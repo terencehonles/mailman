@@ -4,19 +4,29 @@ Copyright (C) 1998 by the Free Software Foundation, Inc.
 
 BSD ISSUES
 
-Vivek Khera writes that BSD does nightly security scans for setuid
-file changes.  Setgid directories also come up on the scan when they
-change.  He says that setgid bit is not necessary on BSD systems
-because group ownership is automatically inherited on files created in 
-directories.  On other Un*xes, this only happens when the directory
-has the setgid bit turned on.
+1. Vivek Khera writes that BSD does nightly security scans for setuid
+   file changes.  Setgid directories also come up on the scan when
+   they change.  He says that setgid bit is not necessary on BSD
+   systems because group ownership is automatically inherited on files
+   created in directories.  On other Un*xes, this only happens when
+   the directory has the setgid bit turned on.
 
-To install without turning on the setgid bit on directories, simply
-pass in the DIRSETGID variable to make, like so:
+   To install without turning on the setgid bit on directories, simply
+   pass in the DIRSETGID variable to make, like so:
 
-    % make DIRSETGID=: install
+     % make DIRSETGID=: install
 
-This turns off the chmod g+s on each directory as they are installed.
+   This turns off the chmod g+s on each directory as they are
+   installed.
+
+2. There is a known problem with the posixfile.py module in all
+   versions of Python before 1.5.2 final (the problem was /not/ fixed
+   in Python 1.5.2b2).  This will cause errors in Mailman's locking
+   routines.  See this message from the mailman-developers archive
+   which explains things in greater detail.  Guido provides a patch.
+
+   http://www.python.org/pipermail/mailman-developers/1999-March/001008.html
+
 
 
 Local Variables:
