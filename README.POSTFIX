@@ -67,7 +67,8 @@ INTEGRATING POSTFIX AND MAILMAN
 
     - Look at the Defaults.py file for the variables POSTFIX_ALIAS_CMD
       and POSTFIX_MAP_CMD command.  Make sure these point to your
-      postalias and postmap programs respectively.
+      postalias and postmap programs respectively.  Remember that if
+      you need to make changes, do it in mm_cfg.py.
 
     - Run the genaliases script to initialize your aliases file.
 
