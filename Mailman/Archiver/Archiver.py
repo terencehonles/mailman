@@ -216,7 +216,7 @@ class Archiver:
                 txt = msg.unixfrom
                 for h in msg.headers:
                     txt = txt + h
-                if msg.body[0] != '\n':
+                if not msg.body or msg.body[0] <> '\n':
                     txt = txt + "\n"
                 for line in string.split(msg.body, '\n'):
                     # Quote unprotected From_ lines appearing in body
