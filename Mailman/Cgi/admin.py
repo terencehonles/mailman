@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -108,13 +108,16 @@ def main():
 
     # Is the request for variable details?
     varhelp = None
+    qsenviron = os.environ.get('QUERY_STRING')
+    if qsenviron:
+        parsedqs = cgi.parse_qs(qsenviron)
     if cgidata.has_key('VARHELP'):
         varhelp = cgidata['VARHELP'].value
-    elif cgidata.has_key('request_login') and os.environ.get('QUERY_STRING'):
+    elif cgidata.has_key('request_login') and parsedqs:
         # POST methods, even if their actions have a query string, don't get
         # put into FieldStorage's keys :-(
-        qs = cgi.parse_qs(os.environ['QUERY_STRING']).get('VARHELP')
-        if qs and type(qs) == ListType:
+        qs = parsedqs.get('VARHELP')
+        if qs and isinstance(qs, ListType):
             varhelp = qs[0]
     if varhelp:
         option_help(mlist, varhelp)
@@ -746,6 +749,7 @@ def get_item_gui_description(mlist, category, subcat,
 
 def membership_options(mlist, subcat, cgidata, doc, form):
     # Show the main stuff
+    adminurl = mlist.GetScriptURL('admin', absolute=1)
     container = Container()
     header = Table(width="100%")
     # If we're in the list subcategory, show the membership list
@@ -809,7 +813,7 @@ def membership_options(mlist, subcat, cgidata, doc, form):
             keys.sort()
             bucket = keys[0]
         members = buckets[bucket]
-        action = mlist.GetScriptURL('admin') + '/members?letter=%s' % bucket
+        action = adminurl + '/members?letter=%s' % bucket
         if len(members) <= chunksz:
             form.set_action(action)
         else:
@@ -845,7 +849,7 @@ def membership_options(mlist, subcat, cgidata, doc, form):
         for letter in digits + lowercase:
             if not buckets.get(letter):
                 continue
-            url = mlist.GetScriptURL('admin') + '/members?letter=%s' % letter
+            url = adminurl + '/members?letter=%s' % letter
             if letter == bucket:
                 show = Bold('[%s]' % letter.upper()).Format()
             else:
@@ -859,7 +863,8 @@ def membership_options(mlist, subcat, cgidata, doc, form):
                           bgcolor=mm_cfg.WEB_ADMINITEM_COLOR)
     usertable.AddRow([Center(h) for h in (_('unsub'),
                                           _('member address<br>member name'),
-                                          _('mod'), _('hide'), _('nomail'),
+                                          _('mod'), _('hide'),
+                                          _('nomail<br>[reason]'),
                                           _('ack'), _('not metoo'),
                                           _('digest'), _('plain'),
                                           _('language'))])
@@ -872,6 +877,12 @@ def membership_options(mlist, subcat, cgidata, doc, form):
         names = filter(None, [mlist.getMemberName(s) for s in members])
         # Make the name field at least as long as the longest email address
         longest = max([len(s) for s in names + members])
+    # Abbreviations for delivery status details
+    ds_abbrevs = {MemberAdaptor.UNKNOWN : _('?'),
+                  MemberAdaptor.BYUSER  : _('U'),
+                  MemberAdaptor.BYADMIN : _('A'),
+                  MemberAdaptor.BYBOUNCE: _('B'),
+                  }
     # Now populate the rows
     for addr in members:
         link = Link(mlist.GetOptionsURL(addr, obscure=1),
@@ -895,13 +906,16 @@ def membership_options(mlist, subcat, cgidata, doc, form):
         box = CheckBox('%s_mod' % addr, value, checked)
         cells.append(Center(box).Format())
         for opt in ('hide', 'nomail', 'ack', 'notmetoo'):
+            extra = ''
             if opt == 'nomail':
-                if mlist.getDeliveryStatus(addr) == MemberAdaptor.ENABLED:
+                status = mlist.getDeliveryStatus(addr)
+                if status == MemberAdaptor.ENABLED:
                     value = 'off'
                     checked = 0
                 else:
                     value = 'on'
                     checked = 1
+                    extra = '[%s]' % ds_abbrevs[status]
             elif mlist.getMemberOption(addr, option_info[opt]):
                 value = 'on'
                 checked = 1
@@ -909,7 +923,7 @@ def membership_options(mlist, subcat, cgidata, doc, form):
                 value = 'off'
                 checked = 0
             box = CheckBox('%s_%s' % (addr, opt), value, checked)
-            cells.append(Center(box).Format())
+            cells.append(Center(box.Format() + extra))
         # This code is less efficient than the original which did a has_key on
         # the underlying dictionary attribute.  This version is slower and
         # less memory efficient.  It points to a new MemberAdaptor interface
@@ -947,7 +961,20 @@ def membership_options(mlist, subcat, cgidata, doc, form):
     legend.AddItem(
         _("""<b>hide</b> -- Is the member's address concealed on
         the list of subscribers?"""))
-    legend.AddItem(_('<b>nomail</b> -- Is delivery to the member disabled?'))
+    legend.AddItem(_(
+        """<b>nomail</b> -- Is delivery to the member disabled?  If so, an
+        abbreviation will be given describing the reason for the disabled
+        delivery:
+            <ul><li><b>U</b> -- Delivery was disabled by the user via their
+                    personal options page.
+                <li><b>A</b> -- Delivery was disabled by the list
+                    administrators.
+                <li><b>B</b> -- Delivery was disabled by the system due to
+                    excessive bouncing from the member's address.
+                <li><b>?</b> -- The reason for disabled delivery isn't known.
+                    This is the case for all memberships which were disabled
+                    in older versions of Mailman.
+            </ul>"""))
     legend.AddItem(
         _('''<b>ack</b> -- Does the member get acknowledgements of their
         posts?'''))
@@ -961,13 +988,30 @@ def membership_options(mlist, subcat, cgidata, doc, form):
         _('''<b>plain</b> -- If getting digests, does the member get plain
         text digests?  (otherwise, MIME)'''))
     legend.AddItem(_("<b>language</b> -- Language preferred by the user"))
-    container.AddItem(legend.Format())
+    addlegend = ''
+    parsedqs = 0
+    qsenviron = os.environ.get('QUERY_STRING')
+    if qsenviron:
+        qs = cgi.parse_qs(qsenviron).get('legend')
+        if qs and isinstance(qs, ListType):
+            qs = qs[0]
+        if qs == 'yes':
+            addlegend = 'legend=yes&'
+    if addlegend:
+        container.AddItem(legend.Format() + '<p>')
+        container.AddItem(
+            Link(adminurl + '/members/list',
+                 _('Click here to hide the legend for this table.')))
+    else:
+        container.AddItem(
+            Link(adminurl + '/members/list?legend=yes',
+                 _('Click here to include the legend for this table.')))
     container.AddItem(Center(usertable))
 
     # There may be additional chunks
     if chunkindex is not None:
         buttons = []
-        url = mlist.GetScriptURL('admin') + '/members?letter=%s&' % bucket
+        url = adminurl + '/members?%sletter=%s&' % (addlegend, bucket)
         footer = _('''<p><em>To view more members, click on the appropriate
         range listed below:</em>''')
         chunkmembers = buckets[bucket]
