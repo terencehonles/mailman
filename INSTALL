@@ -1,5 +1,5 @@
 Mailman - The GNU Mailing List Management System
-Copyright (C) 1998,1999,2000,2001 Free Software Foundation, Inc.
+Copyright (C) 1998,1999,2000,2001,2002 Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
 This file contains installation instructions for GNU Mailman, which is
@@ -23,36 +23,18 @@ upgrade.
 
         http://www.python.org
 
+    If you are building Python from source, you should be fine with
+    the standard "./configure ; make install" for most Unix-like
+    OSes.  If you run "make test", you'll see a bunch of tests skipped
+    -- don't worry, you probably won't need them.  Mailman tries to
+    stick to the basics that compile on most systems.
+
     You must also have an ANSI C compiler in order to build the
     wrapper programs which are used for improved security.  The GNU C
     compiler gcc 2.8.1 or later is known to work well.  For more
     information about obtaining gcc, see
 
         http://www.gnu.org
-
-    Mailman 2.1 now requires the "email" package, which comes as part
-    of Python 2.2.  If you are running an older version of Python,
-    then you need to install the standalone email package by doing the
-    following steps:
-
-    % cd misc
-    % tar zxf email-0.96.tar.gz
-    % cd email-0.96
-    % python setup.py install
-
-    Check to make sure the email package is properly installed by
-    doing the following:
-
-    % python
-    Python 2.1.1 (#1, Aug 31 2001, 17:07:00) 
-    [GCC egcs-2.91.66 19990314/Linux (egcs-1.1.2 release)] on linux2
-    Type "copyright", "credits" or "license" for more information.
-    >>> import email
-    >>> email.__version__
-    '0.93'
-
-    (Note that if you are using Python 2.2, email.__version__ will be
-    "1.0"; either version is fine.)
 
     If there is a README.<yourMTA> file that describes your mail
     server (MTA), read it now.  Some MTAs are more compatible with
@@ -71,7 +53,7 @@ upgrade.
 
     - Add a new user called `mailman'.  Typically this is added to
       your /etc/passwd file.  If username `mailman' is already in use,
-      choose something else unique and see the --with-ownername flag
+      choose something else unique and see the --with-username flag
       below.
 
     - Add a new group called `mailman'.  Typically this is added to
@@ -80,7 +62,7 @@ upgrade.
       security is based on group-ownership permissions, so it is
       important to get this step right.  If groupname `mailman' is
       already in use, choose something else unique and see the
-      --with-ownergroup below.
+      --with-groupname below.
 
     - Create an installation directory (called $prefix in the
       documentation that follows).  All of the Mailman files will be
@@ -103,7 +85,7 @@ upgrade.
       setgid programs.
 
       Make sure the install directory is set to group `mailman' (or
-      whatever you're going to specify as --with-ownergroup) and has
+      whatever you're going to specify as --with-groupname) and has
       the setgid bit set (but see README.BSD if you're on a BSD
       system).  You probably also want to guarantee that this
       directory is readable and executable by everyone.  For example,
@@ -336,7 +318,7 @@ upgrade.
           % cd $prefix/cron
           % crontab -u mailman crontab.in
 
-      If you used the --with-ownername option, use that user name
+      If you used the --with-username option, use that user name
       instead of mailman for the -u argument value.  If your crontab
       does not support the -u option, try these commands:
 
@@ -352,9 +334,9 @@ upgrade.
       If you want to start Mailman every time you reboot your system,
       and your OS supports the chkconfig command (e.g. RedHat and
       Mandrake Linuxes) you can simply do the following (as root, from
-      the Mailman source directory):
+      the Mailman install directory):
 
-          % cp misc/mailman /etc/init.d/mailman
+          % cp scripts/mailman /etc/init.d/mailman
           % chkconfig --add mailman
 
       (Note that /etc/init.d may be /etc/rc.d/init.d on some systems.)
@@ -536,11 +518,11 @@ upgrade.
 
 
     Problem:  I send mail to the list, and get back mail saying,
-              "sh: wrapper not available for sendmail programs"
+              "sh: mailman not available for sendmail programs"
 
     Solution: Your system uses sendmail restricted shell (smrsh).  You
               need to configure smrsh by creating a symbolic link from
-              the mail wrapper ($prefix/mail/wrapper) to the directory
+              the mail wrapper ($prefix/mail/mailman) to the directory
               identifying executables allowed to run under smrsh.
 
               Some common names for this directory are
