@@ -21,6 +21,7 @@ import os
 import signal
 import cgi
 import sha
+from types import ListType
 
 from Mailman import mm_cfg
 from Mailman import MailList
@@ -85,6 +86,9 @@ def process_request(doc, cgidata):
     password = cgidata.getvalue('password', '').strip()
     confirm  = cgidata.getvalue('confirm', '').strip()
     auth     = cgidata.getvalue('auth', '').strip()
+    langs    = cgidata.getvalue('langs', [mm_cfg.DEFAULT_SERVER_LANGUAGE])
+    if type(langs) <> ListType:
+        langs = [langs]
     # Sanity check
     if '@' in listname:
         request_creation(doc, cgidata,
@@ -95,6 +99,10 @@ def process_request(doc, cgidata):
         # used to mine/guess the existance of non-advertised lists.  Then
         # again, that can be done in other ways already, so oh well.
         request_creation(doc, cgidata, _('List already exists: %(listname)s'))
+        return
+    if not listname:
+        request_creation(doc, cgidata,
+                         _('You forgot to enter the list name'))
         return
     if not owner:
         request_creation(doc, cgidata,
@@ -154,7 +162,7 @@ def process_request(doc, cgidata):
         oldmask = os.umask(002)
         try:
             try:
-                mlist.Create(listname, owner, pw)
+                mlist.Create(listname, owner, pw, langs)
             finally:
                 os.umask(oldmask)
         except Errors.MMBadEmailError:
@@ -310,6 +318,31 @@ def request_creation(doc, cgidata=dummy, errmsg=None):
         notify = int(cgidata.getvalue('notify', '1'))
     except ValueError:
         notify = 1
+    # Create the table of initially supported languages
+    langs = Utils.GetDirectories(mm_cfg.TEMPLATE_DIR)
+    langs.sort()
+    try:
+        langi = langs.index(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+    except ValueError:
+        # Someone must have deleted the servers's preferred language.  Could
+        # be other trouble lurking!
+        langi = 0
+    # BAW: we should preserve the list of checked languages across form
+    # invocations.
+    checked = [0] * len(langs)
+    checked[langi] = 1
+    deflang = _(Utils.GetLanguageDescr(mm_cfg.DEFAULT_SERVER_LANGUAGE))
+    ftable.AddRow([Label(_(
+        '''Initial list of supported languages.  <p>Note that if you do not
+        select at least one initial language, the list will use the server
+        default language of %(deflang)s''')),
+                   CheckBoxArray('langs',
+                                 [_(Utils.GetLanguageDescr(L)) for L in langs],
+                                 checked=checked,
+                                 values=langs)])
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, bgcolor=GREY)
+    ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor=GREY)
+
     ftable.AddRow([Label(_('Send "list created" email to list owner?')),
                    RadioButtonArray('notify', (_('No'), _('Yes')),
                                     checked=notify,
