@@ -103,11 +103,12 @@ The Mailman TODO list
 - Provide downloadable tar.gz's of the html archives
 - sort by date should go most-recent to oldest
 - allow list owner to edit archive messages
-- support for alternative archiving systems, e.g. MHonArc, Hypermail
 - archive link should do *something* reasonable before the first
   message has been posted to the list.
 - optional form front-end to public interfaces as a filter to address
   harvesters.
+- clobber_date should support third option: only munge the date if the
+  Date: field is unreasonable (far in the future or far in the past).
 
 *Code cleanup
 - Use the re module where regexp and regsub are used.
