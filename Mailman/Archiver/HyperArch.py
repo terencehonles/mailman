@@ -1123,6 +1123,7 @@ class HyperArchive(pipermail.T):
                     k = kr.start(0)
                 if j != -1 and (j < k or k == -1):
                     text = jr.group(1)
+                    length = len(text)
                     if mm_cfg.ARCHIVER_OBSCURES_EMAILADDRS:
                         text = re.sub('@', _(' at '), text)
                         URL = self.maillist.GetScriptURL(
@@ -1132,10 +1133,11 @@ class HyperArchive(pipermail.T):
                     pos = j
                 elif k != -1 and (j > k or j == -1):
                     text = URL = kr.group(1)
+                    length = len(text)
                     pos = k
                 else: # j==k
                     raise ValueError, "j==k: This can't happen!"
-                length = len(text)
+                #length = len(text)
                 #self.message("URL: %s %s %s \n"
                 #             % (CGIescape(L[:pos]), URL, CGIescape(text)))
                 L2 += '%s<A HREF="%s">%s</A>' % (
