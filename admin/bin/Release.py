@@ -46,12 +46,10 @@ Where `options' are:
 
     tagname is used in the various commands above.  It should essentially be
     the version number for the release, and is required.
-
 """
 
 import sys
 import os
-import string
 import errno
 import re
 import time
@@ -60,11 +58,12 @@ import getopt
 
 program = sys.argv[0]
 
-def usage(status, msg=''):
-    print __doc__ % globals()
+def usage(code, msg=''):
+    print >> sys.stderr, __doc__ % globals()
     if msg:
-        print msg
-    sys.exit(status)
+        print >> sys.stderr, msg
+    sys.exit(code)
+
 
 
 _releasedir = None
@@ -79,14 +78,15 @@ def releasedir(tagname=None):
 
 # CVS related commands
 
+def tag2rel(tagname):
+    return '"Release_%s"' % tagname.replace('.', '_')
+
 def cvsdo(cvscmd):
     os.system('cvs %s' % cvscmd)
 
 def tag_release(tagname, retag):
-    # watch out for dots in the name
-    table = string.maketrans('.', '_')
-    # To be done from writeable repository
-    relname = '"Release_' + string.translate(tagname, table) + '"'
+    # Convert dots in tagname to underscores
+    relname = tag2rel(tagname)
     print 'Tagging release with', relname, '...'
     option = ''
     if retag:
@@ -95,10 +95,7 @@ def tag_release(tagname, retag):
 
 def checkout(tagname, tail):
     print 'checking out...',
-    # watch out for dots in the name
-    table = string.maketrans('.', '_')
-    # To be done from writeable repository
-    relname = '"Release_' + string.translate(tagname, table) + '"'
+    relname = tag2rel(tagname)
     cvsdo('export -k kv -r %s -d %s mailman' % (relname, tail))
     os.rename('%s/doc' % tail, 'mailman-doc')
 
@@ -124,42 +121,47 @@ def make_pkg(tagname):
         os.chdir(curdir)
 
 
+VERSIONMARK = '<!-VERSION--->'
+DATEMARK    = '<!-DATE--->'
+
+
 def do_bump(newvers):
     print 'doing bump...',
-    # hack the index.html file
-    print 'download.ht...',
-    fp = open('admin/www/download.ht', 'r+')
-    text = fp.read()
-    parts = string.split(text, '<!-VERSION--->')
-    parts[1] = newvers
-    text = string.join(parts, '<!-VERSION--->')
-    parts = string.split(text, '<!-DATE--->')
-    timestr = time.ctime(time.time())
-    parts[1] = timestr[4:11] + timestr[-4:]
-    text = string.join(parts, '<!-DATE--->')
-    fp.seek(0)
-    fp.write(text)
-    fp.close()
+    # hack some files
+    for file in ('index.ht', 'download.ht'):
+        print '%s...' % file, 
+        fp = open(os.path.join('admin', 'www', file, 'r+'))
+        text = fp.read()
+        parts = text.split(VERSIONMARK)
+        parts[1] = newvers
+        text = VERSIONMARK.join(parts)
+        parts = text.split(DATEMARK)
+        timestr = time.ctime(time.time())
+        parts[1] = timestr[4:11] + timestr[-4:]
+        text = DATEMARK.join(parts)
+        fp.seek(0)
+        fp.write(text)
+        fp.close()
     # hack the configure.in file
     print 'Version.py...',
-    fp_in = open('Mailman/Version.py')
-    fp_out = open('Mailman/Version.py.new', 'w')
+    infp = open('Mailman/Version.py')
+    outfp = open('Mailman/Version.py.new', 'w')
     matched = 0
     cre = re.compile(r'^VERSION(?P<ws>[ \t]*)=')
     while 1:
-        line = fp_in.readline()
+        line = infp.readline()
         if not line:
             if not matched:
                 print 'Error! VERSION line not found'
             break
         mo = cre.search(line)
         if matched or not mo:
-            fp_out.write(line)
+            outfp.write(line)
         else:
-            fp_out.write('VERSION%s= "%s"\n' % (mo.group('ws'), newvers))
+            outfp.write('VERSION%s= "%s"\n' % (mo.group('ws'), newvers))
             matched = 1
-    fp_in.close()
-    fp_out.close()
+    infp.close()
+    outfp.close()
     os.rename('Mailman/Version.py.new', 'Mailman/Version.py')
 
 
@@ -181,7 +183,7 @@ def main():
     if not os.environ.get('CVSROOT'):
         try:
             fp = open('CVS/Root')
-            os.environ['CVSROOT'] = string.strip(fp.read())
+            os.environ['CVSROOT'] = fp.read().strip()
             fp.close()
         except IOError, e:
             if e.errno <> errno.ENOENT: raise
@@ -221,5 +223,7 @@ def main():
     finally:
         os.umask(omask)
 
+
+
 if __name__ == '__main__':
     main()
