@@ -38,9 +38,9 @@ StudlyCaps).
 <h3>Current Version</h3>
 
 <p>Version
-(<!-VERSION--->2.1b5<!-VERSION--->,
+(<!-VERSION--->2.1b6<!-VERSION--->,
 released on
-<!-DATE--->19-Nov-2002<!-DATE--->)
+<!-DATE--->09-Dec-2002<!-DATE--->)
 is the current development release of the next version of Mailman.
 This version is stable and is being used in some production
 environments, but it may still have some lurking bugs.  If you decide
