@@ -18,7 +18,10 @@
 
 import sys, os
 import paths
-import smtplib,mm_cfg
+
+# XXX: this really should be merged with Python's standard smtplib library
+from Mailman import smtplib
+from Mailman import mm_cfg
 
 #sys.stderr = open("/home/mailman/mailman/logs/debug","a+")
 #sys.stdout = sys.stderr

@@ -26,33 +26,12 @@ rather than sending a single message for each password."""
 
 import sys, os, string
 import paths
-import maillist, mm_cfg, mm_message, mm_utils
+from Mailman import MailList
+from Mailman import mm_cfg
+from Mailman import Utils
 
 
 users = {}				# user: (listname, password, url)
-
-USERPASSWORDSTEXT = """
-This is a reminder, sent out once a month, about your %s
-mailing list memberships.  It includes your subscription info and
-how to use it to change it or unsubscribe from a list.
-
-Passwords for %s:
-
-%s
-%s
-You can visit the URLs to change your membership status or configuration,
-including unsubscribing, setting digest-style delivery or disabling
-delivery altogether (e.g., for a vacation), and so on.
-
-In addition to the URL interfaces, you can also use email to make such
-changes.  For more info, send a message to the '-request' address of the
-list (for example, %s-request@%s) containing just
-the word 'help' in the message body, and an email message will be sent to
-you with instructions.
-
-If you have questions, problems, comments, etc, send them to
-mailman-owner@%s.  Thanks!
-"""
 
 def MailAllPasswords(list, users):
     """Send each user their complete list of passwords.
@@ -69,12 +48,14 @@ def MailAllPasswords(list, users):
 		table.append("%-10s %-10s\n%s\n" % (l, p, u))
 	header = ("%-10s %-10s\n%-10s %-10s"
 		  % ("List", "Password // URL", "----", "--------"))
-	text = USERPASSWORDSTEXT % (list.host_name,
-                                    user,
-				    header,
-				    string.join(table, "\n"),
-				    l, list.host_name,
-				    list.host_name)
+        text = Utils.maketext(
+            'cronpass.txt',
+            {'hostname': list.host_name,
+             'user'    : user,
+             'header'  : header,
+             'table'   : string.join(table, '\n'),
+             'one_list': l,
+             })
    	list.SendTextToUser(subject = subj,
    			    recipient = user,
    			    text = text,
@@ -86,8 +67,8 @@ def main():
     the user a single message with the info for all their lists on this
     site."""
     list = None
-    for name in mm_utils.list_names():
-	list = maillist.MailList(name, lock = 0)
+    for name in Utils.list_names():
+	list = MailList.MailList(name, lock = 0)
 	list_name = list.real_name
 	reminders_to_admins = list.reminders_to_admins
 	if not list.send_reminders:

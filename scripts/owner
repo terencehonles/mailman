@@ -21,25 +21,28 @@
 This script gets called by the wrapper.
 
 Stdin is the mail message, and argv[1] is the name of the mailing list
-whose owner(s) to send mail to."""
+whose owner(s) to send mail to.
+"""
 
 
 import sys
 import paths
-import maillist, mm_message, mm_utils
+from Mailman import MailList
+from Mailman import Message
+from Mailman import Utils
 
 try:
-    sys.stderr = mm_utils.StampedLogger("error", label = 'post',
-                                        manual_reprime=1, nofail=0)
+    sys.stderr = Utils.StampedLogger("error", label = 'post',
+                                     manual_reprime=1, nofail=0)
 except IOError:
     pass                        # Oh well - SOL on redirect, errors show thru.
 
 # Only let one program run at once per list.
 
 # TODO: This *can* fail, and should send back an error message when it does.
-current_list = maillist.MailList(sys.argv[1])
+current_list = MailList.MailList(sys.argv[1])
 try:
-    msg = mm_message.IncomingMessage()
+    msg = Message.IncomingMessage()
     if not current_list.bounce_processing or not current_list.ScanMessage(msg):
 	current_list.DeliverToList(msg, current_list.owner, '', '')
 # Let another process run.

@@ -16,10 +16,15 @@
 # along with this program; if not, write to the Free Software 
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
+import os
+import marshal
 import paths
-import maillist, mm_cfg, mm_utils, marshal, os
+from Mailman import MailList
+from Mailman mm_cfg
+from Mailman import Utils
 
-names = mm_utils.list_names()
+
+names = Utils.list_names()
 try:
     file = open(os.path.join(mm_cfg.DATA_DIR, "gate_watermarks"), "r")
     watermarks = marshal.load(file)
@@ -37,7 +42,7 @@ for name in names:
         wm = 0
     # Save the current state to .last, in case we crash while writing out,
     # and corrupt the file.
-    list = maillist.MailList(name, lock=0)
+    list = MailList.MailList(name, lock=0)
     file = open(os.path.join(mm_cfg.DATA_DIR, "gate_watermarks.last"), "w")
     marshal.dump(watermarks, file)
     file.close()

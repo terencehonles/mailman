@@ -26,7 +26,9 @@
 
 import sys
 import paths
-import maillist, mm_cfg, mm_utils
+from Mailman import MailList
+from Mailman import mm_cfg
+from Mailman import Utils
 
 def usage():
     sys.stderr.write("Usage: %s level\n" % sys.argv[0])
@@ -42,9 +44,9 @@ except ValueError:
     usage()
     raise SystemExit, 1
 
-for name in mm_utils.list_names():
+for name in Utils.list_names():
 
-    list = maillist.MailList(name)
+    list = MailList.MailList(name)
 
     if level <= list.archive_update_frequency:
 	list.UpdateArchive()

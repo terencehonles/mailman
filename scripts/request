@@ -21,34 +21,36 @@
 Called by the wrapper, stdin is the mail message, and argv[1] is the name
 of the target mailing list.
 
-Errors are redirected to logs/errors."""
+Errors are redirected to logs/errors.
+"""
 
 
 import sys
 import paths
-import maillist, mm_utils
+from Mailman import MailList
+from Mailman import Utils
 
 try:
-    sys.stderr = mm_utils.StampedLogger("error", label = 'mailcmd',
-                                        manual_reprime=1)
+    sys.stderr = Utils.StampedLogger("error", label = 'mailcmd',
+                                     manual_reprime=1)
 except IOError:
     pass                        # Oh well - SOL on redirect, errors show thru.
 
 
 # Only let one program run at once per list.
 
-if sys.argv[1] not in mm_utils.list_names():
+if sys.argv[1] not in Utils.list_names():
     import mm_cfg
-    mm_utils.SendTextToUser("Misconfigured list %s" % sys.argv[1],
-                            ("List %s in aliases but not among "
-                             "list_names?\n\n"
-                             "---------- Forwarded message ----------\n"
-                             "%s"
-                             % (mm_cfg.MAILMAN_OWNER, sys.stdin.read())),
-                            mm_cfg.MAILMAN_OWNER,
-                            sender=mm_cfg.MAILMAN_OWNER)
+    Utils.SendTextToUser("Misconfigured list %s" % sys.argv[1],
+                         ("List %s in aliases but not among "
+                          "list_names?\n\n"
+                          "---------- Forwarded message ----------\n"
+                          "%s"
+                          % (mm_cfg.MAILMAN_OWNER, sys.stdin.read())),
+                         mm_cfg.MAILMAN_OWNER,
+                         sender=mm_cfg.MAILMAN_OWNER)
 
-list = maillist.MailList(sys.argv[1])
+list = MailList.MailList(sys.argv[1])
 
 try:
     list.ParseMailCommands()

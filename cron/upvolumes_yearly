@@ -25,12 +25,13 @@
 
 import sys, os
 import paths
-import maillist, mm_cfg, mm_utils
+from Mailman import MailList
+from Mailman import Utils
 
 
-for name in mm_utils.list_names():
+for name in Utils.list_names():
     try:
-	list = maillist.MailList(name)
+	list = MailList.MailList(name)
     except:
 	continue
     list.UpdateArchive()

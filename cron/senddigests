@@ -22,12 +22,13 @@ Typically it's invoked via cron."""
 
 import sys, os
 import paths
-import maillist, mm_cfg, mm_message, mm_utils
+from Mailman import MailList
+from Mailman import Utils
 
 def main():
 
-    for name in mm_utils.list_names():
-	list = maillist.MailList(name, lock=0)
+    for name in Utils.list_names():
+	list = MailList.MailList(name, lock=0)
 	if list.digest_send_periodic:
 	    # Send if there are any messages pending.
 	    list.SendDigestIfAny()

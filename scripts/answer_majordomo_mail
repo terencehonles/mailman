@@ -22,17 +22,18 @@
 import sys
 import os
 import paths
-import mm_message, mm_utils
+from Mailman import Message
+from Mailman import Utils
 
 try:
-    sys.stderr = mm_utils.StampedLogger("error",
-                                        label = 'answer_majordomo_mail',
-                                        manual_reprime=1)
+    sys.stderr = Utils.StampedLogger("error",
+                                     label = 'answer_majordomo_mail',
+                                     manual_reprime=1)
 except IOError:
     pass                        # Oh well - SOL on redirect, errors show thru.
 
-msg = mm_message.IncomingMessage()
+msg = Message.IncomingMessage()
 txtfile = os.path.join(paths.prefix, 'misc/majordomo.answer.txt')
 text = open(txtfile, 'r').read()
-mm_utils.SendTextToUser('Your mail to Majordomo...', text, msg.GetSender(),
-                        'mailman-owner')
+Utils.SendTextToUser('Your mail to Majordomo...', text, msg.GetSender(),
+                     'mailman-owner')

@@ -20,12 +20,14 @@
 
 import sys, os
 import paths
-import maillist, mm_cfg, mm_message, mm_utils
+from Mailman import MailList
+from Mailman mm_cfg
+from Mailman Utils
 
 def main():
 
-    for name in mm_utils.list_names():
-	list = maillist.MailList(name, lock = 0)
+    for name in Utils.list_names():
+	list = MailList.MailList(name, lock = 0)
 	count = list.RequestsPending()
 	if count:
 	    list.SendTextToUser(subject = '%d %s admin request(s) waiting' % 

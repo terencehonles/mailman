@@ -29,7 +29,7 @@ import os
 if not os.fork():
     import string, sys, regsub
     import paths
-    import mm_cfg
+    from Mailman import mm_cfg
     def ContactTransport(sender, recip, text):
         cmd = os.path.join(mm_cfg.SCRIPTS_DIR, "contact_transport")
 	file = os.popen(string.join([mm_cfg.PYTHON,cmd,sender]+recip," "), 'w')
