@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in Revision: 1.23 
+# From configure.in Revision: 1.24 
 
 # Guess values for system-dependent variables and create Makefiles.
 # Generated automatically using autoconf version 2.12 
@@ -536,7 +536,7 @@ fi
 
 # Set VERSION so we only need to edit it in one place
 
-VERSION=1.0b6
+VERSION=1.0b7
 
 
 # /home/mailman is the default installation directory
@@ -1871,7 +1871,7 @@ done
 ac_given_srcdir=$srcdir
 ac_given_INSTALL="$INSTALL"
 
-trap 'rm -fr `echo "misc/paths.py Mailman/Defaults.py Mailman/mm_cfg.py
+trap 'rm -fr `echo "misc/paths.py Mailman/Defaults.py Mailman/mm_cfg.py.dist
            src/Makefile misc/Makefile bin/Makefile
 	   Mailman/Makefile Mailman/Cgi/Makefile Mailman/Logging/Makefile
 	   Mailman/Archiver/Makefile
@@ -1963,7 +1963,7 @@ EOF
 
 cat >> $CONFIG_STATUS <<EOF
 
-CONFIG_FILES=\${CONFIG_FILES-"misc/paths.py Mailman/Defaults.py Mailman/mm_cfg.py
+CONFIG_FILES=\${CONFIG_FILES-"misc/paths.py Mailman/Defaults.py Mailman/mm_cfg.py.dist
            src/Makefile misc/Makefile bin/Makefile
 	   Mailman/Makefile Mailman/Cgi/Makefile Mailman/Logging/Makefile
 	   Mailman/Archiver/Makefile
