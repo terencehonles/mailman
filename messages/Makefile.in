@@ -132,7 +132,7 @@ docstring.files:
 	(cd ..; grep -d skip -l -i '^#! .*python.*' `find bin cron scripts -name ".#*" -prune -o -print` | grep -v pygettext >| messages/$@)
 	(cd ..; ls Mailman/Commands/cmd_*.py >> messages/$@)
 
-mailman.pot: marked.files docstring.files
+potfile: marked.files docstring.files
 	@echo "Running pygettext on $@; this make take a while."
 	(cd ..; $(PROG) -p messages -d mailman -D -X messages/marked.files `cat messages/marked.files messages/docstring.files`)
 
