@@ -43,7 +43,9 @@ import posixfile
 import HyperDatabase
 import pipermail
 
-from Mailman import mm_cfg, EncWord
+from Mailman import mm_cfg
+from Mailman import Utils
+from Mailman import EncWord
 from Mailman.Logging.Syslog import syslog
 
 gzip = None
@@ -78,57 +80,6 @@ def sizeof(filename):
     # GB?? :-)
     return ' %d MB ' % (size / 1000000)
 
-
-article_template='''\
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
- <HEAD>
-   <TITLE> %(title)s
-   </TITLE>
-   <LINK REL="Index" HREF="index.html" >
-   <LINK REL="made" HREF="mailto:%(email_url)s">
-   <META NAME="robots" CONTENT="index,nofollow">
-   %(encoding)s
-   %(prev)s
-   %(next)s
- </HEAD>
- <BODY BGCOLOR="#ffffff">
-   <H1>%(subject_html)s
-   </H1>
-    <B>%(author_html)s
-    </B> 
-    <A HREF="mailto:%(email_url)s"
-       TITLE="%(subject_html)s">%(email_html)s
-       </A><BR>
-    <I>%(datestr_html)s</I>
-    <P><UL>
-        %(prev_wsubj)s
-        %(next_wsubj)s
-         <LI> <B>Messages sorted by:</B> 
-              <a href="date.html#%(sequence)s">[ date ]</a>
-              <a href="thread.html#%(sequence)s">[ thread ]</a>
-              <a href="subject.html#%(sequence)s">[ subject ]</a>
-              <a href="author.html#%(sequence)s">[ author ]</a>
-         </LI>
-       </UL>
-    <HR>  
-<!--beginarticle-->
-%(body)s
-<!--endarticle-->
-    <HR>
-    <P><UL>
-        <!--threads-->
-	%(prev_wsubj)s
-	%(next_wsubj)s
-         <LI> <B>Messages sorted by:</B> 
-              <a href="date.html#%(sequence)s">[ date ]</a>
-              <a href="thread.html#%(sequence)s">[ thread ]</a>
-              <a href="subject.html#%(sequence)s">[ subject ]</a>
-              <a href="author.html#%(sequence)s">[ author ]</a>
-         </LI>
-       </UL>
-</body></html>
-'''
 
 html_charset = '<META http-equiv="Content-Type" ' \
                'content="text/html; charset=%s">'
@@ -187,8 +138,6 @@ class Article(pipermail.Article):
     __super_set_date = pipermail.Article._set_date
     
     _last_article_time = time.time()
-
-    html_tmpl = article_template
 
     # for compatibility with old archives loaded via pickle
     charset = mm_cfg.DEFAULT_CHARSET
@@ -292,8 +241,7 @@ class Article(pipermail.Article):
             d["encoding"] = ""
 
         self._add_decoded(d)
-            
-        return self.html_tmpl % d
+        return Utils.maketext('article.html', d, raw=1)
 
     def _get_prev(self):
         """Return the href and subject for the previous message"""
