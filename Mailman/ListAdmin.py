@@ -59,12 +59,6 @@ LOST = 2
 DASH = '-'
 NL = '\n'
 
-# Should held messages be saved on disk as Python pickles or as plain text?
-# The former is more efficient since we don't need to go through the
-# parse/generate roundtrip each time, but the latter might be preferred if you
-# want to edit the held message on disk.
-HOLD_MESSAGES_AS_PICKLES = 1
-
 
 
 class ListAdmin:
@@ -208,7 +202,7 @@ class ListAdmin:
         # get the message sender
         sender = msg.get_sender()
         # calculate the file name for the message text and write it to disk
-        if HOLD_MESSAGES_AS_PICKLES:
+        if mm_cfg.HOLD_MESSAGES_AS_PICKLES:
             ext = 'pck'
         else:
             ext = 'txt'
@@ -217,7 +211,7 @@ class ListAdmin:
         fp = None
         try:
             fp = open(os.path.join(mm_cfg.DATA_DIR, filename), 'w')
-            if HOLD_MESSAGES_AS_PICKLES:
+            if mm_cfg.HOLD_MESSAGES_AS_PICKLES:
                 cPickle.dump(msg, fp, 1)
             else:
                 g = Generator(fp)

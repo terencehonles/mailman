@@ -665,6 +665,12 @@ OWNERS_CAN_DELETE_THEIR_OWN_LISTS = 0
 # have a heavy impact on the performance of your system.
 OWNERS_CAN_ENABLE_PERSONALIZATION = 0
 
+# Should held messages be saved on disk as Python pickles or as plain text?
+# The former is more efficient since we don't need to go through the
+# parse/generate roundtrip each time, but the latter might be preferred if you
+# want to edit the held message on disk.
+HOLD_MESSAGES_AS_PICKLES = 1
+
 # These define the available types of external message metadata formats, and
 # the one to use by default.  MARSHAL format uses Python's built-in marshal
 # module.  BSDDB_NATIVE uses the bsddb module compiled into Python, which
