@@ -8,11 +8,10 @@ The Mailman TODO List
 Email Handling
     - Use VERP or DSN for address tracing, perhaps tied to the monthly
       password reminders, or VERPing the occasional regular message.
-    - Use multiple subprocesses for MTA handoff, or divorce it
-      entirely from the rest of Mailman.  Multi-threading doesn't seem
-      to help much, possibly because of Python's global interpreter
-      lock.  The problem here is coordinating access to the list
-      database.
+    - Re-implement bulk mailer the Right Way: an asynchat/asyncore
+      server to do DNS lookups and remote MTA delivery directly
+      (optional).
+    - Plain text digests should conform to RFC 1153.
 
 Documentation
     - A detailed feature list
@@ -64,6 +63,8 @@ List Admin UI
     - Better integration with moderated newsgroups (and allow some
       addresses to bypass even that moderation and be delivered to a
       secondary channel, like moderators@isc.org).
+    - Ability to set the next digest volume and issue number from the
+      web
 
 List Member UI
     - Editing your user options should put you back to the edit-options page
@@ -170,7 +171,6 @@ Pipermail + Archiving mechanism
       the Date: field is unreasonable (far in the future or far in the
       past).
     - In general the whole Pipermail subsystem needs a good rewrite.
-    - Ability to set the next digest volume and issue number from the web
 
 Code cleanup
     - Use all the new wizzy Python 2.0 features
