@@ -57,20 +57,26 @@ class GatewayManager:
 	# Use a watermark system instead.
 	if watermark == 0:
 	  return eval(l)
-	for num in range(watermark, eval(l)+1):
+	for num in range(max(watermark+1, eval(f)), eval(l)+1):
 	  try:
 	    headers = con.head(`num`)[3]
+	    found_to = 0
             for header in headers:
 	      i = string.index(header, ':')
-	      if header[:i] <> 'X-Remailer':
+    	      if string.lower(header[:i]) == 'to':
+	        found_to = 1
+	      if header[:i] <> 'X-BeenThere':
 	        continue
-	      if header[i:] == ': %s@%s' % (self._internal_name, 
-	                                    self.host_name):
+	      if header[i:] == ': %s' % self.GetListEmail():
 	        raise "QuickEscape"
 	    body    = con.body(`num`)[3]
-	    file = os.popen("%s %s nonews" % (os.path.join(mm_cfg.SCRIPTS_DIR,
+  	    file = os.popen("%s %s nonews" % 
+	                        (os.path.join(mm_cfg.SCRIPTS_DIR,
 	                        "post"), self._internal_name), "w")
 	    file.write(string.join(headers,'\n'))
+	    # If there wasn't already a TO: header, add one.
+            if not found_to:
+	      file.write("\nTo: %s" % self.GetListEmail())
 	    file.write('\n\n')
 	    file.write(string.join(body,'\n'))
 	    file.write('\n')
@@ -79,12 +85,13 @@ class GatewayManager:
 	    pass # Probably canceled, etc...        
           except "QuickEscape":
 	    pass # We gated this TO news, don't repost it!
- 	return l
+ 	return eval(l)
 				
-  def SendMailToNewsGroup(self, msg):
+  def SendMailToNewsGroup(self, mail_msg):
+	import mm_message
 	import os
-	if self.gateway_to_news == 0:
-	  return
+	#if self.gateway_to_news == 0:
+	#  return
 	if self.linked_newsgroup == '' or self.nntp_host == '':
 	  raise ImproperNNTPConfigError
 	try:
@@ -93,27 +100,43 @@ class GatewayManager:
         except AttributeError:
 	  pass # Wasn't remailed by the news gater then.  Let it through.
 	# Fork in case the nntp connection hangs.
-	if not os.fork():
+	x = os.fork()
+	if not x:
+	  # Now make the news message...
+	  msg = mm_message.NewsMessage(mail_msg)
+
   	  import nntplib,string
-  	  msg.headers.append("Newsgroups: %s\n" % self.linked_newsgroup)
-	  msg.headers.append("X-Remailer: %s@%s\n" % 
-	        (self._internal_name,self.host_name))
+
+	  # Ok, munge headers, etc.
+	  subj = msg.getheader('subject')
+  	  if not subj:
+	    msg.SetHeader('Subject', '%s(no subject)' % prefix)
+  	  if self.reply_goes_to_list:
+            del msg['reply-to']
+            msg.headers.append('Reply-To: %s\n' % self.GetListEmail())
+	  msg.headers.append('Sender: %s\n' % self.GetAdminEmail())
+	  msg.headers.append('Errors-To: %s\n' % self.GetAdminEmail())
+	  msg.headers.append('X-BeenThere: %s\n' % self.GetListEmail())
+   	  msg.headers.append('Newsgroups: %s\n' % self.linked_newsgroup)
 	  # Note:  Need to be sure 2 messages aren't ever sent to the same
           # list in the same process, since message ID's need to be unique.
           # could make the ID be mm.listname.postnum instead if that happens
 	  if msg.getheader('Message-ID') == None:
 	    import time
-	    msg.headers.append("Message-ID: <mm.%s.%s@%s>\n" %
+	    msg.headers.append('Message-ID: <mm.%s.%s@%s>\n' %
                 (time.time(), os.getpid(), self.host_name))
 	  if msg.getheader('Lines') == None:
-	    msg.headers.append("Lines: %s\n" % 
+	    msg.headers.append('Lines: %s\n' % 
                                    len(string.split(msg.body,"\n")))
+	  del msg['received']
+
 	  # NNTP is strict about spaces after the colon in headers.
-          for n in len(msg.headers):
+          for n in range(len(msg.headers)):
 	    line = msg.headers[n]
-	    i = string.index(line,":")
-	    if line[i+1] <> ' ':
+	    i = string.find(line,":")
+	    if i <> -1 and line[i+1] <> ' ':
 	      msg.headers[n] = line[:i+1] + ' ' + line[i+1:]
 	  con = nntplib.NNTP(self.nntp_host)
+   	  con.post(msg)
 	  con.quit()
 	  os._exit(0)
