@@ -354,12 +354,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
     def GetConfigInfo(self):
         info = {}
         for gui in self._gui:
-            try:
+            if hasattr(gui, 'GetConfigCategory') and \
+                   hasattr(gui, 'GetConfigInfo'):
                 key = gui.GetConfigCategory()[0]
                 value = gui.GetConfigInfo(self)
-            except AttributeError:
-                pass
-            else:
                 info[key] = value
         return info
 
