@@ -1,12 +1,12 @@
 Értesítés a(z) %(listname)s levelezõlistára történõ feliratkozási 
 kérelmed megerõsítésérõl.
 
-A(z)%(remote)s címrõl a(z) %(email)s e-mail címmel,
+A(z)%(remote)s címrõl, %(email)s e-mail címmel,
 a(z) %(listaddr)s levelezési listára egy feliratkozási kérelmet
 regisztráltunk. A levelezõlistára való feliratkozás megerõsítéséhez
 erre a levélre kell válaszolni úgy, hogy a Subject: (Tárgy:) mezõt
-nem változtatod meg. A következõ weblapon is megerõsítheted
-feliratkozási szándékodat:
+nem változtatod meg. Feliratkozási szándékodat a következõ weblapon
+is megerõsítheted:
 
     %(confirmurl)s
     
@@ -22,4 +22,4 @@ beszúrt "Re:" vagy "VÁ:" nem okoz gondot).
 Ha nem szeretnél feliratkozni a listára, akkor egyszerûen hagyd 
 figyelmen kívül ezt a levelet. Ha úgy gondolod, hogy jogtalanul
 írtak fel egy listára, vagy más észrevételed van, akkor fordulj
-az adminisztrátorához; %(listadmin)s.
+a lista adminisztrátorához: %(listadmin)s.

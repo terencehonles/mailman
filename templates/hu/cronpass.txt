@@ -5,16 +5,16 @@ a levelezõlistáról.
 
 A Web-címeken a listával kapcsolatos beállításaidat, mint például
 a leiratkozást, vagy a levélküldés típusának beállítását, esetleg 
-szüneteltetését (pl. nyaralás idejére) teheted meg.
+szüneteltetését (pl. nyaralás idejére) módosíthatod/állíthatod be.
 
 A Web elérhetõség mellett, természetesen e-mailen keresztül is el lehet
 végezni a változtatásokat. Bõvebb információért küldj egy levelet, a
 levelezési lista '-request' címére (például %(exreq)s) egy szimpla
-'help' -el a levél törzsében. A válaszlevélben részletes leírást
+'help'-el a levél törzsében. A válaszlevélben részletes leírást
 fogsz kapni az alkalmazható parancsokról.
 
 Kérdéseidet, problémáidat, megjegyzéseidet, egyéb mást a(z) 
-%(owner)s címre küld.  Köszi!
+%(owner)s címre küld.  Köszönjük!
 
 %(useraddr)s jelszava:
 

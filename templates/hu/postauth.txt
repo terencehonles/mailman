@@ -1,10 +1,10 @@
 A lista adminisztrátorként a következõ levél megjelenéséhez szükség
 van az engedélyedre:
 
-    Lista:    %(listname)s@%(hostname)s
-    Feladó:   %(sender)s
-    Targy:    %(subject)s
-    Indok:    %(reason)s
+    Lista:  %(listname)s@%(hostname)s
+    Feladó: %(sender)s
+    Tárgy:  %(subject)s
+    Indok:  %(reason)s
 
 A következõ címen:
 

@@ -3,7 +3,7 @@ jelszavadat kérte ki e-mailben. A jelszóval a listatagsági beállításaidat
 (mint pl. a levelek küldésének módját) tudod beállítani. A jelszó
 ismeretében a listáról le is tudsz iratkozni.
 
-A következõ címmel vagy feliratozva: %(user)s
+A következõ címmel vagy feliratkozva: %(user)s
 
 A %(listname)s jelszavad a következõ: %(password)s
 
@@ -16,8 +16,8 @@ Ugyanezeket e-mailen keresztül is el tudod végezni ezen a címen:
 
     %(requestaddr)s
 
-"help" tartalmú levél elküldésével bõvebb információt lehet megtudni
-a beállításokról.
+A fenti címre egy "help" tartalmú levél elküldésével bõvebb információt
+lehet megtudni a beállításokról.
 
 Kérdések, észrevételek? Küldj egy levelet a(z) %(listname)s levelezõlista
-adminisztrátorának %(adminaddr)s címre.
+adminisztrátorának, a(z) %(owneraddr)s címre.

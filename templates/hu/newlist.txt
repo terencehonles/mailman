@@ -1,13 +1,13 @@
 A(z) `%(listname)s' levelezési lista mûkõdik. A következõkben a 
-levelezési lista alapvetõ információiról olvashatsz itt.
+levelezési lista alapvetõ információiról lehet itt olvasni.
 
 A levelezési lista jelszava a következõ:
 
     %(password)s
 
-Ezzel a jelszóval lehet a lista beállításait elvégezni. Ezen felül ezzel
-a jelszóval lehet néhány adminisztrátori tevékenységet elvégezni, mint 
-például moderált listán a levelek szûrését végrehajtani.
+A megadott jelszóval lehet a lista beállításait megváltoztatni. Ezen
+felül ezzel a jelszóval lehet néhány adminisztrátori tevékenységet is
+elvégezni, mint például moderált listán a levelek szûrését végrehajtani.
 
 A levelezési listát a következõ honlapon lehet beállítani:
 
@@ -26,10 +26,10 @@ beállításaik megváltoztatását; errõl bõvebb információt kaphatsz, ha egy
 
     %(requestaddr)s
 
-Listatag eltávolításához a levelezési lista 'információs' lapján a listatag
-nevére kell kattintanod. Az adminisztrátori jelszó megadásával a listatag
-törlését teheted meg az ott található leiratkozási helyen. A listatag 
+Listatag eltávolításához a levelezési lista 'információs' lapján a 
+listatag nevére kell kattintanod. Törlését pedig a listatagok eltávolítási
+oldalán lehet végrehajtani az adminisztrátori jelszóval. A listatag 
 beállításait (például digest vagy nem-digest formájú levelek fogadása, 
-vagy szüneteltetése, stb.) az adminisztrátori jelszóval is elvégezheted.
+vagy szüneteltetése, stb.) az adminisztrátori jelszóval is módosíthatod.
 
-További kérdéseiddel fordulj ide mailman-owner@%(hostname)s.
+További kérdéseiddel fordulj ide: %(siteowner)s

@@ -14,7 +14,7 @@ digest mód, jelszó változtatása, stb.), látogass el az alábbi címre:
 
   %(optionsurl)s
 %(umbrella)s
-Ugyanezeket a dolgokat e-mailen keresztül is elvégezheted itt:
+Ugyanezeket a dolgokat e-mailen keresztül is elvégezheted ezen a címen:
 
   %(real_name)s-request@%(host_name)s
 

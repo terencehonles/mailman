@@ -1,17 +1,17 @@
 Súgó %(listname)s levelezési lista használatához:
 
-Ez az e-mail a %(version)s verziószámú "Mailman" listakészítõ
+Ez az e-mail a %(version)s verziószámú "Mailman" listakezelõ
 program parancsait ismerteti. A következõkben ismertetett parancsokkal
 a Mailman által üzemeltetett listákról és azok beállításáról
 lehet olvasni. A parancsokat mind a levél törzsében, vagy tárgyában
 meg lehet adni.
 
-Érdemes tudni, hogy az itt megemlített módosításokat Web-en keresztül is
+Érdemes tudni, hogy az itt említett módosításokat Web-en keresztül is
 végre lehet hajtani a következõ címen:
 
     %(listinfo_url)s
 
-Például az említett oldal segítségével a saját címedre el küldheted a
+Például az említett oldal segítségével kikérheted a saját címedre a
 jelszavadat.
 
 A lista beállító parancsokat (pl. subscribe, who, stb.) a listához
@@ -56,14 +56,14 @@ A következõ parancsok állnak rendelkezésre:
 	  Ezt az üzenetet küldi el.        
 
     set <opciók> <on|off> <jelszó> 
-	  A lista beállításait változtatja meg. Az opciók lehetnek:
+	  Megváltoztatja a beállításaidat a listán. Az opciók lehetnek:
 
         ack:
 	  	on-ra állításával értesítést kapsz minden egyes elküldött
 		leveled megérkezésérõl a listára.
 
         digest:
-                A leveleket nem egyesével, hanem egyben, csokorba szedve
+                A leveleket nem egyesével, hanem egyben, összefûzve
 		kapod meg.
 
         plain:
@@ -81,7 +81,7 @@ A következõ parancsok állnak rendelkezésre:
         hide:
 		Elrejti a címedet a 'who' által készített listából.	
 
-    opciók
+    options
 	 Az aktuális beállításaidat mutatja meg.        
 
     password <régi jelszó> <új jelszó> 
