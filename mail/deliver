@@ -18,35 +18,31 @@
 
 """Partition a mass delivery into a suitable set of subdeliveries.
 
-The script takes the following arguments:
+The script takes the following protocol on stdin:
 
- argv[1] path to file containing message
- argv[2] sender
- argv[3] number of processes over which to distribute the sends
- argv[4:] recipients
-
-The recipients will be distributed into at most argv[3] batches, grouping
-together recipients in the same major domain as much as possible.
-"""
+ line 1: batchnum
+ line 2: sender
+ line 3...n+2: n recipients
+ line n+3: <empty> - delimiting end of recipients
+ line n+4: message content
+ 
+The recipients will be distributed into at most batchnum batches, grouping
+together recipients in the same major domain as much as possible."""
 
 # Heh, heh, heh, this partition reminds me of the knapsack problem ;-)
 # Ie, the optimal distribution here is NP Complete.
 
 import os, sys
+import string, re
+import paths
+from Mailman import mm_cfg
+from Mailman.Logging.Utils import LogStdErr
+
+LogStdErr("error", "deliver")
 
 # Settings for pauses during process-depletion (error.EAGAIN) condition.
 REFRACT = 15                            # Seconds between fork retries.
 TRIES = 5                               # Number of times to retry
-
-## # Debugging - os.fork can run out or resources, double check the provisions.
-## import paths
-## from Mailman.Utils import StampedLogger
-## try:
-##     sys.stderr = StampedLogger("error", label = 'deliver',
-##                                manual_reprime=1, nofail=0)
-##     sys.stdout = sys.stderr
-## except IOError:
-##     pass                 # Oh well - SOL on redirect, errors show thru.
 
 def main():
     if not forker():
@@ -54,21 +50,24 @@ def main():
     os._exit(0)
 
 def do_child():
-    import string, sys, re
-    import paths
-    from Mailman import mm_cfg
+    LogStdErr("error", "deliver (child)")
+
     domain_info = {}
 
-    sender = sys.argv[2]
-    spawns = eval(sys.argv[3])
-    file = open(sys.argv[1], "r")
-    text = file.read()
-    file.close()
+    spawns = string.atol(sys.stdin.readline()[:-1])
+    sender = sys.stdin.readline()[:-1]
+    to_list = []
+    while 1:
+        l = sys.stdin.readline()[:-1]
+        if not l:
+            break
+        to_list.append(l)
+    text = sys.stdin.read()
+
     if spawns > mm_cfg.MAX_SPAWNS:
 	spawns = mm_cfg.MAX_SPAWNS
     if spawns < 1:
 	spawns = 1
-    to_list = sys.argv[4:]
 
     # Group by domain.
     for addr in to_list:
@@ -80,7 +79,6 @@ def do_child():
             domain_info[key].append(addr)
     final_groups = BuildGroups(domain_info.values(), len(to_list), spawns)
     ContactTransportForEachGroup(sender, final_groups, text)
-    os.unlink(sys.argv[1])
 
 def BuildGroups(biglist, num_addrs, spawns):
     biglist.sort(lambda x,y: len(x) < len(y))
@@ -110,12 +108,15 @@ def BuildGroups(biglist, num_addrs, spawns):
     return groups
 
 def ContactTransport(sender, recip, text):
-    import string
-    from Mailman import mm_cfg
+    """Pipe message parties & text to contact_transport for SMTP transmit."""
     cmd = os.path.join(mm_cfg.SCRIPTS_DIR, "contact_transport")
-    file = os.popen(string.join([mm_cfg.PYTHON,cmd,sender]+recip," "), 'w')
-    file.write(text)
-    file.close()
+    proc = os.popen("%s %s" % (mm_cfg.PYTHON, cmd), 'w')
+    proc.write("%s\n" % sender)
+    for r in recip:
+        proc.write("%s\n" % r)
+    proc.write("\n")
+    proc.write(text)
+    proc.close()
 
 def ContactTransportForEachGroup(sender, groups, text):
     if len(groups) == 1:
