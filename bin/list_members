@@ -164,7 +164,7 @@ def main():
         try:
             fp = open(outfile, 'w')
         except IOError:
-            print _('Could not open file for writing:'), outfile
+            print >> sys.stderr, _('Could not open file for writing:'), outfile
             sys.exit(1)
     else:
         fp = sys.stdout
@@ -172,7 +172,7 @@ def main():
     try:
         mlist = MailList.MailList(listname, lock=0)
     except Errors.MMListError, e:
-        print _('No such list: %(listname)s')
+        print >> sys.stderr, _('No such list: %(listname)s')
         sys.exit(1)
 
     # Get the lowercased member addresses
