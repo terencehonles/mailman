@@ -21,18 +21,12 @@ import os
 
 if not os.fork():
     import string, sys
-    def CallSendmail(cmd, stdin):
-	file = os.popen(cmd, 'w')
-	file.write(stdin)
-	file.close()
+    def ContactTransport(sender, recip, filename):
+	os.execv(os.path.join(os.path.join(paths.prefix,"mail"),
+	                                     "contact_transport")
+                                         [sender,tmp_file]+to_addrs)
 
     sender = sys.argv[2]
     to_list = sys.argv[3:]
-    file = open(sys.argv[1], 'r')
-    text = file.read()
-    file.close()
-    os.unlink(sys.argv[1])
-    CallSendmail(SENDMAIL_CMD % (sender, string.join(to_list)), text)
-
-
-
+    file _name sys.argv[1]
+    ContactTransport(sender, to_list, file_name)

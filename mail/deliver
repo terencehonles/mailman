@@ -27,10 +27,10 @@ if not os.fork():
     import string, sys, regsub
     import paths
     import mm_cfg
-    def CallSendmail(cmd, stdin):
-	file = os.popen(cmd, 'w')
-	file.write(stdin)
-	file.close()
+    def ContactTransport(sender, recip, filename):
+	os.execv(os.path.join(os.path.join(paths.prefix,"mail"),
+	                                     "contact_transport")
+                                         [sender,tmp_file]+to_addrs)
 
     domain_info = {}
     def GroupByDomain(addr):
@@ -70,29 +70,22 @@ if not os.fork():
 	    groups.append(lastgroup)
 	return groups
 
-    def CallSendmailForEachGroup(groups, sender, text):
+    def ContactTranportForEachGroup(sender, groups, file_name):
 	for group in groups:
 	    if not os.fork():
-		CallSendmail(mm_cfg.SENDMAIL_CMD %
-			     (sender, string.join(group)), text)
+		ContactTransport(sender,group,file_name)
 		os._exit(0)
 
     sender = sys.argv[2]
     spawns = eval(sys.argv[3])
+    file_name = sys.argv[1]
     if spawns > mm_cfg.MAX_SPAWNS:
 	spawns = mm_cfg.MAX_SPAWNS
     if spawns < 1:
 	spawns = 1
     to_list = sys.argv[4:]
-    try:
-        file = open(sys.argv[1], 'r')
-    except IOError, msg:
-        raise IOError, (msg[0], msg[1], sys.argv[1])
-    text = file.read()
-    file.close()
-    os.unlink(sys.argv[1])
 
     map(GroupByDomain, to_list)
     final_groups = BuildGroups(domain_info.values(), len(to_list))
     
-    CallSendmailForEachGroup(final_groups, sender, text)
+    ContactTransportForEachGroup(sender, final_groups, file_name)
