@@ -135,27 +135,26 @@ class MailCommandHandler:
         self.__errors = self.__errors + 1
         self.AddToResponse(text, trunc=trunc, prefix=prefix)
 	
-    def ParseMailCommands(self, msg):
+    def ParseMailCommands(self, msg, msgdata):
         # Break any infloops.  If this has come from a Mailman server then
         # it'll have this header.  It's still possible to infloop between two
         # servers because there's no guaranteed way to know it came from a
         # bot.
         if msg['x-beenthere'] or msg['list-id']:
             return
-        # check the autoresponse stuff
+        # Check the autoresponse stuff
         if self.autorespond_requests:
-            # TBD: this is a hack and is not safe with respect to errors in
+            # BAW: this is a hack and is not safe with respect to errors in
             # the Replybot module.  It should be redesigned to work with the
             # robust delivery scheme.
             from Mailman.Handlers import Replybot
+            # BAW: Replybot doesn't currently support multiple languages
             Replybot.process(self, msg, msgdata={'torequest':1})
             if self.autorespond_requests == 1:
                 # Yes, auto-respond and discard
                 return
 	subject = msg.get('subject', '')
-        sender = msg.get_sender().lower()
-        os.environ['LANG'] = self.GetPreferredLanguage(sender)
-        sender = sender.split('@')[0]
+        sender = msg.get_sender().lower().split('@')[0]
         #
         # XXX: why 'orphanage'?
         if sender in mm_cfg.LIKELY_BOUNCE_SENDERS:
@@ -268,13 +267,18 @@ the list administrator automatically.'''))
                                _('Unexpected Mailman error:\n%(tbmsg)s'))
                         # and send the traceback to the user
                         responsemsg = Message.UserNotification(
-                            admin, admin, 'Unexpected Mailman error',
+                            admin, admin, _('Unexpected Mailman error'),
                             _('''\
 An unexpected Mailman error has occurred in
 MailCommandHandler.ParseMailCommands().  Here is the traceback:
 
 ''') + tbmsg)
                         responsemsg['X-No-Archive'] = 'yes'
+                        lang = msgdata.get(
+                            'lang',
+                            mlist.GetPreferredLanguage(admin))
+                        responsemsg.addheader('Content-Type', 'text/plain',
+                                              charset=Utils.GetCharSet(lang))
                         responsemsg.send(self)
                         break
         # send the response
@@ -301,10 +305,14 @@ The following is a detailed description of the problems.
             # send the response
             realname = self.real_name
             subject = _('Mailman results for %(realname)s')
+            sender = msg.get_sender()
+            lang = msgdata.get('lang', mlist.GetPreferredLanguage(sender))
             responsemsg = Message.UserNotification(msg.get_sender(),
                                                    self.GetRequestEmail(),
                                                    subject,
                                                    self.__respbuf)
+            responsemsg.addheader('Content-Type', 'text/plain',
+                                  charset=Utils.GetCharSet(lang))
             responsemsg.send(self)
             self.__respbuf = ''
             self.__errors = 0
@@ -314,7 +322,7 @@ The following is a detailed description of the problems.
         if len(args) not in [0,2]:
 	    self.AddError(_("Usage: password [<oldpw> <newpw>]"))
 	    return
-        sender = mail.GetSender()
+        sender = mail.get_sender()
         if len(args) == 0:
             # Mail user's password to user
             user = self.FindUser(sender)
@@ -342,9 +350,9 @@ The following is a detailed description of the problems.
             self.AddError(_("Bad user - %(sender)s."), trunc=0)
 
     def ProcessOptionsCmd(self, args, cmd, mail):
-	sender = self.FindUser(mail.GetSender())
+	sender = self.FindUser(mail.get_sender())
 	if not sender:
-            origsender = mail.GetSender()
+            origsender = mail.get_sender()
 	    self.AddError(_("%(origsender)s is not a member of the list."),
                           trunc=0)
 	    return
@@ -470,7 +478,7 @@ The following is a detailed description of the problems.
                           "to get info for all the lists."))
 	    return
 
-	if self.private_roster and not self.IsMember(mail.GetSender()):
+	if self.private_roster and not self.IsMember(mail.get_sender()):
 	    self.AddError(_("Private list: only members may see info."))
 	    return
 
@@ -498,7 +506,7 @@ background and instructions for subscribing to and using it, visit:
 	if self.private_roster == 2:
 	    self.AddError(_("Private list: No one may see subscription list."))
 	    return
-	if self.private_roster and not self.IsMember(mail.GetSender()):
+	if self.private_roster and not self.IsMember(mail.get_sender()):
 	    self.AddError(_("Private list: only members may see list "
 			  "of subscribers."))
 	    return
@@ -539,7 +547,7 @@ background and instructions for subscribing to and using it, visit:
 	if len(args) == 2:
 	    addr = args[1]
 	else:
-	    addr = mail.GetSender()
+	    addr = mail.get_sender()
 	try:
 	    self.ConfirmUserPassword(addr, args[0])
 	    self.DeleteMember(addr, "mailcmd")
@@ -590,10 +598,10 @@ background and instructions for subscribing to and using it, visit:
         if not password:
             password = Utils.MakeRandomPassword()
         if not address:
-            subscribe_address = Utils.LCDomain(mail.GetSender())
+            subscribe_address = Utils.LCDomain(mail.get_sender())
         else:
             subscribe_address = address
-        remote = mail.GetSender()
+        remote = mail.get_sender()
         try:
             self.AddMember(subscribe_address, password, digest, remote)
             self.Save()
