@@ -40,6 +40,7 @@ DEFAULT_SLEEP_INTERVAL = .25
 
 
 from Mailman.Logging.StampedLogger import StampedLogger
+_logfile = None
 
 
 
@@ -90,10 +91,7 @@ class LockFile:
         self.__tmpfname = "%s.%s.%d" % (lockfile,
                                         socket.gethostname(),
                                         os.getpid())
-        if withlogging:
-            self.__log = StampedLogger('locks', self.__tmpfname)
-        else:
-            self.__log = None
+        self.__withlogging = withlogging
         self.__kickstart()
 
     def set_lifetime(self, lifetime):
@@ -103,10 +101,12 @@ class LockFile:
         self.__lifetime = lifetime
 
     def __writelog(self, msg):
-        if self.__log:
-            self.__log.write(msg)
-            if msg and msg[-1] <> '\n':
-                self.__log.write('\n')
+        global _logfile
+        if self.__withlogging:
+            if not _logfile:
+                _logfile = StampedLogger('locks', manual_reprime=1)
+            head, tail = os.path.split(self.__lockfile)
+            _logfile.write('%s %s\n' % (tail, msg))
 
     def refresh(self, newlifetime=None):
         """Refresh the lock.
@@ -128,8 +128,6 @@ class LockFile:
     def __del__(self):
         if self.locked():
             self.unlock()
-        if self.__log:
-            self.__log.close()
 
     def __kickstart(self, force=0):
         # forcing means to remove the original lock file, and create a new
