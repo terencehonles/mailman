@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mailman\n"
 "POT-Creation-Date: Tue Feb  4 00:15:28 2003\n"
-"PO-Revision-Date: 2003-10-10 13:24+0100\n"
-"Last-Translator: Iván R. <ivanrise@msn.com>\n"
+"PO-Revision-Date: 2003-12-03 22:50+0100\n"
+"Last-Translator: Robert Garrigos <robert@cataloniahosting.com>\n"
 "Language-Team: Català <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
@@ -454,8 +454,8 @@ msgid "Delete this mailing list"
 msgstr "Esborra aquesta llista de correu"
 
 #: Mailman/Cgi/admin.py:418
-msgid " (requires confirmation)<br>&nbsp;<br>"
-msgstr " (cal confirmació)<br>&nbsp;<br>"
+msgid " (requires confirmation)<br> <br>"
+msgstr " (cal confirmació)<br> <br>"
 
 #: Mailman/Cgi/admin.py:424
 msgid "Logout"
@@ -997,8 +997,8 @@ msgid "Already a member"
 msgstr "Ja ets membre "
 
 #: Mailman/Cgi/admin.py:1268
-msgid "&lt;blank line&gt;"
-msgstr "&lt;línia en blanc&gt;"
+msgid "<blank line>"
+msgstr "<línia en blanc>"
 
 #: Mailman/Cgi/admin.py:1269
 #: Mailman/Cgi/admin.py:1272
@@ -3737,7 +3737,7 @@ msgstr ""
 
 #: Mailman/Gui/Bounce.py:26
 msgid "Bounce processing"
-msgstr "Processant rebot"
+msgstr "Processament de rebots"
 
 #: Mailman/Gui/Bounce.py:32
 msgid ""
@@ -3989,8 +3989,8 @@ msgstr ""
 "                >%(property)s</a>: %(val)s"
 
 #: Mailman/Gui/ContentFilter.py:30
-msgid "Content&nbsp;filtering"
-msgstr "Filtre de&nbsp;contingut"
+msgid "Content filtering"
+msgstr "Filtre de contingut"
 
 #: Mailman/Gui/ContentFilter.py:37
 msgid "Forward to List Owner"
@@ -4521,14 +4521,14 @@ msgstr ""
 #: Mailman/Gui/General.py:133
 msgid ""
 "The text will be treated as html <em>except</em> that\n"
-"             newlines will be translated to &lt;br&gt; - so you can use links,\n"
+"             newlines will be translated to <br> - so you can use links,\n"
 "             preformatted text, etc, but don't put in carriage returns except\n"
 "             where you mean to separate paragraphs.  And review your changes -\n"
 "             bad html (like some unterminated HTML constructs) can prevent\n"
 "             display of the entire listinfo page."
 msgstr ""
 "El text es tractarà com codi html <em>excepte</em> els retorns\n"
-"            de carro que es traduiran a &lt;br&gt/; - de manera que pot utilitzar enllaços,\n"
+"            de carro que es traduiran a <br>/; - de manera que pot utilitzar enllaços,\n"
 "            text pre-formatat, etc, però no posi retorns de carro més que per a separar\n"
 "            els paràgrafs. Revisi els seus canvis, perquè errors en el codi html poden evitar\n"
 "            que la pàgina d'informació de la llista es visualitzi completament."
@@ -4817,11 +4817,13 @@ msgstr ""
 "             benvinguda ja descriu les adreces i URLs rellevants de la llista de\n"
 "             distribució, de manera que no necessita incloure aquest tipus d'informació\n"
 "             aquí. Aquí només hauria d'incloure informació especifica a l'objectiu de la\n"
-"             llista, com la política de la llista o una orientació als usuaris, o qualsevol altra\             cosa similar.\n"
+"             llista, com la política de la llista o una orientació als usuaris, o qualsevol altra\n"
+"             cosa similar.\n"
 "\n"
 "             <p>Tingui en compte que aquest text es desplegarà d'acord\n"
 "             amb les següents regles:\n"
-"              <ul><li>Cada paràgraf es completa de manera que no ocupi més de 70 caràcters.\n"
+"              <ul><li>Cada paràgraf es completa de manera que no ocupi més de\n"
+" 70 caràcters.\n"
 "                    <li>Qualsevol línia que comenci amb un espai en blanc no es completa.\n"
 "                    <li>Una línia en blanc separa paràgrafs.\n"
 "              </ul>"
@@ -5068,8 +5070,8 @@ msgstr ""
 "            està en blanc."
 
 #: Mailman/Gui/Language.py:34
-msgid "Language&nbsp;options"
-msgstr "Opcions de&nbsp;llenguatge "
+msgid "Language options"
+msgstr "Opcions de llenguatge "
 
 #: Mailman/Gui/Language.py:66
 msgid "Natural language (internationalization) options."
@@ -5172,24 +5174,24 @@ msgstr ""
 "             capçalera original."
 
 #: Mailman/Gui/Membership.py:26
-msgid "Membership&nbsp;Management"
-msgstr "Administració de&nbsp;Membres"
+msgid "Membership Management"
+msgstr "Administració de Membres"
 
 #: Mailman/Gui/Membership.py:30
-msgid "Membership&nbsp;List"
-msgstr "Llista de&nbsp;Membres"
+msgid "Membership List"
+msgstr "Llista de Membres"
 
 #: Mailman/Gui/Membership.py:31
-msgid "Mass&nbsp;Subscription"
-msgstr "Subscripció&nbsp;Massiva"
+msgid "Mass Subscription"
+msgstr "Subscripció Massiva"
 
 #: Mailman/Gui/Membership.py:32
-msgid "Mass&nbsp;Removal"
-msgstr "Eliminació&nbsp;Massiva"
+msgid "Mass Removal"
+msgstr "Eliminació Massiva"
 
 #: Mailman/Gui/NonDigest.py:34
-msgid "Non-digest&nbsp;options"
-msgstr "Opcions de&nbsp;No-resum"
+msgid "Non-digest options"
+msgstr "Opcions de No-resum"
 
 #: Mailman/Gui/NonDigest.py:42
 msgid "Policies concerning immediately delivered list traffic."
@@ -5332,20 +5334,20 @@ msgid "Privacy options"
 msgstr "Opcions de privacitat"
 
 #: Mailman/Gui/Privacy.py:32
-msgid "Subscription&nbsp;rules"
-msgstr "Normes de&nbsp;subscripció"
+msgid "Subscription rules"
+msgstr "Normes de subscripció"
 
 #: Mailman/Gui/Privacy.py:33
-msgid "Sender&nbsp;filters"
-msgstr "Filtres de&nbsp;remitent"
+msgid "Sender filters"
+msgstr "Filtres de remitent"
 
 #: Mailman/Gui/Privacy.py:34
-msgid "Recipient&nbsp;filters"
-msgstr "Filtres de&nbsp;destinatari"
+msgid "Recipient filters"
+msgstr "Filtres de destinatari"
 
 #: Mailman/Gui/Privacy.py:35
-msgid "Spam&nbsp;filters"
-msgstr "Filtres&nbsp;de Spam"
+msgid "Spam filters"
+msgstr "Filtres de Spam"
 
 #: Mailman/Gui/Privacy.py:49
 #: Mailman/Gui/Usenet.py:61
@@ -5585,7 +5587,7 @@ msgid ""
 "            <p>In the text boxes below, add one address per line; start the\n"
 "            line with a ^ character to designate a <a href=\n"
 "            \"http://www.python.org/doc/current/lib/module-re.html\"\n"
-"            >Python regular expression</a>.  When entering backslashes, do so\n"
+"""""            >Python regular expression</a>.  When entering backslashes, do so\n"
 "            as if you were using Python raw strings (i.e. you generally just\n"
 "            use a single backslash).\n"
 "\n"
@@ -5617,7 +5619,7 @@ msgstr ""
 "            <p>A les caixes de text d'abaix, afegeix una adreça per línia; comença la\n"
 "            línia amb ^ per a designar <a href=\n"
 "            \"http://www.python.org/doc/current/lib/module-re.html\"\n"
-"            >una expressió regular de Python</a>.  Quan escriguis barres inverses, fes-ho\n"
+"""""            >una expressió regular de Python</a>.  Quan escriguis barres inverses, fes-ho\n"
 "            com si estiguessis al Python (ex. normalment només es fa servir\n"
 "            una barra invertida).\n"
 "\n"
@@ -6136,8 +6138,8 @@ msgstr ""
 "                una expressió regular legal. Serà descartada."
 
 #: Mailman/Gui/Usenet.py:25
-msgid "Mail&lt;-&gt;News&nbsp;gateways"
-msgstr "Correu&lt;-&gt;Noticies&nbsp;portes d'enllaç"
+msgid "Mail<->News gateways"
+msgstr "Correu<->Noticies portes d'enllaç"
 
 #: Mailman/Gui/Usenet.py:35
 msgid "Mail-to-News and News-to-Mail gateway services."
