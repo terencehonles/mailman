@@ -23,10 +23,6 @@ warning header, or pass it through, depending on the user's preferences.
 """
 
 from Mailman import mm_cfg
-from Mailman import Utils
-from Mailman import Message
-from Mailman import Errors
-from Mailman.i18n import _
 
 from email.Utils import getaddresses
 
