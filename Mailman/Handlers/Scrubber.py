@@ -20,6 +20,7 @@
 import os
 import re
 import sha
+import cgi
 import errno
 import mimetypes
 import tempfile
@@ -42,6 +43,8 @@ pre = re.compile(r'[/\\:]')
 # All other characters to strip out of Content-Disposition: filenames
 # (essentially anything that isn't an alphanum, dot, slash, or underscore.
 sre = re.compile(r'[^-\w.]')
+
+BR = '<br>\n'
 
 
 
@@ -66,20 +69,42 @@ class ScrubberGenerator(Generator):
 
 
 def process(mlist, msg, msgdata=None):
+    sanitize = mm_cfg.ARCHIVE_HTML_SANITIZER
     outer = 1
     for part in msg.walk():
         # If the part is text/plain, we leave it alone
         if part.get_type('text/plain') == 'text/plain':
             pass
-        elif part.get_type() == 'text/html' and \
-             not isinstance(mm_cfg.ARCHIVE_HTML_SANITIZER, StringType):
-            if mm_cfg.ARCHIVE_HTML_SANITIZER == 0:
+        elif part.get_type() == 'text/html' and sanitize in (0, 1, 2):
+            if sanitize == 0:
                 if outer:
                     raise DiscardMessage
                 part.set_payload(_('HTML attachment scrubbed and removed'))
-            else:
+            elif sanitize == 2:
                 # By leaving it alone, Pipermail will automatically escape it
                 pass
+            else:
+                # HTML-escape it and store it as an attachment, but make it
+                # look a /little/ bit prettier. :(
+                payload = cgi.escape(part.get_payload())
+                # For whitespace in the margin, change spaces into
+                # non-breaking spaces, and tabs into 8 of those.  Then use a
+                # mono-space font.  Still looks hideous to me, but then I'd
+                # just as soon discard them.
+                def doreplace(s):
+                    return s.replace(' ', '&nbsp;').replace('\t', '&nbsp'*8)
+                lines = [doreplace(s) for s in payload.split('\n')]
+                payload = '<tt>\n' + BR.join(lines) + '\n</tt>\n'
+                part.set_payload(payload)
+                omask = os.umask(002)
+                try:
+                    url = save_attachment(mlist, part, filter_html=0)
+                finally:
+                    os.umask(omask)
+                part.set_payload(_("""\
+An HTML attachment was scrubbed.
+URL: %(url)s
+"""))
         # If the message isn't a multipart, then we'll strip it out as an
         # attachment that would have to be separately downloaded.  Pipermail
         # will transform the url into a hyperlink.
@@ -124,7 +149,7 @@ Url : %(url)s
 
 
 
-def save_attachment(mlist, msg):
+def save_attachment(mlist, msg, filter_html=1):
     # The directory to store the attachment in
     dir = os.path.join(mlist.archive_dir(), 'attachments')
     try:
@@ -203,7 +228,7 @@ def save_attachment(mlist, msg):
     # ARCHIVE_HTML_SANITIZER is a string (which it must be or we wouldn't be
     # here), then send the attachment through the filter program for
     # sanitization
-    if msg.get_type() == 'text/html':
+    if filter_html and msg.get_type() == 'text/html':
         base, ext = os.path.splitext(path)
         tmppath = base + '-tmp' + ext
         fp = open(tmppath, 'w')
