@@ -59,7 +59,17 @@ class Usenet(GUIBase):
              the newsgroup will be ignored.  This is as if you were reading
              the newsgroup yourself, and you marked all current messages as
              <em>read</em>.  By catching up, your mailing list members will
-             not see any of the earlier messages.'''))
+             not see any of the earlier messages.''')),
+
+            ('news_prefix_subject_too', mm_cfg.Toggle, (_('No'), _('Yes')), 0,
+             _('Prefix <tt>Subject:</tt> headers on postings gated to news?'),
+             _("""Mailman prefixes <tt>Subject:</tt> headers with
+             <a href="?VARHELP=general/subject_prefix">text you can
+             customize</a> and normally, this prefix shows up in messages
+             gatewayed to Usenet.  You can set this option to <em>No</em> to
+             disable the prefix on gated messages.  Of course, if you turn off
+             normal <tt>Subject:</tt> prefixes, they won't be prefixed for
+             gated messages either.""")),
             ]
 
     def _setValue(self, mlist, property, val, doc):
