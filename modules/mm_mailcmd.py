@@ -11,16 +11,22 @@ import mm_message, mm_err, mm_cfg, mm_utils
 
 
 
-option_descs = { 'digest' : 'receive mail from the list bundled together instead of '
-		            'one post at a time',
-		 'nomail' : 'Stop delivering mail.  Useful if you plan on taking a '
-		            'short vacation.',
-		 'norcv'  : 'Turn this on to NOT receive posts you send to the list. '
-		            'does not work if digest is set',
-		 'ack'    : 'Turn this on to receive acknowlegement mail when you '
-		            'send mail to the list',
-		 'fancy'  : 'Get MIME-compliant digests (only works if digest is set)',
-		 'hide'   : 'Conceals your email from the list of subscribers'
+option_descs = { 'digest' :
+		     'receive mail from the list bundled together instead of '
+		     'one post at a time',
+		 'nomail' :
+		     'Stop delivering mail.  Useful if you plan on taking a '
+		     'short vacation.',
+		 'norcv'  :
+		     'Turn this on to NOT receive posts you send to the list. '
+		     'does not work if digest is set',
+		 'ack'    :
+		     'Turn this on to receive acknowlegement mail when you '
+		     'send mail to the list',
+		 'fancy'  :
+		    'Get MIME-compliant digests (only works if digest is set)',
+		 'hide'   :
+		    'Conceals your email from the list of subscribers'
 	       }
 option_info = { 'digest' : 0,
 		'nomail' : mm_cfg.DisableDelivery,
