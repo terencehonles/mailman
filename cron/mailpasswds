@@ -113,7 +113,7 @@ def main():
         sys.exit(1)
 
     # Group lists by host_name if VIRTUAL_HOST_OVERVIEW is true, otherwise
-    # there's only one key in this dictionary: mm_cfg.DEFAULT_HOST_NAME.  The
+    # there's only one key in this dictionary: mm_cfg.DEFAULT_EMAIL_HOST.  The
     # values are lists of the unlocked MailList instances.
     byhost = {}
     for listname in listnames:
@@ -123,7 +123,9 @@ def main():
         if mm_cfg.VIRTUAL_HOST_OVERVIEW:
             host = mlist.host_name
         else:
-            host = mm_cfg.DEFAULT_HOST_NAME
+            # See the note in Defaults.py concerning DEFAULT_HOST_NAME
+            # vs. DEFAULT_EMAIL_HOST.
+            host = mm_cfg.DEFAULT_HOST_NAME or mm_cfg.DEFAULT_EMAIL_HOST
         byhost.setdefault(host, []).append(mlist)
 
     # Now for each virtual host, collate the user information.  Each user
