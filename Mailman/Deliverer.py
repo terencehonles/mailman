@@ -96,11 +96,14 @@ class Deliverer:
 	return string.join(string.split(text, '\n.\n'), '\n .\n')
 
     #
-    # this function is used to deliver messages
-    # that are sent to <listname>-admin.  the sender
-    # is the envelope sender of the message, or if
-    # that is not available, the sender via Message.GetSender()
-    # the recipients arg is a list of the current list
+    # This function is used to deliver messages
+    # that are sent to <listname>-admin.  The sender
+    # of the Mailman-originating message is the admin address
+    # of the list -- otherwise, if both incoming sender and the
+    # list's admin address(es) were non-local, many MTAs
+    # wouldn't accept the message as it would be considered
+    # improper relaying.
+    # The recipients arg is a list of the current list
     # owners.  We don't mess with adding list specific
     # headers on body modifications so that the address
     # will work just like a normal forwarding address
@@ -108,22 +111,12 @@ class Deliverer:
     def DeliverToOwner(self, msg, recipients):
         if not (len(recipients)):
             return
-        sender = None
-        if mm_cfg.USE_ENVELOPE_SENDER:
-            sender = msg.GetEnvelopeSender()
-        if not sender:
-            sender = msg.GetSender()
-        if sender:
-            if not '@' in sender:
-                sender = sender + "@" + mm_cfg.DEFAULT_HOST_NAME
-        else:
-            sender = self.GetAdminEmail()
         cmd = "%s %s" % (mm_cfg.PYTHON,
                          os.path.join(mm_cfg.SCRIPTS_DIR, "deliver"))
         cmdproc = os.popen(cmd, 'w')
 
         cmdproc.write("%d\n" % self.num_spawns)
-        cmdproc.write("%s\n" % sender)
+        cmdproc.write("%s\n" % self.GetAdminEmail())
         for r in recipients:
             # Mustn't send blank lines before end of recipients:
             if not r: continue
