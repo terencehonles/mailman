@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in Revision: 2.2 
+# From configure.in Revision: 2.3 
 
 # Guess values for system-dependent variables and create Makefiles.
 # Generated automatically using autoconf version 2.13 
@@ -2098,7 +2098,7 @@ trap 'rm -fr `echo "misc/paths.py Mailman/Defaults.py Mailman/mm_cfg.py.dist
 	   Mailman/Handlers/Makefile Mailman/Bouncers/Makefile
 	   Mailman/Queue/Makefile Mailman/MTA/Makefile
 	   templates/Makefile cron/Makefile
-	   filters/Makefile scripts/Makefile
+	   filters/Makefile scripts/Makefile messages/Makefile
 	   cron/crontab.in Makefile" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
 EOF
 cat >> $CONFIG_STATUS <<EOF
@@ -2197,7 +2197,7 @@ CONFIG_FILES=\${CONFIG_FILES-"misc/paths.py Mailman/Defaults.py Mailman/mm_cfg.p
 	   Mailman/Handlers/Makefile Mailman/Bouncers/Makefile
 	   Mailman/Queue/Makefile Mailman/MTA/Makefile
 	   templates/Makefile cron/Makefile
-	   filters/Makefile scripts/Makefile
+	   filters/Makefile scripts/Makefile messages/Makefile
 	   cron/crontab.in Makefile"}
 EOF
 cat >> $CONFIG_STATUS <<\EOF
