@@ -1,4 +1,4 @@
-# Copyright (C) 2000,2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 2000-2003 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -17,7 +17,7 @@
 import sys
 import time
 import gettext
-from types import StringType
+from types import StringType, UnicodeType
 
 from Mailman import mm_cfg
 from Mailman.SafeDict import SafeDict
@@ -74,8 +74,19 @@ def _(s):
     # missing key in the dictionary.
     dict = SafeDict(frame.f_globals.copy())
     dict.update(frame.f_locals)
-    # Translate the string, then interpolate into it.
-    return _translation.gettext(s) % dict
+    # Translating the string returns an encoded 8-bit string.  Rather than
+    # turn that into a Unicode, we turn any Unicodes in the dictionary values
+    # into encoded 8-bit strings.  BAW: Returning a Unicode here broke too
+    # much other stuff and _() has many tentacles.  Eventually I think we want
+    # to use Unicode everywhere.
+    tns = _translation.gettext(s)
+    charset = _translation.charset()
+    if not charset:
+        charset = 'us-ascii'
+    for k, v in dict.items():
+        if isinstance(v, UnicodeType):
+            dict[k] = v.encode(charset, 'replace')
+    return tns % dict
 
 
 
