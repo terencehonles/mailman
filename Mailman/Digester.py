@@ -1,3 +1,7 @@
+"""Mixin class with list-digest handling methods and settings."""
+
+__version__ = "$Revision: 394 $"
+
 import mm_utils, mm_err, mm_message, mm_cfg
 import time, os, string
 

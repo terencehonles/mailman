@@ -1,3 +1,10 @@
+"""Library for program-based construction of an HTML documents.
+
+Encapsulate HTML formatting directives in classes that act as containers
+for python and, recursively, for nested HTML formatting objects."""
+
+__version__ = "$Revision: 394 $"
+
 # Eventually could abstract down to HtmlItem, which outputs an arbitrary html
 # object given start / end tags, valid options, and a value.
 # Ug, objects shouldn't be adding their own newlines.  The next object should.

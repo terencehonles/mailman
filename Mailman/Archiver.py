@@ -1,3 +1,11 @@
+"""Mixin class for putting new messages in the right place for archival.
+
+Public archives are separated from private ones.  An external archival
+mechanism (eg, pipermail) should be pointed to the right places, to do the
+archival."""
+
+__version__ = "$Revision: 394 $"
+
 import sys, os, string
 import mm_utils, mm_mbox, mm_cfg, mm_message
 

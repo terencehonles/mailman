@@ -1,8 +1,6 @@
-# Notice that unlike majordomo, message headers/footers aren't going
-# on until After the post has been added to the digest / archive.  I
-# tried putting a footer on the bottom of each message on a majordomo
-# list once, but it sucked hard, because you'd see the footer 100
-# times in each digest.
+"The class representing a mailman maillist.  Mixes in many feature classes."
+
+__version__ = "$Revision: 394 $"
 
 try:
     import mm_cfg

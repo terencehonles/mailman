@@ -1,3 +1,8 @@
+"""Mixin class with message delivery routines."""
+
+__version__ = "$Revision: 394 $"
+
+
 import string, os, sys, tempfile
 import mm_cfg, mm_message, mm_err, mm_utils
 

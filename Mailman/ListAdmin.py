@@ -1,3 +1,7 @@
+"""Mixin class which handles of administrative requests."""
+
+__version__ = "$Revision: 394 $"
+
 # When an operation can't be completed, and is sent to the list admin for
 # Handling, we consider that an error condition, and raise MMNeedApproval
 

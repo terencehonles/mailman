@@ -1,3 +1,7 @@
+"Handle delivery bounce messages, doing filtering when list is set for it."
+
+__version__ = "$Revision: 394 $"
+
 # It's possible to get the mail-list senders address (list-admin) in the
 # bounce list.   You probably don't want to have list mail sent to that
 # address anyway.
