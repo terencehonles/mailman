@@ -93,13 +93,14 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
     def GetRelativeScriptURL(self, script_name):
 	prefix = '../'*Utils.GetNestingLevel()
         return '%s%s/%s' % (prefix,script_name, self._internal_name)
+
     def GetAbsoluteScriptURL(self, script_name):
         if self.web_page_url:
             prefix = self.web_page_url
         else:
             prefix = mm_cfg.DEFAULT_URL
-        return os.path.join(prefix, '%s/%s' % (script_name,
-                                               self._internal_name))
+        return "%s/%s/%s" % (prefix, script_name, self._internal_name)
+
 
     def GetAbsoluteOptionsURL(self, addr, obscured=0,):
 	options = self.GetAbsoluteScriptURL('options')
@@ -107,7 +108,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
             treated = Utils.ObscureEmail(addr, for_text=0)
         else:
             treated = addr
-        return os.path.join(options, treated)
+        return "%s/%s" % (options, treated)
 
     def GetUserOption(self, user, option):
 	if option == mm_cfg.Digests:
@@ -437,9 +438,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         config_info['privacy'] = [
             "List access policies, including anti-spam measures,"
             " covering members and outsiders."
-            '  (See also the <a href="%s">Archival Options section</a> for'
-            ' separate archive-privacy settings.)'
-            % os.path.join(self.GetRelativeScriptURL('admin'), 'archive'),
+            '  (See also the <a href="%s/archive">Archival Options section</a> for'
+            ' separate archive-privacy settings.)' % (self.GetRelativeScriptURL('admin')),
 
 	    "Subscribing",
 
