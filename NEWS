@@ -4,6 +4,10 @@ Copyright (C) 1998 by the Free Software Foundation, Inc.
 
 1.0rc3
 
+- new script bin/check_perms which checks (and optionally fixes) the
+  permissions and group ownerships of the files in your Mailman
+  installation.
+
 - Removed a bottleneck in the archiving code that was causing
   performance problems on highly loaded servers.
 
