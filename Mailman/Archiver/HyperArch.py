@@ -80,19 +80,6 @@ if sys.platform == 'darwin':
 
 
 
-def unicode_quote(arg):
-    if isinstance(arg, types.UnicodeType):
-        result = []
-        for c in arg:
-            c = ord(c)
-            if c < 128:
-                result.append(chr(c))
-            else:
-                result.append("&#%d;" % c)
-        arg = "".join(result)
-    return arg
-
-
 def html_quote(s):
     repls = ( ('&', '&amp;'),
               ("<", '&lt;'),
@@ -100,7 +87,7 @@ def html_quote(s):
               ('"', '&quot;'))
     for thing, repl in repls:
         s = s.replace(thing, repl)
-    return unicode_quote(s)
+    return Utils.uquote(s)
 
 
 def url_quote(s):
@@ -136,7 +123,7 @@ def CGIescape(arg):
         s = Utils.websafe(arg)
     else:
         s = Utils.websafe(str(arg))
-    return unicode_quote(s.replace('"', '&quot;'))
+    return Utils.uquote(s.replace('"', '&quot;'))
 
 # Parenthesized human name
 paren_name_pat = re.compile(r'([(].*[)])')
@@ -166,9 +153,12 @@ quotedpat = re.compile(r'^([>|:]|&gt;)+')
 # strings.  Keys are (templatefile, lang) tuples.
 _templatecache = {}
 
-def quick_maketext(templatefile, dict=None, raw=0, lang=None, mlist=None):
+def quick_maketext(templatefile, dict=None, lang=None, mlist=None):
     if lang is None:
-        lang = mlist.preferred_language
+        if mlist is None:
+            lang = mm_cfg.DEFAULT_SERVER_LANGUAGE
+        else:
+            lang = mlist.preferred_language
     template = _templatecache.get((templatefile, lang))
     if template is None:
         # Use the basic maketext, with defaults to get the raw template
@@ -182,9 +172,9 @@ def quick_maketext(templatefile, dict=None, raw=0, lang=None, mlist=None):
         except (TypeError, ValueError):
             # The template is really screwed up
             pass
-    if raw:
-        return text
-    return Utils.wrap(text)
+    # Make sure the text is in the given character set, or html-ify any bogus
+    # characters.
+    return Utils.uncanonstr(text, lang)
 
 
 
@@ -218,7 +208,6 @@ class Article(pipermail.Article):
     def __init__(self, message=None, sequence=0, keepHeaders=[],
                        lang=mm_cfg.DEFAULT_SERVER_LANGUAGE, mlist=None):
         self.__super_init(message, sequence, keepHeaders)
-
         self.prev = None
         self.next = None
 
@@ -263,7 +252,7 @@ class Article(pipermail.Article):
                 charset = charset[1:-1]
         self.check_header_charsets(charset)
         if self.charset and self.charset in mm_cfg.VERBATIM_ENCODING:
-            self.quote = unicode_quote
+            self.quote = Utils.uquote
 
     # Mapping of listnames to MailList instances as a weak value dictionary.
     # This code is copied from Runner.py but there's one important operational
@@ -421,7 +410,7 @@ class Article(pipermail.Article):
         self._add_decoded(d)
         return quick_maketext(
              'article.html', d,
-             raw=1, lang=self._lang, mlist=self._mlist)
+             lang=self._lang, mlist=self._mlist)
 
     def _get_prev(self):
         """Return the href and subject for the previous message"""
@@ -593,7 +582,6 @@ class HyperArchive(pipermail.T):
 
         self.maillist = maillist
         self._lock_file = None
-        self._charsets = {}
         self.charset = Utils.GetCharSet(maillist.preferred_language)
 
         if hasattr(self.maillist,'archive_volume_frequency'):
@@ -651,8 +639,7 @@ class HyperArchive(pipermail.T):
                 d["%s_ref" % (t)] = ('<a href="%s.html#start">[ %s ]</a>'
                                      % (t, i[t]))
         return quick_maketext(
-            'archidxfoot.html', d, raw=1,
-            lang=mlist.preferred_language,
+            'archidxfoot.html', d,
             mlist=mlist)
 
     def html_head(self):
@@ -690,8 +677,7 @@ class HyperArchive(pipermail.T):
         else:
             d["encoding"] = ""
         return quick_maketext(
-            'archidxhead.html', d, raw=1,
-            lang=mlist.preferred_language,
+            'archidxhead.html', d,
             mlist=mlist)
 
     def html_TOC(self):
@@ -702,6 +688,7 @@ class HyperArchive(pipermail.T):
              "listinfo": mlist.GetScriptURL('listinfo', absolute=1),
              "fullarch": '../%s.mbox/%s.mbox' % (listname, listname),
              "size": sizeof(mbox, mlist.preferred_language),
+             'meta': '',
              }
         # Avoid i18n side-effects
         otrans = i18n.get_translation()
@@ -716,12 +703,11 @@ class HyperArchive(pipermail.T):
             else:
                 d["noarchive_msg"] = ""
                 d["archive_listing_start"] = quick_maketext(
-                    'archliststart.html', raw=1,
+                    'archliststart.html',
                     lang=mlist.preferred_language,
                     mlist=mlist)
                 d["archive_listing_end"] = quick_maketext(
-                    'archlistend.html', raw=1,
-                    lang=mlist.preferred_language,
+                    'archlistend.html',
                     mlist=mlist)
 
                 accum = []
@@ -731,12 +717,11 @@ class HyperArchive(pipermail.T):
         finally:
             i18n.set_translation(otrans)
 
-        if not d.has_key("encoding"):
-            d["encoding"] = ""
+        # The TOC is always in the charset of the list's preferred language
+        d['meta'] += html_charset % Utils.GetCharSet(mlist.preferred_language)
 
         return quick_maketext(
-            'archtoc.html', d, raw=1,
-            lang=mlist.preferred_language,
+            'archtoc.html', d,
             mlist=mlist)
 
     def html_TOC_entry(self, arch):
@@ -771,7 +756,7 @@ class HyperArchive(pipermail.T):
              'archivelabel': self.volNameToDesc(arch),
              'textlink': textlink
              },
-            raw=1, lang=self.maillist.preferred_language, mlist=self.maillist)
+            mlist=self.maillist)
 
     def GetArchLock(self):
         if self._lock_file:
@@ -998,8 +983,7 @@ class HyperArchive(pipermail.T):
             'author':   author
         }
         print quick_maketext(
-            'archidxentry.html', d, raw=1,
-            lang=self.maillist.preferred_language,
+            'archidxentry.html', d,
             mlist=self.maillist)
 
     def get_header(self, field, article):
@@ -1063,30 +1047,6 @@ class HyperArchive(pipermail.T):
             os.umask(omask)
         f.write(article.as_text())
         f.close()
-
-    def add_article(self, article):
-        self.__super_add_article(article)
-        if article.charset:
-            cs = article.charset
-            self._charsets[cs] = self._charsets.get(cs, 0) + 1
-
-    def choose_charset(self):
-        """Pick a charset for the index files
-
-        This method choose the most frequently occuring charset in the
-        individual messages.
-
-        XXX There should be an option to set a default charset.
-        """
-        if not self._charsets:
-            return
-        l = map(lambda p:(p[1], p[0]), self._charsets.items())
-        l.sort() # largest last
-        self.charset = l[-1][1]
-
-    def update_dirty_archives(self):
-        self.choose_charset()
-        self.__super_update_dirty_archives()
 
     def update_archive(self, archive):
         self.__super_update_archive(archive)
