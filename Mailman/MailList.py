@@ -823,10 +823,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             msg['Subject'] = 'confirm ' + cookie
             msg['Reply-To'] = self.GetRequestEmail()
             msg.send(self)
-            if recipient <> email:
-                who = "%s (%s)" % (email, recipient.split('@')[0])
-            else:
-                who = name
+            who = formataddr((name, email))
             syslog('subscribe', '%s: pending %s %s',
                    self.internal_name(), who, by)
             raise Errors.MMSubscribeNeedsConfirmation
@@ -887,8 +884,8 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             kind = ' (digest)'
         else:
             kind = ''
-        syslog('subscribe', '%s: new%s %s (%s)', self.internal_name(),
-               kind, email, name)
+        syslog('subscribe', '%s: new%s %s', self.internal_name(),
+               kind, formataddr((email, name)))
         if ack:
             self.SendSubscribeAck(email, self.getMemberPassword(email),
                                   digest, text)
