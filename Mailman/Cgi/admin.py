@@ -626,9 +626,9 @@ def get_item_gui_description(mlist, category, varname, descr, detailsp):
     else:
         text = Label(descr)
     if varname[0] == '_':
-        text += Label(_('''<br><em><strong>Note:</strong>
+        text = text.Format() + Label(_('''<br><em><strong>Note:</strong>
         setting this value performs an immediate action but does not modify
-        permanent state.</em>'''))
+        permanent state.</em>''')).Format()
     return text
 
 
