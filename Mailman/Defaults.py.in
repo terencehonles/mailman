@@ -40,12 +40,14 @@ PRIVATE_ARCHIVE_URL = 'http://www.OVERRIDE.WITH.YOUR.PRIVATE.ARCHIVE.URL/'
 DEFAULT_ARCHIVE_PRIVATE    = 0		# 0=public, 1=private
 
 # ARCHIVE_TO_MBOX
+#-1 - do not do any archiving
 # 0 - do not archive to mbox, use builtin mailman html archiving only
 # 1 - archive to mbox to use an external archiving mechanism only
 # 2 - archive to both mbox and builtin mailman html archiving -
 #     use this to make both external archiving mechanism work and
 #     mailman's builtin html archiving.  the flat mail file can be
 #     useful for searching, external archivers, etc.
+#
 ARCHIVE_TO_MBOX = 2
 
 # 0 - yearly
@@ -53,6 +55,7 @@ ARCHIVE_TO_MBOX = 2
 # 2 - quarterly
 # 3 - weekly
 # 4 - daily
+#
 DEFAULT_ARCHIVE_VOLUME_FREQUENCY = 1
 
 
