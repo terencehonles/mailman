@@ -1,4 +1,4 @@
-%(listname)s -- confirmation of subscription -- request %(cookie)s
+%(listname)s -- confirmation of subscription -- confirm %(cookie)s
 
 We have received a request%(remote)s for subscription of your email
 address, <%(email)s>, to the %(listaddr)s mailing list.  To confirm
