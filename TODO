@@ -10,7 +10,6 @@ working again before we booted them from the list)
 *Documentation
 - A FAQ (esp. for the web page)
 - A detailed feature list
-- A high level feature list
 - A user's guide
 - A site-admin's guide
 - A list-admin's guide
@@ -28,8 +27,7 @@ confirmation!
 - The list admin should be able to turn off the security mechanisms such as 
 confirmation and passwords if he deems it necessary.
 - Make it so mass-subscribe doesn't hang waiting for the mail transport to 
-do all delivery.
-- Allow the admin to remove posts from the database w/o email notification.
+do all delivery. (This may have been done w/ the admin cookie patches?)
 - Time out admin requests, and have them auto-fail after that period.
 - Allow the admin to edit posts in the database (put a header in the post 
 noting that it was edited by a moderator, however!)
@@ -38,6 +36,7 @@ access to the general list options.
 - An -urgent address for each list that may only be posted to by the list 
 admin.  It will seem to be sent to the whole list, but will deliver to 
 everyone ASAP, and not wait for digests.
+- A web UI to the -urgent address.
 - Better options for the policy on bundling digests (periodic w/ arbitrary 
 periods, size based, a combo of the two, etc).
 - A button that will bundle a digest right now (tm).
@@ -67,8 +66,6 @@ majordomo's).
 - Implement a more general (form-based, like the netscape email
 filter) filtering/bouncing/etc. mechanism.
 - Allow for programs to run that perform filtering / reformatting.
-- Improve confirmation code so that the user only need respond to a message.
-- Make confirmation messages NOT process the message body as commands.
 - Set asside messages IMMEDIATELY as a rescue mechanism... make sure no
   mails are ever lost, even if there turned out to be a bad Mailman bug.
 
@@ -78,6 +75,11 @@ filter) filtering/bouncing/etc. mechanism.
 *Portability concerns
 - Use portable file locking
 - Replace cron stuff with our own scheduling mechanism
+- Provide a way to get list mail from another machine so the SMTP server
+  doesn't have to live on the same machine as the web server + mailman.
+  The easiest thing to do would be to use something like fetchmail to poll
+  a pop3 port.  However, we could have a program that runs on the SMTP server,
+  and just copies mail over to the other machine.
 
 *Bounce handling
 - Add more patterns for bounce handling
