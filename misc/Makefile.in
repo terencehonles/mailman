@@ -48,7 +48,7 @@ PYTHONLIBDIR=	$(prefix)/pythonlib
 SETUPCMD=	setup.py --quiet install --install-lib
 
 EMAILPKG=	email-1.1
-JACODECSPKG=	JapaneseCodecs-1.4.3
+JACODECSPKG=	JapaneseCodecs-1.4.4
 
 # Modes for directories and executables created by the install
 # process.  Default to group-writable directories but
