@@ -66,10 +66,17 @@ def main():
 
     # Make sure the user is authorized to see this page.
     cgidata = cgi.FieldStorage()
-    try:
-        Auth.authenticate(mlist, cgidata)
-    except Auth.NotLoggedInError, e:
-        Auth.loginpage(mlist, 'admindb', e.message)
+
+    if not mlist.WebAuthenticate((mm_cfg.AuthListAdmin,
+                                  mm_cfg.AuthListModerator,
+                                  mm_cfg.AuthSiteAdmin),
+                                 cgidata.getvalue('adminpw', '')):
+        if cgidata.has_key('admlogin'):
+            # This is a re-authorization attempt
+            msg = Bold(FontSize('+1', _('Authorization failed.'))).Format()
+        else:
+            msg = ''
+        Auth.loginpage(mlist, 'admindb', msg=msg)
         return
 
     # Set up the results document
@@ -112,7 +119,7 @@ def main():
     finally:
         mlist.Unlock()
 
-    print doc.Format(bgcolor='#ffffff')
+    print doc.Format()
 
 
 
@@ -125,14 +132,12 @@ def handle_no_list(msg=''):
     doc.SetTitle(header)
     doc.AddItem(Header(2, header))
     doc.AddItem(msg)
-    doc.AddItem(_('You must specify a list name.  Here is the '))
-    # Server's top level URL -- it must end in a slash!
-    link = mm_cfg.DEFAULT_URL
-    if not link.endswith('/'):
-        link += '/'
-    link += 'admin'
-    doc.AddItem(Link(link, _('list of available mailing lists.')))
-    print doc.Format(bgcolor="#ffffff")
+    url = Utils.ScriptURL('admin', absolute=1)
+    link = Link(url, _('list of available mailing lists.')).Format()
+    doc.AddItem(_('You must specify a list name.  Here is the %(link)s'))
+    doc.AddItem('<hr>')
+    doc.AddItem(MailmanLogo())
+    print doc.Format()
 
 
 
