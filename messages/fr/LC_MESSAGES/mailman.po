@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Mailman 2.1b1\n"
-"POT-Creation-Date: Mon Dec  9 01:18:04 2002\n"
+"POT-Creation-Date: Wed Dec 11 07:44:15 2002\n"
 "PO-Revision-Date: 2002-08-14 01:18:58+00:00\n"
 "Last-Translator: Ousmane Wilane <wilane@cyg.sn>\n"
 "Language-Team: fr <traduc@traduc.org>\n"
@@ -920,7 +920,8 @@ msgid "Enter new administrator password:"
 msgstr "Entrez le nouveau mot de passe administrateur:"
 
 #: Mailman/Cgi/admin.py:1167
-msgid "Confirm administator password:"
+#, fuzzy
+msgid "Confirm administrator password:"
 msgstr "Confirmez le mot de passe administrateur:"
 
 #: Mailman/Cgi/admin.py:1172
@@ -940,7 +941,8 @@ msgid "Moderator passwords did not match"
 msgstr "Les mots de passe de modération ne correspondent pas.<br>"
 
 #: Mailman/Cgi/admin.py:1217
-msgid "Administator passwords did not match"
+#, fuzzy
+msgid "Administrator passwords did not match"
 msgstr "Les mots de passe administrateur ne correspindent pas"
 
 #: Mailman/Cgi/admin.py:1265
@@ -4400,6 +4402,7 @@ msgstr ""
 "d'avoir plusieurs adresses d'administrateurs, une par ligne."
 
 #: Mailman/Gui/General.py:76
+#, fuzzy
 msgid ""
 "There are two ownership roles associated with each mailing\n"
 "             list.  The <em>list administrators</em> are the people who "
@@ -4424,7 +4427,7 @@ msgid ""
 "             and also provide the <a href=\"?VARHELP=general/moderator"
 "\">email\n"
 "             addresses of the list moderators</a>.  Note that the field you\n"
-"             are changing here specifies the list administators."
+"             are changing here specifies the list administrators."
 msgstr ""
 "Il y a deux rôles responsables pour une liste de diffusion.  Les\n"
 "<em>Administrateurs de listes</em> sont ceux qui disposent d'un\n"
@@ -9630,6 +9633,7 @@ msgid "No runner name given."
 msgstr "Nom de runner non fournit."
 
 #: bin/remove_members:19
+#, fuzzy
 msgid ""
 "Remove members from a list.\n"
 "\n"
@@ -9655,6 +9659,14 @@ msgid ""
 "       used -a/--all.  Also, you should not specify a listname when using "
 "this\n"
 "       option.\n"
+"\n"
+"    --nouserack\n"
+"    -n\n"
+"        Don't send the user acknowledgements.\n"
+"\n"
+"    --noadminack\n"
+"    -N\n"
+"        Don't send the admin acknowledgements.\n"
 "\n"
 "    --help\n"
 "    -h\n"
@@ -9695,19 +9707,19 @@ msgstr ""
 "\n"
 "    addr1 ... sont les adresses additionnelles à supprimer.\n"
 
-#: bin/remove_members:132
+#: bin/remove_members:147
 msgid "Could not open file for reading: %(filename)s."
 msgstr "Impossible d'ouvrir le fichier en lecture: %(filename)s"
 
-#: bin/remove_members:139
+#: bin/remove_members:154
 msgid "Error opening list %(listname)s... skipping."
 msgstr "Erreur lors de l'ouverture de la liste \"%(listname)s\"... au suivant."
 
-#: bin/remove_members:149
+#: bin/remove_members:164
 msgid "No such member: %(addr)s"
 msgstr "Abonné inconnu: %(addr)s."
 
-#: bin/remove_members:153
+#: bin/remove_members:171
 msgid "User `%(addr)s' removed from list: %(listname)s."
 msgstr "Abonné `%(addr)s' supprimé de la liste: %(listname)s."
 

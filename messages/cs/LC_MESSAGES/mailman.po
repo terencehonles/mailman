@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.0rc3\n"
-"POT-Creation-Date: Mon Dec  9 01:18:04 2002\n"
+"POT-Creation-Date: Wed Dec 11 07:44:15 2002\n"
 "PO-Revision-Date: 2002-11-10 22:56+0100\n"
 "Last-Translator: Dan Ohnesorg <dan@ohnesorg.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -896,7 +896,8 @@ msgid "Enter new administrator password:"
 msgstr "Zadejte nové heslo pro administrátora konference:"
 
 #: Mailman/Cgi/admin.py:1167
-msgid "Confirm administator password:"
+#, fuzzy
+msgid "Confirm administrator password:"
 msgstr "Potvrïte heslo administrátora konference:"
 
 #: Mailman/Cgi/admin.py:1172
@@ -916,7 +917,8 @@ msgid "Moderator passwords did not match"
 msgstr "Hesla moderátora se neshodují."
 
 #: Mailman/Cgi/admin.py:1217
-msgid "Administator passwords did not match"
+#, fuzzy
+msgid "Administrator passwords did not match"
 msgstr "Hesla administrátora se neshodují."
 
 #: Mailman/Cgi/admin.py:1265
@@ -4313,6 +4315,7 @@ msgstr ""
 "adres, uvádìjte ka¾dou na nový øádek."
 
 #: Mailman/Gui/General.py:76
+#, fuzzy
 msgid ""
 "There are two ownership roles associated with each mailing\n"
 "             list.  The <em>list administrators</em> are the people who "
@@ -4337,7 +4340,7 @@ msgid ""
 "             and also provide the <a href=\"?VARHELP=general/moderator"
 "\">email\n"
 "             addresses of the list moderators</a>.  Note that the field you\n"
-"             are changing here specifies the list administators."
+"             are changing here specifies the list administrators."
 msgstr ""
 "Ka¾dá konference mù¾e mít administrátora a moderátora.\n"
 "Administrátor má úplnou kontrolu na konfigurací konference.\n"
@@ -8658,6 +8661,14 @@ msgid ""
 "this\n"
 "       option.\n"
 "\n"
+"    --nouserack\n"
+"    -n\n"
+"        Don't send the user acknowledgements.\n"
+"\n"
+"    --noadminack\n"
+"    -N\n"
+"        Don't send the admin acknowledgements.\n"
+"\n"
 "    --help\n"
 "    -h\n"
 "        Print this help message and exit.\n"
@@ -8668,19 +8679,19 @@ msgid ""
 "\n"
 msgstr ""
 
-#: bin/remove_members:132
+#: bin/remove_members:147
 msgid "Could not open file for reading: %(filename)s."
 msgstr ""
 
-#: bin/remove_members:139
+#: bin/remove_members:154
 msgid "Error opening list %(listname)s... skipping."
 msgstr "Chyba pøi otevírání konfigurace konference %(listname)s... pøeskakuji."
 
-#: bin/remove_members:149
+#: bin/remove_members:164
 msgid "No such member: %(addr)s"
 msgstr "Nenalezl jsem úèastníka: %(addr)s."
 
-#: bin/remove_members:153
+#: bin/remove_members:171
 msgid "User `%(addr)s' removed from list: %(listname)s."
 msgstr "Úèastníka `%(addr)s' byl odhlá¹en z konference: %(listname)s."
 

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: Mon Dec  9 01:18:04 2002\n"
+"POT-Creation-Date: Wed Dec 11 07:44:15 2002\n"
 "PO-Revision-Date: 2002-10-27 02:54+GMT1\n"
 "Last-Translator: Danny Terweij <danny@terweij.nl>\n"
 "Language-Team: Dutch <danny@terweij.nl>\n"
@@ -893,7 +893,8 @@ msgid "Enter new administrator password:"
 msgstr "Voer je nieuwe beheerders wachtwoord in:"
 
 #: Mailman/Cgi/admin.py:1167
-msgid "Confirm administator password:"
+#, fuzzy
+msgid "Confirm administrator password:"
 msgstr "Nogmaals het wachtwoord:"
 
 #: Mailman/Cgi/admin.py:1172
@@ -913,7 +914,8 @@ msgid "Moderator passwords did not match"
 msgstr "Moderator wachtwoorden kwamen niet overeen"
 
 #: Mailman/Cgi/admin.py:1217
-msgid "Administator passwords did not match"
+#, fuzzy
+msgid "Administrator passwords did not match"
 msgstr "Beheerder wachtwoorden kwamen niet overeen"
 
 #: Mailman/Cgi/admin.py:1265
@@ -3816,7 +3818,7 @@ msgid ""
 "             and also provide the <a href=\"?VARHELP=general/moderator"
 "\">email\n"
 "             addresses of the list moderators</a>.  Note that the field you\n"
-"             are changing here specifies the list administators."
+"             are changing here specifies the list administrators."
 msgstr ""
 
 #: Mailman/Gui/General.py:97
@@ -7568,6 +7570,14 @@ msgid ""
 "this\n"
 "       option.\n"
 "\n"
+"    --nouserack\n"
+"    -n\n"
+"        Don't send the user acknowledgements.\n"
+"\n"
+"    --noadminack\n"
+"    -N\n"
+"        Don't send the admin acknowledgements.\n"
+"\n"
 "    --help\n"
 "    -h\n"
 "        Print this help message and exit.\n"
@@ -7578,19 +7588,19 @@ msgid ""
 "\n"
 msgstr ""
 
-#: bin/remove_members:132
+#: bin/remove_members:147
 msgid "Could not open file for reading: %(filename)s."
 msgstr ""
 
-#: bin/remove_members:139
+#: bin/remove_members:154
 msgid "Error opening list %(listname)s... skipping."
 msgstr ""
 
-#: bin/remove_members:149
+#: bin/remove_members:164
 msgid "No such member: %(addr)s"
 msgstr ""
 
-#: bin/remove_members:153
+#: bin/remove_members:171
 msgid "User `%(addr)s' removed from list: %(listname)s."
 msgstr ""
 

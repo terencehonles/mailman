@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: mailman\n"
-"POT-Creation-Date: Mon Dec  9 01:18:04 2002\n"
+"POT-Creation-Date: Wed Dec 11 07:44:15 2002\n"
 "PO-Revision-Date: 2002-10-29 00:40+0200\n"
 "Last-Translator: Anti Veeranna <duke@linux.ee>\n"
 "Language-Team: Estonian <et@li.org>\n"
@@ -894,7 +894,8 @@ msgid "Enter new administrator password:"
 msgstr "Sisesta uus halduriparool:"
 
 #: Mailman/Cgi/admin.py:1167
-msgid "Confirm administator password:"
+#, fuzzy
+msgid "Confirm administrator password:"
 msgstr "Kinnita halduriparooli:"
 
 #: Mailman/Cgi/admin.py:1172
@@ -914,7 +915,8 @@ msgid "Moderator passwords did not match"
 msgstr "Moderaatoriparoolid ei ole ühesugused"
 
 #: Mailman/Cgi/admin.py:1217
-msgid "Administator passwords did not match"
+#, fuzzy
+msgid "Administrator passwords did not match"
 msgstr "Halduriparoolid ei ole ühesugused"
 
 #: Mailman/Cgi/admin.py:1265
@@ -3869,6 +3871,7 @@ msgstr ""
 "    siis kirjuta need eraldi ridadele. "
 
 #: Mailman/Gui/General.py:76
+#, fuzzy
 msgid ""
 "There are two ownership roles associated with each mailing\n"
 "             list.  The <em>list administrators</em> are the people who "
@@ -3893,8 +3896,26 @@ msgid ""
 "             and also provide the <a href=\"?VARHELP=general/moderator"
 "\">email\n"
 "             addresses of the list moderators</a>.  Note that the field you\n"
-"             are changing here specifies the list administators."
+"             are changing here specifies the list administrators."
 msgstr ""
+"<em>Listi haldurid</em> on isikud, kel on täielik kontroll listi "
+"seadistuste\n"
+"üle. Nad saavad seadistust muuta nende veebilehtede kaudu.\n"
+"\n"
+"<p><em>Listi moderaatoritel</em> on vähem õigusi; nad ei saa listi "
+"seadistusi\n"
+"muuta, kuid neil on õigused administratiivtaotluste läbivaatamiseks ja\n"
+"otsuste langetamiseks, näiteks kinnipeetud tellimissoovide aktsepteerimiseks "
+"või nendest\n"
+"keeldumiseks ning kinnipeetud kirjade järjekorrast eemaldamiseks. "
+"Iseenesestmõisteavaltt saavad\n"
+"neid toiminguid teostada ka <em>listi haldurid</em>.\n"
+"\n"
+"<p>Listi haldamisega seotud ülesannete jaotamiseks listi haldurite ja "
+"moderaarite vahel\n"
+"sisestage allpool asuvatesse tekstiväljadesse moderaatori parool ning\n"
+"sisestage moderaatorite meiliaadressid\n"
+"<a href=\"%(adminurl)s/general\">listi üldseadistuste lehel</a>."
 
 #: Mailman/Gui/General.py:97
 msgid ""
@@ -7715,6 +7736,14 @@ msgid ""
 "this\n"
 "       option.\n"
 "\n"
+"    --nouserack\n"
+"    -n\n"
+"        Don't send the user acknowledgements.\n"
+"\n"
+"    --noadminack\n"
+"    -N\n"
+"        Don't send the admin acknowledgements.\n"
+"\n"
 "    --help\n"
 "    -h\n"
 "        Print this help message and exit.\n"
@@ -7725,19 +7754,19 @@ msgid ""
 "\n"
 msgstr ""
 
-#: bin/remove_members:132
+#: bin/remove_members:147
 msgid "Could not open file for reading: %(filename)s."
 msgstr "Faili avamine lugemiseks ebaõnnestus: %(filename)s."
 
-#: bin/remove_members:139
+#: bin/remove_members:154
 msgid "Error opening list %(listname)s... skipping."
 msgstr "Viga listi %(listname)s töötlemisel .. jätan vahele."
 
-#: bin/remove_members:149
+#: bin/remove_members:164
 msgid "No such member: %(addr)s"
 msgstr "Sellise aadressiga liiget pole: %(addr)s"
 
-#: bin/remove_members:153
+#: bin/remove_members:171
 msgid "User `%(addr)s' removed from list: %(listname)s."
 msgstr ""
 "Aadress `%(addr)s' eemaldati listi  %(listname)s tellijate nimekirjast."

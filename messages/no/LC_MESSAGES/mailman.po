@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Mailman 2.1b4+\n"
-"POT-Creation-Date: Mon Dec  9 01:18:04 2002\n"
+"POT-Creation-Date: Wed Dec 11 07:44:15 2002\n"
 "PO-Revision-Date: 2002-12-09 10:47+0100\n"
 "Last-Translator: Daniel Buchmann <Daniel.Buchmann@bibsys.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -908,7 +908,8 @@ msgid "Enter new administrator password:"
 msgstr "Nytt administrator passord:"
 
 #: Mailman/Cgi/admin.py:1167
-msgid "Confirm administator password:"
+#, fuzzy
+msgid "Confirm administrator password:"
 msgstr "Administratorpassordet en gang til:"
 
 #: Mailman/Cgi/admin.py:1172
@@ -928,7 +929,8 @@ msgid "Moderator passwords did not match"
 msgstr "Moderatorpassordene er ikke like"
 
 #: Mailman/Cgi/admin.py:1217
-msgid "Administator passwords did not match"
+#, fuzzy
+msgid "Administrator passwords did not match"
 msgstr "Administratorpassordene er ikke like"
 
 #: Mailman/Cgi/admin.py:1265
@@ -4451,6 +4453,7 @@ msgstr ""
 "men da kun en adresse per linje."
 
 #: Mailman/Gui/General.py:76
+#, fuzzy
 msgid ""
 "There are two ownership roles associated with each mailing\n"
 "             list.  The <em>list administrators</em> are the people who "
@@ -4475,7 +4478,7 @@ msgid ""
 "             and also provide the <a href=\"?VARHELP=general/moderator"
 "\">email\n"
 "             addresses of the list moderators</a>.  Note that the field you\n"
-"             are changing here specifies the list administators."
+"             are changing here specifies the list administrators."
 msgstr ""
 "Det er to roller forbundet med hver epostliste.\n"
 "<em>Listeadministratorene</em> er de som til syvende og sist har kontroll "
@@ -9172,7 +9175,8 @@ msgstr ""
 "\n"
 "    listenavn\n"
 "        Vis eieren(e) av de angitte lister. Mer en enn liste kan altså\n"
-"        spesifiseres. Dersom ingen liste er angitt, vil eiere av alle lister\n"
+"        spesifiseres. Dersom ingen liste er angitt, vil eiere av alle "
+"lister\n"
 "        vises.\n"
 
 #: bin/mailmanctl:19
@@ -9732,6 +9736,7 @@ msgid "No runner name given."
 msgstr "Ingen runner navn ble angitt."
 
 #: bin/remove_members:19
+#, fuzzy
 msgid ""
 "Remove members from a list.\n"
 "\n"
@@ -9757,6 +9762,14 @@ msgid ""
 "       used -a/--all.  Also, you should not specify a listname when using "
 "this\n"
 "       option.\n"
+"\n"
+"    --nouserack\n"
+"    -n\n"
+"        Don't send the user acknowledgements.\n"
+"\n"
+"    --noadminack\n"
+"    -N\n"
+"        Don't send the admin acknowledgements.\n"
 "\n"
 "    --help\n"
 "    -h\n"
@@ -9798,19 +9811,19 @@ msgstr ""
 "    addr1 ... er ytterligere adresser som skal fjernes.\n"
 "\n"
 
-#: bin/remove_members:132
+#: bin/remove_members:147
 msgid "Could not open file for reading: %(filename)s."
 msgstr "Kunne ikke åpne filen \"%(filename)s\" for lesing."
 
-#: bin/remove_members:139
+#: bin/remove_members:154
 msgid "Error opening list %(listname)s... skipping."
 msgstr "Hopper over listen \"%(listname)s\" grunnet feil under åpning."
 
-#: bin/remove_members:149
+#: bin/remove_members:164
 msgid "No such member: %(addr)s"
 msgstr "Medlemmet finnes ikke: %(addr)s."
 
-#: bin/remove_members:153
+#: bin/remove_members:171
 msgid "User `%(addr)s' removed from list: %(listname)s."
 msgstr "%(addr)s er nå fjernet fra listen %(listname)s."
 

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Mailman\n"
-"POT-Creation-Date: Mon Dec  9 01:18:04 2002\n"
+"POT-Creation-Date: Wed Dec 11 07:44:15 2002\n"
 "PO-Revision-Date: 2002-01-06 14:39+0100\n"
 "Last-Translator: Szilard Vizi <vizisz@freemail.hu>\n"
 "Language-Team: Hungarian <LL@li.org>\n"
@@ -894,7 +894,8 @@ msgid "Enter new administrator password:"
 msgstr "Új adminisztrátori jelszó"
 
 #: Mailman/Cgi/admin.py:1167
-msgid "Confirm administator password:"
+#, fuzzy
+msgid "Confirm administrator password:"
 msgstr "Adminisztrátori jelszó még egyszer:"
 
 #: Mailman/Cgi/admin.py:1172
@@ -914,7 +915,8 @@ msgid "Moderator passwords did not match"
 msgstr "A szerkesztõi jelszavak nem egyeznek."
 
 #: Mailman/Cgi/admin.py:1217
-msgid "Administator passwords did not match"
+#, fuzzy
+msgid "Administrator passwords did not match"
 msgstr "Az adminisztrátori jelszavak nem egyeznek."
 
 #: Mailman/Cgi/admin.py:1265
@@ -4164,6 +4166,7 @@ msgstr ""
 "esetén egy sorban csak egy legyen megadva."
 
 #: Mailman/Gui/General.py:76
+#, fuzzy
 msgid ""
 "There are two ownership roles associated with each mailing\n"
 "             list.  The <em>list administrators</em> are the people who "
@@ -4188,7 +4191,7 @@ msgid ""
 "             and also provide the <a href=\"?VARHELP=general/moderator"
 "\">email\n"
 "             addresses of the list moderators</a>.  Note that the field you\n"
-"             are changing here specifies the list administators."
+"             are changing here specifies the list administrators."
 msgstr ""
 "Minden levelezõlistának két különbözõ típusú gazdája lehet.\n"
 "A <em>lista adminisztrátoroknak</em> a lista felett korlátlan,\n"
@@ -9154,6 +9157,14 @@ msgid ""
 "this\n"
 "       option.\n"
 "\n"
+"    --nouserack\n"
+"    -n\n"
+"        Don't send the user acknowledgements.\n"
+"\n"
+"    --noadminack\n"
+"    -N\n"
+"        Don't send the admin acknowledgements.\n"
+"\n"
 "    --help\n"
 "    -h\n"
 "        Print this help message and exit.\n"
@@ -9189,23 +9200,23 @@ msgstr ""
 "    cím1 ... azoknak a címei akiket törölni kell.\n"
 "\n"
 
-#: bin/remove_members:132
+#: bin/remove_members:147
 msgid "Could not open file for reading: %(filename)s."
 msgstr "%(filename)s állományt nem lehet olvasni."
 
-#: bin/remove_members:139
+#: bin/remove_members:154
 #, fuzzy
 msgid "Error opening list %(listname)s... skipping."
 msgstr ""
 "Hiba a(z) \"%(listname)s\" lista megnyitásakor, átugorva.\n"
 "%(e)s"
 
-#: bin/remove_members:149
+#: bin/remove_members:164
 #, fuzzy
 msgid "No such member: %(addr)s"
 msgstr "Nem található %(safeuser)s címmel tag."
 
-#: bin/remove_members:153
+#: bin/remove_members:171
 #, fuzzy
 msgid "User `%(addr)s' removed from list: %(listname)s."
 msgstr "Kérelem a(z) %(listname)s levelezõlista törlésére"

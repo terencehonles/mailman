@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Mailman 2.1b1\n"
-"POT-Creation-Date: Mon Dec  9 01:18:04 2002\n"
+"POT-Creation-Date: Wed Dec 11 07:44:15 2002\n"
 "PO-Revision-Date: 2002-12-10 01:41+0100\n"
 "Last-Translator: Eva Österlind <eva.osterlind@arvika.se>\n"
 "Language-Team: Swedish <information@arvika.se>\n"
@@ -1270,8 +1270,10 @@ msgid ""
 "least\n"
 "    one blank line at the end..."
 msgstr ""
-"I textrutan nedan kan du lägga in extra text som ska läggas till i toppen av inbjudan\n"
-"eller anmälningsbekräftelsen. Kom ihåg att lägga till minst en blankrad i slutet..."
+"I textrutan nedan kan du lägga in extra text som ska läggas till i toppen av "
+"inbjudan\n"
+"eller anmälningsbekräftelsen. Kom ihåg att lägga till minst en blankrad i "
+"slutet..."
 
 # Mailman/Cgi/admin.py:1098
 # Mailman/Cgi/admin.py:1112
@@ -1338,7 +1340,8 @@ msgstr "Nytt administratörslösenord:"
 # Mailman/Cgi/admin.py:1152
 # Mailman/Cgi/admin.py:1166
 #: Mailman/Cgi/admin.py:1167
-msgid "Confirm administator password:"
+#, fuzzy
+msgid "Confirm administrator password:"
 msgstr "Administratörslösenordet en gång till:"
 
 # Mailman/Cgi/admin.py:1157
@@ -1368,7 +1371,8 @@ msgstr "Moderatorlösenorden är inte lika"
 # Mailman/Cgi/admin.py:1202
 # Mailman/Cgi/admin.py:1216
 #: Mailman/Cgi/admin.py:1217
-msgid "Administator passwords did not match"
+#, fuzzy
+msgid "Administrator passwords did not match"
 msgstr "Administratörslösenorden är inte lika"
 
 # Mailman/Cgi/admin.py:1245
@@ -5947,6 +5951,7 @@ msgstr ""
 # Mailman/Gui/General.py:76
 # Mailman/Gui/General.py:76
 #: Mailman/Gui/General.py:76
+#, fuzzy
 msgid ""
 "There are two ownership roles associated with each mailing\n"
 "             list.  The <em>list administrators</em> are the people who "
@@ -5971,7 +5976,7 @@ msgid ""
 "             and also provide the <a href=\"?VARHELP=general/moderator"
 "\">email\n"
 "             addresses of the list moderators</a>.  Note that the field you\n"
-"             are changing here specifies the list administators."
+"             are changing here specifies the list administrators."
 msgstr ""
 "Det är två roller förbundna med varje e-postlista.\n"
 "<em>Listadministratörerna</em> är de som till syvende och sist har kontroll "
@@ -12144,6 +12149,7 @@ msgstr "Inget runnernamn blev angett."
 # bin/remove_members:19
 # bin/remove_members:19
 #: bin/remove_members:19
+#, fuzzy
 msgid ""
 "Remove members from a list.\n"
 "\n"
@@ -12169,6 +12175,14 @@ msgid ""
 "       used -a/--all.  Also, you should not specify a listname when using "
 "this\n"
 "       option.\n"
+"\n"
+"    --nouserack\n"
+"    -n\n"
+"        Don't send the user acknowledgements.\n"
+"\n"
+"    --noadminack\n"
+"    -N\n"
+"        Don't send the admin acknowledgements.\n"
 "\n"
 "    --help\n"
 "    -h\n"
@@ -12215,25 +12229,25 @@ msgstr ""
 
 # bin/remove_members:128
 # bin/remove_members:132
-#: bin/remove_members:132
+#: bin/remove_members:147
 msgid "Could not open file for reading: %(filename)s."
 msgstr "Kunde inte öppna filen \"%(filename)s\" för att läsa."
 
 # bin/remove_members:135
 # bin/remove_members:139
-#: bin/remove_members:139
+#: bin/remove_members:154
 msgid "Error opening list %(listname)s... skipping."
 msgstr "Hoppar över listan \"%(listname)s\" p g a fel under öppnandet."
 
 # bin/remove_members:145
 # bin/remove_members:149
-#: bin/remove_members:149
+#: bin/remove_members:164
 msgid "No such member: %(addr)s"
 msgstr "Medlemmen finns inte: %(addr)s."
 
 # bin/remove_members:149
 # bin/remove_members:153
-#: bin/remove_members:153
+#: bin/remove_members:171
 msgid "User `%(addr)s' removed from list: %(listname)s."
 msgstr "%(addr)s är nu borttagen från listan %(listname)s."
 
