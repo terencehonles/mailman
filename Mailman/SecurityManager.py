@@ -18,8 +18,13 @@
 """Handle passwords and sanitize approved messages."""
 
 
-import mm_crypt, types, string, os
-import mm_err, mm_utils, mm_cfg
+import os
+import string
+import types
+import Crypt
+import Errors
+import Utils
+import mm_cfg
 
 # TBD: is this the best location for the site password?
 SITE_PW_FILE = os.path.join(mm_cfg.DATA_DIR, 'adm.pw')
@@ -29,7 +34,7 @@ class SecurityManager:
     def SetSiteAdminPassword(self, pw):
     	old = os.umask(0022)
 	f = open(SITE_PW_FILE, "w+")
-	f.write(mm_crypt.crypt(pw, mm_utils.GetRandomSeed()))
+	f.write(Crypt.crypt(pw, Utils.GetRandomSeed()))
 	f.close()
         os.umask(old)
 
@@ -38,7 +43,7 @@ class SecurityManager:
 	    f = open(SITE_PW_FILE, "r")
 	    pw = f.read()
 	    f.close()
-	    return mm_crypt.crypt(str, pw) == pw
+	    return Crypt.crypt(str, pw) == pw
 	# There probably is no site admin password if there was an exception
 	except: 
 	    return 0
@@ -55,11 +60,11 @@ class SecurityManager:
 	if self.CheckSiteAdminPassword(pw):
             return 1
 	return ((type(pw) == types.StringType) and 
-		(mm_crypt.crypt(pw, self.password) == self.password))
+		(Crypt.crypt(pw, self.password) == self.password))
 
     def ConfirmAdminPassword(self, pw):
 	if(not self.ValidAdminPassword(pw)):
-	    raise mm_err.MMBadPasswordError
+	    raise Errors.MMBadPasswordError
 	return 1
 
     def ConfirmUserPassword(self, user, pw):
@@ -69,18 +74,18 @@ class SecurityManager:
 	    user = self.FindUser(user)
         try:
             if string.lower(pw) <> string.lower(self.passwords[user]):
-                raise mm_err.MMBadPasswordError
+                raise Errors.MMBadPasswordError
         except KeyError:
-            raise mm_err.MMBadUserError
+            raise Errors.MMBadUserError
 	return 1
 
     def ChangeUserPassword(self, user, newpw, confirm):
 	self.IsListInitialized()
 	addr = self.FindUser(user)
 	if not addr:
-	    raise mm_err.MMNotAMemberError
+	    raise Errors.MMNotAMemberError
 	if newpw <> confirm:
-	    raise mm_err.MMPasswordsMustMatch
+	    raise Errors.MMPasswordsMustMatch
 	self.passwords[addr] = newpw
 	self.Save()
 
