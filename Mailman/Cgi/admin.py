@@ -34,8 +34,9 @@ from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import MailList
 from Mailman import Errors
-from Mailman import MailCommandHandler
+from Mailman import MemberAdaptor
 from Mailman import i18n
+from Mailman.MailCommandHandler import option_info
 from Mailman.UserDesc import UserDesc
 from Mailman.htmlformat import *
 from Mailman.Cgi import Auth
@@ -891,8 +892,14 @@ def membership_options(mlist, subcat, cgidata, doc, form):
         box = CheckBox('%s_mod' % addr, value, checked)
         cells.append(Center(box).Format())
         for opt in ('hide', 'nomail', 'ack', 'notmetoo'):
-            if mlist.getMemberOption(addr,
-                                     MailCommandHandler.option_info[opt]):
+            if opt == 'nomail':
+                if mlist.getDeliveryStatus(addr) == MemberAdaptor.ENABLED:
+                    value = 'off'
+                    checked = 0
+                else:
+                    value = 'on'
+                    checked = 1
+            elif mlist.getMemberOption(addr, option_info[opt]):
                 value = 'on'
                 checked = 1
             else:
@@ -900,13 +907,15 @@ def membership_options(mlist, subcat, cgidata, doc, form):
                 checked = 0
             box = CheckBox('%s_%s' % (addr, opt), value, checked)
             cells.append(Center(box).Format())
-        # FIXME: use MemberAdaptor interface
-        if mlist.members.has_key(addr):
+        # This code is less efficient than the original which did a has_key on
+        # the underlying dictionary attribute.  This version is slower and
+        # less memory efficient.  It points to a new MemberAdaptor interface
+        # method.
+        if addr in mlist.getRegularMemberKeys():
             cells.append(Center(CheckBox(addr + '_digest', 'off', 0).Format()))
         else:
             cells.append(Center(CheckBox(addr + '_digest', 'on', 1).Format()))
-        if mlist.getMemberOption(addr,
-                                 MailCommandHandler.option_info['plain']):
+        if mlist.getMemberOption(addr, option_info['plain']):
             value = 'on'
             checked = 1
         else:
@@ -1391,8 +1400,15 @@ def change_options(mlist, category, subcat, cgidata, doc):
             moderate = not not cgidata.getvalue(user+'_mod')
             mlist.setMemberOption(user, mm_cfg.Moderate, moderate)
 
-            for opt in ('hide', 'nomail', 'ack', 'notmetoo', 'plain'):
-                opt_code = MailCommandHandler.option_info[opt]
+            # Set the `nomail' flag, but only if the user isn't already
+            # disabled (otherwise we might change BYUSER into BYADMIN).
+            if cgidata.has_key('%s_nomail' % user):
+                if mlist.getDeliveryStatus(user) == MemberAdaptor.ENABLED:
+                    mlist.setDeliveryStatus(user, MemberAdaptor.BYADMIN)
+            else:
+                mlist.setDeliveryStatus(user, MemberAdaptor.ENABLED)
+            for opt in ('hide', 'ack', 'notmetoo', 'plain'):
+                opt_code = option_info[opt]
                 if cgidata.has_key('%s_%s' % (user, opt)):
                     mlist.setMemberOption(user, opt_code, 1)
                 else:
