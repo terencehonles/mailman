@@ -128,7 +128,7 @@ class CommandRunner(Runner):
                 return
             elif msgdata.get('torequest'):
                 # Just pass the message off the command handler
-                mlist.ParseMailCommands(msg)
+                mlist.ParseMailCommands(msg, msgdata)
                 return
         finally:
             mlist.Save()
