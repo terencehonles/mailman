@@ -96,11 +96,11 @@ class CommandRunner(Runner):
             #
             # See the diagram in IncomingRunner.py for more information.
             if msgdata.get('toadmin'):
-                if mlist.bounce_processing:
-                    if BouncerAPI.ScanMessages(mlist, msg):
-                        return
-                self._toadmins(mlist, msg, msgdata)
-                return
+                if mlist.bounce_processing and \
+                       BouncerAPI.ScanMessages(mlist, msg):
+                    pass
+                else:
+                    self._toadmins(mlist, msg, msgdata)
             elif msgdata.get('toowner'):
                 # The message could have been a bounce from a broken list
                 # owner address.  About the only other test we can do is to
@@ -114,13 +114,11 @@ class CommandRunner(Runner):
                     senderlhs = sender
                 if senderlhs in mm_cfg.LIKELY_BOUNCE_SENDERS:
                     syslog('error', 'bounce loop detected from: %s', sender)
-                    return
-                self._toadmins(mlist, msg, msgdata)
-                return
+                else:
+                    self._toadmins(mlist, msg, msgdata)
             elif msgdata.get('torequest'):
                 # Just pass the message off the command handler
                 mlist.ParseMailCommands(msg, msgdata)
-                return
             elif msgdata.get('tojoin'):
                 del msg['subject']
                 msg['Subject'] = 'join'
