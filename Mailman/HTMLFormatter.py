@@ -363,8 +363,7 @@ class HTMLFormatter:
             listlangs = Utils.GetLanguageDescr(self.preferred_language)
         else:
             listlangs = self.GetLangSelectBox(lang).Format()
-        return { 
-            '<mm-favicon>' : mm_cfg.IMAGE_LOGOS + mm_cfg.SHORTCUT_ICON,
+        d = { 
             '<mm-mailman-footer>' : self.GetMailmanFooter(),
             '<mm-list-name>' : self.real_name,
             '<mm-email-user>' : self._internal_name,
@@ -387,6 +386,9 @@ class HTMLFormatter:
             '<mm-host>' : self.host_name,
             '<mm-list-langs>' : listlangs,
             }
+        if mm_cfg.IMAGE_LOGOS:
+            d['<mm-favicon>'] = mm_cfg.IMAGE_LOGOS + mm_cfg.SHORTCUT_ICON
+        return d
 
     def GetAllReplacements(self, lang=None):
         """

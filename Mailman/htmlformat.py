@@ -310,7 +310,7 @@ class Document(Container):
                            '<HTML>',
                            '<HEAD>'
                            ])
-            if mm_cfg.SHORTCUT_ICON:
+            if mm_cfg.IMAGE_LOGOS:
                 output.append('<LINK REL="SHORTCUT ICON" HREF="%s">' %
                               (mm_cfg.IMAGE_LOGOS + mm_cfg.SHORTCUT_ICON))
             if self.title:

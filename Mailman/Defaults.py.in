@@ -37,15 +37,16 @@ def days(d): return d * 60 * 60 * 24
 # General system-wide defaults
 #####
 
-# Should image logos be used?  Set this to false to disable image logos from
-# "our sponsors" and just use textual links instead.  Otherwise, this should
-# contain the URL base path to the logo images (and must contain the trailing
-# slash)..  If you want to disable Mailman's logo footer altogther, hack
+# Should image logos be used?  Set this to 0 to disable image logos from "our
+# sponsors" and just use textual links instead (this will also disable the
+# shortcut "favicon").  Otherwise, this should contain the URL base path to
+# the logo images (and must contain the trailing slash)..  If you want to
+# disable Mailman's logo footer altogther, hack
 # Mailman/htmlformat.py:MailmanLogo(), which also contains the hardcoded links
 # and image names.
 IMAGE_LOGOS = '/icons/'
 
-# Set this to None to inhibit Mailman's favicon.
+# The name of the Mailman favicon
 SHORTCUT_ICON = 'mm-icon.png'
 
 # Don't change MAILMAN_URL, unless you want to point it at one of the mirrors.
