@@ -115,6 +115,7 @@ def main():
         print text
         sys.stdout.flush()
     finally:
+        mlist.Save()
         mlist.Unlock()
 
 
@@ -217,6 +218,7 @@ def PrintPostRequest(mlist, id, info, total, count, form):
 
 
 def HandleRequests(mlist, doc, form):
+    erroraddrs = []
     for k in form.keys():
         formv = form[k]
         if type(formv) == types.ListType:
@@ -239,6 +241,11 @@ def HandleRequests(mlist, doc, form):
             # that's okay, it just means someone else has already updated the
             # database, so just ignore this id
             continue
+        except Errors.MMAlreadyAMember, v:
+            erroraddrs.append(v)
     # save the list and print the results
     mlist.Save()
     doc.AddItem(Header(2, 'Database Updated...'))
+    if erroraddrs:
+        for addr in erroraddrs:
+            doc.AddItem(`addr` + ' is already a member<br>')
