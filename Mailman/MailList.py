@@ -475,7 +475,15 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              mailing list, so you don't need to include any of that kind of
              stuff here.  This should just contain mission-specific kinds of
              things, like etiquette policies or team orientation, or that kind
-             of thing.""")),
+             of thing.
+
+             <p>Note that this text will be wrapped, according to the
+             following rules:
+             <ul><li>Each paragraph is filled so that no line is longer than
+                     70 characters.
+                 <li>Any line that begins with whitespace is not filled.
+                 <li>A blank line separates paragraphs.
+             </ul>""")),
 
             ('goodbye_msg', mm_cfg.Text, (4, WIDTH), 0,
              _('''Text sent to people leaving the list.  If empty, no special
