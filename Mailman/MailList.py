@@ -1138,9 +1138,13 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 		ack_post = 1
 	# Deliver the mail.
 	members = self.GetDeliveryMembers()
+        recipients = []
+        for m in members:
+            if not self.GetUserOption(m, mm_cfg.DisableDelivery):
+                recipients.append(m)
 	if dont_send_to_sender:
             try:
-                recipients.remove(members)
+                recipients.remove(sender)
             #
             # sender not in list (case sensitive username problem?)
             #
@@ -1149,10 +1153,6 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                             "couldn't remove %s from recipient list: %s",
                             sender,
                             str(members))
-        recipients = []
-        for m in members:
-            if not self.GetUserOption(m, mm_cfg.DisableDelivery):
-                recipients.append(m)
         self.LogMsg("post", "post to %s from %s size=%d",
                     self._internal_name, msg.GetSender(), len(msg.body))
         
