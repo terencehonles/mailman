@@ -46,8 +46,10 @@ TRIES = 5                               # Number of times to retry
 
 def main():
     if not forker():
-        do_child()
-    os._exit(0)
+        try:
+            do_child()
+        finally:
+            os._exit(0)
 
 def do_child():
     LogStdErr("error", "deliver (child)")
