@@ -227,6 +227,9 @@ class UserNotification(Message):
         # don't override an existing Precedence: header.
         if not self.has_key('precedence'):
             self['Precedence'] = 'bulk'
+        self._enqueue(mlist, **_kws)
+
+    def _enqueue(self, mlist, **_kws):
         # Not imported at module scope to avoid import loop
         from Mailman.Queue.sbcache import get_switchboard
         virginq = get_switchboard(mm_cfg.VIRGINQUEUE_DIR)
@@ -243,12 +246,29 @@ class UserNotification(Message):
 class OwnerNotification(UserNotification):
     """Like user notifications, but this message goes to the list owners."""
 
-    def __init__(self, mlist, sender, subject=None, text=None, tomoderators=1):
+    def __init__(self, mlist, subject=None, text=None, tomoderators=1):
         recips = mlist.owner[:]
         if tomoderators:
             recips.extend(mlist.moderator)
+        # We have to set the owner to the site's -bounces address, otherwise
+        # we'll get a mail loop if an owner's address bounces.
+        sender = Utils.get_site_email(mlist.host_name, 'bounces')
         lang = mlist.preferred_language
         UserNotification.__init__(self, recips, sender, subject, text, lang)
         # Hack the To header to look like it's going to the -owner address
         del self['to']
         self['To'] = mlist.GetOwnerEmail()
+        self._sender = sender
+
+    def _enqueue(self, mlist, **_kws):
+        # Not imported at module scope to avoid import loop
+        from Mailman.Queue.sbcache import get_switchboard
+        virginq = get_switchboard(mm_cfg.VIRGINQUEUE_DIR)
+        # The message metadata better have a `recip' attribute
+        virginq.enqueue(self,
+                        listname = mlist.internal_name(),
+                        recips = self.recips,
+                        nodecorate = 1,
+                        reduced_list_headers = 1,
+                        envsender = self._sender,
+                        **_kws)
