@@ -61,6 +61,15 @@ def UpdateOldVars(l, stored_state):
                  'mimimum_post_count_before_bounce_action')
     PreferStored('bad_posters', 'forbidden_posters')
     PreferStored('automatically_remove', 'automatic_bounce_action')
+    if hasattr(l, "open_subscribe"):
+        if l.open_subscribe:
+            if mm_cfg.ALLOW_OPEN_SUBSCRIBE:
+                l.subscribe_policy = 0 
+            else:
+                l.subscribe_policy = 1
+        else:
+            l.subscribe_policy = 2      # admin approval
+        delattr(l, "open_subscribe")
     #  - dropped vars:
 #    for a in ['archive_retain_text_copy',
 #              'archive_update_frequency']:

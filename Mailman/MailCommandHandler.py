@@ -445,45 +445,46 @@ class MailCommandHandler:
             password = "%s%s" % (Utils.GetRandomSeed(), 
 				 Utils.GetRandomSeed())
         if not address:
-            pending_addr = mail.GetSender()
+            subscribe_address = string.lower(mail.GetSender())
         else:
-            pending_addr = address
+            subscribe_address = address
         remote = mail.GetSender()
-        if pending_addr == self.GetListEmail():
-            badremote = "\n\tfrom " 
-            if remote: badremote = badremote + remote
-            else:      badremote = badremote + "unidentified sender"
-            self.LogMsg("mischief", ("Attempt to self subscribe %s:%s"
-                                     % (pending_addr, badremote)))
-            self.AddApprovalMsg("Attempt to subscribe a list to itself!")
-            return
-        if self.FindUser(pending_addr):
-            self.AddError("%s is already a list member." % pending_addr)
-            return
-        cookie = Pending.gencookie()
-        Pending.add2pending(pending_addr, password, digest, cookie)
-        if remote == pending_addr:
-            remote = ""
+        try:
+            self.AddMember(subscribe_address, password, digest, remote)
+        except Errors.MMSubscribeNeedsConfirmation:
+            #
+            # the confirmation message that's been sent takes place 
+            # of the results of the mail command message
+            #
+            self.__NoMailCmdResponse = 1
+        except Errors.MMNeedApproval, admin_email:
+            self.AddToResponse("your subscription request has been forwarded the list "
+                               "administrator\nat %s for review.\n" % admin_email)
+        except Errors.MMBadEmailError:
+            self.AddError("Mailman won't accept the given email "
+                          "address as a valid address. \n(Does it "
+                          "have an @ in it???)")
+        except Errors.MMListNotReady:
+            self.AddError("The list is not fully functional, and "
+                          "can not accept subscription requests.")
+        except Errors.MMHostileAddress:
+            self.AddError("Your subscription is not allowed because\n"
+                          "the email address you gave is insecure.")
+        except Errors.MMAlreadyAMember:
+            self.AddError("You are already subscribed!")
+        except Errors.MMCantDigestError:
+            self.AddError("No one can subscribe to the digest of this list!")
+        except Errors.MMMustDigestError:
+            self.AddError("This list only supports digest subscriptions!")
         else:
-            remote = " from " + remote
-        text = Utils.maketext(
-            'verify.txt',
-            {'email'       : pending_addr,
-             'listaddr'    : self.GetListEmail(),
-             'listname'    : self.real_name,
-             'listadmin'   : self.GetAdminEmail(),
-             'cookie'      : cookie,
-             'remote'      : remote,
-             'requestaddr' : self.GetRequestEmail(),
-             })
-        self.SendTextToUser(
-            subject = "%s -- confirmation of subscription -- request %d" %
-                (self.real_name, cookie),
-            recipient = pending_addr,
-            sender = self.GetRequestEmail(),
-            text = text)
-        self.__NoMailCmdResponse = 1
-        return
+            #
+            # if the list sends a welcome message, we don't need a response
+            # from the mailcommand handler.
+            #
+            if self.send_welcome_msg:
+                self.__NoMailCmdResponse = 1
+            else:
+                self.AddToResponse("Succeeded")
 
 
 
@@ -497,56 +498,27 @@ class MailCommandHandler:
         except:
             self.AddError("Usage: confirm <confirmation number>\n")
             return
-        pending = Pending.get_pending()
-        if not pending.has_key(cookie):
+        try:
+            self.ProcessConfirmation(cookie)
+        except Errors.MMBadConfirmation:
             self.AddError("Invalid confirmation number!\n"
                           "Please recheck the confirmation number and"
                           " try again.")
-            return
-        (email_addr, password, digest, ts) = pending[cookie]
-        if self.open_subscribe:
-            self.FinishSubscribe(email_addr, password, digest,
-                                 approved=1)
+        except Errors.MMNeedApproval, admin_addr:
+            self.AddToResponse("your request has been forwarded to the list "
+                               "administrator for approval")
+            
         else:
-            self.FinishSubscribe(email_addr, password, digest)
-        del pending[cookie]
-        Pending.set_pending(pending)
-
-    def FinishSubscribe(self, addr, password, digest, approved=0):
-	try:
-            if approved:
-                self.ApprovedAddMember(addr, password, digest)
+            #
+            # if the list sends a welcome message, we don't need a response
+            # from the mailcommand handler.
+            #
+            if self.send_welcome_msg:
+                self.__NoMailCmdResponse = 1
             else:
-                self.AddMember(addr, password, digest)
-	    self.AddToResponse("Succeeded.")
-	except Errors.MMBadEmailError:
-	    self.AddError("Email address '%s' not accepted by Mailman." % 
-			  addr)
-	except Errors.MMMustDigestError:
-	    self.AddError("List only accepts digest members.")
-	except Errors.MMCantDigestError:
-	    self.AddError("List doesn't accept digest members.")
-	except Errors.MMListNotReady:
-	    self.AddError("List is not functional.")
-	except Errors.MMNeedApproval:
-	    self.AddApprovalMsg("Subscription is pending list admin approval.")
-        except Errors.MMHostileAddress:
-	    self.AddError("Email address '%s' not accepted by Mailman "
-			  "(insecure address)" % addr)
-	except Errors.MMAlreadyAMember:
-	    self.AddError("%s is already a list member." % addr)
-	except:
-	    self.AddError("An unknown Mailman error occured.")
-	    self.AddError("Please forward your request to %s" %
-			  self.GetAdminEmail())
-	    self.AddError("%s" % sys.exc_type)
-            self.LogMsg("error", ("%s:\n\t%s.FinishSubscribe() encountered"
-                                  " unexpected exception:\n\t'%s', '%s'"
-                                  % (__name__,
-                                     self._internal_name,
-                                     str(sys.exc_info()[0]),
-                                     str(sys.exc_info()[1]))))
-		
+                self.AddToResponse("Succeeded")
+
+
     def AddApprovalMsg(self, cmd):
         text = Utils.maketext(
             'approve.txt',

@@ -83,7 +83,7 @@ clean:
 	done
 
 distclean:
-	-rm Makefile Defaults.py
+	-rm Makefile Defaults.py mm_cfg.py
 	for d in $(SUBDIRS); \
 	do \
 	    (cd $$d; $(MAKE) distclean); \

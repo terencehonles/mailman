@@ -34,7 +34,7 @@ def main():
     if len(list_info) < 1:
         doc.AddItem(htmlformat.Header(2, "Error"))
         doc.AddItem(htmlformat.Bold("Invalid options to CGI script."))
-        print doc.Format()
+        print doc.Format(bgcolor="#ffffff")
         sys.exit(0)
 
     try:
@@ -42,14 +42,14 @@ def main():
     except:
       doc.AddItem(htmlformat.Header(2, "Error"))
       doc.AddItem(htmlformat.Bold("%s: No such list." % list_name ))
-      print doc.Format()
+      print doc.Format(bgcolor="#ffffff")
       sys.exit(0)
 
 
     if not list._ready:
         doc.AddItem(htmlformat.Header(2, "Error"))
         doc.AddItem(htmlformat.Bold("%s: No such list." % list_name ))
-        print doc.Format()
+        print doc.Format(bgcolor="#ffffff")
         list.Unlock()
         sys.exit(0)
 
@@ -80,7 +80,7 @@ def main():
             doc.AddItem(
                 htmlformat.Bold("You must supply your email address."))
             doc.AddItem(list.GetMailmanFooter())
-            print doc.Format()
+            print doc.Format(bgcolor="#ffffff")
             list.Unlock()
             sys.exit(0)
         addr = form['info'].value
@@ -90,7 +90,7 @@ def main():
             doc.AddItem(htmlformat.Bold("%s has no subscribed addr <i>%s</i>."
                                         % (list.real_name, addr)))
             doc.AddItem(list.GetMailmanFooter())
-            print doc.Format()
+            print doc.Format(bgcolor="#ffffff")
             list.Unlock()
             sys.exit(0)
         list.Unlock()
@@ -150,41 +150,11 @@ def main():
                 digesting = " digest"
             else:
                 digesting = ""
-            cookie = Pending.gencookie()
-            Pending.add2pending(email, pw, digest, cookie)
-            frmremote = " from %s" % remote
-            text = Utils.maketext('verify.txt',
-                                  {"email"      : email,
-                                   "listaddr"   : list.GetListEmail(),
-                                   "listname"   : list.real_name,
-                                   "cookie"     : cookie,
-                                   "hostname"   : frmremote,
-                                   "requestaddr": list.GetRequestEmail(),
-                                   "remote"     : frmremote,
-                                   "listadmin"  : list.GetAdminEmail(),
-                                   })
-            list.SendTextToUser(
-                subject=("%s -- confirmation of subscription -- request %d" % 
-                         (list.real_name, cookie)),
-                recipient = email,
-                sender = list.GetRequestEmail(),
-                text = text,
-                add_headers = ["Reply-to: %s" % list.GetRequestEmail(),
-                               "Errors-To: %s" % list.GetAdminEmail()])
-            results = results + ("Confirmation from your email address is "
-                                 "required, to prevent anyone from covertly "
-                                 "subscribing you.  Instructions are being "
-                                 "sent to you at %s." % email)
-            if remote:
-                by = " " + remote
-            else:
-                by = ""
-            list.LogMsg("subscribe", "%s: pending %s %s%s",
-                        list._internal_name,
-                        "web",
-                        email,
-                        by)
-
+            list.AddMember(email, pw, digest, remote)
+        #
+        # check for all the errors that list.AddMember can throw
+        # options  on the web page for this cgi
+        #
         except Errors.MMBadEmailError:
             results = results + ("Mailman won't accept the given email "
                                  "address as a valid address. (Does it "
@@ -192,22 +162,35 @@ def main():
         except Errors.MMListNotReady:
             results = results + ("The list is not fully functional, and "
                                  "can not accept subscription requests.<p>")
-    #
-    # deprecating this, it might be useful if we decide to
-    # allow approved based subscriptions without confirmation
-    #
-    ##     except Errors.MMNeedApproval, x:
-    ##         results = results + ("Subscription was <em>deferred</em> "
-    ## 			     "because:<br> %s<p>Your request must "
-    ## 			     "be approved by the list admin.  "
-    ## 			     "You will receive email informing you "
-    ## 			     "of the moderator's descision when they "
-    ##			     "get to your request.<p>" % x)
+        except Errors.MMSubscribeNeedsConfirmation:
+            results = results + ("Confirmation from your email address is "
+                                 "required, to prevent anyone from covertly "
+                                 "subscribing you.  Instructions are being "
+                                 "sent to you at %s." % email)
+
+        except Errors.MMNeedApproval, x:
+            results = results + ("Subscription was <em>deferred</em> "
+                                 "because:<br> %s<p>Your request must "
+                                 "be approved by the list admin.  "
+                                 "You will receive email informing you "
+                                 "of the moderator's descision when they "
+                                 "get to your request.<p>" % x)
         except Errors.MMHostileAddress:
             results = results + ("Your subscription is not allowed because "
                                  "the email address you gave is insecure.<p>")
         except Errors.MMAlreadyAMember:
             results = results + "You are already subscribed!<p>"
+        #
+        # these shouldn't happen, but if someone's futzing with the cgi
+        # they might -scott
+        #
+        except Errors.MMCantDigestError:
+            results = results + "No one can subscribe to the digest of this list!"
+        except Errors.MMMustDigestError:
+            results = results + "This list only supports digest subscriptions!"
+        else:
+            results = results + "You have been successfully subscribed to %s." % (list.real_name)
+
 
 
     PrintResults(list, results, doc)
@@ -221,7 +204,7 @@ def PrintResults(list, results, doc):
     output = list.ParseTags('subscribe.html', replacements)
 
     doc.AddItem(output)
-    print doc.Format()
+    print doc.Format(bgcolor="#ffffff")
     list.Unlock()
     sys.exit(0)
 

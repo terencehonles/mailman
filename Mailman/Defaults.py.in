@@ -51,6 +51,7 @@ PRIVATE_ARCHIVE_URL_EXT = '/'
 HOME_PAGE         = 'index.html'
 MAILMAN_OWNER     = 'mailman-owner@%s' % DEFAULT_HOST_NAME
 
+
 # System ceiling on number of batches into which deliveries are divided:
 MAX_SPAWNS        = 40
 
@@ -113,8 +114,23 @@ from: .*@uplinkpro.com
 """
 # Replies to posts inherently directed to list or original sender?
 DEFAULT_REPLY_GOES_TO_LIST = 0
-# Admin approval unnecessary for subscribes?
-DEFAULT_OPEN_SUBSCRIBE = 1
+#
+# SUBSCRIBE POLICY
+# 0 - open list (only when ALLOW_OPEN_SUBSCRIBE is set to 1) **
+# 1 - confirmations required for subscribes
+# 2 - admin approval required for subscribes
+# 3 - both confirmations and admin approval required
+#
+# ** please do not choose option 0 if you are not allowing open
+# subscribes (next variable)
+#
+DEFAULT_SUBSCRIBE_POLICY = 1
+#
+# does this site allow completely unchecked subscriptions?
+#
+ALLOW_OPEN_SUBSCRIBE = 0
+
+
 # Private_roster == 0: anyone can see, 1: members only, 2: admin only.
 DEFAULT_PRIVATE_ROSTER = 0
 # When exposing members, make them unrecognizable as email addrs.  To
@@ -122,8 +138,6 @@ DEFAULT_PRIVATE_ROSTER = 0
 DEFAULT_OBSCURE_ADDRESSES = 1
 # Make it 1 when it works.
 DEFAULT_MEMBER_POSTING_ONLY = 0
-# 1 for email subscription verification, 2 for admin confirmation:
-DEFAULT_WEB_SUBSCRIBE_REQUIRES_CONFIRMATION = 1
 
 		     # Digestification Defaults #
 
@@ -229,4 +243,4 @@ PRIVATE_ARCHIVE_FILE_DIR	= os.path.join(PREFIX, 'archives/private')
 VERSION           = '@VERSION@'
 
 # Data file version number
-DATA_FILE_VERSION = 3
+DATA_FILE_VERSION = 5

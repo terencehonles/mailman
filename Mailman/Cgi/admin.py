@@ -428,7 +428,18 @@ def GetItemCharacteristics(table_entry):
 def GetItemGuiValue(lst, kind, varname, params):
     """Return a representation of an item's settings."""
     if kind == mm_cfg.Radio or kind == mm_cfg.Toggle:
-	return RadioButtonArray(varname, params, getattr(lst, varname))
+        #
+        # if we are sending returning the option for subscribe
+        # policy and this site doesn't allow open subscribes,
+        # then we have to alter the value of lst.subscribe_policy
+        # as passed to RadioButtonArray in order to compensate
+        # for the fact that there is one fewer option. correspondingly,
+        # we alter the value back in the change options function -scott
+        #
+        if varname == "subscribe_policy" and not mm_cfg.ALLOW_OPEN_SUBSCRIBE:
+            return RadioButtonArray(varname, params, getattr(lst, varname) - 1)
+        else:
+            return RadioButtonArray(varname, params, getattr(lst, varname))
     elif (kind == mm_cfg.String or kind == mm_cfg.Email or
 	  kind == mm_cfg.Host or kind == mm_cfg.Number):
 	return TextBox(varname, getattr(lst, varname), params)
@@ -669,6 +680,15 @@ def ChangeOptions(lst, category, cgi_info, document):
     #
     if category != 'members' and not cgi_info.has_key("request_login") and\
        len(cgi_info.keys()) > 1:
+        if cgi_info.has_key("subscribe_policy"):
+            if not mm_cfg.ALLOW_OPEN_SUBSCRIBE:
+                #
+                # we have to add one to the value because the
+                # page didn't present an open list as an option
+                #
+                page_setting = string.atoi(cgi_info["subscribe_policy"].value)
+                cgi_info["subscribe_policy"].value = str(page_setting + 1)
+
         opt_list = GetConfigOptions(lst, category)
         for item in opt_list:
             if len(item) < 5:
@@ -699,10 +719,6 @@ def ChangeOptions(lst, category, cgi_info, document):
             names.remove('')
         subscribe_success = []
         subscribe_errors = []
-        if lst.send_welcome_msg:
-            noack = 0
-        else:
-            noack = 1
 	for new_name in map(string.strip,names):
             digest = 0
             if not lst.digestable:
@@ -711,7 +727,7 @@ def ChangeOptions(lst, category, cgi_info, document):
                 digest = 1
 	    try:
 		lst.ApprovedAddMember(new_name, (Utils.GetRandomSeed() +
-                                                  Utils.GetRandomSeed()), digest, noack)
+                                                  Utils.GetRandomSeed()), digest)
                 subscribe_success.append(new_name)
 	    except Errors.MMAlreadyAMember:
                 subscribe_errors.append((new_name, 'Already a member'))

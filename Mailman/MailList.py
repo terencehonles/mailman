@@ -172,12 +172,10 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	self.info = ''
 	self.welcome_msg = ''
 	self.goodbye_msg = ''
-	self.open_subscribe = mm_cfg.DEFAULT_OPEN_SUBSCRIBE
+	self.subscribe_policy = mm_cfg.DEFAULT_SUBSCRIBE_POLICY
 	self.private_roster = mm_cfg.DEFAULT_PRIVATE_ROSTER
 	self.obscure_addresses = mm_cfg.DEFAULT_OBSCURE_ADDRESSES
 	self.member_posting_only = mm_cfg.DEFAULT_MEMBER_POSTING_ONLY
-	self.web_subscribe_requires_confirmation = \
-		mm_cfg.DEFAULT_WEB_SUBSCRIBE_REQUIRES_CONFIRMATION
 	self.host_name = mm_cfg.DEFAULT_HOST_NAME
 
 	# Analogs to these are initted in Digester.InitVars
@@ -353,6 +351,34 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
              " list.  It can be useful for selecting a particular URL"
              " of a host that has multiple addresses."),
           ]
+        if mm_cfg.ALLOW_OPEN_SUBSCRIBE:
+            sub_cfentry = ('subscribe_policy', mm_cfg.Radio,
+                           ('none', 'confirm', 'require approval', 'confirm+approval'),  0,
+                           "What steps are required for subscription?",
+                           "None - no verification steps (<em>Not Recommended </em>)<br>"
+                           "confirm (*) - email confirmation step required <br>"
+                           "require approval - require list administrator approval for subscriptions <br>"
+                           "confirm+approval - both confirm and approve"
+                           
+                           "<p> (*) when someone requests a subscription, mailman sends"
+                           "them a notice with a unique subscription request number that "
+                           "they must reply to in order to subscribe.<br> This prevents "
+                           "list abusers from subscribing people to your list who don't want"
+                           "to be subscribed."
+                           )
+        else:
+            sub_cfentry = ('subscribe_policy', mm_cfg.Radio,
+                           ('confirm', 'require approval', 'confirm+approval'),  1,
+                           "What steps are required for subscription?",
+                           "confirm (*) - email confirmation required <br>"
+                           "require approval - require list administrator approval for subscription"
+                           "confirm+approval - both confirm and approve"
+                           "<p> (*) when someone requests a subscription, mailman sends"
+                           "them a notice with a unique subscription request number that "
+                           "they must reply to in order to subscribe.<br> This prevents "
+                           "list abusers from subscribing people to your list who don't want"
+                           "to be subscribed." )
+
 
         config_info['privacy'] = [
             "List access policies, including anti-spam measures,"
@@ -367,25 +393,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	     'Advertise this list when people ask what lists are on '
 	     'this machine?'),
 
-	    ('open_subscribe', mm_cfg.Radio, ('No', 'Yes'), 0,
-	     'Are subscribes done without admins approval (ie, is this'
-             ' an <em>open</em> list)?',
-
-             "Disabling this option makes the list <em>closed</em>, where"
-             " members are admitted only at the discretion of the list"
-	     " administrator."),
-
-	    ('web_subscribe_requires_confirmation', mm_cfg.Radio,
-	     ('None', 'Requestor confirms via email', 'Admin approves'), 0,
-	     'What confirmation is required for on-the-web subscribes?',
-
-             "This option determines whether web-initiated subscribes"
-             " require further confirmation, either from the subscribed"
-             " address or from the list administrator.  Absence of"
-             " <em>any</em> confirmation makes web-based subscription a"
-             " tempting opportunity for mischievous subscriptions by third"
-             " parties."),
-
+            sub_cfentry,
+            
             "Membership exposure",
 
 	    ('private_roster', mm_cfg.Radio,
@@ -633,8 +642,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	file.close()
 	self._ready = 1
         if check_version:
-		self.CheckValues()
-		self.CheckVersion(dict)
+            self.CheckValues()
+            self.CheckVersion(dict)
 
     def LogMsg(self, kind, msg, *args):
 	"""Append a message to the log file for messages of specified kind."""
@@ -669,7 +678,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	if not self._ready:
 	    raise Errors.MMListNotReady
 
-    def AddMember(self, name, password, digest=0, web_subscribe=0):
+    def AddMember(self, name, password, digest=0, remote=None):
 	self.IsListInitialized()
 	# Remove spaces... it's a common thing for people to add...
 	name = string.join(string.split(string.lower(name)), '')
@@ -688,25 +697,56 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 	elif not digest and not self.nondigestable:
             raise Errors.MMMustDigestError
 
-        if self.open_subscribe:
-            if (web_subscribe and self.web_subscribe_requires_confirmation):
-                if self.web_subscribe_requires_confirmation == 1:
-                    # Requester confirmation required.
-                    raise Errors.MMWebSubscribeRequiresConfirmation
-                else:
-                    # Admin approval required.
-                    self.AddRequest('add_member', digest, name, password)
+        if self.subscribe_policy == 0: # no confirmation or approval necessary
+            self.ApprovedAddMember(name, password, digest)
+        elif self.subscribe_policy == 1 or self.subscribe_policy == 3: # confirmation
+            import Pending
+            cookie = Pending.gencookie()
+            Pending.add2pending(name, password, digest, cookie)
+            if remote is not None:
+                by = " " + remote
+                remote = " from %s" % remote
             else:
-                # No approval required.
-                self.ApprovedAddMember(name, password, digest)
-        else:
-            # Blanket admin approval requred...
+                by = ""
+                remote = ""
+            text = Utils.maketext('verify.txt',
+                                  {"email"      : name,
+                                   "listaddr"   : self.GetListEmail(),
+                                   "listname"   : self.real_name,
+                                   "cookie"     : cookie,
+                                   "hostname"   : remote,
+                                   "requestaddr": self.GetRequestEmail(),
+                                   "remote"     : remote,
+                                   "listadmin"  : self.GetAdminEmail(),
+                                   })
+            self.SendTextToUser(
+                subject=("%s -- confirmation of subscription -- request %d" % 
+                         (self.real_name, cookie)),
+                recipient = name,
+                sender = self.GetRequestEmail(),
+                text = text,
+                add_headers = ["Reply-to: %s" % self.GetRequestEmail(),
+                               "Errors-To: %s" % self.GetAdminEmail()])
+            self.LogMsg("subscribe", "%s: pending %s %s",
+                        self._internal_name,
+                        name,
+                        by)
+            raise Errors.MMSubscribeNeedsConfirmation
+        else: # approval needed
             self.AddRequest('add_member', digest, name, password)
+            raise Errors.MMNeedApproval, self.GetAdminEmail()
+        
 
-    def ApprovedAddMember(self, name, password, digest, noack=0):
+
+    def ApprovedAddMember(self, name, password, digest, ack=None):
         # XXX klm: It *might* be nice to leave the case of the name alone,
         #          but provide a common interface that always returns the
         #          lower case version for computations.
+        if ack is None:
+            if self.send_welcome_msg:
+                ack = 1
+            else:
+                ack = 0
         name = string.lower(name)
 	if self.IsMember(name):
 	    raise Errors.MMAlreadyAMember
@@ -720,8 +760,24 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
                     self._internal_name, kind, name)
 	self.passwords[name] = password
 	self.Save()
-        if not noack:
+        if ack:
             self.SendSubscribeAck(name, password, digest)
+
+
+    def ProcessConfirmation(self, cookie):
+        import Pending
+        pending = Pending.get_pending()
+        if not pending.has_key(cookie):
+            raise Errors.MMBadConfirmation
+        (email_addr, password, digest, ts) = pending[cookie]
+        del pending[cookie]
+        Pending.set_pending(pending)
+        if self.subscribe_policy == 3: # confirm + approve
+            self.AddRequest('add_member', digest, email_addr, password)
+            raise Errors.MMNeedApproval, self.GetAdminEmail()
+        self.ApprovedAddMember(email_addr, password, digest)
+
+
 
     def DeleteMember(self, name, whence=None):
 	self.IsListInitialized()
