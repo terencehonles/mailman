@@ -92,29 +92,33 @@ def tag_release(tagname, retag):
 	option = '-F'
     cvsdo('tag %s %s' % (option, relname))
 
-def checkout(tagname):
+def checkout(tagname, tail):
     print 'checking out...',
     # watch out for dots in the name
     table = string.maketrans('.', '_')
     # To be done from writeable repository
     relname = '"Release_' + string.translate(tagname, table) + '"'
-    cvsdo('export -k kv -r %s -d %s mailman' % (relname, releasedir()))
-    os.rename('%s/doc' % releasedir(), 'mailman-doc')
+    cvsdo('export -k kv -r %s -d %s mailman' % (relname, tail))
+    os.rename('%s/doc' % tail, 'mailman-doc')
 
 
 
 def make_pkg(tagname):
-    print 'Creating release dir', releasedir(tagname), '...'
+    dir = releasedir(tagname)
+    print 'Creating release dir', dir, '...'
+    if not os.path.isdir(dir):
+        os.mkdir(dir)
+    head, tail = os.path.split(dir)
     # this can't be done from a working directory
     curdir = os.getcwd()
     try:
-        os.chdir(tempfile.gettempdir())
-        checkout(tagname)
+        os.chdir(head)
+        checkout(tagname, tail)
         print 'making tarball...'
-        tarball = releasedir() + '.tgz'
-        os.system('tar cvf - %s | gzip -c > %s' %
-                  ('mailman-' + tagname, tarball))
-        os.system('tar cvf - mailman-doc | gzip -c > mailman-doc.gz')
+        relname = 'mailman-' + tagname
+        os.system('tar cvzf %s --exclude .cvsignore %s' %
+                  (relname + '.tgz', relname))
+        os.system('tar cvzf mailman-doc.tgz --exclude .cvsignore mailman-doc')
     finally:
         os.chdir(curdir)
 
