@@ -25,4 +25,4 @@ import time
 
 def process(mlist, msg, msgdata):
     mlist.last_post_time = time.time()
-    mlist.post_id = mlist.post_id + 1
+    mlist.post_id += 1
