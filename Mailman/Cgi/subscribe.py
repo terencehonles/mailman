@@ -154,7 +154,7 @@ def process_form(mlist, doc):
             # TBD: Hmm, this shouldn't happen
             digest = 0
     else:
-        digest = 0
+        digest = mlist.digest_is_default
 
     if not mlist.digestable:
         digest = 0
