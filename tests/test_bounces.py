@@ -4,14 +4,14 @@
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 """Test the bounce detection modules."""
@@ -39,7 +39,7 @@ class BounceTest(unittest.TestCase):
         ('SimpleMatch', 'simple_02.txt', ['chris.ggggmmmm@usa.net']),
         ('SimpleMatch', 'simple_04.txt', ['claird@starbase.neosoft.com']),
         ('SimpleMatch', 'newmailru_01.txt', ['zzzzz@newmail.ru']),
-        ('SimpleMatch', 'hotpot_01.txt', ['allensmithee@hotpop.com']),
+        ('SimpleMatch', 'hotpop_01.txt', ['allensmithee@hotpop.com']),
         # SimpleWarning
         ('SimpleWarning', 'simple_03.txt', ['jacobus@geo.co.za']),
         # GroupWise
@@ -61,6 +61,9 @@ class BounceTest(unittest.TestCase):
         ('DSN', 'dsn_07.txt', ['david.farrar@parliament.govt.nz']),
         ('DSN', 'dsn_08.txt', ['news-list.zope@localhost.bln.innominate.de']),
         ('DSN', 'dsn_09.txt', ['pr@allen-heath.com']),
+        # Microsoft Exchange
+        ('Exchange', 'microsoft_01.txt', ['DJBENNETT@IKON.COM']),
+        ('Exchange', 'microsoft_02.txt', ['MDMOORE@BALL.COM']),
         # SMTP32
         ('SMTP32', 'smtp32_01.txt', ['oliver@pcworld.com.ph']),
         ('SMTP32', 'smtp32_02.txt', ['lists@mail.spicynoodles.com']),
