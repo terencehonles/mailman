@@ -200,13 +200,13 @@ def ValidateEmail(s):
     if not s or s.count(' ') > 0:
         raise Errors.MMBadEmailError
     if _badchars.search(s) or s[0] == '-':
-        raise Errors.MMHostileAddress
+        raise Errors.MMHostileAddress, s
     user, domain_parts = ParseEmail(s)
     # This means local, unqualified addresses, are no allowed
     if not domain_parts:
-        raise Errors.MMBadEmailError
+        raise Errors.MMBadEmailError, s
     if len(domain_parts) < 2:
-        raise Errors.MMBadEmailError
+        raise Errors.MMBadEmailError, s
 
 
 
