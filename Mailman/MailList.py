@@ -257,6 +257,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         self.language = {}
         self.usernames = {}
         self.passwords = {}
+        self.new_member_options = mm_cfg.DEFAULT_NEW_MEMBER_OPTIONS
 
         # This stuff is configurable
         self.respond_to_post_requests = 1
@@ -320,8 +321,8 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         self.generic_nonmember_action = mm_cfg.DEFAULT_GENERIC_NONMEMBER_ACTION
         # Ban lists
         self.ban_list = []
-	# BAW: This should really be set in SecurityManager.InitVars()
-	self.password = crypted_password
+        # BAW: This should really be set in SecurityManager.InitVars()
+        self.password = crypted_password
 
         # Only one level of mixin inheritance allowed
         for baseclass in self.__class__.__bases__:
