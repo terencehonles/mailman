@@ -94,7 +94,11 @@ The Mailman TODO list
 - Use the re module where regexp and regsub are used.
 - Refine any remaining unqualified exception guards to specify target 
   exceptions, when appropriate.
-- Turn standard mailman exceptions into class exceptions.
+- Turn standard mailman exceptions into class exceptions. (In
+  particular, categorize into, eg, message-hold vs other sorts of
+  exceptions.)
+- Make error messages indicate the file, maillist, etc at fault, when
+  possible.
 - Seperate edit-options from the subscribe script.
 - Remove dead code, etc.
 
