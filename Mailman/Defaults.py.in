@@ -31,7 +31,7 @@ MAILMAN_URL       = 'http://www.list.org/'
 
 # The URL to the `Delivered by Mailman' image.  This will be inserted verbatim
 # in an href.  Set to 0 to disable using an img tag.
-DELIVERED_BY_URL = '/images/mailman.gif'
+DELIVERED_BY_URL = '/images/mailman.jpg'
 
 		   # Many site-specific settings #
 

@@ -196,15 +196,15 @@ if you want to keep your existing installation intact.
       scripts run is *not* in the `mailman' group you created above,
       otherwise private archives will be accessible to anyone.
 
-    - Copy the Mailman logo file misc/mailman.gif to a location
+    - Copy the Mailman logo file misc/mailman.jpg to a location
       accessible to your Web server.  E.g. with Apache, you might
       create an images subdirectory inside htdocs, and then copy
-      misc/mailman.gif to htdocs/images/mailman.gif
+      misc/mailman.jpg to htdocs/images/mailman.jpg
 
       You then want to add a line to your $prefix/Mailman/mm_cfg.py
       file which sets the URL to the logo file.  For example:
 
-      DELIVERED_BY_URL = '/images/mailman.gif'
+      DELIVERED_BY_URL = '/images/mailman.jpg'
 
     - Configure your Web server to point to the Pipermail public
       mailing list archives:
