@@ -132,7 +132,7 @@ class Message(email.Message.Message):
         names without the trailing colon.
         """
         if headers is None:
-            headers = ('from', None, 'reply-to', 'sender')
+            headers = mm_cfg.SENDER_HEADERS
         pairs = []
         for h in headers:
             if h is None:
