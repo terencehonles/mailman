@@ -1,5 +1,5 @@
 Mailman - The GNU Mailing List Management System
-Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.
+Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
 
@@ -7,7 +7,7 @@ The Mailman Wishlist
 
     Here's the wish list for future versions of Mailman.  Many new
     features have been added to Mailman 2.1 (still in alpha as of this
-    writing 11-Jul-2001), so what's left will probably end up in a
+    writing 21-Jan-2002), so what's left will probably end up in a
     Mailman 3.0.
 
     Please also see the Mailman design notes wiki at
@@ -15,11 +15,10 @@ The Mailman Wishlist
         http://www.zope.org/Members/bwarsaw/MailmanDesignNotes/FrontPage
 
 Email Handling
-    - Use VERP or DSN for address tracing, perhaps tied to the monthly
-      password reminders, or VERPing the occasional regular message.
     - Re-implement bulk mailer the Right Way: an asynchat/asyncore
       server to do DNS lookups and remote MTA delivery directly
       (optional).
+    - allow customizable notices on moderated member helds and discards
 
 Documentation
     - A detailed feature list
@@ -44,7 +43,6 @@ List Administration
     - Allow the moderator to edit posts being held for approval (make
       it evident, either through a header or other means that the
       message was edited by the moderator).
-    - Allow the list-admin to require approvals for unsubs
     - Allow the admin to disable option settings by users
     - Ability to set defaults for the various user settings from the
       "Membership Management" page.
@@ -53,10 +51,6 @@ List Administration
       very useful, but could be dangerous!)
     - New moderation choice: archive but don't send to list.
     - New moderation choice: annotate and send to author for resubmittal.
-    - Make it easier for an admin who manages multiple lists to
-      handling pending requests sitting on all those lists.
-    - Ability to ban specific troublesome users (from posting,
-      subscribing, etc).  Posts from banned users would be discarded.
     - Better integration with moderated newsgroups (and allow some
       addresses to bypass even that moderation and be delivered to a
       secondary channel, like moderators@isc.org).
@@ -90,8 +84,7 @@ Other Usability Improvments
       reported to have some good features in this regard.
     - Add a limit on the number of posts from any one individual
       within a period of time (1 post per day, 10 per week, etc).
-    - Don't use the first public mailing list as the `originator' of
-      password reminders.
+      Also, limits on mailbacks, infos, etc.
 
 Mailcmd interface
     - Provide an email interface to all administrative commands
@@ -124,16 +117,9 @@ Portability & architecture
       used by other projects.
 
 Bounce handling
-    - Make a distinction between disabled addresses due to bouncing
-      and a user's explicit disabling of an address
     - Add more patterns for bounce handling (never ending)
-    - Occasionally remove stale bounce entries
     - Send mail to people who are being removed without their knowledge
       (even though they're likely not to get it).
-    - Reminders to disabled addresses.  The idea is that if an addr is
-      disabled due to bouncing, we should send out periodic reminders.
-      We may want to do this for explicitly disabled addrs too, but
-      perhaps with a different schedule.
     - Delete bounce disabled address after some period of retry
 
 Pipermail + Archiving mechanism
