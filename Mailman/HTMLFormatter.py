@@ -358,6 +358,7 @@ class HTMLFormatter:
         dmember_len = len(self.getDigestMemberKeys())
         member_len = len(self.getRegularMemberKeys())
         return { 
+            '<mm-favicon>' : mm_cfg.IMAGE_LOGOS + mm_cfg.SHORTCUT_ICON,
             '<mm-mailman-footer>' : self.GetMailmanFooter(),
             '<mm-list-name>' : self.real_name,
             '<mm-email-user>' : self._internal_name,
