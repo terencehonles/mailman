@@ -38,7 +38,7 @@ def loginpage(mlist, scriptname, msg='', frontpage=None):
     else:
         actionurl = Utils.GetRequestURI(url)
     if msg:
-        msg = FontAttr(msg, color='#FF5060', size='+1').Format()
+        msg = FontAttr(msg, color='#ff0000', size='+1').Format()
     print 'Content-type: text/html\n'
     print Utils.maketext(
         # Should really be admlogin.html :/
@@ -62,7 +62,10 @@ def authenticate(mlist, cgidata):
     # out.  The idea is to set only one cookie when the admin password
     # changes.  The new cookie is necessary, because the checksum part of the
     # cookie is based on (among other things) the list's admin password.
-    if cgidata.has_key('adminpw') and not cgidata.has_key('newpw'):
+    if cgidata.has_key('adminpw') and \
+           cgidata['adminpw'].value and \
+           not cgidata.has_key('newpw'):
+        # then
         adminpw = cgidata['adminpw'].value
     # Attempt to authenticate
     try:
