@@ -1,4 +1,4 @@
-# Copyright (C) 2001 by the Free Software Foundation, Inc.
+# Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -20,10 +20,11 @@
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman.i18n import _
+from Mailman.Gui.GUIBase import GUIBase
 
 
 
-class General:
+class General(GUIBase):
     def GetConfigCategory(self):
         return 'general', _('General Options')
 
@@ -346,3 +347,14 @@ class General:
                 )
 
         return rtn
+
+    def _setValue(self, mlist, property, val, doc):
+        if property == 'real_name' and \
+               val.lower() <> mlist.internal_name().lower():
+            # These values can't differ by other than case
+            doc.addError(_("""<p><b>real_name</b> attribute not
+            changed!  It must differ from the list's name by case
+            only.<p>"""),
+                         tag=_('Error: '))
+        else:
+            GUIBase._setValue(self, mlist, property, val, doc)
