@@ -60,6 +60,11 @@ LogStdErr('error', 'gate_news', manual_reprime=0, tee_to_stdout=1)
 LOCK_LIFETIME = mm_cfg.hours(2)
 NL = '\n'
 
+# We need this exception to work around the continue-inside-try deficiency
+# in Python versions before 2.1.
+class _ContinueLoop(Exception):
+    """Internal exception to continue loops from inside try blocks"""
+    pass
 
 
 def usage(status, msg=''):
@@ -122,7 +127,7 @@ def poll_newsgroup(mlist, conn, first, last, glock):
                     syslog('fromusenet',
                            'mimelib exception for %s:%d\n%s',
                            mlist.linked_newsgroup, num, e)
-                    continue
+                    raise _ContinueLoop
                 if found_to:
                     del msg['X-Originally']
                     msg['X-Originally-To'] = msg['To']
@@ -139,6 +144,8 @@ def poll_newsgroup(mlist, conn, first, last, glock):
             syslog('fromusenet',
                    'NNTP error for list %s: %7d' % (listname, num))
             syslog('fromusenet', str(msg))
+        except _ContinueLoop:
+            continue
         # Even if we don't post the message because it was seen on the
         # list already, update the watermark
         mlist.usenet_watermark = num
