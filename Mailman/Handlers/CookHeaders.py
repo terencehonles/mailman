@@ -4,14 +4,14 @@
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 """Cook a message's Subject header.
@@ -23,7 +23,7 @@ from types import UnicodeType
 
 from email.Charset import Charset
 from email.Header import Header, decode_header
-import email.Utils
+from email.Utils import parseaddr, formataddr, getaddresses
 
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -96,14 +96,14 @@ def process(mlist, msg, msgdata):
             replyto.append((name, addr))
         # List admin wants an explicit Reply-To: added
         if mlist.reply_goes_to_list == 2:
-            add(email.Utils.parseaddr(mlist.reply_to_address))
+            add(parseaddr(mlist.reply_to_address))
         # If we're not first stripping existing Reply-To: then we need to add
         # the original Reply-To:'s to the list we're building up.  In both
         # cases we'll zap the existing field because RFC 2822 says max one is
         # allowed.
         if not mlist.first_strip_reply_to:
             orig = msg.get_all('reply-to', [])
-            for pair in email.Utils.getaddresses(orig):
+            for pair in getaddresses(orig):
                 add(pair)
         # Set Reply-To: header to point back to this list.  Add this last
         # because some folks think that some MUAs make it easier to delete
@@ -115,7 +115,16 @@ def process(mlist, msg, msgdata):
         if replyto:
             # Preserve order
             msg['Reply-To'] = COMMASPACE.join(
-                [email.Utils.formataddr(pair) for pair in replyto])
+                [formataddr(pair) for pair in replyto])
+    # The To field normally contains the list posting address.  However when
+    # messages are personalized, that header will get overwritten with the
+    # address of the recipient.  We need to get the posting address in one of
+    # the recipient headers or they won't be able to reply back to the list.
+    # It's possible the posting address was munged into the Reply-To header,
+    # but if not, we'll add it to a Cc header.  BAW: should we force it into a
+    # Reply-To header in the above code?
+    if mlist.personalize and mlist.reply_goes_to_list <> 1:
+        msg['Cc'] = formataddr((mlist.description, mlist.GetListEmail()))
     # Add list-specific headers as defined in RFC 2369 and RFC 2919, but only
     # if the message is being crafted for a specific list (e.g. not for the
     # password reminders).
@@ -137,7 +146,7 @@ def process(mlist, msg, msgdata):
     # others (i.e. those coming from list posts), we adda a bunch of other RFC
     # 2369 headers.
     headers = {
-        'List-Id'         : listid,
+        'List-Id' : listid,
         }
     if msgdata.get('reduced_list_headers'):
         headers['X-List-Administrivia'] = 'yes'
