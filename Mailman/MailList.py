@@ -71,7 +71,7 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
         self.InitTempVars(name)
         if name:
             if lock:
-                # This will load the database
+                # This will load the database.
                 self.Lock()
             else:
                 self.Load()
@@ -131,6 +131,9 @@ class MailList(MailCommandHandler, HTMLFormatter, Deliverer, ListAdmin,
 
     def GetAdminEmail(self):
         return '%s-admin@%s' % (self._internal_name, self.host_name)
+
+    def GetOwnerEmail(self):
+        return '%s-owner@%s' % (self._internal_name, self.host_name)
 
     def GetMemberAdminEmail(self, member):
         """Usually the member addr, but modified for umbrella lists.
@@ -1339,8 +1342,13 @@ it will not be changed."""),
 
     def Lock(self, timeout=0):
         self.__lock.lock(timeout)
-        # Must reload our database for consistency
-        self.Load()
+        # Must reload our database for consistency.  Watch out for lists that
+        # don't exist.
+        try:
+            self.Load()
+        except Errors.MMUnknownListError:
+            self.Unlock()
+            raise
     
     def Unlock(self):
         self.__lock.unlock(unconditionally=1)
