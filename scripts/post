@@ -33,6 +33,7 @@ from Mailman import Errors
 from Mailman import Utils
 from Mailman.Logging.Utils import LogStdErr
 from Mailman.Handlers import HandlerAPI
+from Mailman.pythonlib.StringIO import StringIO
 
 LogStdErr("error", "post")
 
@@ -53,7 +54,8 @@ def main():
             except:
                 pass
         if msg is None:
-            msg = Message.Message(sys.stdin)
+            s = StringIO(sys.stdin.read())
+            msg = Message.Message(s)
         # go ahead and post the message
         adminaddr = mlist.GetAdminEmail()
         try:
