@@ -16,9 +16,7 @@
 
 """Base class for all web GUI components."""
 
-# Get rid of this when the minimal requirement is Python 2.2
-from __future__ import nested_scopes
-
+import re
 from types import TupleType, ListType
 
 from Mailman import mm_cfg
@@ -59,16 +57,26 @@ class GUIBase:
         # The EmailListEx allows each line to contain either an email address
         # or a regular expression
         if wtype in (mm_cfg.EmailList, mm_cfg.EmailListEx):
-            def validp(addr):
+            addrs = []
+            for addr in [s.strip() for s in val.split(NL)]:
+                # Discard empty lines
+                if not addr:
+                    continue
                 try:
+                    # This throws an exception if the address is invalid
                     Utils.ValidateEmail(addr)
                 except Errors.EmailAddressError:
+                    # See if this is a context that accepts regular
+                    # expressions, and that the re is legal
                     if wtype == mm_cfg.EmailListEx and addr.startswith('^'):
-                        # It's interpreted as a regular expression
-                        pass
-                    raise ValueError
-            return [addr for addr in [s.strip() for s in val.split(NL)]
-                    if validp(addr)]
+                        try:
+                            re.compile(addr)
+                        except re.error:
+                            raise ValueError
+                    else:
+                        raise
+                addrs.append(addr)
+            return addrs
         # This is a host name, i.e. verbatim
         if wtype == mm_cfg.Host:
             return val
