@@ -5,7 +5,7 @@ message and address munging, a handy-dandy routine to map a function on all
 the maillists, the Logging routines, and whatever else doesn't belong
 elsewhere."""
 
-__version__ = "$Revision: 464 $"
+__version__ = "$Revision: 478 $"
 
 
 import sys, string, fcntl, os, random, regsub, re
@@ -388,3 +388,19 @@ class StampedLogger(Logger):
 		    Logger.write(self, ' ' + l)
 		else:
 		    Logger.write(self, l)
+
+def change_boundary(text, boundary, reboundary):
+    """Substitute good boundary for simplistic one in mime messages."""
+    got = []
+    open_b = "--" + boundary
+    close_b = "--" + boundary + "--"
+    open_reb = "--" + reboundary
+    close_reb = "--" + reboundary + "--"
+    for i in string.split(text, '\n'):
+        if i == open_b:
+            got.append(open_reb)
+        elif i == close_b:
+            got.append(close_reb)
+        else:
+            got.append(i)
+    return string.join(got, '\n')
