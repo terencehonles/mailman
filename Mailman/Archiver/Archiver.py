@@ -73,8 +73,6 @@ class Archiver:
  	self.archive_volume_frequency = \
  		mm_cfg.DEFAULT_ARCHIVE_VOLUME_FREQUENCY
 
-	# Not configurable
-	self.clobber_date = 0
 	# Though the archive file dirs are list-specific, they are not
 	# settable from the web interface.  If you REALLY want to redirect
 	# something to a different dir, you can set the member vars by
@@ -130,12 +128,6 @@ class Archiver:
 
 	    ('archive_private', mm_cfg.Radio, (_('public'), _('private')), 0,
              _('Is archive file source for public or private archival?')),
-
-	    ('clobber_date', mm_cfg.Radio,
-             (_('When sent'), _('When resent')),
-             0,
-	     _('''Set date in archive to when the mail is claimed to have been
-             sent, or to the time we resend it?''')),
 
  	    ('archive_volume_frequency', mm_cfg.Radio, 
              (_('Yearly'), _('Monthly'), _('Quarterly'),
