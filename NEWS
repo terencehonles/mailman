@@ -8,6 +8,8 @@ Here is a history of user visible changes to Mailman.
 
     Bug fixes and language updates.  Also,
 
+    - Lithuanian support has been added.
+
     - bin/remove_members grew --nouserack and --noadminack switches
 
     - configure now honors --srcdir

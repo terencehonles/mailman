@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 2.1b5\n"
-"POT-Creation-Date: Thu Dec 12 09:34:16 2002\n"
+"POT-Creation-Date: Tue Dec 24 13:41:28 2002\n"
 "PO-Revision-Date: 2002-12-23 09:46+0000\n"
 "Last-Translator: Gleydson Mazioli da Silva <gleydson@debian.org>\n"
 "Language-Team: Portuguese <debian-l10n-portuguese@lists.debian.org>\n"
@@ -14,148 +14,148 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: pygettext.py 1.4\n"
 
-#: Mailman/Archiver/HyperArch.py:111
+#: Mailman/Archiver/HyperArch.py:112
 msgid "size not available"
 msgstr "tamanho não disponível"
 
-#: Mailman/Archiver/HyperArch.py:117
+#: Mailman/Archiver/HyperArch.py:118
 msgid " %(size)i bytes "
 msgstr "% (size)i bytes "
 
-#: Mailman/Archiver/HyperArch.py:251 Mailman/Archiver/HyperArch.py:421
-#: Mailman/Archiver/HyperArch.py:1014
+#: Mailman/Archiver/HyperArch.py:249 Mailman/Archiver/HyperArch.py:405
+#: Mailman/Archiver/HyperArch.py:963 Mailman/Archiver/HyperArch.py:1127
 msgid " at "
 msgstr " em "
 
-#: Mailman/Archiver/HyperArch.py:450
+#: Mailman/Archiver/HyperArch.py:434
 msgid "Previous message:"
 msgstr "Mensagem anterior:"
 
-#: Mailman/Archiver/HyperArch.py:482
+#: Mailman/Archiver/HyperArch.py:456
 msgid "Next message:"
 msgstr "Próxima mensagem:"
 
-#: Mailman/Archiver/HyperArch.py:660 Mailman/Archiver/HyperArch.py:696
+#: Mailman/Archiver/HyperArch.py:609 Mailman/Archiver/HyperArch.py:645
 msgid "thread"
 msgstr "Discussão"
 
-#: Mailman/Archiver/HyperArch.py:661 Mailman/Archiver/HyperArch.py:697
+#: Mailman/Archiver/HyperArch.py:610 Mailman/Archiver/HyperArch.py:646
 msgid "subject"
 msgstr "assunto"
 
-#: Mailman/Archiver/HyperArch.py:662 Mailman/Archiver/HyperArch.py:698
+#: Mailman/Archiver/HyperArch.py:611 Mailman/Archiver/HyperArch.py:647
 msgid "author"
 msgstr "autor"
 
-#: Mailman/Archiver/HyperArch.py:663 Mailman/Archiver/HyperArch.py:699
+#: Mailman/Archiver/HyperArch.py:612 Mailman/Archiver/HyperArch.py:648
 msgid "date"
 msgstr "data"
 
-#: Mailman/Archiver/HyperArch.py:735
+#: Mailman/Archiver/HyperArch.py:684
 msgid "<P>Currently, there are no archives. </P>"
 msgstr "<p>Atualmente, não existem arquivos das listas.</p>"
 
-#: Mailman/Archiver/HyperArch.py:772
+#: Mailman/Archiver/HyperArch.py:721
 msgid "Gzip'd Text%(sz)s"
 msgstr "Gzip'd Text%(sz)s"
 
-#: Mailman/Archiver/HyperArch.py:777
+#: Mailman/Archiver/HyperArch.py:726
 msgid "Text%(sz)s"
 msgstr "Text%(sz)s"
 
-#: Mailman/Archiver/HyperArch.py:867
+#: Mailman/Archiver/HyperArch.py:816
 msgid "figuring article archives\n"
 msgstr "figurando arquivos de artigo\n"
 
-#: Mailman/Archiver/HyperArch.py:877
+#: Mailman/Archiver/HyperArch.py:826
 msgid "April"
 msgstr "Abril"
 
-#: Mailman/Archiver/HyperArch.py:877
+#: Mailman/Archiver/HyperArch.py:826
 msgid "February"
 msgstr "Fevereiro"
 
-#: Mailman/Archiver/HyperArch.py:877
+#: Mailman/Archiver/HyperArch.py:826
 msgid "January"
 msgstr "Janeiro"
 
-#: Mailman/Archiver/HyperArch.py:877
+#: Mailman/Archiver/HyperArch.py:826
 msgid "March"
 msgstr "Março"
 
-#: Mailman/Archiver/HyperArch.py:878
+#: Mailman/Archiver/HyperArch.py:827
 msgid "August"
 msgstr "Agosto"
 
-#: Mailman/Archiver/HyperArch.py:878
+#: Mailman/Archiver/HyperArch.py:827
 msgid "July"
 msgstr "Julho"
 
-#: Mailman/Archiver/HyperArch.py:878
+#: Mailman/Archiver/HyperArch.py:827
 msgid "June"
 msgstr "Junho"
 
-#: Mailman/Archiver/HyperArch.py:878 Mailman/i18n.py:91
+#: Mailman/Archiver/HyperArch.py:827 Mailman/i18n.py:91
 msgid "May"
 msgstr "Maio"
 
-#: Mailman/Archiver/HyperArch.py:879
+#: Mailman/Archiver/HyperArch.py:828
 msgid "December"
 msgstr "Dezembro"
 
-#: Mailman/Archiver/HyperArch.py:879
+#: Mailman/Archiver/HyperArch.py:828
 msgid "November"
 msgstr "Novembro"
 
-#: Mailman/Archiver/HyperArch.py:879
+#: Mailman/Archiver/HyperArch.py:828
 msgid "October"
 msgstr "Outubro"
 
-#: Mailman/Archiver/HyperArch.py:879
+#: Mailman/Archiver/HyperArch.py:828
 msgid "September"
 msgstr "Setembro"
 
-#: Mailman/Archiver/HyperArch.py:887
+#: Mailman/Archiver/HyperArch.py:836
 msgid "First"
 msgstr "Primeira"
 
-#: Mailman/Archiver/HyperArch.py:887
+#: Mailman/Archiver/HyperArch.py:836
 msgid "Fourth"
 msgstr "Quarto"
 
-#: Mailman/Archiver/HyperArch.py:887
+#: Mailman/Archiver/HyperArch.py:836
 msgid "Second"
 msgstr "Segundo"
 
-#: Mailman/Archiver/HyperArch.py:887
+#: Mailman/Archiver/HyperArch.py:836
 msgid "Third"
 msgstr "Terceira"
 
-#: Mailman/Archiver/HyperArch.py:889
+#: Mailman/Archiver/HyperArch.py:838
 msgid "%(ord)s quarter %(year)i"
 msgstr "%(ord)s quarto %(year)i"
 
-#: Mailman/Archiver/HyperArch.py:896
+#: Mailman/Archiver/HyperArch.py:845
 msgid "%(month)s %(year)i"
 msgstr "%(month)s %(year)i"
 
-#: Mailman/Archiver/HyperArch.py:901
+#: Mailman/Archiver/HyperArch.py:850
 msgid "The Week Of Monday %(day)i %(month)s %(year)i"
 msgstr "A Semana do Mes %(day)i %(month)s %(year)i"
 
-#: Mailman/Archiver/HyperArch.py:905
+#: Mailman/Archiver/HyperArch.py:854
 msgid "%(day)i %(month)s %(year)i"
 msgstr "%(day)i %(month)s %(year)i"
 
-#: Mailman/Archiver/HyperArch.py:1002
+#: Mailman/Archiver/HyperArch.py:951
 msgid "Computing threaded index\n"
 msgstr "Computando a indice da thread\n"
 
-#: Mailman/Archiver/HyperArch.py:1261
+#: Mailman/Archiver/HyperArch.py:1206
 msgid "Updating HTML for article %(seq)s"
 msgstr "Atualizando HTML para o artigo %(seq)s"
 
-#: Mailman/Archiver/HyperArch.py:1268
+#: Mailman/Archiver/HyperArch.py:1213
 msgid "article file %(filename)s is missing!"
 msgstr "o arquivo de artigo %(filename)s está faltando!"
 
@@ -1057,24 +1057,24 @@ msgid "Reason for refusal"
 msgstr "Razão para recusa"
 
 #: Mailman/Cgi/admindb.py:289 Mailman/Cgi/admindb.py:346
-#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:609
+#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:612
 msgid "Defer"
 msgstr "Deferir"
 
 #: Mailman/Cgi/admindb.py:290 Mailman/Cgi/admindb.py:347
-#: Mailman/Cgi/admindb.py:609
+#: Mailman/Cgi/admindb.py:612
 msgid "Approve"
 msgstr "Aprovar"
 
 #: Mailman/Cgi/admindb.py:291 Mailman/Cgi/admindb.py:348
-#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:609
+#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:612
 #: Mailman/Gui/ContentFilter.py:37 Mailman/Gui/Privacy.py:207
 #: Mailman/Gui/Privacy.py:281
 msgid "Reject"
 msgstr "Rejeitar"
 
 #: Mailman/Cgi/admindb.py:292 Mailman/Cgi/admindb.py:349
-#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:609
+#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:612
 #: Mailman/Gui/ContentFilter.py:37 Mailman/Gui/Privacy.py:207
 #: Mailman/Gui/Privacy.py:281
 msgid "Discard"
@@ -1092,7 +1092,7 @@ msgstr "Nome/endereço do Usuário"
 msgid "Unsubscription Requests"
 msgstr "Requisições de Desinscrição"
 
-#: Mailman/Cgi/admindb.py:382 Mailman/Cgi/admindb.py:593
+#: Mailman/Cgi/admindb.py:382 Mailman/Cgi/admindb.py:596
 msgid "From:"
 msgstr "De:"
 
@@ -1116,27 +1116,31 @@ msgstr "Encaminhar mensagens (individualmente) para:"
 msgid "Clear this member's <em>moderate</em> flag"
 msgstr "Limpar a opção de <em>moderação</em> deste membro"
 
-#: Mailman/Cgi/admindb.py:431
+#: Mailman/Cgi/admindb.py:425
+msgid "<em>The sender is now a member of this list</em>"
+msgstr ""
+
+#: Mailman/Cgi/admindb.py:434
 msgid "Add <b>%(esender)s</b> to a sender filter"
 msgstr "Adicionar  <b>%(esender)s</b ao filtro de remetentes."
 
-#: Mailman/Cgi/admindb.py:436
+#: Mailman/Cgi/admindb.py:439
 msgid "Accepts"
 msgstr "Aceitadas"
 
-#: Mailman/Cgi/admindb.py:436
+#: Mailman/Cgi/admindb.py:439
 msgid "Discards"
 msgstr "Descartadas"
 
-#: Mailman/Cgi/admindb.py:436
+#: Mailman/Cgi/admindb.py:439
 msgid "Holds"
 msgstr "Presas"
 
-#: Mailman/Cgi/admindb.py:436
+#: Mailman/Cgi/admindb.py:439
 msgid "Rejects"
 msgstr "Rejeitadas"
 
-#: Mailman/Cgi/admindb.py:445
+#: Mailman/Cgi/admindb.py:448
 msgid ""
 "Ban <b>%(esender)s</b> from ever subscribing to this\n"
 "                    mailing list"
@@ -1144,7 +1148,7 @@ msgstr ""
 "Banir <em>%(esender)s</b> de sempre se inscrever a esta\n"
 "                    lista de discussão"
 
-#: Mailman/Cgi/admindb.py:450
+#: Mailman/Cgi/admindb.py:453
 msgid ""
 "Click on the message number to view the individual\n"
 "            message, or you can "
@@ -1152,94 +1156,94 @@ msgstr ""
 "Clique no número da mensagem para vê-la individualmente, \n"
 "             ou você pode"
 
-#: Mailman/Cgi/admindb.py:452
+#: Mailman/Cgi/admindb.py:455
 msgid "view all messages from %(esender)s"
 msgstr "ver todas as mensagnes do %(esender)s"
 
-#: Mailman/Cgi/admindb.py:472 Mailman/Cgi/admindb.py:596
+#: Mailman/Cgi/admindb.py:475 Mailman/Cgi/admindb.py:599
 msgid "Subject:"
 msgstr "Assunto:"
 
-#: Mailman/Cgi/admindb.py:475
+#: Mailman/Cgi/admindb.py:478
 msgid " bytes"
 msgstr " bytes"
 
-#: Mailman/Cgi/admindb.py:475
+#: Mailman/Cgi/admindb.py:478
 msgid "Size:"
 msgstr "Tamanho:"
 
-#: Mailman/Cgi/admindb.py:479 Mailman/Handlers/Decorate.py:50
+#: Mailman/Cgi/admindb.py:482 Mailman/Handlers/Decorate.py:50
 #: Mailman/Handlers/Scrubber.py:226 Mailman/Handlers/Scrubber.py:227
 msgid "not available"
 msgstr "não disponível"
 
-#: Mailman/Cgi/admindb.py:480 Mailman/Cgi/admindb.py:598
+#: Mailman/Cgi/admindb.py:483 Mailman/Cgi/admindb.py:601
 msgid "Reason:"
 msgstr "Razão:"
 
-#: Mailman/Cgi/admindb.py:484 Mailman/Cgi/admindb.py:602
+#: Mailman/Cgi/admindb.py:487 Mailman/Cgi/admindb.py:605
 msgid "Received:"
 msgstr "Recebida:"
 
-#: Mailman/Cgi/admindb.py:542
+#: Mailman/Cgi/admindb.py:545
 msgid "Posting Held for Approval"
 msgstr "Postando em espera para aprovação"
 
-#: Mailman/Cgi/admindb.py:544
+#: Mailman/Cgi/admindb.py:547
 msgid " (%(count)d of %(total)d)"
 msgstr "(%(count)d de %(total)d)"
 
-#: Mailman/Cgi/admindb.py:555
+#: Mailman/Cgi/admindb.py:558
 msgid "<em>Message with id #%(id)d was lost."
 msgstr "<em>A mensagem com a id #%(id)d foi perdida."
 
-#: Mailman/Cgi/admindb.py:564
+#: Mailman/Cgi/admindb.py:567
 msgid "<em>Message with id #%(id)d is corrupted."
 msgstr "<em>A mensagem com a id #%(id)d foi corrompida."
 
-#: Mailman/Cgi/admindb.py:615
+#: Mailman/Cgi/admindb.py:618
 msgid "Action:"
 msgstr "Ação:"
 
-#: Mailman/Cgi/admindb.py:619
+#: Mailman/Cgi/admindb.py:622
 msgid "Preserve message for site administrator"
 msgstr "Preservar mensagem para o administrador do site"
 
-#: Mailman/Cgi/admindb.py:623
+#: Mailman/Cgi/admindb.py:626
 msgid "Additionally, forward this message to: "
 msgstr "Adicionalmente, encaminhar esta mensagem para:"
 
-#: Mailman/Cgi/admindb.py:627
+#: Mailman/Cgi/admindb.py:630
 msgid "[No explanation given]"
 msgstr "[Nenhuma explicação feita]"
 
-#: Mailman/Cgi/admindb.py:629
+#: Mailman/Cgi/admindb.py:632
 msgid "If you reject this post,<br>please explain (optional):"
 msgstr ""
 "Caso tenha rejeitado esta postagem, <br>por favor justifique (opcional):"
 
-#: Mailman/Cgi/admindb.py:635
+#: Mailman/Cgi/admindb.py:638
 msgid "Message Headers:"
 msgstr "Cabeçalhos da Mensagem:"
 
-#: Mailman/Cgi/admindb.py:640
+#: Mailman/Cgi/admindb.py:643
 msgid "Message Excerpt:"
 msgstr "Resumo da Mensagem"
 
-#: Mailman/Cgi/admindb.py:673 Mailman/Deliverer.py:124
+#: Mailman/Cgi/admindb.py:676 Mailman/Deliverer.py:124
 msgid "No reason given"
 msgstr "Nenhuma razão explicada"
 
-#: Mailman/Cgi/admindb.py:734 Mailman/ListAdmin.py:308
+#: Mailman/Cgi/admindb.py:737 Mailman/ListAdmin.py:308
 #: Mailman/ListAdmin.py:429
 msgid "[No reason given]"
 msgstr "[Nenhuma razão explicada]"
 
-#: Mailman/Cgi/admindb.py:763
+#: Mailman/Cgi/admindb.py:766
 msgid "Database Updated..."
 msgstr "Banco de dados atualizado..."
 
-#: Mailman/Cgi/admindb.py:766
+#: Mailman/Cgi/admindb.py:769
 msgid " is already a member"
 msgstr " já é um membro"
 
@@ -3506,22 +3510,26 @@ msgid "Korean"
 msgstr "Coreano"
 
 #: Mailman/Defaults.py:1217
+msgid "Lithuanian"
+msgstr ""
+
+#: Mailman/Defaults.py:1218
 msgid "Dutch"
 msgstr "Holandês"
 
-#: Mailman/Defaults.py:1218
+#: Mailman/Defaults.py:1219
 msgid "Norwegian"
 msgstr "Norueguês"
 
-#: Mailman/Defaults.py:1219
+#: Mailman/Defaults.py:1220
 msgid "Portuguese (Brazil)"
 msgstr "Portugues (Brasil)"
 
-#: Mailman/Defaults.py:1220
+#: Mailman/Defaults.py:1221
 msgid "Russian"
 msgstr "Russo"
 
-#: Mailman/Defaults.py:1221
+#: Mailman/Defaults.py:1222
 msgid "Swedish"
 msgstr "Suéco"
 
@@ -4498,8 +4506,10 @@ msgstr ""
 "\n"
 "        <p>Para divitir as tarefas de donos de lista entre administradores\n"
 "        e moderadores, você deve\n"
-"        <a href=\"passwords\">definir uma senha separada para moderador</a>,\n"
-"        e também fornecer um <a href=\"?VARHELP=general/moderator\">endereço\n"
+"        <a href=\"passwords\">definir uma senha separada para moderador</"
+"a>,\n"
+"        e também fornecer um <a href=\"?VARHELP=general/moderator"
+"\">endereço\n"
 "        de email para os moderadores da lista</a>. Note que o campo\n"
 "        que está modificando aqui especifica os administradores da lista."
 
@@ -7804,7 +7814,7 @@ msgstr ""
 msgid "listname is required"
 msgstr "o nome da lista é requerido"
 
-#: bin/arch:143 bin/change_pw:106 bin/config_list:239
+#: bin/arch:143 bin/change_pw:106 bin/config_list:242
 msgid ""
 "No such list \"%(listname)s\"\n"
 "%(e)s"
@@ -8548,35 +8558,35 @@ msgstr "opções"
 msgid "legal values are:"
 msgstr "valores legais são:"
 
-#: bin/config_list:252
+#: bin/config_list:255
 msgid "attribute \"%(k)s\" ignored"
 msgstr "atributo \"%(k)s ignorado"
 
-#: bin/config_list:255
+#: bin/config_list:258
 msgid "attribute \"%(k)s\" changed"
 msgstr "atributo \"%(k)s\" modificado"
 
-#: bin/config_list:261
+#: bin/config_list:264
 msgid "Non-standard property restored: %(k)s"
 msgstr "Propriedade não padrão restaurada: %(k)s"
 
-#: bin/config_list:269
+#: bin/config_list:272
 msgid "Invalid value for property: %(k)s"
 msgstr "Valor inválido para a propriedade: %(k)s"
 
-#: bin/config_list:271
+#: bin/config_list:274
 msgid "Bad email address for option %(k)s: %(v)s"
 msgstr "Endereço de e-mail incorreto para a opção %(k)s: %(v)s"
 
-#: bin/config_list:319
+#: bin/config_list:322
 msgid "Only one of -i or -o is allowed"
 msgstr "Somente as opções -i e -o são permitidas"
 
-#: bin/config_list:321
+#: bin/config_list:324
 msgid "One of -i or -o is required"
 msgstr "Somente uma das opções -i ou -o é requerida"
 
-#: bin/config_list:325
+#: bin/config_list:328
 msgid "List name is required"
 msgstr "O nome da lista é requerido"
 

@@ -1,0 +1,8 @@
+Primename, kad Jûs dalyvaujate diskusijø forume %(hostname)s.
+Savo dalyvio nustatymus keisti bei atsijungti nuo forumo
+galite tinklapyje bei komandomis el. paðtu.
+
+Jei turite klausimø ar patarimø, raðykite %(owner)s.
+
+Vartotojo %(useraddr)s slaptaþodþiai:
+

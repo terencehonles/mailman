@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: Thu Dec 12 09:34:16 2002\n"
+"POT-Creation-Date: Tue Dec 24 13:41:28 2002\n"
 "PO-Revision-Date: 2002-12-03 13:00+0900\n"
 "Last-Translator: Tokio Kikuchi <tkikuchi@is.kochi-u.ac.jp>\n"
 "Language-Team: Japanese <mmjp-users@mm.tkikuchi.net>\n"
@@ -14,148 +14,148 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: pygettext.py 1.3\n"
 
-#: Mailman/Archiver/HyperArch.py:111
+#: Mailman/Archiver/HyperArch.py:112
 msgid "size not available"
 msgstr "サイズ情報なし"
 
-#: Mailman/Archiver/HyperArch.py:117
+#: Mailman/Archiver/HyperArch.py:118
 msgid " %(size)i bytes "
 msgstr " %(size)i バイト "
 
-#: Mailman/Archiver/HyperArch.py:251 Mailman/Archiver/HyperArch.py:421
-#: Mailman/Archiver/HyperArch.py:1014
+#: Mailman/Archiver/HyperArch.py:249 Mailman/Archiver/HyperArch.py:405
+#: Mailman/Archiver/HyperArch.py:963 Mailman/Archiver/HyperArch.py:1127
 msgid " at "
 msgstr " ＠ "
 
-#: Mailman/Archiver/HyperArch.py:450
+#: Mailman/Archiver/HyperArch.py:434
 msgid "Previous message:"
 msgstr "前の記事"
 
-#: Mailman/Archiver/HyperArch.py:482
+#: Mailman/Archiver/HyperArch.py:456
 msgid "Next message:"
 msgstr "次の記事"
 
-#: Mailman/Archiver/HyperArch.py:660 Mailman/Archiver/HyperArch.py:696
+#: Mailman/Archiver/HyperArch.py:609 Mailman/Archiver/HyperArch.py:645
 msgid "thread"
 msgstr "スレッド"
 
-#: Mailman/Archiver/HyperArch.py:661 Mailman/Archiver/HyperArch.py:697
+#: Mailman/Archiver/HyperArch.py:610 Mailman/Archiver/HyperArch.py:646
 msgid "subject"
 msgstr "件名"
 
-#: Mailman/Archiver/HyperArch.py:662 Mailman/Archiver/HyperArch.py:698
+#: Mailman/Archiver/HyperArch.py:611 Mailman/Archiver/HyperArch.py:647
 msgid "author"
 msgstr "発信者"
 
-#: Mailman/Archiver/HyperArch.py:663 Mailman/Archiver/HyperArch.py:699
+#: Mailman/Archiver/HyperArch.py:612 Mailman/Archiver/HyperArch.py:648
 msgid "date"
 msgstr "日付"
 
-#: Mailman/Archiver/HyperArch.py:735
+#: Mailman/Archiver/HyperArch.py:684
 msgid "<P>Currently, there are no archives. </P>"
 msgstr "<p>今のところ保存記事はありません."
 
-#: Mailman/Archiver/HyperArch.py:772
+#: Mailman/Archiver/HyperArch.py:721
 msgid "Gzip'd Text%(sz)s"
 msgstr "Gzip圧縮テキスト %(sz)s"
 
-#: Mailman/Archiver/HyperArch.py:777
+#: Mailman/Archiver/HyperArch.py:726
 msgid "Text%(sz)s"
 msgstr "テキスト %(sz)s"
 
-#: Mailman/Archiver/HyperArch.py:867
+#: Mailman/Archiver/HyperArch.py:816
 msgid "figuring article archives\n"
 msgstr "保存書庫作成準備中\n"
 
-#: Mailman/Archiver/HyperArch.py:877
+#: Mailman/Archiver/HyperArch.py:826
 msgid "April"
 msgstr "4月"
 
-#: Mailman/Archiver/HyperArch.py:877
+#: Mailman/Archiver/HyperArch.py:826
 msgid "February"
 msgstr "2月"
 
-#: Mailman/Archiver/HyperArch.py:877
+#: Mailman/Archiver/HyperArch.py:826
 msgid "January"
 msgstr "1月"
 
-#: Mailman/Archiver/HyperArch.py:877
+#: Mailman/Archiver/HyperArch.py:826
 msgid "March"
 msgstr "3月"
 
-#: Mailman/Archiver/HyperArch.py:878
+#: Mailman/Archiver/HyperArch.py:827
 msgid "August"
 msgstr "8月"
 
-#: Mailman/Archiver/HyperArch.py:878
+#: Mailman/Archiver/HyperArch.py:827
 msgid "July"
 msgstr "7月"
 
-#: Mailman/Archiver/HyperArch.py:878
+#: Mailman/Archiver/HyperArch.py:827
 msgid "June"
 msgstr "6月"
 
-#: Mailman/Archiver/HyperArch.py:878 Mailman/i18n.py:91
+#: Mailman/Archiver/HyperArch.py:827 Mailman/i18n.py:91
 msgid "May"
 msgstr "5月"
 
-#: Mailman/Archiver/HyperArch.py:879
+#: Mailman/Archiver/HyperArch.py:828
 msgid "December"
 msgstr "12月"
 
-#: Mailman/Archiver/HyperArch.py:879
+#: Mailman/Archiver/HyperArch.py:828
 msgid "November"
 msgstr "11月"
 
-#: Mailman/Archiver/HyperArch.py:879
+#: Mailman/Archiver/HyperArch.py:828
 msgid "October"
 msgstr "10月"
 
-#: Mailman/Archiver/HyperArch.py:879
+#: Mailman/Archiver/HyperArch.py:828
 msgid "September"
 msgstr "9月"
 
-#: Mailman/Archiver/HyperArch.py:887
+#: Mailman/Archiver/HyperArch.py:836
 msgid "First"
 msgstr "第1"
 
-#: Mailman/Archiver/HyperArch.py:887
+#: Mailman/Archiver/HyperArch.py:836
 msgid "Fourth"
 msgstr "第4"
 
-#: Mailman/Archiver/HyperArch.py:887
+#: Mailman/Archiver/HyperArch.py:836
 msgid "Second"
 msgstr "第2"
 
-#: Mailman/Archiver/HyperArch.py:887
+#: Mailman/Archiver/HyperArch.py:836
 msgid "Third"
 msgstr "第3"
 
-#: Mailman/Archiver/HyperArch.py:889
+#: Mailman/Archiver/HyperArch.py:838
 msgid "%(ord)s quarter %(year)i"
 msgstr "%(year)i年%(ord)s四半期"
 
-#: Mailman/Archiver/HyperArch.py:896
+#: Mailman/Archiver/HyperArch.py:845
 msgid "%(month)s %(year)i"
 msgstr "%(year)i年%(month)s"
 
-#: Mailman/Archiver/HyperArch.py:901
+#: Mailman/Archiver/HyperArch.py:850
 msgid "The Week Of Monday %(day)i %(month)s %(year)i"
 msgstr "%(year)i年%(month)s%(day)i日(月曜日)の週"
 
-#: Mailman/Archiver/HyperArch.py:905
+#: Mailman/Archiver/HyperArch.py:854
 msgid "%(day)i %(month)s %(year)i"
 msgstr "%(year)i年%(month)s%(day)i日"
 
-#: Mailman/Archiver/HyperArch.py:1002
+#: Mailman/Archiver/HyperArch.py:951
 msgid "Computing threaded index\n"
 msgstr "スレッド目次作成中\n"
 
-#: Mailman/Archiver/HyperArch.py:1261
+#: Mailman/Archiver/HyperArch.py:1206
 msgid "Updating HTML for article %(seq)s"
 msgstr "記事 %(seq)s 番のHTMLを更新中"
 
-#: Mailman/Archiver/HyperArch.py:1268
+#: Mailman/Archiver/HyperArch.py:1213
 msgid "article file %(filename)s is missing!"
 msgstr "記事ファイル %(filename)s が行方不明!"
 
@@ -1042,24 +1042,24 @@ msgid "Reason for refusal"
 msgstr "拒否の理由"
 
 #: Mailman/Cgi/admindb.py:289 Mailman/Cgi/admindb.py:346
-#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:609
+#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:612
 msgid "Defer"
 msgstr "保留"
 
 #: Mailman/Cgi/admindb.py:290 Mailman/Cgi/admindb.py:347
-#: Mailman/Cgi/admindb.py:609
+#: Mailman/Cgi/admindb.py:612
 msgid "Approve"
 msgstr "承認"
 
 #: Mailman/Cgi/admindb.py:291 Mailman/Cgi/admindb.py:348
-#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:609
+#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:612
 #: Mailman/Gui/ContentFilter.py:37 Mailman/Gui/Privacy.py:207
 #: Mailman/Gui/Privacy.py:281
 msgid "Reject"
 msgstr "拒否"
 
 #: Mailman/Cgi/admindb.py:292 Mailman/Cgi/admindb.py:349
-#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:609
+#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:612
 #: Mailman/Gui/ContentFilter.py:37 Mailman/Gui/Privacy.py:207
 #: Mailman/Gui/Privacy.py:281
 msgid "Discard"
@@ -1077,7 +1077,7 @@ msgstr "会員アドレス/会員名"
 msgid "Unsubscription Requests"
 msgstr "退会申請"
 
-#: Mailman/Cgi/admindb.py:382 Mailman/Cgi/admindb.py:593
+#: Mailman/Cgi/admindb.py:382 Mailman/Cgi/admindb.py:596
 msgid "From:"
 msgstr "発信者:"
 
@@ -1101,27 +1101,31 @@ msgstr "メールを(個別に)次のアドレスに転送する:"
 msgid "Clear this member's <em>moderate</em> flag"
 msgstr "この会員の<em>発言制限</em>フラグをクリアーする"
 
-#: Mailman/Cgi/admindb.py:431
+#: Mailman/Cgi/admindb.py:425
+msgid "<em>The sender is now a member of this list</em>"
+msgstr ""
+
+#: Mailman/Cgi/admindb.py:434
 msgid "Add <b>%(esender)s</b> to a sender filter"
 msgstr "<b>%(esender)s</b>を送信者フィルター(破棄)に追加する"
 
-#: Mailman/Cgi/admindb.py:436
+#: Mailman/Cgi/admindb.py:439
 msgid "Accepts"
 msgstr "承認"
 
-#: Mailman/Cgi/admindb.py:436
+#: Mailman/Cgi/admindb.py:439
 msgid "Discards"
 msgstr "破棄"
 
-#: Mailman/Cgi/admindb.py:436
+#: Mailman/Cgi/admindb.py:439
 msgid "Holds"
 msgstr "保留"
 
-#: Mailman/Cgi/admindb.py:436
+#: Mailman/Cgi/admindb.py:439
 msgid "Rejects"
 msgstr "拒否"
 
-#: Mailman/Cgi/admindb.py:445
+#: Mailman/Cgi/admindb.py:448
 msgid ""
 "Ban <b>%(esender)s</b> from ever subscribing to this\n"
 "                    mailing list"
@@ -1129,99 +1133,99 @@ msgstr ""
 "<b>%(esender)s</b>をこのメーリングリストから\n"
 "永久に入会を排除します"
 
-#: Mailman/Cgi/admindb.py:450
+#: Mailman/Cgi/admindb.py:453
 msgid ""
 "Click on the message number to view the individual\n"
 "            message, or you can "
 msgstr "メール番号をクリックして個々のメールを見るか, "
 
-#: Mailman/Cgi/admindb.py:452
+#: Mailman/Cgi/admindb.py:455
 msgid "view all messages from %(esender)s"
 msgstr "%(esender)s からの全てのメールを見る"
 
-#: Mailman/Cgi/admindb.py:472 Mailman/Cgi/admindb.py:596
+#: Mailman/Cgi/admindb.py:475 Mailman/Cgi/admindb.py:599
 msgid "Subject:"
 msgstr "件名:"
 
-#: Mailman/Cgi/admindb.py:475
+#: Mailman/Cgi/admindb.py:478
 msgid " bytes"
 msgstr " バイト"
 
-#: Mailman/Cgi/admindb.py:475
+#: Mailman/Cgi/admindb.py:478
 msgid "Size:"
 msgstr "サイズ:"
 
-#: Mailman/Cgi/admindb.py:479 Mailman/Handlers/Decorate.py:50
+#: Mailman/Cgi/admindb.py:482 Mailman/Handlers/Decorate.py:50
 #: Mailman/Handlers/Scrubber.py:226 Mailman/Handlers/Scrubber.py:227
 msgid "not available"
 msgstr "無し"
 
-#: Mailman/Cgi/admindb.py:480 Mailman/Cgi/admindb.py:598
+#: Mailman/Cgi/admindb.py:483 Mailman/Cgi/admindb.py:601
 msgid "Reason:"
 msgstr "理由:"
 
-#: Mailman/Cgi/admindb.py:484 Mailman/Cgi/admindb.py:602
+#: Mailman/Cgi/admindb.py:487 Mailman/Cgi/admindb.py:605
 msgid "Received:"
 msgstr "受信:"
 
-#: Mailman/Cgi/admindb.py:542
+#: Mailman/Cgi/admindb.py:545
 msgid "Posting Held for Approval"
 msgstr "投稿は承認のため保留"
 
-#: Mailman/Cgi/admindb.py:544
+#: Mailman/Cgi/admindb.py:547
 msgid " (%(count)d of %(total)d)"
 msgstr " (%(total)d の %(count)d)"
 
-#: Mailman/Cgi/admindb.py:555
+#: Mailman/Cgi/admindb.py:558
 msgid "<em>Message with id #%(id)d was lost."
 msgstr "<em>ID #%(id)d のメッセージは紛失しています."
 
-#: Mailman/Cgi/admindb.py:564
+#: Mailman/Cgi/admindb.py:567
 msgid "<em>Message with id #%(id)d is corrupted."
 msgstr "<em>ID #%(id)d のメッセージは壊れています."
 
-#: Mailman/Cgi/admindb.py:615
+#: Mailman/Cgi/admindb.py:618
 msgid "Action:"
 msgstr "処置:"
 
-#: Mailman/Cgi/admindb.py:619
+#: Mailman/Cgi/admindb.py:622
 msgid "Preserve message for site administrator"
 msgstr "サイト管理者のためにメッセージを保存する"
 
-#: Mailman/Cgi/admindb.py:623
+#: Mailman/Cgi/admindb.py:626
 msgid "Additionally, forward this message to: "
 msgstr "さらに, このメールを転送:"
 
-#: Mailman/Cgi/admindb.py:627
+#: Mailman/Cgi/admindb.py:630
 msgid "[No explanation given]"
 msgstr "[理由は示されていません]"
 
-#: Mailman/Cgi/admindb.py:629
+#: Mailman/Cgi/admindb.py:632
 msgid "If you reject this post,<br>please explain (optional):"
 msgstr "この投稿を拒否する場合,<br>その理由 (オプショナル):"
 
-#: Mailman/Cgi/admindb.py:635
+#: Mailman/Cgi/admindb.py:638
 msgid "Message Headers:"
 msgstr "メッセージヘッダ:"
 
-#: Mailman/Cgi/admindb.py:640
+#: Mailman/Cgi/admindb.py:643
 msgid "Message Excerpt:"
 msgstr "メッセージの抜書き:"
 
-#: Mailman/Cgi/admindb.py:673 Mailman/Deliverer.py:124
+#: Mailman/Cgi/admindb.py:676 Mailman/Deliverer.py:124
 msgid "No reason given"
 msgstr "理由は示されていません"
 
-#: Mailman/Cgi/admindb.py:734 Mailman/ListAdmin.py:308
+#: Mailman/Cgi/admindb.py:737 Mailman/ListAdmin.py:308
 #: Mailman/ListAdmin.py:429
 msgid "[No reason given]"
 msgstr "[理由は示されていません]"
 
-#: Mailman/Cgi/admindb.py:763
+#: Mailman/Cgi/admindb.py:766
 msgid "Database Updated..."
 msgstr "データベースの更新を完了しました"
 
-#: Mailman/Cgi/admindb.py:766
+#: Mailman/Cgi/admindb.py:769
 msgid " is already a member"
 msgstr " は既に会員です"
 
@@ -3401,22 +3405,26 @@ msgid "Korean"
 msgstr "韓国語"
 
 #: Mailman/Defaults.py:1217
+msgid "Lithuanian"
+msgstr ""
+
+#: Mailman/Defaults.py:1218
 msgid "Dutch"
 msgstr "オランダ語"
 
-#: Mailman/Defaults.py:1218
+#: Mailman/Defaults.py:1219
 msgid "Norwegian"
 msgstr "ノルウェー語"
 
-#: Mailman/Defaults.py:1219
+#: Mailman/Defaults.py:1220
 msgid "Portuguese (Brazil)"
 msgstr "ポルトガル語(ブラジル)"
 
-#: Mailman/Defaults.py:1220
+#: Mailman/Defaults.py:1221
 msgid "Russian"
 msgstr "ロシア語"
 
-#: Mailman/Defaults.py:1221
+#: Mailman/Defaults.py:1222
 msgid "Swedish"
 msgstr "スウェーデン語"
 
@@ -7393,7 +7401,7 @@ msgstr ""
 msgid "listname is required"
 msgstr "リスト名が必要です."
 
-#: bin/arch:143 bin/change_pw:106 bin/config_list:239
+#: bin/arch:143 bin/change_pw:106 bin/config_list:242
 msgid ""
 "No such list \"%(listname)s\"\n"
 "%(e)s"
@@ -7882,35 +7890,35 @@ msgstr "オプション"
 msgid "legal values are:"
 msgstr ""
 
-#: bin/config_list:252
+#: bin/config_list:255
 msgid "attribute \"%(k)s\" ignored"
 msgstr ""
 
-#: bin/config_list:255
+#: bin/config_list:258
 msgid "attribute \"%(k)s\" changed"
 msgstr ""
 
-#: bin/config_list:261
+#: bin/config_list:264
 msgid "Non-standard property restored: %(k)s"
 msgstr ""
 
-#: bin/config_list:269
+#: bin/config_list:272
 msgid "Invalid value for property: %(k)s"
 msgstr "プロパティの値が不正: %(k)s"
 
-#: bin/config_list:271
+#: bin/config_list:274
 msgid "Bad email address for option %(k)s: %(v)s"
 msgstr "%(k)s のオプションについてメールアドレスが不正: %(v)s"
 
-#: bin/config_list:319
+#: bin/config_list:322
 msgid "Only one of -i or -o is allowed"
 msgstr ""
 
-#: bin/config_list:321
+#: bin/config_list:324
 msgid "One of -i or -o is required"
 msgstr ""
 
-#: bin/config_list:325
+#: bin/config_list:328
 msgid "List name is required"
 msgstr "リスト名が必要です."
 

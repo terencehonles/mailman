@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Mailman 2.1b4+\n"
-"POT-Creation-Date: Thu Dec 12 09:34:16 2002\n"
+"POT-Creation-Date: Tue Dec 24 13:41:28 2002\n"
 "PO-Revision-Date: 2002-12-24 13:49+0100\n"
 "Last-Translator: Daniel Buchmann <Daniel.Buchmann@bibsys.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -14,148 +14,148 @@ msgstr ""
 "Content-Transfer-Encoding: quoted-printable\n"
 "Generated-By: pygettext.py 1.3\n"
 
-#: Mailman/Archiver/HyperArch.py:111
+#: Mailman/Archiver/HyperArch.py:112
 msgid "size not available"
 msgstr "størrelsen er ikke tilgjengelig"
 
-#: Mailman/Archiver/HyperArch.py:117
+#: Mailman/Archiver/HyperArch.py:118
 msgid " %(size)i bytes "
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:251 Mailman/Archiver/HyperArch.py:421
-#: Mailman/Archiver/HyperArch.py:1014
+#: Mailman/Archiver/HyperArch.py:249 Mailman/Archiver/HyperArch.py:405
+#: Mailman/Archiver/HyperArch.py:963 Mailman/Archiver/HyperArch.py:1127
 msgid " at "
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:450
+#: Mailman/Archiver/HyperArch.py:434
 msgid "Previous message:"
 msgstr "Forrige melding:"
 
-#: Mailman/Archiver/HyperArch.py:482
+#: Mailman/Archiver/HyperArch.py:456
 msgid "Next message:"
 msgstr "Neste melding:"
 
-#: Mailman/Archiver/HyperArch.py:660 Mailman/Archiver/HyperArch.py:696
+#: Mailman/Archiver/HyperArch.py:609 Mailman/Archiver/HyperArch.py:645
 msgid "thread"
 msgstr "tr&aring;d"
 
-#: Mailman/Archiver/HyperArch.py:661 Mailman/Archiver/HyperArch.py:697
+#: Mailman/Archiver/HyperArch.py:610 Mailman/Archiver/HyperArch.py:646
 msgid "subject"
 msgstr "tittel"
 
-#: Mailman/Archiver/HyperArch.py:662 Mailman/Archiver/HyperArch.py:698
+#: Mailman/Archiver/HyperArch.py:611 Mailman/Archiver/HyperArch.py:647
 msgid "author"
 msgstr "forfatter"
 
-#: Mailman/Archiver/HyperArch.py:663 Mailman/Archiver/HyperArch.py:699
+#: Mailman/Archiver/HyperArch.py:612 Mailman/Archiver/HyperArch.py:648
 msgid "date"
 msgstr "dato"
 
-#: Mailman/Archiver/HyperArch.py:735
+#: Mailman/Archiver/HyperArch.py:684
 msgid "<P>Currently, there are no archives. </P>"
 msgstr "<p>Arkivet er for tiden tomt.</p>"
 
-#: Mailman/Archiver/HyperArch.py:772
+#: Mailman/Archiver/HyperArch.py:721
 msgid "Gzip'd Text%(sz)s"
 msgstr "Gzip'et tekst%(sz)s"
 
-#: Mailman/Archiver/HyperArch.py:777
+#: Mailman/Archiver/HyperArch.py:726
 msgid "Text%(sz)s"
 msgstr "Tekstt%(sz)s"
 
-#: Mailman/Archiver/HyperArch.py:867
+#: Mailman/Archiver/HyperArch.py:816
 msgid "figuring article archives\n"
 msgstr "lager arkiv\n"
 
-#: Mailman/Archiver/HyperArch.py:877
+#: Mailman/Archiver/HyperArch.py:826
 msgid "April"
 msgstr "April"
 
-#: Mailman/Archiver/HyperArch.py:877
+#: Mailman/Archiver/HyperArch.py:826
 msgid "February"
 msgstr "Februar"
 
-#: Mailman/Archiver/HyperArch.py:877
+#: Mailman/Archiver/HyperArch.py:826
 msgid "January"
 msgstr "Januar"
 
-#: Mailman/Archiver/HyperArch.py:877
+#: Mailman/Archiver/HyperArch.py:826
 msgid "March"
 msgstr "Mars"
 
-#: Mailman/Archiver/HyperArch.py:878
+#: Mailman/Archiver/HyperArch.py:827
 msgid "August"
 msgstr "August"
 
-#: Mailman/Archiver/HyperArch.py:878
+#: Mailman/Archiver/HyperArch.py:827
 msgid "July"
 msgstr "Juli"
 
-#: Mailman/Archiver/HyperArch.py:878
+#: Mailman/Archiver/HyperArch.py:827
 msgid "June"
 msgstr "Juni"
 
-#: Mailman/Archiver/HyperArch.py:878 Mailman/i18n.py:91
+#: Mailman/Archiver/HyperArch.py:827 Mailman/i18n.py:91
 msgid "May"
 msgstr "Mai"
 
-#: Mailman/Archiver/HyperArch.py:879
+#: Mailman/Archiver/HyperArch.py:828
 msgid "December"
 msgstr "Desember"
 
-#: Mailman/Archiver/HyperArch.py:879
+#: Mailman/Archiver/HyperArch.py:828
 msgid "November"
 msgstr "November"
 
-#: Mailman/Archiver/HyperArch.py:879
+#: Mailman/Archiver/HyperArch.py:828
 msgid "October"
 msgstr "Oktober"
 
-#: Mailman/Archiver/HyperArch.py:879
+#: Mailman/Archiver/HyperArch.py:828
 msgid "September"
 msgstr "September"
 
-#: Mailman/Archiver/HyperArch.py:887
+#: Mailman/Archiver/HyperArch.py:836
 msgid "First"
 msgstr "Første"
 
-#: Mailman/Archiver/HyperArch.py:887
+#: Mailman/Archiver/HyperArch.py:836
 msgid "Fourth"
 msgstr "Fjerde"
 
-#: Mailman/Archiver/HyperArch.py:887
+#: Mailman/Archiver/HyperArch.py:836
 msgid "Second"
 msgstr "Andre"
 
-#: Mailman/Archiver/HyperArch.py:887
+#: Mailman/Archiver/HyperArch.py:836
 msgid "Third"
 msgstr "Tredje"
 
-#: Mailman/Archiver/HyperArch.py:889
+#: Mailman/Archiver/HyperArch.py:838
 msgid "%(ord)s quarter %(year)i"
 msgstr "%(ord)s kvartal  %(year)i"
 
-#: Mailman/Archiver/HyperArch.py:896
+#: Mailman/Archiver/HyperArch.py:845
 msgid "%(month)s %(year)i"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:901
+#: Mailman/Archiver/HyperArch.py:850
 msgid "The Week Of Monday %(day)i %(month)s %(year)i"
 msgstr "Uken med mandag %(day)i %(month)s %(year)i"
 
-#: Mailman/Archiver/HyperArch.py:905
+#: Mailman/Archiver/HyperArch.py:854
 msgid "%(day)i %(month)s %(year)i"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:1002
+#: Mailman/Archiver/HyperArch.py:951
 msgid "Computing threaded index\n"
 msgstr "Bygger innholdsfortegnelse\n"
 
-#: Mailman/Archiver/HyperArch.py:1261
+#: Mailman/Archiver/HyperArch.py:1206
 msgid "Updating HTML for article %(seq)s"
 msgstr "Oppdaterer HTML for artikkel %(seq)s"
 
-#: Mailman/Archiver/HyperArch.py:1268
+#: Mailman/Archiver/HyperArch.py:1213
 msgid "article file %(filename)s is missing!"
 msgstr "artikkelfilen %(filename)s mangler!"
 
@@ -1060,24 +1060,24 @@ msgid "Reason for refusal"
 msgstr "Begrunnelse"
 
 #: Mailman/Cgi/admindb.py:289 Mailman/Cgi/admindb.py:346
-#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:609
+#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:612
 msgid "Defer"
 msgstr "Avvent"
 
 #: Mailman/Cgi/admindb.py:290 Mailman/Cgi/admindb.py:347
-#: Mailman/Cgi/admindb.py:609
+#: Mailman/Cgi/admindb.py:612
 msgid "Approve"
 msgstr "Godkjenne"
 
 #: Mailman/Cgi/admindb.py:291 Mailman/Cgi/admindb.py:348
-#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:609
+#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:612
 #: Mailman/Gui/ContentFilter.py:37 Mailman/Gui/Privacy.py:207
 #: Mailman/Gui/Privacy.py:281
 msgid "Reject"
 msgstr "Avsl&aring;"
 
 #: Mailman/Cgi/admindb.py:292 Mailman/Cgi/admindb.py:349
-#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:609
+#: Mailman/Cgi/admindb.py:389 Mailman/Cgi/admindb.py:612
 #: Mailman/Gui/ContentFilter.py:37 Mailman/Gui/Privacy.py:207
 #: Mailman/Gui/Privacy.py:281
 msgid "Discard"
@@ -1095,7 +1095,7 @@ msgstr "Medlemmets adresse/navn"
 msgid "Unsubscription Requests"
 msgstr "S&oslash;knader om utmelding"
 
-#: Mailman/Cgi/admindb.py:382 Mailman/Cgi/admindb.py:593
+#: Mailman/Cgi/admindb.py:382 Mailman/Cgi/admindb.py:596
 msgid "From:"
 msgstr "Fra:"
 
@@ -1119,125 +1119,129 @@ msgstr "Videresend meldinger (individuelt) til:"
 msgid "Clear this member's <em>moderate</em> flag"
 msgstr "Skru av dette medlemmets <em>moderasjonsflagg</em>"
 
-#: Mailman/Cgi/admindb.py:431
+#: Mailman/Cgi/admindb.py:425
+msgid "<em>The sender is now a member of this list</em>"
+msgstr ""
+
+#: Mailman/Cgi/admindb.py:434
 msgid "Add <b>%(esender)s</b> to a sender filter"
 msgstr "Legge inn <b>%(esender)s</b> i et avsenderfilter som:"
 
-#: Mailman/Cgi/admindb.py:436
+#: Mailman/Cgi/admindb.py:439
 msgid "Accepts"
 msgstr "Godkjenner"
 
-#: Mailman/Cgi/admindb.py:436
+#: Mailman/Cgi/admindb.py:439
 msgid "Discards"
 msgstr "Kaster"
 
-#: Mailman/Cgi/admindb.py:436
+#: Mailman/Cgi/admindb.py:439
 msgid "Holds"
 msgstr "Holder tilbake"
 
-#: Mailman/Cgi/admindb.py:436
+#: Mailman/Cgi/admindb.py:439
 msgid "Rejects"
 msgstr "Avsl&aring;r"
 
-#: Mailman/Cgi/admindb.py:445
+#: Mailman/Cgi/admindb.py:448
 msgid ""
 "Ban <b>%(esender)s</b> from ever subscribing to this\n"
 "                    mailing list"
 msgstr "Utesteng <b>%(esender)s</b> fra å melde seg på denne epostlisten"
 
-#: Mailman/Cgi/admindb.py:450
+#: Mailman/Cgi/admindb.py:453
 msgid ""
 "Click on the message number to view the individual\n"
 "            message, or you can "
 msgstr "Klikk på meldingens nummer for å se den, eller du kan "
 
-#: Mailman/Cgi/admindb.py:452
+#: Mailman/Cgi/admindb.py:455
 msgid "view all messages from %(esender)s"
 msgstr "se alle meldinger fra %(esender)s"
 
-#: Mailman/Cgi/admindb.py:472 Mailman/Cgi/admindb.py:596
+#: Mailman/Cgi/admindb.py:475 Mailman/Cgi/admindb.py:599
 msgid "Subject:"
 msgstr "Tittel:"
 
-#: Mailman/Cgi/admindb.py:475
+#: Mailman/Cgi/admindb.py:478
 msgid " bytes"
 msgstr ""
 
-#: Mailman/Cgi/admindb.py:475
+#: Mailman/Cgi/admindb.py:478
 msgid "Size:"
 msgstr "Størrelse:"
 
-#: Mailman/Cgi/admindb.py:479 Mailman/Handlers/Decorate.py:50
+#: Mailman/Cgi/admindb.py:482 Mailman/Handlers/Decorate.py:50
 #: Mailman/Handlers/Scrubber.py:226 Mailman/Handlers/Scrubber.py:227
 msgid "not available"
 msgstr "ikke tilgjengelig"
 
-#: Mailman/Cgi/admindb.py:480 Mailman/Cgi/admindb.py:598
+#: Mailman/Cgi/admindb.py:483 Mailman/Cgi/admindb.py:601
 msgid "Reason:"
 msgstr "Begrunnelse:"
 
-#: Mailman/Cgi/admindb.py:484 Mailman/Cgi/admindb.py:602
+#: Mailman/Cgi/admindb.py:487 Mailman/Cgi/admindb.py:605
 msgid "Received:"
 msgstr "Mottatt:"
 
-#: Mailman/Cgi/admindb.py:542
+#: Mailman/Cgi/admindb.py:545
 msgid "Posting Held for Approval"
 msgstr "Epost til listen som venter p&aring; godkjennelse"
 
-#: Mailman/Cgi/admindb.py:544
+#: Mailman/Cgi/admindb.py:547
 msgid " (%(count)d of %(total)d)"
 msgstr " (%(count)d av %(total)d)"
 
-#: Mailman/Cgi/admindb.py:555
+#: Mailman/Cgi/admindb.py:558
 msgid "<em>Message with id #%(id)d was lost."
 msgstr "<em>Mistet meldingen med id #%(id)d."
 
-#: Mailman/Cgi/admindb.py:564
+#: Mailman/Cgi/admindb.py:567
 msgid "<em>Message with id #%(id)d is corrupted."
 msgstr "<em>Feil p&aring; meldingen med id #%(id)d."
 
-#: Mailman/Cgi/admindb.py:615
+#: Mailman/Cgi/admindb.py:618
 msgid "Action:"
 msgstr "Avgj&oslash;relse:"
 
-#: Mailman/Cgi/admindb.py:619
+#: Mailman/Cgi/admindb.py:622
 msgid "Preserve message for site administrator"
 msgstr "Ta vare p&aring; meldingen for systemets administrator"
 
-#: Mailman/Cgi/admindb.py:623
+#: Mailman/Cgi/admindb.py:626
 msgid "Additionally, forward this message to: "
 msgstr "Videresend denne meldingen ogs&aring; til: "
 
-#: Mailman/Cgi/admindb.py:627
+#: Mailman/Cgi/admindb.py:630
 msgid "[No explanation given]"
 msgstr "[Ingen forklaring]"
 
-#: Mailman/Cgi/admindb.py:629
+#: Mailman/Cgi/admindb.py:632
 msgid "If you reject this post,<br>please explain (optional):"
 msgstr "Hvis du ikke godkjenner denne eposten,<br>skriv gjerne en begrunnelse:"
 
-#: Mailman/Cgi/admindb.py:635
+#: Mailman/Cgi/admindb.py:638
 msgid "Message Headers:"
 msgstr "Headers i meldingen:"
 
-#: Mailman/Cgi/admindb.py:640
+#: Mailman/Cgi/admindb.py:643
 msgid "Message Excerpt:"
 msgstr "Utdrag av meldingen:"
 
-#: Mailman/Cgi/admindb.py:673 Mailman/Deliverer.py:124
+#: Mailman/Cgi/admindb.py:676 Mailman/Deliverer.py:124
 msgid "No reason given"
 msgstr "Ingen begrunnelse"
 
-#: Mailman/Cgi/admindb.py:734 Mailman/ListAdmin.py:308
+#: Mailman/Cgi/admindb.py:737 Mailman/ListAdmin.py:308
 #: Mailman/ListAdmin.py:429
 msgid "[No reason given]"
 msgstr "[Ingen begrunnelse]"
 
-#: Mailman/Cgi/admindb.py:763
+#: Mailman/Cgi/admindb.py:766
 msgid "Database Updated..."
 msgstr "Databasen er oppdatert..."
 
-#: Mailman/Cgi/admindb.py:766
+#: Mailman/Cgi/admindb.py:769
 msgid " is already a member"
 msgstr " er allerede medlem"
 
@@ -2430,9 +2434,12 @@ msgid ""
 "    effect.\n"
 "    "
 msgstr ""
-"For &aring; endre p&aring; dine personlige innstillinger, m&aring; du logge inn nedenfor ved &aring; gi inn %(extra)spassordet ditt.\n"
-"Dersom du ikke husker passordet, kan du be om &aring; f&aring; det tilsendt til deg i en epost ved &aring; trykke p&aring; knappen nedenfor.\n"
-"Hvis du bare &oslash;nsker &aring; melde deg ut av listen, klikk <em>Meld meg ut</em> knappen nedenfor,\n"
+"For &aring; endre p&aring; dine personlige innstillinger, m&aring; du logge "
+"inn nedenfor ved &aring; gi inn %(extra)spassordet ditt.\n"
+"Dersom du ikke husker passordet, kan du be om &aring; f&aring; det tilsendt "
+"til deg i en epost ved &aring; trykke p&aring; knappen nedenfor.\n"
+"Hvis du bare &oslash;nsker &aring; melde deg ut av listen, klikk <em>Meld "
+"meg ut</em> knappen nedenfor,\n"
 "og du vil etter kort tid motta en epost som ber deg bekrefte dette.\n"
 "\n"
 "<p><strong><em>Viktig:</em></strong> Fra n&aring; av m&aring; du ha cookies\n"
@@ -3512,22 +3519,26 @@ msgid "Korean"
 msgstr "Koreansk"
 
 #: Mailman/Defaults.py:1217
+msgid "Lithuanian"
+msgstr ""
+
+#: Mailman/Defaults.py:1218
 msgid "Dutch"
 msgstr "Nederlansk"
 
-#: Mailman/Defaults.py:1218
+#: Mailman/Defaults.py:1219
 msgid "Norwegian"
 msgstr "Norsk"
 
-#: Mailman/Defaults.py:1219
+#: Mailman/Defaults.py:1220
 msgid "Portuguese (Brazil)"
 msgstr "Portugisisk (Brasil)"
 
-#: Mailman/Defaults.py:1220
+#: Mailman/Defaults.py:1221
 msgid "Russian"
 msgstr "Russisk"
 
-#: Mailman/Defaults.py:1221
+#: Mailman/Defaults.py:1222
 msgid "Swedish"
 msgstr "Svensk"
 
@@ -3637,7 +3648,8 @@ msgid ""
 msgstr ""
 "Innstillinger for automatiske svar.<p>\n"
 "\n"
-"I tekstboksene nedenfor kan du bruke følgende variabler (skriv dem slik: %%(&lt;variabelnavn&gt;)s ) for å sette inn ønsket informasjon:\n"
+"I tekstboksene nedenfor kan du bruke følgende variabler (skriv dem slik: %%"
+"(&lt;variabelnavn&gt;)s ) for å sette inn ønsket informasjon:\n"
 "<p><ul>\n"
 "        <li><b>listname</b> - <em>navnet p&aring; listen</em>\n"
 "        <li><b>listurl</b> - <em>URL til listens webside</em>\n"
@@ -3646,7 +3658,8 @@ msgstr ""
 "</ul>\n"
 "\n"
 "<p>Du kan enten skrive teksten direkte inn i tekstboksene, eller du kan\n"
-"angi navnet p&aring; en fil som inneholder teksten. Denne filen vil s&aring; lastes inn\n"
+"angi navnet p&aring; en fil som inneholder teksten. Denne filen vil s&aring; "
+"lastes inn\n"
 "i tekstboksen, fra ditt lokale filsystem."
 
 #: Mailman/Gui/Autoresponse.py:55
@@ -7052,7 +7065,8 @@ msgid ""
 "Your message was too big; please trim it to less than\n"
 "%(kb)d KB in size."
 msgstr ""
-"Meldingen din er for stor, vennligst reduser den slik at den blir mindre enn\n"
+"Meldingen din er for stor, vennligst reduser den slik at den blir mindre "
+"enn\n"
 "%(kb)d KB."
 
 #: Mailman/Handlers/Hold.py:110
@@ -7826,7 +7840,7 @@ msgstr ""
 msgid "listname is required"
 msgstr "krever listens navn"
 
-#: bin/arch:143 bin/change_pw:106 bin/config_list:239
+#: bin/arch:143 bin/change_pw:106 bin/config_list:242
 msgid ""
 "No such list \"%(listname)s\"\n"
 "%(e)s"
@@ -8552,35 +8566,35 @@ msgstr ""
 msgid "legal values are:"
 msgstr "gyldige verdier:"
 
-#: bin/config_list:252
+#: bin/config_list:255
 msgid "attribute \"%(k)s\" ignored"
 msgstr "hopper over attributten \"%(k)s\""
 
-#: bin/config_list:255
+#: bin/config_list:258
 msgid "attribute \"%(k)s\" changed"
 msgstr "endret på attributten \"%(k)s\""
 
-#: bin/config_list:261
+#: bin/config_list:264
 msgid "Non-standard property restored: %(k)s"
 msgstr "Ikke-standard egenskap gjenopprettet: %(k)s"
 
-#: bin/config_list:269
+#: bin/config_list:272
 msgid "Invalid value for property: %(k)s"
 msgstr "Ugyldig verdi for egenskap: %(k)s"
 
-#: bin/config_list:271
+#: bin/config_list:274
 msgid "Bad email address for option %(k)s: %(v)s"
 msgstr "Ugyldig epostadresse for innstillingen %(k)s: %(v)s"
 
-#: bin/config_list:319
+#: bin/config_list:322
 msgid "Only one of -i or -o is allowed"
 msgstr "Bare en av parametrene \"-i\" eller \"-o\" kan brukes om gangen"
 
-#: bin/config_list:321
+#: bin/config_list:324
 msgid "One of -i or -o is required"
 msgstr "Du MÅ benytte en av parametrene \"-i\" eller \"-o\""
 
-#: bin/config_list:325
+#: bin/config_list:328
 msgid "List name is required"
 msgstr "Du MÅ spesifisere Listens navn"
 
@@ -10272,13 +10286,15 @@ msgid ""
 "script.\n"
 msgstr ""
 "%s har både offentlige og private mbox arkiver. Siden denne listen\n"
-"bare benytter offentlig arkiv, installerer jeg den offentlige mbox arkivfilen\n"
+"bare benytter offentlig arkiv, installerer jeg den offentlige mbox "
+"arkivfilen\n"
 "(%s) som den aktive, og endrer navnet\n"
 "        %s\n"
 "til\n"
 "        %s.preb6\n"
 "\n"
-"Hvis du vil kan du integrere dette inn i arkivet ved å bruke 'arch' skriptet.\n"
+"Hvis du vil kan du integrere dette inn i arkivet ved å bruke 'arch' "
+"skriptet.\n"
 
 #: bin/update:282
 msgid "- updating old private mbox file"
