@@ -420,13 +420,14 @@ arch_listing_end = '''\
  
 
 class HyperArchive(pipermail.T):
+    __super_init = pipermail.T.__init__
 
     # some defaults
     DIRMODE=02775
     FILEMODE=0660
     
 
-    VERBOSE=0
+    VERBOSE=1
     DEFAULTINDEX='thread'
     ARCHIVE_PERIOD='month'
  
@@ -540,23 +541,19 @@ class HyperArchive(pipermail.T):
         d["archive_listing"] = listing
         return self.html_TOC_tmpl % d
 
-    def __init__(self, maillist,unlock=1):
-        self.maillist=maillist
-        self._unlocklist=unlock
-        self._lock_file=None
+    def __init__(self, maillist, unlock=1):
+        self.maillist = maillist
+        self._unlocklist = unlock
+        self._lock_file = None
  
-
-        #
         # can't init the database while other
         # processes are writing to it!
         # XXX TODO- implement native locking
         # with mailman's LockFile module for HyperDatabase.HyperDatabase
         #
-	pipermail.T.__init__(
-            self,
-            maillist.archive_dir(),
-            reload=1,
-            database=HyperDatabase.HyperDatabase(maillist.archive_dir()))
+        dir = maillist.archive_dir()
+        db = HyperDatabase.HyperDatabase(dir)
+        self.__super_init(dir, reload=1, database=db)
 
         if hasattr(self.maillist,'archive_volume_frequency'):
             if self.maillist.archive_volume_frequency == 0:
@@ -738,8 +735,10 @@ class HyperArchive(pipermail.T):
 
     def open_new_archive(self, archive, archivedir):
 	index_html=os.path.join(archivedir, 'index.html') 
-	try: os.unlink(index_html)
-	except: pass
+	try:
+            os.unlink(index_html)
+	except:
+            pass
 	os.symlink(self.DEFAULTINDEX+'.html',index_html)
 
 
@@ -930,19 +929,16 @@ class HyperArchive(pipermail.T):
         self.database.close()
         del self.database
         f=open(os.path.join(self.basedir, 'pipermail.pck'), 'w')
-        pickle.dump(self.__getstate__(), f)
+        pickle.dump(self.getstate(), f)
         f.close()
 
-    def __getstate__(self):
+    def getstate(self):
         d={}
         for each in self.__dict__.keys():
             if not (each in ['maillist','_lock_file','_unlocklist']
                     or string.upper(each) == each):
                 d[each] = self.__dict__[each]
         return d
-
-        
- 
 
     # Add <A HREF="..."> tags around URLs and e-mail addresses.
 
