@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: Mon Dec  2 11:06:05 2002\n"
+"POT-Creation-Date: Mon Dec  9 01:18:04 2002\n"
 "PO-Revision-Date: 2002-03-28 19:21+09:00\n"
 "Last-Translator: Hyejin Soang, Wongyo Jung<redcloak@igrus.inha.ac.kr, "
 "andsoon@igrus.inha.ac.kr>\n"
@@ -15,183 +15,189 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: pygettext.py 1.4\n"
 
-#: Mailman/Archiver/HyperArch.py:108
+#: Mailman/Archiver/HyperArch.py:111
+#, fuzzy
+msgid "size not available"
+msgstr "이용할 수 없숩니다."
+
+#: Mailman/Archiver/HyperArch.py:117
 msgid " %(size)i bytes "
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:242 Mailman/Archiver/HyperArch.py:410
-#: Mailman/Archiver/HyperArch.py:995
+#: Mailman/Archiver/HyperArch.py:251 Mailman/Archiver/HyperArch.py:421
+#: Mailman/Archiver/HyperArch.py:1014
 msgid " at "
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:439
+#: Mailman/Archiver/HyperArch.py:450
 msgid "Previous message:"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:471
+#: Mailman/Archiver/HyperArch.py:482
 #, fuzzy
 msgid "Next message:"
 msgstr "메세지를 기록합니까?"
 
-#: Mailman/Archiver/HyperArch.py:644 Mailman/Archiver/HyperArch.py:677
+#: Mailman/Archiver/HyperArch.py:660 Mailman/Archiver/HyperArch.py:696
 #, fuzzy
 msgid "thread"
 msgstr "  쓰레드"
 
-#: Mailman/Archiver/HyperArch.py:645 Mailman/Archiver/HyperArch.py:678
+#: Mailman/Archiver/HyperArch.py:661 Mailman/Archiver/HyperArch.py:697
 #, fuzzy
 msgid "subject"
 msgstr "제목 없음"
 
-#: Mailman/Archiver/HyperArch.py:646 Mailman/Archiver/HyperArch.py:679
+#: Mailman/Archiver/HyperArch.py:662 Mailman/Archiver/HyperArch.py:698
 msgid "author"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:647 Mailman/Archiver/HyperArch.py:680
+#: Mailman/Archiver/HyperArch.py:663 Mailman/Archiver/HyperArch.py:699
 #, fuzzy
 msgid "date"
 msgstr "날짜 없음"
 
-#: Mailman/Archiver/HyperArch.py:716
+#: Mailman/Archiver/HyperArch.py:735
 msgid "<P>Currently, there are no archives. </P>"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:753
+#: Mailman/Archiver/HyperArch.py:772
 msgid "Gzip'd Text%(sz)s"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:758
+#: Mailman/Archiver/HyperArch.py:777
 msgid "Text%(sz)s"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:848
+#: Mailman/Archiver/HyperArch.py:867
 #, fuzzy
 msgid "figuring article archives\n"
 msgstr "카테고리 구성"
 
-#: Mailman/Archiver/HyperArch.py:858
+#: Mailman/Archiver/HyperArch.py:877
 msgid "April"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:858
+#: Mailman/Archiver/HyperArch.py:877
 msgid "February"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:858
+#: Mailman/Archiver/HyperArch.py:877
 msgid "January"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:858
+#: Mailman/Archiver/HyperArch.py:877
 msgid "March"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:859
+#: Mailman/Archiver/HyperArch.py:878
 msgid "August"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:859
+#: Mailman/Archiver/HyperArch.py:878
 msgid "July"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:859
+#: Mailman/Archiver/HyperArch.py:878
 msgid "June"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:859 Mailman/i18n.py:91
+#: Mailman/Archiver/HyperArch.py:878 Mailman/i18n.py:91
 #, fuzzy
 msgid "May"
 msgstr "일"
 
-#: Mailman/Archiver/HyperArch.py:860
+#: Mailman/Archiver/HyperArch.py:879
 #, fuzzy
 msgid "December"
 msgstr "회원"
 
-#: Mailman/Archiver/HyperArch.py:860
+#: Mailman/Archiver/HyperArch.py:879
 #, fuzzy
 msgid "November"
 msgstr "회원"
 
-#: Mailman/Archiver/HyperArch.py:860
+#: Mailman/Archiver/HyperArch.py:879
 msgid "October"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:860
+#: Mailman/Archiver/HyperArch.py:879
 #, fuzzy
 msgid "September"
 msgstr "회원"
 
-#: Mailman/Archiver/HyperArch.py:868
+#: Mailman/Archiver/HyperArch.py:887
 #, fuzzy
 msgid "First"
 msgstr "메일링 리스트"
 
-#: Mailman/Archiver/HyperArch.py:868
+#: Mailman/Archiver/HyperArch.py:887
 msgid "Fourth"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:868
+#: Mailman/Archiver/HyperArch.py:887
 msgid "Second"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:868
+#: Mailman/Archiver/HyperArch.py:887
 #, fuzzy
 msgid "Third"
 msgstr "숨김"
 
-#: Mailman/Archiver/HyperArch.py:870
+#: Mailman/Archiver/HyperArch.py:889
 msgid "%(ord)s quarter %(year)i"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:877
+#: Mailman/Archiver/HyperArch.py:896
 msgid "%(month)s %(year)i"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:882
+#: Mailman/Archiver/HyperArch.py:901
 msgid "The Week Of Monday %(day)i %(month)s %(year)i"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:886
+#: Mailman/Archiver/HyperArch.py:905
 msgid "%(day)i %(month)s %(year)i"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:983
+#: Mailman/Archiver/HyperArch.py:1002
 msgid "Computing threaded index\n"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:1232
-msgid "Updating HTML for article "
+#: Mailman/Archiver/HyperArch.py:1261
+#, fuzzy
+msgid "Updating HTML for article %(seq)s"
+msgstr "저장소 [%(archive)s] 를 위한 인덱스 파일을 업데이트 중입니다."
+
+#: Mailman/Archiver/HyperArch.py:1268
+msgid "article file %(filename)s is missing!"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:1238
-msgid "article file %s is missing!"
-msgstr ""
-
-#: Mailman/Archiver/pipermail.py:166 Mailman/Archiver/pipermail.py:167
+#: Mailman/Archiver/pipermail.py:168 Mailman/Archiver/pipermail.py:169
 msgid "No subject"
 msgstr "제목 없음"
 
-#: Mailman/Archiver/pipermail.py:268
+#: Mailman/Archiver/pipermail.py:269
 msgid "Creating archive directory "
 msgstr "저장소를 생성중입니다."
 
-#: Mailman/Archiver/pipermail.py:280
+#: Mailman/Archiver/pipermail.py:281
 msgid "Reloading pickled archive state"
 msgstr "다시 저장소 상태를 불러들이고 있습니다."
 
-#: Mailman/Archiver/pipermail.py:307
+#: Mailman/Archiver/pipermail.py:308
 msgid "Pickling archive state into "
 msgstr "저장소 상태를 저장중입니다: "
 
-#: Mailman/Archiver/pipermail.py:418
+#: Mailman/Archiver/pipermail.py:419
 msgid "Updating index files for archive [%(archive)s]"
 msgstr "저장소 [%(archive)s] 를 위한 인덱스 파일을 업데이트 중입니다."
 
-#: Mailman/Archiver/pipermail.py:451
+#: Mailman/Archiver/pipermail.py:452
 msgid "  Thread"
 msgstr "  쓰레드"
 
-#: Mailman/Archiver/pipermail.py:556
+#: Mailman/Archiver/pipermail.py:557
 msgid "#%(counter)05d %(msgid)s"
 msgstr ""
 
@@ -272,7 +278,7 @@ msgstr ""
 "            배달 방식에서 둘 중 하나를 꼭 선택하시기 바랍니다."
 
 #: Mailman/Cgi/admin.py:179 Mailman/Cgi/admin.py:185 Mailman/Cgi/admin.py:190
-#: Mailman/Cgi/admin.py:1358 Mailman/Gui/GUIBase.py:184
+#: Mailman/Cgi/admin.py:1361 Mailman/Gui/GUIBase.py:184
 msgid "Warning: "
 msgstr "경고: "
 
@@ -917,63 +923,63 @@ msgstr "글관리자 비밀번호가 서로 맞지 않습니다."
 msgid "Administator passwords did not match"
 msgstr "관리자 비밀번호가 서로 맞지 않습니다."
 
-#: Mailman/Cgi/admin.py:1262
+#: Mailman/Cgi/admin.py:1265
 msgid "Already a member"
 msgstr "이미 회원입니다."
 
-#: Mailman/Cgi/admin.py:1265
+#: Mailman/Cgi/admin.py:1268
 msgid "&lt;blank line&gt;"
 msgstr "&lt;공백 줄&gt;"
 
-#: Mailman/Cgi/admin.py:1266 Mailman/Cgi/admin.py:1269
+#: Mailman/Cgi/admin.py:1269 Mailman/Cgi/admin.py:1272
 msgid "Bad/Invalid email address"
 msgstr "잘못된/없는 E메일 주소"
 
-#: Mailman/Cgi/admin.py:1272
+#: Mailman/Cgi/admin.py:1275
 msgid "Hostile address (illegal characters)"
 msgstr "악의적인 주소입니다. (허용되지 않는 문자를 사용>합니다.)"
 
-#: Mailman/Cgi/admin.py:1278
+#: Mailman/Cgi/admin.py:1281
 msgid "Successfully invited:"
 msgstr "성공적으로 초대된 명단:"
 
-#: Mailman/Cgi/admin.py:1280
+#: Mailman/Cgi/admin.py:1283
 msgid "Successfully subscribed:"
 msgstr "성공적으로 가입된 명단:"
 
-#: Mailman/Cgi/admin.py:1285
+#: Mailman/Cgi/admin.py:1288
 msgid "Error inviting:"
 msgstr "초대 에러:"
 
-#: Mailman/Cgi/admin.py:1287
+#: Mailman/Cgi/admin.py:1290
 msgid "Error subscribing:"
 msgstr "가입 에러:"
 
-#: Mailman/Cgi/admin.py:1316
+#: Mailman/Cgi/admin.py:1319
 msgid "Successfully Unsubscribed:"
 msgstr "성공적으로 탈퇴된 명단:"
 
-#: Mailman/Cgi/admin.py:1321
+#: Mailman/Cgi/admin.py:1324
 msgid "Cannot unsubscribe non-members:"
 msgstr "비회원을 탈퇴할 수 없습니다:"
 
-#: Mailman/Cgi/admin.py:1333
+#: Mailman/Cgi/admin.py:1336
 msgid "Bad moderation flag value"
 msgstr "잘못된 글관리 기호입니다."
 
-#: Mailman/Cgi/admin.py:1354
+#: Mailman/Cgi/admin.py:1357
 msgid "Not subscribed"
 msgstr "가입이 되지 않았습니다."
 
-#: Mailman/Cgi/admin.py:1357
+#: Mailman/Cgi/admin.py:1360
 msgid "Ignoring changes to deleted member: %(user)s"
 msgstr "삭제 명단에서 무시된 회원: %(user)s"
 
-#: Mailman/Cgi/admin.py:1397
+#: Mailman/Cgi/admin.py:1400
 msgid "Successfully Removed:"
 msgstr "성공적으로 제거된 명단:"
 
-#: Mailman/Cgi/admin.py:1401
+#: Mailman/Cgi/admin.py:1404
 msgid "Error Unsubscribing:"
 msgstr "탈퇴 에러:"
 
@@ -3231,76 +3237,76 @@ msgstr "개별배달(Non-Digest) 회원들:\n"
 msgid "Digest members:"
 msgstr "묶음배달(Digest) 회원들:\n"
 
-#: Mailman/Defaults.py:1208
+#: Mailman/Defaults.py:1204
 msgid "Traditional Chinese"
 msgstr "전통 중국어"
 
-#: Mailman/Defaults.py:1209
+#: Mailman/Defaults.py:1205
 msgid "Czech"
 msgstr "체크어"
 
-#: Mailman/Defaults.py:1210
+#: Mailman/Defaults.py:1206
 msgid "German"
 msgstr "독일어"
 
-#: Mailman/Defaults.py:1211
+#: Mailman/Defaults.py:1207
 msgid "English (USA)"
 msgstr "영어 (USA)"
 
-#: Mailman/Defaults.py:1212
+#: Mailman/Defaults.py:1208
 msgid "Spanish (Spain)"
 msgstr "스페인어 (스페인)"
 
-#: Mailman/Defaults.py:1213
+#: Mailman/Defaults.py:1209
 msgid "Estonian"
 msgstr ""
 
-#: Mailman/Defaults.py:1214
+#: Mailman/Defaults.py:1210
 msgid "Finnish"
 msgstr "핀란드어"
 
-#: Mailman/Defaults.py:1215
+#: Mailman/Defaults.py:1211
 msgid "French"
 msgstr "프랑스어"
 
-#: Mailman/Defaults.py:1216
+#: Mailman/Defaults.py:1212
 msgid "Simplified Chinese"
 msgstr "간단화된 중국어"
 
-#: Mailman/Defaults.py:1217
+#: Mailman/Defaults.py:1213
 msgid "Hungarian"
 msgstr "헝가리어"
 
-#: Mailman/Defaults.py:1218
+#: Mailman/Defaults.py:1214
 msgid "Italian"
 msgstr "이탈리아어"
 
-#: Mailman/Defaults.py:1219
+#: Mailman/Defaults.py:1215
 msgid "Japanese"
 msgstr "일본어"
 
-#: Mailman/Defaults.py:1220
+#: Mailman/Defaults.py:1216
 #, fuzzy
 msgid "Korean"
 msgstr "노르웨이어"
 
-#: Mailman/Defaults.py:1221
+#: Mailman/Defaults.py:1217
 msgid "Dutch"
 msgstr ""
 
-#: Mailman/Defaults.py:1222
+#: Mailman/Defaults.py:1218
 msgid "Norwegian"
 msgstr "노르웨이어"
 
-#: Mailman/Defaults.py:1223
+#: Mailman/Defaults.py:1219
 msgid "Portuguese (Brazil)"
 msgstr ""
 
-#: Mailman/Defaults.py:1224
+#: Mailman/Defaults.py:1220
 msgid "Russian"
 msgstr "러시아어"
 
-#: Mailman/Defaults.py:1225
+#: Mailman/Defaults.py:1221
 msgid "Swedish"
 msgstr ""
 
@@ -5971,7 +5977,8 @@ msgid "; it was disabled for unknown reasons"
 msgstr "; 알 수 없는 이유로 금지되었습니다."
 
 #: Mailman/HTMLFormatter.py:148
-msgid "Note: your list delivery is currently disabled %(reason)s."
+#, fuzzy
+msgid "Note: your list delivery is currently disabled%(reason)s."
 msgstr ""
 "참고: 당신의 리스트 배달은 현재 %(reason)s 이유 때문에 금지되어 있습니다."
 
@@ -6366,11 +6373,7 @@ msgstr ""
 msgid "Content filtered message notification"
 msgstr ""
 
-#: Mailman/Handlers/Moderate.py:35
-msgid "Posts by member are currently quarantined for moderation"
-msgstr ""
-
-#: Mailman/Handlers/Moderate.py:130
+#: Mailman/Handlers/Moderate.py:138
 msgid ""
 "You are not allowed to post to this mailing list, and your message has been\n"
 "automatically rejected.  If you think that your messages are being rejected "
@@ -6381,11 +6384,11 @@ msgstr ""
 "로 거절됩니다. 만약 당신이 메세지가 에러와 함께 거절된다면 리스트 소유주( %"
 "(listowner)s )에게 연락하시기 바랍니다."
 
-#: Mailman/Handlers/Moderate.py:145
+#: Mailman/Handlers/Moderate.py:153
 msgid "Auto-discard notification"
 msgstr "자동-버림 공지"
 
-#: Mailman/Handlers/Moderate.py:148
+#: Mailman/Handlers/Moderate.py:156
 msgid "The attached message has been automatically discarded."
 msgstr "첨부된 메세지는 자동으로 버려졌습니다."
 
@@ -6802,8 +6805,13 @@ msgstr ""
 msgid "Sep"
 msgstr "설정"
 
-#: Mailman/i18n.py:122
-msgid "%(wday)s %(mon)s %(day)2i %(hh)02i:%(mm)02i:%(ss)02i %(year)04i"
+#: Mailman/i18n.py:95
+msgid "Server Local Time"
+msgstr ""
+
+#: Mailman/i18n.py:128
+msgid ""
+"%(wday)s %(mon)s %(day)2i %(hh)02i:%(mm)02i:%(ss)02i %(tzname)s %(year)04i"
 msgstr ""
 
 #: bin/add_members:26
@@ -7816,6 +7824,32 @@ msgstr ""
 
 #: bin/list_members:179
 msgid "Could not open file for writing:"
+msgstr ""
+
+#: bin/list_owners:19
+msgid ""
+"List the owners of a mailing list, or all mailing lists.\n"
+"\n"
+"Usage: %(PROGRAM)s [options] [listname ...]\n"
+"Options:\n"
+"\n"
+"    -w / --with-listnames\n"
+"        Group the owners by list names and include the list names in the\n"
+"        output.  Otherwise, the owners will be sorted and uniquified based "
+"on\n"
+"        the email address.\n"
+"\n"
+"    -m / --moderators\n"
+"        Include the list moderators in the output.\n"
+"\n"
+"    -h / --help\n"
+"        Print this help message and exit.\n"
+"\n"
+"    listname\n"
+"        Print the owners of the specified lists.  More than one can appear\n"
+"        after the options.  If there are no listnames provided, the owners "
+"of\n"
+"        all the lists will be displayed.\n"
 msgstr ""
 
 #: bin/mailmanctl:19

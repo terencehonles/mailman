@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Mailman 2.1b4+\n"
-"POT-Creation-Date: Mon Dec  2 11:06:05 2002\n"
+"POT-Creation-Date: Mon Dec  9 01:18:04 2002\n"
 "PO-Revision-Date: 2002-12-04 15:21+0100\n"
 "Last-Translator: Daniel Buchmann <Daniel.Buchmann@bibsys.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -14,172 +14,179 @@ msgstr ""
 "Content-Transfer-Encoding: quoted-printable\n"
 "Generated-By: pygettext.py 1.3\n"
 
-#: Mailman/Archiver/HyperArch.py:108
+#: Mailman/Archiver/HyperArch.py:111
+#, fuzzy
+msgid "size not available"
+msgstr "ikke tilgjengelig"
+
+#: Mailman/Archiver/HyperArch.py:117
 msgid " %(size)i bytes "
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:242 Mailman/Archiver/HyperArch.py:410
-#: Mailman/Archiver/HyperArch.py:995
+#: Mailman/Archiver/HyperArch.py:251 Mailman/Archiver/HyperArch.py:421
+#: Mailman/Archiver/HyperArch.py:1014
 msgid " at "
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:439
+#: Mailman/Archiver/HyperArch.py:450
 msgid "Previous message:"
 msgstr "Forrige melding:"
 
-#: Mailman/Archiver/HyperArch.py:471
+#: Mailman/Archiver/HyperArch.py:482
 msgid "Next message:"
 msgstr "Neste melding:"
 
-#: Mailman/Archiver/HyperArch.py:644 Mailman/Archiver/HyperArch.py:677
+#: Mailman/Archiver/HyperArch.py:660 Mailman/Archiver/HyperArch.py:696
 msgid "thread"
 msgstr "tr&aring;d"
 
-#: Mailman/Archiver/HyperArch.py:645 Mailman/Archiver/HyperArch.py:678
+#: Mailman/Archiver/HyperArch.py:661 Mailman/Archiver/HyperArch.py:697
 msgid "subject"
 msgstr "tittel"
 
-#: Mailman/Archiver/HyperArch.py:646 Mailman/Archiver/HyperArch.py:679
+#: Mailman/Archiver/HyperArch.py:662 Mailman/Archiver/HyperArch.py:698
 msgid "author"
 msgstr "forfatter"
 
-#: Mailman/Archiver/HyperArch.py:647 Mailman/Archiver/HyperArch.py:680
+#: Mailman/Archiver/HyperArch.py:663 Mailman/Archiver/HyperArch.py:699
 msgid "date"
 msgstr "dato"
 
-#: Mailman/Archiver/HyperArch.py:716
+#: Mailman/Archiver/HyperArch.py:735
 msgid "<P>Currently, there are no archives. </P>"
 msgstr "<p>Arkivet er for tiden tomt.</p>"
 
-#: Mailman/Archiver/HyperArch.py:753
+#: Mailman/Archiver/HyperArch.py:772
 msgid "Gzip'd Text%(sz)s"
 msgstr "Gzip'et tekst%(sz)s"
 
-#: Mailman/Archiver/HyperArch.py:758
+#: Mailman/Archiver/HyperArch.py:777
 msgid "Text%(sz)s"
 msgstr "Tekstt%(sz)s"
 
-#: Mailman/Archiver/HyperArch.py:848
+#: Mailman/Archiver/HyperArch.py:867
 msgid "figuring article archives\n"
 msgstr "lager arkiv\n"
 
-#: Mailman/Archiver/HyperArch.py:858
+#: Mailman/Archiver/HyperArch.py:877
 msgid "April"
 msgstr "April"
 
-#: Mailman/Archiver/HyperArch.py:858
+#: Mailman/Archiver/HyperArch.py:877
 msgid "February"
 msgstr "Februar"
 
-#: Mailman/Archiver/HyperArch.py:858
+#: Mailman/Archiver/HyperArch.py:877
 msgid "January"
 msgstr "Januar"
 
-#: Mailman/Archiver/HyperArch.py:858
+#: Mailman/Archiver/HyperArch.py:877
 msgid "March"
 msgstr "Mars"
 
-#: Mailman/Archiver/HyperArch.py:859
+#: Mailman/Archiver/HyperArch.py:878
 msgid "August"
 msgstr "August"
 
-#: Mailman/Archiver/HyperArch.py:859
+#: Mailman/Archiver/HyperArch.py:878
 msgid "July"
 msgstr "Juli"
 
-#: Mailman/Archiver/HyperArch.py:859
+#: Mailman/Archiver/HyperArch.py:878
 msgid "June"
 msgstr "Juni"
 
-#: Mailman/Archiver/HyperArch.py:859 Mailman/i18n.py:91
+#: Mailman/Archiver/HyperArch.py:878 Mailman/i18n.py:91
 msgid "May"
 msgstr "Mai"
 
-#: Mailman/Archiver/HyperArch.py:860
+#: Mailman/Archiver/HyperArch.py:879
 msgid "December"
 msgstr "Desember"
 
-#: Mailman/Archiver/HyperArch.py:860
+#: Mailman/Archiver/HyperArch.py:879
 msgid "November"
 msgstr "November"
 
-#: Mailman/Archiver/HyperArch.py:860
+#: Mailman/Archiver/HyperArch.py:879
 msgid "October"
 msgstr "Oktober"
 
-#: Mailman/Archiver/HyperArch.py:860
+#: Mailman/Archiver/HyperArch.py:879
 msgid "September"
 msgstr "September"
 
-#: Mailman/Archiver/HyperArch.py:868
+#: Mailman/Archiver/HyperArch.py:887
 msgid "First"
 msgstr "Første"
 
-#: Mailman/Archiver/HyperArch.py:868
+#: Mailman/Archiver/HyperArch.py:887
 msgid "Fourth"
 msgstr "Fjerde"
 
-#: Mailman/Archiver/HyperArch.py:868
+#: Mailman/Archiver/HyperArch.py:887
 msgid "Second"
 msgstr "Andre"
 
-#: Mailman/Archiver/HyperArch.py:868
+#: Mailman/Archiver/HyperArch.py:887
 msgid "Third"
 msgstr "Tredje"
 
-#: Mailman/Archiver/HyperArch.py:870
+#: Mailman/Archiver/HyperArch.py:889
 msgid "%(ord)s quarter %(year)i"
 msgstr "%(ord)s kvartal  %(year)i"
 
-#: Mailman/Archiver/HyperArch.py:877
+#: Mailman/Archiver/HyperArch.py:896
 msgid "%(month)s %(year)i"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:882
+#: Mailman/Archiver/HyperArch.py:901
 msgid "The Week Of Monday %(day)i %(month)s %(year)i"
 msgstr "Uken med mandag %(day)i %(month)s %(year)i"
 
-#: Mailman/Archiver/HyperArch.py:886
+#: Mailman/Archiver/HyperArch.py:905
 msgid "%(day)i %(month)s %(year)i"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:983
+#: Mailman/Archiver/HyperArch.py:1002
 msgid "Computing threaded index\n"
 msgstr "Bygger innholdsfortegnelse\n"
 
-#: Mailman/Archiver/HyperArch.py:1232
-msgid "Updating HTML for article "
+#: Mailman/Archiver/HyperArch.py:1261
+#, fuzzy
+msgid "Updating HTML for article %(seq)s"
 msgstr "Oppdaterer HTML for artikkel "
 
-#: Mailman/Archiver/HyperArch.py:1238
-msgid "article file %s is missing!"
+#: Mailman/Archiver/HyperArch.py:1268
+#, fuzzy
+msgid "article file %(filename)s is missing!"
 msgstr "fil for artikkel %s mangler!"
 
-#: Mailman/Archiver/pipermail.py:166 Mailman/Archiver/pipermail.py:167
+#: Mailman/Archiver/pipermail.py:168 Mailman/Archiver/pipermail.py:169
 msgid "No subject"
 msgstr "Uten tittel"
 
-#: Mailman/Archiver/pipermail.py:268
+#: Mailman/Archiver/pipermail.py:269
 msgid "Creating archive directory "
 msgstr "Oppretter katalog for arkivet"
 
-#: Mailman/Archiver/pipermail.py:280
+#: Mailman/Archiver/pipermail.py:281
 msgid "Reloading pickled archive state"
 msgstr "Laster arkivets tilstand fra en pickle"
 
-#: Mailman/Archiver/pipermail.py:307
+#: Mailman/Archiver/pipermail.py:308
 msgid "Pickling archive state into "
 msgstr "Lagrer arkivets tilstand i en pickle: "
 
-#: Mailman/Archiver/pipermail.py:418
+#: Mailman/Archiver/pipermail.py:419
 msgid "Updating index files for archive [%(archive)s]"
 msgstr "Oppdaterer indeksfil for arkivet [%(archive)s]"
 
-#: Mailman/Archiver/pipermail.py:451
+#: Mailman/Archiver/pipermail.py:452
 msgid "  Thread"
 msgstr "  Tr&aring;d"
 
-#: Mailman/Archiver/pipermail.py:556
+#: Mailman/Archiver/pipermail.py:557
 msgid "#%(counter)05d %(msgid)s"
 msgstr ""
 
@@ -256,7 +263,7 @@ msgstr ""
 "Dersom du ikke velger minst én av dem, vil epostlisten bli helt ubrukelig!"
 
 #: Mailman/Cgi/admin.py:179 Mailman/Cgi/admin.py:185 Mailman/Cgi/admin.py:190
-#: Mailman/Cgi/admin.py:1358 Mailman/Gui/GUIBase.py:184
+#: Mailman/Cgi/admin.py:1361 Mailman/Gui/GUIBase.py:184
 msgid "Warning: "
 msgstr "Advarsel: "
 
@@ -927,63 +934,63 @@ msgstr "Moderatorpassordene er ikke like"
 msgid "Administator passwords did not match"
 msgstr "Administratorpassordene er ikke like"
 
-#: Mailman/Cgi/admin.py:1262
+#: Mailman/Cgi/admin.py:1265
 msgid "Already a member"
 msgstr "Allerede medlem"
 
-#: Mailman/Cgi/admin.py:1265
+#: Mailman/Cgi/admin.py:1268
 msgid "&lt;blank line&gt;"
 msgstr "&lt;blank linje&gt;"
 
-#: Mailman/Cgi/admin.py:1266 Mailman/Cgi/admin.py:1269
+#: Mailman/Cgi/admin.py:1269 Mailman/Cgi/admin.py:1272
 msgid "Bad/Invalid email address"
 msgstr "Feil/Ugyldig epostadresse"
 
-#: Mailman/Cgi/admin.py:1272
+#: Mailman/Cgi/admin.py:1275
 msgid "Hostile address (illegal characters)"
 msgstr "Farlig epostadresse (inneholder ugyldige tegn)"
 
-#: Mailman/Cgi/admin.py:1278
+#: Mailman/Cgi/admin.py:1281
 msgid "Successfully invited:"
 msgstr "Invitasjon er sendt til:"
 
-#: Mailman/Cgi/admin.py:1280
+#: Mailman/Cgi/admin.py:1283
 msgid "Successfully subscribed:"
 msgstr "P&aring;melding utf&oslash;rt:"
 
-#: Mailman/Cgi/admin.py:1285
+#: Mailman/Cgi/admin.py:1288
 msgid "Error inviting:"
 msgstr "Feil under invitasjon:"
 
-#: Mailman/Cgi/admin.py:1287
+#: Mailman/Cgi/admin.py:1290
 msgid "Error subscribing:"
 msgstr "Feil under p&aring;melding:"
 
-#: Mailman/Cgi/admin.py:1316
+#: Mailman/Cgi/admin.py:1319
 msgid "Successfully Unsubscribed:"
 msgstr "Utmelding utf&oslash;rt:"
 
-#: Mailman/Cgi/admin.py:1321
+#: Mailman/Cgi/admin.py:1324
 msgid "Cannot unsubscribe non-members:"
 msgstr "Kan ikke melde ut et ikke-eksisterende medlem:"
 
-#: Mailman/Cgi/admin.py:1333
+#: Mailman/Cgi/admin.py:1336
 msgid "Bad moderation flag value"
 msgstr "Ugyldig verdi p&aring; moderasjonsflagget"
 
-#: Mailman/Cgi/admin.py:1354
+#: Mailman/Cgi/admin.py:1357
 msgid "Not subscribed"
 msgstr "Ikke p&aring;meldt"
 
-#: Mailman/Cgi/admin.py:1357
+#: Mailman/Cgi/admin.py:1360
 msgid "Ignoring changes to deleted member: %(user)s"
 msgstr "Ser bort i fra endring av et medlem som er utmeldt: %(user)s"
 
-#: Mailman/Cgi/admin.py:1397
+#: Mailman/Cgi/admin.py:1400
 msgid "Successfully Removed:"
 msgstr "Utmelding utf&oslash;rt:"
 
-#: Mailman/Cgi/admin.py:1401
+#: Mailman/Cgi/admin.py:1404
 msgid "Error Unsubscribing:"
 msgstr "Feil under utmelding av:"
 
@@ -1276,7 +1283,9 @@ msgid ""
 "The address requesting to be changed has\n"
 "                    been subsequently unsubscribed.  This request has been\n"
 "                    cancelled."
-msgstr "Addressen som skulle endres er ikke lenger medlem av epostlisten. Forespørselen ble derfor avbrutt."
+msgstr ""
+"Addressen som skulle endres er ikke lenger medlem av epostlisten. "
+"Forespørselen ble derfor avbrutt."
 
 #: Mailman/Cgi/confirm.py:157
 msgid "System error, bad content: %(content)s"
@@ -3456,75 +3465,75 @@ msgstr "Medlemmer i normal-modus:"
 msgid "Digest members:"
 msgstr "Medlemmer i sammendrag-modus:"
 
-#: Mailman/Defaults.py:1208
+#: Mailman/Defaults.py:1204
 msgid "Traditional Chinese"
 msgstr "Kinesisk (Traditional)"
 
-#: Mailman/Defaults.py:1209
+#: Mailman/Defaults.py:1205
 msgid "Czech"
 msgstr "Tsjekkisk"
 
-#: Mailman/Defaults.py:1210
+#: Mailman/Defaults.py:1206
 msgid "German"
 msgstr "Tysk"
 
-#: Mailman/Defaults.py:1211
+#: Mailman/Defaults.py:1207
 msgid "English (USA)"
 msgstr "Engelsk (USA)"
 
-#: Mailman/Defaults.py:1212
+#: Mailman/Defaults.py:1208
 msgid "Spanish (Spain)"
 msgstr "Spansk (Spania)"
 
-#: Mailman/Defaults.py:1213
+#: Mailman/Defaults.py:1209
 msgid "Estonian"
 msgstr "Estisk"
 
-#: Mailman/Defaults.py:1214
+#: Mailman/Defaults.py:1210
 msgid "Finnish"
 msgstr "Finsk"
 
-#: Mailman/Defaults.py:1215
+#: Mailman/Defaults.py:1211
 msgid "French"
 msgstr "Fransk"
 
-#: Mailman/Defaults.py:1216
+#: Mailman/Defaults.py:1212
 msgid "Simplified Chinese"
 msgstr "Kinesisk (Simplified)"
 
-#: Mailman/Defaults.py:1217
+#: Mailman/Defaults.py:1213
 msgid "Hungarian"
 msgstr "Ungarsk"
 
-#: Mailman/Defaults.py:1218
+#: Mailman/Defaults.py:1214
 msgid "Italian"
 msgstr "Italiensk"
 
-#: Mailman/Defaults.py:1219
+#: Mailman/Defaults.py:1215
 msgid "Japanese"
 msgstr "Japansk"
 
-#: Mailman/Defaults.py:1220
+#: Mailman/Defaults.py:1216
 msgid "Korean"
 msgstr "Koreansk"
 
-#: Mailman/Defaults.py:1221
+#: Mailman/Defaults.py:1217
 msgid "Dutch"
 msgstr "Nederlansk"
 
-#: Mailman/Defaults.py:1222
+#: Mailman/Defaults.py:1218
 msgid "Norwegian"
 msgstr "Norsk"
 
-#: Mailman/Defaults.py:1223
+#: Mailman/Defaults.py:1219
 msgid "Portuguese (Brazil)"
 msgstr "Portugisisk (Brasil)"
 
-#: Mailman/Defaults.py:1224
+#: Mailman/Defaults.py:1220
 msgid "Russian"
 msgstr "Russisk"
 
-#: Mailman/Defaults.py:1225
+#: Mailman/Defaults.py:1221
 msgid "Swedish"
 msgstr "Svensk"
 
@@ -6701,7 +6710,8 @@ msgid "; it was disabled for unknown reasons"
 msgstr "; av ukjent grunn"
 
 #: Mailman/HTMLFormatter.py:148
-msgid "Note: your list delivery is currently disabled %(reason)s."
+#, fuzzy
+msgid "Note: your list delivery is currently disabled%(reason)s."
 msgstr "Merk: Levering av epost fra listen er stoppet %(reason)s."
 
 #: Mailman/HTMLFormatter.py:151
@@ -7119,11 +7129,7 @@ msgstr ""
 msgid "Content filtered message notification"
 msgstr "Resultat av filtrering på innhold"
 
-#: Mailman/Handlers/Moderate.py:35
-msgid "Posts by member are currently quarantined for moderation"
-msgstr "Epost fra medlemmet settes i karantene for godkjenning av moderator"
-
-#: Mailman/Handlers/Moderate.py:130
+#: Mailman/Handlers/Moderate.py:138
 msgid ""
 "You are not allowed to post to this mailing list, and your message has been\n"
 "automatically rejected.  If you think that your messages are being rejected "
@@ -7136,11 +7142,11 @@ msgstr ""
 "kontakt\n"
 "epostlistens eier på %(listowner)s."
 
-#: Mailman/Handlers/Moderate.py:145
+#: Mailman/Handlers/Moderate.py:153
 msgid "Auto-discard notification"
 msgstr "Automatisk melding: din epost ble avvist"
 
-#: Mailman/Handlers/Moderate.py:148
+#: Mailman/Handlers/Moderate.py:156
 msgid "The attached message has been automatically discarded."
 msgstr "Den vedlagte meldingen er automatisk forkastet."
 
@@ -7570,8 +7576,13 @@ msgstr "Okt"
 msgid "Sep"
 msgstr "Sep"
 
-#: Mailman/i18n.py:122
-msgid "%(wday)s %(mon)s %(day)2i %(hh)02i:%(mm)02i:%(ss)02i %(year)04i"
+#: Mailman/i18n.py:95
+msgid "Server Local Time"
+msgstr ""
+
+#: Mailman/i18n.py:128
+msgid ""
+"%(wday)s %(mon)s %(day)2i %(hh)02i:%(mm)02i:%(ss)02i %(tzname)s %(year)04i"
 msgstr ""
 
 #: bin/add_members:26
@@ -7778,8 +7789,10 @@ msgid ""
 msgstr ""
 "Bygger epostlistens arkiv på nytt.\n"
 "\n"
-"Bruk denne kommandoen for å bygge en epostlistes arkiv på nytt. Det kan være\n"
-"du får bruk for dette hvis du manuelt redigerer noen epost i et arkiv, eller\n"
+"Bruk denne kommandoen for å bygge en epostlistes arkiv på nytt. Det kan "
+"være\n"
+"du får bruk for dette hvis du manuelt redigerer noen epost i et arkiv, "
+"eller\n"
 "fjerner noen epost fra arkivet.\n"
 "\n"
 "Brukes slik: %(PROGRAM)s [valg] <listenavn> [<mbox-fil>]\n"
@@ -7798,7 +7811,8 @@ msgstr ""
 "\n"
 "    -s N\n"
 "    --start=N\n"
-"        Starter indekseringen på artikkel N, der artikkel 0 er første melding\n"
+"        Starter indekseringen på artikkel N, der artikkel 0 er første "
+"melding\n"
 "        i mbox-filen.\n"
 "        0 er standardverdi.\n"
 "\n"
@@ -7815,7 +7829,8 @@ msgstr ""
 "\n"
 "%% bin/arch minliste archives/private/minliste.mbox/minliste.mbox\n"
 "\n"
-"<mbox-fil> er valgfri. Angis den ikke, prøver kommandoen å gjette riktig navn.\n"
+"<mbox-fil> er valgfri. Angis den ikke, prøver kommandoen å gjette riktig "
+"navn.\n"
 
 #: bin/arch:125
 msgid "listname is required"
@@ -9118,6 +9133,32 @@ msgstr "Ugyldig --digest parameter: %(kind)s"
 msgid "Could not open file for writing:"
 msgstr "Kan ikke åpne filen for skriving:"
 
+#: bin/list_owners:19
+msgid ""
+"List the owners of a mailing list, or all mailing lists.\n"
+"\n"
+"Usage: %(PROGRAM)s [options] [listname ...]\n"
+"Options:\n"
+"\n"
+"    -w / --with-listnames\n"
+"        Group the owners by list names and include the list names in the\n"
+"        output.  Otherwise, the owners will be sorted and uniquified based "
+"on\n"
+"        the email address.\n"
+"\n"
+"    -m / --moderators\n"
+"        Include the list moderators in the output.\n"
+"\n"
+"    -h / --help\n"
+"        Print this help message and exit.\n"
+"\n"
+"    listname\n"
+"        Print the owners of the specified lists.  More than one can appear\n"
+"        after the options.  If there are no listnames provided, the owners "
+"of\n"
+"        all the lists will be displayed.\n"
+msgstr ""
+
 #: bin/mailmanctl:19
 msgid ""
 "Primary start-up and shutdown script for Mailman's qrunner daemon.\n"
@@ -9226,7 +9267,8 @@ msgstr ""
 "at prosessene lukker sine loggfiler, og åpner de på nytt når noe igjen skal\n"
 "logges.\n"
 "\n"
-"Master-qrunneren reagerer også på SIGINT, SIGTERM, og SIGHUP, som den enkelt\n"
+"Master-qrunneren reagerer også på SIGINT, SIGTERM, og SIGHUP, som den "
+"enkelt\n"
 "og greit sender videre til sine qrunnere (merk at master-qrunneren vil\n"
 "lukke og åpne sine loggfiler dersom den får en SIGHUP).\n"
 "Master qrunneren legger også sin pid i filen data/master-qrunner.pid, men\n"
@@ -9250,25 +9292,32 @@ msgstr ""
 "        slik som definert ved konfigurasjon av Mailman). Hvis scriptet\n"
 "        kjøres som root, vil scriptet bytte til denne brukeren og gruppen\n"
 "        før den kontrollerer bruker og gruppe.\n"
-"        Dette kan være upraktisk ved testing og debugging, derfor gjør dette\n"
-"        -u valget slik at denne kontrollen hoppes over, og programmet kjøres\n"
+"        Dette kan være upraktisk ved testing og debugging, derfor gjør "
+"dette\n"
+"        -u valget slik at denne kontrollen hoppes over, og programmet "
+"kjøres\n"
 "        med den bruker og gruppe som kjører scriptet.\n"
 "        Dette valget benyttes normalt ikke i vanlige systemer som er i\n"
 "        produksjon.\n"
-"        Forøvrig er det verdt å merke seg at hvis du benytter -u og ikke er i\n"
-"        mailmangruppen, kan du få problemer med tilgangen til f.eks. å slette\n"
+"        Forøvrig er det verdt å merke seg at hvis du benytter -u og ikke er "
+"i\n"
+"        mailmangruppen, kan du få problemer med tilgangen til f.eks. å "
+"slette\n"
 "        en listes arkiv via web. Uheldig!\n"
 "\n"
 "    -s / --stale-lock-cleanup\n"
 "        Hvis mailmanctl finner en eksisterende master qrunner låsefil,\n"
 "        avslutter den vanligvis med en feilmelding. Med dette valget, vil\n"
-"        mailmanctl utføre noen ekstra kontroller. Hvis en prosess som kjører\n"
-"        passer med den host/pid som står i låsefilen, vil mailmanctl avslutte,\n"
+"        mailmanctl utføre noen ekstra kontroller. Hvis en prosess som "
+"kjører\n"
+"        passer med den host/pid som står i låsefilen, vil mailmanctl "
+"avslutte,\n"
 "        men dersom ingen prosess som passer kjører, vil mailmanctl fjerne\n"
 "        låsefilen og fortsette å kjøre.\n"
 "\n"
 "    -q / --quiet\n"
-"        Ikke vis statusmeldinger. Feilmeldinger vil likevel vises på standard\n"
+"        Ikke vis statusmeldinger. Feilmeldinger vil likevel vises på "
+"standard\n"
 "        error.\n"
 "\n"
 "    --help\n"
@@ -9550,7 +9599,8 @@ msgstr ""
 "\n"
 "    minliste@www.mittdomene.com\n"
 "\n"
-"der 'www.mittdomene.com' er navnet som skal benyttes i URLer for epostlisten.\n"
+"der 'www.mittdomene.com' er navnet som skal benyttes i URLer for "
+"epostlisten.\n"
 "I eksemplet over vil URLen til oversikt over lister bli:\n"
 "http://www.mittdomene.com/mailman/listinfo. Navnet som spesifiseres må også\n"
 "eksistere i en VIRTUAL_HOSTS mapping i mm_cfg.py/Default.py. Den mappingen\n"
@@ -9559,7 +9609,8 @@ msgstr ""
 "benyttes både for URLer og for epostadresser.\n"
 "\n"
 "Hvis du staver listenavnet kun som 'minliste', vil \"host_name\" settes til\n"
-"DEFAULT_EMAIL_HOST (fra Mailman konfigurasjonen) og \"web_page_url\" settes til\n"
+"DEFAULT_EMAIL_HOST (fra Mailman konfigurasjonen) og \"web_page_url\" settes "
+"til\n"
 "DEFAULT_URL.\n"
 "\n"
 "Merk at listenavn vil bli omgjort til små bokstaver.\n"
@@ -10869,6 +10920,9 @@ msgstr ""
 "    --listname=listenavn\n"
 "        Send samle-epost kun fra den angitte listen. Hvis ikke dette valget\n"
 "        benyttes, vil det sendes ut fra alle aktuelle lister.\n"
+
+#~ msgid "Posts by member are currently quarantined for moderation"
+#~ msgstr "Epost fra medlemmet settes i karantene for godkjenning av moderator"
 
 #~ msgid "A confirmation email has been sent separately."
 #~ msgstr "En epost med forespørsel om bekreftelse på påmelding er sendt."

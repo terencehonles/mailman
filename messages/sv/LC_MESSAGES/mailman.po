@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Mailman 2.1b1\n"
-"POT-Creation-Date: Mon Dec  2 11:06:05 2002\n"
+"POT-Creation-Date: Mon Dec  9 01:18:04 2002\n"
 "PO-Revision-Date: 2002-08-18 22:26+0200\n"
 "Last-Translator: Eva Österlind <eva.osterlind@arvika.se>\n"
 "Language-Team: Swedish <information@arvika.se>\n"
@@ -16,201 +16,210 @@ msgstr ""
 "Content-Transfer-Encoding: quoted-printable\n"
 "Generated-By: pygettext.py 1.3\n"
 
-#: Mailman/Archiver/HyperArch.py:108
+# Mailman/Cgi/admindb.py:455 Mailman/Handlers/Decorate.py:49
+# Mailman/Handlers/Scrubber.py:157 Mailman/Handlers/Scrubber.py:158
+#: Mailman/Archiver/HyperArch.py:111
+#, fuzzy
+msgid "size not available"
+msgstr "inte tillg&auml;nglig"
+
+#: Mailman/Archiver/HyperArch.py:117
 msgid " %(size)i bytes "
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:242 Mailman/Archiver/HyperArch.py:410
-#: Mailman/Archiver/HyperArch.py:995
+#: Mailman/Archiver/HyperArch.py:251 Mailman/Archiver/HyperArch.py:421
+#: Mailman/Archiver/HyperArch.py:1014
 msgid " at "
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:439
+#: Mailman/Archiver/HyperArch.py:450
 msgid "Previous message:"
 msgstr ""
 
 # Mailman/Gui/Archive.py:34
-#: Mailman/Archiver/HyperArch.py:471
+#: Mailman/Archiver/HyperArch.py:482
 #, fuzzy
 msgid "Next message:"
 msgstr "Arkivera e-postbrev i ett arkiv?"
 
 # Mailman/Archiver/pipermail.py:452
-#: Mailman/Archiver/HyperArch.py:644 Mailman/Archiver/HyperArch.py:677
+#: Mailman/Archiver/HyperArch.py:660 Mailman/Archiver/HyperArch.py:696
 #, fuzzy
 msgid "thread"
 msgstr "  Tr&aring;d"
 
 # Mailman/Handlers/Scrubber.py:129
-#: Mailman/Archiver/HyperArch.py:645 Mailman/Archiver/HyperArch.py:678
+#: Mailman/Archiver/HyperArch.py:661 Mailman/Archiver/HyperArch.py:697
 #, fuzzy
 msgid "subject"
 msgstr "ingen titel"
 
-#: Mailman/Archiver/HyperArch.py:646 Mailman/Archiver/HyperArch.py:679
+#: Mailman/Archiver/HyperArch.py:662 Mailman/Archiver/HyperArch.py:698
 msgid "author"
 msgstr ""
 
 # Mailman/Handlers/Scrubber.py:130
-#: Mailman/Archiver/HyperArch.py:647 Mailman/Archiver/HyperArch.py:680
+#: Mailman/Archiver/HyperArch.py:663 Mailman/Archiver/HyperArch.py:699
 #, fuzzy
 msgid "date"
 msgstr "inget datum"
 
-#: Mailman/Archiver/HyperArch.py:716
+#: Mailman/Archiver/HyperArch.py:735
 msgid "<P>Currently, there are no archives. </P>"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:753
+#: Mailman/Archiver/HyperArch.py:772
 msgid "Gzip'd Text%(sz)s"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:758
+#: Mailman/Archiver/HyperArch.py:777
 msgid "Text%(sz)s"
 msgstr ""
 
 # bin/rmlist:117 bin/rmlist:119
-#: Mailman/Archiver/HyperArch.py:848
+#: Mailman/Archiver/HyperArch.py:867
 #, fuzzy
 msgid "figuring article archives\n"
 msgstr "privat arkiv"
 
-#: Mailman/Archiver/HyperArch.py:858
+#: Mailman/Archiver/HyperArch.py:877
 msgid "April"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:858
+#: Mailman/Archiver/HyperArch.py:877
 msgid "February"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:858
+#: Mailman/Archiver/HyperArch.py:877
 msgid "January"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:858
+#: Mailman/Archiver/HyperArch.py:877
 msgid "March"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:859
+#: Mailman/Archiver/HyperArch.py:878
 msgid "August"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:859
+#: Mailman/Archiver/HyperArch.py:878
 msgid "July"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:859
+#: Mailman/Archiver/HyperArch.py:878
 msgid "June"
 msgstr ""
 
 # Mailman/Cgi/options.py:666
-#: Mailman/Archiver/HyperArch.py:859 Mailman/i18n.py:91
+#: Mailman/Archiver/HyperArch.py:878 Mailman/i18n.py:91
 #, fuzzy
 msgid "May"
 msgstr "dag"
 
 # Mailman/HTMLFormatter.py:289
-#: Mailman/Archiver/HyperArch.py:860
+#: Mailman/Archiver/HyperArch.py:879
 #, fuzzy
 msgid "December"
 msgstr "medlemmar"
 
 # Mailman/HTMLFormatter.py:289
-#: Mailman/Archiver/HyperArch.py:860
+#: Mailman/Archiver/HyperArch.py:879
 #, fuzzy
 msgid "November"
 msgstr "medlemmar"
 
-#: Mailman/Archiver/HyperArch.py:860
+#: Mailman/Archiver/HyperArch.py:879
 msgid "October"
 msgstr ""
 
 # Mailman/HTMLFormatter.py:289
-#: Mailman/Archiver/HyperArch.py:860
+#: Mailman/Archiver/HyperArch.py:879
 #, fuzzy
 msgid "September"
 msgstr "medlemmar"
 
 # Mailman/Cgi/admin.py:282 Mailman/Cgi/listinfo.py:132 cron/mailpasswds:157
-#: Mailman/Archiver/HyperArch.py:868
+#: Mailman/Archiver/HyperArch.py:887
 #, fuzzy
 msgid "First"
 msgstr "Lista"
 
-#: Mailman/Archiver/HyperArch.py:868
+#: Mailman/Archiver/HyperArch.py:887
 msgid "Fourth"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:868
+#: Mailman/Archiver/HyperArch.py:887
 msgid "Second"
 msgstr ""
 
 # Mailman/Cgi/admin.py:882
-#: Mailman/Archiver/HyperArch.py:868
+#: Mailman/Archiver/HyperArch.py:887
 #, fuzzy
 msgid "Third"
 msgstr "d&ouml;lj"
 
-#: Mailman/Archiver/HyperArch.py:870
+#: Mailman/Archiver/HyperArch.py:889
 msgid "%(ord)s quarter %(year)i"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:877
+#: Mailman/Archiver/HyperArch.py:896
 msgid "%(month)s %(year)i"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:882
+#: Mailman/Archiver/HyperArch.py:901
 msgid "The Week Of Monday %(day)i %(month)s %(year)i"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:886
+#: Mailman/Archiver/HyperArch.py:905
 msgid "%(day)i %(month)s %(year)i"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:983
+#: Mailman/Archiver/HyperArch.py:1002
 msgid "Computing threaded index\n"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:1232
-msgid "Updating HTML for article "
-msgstr ""
+# Mailman/Archiver/pipermail.py:418
+#: Mailman/Archiver/HyperArch.py:1261
+#, fuzzy
+msgid "Updating HTML for article %(seq)s"
+msgstr "Uppdaterar indexfiler f&ouml;r arkivet [%(archive)s]"
 
-#: Mailman/Archiver/HyperArch.py:1238
-msgid "article file %s is missing!"
+#: Mailman/Archiver/HyperArch.py:1268
+msgid "article file %(filename)s is missing!"
 msgstr ""
 
 # Mailman/Archiver/pipermail.py:166 Mailman/Archiver/pipermail.py:167
-#: Mailman/Archiver/pipermail.py:166 Mailman/Archiver/pipermail.py:167
+#: Mailman/Archiver/pipermail.py:168 Mailman/Archiver/pipermail.py:169
 msgid "No subject"
 msgstr "Utan titel"
 
 # Mailman/Archiver/pipermail.py:268
-#: Mailman/Archiver/pipermail.py:268
+#: Mailman/Archiver/pipermail.py:269
 msgid "Creating archive directory "
 msgstr "Skapar arkivkatalog"
 
 # Mailman/Archiver/pipermail.py:280
-#: Mailman/Archiver/pipermail.py:280
+#: Mailman/Archiver/pipermail.py:281
 msgid "Reloading pickled archive state"
 msgstr "Laddar arkivets tillst&aring;nd fr&aring;n en pickle"
 
 # Mailman/Archiver/pipermail.py:307
-#: Mailman/Archiver/pipermail.py:307
+#: Mailman/Archiver/pipermail.py:308
 msgid "Pickling archive state into "
 msgstr "Lagrar arkivets tillst&aring;nd i en pickle: "
 
 # Mailman/Archiver/pipermail.py:418
-#: Mailman/Archiver/pipermail.py:418
+#: Mailman/Archiver/pipermail.py:419
 msgid "Updating index files for archive [%(archive)s]"
 msgstr "Uppdaterar indexfiler f&ouml;r arkivet [%(archive)s]"
 
 # Mailman/Archiver/pipermail.py:452
-#: Mailman/Archiver/pipermail.py:451
+#: Mailman/Archiver/pipermail.py:452
 msgid "  Thread"
 msgstr "  Tr&aring;d"
 
 # Mailman/Archiver/pipermail.py:554
-#: Mailman/Archiver/pipermail.py:556
+#: Mailman/Archiver/pipermail.py:557
 msgid "#%(counter)05d %(msgid)s"
 msgstr ""
 
@@ -314,7 +323,7 @@ msgstr ""
 # Mailman/Cgi/admin.py:179 Mailman/Cgi/admin.py:185 Mailman/Cgi/admin.py:190
 # Mailman/Cgi/admin.py:1340 Mailman/Gui/GUIBase.py:178
 #: Mailman/Cgi/admin.py:179 Mailman/Cgi/admin.py:185 Mailman/Cgi/admin.py:190
-#: Mailman/Cgi/admin.py:1358 Mailman/Gui/GUIBase.py:184
+#: Mailman/Cgi/admin.py:1361 Mailman/Gui/GUIBase.py:184
 msgid "Warning: "
 msgstr "Varning: "
 
@@ -1157,79 +1166,79 @@ msgid "Administator passwords did not match"
 msgstr "Administrat&ouml;rsl&ouml;senorden &auml;r inte lika"
 
 # Mailman/Cgi/admin.py:1245
-#: Mailman/Cgi/admin.py:1262
+#: Mailman/Cgi/admin.py:1265
 msgid "Already a member"
 msgstr "Redan medlem"
 
 # Mailman/Cgi/admin.py:1248
-#: Mailman/Cgi/admin.py:1265
+#: Mailman/Cgi/admin.py:1268
 msgid "&lt;blank line&gt;"
 msgstr "&lt;tom rad&gt;"
 
 # Mailman/Cgi/admin.py:1249 Mailman/Cgi/admin.py:1252
-#: Mailman/Cgi/admin.py:1266 Mailman/Cgi/admin.py:1269
+#: Mailman/Cgi/admin.py:1269 Mailman/Cgi/admin.py:1272
 msgid "Bad/Invalid email address"
 msgstr "Fel/Ogiltig e-postadress"
 
 # Mailman/Cgi/admin.py:1255
-#: Mailman/Cgi/admin.py:1272
+#: Mailman/Cgi/admin.py:1275
 msgid "Hostile address (illegal characters)"
 msgstr "Farlig e-postadress (inneh&aring;ller ogiltiga tecken)"
 
 # Mailman/Cgi/admin.py:1260
-#: Mailman/Cgi/admin.py:1278
+#: Mailman/Cgi/admin.py:1281
 msgid "Successfully invited:"
 msgstr "Inbjudan &auml;r skickad till:"
 
 # Mailman/Cgi/admin.py:1262
-#: Mailman/Cgi/admin.py:1280
+#: Mailman/Cgi/admin.py:1283
 msgid "Successfully subscribed:"
 msgstr "Anm&auml;lan gjord:"
 
 # Mailman/Cgi/admin.py:1267
-#: Mailman/Cgi/admin.py:1285
+#: Mailman/Cgi/admin.py:1288
 msgid "Error inviting:"
 msgstr "Fel under inbjudan:"
 
 # Mailman/Cgi/admin.py:1269
-#: Mailman/Cgi/admin.py:1287
+#: Mailman/Cgi/admin.py:1290
 msgid "Error subscribing:"
 msgstr "Fel under anm&auml;an:"
 
 # Mailman/Cgi/admin.py:1298
-#: Mailman/Cgi/admin.py:1316
+#: Mailman/Cgi/admin.py:1319
 msgid "Successfully Unsubscribed:"
 msgstr "Avanm&auml;lan gjord:"
 
 # Mailman/Cgi/admin.py:1303
-#: Mailman/Cgi/admin.py:1321
+#: Mailman/Cgi/admin.py:1324
 msgid "Cannot unsubscribe non-members:"
 msgstr "Kan inte avanm&auml;la en icke-existerande medlem:"
 
 # Mailman/Cgi/admin.py:1315
-#: Mailman/Cgi/admin.py:1333
+#: Mailman/Cgi/admin.py:1336
 msgid "Bad moderation flag value"
 msgstr "Ogiltigt v&auml;rde p&aring; moderationsflaggan"
 
 # Mailman/Cgi/admin.py:1336
-#: Mailman/Cgi/admin.py:1354
+#: Mailman/Cgi/admin.py:1357
 msgid "Not subscribed"
 msgstr "Inte anm&auml;ld"
 
 # Mailman/Cgi/admin.py:1339
-#: Mailman/Cgi/admin.py:1357
+#: Mailman/Cgi/admin.py:1360
 msgid "Ignoring changes to deleted member: %(user)s"
 msgstr ""
 "Bortser fr&aring;n &auml;ndring av en medlem som &auml;r avanm&auml;ld: %"
 "(user)s"
 
 # Mailman/Cgi/admin.py:1378
-#: Mailman/Cgi/admin.py:1397
+#: Mailman/Cgi/admin.py:1400
 msgid "Successfully Removed:"
 msgstr "Avanm&auml;lan gjord av:"
 
 # Mailman/Cgi/admin.py:1382
-#: Mailman/Cgi/admin.py:1401
+#: Mailman/Cgi/admin.py:1404
 msgid "Error Unsubscribing:"
 msgstr "Fel under avanm&auml;lan av:"
 
@@ -4185,88 +4194,88 @@ msgid "Digest members:"
 msgstr "Medlemmar i sammandragsversion:"
 
 # Mailman/Defaults.py:1159
-#: Mailman/Defaults.py:1208
+#: Mailman/Defaults.py:1204
 msgid "Traditional Chinese"
 msgstr "Kinesiska (Traditional)"
 
 # Mailman/Defaults.py:1160
-#: Mailman/Defaults.py:1209
+#: Mailman/Defaults.py:1205
 msgid "Czech"
 msgstr "Tjeckiska"
 
 # Mailman/Defaults.py:1161
-#: Mailman/Defaults.py:1210
+#: Mailman/Defaults.py:1206
 msgid "German"
 msgstr "Tyska"
 
 # Mailman/Defaults.py:1162
-#: Mailman/Defaults.py:1211
+#: Mailman/Defaults.py:1207
 msgid "English (USA)"
 msgstr "Engelska (USA)"
 
 # Mailman/Defaults.py:1163
-#: Mailman/Defaults.py:1212
+#: Mailman/Defaults.py:1208
 msgid "Spanish (Spain)"
 msgstr "Spanska (Spanien)"
 
-#: Mailman/Defaults.py:1213
+#: Mailman/Defaults.py:1209
 msgid "Estonian"
 msgstr ""
 
 # Mailman/Defaults.py:1164
-#: Mailman/Defaults.py:1214
+#: Mailman/Defaults.py:1210
 msgid "Finnish"
 msgstr "Finska"
 
 # Mailman/Defaults.py:1165
-#: Mailman/Defaults.py:1215
+#: Mailman/Defaults.py:1211
 msgid "French"
 msgstr "Franska"
 
 # Mailman/Defaults.py:1166
-#: Mailman/Defaults.py:1216
+#: Mailman/Defaults.py:1212
 msgid "Simplified Chinese"
 msgstr "Kinesiska (Simplified)"
 
 # Mailman/Defaults.py:1167
-#: Mailman/Defaults.py:1217
+#: Mailman/Defaults.py:1213
 msgid "Hungarian"
 msgstr "Ungerska"
 
 # Mailman/Defaults.py:1168
-#: Mailman/Defaults.py:1218
+#: Mailman/Defaults.py:1214
 msgid "Italian"
 msgstr "Italienska"
 
 # Mailman/Defaults.py:1169
-#: Mailman/Defaults.py:1219
+#: Mailman/Defaults.py:1215
 msgid "Japanese"
 msgstr "Japanska"
 
 # Mailman/Defaults.py:1170
-#: Mailman/Defaults.py:1220
+#: Mailman/Defaults.py:1216
 msgid "Korean"
 msgstr "Koreanska"
 
-#: Mailman/Defaults.py:1221
+#: Mailman/Defaults.py:1217
 msgid "Dutch"
 msgstr ""
 
 # Mailman/Defaults.py:1171
-#: Mailman/Defaults.py:1222
+#: Mailman/Defaults.py:1218
 msgid "Norwegian"
 msgstr "Norska"
 
-#: Mailman/Defaults.py:1223
+#: Mailman/Defaults.py:1219
 msgid "Portuguese (Brazil)"
 msgstr ""
 
 # Mailman/Defaults.py:1172
-#: Mailman/Defaults.py:1224
+#: Mailman/Defaults.py:1220
 msgid "Russian"
 msgstr "Ryska"
 
-#: Mailman/Defaults.py:1225
+#: Mailman/Defaults.py:1221
 msgid "Swedish"
 msgstr ""
 
@@ -7698,7 +7707,8 @@ msgstr "; av ok&auml;nd anledning"
 
 # Mailman/HTMLFormatter.py:144
 #: Mailman/HTMLFormatter.py:148
-msgid "Note: your list delivery is currently disabled %(reason)s."
+#, fuzzy
+msgid "Note: your list delivery is currently disabled%(reason)s."
 msgstr ""
 "Observera distribution av e-postbrev fr&aring;n listan har stoppats %(reason)"
 "s."
@@ -8208,12 +8218,8 @@ msgstr ""
 msgid "Content filtered message notification"
 msgstr ""
 
-#: Mailman/Handlers/Moderate.py:35
-msgid "Posts by member are currently quarantined for moderation"
-msgstr ""
-
 # Mailman/Handlers/Moderate.py:129
-#: Mailman/Handlers/Moderate.py:130
+#: Mailman/Handlers/Moderate.py:138
 msgid ""
 "You are not allowed to post to this mailing list, and your message has been\n"
 "automatically rejected.  If you think that your messages are being rejected "
@@ -8227,12 +8233,12 @@ msgstr ""
 "e-postlistans &auml;gare p&aring; %(listowner)s."
 
 # Mailman/Handlers/Moderate.py:144
-#: Mailman/Handlers/Moderate.py:145
+#: Mailman/Handlers/Moderate.py:153
 msgid "Auto-discard notification"
 msgstr "Automatiskt meddelande: ditt e-postbrev avvisades"
 
 # Mailman/Handlers/Moderate.py:147
-#: Mailman/Handlers/Moderate.py:148
+#: Mailman/Handlers/Moderate.py:156
 msgid "The attached message has been automatically discarded."
 msgstr "Det bifogade meddelandet kastades automatiskt."
 
@@ -8765,8 +8771,13 @@ msgstr ""
 msgid "Sep"
 msgstr "S&auml;tt"
 
-#: Mailman/i18n.py:122
-msgid "%(wday)s %(mon)s %(day)2i %(hh)02i:%(mm)02i:%(ss)02i %(year)04i"
+#: Mailman/i18n.py:95
+msgid "Server Local Time"
+msgstr ""
+
+#: Mailman/i18n.py:128
+msgid ""
+"%(wday)s %(mon)s %(day)2i %(hh)02i:%(mm)02i:%(ss)02i %(tzname)s %(year)04i"
 msgstr ""
 
 # bin/add_members:26
@@ -10469,6 +10480,32 @@ msgstr "Ogiltig --digest parameter: %(kind)s"
 #: bin/list_members:179
 msgid "Could not open file for writing:"
 msgstr "Kan inte &ouml;ppna filen f&ouml;r att skriva:"
+
+#: bin/list_owners:19
+msgid ""
+"List the owners of a mailing list, or all mailing lists.\n"
+"\n"
+"Usage: %(PROGRAM)s [options] [listname ...]\n"
+"Options:\n"
+"\n"
+"    -w / --with-listnames\n"
+"        Group the owners by list names and include the list names in the\n"
+"        output.  Otherwise, the owners will be sorted and uniquified based "
+"on\n"
+"        the email address.\n"
+"\n"
+"    -m / --moderators\n"
+"        Include the list moderators in the output.\n"
+"\n"
+"    -h / --help\n"
+"        Print this help message and exit.\n"
+"\n"
+"    listname\n"
+"        Print the owners of the specified lists.  More than one can appear\n"
+"        after the options.  If there are no listnames provided, the owners "
+"of\n"
+"        all the lists will be displayed.\n"
+msgstr ""
 
 # bin/mailmanctl:19
 #: bin/mailmanctl:19
