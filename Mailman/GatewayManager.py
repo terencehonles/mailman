@@ -92,6 +92,13 @@ class GatewayManager:
                     os.path.join(mm_cfg.SCRIPTS_DIR, 'post'),
                     self._internal_name)
                 file = os.popen(cmd, 'w')
+                # Usenet originated messages will not have a Unix envelope
+                # (i.e. "From " header).  This breaks Pipermail archiving, so
+                # we will synthesize one.  Be sure to use the format searched
+                # for by mailbox.UnixMailbox._isrealfromline()
+                timehdr = time.asctime(time.localtime(time.time()))
+                envhdr = 'From ' + self.GetAdminEmail() + '  ' + timehdr
+                file.write(envhdr + '\n')
                 file.write(string.join(headers,'\n'))
                 # If there wasn't already a TO: header, add one.
                 if not found_to:
