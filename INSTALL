@@ -321,6 +321,16 @@ configure and install the Mailman software.
               You need to reinstall Mailman, and specify $MAIL_GID to
               be 51, as described in the installation instructions.
 
+    Problem:  I send mail to the list, and get back mail saying,
+              "sh: wrapper not available for sendmail programs"
+
+    Solution: Your system uses sendmail restricted shell.  You need to
+              configure smrsh by creating a symbolic link from the mail
+              wrapper ($prefix/mail/wrapper) to either /var/admin/sm.bin 
+              or /usr/admin/sm.bin.  Note that on Debian linux, the system
+              makes /usr/lib/sm.bin, which is wrong, you will need to create
+              the directory /usr/admin/sm.bin and add the link there.
+
 
 Local Variables:
 mode: indented-text
