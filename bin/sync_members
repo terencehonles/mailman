@@ -25,7 +25,7 @@ added.  For every address in the mailing list that does not appear in the
 file, the address is removed.  Other options control what happens when an
 address is added or removed.
 
-Usage: %(program)s [options] -f file listname
+Usage: %(PROGRAM)s [options] -f file listname
 
 Where `options' are:
 
@@ -70,42 +70,34 @@ Where `options' are:
 """
 
 import sys
-import string
 
 import paths
 from Mailman import MailList
 from Mailman import Errors
 from Mailman import Utils
+from Mailman.i18n import _
 
 
 
-program = sys.argv[0]
+PROGRAM = sys.argv[0]
 
-def usage(status, msg=''):
-    print __doc__ % globals()
+def usage(code, msg=''):
+    print >> sys.stderr, _(__doc__)
     if msg:
-        print msg
-    sys.exit(status)
-
-
-
-def startswith(s, prefix):
-    return s[:len(prefix)] == prefix
-
-def endswith(s, suffix):
-    return s[-len(suffix):] == suffix
+        print >> sys.stderr, msg
+    sys.exit(code)
 
 
 
 def yesno(opt):
-    i = string.find(opt, '=')
-    yesno = string.lower(opt[i+1:])
+    i = opt.find('=')
+    yesno = opt[i+1:].lower()
     if yesno in ('y', 'yes'):
         return 1
     elif yesno in ('n', 'no'):
         return 0
     else:
-        usage(1, 'Bad choice: ' + yesno)
+        usage(1, _('Bad choice: %(yesno)s'))
         # no return
 
 
@@ -117,6 +109,8 @@ def main():
     listname = None
     notifyadmin = None
 
+    # TBD: can't use getopt with this command line syntax, which is broken and
+    # should be changed to be getopt compatible.
     i = 1
     while i < len(sys.argv):
         opt = sys.argv[i]
@@ -124,46 +118,46 @@ def main():
             usage(0)
         elif opt in ('-n', '--no-change'):
             dryrun = 1
-            i = i + 1
-            print 'Dry run mode'
+            i += 1
+            print _('Dry run mode')
         elif opt in ('-d', '--digest'):
             digest = 1
-            i = i + 1
-        elif startswith(opt, '-d=') or startswith(opt, '--digest='):
+            i += 1
+        elif opt.startswith('-d=') or opt.startswith('--digest='):
             digest = yesno(opt)
-            i = i + 1
+            i += 1
         elif opt in ('-w', '--welcome-msg'):
             welcome = 1
-            i = i + 1
-        elif startswith(opt, '-w=') or startswith(opt, '--welcome-msg='):
+            i += 1
+        elif opt.startswith('-w=') or opt.startswith('--welcome-msg='):
             welcome = yesno(opt)
-            i = i + 1
+            i += 1
         elif opt in ('-f', '--file'):
             if filename is not None:
-                usage(1, 'Only one -f switch allowed')
+                usage(1, _('Only one -f switch allowed'))
             try:
                 filename = sys.argv[i+1]
             except IndexError:
-                usage(1, 'No argument to -f given')
-            i = i + 2
+                usage(1, _('No argument to -f given'))
+            i += 2
         elif opt in ('-a', '--notifyadmin'):
             notifyadmin = 1
-            i = i + 1
-        elif startswith(opt, '-a=') or startswith(opt, '--notifyadmin='):
+            i += 1
+        elif opt.startswith('-a=') or opt.startswith('--notifyadmin='):
             notifyadmin = yesno(opt)
-            i = i + 1
+            i += 1
         elif opt[0] == '-':
-            usage(1, 'Illegal option: ' + opt)
+            usage(1, _('Illegal option: %(opt)s'))
         else:
             try:
-                listname = string.lower(sys.argv[i])
-                i = i + 1
+                listname = sys.argv[i].lower()
+                i += 1
             except IndexError:
-                usage(1, 'No listname given')
+                usage(1, _('No listname given'))
             break
         
     if listname is None or filename is None:
-        usage(1, 'Must have a listname and a filename')
+        usage(1, _('Must have a listname and a filename'))
 
     # read the list of addresses to sync to from the file
     if filename == '-':
@@ -172,7 +166,7 @@ def main():
         try:
             fp = open(filename)
         except IOError, (code, msg):
-            usage(1, 'Cannot read address file: %s: %s' % (filename, msg))
+            usage(1, _('Cannot read address file: %(filename)s: %(msg)s'))
         try:
             filemembers = fp.readlines()
         finally:
@@ -181,10 +175,10 @@ def main():
     # strip out lines we don't care about, they are comments (# in first
     # non-whitespace) or are blank
     for i in range(len(filemembers)-1, -1, -1):
-        addr = string.strip(filemembers[i])
+        addr = filemembers[i].strip()
         if addr == '' or addr[:1] == '#':
             del filemembers[i]
-            print 'Ignore  :  %30s' % addr
+            print _('Ignore  :  %30(addr)s')
 
     # first filter out any invalid addresses
     filemembers = Utils.ParseAddrs(filemembers)
@@ -193,17 +187,17 @@ def main():
         try:
             Utils.ValidateEmail(addr)
         except Errors.EmailAddressError:
-            print 'Invalid :  %30s' % addr
+            print _('Invalid :  %30(addr)s')
             invalid = 1
     if invalid:
-        print 'You must fix the preceding invalid addresses first.'
+        print _('You must fix the preceding invalid addresses first.')
         sys.exit(1)
 
     # get the locked list object
     try:
         mlist = MailList.MailList(listname)
     except Errors.MMListError, e:
-        print 'No such list "%s"\n%s' % (listname, e)
+        print _('No such list: %(listname)s')
         sys.exit(1)
 
     try:
@@ -212,19 +206,19 @@ def main():
         needsadding = {}
         for addr in (mlist.GetDeliveryMembers() +
                      mlist.GetDigestDeliveryMembers()):
-            addrs[string.lower(addr)] = addr
+            addrs[addr.lower()] = addr
 
         for addr in filemembers:
             # any address found in the file that is also in the list can be
             # ignored.  if not found in the list, it must be added later
-            laddr = string.lower(addr)
+            laddr = addr.lower()
             if addrs.has_key(laddr):
                 del addrs[laddr]
             else:
                 needsadding[laddr] = addr
 
         if not needsadding and not addrs:
-            print 'Nothing to do.'
+            print _('Nothing to do.')
             sys.exit(0)
 
         # addrs contains now all the addresses that need removing
@@ -238,7 +232,7 @@ def main():
                 if not dryrun:
                     mlist.ApprovedAddMember(addr, pw, digest,
                                             welcome, notifyadmin)
-                print 'Added  : %30s (%30s)' % (laddr, addr)
+                print _('Added  : %30(laddr)s (%30(addr)s)')
             except Errors.MMAlreadyAMember:
                 pass
 
@@ -246,7 +240,7 @@ def main():
             # should be a member, otherwise our test above is broken
             if not dryrun:
                 mlist.DeleteMember(addr, admin_notif=notifyadmin)
-            print 'Removed: %30s (%30s)' % (laddr, addr)
+            print _('Removed: %30(laddr)s (%30(addr)s)')
 
         mlist.Save()
     finally:

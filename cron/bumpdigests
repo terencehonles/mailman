@@ -36,6 +36,7 @@ import paths
 from Mailman import MailList
 from Mailman import Utils
 from Mailman import Errors
+from Mailman.i18n import _
 
 # Work around known problems with some RedHat cron daemons
 import signal
@@ -46,9 +47,9 @@ PROGRAM = sys.argv[0]
 
 
 def usage(code, msg=''):
-    print __doc__ % globals()
+    print >> sys.stderr, _(__doc__)
     if msg:
-        print msg
+        print >> sys.stderr, msg
     sys.exit(code)
 
 
@@ -69,7 +70,7 @@ def main():
         listnames = Utils.list_names()
 
     if not listnames:
-        print 'Nothing to do.'
+        print _('Nothing to do.')
         sys.exit(0)
 
     for listname in listnames:
@@ -77,9 +78,9 @@ def main():
             # be sure the list is locked
             mlist = MailList.MailList(listname)
         except Errors.MMListError, e:
-            usage(1, 'No such list: %s' % listname)
+            usage(1, _('No such list: %(listname)s'))
         try:
-            mlist.volume = mlist.volume + 1
+            mlist.volume += 1
             mlist.next_digest_number = 1
         finally:
             mlist.Save()

@@ -114,21 +114,20 @@ and run this from the command line:
 
 import sys
 import getopt
-import string
 
 import paths
-from Mailman.Utils import write
-from Mailman.MailList import MailList
+from Mailman import MailList
+from Mailman.i18n import _
 
 m = None
 r = None
 
 
 
-def usage(msg='', code=1):
-    write(__doc__ % globals(), file=sys.stderr)
+def usage(code, msg=''):
+    print >> sys.stderr, _(__doc__)
     if msg:
-        write(msg, file=sys.stdout)
+        print >> sys.stderr, msg
     sys.exit(code)
 
 
@@ -142,10 +141,10 @@ def atexit():
     if not m:
         return
     if m.Locked():
-        write('Unlocking (but not saving) list:', m.internal_name(),
-              file=sys.stderr)
+        print >> sys.stderr, _('Unlocking (but not saving) list:'), \
+              m.internal_name()
         m.Unlock()
-    write('Finalizing', file=sys.stderr)
+    print >> sys.stderr, _('Finalizing')
     del m
 
 
@@ -156,47 +155,46 @@ def main():
     try:
         opts, args = getopt.getopt(sys.argv[1:], 'hlr:',
                                    ['help', 'lock', 'run='])
-    except getopt.error, m:
-        usage(m)
+    except getopt.error, msg:
+        usage(1, msg)
 
     for opt, arg in opts:
         if opt in ('-h', '--help'):
-            usage(code=0)
+            usage(0)
         elif opt in ('-l', '--lock'):
             lock = 1
         elif opt in ('-r', '--run'):
             run = arg
 
     if len(args) < 1:
-        usage('No list name supplied.')
+        usage(1, _('No list name supplied.'))
 
-    listname = string.lower(args.pop(0))
+    listname = args.pop(0).lower().strip()
     lock = 0
     run = None
 
     # first try to open mailing list
-    write('Loading list:', listname, file=sys.stderr, nl=0)
+    print >> sys.stderr, _('Loading list %(listname)s'),
     if lock:
-        write('(locked)', file=sys.stderr)
+        print >> sys.stderr, _('(locked)')
     else:
-        write('(unlocked)', file=sys.stderr)
+        print >> sys.stderr, _('(unlocked)')
 
-    m = MailList(listname, lock=lock)
+    m = MailList.MailList(listname, lock=lock)
 
     # try to import the module and run the callable
     if run:
-        i = string.find(run, '.')
+        i = run.find('.')
         if i < 0:
             module = run
             callable = run
         else:
             module = run[:i]
             callable = run[i+1:]
-        write('Importing', module, '...', file=sys.stderr)
+        print >> sys.stderr, _('Importing %(module)s...')
         mod = __import__(module)
-        write('Running %s.%s()' % (module, callable), '...', file=sys.stderr)
-        # getattr(mode, callable)(m, *args)
-        r = apply(getattr(mod, callable), (m,) + tuple(args))
+        print >> sys.stderr, _('Running %(module)s.%(callable)s()...')
+        r = getattr(mod, callable)(m, *args)
 
 
 
