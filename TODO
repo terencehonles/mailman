@@ -1,13 +1,11 @@
-TODO for mailman 1.0b2 (TODO $Revision: 451 $, $Date: 1998-04-13 21:15:48 +0100 (Mon, 13 Apr 1998) $)
+TODO for mailman 1.0b2 (TODO $Revision: 509 $, $Date: 1998-05-04 17:57:58 +0100 (Mon, 04 May 1998) $)
 
 This document is by no means up to date, sorry.
 
-For after v 1.0b2:
+For after v 1.0b3:
 ------------
 Pending bugs
 ------------
- - Mime digests a bit feeble - postings containing mime attachments
-   not properly handled
  - Bounce processing
    - Turning off bounce processing doesn't?
    - Turning on non-member-post exclusion doesn't
@@ -16,20 +14,28 @@ Pending bugs
      be seen as different, but klm@parrot.python.org and
      klm@larch.python.org and klm@python.org should probably be seen
      as the same.  There may be more criteria...
- - Bounces of the confirmation notices sent to people attempting
-   web-based subscriptions are, necessarily, directed (via reply-to
-   header) to maillist-request addr, and get mishandled there as
-   unrecognized requests.  Not sure how to solve this one short of
-   recognizing bad subscriber addrs before sending out the notice.
+ - Extremely little documentation.  (Aside from the README, some online
+   admin help, the code, and the developers community,
+   mailman-developers@python.org...)
 -------------------------------
 Pending Developments and Issues
 -------------------------------
-  Some modest Pending Refinements:
+
+Some moderate Pending Refinements:
+
  - Use re module everywhere instead of regexp and regsub.
+ - Add navigation sidebar to all web pages - central links, and
+   list-specific links for list-specific web pages.
+ - Provide user option by which list members are excluded from
+   postings which they're already getting via inclusion on message to:
+   or cc: headers.
+ - Improve recognition of "fuzzy same" addresses (necessary for to: and cc:
+   recognition in previous item)
  - Implement a reasonable administrivia filter for lists (but less
    likely to misfire than majordomo's) (administrivia is, eg,
    unsubscribe request mistakenly sent to list posting addr)
- - Refine any unqualified exception guards to specify target exceptions.
+ - Refine any remaining unqualified exception guards to specify target
+   exceptions, when appropriate.
  - Turn standard mailman exceptions into class exceptions.
  - Implement cookies (with moderate lifetimes) for user and admin passwords.
  - Unravel edit-options functionality from cgi/subscribe script - give 
@@ -46,32 +52,48 @@ Pending Developments and Issues
    page, like admin options pages do.
  - People mass subscribed on admin form should not require approval,
    even for closed-subscribe lists.
-Some bigger Pending Projects
- - User and Admin Guides - HOWTOs
- - Developers guide - documentation
- - Implement email interface to admin commands.
  - Implement a 'which' mailcmd.  (Probably not hard!  May be good intro
    project for someone wading into mailman development.)
+ - Cascaded lists (lists that subscribe to other lists) should not
+   have password notifications posted!
+
+Some bigger Pending Projects:
+
+ - Documentation:
+   - Install (good start in README)
+   - HOWTO setup a list
+   - User and Admin Guides
+     - Overview: features and finding your way around
+     - Tasks
+   - Developers guide
+     - Architecture and API
+     - Direct interaction (via interpreter) and script recipes
+ - Encapsulate all modules within a python package, and use relative
+   paths for everything else.
+ - Email interface to admin commands.
  - Put the admin interface and other things like private subscriber rosters
    *behind* passwords, like the private archives are.  Eg, instead of
    putting the password box on the listinfo form, have it always be just
    a regular link to the roster, but then the roster page would be a
    password page if the roster is private and there's no cookie for it.
- - Generalize and refine admindb so that pending bounces,
-   subscriptions, etc are stored in the filesystem, nicely catalogued, 
+ - Catalogue mechanism - generalize and refine admindb so that pending bounces,
+   subscriptions, etc are stored in the filesystem, nicely catalogued,
    and the interfaces for handling them (eg, admindb) shows succinct
-   summaries, with links to see the entire things.  (I may work on this.)
- - Develop subscription mechanisms so real confirmation happens, and
-   use that as basis for option to change existing subscription
-   delivery address.  (Scott cotton is working on this.)
- - Deliver by connect to SMTP 25 instead of sendmail.  (I'm checking
-   in modules/smtplib.py module john's played with some.)
+   summaries, with links to see the entire things.  (I may work on
+   this.)
+ - (Scott Cotton doing/did this) Develop subscription mechanisms so real
+   confirmation happens, and use that as basis for option to change
+   existing subscription delivery address.  (Scott cotton is working
+   on this.)
+ - (Dragon doing/did this) Deliver by connect to SMTP 25 instead of
+   sendmail.  (I'm checking in modules/smtplib.py module john's played
+   with some.)
  - Robustify aliases handling to not just append entries if they
    already exist, and ideally, edit existing ones if they need to change.
- - Implement a real admin/membership-management section, that includes 
-   includes hidden subscribers, provides easy perusal and changing of
-   all members (including concealed members) status, including
-   disabling or removal from list.
+ - (Scott doing/did this) Implement a real admin/membership-management
+   section, that includes includes hidden subscribers, provides easy
+   perusal and changing of all members (including concealed members)
+   status, including disabling or removal from list.
  - Implement some automated validation of installation - check for
    obvious problems with options settings, file access permissions,
    sendmail hookup, etc.
@@ -80,18 +102,20 @@ Some bigger Pending Projects
  - Make listinfo page static, regenerated every time admin options are 
    changed.  This will speed up and reduce load for listinfo page
    loading.
+
 More Fundamental, or just more bigger:), Pending Projects
+
  - Refine locking to only necessary sections, so there's less room for 
    unnecessary contention.
  - Implement the system as a persistent server.  (John's planning to
    do this.)
- - Implement member profiles, using a class.  For name, organization,
-   description, etc, and defaults options settings.  The lists,
-   themselves, could still have copies of the specific passwords and
-   the compact bitmaps (for the sake of efficiency) for list-specific
-   options like digest/nondigest, but the user could set their default
-   choices - delivery address, password, delivery mode - in their
-   profile.
+ - (Dragon's doing this) Implement member profiles, using a class.
+   For name, organization, description, etc, and defaults options
+   settings.  The lists, themselves, could still have copies of the
+   specific passwords and the compact bitmaps (for the sake of
+   efficiency) for list-specific options like digest/nondigest, but
+   the user could set their default choices - delivery address,
+   password, delivery mode - in their profile.
 
 ===================================================================
 For v .96:
