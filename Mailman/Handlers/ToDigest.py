@@ -219,7 +219,7 @@ class Digest:
         substs = Utils.SafeDict()
         substs.update(mlist.__dict__)
         substs.update(
-            {'got_listinfo_url' : mlist.GetAbsoluteScriptURL('listinfo'),
+            {'got_listinfo_url' : mlist.GetScriptURL('listinfo', absolute=1),
              'got_request_email': mlist.GetRequestEmail(),
              'got_list_email'   : mlist.GetListEmail(),
              'got_owner_email'  : mlist.GetAdminEmail(),
