@@ -68,7 +68,7 @@ class MailCommandHandler:
         else:
 	    lines = string.split(mail.body, '\n')
 	    if subject:
-		self.AddError("Subject line ignored.")
+		self.AddError("Subject line ignored: %s" % subject)
 	for line in lines:
 	    line = string.strip(line)
 	    if not line:
@@ -102,12 +102,14 @@ class MailCommandHandler:
 	    self.AddError("Usage: password <oldpw> <newpw>")
 	    return
 	try:
-	    self.ChangeUserPassword(mail.GetSender(), args[0], args[1], args[1])
+	    self.ChangeUserPassword(mail.GetSender(),
+				    args[0], args[1], args[1])
 	    self.AddToResponse('Succeded.')
 	except mm_err.MMListNotReady:
 	    self.AddError("List is not functional.")
 	except mm_err.MMNotAMemberError:
-	    self.AddError("%s isn't subscribed to this list." % mail.GetSender())
+	    self.AddError("%s isn't subscribed to this list." %
+			  mail.GetSender())
 	except mm_err.MMBadPasswordError:
 	    self.AddError("You gave the wrong password.")
 	except:
