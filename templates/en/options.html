@@ -1,4 +1,4 @@
-<!-- $Revision: 4800 $ -->
+<!-- $Revision: 4824 $ -->
 <html>
 <head>
     <title><MM-Presentable-User> membership configuration for <MM-List-Name>
@@ -10,7 +10,7 @@
         <FONT COLOR="#000000" SIZE=+1>
         <MM-List-Name> mailing list membership configuration for
         <MM-Presentable-User>
-	</FONT></B></TD></TR>
+        </FONT></B></TD></TR>
     </TABLE>
 <MM-Form-Start>
 <p>
@@ -35,7 +35,7 @@
     <TR><TD WIDTH="100%" BGCOLOR="#FFF0D0" colspan="2">
         <FONT COLOR="#000000">
         <B>Changing your <MM-List-Name> membership information</B>
-	</FONT></TD></TR>
+        </FONT></TD></TR>
     <tr><td colspan="2">You can change the address that you are subscribed
         to the mailing list with by entering the new address in the
         fields below.  Note that a confirmation email will be sent to
@@ -82,9 +82,9 @@
     <TR><TD WIDTH="50%" BGCOLOR="#FFF0D0"><FONT COLOR="#000000">
         <B>Unsubscribing from <MM-List-Name></B></td>
 
-	<TD WIDTH="50%" BGCOLOR="#FFF0D0"><FONT COLOR="#000000">
+        <TD WIDTH="50%" BGCOLOR="#FFF0D0"><FONT COLOR="#000000">
         <B>Your other <MM-Host> subscriptions</B>
-	</FONT></TD></TR>
+        </FONT></TD></TR>
 
     <tr><td>
         Turn on the confirmation checkbox and hit this button to
@@ -100,13 +100,13 @@
 
         <p>
         <center><MM-Other-Subscriptions-Submit></center>
-	</TD></TR>
+        </TD></TR>
 </table>
 
 <TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
     <TR><TD COLSPAN=2 WIDTH="100%" BGCOLOR="#FFF0D0"><FONT COLOR="#000000">
         <B>Your <MM-List-Name> Password</B>
-	</FONT></TD></TR>
+        </FONT></TD></TR>
 
     <tr valign="TOP"><td WIDTH="50%">
         <a name=reminder>
@@ -146,7 +146,7 @@
 <TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
     <TR><TD WIDTH="100%" BGCOLOR="#FFF0D0"><FONT COLOR="#000000">
         <B>Your <MM-List-Name> Subscription Options</B>
-	</FONT></TD></TR>
+        </FONT></TD></TR>
 </table>
 
 <p>
@@ -278,6 +278,26 @@ lists you are subscribed to.
         </td><td bgcolor="#cccccc">
         <mm-suppress-nonmatching-topics>No<br>
         <mm-receive-nonmatching-topics>Yes
+        </td></tr>
+
+    <tr><td bgcolor="#cccccc">
+        <strong>Avoid duplicate copies of messages?</strong><p>
+
+                When you are listed explicitly in the <tt>To:</tt> or
+                <tt>Cc:</tt> headers of a list message, you can opt to
+                not receive another copy from the mailing list.
+                Select <em>Yes</em> to avoid receiving copies from the
+                mailing list; select <em>No</em> to receive copies.
+
+                <p>If the list has member personalized messages
+                enabled, and you elect to receive copies, every copy
+                will have a <tt>X-Mailman-Copy: yes</tt> header added
+                to it.
+
+        </td><td bgcolor="#cccccc">
+        <mm-receive-duplicates-button>No<br>
+        <mm-dont-receive-duplicates-button>Yes<p>
+        <mm-global-nodupes-button><i>Set globally</i>
         </td></tr>
 
     <tr><TD colspan="2">
