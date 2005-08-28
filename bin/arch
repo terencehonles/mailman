@@ -163,7 +163,20 @@ def main():
         lock.lock()
         # Maybe wipe the old archives
         if wipe:
+            if mlist.scrub_nondigest:
+                # TK: save the attachments dir because they are not in mbox
+                saved = 0
+                try:
+                    atchdir = os.path.join(mlist.archive_dir(), 'attachments')
+                    savedir = os.path.join(mlist.archive_dir() + '.mbox',
+                                           'attachments')
+                    os.rename(atchdir, savedir)
+                    saved = 1
+                except:
+                    pass
             shutil.rmtree(mlist.archive_dir())
+            if mlist.scrub_nondigest and saved:
+                os.renames(savedir, atchdir)
         try:
             fp = open(mbox)
         except IOError, msg:
