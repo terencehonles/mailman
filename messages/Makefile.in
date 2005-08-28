@@ -48,8 +48,8 @@ MSGFMT= 	@PYTHON@ ../build/bin/msgfmt.py
 MSGMERGE=	msgmerge
 
 # CVS available languages
-LANGUAGES=	ca cs da de es et eu fi fr hu it ja ko lt nl no pl pt pt_BR \
-		ru sl sr sv uk
+LANGUAGES=	ca cs da de es et eu fi fr hr hu it ja ko lt nl no pl \
+		pt pt_BR ro ru sl sr sv tr uk zh_CN zh_TW
 LANGDIRS=	$(LANGUAGES:%=messages/%/LC_MESSAGES)
 # Human readable po file
 POFILES=	$(LANGUAGES:%=%/LC_MESSAGES/mailman.po)
@@ -107,7 +107,8 @@ doinstall: mofiles
 	    po=$(srcdir)/$$d/LC_MESSAGES/mailman.po; \
 	    mo=$(srcdir)/$$d/LC_MESSAGES/mailman.mo; \
 	    dir=$(DESTDIR)$(prefix)/messages/$$d/LC_MESSAGES; \
-	    $(INSTALL) -m $(FILEMODE) $$po $$mo $$dir; \
+	    $(INSTALL) -m $(FILEMODE) $$po $$dir; \
+ 	    $(INSTALL) -m $(FILEMODE) $$mo $$dir; \
 	done
 
 mofiles: $(MOFILES)
@@ -143,7 +144,7 @@ potfile: marked.files docstring.files
 # .pot file
 %/LC_MESSAGES/mailman.po: mailman.pot
 	@echo "Merging new template file with existing translations"
-	$(MSGMERGE) -U $@ mailman.pot
+	$(MSGMERGE) -U $@ mailman.pot || touch $@
 
 
 FORCE:

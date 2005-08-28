@@ -6,7 +6,6 @@ http://linux.gda.pl/pub/Mailman-pl/
 Lista dyskusyjna polskich t³umaczy:
 http://linux.gda.pl/mailman/listinfo/mailman-pl
 
-
 Do tej pory udzia³ w t³umaczeniu wzieli (w kolejno¶ci chronologicznej
 przy³±czania siê do projektu):
 - Marcin Sochacki <wanted%linux.gda.pl>
@@ -15,11 +14,20 @@ przy³±czania siê do projektu):
 - Wojciech Czarnowski <wojtekcz%rodos.com.pl>
 - Bartosz Sawicki <sawickib%iem.pw.edu.pl>
 - Robert ¦wiêcki <rswieck1%elka.pw.edu.pl>
-
+- Pawe³ Go³aszewski <blues@ds.pg.gda.pl>
 
 W chwili obecnej przet³umaczone jest 99% interfejsu subskrybenta i oko³o 
-50% interfejsu administracyjnego.
+95% interfejsu administracyjnego. Najbardziej aktualnej wersji szukajcie w
+oficjalnych CVS Mailmana. 
 
-2003-04-19, sawickib 
+Do zrobienia:
+- szlifowanie, polerowanie :)
+- skoñczenie t³umaczenia mailman.po (zosta³o jeszcze 230 msgid)
+- przet³umaczenie README.* dla ró¿nych MTA
+
+Od jakiego¶ roku nad t³umaczeniem pracujê wla¶ciwie tylko sam, ale bardzo
+chêtnie przyjmê wszystkie formy pomocy.
+
+2004-12-30, Bartosz Sawicki <sawickib@iem.pw.edu.pl>
 
 
