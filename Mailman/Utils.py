@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -27,14 +27,17 @@ from __future__ import nested_scopes
 
 import os
 import re
+import cgi
+import sha
+import time
+import errno
+import base64
 import random
 import urlparse
-import sha
-import errno
-import time
-import cgi
 import htmlentitydefs
+import email.Header
 import email.Iterators
+from email.Errors import HeaderParseError
 from types import UnicodeType
 from string import whitespace, digits
 try:
@@ -57,6 +60,7 @@ except NameError:
     False = 0
 
 EMPTYSTRING = ''
+UEMPTYSTRING = u''
 NL = '\n'
 DOT = '.'
 IDENTCHARS = ascii_letters + digits + '_'
@@ -196,7 +200,7 @@ def LCDomain(addr):
 
 
 # TBD: what other characters should be disallowed?
-_badchars = re.compile(r'[][()<>|;^,/\200-\377]')
+_badchars = re.compile(r'[][()<>|;^,\000-\037\177-\377]')
 
 def ValidateEmail(s):
     """Verify that the an email address isn't grossly evil."""
@@ -295,11 +299,52 @@ for v in _vowels:
         _syllables.append(v+c)
 del c, v
 
-def MakeRandomPassword(length=6):
+def UserFriendly_MakeRandomPassword(length):
     syls = []
     while len(syls) * 2 < length:
         syls.append(random.choice(_syllables))
     return EMPTYSTRING.join(syls)[:length]
+
+
+def Secure_MakeRandomPassword(length):
+    bytesread = 0
+    bytes = []
+    fd = None
+    try:
+        while bytesread < length:
+            try:
+                # Python 2.4 has this on available systems.
+                newbytes = os.urandom(length - bytesread)
+            except (AttributeError, NotImplementedError):
+                if fd is None:
+                    try:
+                        fd = os.open('/dev/urandom', os.O_RDONLY)
+                    except OSError, e:
+                        if e.errno <> errno.ENOENT:
+                            raise
+                        # We have no available source of cryptographically
+                        # secure random characters.  Log an error and fallback
+                        # to the user friendly passwords.
+                        from Mailman.Logging.Syslog import syslog
+                        syslog('error',
+                               'urandom not available, passwords not secure')
+                        return UserFriendly_MakeRandomPassword(length)
+                newbytes = os.read(fd, length - bytesread)
+            bytes.append(newbytes)
+            bytesread += len(newbytes)
+        s = base64.encodestring(EMPTYSTRING.join(bytes))
+        # base64 will expand the string by 4/3rds
+        return s.replace('\n', '')[:length]
+    finally:
+        if fd is not None:
+            os.close(fd)
+
+
+def MakeRandomPassword(length=mm_cfg.MEMBER_PASSWORD_LENGTH):
+    if mm_cfg.USER_FRIENDLY_PASSWORDS:
+        return UserFriendly_MakeRandomPassword(length)
+    return Secure_MakeRandomPassword(length)
+
 
 def GetRandomSeed():
     chr1 = int(random.random() * 52)
@@ -355,7 +400,7 @@ def check_global_password(response, siteadmin=True):
 
 
 def websafe(s):
-    return cgi.escape(s, quote=1)
+    return cgi.escape(s, quote=True)
 
 
 def nntpsplit(s):
@@ -697,7 +742,7 @@ def to_dollar(s):
 
 def to_percent(s):
     """Convert from $-strings to %-strings."""
-    s = s.replace('%', '%%')
+    s = s.replace('%', '%%').replace('$$', '$')
     parts = dre.split(s)
     for i in range(1, len(parts), 4):
         if parts[i] is not None:
@@ -794,6 +839,7 @@ def uncanonstr(s, lang=None):
         # Nope, it contains funny characters, so html-ref it
         return uquote(s)
 
+
 def uquote(s):
     a = []
     for c in s:
@@ -804,3 +850,15 @@ def uquote(s):
             a.append(c)
     # Join characters together and coerce to byte string
     return str(EMPTYSTRING.join(a))
+
+
+def oneline(s, cset):
+    # Decode header string in one line and convert into specified charset
+    try:
+        h = email.Header.make_header(email.Header.decode_header(s))
+        ustr = h.__unicode__()
+        line = UEMPTYSTRING.join(ustr.splitlines())
+        return line.encode(cset, 'replace')
+    except (LookupError, UnicodeError, ValueError, HeaderParseError):
+        # possibly charset problem. return with undecoded string in one line.
+        return EMPTYSTRING.join(s.splitlines())

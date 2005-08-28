@@ -1,4 +1,4 @@
-# Copyright (C) 2002 by the Free Software Foundation, Inc.
+# Copyright (C) 2002-2005 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -84,9 +84,12 @@ def process(res, args):
             res.results.append(_('No valid address found to subscribe'))
             return STOP
         # Watch for encoded names
-        h = make_header(decode_header(realname))
-        # BAW: in Python 2.2, use just unicode(h)
-        realname = h.__unicode__()
+        try:
+            h = make_header(decode_header(realname))
+            # BAW: in Python 2.2, use just unicode(h)
+            realname = h.__unicode__()
+        except UnicodeError:
+            realname = u''
         # Coerce to byte string if uh contains only ascii
         try:
             realname = realname.encode('us-ascii')

@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2004 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -44,6 +44,12 @@ from email.Header import Header
 from email.Charset import Charset
 
 DOT = '.'
+
+try:
+    True, False
+except NameError:
+    True = 1
+    False = 0
 
 
 
@@ -123,7 +129,7 @@ def process(mlist, msg, msgdata):
         # Be sure never to decorate the message more than once!
         if not msgdata.get('decorated'):
             Decorate.process(mlist, msg, msgdata)
-            msgdata['decorated'] = 1
+            msgdata['decorated'] = True
         deliveryfunc = bulkdeliver
     refused = {}
     t0 = time.time()
@@ -337,6 +343,11 @@ def bulkdeliver(mlist, msg, msgdata, envsender, failures, conn):
     # Do some final cleanup of the message header.  Start by blowing away
     # any the Sender: and Errors-To: headers so remote MTAs won't be
     # tempted to delivery bounces there instead of our envelope sender
+    #
+    # BAW An interpretation of RFCs 2822 and 2076 could argue for not touching
+    # the Sender header at all.  Brad Knowles points out that MTAs tend to
+    # wipe existing Return-Path headers, and old MTAs may still honor
+    # Errors-To while new ones will at worst ignore the header.
     del msg['sender']
     del msg['errors-to']
     msg['Sender'] = envsender
@@ -345,20 +356,33 @@ def bulkdeliver(mlist, msg, msgdata, envsender, failures, conn):
     msgtext = msg.as_string()
     refused = {}
     recips = msgdata['recips']
+    msgid = msg['message-id']
     try:
         # Send the message
         refused = conn.sendmail(envsender, recips, msgtext)
     except smtplib.SMTPRecipientsRefused, e:
+        syslog('smtp-failure', 'All recipients refused: %s, msgid: %s',
+               e, msgid)
         refused = e.recipients
-    # MTA not responding, or other socket problems, or any other kind of
-    # SMTPException.  In that case, nothing got delivered
-    except (socket.error, smtplib.SMTPException, IOError), e:
-        # BAW: should this be configurable?
-        syslog('smtp', 'All recipients refused: %s', e)
-        # If the exception had an associated error code, use it, otherwise,
-        # fake it with a non-triggering exception code
-        errcode = getattr(e, 'smtp_code', -1)
-        errmsg = getattr(e, 'smtp_error', 'ignore')
+    except smtplib.SMTPResponseException, e:
+        syslog('smtp-failure', 'SMTP session failure: %s, %s, msgid: %s',
+               e.smtp_code, e.smtp_error, msgid)
+        # If this was a permanent failure, don't add the recipients to the
+        # refused, because we don't want them to be added to failures.
+        # Otherwise, if the MTA rejects the message because of the message
+        # content (e.g. it's spam, virii, or has syntactic problems), then
+        # this will end up registering a bounce score for every recipient.
+        # Definitely /not/ what we want.
+        if e.smtp_code < 500 or e.smtp_code == 552:
+            # It's a temporary failure
+            for r in recips:
+                refused[r] = (e.smtp_code, e.smtp_error)
+    except (socket.error, IOError, smtplib.SMTPException), e:
+        # MTA not responding, or other socket problems, or any other kind of
+        # SMTPException.  In that case, nothing got delivered, so treat this
+        # as a temporary failure.
+        syslog('smtp-failure', 'Low level smtp error: %s, msgid: %s', e, msgid)
+        error = str(e)
         for r in recips:
-            refused[r] = (errcode, errmsg)
+            refused[r] = (-1, error)
     failures.update(refused)

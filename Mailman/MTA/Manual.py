@@ -97,7 +97,7 @@ equivalent) file by adding the following lines, and possibly running the
         _('Mailing list creation request for list %(listname)s'),
         sfp.getvalue(), mm_cfg.DEFAULT_SERVER_LANGUAGE)
     outq = get_switchboard(mm_cfg.OUTQUEUE_DIR)
-    outq.enqueue(msg, recips=[siteowner])
+    outq.enqueue(msg, recips=[siteowner], nodecorate=1)
 
 
 
@@ -141,4 +141,4 @@ equivalent) file by removing the following lines, and possibly running the
         _('Mailing list removal request for list %(listname)s'),
         sfp.getvalue(), mm_cfg.DEFAULT_SERVER_LANGUAGE)
     outq = get_switchboard(mm_cfg.OUTQUEUE_DIR)
-    outq.enqueue(msg, recips=[siteowner])
+    outq.enqueue(msg, recips=[siteowner], nodecorate=1)

@@ -134,6 +134,15 @@ and footers:
              _('''Text appended to the bottom of every immediately-delivery
              message. ''') + headfoot + extra),
             ])
+
+        info.extend([
+            ('scrub_nondigest', mm_cfg.Toggle, (_('No'), _('Yes')), 0,
+             _('Scrub attachments of regular delivery message?'),
+             _('''When you scrub attachments, they are stored in archive
+             area and links are made in the message so that the member can
+             access via web browser. If you want the attachments totally
+             disappear, you can use content filter options.''')),
+            ])
         return info
 
     def _setValue(self, mlist, property, val, doc):

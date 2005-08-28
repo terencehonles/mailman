@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -35,13 +35,16 @@ from Mailman.Logging.Syslog import syslog
 _ = i18n._
 i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
 
+SLASH = '/'
+
 
 
 def true_path(path):
     "Ensure that the path is safe by removing .."
-    path = path.replace('../', '')
-    path = path.replace('./', '')
-    return path[1:]
+    # Workaround for path traverse vulnerability.  Unsuccessful attempts will
+    # be logged in logs/error.
+    parts = [x for x in path.split(SLASH) if x not in ('.', '..')]
+    return SLASH.join(parts)[1:]
 
 
 

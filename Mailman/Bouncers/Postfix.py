@@ -71,7 +71,7 @@ def findaddr(msg):
 
 
 def process(msg):
-    if msg.get_type() <> 'multipart/mixed':
+    if msg.get_type() not in ('multipart/mixed', 'multipart/report'):
         return None
     # We're looking for the plain/text subpart with a Content-Description: of
     # `notification'.

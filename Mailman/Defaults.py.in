@@ -1,6 +1,6 @@
 # -*- python -*-
 
-# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -146,6 +146,10 @@ def add_virtualhost(urlhost, emailhost=None):
 # And set the default
 add_virtualhost(DEFAULT_URL_HOST, DEFAULT_EMAIL_HOST)
 
+# Note that you will want to run bin/fix_url.py to change the domain of an
+# existing list.  bin/fix_url.py must be run within the bin/withlist script,
+# like so: bin/withlist -l -r bin/fix_url.py <listname>
+
 
 
 #####
@@ -187,16 +191,6 @@ WEB_ALINK_COLOR = ''                              # If true, forces ALINK=
 WEB_VLINK_COLOR = ''                              # If true, forces VLINK=
 WEB_HIGHLIGHT_COLOR = '#dddddd'                   # If true, alternating rows
                                                   # in listinfo & admin display
-
-# The driver script prints out a lot of information when a Mailman bug is
-# encountered.  This really helps for development, but it also reveals
-# information about the host system that some administrators are not
-# comfortable with.  By setting STEALTH_MODE to On, you disable the printing
-# of this information on the web pages.  Set STEALTH_MODE to Off to enable
-# better debugging.  This information is still, and always, printed in the
-# error logs.
-STEALTH_MODE = On
-
 
 
 #####
@@ -265,6 +259,16 @@ PRIVATE_EXTERNAL_ARCHIVER = No
 # Errors.DiscardMessage if it wants to throw the message away.  Otherwise it
 # should modify the Message object as necessary.
 ARCHIVE_SCRUBBER = 'Mailman.Handlers.Scrubber'
+
+# Mailman.Handlers.Scrubber uses attachment's filename as is.
+# If you don't like this (extremely long mime-encoded filename) then set
+# this True.
+SCRUBBER_DONT_USE_ATTACHMENT_FILENAME = False
+
+# Use of attachment filename extension per se is may be dangerous because
+# virus fakes it. You can set this True if you filter the attachment by
+# filename extension
+SCRUBBER_USE_ATTACHMENT_FILENAME_EXTENSION = False
 
 # This variable defines what happens to text/html subparts.  They can be
 # stripped completely, escaped, or filtered through an external program.  The
@@ -337,6 +341,10 @@ DEFAULT_CHARSET = None
 # This variable contains a list of such characters sets which are not
 # HTML-quoted in the archives.
 VERBATIM_ENCODING = ['iso-2022-jp']
+
+# When the archive is public, should Mailman also make the raw Unix mbox file
+# publically available?
+PUBLIC_MBOX = No
 
 
 
@@ -459,6 +467,7 @@ GLOBAL_PIPELINE = [
     'Moderate',
     'Hold',
     'MimeDel',
+    'Scrubber',
     'Emergency',
     'Tagger',
     'CalcRecips',
@@ -526,7 +535,7 @@ OWNER_PIPELINE = [
 # printing of this log message.
 SMTP_LOG_EVERY_MESSAGE = (
     'smtp',
-    '%(msg_message-id)s smtp for %(#recips)d recips, completed in %(time).3f seconds')
+    '%(msg_message-id)s smtp to %(listname)s for %(#recips)d recips, completed in %(time).3f seconds')
 
 # This will only be printed if there were no immediate smtp failures.
 # Mutually exclusive with SMTP_LOG_REFUSED.
@@ -593,6 +602,12 @@ VERP_FORMAT = '%(bounces)s+%(mailbox)s=%(host)s'
 # compiled case-insensitively.
 VERP_REGEXP = r'^(?P<bounces>[^+]+?)\+(?P<mailbox>[^=]+)=(?P<host>[^@]+)@.*$'
 
+# VERP format and regexp for probe messages
+VERP_PROBE_FORMAT = '%(bounces)s+%(token)s'
+VERP_PROBE_REGEXP = r'^(?P<bounces>[^+]+?)\+(?P<token>[^@]+)@.*$'
+# Set this Yes to activate VERP probe for disabling by bounce
+VERP_PROBES = No
+
 # A perfect opportunity for doing VERP is the password reminders, which are
 # already addressed individually to each recipient.  Set this to Yes to enable
 # VERPs on all password reminders.
@@ -617,7 +632,7 @@ VERP_DELIVERY_INTERVAL = 0
 # friendly Subject: on the message, but requires cooperation from the MTA.
 # Format is like VERP_FORMAT above, but with the following substitutions:
 #
-# %(confirm)s -- the list-confirm mailbox will be set here
+# %(addr)s -- the list-confirm mailbox will be set here
 # %(cookie)s  -- the confirmation cookie will be set here
 VERP_CONFIRM_FORMAT = '%(addr)s+%(cookie)s'
 
@@ -755,22 +770,6 @@ OWNERS_CAN_ENABLE_PERSONALIZATION = No
 # want to edit the held message on disk.
 HOLD_MESSAGES_AS_PICKLES = Yes
 
-# These define the available types of external message metadata formats, and
-# the one to use by default.  MARSHAL format uses Python's built-in marshal
-# module.  BSDDB_NATIVE uses the bsddb module compiled into Python, which
-# links with whatever version of Berkeley db you've got on your system (in
-# Python 2.0 this is included by default if configure can find it).  ASCII
-# format is a dumb repr()-based format with "key = value" Python assignments.
-# It is human readable and editable (as Python source code) and is appropriate
-# for execfile() food.
-#
-# Note!  Make sure your queues are empty before you change this.
-METAFMT_MARSHAL      = 1
-METAFMT_BSDDB_NATIVE = 2
-METAFMT_ASCII        = 3
-
-METADATA_FORMAT = METAFMT_MARSHAL
-
 # This variable controls the order in which list-specific category options are
 # presented in the admin cgi page.
 ADMIN_CATEGORIES = [
@@ -787,6 +786,21 @@ ADMIN_CATEGORIES = [
 # however that the member moderation flag's initial value is controlled by the
 # list's config variable default_member_moderation.
 DEFAULT_NEW_MEMBER_OPTIONS = 256
+
+# Specify the type of passwords to use, when Mailman generates the passwords
+# itself, as would be the case for membership requests where the user did not
+# fill in a password, or during list creation, when auto-generation of admin
+# passwords was selected.
+#
+# Set this value to Yes for classic Mailman user-friendly(er) passwords.
+# These generate semi-pronounceable passwords which are easier to remember.
+# Set this value to No to use more cryptographically secure, but harder to
+# remember, passwords -- if your operating system and Python version support
+# the necessary feature (specifically that /dev/urandom be available).
+USER_FRIENDLY_PASSWORDS = Yes
+# This value specifies the default lengths of member and list admin passwords
+MEMBER_PASSWORD_LENGTH = 8
+ADMIN_PASSWORD_LENGTH = 10
 
 
 
@@ -806,12 +820,27 @@ DEFAULT_MAX_MESSAGE_SIZE = 40           # KB
 # These format strings will be expanded w.r.t. the dictionary for the
 # mailing list instance.
 DEFAULT_SUBJECT_PREFIX  = "[%(real_name)s] "
+# DEFAULT_SUBJECT_PREFIX = "[%(real_name)s %%d]" # for numbering
 DEFAULT_MSG_HEADER = ""
 DEFAULT_MSG_FOOTER = """_______________________________________________
 %(real_name)s mailing list
 %(real_name)s@%(host_name)s
 %(web_page_url)slistinfo%(cgiext)s/%(_internal_name)s
 """
+
+# Where to put subject prefix for 'Re:' messages:
+#
+#     old style: Re: [prefix] test
+#     new style: [prefix 123] Re: test ... (number is optional)
+#
+# Old style is default for backward compatibility.  New style is forced if a
+# list owner set %d (numbering) in prefix.  If the site owner had applied new
+# style patch (from SF patch area) before, he/she may want to set this No in
+# mm_cfg.py.
+OLD_STYLE_PREFIXING = Yes
+
+# Scrub regular delivery
+DEFAULT_SCRUB_NONDIGEST = False
 
 # Mail command processor will ignore mail command lines after designated max.
 DEFAULT_MAIL_COMMANDS_MAX_LINES = 25
@@ -822,6 +851,9 @@ DEFAULT_ADMIN_IMMED_NOTIFY = Yes
 
 # Is the list owner notified of subscribes/unsubscribes?
 DEFAULT_ADMIN_NOTIFY_MCHANGES = No
+
+# Discard held messages after this days
+DEFAULT_MAX_DAYS_TO_HOLD = 0
 
 # Should list members, by default, have their posts be moderated?
 DEFAULT_DEFAULT_MEMBER_MODERATION = No
@@ -935,10 +967,26 @@ DEFAULT_FILTER_CONTENT = No
 # types regardless of subtype (jpeg, gif, etc.).
 DEFAULT_FILTER_MIME_TYPES = []
 
-# DEFAULT_PASS_MIME_TYPES is a list of MIME types to be passed through.  Format is the same as DEFAULT_FILTER_MIME_TYPES
+# DEFAULT_PASS_MIME_TYPES is a list of MIME types to be passed through.
+# Format is the same as DEFAULT_FILTER_MIME_TYPES
 DEFAULT_PASS_MIME_TYPES = ['multipart/mixed',
                            'multipart/alternative',
                            'text/plain']
+
+# DEFAULT_FILTER_FILENAME_EXTENSIONS is a list of filename extensions to be
+# removed. It is useful because many viruses fake their content-type as
+# harmless ones while keep their extension as executable and expect to be
+# executed when victims 'open' them.
+DEFAULT_FILTER_FILENAME_EXTENSIONS = [
+    'exe', 'bat', 'cmd', 'com', 'pif', 'scr', 'vbs', 'cpl'
+    ]
+
+# DEFAULT_PASS_FILENAME_EXTENSIONS is a list of filename extensions to be
+# passed through. Format is the same as DEFAULT_FILTER_FILENAME_EXTENSIONS.
+DEFAULT_PASS_FILENAME_EXTENSIONS = []
+
+# Replace multipart/alternative with its first alternative.
+DEFAULT_COLLAPSE_ALTERNATIVES = Yes
 
 # Whether text/html should be converted to text/plain after content filtering
 # is performed.  Conversion is done according to HTML_TO_PLAIN_TEXT_COMMAND
@@ -1001,6 +1049,9 @@ PLAIN_DIGEST_KEEP_HEADERS = [
 # Should we do any bounced mail response at all?
 DEFAULT_BOUNCE_PROCESSING = Yes
 
+# How often should the bounce qrunner process queued detected bounces?
+REGISTER_BOUNCES_EVERY = minutes(15)
+
 # Bounce processing works like this: when a bounce from a member is received,
 # we look up the `bounce info' for this member. If there is no bounce info,
 # this is the first bounce we've received from this member.  In that case, we
@@ -1057,14 +1108,17 @@ DEFAULT_BOUNCE_NOTIFY_OWNER_ON_REMOVAL = Yes
 # General time limits
 #####
 
-# How long should subscriptions requests await confirmation before being
-# dropped?
+# Default length of time a pending request is live before it is evicted from
+# the pending database.
 PENDING_REQUEST_LIFE = days(3)
 
 # How long should messages which have delivery failures continue to be
 # retried?  After this period of time, a message that has failed recipients
 # will be dequeued and those recipients will never receive the message.
 DELIVERY_RETRY_PERIOD = days(5)
+
+# How long should we wait before we retry a temporary delivery failure?
+DELIVERY_RETRY_WAIT = hours(1)
 
 
 
@@ -1101,19 +1155,6 @@ LIST_LOCK_TIMEOUT = seconds(10)
 # lock problems, or just want to tune the locks for your system, turn on lock
 # debugging.
 PENDINGDB_LOCK_DEBUGGING = Off
-
-# This variable specifies how long an attempt will be made to acquire a
-# pendingdb lock by the incoming qrunner process.  If the lock acquisition
-# times out, the message will be re-queued for later delivery.
-PENDINGDB_LOCK_TIMEOUT = seconds(30)
-
-# The pendingdb is shared among all lists, and handles all list
-# (un)subscriptions, admin approvals and otherwise held messages, so it is
-# potentially locked a lot more often than single lists.  Mailman deals with
-# this by re-trying any attempts to alter the pendingdb that failed because of
-# locking errors.  This variable indicates how many attempt should be made
-# before abandoning all hope.
-PENDINGDB_LOCK_ATTEMPTS = 10
 
 
 
@@ -1158,9 +1199,10 @@ Checkbox    = 12
 # An "extended email list".  Contents must be an email address or a ^-prefixed
 # regular expression.  Used in the sender moderation text boxes.
 EmailListEx = 13
+# Extended spam filter widget
+HeaderFilter  = 14
 
-# Held message disposition actions, for use between admindb.py and
-# ListAdmin.py.
+# Actions
 DEFER = 0
 APPROVE = 1
 REJECT = 2
@@ -1270,31 +1312,35 @@ LC_DESCRIPTIONS = {}
 def add_language(code, description, charset):
     LC_DESCRIPTIONS[code] = (description, charset)
 
-add_language('big5', _('Traditional Chinese'), 'big5')
-add_language('cs',   _('Czech'),               'iso-8859-2')
-add_language('da',   _('Danish'),              'iso-8859-1')
-add_language('de',   _('German'),              'iso-8859-1')
-add_language('en',   _('English (USA)'),       'us-ascii')
-add_language('es',   _('Spanish (Spain)'),     'iso-8859-1')
-add_language('et',   _('Estonian'),            'iso-8859-15')
-add_language('eu',   _('Euskara'),             'iso-8859-15') # Basque
-add_language('fi',   _('Finnish'),             'iso-8859-1')
-add_language('fr',   _('French'),              'iso-8859-1')
-add_language('gb',   _('Simplified Chinese'),  'gb2312')
-add_language('hu',   _('Hungarian'),           'iso-8859-2')
-add_language('it',   _('Italian'),             'iso-8859-1')
-add_language('ja',   _('Japanese'),            'euc-jp')
-add_language('ko',   _('Korean'),              'euc-kr')
-add_language('lt',   _('Lithuanian'),          'iso-8859-13')
-add_language('nl',   _('Dutch'),               'iso-8859-1')
-add_language('no',   _('Norwegian'),           'iso-8859-1')
-add_language('pl',   _('Polish'),              'iso-8859-2')
-add_language('pt',   _('Portuguese'),          'iso-8859-1')
+add_language('ca',    _('Catalan'),             'iso-8859-1')
+add_language('cs',    _('Czech'),               'iso-8859-2')
+add_language('da',    _('Danish'),              'iso-8859-1')
+add_language('de',    _('German'),              'iso-8859-1')
+add_language('en',    _('English (USA)'),       'us-ascii')
+add_language('es',    _('Spanish (Spain)'),     'iso-8859-1')
+add_language('et',    _('Estonian'),            'iso-8859-15')
+add_language('eu',    _('Euskara'),             'iso-8859-15') # Basque
+add_language('fi',    _('Finnish'),             'iso-8859-1')
+add_language('fr',    _('French'),              'iso-8859-1')
+add_language('hr',    _('Croatian'),            'iso-8859-2')
+add_language('hu',    _('Hungarian'),           'iso-8859-2')
+add_language('it',    _('Italian'),             'iso-8859-1')
+add_language('ja',    _('Japanese'),            'euc-jp')
+add_language('ko',    _('Korean'),              'euc-kr')
+add_language('lt',    _('Lithuanian'),          'iso-8859-13')
+add_language('nl',    _('Dutch'),               'iso-8859-1')
+add_language('no',    _('Norwegian'),           'iso-8859-1')
+add_language('pl',    _('Polish'),              'iso-8859-2')
+add_language('pt',    _('Portuguese'),          'iso-8859-1')
 add_language('pt_BR', _('Portuguese (Brazil)'), 'iso-8859-1')
-add_language('ru',   _('Russian'),             'koi8-r')
-add_language('sr',   _('Serbian'),             'utf-8')
-add_language('sl',   _('Slovenian'),           'iso-8859-2')
-add_language('sv',   _('Swedish'),             'iso-8859-1')
-add_language('uk',   _('Ukrainian'),           'utf-8')
+add_language('ro',    _('Romanian'),            'iso-8859-2')
+add_language('ru',    _('Russian'),             'koi8-r')
+add_language('sr',    _('Serbian'),             'utf-8')
+add_language('sl',    _('Slovenian'),           'iso-8859-2')
+add_language('sv',    _('Swedish'),             'iso-8859-1')
+add_language('tr',    _('Turkish'),             'iso-8859-9')
+add_language('uk',    _('Ukrainian'),           'utf-8')
+add_language('zh_CN', _('Chinese (China)'),     'utf-8')
+add_language('zh_TW', _('Chinese (Taiwan)'),    'utf-8')
 
 del _

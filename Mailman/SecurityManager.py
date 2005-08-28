@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2004 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -53,6 +53,7 @@ import time
 import Cookie
 import marshal
 import binascii
+import urllib
 from types import StringType, TupleType
 from urlparse import urlparse
 
@@ -66,6 +67,12 @@ from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman import Errors
 from Mailman.Logging.Syslog import syslog
+
+try:
+    True, False
+except NameError:
+    True = 1
+    False = 0
 
 
 
@@ -97,7 +104,8 @@ class SecurityManager:
                 # A bad system error
                 raise TypeError, 'No user supplied for AuthUser context'
             secret = self.getMemberPassword(user)
-            key += 'user+%s' % Utils.ObscureEmail(user)
+            userdata = urllib.quote(Utils.ObscureEmail(user), safe='')
+            key += 'user+%s' % userdata
         elif authcontext == mm_cfg.AuthListModerator:
             secret = self.mod_password
             key += 'moderator'
@@ -143,15 +151,15 @@ class SecurityManager:
                     try:
                         salt = secret[:2]
                         if crypt and crypt.crypt(response, salt) == secret:
-                            return 1
-                        return 0
+                            return True
+                        return False
                     except TypeError:
                         # BAW: Hard to say why we can get a TypeError here.
                         # SF bug report #585776 says crypt.crypt() can raise
                         # this if salt contains null bytes, although I don't
                         # know how that can happen (perhaps if a MM2.0 list
                         # with USE_CRYPT = 0 has been updated?  Doubtful.
-                        return 0
+                        return False
                 # The password for the list admin and list moderator are not
                 # kept as plain text, but instead as an sha hexdigest.  The
                 # response being passed in is plain text, so we need to
@@ -163,20 +171,18 @@ class SecurityManager:
                 if secret is None:
                     continue
                 sharesponse = sha.new(response).hexdigest()
-                upgrade = ok = 0
+                upgrade = ok = False
                 if sharesponse == secret:
-                    ok = 1
+                    ok = True
                 elif md5.new(response).digest() == secret:
-                    ok = 1
-                    upgrade = 1
+                    ok = upgrade = True
                 elif cryptmatchp(response, secret):
-                    ok = 1
-                    upgrade = 1
+                    ok = upgrade = True
                 if upgrade:
-                    save_and_unlock = 0
+                    save_and_unlock = False
                     if not self.Locked():
                         self.Lock()
-                        save_and_unlock = 1
+                        save_and_unlock = True
                     try:
                         self.password = sharesponse
                         if save_and_unlock:
@@ -192,8 +198,12 @@ class SecurityManager:
                 if secret and sha.new(response).hexdigest() == secret:
                     return ac
             elif ac == mm_cfg.AuthUser:
-                if self.authenticateMember(user, response):
-                    return ac
+                if user is not None:
+                    try:
+                        if self.authenticateMember(user, response):
+                            return ac
+                    except Errors.NotAMemberError:
+                        pass
             else:
                 # What is this context???
                 syslog('error', 'Bad authcontext: %s', ac)
@@ -205,22 +215,19 @@ class SecurityManager:
         # contains a matching authorization, falling back to checking whether
         # the response matches one of the passwords.  authcontexts must be a
         # sequence, and if it contains the context AuthUser, then the user
-        # argument must not be None.
+        # argument should not be None.
         #
         # Returns a flag indicating whether authentication succeeded or not.
-        try:
-            for ac in authcontexts:
-                ok = self.CheckCookie(ac, user)
-                if ok:
-                    return 1
-            # Check passwords
-            ac = self.Authenticate(authcontexts, response, user)
-            if ac:
-                print self.MakeCookie(ac, user)
-                return 1
-        except Errors.NotAMemberError:
-            pass
-        return 0
+        for ac in authcontexts:
+            ok = self.CheckCookie(ac, user)
+            if ok:
+                return True
+        # Check passwords
+        ac = self.Authenticate(authcontexts, response, user)
+        if ac:
+            print self.MakeCookie(ac, user)
+            return True
+        return False
 
     def MakeCookie(self, authcontext, user=None):
         key, secret = self.AuthContextInfo(authcontext, user)
@@ -269,7 +276,7 @@ class SecurityManager:
         # authentication.
         cookiedata = os.environ.get('HTTP_COOKIE')
         if not cookiedata:
-            return 0
+            return False
         # We can't use the Cookie module here because it isn't liberal in what
         # it accepts.  Feed it a MM2.0 cookie along with a MM2.1 cookie and
         # you get a CookieError. :(.  All we care about is accessing the
@@ -294,17 +301,20 @@ class SecurityManager:
             for user in [Utils.UnobscureEmail(u) for u in usernames]:
                 ok = self.__checkone(c, authcontext, user)
                 if ok:
-                    return 1
-            return 0
+                    return True
+            return False
         else:
             return self.__checkone(c, authcontext, user)
 
     def __checkone(self, c, authcontext, user):
         # Do the guts of the cookie check, for one authcontext/user
         # combination.
-        key, secret = self.AuthContextInfo(authcontext, user)
+        try:
+            key, secret = self.AuthContextInfo(authcontext, user)
+        except Errors.NotAMemberError:
+            return False
         if not c.has_key(key) or not isinstance(secret, StringType):
-            return 0
+            return False
         # Undo the encoding we performed in MakeCookie() above.  BAW: I
         # believe this is safe from exploit because marshal can't be forced to
         # load recursive data structures, and it can't be forced to execute
@@ -318,18 +328,18 @@ class SecurityManager:
             data = marshal.loads(binascii.unhexlify(c[key]))
             issued, received_mac = data
         except (EOFError, ValueError, TypeError, KeyError):
-            return 0
+            return False
         # Make sure the issued timestamp makes sense
         now = time.time()
         if now < issued:
-            return 0
+            return False
         # Calculate what the mac ought to be based on the cookie's timestamp
         # and the shared secret.
         mac = sha.new(secret + `issued`).hexdigest()
         if mac <> received_mac:
-            return 0
+            return False
         # Authenticated!
-        return 1
+        return True
 
 
 

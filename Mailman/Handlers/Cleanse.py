@@ -16,6 +16,11 @@
 
 """Cleanse certain headers from all messages."""
 
+from email.Utils import formataddr
+
+from Mailman.Logging.Syslog import syslog
+from Mailman.Handlers.CookHeaders import uheader
+
 
 def process(mlist, msg, msgdata):
     # Always remove this header from any outgoing messages.  Be sure to do
@@ -26,12 +31,15 @@ def process(mlist, msg, msgdata):
     del msg['urgent']
     # We remove other headers from anonymous lists
     if mlist.anonymous_list:
+        syslog('post', 'post to %s from %s anonymized',
+               mlist.internal_name(), msg.get('from'))
         del msg['from']
         del msg['reply-to']
         del msg['sender']
         # Hotmail sets this one
         del msg['x-originating-email']
-        msg['From'] = mlist.GetListEmail()
+        i18ndesc = str(uheader(mlist, mlist.description, 'From'))
+        msg['From'] = formataddr((i18ndesc, mlist.GetListEmail()))
         msg['Reply-To'] = mlist.GetListEmail()
     # Some headers can be used to fish for membership
     del msg['return-receipt-to']

@@ -25,6 +25,7 @@ archival.
 import os
 import errno
 import traceback
+import re
 from cStringIO import StringIO
 
 from Mailman import mm_cfg
@@ -35,22 +36,26 @@ from Mailman.SafeDict import SafeDict
 from Mailman.Logging.Syslog import syslog
 from Mailman.i18n import _
 
+try:
+    True, False
+except NameError:
+    True = 1
+    False = 0
+
 
 
 def makelink(old, new):
     try:
         os.symlink(old, new)
-    except os.error, e:
-        code, msg = e
-        if code <> errno.EEXIST:
+    except OSError, e:
+        if e.errno <> errno.EEXIST:
             raise
 
 def breaklink(link):
     try:
         os.unlink(link)
-    except os.error, e:
-        code, msg = e
-        if code <> errno.ENOENT:
+    except OSError, e:
+        if e.errno <> errno.ENOENT:
             raise
 
 
@@ -107,13 +112,16 @@ class Archiver:
                 fp = open(indexfile)
             except IOError, e:
                 if e.errno <> errno.ENOENT: raise
-                else:
+                omask = os.umask(002)
+                try:
                     fp = open(indexfile, 'w')
-                    fp.write(Utils.maketext(
-                        'emptyarchive.html',
-                        {'listname': self.real_name,
-                         'listinfo': self.GetScriptURL('listinfo', absolute=1),
-                         }, mlist=self))
+                finally:
+                    os.umask(omask)
+                fp.write(Utils.maketext(
+                    'emptyarchive.html',
+                    {'listname': self.real_name,
+                     'listinfo': self.GetScriptURL('listinfo', absolute=1),
+                     }, mlist=self))
             if fp:
                 fp.close()
         finally:
@@ -128,15 +136,15 @@ class Archiver:
                             self.internal_name() + '.mbox')
 
     def GetBaseArchiveURL(self):
+        url = self.GetScriptURL('private', absolute=1) + '/'
         if self.archive_private:
-            return self.GetScriptURL('private', absolute=1) + '/'
+            return url
         else:
-            inv = {}
-            for k, v in mm_cfg.VIRTUAL_HOSTS.items():
-                inv[v] = k
+            hostname = re.match('[^:]*://([^/]*)/.*', url).group(1)\
+                       or mm_cfg.DEFAULT_URL_HOST
             url = mm_cfg.PUBLIC_ARCHIVE_URL % {
                 'listname': self.internal_name(),
-                'hostname': inv.get(self.host_name, mm_cfg.DEFAULT_URL_HOST),
+                'hostname': hostname
                 }
             if not url.endswith('/'):
                 url += '/'
@@ -220,7 +228,7 @@ class Archiver:
         if mm_cfg.ARCHIVE_TO_MBOX == -1:
             # Archiving is completely disabled, don't require the skeleton.
             return
-        pubdir = Site.get_archpath(self.internal_name(), public=1)
+        pubdir = Site.get_archpath(self.internal_name(), public=True)
         privdir = self.archive_dir()
         pubmbox = pubdir + '.mbox'
         privmbox = privdir + '.mbox'
@@ -231,4 +239,6 @@ class Archiver:
             # BAW: privdir or privmbox could be nonexistant.  We'd get an
             # OSError, ENOENT which should be caught and reported properly.
             makelink(privdir, pubdir)
-            makelink(privmbox, pubmbox)
+            # Only make this link if the site has enabled public mbox files
+            if mm_cfg.PUBLIC_MBOX:
+                makelink(privmbox, pubmbox)

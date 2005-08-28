@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2004 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -52,9 +52,9 @@ _ = i18n._
 
 
 class _BounceInfo:
-    def __init__(self, member, score, date, noticesleft, cookie):
+    def __init__(self, member, score, date, noticesleft):
         self.member = member
-        self.cookie = cookie
+        self.cookie = None
         self.reset(score, date, noticesleft)
 
     def reset(self, score, date, noticesleft):
@@ -111,11 +111,8 @@ class Bouncer:
             day = time.localtime()[:3]
         if not isinstance(info, _BounceInfo):
             # This is the first bounce we've seen from this member
-            cookie = Pending.new(Pending.RE_ENABLE, self.internal_name(),
-                                 member)
             info = _BounceInfo(member, weight, day,
-                               self.bounce_you_are_disabled_warnings,
-                               cookie)
+                               self.bounce_you_are_disabled_warnings)
             self.setBounceInfo(member, info)
             syslog('bounce', '%s: %s bounce score: %s', self.internal_name(),
                    member, info.score)
@@ -131,7 +128,7 @@ class Bouncer:
             # We've already scored any bounces for this day, so ignore it.
             syslog('bounce', '%s: %s already scored a bounce for date %s',
                    self.internal_name(), member,
-                   time.strftime('%d-%b-%Y', day + (0,)*6))
+                   time.strftime('%d-%b-%Y', day + (0,0,0,0,1,0)))
             # Continue to check phase below
         else:
             # See if this member's bounce information is stale.
@@ -154,13 +151,29 @@ class Bouncer:
         # Now that we've adjusted the bounce score for this bounce, let's
         # check to see if the disable-by-bounce threshold has been reached.
         if info.score >= self.bounce_score_threshold:
-            self.disableBouncingMember(member, info, msg)
+            if mm_cfg.VERP_PROBES:
+                syslog('bounce', 
+                   'sending %s list probe to: %s (score %s >= %s)',
+                   self.internal_name(), member, info.score,
+                   self.bounce_score_threshold)
+                self.sendProbe(member, msg)
+                info.reset(0, info.date, info.noticesleft)
+            else:
+                self.disableBouncingMember(member, info, msg)
 
     def disableBouncingMember(self, member, info, msg):
+        # Initialize their confirmation cookie.  If we do it when we get the
+        # first bounce, it'll expire by the time we get the disabling bounce.
+        cookie = self.pend_new(Pending.RE_ENABLE, self.internal_name(), member)
+        info.cookie = cookie
         # Disable them
-        syslog('bounce', '%s: %s disabling due to bounce score %s >= %s',
-               self.internal_name(), member,
-               info.score, self.bounce_score_threshold)
+        if mm_cfg.VERP_PROBES:
+            syslog('bounce', '%s: %s disabling due to probe bounce received',
+                   self.internal_name(), member)
+        else:
+            syslog('bounce', '%s: %s disabling due to bounce score %s >= %s',
+                   self.internal_name(), member,
+                   info.score, self.bounce_score_threshold)
         self.setDeliveryStatus(member, MemberAdaptor.BYBOUNCE)
         self.sendNextNotification(member)
         if self.bounce_notify_owner_on_disable:
@@ -211,7 +224,7 @@ class Bouncer:
                 userack=1)
             # Expunge the pending cookie for the user.  We throw away the
             # returned data.
-            Pending.confirm(info.cookie)
+            self.pend_confirm(info.cookie)
             if reason == MemberAdaptor.BYBOUNCE:
                 syslog('bounce', '%s: %s deleted after exhausting notices',
                        self.internal_name(), member)
@@ -264,6 +277,8 @@ class Bouncer:
         # provided in the exception argument.
         sender = msg.get_sender()
         subject = msg.get('subject', _('(no subject)'))
+        subject = Utils.oneline(subject,
+                                Utils.GetCharSet(self.preferred_language))
         if e is None:
             notice = _('[No bounce details are available]')
         else:

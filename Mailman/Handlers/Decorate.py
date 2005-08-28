@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -14,8 +14,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-"""Decorate a message by sticking the header and footer around it.
-"""
+"""Decorate a message by sticking the header and footer around it."""
 
 from types import ListType
 from email.MIMEText import MIMEText
@@ -27,6 +26,12 @@ from Mailman.Message import Message
 from Mailman.i18n import _
 from Mailman.SafeDict import SafeDict
 from Mailman.Logging.Syslog import syslog
+
+try:
+    True, False
+except:
+    True = 1
+    False = 0
 
 
 
@@ -47,7 +52,12 @@ def process(mlist, msg, msgdata):
             # BAW: Hmm, should we allow this?
             d['user_password'] = mlist.getMemberPassword(member)
             d['user_language'] = mlist.getMemberLanguage(member)
-            d['user_name'] = mlist.getMemberName(member) or _('not available')
+            username = mlist.getMemberName(member) or None
+            try:
+                username = username.encode(Utils.GetCharSet(d['user_language']))
+            except (AttributeError, UnicodeError):
+                username = member
+            d['user_name'] = username
             d['user_optionsurl'] = mlist.GetOptionsURL(member)
         except Errors.NotAMemberError:
             pass
@@ -71,24 +81,45 @@ def process(mlist, msg, msgdata):
     # safely add the header/footer to a plain text message since all
     # charsets Mailman supports are strict supersets of us-ascii --
     # no, UTF-16 emails are not supported yet.
-    mcset = msg.get_param('charset', 'us-ascii').lower()
+    #
+    # TK: Message with 'charset=' cause trouble. So, instead of
+    #     mgs.get_content_charset('us-ascii') ...
+    mcset = msg.get_content_charset() or 'us-ascii'
     lcset = Utils.GetCharSet(mlist.preferred_language)
-    msgtype = msg.get_type('text/plain')
+    msgtype = msg.get_content_type()
     # BAW: If the charsets don't match, should we add the header and footer by
     # MIME multipart chroming the message?
-    wrap = 1
-    if not msg.is_multipart() and msgtype == 'text/plain' and \
-           msg.get('content-transfer-encoding', '').lower() <> 'base64' and \
-           (lcset == 'us-ascii' or mcset == lcset):
-        oldpayload = msg.get_payload()
-        frontsep = endsep = ''
-        if header and not header.endswith('\n'):
-            frontsep = '\n'
-        if footer and not oldpayload.endswith('\n'):
-            endsep = '\n'
-        payload = header + frontsep + oldpayload + endsep + footer
-        msg.set_payload(payload)
-        wrap = 0
+    wrap = True
+    if not msg.is_multipart() and msgtype == 'text/plain':
+        # TK: Try to keep the message plain by converting the header/
+        # footer/oldpayload into unicode and encode with mcset/lcset.
+        # Try to decode qp/base64 also.
+        uheader = unicode(header, lcset)
+        ufooter = unicode(footer, lcset)
+        try:
+            oldpayload = unicode(msg.get_payload(decode=1), mcset)
+            frontsep = endsep = u''
+            if header and not header.endswith('\n'):
+                frontsep = u'\n'
+            if footer and not oldpayload.endswith('\n'):
+                endsep = u'\n'
+            payload = uheader + frontsep + oldpayload + endsep + ufooter
+            try:
+                # first, try encode with list charset
+                payload = payload.encode(lcset)
+                newcset = lcset
+            except UnicodeError:
+                if lcset != mcset:
+                    # if fail, encode with message charset (if different)
+                    payload = payload.encode(mcset)
+                    newcset = mcset
+                    # if this fails, fallback to outer try and wrap=true
+            del msg['content-transfer-encoding']
+            del msg['content-type']
+            msg.set_payload(payload, newcset)
+            wrap = False
+        except (LookupError, UnicodeError):
+            pass
     elif msg.get_type() == 'multipart/mixed':
         # The next easiest thing to do is just prepend the header and append
         # the footer as additional subparts
@@ -104,7 +135,7 @@ def process(mlist, msg, msgdata):
             mimehdr['Content-Disposition'] = 'inline'
             payload.insert(0, mimehdr)
         msg.set_payload(payload)
-        wrap = 0
+        wrap = False
     # If we couldn't add the header or footer in a less intrusive way, we can
     # at least do it by MIME encapsulation.  We want to keep as much of the
     # outer chrome as possible.

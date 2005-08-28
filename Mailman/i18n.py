@@ -108,7 +108,7 @@ def ctime(date):
         try:
             year, mon, day, hh, mm, ss, wday, ydat, dst = time.strptime(date)
             tzname = time.tzname[dst and 1 or 0]
-        except ValueError:
+        except (ValueError, AttributeError):
             try:
                 wday, mon, day, hms, year = date.split()
                 hh, mm, ss = hms.split(':')

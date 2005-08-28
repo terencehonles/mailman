@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2004 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -93,7 +93,7 @@ def process_request(doc, cgidata):
     auth     = cgidata.getvalue('auth', '').strip()
     langs    = cgidata.getvalue('langs', [mm_cfg.DEFAULT_SERVER_LANGUAGE])
 
-    if type(langs) <> ListType:
+    if not isinstance(langs, ListType):
         langs = [langs]
     # Sanity check
     safelistname = Utils.websafe(listname)
@@ -125,7 +125,8 @@ def process_request(doc, cgidata):
                 blank if you want Mailman to autogenerate the list
                 passwords.'''))
             return
-        password = confirm = Utils.MakeRandomPassword(length=8)
+        password = confirm = Utils.MakeRandomPassword(
+            mm_cfg.ADMIN_PASSWORD_LENGTH)
     else:
         if password <> confirm:
             request_creation(doc, cgidata,
@@ -152,6 +153,15 @@ def process_request(doc, cgidata):
             doc, cgidata,
             _('You are not authorized to create new mailing lists'))
         return
+    # Make sure the web hostname matches one of our virtual domains
+    hostname = Utils.get_domain()
+    if mm_cfg.VIRTUAL_HOST_OVERVIEW and \
+           not mm_cfg.VIRTUAL_HOSTS.has_key(hostname):
+        safehostname = Utils.websafe(hostname)
+        request_creation(doc, cgidata,
+                         _('Unknown virtual host: %(safehostname)s'))
+        return
+    emailhost = mm_cfg.VIRTUAL_HOSTS.get(hostname, mm_cfg.DEFAULT_EMAIL_HOST)
     # We've got all the data we need, so go ahead and try to create the list
     # See admin.py for why we need to set up the signal handler.
     mlist = MailList.MailList()
@@ -175,10 +185,10 @@ def process_request(doc, cgidata):
         oldmask = os.umask(002)
         try:
             try:
-                mlist.Create(listname, owner, pw, langs)
+                mlist.Create(listname, owner, pw, langs, emailhost)
             finally:
                 os.umask(oldmask)
-        except Errors.MMBadEmailError, s:
+        except Errors.EmailAddressError, s:
             request_creation(doc, cgidata,
                              _('Bad owner email address: %(s)s'))
             return
@@ -199,11 +209,9 @@ def process_request(doc, cgidata):
 
         # Initialize the host_name and web_page_url attributes, based on
         # virtual hosting settings and the request environment variables.
-        hostname = Utils.get_domain()
         mlist.default_member_moderation = moderate
         mlist.web_page_url = mm_cfg.DEFAULT_URL_PATTERN % hostname
-        mlist.host_name = mm_cfg.VIRTUAL_HOSTS.get(
-            hostname, mm_cfg.DEFAULT_EMAIL_HOST)
+        mlist.host_name = emailhost
         mlist.Save()
     finally:
         # Now be sure to unlock the list.  It's okay if we get a signal here
@@ -220,7 +228,7 @@ def process_request(doc, cgidata):
 
     # And send the notice to the list owner.
     if notify:
-        siteadmin = Utils.get_site_email(mlist.host_name, 'admin')
+        siteowner = Utils.get_site_email(mlist.host_name, 'owner')
         text = Utils.maketext(
             'newlist.txt',
             {'listname'    : listname,
@@ -228,10 +236,10 @@ def process_request(doc, cgidata):
              'admin_url'   : mlist.GetScriptURL('admin', absolute=1),
              'listinfo_url': mlist.GetScriptURL('listinfo', absolute=1),
              'requestaddr' : mlist.GetRequestEmail(),
-             'siteowner'   : siteadmin,
+             'siteowner'   : siteowner,
              }, mlist=mlist)
         msg = Message.UserNotification(
-            owner, siteadmin,
+            owner, siteowner,
             _('Your new mailing list: %(listname)s'),
             text, mlist.preferred_language)
         msg.send(mlist)

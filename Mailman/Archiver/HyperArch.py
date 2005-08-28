@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -40,6 +40,8 @@ import weakref
 import binascii
 
 from email.Header import decode_header, make_header
+from email.Errors import HeaderParseError
+from email.Charset import Charset
 
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -287,10 +289,9 @@ class Article(pipermail.Article):
         self.ctype = ctype.lower()
         self.cenc = cenc.lower()
         self.decoded = {}
-        charset = message.get_param('charset')
-        if isinstance(charset, types.TupleType):
-            # An RFC 2231 charset
-            charset = unicode(charset[2], charset[0])
+        cset = Utils.GetCharSet(mlist.preferred_language)
+        cset_out = Charset(cset).output_charset or cset
+        charset = message.get_content_charset(cset_out)
         if charset:
             charset = charset.lower().strip()
             if charset[0]=='"' and charset[-1]=='"':
@@ -298,7 +299,7 @@ class Article(pipermail.Article):
             if charset[0]=="'" and charset[-1]=="'":
                 charset = charset[1:-1]
             try:
-                body = message.get_payload(decode=1)
+                body = message.get_payload(decode=True)
             except binascii.Error:
                 body = None
             if body and charset != Utils.GetCharSet(self._lang):
@@ -402,22 +403,35 @@ class Article(pipermail.Article):
                 self.decoded['email'] = email
         if subject:
             self.decoded['subject'] = subject
+        self.decoded['stripped'] = self.strip_subject(subject or self.subject)
+
+    def strip_subject(self, subject):
+        # Strip subject_prefix and Re: for subject sorting
+        # This part was taken from CookHeaders.py (TK)
+        prefix = self._mlist.subject_prefix.strip()
+        if prefix:
+            prefix_pat = re.escape(prefix)
+            prefix_pat = '%'.join(prefix_pat.split(r'\%'))
+            prefix_pat = re.sub(r'%\d*d', r'\s*\d+\s*', prefix_pat)
+            subject = re.sub(prefix_pat, '', subject)
+        subject = subject.lstrip()
+        strip_pat = re.compile('^((RE|AW|SV)(\[\d+\])?:\s*)+', re.I)
+        stripped = strip_pat.sub('', subject)
+        return stripped
 
     def decode_charset(self, field):
-        if field.find("=?") == -1:
-            return None
-        # Get the decoded header as a list of (s, charset) tuples
-        pairs = decode_header(field)
-        # Use __unicode__() until we can guarantee Python 2.2
+        # TK: This function was rewritten for unifying to Unicode.
+        # Convert 'field' into Unicode one line string.
         try:
-            # Use a large number for maxlinelen so it won't get wrapped
-            h = make_header(pairs, 99999)
-            return h.__unicode__()
-        except (UnicodeError, LookupError):
-            # Unknown encoding
-            return None
-        # The last value for c will have the proper charset in it
-        return EMPTYSTRING.join([s for s, c in pairs])
+            pairs = decode_header(field)
+            ustr = make_header(pairs).__unicode__()
+        except (LookupError, UnicodeError, ValueError, HeaderParseError):
+            # assume list's language
+            cset = Utils.GetCharSet(self._mlist.preferred_language)
+            if cset == 'us-ascii':
+                cset = 'iso-8859-1' # assume this for English list
+            ustr = unicode(field, cset, 'replace')
+        return u''.join(ustr.splitlines())
 
     def as_html(self):
         d = self.__dict__.copy()
@@ -538,7 +552,15 @@ class Article(pipermail.Article):
         body = EMPTYSTRING.join(self.body)
         if isinstance(body, types.UnicodeType):
             body = body.encode(Utils.GetCharSet(self._lang), 'replace')
-        return NL.join(headers) % d + '\n\n' + body
+        if mm_cfg.ARCHIVER_OBSCURES_EMAILADDRS:
+            otrans = i18n.get_translation()
+            try:
+                i18n.set_language(self._lang)
+                body = re.sub(r'([-+,.\w]+)@([-+.\w]+)',
+                              '\g<1>' + _(' at ') + '\g<2>', body)
+            finally:
+                i18n.set_translation(otrans)
+        return NL.join(headers) % d + '\n\n' + body + '\n'
 
     def _set_date(self, message):
         self.__super_set_date(message)
@@ -559,6 +581,12 @@ class Article(pipermail.Article):
                 break
             self.body.append(line)
 
+    def finished_update_article(self):
+        self.body = []
+        try:
+            del self.html_body
+        except AttributeError:
+            pass
 
 
 class HyperArchive(pipermail.T):
@@ -735,13 +763,14 @@ class HyperArchive(pipermail.T):
                 d["archive_listing"] = EMPTYSTRING.join(accum)
         finally:
             i18n.set_translation(otrans)
-
         # The TOC is always in the charset of the list's preferred language
         d['meta'] += html_charset % Utils.GetCharSet(mlist.preferred_language)
-
-        return quick_maketext(
-            'archtoc.html', d,
-            mlist=mlist)
+        # The site can disable public access to the mbox file.
+        if mm_cfg.PUBLIC_MBOX:
+            template = 'archtoc.html'
+        else:
+            template = 'archtocnombox.html'
+        return quick_maketext(template, d, mlist=mlist)
 
     def html_TOC_entry(self, arch):
         # Check to see if the archive is gzip'd or not
@@ -996,7 +1025,11 @@ class HyperArchive(pipermail.T):
         subject = self.get_header("subject", article)
         author = self.get_header("author", article)
         if mm_cfg.ARCHIVER_OBSCURES_EMAILADDRS:
-            author = re.sub('@', _(' at '), author)
+            try:
+                author = re.sub('@', _(' at '), author)
+            except UnicodeError:
+                # Non-ASCII author contains '@' ... no valid email anyway
+                pass
         subject = CGIescape(subject, self.lang)
         author = CGIescape(author, self.lang)
 
@@ -1121,6 +1154,10 @@ class HyperArchive(pipermail.T):
         # 1. use lines directly, rather than source and dest
         # 2. make it clearer
         # 3. make it faster
+        # TK: Prepare for unicode obscure.
+        atmark = _(' at ')
+        if lines and isinstance(lines[0], types.UnicodeType):
+            atmark = unicode(atmark, Utils.GetCharSet(self.lang), 'replace')
         source = lines[:]
         dest = lines
         last_line_was_quoted = 0
@@ -1161,7 +1198,7 @@ class HyperArchive(pipermail.T):
                     text = jr.group(1)
                     length = len(text)
                     if mm_cfg.ARCHIVER_OBSCURES_EMAILADDRS:
-                        text = re.sub('@', _(' at '), text)
+                        text = re.sub('@', atmark, text)
                         URL = self.maillist.GetScriptURL(
                             'listinfo', absolute=1)
                     else:

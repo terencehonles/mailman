@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -15,7 +15,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 # Mailman version
-VERSION = "2.2a0"
+VERSION = "2.2.0a0"
 
 # And as a hex number in the manner of PY_VERSION_HEX
 ALPHA = 0xa
@@ -36,13 +36,13 @@ HEX_VERSION = ((MAJOR_REV << 24) | (MINOR_REV << 16) | (MICRO_REV << 8) |
                (REL_LEVEL << 4)  | (REL_SERIAL << 0))
 
 # config.pck schema version number
-DATA_FILE_VERSION = 88
+DATA_FILE_VERSION = 96
 
 # qfile/*.db schema version number
 QFILE_SCHEMA_VERSION = 3
 
-# version number for the data/pending.db file schema
-PENDING_FILE_SCHEMA_VERSION = 1
+# version number for the lists/<listname>/pending.db file schema
+PENDING_FILE_SCHEMA_VERSION = 2
 
 # version number for the lists/<listname>/request.db file schema
 REQUESTS_FILE_SCHEMA_VERSION = 1

@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2004 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -25,6 +25,7 @@ from Mailman import Errors
 from Mailman import Utils
 from Mailman import Message
 from Mailman import i18n
+from Mailman import Pending
 from Mailman.Logging.Syslog import syslog
 
 _ = i18n._
@@ -111,19 +112,27 @@ your membership administrative address, %(addr)s.'''))
         cpuser = self.getMemberCPAddress(user)
         recipient = self.GetMemberAdminEmail(cpuser)
         subject = _('%(listfullname)s mailing list reminder')
+        # Get user's language and charset
+        lang = self.getMemberLanguage(user)
+        cset = Utils.GetCharSet(lang)
+        password = self.getMemberPassword(user)
+        # TK: Make unprintables to ?
+        # The list owner should allow users to set language options if they
+        # want to use non-us-ascii characters in password and send it back.
+        password = unicode(password, cset, 'replace').encode(cset, 'replace')
         # get the text from the template
         text = Utils.maketext(
             'userpass.txt',
             {'user'       : cpuser,
              'listname'   : self.real_name,
              'fqdn_lname' : self.GetListEmail(),
-             'password'   : self.getMemberPassword(user),
+             'password'   : password,
              'options_url': self.GetOptionsURL(user, absolute=True),
              'requestaddr': requestaddr,
              'owneraddr'  : self.GetOwnerEmail(),
-            }, lang=self.getMemberLanguage(user), mlist=self)
+            }, lang=lang, mlist=self)
         msg = Message.UserNotification(recipient, adminaddr, subject, text,
-                                       self.getMemberLanguage(user))
+                                       lang)
         msg['X-No-Archive'] = 'yes'
         msg.send(self, verp=mm_cfg.VERP_PERSONALIZED_DELIVERIES)
 
@@ -181,3 +190,42 @@ is required.""")))
             msg.send(mlist)
         finally:
             i18n.set_translation(otrans)
+
+    def sendProbe(self, member, msg):
+        listname = self.real_name
+        # Put together the substitution dictionary.
+        d = {'listname': listname,
+             'address': member,
+             'optionsurl': self.GetOptionsURL(member, absolute=True),
+             'password': self.getMemberPassword(member),
+             'owneraddr': self.GetOwnerEmail(),
+             }
+        text = Utils.maketext('probe.txt', d,
+                              lang=self.getMemberLanguage(member),
+                              mlist=self)
+        # Calculate the VERP'd sender address for bounce processing of the
+        # probe message.
+        token = self.pend_new(Pending.PROBE_BOUNCE, member, msg)
+        probedict = {
+            'bounces': self.internal_name() + '-bounces',
+            'token': token,
+            }
+        probeaddr = '%s@%s' % ((mm_cfg.VERP_PROBE_FORMAT % probedict),
+                               self.host_name)
+        # Calculate the Subject header, in the member's preferred language
+        ulang = self.getMemberLanguage(member)
+        otrans = i18n.get_translation()
+        i18n.set_language(ulang)
+        try:
+            subject = _('%(listname)s mailing list probe message')
+        finally:
+            i18n.set_translation(otrans)
+        outer = Message.UserNotification(member, probeaddr, subject)
+        outer.set_type('multipart/mixed')
+        text = MIMEText(text, _charset=Utils.GetCharSet(ulang))
+        outer.attach(text)
+        outer.attach(MIMEMessage(msg))
+        # Turn off further VERP'ing in the final delivery step.  We set
+        # probe_token for the OutgoingRunner to more easily handling local
+        # rejects of probe messages.
+        outer.send(self, envsender=probeaddr, verp=False, probe_token=token)

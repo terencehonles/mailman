@@ -1,17 +1,17 @@
-# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 """Determine whether the message is approved for delivery.
@@ -20,7 +20,6 @@ This module only tests for definitive approvals.  IOW, this module only
 determines whether the message is definitively approved or definitively
 denied.  Situations that could hold a message for approval or confirmation are
 not tested by this module.
-
 """
 
 from email.Iterators import typed_subpart_iterator
@@ -52,7 +51,9 @@ def process(mlist, msg, msgdata):
         part = None
         for part in typed_subpart_iterator(msg, 'text', 'plain'):
             break
-        if part is not None:
+        # XXX I'm not entirely sure why, but it is possible for the payload of
+        # the part to be None, and you can't splitlines() on None.
+        if part is not None and part.get_payload() is not None:
             lines = part.get_payload().splitlines()
             line = ''
             for lineno, line in zip(range(len(lines)), lines):

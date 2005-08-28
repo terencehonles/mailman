@@ -92,4 +92,5 @@ def process(mlist, msg, msgdata):
     msgdata['recips'] = newrecips
     # RFC 2822 specifies zero or one CC header
     del msg['cc']
-    msg['Cc'] = COMMASPACE.join([formataddr(i) for i in ccaddrs.values()])
+    if ccaddrs:
+        msg['Cc'] = COMMASPACE.join([formataddr(i) for i in ccaddrs.values()])

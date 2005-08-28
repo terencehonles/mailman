@@ -1,21 +1,22 @@
-# Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2005 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-"""MailList mixin class managing the general options.
-"""
+"""MailList mixin class managing the general options."""
+
+import re
 
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -143,7 +144,11 @@ class General(GUIBase):
              posted to the list, to distinguish mailing list messages in in
              mailbox summaries.  Brevity is premium here, it's ok to shorten
              long mailing list names to something more concise, as long as it
-             still identifies the mailing list.""")),
+             still identifies the mailing list.
+             You can also add a sequencial number by %%d substitution
+             directive. eg.; [listname %%d] -> [listname 123]
+                            (listname %%05d) -> (listname 00123)
+             """)),
 
             ('anonymous_list', mm_cfg.Radio, (_('No'), _('Yes')), 0,
              _("""Hide the sender of a message, replacing it with the list
@@ -174,7 +179,7 @@ class General(GUIBase):
              messages, overriding the header in the original message if
              necessary (<em>Explicit address</em> inserts the value of <a
              href="?VARHELP=general/reply_to_address">reply_to_address</a>).
- 
+
              <p>There are many reasons not to introduce or override the
              <tt>Reply-To:</tt> header.  One is that some posters depend on
              their own <tt>Reply-To:</tt> settings to convey their valid
@@ -183,7 +188,7 @@ class General(GUIBase):
              href="http://www.unicom.com/pw/reply-to-harmful.html">`Reply-To'
              Munging Considered Harmful</a> for a general discussion of this
              issue.  See <a
-        href="http://www.metasystema.org/essays/reply-to-useful.mhtml">Reply-To
+             href="http://www.metasystema.net/essays/reply-to.mhtml">Reply-To
              Munging Considered Useful</a> for a dissenting opinion.
 
              <p>Some mailing lists have restricted posting privileges, with a
@@ -283,7 +288,7 @@ class General(GUIBase):
                  <li>A blank line separates paragraphs.
              </ul>""")),
 
-            ('send_welcome_msg', mm_cfg.Radio, (_('No'), _('Yes')), 0, 
+            ('send_welcome_msg', mm_cfg.Radio, (_('No'), _('Yes')), 0,
              _('Send welcome message to newly subscribed members?'),
              _("""Turn this off only if you plan on subscribing people manually
              and don't want them to know that you did so.  This option is most
@@ -310,15 +315,11 @@ class General(GUIBase):
             ('admin_notify_mchanges', mm_cfg.Radio, (_('No'), _('Yes')), 0,
              _('''Should administrator get notices of subscribes and
              unsubscribes?''')),
-            
+
             ('respond_to_post_requests', mm_cfg.Radio,
              (_('No'), _('Yes')), 0,
-             _('Send mail to poster when their posting is held for approval?'),
-
-             _("""Approval notices are sent when mail triggers certain of the
-             limits <em>except</em> routine list moderation and spam filters,
-             for which notices are <em>not</em> sent.  This option overrides
-             ever sending the notice.""")),
+             _('Send mail to poster when their posting is held for approval?')
+            ),
 
             _('Additional settings'),
 
@@ -338,7 +339,7 @@ class General(GUIBase):
              # to tell if all were deselected!
              0, _('''Default options for new members joining this list.<input
              type="hidden" name="new_member_options" value="ignore">'''),
-             
+
              _("""When a new member is subscribed to this list, their initial
              set of options is taken from the this variable's setting.""")),
 
@@ -407,6 +408,13 @@ class General(GUIBase):
              headers.)"""))
             )
 
+        # Discard held messages after this number of days
+        rtn.append(
+            ('max_days_to_hold', mm_cfg.Number, 7, 0,
+            _("""Discard held messages older than this number of days.
+            Use 0 for no automatic discarding."""))
+            )
+
         return rtn
 
     def _setValue(self, mlist, property, val, doc):
@@ -429,6 +437,15 @@ class General(GUIBase):
                 val, mlist.preferred_language)
         else:
             GUIBase._setValue(self, mlist, property, val, doc)
+
+    def _escape(self, property, value):
+        # The 'info' property allows HTML, but lets sanitize it to avoid XSS
+        # exploits.  Everything else should be fully escaped.
+        if property <> 'info':
+            return GUIBase._escape(self, property, value)
+        # Sanitize <script> and </script> tags but nothing else.  Not the best
+        # solution, but expedient.
+        return re.sub(r'<([/]?script.*?)>', r'&lt;\1&gt;', value)
 
     def _postValidate(self, mlist, doc):
         if not mlist.reply_to_address.strip() and \

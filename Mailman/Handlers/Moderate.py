@@ -135,7 +135,11 @@ def matches_p(sender, nonmembers):
 
 def do_reject(mlist):
     listowner = mlist.GetOwnerEmail()
-    raise Errors.RejectMessage, Utils.wrap(_("""\
+    if mlist.nonmember_rejection_notice:
+        raise Errors.RejectMessage, \
+              Utils.wrap(_(mlist.nonmember_rejection_notice))
+    else:
+        raise Errors.RejectMessage, Utils.wrap(_("""\
 You are not allowed to post to this mailing list, and your message has been
 automatically rejected.  If you think that your messages are being rejected in
 error, contact the mailing list owner at %(listowner)s."""))

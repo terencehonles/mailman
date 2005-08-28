@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -38,6 +38,7 @@ from types import *
 
 import email.Iterators
 from email.Utils import getaddresses, formataddr, parseaddr
+from email.Header import Header
 
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -56,6 +57,7 @@ from Mailman.HTMLFormatter import HTMLFormatter
 from Mailman.ListAdmin import ListAdmin
 from Mailman.SecurityManager import SecurityManager
 from Mailman.TopicMgr import TopicMgr
+from Mailman import Pending
 
 # gui components package
 from Mailman import Gui
@@ -64,7 +66,6 @@ from Mailman import Gui
 from Mailman import MemberAdaptor
 from Mailman.OldStyleMemberships import OldStyleMemberships
 from Mailman import Message
-from Mailman import Pending
 from Mailman import Site
 from Mailman import i18n
 from Mailman.Logging.Syslog import syslog
@@ -84,7 +85,7 @@ except NameError:
 # Use mixins here just to avoid having any one chunk be too large.
 class MailList(HTMLFormatter, Deliverer, ListAdmin,
                Archiver, Digester, SecurityManager, Bouncer, GatewayManager,
-               Autoresponder, TopicMgr):
+               Autoresponder, TopicMgr, Pending.Pending):
 
     #
     # A MailList object's basic Python object model support
@@ -194,14 +195,37 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
     def GetOwnerEmail(self):
         return self.getListAddress('owner')
 
-    def GetRequestEmail(self):
-        return self.getListAddress('request')
+    def GetRequestEmail(self, cookie=''):
+        if mm_cfg.VERP_CONFIRMATIONS and cookie:
+            return self.GetConfirmEmail(cookie)
+        else:
+            return self.getListAddress('request')
 
     def GetConfirmEmail(self, cookie):
         return mm_cfg.VERP_CONFIRM_FORMAT % {
             'addr'  : '%s-confirm' % self.internal_name(),
             'cookie': cookie,
             } + '@' + self.host_name
+
+    def GetConfirmJoinSubject(self, listname, cookie):
+        if mm_cfg.VERP_CONFIRMATIONS and cookie:
+            cset = Utils.GetCharSet(self.preferred_language)
+            subj = Header(
+     _('Your confirmation is required to join the %(listname)s mailing list'),
+                          cset, header_name='subject')
+            return subj
+        else:
+            return 'confirm ' + cookie
+
+    def GetConfirmLeaveSubject(self, listname, cookie):
+        if mm_cfg.VERP_CONFIRMATIONS and cookie:
+            cset = Utils.GetCharSet(self.preferred_language)
+            subj = Header(
+     _('Your confirmation is required to leave the %(listname)s mailing list'),
+                          cset, header_name='subject')
+            return subj
+        else:
+            return 'confirm ' + cookie
 
     def GetListEmail(self):
         return self.getListAddress()
@@ -251,7 +275,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         if name:
             self._full_path = Site.get_listpath(name)
         else:
-            self._full_path = None
+            self._full_path = ''
         # Only one level of mixin inheritance allowed
         for baseclass in self.__class__.__bases__:
             if hasattr(baseclass, 'InitTempVars'):
@@ -315,6 +339,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         self.send_goodbye_msg = mm_cfg.DEFAULT_SEND_GOODBYE_MSG
         self.bounce_matching_headers = \
                 mm_cfg.DEFAULT_BOUNCE_MATCHING_HEADERS
+        self.header_filter_rules = []
         self.anonymous_list = mm_cfg.DEFAULT_ANONYMOUS_LIST
         internalname = self.internal_name()
         self.real_name = internalname[0].upper() + internalname[1:]
@@ -334,7 +359,11 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         self.include_list_post_header = 1
         self.filter_mime_types = mm_cfg.DEFAULT_FILTER_MIME_TYPES
         self.pass_mime_types = mm_cfg.DEFAULT_PASS_MIME_TYPES
+        self.filter_filename_extensions = \
+            mm_cfg.DEFAULT_FILTER_FILENAME_EXTENSIONS
+        self.pass_filename_extensions = mm_cfg.DEFAULT_PASS_FILENAME_EXTENSIONS
         self.filter_content = mm_cfg.DEFAULT_FILTER_CONTENT
+        self.collapse_alternatives = mm_cfg.DEFAULT_COLLAPSE_ALTERNATIVES
         self.convert_html_to_plaintext = \
             mm_cfg.DEFAULT_CONVERT_HTML_TO_PLAINTEXT
         self.filter_action = mm_cfg.DEFAULT_FILTER_ACTION
@@ -357,6 +386,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         self.discard_these_nonmembers = []
         self.forward_auto_discards = mm_cfg.DEFAULT_FORWARD_AUTO_DISCARDS
         self.generic_nonmember_action = mm_cfg.DEFAULT_GENERIC_NONMEMBER_ACTION
+        self.nonmember_rejection_notice = ''
         # Ban lists
         self.ban_list = []
         # BAW: This should really be set in SecurityManager.InitVars()
@@ -365,7 +395,6 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         # 2-tuple of the date of the last autoresponse and the number of
         # autoresponses sent on that date.
         self.hold_and_cmd_autoresponses = {}
-
         # Only one level of mixin inheritance allowed
         for baseclass in self.__class__.__bases__:
             if hasattr(baseclass, 'InitVars'):
@@ -382,6 +411,10 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             self.encode_ascii_prefixes = 0
         else:
             self.encode_ascii_prefixes = 2
+        # scrub regular delivery
+        self.scrub_nondigest = mm_cfg.DEFAULT_SCRUB_NONDIGEST
+        # automatic discarding
+        self.max_days_to_hold = mm_cfg.DEFAULT_MAX_DAYS_TO_HOLD
 
 
     #
@@ -432,7 +465,8 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
     #
     # List creation
     #
-    def Create(self, name, admin, crypted_password, langs=None):
+    def Create(self, name, admin, crypted_password,
+               langs=None, emailhost=None):
         if Utils.list_exists(name):
             raise Errors.MMListAlreadyExistsError, name
         # Validate what will be the list's posting address.  If that's
@@ -440,7 +474,9 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         # part doesn't really matter, since that better already be valid.
         # However, most scripts already catch MMBadEmailError as exceptions on
         # the admin's email address, so transform the exception.
-        postingaddr = '%s@%s' % (name, mm_cfg.DEFAULT_EMAIL_HOST)
+        if emailhost is None:
+            emailhost = mm_cfg.DEFAULT_EMAIL_HOST
+        postingaddr = '%s@%s' % (name, emailhost)
         try:
             Utils.ValidateEmail(postingaddr)
         except Errors.MMBadEmailError:
@@ -564,7 +600,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
                 if type(dict) <> DictType:
                     return None, 'Load() expected to return a dictionary'
             except (EOFError, ValueError, TypeError, MemoryError,
-                    cPickle.PicklingError), e:
+                    cPickle.PicklingError, cPickle.UnpicklingError), e:
                 return None, e
         finally:
             fp.close()
@@ -572,7 +608,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         self.__timestamp = mtime
         return dict, None
 
-    def Load(self, check_version=1):
+    def Load(self, check_version=True):
         if not Utils.list_exists(self.internal_name()):
             raise Errors.MMUnknownListError
         # We first try to load config.pck, which contains the up-to-date
@@ -605,19 +641,56 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             raise Errors.MMCorruptListDatabaseError, e
         # Now, if we didn't end up using the primary database file, we want to
         # copy the fallback into the primary so that the logic in Save() will
-        # still work.  For giggles, we'll copy it to a safety backup.
-        if file == plast:
-            shutil.copy(file, pfile)
-            shutil.copy(file, pfile + '.safety')
-        elif file == dlast:
-            shutil.copy(file, dfile)
-            shutil.copy(file, pfile + '.safety')
+        # still work.  For giggles, we'll copy it to a safety backup.  Note we
+        # MUST do this with the underlying list lock acquired.
+        if file == plast or file == dlast:
+            syslog('error', 'fixing corrupt config file, using: %s', file)
+            unlock = True
+            try:
+                try:
+                    self.__lock.lock()
+                except LockFile.AlreadyLockedError:
+                    unlock = False
+                self.__fix_corrupt_pckfile(file, pfile, plast, dfile, dlast)
+            finally:
+                if unlock:
+                    self.__lock.unlock()
         # Copy the loaded dictionary into the attributes of the current
         # mailing list object, then run sanity check on the data.
         self.__dict__.update(dict)
         if check_version:
             self.CheckVersion(dict)
             self.CheckValues()
+
+    def __fix_corrupt_pckfile(self, file, pfile, plast, dfile, dlast):
+        if file == plast:
+            # Move aside any existing pickle file and delete any existing
+            # safety file.  This avoids EPERM errors inside the shutil.copy()
+            # calls if those files exist with different ownership.
+            try:
+                os.rename(pfile, pfile + '.corrupt')
+            except OSError, e:
+                if e.errno <> errno.ENOENT: raise
+            try:
+                os.remove(pfile + '.safety')
+            except OSError, e:
+                if e.errno <> errno.ENOENT: raise
+            shutil.copy(file, pfile)
+            shutil.copy(file, pfile + '.safety')
+        elif file == dlast:
+            # Move aside any existing marshal file and delete any existing
+            # safety file.  This avoids EPERM errors inside the shutil.copy()
+            # calls if those files exist with different ownership.
+            try:
+                os.rename(dfile, dfile + '.corrupt')
+            except OSError, e:
+                if e.errno <> errno.ENOENT: raise
+            try:
+                os.remove(dfile + '.safety')
+            except OSError, e:
+                if e.errno <> errno.ENOENT: raise
+            shutil.copy(file, dfile)
+            shutil.copy(file, dfile + '.safety')
 
 
     #
@@ -691,14 +764,14 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         """
         invitee = userdesc.address
         Utils.ValidateEmail(invitee)
-        requestaddr = self.GetRequestEmail()
         # Hack alert!  Squirrel away a flag that only invitations have, so
         # that we can do something slightly different when an invitation
         # subscription is confirmed.  In those cases, we don't need further
         # admin approval, even if the list is so configured.  The flag is the
         # list name to prevent invitees from cross-subscribing.
         userdesc.invitation = self.internal_name()
-        cookie = Pending.new(Pending.SUBSCRIPTION, userdesc)
+        cookie = self.pend_new(Pending.SUBSCRIPTION, userdesc)
+        requestaddr = self.getListAddress('request')
         confirmurl = '%s/%s' % (self.GetScriptURL('confirm', absolute=1),
                                 cookie)
         listname = self.real_name
@@ -712,17 +785,13 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
              'cookie'     : cookie,
              'listowner'  : self.GetOwnerEmail(),
              }, mlist=self)
-        if mm_cfg.VERP_CONFIRMATIONS:
-            subj = _(
-                'You have been invited to join the %(listname)s mailing list')
-            sender = self.GetConfirmEmail(cookie)
-        else:
-            # Do it the old fashioned way
-            subj = 'confirm ' + cookie
-            sender = requestaddr
+        sender = self.GetRequestEmail(cookie)
         msg = Message.UserNotification(
-            invitee, sender, subj,
-            text, lang=self.preferred_language)
+            invitee, sender,
+            text=text, lang=self.preferred_language)
+        subj = self.GetConfirmJoinSubject(listname, cookie)
+        del msg['subject']
+        msg['Subject'] = subj
         msg.send(self)
 
     def AddMember(self, userdesc, remote=None):
@@ -807,11 +876,11 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         # means the user must confirm; 2 means the admin must approve; 3 means
         # the user must confirm and then the admin must approve
         if self.subscribe_policy == 0:
-            self.ApprovedAddMember(userdesc)
+            self.ApprovedAddMember(userdesc, whence=remote or '')
         elif self.subscribe_policy == 1 or self.subscribe_policy == 3:
             # User confirmation required.  BAW: this should probably just
             # accept a userdesc instance.
-            cookie = Pending.new(Pending.SUBSCRIPTION, userdesc)
+            cookie = self.pend_new(Pending.SUBSCRIPTION, userdesc)
             # Send the user the confirmation mailback
             if remote is None:
                 by = remote = ''
@@ -829,18 +898,18 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
                  'listaddr'    : self.GetListEmail(),
                  'listname'    : realname,
                  'cookie'      : cookie,
-                 'requestaddr' : self.GetRequestEmail(),
+                 'requestaddr' : self.getListAddress('request'),
                  'remote'      : remote,
                  'listadmin'   : self.GetOwnerEmail(),
                  'confirmurl'  : confirmurl,
                  }, lang=lang, mlist=self)
             msg = Message.UserNotification(
-                recipient, self.GetRequestEmail(),
+                recipient, self.GetRequestEmail(cookie),
                 text=text, lang=lang)
             # BAW: See ChangeMemberAddress() for why we do it this way...
             del msg['subject']
-            msg['Subject'] = 'confirm ' + cookie
-            msg['Reply-To'] = self.GetRequestEmail()
+            msg['Subject'] = self.GetConfirmJoinSubject(realname, cookie)
+            msg['Reply-To'] = self.GetRequestEmail(cookie)
             msg.send(self)
             who = formataddr((name, email))
             syslog('subscribe', '%s: pending %s %s',
@@ -854,7 +923,8 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             raise Errors.MMNeedApproval, _(
                 'subscriptions to %(realname)s require moderator approval')
 
-    def ApprovedAddMember(self, userdesc, ack=None, admin_notif=None, text=''):
+    def ApprovedAddMember(self, userdesc, ack=None, admin_notif=None, text='',
+                          whence=''):
         """Add a member right now.
 
         The member's subscription must be approved by what ever policy the
@@ -903,8 +973,8 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             kind = ' (digest)'
         else:
             kind = ''
-        syslog('subscribe', '%s: new%s %s', self.internal_name(),
-               kind, formataddr((email, name)))
+        syslog('subscribe', '%s: new%s %s, %s', self.internal_name(),
+               kind, formataddr((email, name)), whence)
         if ack:
             self.SendSubscribeAck(email, self.getMemberPassword(email),
                                   digest, text)
@@ -1004,8 +1074,8 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         if newaddr == self.GetListEmail().lower():
             raise Errors.MMBadEmailError
         # Pend the subscription change
-        cookie = Pending.new(Pending.CHANGE_OF_ADDRESS,
-                             oldaddr, newaddr, globally)
+        cookie = self.pend_new(Pending.CHANGE_OF_ADDRESS,
+                               oldaddr, newaddr, globally)
         confirmurl = '%s/%s' % (self.GetScriptURL('confirm', absolute=1),
                                 cookie)
         realname = self.real_name
@@ -1016,7 +1086,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
              'listaddr'   : self.GetListEmail(),
              'listname'   : realname,
              'cookie'     : cookie,
-             'requestaddr': self.GetRequestEmail(),
+             'requestaddr': self.getListAddress('request'),
              'remote'     : '',
              'listadmin'  : self.GetOwnerEmail(),
              'confirmurl' : confirmurl,
@@ -1029,15 +1099,21 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         # Subject: in a separate step, although we have to delete the one
         # UserNotification adds.
         msg = Message.UserNotification(
-            newaddr, self.GetRequestEmail(),
+            newaddr, self.GetRequestEmail(cookie),
             text=text, lang=lang)
         del msg['subject']
-        msg['Subject'] = 'confirm ' + cookie
-        msg['Reply-To'] = self.GetRequestEmail()
+        msg['Subject'] = self.GetConfirmJoinSubject(realname, cookie)
+        msg['Reply-To'] = self.GetRequestEmail(cookie)
         msg.send(self)
 
     def ApprovedChangeMemberAddress(self, oldaddr, newaddr, globally):
-        self.changeMemberAddress(oldaddr, newaddr)
+        # It's possible they were a member of this list, but choose to change
+        # their membership globally.  In that case, we simply remove the old
+        # address.
+        if self.getMemberCPAddress(oldaddr) == newaddr:
+            self.removeMember(oldaddr)
+        else:
+            self.changeMemberAddress(oldaddr, newaddr)
         # If globally is true, then we also include every list for which
         # oldaddr is a member.
         if not globally:
@@ -1053,7 +1129,11 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
                 continue
             mlist.Lock()
             try:
-                mlist.changeMemberAddress(oldaddr, newaddr)
+                # Same logic as above, re newaddr is already a member
+                if mlist.getMemberCPAddress(oldaddr) == newaddr:
+                    mlist.removeMember(oldaddr)
+                else:
+                    mlist.changeMemberAddress(oldaddr, newaddr)
                 mlist.Save()
             finally:
                 mlist.Unlock()
@@ -1063,15 +1143,16 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
     # Confirmation processing
     #
     def ProcessConfirmation(self, cookie, context=None):
-        data = Pending.confirm(cookie)
-        if data is None:
-            raise Errors.MMBadConfirmation, 'data is None'
+        rec = self.pend_confirm(cookie)
+        if rec is None:
+            raise Errors.MMBadConfirmation, 'No cookie record for %s' % cookie
         try:
-            op = data[0]
-            data = data[1:]
+            op = rec[0]
+            data = rec[1:]
         except ValueError:
-            raise Errors.MMBadConfirmation, 'op-less data %s' % (data,)
+            raise Errors.MMBadConfirmation, 'op-less data %s' % (rec,)
         if op == Pending.SUBSCRIPTION:
+            whence = 'via email confirmation'
             try:
                 userdesc = data[0]
                 # If confirmation comes from the web, context should be a
@@ -1080,6 +1161,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
                 # context is a Message and isn't relevant, so ignore it.
                 if isinstance(context, UserDesc):
                     userdesc += context
+                    whence = 'via web confirmation'
                 addr = userdesc.address
                 fullname = userdesc.fullname
                 password = userdesc.password
@@ -1104,7 +1186,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
                 name = self.real_name
                 raise Errors.MMNeedApproval, _(
                     'subscriptions to %(name)s require administrator approval')
-            self.ApprovedAddMember(userdesc)
+            self.ApprovedAddMember(userdesc, whence=whence)
             return op, addr, password, digest, lang
         elif op == Pending.UNSUBSCRIPTION:
             addr = data[0]
@@ -1125,8 +1207,10 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             approved = None
             # Confirmation should be coming from email, where context should
             # be the confirming message.  If the message does not have an
-            # Approved: header, this is a discard, otherwise it's an approval
-            # (if the passwords match).
+            # Approved: header, this is a discard.  If it has an Approved:
+            # header that does not match the list password, then we'll notify
+            # the list administrator that they used the wrong password.
+            # Otherwise it's an approval.
             if isinstance(context, Message.Message):
                 # See if it's got an Approved: header, either in the headers,
                 # or in the first text/plain section of the response.  For
@@ -1140,7 +1224,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
                         subpart = None
                     if subpart:
                         s = StringIO(subpart.get_payload())
-                        while 1:
+                        while True:
                             line = s.readline()
                             if not line:
                                 break
@@ -1153,11 +1237,19 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
                                     # then
                                     approved = line[i+1:].strip()
                             break
-            # Okay, does the approved header match the list password?
-            if approved and self.Authenticate([mm_cfg.AuthListAdmin,
-                                               mm_cfg.AuthListModerator],
-                                              approved) <> mm_cfg.UnAuthorized:
-                action = mm_cfg.APPROVE
+            # Is there an approved header?
+            if approved is not None:
+                # Does it match the list password?  Note that we purposefully
+                # do not allow the site password here.
+                if self.Authenticate([mm_cfg.AuthListAdmin,
+                                      mm_cfg.AuthListModerator],
+                                     approved) <> mm_cfg.UnAuthorized:
+                    action = mm_cfg.APPROVE
+                else:
+                    # The password didn't match.  Re-pend the message and
+                    # inform the list moderators about the problem.
+                    self.pend_repend(cookie, rec)
+                    raise Errors.MMBadPasswordError
             else:
                 action = mm_cfg.DISCARD
             try:
@@ -1171,11 +1263,13 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             member = data[1]
             self.setDeliveryStatus(member, MemberAdaptor.ENABLED)
             return op, member
+        else:
+            assert 0, 'Bad op: %s' % op
 
     def ConfirmUnsubscription(self, addr, lang=None, remote=None):
         if lang is None:
             lang = self.getMemberLanguage(addr)
-        cookie = Pending.new(Pending.UNSUBSCRIPTION, addr)
+        cookie = self.pend_new(Pending.UNSUBSCRIPTION, addr)
         confirmurl = '%s/%s' % (self.GetScriptURL('confirm', absolute=1),
                                 cookie)
         realname = self.real_name
@@ -1191,18 +1285,18 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
              'listaddr'    : self.GetListEmail(),
              'listname'    : realname,
              'cookie'      : cookie,
-             'requestaddr' : self.GetRequestEmail(),
+             'requestaddr' : self.getListAddress('request'),
              'remote'      : remote,
              'listadmin'   : self.GetOwnerEmail(),
              'confirmurl'  : confirmurl,
              }, lang=lang, mlist=self)
         msg = Message.UserNotification(
-            addr, self.GetRequestEmail(),
+            addr, self.GetRequestEmail(cookie),
             text=text, lang=lang)
             # BAW: See ChangeMemberAddress() for why we do it this way...
         del msg['subject']
-        msg['Subject'] = 'confirm ' + cookie
-        msg['Reply-To'] = self.GetRequestEmail()
+        msg['Subject'] = self.GetConfirmLeaveSubject(realname, cookie)
+        msg['Reply-To'] = self.GetRequestEmail(cookie)
         msg.send(self)
 
 
@@ -1211,20 +1305,19 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
     #
     def HasExplicitDest(self, msg):
         """True if list name or any acceptable_alias is included among the
-        to or cc addrs."""
-        # BAW: fall back to Utils.ParseAddr if the first test fails.
-        # this is the list's full address
+        addresses in the recipient headers.
+        """
+        # This is the list's full address.
         listfullname = '%s@%s' % (self.internal_name(), self.host_name)
         recips = []
-        # check all recipient addresses against the list's explicit addresses,
+        # Check all recipient addresses against the list's explicit addresses,
         # specifically To: Cc: and Resent-to:
         to = []
         for header in ('to', 'cc', 'resent-to', 'resent-cc'):
             to.extend(getaddresses(msg.get_all(header, [])))
         for fullname, addr in to:
-            # It's possible that if the header doesn't have a valid
-            # (i.e. RFC822) value, we'll get None for the address.  So skip
-            # it.
+            # It's possible that if the header doesn't have a valid RFC 2822
+            # value, we'll get None for the address.  So skip it.
             if addr is None:
                 continue
             addr = addr.lower()
@@ -1233,40 +1326,39 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
                     localpart == self.internal_name() or
                     # exact match against the complete list address
                     addr == listfullname):
-                return 1
+                return True
             recips.append((addr, localpart))
-        #
-        # helper function used to match a pattern against an address.  Do it
+        # Helper function used to match a pattern against an address.
         def domatch(pattern, addr):
             try:
-                if re.match(pattern, addr):
-                    return 1
+                if re.match(pattern, addr, re.IGNORECASE):
+                    return True
             except re.error:
                 # The pattern is a malformed regexp -- try matching safely,
                 # with all non-alphanumerics backslashed:
-                if re.match(re.escape(pattern), addr):
-                    return 1
-        #
+                if re.match(re.escape(pattern), addr, re.IGNORECASE):
+                    return True
+            return False
         # Here's the current algorithm for matching acceptable_aliases:
         #
         # 1. If the pattern does not have an `@' in it, we first try matching
         #    it against just the localpart.  This was the behavior prior to
-        #    2.0beta3, and is kept for backwards compatibility.
-        #    (deprecated).
+        #    2.0beta3, and is kept for backwards compatibility.  (deprecated).
         #
         # 2. If that match fails, or the pattern does have an `@' in it, we
         #    try matching against the entire recip address.
+        aliases = self.acceptable_aliases.splitlines()
         for addr, localpart in recips:
-            for alias in self.acceptable_aliases.split('\n'):
+            for alias in aliases:
                 stripped = alias.strip()
                 if not stripped:
-                    # ignore blank or empty lines
+                    # Ignore blank or empty lines
                     continue
                 if '@' not in stripped and domatch(stripped, localpart):
-                    return 1
+                    return True
                 if domatch(stripped, addr):
-                    return 1
-        return 0
+                    return True
+        return False
 
     def parse_matching_header_opt(self):
         """Return a list of triples [(field name, regex, line), ...]."""
@@ -1313,13 +1405,17 @@ bad regexp in bounce_matching_header line: %s
                     return line
         return 0
 
-    def autorespondToSender(self, sender):
+    def autorespondToSender(self, sender, lang=None):
         """Return true if Mailman should auto-respond to this sender.
 
         This is only consulted for messages sent to the -request address, or
         for posting hold notifications, and serves only as a safety value for
         mail loops with email 'bots.
         """
+        # language setting
+        if lang == None:
+            lang = self.preferred_language
+        i18n.set_language(lang)
         # No limit
         if mm_cfg.MAX_AUTORESPONSES_PER_DAY == 0:
             return 1
@@ -1347,11 +1443,12 @@ bad regexp in bounce_matching_header line: %s
                  'listname': '%s@%s' % (self.real_name, self.host_name),
                  'num' : count,
                  'owneremail': self.GetOwnerEmail(),
-                 })
+                 },
+                lang=lang)
             msg = Message.UserNotification(
                 sender, self.GetOwnerEmail(),
                 _('Last autoresponse notification for today'),
-                text)
+                text, lang=lang)
             msg.send(self)
             return 0
         self.hold_and_cmd_autoresponses[sender] = (today, count+1)
@@ -1370,4 +1467,6 @@ bad regexp in bounce_matching_header line: %s
         # preferred language.
         if mm_cfg.DEFAULT_SERVER_LANGUAGE not in langs:
             langs.append(mm_cfg.DEFAULT_SERVER_LANGUAGE)
-        return langs
+        # When testing, it's possible we've disabled a language, so just
+        # filter things out so we don't get tracebacks.
+        return [lang for lang in langs if mm_cfg.LC_DESCRIPTIONS.has_key(lang)]

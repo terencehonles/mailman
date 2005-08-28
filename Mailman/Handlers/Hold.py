@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2004 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -197,6 +197,12 @@ def hold_for_approval(mlist, msg, msgdata, exc):
         exc = exc()
     listname = mlist.real_name
     sender = msgdata.get('sender', msg.get_sender())
+    usersubject = msg.get('subject')
+    charset = Utils.GetCharSet(mlist.preferred_language)
+    if usersubject:
+        usersubject = Utils.oneline(usersubject, charset)
+    else:
+        usersubject = _('(no subject)')
     message_id = msg.get('message-id', 'n/a')
     owneraddr = mlist.GetOwnerEmail()
     adminaddr = mlist.GetBouncesEmail()
@@ -212,7 +218,7 @@ def hold_for_approval(mlist, msg, msgdata, exc):
          'hostname'   : mlist.host_name,
          'reason'     : _(reason),
          'sender'     : sender,
-         'subject'    : msg.get('subject', _('(no subject)')),
+         'subject'    : usersubject,
          'admindb_url': mlist.GetScriptURL('admindb', absolute=1),
          }
     # We may want to send a notification to the original sender too
@@ -224,9 +230,9 @@ def hold_for_approval(mlist, msg, msgdata, exc):
     #
     # This message should appear to come from <list>-admin so as to handle any
     # bounce processing that might be needed.
-    cookie = Pending.new(Pending.HELD_MESSAGE, id)
+    cookie = mlist.pend_new(Pending.HELD_MESSAGE, id)
     if not fromusenet and ackp(msg) and mlist.respond_to_post_requests and \
-           mlist.autorespondToSender(sender):
+           mlist.autorespondToSender(sender, mlist.getMemberLanguage(sender)):
         # Get a confirmation cookie
         d['confirmurl'] = '%s/%s' % (mlist.GetScriptURL('confirm', absolute=1),
                                      cookie)
@@ -247,7 +253,6 @@ def hold_for_approval(mlist, msg, msgdata, exc):
             lang = mlist.preferred_language
             charset = Utils.GetCharSet(lang)
             # We need to regenerate or re-translate a few values in d
-            usersubject = msg.get('subject', _('(no subject)'))
             d['reason'] = _(reason)
             d['subject'] = usersubject
             # craft the admin notification message and deliver it

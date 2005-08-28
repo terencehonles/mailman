@@ -7,7 +7,7 @@ import os
 import re
 import sys
 import time
-from email.Utils import parseaddr, parsedate_tz, mktime_tz
+from email.Utils import parseaddr, parsedate_tz, mktime_tz, formatdate
 import cPickle as pickle
 from cStringIO import StringIO
 from string import lowercase
@@ -126,9 +126,13 @@ class Database(DatabaseInterface):
         """Store article without message body to save space"""
         # TBD this is not thread safe!
         temp = article.body
+        temp2 = article.html_body
         article.body = []
+        del article.html_body
         self.articleIndex[article.msgid] = pickle.dumps(article)
         article.body = temp
+        article.html_body = temp2
+
 
 # The Article class encapsulates a single posting.  The attributes
 # are:
@@ -213,7 +217,8 @@ class Article:
                 self.headers[i] = message[i]
 
         # Read the message body
-        s = StringIO(message.get_payload())
+        s = StringIO(message.get_payload(decode=1)\
+                     or message.as_string().split('\n\n',1)[1])
         self.body = s.readlines()
 
     def _set_date(self, message):
@@ -235,9 +240,15 @@ class Article:
             date = self._last_article_time + 1
         self._last_article_time = date
         self.date = '%011i' % date
+        self.datestr = message.get('date') \
+                       or message.get('x-list-received-date') \
+                       or formatdate(date)
 
     def __repr__(self):
         return '<Article ID = '+repr(self.msgid)+'>'
+
+    def finished_update_article(self):
+        pass    
 
 # Pipermail formatter class
 
@@ -486,6 +497,8 @@ class T:
                             self.update_article(arcdir, a1, L[0], L[2])
                         else:
                             del self.database.changed[key]
+            if L[0]:
+                L[0].finished_update_article()
             L = L[1:]                   # Rotate the list
             if msgid is None:
                 L.append(msgid)
@@ -600,8 +613,14 @@ class T:
             self.write_article(arch, temp, os.path.join(archivedir,
                                                         filename))
 
-            author = fixAuthor(article.author)
-            subject = article.subject.lower()
+            if article.decoded.has_key('author'):
+                author = fixAuthor(article.decoded['author'])
+            else:
+                author = fixAuthor(article.author)
+            if article.decoded.has_key('stripped'):
+                subject = article.decoded['stripped'].lower()
+            else:
+                subject = article.subject.lower()
 
             article.parentID = parentID = self.get_parent_info(arch, article)
             if parentID:
