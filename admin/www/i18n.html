@@ -1,8 +1,7 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-                      "http://www.w3.org/TR/html4/loose.dtd" >
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Sat Nov  1 11:06:28 2003 -->
+<!-- Sun Aug 28 13:50:56 2005 -->
 <!-- USING HT2HTML 2.0 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -12,8 +11,8 @@ Title: Internationalization
 
 <head>
 <title>Internationalization</title>
-<meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
-<meta name="generator" content="HT2HTML/2.0" />
+<meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
+<meta name="generator" content="HT2HTML/2.0">
 <style type="text/css">
 body { margin: 0px; }
 </style>
@@ -45,12 +44,18 @@ CELLSPACING=0 CELLPADDING=0
 <a href="./index.html">Home</a>
     </td>
     <td bgcolor="#eecfa1">
+<a href="./security.html">Security</a>
+    </td>
+    <td bgcolor="#eecfa1">
 <a href="./docs.html">Documentation</a>
     </td>
     <td bgcolor="#eecfa1">
 <a href="./lists.html">Mailing lists</a>
     </td>
 </tr><tr>
+    <td bgcolor="#eecfa1">
+&nbsp;
+    </td>
     <td bgcolor="#eecfa1">
 <a href="./help.html">Help</a>
     </td>
@@ -78,6 +83,9 @@ Overview
 <a href="index.html">Home</a>
 </td></tr>
 <tr><td bgcolor="#eecfa1">
+<a href="security.html">Security</li>
+</td></tr>
+<tr><td bgcolor="#eecfa1">
 <a href="features.html">Features</a>
 </td></tr>
 <tr><td bgcolor="#eecfa1">
@@ -98,7 +106,7 @@ Overview
 <tr><td bgcolor="#eecfa1">
 <a href="mirrors.html">Mirrors</a>
 </td></tr>
-<tr><td bgcolor="#eecfa1">&nbsp;</td></tr>
+<tr><td bgcolor="#eecfa1">&nbsp;
 <tr><td bgcolor="#36648b"><b><font color="#ffffff">
 Documentation
 </font></b></td></tr>
@@ -117,26 +125,7 @@ Documentation
 <tr><td bgcolor="#eecfa1">
 <b>Translators</b>
 </td></tr>
-<tr><td bgcolor="#eecfa1">&nbsp;</td></tr>
-<tr><td bgcolor="#36648b"><b><font color="#ffffff">
-Exits
-</font></b></td></tr>
-<tr><td bgcolor="#eecfa1">
-<a href="http://sf.net/projects/mailman">SF Project Page</a>
-</td></tr>
-<tr><td bgcolor="#eecfa1">
-<a href="lists.html">Discussion Lists</a>
-</td></tr>
-<tr><td bgcolor="#eecfa1">
-<a href="http://www.python.org/">Python</a>
-</td></tr>
-<tr><td bgcolor="#eecfa1">
-<a href="http://www.gnu.org/">GNU</a>
-</td></tr>
-<tr><td bgcolor="#eecfa1">
-<a href="http://barry.warsaw.us/">Barry Warsaw</a>
-</td></tr>
-<tr><td bgcolor="#eecfa1">&nbsp;</td></tr>
+<tr><td bgcolor="#eecfa1">&nbsp;
 <tr><td bgcolor="#36648b"><b><font color="#ffffff">
 Email Us
 </font></b></td></tr>
@@ -158,7 +147,7 @@ Email Us
 &nbsp;
 </td></tr>
 <tr><td bgcolor="#eecfa1">
-&copy; 1998-2003
+&copy; 1998-2005
 Free Software Foundation, Inc.  Verbatim copying and distribution of this
 entire article is permitted in any medium, provided this notice is preserved.
 
@@ -169,7 +158,7 @@ entire article is permitted in any medium, provided this notice is preserved.
 <td width="15">&nbsp;&nbsp;</td><!--spacer-->
 <!-- end of sidebar cell -->
 <!-- start of body cell -->
-<td valign="top" width="90%" class="body"><br />
+<td valign="top" width="90%" class="body"><br>
 <h3>Internationalization</h3>
 
 Mailman 2.1 is fully internationalized.  This means you can add
@@ -229,15 +218,19 @@ Project</a> for future language support.
     <td><a href="mailto:robert@cataloniahosting.com">Robert Garrigos</td>
     <td>Supported</td>
 </tr>
-<tr><td>Chinese</td><td>Big5, gb</td>
-    <td><a href="mailto:max.yu@turbolinux.com.cn">Max Yu</a>
-    <td>Both Simplified Chinese (GB), and Big5 have been submitted but
-        support may be incomplete.  Assistance would be greatly
-        appreciated!</td>
+<tr><td rowspan="2">Chinese</td><td>zh_CN</td>
+    <td>Coordinated at
+        <a href="http://mail.cs.hit.edu.cn:8080/mmcn/">this page</a> by
+        champion <a href="mailto:leona@cs.hit.edu.cn">Leona</a>.</td>
+    <td>Supported</td>
+</tr>
+<tr><td>zh_TW</td>
+    <td><a href="mailto:ping@pingyeh.net">Ping Yeh</td>
+    <td>Supported</td>
 </tr>
 <tr><td>Croatian</td><td>hr</td>
     <td><a href="mailto:nkatic@public.srce.hr">Nino Katic</a></td>
-    <td>Not yet submitted</td>
+    <td>Supported</td>
 </tr>
 <tr><td>Czech</td><td>cs</td>
     <td><a href="mailto:dan@ohnesorg.cz">Dan Ohnesorg</a> with
@@ -245,12 +238,11 @@ Project</a> for future language support.
     <td>Supported</td>
 </tr>
 <tr><td>Danish</td><td>da</td>
-    <td><a href="mailto:soren@ka-net.dk">Soren Bondrup</a></td>
+    <td><a href="mailto:mm-da@statsbiblioteket.dk">Tom G. Christensen</a></td>
     <td>Supported</td>
 </tr>
 <tr><td>Dutch</td><td>nl</td>
-    <td><a href="mailto:danny@terweij.nl">Danny Terweij</a>,
-    <a href="mailto:sander@steffann.nl">Sander Steffann</a></td>
+    <td><a href="mailto:danny@terweij.nl">Danny Terweij</a></td>
     <td>Supported</td>
 </tr>
 <tr><td>Esperanto</td><td>eo</td>
@@ -275,7 +267,8 @@ Project</a> for future language support.
     >http://listes.rezo.net/mailman/listinfo/mailman-fr</a></td>
 </tr>
 <tr><td>German</td><td>de</td>
-    <td><a href="mailto:p.heinlein@jpberlin.de">Peer Heinlein</a></td>
+    <td><a href="mailto:p.heinlein@jpberlin.de">Peer Heinlein</a>.
+    (See <a href="http://www.postfixbuch.de/mailman.txt">also</a>)</td>
     <td>Supported</td>
 </tr>
 <tr><td>Hungarian</td><td>hu</td>
@@ -327,13 +320,16 @@ Project</a> for future language support.
 <tr><td>Portuguese</td><td>pt, pt_BR</td>
     <td><a href="mailto:gleydson.mazioli@ima.sp.gov.br">Gleydson
         Mazioli da Silva</a>,
-        <a href="mailto:samarta@ci.uc.pt">João Sá Marta</a>,
         <a href="mailto:queiroz@ccuec.unicamp.br">Rubens Queiroz de
         Almeida</a>,
         <a href="mailto:aleck@unesp.br">Aleck Zander</a>,
         <a href="mailto:joseroberto@dicaslinux.com.br">Jose Roberto Kerne</a>
         <a href="mailto:moitinho@civil.ist.utl.pt">Jose Paulo Moitinho
         de Almeida</a></td>
+    <td>Supported</td>
+</tr>
+<tr><td>Romanian</td><td>ro</td>
+    <td><a href="mailto:gupi@informatia.ro">Stefaniu Criste</a></td>
     <td>Supported</td>
 </tr>
 <tr><td>Russian</td><td>ru</td>
@@ -345,9 +341,9 @@ Project</a> for future language support.
     <td><a href="mailto:bojan@trust-b.com">Bojan Suzic</a></td>
     <td>Supported</td>
 </tr>
-<tr><td>Solvenian</td><td>sl</td>
+<tr><td>Slovenian</td><td>sl</td>
     <td><a href="mailto:urosh@agenda.si">Uros Kositer</a></td>
-    <td>supported</td>
+    <td>Supported</td>
 </tr>
 <tr><td>Spanish</td><td>es</td>
     <td><a href="mailto:jcrey@uma.es">Juan Carlos Rey Anaya</a></td>
@@ -359,8 +355,9 @@ Project</a> for future language support.
     <td>Supported</td>
 </tr>
 <tr><td>Turkish</td><td>tr</td>
-    <td><a href="mailto:eguler@aegee.metu.edu.tr">Erdinc Guler</a></td>
-    <td>Not yet submitted</td>
+    <td><a href="mailto:kerem.erkan@hacettepe.edu.tr">Kerem Erkan</a>,
+        <a href="mailto:eguler@aegee.metu.edu.tr">Erdinc Guler</a></td>
+    <td>Supported</td>
 </tr>
 <tr><td>Ukrainian</td><td>uk</td>
     <td><a href="mailto:mvd@mylinux.com.ua">Maxim Dzumanenko</a></td>

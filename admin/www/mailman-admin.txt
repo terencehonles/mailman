@@ -1,18 +1,16 @@
+   #GNU Mailman - List Administration Manual Contents About this
+   document... About this document...
 
-   #first Contents
-
-                  GNU Mailman - List Administration Manual
+   Previous Page Up One Level Next Page GNU Mailman - List Administration
+                                   Manual
      _________________________________________________________________
 
-                  GNU Mailman - List Administration Manual
+GNU Mailman - List Administration Manual
 
-                         Barry A. Warsaw, Terri Oda
+   Barry A. Warsaw
 
-                           terri (at) zone12.com
-
-                                Release 2.1
-                              October 2, 2004
-
+   Release 2.1
+   December 13, 2004
 
                                  Front Matter
 
@@ -30,42 +28,33 @@
 
 Contents
 
-     * Front Matter
-          + 1 WARNING: This is incomplete
-          + 2 Introduction to GNU Mailman
-               o 2.1 A List's Email Addresses
-               o 2.2 Administrative Roles
-               o 2.3 A List's Web Pages
-               o 2.4 Basic Architectural Overview
-          + 3 The List Configuration Pages
-               o 3.1 The General Options Category
-               o 3.2 The Passwords Category
-               o 3.3 The Language Options Category
-               o 3.4 The Membership Management Category
-               o 3.5 The Non-digest Options Category
-               o 3.6 The Digest Options Category
-               o 3.7 The Privacy Options Category
-               o 3.8 The Bounce Processing Category
-               o 3.9 The Archiving Options Category
-               o 3.10 The Mail/News Gateway Category
-               o 3.11 The Auto-responder Category
-               o 3.12 The Content Filtering Category
-               o 3.13 The Topics Category
-          + 4 Membership Management
-          + 5 Tending to Pending Moderator Requests
-          + 6 Editing the Public HTML Pages
-          + 7 Deleting the Mailing List
+     *
+          + 1 Introduction to GNU Mailman
+               o 1.1 A List's Email Addresses
+               o 1.2 Administrative Roles
+               o 1.3 A List's Web Pages
+               o 1.4 Basic Architectural Overview
+          + 2 The List Configuration Pages
+               o 2.1 The General Options Category
+               o 2.2 The Passwords Category
+               o 2.3 The Language Options Category
+               o 2.4 The Membership Management Category
+               o 2.5 The Non-digest Options Category
+               o 2.6 The Digest Options Category
+               o 2.7 The Privacy Options Category
+               o 2.8 The Bounce Processing Category
+               o 2.9 The Archiving Options Category
+               o 2.10 The Mail/News Gateway Category
+               o 2.11 The Auto-responder Category
+               o 2.12 The Content Filtering Category
+               o 2.13 The Topics Category
+          + 3 Membership Management
+          + 4 Tending to Pending Moderator Requests
+          + 5 Editing the Public HTML Pages
+          + 6 Deleting the Mailing List
           + 1 This is an Appendix
-     * About this document ...
 
-                         1 WARNING: This is incomplete
-
-   Warning: This documentation is not yet complete. It is known to be
-   missing sections and hasn't been proofread completely yet. However,
-   I'm putting it online anyhow because some questions have come up on
-   the lists which are answered in here.
-
-                         2 Introduction to GNU Mailman
+                         1 Introduction to GNU Mailman
 
    GNU Mailman is software that lets you manage electronic mailing lists.
    It supports a wide range of mailing list types, such as general
@@ -84,7 +73,7 @@ Contents
    the command line interface; see the GNU Mailman site administrator's
    manual for more details.
 
-2.1 A List's Email Addresses
+1.1 A List's Email Addresses
 
    Every mailing list has a set of email addresses that messages can be
    sent to. There's always one address for posting messages to the list,
@@ -124,7 +113,7 @@ Contents
    administrators, but this address only exists for compatibility with
    older versions of Mailman.
 
-2.2 Administrative Roles
+1.2 Administrative Roles
 
    There are two primary administrative roles for each mailing list, a
    list owner and a list moderator. A list owner is allowed to change
@@ -152,7 +141,7 @@ Contents
    list administrator interchangably, meaning both roles. When necessary,
    we'll distinguish the list moderator explicitly.
 
-2.3 A List's Web Pages
+1.3 A List's Web Pages
 
    Every mailing list is also accessible by a number of web pages. Note
    that the exact urls is configurable by the site administrator, so they
@@ -188,7 +177,7 @@ Contents
    previously logged in as the list owner, you do not need to re-login to
    access the administrative requests page.
 
-2.4 Basic Architectural Overview
+1.4 Basic Architectural Overview
 
    This section will outline the basic architecture of GNU Mailman, such
    as how messages are processed by the sytem. Without going into lots of
@@ -217,7 +206,7 @@ Contents
    name, which is a combination of a unique hash and the Unix time that
    the message was received. The metadata file has a suffix of .db and
    the message file has a suffix of either .msg if stored in plain text,
-   or .pck if stored in a more efficient internal representation1.
+   or .pck if stored in a more efficient internal representation^1.
 
    As a message moves through the incoming queue, it performs various
    checks on the message, such as whether it matches one of the
@@ -227,7 +216,7 @@ Contents
    adding footers, etc. Messages in the incoming queue may also be stored
    for appending to digests.
 
-                        3 The List Configuration Pages
+                        2 The List Configuration Pages
 
    After logging into the list configuration pages, you'll see the
    configuration options for the list, grouped in categories. All the
@@ -269,14 +258,14 @@ Contents
    at the top of the resulting page. The results page will always be the
    category page that you submitted.
 
-3.1 The General Options Category
+2.1 The General Options Category
 
    The General Options category is where you can set a variety of
    variables that affect basic behavior and public information. In the
    descriptions that follow, the variable name is given first, along with
    an overview and a description of what that variable controls.
 
-  3.1.1 General list personality
+  2.1.1 General list personality
 
    These variables, grouped under the general list personality section,
    control some public information about the mailing list.
@@ -353,7 +342,7 @@ Contents
           in the style of the content of the message. There's little
           Mailman can do about this kind of identity leakage.
 
-  3.1.2 Reply-To header munging
+  2.1.2 Reply-To header munging
 
    This section controls what happens to the Reply-To: headers of
    messages posted through your list.
@@ -423,12 +412,12 @@ Contents
           This is the address that will be added in the Reply-To: header
           if reply_goes_to_list is set to Explicit address.
 
-  3.1.3 Umbrella list settings
+  2.1.3 Umbrella list settings
 
    TBD. Note that umbrella lists are deprecated and will be replace with
    a better mechanism for Mailman 3.0.
 
-  3.1.4 Notifications
+  2.1.4 Notifications
 
    Mailman sends notifications to the list administrators or list members
    under a number of different circumstances. Most of these notifications
@@ -498,7 +487,7 @@ Contents
           gets a notice when their message is held for moderator
           approval.
 
-  3.1.5 Additional settings
+  2.1.5 Additional settings
 
    This section contains some miscellaneous settings for your mailing
    list.
@@ -589,7 +578,7 @@ Contents
           (This does not affect the inclusion of the other List-*
           headers.)
 
-3.2 The Passwords Category
+2.2 The Passwords Category
 
    As mentioned above, there are two primary administrative roles for
    mailing lists. In this category you can specify the password for these
@@ -614,7 +603,7 @@ Contents
    password, be sure to fill in the moderator variable in the General
    options category page.
 
-3.3 The Language Options Category
+2.3 The Language Options Category
 
    Mailman is multilingual and internationalized, meaning you can set up
    your list so that members can interact with it in any of a number of
@@ -667,7 +656,7 @@ Contents
           extra, or missing spaces between the prefix and the original
           header.
 
-3.4 The Membership Management Category
+2.4 The Membership Management Category
 
    The Membership Management category is unlike the other administrative
    categories. It doesn't contain configuration variables or list
@@ -679,7 +668,7 @@ Contents
    More details on membership management are described in the Membership
    Management section.
 
-3.5 The Non-digest Options Category
+2.5 The Non-digest Options Category
 
    Mailman delivers messages to users via two modes. List members can
    elect to receive postings in bundles call digests one or a few times a
@@ -767,7 +756,7 @@ Description: An example of Mailman mailing lists
 
    list_name
           This is the canonical name of the mailing list. In other words
-          it's the posting address of the list3.
+          it's the posting address of the list^3.
 
    host_name
           This is the domain name part of the email address for this
@@ -802,7 +791,7 @@ Description: An example of Mailman mailing lists
 
    user_delivered_to
           The case-preserved address that the user subscribed to the
-          mailing list with4.
+          mailing list with^4.
 
    user_password
           The user's password, in clear text.
@@ -813,7 +802,7 @@ Description: An example of Mailman mailing lists
    user_optionsurl
           The url to the user's personal options page.
 
-3.6 The Digest Options Category
+2.6 The Digest Options Category
 
    Digest delivery is a way to bundle many articles together into one
    package, which can be delivered once per day (if there were any posted
@@ -844,7 +833,7 @@ Description: An example of Mailman mailing lists
    the message with a Urgent: header, where the value of the header is
    the list administrator's password. Non-digest members will receive the
    message like normal, but digest members will receive the message
-   immediately5.
+   immediately^5.
 
    Here are the variables which control digest delivery:
 
@@ -908,7 +897,7 @@ Description: An example of Mailman mailing lists
           members, regardless of size (well, there has to be at least one
           message in the digest).
 
-3.7 The Privacy Options Category
+2.7 The Privacy Options Category
 
    The Privacy category lets you control how much of the list's
    information is public, as well as who can send messages to your list.
@@ -947,7 +936,7 @@ Description: An example of Mailman mailing lists
    expressions which will be matched against an address, if the line
    begins with a (caret) character.
 
-  3.7.1 Subscription rules
+  2.7.1 Subscription rules
 
    This subcategory controls the rules for exposing the existance of this
    list, and for what new members must do in order to subscribe to the
@@ -1026,7 +1015,7 @@ Description: An example of Mailman mailing lists
           reduce the opportunity for email address harvesting by
           spammers, although it probably doesn't eliminate it.
 
-  3.7.2 Sender filters
+  2.7.2 Sender filters
 
    When a message is posted to the list, a series of moderation criteria
    are applied to determine the disposition of the message. This section
@@ -1120,7 +1109,7 @@ Description: An example of Mailman mailing lists
           generic_nonmember_action is Discard, you can choose whether
           such messages are forwarded to the lsit administrators or not.
 
-  3.7.3 Recipient Filters
+  2.7.3 Recipient Filters
 
    The variables in this section control various filters based on the
    recipient of the message.
@@ -1149,7 +1138,7 @@ Description: An example of Mailman mailing lists
           with lots of explicit recipients, so setting this number to a
           reasonable value may cut down on spam.
 
-  3.7.4 Spam Filters
+  2.7.4 Spam Filters
 
    This section provides some adjuncts to spam fighting tools; it doesn't
    replace dedicated anti-spam tools such as SpamAssassin or Spambayes.
@@ -1176,7 +1165,7 @@ Description: An example of Mailman mailing lists
           This line will match from 3 to 5 stars in the value of this
           field.
 
-3.8 The Bounce Processing Category
+2.8 The Bounce Processing Category
 
    These policies control the automatic bounce processing system in
    Mailman. Here's an overview of how it works:
@@ -1256,7 +1245,7 @@ Description: An example of Mailman mailing lists
           when a member is removed from the list after their disabled
           notifications have been exhausted.
 
-3.9 The Archiving Options Category
+2.9 The Archiving Options Category
 
    Mailman comes with a built-in web-based archiver called Pipermail,
    although it can be configured to use external, third party archivers.
@@ -1288,25 +1277,25 @@ Description: An example of Mailman mailing lists
           may want a longer frequency (e.g. Yearly). This option has no
           effect when a third party archiver is used.
 
-3.10 The Mail/News Gateway Category
+2.10 The Mail/News Gateway Category
 
    Mailman has a sophisticated mail-to-news gateway feature. It can
    independently gate messages from news to mail and vice versa, and can
    even be used to manage moderated newsgroups.
 
-3.11 The Auto-responder Category
+2.11 The Auto-responder Category
 
-3.12 The Content Filtering Category
+2.12 The Content Filtering Category
 
-3.13 The Topics Category
+2.13 The Topics Category
 
-                            4 Membership Management
+                            3 Membership Management
 
-                    5 Tending to Pending Moderator Requests
+                    4 Tending to Pending Moderator Requests
 
-                        6 Editing the Public HTML Pages
+                        5 Editing the Public HTML Pages
 
-                          7 Deleting the Mailing List
+                          6 Deleting the Mailing List
 
                              1 This is an Appendix
 
@@ -1326,7 +1315,8 @@ Just add another \section{}, but don't say \appendix again.
 
                             About this document ...
 
-   GNU Mailman - List Administration Manual, October 2, 2004, Release 2.1
+   GNU Mailman - List Administration Manual, December 13, 2004, Release
+   2.1
 
    This document was generated using the LaTeX2HTML translator.
 
@@ -1342,7 +1332,7 @@ Just add another \section{}, but don't say \appendix again.
 
     Footnotes
 
-   ... representation1
+   ... representation^1
           Specifically, a Python pickle
 
    ... required^2
@@ -1351,11 +1341,11 @@ Just add another \section{}, but don't say \appendix again.
           substituted with the mailing list's name. Ask your site
           administrator if the've configured your list this way.
 
-   ... list3
+   ... list^3
           For backward compatibility, the variable _internal_name is
           equivalent.
 
-   ... with4
+   ... with^4
           Usually it makes no difference which of user_address and
           user_delivered_to is used, but it's important to remember that
           they can be different. When they're different, Mailman always
@@ -1363,11 +1353,12 @@ Just add another \section{}, but don't say \appendix again.
           subscription information, but it always delivers messages to
           the case-preserved version.
 
-   ... immediately5
+   ... immediately^5
           They'll also receive the message in the digest.
      _________________________________________________________________
 
-                  GNU Mailman - List Administration Manual
+   Previous Page Up One Level Next Page GNU Mailman - List Administration
+                                   Manual
      _________________________________________________________________
 
-   Release 2.1, documentation updated on October 2, 2004.
+   Release 2.1, documentation updated on December 13, 2004.

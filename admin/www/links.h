@@ -1,6 +1,7 @@
 <!-- -*- html -*- -->
 <h3>Overview</h3>
 <li><a href="index.html">Home</a>
+<li><a href="security.html">Security</li>
 <li><a href="features.html">Features</a>
 <li><a href="i18n.html">Internationalization</a>
 <li><a href="otherstuff.html">Rants, Papers, and Logos</a>

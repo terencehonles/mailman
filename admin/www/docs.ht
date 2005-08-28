@@ -3,9 +3,8 @@ Links: links.h doco-links.h
 Other-links:
     <h3>Exits</h3>
     <li><a href="http://www.python.org/cgi-bin/faqw-mm.py">FAQ Wizard</a>
-	 <li><a href="http://terri.zone12.com/doc/mailman/">Terri Oda's Docs</a>
     <li><a href="http://staff.imsa.edu/~ckolar/mailman">Chris Kolar's Docs</a>
-    <li><a href="http://www.exim.org/howto/mailman21.html">Exim HOWTO</a>
+    <li><a href="http://www.exim.org/howto/mailman.html">Exim HOWTO</a>
 
 <h3>Mailman Documentation</h3>
 
@@ -26,12 +25,12 @@ is organized among the following audiences:
     manage the membership of your mailing list.
 
 <p><li><a href="site.html"><b>Site Administrators</b></a> -- anybody
-    who is setting up a Mailman site.  This documentation contains all
-    the information about installing Mailman, integrating it with your
-    mail and web servers, setting list defaults, configuring virtual
-    domains, and enabling various options for your list
-    administrators.  This documentation also gives some hints on how
-    to tune Mailman for optimal performance.
+    who is installing and setting up a Mailman site.  This documentation
+    contains all the information about installing Mailman, integrating it with
+    your mail and web servers, setting list defaults, configuring virtual
+    domains, and enabling various options for your list administrators.  This
+    documentation also gives some hints on how to tune Mailman for optimal
+    performance.
 
 <p><li><a href="i18n.html"><b>Translators</b></a> -- anybody who is
     contributing to internationalization support for Mailman.  This
@@ -41,6 +40,11 @@ is organized among the following audiences:
 </ul>
 
 <h3>Other Resources</h3>
+
+<p>The <a href="http://www.washington.edu/computing/mailman/">University of
+Washington</a> has some very nice documentation on their installation of
+Mailman.  It may be specific to UW's set up at times, but you might find it
+useful as a general help guide too.
 
 <p>The <a href="faq.html">Frequently Asked Questions (FAQ)</a> is
 available to answer the most common questions.  See also the community
@@ -62,24 +66,16 @@ list first - then submit your question - so that your question will be
 distributed quickly to the list subscribers and replies also will be
 distributed quickly back to you.
 
-<p><a href="http://terri.zone12.com/">Terri Oda</a> has the most recent
-versions of the <a href="http://terri.zone12.com/doc/mailman/">Mailman
-documenation</a> available on her website.  This currently includes the list
-members manual and the list administrators manual. 
-
 <p><a href="http://staff.imsa.edu/~ckolar/index.htm">Chris Kolar</a> has made
 available <a href="http://staff.imsa.edu/~ckolar/mailman">Mailman
 documentation</a>, primarily for list owners who are not necessarily
 technical, but who own Mailman mailing lists.
 
 <p>Nigel Metheringham has posted a
-<a href="http://www.exim.org/howto/mailman21.html">HOWTO on using Exim
+<a href="http://www.exim.org/howto/mailman.html">HOWTO on using Exim
 and Mailman</a> together.  If you're using the
 <a href="http://www.exim.org">Exim mailer</a> you should check this out.
 
 <p>The <a href="download.html">Mailman source distribution</a> itself
 contains many README files for discussion of issues specific to
 operating system, mail transport agent, or web server.
-
-<p>The most recent versions of the official documenation can be found in the <a
-href="http://cvs.sourceforge.net/viewcvs.py/mailman/mailman/doc/">CVS documenation directory</a>.

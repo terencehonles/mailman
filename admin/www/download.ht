@@ -1,6 +1,11 @@
 Title: Downloading Mailman
 Links: links.h download-links.h
 
+<h3>Requirements</h3>
+
+See the <a href="requirements.html">requirements page</a> for the list of
+pre-requisites.
+
 <h3>Downloading</h3>
 
 Mailman is available from the following sources:

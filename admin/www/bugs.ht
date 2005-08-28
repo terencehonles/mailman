@@ -23,3 +23,5 @@ your submission to the
 >mailman-developers</a> mailing list, but don't rely on just the email
 to get the attention of the Mailman developers.
 
+<p>Please see the <a href="security.html">Mailman security page</a> for
+instructions on reporting security related issues.

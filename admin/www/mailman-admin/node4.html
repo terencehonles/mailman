@@ -1,118 +1,157 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
 <head>
-<title>2 Introduction to GNU Mailman</title>
-<META NAME="description" CONTENT="2 Introduction to GNU Mailman">
-<META NAME="keywords" CONTENT="mailman-admin">
-<META NAME="resource-type" CONTENT="document">
-<META NAME="distribution" CONTENT="global">
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<link rel="STYLESHEET" href="mailman-admin.css">
-<link rel="first" href="mailman-admin.html">
-<link rel="contents" href="contents.html" title="Contents">
-
-<LINK REL="next" HREF="node9.html">
-<LINK REL="previous" HREF="node3.html">
-<LINK REL="up" href="contents.html">
-<LINK REL="next" HREF="node5.html">
+<link rel="STYLESHEET" href="mailman-admin.css" type='text/css' />
+<link rel="first" href="mailman-admin.html" title='GNU Mailman - List Administration Manual' />
+<link rel='contents' href='contents.html' title="Contents" />
+<link rel='last' href='about.html' title='About this document...' />
+<link rel='help' href='about.html' title='About this document...' />
+<link rel="next" href="node5.html" />
+<link rel="prev" href="node3.html" />
+<link rel="parent" href="node3.html" />
+<link rel="next" href="node5.html" />
+<meta name='aesop' content='information' />
+<title>1.1 A List's Email Addresses</title>
 </head>
 <body>
 <DIV CLASS="navigation">
+<div id='top-navigation-panel' xml:id='top-navigation-panel'>
 <table align="center" width="100%" cellpadding="0" cellspacing="2">
 <tr>
-<td><A HREF="node3.html"><img src="../icons/previous.gif"
-  border="0" height="32"
-  alt="Previous Page" width="32"></A></td>
-<td><A href="contents.html"><img src="../icons/up.gif"
-  border="0" height="32"
-  alt="Up One Level" width="32"></A></td>
-<td><A HREF="node5.html"><img src="../icons/next.gif"
-  border="0" height="32"
-  alt="Next Page" width="32"></A></td>
+<td class='online-navigation'><a rel="prev" title="1 Introduction to GNU"
+  href="node3.html"><img src='previous.png'
+  border='0' height='32'  alt='Previous Page' width='32' /></A></td>
+<td class='online-navigation'><a rel="parent" title="1 Introduction to GNU"
+  href="node3.html"><img src='up.png'
+  border='0' height='32'  alt='Up One Level' width='32' /></A></td>
+<td class='online-navigation'><a rel="next" title="1.2 Administrative Roles"
+  href="node5.html"><img src='next.png'
+  border='0' height='32'  alt='Next Page' width='32' /></A></td>
 <td align="center" width="100%">GNU Mailman - List Administration Manual</td>
-<td><A href="contents.html"><img src="../icons/contents.gif"
-  border="0" height="32"
-  alt="Contents" width="32"></A></td>
-<td><img src="../icons/blank.gif"
-  border="0" height="32"
-  alt="" width="32"></td>
-<td><img src="../icons/blank.gif"
-  border="0" height="32"
-  alt="" width="32"></td>
+<td class='online-navigation'><a rel="contents" title="Table of Contents"
+  href="contents.html"><img src='contents.png'
+  border='0' height='32'  alt='Contents' width='32' /></A></td>
+<td class='online-navigation'><img src='blank.png'
+  border='0' height='32'  alt='' width='32' /></td>
+<td class='online-navigation'><img src='blank.png'
+  border='0' height='32'  alt='' width='32' /></td>
 </tr></table>
-<b class="navlabel">Previous:</b> <a class="sectref" HREF="node3.html">1 WARNING: This is</A>
-<b class="navlabel">Up:</b> <a class="sectref" href="contents.html">Contents</A>
-<b class="navlabel">Next:</b> <a class="sectref" HREF="node5.html">2.1 A List's Email</A>
-<br><hr>
+<div class='online-navigation'>
+<b class="navlabel">Previous:</b>
+<a class="sectref" rel="prev" href="node3.html">1 Introduction to GNU</A>
+<b class="navlabel">Up:</b>
+<a class="sectref" rel="parent" href="node3.html">1 Introduction to GNU</A>
+<b class="navlabel">Next:</b>
+<a class="sectref" rel="next" href="node5.html">1.2 Administrative Roles</A>
+</div>
+<hr /></div>
 </DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION002200000000000000000">
-2 Introduction to GNU Mailman</A>
-</H1>
+<H2><A NAME="SECTION002110000000000000000">
+1.1 A List's Email Addresses</A>
+</H2>
 
 <P>
-GNU Mailman is software that lets you manage electronic mailing lists.
-It supports a wide range of mailing list types, such as general
-discussion lists and announce-only lists.  Mailman has extensive
-features for controlling the privacy of your lists, distributing your
-list as personalized postings or digests, gatewaying postings to and
-from Usenet, and providing automatic bounce detection.  Mailman
-provides a built-in archiver, multiple natural languages, as well as
-advanced content and topic filtering.
-
-<P>
-Mailman provides several interfaces to its functionality.  Most list
-administrators will primarily use the web interface to customize their
-lists.  There is also a limited email command interface to the
-administrative functions, as well as a command line interface if you
-have shell access on the Mailman server.  This document does not cover
-the command line interface; see the GNU Mailman site administrator's
-manual for more details.
+Every mailing list has a set of email addresses that messages can be
+sent to.  There's always one address for posting messages to the list,
+one address that bounces will be sent to, and addresses for processing
+email commands.  For example, for a mailing list called
+<var>mylist@example.com</var>, you'd find these addresses:
 
 <P>
 
-<p><hr>
-<!--Table of Child-Links-->
-<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></a>
+<UL>
+<LI>mylist@example.com - this is the email address people should
+      use for new postings to the list.
 
-<UL CLASS="ChildLinks">
-<LI><A href="node5.html">2.1 A List's Email Addresses</a>
-<LI><A href="node6.html">2.2 Administrative Roles</a>
-<LI><A href="node7.html">2.3 A List's Web Pages</a>
-<LI><A href="node8.html">2.4 Basic Architectural Overview</a>
-</ul>
-<!--End of Table of Child-Links-->
+<P>
+</LI>
+<LI>mylist-join@example.com - by sending a message to this address,
+      a new member can request subscription to the list.  Both the
+      <span class="mailheader">Subject:</span> header and body of such a message are
+      ignored.  Note that mylist-subscribe@example.com is an alias for
+      the -join address.
+
+<P>
+</LI>
+<LI>mylist-leave@example.com - by sending a message to this address,
+      a member can request unsubscription from the list.  As with the
+      -join address, the <span class="mailheader">Subject:</span> header and body of the
+      message is ignored.  Note that mylist-unsubscribe@example.com is
+      an alias for the -leave address.
+
+<P>
+</LI>
+<LI>mylist-owner@example.com - This address reaches the list owner
+      and list moderators directly.
+
+<P>
+</LI>
+<LI>mylist-request@example.com - This address reaches a mail robot
+      which processes email commands that can be used to set member
+      subscription options, as well as process other commands.
+
+<P>
+</LI>
+<LI>mylist-bounces@example.com - This address receives bounces from
+      members who's addresses have become either temporarily or
+      permanently inactive.  The -bounces address is also a mail robot
+      that processes bounces and automatically disables or removes
+      members as configured in the bounce processing settings.  Any
+      bounce messages that are either unrecognized, or do not seem to
+      contain member addresses, are forwarded to the list
+      administrators.
+
+<P>
+</LI>
+<LI>mylist-confirm@example.com - This address is another email
+      robot, which processes confirmation messages for subscription
+      and unsubscription requests.
+</LI>
+</UL>
+
+<P>
+There's also an -admin address which also reaches the list
+administrators, but this address only exists for compatibility with
+older versions of Mailman.
+
+<P>
 
 <DIV CLASS="navigation">
-<p><hr>
+<div class='online-navigation'>
+<p></p><hr />
 <table align="center" width="100%" cellpadding="0" cellspacing="2">
 <tr>
-<td><A HREF="node3.html"><img src="../icons/previous.gif"
-  border="0" height="32"
-  alt="Previous Page" width="32"></A></td>
-<td><A href="contents.html"><img src="../icons/up.gif"
-  border="0" height="32"
-  alt="Up One Level" width="32"></A></td>
-<td><A HREF="node5.html"><img src="../icons/next.gif"
-  border="0" height="32"
-  alt="Next Page" width="32"></A></td>
+<td class='online-navigation'><a rel="prev" title="1 Introduction to GNU"
+  href="node3.html"><img src='previous.png'
+  border='0' height='32'  alt='Previous Page' width='32' /></A></td>
+<td class='online-navigation'><a rel="parent" title="1 Introduction to GNU"
+  href="node3.html"><img src='up.png'
+  border='0' height='32'  alt='Up One Level' width='32' /></A></td>
+<td class='online-navigation'><a rel="next" title="1.2 Administrative Roles"
+  href="node5.html"><img src='next.png'
+  border='0' height='32'  alt='Next Page' width='32' /></A></td>
 <td align="center" width="100%">GNU Mailman - List Administration Manual</td>
-<td><A href="contents.html"><img src="../icons/contents.gif"
-  border="0" height="32"
-  alt="Contents" width="32"></A></td>
-<td><img src="../icons/blank.gif"
-  border="0" height="32"
-  alt="" width="32"></td>
-<td><img src="../icons/blank.gif"
-  border="0" height="32"
-  alt="" width="32"></td>
+<td class='online-navigation'><a rel="contents" title="Table of Contents"
+  href="contents.html"><img src='contents.png'
+  border='0' height='32'  alt='Contents' width='32' /></A></td>
+<td class='online-navigation'><img src='blank.png'
+  border='0' height='32'  alt='' width='32' /></td>
+<td class='online-navigation'><img src='blank.png'
+  border='0' height='32'  alt='' width='32' /></td>
 </tr></table>
-<b class="navlabel">Previous:</b> <a class="sectref" HREF="node3.html">1 WARNING: This is</A>
-<b class="navlabel">Up:</b> <a class="sectref" href="contents.html">Contents</A>
-<b class="navlabel">Next:</b> <a class="sectref" HREF="node5.html">2.1 A List's Email</A>
-<hr>
-<span class="release-info">Release 2.1, documentation updated on October 2, 2004.</span>
+<div class='online-navigation'>
+<b class="navlabel">Previous:</b>
+<a class="sectref" rel="prev" href="node3.html">1 Introduction to GNU</A>
+<b class="navlabel">Up:</b>
+<a class="sectref" rel="parent" href="node3.html">1 Introduction to GNU</A>
+<b class="navlabel">Next:</b>
+<a class="sectref" rel="next" href="node5.html">1.2 Administrative Roles</A>
+</div>
+</div>
+<hr />
+<span class="release-info">Release 2.1, documentation updated on December 13, 2004.</span>
 </DIV>
 <!--End of Navigation Panel-->
 

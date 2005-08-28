@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Sun Mar 23 00:31:22 2003 -->
+<!-- Sun Aug 28 13:50:56 2005 -->
 <!-- USING HT2HTML 2.0 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -44,12 +44,18 @@ CELLSPACING=0 CELLPADDING=0
 <a href="./index.html">Home</a>
     </td>
     <td bgcolor="#eecfa1">
+<a href="./security.html">Security</a>
+    </td>
+    <td bgcolor="#eecfa1">
 <a href="./docs.html">Documentation</a>
     </td>
     <td bgcolor="#eecfa1">
 <a href="./lists.html">Mailing lists</a>
     </td>
 </tr><tr>
+    <td bgcolor="#eecfa1">
+&nbsp;
+    </td>
     <td bgcolor="#eecfa1">
 <a href="./help.html">Help</a>
     </td>
@@ -75,6 +81,9 @@ Overview
 </font></b></td></tr>
 <tr><td bgcolor="#eecfa1">
 <a href="index.html">Home</a>
+</td></tr>
+<tr><td bgcolor="#eecfa1">
+<a href="security.html">Security</li>
 </td></tr>
 <tr><td bgcolor="#eecfa1">
 <a href="features.html">Features</a>
@@ -138,7 +147,7 @@ Email Us
 &nbsp;
 </td></tr>
 <tr><td bgcolor="#eecfa1">
-&copy; 1998-2003
+&copy; 1998-2005
 Free Software Foundation, Inc.  Verbatim copying and distribution of this
 entire article is permitted in any medium, provided this notice is preserved.
 
@@ -152,11 +161,19 @@ entire article is permitted in any medium, provided this notice is preserved.
 <td valign="top" width="90%" class="body"><br>
 <h3>Site Administrator Documentation</h3>
 
-By definition, the site administrator has shell access to the Mailman
-installation, and the proper permissions for total control over
-Mailman at the site.  The site admin can edit the
-<code>Mailman/mm_cfg.py</code> configuration file, and can run the
-various and sundry command line scripts.
+<p>The <a href="mailman-install/index.html">GNU Mailman - Installation
+Manual</a> describes how to build and install Mailman.  It contains general
+instructions, as well as specific details for various platforms, mail, and web
+servers.  It is also available in
+<a href="mailman-install.pdf">PDF format</a> (approx. 110k),
+<a href="mailman-install.ps">PostScript format</a>, (approx. 129k),
+and
+<a href="mailman-install.txt">plain text format</a> (approx. 63k).
+
+<p>By definition, the site administrator has shell access to the Mailman
+installation, and the proper permissions for total control over Mailman at the
+site.  The site admin can edit the <code>Mailman/mm_cfg.py</code>
+configuration file, and can run the various and sundry command line scripts.
 
 <h3>Command line scripts</h3>
 
@@ -174,13 +191,6 @@ usually <code>/home/mailman</code></em>.
     options allow you to add the addresses as digest or regular
     members, select whether various notification emails are sent, and
     choose which list to add the members to.
-
-<dt><b>addlang</b>
-<dd>Use this to add language support to a specific list.  The site
-    itself must have the language pack to add already installed.  Note
-    that removing language support from a list requires you to
-    manually <tt>rm</tt> the lists/<em>yourlist</em>/<em>lang</em>
-    subdirectory.
 
 <dt><b>arch</b>
 <dd>Use this to rebuild a list's archive.  This script can't be used
@@ -249,7 +259,7 @@ web_page_url = 'http://www.mynewsite.com/mailman-relocated/'
 
 <dt><b>genaliases</b>
 <dd>Use this script to regenerate the plain text and <em>db</em> alias
-    files for Postfix (if you're using Postfix as you're MTA).
+    files for Postfix (if you're using Postfix as your MTA).
 
 <dt><b>list_admins</b>
 <dd>List all the owners of a mailing list.
@@ -267,8 +277,8 @@ web_page_url = 'http://www.mynewsite.com/mailman-relocated/'
     restart the qrunner.
 
 <dt><b>mmsitepass</b>
-<dd>Use this script to set the site password, which can be used any
-    where in the system a list or user password can be used.
+<dd>Use this script to set the site password, which can be used anywhere in
+    the system a list or user password can be used.
     Essentially, the site password trumps any other password, so
     choose wisely!
 

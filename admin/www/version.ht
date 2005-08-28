@@ -4,9 +4,9 @@ Links: links.h download-links.h
 <h3>Current Mailman Version</h3>
 
 <p>Version
-(<!-VERSION--->2.1<!-VERSION--->,
+<!-VERSION--->2.1.6<!-VERSION--->,
 released on
-<!-DATE--->30-Dec-2002<!-DATE--->)
+<!-DATE--->30-May-2005<!-DATE--->
 is the latest stable release.  See also information on
 <a href="prev.html">previous version</a> if you're not yet ready to
 upgrade.

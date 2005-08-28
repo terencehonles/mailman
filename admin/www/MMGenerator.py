@@ -17,8 +17,10 @@ from LinkFixer import LinkFixer
 sitelinks = [
     # Row 1
     ('%(rootdir)s/index.html',    'Home'),
+    ('%(rootdir)s/security.html', 'Security'),
     ('%(rootdir)s/docs.html',     'Documentation'),
     ('%(rootdir)s/lists.html',    'Mailing lists'),
+    (None, '&nbsp;'),
     ('%(rootdir)s/help.html',     'Help'),
     ('%(rootdir)s/download.html', 'Download'),
     ('%(rootdir)s/devs.html',     'Developers'),
@@ -61,7 +63,7 @@ entire article is permitted in any medium, provided this notice is preserved.
         #
         sitelink_fixer = LinkFixer(f.myurl(), rootdir)
         sitelink_fixer.massage(sitelinks, self.__d, aboves=1)
-        Banner.__init__(self, sitelinks, cols=3)
+        Banner.__init__(self, sitelinks, cols=4)
         # kludge!
 ##        for i in range(len(p.sidebar)-1, -1, -1):
 ##            if p.sidebar[i] == 'Email Us':
