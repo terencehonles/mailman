@@ -10,7 +10,7 @@ U kunt ook de volgende web pagina bezoeken:
 Of u kunt een berichtje sturen met de volgende regel -- en alleen deze regel --
 aan %(requestaddr)s:
 
-   bevestig %(cookie)s
+   confirm %(cookie)s
 
 Opmerking: Gewoon een reply op dit bericht sturen zou moeten voldoen in de
 meeste e-mail programma's.

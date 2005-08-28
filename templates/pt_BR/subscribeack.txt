@@ -1,10 +1,10 @@
 Bem Vindo a lista de discussão %(real_name)s@%(host_name)s!
 %(welcome)s
-Para postar a esta lista, envie uma mensagem para:
+Para postar nesta lista, envie uma mensagem para o endereço:
 
   %(emailaddr)s
 
-Informações gerais sobre esta lista de discussão podem ser encontradas em:
+Informações gerais sobre a lista de discussão podem ser encontradas em:
 
   %(listinfo_url)s
 

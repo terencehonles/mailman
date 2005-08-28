@@ -1,5 +1,5 @@
 Seu endereço de email "%(email)s" foi convidado para participar da 
-lista de discussão %(listname)s em %(hostname)s.
+lista de discussão %(listname)s em %(hostname)s pelo dono da lista %(listname)s.
 Você poderá aceitar o convite simplesmente respondendo a esta 
 mensagem, mantendo a linha de Assunto intacta.
 
@@ -7,7 +7,7 @@ Você também poderá visitar esta página:
 
     %(confirmurl)s
 
-Ou deverá incluir as seguintes listas -- e somente a seguinte
+Ou deverá incluir a seguinte linhas -- somente esta
 linha -- em uma mensagem para %(requestaddr)s:
 
     confirm %(cookie)s

@@ -1,7 +1,14 @@
-La vostra petició a %(requestaddr)s:    %(cmd)sha estat reenviada a la persona encarregada de la llista.
+La vostra petició a %(requestaddr)s:    
 
-Això ha passat perquè probablement esteu intentant de  subscriure-us a una llista 'tancada'.
+     %(cmd)s
 
-Rebreu una notificació per email amb la decisió del propietari de la llista sobre la vostra petició de subscripció.
+ha estat reenviada a la persona encarregada de la llista.
 
-Qualsevol pregunta sobre el criteri que segueix el propietari de la llista s'ha de dirigir a:    %(adminaddr)s
+Això ha passat perquè probablement esteu intentant de subscriure-us a una llista 'tancada'.
+
+Rebreu un notificació per correu amb la decisió del propietari de la llista sobre la vostra
+petició de subscripció.
+
+Qualsevol pregunta sobre el criteri que segueix el propietari de la llista s'ha de dirigir a:    
+
+     %(adminaddr)s
