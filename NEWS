@@ -9,6 +9,9 @@ Here is a history of user visible changes to Mailman.
 
   New Features
 
+    - Always remove DomainKey (and similar) headers (1287546) from messages
+      sent to the list.
+
     - List owners can customize content filter behavior as not to collapse
       multipart/alternative to its first content.  This allows HTML part
       to pass through after other content filtering is done.
