@@ -18,6 +18,9 @@ Here is a history of user visible changes to Mailman.
 
   Bug fixes and other patches
 
+    - Take preambles and epilogues into account when calculating message sizes
+      for holding purposes (Mark Sapiro).
+
     - Logging/Logger.py unicode transform option (1235567).
 
     - bin/update crashes with bogus files (949117).

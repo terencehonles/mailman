@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2004 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -25,7 +25,6 @@ we do nothing.  If the message must be held for approval, then the hold
 database is updated and any administrator notification messages are sent.
 Finally an exception is raised to let the pipeline machinery know that further
 message handling should stop.
-
 """
 
 import email
@@ -176,6 +175,11 @@ def process(mlist, msg, msgdata):
         bodylen = 0
         for line in email.Iterators.body_line_iterator(msg):
             bodylen += len(line)
+        for part in msg.walk():
+            if part.preamble:
+                bodylen += len(part.preamble)
+            if part.epilogue:
+                bodylen += len(part.epilogue)
         if bodylen/1024.0 > mlist.max_message_size:
             hold_for_approval(mlist, msg, msgdata,
                               MessageTooBig(bodylen, mlist.max_message_size))
