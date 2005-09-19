@@ -278,7 +278,11 @@ class Article(pipermail.Article):
             otrans = i18n.get_translation()
             try:
                 i18n.set_language(lang)
-                self.email = re.sub('@', _(' at '), self.email)
+                if self.author == self.email:
+                    self.author = self.email = re.sub('@', _(' at '),
+                                                      self.email)
+                else:
+                    self.email = re.sub('@', _(' at '), self.email)
             finally:
                 i18n.set_translation(otrans)
 
