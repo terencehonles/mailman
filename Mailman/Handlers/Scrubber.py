@@ -113,7 +113,7 @@ class ScrubberGenerator(Generator):
 def safe_strftime(fmt, floatsecs):
     try:
         return time.strftime(fmt, floatsecs)
-    except (TypeError, ValueError):
+    except (TypeError, ValueError, OverflowError):
         return None
 
 
