@@ -443,6 +443,10 @@ class Privacy(GUIBase):
     # _getValidValue() will essentially ignore any hdrfilter_* form variables.
     # TK: we should call this function only in subcat == 'spam'
     def _handleForm(self, mlist, category, subcat, cgidata, doc):
+        # TK: If there is no hdrfilter_* in cgidata, we should not touch
+        # the header filter rules.
+        if not cgidata.has_key('hdrfilter_rebox_01'):
+            return
         # First deal with
         rules = []
         # We start i at 1 and keep going until we no longer find items keyed
