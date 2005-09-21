@@ -18,6 +18,11 @@ Here is a history of user visible changes to Mailman.
 
   Bug fixes and other patches
 
+    - header_filter_rules get lost if accessed directly and needed authenti-
+      cation by login page (1230865).
+
+    - Obscure email when the poster doesn't set full name in 'From:' header.
+
     - Take preambles and epilogues into account when calculating message sizes
       for holding purposes (Mark Sapiro).
 
