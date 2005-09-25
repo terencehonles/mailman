@@ -30,6 +30,8 @@ Here is a history of user visible changes to Mailman.
 
     - bin/update crashes with bogus files (949117).
 
+    - Bugs and patches: 1212066/1301983 (Date header in create/remove notice)
+
 2.1.6 (30-May-2005)
 
   Security
