@@ -123,6 +123,12 @@ Project</a> for future language support.
     <td><a href="mailto:oli@edal.net">&Oacute;lafur Gar&eth;arsson</a></td>
     <td>Not yet submitted</td>
 </tr>
+<tr><td>Interlingua</td><td>ia</td>
+    <td><a href="mailto:mardy@users.sourceforge.net">Alberto Mardegan</a>,
+    Thomas Breinstrup, <a href="mailto:ensjo@interlingua.com">Emerson
+    Jos&eacute; Silveira da Costa</a></td>
+    <td>Supported</td>
+</tr>
 <tr><td>Italian</td><td>it</td>
     <td><a href="mailto:pioppo@ferrara.linux.it">Simone Piunno</a></td>
     <td>Supported.  Italian translation team mailing list at
