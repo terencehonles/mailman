@@ -42,7 +42,7 @@ TEMPLATEDIR= 	$(prefix)/templates
 
 SHELL=		/bin/sh
 
-LANGUAGES=	ca cs da de en es et eu fi fr hr hu it ja ko lt nl \
+LANGUAGES=	ca cs da de en es et eu fi fr hr hu ia it ja ko lt nl \
 		no pl pt pt_BR ro ru sl sr sv tr uk zh_CN zh_TW
 
 # Modes for directories and executables created by the install
