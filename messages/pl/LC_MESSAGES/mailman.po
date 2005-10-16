@@ -1053,7 +1053,7 @@ msgstr "Zadania administracyjne dla listy dyskusyjnej:"
 
 #: Mailman/Cgi/admindb.py:191 Mailman/Cgi/admindb.py:246
 msgid "Submit All Data"
-msgstr "Wy¶lij wszystko"
+msgstr "Zatwierd¼ dane"
 
 #: Mailman/Cgi/admindb.py:196 Mailman/Cgi/admindb.py:244
 msgid "Discard all messages marked <em>Defer</em>"
@@ -5030,7 +5030,7 @@ msgid ""
 "off\n"
 "             period."
 msgstr ""
-"Po w³±czeniu tej opcji wszystkie wiadomo¶ci zatrzymywane s± domoderowania. "
+"Po w³±czeniu tej opcji wszystkie wiadomo¶ci zatrzymywane s± do moderowania. "
 "Mo¿na jej u¿yæ w celu np. ostudzenia gor±cej dyskusji."
 
 #: Mailman/Gui/General.py:341
@@ -5076,7 +5076,7 @@ msgid ""
 "Maximum length in kilobytes (KB) of a message body.  Use 0\n"
 "             for no limit."
 msgstr ""
-"Maksymalna wielko¶æ tre¶ci listu w kilobajtach (KB). Wprowad¼ 0 aby\n"
+"Maksymalna wielko¶æ tre¶ci listu w kilobajtach (KB). Wprowad¼ 0, aby\n"
 "wy³±czyæ limit."
 
 #: Mailman/Gui/General.py:362
