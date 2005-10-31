@@ -406,6 +406,15 @@ class Article(pipermail.Article):
             if email:
                 self.decoded['email'] = email
         if subject:
+            if mm_cfg.ARCHIVER_OBSCURES_EMAILADDRS:
+                otrans = i18n.get_translation()
+                try:
+                    i18n.set_language(self._lang)
+                    atmark = unicode(_(' at '), Utils.GetCharSet(self._lang))
+                    subject = re.sub(r'([-+,.\w]+)@([-+.\w]+)',
+                              '\g<1>' + atmark + '\g<2>', subject)
+                finally:
+                    i18n.set_translation(otrans)
             self.decoded['subject'] = subject
         self.decoded['stripped'] = self.strip_subject(subject or self.subject)
 
