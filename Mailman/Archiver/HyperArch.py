@@ -428,7 +428,7 @@ class Article(pipermail.Article):
             prefix_pat = re.sub(r'%\d*d', r'\s*\d+\s*', prefix_pat)
             subject = re.sub(prefix_pat, '', subject)
         subject = subject.lstrip()
-        strip_pat = re.compile('^((RE|AW|SV)(\[\d+\])?:\s*)+', re.I)
+        strip_pat = re.compile('^((RE|AW|SV|VS)(\[\d+\])?:\s*)+', re.I)
         stripped = strip_pat.sub('', subject)
         return stripped
 

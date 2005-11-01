@@ -268,7 +268,7 @@ def prefix_subject(mlist, msg, msgdata):
     else:
         old_style = mm_cfg.OLD_STYLE_PREFIXING
     subject = re.sub(prefix_pattern, '', subject)
-    rematch = re.match('((RE|AW|SV)(\[\d+\])?:\s*)+', subject, re.I)
+    rematch = re.match('((RE|AW|SV|VS)(\[\d+\])?:\s*)+', subject, re.I)
     if rematch:
         subject = subject[rematch.end():]
         recolon = 'Re:'
