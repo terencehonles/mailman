@@ -18,6 +18,8 @@ Here is a history of user visible changes to Mailman.
 
   Bug fixes and other patches
 
+    - Add PEP263 charset in config_list output (1343100).
+
     - header_filter_rules get lost if accessed directly and needed authenti-
       cation by login page (1230865).
 
