@@ -72,9 +72,12 @@ from Mailman import mm_cfg
 from Mailman import MailList
 from Mailman import Utils
 from Mailman import Errors
-from Mailman.i18n import _
+from Mailman import i18n
+
+_ = i18n._
 
 NL = '\n'
+nonasciipat = re.compile(r'[\x80-\xff]')
 
 
 
@@ -103,14 +106,21 @@ def do_output(listname, outfile):
             mlist = MailList.MailList(listname, lock=0)
         except Errors.MMListError:
             usage(1, _('No such list: %(listname)s'))
-        # get all the list config info.  all this stuff is accessible via the
-        # web interface
+        # Preamble for the config info. PEP263 charset and capture time.
+        language = mlist.preferred_language
+        charset = Utils.GetCharSet(language)
+        i18n.set_language(language)
+        if not charset:
+            charset = 'us-ascii'
         when = time.ctime(time.time())
         print >> outfp, _('''\
-## "%(listname)s" mailing list configuration settings -*- python -*-
+# -*- python -*-
+# -*- coding: %(charset)s -*-
+## "%(listname)s" mailing list configuration settings
 ## captured on %(when)s
 ''')
-
+        # get all the list config info.  all this stuff is accessible via the
+        # web interface
         for k in mm_cfg.ADMIN_CATEGORIES:
             subcats = mlist.GetConfigSubCategories(k)
             if subcats is None:
@@ -128,6 +138,7 @@ def do_list_categories(mlist, k, subcat, outfp):
     label, gui = mlist.GetConfigCategories()[k]
     if info is None:
         return
+    charset = Utils.GetCharSet(mlist.preferred_language)
     print >> outfp, '##', k.capitalize(), _('options')
     print >> outfp, '#'
     # First, massage the descripton text, which could have obnoxious
@@ -172,17 +183,19 @@ def do_list_categories(mlist, k, subcat, outfp):
             if not lines:
                 print >> outfp, "''"
             elif len(lines) == 1:
-                print >> outfp, repr(lines[0])
+                if charset <> 'us-ascii' and nonasciipat.search(lines[0]):
+                    # This is more readable for non-english list.
+                    print >> outfp, '"' + lines[0].replace('"', '\\"') + '"'
+                else:
+                    print >> outfp, repr(lines[0])
             else:
-                first = 1
-                outfp.write(' """')
-                for line in lines:
-                    if first:
-                        first = 0
-                    else:
-                        print >> outfp
-                    outfp.write(line.replace('"', '\\"'))
-                print >> outfp, '"""'
+                if charset == 'us-ascii' and nonasciipat.search(value):
+                    # Normally, an english list should not have non-ascii char.
+                    print >> outfp, repr(NL.join(lines))
+                else:
+                    outfp.write(' """')
+                    outfp.write(NL.join(lines).replace('"', '\\"'))
+                    outfp.write('"""\n')
         elif vtype in (mm_cfg.Radio, mm_cfg.Toggle):
             print >> outfp, '#'
             print >> outfp, '#', _('legal values are:')
