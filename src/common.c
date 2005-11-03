@@ -1,6 +1,6 @@
 /* common.c --- Common routines, constants, etc.  Used by all the wrappers.
  *
- * Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
+ * Copyright (C) 1998,1999,2000,2001,2002,2005 by the Free Software Foundation, Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -137,10 +137,15 @@ check_caller(const char* ident, const char* parentgroup)
 
 	if (!mygroup)
 		fatal(ident, GROUP_NAME_NOT_FOUND,
-		      "Failure to find group name %s.  Try adding this group\n"
-		      "to your system, or re-run configure, providing an\n"
-		      "existing group name with the command line option %s.",
-		      parentgroup, option);
+		      "Failure to find group name for GID %d.  Mailman\n"
+		      "expected the %s wrapper to be executed as group\n"
+		      "\"%s\", but the system's %s server executed the\n"
+		      "wrapper as GID %d for which the name could not be\n"
+		      "found.  Try adding GID %d to your system as \"%s\",\n"
+		      "or tweak your %s server to run the wrapper as group\n"
+		      "\"%s\".",
+		      mygid, wrapper, parentgroup, server, mygid, mygid,
+		      parentgroup, server, parentgroup);
 
         if (strcmp(parentgroup, mygroup->gr_name))
                 fatal(ident, GROUP_MISMATCH,
