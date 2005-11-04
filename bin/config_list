@@ -1,6 +1,6 @@
 #! @PYTHON@
 #
-# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -177,7 +177,7 @@ def do_list_categories(mlist, k, subcat, outfp):
             value = gui.getValue(mlist, vtype, varname, data[2])
         if value is None and not varname.startswith('_'):
             value = getattr(mlist, varname)
-        if vtype in (mm_cfg.Text, mm_cfg.FileUpload):
+        if vtype in (mm_cfg.String, mm_cfg.Text, mm_cfg.FileUpload):
             print >> outfp, varname, '=',
             lines = value.splitlines()
             if not lines:
