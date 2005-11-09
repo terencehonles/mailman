@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2004 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2005 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -84,7 +84,8 @@ def process_request(doc, cgidata):
     except ValueError:
         notify = 0
     try:
-        moderate = int(cgidata.getvalue('moderate', '0'))
+        moderate = int(cgidata.getvalue('moderate',
+                       mm_cfg.DEFAULT_DEFAULT_MEMBER_MODERATION))
     except ValueError:
         moderate = mm_cfg.DEFAULT_DEFAULT_MEMBER_MODERATION
 
@@ -358,6 +359,11 @@ def request_creation(doc, cgidata=dummy, errmsg=None):
         notify = int(cgidata.getvalue('notify', '1'))
     except ValueError:
         notify = 1
+    try:
+        moderate = int(cgidata.getvalue('moderate',
+                       mm_cfg.DEFAULT_DEFAULT_MEMBER_MODERATION))
+    except ValueError:
+        moderate = mm_cfg.DEFAULT_DEFAULT_MEMBER_MODERATION
 
     ftable.AddRow([Center(Italic(_('List Characteristics')))])
     ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, colspan=2)
@@ -367,7 +373,7 @@ def request_creation(doc, cgidata=dummy, errmsg=None):
     are allowed to post unmoderated to this list?  Answer <em>Yes</em> to hold
     new member postings for moderator approval by default.""")),
         RadioButtonArray('moderate', (_('No'), _('Yes')),
-                         checked=mm_cfg.DEFAULT_DEFAULT_MEMBER_MODERATION,
+                         checked=moderate,
                          values=(0,1))])
     ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, bgcolor=GREY)
     ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor=GREY)
