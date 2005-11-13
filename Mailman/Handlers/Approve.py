@@ -68,7 +68,7 @@ def process(mlist, msg, msgdata):
                     # Now strip the first line from the payload so the
                     # password doesn't leak.
                     del lines[lineno]
-                    part.set_payload(NL.join(lines[1:]))
+                    part.set_payload(NL.join(lines[0:]))
     if passwd is not missing and mlist.Authenticate((mm_cfg.AuthListModerator,
                                                      mm_cfg.AuthListAdmin),
                                                     passwd):
