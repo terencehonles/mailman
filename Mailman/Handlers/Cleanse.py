@@ -27,6 +27,8 @@ def process(mlist, msg, msgdata):
     # this after the information on the header is actually used, but before a
     # permanent record of the header is saved.
     del msg['approved']
+    # Remove this one too.
+    del msg['approve']
     # Also remove this header since it can contain a password
     del msg['urgent']
     # We remove other headers from anonymous lists
