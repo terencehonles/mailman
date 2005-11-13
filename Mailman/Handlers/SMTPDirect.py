@@ -140,7 +140,7 @@ def process(mlist, msg, msgdata):
     # If we're VERPing, it doesn't matter because bulkdeliver is working
     # on a copy, but otherwise msg gets changed. If the list is anonymous,
     # the original sender is long gone, but Cleanse.py has logged it.
-    origsender = msg.get_sender()
+    origsender = msgdata.get('original_sender', msg.get_sender())
     # `undelivered' is a copy of chunks that we pop from to do deliveries.
     # This seems like a good tradeoff between robustness and resource
     # utilization.  If delivery really fails (i.e. qfiles/shunt type
