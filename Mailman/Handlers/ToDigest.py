@@ -341,7 +341,7 @@ def send_i18n_digests(mlist, mboxfp):
             try:
                 payload = unicode(payload, mcset, 'replace'
                           ).encode(lcset, 'replace')
-            except LookupError:
+            except (UnicodeError, LookupError):
                 # TK: Message has something unknown charset.
                 #     _out means charset in 'outer world'.
                 payload = unicode(payload, lcset_out, 'replace'
