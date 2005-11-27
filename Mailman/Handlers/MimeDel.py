@@ -197,7 +197,7 @@ def to_plaintext(msg):
         filename = tempfile.mktemp('.html')
         fp = open(filename, 'w')
         try:
-            fp.write(subpart.get_payload())
+            fp.write(subpart.get_payload(decode=1))
             fp.close()
             cmd = os.popen(mm_cfg.HTML_TO_PLAIN_TEXT_COMMAND %
                            {'filename': filename})
@@ -213,6 +213,11 @@ def to_plaintext(msg):
         # Now replace the payload of the subpart and twiddle the Content-Type:
         subpart.set_payload(plaintext)
         subpart.set_type('text/plain')
+        try:
+            # not base64 or quoted-printable any more
+            subpart.replace_header('content-transfer-encoding', '8bit')
+        except KeyError:
+            pass
         changedp = 1
     return changedp
 
