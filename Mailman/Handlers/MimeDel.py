@@ -211,13 +211,9 @@ def to_plaintext(msg):
             except OSError, e:
                 if e.errno <> errno.ENOENT: raise
         # Now replace the payload of the subpart and twiddle the Content-Type:
+        del subpart['content-transfer-encoding']
         subpart.set_payload(plaintext)
         subpart.set_type('text/plain')
-        try:
-            # not base64 or quoted-printable any more
-            subpart.replace_header('content-transfer-encoding', '8bit')
-        except KeyError:
-            pass
         changedp = 1
     return changedp
 
