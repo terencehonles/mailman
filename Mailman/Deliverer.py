@@ -197,7 +197,6 @@ is required.""")))
         d = {'listname': listname,
              'address': member,
              'optionsurl': self.GetOptionsURL(member, absolute=True),
-             'password': self.getMemberPassword(member),
              'owneraddr': self.GetOwnerEmail(),
              }
         text = Utils.maketext('probe.txt', d,
@@ -220,7 +219,7 @@ is required.""")))
             subject = _('%(listname)s mailing list probe message')
         finally:
             i18n.set_translation(otrans)
-        outer = Message.UserNotification(member, probeaddr, subject)
+        outer = Message.UserNotification(member, probeaddr, subject, lang=ulang)
         outer.set_type('multipart/mixed')
         text = MIMEText(text, _charset=Utils.GetCharSet(ulang))
         outer.attach(text)
