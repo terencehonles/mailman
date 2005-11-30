@@ -156,6 +156,7 @@ def ChangeHTML(mlist, cgi_info, template_name, doc):
         doc.AddItem('<hr>')
         return
     code = cgi_info['html_code'].value
+    code = re.sub(r'<([/]?script.*?)>', r'&lt;\1&gt;', code)
     langdir = os.path.join(mlist.fullpath(), mlist.preferred_language)
     # Make sure the directory exists
     omask = os.umask(0)
