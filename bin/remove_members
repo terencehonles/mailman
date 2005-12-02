@@ -1,6 +1,6 @@
 #! @PYTHON@
 #
-# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -110,9 +110,6 @@ def main():
     except getopt.error, msg:
         usage(1, msg)
 
-    if len(args) < 1:
-        usage(1)
-
     filename = None
     all = False
     alllists = False
@@ -133,6 +130,9 @@ def main():
             userack = False
         elif opt in ('-N', '--noadminack'):
             admin_notif = False
+
+    if len(args) < 1 and not (filename and alllists):
+        usage(1)
 
     # You probably don't want to delete all the users of all the lists -- Marc
     if all and alllists:
