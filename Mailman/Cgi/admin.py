@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2004 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -1345,6 +1345,9 @@ def change_options(mlist, category, subcat, cgidata, doc):
             except Errors.MMHostileAddress:
                 subscribe_errors.append(
                     (entry, _('Hostile address (illegal characters)')))
+            except Errors.MembershipIsBanned, pattern:
+                subscribe_errors.append(
+                    (entry, _('Banned address (matched %(pattern)s)')))
             else:
                 member = Utils.uncanonstr(formataddr((fullname, address)))
                 subscribe_success.append(Utils.websafe(member))

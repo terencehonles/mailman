@@ -399,6 +399,11 @@ address.  Upon confirmation, any other mailing list containing the address
                 msg = _('Illegal email address provided')
             except Errors.MMAlreadyAMember:
                 msg = _('%(newaddr)s is already a member of the list.')
+            except Errors.MembershipIsBanned:
+                owneraddr = mlist.GetOwnerEmail()
+                msg = _("""%(newaddr)s is banned from this list.  If you
+                      think this restriction is erroneous, please contact
+                      the list owners at %(owneraddr)s.""")
 
         if set_membername:
             mlist.Lock()

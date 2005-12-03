@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2004 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -745,6 +745,7 @@ def process_form(mlist, doc, cgidata):
             if sender not in mlist.ban_list:
                 mlist.ban_list.append(sender)
     # Now, do message specific actions
+    banaddrs = []
     erroraddrs = []
     for k in cgidata.keys():
         formv = cgidata[k]
@@ -794,8 +795,14 @@ def process_form(mlist, doc, cgidata):
             continue
         except Errors.MMAlreadyAMember, v:
             erroraddrs.append(v)
+        except Errors.MembershipIsBanned, pattern:
+            sender = mlist.GetRecord(request_id)[1]
+            banaddrs.append((sender, pattern))
     # save the list and print the results
     doc.AddItem(Header(2, _('Database Updated...')))
     if erroraddrs:
         for addr in erroraddrs:
             doc.AddItem(`addr` + _(' is already a member') + '<br>')
+    if banaddrs:
+        for addr, patt in banaddrs:
+            doc.AddItem(_('%(addr)s is banned (matched: %(patt)s)') + '<br>')

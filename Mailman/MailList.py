@@ -764,6 +764,10 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         """
         invitee = userdesc.address
         Utils.ValidateEmail(invitee)
+        # check for banned address
+        pattern = self.GetBannedPattern(invitee)
+        if pattern:
+            raise Errors.MembershipIsBanned, pattern
         # Hack alert!  Squirrel away a flag that only invitations have, so
         # that we can do something slightly different when an invitation
         # subscription is confirmed.  In those cases, we don't need further
@@ -837,29 +841,13 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         if email.lower() == self.GetListEmail().lower():
             # Trying to subscribe the list to itself!
             raise Errors.MMBadEmailError
-
+        realname = self.real_name
         # Is the subscribing address banned from this list?
-        ban = 0
-        for pattern in self.ban_list:
-            if pattern.startswith('^'):
-                # This is a regular expression match
-                try:
-                    if re.search(pattern, email, re.IGNORECASE):
-                        ban = 1
-                        break
-                except re.error:
-                    # BAW: we should probably remove this pattern
-                    pass
-            else:
-                # Do the comparison case insensitively
-                if pattern.lower() == email.lower():
-                    ban = 1
-                    break
-        if ban:
-            syslog('vette', 'banned subscription: %s (matched: %s)',
-                   email, pattern)
+        pattern = self.GetBannedPattern(email)
+        if pattern:
+            syslog('vette', '%s banned subscription: %s (matched: %s)',
+                   realname, email, pattern)
             raise Errors.MembershipIsBanned, pattern
-
         # Sanity check the digest flag
         if digest and not self.digestable:
             raise Errors.MMCantDigestError
@@ -889,7 +877,6 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
                 remote = _(' from %(remote)s')
 
             recipient = self.GetMemberAdminEmail(email)
-            realname = self.real_name
             confirmurl = '%s/%s' % (self.GetScriptURL('confirm', absolute=1),
                                     cookie)
             text = Utils.maketext(
@@ -961,6 +948,11 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         Utils.ValidateEmail(email)
         if self.isMember(email):
             raise Errors.MMAlreadyAMember, email
+        # Check for banned address here too for admin mass subscribes
+        # and confirmations.
+        pattern = self.GetBannedPattern(email)
+        if pattern:
+            raise Errors.MembershipIsBanned, pattern
         # Do the actual addition
         self.addNewMember(email, realname=name, digest=digest,
                           password=password, language=lang)
@@ -1073,12 +1065,21 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             raise Errors.MMAlreadyAMember
         if newaddr == self.GetListEmail().lower():
             raise Errors.MMBadEmailError
+        realname = self.real_name
+        # Don't allow changing to a banned address. MAS: maybe we should
+        # unsubscribe the oldaddr too just for trying, but that's probably
+        # too harsh.
+        pattern = self.GetBannedPattern(newaddr)
+        if pattern:
+            syslog('vette',
+                   '%s banned address change: %s -> %s (matched: %s)',
+                   realname, oldaddr, newaddr, pattern)
+            raise Errors.MembershipIsBanned, pattern
         # Pend the subscription change
         cookie = self.pend_new(Pending.CHANGE_OF_ADDRESS,
                                oldaddr, newaddr, globally)
         confirmurl = '%s/%s' % (self.GetScriptURL('confirm', absolute=1),
                                 cookie)
-        realname = self.real_name
         lang = self.getMemberLanguage(oldaddr)
         text = Utils.maketext(
             'verify.txt',
@@ -1107,6 +1108,13 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         msg.send(self)
 
     def ApprovedChangeMemberAddress(self, oldaddr, newaddr, globally):
+        # Check here for banned address in case address was banned after
+        # confirmation was mailed. MAS: If it's global change should we just
+        # skip this list and proceed to the others? For now we'll throw the
+        # exception.
+        pattern = self.GetBannedPattern(newaddr)
+        if pattern:
+            raise Errors.MembershipIsBanned, pattern
         # It's possible they were a member of this list, but choose to change
         # their membership globally.  In that case, we simply remove the old
         # address.
@@ -1126,6 +1134,9 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             if mlist.host_name <> self.host_name:
                 continue
             if not mlist.isMember(oldaddr):
+                continue
+            # If new address is banned from this list, just skip it.
+            if mlist.GetBannedPattern(newaddr):
                 continue
             mlist.Lock()
             try:
@@ -1453,6 +1464,31 @@ bad regexp in bounce_matching_header line: %s
             return 0
         self.hold_and_cmd_autoresponses[sender] = (today, count+1)
         return 1
+
+    def GetBannedPattern(self, email):
+        """Returns matched entry in ban_list if email matches.
+        Otherwise returns None.
+        """
+        ban = 0
+        for pattern in self.ban_list:
+            if pattern.startswith('^'):
+                # This is a regular expression match
+                try:
+                    if re.search(pattern, email, re.IGNORECASE):
+                        ban = 1
+                        break
+                except re.error:
+                    # BAW: we should probably remove this pattern
+                    pass
+            else:
+                # Do the comparison case insensitively
+                if pattern.lower() == email.lower():
+                    ban = 1
+                    break
+        if ban:
+            return pattern
+        else:
+            return None
 
 
 

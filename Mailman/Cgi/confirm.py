@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2004 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2005 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -370,6 +370,11 @@ def subscription_confirm(mlist, doc, cookie, cgidata):
             address that has already been unsubscribed.'''))
         except Errors.MMAlreadyAMember:
             doc.addError(_("You are already a member of this mailing list!"))
+        except Errors.MembershipIsBanned:
+            owneraddr = mlist.GetOwnerEmail()
+            doc.addError(_("""You are currently banned from subscribing to
+            this list.  If you think this restriction is erroneous, please
+            contact the list owners at %(owneraddr)s."""))
         except Errors.HostileSubscriptionError:
             doc.addError(_("""\
             You were not invited to this mailing list.  The invitation has
@@ -517,6 +522,12 @@ def addrchange_confirm(mlist, doc, cookie):
             bad_confirmation(doc, _('''Invalid confirmation string.  It is
             possible that you are attempting to confirm a request for an
             address that has already been unsubscribed.'''))
+        except Errors.MembershipIsBanned:
+            owneraddr = mlist.GetOwnerEmail()
+            realname = mlist.real_name
+            doc.addError(_("""%(newaddr)s is banned from subscribing to the
+            %(realname)s list.  If you think this restriction is erroneous,
+            please contact the list owners at %(owneraddr)s."""))
         else:
             # The response
             listname = mlist.real_name
