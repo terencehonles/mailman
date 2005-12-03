@@ -1,4 +1,4 @@
-# Copyright (C) 2002-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 2002-2005 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -63,6 +63,12 @@ Your request has been forwarded to the list moderator for approval."""))
         res.results.append(_("""\
 You are not currently a member.  Have you already unsubscribed or changed
 your email address?"""))
+    except Errors.MembershipIsBanned:
+        owneraddr = mlist.GetOwnerEmail()
+        res.results.append(_("""\
+You are currently banned from subscribing to this list.  If you think this
+restriction is erroneous, please contact the list owners at
+%(owneraddr)s."""))
     except Errors.HostileSubscriptionError:
         res.results.append(_("""\
 You were not invited to this mailing list.  The invitation has been discarded,
