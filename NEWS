@@ -18,6 +18,22 @@ Here is a history of user visible changes to Mailman.
 
   Bug fixes and other patches
 
+    - Apply the list's ban_list to address changes and admin mass subscribe
+      and invite and to confirmations/approvals of address changes,
+      subscriptions and invitations.
+
+    - Decode quoted-printable and base64 encoded parts before passing to
+      HTML_TO_PLAIN_TEXT_COMMAND (1367783).
+
+    - Remove Approve: header from post - treat as Approved: (1355707).
+
+    - Stop removing line following Approve(d): line in body of post (1318883).
+
+    - Log post in post log with true sender, not listname-bounces (1287921).
+
+    - Correctly initialize and remember the list's default_member_moderation
+      attribute in the web list creation page (1263213).
+
     - Add PEP263 charset in config_list output (1343100).
 
     - header_filter_rules get lost if accessed directly and needed authenti-
