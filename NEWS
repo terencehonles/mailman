@@ -47,6 +47,14 @@ Here is a history of user visible changes to Mailman.
 
   Bug fixes and other patches
 
+    - Fix bounce log score messages to be more consistent.
+
+    - Fix bin/remove_members to accept no arguments when both --fromall and
+      --file= options are specified.
+
+    - Change cgi-bin and mail wrapper "group not found" error message to be
+      more descriptive of the actual problem.
+
     - Apply the list's ban_list to address changes and admin mass subscribe
       and invite and to confirmations/approvals of address changes,
       subscriptions and invitations.
