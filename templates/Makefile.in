@@ -42,8 +42,8 @@ TEMPLATEDIR= 	$(prefix)/templates
 
 SHELL=		/bin/sh
 
-LANGUAGES=	ca cs da de en es et eu fi fr hr hu ia it ja ko lt nl \
-		no pl pt pt_BR ro ru sl sr sv tr uk zh_CN zh_TW
+LANGUAGES=	en @LANGUAGES@
+MAKELANGS=	@LANGUAGES@
 
 # Modes for directories and executables created by the install
 # process.  Default to group-writable directories but
@@ -52,13 +52,18 @@ DIRMODE=	775
 EXEMODE=	755
 FILEMODE=	644
 INSTALL_PROGRAM=$(INSTALL) -m $(EXEMODE)
+PO2TEMPL= @PYTHON@ build/bin/po2templ.py
 
 
 # Rules
 
 all:
+	for d in $(MAKELANGS); \
+	do \
+	    (mkdir -p $$d; cd ..; $(PO2TEMPL) $$d) \
+	done
 
-install:
+install: all
 	for d in $(LANGUAGES); \
 	do \
 	    $(srcdir)/../mkinstalldirs $(DESTDIR)$(TEMPLATEDIR)/$$d; \
@@ -73,4 +78,5 @@ finish:
 clean:
 
 distclean:
-	-rm -f Makefile
+	-rm -f Makefile; \
+	-rm -f @LANGUAGES@
