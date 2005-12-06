@@ -34,6 +34,8 @@ CC=		@CC@
 INSTALL=	@INSTALL@
 PYTHON= 	@PYTHON@
 
+LANGUAGES=      @LANGUAGES@
+
 DEFS=		@DEFS@
 
 # Customizable but not set by configure
