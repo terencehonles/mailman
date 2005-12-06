@@ -1304,44 +1304,57 @@ from Version import *
 # element being the description, as described in the catalogs, and second
 # element is the language charset.  I have chosen code from /usr/share/locale
 # in my GNU/Linux. :-)
+# TK: Now the site admin can select languages for the installation from
+# those in the distribution tarball.  We don't touch add_language() function
+# for backward compatibility in mm_cfg.py syntax.  You may have to add your
+# own language in mm_cfg.py if it is not included in the distribution even
+# if you had put language files in source directory and configured by
+# `--with-languages' option.
 def _(s):
     return s
+
+LANGUAGES = 'en ' + '@LANGUAGES@'
+LANGUAGE_DICT = {
+	'ca':   (_('Catalan'),             'iso-8859-1'),
+	'cs':   (_('Czech'),               'iso-8859-2'),
+	'da':   (_('Danish'),              'iso-8859-1'),
+	'de':   (_('German'),              'iso-8859-1'),
+	'en':   (_('English (USA)'),       'us-ascii'),
+	'es':   (_('Spanish (Spain)'),     'iso-8859-1'),
+	'et':   (_('Estonian'),            'iso-8859-15'),
+	'eu':   (_('Euskara'),             'iso-8859-15'), # Basque
+	'fi':   (_('Finnish'),             'iso-8859-1'),
+	'fr':   (_('French'),              'iso-8859-1'),
+	'hr':   (_('Croatian'),            'iso-8859-2'),
+	'hu':   (_('Hungarian'),           'iso-8859-2'),
+        'ia':   (_('Interlingua'),         'iso-8859-15'),
+	'it':   (_('Italian'),             'iso-8859-1'),
+	'ja':   (_('Japanese'),            'euc-jp'),
+	'ko':   (_('Korean'),              'euc-kr'),
+	'lt':   (_('Lithuanian'),          'iso-8859-13'),
+	'nl':   (_('Dutch'),               'iso-8859-1'),
+	'no':   (_('Norwegian'),           'iso-8859-1'),
+	'pl':   (_('Polish'),              'iso-8859-2'),
+	'pt':   (_('Portuguese'),          'iso-8859-1'),
+	'pt_BR':(_('Portuguese (Brazil)'), 'iso-8859-1'),
+	'ro':   (_('Romanian'),            'iso-8859-2'),
+	'ru':   (_('Russian'),             'koi8-r'),
+	'sr':   (_('Serbian'),             'utf-8'),
+	'sl':   (_('Slovenian'),           'iso-8859-2'),
+	'sv':   (_('Swedish'),             'iso-8859-1'),
+	'tr':   (_('Turkish'),             'iso-8859-9'),
+	'uk':   (_('Ukrainian'),           'utf-8'),
+	'zh_CN':(_('Chinese (China)'),     'utf-8'),
+	'zh_TW':(_('Chinese (Taiwan)'),    'utf-8'),
+}
 
 LC_DESCRIPTIONS = {}
 
 def add_language(code, description, charset):
     LC_DESCRIPTIONS[code] = (description, charset)
 
-add_language('ca',    _('Catalan'),             'iso-8859-1')
-add_language('cs',    _('Czech'),               'iso-8859-2')
-add_language('da',    _('Danish'),              'iso-8859-1')
-add_language('de',    _('German'),              'iso-8859-1')
-add_language('en',    _('English (USA)'),       'us-ascii')
-add_language('es',    _('Spanish (Spain)'),     'iso-8859-1')
-add_language('et',    _('Estonian'),            'iso-8859-15')
-add_language('eu',    _('Euskara'),             'iso-8859-15') # Basque
-add_language('fi',    _('Finnish'),             'iso-8859-1')
-add_language('fr',    _('French'),              'iso-8859-1')
-add_language('hr',    _('Croatian'),            'iso-8859-2')
-add_language('hu',    _('Hungarian'),           'iso-8859-2')
-add_language('ia',    _('Interlingua'),         'iso-8859-15')
-add_language('it',    _('Italian'),             'iso-8859-1')
-add_language('ja',    _('Japanese'),            'euc-jp')
-add_language('ko',    _('Korean'),              'euc-kr')
-add_language('lt',    _('Lithuanian'),          'iso-8859-13')
-add_language('nl',    _('Dutch'),               'iso-8859-1')
-add_language('no',    _('Norwegian'),           'iso-8859-1')
-add_language('pl',    _('Polish'),              'iso-8859-2')
-add_language('pt',    _('Portuguese'),          'iso-8859-1')
-add_language('pt_BR', _('Portuguese (Brazil)'), 'iso-8859-1')
-add_language('ro',    _('Romanian'),            'iso-8859-2')
-add_language('ru',    _('Russian'),             'koi8-r')
-add_language('sr',    _('Serbian'),             'utf-8')
-add_language('sl',    _('Slovenian'),           'iso-8859-2')
-add_language('sv',    _('Swedish'),             'iso-8859-1')
-add_language('tr',    _('Turkish'),             'iso-8859-9')
-add_language('uk',    _('Ukrainian'),           'utf-8')
-add_language('zh_CN', _('Chinese (China)'),     'utf-8')
-add_language('zh_TW', _('Chinese (Taiwan)'),    'utf-8')
+for lang in LANGUAGES.split():
+    if lang in LANGUAGE_DICT.keys():
+        add_language(lang, LANGUAGE_DICT[lang][0], LANGUAGE_DICT[lang][1])
 
 del _
