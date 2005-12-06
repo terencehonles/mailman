@@ -145,7 +145,7 @@ class Bouncer:
                 info.score += weight
                 info.date = day
                 syslog('bounce', '%s: %s current bounce score: %s',
-                       member, self.internal_name(), info.score)
+                       self.internal_name(), member, info.score)
             # Continue to the check phase below
         #
         # Now that we've adjusted the bounce score for this bounce, let's
