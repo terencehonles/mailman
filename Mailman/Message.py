@@ -188,6 +188,13 @@ class Message(email.Message.Message):
             authors.append(address)
         return authors
 
+    def get_filename(self, failobj=None):
+        try:
+            filename = email.Message.Message.get_filename(self, failobj)
+            return filename
+        except (UnicodeError, LookupError, ValueError):
+            return failobj
+
 
 
 class UserNotification(Message):
