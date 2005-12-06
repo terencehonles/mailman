@@ -7,6 +7,27 @@ Here is a history of user visible changes to Mailman.
 2.2 alpha 1 (XX-XXX-200X)
 2.1.7 (XX-XXX-200X)
 
+  Security
+
+    - A note on CVE-2005-3573: Although the RFC2231 bug example in the
+      CVE has been solved in mailman-2.1.6, there may be more cases
+      where ToDigest.send_digests() can block regular delivery.
+      We put the send_digests() calling part in try - except clause and
+      leave a message in the error log if something happened in
+      send_digests().  Daily call of cron/senddigests will notify more
+      detail to the site administrator.
+
+    - List administrators can no longer change the user's option/subscription
+      globally.  Site admin can change these only if
+      mm_cfg.ALLOW_SITE_ADMIN_COOKIES is set to Yes.
+
+    - Script tag is disallowd in edithtml script.
+
+    - Since probe message for the disabled users may reach unexpected
+      persons, the password was excluded from sendProbe() and probe.txt.
+      Note that the default value of VERP_PROBE has been set to `No'
+      from 2.1.6., thus this change doesn't change the default behavior.
+
   New Features
 
     - Always remove DomainKey (and similar) headers (1287546) from messages
