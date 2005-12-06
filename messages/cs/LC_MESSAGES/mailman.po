@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.0rc3\n"
-"POT-Creation-Date: Wed Mar 23 09:55:34 2005\n"
+"POT-Creation-Date: Tue Dec  6 12:15:05 2005\n"
 "PO-Revision-Date: 2002-12-15 00:39+0100\n"
 "Last-Translator: Dan Ohnesorg <dan@ohnesorg.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -22,141 +22,142 @@ msgstr "velikost není známa"
 msgid " %(size)i bytes "
 msgstr " %(size)i bajtù  "
 
-#: Mailman/Archiver/HyperArch.py:281 Mailman/Archiver/HyperArch.py:454
-#: Mailman/Archiver/HyperArch.py:562 Mailman/Archiver/HyperArch.py:1031
-#: Mailman/Archiver/HyperArch.py:1160
+#: Mailman/Archiver/HyperArch.py:282 Mailman/Archiver/HyperArch.py:285
+#: Mailman/Archiver/HyperArch.py:413 Mailman/Archiver/HyperArch.py:465
+#: Mailman/Archiver/HyperArch.py:573 Mailman/Archiver/HyperArch.py:1042
+#: Mailman/Archiver/HyperArch.py:1171
 msgid " at "
 msgstr " na "
 
-#: Mailman/Archiver/HyperArch.py:483
+#: Mailman/Archiver/HyperArch.py:494
 msgid "Previous message:"
 msgstr "Pøedchozí pøíspìvek:"
 
-#: Mailman/Archiver/HyperArch.py:505
+#: Mailman/Archiver/HyperArch.py:516
 msgid "Next message:"
 msgstr "Následující pøíspìvek:"
 
-#: Mailman/Archiver/HyperArch.py:672 Mailman/Archiver/HyperArch.py:708
+#: Mailman/Archiver/HyperArch.py:683 Mailman/Archiver/HyperArch.py:719
 msgid "thread"
 msgstr "Vlákno"
 
-#: Mailman/Archiver/HyperArch.py:673 Mailman/Archiver/HyperArch.py:709
+#: Mailman/Archiver/HyperArch.py:684 Mailman/Archiver/HyperArch.py:720
 msgid "subject"
 msgstr "vìc"
 
-#: Mailman/Archiver/HyperArch.py:674 Mailman/Archiver/HyperArch.py:710
+#: Mailman/Archiver/HyperArch.py:685 Mailman/Archiver/HyperArch.py:721
 msgid "author"
 msgstr "autor"
 
-#: Mailman/Archiver/HyperArch.py:675 Mailman/Archiver/HyperArch.py:711
+#: Mailman/Archiver/HyperArch.py:686 Mailman/Archiver/HyperArch.py:722
 msgid "date"
 msgstr "datum"
 
-#: Mailman/Archiver/HyperArch.py:747
+#: Mailman/Archiver/HyperArch.py:758
 msgid "<P>Currently, there are no archives. </P>"
 msgstr "<P>V souèasné dobì neexistují ¾ádné archivy. </P>"
 
-#: Mailman/Archiver/HyperArch.py:785
+#: Mailman/Archiver/HyperArch.py:796
 msgid "Gzip'd Text%(sz)s"
 msgstr "Zagzipovaný text %(sz)s"
 
-#: Mailman/Archiver/HyperArch.py:790
+#: Mailman/Archiver/HyperArch.py:801
 msgid "Text%(sz)s"
 msgstr "Text %(sz)s"
 
-#: Mailman/Archiver/HyperArch.py:880
+#: Mailman/Archiver/HyperArch.py:891
 msgid "figuring article archives\n"
 msgstr "generuji archiv pøíspìvkù\n"
 
-#: Mailman/Archiver/HyperArch.py:890
+#: Mailman/Archiver/HyperArch.py:901
 msgid "April"
 msgstr "Duben"
 
-#: Mailman/Archiver/HyperArch.py:890
+#: Mailman/Archiver/HyperArch.py:901
 msgid "February"
 msgstr "Únor"
 
-#: Mailman/Archiver/HyperArch.py:890
+#: Mailman/Archiver/HyperArch.py:901
 msgid "January"
 msgstr "Leden"
 
-#: Mailman/Archiver/HyperArch.py:890
+#: Mailman/Archiver/HyperArch.py:901
 msgid "March"
 msgstr "Bøezen"
 
-#: Mailman/Archiver/HyperArch.py:891
+#: Mailman/Archiver/HyperArch.py:902
 msgid "August"
 msgstr "Srpen"
 
-#: Mailman/Archiver/HyperArch.py:891
+#: Mailman/Archiver/HyperArch.py:902
 msgid "July"
 msgstr "Èerven"
 
-#: Mailman/Archiver/HyperArch.py:891
+#: Mailman/Archiver/HyperArch.py:902
 msgid "June"
 msgstr "Èervenec"
 
-#: Mailman/Archiver/HyperArch.py:891 Mailman/i18n.py:102
+#: Mailman/Archiver/HyperArch.py:902 Mailman/i18n.py:102
 msgid "May"
 msgstr "Kvìten"
 
-#: Mailman/Archiver/HyperArch.py:892
+#: Mailman/Archiver/HyperArch.py:903
 msgid "December"
 msgstr "Prosinec"
 
-#: Mailman/Archiver/HyperArch.py:892
+#: Mailman/Archiver/HyperArch.py:903
 msgid "November"
 msgstr "Listopad"
 
-#: Mailman/Archiver/HyperArch.py:892
+#: Mailman/Archiver/HyperArch.py:903
 msgid "October"
 msgstr "Øíjen"
 
-#: Mailman/Archiver/HyperArch.py:892
+#: Mailman/Archiver/HyperArch.py:903
 msgid "September"
 msgstr "Záøí"
 
-#: Mailman/Archiver/HyperArch.py:900
+#: Mailman/Archiver/HyperArch.py:911
 msgid "First"
 msgstr "První"
 
-#: Mailman/Archiver/HyperArch.py:900
+#: Mailman/Archiver/HyperArch.py:911
 msgid "Fourth"
 msgstr "Ètvrtý"
 
-#: Mailman/Archiver/HyperArch.py:900
+#: Mailman/Archiver/HyperArch.py:911
 msgid "Second"
 msgstr "Druhý"
 
-#: Mailman/Archiver/HyperArch.py:900
+#: Mailman/Archiver/HyperArch.py:911
 msgid "Third"
 msgstr "Tøetí"
 
-#: Mailman/Archiver/HyperArch.py:902
+#: Mailman/Archiver/HyperArch.py:913
 msgid "%(ord)s quarter %(year)i"
 msgstr "%(ord)s ètvrtletí %(year)i"
 
-#: Mailman/Archiver/HyperArch.py:909
+#: Mailman/Archiver/HyperArch.py:920
 msgid "%(month)s %(year)i"
 msgstr "%(month)s %(year)i"
 
-#: Mailman/Archiver/HyperArch.py:914
+#: Mailman/Archiver/HyperArch.py:925
 msgid "The Week Of Monday %(day)i %(month)s %(year)i"
 msgstr "Týden, který zaèíná pondìlím %(day)i %(month)s %(year)i"
 
-#: Mailman/Archiver/HyperArch.py:918
+#: Mailman/Archiver/HyperArch.py:929
 msgid "%(day)i %(month)s %(year)i"
 msgstr "%(day)i %(month)s %(year)i"
 
-#: Mailman/Archiver/HyperArch.py:1018
+#: Mailman/Archiver/HyperArch.py:1029
 msgid "Computing threaded index\n"
 msgstr "Generuji index pro pøíspìvky sdru¾ené do vláken\n"
 
-#: Mailman/Archiver/HyperArch.py:1283
+#: Mailman/Archiver/HyperArch.py:1294
 msgid "Updating HTML for article %(seq)s"
 msgstr "Aktualizuji HTML stránky pro pøíspìvek %(seq)s"
 
-#: Mailman/Archiver/HyperArch.py:1290
+#: Mailman/Archiver/HyperArch.py:1301
 msgid "article file %(filename)s is missing!"
 msgstr "soubor %(filename)s ve kterém je ulo¾en pøíspìvìk nebyl nalezen!"
 
@@ -220,8 +221,8 @@ msgstr ""
 "datum: %(date)s"
 
 #: Mailman/Bouncer.py:279 Mailman/Deliverer.py:144
-#: Mailman/Handlers/Acknowledge.py:44 Mailman/Handlers/CookHeaders.py:284
-#: Mailman/Handlers/Hold.py:205 Mailman/Handlers/ToDigest.py:226
+#: Mailman/Handlers/Acknowledge.py:44 Mailman/Handlers/CookHeaders.py:280
+#: Mailman/Handlers/Hold.py:209 Mailman/Handlers/ToDigest.py:237
 #: Mailman/ListAdmin.py:223
 msgid "(no subject)"
 msgstr "(no subject)"
@@ -240,7 +241,7 @@ msgstr "Administrátor"
 
 #: Mailman/Cgi/admin.py:74 Mailman/Cgi/admindb.py:89 Mailman/Cgi/confirm.py:61
 #: Mailman/Cgi/edithtml.py:68 Mailman/Cgi/listinfo.py:51
-#: Mailman/Cgi/options.py:77 Mailman/Cgi/private.py:101
+#: Mailman/Cgi/options.py:78 Mailman/Cgi/private.py:101
 #: Mailman/Cgi/rmlist.py:64 Mailman/Cgi/roster.py:57
 #: Mailman/Cgi/subscribe.py:61
 msgid "No such list <em>%(safelistname)s</em>"
@@ -264,7 +265,7 @@ msgstr ""
 "doruèení zapnout."
 
 #: Mailman/Cgi/admin.py:183 Mailman/Cgi/admin.py:189 Mailman/Cgi/admin.py:194
-#: Mailman/Cgi/admin.py:1433 Mailman/Gui/GUIBase.py:191
+#: Mailman/Cgi/admin.py:1436 Mailman/Gui/GUIBase.py:191
 msgid "Warning: "
 msgstr "Pozor: "
 
@@ -509,7 +510,7 @@ msgstr "Název:"
 msgid "Regexp:"
 msgstr "Regulární výraz:"
 
-#: Mailman/Cgi/admin.py:705 Mailman/Cgi/options.py:979
+#: Mailman/Cgi/admin.py:705 Mailman/Cgi/options.py:1029
 msgid "Description:"
 msgstr "Popis:"
 
@@ -820,54 +821,55 @@ msgstr "Poslat novì pøihlá¹eným uvítací zprávu?"
 
 #: Mailman/Cgi/admin.py:1144 Mailman/Cgi/admin.py:1153
 #: Mailman/Cgi/admin.py:1186 Mailman/Cgi/admin.py:1194
-#: Mailman/Cgi/confirm.py:289 Mailman/Cgi/create.py:339
-#: Mailman/Cgi/create.py:369 Mailman/Cgi/create.py:407
+#: Mailman/Cgi/confirm.py:289 Mailman/Cgi/create.py:340
+#: Mailman/Cgi/create.py:375 Mailman/Cgi/create.py:413
 #: Mailman/Cgi/rmlist.py:228 Mailman/Gui/Archive.py:33
 #: Mailman/Gui/Autoresponse.py:54 Mailman/Gui/Autoresponse.py:62
 #: Mailman/Gui/Autoresponse.py:71 Mailman/Gui/Bounce.py:77
 #: Mailman/Gui/Bounce.py:120 Mailman/Gui/Bounce.py:146
-#: Mailman/Gui/Bounce.py:155 Mailman/Gui/ContentFilter.py:70
-#: Mailman/Gui/ContentFilter.py:112 Mailman/Gui/Digest.py:46
-#: Mailman/Gui/Digest.py:62 Mailman/Gui/Digest.py:84 Mailman/Gui/Digest.py:89
-#: Mailman/Gui/General.py:154 Mailman/Gui/General.py:160
-#: Mailman/Gui/General.py:238 Mailman/Gui/General.py:265
-#: Mailman/Gui/General.py:292 Mailman/Gui/General.py:303
-#: Mailman/Gui/General.py:306 Mailman/Gui/General.py:316
-#: Mailman/Gui/General.py:321 Mailman/Gui/General.py:327
-#: Mailman/Gui/General.py:347 Mailman/Gui/General.py:375
-#: Mailman/Gui/General.py:398 Mailman/Gui/NonDigest.py:44
-#: Mailman/Gui/NonDigest.py:52 Mailman/Gui/NonDigest.py:139
-#: Mailman/Gui/Privacy.py:110 Mailman/Gui/Privacy.py:116
-#: Mailman/Gui/Privacy.py:149 Mailman/Gui/Privacy.py:197
-#: Mailman/Gui/Privacy.py:305 Mailman/Gui/Privacy.py:324
-#: Mailman/Gui/Usenet.py:52 Mailman/Gui/Usenet.py:56 Mailman/Gui/Usenet.py:93
-#: Mailman/Gui/Usenet.py:105
-msgid "No"
-msgstr "Ne"
-
-#: Mailman/Cgi/admin.py:1144 Mailman/Cgi/admin.py:1153
-#: Mailman/Cgi/admin.py:1186 Mailman/Cgi/admin.py:1194
-#: Mailman/Cgi/confirm.py:289 Mailman/Cgi/create.py:339
-#: Mailman/Cgi/create.py:369 Mailman/Cgi/create.py:407
-#: Mailman/Cgi/rmlist.py:228 Mailman/Gui/Archive.py:33
-#: Mailman/Gui/Autoresponse.py:54 Mailman/Gui/Autoresponse.py:62
-#: Mailman/Gui/Bounce.py:77 Mailman/Gui/Bounce.py:120
-#: Mailman/Gui/Bounce.py:146 Mailman/Gui/Bounce.py:155
-#: Mailman/Gui/ContentFilter.py:70 Mailman/Gui/ContentFilter.py:112
+#: Mailman/Gui/Bounce.py:155 Mailman/Gui/ContentFilter.py:74
+#: Mailman/Gui/ContentFilter.py:116 Mailman/Gui/ContentFilter.py:120
 #: Mailman/Gui/Digest.py:46 Mailman/Gui/Digest.py:62 Mailman/Gui/Digest.py:84
-#: Mailman/Gui/Digest.py:89 Mailman/Gui/General.py:154
-#: Mailman/Gui/General.py:160 Mailman/Gui/General.py:238
-#: Mailman/Gui/General.py:265 Mailman/Gui/General.py:292
-#: Mailman/Gui/General.py:303 Mailman/Gui/General.py:306
-#: Mailman/Gui/General.py:316 Mailman/Gui/General.py:321
-#: Mailman/Gui/General.py:327 Mailman/Gui/General.py:347
-#: Mailman/Gui/General.py:375 Mailman/Gui/General.py:398
+#: Mailman/Gui/Digest.py:89 Mailman/Gui/General.py:153
+#: Mailman/Gui/General.py:159 Mailman/Gui/General.py:237
+#: Mailman/Gui/General.py:264 Mailman/Gui/General.py:291
+#: Mailman/Gui/General.py:302 Mailman/Gui/General.py:305
+#: Mailman/Gui/General.py:315 Mailman/Gui/General.py:320
+#: Mailman/Gui/General.py:326 Mailman/Gui/General.py:346
+#: Mailman/Gui/General.py:374 Mailman/Gui/General.py:397
 #: Mailman/Gui/NonDigest.py:44 Mailman/Gui/NonDigest.py:52
 #: Mailman/Gui/NonDigest.py:139 Mailman/Gui/Privacy.py:110
 #: Mailman/Gui/Privacy.py:116 Mailman/Gui/Privacy.py:149
 #: Mailman/Gui/Privacy.py:197 Mailman/Gui/Privacy.py:305
 #: Mailman/Gui/Privacy.py:324 Mailman/Gui/Usenet.py:52
 #: Mailman/Gui/Usenet.py:56 Mailman/Gui/Usenet.py:93 Mailman/Gui/Usenet.py:105
+msgid "No"
+msgstr "Ne"
+
+#: Mailman/Cgi/admin.py:1144 Mailman/Cgi/admin.py:1153
+#: Mailman/Cgi/admin.py:1186 Mailman/Cgi/admin.py:1194
+#: Mailman/Cgi/confirm.py:289 Mailman/Cgi/create.py:340
+#: Mailman/Cgi/create.py:375 Mailman/Cgi/create.py:413
+#: Mailman/Cgi/rmlist.py:228 Mailman/Gui/Archive.py:33
+#: Mailman/Gui/Autoresponse.py:54 Mailman/Gui/Autoresponse.py:62
+#: Mailman/Gui/Bounce.py:77 Mailman/Gui/Bounce.py:120
+#: Mailman/Gui/Bounce.py:146 Mailman/Gui/Bounce.py:155
+#: Mailman/Gui/ContentFilter.py:74 Mailman/Gui/ContentFilter.py:116
+#: Mailman/Gui/ContentFilter.py:120 Mailman/Gui/Digest.py:46
+#: Mailman/Gui/Digest.py:62 Mailman/Gui/Digest.py:84 Mailman/Gui/Digest.py:89
+#: Mailman/Gui/General.py:153 Mailman/Gui/General.py:159
+#: Mailman/Gui/General.py:237 Mailman/Gui/General.py:264
+#: Mailman/Gui/General.py:291 Mailman/Gui/General.py:302
+#: Mailman/Gui/General.py:305 Mailman/Gui/General.py:315
+#: Mailman/Gui/General.py:320 Mailman/Gui/General.py:326
+#: Mailman/Gui/General.py:346 Mailman/Gui/General.py:374
+#: Mailman/Gui/General.py:397 Mailman/Gui/NonDigest.py:44
+#: Mailman/Gui/NonDigest.py:52 Mailman/Gui/NonDigest.py:139
+#: Mailman/Gui/Privacy.py:110 Mailman/Gui/Privacy.py:116
+#: Mailman/Gui/Privacy.py:149 Mailman/Gui/Privacy.py:197
+#: Mailman/Gui/Privacy.py:305 Mailman/Gui/Privacy.py:324
+#: Mailman/Gui/Usenet.py:52 Mailman/Gui/Usenet.py:56 Mailman/Gui/Usenet.py:93
+#: Mailman/Gui/Usenet.py:105
 msgid "Yes"
 msgstr "Ano"
 
@@ -984,47 +986,51 @@ msgstr "Neplatná emailová adresa"
 msgid "Hostile address (illegal characters)"
 msgstr "Neplatná adresa (obsahuje nepovolené znaky)"
 
-#: Mailman/Cgi/admin.py:1353
+#: Mailman/Cgi/admin.py:1350
+msgid "Banned address (matched %(pattern)s)"
+msgstr ""
+
+#: Mailman/Cgi/admin.py:1356
 msgid "Successfully invited:"
 msgstr "Úspì¹nì pøizváni:"
 
-#: Mailman/Cgi/admin.py:1355
+#: Mailman/Cgi/admin.py:1358
 msgid "Successfully subscribed:"
 msgstr "Úspì¹nì pøihlá¹eni:"
 
-#: Mailman/Cgi/admin.py:1360
+#: Mailman/Cgi/admin.py:1363
 msgid "Error inviting:"
 msgstr "Chyba pøi pozvání:"
 
-#: Mailman/Cgi/admin.py:1362
+#: Mailman/Cgi/admin.py:1365
 msgid "Error subscribing:"
 msgstr "Chyba pøi pøihla¹ování:"
 
-#: Mailman/Cgi/admin.py:1391
+#: Mailman/Cgi/admin.py:1394
 msgid "Successfully Unsubscribed:"
 msgstr "Úspì¹nì odhlá¹eni:"
 
-#: Mailman/Cgi/admin.py:1396
+#: Mailman/Cgi/admin.py:1399
 msgid "Cannot unsubscribe non-members:"
 msgstr "Nemohu odhlásit nìkoho, kdo není úèastníkem:"
 
-#: Mailman/Cgi/admin.py:1408
+#: Mailman/Cgi/admin.py:1411
 msgid "Bad moderation flag value"
 msgstr "Chybná hodnota pøíznaku moderace."
 
-#: Mailman/Cgi/admin.py:1429
+#: Mailman/Cgi/admin.py:1432
 msgid "Not subscribed"
 msgstr "Není pøihlá¹en"
 
-#: Mailman/Cgi/admin.py:1432
+#: Mailman/Cgi/admin.py:1435
 msgid "Ignoring changes to deleted member: %(user)s"
 msgstr "Ignoruji zmìny provedené u odhlá¹eného úèastníka: %(user)s"
 
-#: Mailman/Cgi/admin.py:1472
+#: Mailman/Cgi/admin.py:1475
 msgid "Successfully Removed:"
 msgstr "Úspì¹nì odstranìni:"
 
-#: Mailman/Cgi/admin.py:1476
+#: Mailman/Cgi/admin.py:1479
 msgid "Error Unsubscribing:"
 msgstr "Chyba pøi odhla¹ování"
 
@@ -1194,7 +1200,7 @@ msgid "Size:"
 msgstr "Velikost:"
 
 #: Mailman/Cgi/admindb.py:498 Mailman/Handlers/Scrubber.py:198
-#: Mailman/Handlers/Scrubber.py:295 Mailman/Handlers/Scrubber.py:296
+#: Mailman/Handlers/Scrubber.py:302 Mailman/Handlers/Scrubber.py:303
 msgid "not available"
 msgstr "[¾ádný popis není k dispozici]"
 
@@ -1250,18 +1256,22 @@ msgstr "Èást zprávy"
 msgid "No reason given"
 msgstr "Bez udání dùvodu"
 
-#: Mailman/Cgi/admindb.py:769 Mailman/ListAdmin.py:296
+#: Mailman/Cgi/admindb.py:770 Mailman/ListAdmin.py:296
 #: Mailman/ListAdmin.py:414
 msgid "[No reason given]"
 msgstr "[Bez udání dùvodu]"
 
-#: Mailman/Cgi/admindb.py:798
+#: Mailman/Cgi/admindb.py:802
 msgid "Database Updated..."
 msgstr "Databáze byla aktualizována"
 
-#: Mailman/Cgi/admindb.py:801
+#: Mailman/Cgi/admindb.py:805
 msgid " is already a member"
 msgstr "je úèastníkem konference"
+
+#: Mailman/Cgi/admindb.py:808
+msgid "%(addr)s is banned (matched: %(patt)s)"
+msgstr ""
 
 #: Mailman/Cgi/confirm.py:75
 msgid "Confirmation string was empty."
@@ -1464,8 +1474,8 @@ msgstr ""
 "            Nicménì pøihlá¹ení musí je¹tì schválit moderátor konference.\n"
 "            O jeho rozhodnutí budete informován."
 
-#: Mailman/Cgi/confirm.py:368 Mailman/Cgi/confirm.py:428
-#: Mailman/Cgi/confirm.py:517 Mailman/Cgi/confirm.py:740
+#: Mailman/Cgi/confirm.py:368 Mailman/Cgi/confirm.py:433
+#: Mailman/Cgi/confirm.py:522 Mailman/Cgi/confirm.py:751
 msgid ""
 "Invalid confirmation string.  It is\n"
 "            possible that you are attempting to confirm a request for an\n"
@@ -1479,7 +1489,19 @@ msgstr ""
 msgid "You are already a member of this mailing list!"
 msgstr "Ji¾ jste úèastníkem této konference!"
 
-#: Mailman/Cgi/confirm.py:374
+#: Mailman/Cgi/confirm.py:375
+#, fuzzy
+msgid ""
+"You are currently banned from subscribing to\n"
+"            this list.  If you think this restriction is erroneous, please\n"
+"            contact the list owners at %(owneraddr)s."
+msgstr ""
+"Emailová adresa, ze které se pøihla¹ujete, je zakázaná.\n"
+"        Pokud máte pocit, ¾e to není správnì, mù¾ete kontaktovat správce\n"
+"        na adrese %(listowner)s. Typicky bývají zakázány adresy ze kterých\n"
+"        dostáváme spam."
+
+#: Mailman/Cgi/confirm.py:379
 msgid ""
 "            You were not invited to this mailing list.  The invitation has\n"
 "            been discarded, and both list administrators have been\n"
@@ -1488,11 +1510,11 @@ msgstr ""
 "Nebyl jste pozván do této konference. Pozvání bylo zru¹eno\n"
 "a byl informován správce konference."
 
-#: Mailman/Cgi/confirm.py:384
+#: Mailman/Cgi/confirm.py:389
 msgid "Subscription request confirmed"
 msgstr "®ádost o pøihlá¹ení byla potvrzena"
 
-#: Mailman/Cgi/confirm.py:388
+#: Mailman/Cgi/confirm.py:393
 msgid ""
 "            You have successfully confirmed your subscription request for\n"
 "            \"%(addr)s\" to the %(listname)s mailing list.  A separate\n"
@@ -1512,15 +1534,15 @@ msgstr ""
 "            <a href=\"%(optionsurl)s\">stránku \n"
 "            s konfigurací va¹eho úètu</a>."
 
-#: Mailman/Cgi/confirm.py:406
+#: Mailman/Cgi/confirm.py:411
 msgid "You have canceled your unsubscription request."
 msgstr "Zru¹il jste Vá¹ po¾adavek na odhlá¹ení."
 
-#: Mailman/Cgi/confirm.py:434
+#: Mailman/Cgi/confirm.py:439
 msgid "Unsubscription request confirmed"
 msgstr "®ádost o odhlá¹ení byla potvrzena"
 
-#: Mailman/Cgi/confirm.py:438
+#: Mailman/Cgi/confirm.py:443
 msgid ""
 "            You have successfully unsubscribed from the %(listname)s "
 "mailing\n"
@@ -1532,15 +1554,15 @@ msgstr ""
 "            Nyní mù¾ete pokraèovat na <a href=\"%(listinfourl)s\">hlavní "
 "stránku             s informacemi o konferenci.</a>."
 
-#: Mailman/Cgi/confirm.py:449
+#: Mailman/Cgi/confirm.py:454
 msgid "Confirm unsubscription request"
 msgstr "Potvrï ¾ádost o odhlá¹ení"
 
-#: Mailman/Cgi/confirm.py:464 Mailman/Cgi/confirm.py:554
+#: Mailman/Cgi/confirm.py:469 Mailman/Cgi/confirm.py:565
 msgid "<em>Not available</em>"
 msgstr "<em>Není definováno ¾ádné téma</em>"
 
-#: Mailman/Cgi/confirm.py:467
+#: Mailman/Cgi/confirm.py:472
 msgid ""
 "Your confirmation is required in order to complete the\n"
 "    unsubscription request from the mailing list <em>%(listname)s</em>.  "
@@ -1568,24 +1590,36 @@ msgstr ""
 "\n"
 "    <p>A nebo kliknìte na <em>Zru¹it</em> a odhlá¹ení se neprovede."
 
-#: Mailman/Cgi/confirm.py:483 Mailman/Cgi/options.py:696
-#: Mailman/Cgi/options.py:837 Mailman/Cgi/options.py:847
+#: Mailman/Cgi/confirm.py:488 Mailman/Cgi/options.py:746
+#: Mailman/Cgi/options.py:887 Mailman/Cgi/options.py:897
 msgid "Unsubscribe"
 msgstr "Odhlásit"
 
-#: Mailman/Cgi/confirm.py:484 Mailman/Cgi/confirm.py:583
+#: Mailman/Cgi/confirm.py:489 Mailman/Cgi/confirm.py:594
 msgid "Cancel and discard"
 msgstr "Zru¹ a zahoï"
 
-#: Mailman/Cgi/confirm.py:494
+#: Mailman/Cgi/confirm.py:499
 msgid "You have canceled your change of address request."
 msgstr "Zru¹il jste po¾adavek na zmìnu adresy."
 
-#: Mailman/Cgi/confirm.py:523
+#: Mailman/Cgi/confirm.py:528
+#, fuzzy
+msgid ""
+"%(newaddr)s is banned from subscribing to the\n"
+"            %(realname)s list.  If you think this restriction is erroneous,\n"
+"            please contact the list owners at %(owneraddr)s."
+msgstr ""
+"Emailová adresa, ze které se pøihla¹ujete, je zakázaná.\n"
+"        Pokud máte pocit, ¾e to není správnì, mù¾ete kontaktovat správce\n"
+"        na adrese %(listowner)s. Typicky bývají zakázány adresy ze kterých\n"
+"        dostáváme spam."
+
+#: Mailman/Cgi/confirm.py:534
 msgid "Change of address request confirmed"
 msgstr "Zmìna adresy byla odsouhlasena"
 
-#: Mailman/Cgi/confirm.py:527
+#: Mailman/Cgi/confirm.py:538
 msgid ""
 "            You have successfully changed your address on the %(listname)s\n"
 "            mailing list from <b>%(oldaddr)s</b> to <b>%(newaddr)s</b>.  "
@@ -1600,15 +1634,15 @@ msgstr ""
 "href=\"%(optionsurl)s\">konfigurací svého \n"
 "            úètu</a>."
 
-#: Mailman/Cgi/confirm.py:539
+#: Mailman/Cgi/confirm.py:550
 msgid "Confirm change of address request"
 msgstr "Potvrï ¾ádost o zmìnu adresy"
 
-#: Mailman/Cgi/confirm.py:558
+#: Mailman/Cgi/confirm.py:569
 msgid "globally"
 msgstr "globálnì"
 
-#: Mailman/Cgi/confirm.py:561
+#: Mailman/Cgi/confirm.py:572
 msgid ""
 "Your confirmation is required in order to complete the\n"
 "    change of address request for the mailing list <em>%(listname)s</em>.  "
@@ -1646,15 +1680,15 @@ msgstr ""
 "    Zmìnu provedete kliknutím na <em>Zmìnit adresu</em>.\n"
 "    <p>Nebo mù¾ete kliknout na <em>Zru¹it</em> pro zru¹ení po¾adavku."
 
-#: Mailman/Cgi/confirm.py:582
+#: Mailman/Cgi/confirm.py:593
 msgid "Change address"
 msgstr "Po¾adavek na zmìnu"
 
-#: Mailman/Cgi/confirm.py:591 Mailman/Cgi/confirm.py:705
+#: Mailman/Cgi/confirm.py:602 Mailman/Cgi/confirm.py:716
 msgid "Continue awaiting approval"
 msgstr "Pokraèuj v èekání na souhlas"
 
-#: Mailman/Cgi/confirm.py:599
+#: Mailman/Cgi/confirm.py:610
 msgid ""
 "Okay, the list moderator will still have the\n"
 "    opportunity to approve or reject this message."
@@ -1662,11 +1696,11 @@ msgstr ""
 "Dobøe, moderátor konference bude mít mo¾nost pøíspìvek povolit nebo "
 "zamítnout."
 
-#: Mailman/Cgi/confirm.py:625
+#: Mailman/Cgi/confirm.py:636
 msgid "Sender discarded message via web."
 msgstr "Odesílatel zru¹il pøíspìvek pøes webovské rozhraní."
 
-#: Mailman/Cgi/confirm.py:627
+#: Mailman/Cgi/confirm.py:638
 msgid ""
 "The held message with the Subject:\n"
 "            header <em>%(subject)s</em> could not be found.  The most "
@@ -1681,11 +1715,11 @@ msgstr ""
 "             a tak byla rozeslána a nebo ji zamítl. S po¾adavkem na zru¹ení\n"
 "             pøíspìvku jste pøi¹el pozdì."
 
-#: Mailman/Cgi/confirm.py:635
+#: Mailman/Cgi/confirm.py:646
 msgid "Posted message canceled"
 msgstr "Pøíspìvek byl stornován"
 
-#: Mailman/Cgi/confirm.py:638
+#: Mailman/Cgi/confirm.py:649
 msgid ""
 "            You have successfully canceled the posting of your message with\n"
 "            the Subject: header <em>%(subject)s</em> to the mailing list\n"
@@ -1695,17 +1729,17 @@ msgstr ""
 "            <em>%(subject)s</em> do konference \n"
 "            %(listname)s."
 
-#: Mailman/Cgi/confirm.py:649
+#: Mailman/Cgi/confirm.py:660
 msgid "Cancel held message posting"
 msgstr "Zahoï pøíspìvek"
 
-#: Mailman/Cgi/confirm.py:674
+#: Mailman/Cgi/confirm.py:685
 msgid ""
 "The held message you were referred to has\n"
 "        already been handled by the list administrator."
 msgstr "Pøíspìvek, který jste chtìl zobrazit byl ji¾ vyøízen moderátorem."
 
-#: Mailman/Cgi/confirm.py:688
+#: Mailman/Cgi/confirm.py:699
 msgid ""
 "Your confirmation is required in order to cancel the\n"
 "    posting of your message to the mailing list <em>%(listname)s</em>:\n"
@@ -1734,11 +1768,11 @@ msgstr ""
 "poèká na\n"
 "    rozhodnutí moderátora."
 
-#: Mailman/Cgi/confirm.py:704
+#: Mailman/Cgi/confirm.py:715
 msgid "Cancel posting"
 msgstr "Zahoï pøíspìvek"
 
-#: Mailman/Cgi/confirm.py:716
+#: Mailman/Cgi/confirm.py:727
 msgid ""
 "You have canceled the re-enabling of your membership.  If\n"
 "    we continue to receive bounces from your address, it could be deleted "
@@ -1748,11 +1782,11 @@ msgstr ""
 "Zru¹il jste po¾adavek na obnovení èlenství. Pokud se budou \n"
 "i nadále vracet pøíspìvky, bude Va¹e adresa z konference odhlá¹ena."
 
-#: Mailman/Cgi/confirm.py:746
+#: Mailman/Cgi/confirm.py:757
 msgid "Membership re-enabled."
 msgstr "Èlenství bylo znovu povoleno."
 
-#: Mailman/Cgi/confirm.py:750
+#: Mailman/Cgi/confirm.py:761
 msgid ""
 "            You have successfully re-enabled your membership in the\n"
 "            %(listname)s mailing list.  You can now <a\n"
@@ -1764,11 +1798,11 @@ msgstr ""
 "            href=\"%(optionsurl)s\">na stránku s konfigurací èlena</a>.\n"
 "            "
 
-#: Mailman/Cgi/confirm.py:762
+#: Mailman/Cgi/confirm.py:773
 msgid "Re-enable mailing list membership"
 msgstr "Povol èlenství v konferenci"
 
-#: Mailman/Cgi/confirm.py:779
+#: Mailman/Cgi/confirm.py:790
 msgid ""
 "We're sorry, but you have already been unsubscribed\n"
 "        from this mailing list.  To re-subscribe, please visit the\n"
@@ -1778,11 +1812,11 @@ msgstr ""
 "        Pokud se chcete znovu pøihlásit, \n"
 "        <a href=\"%(listinfourl)s\">nav¹tivte informaèní stránku.</a>."
 
-#: Mailman/Cgi/confirm.py:794
+#: Mailman/Cgi/confirm.py:805
 msgid "<em>not available</em>"
 msgstr "<em>není k dispozici</em>"
 
-#: Mailman/Cgi/confirm.py:798
+#: Mailman/Cgi/confirm.py:809
 msgid ""
 "Your membership in the %(realname)s mailing list is\n"
 "    currently disabled due to excessive bounces.  Your confirmation is\n"
@@ -1819,11 +1853,11 @@ msgstr ""
 "    Nebo kliknìte na <em>Zru¹it</em> a systém bude dále èekat.\n"
 "    "
 
-#: Mailman/Cgi/confirm.py:818
+#: Mailman/Cgi/confirm.py:829
 msgid "Re-enable membership"
 msgstr "Obnov èlenství"
 
-#: Mailman/Cgi/confirm.py:819
+#: Mailman/Cgi/confirm.py:830
 msgid "Cancel"
 msgstr "Zru¹"
 
@@ -1847,25 +1881,25 @@ msgstr "<br>Zpìt na"
 msgid "administrative list overview"
 msgstr "administrative list overview"
 
-#: Mailman/Cgi/create.py:102
+#: Mailman/Cgi/create.py:103
 #, fuzzy
 msgid "List name must not include \"@\": %(safelistname)s"
 msgstr "Jméno konference nesmí obsahovat \"@\": %(listname)s"
 
-#: Mailman/Cgi/create.py:109
+#: Mailman/Cgi/create.py:110
 #, fuzzy
 msgid "List already exists: %(safelistname)s"
 msgstr "Konference ji¾ existuje : %(listname)s"
 
-#: Mailman/Cgi/create.py:113
+#: Mailman/Cgi/create.py:114
 msgid "You forgot to enter the list name"
 msgstr "Zapomnìl jste zadat název konference"
 
-#: Mailman/Cgi/create.py:117
+#: Mailman/Cgi/create.py:118
 msgid "You forgot to specify the list owner"
 msgstr "Zapomnìl jste zadat vlastníka konference"
 
-#: Mailman/Cgi/create.py:124
+#: Mailman/Cgi/create.py:125
 msgid ""
 "Leave the initial password (and confirmation) fields\n"
 "                blank if you want Mailman to autogenerate the list\n"
@@ -1874,36 +1908,36 @@ msgstr ""
 "Pokud necháte poèáteèní hesla nevyplnìná Mailman  vygeneruje náhodná hesla "
 "sám."
 
-#: Mailman/Cgi/create.py:133
+#: Mailman/Cgi/create.py:134
 msgid "Initial list passwords do not match"
 msgstr "Hesla  pro zøízení konference nesouhlasí"
 
-#: Mailman/Cgi/create.py:142
+#: Mailman/Cgi/create.py:143
 msgid "The list password cannot be empty<!-- ignore -->"
 msgstr "Heslo pro konferenci nesmí být prázdné.<!-- ignore -->"
 
-#: Mailman/Cgi/create.py:154
+#: Mailman/Cgi/create.py:155
 msgid "You are not authorized to create new mailing lists"
 msgstr "Nemáte právo zalo¾it novou konferenci."
 
-#: Mailman/Cgi/create.py:162
+#: Mailman/Cgi/create.py:163
 #, fuzzy
 msgid "Unknown virtual host: %(safehostname)s"
 msgstr "Neznámá konference: %(listname)s"
 
-#: Mailman/Cgi/create.py:193 bin/newlist:202
+#: Mailman/Cgi/create.py:194 bin/newlist:202
 msgid "Bad owner email address: %(s)s"
 msgstr "Neplatná adresa vlastníka: %(s)s"
 
-#: Mailman/Cgi/create.py:197 bin/newlist:170 bin/newlist:204
+#: Mailman/Cgi/create.py:198 bin/newlist:170 bin/newlist:204
 msgid "List already exists: %(listname)s"
 msgstr "Konference ji¾ existuje : %(listname)s"
 
-#: Mailman/Cgi/create.py:201 bin/newlist:200
+#: Mailman/Cgi/create.py:202 bin/newlist:200
 msgid "Illegal list name: %(s)s"
 msgstr "Nepøípustný název konference %(s)s"
 
-#: Mailman/Cgi/create.py:206
+#: Mailman/Cgi/create.py:207
 msgid ""
 "Some unknown error occurred while creating the list.\n"
 "                Please contact the site administrator for assistance."
@@ -1911,15 +1945,15 @@ msgstr ""
 "V prùbìhu zakládání konference do¹lo k neznámé chybì\n"
 "  Prosíme, kontaktuje správce serveru."
 
-#: Mailman/Cgi/create.py:243 bin/newlist:245
+#: Mailman/Cgi/create.py:244 bin/newlist:245
 msgid "Your new mailing list: %(listname)s"
 msgstr "Va¹e nová konference : %(listname)s"
 
-#: Mailman/Cgi/create.py:252
+#: Mailman/Cgi/create.py:253
 msgid "Mailing list creation results"
 msgstr "Výsledky vytvoøení konference"
 
-#: Mailman/Cgi/create.py:258
+#: Mailman/Cgi/create.py:259
 msgid ""
 "You have successfully created the mailing list\n"
 "    <b>%(listname)s</b> and notification has been sent to the list owner\n"
@@ -1929,28 +1963,28 @@ msgstr ""
 "        <b>%(listname)s</b>, zpráva byla zaslána i vlastníkovi na adresu:\n"
 "        <b>%(owner)s</b>.  Nyní mù¾ete:"
 
-#: Mailman/Cgi/create.py:262
+#: Mailman/Cgi/create.py:263
 msgid "Visit the list's info page"
 msgstr "Nav¹tivte informaèní stránky o konferenci"
 
-#: Mailman/Cgi/create.py:263
+#: Mailman/Cgi/create.py:264
 msgid "Visit the list's admin page"
 msgstr "Nav¹tivte stránky pro administrátora konference"
 
-#: Mailman/Cgi/create.py:264
+#: Mailman/Cgi/create.py:265
 msgid "Create another list"
 msgstr "Zalo¾it dal¹í konferenci?"
 
-#: Mailman/Cgi/create.py:282
+#: Mailman/Cgi/create.py:283
 msgid "Create a %(hostname)s Mailing List"
 msgstr "Vytvoø konferenci %(hostname)s"
 
-#: Mailman/Cgi/create.py:291 Mailman/Cgi/rmlist.py:199
+#: Mailman/Cgi/create.py:292 Mailman/Cgi/rmlist.py:199
 #: Mailman/Gui/Bounce.py:187 Mailman/htmlformat.py:339
 msgid "Error: "
 msgstr "Chyba"
 
-#: Mailman/Cgi/create.py:293
+#: Mailman/Cgi/create.py:294
 msgid ""
 "You can create a new mailing list by entering the\n"
 "    relevant information into the form below.  The name of the mailing list\n"
@@ -1992,35 +2026,35 @@ msgstr ""
 "serveru a nebo\n"
 "o heslo urèené pro vytváøení konferencí."
 
-#: Mailman/Cgi/create.py:319
+#: Mailman/Cgi/create.py:320
 msgid "List Identity"
 msgstr "Identita konference"
 
-#: Mailman/Cgi/create.py:323
+#: Mailman/Cgi/create.py:324
 msgid "Name of list:"
 msgstr "Jméno konference:"
 
-#: Mailman/Cgi/create.py:329
+#: Mailman/Cgi/create.py:330
 msgid "Initial list owner address:"
 msgstr "Poèáteèní adresa vlastníka konference:"
 
-#: Mailman/Cgi/create.py:338
+#: Mailman/Cgi/create.py:339
 msgid "Auto-generate initial list password?"
 msgstr "Vytvoøit náhodné poèáteèní heslo?"
 
-#: Mailman/Cgi/create.py:346
+#: Mailman/Cgi/create.py:347
 msgid "Initial list password:"
 msgstr "Poèáteèní heslo:"
 
-#: Mailman/Cgi/create.py:352
+#: Mailman/Cgi/create.py:353
 msgid "Confirm initial password:"
 msgstr "Potvrï poèáteèní heslo:"
 
-#: Mailman/Cgi/create.py:362
+#: Mailman/Cgi/create.py:368
 msgid "List Characteristics"
 msgstr "Charakteristika konference"
 
-#: Mailman/Cgi/create.py:366
+#: Mailman/Cgi/create.py:372
 msgid ""
 "Should new members be quarantined before they\n"
 "    are allowed to post unmoderated to this list?  Answer <em>Yes</em> to "
@@ -2031,7 +2065,7 @@ msgstr ""
 "budou v¹echny pøíspìvky novì pøihlá¹ených úèastníkù zadr¾eny do rozhodnutí "
 "moderátora."
 
-#: Mailman/Cgi/create.py:395
+#: Mailman/Cgi/create.py:401
 msgid ""
 "Initial list of supported languages.  <p>Note that if you do not\n"
 "        select at least one initial language, the list will use the server\n"
@@ -2042,19 +2076,19 @@ msgstr ""
 "        bude pou¾it implicitní jazyk serveru, tedy \n"
 "        %(deflang)s"
 
-#: Mailman/Cgi/create.py:406
+#: Mailman/Cgi/create.py:412
 msgid "Send \"list created\" email to list owner?"
 msgstr "Zaslat vlastníkovi konference dopis s oznámením o zalo¾ení konference?"
 
-#: Mailman/Cgi/create.py:415
+#: Mailman/Cgi/create.py:421
 msgid "List creator's (authentication) password:"
 msgstr "Heslo tvùrce konference:"
 
-#: Mailman/Cgi/create.py:420
+#: Mailman/Cgi/create.py:426
 msgid "Create List"
 msgstr "Zalo¾ konferenci"
 
-#: Mailman/Cgi/create.py:421
+#: Mailman/Cgi/create.py:427
 msgid "Clear Form"
 msgstr "Vyma¾ formuláø"
 
@@ -2118,7 +2152,7 @@ msgstr "Není mo¾né mít prázdnou ¹ablonu pro generování HTML stránek."
 msgid "HTML Unchanged."
 msgstr "HTML ¹ablony nebyly zmìnìny"
 
-#: Mailman/Cgi/edithtml.py:170
+#: Mailman/Cgi/edithtml.py:175
 msgid "HTML successfully updated."
 msgstr "HTML ¹ablony byly úspì¹nì aktualizovány."
 
@@ -2181,33 +2215,33 @@ msgstr ""
 msgid "Edit Options"
 msgstr "Editace vlastností"
 
-#: Mailman/Cgi/listinfo.py:197 Mailman/Cgi/options.py:803
+#: Mailman/Cgi/listinfo.py:197 Mailman/Cgi/options.py:853
 #: Mailman/Cgi/roster.py:109
 msgid "View this page in"
 msgstr "Zobraz tuto stránku v "
 
-#: Mailman/Cgi/options.py:57 Mailman/Cgi/options.py:74
+#: Mailman/Cgi/options.py:58 Mailman/Cgi/options.py:75
 msgid "CGI script error"
 msgstr "Chyba v CGI skriptu"
 
-#: Mailman/Cgi/options.py:60
+#: Mailman/Cgi/options.py:61
 msgid "Invalid options to CGI script."
 msgstr "Neplatné parametry cgi skriptu."
 
-#: Mailman/Cgi/options.py:104
+#: Mailman/Cgi/options.py:105
 msgid "No address given"
 msgstr "Nebyl zadána adresa"
 
-#: Mailman/Cgi/options.py:116
+#: Mailman/Cgi/options.py:117
 msgid "Illegal Email Address: %(safeuser)s"
 msgstr "Neplatná emailová adresa: %(safeuser)s"
 
-#: Mailman/Cgi/options.py:123 Mailman/Cgi/options.py:187
-#: Mailman/Cgi/options.py:209
+#: Mailman/Cgi/options.py:124 Mailman/Cgi/options.py:188
+#: Mailman/Cgi/options.py:210
 msgid "No such member: %(safeuser)s."
 msgstr "Nenalezl jsem úèastníka: %(safeuser)s."
 
-#: Mailman/Cgi/options.py:173
+#: Mailman/Cgi/options.py:174
 #, fuzzy
 msgid ""
 "Your unsubscription request has been\n"
@@ -2216,40 +2250,58 @@ msgstr ""
 "Va¹e ¾ádost o pøihlá¹ení byla pøedána administrátorovi konference ke "
 "zpracování."
 
-#: Mailman/Cgi/options.py:178 Mailman/Cgi/options.py:192
+#: Mailman/Cgi/options.py:179 Mailman/Cgi/options.py:193
 msgid "The confirmation email has been sent."
 msgstr "Dopis s oznámením byl odeslán."
 
-#: Mailman/Cgi/options.py:203 Mailman/Cgi/options.py:215
-#: Mailman/Cgi/options.py:257
+#: Mailman/Cgi/options.py:204 Mailman/Cgi/options.py:216
+#: Mailman/Cgi/options.py:271
 msgid "A reminder of your password has been emailed to you."
 msgstr "Bylo Vám zasláno pøipomenutí Va¹eho hesla."
 
-#: Mailman/Cgi/options.py:231
+#: Mailman/Cgi/options.py:245
 msgid "Authentication failed."
 msgstr "Autentizace selhala."
 
-#: Mailman/Cgi/options.py:263
+#: Mailman/Cgi/options.py:278
+msgid ""
+"The list administrator may not view the other\n"
+"            subscriptions for this user."
+msgstr ""
+
+#: Mailman/Cgi/options.py:279 Mailman/Cgi/options.py:322
+#: Mailman/Cgi/options.py:442 Mailman/Cgi/options.py:658
+msgid "Note: "
+msgstr ""
+
+#: Mailman/Cgi/options.py:284
 msgid "List subscriptions for %(safeuser)s on %(hostname)s"
 msgstr ""
 "Seznam konferencí, ve kterých je pøihlá¹en u¾ivatel %(safeuser)s na serveru %"
 "(hostname)s"
 
-#: Mailman/Cgi/options.py:266
+#: Mailman/Cgi/options.py:287
 msgid ""
 "Click on a link to visit your options page for the\n"
 "        requested mailing list."
 msgstr "Pro zobrazení vlastností této konference kliknìte na odkaz."
 
-#: Mailman/Cgi/options.py:315
+#: Mailman/Cgi/options.py:319
+msgid ""
+"The list administrator may not change the names\n"
+"            or addresses for this user's other subscriptions.  However, the\n"
+"            subscription for this mailing list has been changed."
+msgstr ""
+
+#: Mailman/Cgi/options.py:342
 msgid "Addresses did not match!"
 msgstr "Adresy nesouhlasí!"
 
-#: Mailman/Cgi/options.py:320
+#: Mailman/Cgi/options.py:347
 msgid "You are already using that email address"
 msgstr "Tuto emailovou adresu ji¾ pou¾íváte"
 
-#: Mailman/Cgi/options.py:332
+#: Mailman/Cgi/options.py:359
 msgid ""
 "The new address you requested %(newaddr)s is already a member of the\n"
 "%(listname)s mailing list, however you have also requested a global change "
@@ -2262,48 +2314,70 @@ msgstr ""
 "zmìnu adresy a tak budou po potvrzení zmìnìny adresy v ostatních\n"
 "konferencích, kterých je u¾ivatel %(safeuser)s èlenem."
 
-#: Mailman/Cgi/options.py:341
+#: Mailman/Cgi/options.py:368
 msgid "The new address is already a member: %(newaddr)s"
 msgstr "Nová adresa je v konferenci ji¾ pøihlá¹ena: %(newaddr)s"
 
-#: Mailman/Cgi/options.py:347
+#: Mailman/Cgi/options.py:374
 msgid "Addresses may not be blank"
 msgstr "Adresy nesmí zùstat nevyplnìné."
 
-#: Mailman/Cgi/options.py:361
+#: Mailman/Cgi/options.py:388
 msgid "A confirmation message has been sent to %(newaddr)s. "
 msgstr "Zpráva s upozornìním byla zaslána na adresu %(newaddr)s"
 
-#: Mailman/Cgi/options.py:370
+#: Mailman/Cgi/options.py:397
 msgid "Bad email address provided"
 msgstr "Neplatná emailová adresa"
 
-#: Mailman/Cgi/options.py:372
+#: Mailman/Cgi/options.py:399
 msgid "Illegal email address provided"
 msgstr "Neplatná emailová adresa"
 
-#: Mailman/Cgi/options.py:374
+#: Mailman/Cgi/options.py:401
 msgid "%(newaddr)s is already a member of the list."
 msgstr "%(newaddr)s ji¾ je pøihlá¹en."
 
-#: Mailman/Cgi/options.py:383
+#: Mailman/Cgi/options.py:404
+#, fuzzy
+msgid ""
+"%(newaddr)s is banned from this list.  If you\n"
+"                      think this restriction is erroneous, please contact\n"
+"                      the list owners at %(owneraddr)s."
+msgstr ""
+"Emailová adresa, kterou jste pou¾il je na seznamu zakázaných adres,\n"
+"které se nesmí pøihlásit do konference. Pokud máte pocit, ¾e je to chyba\n"
+"kontaktujte správce konference na adrese %(listowner)s."
+
+#: Mailman/Cgi/options.py:415
 msgid "Member name successfully changed. "
 msgstr "Jméno bylo úspì¹nì zmìnìno."
 
-#: Mailman/Cgi/options.py:394
+#: Mailman/Cgi/options.py:426
 msgid "Passwords may not be blank"
 msgstr "Nejsou povolena prázdná hesla."
 
-#: Mailman/Cgi/options.py:399
+#: Mailman/Cgi/options.py:431
 msgid "Passwords did not match!"
 msgstr "Hesla nesouhlasí"
 
-#: Mailman/Cgi/options.py:414 Mailman/Commands/cmd_password.py:83
+#: Mailman/Cgi/options.py:439
+#, fuzzy
+msgid ""
+"The list administrator may not change the\n"
+"            password for this user's other subscriptions.  However, the\n"
+"            password for this mailing list has been changed."
+msgstr ""
+"Administrátor konference nepovolil pro tuto konferenci nastavení digest "
+"módu.\n"
+"Ale ostatní volby, které jste nastavil, byly akceptovány."
+
+#: Mailman/Cgi/options.py:456 Mailman/Commands/cmd_password.py:83
 #: Mailman/Commands/cmd_password.py:109
 msgid "Password successfully changed."
 msgstr "Heslo bylo úspì¹nì zmìnìno."
 
-#: Mailman/Cgi/options.py:423
+#: Mailman/Cgi/options.py:465
 msgid ""
 "You must confirm your unsubscription request by turning\n"
 "                on the checkbox below the <em>Unsubscribe</em> button.  You\n"
@@ -2313,11 +2387,11 @@ msgstr ""
 "Za¹krtnìte políèko pod tlaèítkem <em>Odhlásit</em>.\n"
 "V tomto okam¾iku je¹tì nejste odhlá¹en!"
 
-#: Mailman/Cgi/options.py:455
+#: Mailman/Cgi/options.py:497
 msgid "Unsubscription results"
 msgstr "Výsledky odhlá¹ení"
 
-#: Mailman/Cgi/options.py:459
+#: Mailman/Cgi/options.py:501
 msgid ""
 "Your unsubscription request has been received and\n"
 "            forwarded on to the list moderators for approval.  You will\n"
@@ -2327,7 +2401,7 @@ msgstr ""
 "Vá¹ po¾adavek na odhlá¹ení byl pøijat a pøedán moderátorovi ke schválení.\n"
 "            O výsledku budete informován "
 
-#: Mailman/Cgi/options.py:464
+#: Mailman/Cgi/options.py:506
 msgid ""
 "You have been successfully unsubscribed from the\n"
 "            mailing list %(fqdn_listname)s.  If you were receiving digest\n"
@@ -2342,7 +2416,15 @@ msgstr ""
 "kontaktujte správce\n"
 "na adrese:        %(owneraddr)s."
 
-#: Mailman/Cgi/options.py:615
+#: Mailman/Cgi/options.py:655
+msgid ""
+"The list administrator may not change the\n"
+"                options for this user's other subscriptions.  However the\n"
+"                options for this mailing list subscription has been\n"
+"                changed."
+msgstr ""
+
+#: Mailman/Cgi/options.py:665
 msgid ""
 "The list administrator has disabled digest delivery for\n"
 "            this list, so your delivery option has not been set.  However "
@@ -2353,7 +2435,7 @@ msgstr ""
 "konferenci.\n"
 "Ale ostatní volby, které jste nastavil, byly akceptovány."
 
-#: Mailman/Cgi/options.py:619
+#: Mailman/Cgi/options.py:669
 msgid ""
 "The list administrator has disabled non-digest delivery\n"
 "            for this list, so your delivery option has not been set.  "
@@ -2364,63 +2446,63 @@ msgstr ""
 "módu.\n"
 "Ale ostatní volby, které jste nastavil, byly akceptovány."
 
-#: Mailman/Cgi/options.py:623
+#: Mailman/Cgi/options.py:673
 msgid "You have successfully set your options."
 msgstr "Va¹e nastavení bylo úspì¹nì zmìnìno."
 
-#: Mailman/Cgi/options.py:626
+#: Mailman/Cgi/options.py:676
 msgid "You may get one last digest."
 msgstr "Je¹tì mo¾ná obdr¾íte jeden poslední digest."
 
-#: Mailman/Cgi/options.py:698
+#: Mailman/Cgi/options.py:748
 msgid "<em>Yes, I really want to unsubscribe</em>"
 msgstr "<em>Ano; skuteènì se chci odhlásit</em>"
 
-#: Mailman/Cgi/options.py:702
+#: Mailman/Cgi/options.py:752
 msgid "Change My Password"
 msgstr "Zmìna hesla"
 
-#: Mailman/Cgi/options.py:705
+#: Mailman/Cgi/options.py:755
 msgid "List my other subscriptions"
 msgstr "Zobraz ostatní konference, ve kterých jsem pøihlá¹en."
 
-#: Mailman/Cgi/options.py:711
+#: Mailman/Cgi/options.py:761
 msgid "Email My Password To Me"
 msgstr "Za¹li mi heslo mailem"
 
-#: Mailman/Cgi/options.py:713
+#: Mailman/Cgi/options.py:763
 msgid "password"
 msgstr "heslo"
 
-#: Mailman/Cgi/options.py:715
+#: Mailman/Cgi/options.py:765
 msgid "Log out"
 msgstr "Odhlásit"
 
-#: Mailman/Cgi/options.py:717
+#: Mailman/Cgi/options.py:767
 msgid "Submit My Changes"
 msgstr "Proveï zmìny"
 
-#: Mailman/Cgi/options.py:729
+#: Mailman/Cgi/options.py:779
 msgid "days"
 msgstr "dny"
 
-#: Mailman/Cgi/options.py:731
+#: Mailman/Cgi/options.py:781
 msgid "day"
 msgstr "den"
 
-#: Mailman/Cgi/options.py:732
+#: Mailman/Cgi/options.py:782
 msgid "%(days)d %(units)s"
 msgstr "%(days)d %(units)s"
 
-#: Mailman/Cgi/options.py:738
+#: Mailman/Cgi/options.py:788
 msgid "Change My Address and Name"
 msgstr "Zmìò mojí adresu a jméno"
 
-#: Mailman/Cgi/options.py:762
+#: Mailman/Cgi/options.py:812
 msgid "<em>No topics defined</em>"
 msgstr "<em>Není definováno ¾ádné téma</em>"
 
-#: Mailman/Cgi/options.py:770
+#: Mailman/Cgi/options.py:820
 msgid ""
 "\n"
 "You are subscribed to this list with the case-preserved address\n"
@@ -2431,19 +2513,19 @@ msgstr ""
 "písmen\n"
 "<em>%(cpuser)s</em>."
 
-#: Mailman/Cgi/options.py:784
+#: Mailman/Cgi/options.py:834
 msgid "%(realname)s list: member options login page"
 msgstr "Konference %(realname)s: pøihlá¹ení úèastníka pro editaci parametrù"
 
-#: Mailman/Cgi/options.py:785
+#: Mailman/Cgi/options.py:835
 msgid "email address and "
 msgstr "emailová adresa a "
 
-#: Mailman/Cgi/options.py:788
+#: Mailman/Cgi/options.py:838
 msgid "%(realname)s list: member options for user %(safeuser)s"
 msgstr "Nastavení parametrù pro %(safeuser)s v konferenci %(realname)s"
 
-#: Mailman/Cgi/options.py:813
+#: Mailman/Cgi/options.py:863
 msgid ""
 "In order to change your membership option, you must\n"
 "    first log in by giving your %(extra)smembership password in the section\n"
@@ -2474,19 +2556,19 @@ msgstr ""
 "do kliknutí na odhlásit."
 
 # In this entry insert a space at the end of string, it will be stripped.
-#: Mailman/Cgi/options.py:827
+#: Mailman/Cgi/options.py:877
 msgid "Email address:"
 msgstr "Emailová adresa:"
 
-#: Mailman/Cgi/options.py:831
+#: Mailman/Cgi/options.py:881
 msgid "Password:"
 msgstr " Heslo:"
 
-#: Mailman/Cgi/options.py:833
+#: Mailman/Cgi/options.py:883
 msgid "Log in"
 msgstr "Pøihlásit"
 
-#: Mailman/Cgi/options.py:841
+#: Mailman/Cgi/options.py:891
 msgid ""
 "By clicking on the <em>Unsubscribe</em> button, a\n"
 "    confirmation message will be emailed to you.  This message will have a\n"
@@ -2500,38 +2582,38 @@ msgstr ""
 "Nebo\n"
 "mù¾ete odhlá¹ení potvrdit mailem, podrobnosti budou uvedeny v té zprávì."
 
-#: Mailman/Cgi/options.py:849
+#: Mailman/Cgi/options.py:899
 msgid "Password reminder"
 msgstr "Pøipomínka hesla"
 
-#: Mailman/Cgi/options.py:853
+#: Mailman/Cgi/options.py:903
 msgid ""
 "By clicking on the <em>Remind</em> button, your\n"
 "    password will be emailed to you."
 msgstr ""
 "Kliknutím na tlaèítko <em>Po¹li heslo</em> Vám bude zaslána Va¹e heslo."
 
-#: Mailman/Cgi/options.py:856
+#: Mailman/Cgi/options.py:906
 msgid "Remind"
 msgstr "Upozorni"
 
-#: Mailman/Cgi/options.py:956
+#: Mailman/Cgi/options.py:1006
 msgid "<missing>"
 msgstr "<chybí>"
 
-#: Mailman/Cgi/options.py:967
+#: Mailman/Cgi/options.py:1017
 msgid "Requested topic is not valid: %(topicname)s"
 msgstr "Téma, které po¾adujete, neexistuje: %(topicname)s"
 
-#: Mailman/Cgi/options.py:972
+#: Mailman/Cgi/options.py:1022
 msgid "Topic filter details"
 msgstr "Parametry tématického filtru"
 
-#: Mailman/Cgi/options.py:975
+#: Mailman/Cgi/options.py:1025
 msgid "Name:"
 msgstr "Jméno:"
 
-#: Mailman/Cgi/options.py:977
+#: Mailman/Cgi/options.py:1027
 msgid "Pattern (as regexp):"
 msgstr "Pravidlo (regulární výraz):"
 
@@ -2832,7 +2914,18 @@ msgstr ""
 "Nejste úèastníkem. Neodhlásil jste se? Nezmìnil jste si mezitím emailovou "
 "adresu?"
 
-#: Mailman/Commands/cmd_confirm.py:67
+#: Mailman/Commands/cmd_confirm.py:68
+#, fuzzy
+msgid ""
+"You are currently banned from subscribing to this list.  If you think this\n"
+"restriction is erroneous, please contact the list owners at\n"
+"%(owneraddr)s."
+msgstr ""
+"Emailová adresa, kterou jste pou¾il je na seznamu zakázaných adres,\n"
+"které se nesmí pøihlásit do konference. Pokud máte pocit, ¾e je to chyba\n"
+"kontaktujte správce konference na adrese %(listowner)s."
+
+#: Mailman/Commands/cmd_confirm.py:73
 msgid ""
 "You were not invited to this mailing list.  The invitation has been "
 "discarded,\n"
@@ -2841,11 +2934,11 @@ msgstr ""
 "Nebyl jste pozván do této konference. Pozvání bylo zru¹eno a správce "
 "konference byl informován."
 
-#: Mailman/Commands/cmd_confirm.py:71
+#: Mailman/Commands/cmd_confirm.py:77
 msgid "Bad approval password given.  Held message is still being held."
 msgstr ""
 
-#: Mailman/Commands/cmd_confirm.py:80
+#: Mailman/Commands/cmd_confirm.py:86
 msgid "Confirmation succeeded"
 msgstr "Úspì¹nì potvrzeno"
 
@@ -3510,127 +3603,131 @@ msgstr "Bì¾ní úèastníci:"
 msgid "Digest members:"
 msgstr "Úèastnící odebírající Digest verzi:"
 
-#: Mailman/Defaults.py:1310
+#: Mailman/Defaults.py:1318
 #, fuzzy
 msgid "Catalan"
 msgstr "Italsky"
 
-#: Mailman/Defaults.py:1311
+#: Mailman/Defaults.py:1319
 msgid "Czech"
 msgstr "Èe¹tina"
 
-#: Mailman/Defaults.py:1312
+#: Mailman/Defaults.py:1320
 #, fuzzy
 msgid "Danish"
 msgstr "Fin¹tina"
 
-#: Mailman/Defaults.py:1313
+#: Mailman/Defaults.py:1321
 msgid "German"
 msgstr "Nìmèina"
 
-#: Mailman/Defaults.py:1314
+#: Mailman/Defaults.py:1322
 msgid "English (USA)"
 msgstr "Anglicky (USA)"
 
-#: Mailman/Defaults.py:1315
+#: Mailman/Defaults.py:1323
 msgid "Spanish (Spain)"
 msgstr "©panìlsky (Spain)"
 
-#: Mailman/Defaults.py:1316
+#: Mailman/Defaults.py:1324
 msgid "Estonian"
 msgstr "Eston¹tina"
 
-#: Mailman/Defaults.py:1317
+#: Mailman/Defaults.py:1325
 msgid "Euskara"
 msgstr ""
 
-#: Mailman/Defaults.py:1318
+#: Mailman/Defaults.py:1326
 msgid "Finnish"
 msgstr "Fin¹tina"
 
-#: Mailman/Defaults.py:1319
+#: Mailman/Defaults.py:1327
 msgid "French"
 msgstr "Francouzsky"
 
-#: Mailman/Defaults.py:1320
+#: Mailman/Defaults.py:1328
 msgid "Croatian"
 msgstr ""
 
-#: Mailman/Defaults.py:1321
+#: Mailman/Defaults.py:1329
 msgid "Hungarian"
 msgstr "Maïar¹tina"
 
-#: Mailman/Defaults.py:1322
+#: Mailman/Defaults.py:1330
+msgid "Interlingua"
+msgstr ""
+
+#: Mailman/Defaults.py:1331
 msgid "Italian"
 msgstr "Italsky"
 
-#: Mailman/Defaults.py:1323
+#: Mailman/Defaults.py:1332
 msgid "Japanese"
 msgstr "Japonsky"
 
-#: Mailman/Defaults.py:1324
+#: Mailman/Defaults.py:1333
 msgid "Korean"
 msgstr "Korej¹tina"
 
-#: Mailman/Defaults.py:1325
+#: Mailman/Defaults.py:1334
 msgid "Lithuanian"
 msgstr "Litev¹tina"
 
-#: Mailman/Defaults.py:1326
+#: Mailman/Defaults.py:1335
 msgid "Dutch"
 msgstr "Dán¹tina"
 
-#: Mailman/Defaults.py:1327
+#: Mailman/Defaults.py:1336
 msgid "Norwegian"
 msgstr "Nor¹tina"
 
-#: Mailman/Defaults.py:1328
+#: Mailman/Defaults.py:1337
 msgid "Polish"
 msgstr "Polsky"
 
-#: Mailman/Defaults.py:1329
+#: Mailman/Defaults.py:1338
 msgid "Portuguese"
 msgstr "Portugalsky"
 
-#: Mailman/Defaults.py:1330
+#: Mailman/Defaults.py:1339
 msgid "Portuguese (Brazil)"
 msgstr "Brazilská portugal¹tina"
 
-#: Mailman/Defaults.py:1331
+#: Mailman/Defaults.py:1340
 #, fuzzy
 msgid "Romanian"
 msgstr "Eston¹tina"
 
-#: Mailman/Defaults.py:1332
+#: Mailman/Defaults.py:1341
 msgid "Russian"
 msgstr "Ru¹tina"
 
-#: Mailman/Defaults.py:1333
+#: Mailman/Defaults.py:1342
 msgid "Serbian"
 msgstr "Srb¹tina"
 
-#: Mailman/Defaults.py:1334
+#: Mailman/Defaults.py:1343
 #, fuzzy
 msgid "Slovenian"
 msgstr "Srb¹tina"
 
-#: Mailman/Defaults.py:1335
+#: Mailman/Defaults.py:1344
 msgid "Swedish"
 msgstr "©véd¹tina"
 
-#: Mailman/Defaults.py:1336
+#: Mailman/Defaults.py:1345
 msgid "Turkish"
 msgstr ""
 
-#: Mailman/Defaults.py:1337
+#: Mailman/Defaults.py:1346
 msgid "Ukrainian"
 msgstr "Ukrajin¹tina"
 
-#: Mailman/Defaults.py:1338
+#: Mailman/Defaults.py:1347
 msgid "Chinese (China)"
 msgstr ""
 
-#: Mailman/Defaults.py:1339
+#: Mailman/Defaults.py:1348
 msgid "Chinese (Taiwan)"
 msgstr ""
 
@@ -3686,7 +3783,7 @@ msgstr ""
 "ale pokusil se potvrdit èlenství v jiné konferenci.\n"
 "Jedná se pouze o upozornìní, není tøeba s tím cokoliv dìlat."
 
-#: Mailman/Deliverer.py:220
+#: Mailman/Deliverer.py:219
 #, fuzzy
 msgid "%(listname)s mailing list probe message"
 msgstr "Konference %(listfullname)s pøipomínka hesla"
@@ -4049,7 +4146,7 @@ msgstr ""
 "pozastaveno</em> \n"
 "Musí to být celé èíslo."
 
-#: Mailman/Gui/Bounce.py:117 Mailman/Gui/General.py:263
+#: Mailman/Gui/Bounce.py:117 Mailman/Gui/General.py:262
 msgid "Notifications"
 msgstr "Notifikace"
 
@@ -4186,6 +4283,7 @@ msgid "Preserve"
 msgstr "Zachovej"
 
 #: Mailman/Gui/ContentFilter.py:42
+#, fuzzy
 msgid ""
 "Policies concerning the content of list traffic.\n"
 "\n"
@@ -4209,11 +4307,14 @@ msgid ""
 "            attachments that are empty are removed.  If the outer message "
 "is\n"
 "            left empty after this filtering, then the whole message is\n"
-"            discarded.  Then, each <tt>multipart/alternative</tt> section "
-"will\n"
+"            discarded.\n"
+"\n"
+"            <p> Then, each <tt>multipart/alternative</tt> section will\n"
 "            be replaced by just the first alternative that is non-empty "
 "after\n"
-"            filtering.\n"
+"            filtering if\n"
+"            <a href=\"?VARHELP=contentfilter/collapse_alternatives\"\n"
+"            >collapse_alternatives</a> is enabled.\n"
 "\n"
 "            <p>Finally, any <tt>text/html</tt> parts that are left in the\n"
 "            message may be converted to <tt>text/plain</tt> if\n"
@@ -4256,7 +4357,7 @@ msgstr ""
 "tak, \n"
 "            ¾e tuto konverzi dovoluje."
 
-#: Mailman/Gui/ContentFilter.py:71
+#: Mailman/Gui/ContentFilter.py:75
 msgid ""
 "Should Mailman filter the content of list traffic according\n"
 "             to the settings below?"
@@ -4264,13 +4365,13 @@ msgstr ""
 "Má Mailman filtrovat obsah pøíspìvkù do konference podle ní¾e\n"
 "nastavených pravidel?"
 
-#: Mailman/Gui/ContentFilter.py:75
+#: Mailman/Gui/ContentFilter.py:79
 msgid ""
 "Remove message attachments that have a matching content\n"
 "             type."
 msgstr "Odstraò pøílohy zpráv, které mají tento MIME typ."
 
-#: Mailman/Gui/ContentFilter.py:78
+#: Mailman/Gui/ContentFilter.py:82
 msgid ""
 "Use this option to remove each message attachment that\n"
 "             matches one of these content types.  Each line should contain "
@@ -4299,7 +4400,7 @@ msgstr ""
 "pass_mime_types\"\n"
 "             >pass_mime_types</a> pro seznam typù, které jsou povoleny."
 
-#: Mailman/Gui/ContentFilter.py:90
+#: Mailman/Gui/ContentFilter.py:94
 msgid ""
 "Remove message attachments that don't have a matching\n"
 "             content type.  Leave this field blank to skip this filter\n"
@@ -4307,7 +4408,7 @@ msgid ""
 msgstr ""
 "Propus» tyto pøílohy. Nechte pole prázdné, pokud nechcete pøílohy filtrovat."
 
-#: Mailman/Gui/ContentFilter.py:94
+#: Mailman/Gui/ContentFilter.py:98
 msgid ""
 "Use this option to remove each message attachment that does\n"
 "             not have a matching content type.  Requirements and formats "
@@ -4331,14 +4432,14 @@ msgstr ""
 "             a neuvedete v nìm polo¾ku <tt>multipart</tt> budou v¹echny "
 "pøíspìvky,              které obsahují pøílohu, fitrem zamítnuty. "
 
-#: Mailman/Gui/ContentFilter.py:104
+#: Mailman/Gui/ContentFilter.py:108
 #, fuzzy
 msgid ""
 "Remove message attachments that have a matching filename\n"
 "             extension."
 msgstr "Odstraò pøílohy zpráv, které mají tento MIME typ."
 
-#: Mailman/Gui/ContentFilter.py:108
+#: Mailman/Gui/ContentFilter.py:112
 #, fuzzy
 msgid ""
 "Remove message attachments that don't have a matching\n"
@@ -4348,7 +4449,14 @@ msgid ""
 msgstr ""
 "Propus» tyto pøílohy. Nechte pole prázdné, pokud nechcete pøílohy filtrovat."
 
-#: Mailman/Gui/ContentFilter.py:113
+#: Mailman/Gui/ContentFilter.py:117
+#, fuzzy
+msgid ""
+"Should Mailman collapse multipart/alternative to its\n"
+"             first part content?"
+msgstr "Má Mailman zasílat automatické odpovìdi autorùm pøíspìvkù?"
+
+#: Mailman/Gui/ContentFilter.py:121
 msgid ""
 "Should Mailman convert <tt>text/html</tt> parts to plain\n"
 "             text?  This conversion happens after MIME attachments have "
@@ -4358,13 +4466,13 @@ msgstr ""
 "Má Mailman konvertovat  <tt>text/html</tt> na èistý text?\n"
 "Tato konverze je provádìna a¾ po odstranìní pøípadných MIME pøíloh. "
 
-#: Mailman/Gui/ContentFilter.py:119
+#: Mailman/Gui/ContentFilter.py:127
 msgid ""
 "Action to take when a message matches the content filtering\n"
 "             rules."
 msgstr "Akce, která probìhne kdy¾ pøíspìvek vyhoví testu na filtrování obsahu."
 
-#: Mailman/Gui/ContentFilter.py:122
+#: Mailman/Gui/ContentFilter.py:130
 msgid ""
 "One of these actions is take when the message matches one of\n"
 "             the content filtering rules, meaning, the top-level\n"
@@ -4422,7 +4530,7 @@ msgstr ""
 "serveru\n"
 "             nepovolil. "
 
-#: Mailman/Gui/ContentFilter.py:163
+#: Mailman/Gui/ContentFilter.py:171
 msgid "Bad MIME type ignored: %(spectype)s"
 msgstr "Chybný MIME typ byl ignorován: %(spectype)s"
 
@@ -4577,43 +4685,43 @@ msgstr ""
 "                    co jste chtìli nastavit.\n"
 "                    "
 
-#: Mailman/Gui/General.py:34
+#: Mailman/Gui/General.py:33
 msgid "General Options"
 msgstr "V¹eobecné vlastnosti"
 
-#: Mailman/Gui/General.py:48
+#: Mailman/Gui/General.py:47
 msgid "Conceal the member's address"
 msgstr "Skrýt adresu úèastníka"
 
-#: Mailman/Gui/General.py:49
+#: Mailman/Gui/General.py:48
 msgid "Acknowledge the member's posting"
 msgstr "Pøijmi pøíspìvek úèastníka"
 
-#: Mailman/Gui/General.py:50
+#: Mailman/Gui/General.py:49
 msgid "Do not send a copy of a member's own post"
 msgstr "Nezasílej úèastníkovi kopii jeho vlastních pøíspìvkù"
 
-#: Mailman/Gui/General.py:52
+#: Mailman/Gui/General.py:51
 msgid "Filter out duplicate messages to list members (if possible)"
 msgstr "Filtruj duplicitní pøíspìvky, pokud je to mo¾né"
 
-#: Mailman/Gui/General.py:59
+#: Mailman/Gui/General.py:58
 msgid ""
 "Fundamental list characteristics, including descriptive\n"
 "            info and basic behaviors."
 msgstr ""
 "Základní charakteristika konference, vèetnì popisu a základních informací."
 
-#: Mailman/Gui/General.py:62
+#: Mailman/Gui/General.py:61
 msgid "General list personality"
 msgstr "Informaèní stránka konference"
 
-#: Mailman/Gui/General.py:65
+#: Mailman/Gui/General.py:64
 msgid "The public name of this list (make case-changes only)."
 msgstr ""
 "Jméno konference. Je v nìm mo¾né provádìt pouze zmìny velikosti písmen."
 
-#: Mailman/Gui/General.py:66
+#: Mailman/Gui/General.py:65
 msgid ""
 "The capitalization of this name can be changed to make it\n"
 "             presentable in polite company as a proper noun, or to make an\n"
@@ -4630,7 +4738,7 @@ msgstr ""
 "odkazy. Pokud bude jméno zmìnìno, pøes nìj zasílaná po¹ta asi nebude "
 "doruèena Mailmanovi."
 
-#: Mailman/Gui/General.py:75
+#: Mailman/Gui/General.py:74
 msgid ""
 "The list administrator email addresses.  Multiple\n"
 "             administrator addresses, each on separate line is okay."
@@ -4638,7 +4746,7 @@ msgstr ""
 "E-mailová adresa administrátora konference. Pokud potøebujete zadat více "
 "adres, uvádìjte ka¾dou na nový øádek."
 
-#: Mailman/Gui/General.py:78
+#: Mailman/Gui/General.py:77
 msgid ""
 "There are two ownership roles associated with each mailing\n"
 "             list.  The <em>list administrators</em> are the people who "
@@ -4676,7 +4784,7 @@ msgstr ""
 "stejnì\n"
 "jako administrátorù, více. Pozor, zde zmìníte adresu administrátora."
 
-#: Mailman/Gui/General.py:99
+#: Mailman/Gui/General.py:98
 msgid ""
 "The list moderator email addresses.  Multiple\n"
 "             moderator addresses, each on separate line is okay."
@@ -4684,7 +4792,7 @@ msgstr ""
 "E-mailová adresa moderátora konference. Pokud potøebujete zadat více adres, "
 "uvádìjte ka¾dou na nový øádek."
 
-#: Mailman/Gui/General.py:102
+#: Mailman/Gui/General.py:101
 msgid ""
 "There are two ownership roles associated with each mailing\n"
 "             list.  The <em>list administrators</em> are the people who "
@@ -4718,11 +4826,11 @@ msgstr ""
 "Pokud chcete zalo¾it moderátora, vyplòte do okénka jeho emailovou adresu\n"
 "a zadejte heslo. "
 
-#: Mailman/Gui/General.py:123
+#: Mailman/Gui/General.py:122
 msgid "A terse phrase identifying this list."
 msgstr "Krátké heslo identifikující konferenci"
 
-#: Mailman/Gui/General.py:125
+#: Mailman/Gui/General.py:124
 msgid ""
 "This description is used when the mailing list is listed with\n"
 "                other mailing lists, or in headers, and so forth.  It "
@@ -4734,7 +4842,7 @@ msgstr ""
 "Tento popis bude zobrazen v¹ude tam, kde je to vhodné. Mìl by být co "
 "nejkrat¹í a souèasnì nejúdernìj¹í."
 
-#: Mailman/Gui/General.py:131
+#: Mailman/Gui/General.py:130
 msgid ""
 "An introductory description - a few paragraphs - about the\n"
 "             list.  It will be included, as html, at the top of the "
@@ -4746,7 +4854,7 @@ msgstr ""
 "zaèátku stránky listinfo.  Znaky nový øádek budou konvertovány do znakù "
 "zahajujících odstavec."
 
-#: Mailman/Gui/General.py:135
+#: Mailman/Gui/General.py:134
 msgid ""
 "The text will be treated as html <em>except</em> that\n"
 "             newlines will be translated to &lt;br&gt; - so you can use "
@@ -4763,11 +4871,11 @@ msgstr ""
 "pøedformátovaný text a tak podobnì s výhradou, ¾e znaky nový øádek musí "
 "oddìlovat odstavce."
 
-#: Mailman/Gui/General.py:143
+#: Mailman/Gui/General.py:142
 msgid "Prefix for subject line of list postings."
 msgstr "Prefix, který bude pøidán do subjektu ka¾dého rozesílaného pøíspìvku."
 
-#: Mailman/Gui/General.py:144
+#: Mailman/Gui/General.py:143
 #, fuzzy
 msgid ""
 "This text will be prepended to subject lines of messages\n"
@@ -4785,7 +4893,7 @@ msgstr ""
 "Tento text bude uvozovat subjekt ka¾dé zprávy. Asi by bylo vhodné, aby mìl "
 "vztah ke konferenci, ale mìl by být krat¹í, aby zbyteènì neubíral místo."
 
-#: Mailman/Gui/General.py:155
+#: Mailman/Gui/General.py:154
 msgid ""
 "Hide the sender of a message, replacing it with the list\n"
 "             address (Removes From, Sender and Reply-To fields)"
@@ -4793,11 +4901,11 @@ msgstr ""
 "Skryj pùvodního autora pøíspìvku a nahraï jej adresou konference. (Vztahuje "
 "se na adresy v From, Sender a Reply-To.)"
 
-#: Mailman/Gui/General.py:158
+#: Mailman/Gui/General.py:157
 msgid "<tt>Reply-To:</tt> header munging"
 msgstr "Nastavovat hlavièku <tt>Reply-To:</tt>."
 
-#: Mailman/Gui/General.py:161
+#: Mailman/Gui/General.py:160
 msgid ""
 "Should any existing <tt>Reply-To:</tt> header found in the\n"
 "             original message be stripped?  If so, this will be done\n"
@@ -4808,19 +4916,19 @@ msgstr ""
 "konference odstranìna existující,\n"
 "             hlavièka <tt>Reply-To:</tt>?"
 
-#: Mailman/Gui/General.py:167
+#: Mailman/Gui/General.py:166
 msgid "Explicit address"
 msgstr "Konkrétní adresa"
 
-#: Mailman/Gui/General.py:167
+#: Mailman/Gui/General.py:166
 msgid "Poster"
 msgstr "Pøispìvateli"
 
-#: Mailman/Gui/General.py:167
+#: Mailman/Gui/General.py:166
 msgid "This list"
 msgstr "Tato konference"
 
-#: Mailman/Gui/General.py:168
+#: Mailman/Gui/General.py:167
 msgid ""
 "Where are replies to list messages directed?\n"
 "             <tt>Poster</tt> is <em>strongly</em> recommended for most "
@@ -4831,7 +4939,7 @@ msgstr ""
 "<tt>Pøispìvateli</tt> je <em>dùraznì</em> doporuèena. (Tento ponìkud "
 "kryptický text je o poli Reply-To:, i kdy¾ to anglický originál zaml¾uje)"
 
-#: Mailman/Gui/General.py:173
+#: Mailman/Gui/General.py:172
 #, fuzzy
 msgid ""
 "This option controls what Mailman does to the\n"
@@ -4857,8 +4965,8 @@ msgid ""
 "             Munging Considered Harmful</a> for a general discussion of "
 "this\n"
 "             issue.  See <a\n"
-"        href=\"http://www.metasystema.org/essays/reply-to-useful.mhtml"
-"\">Reply-To\n"
+"             href=\"http://www.metasystema.net/essays/reply-to.mhtml\">Reply-"
+"To\n"
 "             Munging Considered Useful</a> for a dissenting opinion.\n"
 "\n"
 "             <p>Some mailing lists have restricted posting privileges, with "
@@ -4910,11 +5018,12 @@ msgstr ""
 "<p>Pozor: Pokud pøíspìvek obsahuje hlavièku <tt>Reply-To:</tt>\n"
 "její obsah nebude zmìnìn."
 
-#: Mailman/Gui/General.py:205
+#: Mailman/Gui/General.py:204
 msgid "Explicit <tt>Reply-To:</tt> header."
 msgstr "Nastavovat hlavièku <tt>Reply-To:</tt>."
 
-#: Mailman/Gui/General.py:207
+#: Mailman/Gui/General.py:206
+#, fuzzy
 msgid ""
 "This is the address set in the <tt>Reply-To:</tt> header\n"
 "             when the <a\n"
@@ -4932,8 +5041,8 @@ msgid ""
 "             Munging Considered Harmful</a> for a general discussion of "
 "this\n"
 "             issue.  See <a\n"
-"        href=\"http://www.metasystema.org/essays/reply-to-useful.mhtml"
-"\">Reply-To\n"
+"             href=\"http://www.metasystema.net/essays/reply-to.mhtml\">Reply-"
+"To\n"
 "             Munging Considered Useful</a> for a dissenting opinion.\n"
 "\n"
 "             <p>Some mailing lists have restricted posting privileges, with "
@@ -4986,17 +5095,17 @@ msgstr ""
 "<p>Pozor: Pokud pøíspìvek obsahuje hlavièku <tt>Reply-To:</tt>\n"
 "její obsah nebude zmìnìn."
 
-#: Mailman/Gui/General.py:236
+#: Mailman/Gui/General.py:235
 msgid "Umbrella list settings"
 msgstr "Konfigurace de¹tníkové konference"
 
-#: Mailman/Gui/General.py:239
+#: Mailman/Gui/General.py:238
 msgid ""
 "Send password reminders to, eg, \"-owner\" address instead of\n"
 "             directly to user."
 msgstr "Zasílat upomínky hesel na adresu \"-owner\" místo pøímo u¾ivateli?"
 
-#: Mailman/Gui/General.py:242
+#: Mailman/Gui/General.py:241
 msgid ""
 "Set this to yes when this list is intended to cascade only\n"
 "             to other mailing lists.  When set, meta notices like\n"
@@ -5015,7 +5124,7 @@ msgstr ""
 "vznikne z adresy \n"
 "úèastníka pøidáním textu uvedeného v poli \"de¹tníkový sufix\"."
 
-#: Mailman/Gui/General.py:250
+#: Mailman/Gui/General.py:249
 msgid ""
 "Suffix for use when this list is an umbrella for other\n"
 "             lists, according to setting of previous \"umbrella_list\"\n"
@@ -5024,7 +5133,7 @@ msgstr ""
 "Sufix, který bude pøidán ke jménu úèastníka\n"
 "konference v de¹tníkové konfiguraci. "
 
-#: Mailman/Gui/General.py:254
+#: Mailman/Gui/General.py:253
 msgid ""
 "When \"umbrella_list\" is set to indicate that this list has\n"
 "             other mailing lists as members, then administrative notices "
@@ -5045,11 +5154,11 @@ msgstr ""
 "adrese úèastníka. Témìø výhradnì se pou¾ívá øetìzec -owner. Pokud toto není "
 "de¹tníková konference, nemá tato volba ¾ádný efekt."
 
-#: Mailman/Gui/General.py:266
+#: Mailman/Gui/General.py:265
 msgid "Send monthly password reminders?"
 msgstr "Zasílat ka¾dý mìsíc upozornìní na hesla?"
 
-#: Mailman/Gui/General.py:268
+#: Mailman/Gui/General.py:267
 msgid ""
 "Turn this on if you want password reminders to be sent once\n"
 "             per month to your members.  Note that members may disable "
@@ -5062,7 +5171,7 @@ msgstr ""
 "si\n"
 "             mohou individuálnì vypnout v konfiguraci èlena."
 
-#: Mailman/Gui/General.py:273
+#: Mailman/Gui/General.py:272
 msgid ""
 "List-specific text prepended to new-subscriber welcome\n"
 "             message"
@@ -5072,7 +5181,7 @@ msgstr ""
 "pøidány automaticky. Spí¹e by se mìlo jednat o text popisující o èem "
 "konference je, co se v ní smí a co ne a tak podobnì."
 
-#: Mailman/Gui/General.py:276
+#: Mailman/Gui/General.py:275
 msgid ""
 "This value, if any, will be added to the front of the\n"
 "             new-subscriber welcome message.  The rest of the welcome "
@@ -5098,11 +5207,11 @@ msgstr ""
 "Mailmanem. Pokyny pro ovládání Mailmanu budou pøipojeny k této zprávì, tak¾e "
 "není nutné, aby byly zmiòovány v tomto textu."
 
-#: Mailman/Gui/General.py:293
+#: Mailman/Gui/General.py:292
 msgid "Send welcome message to newly subscribed members?"
 msgstr "Poslat novì pøihlá¹eným uvítací zprávu?"
 
-#: Mailman/Gui/General.py:294
+#: Mailman/Gui/General.py:293
 msgid ""
 "Turn this off only if you plan on subscribing people manually\n"
 "             and don't want them to know that you did so.  This option is "
@@ -5116,7 +5225,7 @@ msgstr ""
 "Vhodné pou¾ití je tøeba pøi zmìnì listserveru, kdy nepotøebujete, aby "
 "úèastníci byli o zmìnì informováni."
 
-#: Mailman/Gui/General.py:300
+#: Mailman/Gui/General.py:299
 msgid ""
 "Text sent to people leaving the list.  If empty, no special\n"
 "             text will be added to the unsubscribe message."
@@ -5125,11 +5234,11 @@ msgstr ""
 "zprávì nebude pøidán ¾ádný dal¹í text. (Uvítací zpráva obsahuje popis práce "
 "s Mailmanem, ale odhla¹ovací nikoliv.)"
 
-#: Mailman/Gui/General.py:304
+#: Mailman/Gui/General.py:303
 msgid "Send goodbye message to members when they are unsubscribed?"
 msgstr "Poslat pøi odhlá¹ení louèící zprávu?"
 
-#: Mailman/Gui/General.py:307
+#: Mailman/Gui/General.py:306
 msgid ""
 "Should the list moderators get immediate notice of new\n"
 "             requests, as well as daily notices about collected ones?"
@@ -5137,7 +5246,7 @@ msgstr ""
 "Mají být adminitrátorovi zasílány administrativní po¾adavky ihned a nebo jen "
 "jednou dennì?"
 
-#: Mailman/Gui/General.py:310
+#: Mailman/Gui/General.py:309
 msgid ""
 "List moderators (and list administrators) are sent daily\n"
 "             reminders of requests pending approval, like subscriptions to "
@@ -5151,28 +5260,28 @@ msgstr ""
 "pøíspìvky.Pokud vyberete tuto volbu, budou upozornìní zasílána okam¾itì pøi "
 "vzniku po¾adavku.Jinak budou upozornìní zasílána jednou dennì."
 
-#: Mailman/Gui/General.py:317
+#: Mailman/Gui/General.py:316
 msgid ""
 "Should administrator get notices of subscribes and\n"
 "             unsubscribes?"
 msgstr ""
 "Má být administrátor informován o pøihla¹ování a odhla¹ování úèastníkù?"
 
-#: Mailman/Gui/General.py:322
+#: Mailman/Gui/General.py:321
 msgid "Send mail to poster when their posting is held for approval?"
 msgstr ""
 "Informovat pøispìvatele, ¾e jeho pøíspìvek byl pozastaven a pøedán ke "
 "schválení administrátorovi?"
 
-#: Mailman/Gui/General.py:325
+#: Mailman/Gui/General.py:324
 msgid "Additional settings"
 msgstr "Dal¹í konfiguraèní volby"
 
-#: Mailman/Gui/General.py:328
+#: Mailman/Gui/General.py:327
 msgid "Emergency moderation of all list traffic."
 msgstr "Nouzová moderace v¹ech pøíspìvkù do konference:"
 
-#: Mailman/Gui/General.py:329
+#: Mailman/Gui/General.py:328
 msgid ""
 "When this option is enabled, all list traffic is emergency\n"
 "             moderated, i.e. held for moderation.  Turn this option on when\n"
@@ -5185,7 +5294,7 @@ msgstr ""
 "vhodná,\n"
 "pokud v konferenci nastane flamewar a chcete ji nechat vychladnout."
 
-#: Mailman/Gui/General.py:341
+#: Mailman/Gui/General.py:340
 msgid ""
 "Default options for new members joining this list.<input\n"
 "             type=\"hidden\" name=\"new_member_options\" value=\"ignore\">"
@@ -5193,7 +5302,7 @@ msgstr ""
 "Výchozí hodnoty pro úèastníky, kteøí se pøihlásí do konference.<input\n"
 "             type=\"hidden\" name=\"new_member_options\" value=\"ignore\">"
 
-#: Mailman/Gui/General.py:344
+#: Mailman/Gui/General.py:343
 msgid ""
 "When a new member is subscribed to this list, their initial\n"
 "             set of options is taken from the this variable's setting."
@@ -5202,7 +5311,7 @@ msgstr ""
 "          výchozí hodnoty jeho úètu budou nastaveny\n"
 "          podle tìchto promìnných."
 
-#: Mailman/Gui/General.py:348
+#: Mailman/Gui/General.py:347
 msgid ""
 "(Administrivia filter) Check postings and intercept ones\n"
 "             that seem to be administrative requests?"
@@ -5210,7 +5319,7 @@ msgstr ""
 "(Administrivia filter) Kontrolovat pøíspìvky, jestli se nejedná \n"
 "o pøíkazy pro Mailman, zaslané omylem na adresu konference?"
 
-#: Mailman/Gui/General.py:351
+#: Mailman/Gui/General.py:350
 msgid ""
 "Administrivia tests will check postings to see whether it's\n"
 "             really meant as an administrative request (like subscribe,\n"
@@ -5223,7 +5332,7 @@ msgstr ""
 "pro listserver. Pokud je takový text nalezen je distribuce zprávy pozdr¾ena "
 "a¾ do rozhodnutí administrátora."
 
-#: Mailman/Gui/General.py:358
+#: Mailman/Gui/General.py:357
 msgid ""
 "Maximum length in kilobytes (KB) of a message body.  Use 0\n"
 "             for no limit."
@@ -5231,14 +5340,14 @@ msgstr ""
 "Maximální velikost pøíspìvku v KB. Pokud nemá být velikost omezena, nastavte "
 "ji na 0."
 
-#: Mailman/Gui/General.py:362
+#: Mailman/Gui/General.py:361
 msgid "Host name this list prefers for email."
 msgstr ""
 "Jméno serveru, na kterém bì¾í tato konference. Pozor, pokud se bude li¹it od "
 "jména, pøes které se zobrazuje seznam konferencí, konference v nìm nebude "
 "uvedena."
 
-#: Mailman/Gui/General.py:364
+#: Mailman/Gui/General.py:363
 msgid ""
 "The \"host_name\" is the preferred name for email to\n"
 "             mailman-related addresses on this host, and generally should "
@@ -5254,7 +5363,7 @@ msgstr ""
 "serveru,resp. na jméno domény, kde Mailman bì¾í. Tato volba mù¾e být "
 "u¾iteèná pokud má server, kde Mailman bì¾í více jmen."
 
-#: Mailman/Gui/General.py:376
+#: Mailman/Gui/General.py:375
 msgid ""
 "Should messages from this mailing list include the\n"
 "                 <a href=\"http://www.faqs.org/rfcs/rfc2369.html\">RFC 2369</"
@@ -5269,7 +5378,7 @@ msgstr ""
 "silnì\n"
 "                 doporuèeno."
 
-#: Mailman/Gui/General.py:381
+#: Mailman/Gui/General.py:380
 msgid ""
 "RFC 2369 defines a set of List-* headers that are\n"
 "                 normally added to every message sent to the list "
@@ -5301,11 +5410,11 @@ msgstr ""
 "stì¾ovat je potøeba jim nejdøíve vysvìtlit jak se hlavièky skrývají, aby\n"
 "je nevidìli a teprve v pøípadì, ¾e nebude jiná mo¾nost tuto volbu potlaèit."
 
-#: Mailman/Gui/General.py:399
+#: Mailman/Gui/General.py:398
 msgid "Should postings include the <tt>List-Post:</tt> header?"
 msgstr "Mají pøíspìvky obsahovat hlavièku <tt>List-Post:</tt>?"
 
-#: Mailman/Gui/General.py:400
+#: Mailman/Gui/General.py:399
 msgid ""
 "The <tt>List-Post:</tt> header is one of the headers\n"
 "             recommended by\n"
@@ -5331,13 +5440,13 @@ msgstr ""
 "mateni.              (Nastavení neovlivní ostatní <tt>List-*:</tt>\n"
 "             hlavièky.)"
 
-#: Mailman/Gui/General.py:415
+#: Mailman/Gui/General.py:414
 msgid ""
 "Discard held messages older than this number of days.\n"
 "            Use 0 for no automatic discarding."
 msgstr ""
 
-#: Mailman/Gui/General.py:425
+#: Mailman/Gui/General.py:424
 msgid ""
 "<b>real_name</b> attribute not\n"
 "            changed!  It must differ from the list's name by case\n"
@@ -5346,7 +5455,7 @@ msgstr ""
 "Atribut <b>real_name</b> nebyl zmìnìn. Od jména konference se smí li¹it jen "
 "velikostí písmen."
 
-#: Mailman/Gui/General.py:455
+#: Mailman/Gui/General.py:454
 msgid ""
 "You cannot add a Reply-To: to an explicit\n"
 "            address if that address is blank.  Resetting these values."
@@ -6440,7 +6549,7 @@ msgstr ""
 "øetìzec'@public.com' .<p>Mezery na zaèátku øádku jsou ignorovány, co¾ mù¾e \n"
 "být u¾iteèné pro strukturování zadaných pravidel."
 
-#: Mailman/Gui/Privacy.py:481
+#: Mailman/Gui/Privacy.py:485
 #, fuzzy
 msgid ""
 "Header filter rules require a pattern.\n"
@@ -6449,7 +6558,7 @@ msgstr ""
 "Definice topicu vy¾aduje zadání jak názvu, tak vzoru pro\n"
 "          porovnávání. Nekompletní definice budou ignorovány."
 
-#: Mailman/Gui/Privacy.py:489
+#: Mailman/Gui/Privacy.py:493
 #, fuzzy
 msgid ""
 "The header filter rule pattern\n"
@@ -7112,53 +7221,53 @@ msgstr ""
 msgid "Emergency hold on all list traffic is in effect"
 msgstr "Je aktivní nouzová moderace v¹ech zpráv"
 
-#: Mailman/Handlers/Emergency.py:30 Mailman/Handlers/Hold.py:58
+#: Mailman/Handlers/Emergency.py:30 Mailman/Handlers/Hold.py:57
 msgid "Your message was deemed inappropriate by the moderator."
 msgstr "Vá¹ pøíspìvek byl moderátorem shledán nepøijatelným."
 
-#: Mailman/Handlers/Hold.py:53
+#: Mailman/Handlers/Hold.py:52
 msgid "Sender is explicitly forbidden"
 msgstr "Odesílatel je explicitnì zakázán"
 
-#: Mailman/Handlers/Hold.py:54
+#: Mailman/Handlers/Hold.py:53
 msgid "You are forbidden from posting messages to this list."
 msgstr "Máte zakázáno pøispívat do této konference."
 
-#: Mailman/Handlers/Hold.py:57
+#: Mailman/Handlers/Hold.py:56
 msgid "Post to moderated list"
 msgstr "Pøíspìvek do moderované konference"
 
-#: Mailman/Handlers/Hold.py:61
+#: Mailman/Handlers/Hold.py:60
 msgid "Post by non-member to a members-only list"
 msgstr ""
 "Pøíspìvek od neèlena do konference s pøispíváním omezeným pouze na èleny."
 
-#: Mailman/Handlers/Hold.py:62
+#: Mailman/Handlers/Hold.py:61
 msgid "Non-members are not allowed to post messages to this list."
 msgstr "Do této konference smí pøispívat jen její úèastníci."
 
-#: Mailman/Handlers/Hold.py:65
+#: Mailman/Handlers/Hold.py:64
 msgid "Posting to a restricted list by sender requires approval"
 msgstr "Do konference není mo¾né pøispívat bez souhlasu moderátora"
 
-#: Mailman/Handlers/Hold.py:66
+#: Mailman/Handlers/Hold.py:65
 msgid "This list is restricted; your message was not approved."
 msgstr ""
 "Tato konference není veøejnì pøístupná, Vás pøíspìvek nebyl akceptován."
 
-#: Mailman/Handlers/Hold.py:69
+#: Mailman/Handlers/Hold.py:68
 msgid "Too many recipients to the message"
 msgstr "Zpráva obsahuje pøíli¹ mnoho pøíjemcù"
 
-#: Mailman/Handlers/Hold.py:70
+#: Mailman/Handlers/Hold.py:69
 msgid "Please trim the recipient list; it is too long."
 msgstr "Prosím, zkra»te seznam pøíjemcù, je pøíli¹ dlouhý."
 
-#: Mailman/Handlers/Hold.py:73
+#: Mailman/Handlers/Hold.py:72
 msgid "Message has implicit destination"
 msgstr "Zpráva neobsahuje korektního (¾ádného) pøíjemce"
 
-#: Mailman/Handlers/Hold.py:74
+#: Mailman/Handlers/Hold.py:73
 msgid ""
 "Blind carbon copies or other implicit destinations are\n"
 "not allowed.  Try reposting your message by explicitly including the list\n"
@@ -7171,11 +7280,11 @@ msgstr ""
 "obsahoval adresu konference v jednom z tìchto polí. \n"
 "Toto opatøení je nutné pro zamezení spamování pøes na¹i konferenci."
 
-#: Mailman/Handlers/Hold.py:79
+#: Mailman/Handlers/Hold.py:78
 msgid "Message may contain administrivia"
 msgstr "Zpráva pravdìpodobnì obsahuje pøíkazy pro listserver"
 
-#: Mailman/Handlers/Hold.py:84
+#: Mailman/Handlers/Hold.py:83
 msgid ""
 "Please do *not* post administrative requests to the mailing\n"
 "list.  If you wish to subscribe, visit %(listurl)s or send a message with "
@@ -7189,22 +7298,22 @@ msgstr ""
 "nebo za¹lete na adresu %(request)s zprávu obsahující jako Subject: slovo "
 "'help' a získáte bli¾¹í informace."
 
-#: Mailman/Handlers/Hold.py:90
+#: Mailman/Handlers/Hold.py:89
 msgid "Message has a suspicious header"
 msgstr "Vá¹ pøíspìvek má neplatnou hlavièku."
 
-#: Mailman/Handlers/Hold.py:91
+#: Mailman/Handlers/Hold.py:90
 msgid "Your message had a suspicious header."
 msgstr "Vá¹ pøíspìvek má neplatnou hlavièku."
 
-#: Mailman/Handlers/Hold.py:101
+#: Mailman/Handlers/Hold.py:100
 msgid ""
 "Message body is too big: %(size)d bytes with a limit of\n"
 "%(limit)d KB"
 msgstr ""
 "Tìlo zprávy je pøíli¹ veliké: %(size)d bytù, kde¾to limit je %(limit)d KB."
 
-#: Mailman/Handlers/Hold.py:106
+#: Mailman/Handlers/Hold.py:105
 msgid ""
 "Your message was too big; please trim it to less than\n"
 "%(kb)d KB in size."
@@ -7212,21 +7321,21 @@ msgstr ""
 "Va¹e zpráva je pøíli¹ veliká, prosím zkra»te ji na \n"
 "%(kb)d KB."
 
-#: Mailman/Handlers/Hold.py:110
+#: Mailman/Handlers/Hold.py:109
 msgid "Posting to a moderated newsgroup"
 msgstr "Pøíspìvek do moderované konference"
 
-#: Mailman/Handlers/Hold.py:240
+#: Mailman/Handlers/Hold.py:244
 msgid "Your message to %(listname)s awaits moderator approval"
 msgstr "Vá¹ pøíspìvek do konference %(listname)s èeká na schválení moderátorem"
 
-#: Mailman/Handlers/Hold.py:259
+#: Mailman/Handlers/Hold.py:263
 msgid "%(listname)s post from %(sender)s requires approval"
 msgstr ""
 "Pøíspìvek od %(sender)s do konference %(listname)s vy¾aduje souhlas "
 "moderátora."
 
-#: Mailman/Handlers/Hold.py:266
+#: Mailman/Handlers/Hold.py:270
 msgid ""
 "If you reply to this message, keeping the Subject: header intact, Mailman "
 "will\n"
@@ -7265,7 +7374,7 @@ msgstr "Content type této zprávy nebyl explicitnì povolen"
 msgid "After content filtering, the message was empty"
 msgstr "Po pøefiltrování obsahu nezbyl ¾ádný text k odeslání"
 
-#: Mailman/Handlers/MimeDel.py:229
+#: Mailman/Handlers/MimeDel.py:232
 msgid ""
 "The attached message matched the %(listname)s mailing list's content "
 "filtering\n"
@@ -7282,7 +7391,7 @@ msgstr ""
 "ulo¾ena a ani nebyla nikam rozeslána.\n"
 "\n"
 
-#: Mailman/Handlers/MimeDel.py:235
+#: Mailman/Handlers/MimeDel.py:238
 msgid "Content filtered message notification"
 msgstr "Zpráva o filtraci obsahu pøíspìvku"
 
@@ -7361,7 +7470,7 @@ msgstr ""
 "Velikost: %(size)s\n"
 "Url: %(url)s\n"
 
-#: Mailman/Handlers/Scrubber.py:300
+#: Mailman/Handlers/Scrubber.py:307
 msgid ""
 "A non-text attachment was scrubbed...\n"
 "Name: %(filename)s\n"
@@ -7377,12 +7486,12 @@ msgstr ""
 "Popis: %(desc)s\n"
 "Url : %(url)s\n"
 
-#: Mailman/Handlers/Scrubber.py:335
+#: Mailman/Handlers/Scrubber.py:342
 #, fuzzy
 msgid "Skipped content of type %(partctype)s\n"
 msgstr "Zde byl umístìn nepøijatelný obsah typu: %(partctype)s"
 
-#: Mailman/Handlers/Scrubber.py:370
+#: Mailman/Handlers/Scrubber.py:377
 msgid "-------------- next part --------------\n"
 msgstr "------------- dal¹í èást ---------------\n"
 
@@ -7390,43 +7499,43 @@ msgstr "------------- dal¹í èást ---------------\n"
 msgid "The message headers matched a filter rule"
 msgstr ""
 
-#: Mailman/Handlers/SpamDetect.py:135
+#: Mailman/Handlers/SpamDetect.py:136
 msgid "Message rejected by filter rule match"
 msgstr ""
 
-#: Mailman/Handlers/ToDigest.py:149
+#: Mailman/Handlers/ToDigest.py:160
 msgid "%(realname)s Digest, Vol %(volume)d, Issue %(issue)d"
 msgstr "%(realname)s Digest, Vol %(volume)d, Issue %(issue)d"
 
-#: Mailman/Handlers/ToDigest.py:195
+#: Mailman/Handlers/ToDigest.py:206
 msgid "digest header"
 msgstr "Záhlaví Digest zprávy"
 
-#: Mailman/Handlers/ToDigest.py:198
+#: Mailman/Handlers/ToDigest.py:209
 msgid "Digest Header"
 msgstr "Záhlaví Digest zprávy"
 
-#: Mailman/Handlers/ToDigest.py:211
+#: Mailman/Handlers/ToDigest.py:222
 msgid "Today's Topics:\n"
 msgstr "Dne¹ní menu:\n"
 
-#: Mailman/Handlers/ToDigest.py:291
+#: Mailman/Handlers/ToDigest.py:302
 msgid "Today's Topics (%(msgcount)d messages)"
 msgstr "Dne¹ní menu (%(msgcount)d zpráv):"
 
-#: Mailman/Handlers/ToDigest.py:317
+#: Mailman/Handlers/ToDigest.py:328
 msgid "[Message discarded by content filter]"
 msgstr ""
 
-#: Mailman/Handlers/ToDigest.py:343
+#: Mailman/Handlers/ToDigest.py:354
 msgid "digest footer"
 msgstr "Patièka digestu"
 
-#: Mailman/Handlers/ToDigest.py:346
+#: Mailman/Handlers/ToDigest.py:357
 msgid "Digest Footer"
 msgstr "Patièka digestu"
 
-#: Mailman/Handlers/ToDigest.py:360
+#: Mailman/Handlers/ToDigest.py:371
 msgid "End of "
 msgstr "Konec: "
 
@@ -7462,7 +7571,7 @@ msgstr "Pùvodní zpráva"
 msgid "Request to mailing list %(realname)s rejected"
 msgstr "Po¾adavek do konference %(realname)s byl zamítnut."
 
-#: Mailman/MTA/Manual.py:64
+#: Mailman/MTA/Manual.py:65
 msgid ""
 "The mailing list `%(listname)s' has been created via the through-the-web\n"
 "interface.  In order to complete the activation of this mailing list, the\n"
@@ -7477,7 +7586,7 @@ msgstr ""
 "do souboru /etc/aliases tyto øádky: (Asi bude nutné následnì spustit\n"
 "pøíkaz newaliases).\n"
 
-#: Mailman/MTA/Manual.py:75
+#: Mailman/MTA/Manual.py:76
 msgid ""
 "To finish creating your mailing list, you must edit your /etc/aliases (or\n"
 "equivalent) file by adding the following lines, and possibly running the\n"
@@ -7488,11 +7597,11 @@ msgstr ""
 "do souboru /etc/aliases tyto øádky: (Asi bude nutné následnì spustit\n"
 "pøíkaz newaliases).\n"
 
-#: Mailman/MTA/Manual.py:80
+#: Mailman/MTA/Manual.py:81
 msgid "## %(listname)s mailing list"
 msgstr "## %(listname)s mailing list"
 
-#: Mailman/MTA/Manual.py:97
+#: Mailman/MTA/Manual.py:98
 msgid "Mailing list creation request for list %(listname)s"
 msgstr "Administrativní po¾adavky pro konferenci '%(listname)s' "
 
@@ -7540,9 +7649,9 @@ msgstr "Práva na souboru: %(file)s musí být 066x (jsou %(octmode)s)"
 
 #: Mailman/MTA/Postfix.py:318 Mailman/MTA/Postfix.py:345 bin/check_perms:123
 #: bin/check_perms:145 bin/check_perms:155 bin/check_perms:166
-#: bin/check_perms:191 bin/check_perms:208 bin/check_perms:227
-#: bin/check_perms:250 bin/check_perms:269 bin/check_perms:283
-#: bin/check_perms:303 bin/check_perms:340
+#: bin/check_perms:191 bin/check_perms:208 bin/check_perms:234
+#: bin/check_perms:257 bin/check_perms:276 bin/check_perms:290
+#: bin/check_perms:310 bin/check_perms:347
 msgid "(fixing)"
 msgstr "(opravuji)"
 
@@ -7565,31 +7674,31 @@ msgstr "Nejste úèastníkem konference %(listname)s."
 msgid "Your confirmation is required to leave the %(listname)s mailing list"
 msgstr "Nejste úèastníkem konference %(listname)s."
 
-#: Mailman/MailList.py:888 Mailman/MailList.py:1277
+#: Mailman/MailList.py:877 Mailman/MailList.py:1289
 msgid " from %(remote)s"
 msgstr "od %(remote)s"
 
-#: Mailman/MailList.py:922
+#: Mailman/MailList.py:910
 msgid "subscriptions to %(realname)s require moderator approval"
 msgstr "pøihlá¹ky do konference %(realname)s vy¾adují souhlas moderátora"
 
-#: Mailman/MailList.py:986 bin/add_members:242
+#: Mailman/MailList.py:979 bin/add_members:242
 msgid "%(realname)s subscription notification"
 msgstr "%(realname)s zpráva o pøihlá¹ení."
 
-#: Mailman/MailList.py:1005
+#: Mailman/MailList.py:998
 msgid "unsubscriptions require moderator approval"
 msgstr "odhlá¹ení z konference vy¾aduje souhlas moderátora"
 
-#: Mailman/MailList.py:1025
+#: Mailman/MailList.py:1018
 msgid "%(realname)s unsubscribe notification"
 msgstr "%(realname)s zpráva o odhlá¹ení"
 
-#: Mailman/MailList.py:1186
+#: Mailman/MailList.py:1198
 msgid "subscriptions to %(name)s require administrator approval"
 msgstr "pøihlá¹ky do konference %(name)s vy¾adují souhlas moderátora"
 
-#: Mailman/MailList.py:1449
+#: Mailman/MailList.py:1461
 msgid "Last autoresponse notification for today"
 msgstr "Poslední dne¹ní automatická odpovìï"
 
@@ -7849,14 +7958,14 @@ msgstr ""
 "Nemohu èíst ze standardního vstupu jak bì¾né úèastníky, tak úèastníky "
 "vyu¾ívající digest."
 
-#: bin/add_members:210 bin/config_list:105 bin/find_member:97 bin/inject:90
+#: bin/add_members:210 bin/config_list:108 bin/find_member:97 bin/inject:90
 #: bin/list_admins:89 bin/list_members:232 bin/sync_members:222
 #: cron/bumpdigests:86
 msgid "No such list: %(listname)s"
 msgstr "Nenalezl jsem konferenci %(listname)s"
 
 #: bin/add_members:230 bin/change_pw:158 bin/check_db:114 bin/discard:83
-#: bin/sync_members:244 bin/update:555 cron/bumpdigests:78
+#: bin/sync_members:244 bin/update:564 cron/bumpdigests:78
 msgid "Nothing to do."
 msgstr "®ádný pøíkaz."
 
@@ -7913,7 +8022,7 @@ msgstr ""
 msgid "listname is required"
 msgstr "Jméno konference je vy¾adováno."
 
-#: bin/arch:143 bin/change_pw:106 bin/config_list:242
+#: bin/arch:143 bin/change_pw:106 bin/config_list:255
 msgid ""
 "No such list \"%(listname)s\"\n"
 "%(e)s"
@@ -8133,63 +8242,72 @@ msgstr ""
 msgid "%(private)s must not be other-readable"
 msgstr ""
 
-#: bin/check_perms:225
+#: bin/check_perms:215
+msgid ""
+"Warning: Private archive directory is other-executable (o+x).\n"
+"         This could allow other users on your system to read private "
+"archives.\n"
+"         If you're on a shared multiuser system, you should consult the\n"
+"         installation manual on how to fix this."
+msgstr ""
+
+#: bin/check_perms:232
 msgid "mbox file must be at least 0660:"
 msgstr ""
 
-#: bin/check_perms:248
+#: bin/check_perms:255
 msgid "%(dbdir)s \"other\" perms must be 000"
 msgstr ""
 
-#: bin/check_perms:258
+#: bin/check_perms:265
 msgid "checking cgi-bin permissions"
 msgstr ""
 
-#: bin/check_perms:263
+#: bin/check_perms:270
 msgid "    checking set-gid for %(path)s"
 msgstr ""
 
-#: bin/check_perms:267
+#: bin/check_perms:274
 msgid "%(path)s must be set-gid"
 msgstr ""
 
-#: bin/check_perms:277
+#: bin/check_perms:284
 msgid "checking set-gid for %(wrapper)s"
 msgstr ""
 
-#: bin/check_perms:281
+#: bin/check_perms:288
 msgid "%(wrapper)s must be set-gid"
 msgstr ""
 
-#: bin/check_perms:291
+#: bin/check_perms:298
 msgid "checking permissions on %(pwfile)s"
 msgstr ""
 
-#: bin/check_perms:300
+#: bin/check_perms:307
 msgid "%(pwfile)s permissions must be exactly 0640 (got %(octmode)s)"
 msgstr ""
 
-#: bin/check_perms:324
+#: bin/check_perms:331
 msgid "checking permissions on list data"
 msgstr ""
 
-#: bin/check_perms:330
+#: bin/check_perms:337
 msgid "    checking permissions on: %(path)s"
 msgstr ""
 
-#: bin/check_perms:338
+#: bin/check_perms:345
 msgid "file permissions must be at least 660: %(path)s"
 msgstr ""
 
-#: bin/check_perms:383
+#: bin/check_perms:390
 msgid "No problems found"
 msgstr ""
 
-#: bin/check_perms:385
+#: bin/check_perms:392
 msgid "Problems found:"
 msgstr ""
 
-#: bin/check_perms:386
+#: bin/check_perms:393
 msgid "Re-run as %(MAILMAN_USER)s (or root) with -f flag to fix"
 msgstr ""
 
@@ -8393,49 +8511,51 @@ msgid ""
 "\n"
 msgstr ""
 
-#: bin/config_list:109
+#: bin/config_list:116
 msgid ""
-"## \"%(listname)s\" mailing list configuration settings -*- python -*-\n"
+"# -*- python -*-\n"
+"# -*- coding: %(charset)s -*-\n"
+"## \"%(listname)s\" mailing list configuration settings\n"
 "## captured on %(when)s\n"
 msgstr ""
 
-#: bin/config_list:131
+#: bin/config_list:142
 msgid "options"
 msgstr "Vlastnosti"
 
-#: bin/config_list:188
+#: bin/config_list:201
 msgid "legal values are:"
 msgstr ""
 
-#: bin/config_list:255
+#: bin/config_list:268
 msgid "attribute \"%(k)s\" ignored"
 msgstr ""
 
-#: bin/config_list:258
+#: bin/config_list:271
 msgid "attribute \"%(k)s\" changed"
 msgstr ""
 
-#: bin/config_list:264
+#: bin/config_list:277
 msgid "Non-standard property restored: %(k)s"
 msgstr ""
 
-#: bin/config_list:272
+#: bin/config_list:285
 msgid "Invalid value for property: %(k)s"
 msgstr "Chybná hodnota parametru: %(k)s"
 
-#: bin/config_list:274
+#: bin/config_list:287
 msgid "Bad email address for option %(k)s: %(v)s"
 msgstr "Chybná emailová adresa pro parametr %(k)s: %(v)s"
 
-#: bin/config_list:331
+#: bin/config_list:344
 msgid "Only one of -i or -o is allowed"
 msgstr ""
 
-#: bin/config_list:333
+#: bin/config_list:346
 msgid "One of -i or -o is required"
 msgstr ""
 
-#: bin/config_list:337
+#: bin/config_list:350
 msgid "List name is required"
 msgstr "Jméno konference je vy¾adováno."
 
@@ -8534,15 +8654,15 @@ msgstr ""
 msgid "Please specify either -p or -m."
 msgstr ""
 
-#: bin/dumpdb:135
+#: bin/dumpdb:136
 msgid "[----- start pickle file -----]"
 msgstr ""
 
-#: bin/dumpdb:140
+#: bin/dumpdb:142
 msgid "[----- end pickle file -----]"
 msgstr ""
 
-#: bin/dumpdb:142
+#: bin/dumpdb:145
 msgid "<----- start object %(cnt)s ----->"
 msgstr ""
 
@@ -9631,6 +9751,20 @@ msgstr ""
 msgid "Removed: %(s)s"
 msgstr ""
 
+#: bin/templ2pot.py:5
+msgid ""
+"templ2pot.py -- convert mailman template (en) to pot format.\n"
+"\n"
+"Usage: templ2pot.py inputfile ...\n"
+"\n"
+"Options:\n"
+"\n"
+"    -h, --help\n"
+"\n"
+"Inputfiles are english templates.  Outputs are written to stdout.\n"
+"\n"
+msgstr ""
+
 #: bin/transcheck:18
 msgid ""
 "\n"
@@ -9733,7 +9867,7 @@ msgstr ""
 msgid "Fixing language templates: %(listname)s"
 msgstr ""
 
-#: bin/update:196 bin/update:689
+#: bin/update:196 bin/update:698
 msgid "WARNING: could not acquire lock for list: %(listname)s"
 msgstr ""
 
@@ -9844,61 +9978,69 @@ msgstr ""
 msgid "updating old qfiles"
 msgstr ""
 
-#: bin/update:512
+#: bin/update:448
+msgid "Warning!  Not a directory: %(dirpath)s"
+msgstr ""
+
+#: bin/update:517
 msgid "message is unparsable: %(filebase)s"
 msgstr ""
 
-#: bin/update:541
+#: bin/update:531
+msgid "Warning!  Deleting empty .pck file: %(pckfile)s"
+msgstr ""
+
+#: bin/update:550
 msgid "Updating Mailman 2.0 pending_subscriptions.db database"
 msgstr ""
 
-#: bin/update:552
+#: bin/update:561
 msgid "Updating Mailman 2.1.4 pending.pck database"
 msgstr ""
 
-#: bin/update:576
+#: bin/update:585
 msgid "Ignoring bad pended data: %(key)s: %(val)s"
 msgstr ""
 
-#: bin/update:592
+#: bin/update:601
 msgid "WARNING: Ignoring duplicate pending ID: %(id)s."
 msgstr ""
 
-#: bin/update:645
+#: bin/update:654
 msgid "getting rid of old source files"
 msgstr ""
 
-#: bin/update:655
+#: bin/update:664
 msgid "no lists == nothing to do, exiting"
 msgstr ""
 
-#: bin/update:662
+#: bin/update:671
 msgid ""
 "fixing all the perms on your old html archives to work with b6\n"
 "If your archives are big, this could take a minute or two..."
 msgstr ""
 
-#: bin/update:667
+#: bin/update:676
 msgid "done"
 msgstr "hotovo"
 
-#: bin/update:669
+#: bin/update:678
 msgid "Updating mailing list: %(listname)s"
 msgstr ""
 
-#: bin/update:672
+#: bin/update:681
 msgid "Updating Usenet watermarks"
 msgstr ""
 
-#: bin/update:677
+#: bin/update:686
 msgid "- nothing to update here"
 msgstr ""
 
-#: bin/update:700
+#: bin/update:709
 msgid "- usenet watermarks updated and gate_watermarks removed"
 msgstr ""
 
-#: bin/update:714
+#: bin/update:723
 msgid ""
 "\n"
 "\n"
@@ -9921,22 +10063,22 @@ msgid ""
 "\n"
 msgstr ""
 
-#: bin/update:771
+#: bin/update:780
 msgid "No updates are necessary."
 msgstr ""
 
-#: bin/update:774
+#: bin/update:783
 msgid ""
 "Downgrade detected, from version %(hexlversion)s to version %(hextversion)s\n"
 "This is probably not safe.\n"
 "Exiting."
 msgstr ""
 
-#: bin/update:779
+#: bin/update:788
 msgid "Upgrading from version %(hexlversion)s to %(hextversion)s"
 msgstr ""
 
-#: bin/update:788
+#: bin/update:797
 msgid ""
 "\n"
 "ERROR:\n"
@@ -10342,6 +10484,2748 @@ msgid ""
 "all\n"
 "        lists are sent out.\n"
 msgstr ""
+
+#: templates/en/admindbdetails.html:1
+msgid ""
+"The administrative requests are displayed in one of two ways, on a <a\n"
+"href=\"%(summaryurl)s\">summary page</a>, and on a <em>details</em>\n"
+"page.  The summary page contains pending subscription and\n"
+"unsubscription requests, as well as postings being held for your\n"
+"approval, grouped by sender email address.  The details page contains\n"
+"a more detailed view of each held message, including the all the\n"
+"message's headers and an excerpt of the message body.\n"
+"\n"
+"<p>On all the pages, the following actions are available:\n"
+"\n"
+"<ul>\n"
+"<li><b>Defer</b> -- Defer your decision until later.  No action is\n"
+"    taken now for this pending administrative request, but for held\n"
+"    postings, you can still forward or preserve the message (see\n"
+"    below).\n"
+"\n"
+"<li><b>Approve</b> -- Approve the message, sending it on to the list.\n"
+"    For membership requests, approve the change in membership status.\n"
+"\n"
+"<li><b>Reject</b> -- Reject the message, sending a rejection notice to\n"
+"    the sender, and discarding the original message.  For membership\n"
+"    requests, reject the change in membership status.  In either case,\n"
+"    you should add a reason for the rejection in the accompanying text\n"
+"    box.\n"
+"\n"
+"<li><b>Discard</b> -- Throw away the original message, without sending\n"
+"    a rejection notice.  For membership requests, this simply discards\n"
+"    the request without notice to the person making the request.  This\n"
+"    is usually the action you want to take for known spam.\n"
+"</ul>\n"
+"\n"
+"<p>For held messages, turn on the <b>Preserve</b> option if you want\n"
+"to save a copy of the message for the site administrator.  This is\n"
+"useful for abusive messages that you want to discard, but need to keep\n"
+"a record of for later inspection.\n"
+"\n"
+"<p>Turn on the <b>Forward to</b> option, and fill in the forwarding\n"
+"address if you want to forward the message to someone else not on the\n"
+"list.  To edit a held message before it is sent on to the list, you\n"
+"should forward the message to yourself (or the list owners), and\n"
+"discard the original message.  Then, when the message shows up in your\n"
+"mailbox, make your edits and resend the message to the list, including\n"
+"an <tt>Approved:</tt> header with the list password as its value.  It\n"
+"is proper netiquette in this case to include a note in the resent\n"
+"message, explaining that you have modified the text.\n"
+"\n"
+"<p>If the sender is a list member who is being moderated, you can\n"
+"optionally clear their moderation flag.  This is useful when your list\n"
+"is configured to put new members on probation, and you've decided that\n"
+"this member can be trusted to post to the list without approval.\n"
+"\n"
+"<p>If the sender is not a list member, you can add the email address to\n"
+"a <em>sender filter</em>.  Sender filters are described on the <a\n"
+"href=\"%(filterurl)s\">sender filter privacy page</a>, and may be one of\n"
+"<b>auto-accept</b> (Accepts), <b>auto-hold</b> (Holds),\n"
+"<b>auto-reject</b> (Rejects), or <b>auto-discard</b> (Discards).  This\n"
+"option will not be available if the address is already on one of the\n"
+"sender filters.\n"
+"\n"
+"<p>When you're finished, click on the <em>Submit All Data</em> button\n"
+"at the top or bottom of the page.  This button will submit all\n"
+"selected actions for all administrative requests that you've made a\n"
+"decision for.\n"
+"\n"
+"<p><a href=\"%(summaryurl)s\">Return to the summary page</a>.\n"
+msgstr ""
+"Administrativní po¾adavky mohou být zobrazeny dvìma zpùsoby. Buï\n"
+"<a href=\"%(summaryurl)s\">hromadnì</a> a nebo <em>detailnì</em>.\n"
+"Pøi hromadném zobrazení jsou v¹echny po¾adavky pocházející od\n"
+"stejného u¾ivatele zobrazeny dohromady a mù¾e o nich být rozhodnuto\n"
+"najednou. Pøi detailním zobrazení je ka¾dý pøíspìvek zobrazen\n"
+"samostatnì a administrátor rozhoduje o ka¾dém pøíspìvku zvlá¹».\n"
+"Detailní zobrazení obsahuje navíc v¹echny hlavièky a èást z tìla\n"
+"zprávy.\n"
+"\n"
+"<p>Pro pozastavené pøíspìvky vyberte jednu z tìchto akcí:\n"
+"<ul>\n"
+"<li><b>Ponechat</b> - Nech zprávu èekat ve frontì, nemá to vliv na\n"
+"nastavení forwardování, to znamená, ¾e zprávu mù¾ete forwardovat\n"
+"a pøitom ponechat ve frontì\n"
+"\n"
+"<li><b>Akceptovat</b> - Roze¹li zprávu do konference. Pokud se\n"
+"nejedná o zprávu, ale o po¾adavek na pøihlá¹ení úèastníka, pøihlas\n"
+"ho.\n"
+"\n"
+"<li><b>Zamítnout</b> - Vra» zprávu odesílateli. Mù¾ete uvést i dùvod,\n"
+"který bude uveden v zamítavé odpovìdi. Zpráva bude z fronty\n"
+"vymazána. Pokud se jedná o po¾adavek na pøihlá¹ení, bude zamítnut.\n"
+"\n"
+"<li><b>Zahodit</b> - vhodné pro SPAM. Zpráva potichu zmizí, nikomu se\n"
+"nic neposílá. I kdy¾ se jedná o po¾adavek na pøihlá¹ení, nebude se\n"
+"posílat ¾ádné oznámení.\n"
+"</ul>\n"
+"\n"
+"<p>Vybráním volby <b>Ponechat</b> mù¾ete napø. ponechat zprávu ve\n"
+"frontì pro správce serveru. To vyu¾ijete asi pøedev¹ím u zpráv, které\n"
+"nejsou obyèejným spamem, ale vy¾adují dal¹í odvetné akce.\n"
+"\n"
+"S pomocí volby<b>Pøeposlat</b> mù¾ete kopii zprávy odeslat na adresu,\n"
+"kterou vyplníte do vstupního pole vedle této volby. Pokud potøebujete\n"
+"nìjaký pøíspìvek modifikovat, pøed rozesláním u¾ivatelùm, musíte si\n"
+"jej pøeposlat na svou adresu a pùvodní zprávu zahodit. Poté co zprávu\n"
+"upravíte, musíte ji poslat zpìt do konference, pøípadnì s hlavièkou \n"
+"<tt>Approved:</tt> do které doplníte heslo pro danou\n"
+"konferenci. Netiquetta vy¾aduje, abyste v takovém pøípadì do textu\n"
+"uvedli upozornìní, ¾e jste zprávu pozmìnili a vysvìtlili, proè jste\n"
+"to udìlali.\n"
+"\n"
+"<p>Pokud má pøispìvatel nastaven pøíznak moderovat, co¾ se typicky\n"
+"pou¾ívá u nových úèastníkù, kdy se nejdøíve èeká, jakou úroveò budou\n"
+"mít jejich pøíspìvky, mù¾ete souèasnì s propu¹tìním pøíspìvku do\n"
+"distribuce tento pøíznak zru¹it, tak¾e u¾ivatel bude moci nadále\n"
+"pøispívat sám.\n"
+"\n"
+"<p>Pokud odesílatel není úèastníkem konference, mù¾ete jeho emailovou\n"
+"adresu vlo¾it do <em>filtru odesílatelù</em>. Jak tyto filtry fungují\n"
+"je popsáno na <a href=\"%(filterurl)s\">stránce s konfigurací filtrování\n"
+"</a>. Pøíspìvky mohou být na základì filtrù buï automaticky\n"
+"akceptovány, automaticky pozdr¾eny do rozhodnutí moderátora,\n"
+"automaticky vráceny a nebo automaticky zahozeny (SPAM). Pokud\n"
+"odesílatel je úèastníkem a nebo u¾ je zaveden ve filtrech, tato volba\n"
+"nebude k dispozici.\n"
+"\n"
+"<p>Pokud jste ji¾ pro¹li celou stránkou kliknìte na jejím horním nebo\n"
+"spodním okraji na tlaèítko <em>Potvrdit v¹echny zmìny</em>. Tím se \n"
+"pøenesou provedené zmìny do databáze a server podle daných pokynù provede\n"
+"potøebné operace. Pokud u nìkteré polo¾ky nevyberete ani jednu volbu,\n"
+"polo¾ka nebude nijak ovlivnìna a zùstane ulo¾ena v databázi. Budete o ni\n"
+"moci rozhodnout kdykoliv pøí¹tì.\n"
+"\n"
+"\n"
+"<p><a href=\"%(summaryurl)s\">Zpìt na pøehled èekajících po¾adavkù</a>.\n"
+
+#: templates/en/admindbpreamble.html:1
+msgid ""
+"This page contains a subset of the <em>%(listname)s</em> mailing list\n"
+"postings that are being held for your approval.  It currently shows\n"
+"%(description)s\n"
+"\n"
+"<p>For each administrative request, please select the action to take,\n"
+"clicking on the <b>Submit All Data</b> when finished.  More detailed\n"
+"instructions are available <a href=\"%(detailsurl)s\">here</a>.\n"
+"\n"
+"<p>You can also <a href=\"%(summaryurl)s\">view a summary</a> of all\n"
+"pending requests.\n"
+msgstr ""
+"Na této stránce naleznete v¹echny pøíspìvky do konference <em>%(listname)s</"
+"em>,\n"
+"které nebyly z nìjakého dùvodu rozeslány a èekají na Va¹e rozhodnutí.\n"
+"Momentálnì jsou zobrazeny %(description)s\n"
+"\n"
+"<p>U ka¾dého administrativního po¾adavku musíte vybrat akci, která se\n"
+"s ním má provést a nakonec vybrané akce provedete kliknutím na \n"
+"<b>Potvrdit v¹echny zmìny</b>. Podrobnìj¹í informace o tom, jak\n"
+"zacházet s administrativním rozhraním naleznete \n"
+"<a href=\"%(detailsurl)s\">zde</a>.\n"
+"\n"
+"<p>Takté¾ si mù¾ete prohlédnout pøehled v¹ech\n"
+"<a href=\"%(summaryurl)s\">èekajících po¾adavkù</a> zobrazený tak, ¾e\n"
+"pøíspìvky od jednoho pøispìvatele jsou slouèeny dohromady a mù¾ete\n"
+"o nich rozhodnout souèasnì.\n"
+
+#: templates/en/admindbsummary.html:1
+msgid ""
+"This page contains a summary of the current set of administrative\n"
+"requests requiring your approval for the\n"
+"<a href=\"%(adminurl)s\"><em>%(listname)s</em> mailing list</a>.\n"
+"First, you will find the list of pending\n"
+"subscription and unsubscription requests, if any, followed by any\n"
+"postings being held for your approval.\n"
+"\n"
+"<p>For each administrative request, please select the action to take,\n"
+"clicking on the <b>Submit All Data</b> button when finished.\n"
+"<a href=\"%(detailsurl)s\">More detailed instructions</a> are also\n"
+"available.\n"
+"\n"
+"<p>You can also <a href=\"%(viewallurl)s\">view the details</a> of all\n"
+"held postings.\n"
+msgstr ""
+"Pøehled po¾adavkù pro konferenci <a href=\"%(adminurl)s\"><em>%(listname)s</"
+"em></a>.\n"
+"\n"
+"Tato stránka obsahuje pøehled v¹ech po¾adavkù pro administrátora\n"
+"setøídìný tak, ¾e po¾adavky od jednoho u¾ivatele jsou slouèeny\n"
+"dohromady a mù¾e o nich být rozhodnuto najednou.\n"
+"\n"
+"Nejdøíve jsou zaøazeny po¾adavky na pøihlá¹ení a odhlá¹ení a za nimi\n"
+"pøípadnì pøíspìvky, které èekají na schválení distribuce moderátorem.\n"
+"\n"
+"<p>U ka¾dého administrativního po¾adavku musíte vybrat akci, která se\n"
+"s ním má provést a nakonec vybrané akce provedete kliknutím na \n"
+"<b>Potvrdit v¹echny zmìny</b>. Podrobnìj¹í informace o tom, jak\n"
+"zacházet s administrativním rozhraním naleznete \n"
+"<a href=\"%(detailsurl)s\">zde</a>.\n"
+"\n"
+"<p>Takté¾ si mù¾ete prohlédnout detailní pøehled v¹ech\n"
+"<a href=\"%(viewallurl)s\">èekajících po¾adavkù</a> kde je ka¾dý\n"
+"pøíspìvek zobrazen samostatnì.\n"
+
+#: templates/en/adminsubscribeack.txt:1
+msgid ""
+"%(member)s has been successfully subscribed to %(listname)s.\n"
+"\n"
+"\n"
+msgstr ""
+"%(member)s byl úspì¹nì pøihlá¹en do konference %(listname)s.\n"
+"\n"
+"\n"
+
+#: templates/en/adminunsubscribeack.txt:1
+msgid ""
+"%(member)s has been removed from %(listname)s.\n"
+"\n"
+msgstr ""
+"%(member)s byl odhlá¹en z konference %(listname)s.\n"
+"\n"
+
+#: templates/en/admlogin.html:1
+msgid ""
+"<html>\n"
+"<head>\n"
+"  <title>%(listname)s %(who)s Authentication</title>\n"
+"</head>\n"
+"<body bgcolor=\"#ffffff\">\n"
+"<FORM METHOD=POST ACTION=\"%(path)s\">\n"
+"%(message)s\n"
+"  <TABLE WIDTH=\"100%%\" BORDER=\"0\" CELLSPACING=\"4\" CELLPADDING=\"5\">\n"
+"    <TR>\n"
+"      <TD COLSPAN=\"2\" WIDTH=\"100%%\" BGCOLOR=\"#99CCFF\" ALIGN=\"CENTER"
+"\">\n"
+"\t<B><FONT COLOR=\"#000000\" SIZE=\"+1\">%(listname)s %(who)s\n"
+"\t    Authentication</FONT></B>\n"
+"      </TD>\n"
+"    </TR>\n"
+"    <tr>\n"
+"      <TD><div ALIGN=\"Right\">List %(who)s Password:</div></TD>\n"
+"      <TD><INPUT TYPE=\"password\" NAME=\"adminpw\" SIZE=\"30\"></TD>\n"
+"    </tr>\n"
+"    <tr>\n"
+"      <td colspan=2 align=middle><INPUT type=\"SUBMIT\"\n"
+"                                        name=\"admlogin\"\n"
+"\t\t\t\t\tvalue=\"Let me in...\">\n"
+"      </td>\n"
+"    </tr>\n"
+"  </TABLE>\n"
+"      <p><strong><em>Important:</em></strong> From this point on, you\n"
+"      must have cookies enabled in your browser, otherwise no\n"
+"      administrative changes will take effect.\n"
+"\n"
+"      <p>Session cookies are used in Mailman's\n"
+"      administrative interface so that you don't need to\n"
+"      re-authenticate with every administrative operation.  This\n"
+"      cookie will expire automatically when you exit your browser, or\n"
+"      you can explicitly expire the cookie by hitting the\n"
+"      <em>Logout</em> link under <em>Other Administrative\n"
+"      Activities</em> (which you'll see once you successfully log in).\n"
+"</FORM>\n"
+"</body>\n"
+"</html>\n"
+msgstr ""
+"<html>\n"
+"<head>\n"
+"  <title>%(listname)s %(who)s pøihlá¹ení</title>\n"
+"</head>\n"
+"<body bgcolor=\"#ffffff\">\n"
+"<FORM METHOD=POST ACTION=\"%(path)s\">\n"
+"%(message)s\n"
+"  <TABLE WIDTH=\"100%%\" BORDER=\"0\" CELLSPACING=\"4\" CELLPADDING=\"5\">\n"
+"    <TR>\n"
+"      <TD COLSPAN=\"2\" WIDTH=\"100%%\" BGCOLOR=\"#99CCFF\" ALIGN=\"CENTER"
+"\">\n"
+"\t<B><FONT COLOR=\"#000000\" SIZE=\"+1\">%(listname)s %(who)s\n"
+"\t    pøihlá¹ení</FONT></B>\n"
+"      </TD>\n"
+"    </TR>\n"
+"    <tr>\n"
+"      <TD><div ALIGN=\"Right\">Heslo pro %(who)s:</div></TD>\n"
+"      <TD><INPUT TYPE=\"password\" NAME=\"adminpw\" SIZE=\"30\"></TD>\n"
+"    </tr>\n"
+"    <tr>\n"
+"      <td colspan=2 align=middle><INPUT type=\"SUBMIT\"\n"
+"                                        name=\"admlogin\"\n"
+"\t\t\t\t\tvalue=\"Pus» mì dovnitø...\">\n"
+"      </td>\n"
+"    </tr>\n"
+"  </TABLE>\n"
+"      <p><strong><em>Pozor:</em></strong> Aby systém fungoval \n"
+"      správnì musíte mít povolené cookie ve Va¹em prohlí¾eèi.\n"
+"\n"
+"      <p>Cookies se pou¾ívají na to, abyste nemuseli jeden\n"
+"      ka¾dý po¾adavek znovu potvrzovat heslem. Zaniknou\n"
+"      pokud ukonèíte prohlí¾eè a nebo kdy¾ se odhlásíte.\n"
+"      Odhlásit se mù¾ete kliknutím na <em>Odhlásit</em>. \n"
+"      Tento odkaz uvidíte a¾ po úspì¹ném pøihlá¹ení.\n"
+"</FORM>\n"
+"</body>\n"
+"</html>\n"
+
+#: templates/en/approve.txt:1
+msgid ""
+"Your request to %(requestaddr)s:\n"
+"\n"
+"    %(cmd)s\n"
+"\n"
+"has been forwarded to the person running the list.\n"
+"\n"
+"This is probably because you are trying to subscribe to a 'closed'\n"
+"list.\n"
+"\n"
+"You will receive email notification of the list owner's decision about\n"
+"your subscription request.\n"
+"\n"
+"Any questions about the list owner's policy should be directed to:\n"
+"\n"
+"    %(adminaddr)s\n"
+msgstr ""
+"Vá¹ po¾adavek zaslaný na adresu %(requestaddr)s:\n"
+"\n"
+"    %(cmd)s\n"
+"\n"
+"byl pøedán správci konference.\n"
+"\n"
+"Pravdìpodobnì se pøihla¹ujete do uzavøené konference, která\n"
+"vy¾aduje pro pøihlá¹ení schválení správce. Pøípadnì automatický\n"
+"systém správy konference po¾adavku neporozumìl.\n"
+"\n"
+"O rozhodnutí správce budete informováni elektronickou po¹tou.\n"
+"\n"
+"Jakékoliv dal¹í dotazy smìøujte, prosím, na správce konference:\n"
+"\n"
+"    %(adminaddr)s\n"
+"\n"
+"\n"
+
+#: templates/en/archidxentry.html:1
+msgid ""
+"<LI><A HREF=\"%(filename)s\">%(subject)s\n"
+"</A><A NAME=\"%(sequence)i\">&nbsp;</A>\n"
+"<I>%(author)s\n"
+"</I>\n"
+msgstr ""
+
+#: templates/en/archidxfoot.html:1
+msgid ""
+"    </ul>\n"
+"    <p>\n"
+"      <a name=\"end\"><b>Last message date:</b></a> \n"
+"       <i>%(lastdate)s</i><br>\n"
+"    <b>Archived on:</b> <i>%(archivedate)s</i>\n"
+"    <p>\n"
+"   <ul>\n"
+"         <li> <b>Messages sorted by:</b>\n"
+"\t        %(thread_ref)s\n"
+"\t\t%(subject_ref)s\n"
+"\t\t%(author_ref)s\n"
+"\t\t%(date_ref)s\n"
+"\t     <li><b><a href=\"%(listinfo)s\">More info on this list...\n"
+"                    </a></b></li>\n"
+"     </ul>\n"
+"     <p>\n"
+"     <hr>\n"
+"     <i>This archive was generated by\n"
+"     Pipermail %(version)s.</i>\n"
+"  </BODY>\n"
+"</HTML>\n"
+msgstr ""
+
+#: templates/en/archidxhead.html:1
+#, fuzzy
+msgid ""
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">\n"
+"<HTML>\n"
+"  <HEAD>\n"
+"     <title>The %(listname)s %(archive)s Archive by %(archtype)s</title>\n"
+"     <META NAME=\"robots\" CONTENT=\"noindex,follow\">\n"
+"     %(encoding)s\n"
+"  </HEAD>\n"
+"  <BODY BGCOLOR=\"#ffffff\">\n"
+"      <a name=\"start\"></A>\n"
+"      <h1>%(archive)s Archives by %(archtype)s</h1>\n"
+"      <ul>\n"
+"         <li> <b>Messages sorted by:</b>\n"
+"\t        %(thread_ref)s\n"
+"\t\t%(subject_ref)s\n"
+"\t\t%(author_ref)s\n"
+"\t\t%(date_ref)s\n"
+"\n"
+"\t     <li><b><a href=\"%(listinfo)s\">More info on this list...\n"
+"                    </a></b></li>\n"
+"      </ul>\n"
+"      <p><b>Starting:</b> <i>%(firstdate)s</i><br>\n"
+"         <b>Ending:</b> <i>%(lastdate)s</i><br>\n"
+"         <b>Messages:</b> %(size)s<p>\n"
+"     <ul>\n"
+msgstr ""
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">\n"
+"<HTML>\n"
+"  <HEAD>\n"
+"     <title>Archiv konference %(listname)s</title>\n"
+"     <META NAME=\"robots\" CONTENT=\"noindex,follow\">\n"
+"  </HEAD>\n"
+"  <BODY BGCOLOR=\"#ffffff\">\n"
+"     <h1>Archiv konference %(listname)s</h1>\n"
+"     <p>\n"
+"      Do této konference nebyl dosud zaslán ¾ádný pøíspìvek.\n"
+"      Proto je tento archiv prázdný. Více informací o konferenci\n"
+"      získáte na <a href=\"%(listinfo)s\">informaèní stránce.</a>.\n"
+"     </p>\n"
+"  </BODY>\n"
+"  </HTML>\n"
+
+#: templates/en/archlistend.html:1
+msgid "         </table>\n"
+msgstr ""
+
+#: templates/en/archliststart.html:1
+msgid ""
+"\t<table border=3>\n"
+"          <tr><td>Archive</td>\n"
+"          <td>View by:</td>\n"
+"          <td>Downloadable version</td></tr>\n"
+msgstr ""
+
+#: templates/en/archtoc.html:1
+#, fuzzy
+msgid ""
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">\n"
+"<HTML>\n"
+"  <HEAD>\n"
+"     <title>The %(listname)s Archives</title>\n"
+"     <META NAME=\"robots\" CONTENT=\"noindex,follow\">\n"
+"     %(meta)s\n"
+"  </HEAD>\n"
+"  <BODY BGCOLOR=\"#ffffff\">\n"
+"     <h1>The %(listname)s Archives </h1>\n"
+"     <p>\n"
+"      You can get <a href=\"%(listinfo)s\">more information about this list</"
+"a>\n"
+"      or you can <a href=\"%(fullarch)s\">download the full raw archive</a>\n"
+"      (%(size)s).\n"
+"     </p>\n"
+"     %(noarchive_msg)s\n"
+"     %(archive_listing_start)s\n"
+"     %(archive_listing)s\n"
+"     %(archive_listing_end)s\n"
+"     </BODY>\n"
+"     </HTML>\n"
+msgstr ""
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">\n"
+"<HTML>\n"
+"  <HEAD>\n"
+"     <title>Archiv konference %(listname)s</title>\n"
+"     <META NAME=\"robots\" CONTENT=\"noindex,follow\">\n"
+"  </HEAD>\n"
+"  <BODY BGCOLOR=\"#ffffff\">\n"
+"     <h1>Archiv konference %(listname)s</h1>\n"
+"     <p>\n"
+"      Do této konference nebyl dosud zaslán ¾ádný pøíspìvek.\n"
+"      Proto je tento archiv prázdný. Více informací o konferenci\n"
+"      získáte na <a href=\"%(listinfo)s\">informaèní stránce.</a>.\n"
+"     </p>\n"
+"  </BODY>\n"
+"  </HTML>\n"
+
+#: templates/en/archtocentry.html:1
+msgid ""
+"\n"
+"\t    <tr>\n"
+"            <td>%(archivelabel)s:</td>\n"
+"            <td>\n"
+"              <A href=\"%(archive)s/thread.html\">[ Thread ]</a>\n"
+"              <A href=\"%(archive)s/subject.html\">[ Subject ]</a>\n"
+"              <A href=\"%(archive)s/author.html\">[ Author ]</a>\n"
+"              <A href=\"%(archive)s/date.html\">[ Date ]</a>\n"
+"            </td>\n"
+"            %(textlink)s\n"
+"            </tr>\n"
+"\n"
+msgstr ""
+
+#: templates/en/article.html:1
+msgid ""
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">\n"
+"<HTML>\n"
+" <HEAD>\n"
+"   <TITLE> %(title)s\n"
+"   </TITLE>\n"
+"   <LINK REL=\"Index\" HREF=\"index.html\" >\n"
+"   <LINK REL=\"made\" HREF=\"mailto:%(email_url)s?Subject=%(subject_url)s&In-"
+"Reply-To=%(in_reply_to_url)s\">\n"
+"   <META NAME=\"robots\" CONTENT=\"index,nofollow\">\n"
+"   %(encoding)s\n"
+"   %(prev)s\n"
+"   %(next)s\n"
+" </HEAD>\n"
+" <BODY BGCOLOR=\"#ffffff\">\n"
+"   <H1>%(subject_html)s</H1>\n"
+"    <B>%(author_html)s</B> \n"
+"    <A HREF=\"mailto:%(email_url)s?Subject=%(subject_url)s&In-Reply-To=%"
+"(in_reply_to_url)s\"\n"
+"       TITLE=\"%(subject_html)s\">%(email_html)s\n"
+"       </A><BR>\n"
+"    <I>%(datestr_html)s</I>\n"
+"    <P><UL>\n"
+"        %(prev_wsubj)s\n"
+"        %(next_wsubj)s\n"
+"         <LI> <B>Messages sorted by:</B> \n"
+"              <a href=\"date.html#%(sequence)s\">[ date ]</a>\n"
+"              <a href=\"thread.html#%(sequence)s\">[ thread ]</a>\n"
+"              <a href=\"subject.html#%(sequence)s\">[ subject ]</a>\n"
+"              <a href=\"author.html#%(sequence)s\">[ author ]</a>\n"
+"         </LI>\n"
+"       </UL>\n"
+"    <HR>  \n"
+"<!--beginarticle-->\n"
+"%(body)s\n"
+"<!--endarticle-->\n"
+"    <HR>\n"
+"    <P><UL>\n"
+"        <!--threads-->\n"
+"\t%(prev_wsubj)s\n"
+"\t%(next_wsubj)s\n"
+"         <LI> <B>Messages sorted by:</B> \n"
+"              <a href=\"date.html#%(sequence)s\">[ date ]</a>\n"
+"              <a href=\"thread.html#%(sequence)s\">[ thread ]</a>\n"
+"              <a href=\"subject.html#%(sequence)s\">[ subject ]</a>\n"
+"              <a href=\"author.html#%(sequence)s\">[ author ]</a>\n"
+"         </LI>\n"
+"       </UL>\n"
+"\n"
+"<hr>\n"
+"<a href=\"%(listurl)s\">More information about the %(listname)s\n"
+"mailing list</a><br>\n"
+"</body></html>\n"
+msgstr ""
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">\n"
+"<HTML>\n"
+" <HEAD>\n"
+"   <TITLE> %(title)s\n"
+"   </TITLE>\n"
+"   <LINK REL=\"Index\" HREF=\"index.html\" >\n"
+"   <LINK REL=\"made\" HREF=\"mailto:%(email_url)s?Subject=%(subject_url)s&In-"
+"Reply-To=%(in_reply_to_url)s\">\n"
+"   <META NAME=\"robots\" CONTENT=\"index,nofollow\">\n"
+"   %(encoding)s\n"
+"   %(prev)s\n"
+"   %(next)s\n"
+" </HEAD>\n"
+" <BODY BGCOLOR=\"#ffffff\">\n"
+"   <H1>%(subject_html)s</H1>\n"
+"    <B>%(author_html)s</B> \n"
+"    <A HREF=\"mailto:%(email_url)s?Subject=%(subject_url)s&In-Reply-To=%"
+"(in_reply_to_url)s\"\n"
+"       TITLE=\"%(subject_html)s\">%(email_html)s\n"
+"       </A><BR>\n"
+"    <I>%(datestr_html)s</I>\n"
+"    <P><UL>\n"
+"        %(prev_wsubj)s\n"
+"        %(next_wsubj)s\n"
+"         <LI> <B>Zprávy tøídìné podle:</B> \n"
+"              <a href=\"date.html#%(sequence)s\">[ data ]</a>\n"
+"              <a href=\"thread.html#%(sequence)s\">[ vlákna ]</a>\n"
+"              <a href=\"subject.html#%(sequence)s\">[ subjektu ]</a>\n"
+"              <a href=\"author.html#%(sequence)s\">[ autora ]</a>\n"
+"         </LI>\n"
+"       </UL>\n"
+"    <HR>  \n"
+"<!--beginarticle-->\n"
+"%(body)s\n"
+"<!--endarticle-->\n"
+"    <HR>\n"
+"    <P><UL>\n"
+"        <!--threads-->\n"
+"\t%(prev_wsubj)s\n"
+"\t%(next_wsubj)s\n"
+"         <LI> <B>Zprávy tøídìné podle:</B> \n"
+"              <a href=\"date.html#%(sequence)s\">[ data ]</a>\n"
+"              <a href=\"thread.html#%(sequence)s\">[ vlákna ]</a>\n"
+"              <a href=\"subject.html#%(sequence)s\">[ subjektu ]</a>\n"
+"              <a href=\"author.html#%(sequence)s\">[ autora ]</a>\n"
+"         </LI>\n"
+"       </UL>\n"
+"<hr>\n"
+"<a href=\"%(listurl)s\">Dal¹í informace o konferenci %(listname)s</a><br>\n"
+"</body></html>\n"
+
+#: templates/en/bounce.txt:1
+msgid ""
+"This is a Mailman mailing list bounce action notice:\n"
+"\n"
+"    List:       %(listname)s\n"
+"    Member:     %(addr)s\n"
+"    Action:     Subscription %(negative)s%(did)s.\n"
+"    Reason:     Excessive or fatal bounces.\n"
+"    %(but)s\n"
+"\n"
+"%(reenable)s\n"
+"The triggering bounce notice is attached below.\n"
+"\n"
+"Questions?  \n"
+"Contact the Mailman site administrator at %(owneraddr)s.\n"
+msgstr ""
+"Toto je zpráva od automatického systému pro detekci\n"
+"neplatných elektronických adres systému Mailman.\n"
+"\n"
+"\n"
+"    Konference: %(listname)s\n"
+"    Úèastník:   %(addr)s\n"
+"    Akce:       Èlenství %(negative)s%(did)s.\n"
+"    Dùvod:      Pøekroèení poètu nedoruèitelných pøíspìvkù.\n"
+"    %(but)s\n"
+"\n"
+"%(reenable)s\n"
+"Zpráva, kterou se nedaøí doruèit je pøilo¾ena ní¾e.\n"
+"\n"
+"Dotazy?  Kontaktuje správce Mailmana na %(owneraddr)s.\n"
+"\n"
+"\n"
+
+#: templates/en/convert.txt:1
+msgid ""
+"The %(listname)s mailing list has just undergone a big change.  It is\n"
+"running on a new mailing list package called \"Mailman\".  This will\n"
+"hopefully solve a lot of problems that administering this list has\n"
+"presented.\n"
+"\n"
+"How does this affect you?\n"
+"\n"
+"1) Mail intended for the whole list should be sent to: %(listaddr)s.\n"
+"\n"
+"2) You have been given an arbitrary password to prevent others from\n"
+"unsubscribing you without your knowledge.  It will be mailed to you in \n"
+"a separate email, which you may have already received.  Don't worry if \n"
+"you forget this password; a reminder will be sent to you via email\n"
+"every month.\n"
+"\n"
+"3) If you have World Wide Web access, you can use it any time to\n"
+"unsubscribe from this list, to switch to and from digest mode, to\n"
+"check back issues of the list (which will be available after the list\n"
+"has been getting posts for a day or so), etc.  The Web address for\n"
+"these resources is:\n"
+"\n"
+"    %(listinfo_url)s\n"
+"\n"
+"4) If you do not have WWW access, you can do these same things via\n"
+"email.  Send mail to %(requestaddr)s with a subject or body containing \n"
+"just the word \"help\" (without the quotes).  You will receive an\n"
+"automated reply giving you further directions.\n"
+"\n"
+"Please address any questions or problems with this new setup to:\n"
+"%(adminaddr)s.\n"
+"\n"
+"This message was auto-generated by Mailman %(version)s.  For more\n"
+"information on the Mailman software, visit the Mailman homepage at\n"
+"http://www.list.org/\n"
+msgstr ""
+"Konference %(listname)s právì prodìlal velkou zmìnu. Od nynìj¹ka je \n"
+"provozována novým programem, který se jmenuje \"Mailman\". Doufám,\n"
+"¾e to vyøe¹í v¹echny problémy, které se mo¾ná døíve pøi bìhu\n"
+"konference vyskytly.\n"
+"\n"
+"A jak se to týká Vás?\n"
+"\n"
+"1) Pøíspìvky do konference budou nyní zasílány na adresu:\n"
+"   %(listaddr)s.\n"
+"   Je docela dobøe mo¾né, ¾e tato adresa se shoduje s adresou\n"
+"   pùvodní, zále¾í to na lokální situaci.\n"
+"\n"
+"2) Bude Vám pøidìleno unikátní heslo, které znemo¾ní, aby nìkdo\n"
+"   jiný modifikoval nastavení Va¹eho u¾ivatelského konta, pøípadnì\n"
+"   aby Vás bez Va¹eho vìdomí pøihlásil nebo odhlásil. Pokud heslo\n"
+"   zapomenete, ¾ádný problém. Heslo je znovu zasíláno ka¾dý mìsíc\n"
+"   a kromì toho si jej mù¾ete nechat zaslat z www stránky konference.\n"
+"   Pøípadnì se jej tam mù¾ete i zmìnit.  \n"
+"\n"
+"3) Pokud máte pøístup WWW, mù¾ete kdykoliv mìnit nastavení\n"
+"   svého u¾ivatelského úètu na adrese:\n"
+"\n"
+"    %(listinfo_url)s\n"
+"\n"
+"   Zde se mù¾ete jednak pøihlásit a odhlásit a jednak mìnit nastavení\n"
+"   jako tøeba doèasný zákaz zasílání pøíspìvkù, zapnutí a vypnutí\n"
+"   digest re¾imu. (Pokud je digest aktivní, jsou Vám pøíspìvky zasílány\n"
+"   jen jednou za nastavený èas. Napø. dostanete veèer jeden dopis\n"
+"   obsahující pøíspìvky z celého dne.)\n"
+"\n"
+"4) Pokud nemáte pøístup k WWW, nevadí. Svùj úèet mù¾ete spravovat\n"
+"   i pomocí elektronické po¹ty. Za¹lete na adresu %(requestaddr)s\n"
+"   dopis obsahující slùvko help v tìle dopisu a obratem obdr¾íte\n"
+"   podrobný návod.\n"
+"\n"
+"Pokud máte jakékoliv dotazy nebo problémy, mù¾ete kontaktovat správce\n"
+"konference na adrese:\n"
+"%(adminaddr)s.\n"
+"\n"
+"Tato zprávy byla generována automaticky programem Mailman verze %(version)"
+"s.\n"
+"Jakékoliv dal¹í informace o tomto programu naleznete na adrese:\n"
+"http://www.list.org/\n"
+
+#: templates/en/checkdbs.txt:1
+msgid ""
+"The %(real_name)s@%(host_name)s mailing list has %(count)d request(s)\n"
+"waiting for your consideration at:\n"
+"\n"
+"\t%(adminDB)s\n"
+"\t\n"
+"Please attend to this at your earliest convenience.  This notice of\n"
+"pending requests, if any, will be sent out daily.\n"
+msgstr ""
+"Konference %(real_name)s@%(host_name)s má %(count)d po¾adavkù, které\n"
+"èekají na Va¹e rozhodnutí na:\n"
+"\n"
+"\t%(adminDB)s\n"
+"\t\n"
+"Prosím, rozhodnìte co nejdøíve o osudu èekajících po¾adavkù. Tato zpráva\n"
+"je zasílána jednou dennì, pokud nìjaké po¾adavky èekají na vyøízení.\n"
+"\n"
+
+#: templates/en/cronpass.txt:1
+msgid ""
+"This is a reminder, sent out once a month, about your %(hostname)s\n"
+"mailing list memberships.  It includes your subscription info and how\n"
+"to use it to change it or unsubscribe from a list.\n"
+"\n"
+"You can visit the URLs to change your membership status or\n"
+"configuration, including unsubscribing, setting digest-style delivery\n"
+"or disabling delivery altogether (e.g., for a vacation), and so on.\n"
+"\n"
+"In addition to the URL interfaces, you can also use email to make such\n"
+"changes.  For more info, send a message to the '-request' address of\n"
+"the list (for example, %(exreq)s) containing just the word 'help' in\n"
+"the message body, and an email message will be sent to you with\n"
+"instructions.\n"
+"\n"
+"If you have questions, problems, comments, etc, send them to\n"
+"%(owner)s.  Thanks!\n"
+"\n"
+"Passwords for %(useraddr)s:\n"
+"\n"
+msgstr ""
+"Tato zpráva je zasílána jednou mìsíènì, aby Vás upozornila na stav\n"
+"Va¹eho èlenství v konferencích na serveru %(hostname)s\n"
+"Zároveò obsahuje pro pøipomenutí hesla pro správu Va¹eho èlenského\n"
+"konta a informace o správì konference.\n"
+"\n"
+"Pokud nav¹tívíte ní¾e uvedený odkaz, mù¾ete si zmìnit parametry\n"
+"svého èlenského konta, vèetnì pøihlá¹ení a odhlá¹ení. \n"
+"\n"
+"Kromì http pøístupu mù¾ete parametry svého èlenského konta\n"
+"mìnit zasláním po¾adavkù na '-request'adresu konference.\n"
+"Dopis zaslaný (napø. na, %(exreq)s) obsahující slovo 'help'\n"
+"v tìle dopisu vrátí zpìt kompletní popis ovládání konference \n"
+"elektronickou po¹tou.\n"
+"\n"
+"Pokud máte nìjaké dotazy, problémy, pøipomínky a tak podobnì,\n"
+"za¹lete je, prosím, na adresu %(owner)s.  Dìkuji!\n"
+"\n"
+"Hesla pro %(useraddr)s:\n"
+"\n"
+"\n"
+"\n"
+
+#: templates/en/disabled.txt:1
+msgid ""
+"Your membership in the mailing list %(listname)s has been disabled\n"
+"%(reason)s.  You will not get any more messages from this\n"
+"list until you re-enable your membership.  You will receive\n"
+"%(noticesleft)s more reminders like this before your membership in the\n"
+"list is deleted.\n"
+"\n"
+"To re-enable your membership, you can simply respond to this message\n"
+"(leaving the Subject: line intact), or visit the confirmation page at\n"
+"\n"
+"    %(confirmurl)s\n"
+"\n"
+"You can also visit your membership page at\n"
+"\n"
+"    %(optionsurl)s\n"
+"\n"
+"On your membership page, you can change various delivery options such\n"
+"as your email address and whether you get digests or not.  As a\n"
+"reminder, your membership password is\n"
+"\n"
+"    %(password)s\n"
+"\n"
+"If you have any questions or problems, you can contact the list owner\n"
+"at\n"
+"\n"
+"    %(owneraddr)s\n"
+msgstr ""
+"Va¹e èlenství v konferenci %(listname)s\n"
+"bylo pozastaveno, z dùvodu: %(reason)s\n"
+"Toto varování bude zasláno je¹tì %(noticesleft)s\n"
+"a pokud nebudete reagovat, budete z konference odhlá¹en.\n"
+"\n"
+"Pokud máte zájem být i nadále èlenem, odpovìzte na tuto zprávu,\n"
+"tak, abyste nezmìnil to, co je napsáno v Subjectu. Nebo mù¾ete\n"
+"nav¹tívit stránku\n"
+"\n"
+"    %(confirmurl)s\n"
+"\n"
+"Kde mù¾ete své èlenství potvrdit. Také mù¾ete nav¹tívit stránku\n"
+"s konfigurací úèastníka na adrese:\n"
+"\n"
+"    %(optionsurl)s\n"
+"\n"
+"A na této stránce zmìnit parametry doruèování nebo emailovou\n"
+"adresu. Pro pøístup budete potøebovat heslo, které zní:\n"
+"\n"
+"    %(password)s\n"
+"\n"
+"Pokud máte nìjaké dal¹í otázky nebo problémy, kontaktujte správce na\n"
+"\n"
+"    %(owneraddr)s\n"
+
+#: templates/en/emptyarchive.html:1
+msgid ""
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">\n"
+"<HTML>\n"
+"  <HEAD>\n"
+"     <title>The %(listname)s Archives</title>\n"
+"     <META NAME=\"robots\" CONTENT=\"noindex,follow\">\n"
+"  </HEAD>\n"
+"  <BODY BGCOLOR=\"#ffffff\">\n"
+"     <h1>The %(listname)s Archives </h1>\n"
+"     <p>\n"
+"      No messages have been posted to this list yet, so the archives are\n"
+"      currently empty.  You can get <a href=\"%(listinfo)s\">more "
+"information\n"
+"      about this list</a>.\n"
+"     </p>\n"
+"  </BODY>\n"
+"  </HTML>\n"
+msgstr ""
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">\n"
+"<HTML>\n"
+"  <HEAD>\n"
+"     <title>Archiv konference %(listname)s</title>\n"
+"     <META NAME=\"robots\" CONTENT=\"noindex,follow\">\n"
+"  </HEAD>\n"
+"  <BODY BGCOLOR=\"#ffffff\">\n"
+"     <h1>Archiv konference %(listname)s</h1>\n"
+"     <p>\n"
+"      Do této konference nebyl dosud zaslán ¾ádný pøíspìvek.\n"
+"      Proto je tento archiv prázdný. Více informací o konferenci\n"
+"      získáte na <a href=\"%(listinfo)s\">informaèní stránce.</a>.\n"
+"     </p>\n"
+"  </BODY>\n"
+"  </HTML>\n"
+
+#: templates/en/headfoot.html:1
+msgid ""
+"This text can include \n"
+"<a href=\"http://www.python.org/doc/current/lib/typesseq-strings.html"
+"\">Python\n"
+"format strings</a> which are resolved against list attributes.  The\n"
+"list of substitutions allowed are:\n"
+"\n"
+"<ul>\n"
+"    <li><b>real_name</b> - The \"pretty\" name of the list; usually\n"
+"    the list name with capitalization.\n"
+"\n"
+"    <li><b>list_name</b> - The name by which the list is\n"
+"    identified in URLs, where case is significant.\n"
+"\n"
+"    <li><b>host_name</b> - The fully qualified domain name\n"
+"    that the list server runs on.\n"
+"\n"
+"    <li><b>web_page_url</b> - The base URL for Mailman.  This\n"
+"    can be appended with,\n"
+"    e.g. <em>listinfo/%(list_name)s</em> to yield the\n"
+"    listinfo page for the mailing list.\n"
+"\n"
+"    <li><b>description</b> - The brief description of the\n"
+"    mailing list.\n"
+"\n"
+"    <li><b>info</b> - The full description of the mailing\n"
+"    list.\n"
+"\n"
+"    <li><b>cgiext</b> - The extension added to CGI scripts.\n"
+"</ul>\n"
+msgstr ""
+"Tento text mù¾e obsahovat <a\n"
+"href=\"http://www.python.org/doc/current/lib/typesseq-strings.html"
+"\">formátovací\n"
+"pøíkazy Pythonu</a> které se nahrazují odpovídajícími hodnotami, pøi\n"
+"generování stránky.  Nejdùle¾itìj¹í promìnné jsou:\n"
+"\n"
+"<ul>\n"
+"    <li><b>real_name</b> - `Hezké' jméno konference, \n"
+"    obvykle název, který má zachovánu velikost písmen tak jak je \n"
+"    zadán v konfiguraci.\n"
+"\n"
+"    <li><b>list_name</b> - Jméno konference, tak jak\n"
+"    se pou¾ívá v URL, tedy tam kde zále¾í na velikosti písmen (v¹echna\n"
+"    jsou pøevedena na malá).\n"
+"\n"
+"    <li><b>host_name</b> - Celé DNS jméno serveru na\n"
+"    kterém konference bì¾í.\n"
+"    \n"
+"    <li><b>web_page_url</b> - Základní URL pro Mailman.\n"
+"    Pokud je následováno napø. tímto pøíkazem:\n"
+"    <em>listinfo/%(list_name)s</em>\n"
+"    vede na stránku s informacemi o konferenci.\n"
+"\n"
+"    <li><b>description</b> - Krátký, charakteristický\n"
+"    popis konference, tak jak byl zadán pøi konfiguraci.\n"
+"\n"
+"    <li><b>info</b> - Kompletní, dlouhý, popis konference.\n"
+"\n"
+"    <li><b>cgiext</b> - pøípona pøidávaná k cgi scriptùm.\n"
+"\n"
+"</ul>\n"
+
+#: templates/en/help.txt:1
+msgid ""
+"Help for %(listname)s mailing list:\n"
+"\n"
+"This is email command help for version %(version)s of the \"Mailman\"\n"
+"list manager.  The following describes commands you can send to get\n"
+"information about and control your subscription to Mailman lists at\n"
+"this site.  A command can be in the subject line or in the body of the\n"
+"message.\n"
+"\n"
+"Note that much of the following can also be accomplished via the World\n"
+"Wide Web, at:\n"
+"\n"
+"    %(listinfo_url)s\n"
+"\n"
+"In particular, you can use the Web site to have your password sent to\n"
+"your delivery address.\n"
+"\n"
+"List specific commands (subscribe, who, etc) should be sent to the\n"
+"*-request address for the particular list, e.g. for the 'mailman'\n"
+"list, use 'mailman-request@...'.\n"
+"\n"
+"About the descriptions - words in \"<>\"s signify REQUIRED items and\n"
+"words in \"[]\" denote OPTIONAL items.  Do not include the \"<>\"s or\n"
+"\"[]\"s when you use the commands.\n"
+"\n"
+"The following commands are valid:\n"
+"\n"
+"    %(commands)s\n"
+"\n"
+"Commands should be sent to %(requestaddr)s\n"
+"\n"
+"Questions and concerns for the attention of a person should be sent to\n"
+"\n"
+"    %(adminaddr)s\n"
+msgstr ""
+"Nápovìda pro konferenci %(listname)s:\n"
+"\n"
+"Tato konference je zaji¹»ována programem \"Mailman\" verze %(version)s.\n"
+"Pro její ovládání mù¾ete pou¾ít dále popsané pøíkazy. Pøíkaz mù¾e být\n"
+"zadán v tìle dopisu nebo v øádce subject: (v èeských programech\n"
+"pøekládáme jako vìc:). Je lep¹í, kdy¾ dopis nebude kromì pøíkazù\n"
+"obsahovat nic jiného (tøeba podpis) a  pøíkazy musíte zasílat z\n"
+"adresy, ze které jste se pøihlásili. Pokud je omezeno pøispívání do\n"
+"konference pouze pro její úèastníky, musíte se pøihlásit z adresy,\n"
+"kterou budete pou¾ívat pro pøispívání. Také se mù¾ete pøihlásit\n"
+"nìkolikrát, ze v¹ech adres, které budete pou¾ívat a u nìkterých\n"
+"nastavit, ¾e si nepøejete zasílat pøíspìvky.\n"
+"\n"
+"Vìt¹inu zde popsaných akcí mù¾ete mnohem pohodlnìji provést pomocí www\n"
+"prohlí¾eèe na adrese:\n"
+"\n"
+"    %(listinfo_url)s\n"
+"\n"
+"Pokud zapomenete heslo, mù¾ete si jej nechat na vý¹e uvedené adrese\n"
+"zaslat na svou e-mailovou adresu.\n"
+"\n"
+"Pøíkazy vztahující se na urèitou konferenci (subscribe, who atd.)\n"
+"zasílejte na tzv. request adresu, která má tvar \n"
+"jméno_konference-request@..., tedy napøíklad pro konferenci, které se\n"
+"jmenuje mailman na adresu mailman-request@....\n"
+"\n"
+"Konvence zápisu: slova uvedená mezi ostrými závorkami \"<>\" oznaèují\n"
+"povinné parametry, které musí být u pøíkazu uvedeny, slova v hranatých\n"
+"závorkách \"[]\" jsou nepovinné parametry, které uvedete jen tehdy, kdy¾\n"
+"po¾adujete nìjakou zvlá¹tní konfiguraci. Závorky \"<>\" a \"[]\" nejsou\n"
+"souèástí pøíkazù a neuvádìjí se.\n"
+"\n"
+"Systém rozumí následujícím pøíkazùm:\n"
+"\n"
+"    %(commands)s\n"
+"\n"
+"Pøíkazy zasílejte na adresu %(requestaddr)s\n"
+"\n"
+"Pøípadnì dotazy nebo námìty zasílejte na adresu\n"
+"\n"
+"    %(adminaddr)s\n"
+
+#: templates/en/invite.txt:1
+#, fuzzy
+msgid ""
+"Your address \"%(email)s\" has been invited to join the %(listname)s\n"
+"mailing list at %(hostname)s by the %(listname)s mailing list owner.\n"
+"You may accept the invitation by simply replying to this message,\n"
+"keeping the Subject: header intact.\n"
+"\n"
+"You can also visit this web page:\n"
+"\n"
+"    %(confirmurl)s\n"
+"\n"
+"Or you should include the following line -- and only the following\n"
+"line -- in a message to %(requestaddr)s:\n"
+"\n"
+"    confirm %(cookie)s\n"
+"\n"
+"Note that simply sending a `reply' to this message should work from\n"
+"most mail readers.\n"
+"\n"
+"If you want to decline this invitation, please simply disregard this\n"
+"message.  If you have any questions, please send them to\n"
+"%(listowner)s.\n"
+msgstr ""
+"Konference %(listname)s -- potvrzení pøihlá¹ení\n"
+"\n"
+"Obdr¾eli jsme po¾adavek z %(remote)s na pøihlá¹ení adresy\n"
+"\"%(email)s\", do konference %(listaddr)s. Pro potvrzení, ¾e tento "
+"po¾adavek\n"
+"pochází od Vás za¹lete, prosíme, zprávu na adresu %(requestaddr)s\n"
+"a buï: \n"
+"\n"
+"- ponechte øádek vìc: (Subject:) beze zmìny (pøípadné \"Re:\" doplnìné\n"
+"  automaticky po¹tovním klientem nevadí),\n"
+"\n"
+"- nebo vlo¾te do tìla dopisu následující øádek. Kromì nìj odstraòte\n"
+"  jakýkoliv dal¹í text, øádek musí být na první øádce a zaèínat hned\n"
+"  na zaèátku øádky.\n"
+"\n"
+"confirm %(cookie)s\n"
+"\n"
+"(Ve vìt¹inì po¹tovních klientù prostì za¹lete odpovìï na tento dopis.\n"
+"Obvykle je toti¾ øádek vìc: ponechán beze zmìny.)\n"
+"\n"
+"Nebo mù¾ete místo zaslání mailu nav¹tívit následující URL:\n"
+"\n"
+"    %(confirmurl)s\n"
+"\n"
+"Pokud se do konference pøihlásit nechcete, nebo dokonce nevíte, proè jste\n"
+"tento dopis dostali, prostì jej zahoïte. Pokud máte nìjaký dotaz nebo\n"
+"problém, prosím, kontaktujte správce na adrese: %(listadmin)s.\n"
+
+#: templates/en/listinfo.html:1
+msgid ""
+"<!-- $Revision: 7626 $ -->\n"
+"<HTML>\n"
+"  <HEAD>\n"
+"    <TITLE><MM-List-Name> Info Page</TITLE>\n"
+"  \n"
+"  </HEAD>\n"
+"  <BODY BGCOLOR=\"#ffffff\">\n"
+"\n"
+"    <P>\n"
+"      <TABLE COLS=\"1\" BORDER=\"0\" CELLSPACING=\"4\" CELLPADDING=\"5\">\n"
+"\t<TR>\n"
+"\t  <TD COLSPAN=\"2\" WIDTH=\"100%\" BGCOLOR=\"#99CCFF\" ALIGN=\"CENTER\">\n"
+"\t    <B><FONT COLOR=\"#000000\" SIZE=\"+1\"><MM-List-Name> --\n"
+"\t<MM-List-Description></FONT></B>\n"
+"\t  </TD>\n"
+"\t</TR>\n"
+"\t<tr>\n"
+"\t    <td colspan=\"2\">\n"
+"\t      <p>&nbsp;\n"
+"\t    </td>\n"
+"\t  </tr>\n"
+"\t  <tr>\n"
+"\t    <TD COLSPAN=\"1\" WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\">\n"
+"\t      <B><FONT COLOR=\"#000000\">About <MM-List-Name></FONT></B>\n"
+"\t    </TD>\n"
+"            <TD COLSPAN=\"1\" WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\">\n"
+"              <MM-lang-form-start><MM-displang-box> <MM-list-langs>\n"
+"              <MM-form-end>\n"
+"    <MM-Subscribe-Form-Start>\n"
+"            </TD>\n"
+"\t  </TR>\n"
+"\t    <tr>\n"
+"\t      <td colspan=\"2\">\n"
+"\t\t<P><MM-List-Info></P>\n"
+"\t  <p> To see the collection of prior postings to the list,\n"
+"\t      visit the <MM-Archive><MM-List-Name>\n"
+"\t\t  Archives</MM-Archive>.\n"
+"\t      <MM-Restricted-List-Message>\n"
+"\t  </p>\n"
+"\t</TD>\n"
+"      </TR>\n"
+"      <TR>\n"
+"\t<TD COLSPAN=\"2\" WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\">\n"
+"\t  <B><FONT COLOR=\"#000000\">Using <MM-List-Name></FONT></B>\n"
+"\t</TD>\n"
+"      </TR>\n"
+"      <tr>\n"
+"\t<td colspan=\"2\">\n"
+"\t  To post a message to all the list members, send email to\n"
+"\t  <A HREF=\"mailto:<MM-Posting-Addr>\"><MM-Posting-Addr></A>.\n"
+"\n"
+"\t  <p>You can subscribe to the list, or change your existing\n"
+"\t    subscription, in the sections below.\n"
+"\t</td>\n"
+"      </tr>\n"
+"      <TR>\n"
+"\t<TD COLSPAN=\"2\" WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\">\n"
+"\t  <B><FONT COLOR=\"#000000\">Subscribing to <MM-List-Name></FONT></B>\n"
+"\t</TD>\n"
+"      </TR>\n"
+"      <tr>\n"
+"\t<td colspan=\"2\">\n"
+"\t  <P>\n"
+"\t    Subscribe to <MM-List-Name> by filling out the following\n"
+"\t      form.\n"
+"\t  <MM-List-Subscription-Msg>\n"
+"\t  <ul>\n"
+"\t      <TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\"\n"
+"\t\tWIDTH=\"70%\" HEIGHT= \"112\">\n"
+"\t\t<TR>\n"
+"\t\t  <TD BGCOLOR=\"#dddddd\" WIDTH=\"55%\">Your email address:</TD>\n"
+"\t\t  <TD WIDTH=\"33%\"><MM-Subscribe-Box>\n"
+"\t</TD>\n"
+"\t<TD WIDTH=\"12%\">&nbsp;</TD></TR>\n"
+"      <tr>\n"
+"        <td bgcolor=\"#dddddd\" width=\"55%\">Your name (optional):</td>\n"
+"        <td width=\"33%\"><mm-fullname-box></td>\n"
+"\t<TD WIDTH=\"12%\">&nbsp;</TD></TR>\n"
+"      <TR>\n"
+"\t<TD COLSPAN=\"3\"><FONT SIZE=-1>You may enter a\n"
+"\t    privacy password below. This provides only mild security,\n"
+"\t    but should prevent others from messing with your\n"
+"\t    subscription.  <b>Do not use a valuable password</b> as\n"
+"\t    it will occasionally be emailed back to you in cleartext.\n"
+"\n"
+"            <p>If you choose not to enter a password, one will be\n"
+"            automatically generated for you, and it will be sent to\n"
+"            you once you've confirmed your subscription.  You can\n"
+"            always request a mail-back of your password when you edit\n"
+"            your personal options.\n"
+"\t    <MM-Reminder>\n"
+"\t</TD>\n"
+"      </TR>  \n"
+"      <TR>\n"
+"\t<TD BGCOLOR=\"#dddddd\">Pick a password:</TD>\n"
+"\t<TD><MM-New-Password-Box></TD>\n"
+"\t<TD>&nbsp;</TD></TR>\n"
+"      <TR> \n"
+"\t<TD BGCOLOR=\"#dddddd\">Reenter password to confirm:</TD>\n"
+"\t<TD><MM-Confirm-Password></TD>\n"
+"\t<TD>&nbsp; </TD></TR>\n"
+"      <tr>\n"
+"        <TD BGCOLOR=\"#dddddd\">Which language do you prefer to display your "
+"messages?</TD> \n"
+"        <TD> <MM-list-langs></TD>\n"
+"        <TD>&nbsp; </TD></TR>\n"
+"      <mm-digest-question-start>\n"
+"      <tr>\n"
+"\t<td>Would you like to receive list mail batched in a daily\n"
+"\t  digest?\n"
+"\t  </td>\n"
+"\t<td><MM-Undigest-Radio-Button> No\n"
+"\t    <MM-Digest-Radio-Button>  Yes\n"
+"\t</TD>\n"
+"      </tr>\n"
+"      <mm-digest-question-end>\n"
+"      <tr>\n"
+"\t<td colspan=\"3\">\n"
+"\t  <center><MM-Subscribe-Button></P></center>\n"
+"    </TABLE>\n"
+"    <MM-Form-End>\n"
+"    </ul>\n"
+"    </td>\n"
+"    </tr>\n"
+"    <TR>\n"
+"      <TD COLSPAN=\"2\" WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\">\n"
+"\t<a name=\"subscribers\">\n"
+"        <B><FONT COLOR=\"#000000\"><MM-List-Name> Subscribers</FONT></B></"
+"a>\n"
+"      </TD>\n"
+"    </TR>\n"
+"    <tr>\n"
+"      <TD COLSPAN=\"2\" WIDTH=\"100%\">\n"
+"\t<MM-Roster-Form-Start>\n"
+"\t<MM-Roster-Option>\n"
+"\t    <MM-Form-End>\n"
+"\t  <p>\n"
+"\t<MM-Options-Form-Start>\n"
+"\t<MM-Editing-Options>\n"
+"\t\t<MM-Form-End>\n"
+"      </td>\n"
+"    </tr>\n"
+"  </table>\n"
+"<MM-Mailman-Footer>\n"
+"</BODY>\n"
+"</HTML>\n"
+msgstr ""
+"<!-- $Revision: 7626 $ -->\n"
+"<HTML>\n"
+"  <HEAD>\n"
+"    <TITLE>Informace o konferenci<MM-List-Name></TITLE>\n"
+"  \n"
+"  </HEAD>\n"
+"  <BODY BGCOLOR=\"#ffffff\">\n"
+"\n"
+"    <P>\n"
+"      <TABLE COLS=\"1\" BORDER=\"0\" CELLSPACING=\"4\" CELLPADDING=\"5\">\n"
+"\t<TR>\n"
+"\t  <TD COLSPAN=\"2\" WIDTH=\"100%\" BGCOLOR=\"#99CCFF\" ALIGN=\"CENTER\">\n"
+"\t    <B><FONT COLOR=\"#000000\" SIZE=\"+1\"><MM-List-Name> --\n"
+"\t<MM-List-Description></FONT></B>\n"
+"\t  </TD>\n"
+"\t</TR>\n"
+"\t<tr>\n"
+"\t    <td colspan=\"2\">\n"
+"\t      <p>&nbsp;\n"
+"\t    </td>\n"
+"\t  </tr>\n"
+"\t  <tr>\n"
+"\t    <TD COLSPAN=\"1\" WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\">\n"
+"\t      <B><FONT COLOR=\"#000000\">Konference <MM-List-Name></FONT></B>\n"
+"\t    </TD>\n"
+"            <TD COLSPAN=\"1\" WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\">\n"
+"              <MM-lang-form-start><MM-displang-box> <MM-list-langs>\n"
+"              <MM-form-end>\n"
+"    <MM-Subscribe-Form-Start>\n"
+"            </TD>\n"
+"\t  </TR>\n"
+"\t    <tr>\n"
+"\t      <td colspan=\"2\">\n"
+"\t\t<P><MM-List-Info></P>\n"
+"\t  <p> Pokud si chcete prohlédnou pøedchozí pøíspìvky \n"
+"              v této konferenci, nav¹tivte \n"
+"\t      <MM-Archive>archiv konference <MM-List-Name>\n"
+"\t      </MM-Archive>.\n"
+"\t      <MM-Restricted-List-Message>\n"
+"\t  </p>\n"
+"\t</TD>\n"
+"      </TR>\n"
+"      <TR>\n"
+"\t<TD COLSPAN=\"2\" WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\">\n"
+"\t  <B><FONT COLOR=\"#000000\">Jak komunikovat s konferencí <MM-List-Name></"
+"FONT></B>\n"
+"\t</TD>\n"
+"      </TR>\n"
+"      <tr>\n"
+"\t<td colspan=\"2\">\n"
+"\t  Pøíspìvky zasílejte na adresu:\n"
+"\t  <A HREF=\"mailto:<MM-Posting-Addr>\"><MM-Posting-Addr></A>.\n"
+"\n"
+"\t  <p>Pokud se chcete pøihlásit, nebo nìjak konfigurovat své u¾ivatelské "
+"konto,\n"
+"              mù¾ete tak uèinit právì zde.\n"
+"\t</td>\n"
+"      </tr>\n"
+"      <TR>\n"
+"\t<TD COLSPAN=\"2\" WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\">\n"
+"\t  <B><FONT COLOR=\"#000000\">Pøihlá¹ení do konference <MM-List-Name></"
+"FONT></B>\n"
+"\t</TD>\n"
+"      </TR>\n"
+"      <tr>\n"
+"\t<td colspan=\"2\">\n"
+"\t  <P>\n"
+"             Pro pøihlá¹ení do konference <MM-List-Name> musíte vyplnit "
+"následující formuláø.\n"
+"\t  <MM-List-Subscription-Msg>\n"
+"\t  <ul>\n"
+"\t      <TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\"\n"
+"\t\tWIDTH=\"70%\" HEIGHT= \"112\">\n"
+"\t\t<TR>\n"
+"\t\t  <TD BGCOLOR=\"#dddddd\" WIDTH=\"55%\">Va¹e e-mailová adresa:</TD>\n"
+"\t\t  <TD WIDTH=\"33%\"><MM-Subscribe-Box>\n"
+"\t</TD>\n"
+"\t<TD WIDTH=\"12%\">&nbsp;</TD></TR>\n"
+"      <tr>\n"
+"        <td bgcolor=\"#dddddd\" width=\"55%\">Va¹e jméno (nepovinné):</td>\n"
+"        <td width=\"33%\"><mm-fullname-box></td>\n"
+"\t<TD WIDTH=\"12%\">&nbsp;</TD></TR>\n"
+"      <TR>\n"
+"\t<TD COLSPAN=\"3\"><FONT SIZE=-1>Musíte zadat heslo  pro ochranu svého "
+"konta\n"
+"\tpøed nepovolanými osobami. V ¾ádném pøípadì nepou¾ívejte ¾ádné heslo, "
+"které\n"
+"\tpou¾íváte na nìjakém jiném systému, pøípadnì heslo, které je potøeba\n"
+"\tutajovat. Heslo je pøená¹eno bez jakéhokoliv zabezpeèení a  navíc\n"
+"\tVám bude zasíláno elektronickou po¹tou.\n"
+"            <p>\n"
+"        Pokud heslo nezadáte, systém Vám pøidìlí náhodné heslo, které Vám\n"
+"        bude zasláno mailem.\n"
+"\t    <MM-Reminder>\n"
+"\t</TD>\n"
+"      </TR>  \n"
+"      <TR>\n"
+"\t<TD BGCOLOR=\"#dddddd\">Zvolte si heslo:</TD>\n"
+"\t<TD><MM-New-Password-Box></TD>\n"
+"\t<TD>&nbsp;</TD></TR>\n"
+"      <TR> \n"
+"\t<TD BGCOLOR=\"#dddddd\">A je¹tì jednou to samé pro kontrolu:</TD>\n"
+"\t<TD><MM-Confirm-Password></TD>\n"
+"\t<TD>&nbsp; </TD></TR>\n"
+"      <tr>\n"
+"        <TD BGCOLOR=\"#dddddd\">Jaký jazyk preferujete pro komunikaci s "
+"mailmanem?</TD> \n"
+"        <TD> <MM-list-langs></TD>\n"
+"        <TD>&nbsp; </TD></TR>\n"
+"      <mm-digest-question-start>\n"
+"      <tr>\n"
+"\t<td>Pøejete si dostávat pøíspìvky jen jednou dennì, v¹echny v jednom\n"
+"\tdopise? Tuto volbu znáte asi jako digest.\n"
+"\t  </td>\n"
+"\t<td><MM-Undigest-Radio-Button> Ne\n"
+"\t    <MM-Digest-Radio-Button>  Ano\n"
+"\t</TD>\n"
+"      </tr>\n"
+"      <mm-digest-question-end>\n"
+"      <tr>\n"
+"\t<td colspan=\"3\">\n"
+"\t  <center><MM-Subscribe-Button></P></center>\n"
+"    </TABLE>\n"
+"    <MM-Form-End>\n"
+"    </ul>\n"
+"    </td>\n"
+"    </tr>\n"
+"    <TR>\n"
+"      <TD COLSPAN=\"2\" WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\">\n"
+"\t<a name=\"subscribers\">\n"
+"        <B><FONT COLOR=\"#000000\">Úèastníci konference <MM-List-Name></"
+"FONT></B></a>\n"
+"      </TD>\n"
+"    </TR>\n"
+"    <tr>\n"
+"      <TD COLSPAN=\"2\" WIDTH=\"100%\">\n"
+"\t<MM-Roster-Form-Start>\n"
+"\t<MM-Roster-Option>\n"
+"\t    <MM-Form-End>\n"
+"\t  <p>\n"
+"\t<MM-Options-Form-Start>\n"
+"\t<MM-Editing-Options>\n"
+"\t\t<MM-Form-End>\n"
+"      </td>\n"
+"    </tr>\n"
+"  </table>\n"
+"<MM-Mailman-Footer>\n"
+"</BODY>\n"
+"</HTML>\n"
+
+#: templates/en/masthead.txt:1
+msgid ""
+"Send %(real_name)s mailing list submissions to\n"
+"\t%(got_list_email)s\n"
+"\n"
+"To subscribe or unsubscribe via the World Wide Web, visit\n"
+"\t%(got_listinfo_url)s\n"
+"or, via email, send a message with subject or body 'help' to\n"
+"\t%(got_request_email)s\n"
+"\n"
+"You can reach the person managing the list at\n"
+"\t%(got_owner_email)s\n"
+"\n"
+"When replying, please edit your Subject line so it is more specific than\n"
+"\"Re: Contents of %(real_name)s digest...\"\n"
+msgstr ""
+"Pøíspìvky do konference  %(real_name)s zasílejte na adresu:\n"
+"\t%(got_list_email)s\n"
+"\n"
+"Pro pøihlá¹ení nebo odhlá¹ení pou¾ijte WWW rozhraní na adrese\"\n"
+"\t%(got_listinfo_url)s\n"
+"nebo pou¾ijte elektronickou po¹tu, za¹lete slovo help v tìle dopisu\n"
+"na adresu\n"
+"\t%(got_request_email)s\n"
+"\n"
+"Správce konference mù¾ete nalézt na adrese\n"
+"\t%(got_owner_email)s\n"
+"\n"
+"Kdy¾ budete odpovídat na pøíspìvek, zmìòte, prosím, Subject: na \n"
+"nìco rozumnìj¹ího ne¾ je:\n"
+"\"Re: Contents of %(real_name)s digest...\"\n"
+"\n"
+
+#: templates/en/newlist.txt:1
+msgid ""
+"The mailing list `%(listname)s' has just been created for you.  The\n"
+"following is some basic information about your mailing list.\n"
+"\n"
+"Your mailing list password is:\n"
+"\n"
+"    %(password)s\n"
+"\n"
+"You need this password to configure your mailing list.  You also need\n"
+"it to handle administrative requests, such as approving mail if you\n"
+"choose to run a moderated list.\n"
+"\n"
+"You can configure your mailing list at the following web page:\n"
+"\n"
+"    %(admin_url)s\n"
+"\n"
+"The web page for users of your mailing list is: \n"
+"\n"
+"    %(listinfo_url)s\n"
+"\n"
+"You can even customize these web pages from the list configuration\n"
+"page.  However, you do need to know HTML to be able to do this.\n"
+"\n"
+"There is also an email-based interface for users (not administrators)\n"
+"of your list; you can get info about using it by sending a message\n"
+"with just the word `help' as subject or in the body, to:\n"
+"\n"
+"    %(requestaddr)s\n"
+"\n"
+"To unsubscribe a user: from the mailing list 'listinfo' web page,\n"
+"click on or enter the user's email address as if you were that user.\n"
+"Where that user would put in their password to unsubscribe, put in\n"
+"your admin password.  You can also use your password to change\n"
+"member's options, including digestification, delivery disabling, etc.\n"
+"\n"
+"Please address all questions to %(siteowner)s.\n"
+msgstr ""
+"Právì pro Vás byla vytvoøena konference `%(listname)s'.\n"
+"Následují informace o tom, jak s konferencí zacházet.\n"
+"\n"
+"Va¹e heslo, pro správu konference je:\n"
+"\n"
+"    %(password)s\n"
+"\n"
+"Toto heslo budete potøebovat pro konfiguraci konference, pro\n"
+"vyøizování administrativních úkonù jako tøeba akcetapce pøihlá¹ení\n"
+"úèastníka do uzavøené konference nebo pro akceptaci pøíspìvkù do\n"
+"moderovaných konferencí.\n"
+"\n"
+"Na následující adrese mù¾ete nakonfigurovat svou konferenci.\n"
+"\n"
+"    %(admin_url)s\n"
+"\n"
+"U¾ivatelé budou ke konferenci pøistupovat pøes stránku: \n"
+"\n"
+"    %(listinfo_url)s\n"
+"\n"
+"Vzhled tìchto stránek mù¾ete mìnit dle své úvahy, ale budete\n"
+"potøebovat alespoò základní znalosti HTML.\n"
+"\n"
+"U¾ivatelé mohou vyu¾ívat i emailové rozhraní\n"
+"konference. Administrovat pøes nìj konferenci ale není mo¾né. Jak se\n"
+"toto rozhraní pou¾ívá mù¾ete zjistit zasláním pøíkazu help v tìle\n"
+"dopisu na tuto adresu:\n"
+"\n"
+"\n"
+"    %(requestaddr)s\n"
+"\n"
+"Pokud potøebujete odhlásit ruènì úèastníka konference, mù¾ete tak\n"
+"udìlat pøes stránku s informacemi o konferenci, kliknutím seznam\n"
+"úèastníkù a potom na pøíslu¹nou e-mailovou adresu. Jako heslo pou¾ijte\n"
+"své administrátorské heslo. Také mù¾ete stejným zpùsobem nastavovat\n"
+"úèastníkùm parametry jejich kont.\n"
+"\n"
+"Pokud máte nìjaké dotazy, zasílejte je na adresu\n"
+"%(siteowner)s, pokud to ov¹em není Va¹e vlastní adresa.\n"
+"\n"
+
+#: templates/en/nomoretoday.txt:1
+msgid ""
+"We have received a message from your address `%(sender)s' requesting\n"
+"an automated response from the %(listname)s mailing list.  We have\n"
+"seen %(num)s such messages from you today.  In order to avoid problems\n"
+"such as mail loops between email robots, we will not be sending you\n"
+"any further email responses today.  Please try again tomorrow.\n"
+"\n"
+"If you believe this message is in error, or if you have any questions,\n"
+"please contact the list owner at %(owneremail)s.\n"
+msgstr ""
+
+#: templates/en/options.html:1
+msgid ""
+"<html>\n"
+"<head>\n"
+"    <link rel=\"SHORTCUT ICON\" href=\"<mm-favicon>\">\n"
+"    <title><MM-Presentable-User> membership configuration for <MM-List-"
+"Name>\n"
+"    </title>\n"
+"</head>\n"
+"<BODY BGCOLOR=\"#ffffff\">\n"
+"    <TABLE WIDTH=\"100%\" BORDER=\"0\" CELLSPACING=\"0\" CELLPADDING=\"5\">\n"
+"    <TR><TD WIDTH=\"100%\" BGCOLOR=\"#99CCFF\"><B>\n"
+"        <FONT COLOR=\"#000000\" SIZE=+1>\n"
+"        <MM-List-Name> mailing list membership configuration for\n"
+"        <MM-Presentable-User>\n"
+"        </FONT></B></TD></TR>\n"
+"    </TABLE>\n"
+"<p>\n"
+"<table width=\"100%\" border=\"0\" cellspacing=\"5\" cellpadding=\"5\">\n"
+"    <tr><td>\n"
+"        <b><MM-Presentable-User></b>'s subscription status,\n"
+"        password, and options for the <MM-List-Name> mailing list.\n"
+"        </td><td><MM-Form-Start><mm-logout-button><MM-Form-End></td>\n"
+"    </tr><tr>\n"
+"        <td colspan=\"2\">\n"
+"        <MM-Case-Preserved-User>\n"
+"\n"
+"        <MM-Disabled-Notice>\n"
+"\n"
+"        <p><mm-results>\n"
+"        </td>\n"
+"    </tr>\n"
+"</table>\n"
+"\n"
+"<MM-Form-Start>\n"
+"<p>\n"
+"<TABLE WIDTH=\"100%\" BORDER=\"0\" CELLSPACING=\"0\" CELLPADDING=\"5\">\n"
+"    <TR><TD WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\" colspan=\"2\">\n"
+"        <FONT COLOR=\"#000000\">\n"
+"        <B>Changing your <MM-List-Name> membership information</B>\n"
+"        </FONT></TD></TR>\n"
+"    <tr><td colspan=\"2\">You can change the address that you are "
+"subscribed\n"
+"        to the mailing list with by entering the new address in the\n"
+"        fields below.  Note that a confirmation email will be sent to\n"
+"        the new address, and the change must be confirmed before it is\n"
+"        processed.\n"
+"\n"
+"        <p>Confirmations time out after about <mm-pending-days>.\n"
+"\n"
+"        <p>You can also optionally set or change your real name\n"
+"        (i.e. <em>John Smith</em>).\n"
+"\n"
+"        <p>If you want to make the membership changes for all the\n"
+"        lists that you are subscribed to at <mm-host>, turn on the\n"
+"        <em>Change globally</em> check box.\n"
+"\n"
+"        </td></tr>\n"
+"    <tr><td><center>\n"
+"        <table border=\"0\" cellspacing=\"2\" cellpadding=\"2\" width=\"80%"
+"\" cols=\"2\">\n"
+"        <tr><td bgcolor=\"#dddddd\"><div align=\"right\">New address:</div></"
+"td>\n"
+"            <td><mm-new-address-box></td>\n"
+"            </tr>\n"
+"        <tr><td bgcolor=\"#dddddd\"><div align=\"right\">Again to\n"
+"            confirm:</div></td> \n"
+"            <td><mm-confirm-address-box></td>\n"
+"            </tr>\n"
+"        </tr></table></center>\n"
+"        </td>\n"
+"        <td><center>\n"
+"        <table border=\"0\" cellspacing=\"2\" cellpadding=\"2\" width=\"80%"
+"\" cols=\"2\">\n"
+"            <tr><td bgcolor=\"#dddddd\"><div align=\"right\">Your name\n"
+"            (optional):</div></td>\n"
+"            <td><mm-fullname-box></td>\n"
+"            </tr>\n"
+"        </table></center>\n"
+"        </td>\n"
+"        </tr>\n"
+"    <tr><td colspan=\"2\"><center><mm-change-address-button>\n"
+"        <p><mm-global-change-of-address>Change globally</center></td>\n"
+"    </tr>\n"
+"</table>\n"
+"\n"
+"<p>\n"
+"<TABLE WIDTH=\"100%\" BORDER=\"0\" CELLSPACING=\"5\" CELLPADDING=\"5\">\n"
+"    <TR><TD WIDTH=\"50%\" BGCOLOR=\"#FFF0D0\"><FONT COLOR=\"#000000\">\n"
+"        <B>Unsubscribing from <MM-List-Name></B></td>\n"
+"\n"
+"        <TD WIDTH=\"50%\" BGCOLOR=\"#FFF0D0\"><FONT COLOR=\"#000000\">\n"
+"        <B>Your other <MM-Host> subscriptions</B>\n"
+"        </FONT></TD></TR>\n"
+"\n"
+"    <tr><td>\n"
+"        Turn on the confirmation checkbox and hit this button to\n"
+"        unsubscribe from this mailing list.  <strong>Warning:</strong>\n"
+"        This action will be taken immediately!\n"
+"        <p>\n"
+"        <center><MM-Unsubscribe-Button></center></td>\n"
+"    <td>\n"
+"        You can view a list of all the other mailing lists at\n"
+"        <mm-host> for which you are a member.  Use this if you want to\n"
+"        make the same membership option changes to this other\n"
+"        subscriptions.\n"
+"\n"
+"        <p>\n"
+"        <center><MM-Other-Subscriptions-Submit></center>\n"
+"        </TD></TR>\n"
+"</table>\n"
+"\n"
+"<TABLE WIDTH=\"100%\" BORDER=\"0\" CELLSPACING=\"0\" CELLPADDING=\"5\">\n"
+"    <TR><TD COLSPAN=2 WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\"><FONT COLOR="
+"\"#000000\">\n"
+"        <B>Your <MM-List-Name> Password</B>\n"
+"        </FONT></TD></TR>\n"
+"\n"
+"    <tr valign=\"TOP\"><td WIDTH=\"50%\">\n"
+"        <a name=reminder>\n"
+"        <center>\n"
+"        <h3>Forgotten Your Password?</h3>\n"
+"        </center>\n"
+"        Click this button to have your password emailed to your\n"
+"        membership address.\n"
+"        <p><MM-Umbrella-Notice>\n"
+"        <center>\n"
+"        <MM-Email-My-Pw>\n"
+"        </center>\n"
+"        </td>\n"
+"\n"
+"    <td WIDTH=\"50%\">\n"
+"        <a name=changepw>\n"
+"        <center>\n"
+"        <h3>Change Your Password</h3>\n"
+"        <TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\" WIDTH=\"70%"
+"\" COLS=2>\n"
+"            <TR><TD BGCOLOR=\"#dddddd\"><div align=\"right\">New\n"
+"                password:</div></TD>\n"
+"                <TD><MM-New-Pass-Box></TD>\n"
+"                </TR>\n"
+"            <TR>\n"
+"                <TD BGCOLOR=\"#dddddd\"><div align=\"right\">Again to\n"
+"                confirm:</div></TD>\n"
+"                <TD><MM-Confirm-Pass-Box></TD>\n"
+"            </TR>\n"
+"        </table>\n"
+"\n"
+"        <MM-Change-Pass-Button>\n"
+"        <p><center><mm-global-pw-changes-button>Change globally.\n"
+"        </center>\n"
+"</TABLE>\n"
+"\n"
+"<p>\n"
+"<TABLE WIDTH=\"100%\" BORDER=\"0\" CELLSPACING=\"0\" CELLPADDING=\"5\">\n"
+"    <TR><TD WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\"><FONT COLOR=\"#000000\">\n"
+"        <B>Your <MM-List-Name> Subscription Options</B>\n"
+"        </FONT></TD></TR>\n"
+"</table>\n"
+"\n"
+"<p>\n"
+"<i><strong>Current values are checked.</strong></i>\n"
+"\n"
+"<p>Note that some of the options have a <em>Set globally</em>\n"
+"checkbox.  Checking this field will cause the changes to be made to\n"
+"every mailing list that you are a member of on <mm-host>.  Click on\n"
+"<em>List my other subscriptions</em> above to see which other mailing\n"
+"lists you are subscribed to.\n"
+"<p>\n"
+"<TABLE BORDER=\"0\" CELLSPACING=\"3\" CELLPADDING=\"4\" WIDTH=\"100%\">\n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\n"
+"        <a name=\"disable\">\n"
+"        <strong>Mail delivery</strong></a><p>\n"
+"        Set this option to <em>Enabled</em> to receive messages posted\n"
+"        to this mailing list.  Set it to <em>Disabled</em> if you want\n"
+"        to stay subscribed, but don't want mail delivered to you for a\n"
+"        while (e.g. you're going on vacation).  If you disable mail\n"
+"        delivery, don't forget to re-enable it when you come back; it\n"
+"        will not be automatically re-enabled.\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <mm-delivery-enable-button>Enabled<br>\n"
+"        <mm-delivery-disable-button>Disabled<p>\n"
+"        <mm-global-deliver-button><i>Set globally</i>\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\n"
+"        <strong>Set Digest Mode</strong><p>\n"
+"        If you turn digest mode on, you'll get posts bundled together\n"
+"        (usually one per day but possibly more on busy lists), instead\n"
+"        of singly when they're sent.  If digest mode is changed from\n"
+"        on to off, you may receive one last digest.\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <MM-Undigest-Radio-Button>Off<br>\n"
+"        <MM-Digest-Radio-Button>On\n"
+"        </td></tr>\n"
+"        \n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\n"
+"        <strong>Get MIME or Plain Text Digests?</strong><p>\n"
+"        Your mail reader may or may not support MIME digests.  In\n"
+"        general MIME digests are preferred, but if you have a problem\n"
+"        reading them, select plain text digests.\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <MM-Mime-Digests-Button>MIME<br>\n"
+"        <MM-Plain-Digests-Button>Plain Text<p>\n"
+"        <mm-global-mime-button><i>Set globally</i>\n"
+"        </td></tr>\n"
+"        \n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\n"
+"        <strong>Receive your own posts to the list?</strong><p>\n"
+"        Ordinarily, you will get a copy of every message you post to\n"
+"        the list.  If you don't want to receive this copy, set this\n"
+"        option to <em>No</em>.\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <mm-dont-receive-own-mail-button>No<br>\n"
+"        <mm-receive-own-mail-button>Yes\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\n"
+"        <strong>Receive acknowledgement mail when you send mail to\n"
+"        the list?</strong><p>\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <mm-dont-ack-posts-button>No<br>\n"
+"        <mm-ack-posts-button>Yes\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><td bgcolor=\"#cccccc\">\n"
+"        <strong>Get password reminder email for this list?</strong><p>\n"
+"        Once a month, you will get an email containing a password\n"
+"        reminder for every list at this host to which you are\n"
+"        subscribed.  You can turn this off on a per-list basis by\n"
+"        selecting <em>No</em> for this option.  If you turn off\n"
+"        password reminders for all the lists you are subscribed to, no\n"
+"        reminder email will be sent to you.\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <mm-dont-get-password-reminder-button>No<br>\n"
+"        <mm-get-password-reminder-button>Yes<p>\n"
+"        <mm-global-remind-button><i>Set globally</i>\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\n"
+"        <strong>Conceal yourself from subscriber list?</strong><p>\n"
+"        When someone views the list membership, your email address is\n"
+"        normally shown (in an obscured fashion to thwart spam\n"
+"        harvesters).  If you do not want your email address to show up\n"
+"        on this membership roster at all, select <em>Yes</em> for this "
+"option.\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <MM-Public-Subscription-Button>No<br>\n"
+"        <MM-Hide-Subscription-Button>Yes\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\n"
+"        <strong>What language do you prefer?</strong><p>\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <MM-list-langs>\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><td bgcolor=\"#cccccc\">\n"
+"        <strong>Which topic categories would you like to subscribe\n"
+"                to?</strong><p>\n"
+"                By selecting one or more topics, you can filter the\n"
+"                traffic on the mailing list, so as to receive only a\n"
+"                subset of the messages.  If a message matches one of\n"
+"                your selected topics, then you will get the message,\n"
+"                otherwise you will not.\n"
+"\n"
+"                <p>If a message does not match any topic, the delivery\n"
+"                rule depends on the setting of the option below.  If\n"
+"                you do not select any topics of interest, you will get\n"
+"                all the messages sent to the mailing list.\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <mm-topics>\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><td bgcolor=\"#cccccc\">\n"
+"        <strong>Do you want to receive messages that do not match any\n"
+"                topic filter?</strong><p>\n"
+"\n"
+"                This option only takes effect if you've subscribed to\n"
+"                at least one topic above.  It describes what the\n"
+"                default delivery rule is for messages that don't match\n"
+"                any topic filter.  Selecting <em>No</em> says that if\n"
+"                the message does not match any topic filters, then you\n"
+"                won't get the message, while selecting <em>Yes</em>\n"
+"                says to deliver such non-matching messages to you.\n"
+"\n"
+"                <p>If no topics of interest are selected above, then\n"
+"                you will receive every message sent to the mailing\n"
+"                list.\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <mm-suppress-nonmatching-topics>No<br>\n"
+"        <mm-receive-nonmatching-topics>Yes\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><td bgcolor=\"#cccccc\">\n"
+"        <strong>Avoid duplicate copies of messages?</strong><p>\n"
+"\n"
+"                When you are listed explicitly in the <tt>To:</tt> or\n"
+"                <tt>Cc:</tt> headers of a list message, you can opt to\n"
+"                not receive another copy from the mailing list.\n"
+"                Select <em>Yes</em> to avoid receiving copies from the\n"
+"                mailing list; select <em>No</em> to receive copies.\n"
+"\n"
+"                <p>If the list has member personalized messages\n"
+"                enabled, and you elect to receive copies, every copy\n"
+"                will have a <tt>X-Mailman-Copy: yes</tt> header added\n"
+"                to it.\n"
+"\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <mm-receive-duplicates-button>No<br>\n"
+"        <mm-dont-receive-duplicates-button>Yes<p>\n"
+"        <mm-global-nodupes-button><i>Set globally</i>\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><TD colspan=\"2\">\n"
+"        <center><MM-options-Submit-button></center>\n"
+"        </td></tr>\n"
+"\n"
+"</table>\n"
+"</center>\n"
+"<p>\n"
+"<MM-Form-End>\n"
+"\n"
+"<MM-Mailman-Footer>\n"
+"</body>\n"
+"</html>\n"
+msgstr ""
+"<!-- $Revision: 7626 $ -->\n"
+"<html>\n"
+"<head>\n"
+"    <link rel=\"SHORTCUT ICON\" href=\"<mm-favicon>\">\n"
+"    <title><MM-Presentable-User> Konfigurace konference <MM-List-Name></"
+"title>\n"
+"\n"
+"</head>\n"
+"<BODY BGCOLOR=\"#ffffff\">\n"
+"\t<TABLE WIDTH=\"100%\" BORDER=\"0\" CELLSPACING=\"0\" CELLPADDING=\"5\">\n"
+"\t<TR><TD WIDTH=\"100%\" BGCOLOR=\"#99CCFF\"><B>\n"
+"\t<FONT COLOR=\"#000000\" SIZE=+1>\n"
+"        <MM-List-Name> Nastavení pro u¾ivatele: <MM-Presentable-User>\n"
+"\t</FONT></B></TD></TR> </TABLE>\n"
+"<p>\n"
+"<table width=\"100%\" border=\"0\" cellspacing=\"5\" cellpadding=\"5\">\n"
+"    <tr><td>\n"
+"        <b>U¾ivatel <MM-Presentable-User></b>, konfigurace\n"
+"\tu¾ivatelského úètu pro konferenci <MM-List-Name>.\n"
+"        </td><td><MM-Form-Start><mm-logout-button><MM-Form-End></td>\n"
+"    </tr><tr>\n"
+"        <td colspan=\"2\">\n"
+"        <MM-Case-Preserved-User>\n"
+"\n"
+"        <MM-Disabled-Notice>\n"
+"\n"
+"        <p><mm-results>\n"
+"        </td>\n"
+"    </tr>\n"
+"</table>\n"
+"\n"
+"<MM-Form-Start>\n"
+"<p>\n"
+"<TABLE WIDTH=\"100%\" BORDER=\"0\" CELLSPACING=\"0\" CELLPADDING=\"5\">\n"
+"    <TR><TD WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\" colspan=\"2\">\n"
+"        <FONT COLOR=\"#000000\">\n"
+"        <B>Zmìna konfigurace pro konferenci <MM-List-Name></B>\n"
+"\t</FONT></TD></TR>\n"
+"    <tr><td colspan=\"2\">Mù¾ete zmìnit e-mailovou adresu, na kterou se\n"
+"    zasílají pøíspìvky. Zadejte novou adresu do tohoto pole. Na Va¹i\n"
+"    stávající adresu bude zaslána ¾ádost o ovìøení a zmìna bude\n"
+"    provedena teprve po potvrzení.\n"
+"\n"
+"        <p>Na potvrzení budeme èekat <mm-pending-days> dní.\n"
+"\n"
+"        <p>Mù¾ete si nastavit i své jméno, jako napø.\n"
+"        <em>Petr Novák</em>.\n"
+"\n"
+"        <p>Pokud se mají provedené zmìny projevit ve v¹ech\n"
+"\tkonferencích na tomto serveru, musíte za¹krtnout volbu\n"
+"        <em>Zmìnit globálnì</em>.\n"
+"\n"
+"        </td></tr>\n"
+"    <tr><td><center>\n"
+"        <table border=\"0\" cellspacing=\"2\" cellpadding=\"2\" width=\"80%"
+"\" cols=\"2\">\n"
+"        <tr><td bgcolor=\"#dddddd\"><div align=\"right\">Nová adresa:</div></"
+"td>\n"
+"            <td><mm-new-address-box></td>\n"
+"            </tr>\n"
+"        <tr><td bgcolor=\"#dddddd\"><div align=\"right\">Znovu pro "
+"potvrzení:\n"
+"            </div></td> \n"
+"            <td><mm-confirm-address-box></td>\n"
+"            </tr>\n"
+"        </tr></table></center>\n"
+"        </td>\n"
+"        <td><center>\n"
+"        <table border=\"0\" cellspacing=\"2\" cellpadding=\"2\" width=\"80%"
+"\" cols=\"2\">\n"
+"            <tr><td bgcolor=\"#dddddd\"><div align=\"right\">Celé jméno\n"
+"            (nepovinné):</div></td>\n"
+"            <td><mm-fullname-box></td>\n"
+"            </tr>\n"
+"        </table></center>\n"
+"        </td>\n"
+"        </tr>\n"
+"    <tr><td colspan=\"2\"><center><mm-change-address-button>\n"
+"        <p><mm-global-change-of-address>Zmìnit globálnì</center></td>\n"
+"    </tr>\n"
+"</table>\n"
+"\n"
+"<p>\n"
+"<TABLE WIDTH=\"100%\" BORDER=\"0\" CELLSPACING=5\" CELLPADDING=\"5\">\n"
+"\t<TR><TD WIDTH=\"50%\" BGCOLOR=\"#FFF0D0\"><FONT COLOR=\"#000000\">\n"
+"<B>Odhlá¹ení z <MM-List-Name></B>\n"
+"\n"
+"\t<TD WIDTH=\"50%\" BGCOLOR=\"#FFF0D0\"><FONT COLOR=\"#000000\">\n"
+"<B>Va¹e ostatní  pøihlá¹ené konference na  <MM-Host></B>\n"
+"\t</FONT></TD></TR>\n"
+"\n"
+"\t<tr><td>\n"
+"         Pro odhlá¹ení za¹krtnìte políèko a kliknìte na tlaèítko\n"
+"\t Odhlásit. <strong>Pozor:</strong>\n"
+"\t Zmìna se projeví okam¾itì.\n"
+"\t <p>\n"
+"\t <center><MM-Unsubscribe-Button></center></td>\n"
+"     <td>\n"
+"        Mù¾ete si zobrazit seznam v¹ech dal¹ích konferencí na tomto\n"
+"\tserveru, jejich¾ jste èleny. Pokud zvolíte tuto volbu,\n"
+"\tpromítnou se zde provedené zmìny i do v¹ech ostatních kont.\n"
+"        <p>\n"
+"        <center><MM-Other-Subscriptions-Submit></center>\n"
+"\t</TD></TR>\n"
+"</table>\n"
+"\n"
+"<TABLE WIDTH=\"100%\" BORDER=\"0\" CELLSPACING=\"0\" CELLPADDING=\"5\">\n"
+"     <TR><TD COLSPAN=2 WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\"><FONT COLOR="
+"\"#000000\">\n"
+"\t<B>Va¹e heslo pro  <MM-List-Name></B>\n"
+"\t</FONT></TD></TR>\n"
+"\n"
+"    <tr valign=\"TOP\"><td WIDTH=\"50%\">\n"
+"        <a name=reminder>\n"
+"        <center>\n"
+"        <h3>Zapomnìli jste heslo?</h3>\n"
+"        </center>\n"
+"         Kliknìte na toto tlaèítko a heslo Vám bude zasláno na Va¹í\n"
+"         e-mailovou adresu.\n"
+"\t <p>\n"
+"\t <MM-Umbrella-Notice>\n"
+"\t <center>\n"
+"\t <MM-Email-My-Pw>\n"
+"\t </center>\n"
+"\t </td>\n"
+"\n"
+"     <td WIDTH=\"50%\">\n"
+"         <a name=changepw>\n"
+"         <center>\n"
+"\t <h3>Zmìna hesla</h3>\n"
+"      \t <TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\" WIDTH=\"70%"
+"\" COLS=2>\n"
+"\t    <TR><TD BGCOLOR=\"#dddddd\">Nové heslo:</TD>\n"
+"\t<TD><MM-New-Pass-Box></TD>\n"
+"      </TR>\n"
+"      <TR> \n"
+"\t<TD BGCOLOR=\"#dddddd\">A je¹tì jednou nové pro kontrolu:</TD>\n"
+"\t<TD><MM-Confirm-Pass-Box></TD>\n"
+"      </TR>\n"
+"</table>\n"
+"           <MM-Change-Pass-Button>\n"
+"        <p><center><mm-global-pw-changes-button>Zmìnit globálnì.\n"
+"     </TABLE>\n"
+"\n"
+"<p>\n"
+"<TABLE WIDTH=\"100%\" BORDER=\"0\" CELLSPACING=\"0\" CELLPADDING=\"5\">\n"
+"\t<TR><TD WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\"><FONT COLOR=\"#000000\">\n"
+"<B>Nastavení Va¹eho konta pro konferenci <MM-List-Name> </B>\n"
+"\t</FONT></TD></TR>\n"
+"</table>\n"
+"\n"
+"<p>\n"
+"<i><strong>Aktuální hodnoty jsou za¹krtnuty</strong></i><p>\n"
+"\n"
+"<p>Pozor, u nìkterých voleb je checkbox <em>Nastavit globálnì</em>.\n"
+"Pokud jej za¹krtnete, provedou se zmìny ve v¹ech konferencích, do\n"
+"kterých jste pøihlá¹eni na tomto serveru. Pokud chcete vìdìt, které to\n"
+"jsou, kliknìte na <em>Seznam ostatních konferencí</em> nahoøe na stránce.\n"
+"<p>\n"
+"<TABLE BORDER=\"0\" CELLSPACING=\"3\" CELLPADDING=\"4\" WIDTH=\"100%\">\n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\n"
+"        <a name=\"disable\">\n"
+"        <strong>Zakázat zasílání pøíspìvkù</strong></a><p>\n"
+"Vyberte tuto volbu, pokud si nepøejete dostávat ¾ádné pøíspìvky.\n"
+"</td><td bgcolor=\"#cccccc\">\n"
+"<mm-delivery-enable-button> Zasílat<br>\n"
+"<mm-delivery-disable-button> Nezasílat<br>\n"
+"        <mm-global-deliver-button><i>Nastavit globálnì</i>\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\n"
+"        <strong>Zapnutí digest re¾imu</strong><p>\n"
+"Pokud je zapnut digest re¾im dostanete v¹echny pøíspìvky v jednom dopise\n"
+"jednou dennì. Pokud digest vypnete, dostanete pøíspìvky z posledního dne\n"
+"je¹tì v digest formì.\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <MM-Undigest-Radio-Button>Vypnuto<br>\n"
+"        <MM-Digest-Radio-Button>Zapnuto\n"
+"        </td></tr>\n"
+"        \n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\n"
+"        <strong>Pøejete si digest dostávat jako MIME zprávu nebo èistý\n"
+"\ttext?</strong><p>\n"
+"Pokud Vá¹ po¹tovní klient nedoká¾e pøeèíst MIME zprávu, nastavte si zde\n"
+"volbu èistý text. Tato volba nemá ¾ádný význam, pokud není digest aktivní."
+"<br>\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <MM-Mime-Digests-Button>MIME<br>\n"
+"        <MM-Plain-Digests-Button>Èistý text<p>\n"
+"        <mm-global-mime-button><i>Nastavit globálnìkk</i>\n"
+"        </td></tr>\n"
+"        \n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\n"
+"        <strong>Pøejete si dostávat pøíspìvky, které jste sami zaslali do\n"
+"konference?</strong><p>\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <mm-dont-receive-own-mail-button>Ne<br>\n"
+"        <mm-receive-own-mail-button>Ano\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\n"
+"        <strong> Pøejete si dostávat oznámení o rozeslání vlastních "
+"pøíspìvkù?</strong><p>\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <mm-dont-ack-posts-button>Ne<br>\n"
+"        <mm-ack-posts-button>Ano\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><td bgcolor=\"#cccccc\">\n"
+"        <strong>Chcete dostávat upozornìní na hesla?</strong><p>\n"
+"\tVe výchozí konfiguraci dostáváte jednou mìsíènì mailem\n"
+"\tzprávu, kde je uveden seznam konferencí a k nim pøíslu¹ná\n"
+"\thesla, která potøebujete pro rùzné administrativní operace.\n"
+"        Pokud vyberete <em>Ne</em>, nebudete tento mail\n"
+"\tdostávat. Pøípadnì zapomenuté heslo si mù¾ete poslat\n"
+"\tz webovského rozhraní.\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <mm-dont-get-password-reminder-button>Ne<br>\n"
+"        <mm-get-password-reminder-button>Ano<p>\n"
+"        <mm-global-remind-button><i>Nastavit globálnì</i>\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\n"
+"        <strong>Pøejete si být vidìt v seznamu úèastníkù?</strong><p>\n"
+"\tPokud si nìkdo zobrazí seznam úèastníkù, ve výchozí\n"
+"\tkonfiguraci vidí adresy v¹ech úèastníkù. Pokud na tomto\n"
+"\tseznamu nechcete být uvedeni, mù¾ete zde zobrazení zakázat.\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <MM-Public-Subscription-Button>Zobrazit<br>\n"
+"        <MM-Hide-Subscription-Button>Skrýt\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\n"
+"        <strong>Jakou øeè preferujete pro komunikaci s listserverem?</"
+"strong><p>\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <MM-list-langs>\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><td bgcolor=\"#cccccc\">\n"
+"        <strong>Která témata Vás zajímají?</strong><p>\n"
+"\t        Pokud si vyberete jedno nebo více témat, mù¾ete\n"
+"\t\tfiltrovat pøíspìvky z konference a dostávat jedinì\n"
+"\t\tty, které Vás zajímají.\n"
+"\n"
+"                <p>U pøíspìvkù, které se nepodaøí zatøídit do ¾ádné\n"
+"\t\tkategorie, závisí na nastavení dal¹í volby, jestli je\n"
+"\t\tdostanete nebo ne. Pokud nezvolíte ¾ádné téma, budete\n"
+"\t\tdostávat v¹echny pøíspìvky.\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <mm-topics>\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><td bgcolor=\"#cccccc\">\n"
+"        <strong>Chcete dostávat pøíspìvky, které se nepodaøilo\n"
+"\tzaøadit do ¾ádné kategorie?</strong><p>\n"
+"\n"
+"                Tato volba má smysl jedinì pokud jste si v pøedchozí\n"
+"\t\tvolbì vybral nìjaké téma. Pokud zde\n"
+"\t\todpovíte <em>Ne</em> nebudete dostávat ¾ádné\n"
+"\t\tpøíspìvky, které nespadají do Va¹ich témat, jinak\n"
+"\t\tbudete dostávat i nezatøíditelné.\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <mm-suppress-nonmatching-topics>Ne<br>\n"
+"        <mm-receive-nonmatching-topics>Ano\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><td bgcolor=\"#cccccc\">\n"
+"        <strong>Eliminuj duplicitní pøíspìvky?</strong><p>\n"
+"\n"
+"                Pokud dostane listserver k rozeslání pøíspìvek\n"
+"                jste uvedeni v hlavièèe <tt>To:</tt>\n"
+"                nebo <tt>Cc:</tt> dostanete pøíspìvek dvakrát, jednou\n"
+"                pøímo a jednou pøes konferenci. Pokud vyberete\n"
+"                volbu <em>Ano</em>, listserv takový pøíspìvek na va¹i\n"
+"                adresu neza¹le a vy dostanete jen ten, který vám\n"
+"                zasílá pøímo autor. Pokud vyberete volbu <em>Ne</em>\n"
+"                dostanete pøíspìvek pravdìpodobnì dvakrát.\n"
+"\n"
+"                <p>Pokud listserver rozesílá ka¾dý pøíspìvek zvlá¹»,\n"
+"                a vy máte nastaveno, ¾e si pøejete dostávat\n"
+"                duplicitní pøíspìvky, bude mít ka¾dý duplicitní\n"
+"                pøíspìvek pøidánu hlavièku \n"
+"                <tt>X-Mailman-Copy: yes</tt>.\n"
+"\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <mm-receive-duplicates-button>Ne<br>\n"
+"        <mm-dont-receive-duplicates-button>Ano<p>\n"
+"        <mm-global-nodupes-button><i>Nastavit globálnì</i>\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><TD colspan=\"2\">\n"
+"        <center><MM-options-Submit-button></center>\n"
+"        </td></tr>\n"
+"\n"
+"</table>\n"
+"</center>\n"
+"<p>\n"
+"<MM-Form-End>\n"
+"\n"
+"<MM-Mailman-Footer>\n"
+"</body>\n"
+"</html>\n"
+
+#: templates/en/postack.txt:1
+msgid ""
+"Your message entitled\n"
+"\n"
+"    %(subject)s\n"
+"\n"
+"was successfully received by the %(listname)s mailing list.\n"
+"\n"
+"List info page: %(listinfo_url)s\n"
+"Your preferences: %(optionsurl)s\n"
+msgstr ""
+"Va¹e zpráva ve vìci:\n"
+"\n"
+"    %(subject)s\n"
+"\n"
+"byla úspì¹nì doruèena do konference %(listname)s.\n"
+"\n"
+"Informace o konferenci: %(listinfo_url)s\n"
+"Konfigurace Va¹eho úètu: %(optionsurl)s\n"
+
+#: templates/en/postauth.txt:1
+msgid ""
+"As list administrator, your authorization is requested for the\n"
+"following mailing list posting:\n"
+"\n"
+"    List:    %(listname)s@%(hostname)s\n"
+"    From:    %(sender)s\n"
+"    Subject: %(subject)s\n"
+"    Reason:  %(reason)s\n"
+"\n"
+"At your convenience, visit:\n"
+"\n"
+"    %(admindb_url)s\n"
+"        \n"
+"to approve or deny the request.\n"
+msgstr ""
+"Proto¾e jste správcem konference, je po¾adován Vá¹ souhlas s distribucí\n"
+"následujícího pøíspìvku:\n"
+"\n"
+"    Konference:    %(listname)s@%(hostname)s\n"
+"    Od:            %(sender)s\n"
+"    Vìc:           %(subject)s\n"
+"    Dùvod:         %(reason)s\n"
+"\n"
+"Nav¹tivte, dle Va¹ich mo¾ností, následující adresu:\n"
+"\n"
+"    %(admindb_url)s\n"
+"        \n"
+"pro povolení nebo zamítnutí po¾adavku.\n"
+
+#: templates/en/postheld.txt:1
+msgid ""
+"Your mail to '%(listname)s' with the subject\n"
+"\n"
+"    %(subject)s\n"
+"\n"
+"Is being held until the list moderator can review it for approval.\n"
+"\n"
+"The reason it is being held:\n"
+"\n"
+"    %(reason)s\n"
+"\n"
+"Either the message will get posted to the list, or you will receive\n"
+"notification of the moderator's decision.  If you would like to cancel\n"
+"this posting, please visit the following URL:\n"
+"\n"
+"    %(confirmurl)s\n"
+msgstr ""
+"Va¹e zpráva pro konferenci '%(listname)s' ve vìci\n"
+"\n"
+"    %(subject)s\n"
+"\n"
+"Nebyla rozeslána. Pro její distribuci je nutný souhlas moderátora.\n"
+"\n"
+"Dùvod pozdr¾ení distribuce zprávy je:\n"
+"\n"
+"    %(reason)s\n"
+"\n"
+"Va¹e zpráva buï bude rozeslána nebo dostanete zprávu o rozhodnutí\n"
+"moderátora.\n"
+"\n"
+"Pokud si zprávu nepøejete rozeslat, mù¾ete si stornovat na této adrese:\n"
+"\n"
+"    %(confirmurl)s\n"
+
+#: templates/en/private.html:1
+msgid ""
+"<html>\n"
+"<head>\n"
+"    <title>%(realname)s Private Archives Authentication</title>\n"
+"</head>\n"
+"<body bgcolor=\"#ffffff\">\n"
+"<FORM METHOD=POST ACTION=\"%(action)s/\">\n"
+"%(message)s\n"
+"  <TABLE WIDTH=\"100%%\" BORDER=\"0\" CELLSPACING=\"4\" CELLPADDING=\"5\">\n"
+"    <TR>\n"
+"      <TD COLSPAN=\"2\" WIDTH=\"100%%\" BGCOLOR=\"#99CCFF\" ALIGN=\"CENTER"
+"\">\n"
+"\t<B><FONT COLOR=\"#000000\" SIZE=\"+1\">%(realname)s Private\n"
+"\t    Archives Authentication</FONT></B>\n"
+"      </TD>\n"
+"    </TR>\n"
+"    <tr>\n"
+"        <TD><div ALIGN=\"Right\">Email address:</div></TD>\n"
+"        <TD><INPUT TYPE=\"text\" NAME=\"username\" SIZE=\"30\"></TD>\n"
+"    </tr>\n"
+"    <tr>\n"
+"      <TD><div ALIGN=\"Right\">Password:</div></TD>\n"
+"      <TD><INPUT TYPE=\"password\" NAME=\"password\" SIZE=\"30\"></TD>\n"
+"    </tr>\n"
+"    <tr>\n"
+"      <td colspan=2 align=\"middle\"><INPUT type=\"SUBMIT\"\n"
+"                                          name=\"submit\"\n"
+"\t\t\t\t\t  value=\"Let me in...\">\n"
+"      </td>\n"
+"    </tr>\n"
+"  </TABLE>\n"
+"      <p><strong><em>Important:</em></strong> From this point on, you\n"
+"      must have cookies enabled in your browser, otherwise\n"
+"      you will have to re-authenticate with every operation.\n"
+"\n"
+"      <p>Session cookies are used in Mailman's\n"
+"      private archive interface so that you don't need to\n"
+"      re-authenticate with every operation.  This\n"
+"      cookie will expire automatically when you exit your browser, or\n"
+"      you can explicitly expire the cookie by visiting your\n"
+"      member options page and clicking the\n"
+"      <em>Log out</em> button.\n"
+"</FORM>\n"
+"</body>\n"
+"</html>\n"
+msgstr ""
+"<html>\n"
+"<head>\n"
+"    <title>Konference %(realname)s - pøihlá¹ení pro pøístup do privátního "
+"archivu </title>\n"
+"</head>\n"
+"<body bgcolor=\"#ffffff\">\n"
+"<FORM METHOD=POST ACTION=\"%(action)s/\">\n"
+"%(message)s\n"
+"  <TABLE WIDTH=\"100%%\" BORDER=\"0\" CELLSPACING=\"4\" CELLPADDING=\"5\">\n"
+"    <TR>\n"
+"      <TD COLSPAN=\"2\" WIDTH=\"100%%\" BGCOLOR=\"#99CCFF\" ALIGN=\"CENTER"
+"\">\n"
+"\t<B><FONT COLOR=\"#000000\" SIZE=\"+1\">Konference %(realname)s - \n"
+"\t    pøihlá¹ení pro pøístup do privátního archivu</FONT></B>\n"
+"      </TD>\n"
+"    </TR>\n"
+"    <tr>\n"
+"        <TD><div ALIGN=\"Right\">Emailová adresa:</div></TD>\n"
+"        <TD><INPUT TYPE=\"text\" NAME=\"username\" SIZE=\"30\"></TD>\n"
+"    </tr>\n"
+"    <tr>\n"
+"      <TD><div ALIGN=\"Right\">Heslo:</div></TD>\n"
+"      <TD><INPUT TYPE=\"password\" NAME=\"password\" SIZE=\"30\"></TD>\n"
+"    </tr>\n"
+"    <tr>\n"
+"      <td colspan=2 align=\"middle\"><INPUT type=\"SUBMIT\"\n"
+"                                          name=\"submit\"\n"
+"\t\t\t\t\t  value=\"Pus» mì dovnitø...\">\n"
+"      </td>\n"
+"    </tr>\n"
+"  </TABLE>\n"
+"      <p><strong><em>Pozor:</em></strong> Aby systém fungoval \n"
+"      správnì musíte mít povolené cookie ve Va¹em prohlí¾eèi.\n"
+"\n"
+"      <p>Cookies se pou¾ívají na to, abyste nemuseli jeden\n"
+"      ka¾dý po¾adavek znovu potvrzovat heslem. Zaniknou\n"
+"      pokud ukonèíte prohlí¾eè a nebo kdy¾ se odhlásíte.\n"
+"      Odhlásit se mù¾ete kliknutím na <em>Odhlásit</em>. \n"
+"      Tento odkaz uvidíte a¾ po úspì¹ném pøihlá¹ení.\n"
+"\n"
+"</FORM>\n"
+"</body>\n"
+"</html>\n"
+
+#: templates/en/probe.txt:1
+msgid ""
+"This is a probe message.  You can ignore this message.\n"
+"\n"
+"The %(listname)s mailing list has received a number of bounces from you,\n"
+"indicating that there may be a problem delivering messages to %(address)s.\n"
+"A bounce sample is attached below.  Please examine this message to make "
+"sure\n"
+"there are no problems with your email address.  You may want to check with\n"
+"your mail administrator for more help.\n"
+"\n"
+"If you are reading this, you don't need to do anything to remain an enabled\n"
+"member of the mailing list.  If this message had bounced, you would not be\n"
+"reading it, and your membership would have been disabled.  Normally when "
+"you\n"
+"are disabled, you receive occasional messages asking you to re-enable your\n"
+"subscription.\n"
+"\n"
+"You can also visit your membership page at\n"
+"\n"
+"    %(optionsurl)s\n"
+"\n"
+"On your membership page, you can change various delivery options such\n"
+"as your email address and whether you get digests or not.\n"
+"\n"
+"If you have any questions or problems, you can contact the list owner\n"
+"at\n"
+"\n"
+"    %(owneraddr)s\n"
+msgstr ""
+
+#: templates/en/refuse.txt:1
+msgid ""
+"Your request to the %(listname)s mailing list\n"
+"\n"
+"    %(request)s\n"
+"\n"
+"has been rejected by the list moderator.  The moderator gave the\n"
+"following reason for rejecting your request:\n"
+"\n"
+"\"%(reason)s\"\n"
+"\n"
+"Any questions or comments should be directed to the list administrator \n"
+"at:\n"
+"\n"
+"    %(adminaddr)s\n"
+msgstr ""
+"Vá¹ po¾adavek pro konferenci  %(listname)s\n"
+"\n"
+"    %(request)s\n"
+"\n"
+"byl zamítnut správcem konference. Správce uvedl následující dùvod zamítnutí\n"
+"po¾adavku:\n"
+"\n"
+"\"%(reason)s\"\n"
+"\n"
+"Jakékoliv dotazy nebo pøipomínky zasílejte laskavì na adresu:\n"
+"\n"
+"    %(adminaddr)s\n"
+
+#: templates/en/roster.html:1
+msgid ""
+"<!-- $Revision: 7626 $ -->\n"
+"<HTML>\n"
+"  <HEAD>\n"
+"    <TITLE><MM-List-Name> Subscribers</TITLE>\n"
+"  \n"
+"  </HEAD>\n"
+"  <BODY BGCOLOR=\"#ffffff\">\n"
+"\n"
+"    <P>\n"
+"    <TABLE WIDTH=\"100%\" COLS=\"1\" BORDER=\"0\" CELLSPACING=\"4\" "
+"CELLPADDING=\"5\">\n"
+"      <TR>\n"
+"\t<TD COLSPAN=\"2\" WIDTH=\"100%\" BGCOLOR=\"#99CCFF\" ALIGN=\"CENTER\">\n"
+"\t  <B><FONT COLOR=\"#000000\" SIZE=\"+1\"><MM-List-Name>\n"
+"\t\tSubscribers</FONT></B>\n"
+"\t</TD>\n"
+"      </TR>\n"
+"      <TR>\n"
+"\t<TD COLSPAN=\"2\" WIDTH=\"100%\" ALIGN=\"CENTER\">\n"
+"\t    \n"
+"          <P align = \"right\"> <MM-lang-form-start><MM-displang-box>\n"
+"                       <MM-list-langs><MM-form-end></p>        \n"
+"\n"
+"\t  <P>Click on your address to visit your subscription\n"
+"\t      options page.<br><I>(Parenthesized entries have list delivery \n"
+"\t      disabled.)</I></P>\n"
+"\t</TD>\n"
+"      </TR>\n"
+"      <TR WIDTH=\"100%\" VALIGN=\"top\">\n"
+"\t<TD BGCOLOR=\"#FFF0D0\" WIDTH=\"50%\">\n"
+"\t  <center>\n"
+"\t    <B><FONT COLOR=\"#000000\"><MM-Num-Reg-Users>\n"
+"\t\t  Non-digested Members of <MM-List-Name>:</FONT></B>\n"
+"\t  </center>\n"
+"\t</TD>\n"
+"\t<TD BGCOLOR=\"#FFF0D0\" WIDTH=\"50%\">\n"
+"\t  <center>\n"
+"\t    <B><FONT COLOR=\"#000000\"><MM-Num-Digesters> Digested\n"
+"\t\t  Members of <MM-List-Name>:</FONT></B> \n"
+"\t  </center>\n"
+"\t</TD>\n"
+"      </TR>\n"
+"      <TR VALIGN=\"top\">\n"
+"\t<td>\n"
+"\t  <P><MM-Regular-Users>\n"
+"\t</td>\n"
+"\t<td>\n"
+"\t  <P><MM-Digest-Users>\n"
+"\t</td>\n"
+"      </tr>\n"
+"    </table>\n"
+"<MM-Mailman-Footer>\n"
+"</BODY>\n"
+"</HTML>\n"
+msgstr ""
+"<!-- $Revision: 7626 $ -->\n"
+"<HTML>\n"
+"  <HEAD>\n"
+"    <TITLE>Úèastníci konference <MM-List-Name></TITLE>\n"
+"  \n"
+"  </HEAD>\n"
+"  <BODY BGCOLOR=\"#ffffff\">\n"
+"\n"
+"    <P>\n"
+"    <TABLE WIDTH=\"100%\" COLS=\"1\" BORDER=\"0\" CELLSPACING=\"4\" "
+"CELLPADDING=\"5\">\n"
+"      <TR>\n"
+"\t<TD COLSPAN=\"2\" WIDTH=\"100%\" BGCOLOR=\"#99CCFF\" ALIGN=\"CENTER\">\n"
+"\t  <B><FONT COLOR=\"#000000\" SIZE=\"+1\"> Úèastníci konference <MM-List-"
+"Name>\n"
+"\t\t</FONT></B>\n"
+"\t</TD>\n"
+"      </TR>\n"
+"      <TR>\n"
+"\t<TD COLSPAN=\"2\" WIDTH=\"100%\" ALIGN=\"CENTER\">\n"
+"\n"
+"          <P align = \"right\"> <MM-lang-form-start><MM-displang-box>\n"
+"                       <MM-list-langs><MM-form-end></p>        \n"
+"\t    \n"
+"\t  <P>\n"
+"              Kliknìte na svou adresu. Vstoupíte tím na stránku na které si\n"
+"mù¾ete libovolnì konfigurovat své úèastnické konto. <br>\n"
+"<I>(Úèastníci v závorkách mají zakázáno doruèování po¹ty. )</I></P>\n"
+"\t</TD>\n"
+"      </TR>\n"
+"      <TR WIDTH=\"100%\" VALIGN=\"top\">\n"
+"\t<TD BGCOLOR=\"#FFF0D0\" WIDTH=\"50%\">\n"
+"\t  <center>\n"
+"\t    <B><FONT COLOR=\"#000000\"><MM-Num-Reg-Users>\n"
+"\t\t  bì¾ných úèastníkù konference <MM-List-Name>:</FONT></B>\n"
+"\t  </center>\n"
+"\t</TD>\n"
+"\t<TD BGCOLOR=\"#FFF0D0\" WIDTH=\"50%\">\n"
+"\t  <center>\n"
+"\t    <B><FONT COLOR=\"#000000\"><MM-Num-Digesters> Úèastníkù konference \n"
+"<MM-List-Name> vyu¾ívá digest:</FONT></B> \n"
+"\t  </center>\n"
+"\t</TD>\n"
+"      </TR>\n"
+"      <TR VALIGN=\"top\">\n"
+"\t<td>\n"
+"\t  <P><MM-Regular-Users>\n"
+"\t</td>\n"
+"\t<td>\n"
+"\t  <P><MM-Digest-Users>\n"
+"\t</td>\n"
+"      </tr>\n"
+"    </table>\n"
+"<MM-Mailman-Footer>\n"
+"</BODY>\n"
+"</HTML>\n"
+
+#: templates/en/subauth.txt:1
+msgid ""
+"Your authorization is required for a mailing list subscription request\n"
+"approval:\n"
+"\n"
+"    For:  %(username)s\n"
+"    List: %(listname)s@%(hostname)s\n"
+"\n"
+"At your convenience, visit:\n"
+"\n"
+"    %(admindb_url)s\n"
+"\t\n"
+"to process the request.\n"
+msgstr ""
+"Je nutné, aby jste rozhodl o pøihlá¹ení úèastníka do konference.\n"
+"\n"
+"    Úèastník:\t%(username)s\n"
+"    Konference:\t%(listname)s@%(hostname)s\n"
+"\n"
+"Nav¹tivte, prosím, adresu:\n"
+"\n"
+"\t%(admindb_url)s\n"
+"\t\n"
+"pro vyøízení po¾adavku.\n"
+
+#: templates/en/subscribe.html:1
+msgid ""
+"<!-- $Revision: 7626 $ -->\n"
+"<html>\n"
+"<head><title><MM-List-Name> Subscription results</title></head>\n"
+"<body bgcolor=\"white\">\n"
+"<h1><MM-List-Name> Subscription results</h1>\n"
+"<MM-Results>\n"
+"<MM-Mailman-Footer>\n"
+"</body>\n"
+"</html>\n"
+msgstr ""
+"<!-- $Revision: 7626 $ -->\n"
+"<html>\n"
+"<head><title><MM-List-Name> Výsledky pøihlá¹ení</title></head>\n"
+"<body bgcolor=\"white\">\n"
+"<h1><MM-List-Name> Výsledky pøihlá¹ení</h1>\n"
+"<MM-Results>\n"
+"<MM-Mailman-Footer>\n"
+"</body>\n"
+"</html>\n"
+
+#: templates/en/subscribeack.txt:1
+msgid ""
+"Welcome to the %(real_name)s@%(host_name)s mailing list!\n"
+"%(welcome)s\n"
+"To post to this list, send your email to:\n"
+"\n"
+"  %(emailaddr)s\n"
+"\n"
+"General information about the mailing list is at:\n"
+"\n"
+"  %(listinfo_url)s\n"
+"\n"
+"If you ever want to unsubscribe or change your options (eg, switch to or\n"
+"from digest mode, change your password, etc.), visit your subscription\n"
+"page at:\n"
+"\n"
+"  %(optionsurl)s\n"
+"%(umbrella)s\n"
+"You can also make such adjustments via email by sending a message to:\n"
+"\n"
+"  %(real_name)s-request@%(host_name)s\n"
+"\n"
+"with the word `help' in the subject or body (don't include the\n"
+"quotes), and you will get back a message with instructions.\n"
+"\n"
+"You must know your password to change your options (including changing\n"
+"the password, itself) or to unsubscribe.  It is:\n"
+"\n"
+"  %(password)s\n"
+"\n"
+"Normally, Mailman will remind you of your %(host_name)s mailing list\n"
+"passwords once every month, although you can disable this if you\n"
+"prefer.  This reminder will also include instructions on how to\n"
+"unsubscribe or change your account options.  There is also a button on\n"
+"your options page that will email your current password to you.\n"
+msgstr ""
+"Vítejte v konferenci %(real_name)s@%(host_name)s!\n"
+"%(welcome)s\n"
+"Pøíspìvky zasílejte na adresu:\n"
+"\n"
+"  %(emailaddr)s\n"
+"\n"
+"V¹eobecné informace o konferenci naleznete na adrese:\n"
+"\n"
+"  %(listinfo_url)s\n"
+"\n"
+"Pokud se nìkdy budete chtít odhlásit, nebo zmìnit nìjaké nastavení svého\n"
+"úèastnického konta (zmìnit heslo, digest a podobnì..), nav¹tivte\n"
+"konfiguraèní stránku na adrese:\n"
+"\n"
+"  %(optionsurl)s\n"
+"%(umbrella)s\n"
+"Konfiguraci mù¾ete udìlat i pomocí e-mailového klienta, pokud za¹lete na\n"
+"adresu:\n"
+"\n"
+"  %(real_name)s-request@%(host_name)s\n"
+"\n"
+"slovo help v tìle dopisu, dostanete podrobnìj¹í informace.\n"
+"\n"
+"Pro zmìnu konfigurace, nebo pro odhlá¹ení, budete potøebovat zadat heslo.\n"
+"Teï máte nastavené heslo:\n"
+"\n"
+"  %(password)s\n"
+"\n"
+"Pokud své heslo zapomenete, nevadí, ka¾dý mìsíc dostanete dopis, ve kterém\n"
+"Vám pøipomeneme nejen heslo, ale i do kterých konferencí jste na serveru\n"
+"%(host_name)s pøihlá¹eni.\n"
+"\n"
+"Kromì toho si kdykoliv mù¾ete nechat heslo zaslat kliknutím na tlaèítko na\n"
+"konfiguraèní stránce.\n"
+
+#: templates/en/unsub.txt:1
+msgid ""
+"Mailing list removal confirmation notice for mailing list %(listname)s\n"
+"\n"
+"We have received a request%(remote)s for the removal of your email\n"
+"address, \"%(email)s\" from the %(listaddr)s mailing list.  To confirm\n"
+"that you want to be removed from this mailing list, simply reply to\n"
+"this message, keeping the Subject: header intact.  Or visit this web\n"
+"page:\n"
+"\n"
+"    %(confirmurl)s\n"
+"\n"
+"Or include the following line -- and only the following line -- in a\n"
+"message to %(requestaddr)s:\n"
+"\n"
+"    confirm %(cookie)s\n"
+"\n"
+"Note that simply sending a `reply' to this message should work from\n"
+"most mail readers, since that usually leaves the Subject: line in\n"
+"the right form (additional \"Re:\" text in the Subject: is okay).\n"
+"\n"
+"If you do not wish to be removed from this list, please simply\n"
+"disregard this message.  If you think you are being maliciously\n"
+"removed from the list, or have any other questions, send them to\n"
+"%(listadmin)s.\n"
+msgstr ""
+"®ádost o potvrzení po¾adavku na odhlá¹ení z konference %(listname)s\n"
+"\n"
+"Dostali jsme po¾adavek od %(remote)s na odhlá¹ení Va¹í emailové adresy\n"
+"\"%(email)s\" z konference %(listaddr)s. Pro potvrzení tohoto po¾adavku\n"
+"musíte buï nav¹tívit toto URL:\n"
+"\n"
+"    %(confirmurl)s\n"
+"\n"
+"nebo zaslat na adresu %(requestaddr)s pøíkaz:\n"
+"\n"
+"    confirm %(cookie)s\n"
+"\n"
+"Zcela postaèí pokud odpovíte na tuto zprávu pøes reply (odpovìdìt)\n"
+"a ponecháte Subject: zprávy beze zmìny (pøípadné Re: èi podobný\n"
+"text pøidaný po¹tovním klientem nevadí).\n"
+"\n"
+"Pokud nechcete být odhlá¹eni, prostì tento po¾adavek ignorujte. \n"
+"Pokud máte dal¹í dotazy, kontaktujte správce konference na adrese:\n"
+"%(listadmin)s.\n"
+
+#: templates/en/unsubauth.txt:1
+msgid ""
+"Your authorization is required for a mailing list unsubscription\n"
+"request approval:\n"
+"\n"
+"    By:   %(username)s\n"
+"    From: %(listname)s@%(hostname)s\n"
+"\n"
+"At your convenience, visit:\n"
+"\n"
+"    %(admindb_url)s\n"
+"\n"
+"to process the request.\n"
+msgstr ""
+"Proto¾e jste správcem konference, je po¾adován Vá¹ souhlas s pøihlá¹ením\n"
+"následujícího u¾ivatele:\n"
+"\n"
+"    U¾ivatel:   %(username)s\n"
+"    email:      %(listname)s@%(hostname)s\n"
+"\n"
+"\n"
+"Nav¹tivte, dle Va¹ich mo¾ností, následující adresu:\n"
+"\n"
+"    %(admindb_url)s\n"
+"\n"
+"pro povolení nebo zamítnutí po¾adavku.\n"
+
+#: templates/en/userpass.txt:1
+msgid ""
+"You, or someone posing as you, has requested a password reminder for\n"
+"your membership on the mailing list %(fqdn_lname)s.  You will need\n"
+"this password in order to change your membership options (e.g. do you\n"
+"want regular delivery or digest delivery), and having this password\n"
+"makes it easier for you to unsubscribe from the mailing list.\n"
+"\n"
+"You are subscribed with the address: %(user)s\n"
+"\n"
+"Your %(listname)s password is: %(password)s\n"
+"\n"
+"To make changes to your membership options, log in and visit your\n"
+"options web page:\n"
+"\n"
+"    %(options_url)s\n"
+"\n"
+"You can also make such changes via email by sending a message to:\n"
+"\n"
+"    %(requestaddr)s\n"
+"\n"
+"with the text \"help\" in the subject or body.  The automatic reply will\n"
+"contain more detailed instructions.\n"
+"\n"
+"Questions or comments?  Please send them to the %(listname)s mailing\n"
+"list administrator at %(owneraddr)s.\n"
+msgstr ""
+"Tento dopis dostáváte pro pøipomenutí hesla pro konferenci na %(fqdn_lname)"
+"s,\n"
+"do které jste pøihlá¹eni z adresy \"%(user)s\".\n"
+"\n"
+"Va¹e heslo pro konferenci %(listname)s je: %(password)s\n"
+"\n"
+"Abyste mohli mìnit nastavení svého úèastnického konta, nav¹tivte WWW\n"
+"stránku:\n"
+"\n"
+"    %(options_url)s\n"
+"\n"
+"Nebo za¹lete dopis obsahující slovo help na adresu:\n"
+"\n"
+"    %(requestaddr)s\n"
+"\n"
+"Budou Vám zaslány podrobnìj¹í instrukce.\n"
+"\n"
+"Máte nìjaký dotaz nebo pøipomínku? Pi¹te správci konference\n"
+"%(listname)s na adresu %(owneraddr)s.\n"
+
+#: templates/en/verify.txt:1
+msgid ""
+"Mailing list subscription confirmation notice for mailing list %(listname)s\n"
+"\n"
+"We have received a request%(remote)s for subscription of your email\n"
+"address, \"%(email)s\", to the %(listaddr)s mailing list.  To confirm\n"
+"that you want to be added to this mailing list, simply reply to this\n"
+"message, keeping the Subject: header intact.  Or visit this web page:\n"
+"\n"
+"    %(confirmurl)s\n"
+"\n"
+"Or include the following line -- and only the following line -- in a\n"
+"message to %(requestaddr)s:\n"
+"\n"
+"    confirm %(cookie)s\n"
+"\n"
+"Note that simply sending a `reply' to this message should work from\n"
+"most mail readers, since that usually leaves the Subject: line in\n"
+"the right form (additional \"Re:\" text in the Subject: is okay).\n"
+"\n"
+"If you do not wish to be subscribed to this list, please simply\n"
+"disregard this message.  If you think you are being maliciously\n"
+"subscribed to the list, or have any other questions, send them to\n"
+"%(listadmin)s.\n"
+msgstr ""
+"Konference %(listname)s -- potvrzení pøihlá¹ení\n"
+"\n"
+"Obdr¾eli jsme po¾adavek z %(remote)s na pøihlá¹ení adresy\n"
+"\"%(email)s\", do konference %(listaddr)s. Pro potvrzení, ¾e tento "
+"po¾adavek\n"
+"pochází od Vás za¹lete, prosíme, zprávu na adresu %(requestaddr)s\n"
+"a buï: \n"
+"\n"
+"- ponechte øádek vìc: (Subject:) beze zmìny (pøípadné \"Re:\" doplnìné\n"
+"  automaticky po¹tovním klientem nevadí),\n"
+"\n"
+"- nebo vlo¾te do tìla dopisu následující øádek. Kromì nìj odstraòte\n"
+"  jakýkoliv dal¹í text, øádek musí být na první øádce a zaèínat hned\n"
+"  na zaèátku øádky.\n"
+"\n"
+"confirm %(cookie)s\n"
+"\n"
+"(Ve vìt¹inì po¹tovních klientù prostì za¹lete odpovìï na tento dopis.\n"
+"Obvykle je toti¾ øádek vìc: ponechán beze zmìny.)\n"
+"\n"
+"Nebo mù¾ete místo zaslání mailu nav¹tívit následující URL:\n"
+"\n"
+"    %(confirmurl)s\n"
+"\n"
+"Pokud se do konference pøihlásit nechcete, nebo dokonce nevíte, proè jste\n"
+"tento dopis dostali, prostì jej zahoïte. Pokud máte nìjaký dotaz nebo\n"
+"problém, prosím, kontaktujte správce na adrese: %(listadmin)s.\n"
 
 #~ msgid ""
 #~ "Approval notices are sent when mail triggers certain of the\n"

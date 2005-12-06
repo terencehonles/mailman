@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Mailman 2.1\n"
-"POT-Creation-Date: Wed Mar 23 09:55:34 2005\n"
+"POT-Creation-Date: Tue Dec  6 12:15:05 2005\n"
 "PO-Revision-Date: 2003-03-09 20:38+0100\n"
 "Last-Translator: Gahan Zwart <linux@innertruth.net>\n"
 "Language-Team: Dutch <danny@terweij.nl>\n"
@@ -21,141 +21,142 @@ msgstr "grootte niet beschikbaar"
 msgid " %(size)i bytes "
 msgstr " %(size)i bytes "
 
-#: Mailman/Archiver/HyperArch.py:281 Mailman/Archiver/HyperArch.py:454
-#: Mailman/Archiver/HyperArch.py:562 Mailman/Archiver/HyperArch.py:1031
-#: Mailman/Archiver/HyperArch.py:1160
+#: Mailman/Archiver/HyperArch.py:282 Mailman/Archiver/HyperArch.py:285
+#: Mailman/Archiver/HyperArch.py:413 Mailman/Archiver/HyperArch.py:465
+#: Mailman/Archiver/HyperArch.py:573 Mailman/Archiver/HyperArch.py:1042
+#: Mailman/Archiver/HyperArch.py:1171
 msgid " at "
 msgstr " op "
 
-#: Mailman/Archiver/HyperArch.py:483
+#: Mailman/Archiver/HyperArch.py:494
 msgid "Previous message:"
 msgstr "Vorig bericht:"
 
-#: Mailman/Archiver/HyperArch.py:505
+#: Mailman/Archiver/HyperArch.py:516
 msgid "Next message:"
 msgstr "Volgend Bericht:"
 
-#: Mailman/Archiver/HyperArch.py:672 Mailman/Archiver/HyperArch.py:708
+#: Mailman/Archiver/HyperArch.py:683 Mailman/Archiver/HyperArch.py:719
 msgid "thread"
 msgstr "Draad"
 
-#: Mailman/Archiver/HyperArch.py:673 Mailman/Archiver/HyperArch.py:709
+#: Mailman/Archiver/HyperArch.py:684 Mailman/Archiver/HyperArch.py:720
 msgid "subject"
 msgstr "onderwerp"
 
-#: Mailman/Archiver/HyperArch.py:674 Mailman/Archiver/HyperArch.py:710
+#: Mailman/Archiver/HyperArch.py:685 Mailman/Archiver/HyperArch.py:721
 msgid "author"
 msgstr "auteur"
 
-#: Mailman/Archiver/HyperArch.py:675 Mailman/Archiver/HyperArch.py:711
+#: Mailman/Archiver/HyperArch.py:686 Mailman/Archiver/HyperArch.py:722
 msgid "date"
 msgstr "datum"
 
-#: Mailman/Archiver/HyperArch.py:747
+#: Mailman/Archiver/HyperArch.py:758
 msgid "<P>Currently, there are no archives. </P>"
 msgstr "<p>Er zijn momenteel geen archieven. </P>"
 
-#: Mailman/Archiver/HyperArch.py:785
+#: Mailman/Archiver/HyperArch.py:796
 msgid "Gzip'd Text%(sz)s"
 msgstr "Ingepakt in ZIP %(sz)s"
 
-#: Mailman/Archiver/HyperArch.py:790
+#: Mailman/Archiver/HyperArch.py:801
 msgid "Text%(sz)s"
 msgstr "Tekst %(sz)s"
 
-#: Mailman/Archiver/HyperArch.py:880
+#: Mailman/Archiver/HyperArch.py:891
 msgid "figuring article archives\n"
 msgstr "berekenen van artikelarchieven\n"
 
-#: Mailman/Archiver/HyperArch.py:890
+#: Mailman/Archiver/HyperArch.py:901
 msgid "April"
 msgstr "april"
 
-#: Mailman/Archiver/HyperArch.py:890
+#: Mailman/Archiver/HyperArch.py:901
 msgid "February"
 msgstr "februari"
 
-#: Mailman/Archiver/HyperArch.py:890
+#: Mailman/Archiver/HyperArch.py:901
 msgid "January"
 msgstr "januari"
 
-#: Mailman/Archiver/HyperArch.py:890
+#: Mailman/Archiver/HyperArch.py:901
 msgid "March"
 msgstr "maart"
 
-#: Mailman/Archiver/HyperArch.py:891
+#: Mailman/Archiver/HyperArch.py:902
 msgid "August"
 msgstr "augustus"
 
-#: Mailman/Archiver/HyperArch.py:891
+#: Mailman/Archiver/HyperArch.py:902
 msgid "July"
 msgstr "juli"
 
-#: Mailman/Archiver/HyperArch.py:891
+#: Mailman/Archiver/HyperArch.py:902
 msgid "June"
 msgstr "juni"
 
-#: Mailman/Archiver/HyperArch.py:891 Mailman/i18n.py:102
+#: Mailman/Archiver/HyperArch.py:902 Mailman/i18n.py:102
 msgid "May"
 msgstr "mei"
 
-#: Mailman/Archiver/HyperArch.py:892
+#: Mailman/Archiver/HyperArch.py:903
 msgid "December"
 msgstr "december"
 
-#: Mailman/Archiver/HyperArch.py:892
+#: Mailman/Archiver/HyperArch.py:903
 msgid "November"
 msgstr "november"
 
-#: Mailman/Archiver/HyperArch.py:892
+#: Mailman/Archiver/HyperArch.py:903
 msgid "October"
 msgstr "oktober"
 
-#: Mailman/Archiver/HyperArch.py:892
+#: Mailman/Archiver/HyperArch.py:903
 msgid "September"
 msgstr "september"
 
-#: Mailman/Archiver/HyperArch.py:900
+#: Mailman/Archiver/HyperArch.py:911
 msgid "First"
 msgstr "Eerste"
 
-#: Mailman/Archiver/HyperArch.py:900
+#: Mailman/Archiver/HyperArch.py:911
 msgid "Fourth"
 msgstr "Vierde"
 
-#: Mailman/Archiver/HyperArch.py:900
+#: Mailman/Archiver/HyperArch.py:911
 msgid "Second"
 msgstr "Tweede"
 
-#: Mailman/Archiver/HyperArch.py:900
+#: Mailman/Archiver/HyperArch.py:911
 msgid "Third"
 msgstr "Derde"
 
-#: Mailman/Archiver/HyperArch.py:902
+#: Mailman/Archiver/HyperArch.py:913
 msgid "%(ord)s quarter %(year)i"
 msgstr "%(ord)s kwartaal %(year)i"
 
-#: Mailman/Archiver/HyperArch.py:909
+#: Mailman/Archiver/HyperArch.py:920
 msgid "%(month)s %(year)i"
 msgstr "%(month)s %(year)i"
 
-#: Mailman/Archiver/HyperArch.py:914
+#: Mailman/Archiver/HyperArch.py:925
 msgid "The Week Of Monday %(day)i %(month)s %(year)i"
 msgstr "De week van maandag %(day)i %(month)s %(year)i"
 
-#: Mailman/Archiver/HyperArch.py:918
+#: Mailman/Archiver/HyperArch.py:929
 msgid "%(day)i %(month)s %(year)i"
 msgstr "%(day)i %(month)s %(year)i"
 
-#: Mailman/Archiver/HyperArch.py:1018
+#: Mailman/Archiver/HyperArch.py:1029
 msgid "Computing threaded index\n"
 msgstr "Berekenen van draadindex\n"
 
-#: Mailman/Archiver/HyperArch.py:1283
+#: Mailman/Archiver/HyperArch.py:1294
 msgid "Updating HTML for article %(seq)s"
 msgstr "Updaten van HTML voor artikel %(seq)s"
 
-#: Mailman/Archiver/HyperArch.py:1290
+#: Mailman/Archiver/HyperArch.py:1301
 msgid "article file %(filename)s is missing!"
 msgstr "artikelbestand %s is niet gevonden!"
 
@@ -217,8 +218,8 @@ msgid " The last bounce received from you was dated %(date)s"
 msgstr " Uw laatste bounce is ontvangen op $(date)s"
 
 #: Mailman/Bouncer.py:279 Mailman/Deliverer.py:144
-#: Mailman/Handlers/Acknowledge.py:44 Mailman/Handlers/CookHeaders.py:284
-#: Mailman/Handlers/Hold.py:205 Mailman/Handlers/ToDigest.py:226
+#: Mailman/Handlers/Acknowledge.py:44 Mailman/Handlers/CookHeaders.py:280
+#: Mailman/Handlers/Hold.py:209 Mailman/Handlers/ToDigest.py:237
 #: Mailman/ListAdmin.py:223
 msgid "(no subject)"
 msgstr "(Geen onderwerp)"
@@ -237,7 +238,7 @@ msgstr "beheerder"
 
 #: Mailman/Cgi/admin.py:74 Mailman/Cgi/admindb.py:89 Mailman/Cgi/confirm.py:61
 #: Mailman/Cgi/edithtml.py:68 Mailman/Cgi/listinfo.py:51
-#: Mailman/Cgi/options.py:77 Mailman/Cgi/private.py:101
+#: Mailman/Cgi/options.py:78 Mailman/Cgi/private.py:101
 #: Mailman/Cgi/rmlist.py:64 Mailman/Cgi/roster.py:57
 #: Mailman/Cgi/subscribe.py:61
 msgid "No such list <em>%(safelistname)s</em>"
@@ -262,7 +263,7 @@ msgstr ""
 "          anders is de maillijst onbruikbaar."
 
 #: Mailman/Cgi/admin.py:183 Mailman/Cgi/admin.py:189 Mailman/Cgi/admin.py:194
-#: Mailman/Cgi/admin.py:1433 Mailman/Gui/GUIBase.py:191
+#: Mailman/Cgi/admin.py:1436 Mailman/Gui/GUIBase.py:191
 msgid "Warning: "
 msgstr "Waarschuwing: "
 
@@ -511,7 +512,7 @@ msgstr "Onderwerp naam:"
 msgid "Regexp:"
 msgstr "Expressie:"
 
-#: Mailman/Cgi/admin.py:705 Mailman/Cgi/options.py:979
+#: Mailman/Cgi/admin.py:705 Mailman/Cgi/options.py:1029
 msgid "Description:"
 msgstr "Omschrijving:"
 
@@ -834,54 +835,55 @@ msgstr "Stuur een welkomstbericht naar de nieuwe leden?"
 
 #: Mailman/Cgi/admin.py:1144 Mailman/Cgi/admin.py:1153
 #: Mailman/Cgi/admin.py:1186 Mailman/Cgi/admin.py:1194
-#: Mailman/Cgi/confirm.py:289 Mailman/Cgi/create.py:339
-#: Mailman/Cgi/create.py:369 Mailman/Cgi/create.py:407
+#: Mailman/Cgi/confirm.py:289 Mailman/Cgi/create.py:340
+#: Mailman/Cgi/create.py:375 Mailman/Cgi/create.py:413
 #: Mailman/Cgi/rmlist.py:228 Mailman/Gui/Archive.py:33
 #: Mailman/Gui/Autoresponse.py:54 Mailman/Gui/Autoresponse.py:62
 #: Mailman/Gui/Autoresponse.py:71 Mailman/Gui/Bounce.py:77
 #: Mailman/Gui/Bounce.py:120 Mailman/Gui/Bounce.py:146
-#: Mailman/Gui/Bounce.py:155 Mailman/Gui/ContentFilter.py:70
-#: Mailman/Gui/ContentFilter.py:112 Mailman/Gui/Digest.py:46
-#: Mailman/Gui/Digest.py:62 Mailman/Gui/Digest.py:84 Mailman/Gui/Digest.py:89
-#: Mailman/Gui/General.py:154 Mailman/Gui/General.py:160
-#: Mailman/Gui/General.py:238 Mailman/Gui/General.py:265
-#: Mailman/Gui/General.py:292 Mailman/Gui/General.py:303
-#: Mailman/Gui/General.py:306 Mailman/Gui/General.py:316
-#: Mailman/Gui/General.py:321 Mailman/Gui/General.py:327
-#: Mailman/Gui/General.py:347 Mailman/Gui/General.py:375
-#: Mailman/Gui/General.py:398 Mailman/Gui/NonDigest.py:44
-#: Mailman/Gui/NonDigest.py:52 Mailman/Gui/NonDigest.py:139
-#: Mailman/Gui/Privacy.py:110 Mailman/Gui/Privacy.py:116
-#: Mailman/Gui/Privacy.py:149 Mailman/Gui/Privacy.py:197
-#: Mailman/Gui/Privacy.py:305 Mailman/Gui/Privacy.py:324
-#: Mailman/Gui/Usenet.py:52 Mailman/Gui/Usenet.py:56 Mailman/Gui/Usenet.py:93
-#: Mailman/Gui/Usenet.py:105
-msgid "No"
-msgstr "Nee"
-
-#: Mailman/Cgi/admin.py:1144 Mailman/Cgi/admin.py:1153
-#: Mailman/Cgi/admin.py:1186 Mailman/Cgi/admin.py:1194
-#: Mailman/Cgi/confirm.py:289 Mailman/Cgi/create.py:339
-#: Mailman/Cgi/create.py:369 Mailman/Cgi/create.py:407
-#: Mailman/Cgi/rmlist.py:228 Mailman/Gui/Archive.py:33
-#: Mailman/Gui/Autoresponse.py:54 Mailman/Gui/Autoresponse.py:62
-#: Mailman/Gui/Bounce.py:77 Mailman/Gui/Bounce.py:120
-#: Mailman/Gui/Bounce.py:146 Mailman/Gui/Bounce.py:155
-#: Mailman/Gui/ContentFilter.py:70 Mailman/Gui/ContentFilter.py:112
+#: Mailman/Gui/Bounce.py:155 Mailman/Gui/ContentFilter.py:74
+#: Mailman/Gui/ContentFilter.py:116 Mailman/Gui/ContentFilter.py:120
 #: Mailman/Gui/Digest.py:46 Mailman/Gui/Digest.py:62 Mailman/Gui/Digest.py:84
-#: Mailman/Gui/Digest.py:89 Mailman/Gui/General.py:154
-#: Mailman/Gui/General.py:160 Mailman/Gui/General.py:238
-#: Mailman/Gui/General.py:265 Mailman/Gui/General.py:292
-#: Mailman/Gui/General.py:303 Mailman/Gui/General.py:306
-#: Mailman/Gui/General.py:316 Mailman/Gui/General.py:321
-#: Mailman/Gui/General.py:327 Mailman/Gui/General.py:347
-#: Mailman/Gui/General.py:375 Mailman/Gui/General.py:398
+#: Mailman/Gui/Digest.py:89 Mailman/Gui/General.py:153
+#: Mailman/Gui/General.py:159 Mailman/Gui/General.py:237
+#: Mailman/Gui/General.py:264 Mailman/Gui/General.py:291
+#: Mailman/Gui/General.py:302 Mailman/Gui/General.py:305
+#: Mailman/Gui/General.py:315 Mailman/Gui/General.py:320
+#: Mailman/Gui/General.py:326 Mailman/Gui/General.py:346
+#: Mailman/Gui/General.py:374 Mailman/Gui/General.py:397
 #: Mailman/Gui/NonDigest.py:44 Mailman/Gui/NonDigest.py:52
 #: Mailman/Gui/NonDigest.py:139 Mailman/Gui/Privacy.py:110
 #: Mailman/Gui/Privacy.py:116 Mailman/Gui/Privacy.py:149
 #: Mailman/Gui/Privacy.py:197 Mailman/Gui/Privacy.py:305
 #: Mailman/Gui/Privacy.py:324 Mailman/Gui/Usenet.py:52
 #: Mailman/Gui/Usenet.py:56 Mailman/Gui/Usenet.py:93 Mailman/Gui/Usenet.py:105
+msgid "No"
+msgstr "Nee"
+
+#: Mailman/Cgi/admin.py:1144 Mailman/Cgi/admin.py:1153
+#: Mailman/Cgi/admin.py:1186 Mailman/Cgi/admin.py:1194
+#: Mailman/Cgi/confirm.py:289 Mailman/Cgi/create.py:340
+#: Mailman/Cgi/create.py:375 Mailman/Cgi/create.py:413
+#: Mailman/Cgi/rmlist.py:228 Mailman/Gui/Archive.py:33
+#: Mailman/Gui/Autoresponse.py:54 Mailman/Gui/Autoresponse.py:62
+#: Mailman/Gui/Bounce.py:77 Mailman/Gui/Bounce.py:120
+#: Mailman/Gui/Bounce.py:146 Mailman/Gui/Bounce.py:155
+#: Mailman/Gui/ContentFilter.py:74 Mailman/Gui/ContentFilter.py:116
+#: Mailman/Gui/ContentFilter.py:120 Mailman/Gui/Digest.py:46
+#: Mailman/Gui/Digest.py:62 Mailman/Gui/Digest.py:84 Mailman/Gui/Digest.py:89
+#: Mailman/Gui/General.py:153 Mailman/Gui/General.py:159
+#: Mailman/Gui/General.py:237 Mailman/Gui/General.py:264
+#: Mailman/Gui/General.py:291 Mailman/Gui/General.py:302
+#: Mailman/Gui/General.py:305 Mailman/Gui/General.py:315
+#: Mailman/Gui/General.py:320 Mailman/Gui/General.py:326
+#: Mailman/Gui/General.py:346 Mailman/Gui/General.py:374
+#: Mailman/Gui/General.py:397 Mailman/Gui/NonDigest.py:44
+#: Mailman/Gui/NonDigest.py:52 Mailman/Gui/NonDigest.py:139
+#: Mailman/Gui/Privacy.py:110 Mailman/Gui/Privacy.py:116
+#: Mailman/Gui/Privacy.py:149 Mailman/Gui/Privacy.py:197
+#: Mailman/Gui/Privacy.py:305 Mailman/Gui/Privacy.py:324
+#: Mailman/Gui/Usenet.py:52 Mailman/Gui/Usenet.py:56 Mailman/Gui/Usenet.py:93
+#: Mailman/Gui/Usenet.py:105
 msgid "Yes"
 msgstr "Ja"
 
@@ -1003,47 +1005,51 @@ msgstr "Geen geldig e-mailadres"
 msgid "Hostile address (illegal characters)"
 msgstr "Geen geldige karakters in het adres"
 
-#: Mailman/Cgi/admin.py:1353
+#: Mailman/Cgi/admin.py:1350
+msgid "Banned address (matched %(pattern)s)"
+msgstr ""
+
+#: Mailman/Cgi/admin.py:1356
 msgid "Successfully invited:"
 msgstr "Succesvol uitgenodigd:"
 
-#: Mailman/Cgi/admin.py:1355
+#: Mailman/Cgi/admin.py:1358
 msgid "Successfully subscribed:"
 msgstr "Succesvol aangemeld:"
 
-#: Mailman/Cgi/admin.py:1360
+#: Mailman/Cgi/admin.py:1363
 msgid "Error inviting:"
 msgstr "Fouten bij het uitnodigen:"
 
-#: Mailman/Cgi/admin.py:1362
+#: Mailman/Cgi/admin.py:1365
 msgid "Error subscribing:"
 msgstr "Fouten bij het aanmelden:"
 
-#: Mailman/Cgi/admin.py:1391
+#: Mailman/Cgi/admin.py:1394
 msgid "Successfully Unsubscribed:"
 msgstr "Met success afgemeld:"
 
-#: Mailman/Cgi/admin.py:1396
+#: Mailman/Cgi/admin.py:1399
 msgid "Cannot unsubscribe non-members:"
 msgstr "Kan geen niet-leden afmelden:"
 
-#: Mailman/Cgi/admin.py:1408
+#: Mailman/Cgi/admin.py:1411
 msgid "Bad moderation flag value"
 msgstr "Verkeerde moderatievlagwaarde"
 
-#: Mailman/Cgi/admin.py:1429
+#: Mailman/Cgi/admin.py:1432
 msgid "Not subscribed"
 msgstr "Niet aangemeld"
 
-#: Mailman/Cgi/admin.py:1432
+#: Mailman/Cgi/admin.py:1435
 msgid "Ignoring changes to deleted member: %(user)s"
 msgstr "Negeer de wijzigingen voor verwijderd lid: %(user)s"
 
-#: Mailman/Cgi/admin.py:1472
+#: Mailman/Cgi/admin.py:1475
 msgid "Successfully Removed:"
 msgstr "Successvol Verwijderd:"
 
-#: Mailman/Cgi/admin.py:1476
+#: Mailman/Cgi/admin.py:1479
 msgid "Error Unsubscribing:"
 msgstr "Fout bij afmelden:"
 
@@ -1215,7 +1221,7 @@ msgid "Size:"
 msgstr "Grootte:"
 
 #: Mailman/Cgi/admindb.py:498 Mailman/Handlers/Scrubber.py:198
-#: Mailman/Handlers/Scrubber.py:295 Mailman/Handlers/Scrubber.py:296
+#: Mailman/Handlers/Scrubber.py:302 Mailman/Handlers/Scrubber.py:303
 msgid "not available"
 msgstr "niet beschikbaar"
 
@@ -1271,18 +1277,22 @@ msgstr "Bericht inhoud:"
 msgid "No reason given"
 msgstr "Geen reden opgegeven"
 
-#: Mailman/Cgi/admindb.py:769 Mailman/ListAdmin.py:296
+#: Mailman/Cgi/admindb.py:770 Mailman/ListAdmin.py:296
 #: Mailman/ListAdmin.py:414
 msgid "[No reason given]"
 msgstr "[Geen reden opgegeven]"
 
-#: Mailman/Cgi/admindb.py:798
+#: Mailman/Cgi/admindb.py:802
 msgid "Database Updated..."
 msgstr "De database is gewijzigd..."
 
-#: Mailman/Cgi/admindb.py:801
+#: Mailman/Cgi/admindb.py:805
 msgid " is already a member"
 msgstr " is al lid"
+
+#: Mailman/Cgi/admindb.py:808
+msgid "%(addr)s is banned (matched: %(patt)s)"
+msgstr ""
 
 #: Mailman/Cgi/confirm.py:75
 msgid "Confirmation string was empty."
@@ -1495,8 +1505,8 @@ msgstr ""
 "moderator's\n"
 "            beslissing."
 
-#: Mailman/Cgi/confirm.py:368 Mailman/Cgi/confirm.py:428
-#: Mailman/Cgi/confirm.py:517 Mailman/Cgi/confirm.py:740
+#: Mailman/Cgi/confirm.py:368 Mailman/Cgi/confirm.py:433
+#: Mailman/Cgi/confirm.py:522 Mailman/Cgi/confirm.py:751
 msgid ""
 "Invalid confirmation string.  It is\n"
 "            possible that you are attempting to confirm a request for an\n"
@@ -1511,18 +1521,30 @@ msgstr ""
 msgid "You are already a member of this mailing list!"
 msgstr "U bent al lid van deze maillijst!"
 
-#: Mailman/Cgi/confirm.py:374
+#: Mailman/Cgi/confirm.py:375
+#, fuzzy
+msgid ""
+"You are currently banned from subscribing to\n"
+"            this list.  If you think this restriction is erroneous, please\n"
+"            contact the list owners at %(owneraddr)s."
+msgstr ""
+"Voor het door u opgegeven e-mailadres is een verbod\n"
+"        ingesteld voor deze maillijst. Als u denkt dat dit een \n"
+"        vergissing is dan kunt u contact opnemen met de\n"
+"        lijsteigenaren: %(listowner)s."
+
+#: Mailman/Cgi/confirm.py:379
 msgid ""
 "            You were not invited to this mailing list.  The invitation has\n"
 "            been discarded, and both list administrators have been\n"
 "            alerted."
 msgstr ""
 
-#: Mailman/Cgi/confirm.py:384
+#: Mailman/Cgi/confirm.py:389
 msgid "Subscription request confirmed"
 msgstr "Aanmeldingsverzoek bevestigd"
 
-#: Mailman/Cgi/confirm.py:388
+#: Mailman/Cgi/confirm.py:393
 msgid ""
 "            You have successfully confirmed your subscription request for\n"
 "            \"%(addr)s\" to the %(listname)s mailing list.  A separate\n"
@@ -1542,15 +1564,15 @@ msgstr ""
 "            <p>U kunt nu doorgaan naar uw lidmaatschaps\n"
 "            <a href=\"%(optionsurl)s\">inlogpagina</a>."
 
-#: Mailman/Cgi/confirm.py:406
+#: Mailman/Cgi/confirm.py:411
 msgid "You have canceled your unsubscription request."
 msgstr "U heeft uw afmeldingsverzoek geannuleerd."
 
-#: Mailman/Cgi/confirm.py:434
+#: Mailman/Cgi/confirm.py:439
 msgid "Unsubscription request confirmed"
 msgstr "Afmeldingsverzoek is bevestigd"
 
-#: Mailman/Cgi/confirm.py:438
+#: Mailman/Cgi/confirm.py:443
 msgid ""
 "            You have successfully unsubscribed from the %(listname)s "
 "mailing\n"
@@ -1563,15 +1585,15 @@ msgstr ""
 "de\n"
 "            maillijst</a> bezoeken."
 
-#: Mailman/Cgi/confirm.py:449
+#: Mailman/Cgi/confirm.py:454
 msgid "Confirm unsubscription request"
 msgstr "Bevestig afmeldingsverzoek"
 
-#: Mailman/Cgi/confirm.py:464 Mailman/Cgi/confirm.py:554
+#: Mailman/Cgi/confirm.py:469 Mailman/Cgi/confirm.py:565
 msgid "<em>Not available</em>"
 msgstr "<em>Niet beschikbaar</em>"
 
-#: Mailman/Cgi/confirm.py:467
+#: Mailman/Cgi/confirm.py:472
 msgid ""
 "Your confirmation is required in order to complete the\n"
 "    unsubscription request from the mailing list <em>%(listname)s</em>.  "
@@ -1602,24 +1624,36 @@ msgstr ""
 "    <p>Of klik op <em>Annuleren</em> om uw afmeldingsverzoek af\n"
 "    te breken."
 
-#: Mailman/Cgi/confirm.py:483 Mailman/Cgi/options.py:696
-#: Mailman/Cgi/options.py:837 Mailman/Cgi/options.py:847
+#: Mailman/Cgi/confirm.py:488 Mailman/Cgi/options.py:746
+#: Mailman/Cgi/options.py:887 Mailman/Cgi/options.py:897
 msgid "Unsubscribe"
 msgstr "Afmelden"
 
-#: Mailman/Cgi/confirm.py:484 Mailman/Cgi/confirm.py:583
+#: Mailman/Cgi/confirm.py:489 Mailman/Cgi/confirm.py:594
 msgid "Cancel and discard"
 msgstr "Annuleer en negeer"
 
-#: Mailman/Cgi/confirm.py:494
+#: Mailman/Cgi/confirm.py:499
 msgid "You have canceled your change of address request."
 msgstr "Je hebt je email adres verandering geannuleerd."
 
-#: Mailman/Cgi/confirm.py:523
+#: Mailman/Cgi/confirm.py:528
+#, fuzzy
+msgid ""
+"%(newaddr)s is banned from subscribing to the\n"
+"            %(realname)s list.  If you think this restriction is erroneous,\n"
+"            please contact the list owners at %(owneraddr)s."
+msgstr ""
+"Voor het door u opgegeven e-mailadres is een verbod\n"
+"        ingesteld voor deze maillijst. Als u denkt dat dit een \n"
+"        vergissing is dan kunt u contact opnemen met de\n"
+"        lijsteigenaren: %(listowner)s."
+
+#: Mailman/Cgi/confirm.py:534
 msgid "Change of address request confirmed"
 msgstr "Wijziging van het e-mailadres is bevestigd"
 
-#: Mailman/Cgi/confirm.py:527
+#: Mailman/Cgi/confirm.py:538
 msgid ""
 "            You have successfully changed your address on the %(listname)s\n"
 "            mailing list from <b>%(oldaddr)s</b> to <b>%(newaddr)s</b>.  "
@@ -1633,16 +1667,16 @@ msgstr ""
 "            verder gaan naar uw lidmaatschaps<a href=\"%(optionsurl)s"
 "\">inlogpagina</a>."
 
-#: Mailman/Cgi/confirm.py:539
+#: Mailman/Cgi/confirm.py:550
 msgid "Confirm change of address request"
 msgstr "Bevestig uw adreswijzigingsverzoek"
 
-#: Mailman/Cgi/confirm.py:558
+#: Mailman/Cgi/confirm.py:569
 msgid "globally"
 msgstr "globaal"
 
 # plaatsing globallys onzeker
-#: Mailman/Cgi/confirm.py:561
+#: Mailman/Cgi/confirm.py:572
 msgid ""
 "Your confirmation is required in order to complete the\n"
 "    change of address request for the mailing list <em>%(listname)s</em>.  "
@@ -1683,15 +1717,15 @@ msgstr ""
 "    <p>Of klik op <em>Annuleren</em> om dit adreswijzigingsverzoek te\n"
 "    annuleren."
 
-#: Mailman/Cgi/confirm.py:582
+#: Mailman/Cgi/confirm.py:593
 msgid "Change address"
 msgstr "Verander e-mailadres"
 
-#: Mailman/Cgi/confirm.py:591 Mailman/Cgi/confirm.py:705
+#: Mailman/Cgi/confirm.py:602 Mailman/Cgi/confirm.py:716
 msgid "Continue awaiting approval"
 msgstr "Wacht op goedkeuring"
 
-#: Mailman/Cgi/confirm.py:599
+#: Mailman/Cgi/confirm.py:610
 msgid ""
 "Okay, the list moderator will still have the\n"
 "    opportunity to approve or reject this message."
@@ -1699,11 +1733,11 @@ msgstr ""
 "OK, de lijstmoderator heeft nog steeds de bevoegdheid om\n"
 "    het bericht te annuleren of door te laten."
 
-#: Mailman/Cgi/confirm.py:625
+#: Mailman/Cgi/confirm.py:636
 msgid "Sender discarded message via web."
 msgstr "Verstuurder heeft bericht geannuleerd via het web."
 
-#: Mailman/Cgi/confirm.py:627
+#: Mailman/Cgi/confirm.py:638
 msgid ""
 "The held message with the Subject:\n"
 "            header <em>%(subject)s</em> could not be found.  The most "
@@ -1721,11 +1755,11 @@ msgstr ""
 "kunnen\n"
 "            intrekken."
 
-#: Mailman/Cgi/confirm.py:635
+#: Mailman/Cgi/confirm.py:646
 msgid "Posted message canceled"
 msgstr "Bezorgd bericht geannuleerd"
 
-#: Mailman/Cgi/confirm.py:638
+#: Mailman/Cgi/confirm.py:649
 msgid ""
 "            You have successfully canceled the posting of your message with\n"
 "            the Subject: header <em>%(subject)s</em> to the mailing list\n"
@@ -1735,11 +1769,11 @@ msgstr ""
 "            <em>%(subject)s</em> naar de maillijst %(listname)s.\n"
 "            kunnen intrekken."
 
-#: Mailman/Cgi/confirm.py:649
+#: Mailman/Cgi/confirm.py:660
 msgid "Cancel held message posting"
 msgstr "Annuleer vastgehouden bericht"
 
-#: Mailman/Cgi/confirm.py:674
+#: Mailman/Cgi/confirm.py:685
 msgid ""
 "The held message you were referred to has\n"
 "        already been handled by the list administrator."
@@ -1747,7 +1781,7 @@ msgstr ""
 "Het vastgehouden bericht waarnaar u verwijst is al\n"
 "        verwerkt door de lijstbeheerder."
 
-#: Mailman/Cgi/confirm.py:688
+#: Mailman/Cgi/confirm.py:699
 msgid ""
 "Your confirmation is required in order to cancel the\n"
 "    posting of your message to the mailing list <em>%(listname)s</em>:\n"
@@ -1775,11 +1809,11 @@ msgstr ""
 "    <p>Of klik op de <em>Wacht op goedkeuring</em> knop om de\n"
 "    lijstmoderator het bericht te laten goed- of afkeuren."
 
-#: Mailman/Cgi/confirm.py:704
+#: Mailman/Cgi/confirm.py:715
 msgid "Cancel posting"
 msgstr "Annuleer het bericht"
 
-#: Mailman/Cgi/confirm.py:716
+#: Mailman/Cgi/confirm.py:727
 msgid ""
 "You have canceled the re-enabling of your membership.  If\n"
 "    we continue to receive bounces from your address, it could be deleted "
@@ -1790,11 +1824,11 @@ msgstr ""
 "    het systeem weer bounces krijgt van uw adres dan word uw lidmaatschap\n"
 "    geannuleerd voor deze maillijst."
 
-#: Mailman/Cgi/confirm.py:746
+#: Mailman/Cgi/confirm.py:757
 msgid "Membership re-enabled."
 msgstr "Lidmaatschap is weer geaktiveerd."
 
-#: Mailman/Cgi/confirm.py:750
+#: Mailman/Cgi/confirm.py:761
 msgid ""
 "            You have successfully re-enabled your membership in the\n"
 "            %(listname)s mailing list.  You can now <a\n"
@@ -1807,11 +1841,11 @@ msgstr ""
 "bezoeken</a>.\n"
 "            "
 
-#: Mailman/Cgi/confirm.py:762
+#: Mailman/Cgi/confirm.py:773
 msgid "Re-enable mailing list membership"
 msgstr "Her-aanmelding mailing lijst lidmaatschap"
 
-#: Mailman/Cgi/confirm.py:779
+#: Mailman/Cgi/confirm.py:790
 msgid ""
 "We're sorry, but you have already been unsubscribed\n"
 "        from this mailing list.  To re-subscribe, please visit the\n"
@@ -1821,11 +1855,11 @@ msgstr ""
 "        deze mailing lijst.  Om je weer aan te nelden bezoek\n"
 "        <a href=\"%(listinfourl)s\">lijst informatie pagina</a>."
 
-#: Mailman/Cgi/confirm.py:794
+#: Mailman/Cgi/confirm.py:805
 msgid "<em>not available</em>"
 msgstr "<em>niet beschikbaar</em>"
 
-#: Mailman/Cgi/confirm.py:798
+#: Mailman/Cgi/confirm.py:809
 #, fuzzy
 msgid ""
 "Your membership in the %(realname)s mailing list is\n"
@@ -1866,11 +1900,11 @@ msgstr ""
 "    re-enabling your membership.\n"
 "    "
 
-#: Mailman/Cgi/confirm.py:818
+#: Mailman/Cgi/confirm.py:829
 msgid "Re-enable membership"
 msgstr "Her-activeer lidmaatschap"
 
-#: Mailman/Cgi/confirm.py:819
+#: Mailman/Cgi/confirm.py:830
 msgid "Cancel"
 msgstr "Annuleer"
 
@@ -1894,25 +1928,25 @@ msgstr "<br>Terug naar de "
 msgid "administrative list overview"
 msgstr "beheerdersoverzicht lijst"
 
-#: Mailman/Cgi/create.py:102
+#: Mailman/Cgi/create.py:103
 #, fuzzy
 msgid "List name must not include \"@\": %(safelistname)s"
 msgstr "Lijstnaam mag niet de volgende tekens bevatten: \"@\": %(listname)s"
 
-#: Mailman/Cgi/create.py:109
+#: Mailman/Cgi/create.py:110
 #, fuzzy
 msgid "List already exists: %(safelistname)s"
 msgstr "Lijst bestaat al: %(listname)s"
 
-#: Mailman/Cgi/create.py:113
+#: Mailman/Cgi/create.py:114
 msgid "You forgot to enter the list name"
 msgstr "U bent vergeten de lijstnaam in te voeren"
 
-#: Mailman/Cgi/create.py:117
+#: Mailman/Cgi/create.py:118
 msgid "You forgot to specify the list owner"
 msgstr "U bent vergeten de lijstbeheerder in te voeren"
 
-#: Mailman/Cgi/create.py:124
+#: Mailman/Cgi/create.py:125
 msgid ""
 "Leave the initial password (and confirmation) fields\n"
 "                blank if you want Mailman to autogenerate the list\n"
@@ -1922,35 +1956,35 @@ msgstr ""
 "                dan zal het systeem een wachtwoord genereren.\n"
 "                "
 
-#: Mailman/Cgi/create.py:133
+#: Mailman/Cgi/create.py:134
 msgid "Initial list passwords do not match"
 msgstr "Ingevoerde wachtwoorden komen niet overeen"
 
-#: Mailman/Cgi/create.py:142
+#: Mailman/Cgi/create.py:143
 msgid "The list password cannot be empty<!-- ignore -->"
 msgstr "Het lijstwachtwoord moet ingevuld worden<!-- ignore -->"
 
-#: Mailman/Cgi/create.py:154
+#: Mailman/Cgi/create.py:155
 msgid "You are not authorized to create new mailing lists"
 msgstr "U bent niet geauthoriseerd om nieuwe lijsten aan te maken"
 
-#: Mailman/Cgi/create.py:162
+#: Mailman/Cgi/create.py:163
 msgid "Unknown virtual host: %(safehostname)s"
 msgstr ""
 
-#: Mailman/Cgi/create.py:193 bin/newlist:202
+#: Mailman/Cgi/create.py:194 bin/newlist:202
 msgid "Bad owner email address: %(s)s"
 msgstr "Foutieve lijsteigenaar e-mailadres: %(s)s"
 
-#: Mailman/Cgi/create.py:197 bin/newlist:170 bin/newlist:204
+#: Mailman/Cgi/create.py:198 bin/newlist:170 bin/newlist:204
 msgid "List already exists: %(listname)s"
 msgstr "Lijst bestaat al: %(listname)s"
 
-#: Mailman/Cgi/create.py:201 bin/newlist:200
+#: Mailman/Cgi/create.py:202 bin/newlist:200
 msgid "Illegal list name: %(s)s"
 msgstr "Ongeldige lijstnaam: %(s)s"
 
-#: Mailman/Cgi/create.py:206
+#: Mailman/Cgi/create.py:207
 msgid ""
 "Some unknown error occurred while creating the list.\n"
 "                Please contact the site administrator for assistance."
@@ -1958,15 +1992,15 @@ msgstr ""
 "Er is een onbekende fout opgetreden tijdens het maken van de lijst.\n"
 "                Neem contact op met de website eigenaar voor assistentie."
 
-#: Mailman/Cgi/create.py:243 bin/newlist:245
+#: Mailman/Cgi/create.py:244 bin/newlist:245
 msgid "Your new mailing list: %(listname)s"
 msgstr "Uw nieuwe maillijst : %(listname)s"
 
-#: Mailman/Cgi/create.py:252
+#: Mailman/Cgi/create.py:253
 msgid "Mailing list creation results"
 msgstr "Maillijst aanmaakresultaten:"
 
-#: Mailman/Cgi/create.py:258
+#: Mailman/Cgi/create.py:259
 msgid ""
 "You have successfully created the mailing list\n"
 "    <b>%(listname)s</b> and notification has been sent to the list owner\n"
@@ -1976,28 +2010,28 @@ msgstr ""
 "    <b>%(listname)s</b> gegevens zijn naar de lijstbeheerder verstuurd\n"
 "    <b>%(owner)s</b>.  Je kan nu:"
 
-#: Mailman/Cgi/create.py:262
+#: Mailman/Cgi/create.py:263
 msgid "Visit the list's info page"
 msgstr "Bezoek de lijstinformatiepagina"
 
-#: Mailman/Cgi/create.py:263
+#: Mailman/Cgi/create.py:264
 msgid "Visit the list's admin page"
 msgstr "Bezoek de lijstbeheerderspagina"
 
-#: Mailman/Cgi/create.py:264
+#: Mailman/Cgi/create.py:265
 msgid "Create another list"
 msgstr "Maak nog een maillijst aan"
 
-#: Mailman/Cgi/create.py:282
+#: Mailman/Cgi/create.py:283
 msgid "Create a %(hostname)s Mailing List"
 msgstr "Maak aan een %(hostname)s Maillijst"
 
-#: Mailman/Cgi/create.py:291 Mailman/Cgi/rmlist.py:199
+#: Mailman/Cgi/create.py:292 Mailman/Cgi/rmlist.py:199
 #: Mailman/Gui/Bounce.py:187 Mailman/htmlformat.py:339
 msgid "Error: "
 msgstr "Fout:"
 
-#: Mailman/Cgi/create.py:293
+#: Mailman/Cgi/create.py:294
 msgid ""
 "You can create a new mailing list by entering the\n"
 "    relevant information into the form below.  The name of the mailing list\n"
@@ -2051,35 +2085,35 @@ msgstr ""
 "    de sitebeheerder kan worden gebruikt voor authentificatie.\n"
 "    "
 
-#: Mailman/Cgi/create.py:319
+#: Mailman/Cgi/create.py:320
 msgid "List Identity"
 msgstr "Lijstidentificatie"
 
-#: Mailman/Cgi/create.py:323
+#: Mailman/Cgi/create.py:324
 msgid "Name of list:"
 msgstr "Naam van de lijst:"
 
-#: Mailman/Cgi/create.py:329
+#: Mailman/Cgi/create.py:330
 msgid "Initial list owner address:"
 msgstr "Lijstbeheerders e-mailadres:"
 
-#: Mailman/Cgi/create.py:338
+#: Mailman/Cgi/create.py:339
 msgid "Auto-generate initial list password?"
 msgstr "Automatisch een wachtwoord genereren?"
 
-#: Mailman/Cgi/create.py:346
+#: Mailman/Cgi/create.py:347
 msgid "Initial list password:"
 msgstr "Lijstwachtwoord:"
 
-#: Mailman/Cgi/create.py:352
+#: Mailman/Cgi/create.py:353
 msgid "Confirm initial password:"
 msgstr "Bevestiging lijstwachtwoord"
 
-#: Mailman/Cgi/create.py:362
+#: Mailman/Cgi/create.py:368
 msgid "List Characteristics"
 msgstr "Lijst eigenschappen"
 
-#: Mailman/Cgi/create.py:366
+#: Mailman/Cgi/create.py:372
 msgid ""
 "Should new members be quarantined before they\n"
 "    are allowed to post unmoderated to this list?  Answer <em>Yes</em> to "
@@ -2091,7 +2125,7 @@ msgstr ""
 "    om berichten van nieuwe leden vast te houden voor goedkeuring door de\n"
 "    moderator als standaard in te stellen."
 
-#: Mailman/Cgi/create.py:395
+#: Mailman/Cgi/create.py:401
 msgid ""
 "Initial list of supported languages.  <p>Note that if you do not\n"
 "        select at least one initial language, the list will use the server\n"
@@ -2101,19 +2135,19 @@ msgstr ""
 "        taal kiest dan zal de lijst deze standaardtaal voor deze server\n"
 "        gebruiken: %(deflang)s"
 
-#: Mailman/Cgi/create.py:406
+#: Mailman/Cgi/create.py:412
 msgid "Send \"list created\" email to list owner?"
 msgstr "Verzend een \"list created\" e-mail naar de lijstbeheerder?"
 
-#: Mailman/Cgi/create.py:415
+#: Mailman/Cgi/create.py:421
 msgid "List creator's (authentication) password:"
 msgstr "(authentificatie) wachtwoord van de lijsteigenaar:"
 
-#: Mailman/Cgi/create.py:420
+#: Mailman/Cgi/create.py:426
 msgid "Create List"
 msgstr "Lijst aanmaken"
 
-#: Mailman/Cgi/create.py:421
+#: Mailman/Cgi/create.py:427
 msgid "Clear Form"
 msgstr "Wis formulier"
 
@@ -2177,7 +2211,7 @@ msgstr "Pagina mag niet leeg zijn!"
 msgid "HTML Unchanged."
 msgstr "Pagina onveranderd."
 
-#: Mailman/Cgi/edithtml.py:170
+#: Mailman/Cgi/edithtml.py:175
 msgid "HTML successfully updated."
 msgstr "HTML pagina opgeslagen."
 
@@ -2239,34 +2273,34 @@ msgstr ""
 msgid "Edit Options"
 msgstr "Bewerk de opties"
 
-#: Mailman/Cgi/listinfo.py:197 Mailman/Cgi/options.py:803
+#: Mailman/Cgi/listinfo.py:197 Mailman/Cgi/options.py:853
 #: Mailman/Cgi/roster.py:109
 msgid "View this page in"
 msgstr "Bekijk deze pagina in"
 
-#: Mailman/Cgi/options.py:57 Mailman/Cgi/options.py:74
+#: Mailman/Cgi/options.py:58 Mailman/Cgi/options.py:75
 msgid "CGI script error"
 msgstr "CGI-scriptfout"
 
-#: Mailman/Cgi/options.py:60
+#: Mailman/Cgi/options.py:61
 msgid "Invalid options to CGI script."
 msgstr "Ongeldige opties doorgegeven aan het CGI-script."
 
-#: Mailman/Cgi/options.py:104
+#: Mailman/Cgi/options.py:105
 msgid "No address given"
 msgstr "Er is geen adres opgegeven"
 
-#: Mailman/Cgi/options.py:116
+#: Mailman/Cgi/options.py:117
 #, fuzzy
 msgid "Illegal Email Address: %(safeuser)s"
 msgstr "Ongeldig e-mailadres opgegeven"
 
-#: Mailman/Cgi/options.py:123 Mailman/Cgi/options.py:187
-#: Mailman/Cgi/options.py:209
+#: Mailman/Cgi/options.py:124 Mailman/Cgi/options.py:188
+#: Mailman/Cgi/options.py:210
 msgid "No such member: %(safeuser)s."
 msgstr "Onbekend lid: %(safeuser)s."
 
-#: Mailman/Cgi/options.py:173
+#: Mailman/Cgi/options.py:174
 #, fuzzy
 msgid ""
 "Your unsubscription request has been\n"
@@ -2275,25 +2309,36 @@ msgstr ""
 "Uw afmeldingsverzoek is doorgestuurd naar de lijstmoderator voor\n"
 "goedkeuring."
 
-#: Mailman/Cgi/options.py:178 Mailman/Cgi/options.py:192
+#: Mailman/Cgi/options.py:179 Mailman/Cgi/options.py:193
 msgid "The confirmation email has been sent."
 msgstr "Het bevestigingsbericht is verzonden"
 
-#: Mailman/Cgi/options.py:203 Mailman/Cgi/options.py:215
-#: Mailman/Cgi/options.py:257
+#: Mailman/Cgi/options.py:204 Mailman/Cgi/options.py:216
+#: Mailman/Cgi/options.py:271
 msgid "A reminder of your password has been emailed to you."
 msgstr "Een herinneringsbericht met uw wachtwoord is verzonden."
 
-#: Mailman/Cgi/options.py:231
+#: Mailman/Cgi/options.py:245
 msgid "Authentication failed."
 msgstr "Autentificatie is mislukt"
 
-#: Mailman/Cgi/options.py:263
+#: Mailman/Cgi/options.py:278
+msgid ""
+"The list administrator may not view the other\n"
+"            subscriptions for this user."
+msgstr ""
+
+#: Mailman/Cgi/options.py:279 Mailman/Cgi/options.py:322
+#: Mailman/Cgi/options.py:442 Mailman/Cgi/options.py:658
+msgid "Note: "
+msgstr ""
+
+#: Mailman/Cgi/options.py:284
 #, fuzzy
 msgid "List subscriptions for %(safeuser)s on %(hostname)s"
 msgstr "Lijstaanmeldingen voor %(user)s op %(hostname)s"
 
-#: Mailman/Cgi/options.py:266
+#: Mailman/Cgi/options.py:287
 msgid ""
 "Click on a link to visit your options page for the\n"
 "        requested mailing list."
@@ -2301,15 +2346,22 @@ msgstr ""
 "Klik op een link om de instellingenpagina weer te geven van de\n"
 "        opgevraagde maillijst."
 
-#: Mailman/Cgi/options.py:315
+#: Mailman/Cgi/options.py:319
+msgid ""
+"The list administrator may not change the names\n"
+"            or addresses for this user's other subscriptions.  However, the\n"
+"            subscription for this mailing list has been changed."
+msgstr ""
+
+#: Mailman/Cgi/options.py:342
 msgid "Addresses did not match!"
 msgstr "Adressen komen niet overeen!"
 
-#: Mailman/Cgi/options.py:320
+#: Mailman/Cgi/options.py:347
 msgid "You are already using that email address"
 msgstr "Je gebruikt dat e-mailadres al"
 
-#: Mailman/Cgi/options.py:332
+#: Mailman/Cgi/options.py:359
 #, fuzzy
 msgid ""
 "The new address you requested %(newaddr)s is already a member of the\n"
@@ -2325,48 +2377,71 @@ msgstr ""
 "maillijsten\n"
 "die het adres %(user)s bevatten worden gewijzigd."
 
-#: Mailman/Cgi/options.py:341
+#: Mailman/Cgi/options.py:368
 msgid "The new address is already a member: %(newaddr)s"
 msgstr "%(newaddr)s is al lid van de maillijst."
 
-#: Mailman/Cgi/options.py:347
+#: Mailman/Cgi/options.py:374
 msgid "Addresses may not be blank"
 msgstr "E-mailadressen mogen niet blanco zijn"
 
-#: Mailman/Cgi/options.py:361
+#: Mailman/Cgi/options.py:388
 msgid "A confirmation message has been sent to %(newaddr)s. "
 msgstr "Een bevestigingsbericht is verzonden naar %(newaddr)s."
 
-#: Mailman/Cgi/options.py:370
+#: Mailman/Cgi/options.py:397
 msgid "Bad email address provided"
 msgstr "Foutief e-mailadres opgegeven"
 
-#: Mailman/Cgi/options.py:372
+#: Mailman/Cgi/options.py:399
 msgid "Illegal email address provided"
 msgstr "Ongeldig e-mailadres opgegeven"
 
-#: Mailman/Cgi/options.py:374
+#: Mailman/Cgi/options.py:401
 msgid "%(newaddr)s is already a member of the list."
 msgstr "%(newaddr)s is al lid van de maililijst."
 
-#: Mailman/Cgi/options.py:383
+#: Mailman/Cgi/options.py:404
+#, fuzzy
+msgid ""
+"%(newaddr)s is banned from this list.  If you\n"
+"                      think this restriction is erroneous, please contact\n"
+"                      the list owners at %(owneraddr)s."
+msgstr ""
+"Voor het door u opgegeven e-mailadres is een verbod ingesteld\n"
+"voor deze maillijst. Als u denkt dat dit een vergissing is dan kunt u\n"
+" contact opnemen met de lijsteigenaren: %(listowner)s."
+
+#: Mailman/Cgi/options.py:415
 msgid "Member name successfully changed. "
 msgstr "Gebruikersnaam is veranderd. "
 
-#: Mailman/Cgi/options.py:394
+#: Mailman/Cgi/options.py:426
 msgid "Passwords may not be blank"
 msgstr "Wachtwoorden mogen niet blanco zijn"
 
-#: Mailman/Cgi/options.py:399
+#: Mailman/Cgi/options.py:431
 msgid "Passwords did not match!"
 msgstr "Wachtwoorden kwamen niet overeen!"
 
-#: Mailman/Cgi/options.py:414 Mailman/Commands/cmd_password.py:83
+#: Mailman/Cgi/options.py:439
+#, fuzzy
+msgid ""
+"The list administrator may not change the\n"
+"            password for this user's other subscriptions.  However, the\n"
+"            password for this mailing list has been changed."
+msgstr ""
+"De lijsteigenaar heeft voor deze lijst het gebruik van gewone\n"
+"            berichtversturing uitgezet, dus deze instelling is niet "
+"uitgevoerd.\n"
+"            De andere veranderde instellingen zijn wel uitgevoerd."
+
+#: Mailman/Cgi/options.py:456 Mailman/Commands/cmd_password.py:83
 #: Mailman/Commands/cmd_password.py:109
 msgid "Password successfully changed."
 msgstr "Wachtwoord is veranderd."
 
-#: Mailman/Cgi/options.py:423
+#: Mailman/Cgi/options.py:465
 msgid ""
 "You must confirm your unsubscription request by turning\n"
 "                on the checkbox below the <em>Unsubscribe</em> button.  You\n"
@@ -2376,11 +2451,11 @@ msgstr ""
 "                onder de <em>Afmelden</em>-knop aan te vinken.  U\n"
 "                bent niet afgemeld!"
 
-#: Mailman/Cgi/options.py:455
+#: Mailman/Cgi/options.py:497
 msgid "Unsubscription results"
 msgstr "Afmeldingsresultaat"
 
-#: Mailman/Cgi/options.py:459
+#: Mailman/Cgi/options.py:501
 msgid ""
 "Your unsubscription request has been received and\n"
 "            forwarded on to the list moderators for approval.  You will\n"
@@ -2392,7 +2467,7 @@ msgstr ""
 "            ontvangen zodra de lijstmoderators een beslissing hebben\n"
 "            genomen."
 
-#: Mailman/Cgi/options.py:464
+#: Mailman/Cgi/options.py:506
 msgid ""
 "You have been successfully unsubscribed from the\n"
 "            mailing list %(fqdn_listname)s.  If you were receiving digest\n"
@@ -2408,7 +2483,15 @@ msgstr ""
 "            contact op met de lijsteigenaar op het volgende e-mailadres:\n"
 "            %(owneraddr)s."
 
-#: Mailman/Cgi/options.py:615
+#: Mailman/Cgi/options.py:655
+msgid ""
+"The list administrator may not change the\n"
+"                options for this user's other subscriptions.  However the\n"
+"                options for this mailing list subscription has been\n"
+"                changed."
+msgstr ""
+
+#: Mailman/Cgi/options.py:665
 msgid ""
 "The list administrator has disabled digest delivery for\n"
 "            this list, so your delivery option has not been set.  However "
@@ -2420,7 +2503,7 @@ msgstr ""
 "            is niet uitgevoerd. Alle andere veranderde instellingen\n"
 "            zijn wel uitgevoerd."
 
-#: Mailman/Cgi/options.py:619
+#: Mailman/Cgi/options.py:669
 msgid ""
 "The list administrator has disabled non-digest delivery\n"
 "            for this list, so your delivery option has not been set.  "
@@ -2432,63 +2515,63 @@ msgstr ""
 "uitgevoerd.\n"
 "            De andere veranderde instellingen zijn wel uitgevoerd."
 
-#: Mailman/Cgi/options.py:623
+#: Mailman/Cgi/options.py:673
 msgid "You have successfully set your options."
 msgstr "De instellingen zijn gewijzigd en doorgevoerd."
 
-#: Mailman/Cgi/options.py:626
+#: Mailman/Cgi/options.py:676
 msgid "You may get one last digest."
 msgstr "U krijgt misschien nog één laatste digest toegestuurd."
 
-#: Mailman/Cgi/options.py:698
+#: Mailman/Cgi/options.py:748
 msgid "<em>Yes, I really want to unsubscribe</em>"
 msgstr "<em>Ja, ik wil mezelf echt afmelden</em>"
 
-#: Mailman/Cgi/options.py:702
+#: Mailman/Cgi/options.py:752
 msgid "Change My Password"
 msgstr "Wijzig mijn wachtwoord"
 
-#: Mailman/Cgi/options.py:705
+#: Mailman/Cgi/options.py:755
 msgid "List my other subscriptions"
 msgstr "Laat mijn andere aanmeldingen zien"
 
-#: Mailman/Cgi/options.py:711
+#: Mailman/Cgi/options.py:761
 msgid "Email My Password To Me"
 msgstr "Stuur mijn wachtwoord per e-mail toe"
 
-#: Mailman/Cgi/options.py:713
+#: Mailman/Cgi/options.py:763
 msgid "password"
 msgstr "wachtwoord"
 
-#: Mailman/Cgi/options.py:715
+#: Mailman/Cgi/options.py:765
 msgid "Log out"
 msgstr "Uitloggen"
 
-#: Mailman/Cgi/options.py:717
+#: Mailman/Cgi/options.py:767
 msgid "Submit My Changes"
 msgstr "Verstuur de wijzigingen"
 
-#: Mailman/Cgi/options.py:729
+#: Mailman/Cgi/options.py:779
 msgid "days"
 msgstr "dagen"
 
-#: Mailman/Cgi/options.py:731
+#: Mailman/Cgi/options.py:781
 msgid "day"
 msgstr "dag"
 
-#: Mailman/Cgi/options.py:732
+#: Mailman/Cgi/options.py:782
 msgid "%(days)d %(units)s"
 msgstr "%(days)d %(units)s"
 
-#: Mailman/Cgi/options.py:738
+#: Mailman/Cgi/options.py:788
 msgid "Change My Address and Name"
 msgstr "Verander mijn e-mailadres en naam"
 
-#: Mailman/Cgi/options.py:762
+#: Mailman/Cgi/options.py:812
 msgid "<em>No topics defined</em>"
 msgstr "<em>Geen onderwerpen gedefineerd</em>"
 
-#: Mailman/Cgi/options.py:770
+#: Mailman/Cgi/options.py:820
 #, fuzzy
 msgid ""
 "\n"
@@ -2500,20 +2583,20 @@ msgstr ""
 "subscribed to this list with the case-preserved address\n"
 "<em>%(cpuser)s</em>."
 
-#: Mailman/Cgi/options.py:784
+#: Mailman/Cgi/options.py:834
 msgid "%(realname)s list: member options login page"
 msgstr "%(realname)s lijst: inlogpagina voor lidmaatschapsinstellingen"
 
-#: Mailman/Cgi/options.py:785
+#: Mailman/Cgi/options.py:835
 msgid "email address and "
 msgstr "e-mailadres en "
 
-#: Mailman/Cgi/options.py:788
+#: Mailman/Cgi/options.py:838
 #, fuzzy
 msgid "%(realname)s list: member options for user %(safeuser)s"
 msgstr "%(realname)s lijst: lidmaatschapsinstellingen voor gebruiker %(user)s"
 
-#: Mailman/Cgi/options.py:813
+#: Mailman/Cgi/options.py:863
 msgid ""
 "In order to change your membership option, you must\n"
 "    first log in by giving your %(extra)smembership password in the section\n"
@@ -2545,19 +2628,19 @@ msgstr ""
 "    veranderen.\n"
 "    "
 
-#: Mailman/Cgi/options.py:827
+#: Mailman/Cgi/options.py:877
 msgid "Email address:"
 msgstr "E-mailadres:"
 
-#: Mailman/Cgi/options.py:831
+#: Mailman/Cgi/options.py:881
 msgid "Password:"
 msgstr "Wachtwoord"
 
-#: Mailman/Cgi/options.py:833
+#: Mailman/Cgi/options.py:883
 msgid "Log in"
 msgstr "Inloggen"
 
-#: Mailman/Cgi/options.py:841
+#: Mailman/Cgi/options.py:891
 msgid ""
 "By clicking on the <em>Unsubscribe</em> button, a\n"
 "    confirmation message will be emailed to you.  This message will have a\n"
@@ -2572,11 +2655,11 @@ msgstr ""
 "    het bericht terugsturen (reply/antwoord) om de afmelding te\n"
 "    voltooien.)"
 
-#: Mailman/Cgi/options.py:849
+#: Mailman/Cgi/options.py:899
 msgid "Password reminder"
 msgstr "Wachtwoordherinnering"
 
-#: Mailman/Cgi/options.py:853
+#: Mailman/Cgi/options.py:903
 msgid ""
 "By clicking on the <em>Remind</em> button, your\n"
 "    password will be emailed to you."
@@ -2584,27 +2667,27 @@ msgstr ""
 "Door op de <em>Herinnering</em> knop te drukken, word\n"
 "    uw wachtwoord toegestuurd."
 
-#: Mailman/Cgi/options.py:856
+#: Mailman/Cgi/options.py:906
 msgid "Remind"
 msgstr "Herinnering"
 
-#: Mailman/Cgi/options.py:956
+#: Mailman/Cgi/options.py:1006
 msgid "<missing>"
 msgstr "<onvolledig>"
 
-#: Mailman/Cgi/options.py:967
+#: Mailman/Cgi/options.py:1017
 msgid "Requested topic is not valid: %(topicname)s"
 msgstr "Aangevraagde onderwerp is niet geldig: %(topicname)s"
 
-#: Mailman/Cgi/options.py:972
+#: Mailman/Cgi/options.py:1022
 msgid "Topic filter details"
 msgstr "Onderwerp filterdetails"
 
-#: Mailman/Cgi/options.py:975
+#: Mailman/Cgi/options.py:1025
 msgid "Name:"
 msgstr "Naam:"
 
-#: Mailman/Cgi/options.py:977
+#: Mailman/Cgi/options.py:1027
 msgid "Pattern (as regexp):"
 msgstr "Patroon:"
 
@@ -2920,18 +3003,29 @@ msgstr ""
 "uw\n"
 "e-mailadres veranderd?"
 
-#: Mailman/Commands/cmd_confirm.py:67
+#: Mailman/Commands/cmd_confirm.py:68
+#, fuzzy
+msgid ""
+"You are currently banned from subscribing to this list.  If you think this\n"
+"restriction is erroneous, please contact the list owners at\n"
+"%(owneraddr)s."
+msgstr ""
+"Voor het door u opgegeven e-mailadres is een verbod ingesteld\n"
+"voor deze maillijst. Als u denkt dat dit een vergissing is dan kunt u\n"
+" contact opnemen met de lijsteigenaren: %(listowner)s."
+
+#: Mailman/Commands/cmd_confirm.py:73
 msgid ""
 "You were not invited to this mailing list.  The invitation has been "
 "discarded,\n"
 "and both list administrators have been alerted."
 msgstr ""
 
-#: Mailman/Commands/cmd_confirm.py:71
+#: Mailman/Commands/cmd_confirm.py:77
 msgid "Bad approval password given.  Held message is still being held."
 msgstr ""
 
-#: Mailman/Commands/cmd_confirm.py:80
+#: Mailman/Commands/cmd_confirm.py:86
 msgid "Confirmation succeeded"
 msgstr "Bevestiging succesvol."
 
@@ -3623,129 +3717,133 @@ msgstr "Geen digest (normale) leden:"
 msgid "Digest members:"
 msgstr "Digestleden"
 
-#: Mailman/Defaults.py:1310
+#: Mailman/Defaults.py:1318
 #, fuzzy
 msgid "Catalan"
 msgstr "Italiaans"
 
-#: Mailman/Defaults.py:1311
+#: Mailman/Defaults.py:1319
 msgid "Czech"
 msgstr "Tsjechisch"
 
-#: Mailman/Defaults.py:1312
+#: Mailman/Defaults.py:1320
 #, fuzzy
 msgid "Danish"
 msgstr "Fins"
 
-#: Mailman/Defaults.py:1313
+#: Mailman/Defaults.py:1321
 msgid "German"
 msgstr "Duits"
 
-#: Mailman/Defaults.py:1314
+#: Mailman/Defaults.py:1322
 msgid "English (USA)"
 msgstr "Engels (USA)"
 
-#: Mailman/Defaults.py:1315
+#: Mailman/Defaults.py:1323
 msgid "Spanish (Spain)"
 msgstr "Spaans (Spanje)"
 
-#: Mailman/Defaults.py:1316
+#: Mailman/Defaults.py:1324
 msgid "Estonian"
 msgstr "Ests"
 
-#: Mailman/Defaults.py:1317
+#: Mailman/Defaults.py:1325
 msgid "Euskara"
 msgstr ""
 
-#: Mailman/Defaults.py:1318
+#: Mailman/Defaults.py:1326
 msgid "Finnish"
 msgstr "Fins"
 
-#: Mailman/Defaults.py:1319
+#: Mailman/Defaults.py:1327
 msgid "French"
 msgstr "Frans"
 
-#: Mailman/Defaults.py:1320
+#: Mailman/Defaults.py:1328
 msgid "Croatian"
 msgstr ""
 
-#: Mailman/Defaults.py:1321
+#: Mailman/Defaults.py:1329
 msgid "Hungarian"
 msgstr "Hongaars"
 
-#: Mailman/Defaults.py:1322
+#: Mailman/Defaults.py:1330
+msgid "Interlingua"
+msgstr ""
+
+#: Mailman/Defaults.py:1331
 msgid "Italian"
 msgstr "Italiaans"
 
-#: Mailman/Defaults.py:1323
+#: Mailman/Defaults.py:1332
 msgid "Japanese"
 msgstr "Japans"
 
-#: Mailman/Defaults.py:1324
+#: Mailman/Defaults.py:1333
 msgid "Korean"
 msgstr "Koreaans"
 
-#: Mailman/Defaults.py:1325
+#: Mailman/Defaults.py:1334
 msgid "Lithuanian"
 msgstr "Litouws"
 
-#: Mailman/Defaults.py:1326
+#: Mailman/Defaults.py:1335
 msgid "Dutch"
 msgstr "Nederlands"
 
-#: Mailman/Defaults.py:1327
+#: Mailman/Defaults.py:1336
 msgid "Norwegian"
 msgstr "Noors"
 
-#: Mailman/Defaults.py:1328
+#: Mailman/Defaults.py:1337
 msgid "Polish"
 msgstr ""
 
-#: Mailman/Defaults.py:1329
+#: Mailman/Defaults.py:1338
 #, fuzzy
 msgid "Portuguese"
 msgstr "Portugees (Braziliaans)"
 
-#: Mailman/Defaults.py:1330
+#: Mailman/Defaults.py:1339
 msgid "Portuguese (Brazil)"
 msgstr "Portugees (Braziliaans)"
 
-#: Mailman/Defaults.py:1331
+#: Mailman/Defaults.py:1340
 #, fuzzy
 msgid "Romanian"
 msgstr "Ests"
 
-#: Mailman/Defaults.py:1332
+#: Mailman/Defaults.py:1341
 msgid "Russian"
 msgstr "Russisch"
 
-#: Mailman/Defaults.py:1333
+#: Mailman/Defaults.py:1342
 #, fuzzy
 msgid "Serbian"
 msgstr "Duits"
 
-#: Mailman/Defaults.py:1334
+#: Mailman/Defaults.py:1343
 #, fuzzy
 msgid "Slovenian"
 msgstr "Duits"
 
-#: Mailman/Defaults.py:1335
+#: Mailman/Defaults.py:1344
 msgid "Swedish"
 msgstr "Zweeds"
 
-#: Mailman/Defaults.py:1336
+#: Mailman/Defaults.py:1345
 msgid "Turkish"
 msgstr ""
 
-#: Mailman/Defaults.py:1337
+#: Mailman/Defaults.py:1346
 msgid "Ukrainian"
 msgstr ""
 
-#: Mailman/Defaults.py:1338
+#: Mailman/Defaults.py:1347
 msgid "Chinese (China)"
 msgstr ""
 
-#: Mailman/Defaults.py:1339
+#: Mailman/Defaults.py:1348
 msgid "Chinese (Taiwan)"
 msgstr ""
 
@@ -3797,7 +3895,7 @@ msgid ""
 "is required."
 msgstr ""
 
-#: Mailman/Deliverer.py:220
+#: Mailman/Deliverer.py:219
 #, fuzzy
 msgid "%(listname)s mailing list probe message"
 msgstr "%(listfullname)s maillijstherinnering"
@@ -4184,7 +4282,7 @@ msgstr ""
 "uitgeschakeld\n"
 "             </em> herinneringen.  Deze waarde moet een heel getal zijn."
 
-#: Mailman/Gui/Bounce.py:117 Mailman/Gui/General.py:263
+#: Mailman/Gui/Bounce.py:117 Mailman/Gui/General.py:262
 msgid "Notifications"
 msgstr "Meldingen"
 
@@ -4335,6 +4433,7 @@ msgid "Preserve"
 msgstr "Bewaren"
 
 #: Mailman/Gui/ContentFilter.py:42
+#, fuzzy
 msgid ""
 "Policies concerning the content of list traffic.\n"
 "\n"
@@ -4358,11 +4457,14 @@ msgid ""
 "            attachments that are empty are removed.  If the outer message "
 "is\n"
 "            left empty after this filtering, then the whole message is\n"
-"            discarded.  Then, each <tt>multipart/alternative</tt> section "
-"will\n"
+"            discarded.\n"
+"\n"
+"            <p> Then, each <tt>multipart/alternative</tt> section will\n"
 "            be replaced by just the first alternative that is non-empty "
 "after\n"
-"            filtering.\n"
+"            filtering if\n"
+"            <a href=\"?VARHELP=contentfilter/collapse_alternatives\"\n"
+"            >collapse_alternatives</a> is enabled.\n"
 "\n"
 "            <p>Finally, any <tt>text/html</tt> parts that are left in the\n"
 "            message may be converted to <tt>text/plain</tt> if\n"
@@ -4408,7 +4510,7 @@ msgstr ""
 "ingesteld\n"
 "            om deze omzettingen mogelijk te maken."
 
-#: Mailman/Gui/ContentFilter.py:71
+#: Mailman/Gui/ContentFilter.py:75
 msgid ""
 "Should Mailman filter the content of list traffic according\n"
 "             to the settings below?"
@@ -4416,7 +4518,7 @@ msgstr ""
 "Moet Mailman de inhoud van het lijstverkeer filteren\n"
 "             volgens onderstaande instellingen?"
 
-#: Mailman/Gui/ContentFilter.py:75
+#: Mailman/Gui/ContentFilter.py:79
 msgid ""
 "Remove message attachments that have a matching content\n"
 "             type."
@@ -4425,7 +4527,7 @@ msgstr ""
 "             inhoudstype."
 
 # whitelist vertalen?
-#: Mailman/Gui/ContentFilter.py:78
+#: Mailman/Gui/ContentFilter.py:82
 msgid ""
 "Use this option to remove each message attachment that\n"
 "             matches one of these content types.  Each line should contain "
@@ -4451,7 +4553,7 @@ msgstr ""
 "             <p>Zie ook <a href=\"?VARHELP=contentfilter/pass_mime_types\"\n"
 "             >pass_mime_types</a> voor een inhoudstype whitelist."
 
-#: Mailman/Gui/ContentFilter.py:90
+#: Mailman/Gui/ContentFilter.py:94
 msgid ""
 "Remove message attachments that don't have a matching\n"
 "             content type.  Leave this field blank to skip this filter\n"
@@ -4460,7 +4562,7 @@ msgstr ""
 "Verwijder berichtbijlagen die niet gelijk zijn aan een inhoudstype.\n"
 "             Laat dit veld leeg om deze controle over te slaan."
 
-#: Mailman/Gui/ContentFilter.py:94
+#: Mailman/Gui/ContentFilter.py:98
 msgid ""
 "Use this option to remove each message attachment that does\n"
 "             not have a matching content type.  Requirements and formats "
@@ -4485,7 +4587,7 @@ msgstr ""
 "berichten met\n"
 "             bijlages worden afgewezen door het doorlaatfilter."
 
-#: Mailman/Gui/ContentFilter.py:104
+#: Mailman/Gui/ContentFilter.py:108
 #, fuzzy
 msgid ""
 "Remove message attachments that have a matching filename\n"
@@ -4494,7 +4596,7 @@ msgstr ""
 "Verwijder berichtbijlages die gelijk zijn aan een\n"
 "             inhoudstype."
 
-#: Mailman/Gui/ContentFilter.py:108
+#: Mailman/Gui/ContentFilter.py:112
 #, fuzzy
 msgid ""
 "Remove message attachments that don't have a matching\n"
@@ -4505,7 +4607,16 @@ msgstr ""
 "Verwijder berichtbijlagen die niet gelijk zijn aan een inhoudstype.\n"
 "             Laat dit veld leeg om deze controle over te slaan."
 
-#: Mailman/Gui/ContentFilter.py:113
+#: Mailman/Gui/ContentFilter.py:117
+#, fuzzy
+msgid ""
+"Should Mailman collapse multipart/alternative to its\n"
+"             first part content?"
+msgstr ""
+"Moet Mailman een automatisch antwoord versturen aan\n"
+"             maillijstzenders?"
+
+#: Mailman/Gui/ContentFilter.py:121
 msgid ""
 "Should Mailman convert <tt>text/html</tt> parts to plain\n"
 "             text?  This conversion happens after MIME attachments have "
@@ -4516,7 +4627,7 @@ msgstr ""
 "             Deze omzetting wordt uitgevoerd nadat MIME bijlagen zijn "
 "verwijderd."
 
-#: Mailman/Gui/ContentFilter.py:119
+#: Mailman/Gui/ContentFilter.py:127
 msgid ""
 "Action to take when a message matches the content filtering\n"
 "             rules."
@@ -4526,7 +4637,7 @@ msgstr ""
 
 # lijstlidmaatschap?
 # alle berichten worden bewaard -> beter is -> alle berichten worden vastgehouden
-#: Mailman/Gui/ContentFilter.py:122
+#: Mailman/Gui/ContentFilter.py:130
 msgid ""
 "One of these actions is take when the message matches one of\n"
 "             the content filtering rules, meaning, the top-level\n"
@@ -4588,7 +4699,7 @@ msgstr ""
 "beschikbaar\n"
 "             als dit is aangezet door de sitebeheerder."
 
-#: Mailman/Gui/ContentFilter.py:163
+#: Mailman/Gui/ContentFilter.py:171
 msgid "Bad MIME type ignored: %(spectype)s"
 msgstr "Ongeldig MIME type genegeerd: %(spectype)s"
 
@@ -4751,27 +4862,27 @@ msgstr ""
 "                    gecorrigeerde waarde op correctheid.\n"
 "                    "
 
-#: Mailman/Gui/General.py:34
+#: Mailman/Gui/General.py:33
 msgid "General Options"
 msgstr "Algemene Instellingen"
 
-#: Mailman/Gui/General.py:48
+#: Mailman/Gui/General.py:47
 msgid "Conceal the member's address"
 msgstr "Verberg het adres van het lid"
 
-#: Mailman/Gui/General.py:49
+#: Mailman/Gui/General.py:48
 msgid "Acknowledge the member's posting"
 msgstr "Bevestig het ontvangen van het bericht van het lid"
 
-#: Mailman/Gui/General.py:50
+#: Mailman/Gui/General.py:49
 msgid "Do not send a copy of a member's own post"
 msgstr "Stuur geen kopie van berichten die een lid zelf heeft verstuurd"
 
-#: Mailman/Gui/General.py:52
+#: Mailman/Gui/General.py:51
 msgid "Filter out duplicate messages to list members (if possible)"
 msgstr "Filter dubbele berichten aan lijstleden eruit (indien mogelijk)"
 
-#: Mailman/Gui/General.py:59
+#: Mailman/Gui/General.py:58
 msgid ""
 "Fundamental list characteristics, including descriptive\n"
 "            info and basic behaviors."
@@ -4779,16 +4890,16 @@ msgstr ""
 "Algemene maillijstinstellingen, inclusief de hoofdinstellingen\n"
 "            en beschrijvende gegevens."
 
-#: Mailman/Gui/General.py:62
+#: Mailman/Gui/General.py:61
 msgid "General list personality"
 msgstr "Algemene lijstinstellingen"
 
-#: Mailman/Gui/General.py:65
+#: Mailman/Gui/General.py:64
 msgid "The public name of this list (make case-changes only)."
 msgstr ""
 "De naam van deze lijst (maak alleen hoofdletter/kleine letterwijzingen)"
 
-#: Mailman/Gui/General.py:66
+#: Mailman/Gui/General.py:65
 msgid ""
 "The capitalization of this name can be changed to make it\n"
 "             presentable in polite company as a proper noun, or to make an\n"
@@ -4808,7 +4919,7 @@ msgstr ""
 "             kleine lettergevoelig, maar is wel gevoelig voor al het "
 "andere :-)"
 
-#: Mailman/Gui/General.py:75
+#: Mailman/Gui/General.py:74
 msgid ""
 "The list administrator email addresses.  Multiple\n"
 "             administrator addresses, each on separate line is okay."
@@ -4817,7 +4928,7 @@ msgstr ""
 "             moet elk e-mailadres op een aparte regel worden gezet."
 
 # Die laatste zin snap ik niet, context zien!
-#: Mailman/Gui/General.py:78
+#: Mailman/Gui/General.py:77
 msgid ""
 "There are two ownership roles associated with each mailing\n"
 "             list.  The <em>list administrators</em> are the people who "
@@ -4869,7 +4980,7 @@ msgstr ""
 "nu wijzigt\n"
 "             de instelling van de lijstbeheerder is."
 
-#: Mailman/Gui/General.py:99
+#: Mailman/Gui/General.py:98
 msgid ""
 "The list moderator email addresses.  Multiple\n"
 "             moderator addresses, each on separate line is okay."
@@ -4878,7 +4989,7 @@ msgstr ""
 "             moet elk e-mailadres op een aparte regel worden gezet."
 
 # Veld 4400 heeft exact dezelfde tekst?
-#: Mailman/Gui/General.py:102
+#: Mailman/Gui/General.py:101
 msgid ""
 "There are two ownership roles associated with each mailing\n"
 "             list.  The <em>list administrators</em> are the people who "
@@ -4928,11 +5039,11 @@ msgstr ""
 "             van de lijstmoderators opgeven</a>.  Note that the field you\n"
 "             are changing here specifies the list administrators."
 
-#: Mailman/Gui/General.py:123
+#: Mailman/Gui/General.py:122
 msgid "A terse phrase identifying this list."
 msgstr "Een korte zin die deze lijst omschrijft."
 
-#: Mailman/Gui/General.py:125
+#: Mailman/Gui/General.py:124
 msgid ""
 "This description is used when the mailing list is listed with\n"
 "                other mailing lists, or in headers, and so forth.  It "
@@ -4946,7 +5057,7 @@ msgstr ""
 "                zo kort en bondig zijn als mogelijk, maar wel voldoende de\n"
 "                de maillijst beschrijven."
 
-#: Mailman/Gui/General.py:131
+#: Mailman/Gui/General.py:130
 msgid ""
 "An introductory description - a few paragraphs - about the\n"
 "             list.  It will be included, as html, at the top of the "
@@ -4960,7 +5071,7 @@ msgstr ""
 "             een return na een regel geeft het einde van een alinea aan.\n"
 "             Zie de details voor meer informatie."
 
-#: Mailman/Gui/General.py:135
+#: Mailman/Gui/General.py:134
 msgid ""
 "The text will be treated as html <em>except</em> that\n"
 "             newlines will be translated to &lt;br&gt; - so you can use "
@@ -4980,13 +5091,13 @@ msgstr ""
 "             uw veranderingen goed. Ongeldige of foute html kan ervoor\n"
 "             zorgen dat de lijstinformatiepagina niet wordt getoond."
 
-#: Mailman/Gui/General.py:143
+#: Mailman/Gui/General.py:142
 msgid "Prefix for subject line of list postings."
 msgstr ""
 "Tekst die wordt toegevoegd aan het begin van de onderwerpregel van elk "
 "maillijstbericht."
 
-#: Mailman/Gui/General.py:144
+#: Mailman/Gui/General.py:143
 #, fuzzy
 msgid ""
 "This text will be prepended to subject lines of messages\n"
@@ -5008,7 +5119,7 @@ msgstr ""
 "uiterst\n"
 "             belangrijk, zolang de lijst hiermee geïdentificeerd kan worden"
 
-#: Mailman/Gui/General.py:155
+#: Mailman/Gui/General.py:154
 msgid ""
 "Hide the sender of a message, replacing it with the list\n"
 "             address (Removes From, Sender and Reply-To fields)"
@@ -5017,11 +5128,11 @@ msgstr ""
 "             door het mailadres van de lijst (dit verwijdert de From,\n"
 "             To en Reply-To velden)"
 
-#: Mailman/Gui/General.py:158
+#: Mailman/Gui/General.py:157
 msgid "<tt>Reply-To:</tt> header munging"
 msgstr "<tt>Reply-To:</tt> headerwijzigingen"
 
-#: Mailman/Gui/General.py:161
+#: Mailman/Gui/General.py:160
 msgid ""
 "Should any existing <tt>Reply-To:</tt> header found in the\n"
 "             original message be stripped?  If so, this will be done\n"
@@ -5034,19 +5145,19 @@ msgstr ""
 "             een <tt>Reply-To:</tt> header is toegevoegd door Mailman\n"
 "             of niet."
 
-#: Mailman/Gui/General.py:167
+#: Mailman/Gui/General.py:166
 msgid "Explicit address"
 msgstr "Expliciet adres"
 
-#: Mailman/Gui/General.py:167
+#: Mailman/Gui/General.py:166
 msgid "Poster"
 msgstr "Verzender"
 
-#: Mailman/Gui/General.py:167
+#: Mailman/Gui/General.py:166
 msgid "This list"
 msgstr "Deze lijst"
 
-#: Mailman/Gui/General.py:168
+#: Mailman/Gui/General.py:167
 msgid ""
 "Where are replies to list messages directed?\n"
 "             <tt>Poster</tt> is <em>strongly</em> recommended for most "
@@ -5057,7 +5168,7 @@ msgstr ""
 "             <tt>Verzender</tt> wordt <em>sterk</em> aangeraden voor de\n"
 "             meeste maillijsten."
 
-#: Mailman/Gui/General.py:173
+#: Mailman/Gui/General.py:172
 #, fuzzy
 msgid ""
 "This option controls what Mailman does to the\n"
@@ -5083,8 +5194,8 @@ msgid ""
 "             Munging Considered Harmful</a> for a general discussion of "
 "this\n"
 "             issue.  See <a\n"
-"        href=\"http://www.metasystema.org/essays/reply-to-useful.mhtml"
-"\">Reply-To\n"
+"             href=\"http://www.metasystema.net/essays/reply-to.mhtml\">Reply-"
+"To\n"
 "             Munging Considered Useful</a> for a dissenting opinion.\n"
 "\n"
 "             <p>Some mailing lists have restricted posting privileges, with "
@@ -5142,11 +5253,12 @@ msgstr ""
 "hieronder naar\n"
 "             de discussielijst zetten."
 
-#: Mailman/Gui/General.py:205
+#: Mailman/Gui/General.py:204
 msgid "Explicit <tt>Reply-To:</tt> header."
 msgstr "Vaste <tt>Reply-To:</tt> header."
 
-#: Mailman/Gui/General.py:207
+#: Mailman/Gui/General.py:206
+#, fuzzy
 msgid ""
 "This is the address set in the <tt>Reply-To:</tt> header\n"
 "             when the <a\n"
@@ -5164,8 +5276,8 @@ msgid ""
 "             Munging Considered Harmful</a> for a general discussion of "
 "this\n"
 "             issue.  See <a\n"
-"        href=\"http://www.metasystema.org/essays/reply-to-useful.mhtml"
-"\">Reply-To\n"
+"             href=\"http://www.metasystema.net/essays/reply-to.mhtml\">Reply-"
+"To\n"
 "             Munging Considered Useful</a> for a dissenting opinion.\n"
 "\n"
 "             <p>Some mailing lists have restricted posting privileges, with "
@@ -5223,11 +5335,11 @@ msgstr ""
 "             <p>Let op dat als het oorspronkelijke bericht een\n"
 "             <tt>Reply-To:</tt> header bevat, deze niet wordt gewijzigd."
 
-#: Mailman/Gui/General.py:236
+#: Mailman/Gui/General.py:235
 msgid "Umbrella list settings"
 msgstr "Overkoepelende lijstinstellingen"
 
-#: Mailman/Gui/General.py:239
+#: Mailman/Gui/General.py:238
 msgid ""
 "Send password reminders to, eg, \"-owner\" address instead of\n"
 "             directly to user."
@@ -5236,7 +5348,7 @@ msgstr ""
 "             plaats van direct naar de gebruiker."
 
 # Hoe vertaal je cascade (waterval) in hemelsnaam?
-#: Mailman/Gui/General.py:242
+#: Mailman/Gui/General.py:241
 msgid ""
 "Set this to yes when this list is intended to cascade only\n"
 "             to other mailing lists.  When set, meta notices like\n"
@@ -5253,7 +5365,7 @@ msgstr ""
 "             waarde in \"umbrella_member_suffix\" aan het lid zijn \n"
 "             gebruikersnaam."
 
-#: Mailman/Gui/General.py:250
+#: Mailman/Gui/General.py:249
 msgid ""
 "Suffix for use when this list is an umbrella for other\n"
 "             lists, according to setting of previous \"umbrella_list\"\n"
@@ -5264,7 +5376,7 @@ msgstr ""
 "             instellingen van de vorige \"umbrella_list\"\n"
 "             instelling."
 
-#: Mailman/Gui/General.py:254
+#: Mailman/Gui/General.py:253
 msgid ""
 "When \"umbrella_list\" is set to indicate that this list has\n"
 "             other mailing lists as members, then administrative notices "
@@ -5289,11 +5401,11 @@ msgstr ""
 "             keus. Deze instelling heeft geen effect als \"umbrella_list\"\n"
 "             op \"Nee\" is gezet."
 
-#: Mailman/Gui/General.py:266
+#: Mailman/Gui/General.py:265
 msgid "Send monthly password reminders?"
 msgstr "Verstuur maandelijkse wachtwoordherinneringen?"
 
-#: Mailman/Gui/General.py:268
+#: Mailman/Gui/General.py:267
 msgid ""
 "Turn this on if you want password reminders to be sent once\n"
 "             per month to your members.  Note that members may disable "
@@ -5305,7 +5417,7 @@ msgstr ""
 "             hun eigen individuele wachtwoordherinneringen kunnen\n"
 "             uitschakelen."
 
-#: Mailman/Gui/General.py:273
+#: Mailman/Gui/General.py:272
 msgid ""
 "List-specific text prepended to new-subscriber welcome\n"
 "             message"
@@ -5313,7 +5425,7 @@ msgstr ""
 "Lijstspecifieke tekst toegevoegd aan het begin van een\n"
 "             welkomstbericht voor nieuwe leden"
 
-#: Mailman/Gui/General.py:276
+#: Mailman/Gui/General.py:275
 msgid ""
 "This value, if any, will be added to the front of the\n"
 "             new-subscriber welcome message.  The rest of the welcome "
@@ -5357,11 +5469,11 @@ msgstr ""
 "scheiden.\n"
 "             </ul>"
 
-#: Mailman/Gui/General.py:293
+#: Mailman/Gui/General.py:292
 msgid "Send welcome message to newly subscribed members?"
 msgstr "Stuur een welkomstbericht naar nieuwe aanmelders?"
 
-#: Mailman/Gui/General.py:294
+#: Mailman/Gui/General.py:293
 msgid ""
 "Turn this off only if you plan on subscribing people manually\n"
 "             and don't want them to know that you did so.  This option is "
@@ -5375,7 +5487,7 @@ msgstr ""
 "             wanneer u lijsten transparant wilt verhuizen van een\n"
 "             ander lijstbeheerprogramma naar Mailman."
 
-#: Mailman/Gui/General.py:300
+#: Mailman/Gui/General.py:299
 msgid ""
 "Text sent to people leaving the list.  If empty, no special\n"
 "             text will be added to the unsubscribe message."
@@ -5384,11 +5496,11 @@ msgstr ""
 "             Als dit leeg is dan zal geen speciale tekst worden\n"
 "             toegevoegd aan het afmeldingsbericht."
 
-#: Mailman/Gui/General.py:304
+#: Mailman/Gui/General.py:303
 msgid "Send goodbye message to members when they are unsubscribed?"
 msgstr "Verstuur een afmeldingsbericht aan leden als ze zijn afgemeld?"
 
-#: Mailman/Gui/General.py:307
+#: Mailman/Gui/General.py:306
 msgid ""
 "Should the list moderators get immediate notice of new\n"
 "             requests, as well as daily notices about collected ones?"
@@ -5396,7 +5508,7 @@ msgstr ""
 "Moeten de lijstmoderators onmiddelijk melding krijgen van nieuwe\n"
 "             aanvragen, zowel dagelijkse meldingen als verzamelde?"
 
-#: Mailman/Gui/General.py:310
+#: Mailman/Gui/General.py:309
 msgid ""
 "List moderators (and list administrators) are sent daily\n"
 "             reminders of requests pending approval, like subscriptions to "
@@ -5413,7 +5525,7 @@ msgstr ""
 "             deze instelling zorgt er ook voor dat er onmiddelijk meldingen\n"
 "             worden verstuurd als er nieuwe verzoeken binnenkomen."
 
-#: Mailman/Gui/General.py:317
+#: Mailman/Gui/General.py:316
 msgid ""
 "Should administrator get notices of subscribes and\n"
 "             unsubscribes?"
@@ -5421,21 +5533,21 @@ msgstr ""
 "Moet de beheerder meldingen krijgen van aanmeldingen\n"
 "             en afmeldingen?"
 
-#: Mailman/Gui/General.py:322
+#: Mailman/Gui/General.py:321
 msgid "Send mail to poster when their posting is held for approval?"
 msgstr ""
 "Een melding versturen naar een verzender als zijn/haar bericht wordt "
 "vastgehouden voor goedkeuring?"
 
-#: Mailman/Gui/General.py:325
+#: Mailman/Gui/General.py:324
 msgid "Additional settings"
 msgstr "Aanvullende instellingen"
 
-#: Mailman/Gui/General.py:328
+#: Mailman/Gui/General.py:327
 msgid "Emergency moderation of all list traffic."
 msgstr "Noodmoderatie voor al het lijstverkeer."
 
-#: Mailman/Gui/General.py:329
+#: Mailman/Gui/General.py:328
 msgid ""
 "When this option is enabled, all list traffic is emergency\n"
 "             moderated, i.e. held for moderation.  Turn this option on when\n"
@@ -5451,7 +5563,7 @@ msgstr ""
 "afkoelperiode\n"
 "             wilt instellen."
 
-#: Mailman/Gui/General.py:341
+#: Mailman/Gui/General.py:340
 msgid ""
 "Default options for new members joining this list.<input\n"
 "             type=\"hidden\" name=\"new_member_options\" value=\"ignore\">"
@@ -5460,7 +5572,7 @@ msgstr ""
 "             op deze lijst.<input type=\"hidden\" name=\"new_member_options"
 "\" value=\"ignore\">"
 
-#: Mailman/Gui/General.py:344
+#: Mailman/Gui/General.py:343
 msgid ""
 "When a new member is subscribed to this list, their initial\n"
 "             set of options is taken from the this variable's setting."
@@ -5469,7 +5581,7 @@ msgstr ""
 "             initiële groepinstellingen genomen van de instelling\n"
 "             van deze variabele."
 
-#: Mailman/Gui/General.py:348
+#: Mailman/Gui/General.py:347
 msgid ""
 "(Administrivia filter) Check postings and intercept ones\n"
 "             that seem to be administrative requests?"
@@ -5478,7 +5590,7 @@ msgstr ""
 "             berichten waarin mogelijk beheerdersverzoeken\n"
 "             kunnen staan?"
 
-#: Mailman/Gui/General.py:351
+#: Mailman/Gui/General.py:350
 msgid ""
 "Administrivia tests will check postings to see whether it's\n"
 "             really meant as an administrative request (like subscribe,\n"
@@ -5494,7 +5606,7 @@ msgstr ""
 "             melding aan de beheerder dat er een nieuw verzoek is\n"
 "             binnengekomen."
 
-#: Mailman/Gui/General.py:358
+#: Mailman/Gui/General.py:357
 msgid ""
 "Maximum length in kilobytes (KB) of a message body.  Use 0\n"
 "             for no limit."
@@ -5502,11 +5614,11 @@ msgstr ""
 "Hoe groot mag een bericht zijn (in KB)?\n"
 "             0 voor geen limiet."
 
-#: Mailman/Gui/General.py:362
+#: Mailman/Gui/General.py:361
 msgid "Host name this list prefers for email."
 msgstr "Hostnaam voor deze lijst die gewenst is voor e-mail."
 
-#: Mailman/Gui/General.py:364
+#: Mailman/Gui/General.py:363
 msgid ""
 "The \"host_name\" is the preferred name for email to\n"
 "             mailman-related addresses on this host, and generally should "
@@ -5525,7 +5637,7 @@ msgstr ""
 "alternatieve\n"
 "             namen voor een host die meerdere adressen heeft."
 
-#: Mailman/Gui/General.py:376
+#: Mailman/Gui/General.py:375
 msgid ""
 "Should messages from this mailing list include the\n"
 "                 <a href=\"http://www.faqs.org/rfcs/rfc2369.html\">RFC 2369</"
@@ -5540,7 +5652,7 @@ msgstr ""
 "em> wordt sterk\n"
 "                 aangeraden."
 
-#: Mailman/Gui/General.py:381
+#: Mailman/Gui/General.py:380
 msgid ""
 "RFC 2369 defines a set of List-* headers that are\n"
 "                 normally added to every message sent to the list "
@@ -5582,11 +5694,11 @@ msgstr ""
 "                 niet aanbevolen (en in feite zal de mogelijkheid om deze\n"
 "                 headers uit te zetten mogelijk verdwijnen)."
 
-#: Mailman/Gui/General.py:399
+#: Mailman/Gui/General.py:398
 msgid "Should postings include the <tt>List-Post:</tt> header?"
 msgstr "Moeten berichten de <tt>List-Post:</tt> header bevatten?"
 
-#: Mailman/Gui/General.py:400
+#: Mailman/Gui/General.py:399
 msgid ""
 "The <tt>List-Post:</tt> header is one of the headers\n"
 "             recommended by\n"
@@ -5618,13 +5730,13 @@ msgstr ""
 "             zetten. (Dit heeft overigens geen effect op de toevoeging van\n"
 "             andere <tt>List-*:</tt>-headers.)"
 
-#: Mailman/Gui/General.py:415
+#: Mailman/Gui/General.py:414
 msgid ""
 "Discard held messages older than this number of days.\n"
 "            Use 0 for no automatic discarding."
 msgstr ""
 
-#: Mailman/Gui/General.py:425
+#: Mailman/Gui/General.py:424
 msgid ""
 "<b>real_name</b> attribute not\n"
 "            changed!  It must differ from the list's name by case\n"
@@ -5634,7 +5746,7 @@ msgstr ""
 "            gewijzigd!  Het mag alleen maar op het gebied van\n"
 "            hoofd- of kleine letters afwijken van de lijstnaam."
 
-#: Mailman/Gui/General.py:455
+#: Mailman/Gui/General.py:454
 msgid ""
 "You cannot add a Reply-To: to an explicit\n"
 "            address if that address is blank.  Resetting these values."
@@ -6850,13 +6962,13 @@ msgstr ""
 "             worden omzeild door bijvoorbeeld escape karakters te of\n"
 "             haakjes te gebruiken."
 
-#: Mailman/Gui/Privacy.py:481
+#: Mailman/Gui/Privacy.py:485
 msgid ""
 "Header filter rules require a pattern.\n"
 "                Incomplete filter rules will be ignored."
 msgstr ""
 
-#: Mailman/Gui/Privacy.py:489
+#: Mailman/Gui/Privacy.py:493
 msgid ""
 "The header filter rule pattern\n"
 "                '%(safepattern)s' is not a legal regular expression.  This\n"
@@ -7522,31 +7634,31 @@ msgstr ""
 msgid "Emergency hold on all list traffic is in effect"
 msgstr "Noodsituatie voor al het berichtverkeer is in werking getreden"
 
-#: Mailman/Handlers/Emergency.py:30 Mailman/Handlers/Hold.py:58
+#: Mailman/Handlers/Emergency.py:30 Mailman/Handlers/Hold.py:57
 msgid "Your message was deemed inappropriate by the moderator."
 msgstr ""
 
-#: Mailman/Handlers/Hold.py:53
+#: Mailman/Handlers/Hold.py:52
 msgid "Sender is explicitly forbidden"
 msgstr ""
 
-#: Mailman/Handlers/Hold.py:54
+#: Mailman/Handlers/Hold.py:53
 msgid "You are forbidden from posting messages to this list."
 msgstr "U mag geen berichten versturen naar deze lijst."
 
-#: Mailman/Handlers/Hold.py:57
+#: Mailman/Handlers/Hold.py:56
 msgid "Post to moderated list"
 msgstr "Verstuurd naar een gemodereerde lijst"
 
-#: Mailman/Handlers/Hold.py:61
+#: Mailman/Handlers/Hold.py:60
 msgid "Post by non-member to a members-only list"
 msgstr "Verstuurd door een gebruiker die geen lid is op een alleen ledenlijst"
 
-#: Mailman/Handlers/Hold.py:62
+#: Mailman/Handlers/Hold.py:61
 msgid "Non-members are not allowed to post messages to this list."
 msgstr "Niet-leden mogen geen berichten sturen naar deze lijst."
 
-#: Mailman/Handlers/Hold.py:65
+#: Mailman/Handlers/Hold.py:64
 #, fuzzy
 msgid "Posting to a restricted list by sender requires approval"
 msgstr ""
@@ -7554,26 +7666,26 @@ msgstr ""
 "benodigdVersturen naar een lijst met restrictie door zender vereist "
 "goedkeuring"
 
-#: Mailman/Handlers/Hold.py:66
+#: Mailman/Handlers/Hold.py:65
 #, fuzzy
 msgid "This list is restricted; your message was not approved."
 msgstr "Deze lijst heeft restricties, je bericht is niet goedgekeurd."
 
-#: Mailman/Handlers/Hold.py:69
+#: Mailman/Handlers/Hold.py:68
 msgid "Too many recipients to the message"
 msgstr "Te veel ontvangers in het bericht (AAN:/CC:)"
 
-#: Mailman/Handlers/Hold.py:70
+#: Mailman/Handlers/Hold.py:69
 #, fuzzy
 msgid "Please trim the recipient list; it is too long."
 msgstr "Verkort de AAN:/CC: lijst, het is te lang."
 
-#: Mailman/Handlers/Hold.py:73
+#: Mailman/Handlers/Hold.py:72
 #, fuzzy
 msgid "Message has implicit destination"
 msgstr "Het bericht heeft een onbekend doel"
 
-#: Mailman/Handlers/Hold.py:74
+#: Mailman/Handlers/Hold.py:73
 #, fuzzy
 msgid ""
 "Blind carbon copies or other implicit destinations are\n"
@@ -7585,11 +7697,11 @@ msgstr ""
 "veld.\n"
 "Alvast dank."
 
-#: Mailman/Handlers/Hold.py:79
+#: Mailman/Handlers/Hold.py:78
 msgid "Message may contain administrivia"
 msgstr "Bericht bevat misschien administratieve commando's"
 
-#: Mailman/Handlers/Hold.py:84
+#: Mailman/Handlers/Hold.py:83
 msgid ""
 "Please do *not* post administrative requests to the mailing\n"
 "list.  If you wish to subscribe, visit %(listurl)s or send a message with "
@@ -7598,16 +7710,16 @@ msgid ""
 "instructions."
 msgstr ""
 
-#: Mailman/Handlers/Hold.py:90
+#: Mailman/Handlers/Hold.py:89
 #, fuzzy
 msgid "Message has a suspicious header"
 msgstr "Bericht heeft een verdachte header"
 
-#: Mailman/Handlers/Hold.py:91
+#: Mailman/Handlers/Hold.py:90
 msgid "Your message had a suspicious header."
 msgstr "Uw bericht heeft een verdachte header."
 
-#: Mailman/Handlers/Hold.py:101
+#: Mailman/Handlers/Hold.py:100
 msgid ""
 "Message body is too big: %(size)d bytes with a limit of\n"
 "%(limit)d KB"
@@ -7615,7 +7727,7 @@ msgstr ""
 "Bericht is te groot. Het is: %(size)d bytes en het mag maar\n"
 "%(limit)d KB groot zijn."
 
-#: Mailman/Handlers/Hold.py:106
+#: Mailman/Handlers/Hold.py:105
 msgid ""
 "Your message was too big; please trim it to less than\n"
 "%(kb)d KB in size."
@@ -7623,19 +7735,19 @@ msgstr ""
 "Uw bericht was te groot.Het mag maar\n"
 "%(kb)d KB groot zijn."
 
-#: Mailman/Handlers/Hold.py:110
+#: Mailman/Handlers/Hold.py:109
 msgid "Posting to a moderated newsgroup"
 msgstr "Versturen naar een gemodereerde nieuwsgroep"
 
-#: Mailman/Handlers/Hold.py:240
+#: Mailman/Handlers/Hold.py:244
 msgid "Your message to %(listname)s awaits moderator approval"
 msgstr "Uw bericht aan %(listname)s wacht op goedkeuring door de moderator"
 
-#: Mailman/Handlers/Hold.py:259
+#: Mailman/Handlers/Hold.py:263
 msgid "%(listname)s post from %(sender)s requires approval"
 msgstr ""
 
-#: Mailman/Handlers/Hold.py:266
+#: Mailman/Handlers/Hold.py:270
 msgid ""
 "If you reply to this message, keeping the Subject: header intact, Mailman "
 "will\n"
@@ -7666,7 +7778,7 @@ msgstr ""
 msgid "After content filtering, the message was empty"
 msgstr ""
 
-#: Mailman/Handlers/MimeDel.py:229
+#: Mailman/Handlers/MimeDel.py:232
 msgid ""
 "The attached message matched the %(listname)s mailing list's content "
 "filtering\n"
@@ -7676,7 +7788,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: Mailman/Handlers/MimeDel.py:235
+#: Mailman/Handlers/MimeDel.py:238
 msgid "Content filtered message notification"
 msgstr ""
 
@@ -7752,7 +7864,7 @@ msgstr ""
 "Groote: %(size)s\n"
 "Url: %(url)s\n"
 
-#: Mailman/Handlers/Scrubber.py:300
+#: Mailman/Handlers/Scrubber.py:307
 #, fuzzy
 msgid ""
 "A non-text attachment was scrubbed...\n"
@@ -7769,11 +7881,11 @@ msgstr ""
 "Omschrijving: %(desc)s\n"
 "Url : %(url)s\n"
 
-#: Mailman/Handlers/Scrubber.py:335
+#: Mailman/Handlers/Scrubber.py:342
 msgid "Skipped content of type %(partctype)s\n"
 msgstr ""
 
-#: Mailman/Handlers/Scrubber.py:370
+#: Mailman/Handlers/Scrubber.py:377
 msgid "-------------- next part --------------\n"
 msgstr ""
 
@@ -7781,44 +7893,44 @@ msgstr ""
 msgid "The message headers matched a filter rule"
 msgstr ""
 
-#: Mailman/Handlers/SpamDetect.py:135
+#: Mailman/Handlers/SpamDetect.py:136
 msgid "Message rejected by filter rule match"
 msgstr ""
 
-#: Mailman/Handlers/ToDigest.py:149
+#: Mailman/Handlers/ToDigest.py:160
 msgid "%(realname)s Digest, Vol %(volume)d, Issue %(issue)d"
 msgstr "%(realname)s Digest, Volume %(volume)d, Nummer %(issue)d"
 
-#: Mailman/Handlers/ToDigest.py:195
+#: Mailman/Handlers/ToDigest.py:206
 msgid "digest header"
 msgstr "digestheader"
 
-#: Mailman/Handlers/ToDigest.py:198
+#: Mailman/Handlers/ToDigest.py:209
 msgid "Digest Header"
 msgstr "Digestheader"
 
-#: Mailman/Handlers/ToDigest.py:211
+#: Mailman/Handlers/ToDigest.py:222
 msgid "Today's Topics:\n"
 msgstr "Onderwerpen van vandaag:\n"
 
-#: Mailman/Handlers/ToDigest.py:291
+#: Mailman/Handlers/ToDigest.py:302
 #, fuzzy
 msgid "Today's Topics (%(msgcount)d messages)"
 msgstr "Aantal onderwerpen van vandaag (%(msgcount)d)"
 
-#: Mailman/Handlers/ToDigest.py:317
+#: Mailman/Handlers/ToDigest.py:328
 msgid "[Message discarded by content filter]"
 msgstr ""
 
-#: Mailman/Handlers/ToDigest.py:343
+#: Mailman/Handlers/ToDigest.py:354
 msgid "digest footer"
 msgstr "digestvoetnoot"
 
-#: Mailman/Handlers/ToDigest.py:346
+#: Mailman/Handlers/ToDigest.py:357
 msgid "Digest Footer"
 msgstr "Digestvoetnoot"
 
-#: Mailman/Handlers/ToDigest.py:360
+#: Mailman/Handlers/ToDigest.py:371
 msgid "End of "
 msgstr "Eind van "
 
@@ -7855,7 +7967,7 @@ msgstr "Origineel berichtOorspronkelijk bericht"
 msgid "Request to mailing list %(realname)s rejected"
 msgstr ""
 
-#: Mailman/MTA/Manual.py:64
+#: Mailman/MTA/Manual.py:65
 msgid ""
 "The mailing list `%(listname)s' has been created via the through-the-web\n"
 "interface.  In order to complete the activation of this mailing list, the\n"
@@ -7865,19 +7977,19 @@ msgid ""
 "Here are the entries for the /etc/aliases file:\n"
 msgstr ""
 
-#: Mailman/MTA/Manual.py:75
+#: Mailman/MTA/Manual.py:76
 msgid ""
 "To finish creating your mailing list, you must edit your /etc/aliases (or\n"
 "equivalent) file by adding the following lines, and possibly running the\n"
 "`newaliases' program:\n"
 msgstr ""
 
-#: Mailman/MTA/Manual.py:80
+#: Mailman/MTA/Manual.py:81
 #, fuzzy
 msgid "## %(listname)s mailing list"
 msgstr "%(hostname)s Mailing Lijsten"
 
-#: Mailman/MTA/Manual.py:97
+#: Mailman/MTA/Manual.py:98
 msgid "Mailing list creation request for list %(listname)s"
 msgstr ""
 
@@ -7916,9 +8028,9 @@ msgstr ""
 
 #: Mailman/MTA/Postfix.py:318 Mailman/MTA/Postfix.py:345 bin/check_perms:123
 #: bin/check_perms:145 bin/check_perms:155 bin/check_perms:166
-#: bin/check_perms:191 bin/check_perms:208 bin/check_perms:227
-#: bin/check_perms:250 bin/check_perms:269 bin/check_perms:283
-#: bin/check_perms:303 bin/check_perms:340
+#: bin/check_perms:191 bin/check_perms:208 bin/check_perms:234
+#: bin/check_perms:257 bin/check_perms:276 bin/check_perms:290
+#: bin/check_perms:310 bin/check_perms:347
 msgid "(fixing)"
 msgstr ""
 
@@ -7940,31 +8052,31 @@ msgstr "U bent geen lid van de %(listname)s maillijst"
 msgid "Your confirmation is required to leave the %(listname)s mailing list"
 msgstr "U bent geen lid van de %(listname)s maillijst"
 
-#: Mailman/MailList.py:888 Mailman/MailList.py:1277
+#: Mailman/MailList.py:877 Mailman/MailList.py:1289
 msgid " from %(remote)s"
 msgstr ""
 
-#: Mailman/MailList.py:922
+#: Mailman/MailList.py:910
 msgid "subscriptions to %(realname)s require moderator approval"
 msgstr ""
 
-#: Mailman/MailList.py:986 bin/add_members:242
+#: Mailman/MailList.py:979 bin/add_members:242
 msgid "%(realname)s subscription notification"
 msgstr ""
 
-#: Mailman/MailList.py:1005
+#: Mailman/MailList.py:998
 msgid "unsubscriptions require moderator approval"
 msgstr ""
 
-#: Mailman/MailList.py:1025
+#: Mailman/MailList.py:1018
 msgid "%(realname)s unsubscribe notification"
 msgstr ""
 
-#: Mailman/MailList.py:1186
+#: Mailman/MailList.py:1198
 msgid "subscriptions to %(name)s require administrator approval"
 msgstr ""
 
-#: Mailman/MailList.py:1449
+#: Mailman/MailList.py:1461
 msgid "Last autoresponse notification for today"
 msgstr ""
 
@@ -8200,14 +8312,14 @@ msgstr ""
 msgid "Cannot read both digest and normal members from standard input."
 msgstr ""
 
-#: bin/add_members:210 bin/config_list:105 bin/find_member:97 bin/inject:90
+#: bin/add_members:210 bin/config_list:108 bin/find_member:97 bin/inject:90
 #: bin/list_admins:89 bin/list_members:232 bin/sync_members:222
 #: cron/bumpdigests:86
 msgid "No such list: %(listname)s"
 msgstr ""
 
 #: bin/add_members:230 bin/change_pw:158 bin/check_db:114 bin/discard:83
-#: bin/sync_members:244 bin/update:555 cron/bumpdigests:78
+#: bin/sync_members:244 bin/update:564 cron/bumpdigests:78
 msgid "Nothing to do."
 msgstr ""
 
@@ -8264,7 +8376,7 @@ msgstr ""
 msgid "listname is required"
 msgstr ""
 
-#: bin/arch:143 bin/change_pw:106 bin/config_list:242
+#: bin/arch:143 bin/change_pw:106 bin/config_list:255
 msgid ""
 "No such list \"%(listname)s\"\n"
 "%(e)s"
@@ -8482,63 +8594,72 @@ msgstr ""
 msgid "%(private)s must not be other-readable"
 msgstr ""
 
-#: bin/check_perms:225
+#: bin/check_perms:215
+msgid ""
+"Warning: Private archive directory is other-executable (o+x).\n"
+"         This could allow other users on your system to read private "
+"archives.\n"
+"         If you're on a shared multiuser system, you should consult the\n"
+"         installation manual on how to fix this."
+msgstr ""
+
+#: bin/check_perms:232
 msgid "mbox file must be at least 0660:"
 msgstr ""
 
-#: bin/check_perms:248
+#: bin/check_perms:255
 msgid "%(dbdir)s \"other\" perms must be 000"
 msgstr ""
 
-#: bin/check_perms:258
+#: bin/check_perms:265
 msgid "checking cgi-bin permissions"
 msgstr ""
 
-#: bin/check_perms:263
+#: bin/check_perms:270
 msgid "    checking set-gid for %(path)s"
 msgstr ""
 
-#: bin/check_perms:267
+#: bin/check_perms:274
 msgid "%(path)s must be set-gid"
 msgstr ""
 
-#: bin/check_perms:277
+#: bin/check_perms:284
 msgid "checking set-gid for %(wrapper)s"
 msgstr ""
 
-#: bin/check_perms:281
+#: bin/check_perms:288
 msgid "%(wrapper)s must be set-gid"
 msgstr ""
 
-#: bin/check_perms:291
+#: bin/check_perms:298
 msgid "checking permissions on %(pwfile)s"
 msgstr ""
 
-#: bin/check_perms:300
+#: bin/check_perms:307
 msgid "%(pwfile)s permissions must be exactly 0640 (got %(octmode)s)"
 msgstr ""
 
-#: bin/check_perms:324
+#: bin/check_perms:331
 msgid "checking permissions on list data"
 msgstr ""
 
-#: bin/check_perms:330
+#: bin/check_perms:337
 msgid "    checking permissions on: %(path)s"
 msgstr ""
 
-#: bin/check_perms:338
+#: bin/check_perms:345
 msgid "file permissions must be at least 660: %(path)s"
 msgstr ""
 
-#: bin/check_perms:383
+#: bin/check_perms:390
 msgid "No problems found"
 msgstr ""
 
-#: bin/check_perms:385
+#: bin/check_perms:392
 msgid "Problems found:"
 msgstr ""
 
-#: bin/check_perms:386
+#: bin/check_perms:393
 msgid "Re-run as %(MAILMAN_USER)s (or root) with -f flag to fix"
 msgstr ""
 
@@ -8742,49 +8863,51 @@ msgid ""
 "\n"
 msgstr ""
 
-#: bin/config_list:109
+#: bin/config_list:116
 msgid ""
-"## \"%(listname)s\" mailing list configuration settings -*- python -*-\n"
+"# -*- python -*-\n"
+"# -*- coding: %(charset)s -*-\n"
+"## \"%(listname)s\" mailing list configuration settings\n"
 "## captured on %(when)s\n"
 msgstr ""
 
-#: bin/config_list:131
+#: bin/config_list:142
 msgid "options"
 msgstr ""
 
-#: bin/config_list:188
+#: bin/config_list:201
 msgid "legal values are:"
 msgstr ""
 
-#: bin/config_list:255
+#: bin/config_list:268
 msgid "attribute \"%(k)s\" ignored"
 msgstr ""
 
-#: bin/config_list:258
+#: bin/config_list:271
 msgid "attribute \"%(k)s\" changed"
 msgstr ""
 
-#: bin/config_list:264
+#: bin/config_list:277
 msgid "Non-standard property restored: %(k)s"
 msgstr ""
 
-#: bin/config_list:272
+#: bin/config_list:285
 msgid "Invalid value for property: %(k)s"
 msgstr ""
 
-#: bin/config_list:274
+#: bin/config_list:287
 msgid "Bad email address for option %(k)s: %(v)s"
 msgstr ""
 
-#: bin/config_list:331
+#: bin/config_list:344
 msgid "Only one of -i or -o is allowed"
 msgstr ""
 
-#: bin/config_list:333
+#: bin/config_list:346
 msgid "One of -i or -o is required"
 msgstr ""
 
-#: bin/config_list:337
+#: bin/config_list:350
 msgid "List name is required"
 msgstr ""
 
@@ -8883,15 +9006,15 @@ msgstr ""
 msgid "Please specify either -p or -m."
 msgstr ""
 
-#: bin/dumpdb:135
+#: bin/dumpdb:136
 msgid "[----- start pickle file -----]"
 msgstr ""
 
-#: bin/dumpdb:140
+#: bin/dumpdb:142
 msgid "[----- end pickle file -----]"
 msgstr ""
 
-#: bin/dumpdb:142
+#: bin/dumpdb:145
 msgid "<----- start object %(cnt)s ----->"
 msgstr ""
 
@@ -9979,6 +10102,20 @@ msgstr ""
 msgid "Removed: %(s)s"
 msgstr ""
 
+#: bin/templ2pot.py:5
+msgid ""
+"templ2pot.py -- convert mailman template (en) to pot format.\n"
+"\n"
+"Usage: templ2pot.py inputfile ...\n"
+"\n"
+"Options:\n"
+"\n"
+"    -h, --help\n"
+"\n"
+"Inputfiles are english templates.  Outputs are written to stdout.\n"
+"\n"
+msgstr ""
+
 #: bin/transcheck:18
 msgid ""
 "\n"
@@ -10081,7 +10218,7 @@ msgstr ""
 msgid "Fixing language templates: %(listname)s"
 msgstr ""
 
-#: bin/update:196 bin/update:689
+#: bin/update:196 bin/update:698
 msgid "WARNING: could not acquire lock for list: %(listname)s"
 msgstr ""
 
@@ -10192,61 +10329,69 @@ msgstr ""
 msgid "updating old qfiles"
 msgstr ""
 
-#: bin/update:512
+#: bin/update:448
+msgid "Warning!  Not a directory: %(dirpath)s"
+msgstr ""
+
+#: bin/update:517
 msgid "message is unparsable: %(filebase)s"
 msgstr ""
 
-#: bin/update:541
+#: bin/update:531
+msgid "Warning!  Deleting empty .pck file: %(pckfile)s"
+msgstr ""
+
+#: bin/update:550
 msgid "Updating Mailman 2.0 pending_subscriptions.db database"
 msgstr ""
 
-#: bin/update:552
+#: bin/update:561
 msgid "Updating Mailman 2.1.4 pending.pck database"
 msgstr ""
 
-#: bin/update:576
+#: bin/update:585
 msgid "Ignoring bad pended data: %(key)s: %(val)s"
 msgstr ""
 
-#: bin/update:592
+#: bin/update:601
 msgid "WARNING: Ignoring duplicate pending ID: %(id)s."
 msgstr ""
 
-#: bin/update:645
+#: bin/update:654
 msgid "getting rid of old source files"
 msgstr ""
 
-#: bin/update:655
+#: bin/update:664
 msgid "no lists == nothing to do, exiting"
 msgstr ""
 
-#: bin/update:662
+#: bin/update:671
 msgid ""
 "fixing all the perms on your old html archives to work with b6\n"
 "If your archives are big, this could take a minute or two..."
 msgstr ""
 
-#: bin/update:667
+#: bin/update:676
 msgid "done"
 msgstr ""
 
-#: bin/update:669
+#: bin/update:678
 msgid "Updating mailing list: %(listname)s"
 msgstr ""
 
-#: bin/update:672
+#: bin/update:681
 msgid "Updating Usenet watermarks"
 msgstr ""
 
-#: bin/update:677
+#: bin/update:686
 msgid "- nothing to update here"
 msgstr ""
 
-#: bin/update:700
+#: bin/update:709
 msgid "- usenet watermarks updated and gate_watermarks removed"
 msgstr ""
 
-#: bin/update:714
+#: bin/update:723
 msgid ""
 "\n"
 "\n"
@@ -10269,22 +10414,22 @@ msgid ""
 "\n"
 msgstr ""
 
-#: bin/update:771
+#: bin/update:780
 msgid "No updates are necessary."
 msgstr ""
 
-#: bin/update:774
+#: bin/update:783
 msgid ""
 "Downgrade detected, from version %(hexlversion)s to version %(hextversion)s\n"
 "This is probably not safe.\n"
 "Exiting."
 msgstr ""
 
-#: bin/update:779
+#: bin/update:788
 msgid "Upgrading from version %(hexlversion)s to %(hextversion)s"
 msgstr ""
 
-#: bin/update:788
+#: bin/update:797
 msgid ""
 "\n"
 "ERROR:\n"
@@ -10684,6 +10829,2741 @@ msgid ""
 "all\n"
 "        lists are sent out.\n"
 msgstr ""
+
+#: templates/en/admindbdetails.html:1
+msgid ""
+"The administrative requests are displayed in one of two ways, on a <a\n"
+"href=\"%(summaryurl)s\">summary page</a>, and on a <em>details</em>\n"
+"page.  The summary page contains pending subscription and\n"
+"unsubscription requests, as well as postings being held for your\n"
+"approval, grouped by sender email address.  The details page contains\n"
+"a more detailed view of each held message, including the all the\n"
+"message's headers and an excerpt of the message body.\n"
+"\n"
+"<p>On all the pages, the following actions are available:\n"
+"\n"
+"<ul>\n"
+"<li><b>Defer</b> -- Defer your decision until later.  No action is\n"
+"    taken now for this pending administrative request, but for held\n"
+"    postings, you can still forward or preserve the message (see\n"
+"    below).\n"
+"\n"
+"<li><b>Approve</b> -- Approve the message, sending it on to the list.\n"
+"    For membership requests, approve the change in membership status.\n"
+"\n"
+"<li><b>Reject</b> -- Reject the message, sending a rejection notice to\n"
+"    the sender, and discarding the original message.  For membership\n"
+"    requests, reject the change in membership status.  In either case,\n"
+"    you should add a reason for the rejection in the accompanying text\n"
+"    box.\n"
+"\n"
+"<li><b>Discard</b> -- Throw away the original message, without sending\n"
+"    a rejection notice.  For membership requests, this simply discards\n"
+"    the request without notice to the person making the request.  This\n"
+"    is usually the action you want to take for known spam.\n"
+"</ul>\n"
+"\n"
+"<p>For held messages, turn on the <b>Preserve</b> option if you want\n"
+"to save a copy of the message for the site administrator.  This is\n"
+"useful for abusive messages that you want to discard, but need to keep\n"
+"a record of for later inspection.\n"
+"\n"
+"<p>Turn on the <b>Forward to</b> option, and fill in the forwarding\n"
+"address if you want to forward the message to someone else not on the\n"
+"list.  To edit a held message before it is sent on to the list, you\n"
+"should forward the message to yourself (or the list owners), and\n"
+"discard the original message.  Then, when the message shows up in your\n"
+"mailbox, make your edits and resend the message to the list, including\n"
+"an <tt>Approved:</tt> header with the list password as its value.  It\n"
+"is proper netiquette in this case to include a note in the resent\n"
+"message, explaining that you have modified the text.\n"
+"\n"
+"<p>If the sender is a list member who is being moderated, you can\n"
+"optionally clear their moderation flag.  This is useful when your list\n"
+"is configured to put new members on probation, and you've decided that\n"
+"this member can be trusted to post to the list without approval.\n"
+"\n"
+"<p>If the sender is not a list member, you can add the email address to\n"
+"a <em>sender filter</em>.  Sender filters are described on the <a\n"
+"href=\"%(filterurl)s\">sender filter privacy page</a>, and may be one of\n"
+"<b>auto-accept</b> (Accepts), <b>auto-hold</b> (Holds),\n"
+"<b>auto-reject</b> (Rejects), or <b>auto-discard</b> (Discards).  This\n"
+"option will not be available if the address is already on one of the\n"
+"sender filters.\n"
+"\n"
+"<p>When you're finished, click on the <em>Submit All Data</em> button\n"
+"at the top or bottom of the page.  This button will submit all\n"
+"selected actions for all administrative requests that you've made a\n"
+"decision for.\n"
+"\n"
+"<p><a href=\"%(summaryurl)s\">Return to the summary page</a>.\n"
+msgstr ""
+"The administrative requests are displayed in one of two ways, on a <a\n"
+"href=\"%(summaryurl)s\">summary page</a>, and on a <em>details</em>\n"
+"page.  The summary page contains pending subscription and\n"
+"unsubscription requests, as well as postings being held for your\n"
+"approval, grouped by sender email address.  The details page contains\n"
+"a more detailed view of each held message, including the all the\n"
+"message's headers and an excerpt of the message body.\n"
+"\n"
+"<p>On all the pages, the following actions are available:\n"
+"\n"
+"<ul>\n"
+"<li><b>Defer</b> -- Defer your decision until later.  No action is\n"
+"    taken now for this pending administrative request, but for held\n"
+"    postings, you can still forward or preserve the message (see\n"
+"    below).\n"
+"\n"
+"<li><b>Approve</b> -- Approve the message, sending it on to the list.\n"
+"    For membership requests, approve the change in membership status.\n"
+"\n"
+"<li><b>Reject</b> -- Reject the message, sending a rejection notice to\n"
+"    the sender, and discarding the original message.  For membership\n"
+"    requests, reject the change in membership status.  In either case,\n"
+"    you should add a reason for the rejection in the accompanying text\n"
+"    box.\n"
+"\n"
+"<li><b>Discard</b> -- Throw away the original message, without sending\n"
+"    a rejection notice.  For membership requests, this simply discards\n"
+"    the request without notice to the person making the request.  This\n"
+"    is usually the action you want to take for known spam.\n"
+"</ul>\n"
+"\n"
+"<p>For held messages, turn on the <b>Preserve</b> option if you want\n"
+"to save a copy of the message for the site administrator.  This is\n"
+"useful for abusive messages that you want to discard, but need to keep\n"
+"a record of for later inspection.\n"
+"\n"
+"<p>Turn on the <b>Forward to</b> option, and fill in the forwarding\n"
+"address if you want to forward the message to someone else not on the\n"
+"list.  To edit a held message before it is sent on to the list, you\n"
+"should forward the message to yourself (or the list owners), and\n"
+"discard the original message.  Then, when the message shows up in your\n"
+"mailbox, make your edits and resend the message to the list, including\n"
+"an <tt>Approved:</tt> header with the list password as its value.  It\n"
+"is proper netiquette in this case to include a note in the resent\n"
+"message, explaining that you have modified the text.\n"
+"\n"
+"<p>If the sender is a list member who is being moderated, you can\n"
+"optionally clear their moderation flag.  This is useful when your list\n"
+"is configured to put new members on probation, and you've decided that\n"
+"this member can be trusted to post to the list without approval.\n"
+"\n"
+"<p>If the sender is not a list member, you can add the email address to\n"
+"a <em>sender filter</em>.  Sender filters are described on the <a\n"
+"href=\"%(filterurl)s\">sender filter privacy page</a>, and may be one of\n"
+"<b>auto-accept</b> (Accepts), <b>auto-hold</b> (Holds),\n"
+"<b>auto-reject</b> (Rejects), or <b>auto-discard</b> (Discards).  This\n"
+"option will not be available if the address is already on one of the\n"
+"sender filters.\n"
+"\n"
+"<p>When you're finished, click on the <em>Submit All Data</em> button\n"
+"at the top or bottom of the page.  This button will submit all\n"
+"selected actions for all administrative requests that you've made a\n"
+"decision for.\n"
+"\n"
+"<p><a href=\"%(summaryurl)s\">Return to the summary page</a>.\n"
+
+#: templates/en/admindbpreamble.html:1
+msgid ""
+"This page contains a subset of the <em>%(listname)s</em> mailing list\n"
+"postings that are being held for your approval.  It currently shows\n"
+"%(description)s\n"
+"\n"
+"<p>For each administrative request, please select the action to take,\n"
+"clicking on the <b>Submit All Data</b> when finished.  More detailed\n"
+"instructions are available <a href=\"%(detailsurl)s\">here</a>.\n"
+"\n"
+"<p>You can also <a href=\"%(summaryurl)s\">view a summary</a> of all\n"
+"pending requests.\n"
+msgstr ""
+"Hier vind je informatie van alle <em>%(listname)s</em> mailing lijst\r\n"
+"berichten die worden vastgehouden voor goed of afkeuring.<br>\r\n"
+"It currently shows %(description)s\r\n"
+"\r\n"
+"<p>Als je klaar bent met je administartieve taak druk dan op <b>Submit All "
+"Data</b> knop.<br>\r\n"
+"Voor help klik <a href=\"%(detailsurl)s\">hier</a>.\r\n"
+"\r\n"
+"<p>Bekijk <a href=\"%(summaryurl)s\">hier</a> alle administratieve berichten."
+
+#: templates/en/admindbsummary.html:1
+msgid ""
+"This page contains a summary of the current set of administrative\n"
+"requests requiring your approval for the\n"
+"<a href=\"%(adminurl)s\"><em>%(listname)s</em> mailing list</a>.\n"
+"First, you will find the list of pending\n"
+"subscription and unsubscription requests, if any, followed by any\n"
+"postings being held for your approval.\n"
+"\n"
+"<p>For each administrative request, please select the action to take,\n"
+"clicking on the <b>Submit All Data</b> button when finished.\n"
+"<a href=\"%(detailsurl)s\">More detailed instructions</a> are also\n"
+"available.\n"
+"\n"
+"<p>You can also <a href=\"%(viewallurl)s\">view the details</a> of all\n"
+"held postings.\n"
+msgstr ""
+"Deze pagina laat alle administratieve handelingen zien voor de <a href=\"%"
+"(adminurl)s\"><em>%(listname)s</em> mailing lijst</a>.\r\n"
+"Eerst zie je (als die er zijn) alle aanmeldings/afmeldings berichten gevolgd "
+"door de berichten die vastgehouden worden.\r\n"
+"\r\n"
+"<p>Druk na je administratieve taak op de <b>Submit All Data</b> knop om de "
+"gegevens te verwerken.\r\n"
+"Druk <a href=\"%(detailsurl)s\">hier</a> voor help\r\n"
+"\r\n"
+"<p>Bekijk <a href=\"%(viewallurl)s\">hier</a> alle vastgehouden berichten."
+
+#: templates/en/adminsubscribeack.txt:1
+msgid ""
+"%(member)s has been successfully subscribed to %(listname)s.\n"
+"\n"
+"\n"
+msgstr ""
+"%(member)s is succesvol ingeschreven op de %(listname)s mailinglijst.\r\n"
+"\r\n"
+"\r\n"
+
+#: templates/en/adminunsubscribeack.txt:1
+msgid ""
+"%(member)s has been removed from %(listname)s.\n"
+"\n"
+msgstr ""
+"%(member)s is verwijderd van %(listname)s.\r\n"
+"\r\n"
+
+#: templates/en/admlogin.html:1
+msgid ""
+"<html>\n"
+"<head>\n"
+"  <title>%(listname)s %(who)s Authentication</title>\n"
+"</head>\n"
+"<body bgcolor=\"#ffffff\">\n"
+"<FORM METHOD=POST ACTION=\"%(path)s\">\n"
+"%(message)s\n"
+"  <TABLE WIDTH=\"100%%\" BORDER=\"0\" CELLSPACING=\"4\" CELLPADDING=\"5\">\n"
+"    <TR>\n"
+"      <TD COLSPAN=\"2\" WIDTH=\"100%%\" BGCOLOR=\"#99CCFF\" ALIGN=\"CENTER"
+"\">\n"
+"\t<B><FONT COLOR=\"#000000\" SIZE=\"+1\">%(listname)s %(who)s\n"
+"\t    Authentication</FONT></B>\n"
+"      </TD>\n"
+"    </TR>\n"
+"    <tr>\n"
+"      <TD><div ALIGN=\"Right\">List %(who)s Password:</div></TD>\n"
+"      <TD><INPUT TYPE=\"password\" NAME=\"adminpw\" SIZE=\"30\"></TD>\n"
+"    </tr>\n"
+"    <tr>\n"
+"      <td colspan=2 align=middle><INPUT type=\"SUBMIT\"\n"
+"                                        name=\"admlogin\"\n"
+"\t\t\t\t\tvalue=\"Let me in...\">\n"
+"      </td>\n"
+"    </tr>\n"
+"  </TABLE>\n"
+"      <p><strong><em>Important:</em></strong> From this point on, you\n"
+"      must have cookies enabled in your browser, otherwise no\n"
+"      administrative changes will take effect.\n"
+"\n"
+"      <p>Session cookies are used in Mailman's\n"
+"      administrative interface so that you don't need to\n"
+"      re-authenticate with every administrative operation.  This\n"
+"      cookie will expire automatically when you exit your browser, or\n"
+"      you can explicitly expire the cookie by hitting the\n"
+"      <em>Logout</em> link under <em>Other Administrative\n"
+"      Activities</em> (which you'll see once you successfully log in).\n"
+"</FORM>\n"
+"</body>\n"
+"</html>\n"
+msgstr ""
+"<html>\r\n"
+"<head>\r\n"
+"  <title>%(listname)s %(who)s inloggen</title>\r\n"
+"</head>\r\n"
+"<body bgcolor=\"#ffffff\">\r\n"
+"<FORM METHOD=POST ACTION=\"%(path)s\">\r\n"
+"%(message)s\r\n"
+"  <TABLE WIDTH=\"100%%\" BORDER=\"0\" CELLSPACING=\"4\" CELLPADDING=\"5\">"
+"\r\n"
+"    <TR>\r\n"
+"      <TD COLSPAN=\"2\" WIDTH=\"100%%\" BGCOLOR=\"#99CCFF\" ALIGN=\"CENTER\">"
+"\r\n"
+"\t<B><FONT COLOR=\"#000000\" SIZE=\"+1\">%(listname)s %(who)s\r\n"
+"\t    inloggen</FONT></B>\r\n"
+"      </TD>\r\n"
+"    </TR>\r\n"
+"    <tr>\r\n"
+"      <TD><div ALIGN=\"Right\">List %(who)s Wachtwoord:</div></TD>\r\n"
+"      <TD><INPUT TYPE=\"password\" NAME=\"adminpw\" SIZE=\"30\"></TD>\r\n"
+"    </tr>\r\n"
+"    <tr>\r\n"
+"      <td colspan=2 align=middle><INPUT type=\"SUBMIT\"\r\n"
+"                                        name=\"admlogin\"\r\n"
+"\t\t\t\t\tvalue=\"Inloggen\">\r\n"
+"      </td>\r\n"
+"    </tr>\r\n"
+"  </TABLE>\r\n"
+"      <p><strong><em>Belangrijk:</em></strong><br>\r\n"
+"      Vanaf hier werkt het alleen met cookies, zet de cookies aan in je "
+"browser. Anders kun je niet inloggen. \r\n"
+"</FORM>\r\n"
+"</body>\r\n"
+"</html>"
+
+#: templates/en/approve.txt:1
+msgid ""
+"Your request to %(requestaddr)s:\n"
+"\n"
+"    %(cmd)s\n"
+"\n"
+"has been forwarded to the person running the list.\n"
+"\n"
+"This is probably because you are trying to subscribe to a 'closed'\n"
+"list.\n"
+"\n"
+"You will receive email notification of the list owner's decision about\n"
+"your subscription request.\n"
+"\n"
+"Any questions about the list owner's policy should be directed to:\n"
+"\n"
+"    %(adminaddr)s\n"
+msgstr ""
+"Uw verzoek om %(requestaddr)s:\r\n"
+"\r\n"
+"    %(cmd)s\r\n"
+"\r\n"
+"is doorgestuurd naar de listowner van deze lijst.\r\n"
+"\r\n"
+"Dit komt waarschijnlijk doordat u lid probeert te worden van een\r\n"
+"'gesloten' lijst.\r\n"
+"\r\n"
+"U ontvangt een e-mail van de listowner over uw aanmelding.\r\n"
+"\r\n"
+"Vragen over het beleid van de listowner kunt u sturen naar:\r\n"
+"\r\n"
+"    %(adminaddr)s\r\n"
+
+#: templates/en/archidxentry.html:1
+msgid ""
+"<LI><A HREF=\"%(filename)s\">%(subject)s\n"
+"</A><A NAME=\"%(sequence)i\">&nbsp;</A>\n"
+"<I>%(author)s\n"
+"</I>\n"
+msgstr ""
+
+#: templates/en/archidxfoot.html:1
+msgid ""
+"    </ul>\n"
+"    <p>\n"
+"      <a name=\"end\"><b>Last message date:</b></a> \n"
+"       <i>%(lastdate)s</i><br>\n"
+"    <b>Archived on:</b> <i>%(archivedate)s</i>\n"
+"    <p>\n"
+"   <ul>\n"
+"         <li> <b>Messages sorted by:</b>\n"
+"\t        %(thread_ref)s\n"
+"\t\t%(subject_ref)s\n"
+"\t\t%(author_ref)s\n"
+"\t\t%(date_ref)s\n"
+"\t     <li><b><a href=\"%(listinfo)s\">More info on this list...\n"
+"                    </a></b></li>\n"
+"     </ul>\n"
+"     <p>\n"
+"     <hr>\n"
+"     <i>This archive was generated by\n"
+"     Pipermail %(version)s.</i>\n"
+"  </BODY>\n"
+"</HTML>\n"
+msgstr ""
+
+#: templates/en/archidxhead.html:1
+#, fuzzy
+msgid ""
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">\n"
+"<HTML>\n"
+"  <HEAD>\n"
+"     <title>The %(listname)s %(archive)s Archive by %(archtype)s</title>\n"
+"     <META NAME=\"robots\" CONTENT=\"noindex,follow\">\n"
+"     %(encoding)s\n"
+"  </HEAD>\n"
+"  <BODY BGCOLOR=\"#ffffff\">\n"
+"      <a name=\"start\"></A>\n"
+"      <h1>%(archive)s Archives by %(archtype)s</h1>\n"
+"      <ul>\n"
+"         <li> <b>Messages sorted by:</b>\n"
+"\t        %(thread_ref)s\n"
+"\t\t%(subject_ref)s\n"
+"\t\t%(author_ref)s\n"
+"\t\t%(date_ref)s\n"
+"\n"
+"\t     <li><b><a href=\"%(listinfo)s\">More info on this list...\n"
+"                    </a></b></li>\n"
+"      </ul>\n"
+"      <p><b>Starting:</b> <i>%(firstdate)s</i><br>\n"
+"         <b>Ending:</b> <i>%(lastdate)s</i><br>\n"
+"         <b>Messages:</b> %(size)s<p>\n"
+"     <ul>\n"
+msgstr ""
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">\r\n"
+"<HTML>\r\n"
+"  <HEAD>\r\n"
+"     <title>%(listname)s Archief</title>\r\n"
+"     <META NAME=\"robots\" CONTENT=\"noindex,follow\">\r\n"
+"  </HEAD>\r\n"
+"  <BODY BGCOLOR=\"#ffffff\">\r\n"
+"     <h1>%(listname)s Archief</h1>\r\n"
+"     <p>\r\n"
+"      <b><FONT COLOR=RED SIZE=\"4\">Het Archief is nog leeg.</FONT></"
+"b><br><br><a href=\"%(listinfo)s\">Informatie pagina van de lijst</a>.\r\n"
+"     </p>\r\n"
+"  </BODY>\r\n"
+"  </HTML>"
+
+#: templates/en/archlistend.html:1
+msgid "         </table>\n"
+msgstr ""
+
+#: templates/en/archliststart.html:1
+msgid ""
+"\t<table border=3>\n"
+"          <tr><td>Archive</td>\n"
+"          <td>View by:</td>\n"
+"          <td>Downloadable version</td></tr>\n"
+msgstr ""
+
+#: templates/en/archtoc.html:1
+#, fuzzy
+msgid ""
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">\n"
+"<HTML>\n"
+"  <HEAD>\n"
+"     <title>The %(listname)s Archives</title>\n"
+"     <META NAME=\"robots\" CONTENT=\"noindex,follow\">\n"
+"     %(meta)s\n"
+"  </HEAD>\n"
+"  <BODY BGCOLOR=\"#ffffff\">\n"
+"     <h1>The %(listname)s Archives </h1>\n"
+"     <p>\n"
+"      You can get <a href=\"%(listinfo)s\">more information about this list</"
+"a>\n"
+"      or you can <a href=\"%(fullarch)s\">download the full raw archive</a>\n"
+"      (%(size)s).\n"
+"     </p>\n"
+"     %(noarchive_msg)s\n"
+"     %(archive_listing_start)s\n"
+"     %(archive_listing)s\n"
+"     %(archive_listing_end)s\n"
+"     </BODY>\n"
+"     </HTML>\n"
+msgstr ""
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">\r\n"
+"<HTML>\r\n"
+"  <HEAD>\r\n"
+"     <title>%(listname)s Archief</title>\r\n"
+"     <META NAME=\"robots\" CONTENT=\"noindex,follow\">\r\n"
+"  </HEAD>\r\n"
+"  <BODY BGCOLOR=\"#ffffff\">\r\n"
+"     <h1>%(listname)s Archief</h1>\r\n"
+"     <p>\r\n"
+"      <b><FONT COLOR=RED SIZE=\"4\">Het Archief is nog leeg.</FONT></"
+"b><br><br><a href=\"%(listinfo)s\">Informatie pagina van de lijst</a>.\r\n"
+"     </p>\r\n"
+"  </BODY>\r\n"
+"  </HTML>"
+
+#: templates/en/archtocentry.html:1
+msgid ""
+"\n"
+"\t    <tr>\n"
+"            <td>%(archivelabel)s:</td>\n"
+"            <td>\n"
+"              <A href=\"%(archive)s/thread.html\">[ Thread ]</a>\n"
+"              <A href=\"%(archive)s/subject.html\">[ Subject ]</a>\n"
+"              <A href=\"%(archive)s/author.html\">[ Author ]</a>\n"
+"              <A href=\"%(archive)s/date.html\">[ Date ]</a>\n"
+"            </td>\n"
+"            %(textlink)s\n"
+"            </tr>\n"
+"\n"
+msgstr ""
+
+#: templates/en/article.html:1
+msgid ""
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">\n"
+"<HTML>\n"
+" <HEAD>\n"
+"   <TITLE> %(title)s\n"
+"   </TITLE>\n"
+"   <LINK REL=\"Index\" HREF=\"index.html\" >\n"
+"   <LINK REL=\"made\" HREF=\"mailto:%(email_url)s?Subject=%(subject_url)s&In-"
+"Reply-To=%(in_reply_to_url)s\">\n"
+"   <META NAME=\"robots\" CONTENT=\"index,nofollow\">\n"
+"   %(encoding)s\n"
+"   %(prev)s\n"
+"   %(next)s\n"
+" </HEAD>\n"
+" <BODY BGCOLOR=\"#ffffff\">\n"
+"   <H1>%(subject_html)s</H1>\n"
+"    <B>%(author_html)s</B> \n"
+"    <A HREF=\"mailto:%(email_url)s?Subject=%(subject_url)s&In-Reply-To=%"
+"(in_reply_to_url)s\"\n"
+"       TITLE=\"%(subject_html)s\">%(email_html)s\n"
+"       </A><BR>\n"
+"    <I>%(datestr_html)s</I>\n"
+"    <P><UL>\n"
+"        %(prev_wsubj)s\n"
+"        %(next_wsubj)s\n"
+"         <LI> <B>Messages sorted by:</B> \n"
+"              <a href=\"date.html#%(sequence)s\">[ date ]</a>\n"
+"              <a href=\"thread.html#%(sequence)s\">[ thread ]</a>\n"
+"              <a href=\"subject.html#%(sequence)s\">[ subject ]</a>\n"
+"              <a href=\"author.html#%(sequence)s\">[ author ]</a>\n"
+"         </LI>\n"
+"       </UL>\n"
+"    <HR>  \n"
+"<!--beginarticle-->\n"
+"%(body)s\n"
+"<!--endarticle-->\n"
+"    <HR>\n"
+"    <P><UL>\n"
+"        <!--threads-->\n"
+"\t%(prev_wsubj)s\n"
+"\t%(next_wsubj)s\n"
+"         <LI> <B>Messages sorted by:</B> \n"
+"              <a href=\"date.html#%(sequence)s\">[ date ]</a>\n"
+"              <a href=\"thread.html#%(sequence)s\">[ thread ]</a>\n"
+"              <a href=\"subject.html#%(sequence)s\">[ subject ]</a>\n"
+"              <a href=\"author.html#%(sequence)s\">[ author ]</a>\n"
+"         </LI>\n"
+"       </UL>\n"
+"\n"
+"<hr>\n"
+"<a href=\"%(listurl)s\">More information about the %(listname)s\n"
+"mailing list</a><br>\n"
+"</body></html>\n"
+msgstr ""
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">\n"
+"<HTML>\n"
+" <HEAD>\n"
+"   <TITLE> %(title)s\n"
+"   </TITLE>\n"
+"   <LINK REL=\"Index\" HREF=\"index.html\" >\n"
+"   <LINK REL=\"made\" HREF=\"mailto:%(email_url)s\">\n"
+"   <META NAME=\"robots\" CONTENT=\"index,nofollow\">\n"
+"   %(encoding)s\n"
+"   %(prev)s\n"
+"   %(next)s\n"
+" </HEAD>\n"
+" <BODY BGCOLOR=\"#ffffff\"><font face=\"Arial\" size=\"4\">\n"
+"   <H1><font color=\"#0000FF\"><i>Onderwerp : </i> %(subject_html)s </font>\n"
+"   </H1>\n"
+"       <span style=\"background-color: #FFFFCC\">\n"
+"       <i>Auteur :</i>\n"
+"       <B>%(author_html)s</B></span><br>\n"
+"       <span style=\"background-color: #CCFFFF\">\n"
+"       <i>E-mail :</i>\n"
+"       <A HREF=\"mailto:%(email_url)s\"\n"
+"       TITLE=\"%(subject_html)s\">%(email_html)s\n"
+"       </A></span><br>\n"
+"       <span style=\"background-color: #FFCCFF\">\n"
+"       <I>Datum :</I></td>\n"
+"       <I>%(datestr_html)s</I></td> </span>\n"
+"      </FONT><P><UL>\n"
+"        %(prev_wsubj)s\n"
+"        %(next_wsubj)s\n"
+"         <LI> <B>Berichten gesorteerd op:</B> \n"
+"              <a href=\"date.html#%(sequence)s\">[ datum ]</a>\n"
+"              <a href=\"thread.html#%(sequence)s\">[ draad ]</a>\n"
+"              <a href=\"subject.html#%(sequence)s\">[ onderwerp ]</a>\n"
+"              <a href=\"author.html#%(sequence)s\">[ auteur ]</a>\n"
+"         </LI>\n"
+"       </UL>\n"
+"    <HR>  \n"
+"<!--beginarticle-->\n"
+"%(body)s\n"
+"<!--endarticle-->\n"
+"    <HR>\n"
+"    <P><UL>\n"
+"        <!--threads-->\n"
+"\t%(prev_wsubj)s\n"
+"\t%(next_wsubj)s\n"
+"         <LI> <B>Berichten gesorteerd op:</B> \n"
+"              <a href=\"date.html#%(sequence)s\">[ datum ]</a>\n"
+"              <a href=\"thread.html#%(sequence)s\">[ draad ]</a>\n"
+"              <a href=\"subject.html#%(sequence)s\">[ onderwerp ]</a>\n"
+"              <a href=\"author.html#%(sequence)s\">[ auteur ]</a>\n"
+"         </LI>\n"
+"       </UL>\n"
+"</body></html>\n"
+
+#: templates/en/bounce.txt:1
+msgid ""
+"This is a Mailman mailing list bounce action notice:\n"
+"\n"
+"    List:       %(listname)s\n"
+"    Member:     %(addr)s\n"
+"    Action:     Subscription %(negative)s%(did)s.\n"
+"    Reason:     Excessive or fatal bounces.\n"
+"    %(but)s\n"
+"\n"
+"%(reenable)s\n"
+"The triggering bounce notice is attached below.\n"
+"\n"
+"Questions?  \n"
+"Contact the Mailman site administrator at %(owneraddr)s.\n"
+msgstr ""
+"Dit is een actie lijst voor bouncende berichten:\r\n"
+"\r\n"
+"    Lijst:       %(listname)s\r\n"
+"    Member:     %(addr)s\r\n"
+"    Actie :     lidmaatschap %(negative)s%(did)s.\r\n"
+"    Reden :     Maximale aantal bounces bereikt.\r\n"
+"    %(but)s\r\n"
+"\r\n"
+"%(reenable)s\r\n"
+"De veroorzakende bounce is bijgesloten.\r\n"
+"Vragen?\r\n"
+"Neem contact op met de Mailman site administrator op: %(owneraddr)s.\r\n"
+
+#: templates/en/convert.txt:1
+msgid ""
+"The %(listname)s mailing list has just undergone a big change.  It is\n"
+"running on a new mailing list package called \"Mailman\".  This will\n"
+"hopefully solve a lot of problems that administering this list has\n"
+"presented.\n"
+"\n"
+"How does this affect you?\n"
+"\n"
+"1) Mail intended for the whole list should be sent to: %(listaddr)s.\n"
+"\n"
+"2) You have been given an arbitrary password to prevent others from\n"
+"unsubscribing you without your knowledge.  It will be mailed to you in \n"
+"a separate email, which you may have already received.  Don't worry if \n"
+"you forget this password; a reminder will be sent to you via email\n"
+"every month.\n"
+"\n"
+"3) If you have World Wide Web access, you can use it any time to\n"
+"unsubscribe from this list, to switch to and from digest mode, to\n"
+"check back issues of the list (which will be available after the list\n"
+"has been getting posts for a day or so), etc.  The Web address for\n"
+"these resources is:\n"
+"\n"
+"    %(listinfo_url)s\n"
+"\n"
+"4) If you do not have WWW access, you can do these same things via\n"
+"email.  Send mail to %(requestaddr)s with a subject or body containing \n"
+"just the word \"help\" (without the quotes).  You will receive an\n"
+"automated reply giving you further directions.\n"
+"\n"
+"Please address any questions or problems with this new setup to:\n"
+"%(adminaddr)s.\n"
+"\n"
+"This message was auto-generated by Mailman %(version)s.  For more\n"
+"information on the Mailman software, visit the Mailman homepage at\n"
+"http://www.list.org/\n"
+msgstr ""
+"De %(listname)s mailinglijst heeft zojuist een grote verandering ondergaan."
+"\r\n"
+"Het werkt nu op een nieuw mailinglijst pakket genaamd \"Mailman\". Dit zal "
+"hopelijk\r\n"
+"veel problemen oplossen.\r\n"
+"hopefully solve a lot of problems that administering this list has\r\n"
+"presented.\r\n"
+"\r\n"
+"Hoe zal dit u betreffen?\r\n"
+"\r\n"
+"1) Mail die naar de lijst gestuurd wordt, moet gestuurd worden naar: %"
+"(listaddr)s.\r\n"
+"\r\n"
+"2) U zult een paswoord ontvangen om te voorkomen dat anderen u kunnen "
+"uitschrijven\r\n"
+"zonder dat u dat weet. Deze zal naar u toe gemaild worden in een apart e-"
+"mailtje, het\r\n"
+"kan ook zijn dat u deze al ontvangen heeft. Mocht u dit paswoord vergeten is "
+"dat geen\r\n"
+"probleem. Er zal iedere maand een herinnering via e-mail naar u toegezonden "
+"worden.\r\n"
+"\r\n"
+"3) Als u toegang heeft tot internet dan kunt u ten allen tijde zich "
+"uitschrijven van deze\r\n"
+"lijst, aan en uitzetten van de Digest mode, het archief van deze lijst "
+"bekijken (deze zal\r\n"
+"beschikbaar zijn zodra er een paar dagen gemaild is op de lijst), etc.\r\n"
+"Het adres voor deze bron is:\r\n"
+"\r\n"
+"    %(listinfo_url)s\r\n"
+"\r\n"
+"4) Als u geen toegang heeft tot internet dan kunt u deze dingen ook doen via "
+"e-mail.\r\n"
+"Stuur een e-mail naar %(requestaddr)s met als onderwerp of in de tekst het "
+"woord\r\n"
+"\"help\" (zonder aanhalingstekens). U ontvangt dan automatisch een antwoord "
+"waar verdere\r\n"
+"aanwijzingen in staan.\r\n"
+"\r\n"
+"Heeft u nog vragen of problemen met deze nieuwe setup, dan kunt u die "
+"richten aan:\r\n"
+"%(adminaddr)s.\r\n"
+"\r\n"
+"Dit bericht was automatisch gegenereerd door Mailman %(version)s. Voor meer "
+"informatie\r\n"
+"over de Mailman software, bezoek dan de Mailman homepage op: http://www.list."
+"org/\r\n"
+
+#: templates/en/checkdbs.txt:1
+msgid ""
+"The %(real_name)s@%(host_name)s mailing list has %(count)d request(s)\n"
+"waiting for your consideration at:\n"
+"\n"
+"\t%(adminDB)s\n"
+"\t\n"
+"Please attend to this at your earliest convenience.  This notice of\n"
+"pending requests, if any, will be sent out daily.\n"
+msgstr ""
+"De %(real_name)s@%(host_name)s mailinglijst heeft %(count)d verzoek(en)\r\n"
+"die wachten op uw goedkeuring op:\r\n"
+"\r\n"
+"\t%(adminDB)s\r\n"
+"\r\n"
+"Kunt u hier aub zo spoedig mogelijk naar kijken? Dit overzicht van wachtende "
+"verzoeken,\r\n"
+"als die er zijn, zal dagelijks naar u toegezonden worden.\r\n"
+
+#: templates/en/cronpass.txt:1
+msgid ""
+"This is a reminder, sent out once a month, about your %(hostname)s\n"
+"mailing list memberships.  It includes your subscription info and how\n"
+"to use it to change it or unsubscribe from a list.\n"
+"\n"
+"You can visit the URLs to change your membership status or\n"
+"configuration, including unsubscribing, setting digest-style delivery\n"
+"or disabling delivery altogether (e.g., for a vacation), and so on.\n"
+"\n"
+"In addition to the URL interfaces, you can also use email to make such\n"
+"changes.  For more info, send a message to the '-request' address of\n"
+"the list (for example, %(exreq)s) containing just the word 'help' in\n"
+"the message body, and an email message will be sent to you with\n"
+"instructions.\n"
+"\n"
+"If you have questions, problems, comments, etc, send them to\n"
+"%(owner)s.  Thanks!\n"
+"\n"
+"Passwords for %(useraddr)s:\n"
+"\n"
+msgstr ""
+"Dit is een maandelijkse herinnering m.b.t. uw %(hostname)s\r\n"
+"mailinglijst lidmaatschap. Dit bericht bevat uw inlog gegevens en uitleg hoe "
+"je\r\n"
+"een abonnement kunt wijzigen of stopzetten.\r\n"
+"\r\n"
+"U kunt de volgende URLs bezoeken om uw lidmaatschap status of\r\n"
+"configuratie te wijzigen, inclusief het annuleren van je lidmaatschap,\r\n"
+"het kiezen voor digest (samengestelde) berichten of het tijdelijk\r\n"
+"stopzetten van berichten (no-mail) i.v.m. vakantie etc.\r\n"
+"\r\n"
+"Behalve via onderstaande URLs, kunt u dergelijke veranderingen ook via\r\n"
+"e-mail doorgeven. Voor meer informatie hierover, stuur een e-mail naar\r\n"
+"'-request' adres van de mailinglijst (bijvoorbeeld: %(exreq)s) met als tekst "
+"van je\r\n"
+"e-mail alleen het woord 'help'. Je ontvangt dan een e-mail terug met verdere"
+"\r\n"
+"instructies.\r\n"
+"\r\n"
+"Voor verdere vragen, problemen, opmerkingen, etc. Stuur een e-mail naar\r\n"
+"%(owner)s.  Bedankt!\r\n"
+"\r\n"
+"Paswoord voor %(useraddr)s:"
+
+#: templates/en/disabled.txt:1
+msgid ""
+"Your membership in the mailing list %(listname)s has been disabled\n"
+"%(reason)s.  You will not get any more messages from this\n"
+"list until you re-enable your membership.  You will receive\n"
+"%(noticesleft)s more reminders like this before your membership in the\n"
+"list is deleted.\n"
+"\n"
+"To re-enable your membership, you can simply respond to this message\n"
+"(leaving the Subject: line intact), or visit the confirmation page at\n"
+"\n"
+"    %(confirmurl)s\n"
+"\n"
+"You can also visit your membership page at\n"
+"\n"
+"    %(optionsurl)s\n"
+"\n"
+"On your membership page, you can change various delivery options such\n"
+"as your email address and whether you get digests or not.  As a\n"
+"reminder, your membership password is\n"
+"\n"
+"    %(password)s\n"
+"\n"
+"If you have any questions or problems, you can contact the list owner\n"
+"at\n"
+"\n"
+"    %(owneraddr)s\n"
+msgstr ""
+"Uw lidmaatschap van de mailinglijst %(listname)s is stopgezet. Dit i.v.m.\r\n"
+"teveel bounces.U ontvangt geen berichten meer van deze lijst totdat u uw\r\n"
+"lidmaatschap heeft hersteld. U ontvangt nog %(noticesleft)s herinneringen als"
+"\r\n"
+"deze, voordat uw lidmaatschap wordt opgeheven.\r\n"
+"\r\n"
+"Om uw lidmaatschap te herstellen kunt u simpelweg op dit bericht reageren\r\n"
+"(laat de onderwerp:/subject: regel staan), of bezoek de bevestigingspagina "
+"op:\r\n"
+"\r\n"
+"    %(confirmurl)s\r\n"
+"\r\n"
+"U kunt ook uw lidmaatschapspagina bezoeken\r\n"
+"\r\n"
+"    %(optionsurl)s\r\n"
+"\r\n"
+"Op uw lidmaatschapspagina kunt u enkele bezorg opties wijzigen.\r\n"
+"Bijvoorbeeld uw e-mail adres wijzigen, aangeven of u dagelijks een overzicht "
+"van\r\n"
+"berichten wilt ontvangen (digest).\r\n"
+"Als extra herinnering, uw paswoord is:\r\n"
+"\r\n"
+"    %(password)s\r\n"
+"\r\n"
+"Heeft u nog vragen of problemen, neem dan contact op met de list owner op\r\n"
+"\r\n"
+"    %(owneraddr)s\r\n"
+
+#: templates/en/emptyarchive.html:1
+msgid ""
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">\n"
+"<HTML>\n"
+"  <HEAD>\n"
+"     <title>The %(listname)s Archives</title>\n"
+"     <META NAME=\"robots\" CONTENT=\"noindex,follow\">\n"
+"  </HEAD>\n"
+"  <BODY BGCOLOR=\"#ffffff\">\n"
+"     <h1>The %(listname)s Archives </h1>\n"
+"     <p>\n"
+"      No messages have been posted to this list yet, so the archives are\n"
+"      currently empty.  You can get <a href=\"%(listinfo)s\">more "
+"information\n"
+"      about this list</a>.\n"
+"     </p>\n"
+"  </BODY>\n"
+"  </HTML>\n"
+msgstr ""
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">\r\n"
+"<HTML>\r\n"
+"  <HEAD>\r\n"
+"     <title>%(listname)s Archief</title>\r\n"
+"     <META NAME=\"robots\" CONTENT=\"noindex,follow\">\r\n"
+"  </HEAD>\r\n"
+"  <BODY BGCOLOR=\"#ffffff\">\r\n"
+"     <h1>%(listname)s Archief</h1>\r\n"
+"     <p>\r\n"
+"      <b><FONT COLOR=RED SIZE=\"4\">Het Archief is nog leeg.</FONT></"
+"b><br><br><a href=\"%(listinfo)s\">Informatie pagina van de lijst</a>.\r\n"
+"     </p>\r\n"
+"  </BODY>\r\n"
+"  </HTML>"
+
+#: templates/en/headfoot.html:1
+msgid ""
+"This text can include \n"
+"<a href=\"http://www.python.org/doc/current/lib/typesseq-strings.html"
+"\">Python\n"
+"format strings</a> which are resolved against list attributes.  The\n"
+"list of substitutions allowed are:\n"
+"\n"
+"<ul>\n"
+"    <li><b>real_name</b> - The \"pretty\" name of the list; usually\n"
+"    the list name with capitalization.\n"
+"\n"
+"    <li><b>list_name</b> - The name by which the list is\n"
+"    identified in URLs, where case is significant.\n"
+"\n"
+"    <li><b>host_name</b> - The fully qualified domain name\n"
+"    that the list server runs on.\n"
+"\n"
+"    <li><b>web_page_url</b> - The base URL for Mailman.  This\n"
+"    can be appended with,\n"
+"    e.g. <em>listinfo/%(list_name)s</em> to yield the\n"
+"    listinfo page for the mailing list.\n"
+"\n"
+"    <li><b>description</b> - The brief description of the\n"
+"    mailing list.\n"
+"\n"
+"    <li><b>info</b> - The full description of the mailing\n"
+"    list.\n"
+"\n"
+"    <li><b>cgiext</b> - The extension added to CGI scripts.\n"
+"</ul>\n"
+msgstr ""
+"Deze commando's kunnen gebruikt worden in je tekst:<br>\n"
+"&nbsp;<table border=\"0\" cellspacing=\"1\" style=\"border-collapse: collapse"
+"\" bordercolor=\"#111111\" width=\"100%\" id=\"AutoNumber1\">\n"
+"  <tr>\n"
+"    <td width=\"17%\"><b>real_name</b></td>\n"
+"    <td width=\"83%\">De lijstnaam met hoofdletters er in. </td>\n"
+"  </tr>\n"
+"  <tr>\n"
+"    <td width=\"17%\"><b>list_name</b></td>\n"
+"    <td width=\"83%\">De lijstnaam zonder hoofdletters er in, gepresenteerd "
+"als \n"
+"    URL. </td>\n"
+"  </tr>\n"
+"  <tr>\n"
+"    <td width=\"17%\"><b>host_name</b></td>\n"
+"    <td width=\"83%\">De hostnaam van de server waar deze mailing lijst op "
+"draait..\n"
+"    </td>\n"
+"  </tr>\n"
+"  <tr>\n"
+"    <td width=\"17%\"><b>web_page_url</b></td>\n"
+"    <td width=\"83%\">Basis URL van Mailman. Hier kan aan toegevoegd worden: "
+"<em>listinfo/%(list_name)s</em> \n"
+"    om naar de lijst informatie pagina te gaan.. </td>\n"
+"  </tr>\n"
+"  <tr>\n"
+"    <td width=\"17%\"><b>description</b></td>\n"
+"    <td width=\"83%\">Dit laat de korte omschrijving zien van de mailing "
+"lijst..\n"
+"    </td>\n"
+"  </tr>\n"
+"  <tr>\n"
+"    <td width=\"17%\"><b>info</b></td>\n"
+"    <td width=\"83%\">De volledige omschrijving van de mailing lijst.. </"
+"td>\n"
+"  </tr>\n"
+"  <tr>\n"
+"    <td width=\"17%\"><b>cgiext</b></td>\n"
+"    <td width=\"83%\">Geeft weer de extentie die is toegevoegd aan CGI "
+"scripts..\n"
+"    </td>\n"
+"  </tr>\n"
+"</table>\n"
+"&nbsp;<p>Om het commando te laten werken voeg je er voor : <b>%(</b> en er "
+"na <b>\n"
+")s</b> .</p>\n"
+"<p>Een voorbeeld van een voetnoot:</p>\n"
+"<p><b>---------------------------<br>\n"
+"Mailing lijst: %(real_name)s<br>\n"
+"Lijst informatie: %(web_page_url)slistinfo/%(list_name)s</b></p>\n"
+"<p>&nbsp;</p>\n"
+
+#: templates/en/help.txt:1
+msgid ""
+"Help for %(listname)s mailing list:\n"
+"\n"
+"This is email command help for version %(version)s of the \"Mailman\"\n"
+"list manager.  The following describes commands you can send to get\n"
+"information about and control your subscription to Mailman lists at\n"
+"this site.  A command can be in the subject line or in the body of the\n"
+"message.\n"
+"\n"
+"Note that much of the following can also be accomplished via the World\n"
+"Wide Web, at:\n"
+"\n"
+"    %(listinfo_url)s\n"
+"\n"
+"In particular, you can use the Web site to have your password sent to\n"
+"your delivery address.\n"
+"\n"
+"List specific commands (subscribe, who, etc) should be sent to the\n"
+"*-request address for the particular list, e.g. for the 'mailman'\n"
+"list, use 'mailman-request@...'.\n"
+"\n"
+"About the descriptions - words in \"<>\"s signify REQUIRED items and\n"
+"words in \"[]\" denote OPTIONAL items.  Do not include the \"<>\"s or\n"
+"\"[]\"s when you use the commands.\n"
+"\n"
+"The following commands are valid:\n"
+"\n"
+"    %(commands)s\n"
+"\n"
+"Commands should be sent to %(requestaddr)s\n"
+"\n"
+"Questions and concerns for the attention of a person should be sent to\n"
+"\n"
+"    %(adminaddr)s\n"
+msgstr ""
+"Help voor %(listname)s mailinglijsten:\r\n"
+"\r\n"
+"Dit is e-mail commando help voor versie %(version)s van de \"Mailman\"\r\n"
+"lijst manager.\r\n"
+"De Commando's kun je plaatsen in het onderwerp veld of in de body van een "
+"bericht.\r\n"
+"\r\n"
+"TIP: het beste is om dit in plaintekst mail te doen (geen HTML mail dus).\r\n"
+"\r\n"
+"\r\n"
+"De e-mail commando's kun je ook grafish instellen op de volgende website:\r\n"
+"\r\n"
+"    %(listinfo_url)s\r\n"
+"\r\n"
+"Woorden tussen \"<>\"s Zijn verplicht.\r\n"
+"Woorden tussen \"[]\" Zijn optionele commando's.\r\n"
+"De commando's invullen zonder <> en [].\r\n"
+"\r\n"
+"De lijst met commando's:\r\n"
+"\r\n"
+"    %(commands)s\r\n"
+"\r\n"
+"De commando's stuur je naar: %(requestaddr)s\r\n"
+"\r\n"
+"Voor vragen mail : %(adminaddr)s\r\n"
+
+#: templates/en/invite.txt:1
+msgid ""
+"Your address \"%(email)s\" has been invited to join the %(listname)s\n"
+"mailing list at %(hostname)s by the %(listname)s mailing list owner.\n"
+"You may accept the invitation by simply replying to this message,\n"
+"keeping the Subject: header intact.\n"
+"\n"
+"You can also visit this web page:\n"
+"\n"
+"    %(confirmurl)s\n"
+"\n"
+"Or you should include the following line -- and only the following\n"
+"line -- in a message to %(requestaddr)s:\n"
+"\n"
+"    confirm %(cookie)s\n"
+"\n"
+"Note that simply sending a `reply' to this message should work from\n"
+"most mail readers.\n"
+"\n"
+"If you want to decline this invitation, please simply disregard this\n"
+"message.  If you have any questions, please send them to\n"
+"%(listowner)s.\n"
+msgstr ""
+"Uw e-mail adres \"%(email)s\" is uitgenodigd om deel te nemen aan de %"
+"(listname)s\r\n"
+"mailinglijst op %(hostname)s door de %(listname)s mailing listowner.\r\n"
+"U kunt de uitnodiging accepteren door dit bericht te beantwoorden (replyen)"
+"\r\n"
+"en daarbij het Onderwerp:/Subject: te laten staan.\r\n"
+"\r\n"
+"U kunt ook de volgende web pagina bezoeken:\r\n"
+"\r\n"
+"    %(confirmurl)s\r\n"
+"\r\n"
+"Of u kunt een berichtje sturen met de volgende regel -- en alleen deze regel "
+"--\r\n"
+"aan %(requestaddr)s:\r\n"
+"\r\n"
+"   confirm %(cookie)s\r\n"
+"\r\n"
+"Opmerking: Gewoon een reply op dit bericht sturen zou moeten voldoen in de"
+"\r\n"
+"meeste e-mail programma's.\r\n"
+"\r\n"
+"Als u niet in wilt gaan op deze uitnodiging, kunt u dit bericht negeren.\r\n"
+"Mocht u nog vragen hebben, stuur deze dan naar\r\n"
+"%(listowner)s.\r\n"
+
+#: templates/en/listinfo.html:1
+msgid ""
+"<!-- $Revision: 7626 $ -->\n"
+"<HTML>\n"
+"  <HEAD>\n"
+"    <TITLE><MM-List-Name> Info Page</TITLE>\n"
+"  \n"
+"  </HEAD>\n"
+"  <BODY BGCOLOR=\"#ffffff\">\n"
+"\n"
+"    <P>\n"
+"      <TABLE COLS=\"1\" BORDER=\"0\" CELLSPACING=\"4\" CELLPADDING=\"5\">\n"
+"\t<TR>\n"
+"\t  <TD COLSPAN=\"2\" WIDTH=\"100%\" BGCOLOR=\"#99CCFF\" ALIGN=\"CENTER\">\n"
+"\t    <B><FONT COLOR=\"#000000\" SIZE=\"+1\"><MM-List-Name> --\n"
+"\t<MM-List-Description></FONT></B>\n"
+"\t  </TD>\n"
+"\t</TR>\n"
+"\t<tr>\n"
+"\t    <td colspan=\"2\">\n"
+"\t      <p>&nbsp;\n"
+"\t    </td>\n"
+"\t  </tr>\n"
+"\t  <tr>\n"
+"\t    <TD COLSPAN=\"1\" WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\">\n"
+"\t      <B><FONT COLOR=\"#000000\">About <MM-List-Name></FONT></B>\n"
+"\t    </TD>\n"
+"            <TD COLSPAN=\"1\" WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\">\n"
+"              <MM-lang-form-start><MM-displang-box> <MM-list-langs>\n"
+"              <MM-form-end>\n"
+"    <MM-Subscribe-Form-Start>\n"
+"            </TD>\n"
+"\t  </TR>\n"
+"\t    <tr>\n"
+"\t      <td colspan=\"2\">\n"
+"\t\t<P><MM-List-Info></P>\n"
+"\t  <p> To see the collection of prior postings to the list,\n"
+"\t      visit the <MM-Archive><MM-List-Name>\n"
+"\t\t  Archives</MM-Archive>.\n"
+"\t      <MM-Restricted-List-Message>\n"
+"\t  </p>\n"
+"\t</TD>\n"
+"      </TR>\n"
+"      <TR>\n"
+"\t<TD COLSPAN=\"2\" WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\">\n"
+"\t  <B><FONT COLOR=\"#000000\">Using <MM-List-Name></FONT></B>\n"
+"\t</TD>\n"
+"      </TR>\n"
+"      <tr>\n"
+"\t<td colspan=\"2\">\n"
+"\t  To post a message to all the list members, send email to\n"
+"\t  <A HREF=\"mailto:<MM-Posting-Addr>\"><MM-Posting-Addr></A>.\n"
+"\n"
+"\t  <p>You can subscribe to the list, or change your existing\n"
+"\t    subscription, in the sections below.\n"
+"\t</td>\n"
+"      </tr>\n"
+"      <TR>\n"
+"\t<TD COLSPAN=\"2\" WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\">\n"
+"\t  <B><FONT COLOR=\"#000000\">Subscribing to <MM-List-Name></FONT></B>\n"
+"\t</TD>\n"
+"      </TR>\n"
+"      <tr>\n"
+"\t<td colspan=\"2\">\n"
+"\t  <P>\n"
+"\t    Subscribe to <MM-List-Name> by filling out the following\n"
+"\t      form.\n"
+"\t  <MM-List-Subscription-Msg>\n"
+"\t  <ul>\n"
+"\t      <TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\"\n"
+"\t\tWIDTH=\"70%\" HEIGHT= \"112\">\n"
+"\t\t<TR>\n"
+"\t\t  <TD BGCOLOR=\"#dddddd\" WIDTH=\"55%\">Your email address:</TD>\n"
+"\t\t  <TD WIDTH=\"33%\"><MM-Subscribe-Box>\n"
+"\t</TD>\n"
+"\t<TD WIDTH=\"12%\">&nbsp;</TD></TR>\n"
+"      <tr>\n"
+"        <td bgcolor=\"#dddddd\" width=\"55%\">Your name (optional):</td>\n"
+"        <td width=\"33%\"><mm-fullname-box></td>\n"
+"\t<TD WIDTH=\"12%\">&nbsp;</TD></TR>\n"
+"      <TR>\n"
+"\t<TD COLSPAN=\"3\"><FONT SIZE=-1>You may enter a\n"
+"\t    privacy password below. This provides only mild security,\n"
+"\t    but should prevent others from messing with your\n"
+"\t    subscription.  <b>Do not use a valuable password</b> as\n"
+"\t    it will occasionally be emailed back to you in cleartext.\n"
+"\n"
+"            <p>If you choose not to enter a password, one will be\n"
+"            automatically generated for you, and it will be sent to\n"
+"            you once you've confirmed your subscription.  You can\n"
+"            always request a mail-back of your password when you edit\n"
+"            your personal options.\n"
+"\t    <MM-Reminder>\n"
+"\t</TD>\n"
+"      </TR>  \n"
+"      <TR>\n"
+"\t<TD BGCOLOR=\"#dddddd\">Pick a password:</TD>\n"
+"\t<TD><MM-New-Password-Box></TD>\n"
+"\t<TD>&nbsp;</TD></TR>\n"
+"      <TR> \n"
+"\t<TD BGCOLOR=\"#dddddd\">Reenter password to confirm:</TD>\n"
+"\t<TD><MM-Confirm-Password></TD>\n"
+"\t<TD>&nbsp; </TD></TR>\n"
+"      <tr>\n"
+"        <TD BGCOLOR=\"#dddddd\">Which language do you prefer to display your "
+"messages?</TD> \n"
+"        <TD> <MM-list-langs></TD>\n"
+"        <TD>&nbsp; </TD></TR>\n"
+"      <mm-digest-question-start>\n"
+"      <tr>\n"
+"\t<td>Would you like to receive list mail batched in a daily\n"
+"\t  digest?\n"
+"\t  </td>\n"
+"\t<td><MM-Undigest-Radio-Button> No\n"
+"\t    <MM-Digest-Radio-Button>  Yes\n"
+"\t</TD>\n"
+"      </tr>\n"
+"      <mm-digest-question-end>\n"
+"      <tr>\n"
+"\t<td colspan=\"3\">\n"
+"\t  <center><MM-Subscribe-Button></P></center>\n"
+"    </TABLE>\n"
+"    <MM-Form-End>\n"
+"    </ul>\n"
+"    </td>\n"
+"    </tr>\n"
+"    <TR>\n"
+"      <TD COLSPAN=\"2\" WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\">\n"
+"\t<a name=\"subscribers\">\n"
+"        <B><FONT COLOR=\"#000000\"><MM-List-Name> Subscribers</FONT></B></"
+"a>\n"
+"      </TD>\n"
+"    </TR>\n"
+"    <tr>\n"
+"      <TD COLSPAN=\"2\" WIDTH=\"100%\">\n"
+"\t<MM-Roster-Form-Start>\n"
+"\t<MM-Roster-Option>\n"
+"\t    <MM-Form-End>\n"
+"\t  <p>\n"
+"\t<MM-Options-Form-Start>\n"
+"\t<MM-Editing-Options>\n"
+"\t\t<MM-Form-End>\n"
+"      </td>\n"
+"    </tr>\n"
+"  </table>\n"
+"<MM-Mailman-Footer>\n"
+"</BODY>\n"
+"</HTML>\n"
+msgstr ""
+"<!-- $Revision: 7626 $ -->\r\n"
+"<HTML>\r\n"
+"  <HEAD>\r\n"
+"    <TITLE><MM-List-Name> Informatie Pagina</TITLE>\r\n"
+"  \r\n"
+"  </HEAD>\r\n"
+"  <BODY BGCOLOR=\"#ffffff\">\r\n"
+"\r\n"
+"    <P>\r\n"
+"      <TABLE COLS=\"1\" BORDER=\"0\" CELLSPACING=\"4\" CELLPADDING=\"5\">\r\n"
+"\t<TR>\r\n"
+"\t  <TD COLSPAN=\"2\" WIDTH=\"100%\" BGCOLOR=\"#99CCFF\" ALIGN=\"CENTER\">"
+"\r\n"
+"\t    <B><FONT COLOR=\"#000000\" SIZE=\"+1\"><MM-List-Name> --\r\n"
+"\t<MM-List-Description></FONT></B>\r\n"
+"\t  </TD>\r\n"
+"\t</TR>\r\n"
+"\t<tr>\r\n"
+"\t    <td colspan=\"2\">\r\n"
+"\t      <p>&nbsp;\r\n"
+"\t    </td>\r\n"
+"\t  </tr>\r\n"
+"\t  <tr>\r\n"
+"\t    <TD COLSPAN=\"1\" WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\">\r\n"
+"\t      <B><FONT COLOR=\"#000000\">Lijst omschrijving <MM-List-Name></FONT></"
+"B>\r\n"
+"\t    </TD>\r\n"
+"            <TD COLSPAN=\"1\" WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\">\r\n"
+"              <MM-lang-form-start><MM-displang-box> <MM-list-langs>\r\n"
+"              <MM-form-end>\r\n"
+"    <MM-Subscribe-Form-Start>\r\n"
+"            </TD>\r\n"
+"\t  </TR>\r\n"
+"\t    <tr>\r\n"
+"\t      <td colspan=\"2\">\r\n"
+"\t\t<P><MM-List-Info></P>\r\n"
+"\t  <p> Bezoek het archief van <MM-Archive><MM-List-Name></MM-Archive>.\r\n"
+"\t      <MM-Restricted-List-Message>\r\n"
+"\t  </p>\r\n"
+"\t</TD>\r\n"
+"      </TR>\r\n"
+"      <TR>\r\n"
+"\t<TD COLSPAN=\"2\" WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\">\r\n"
+"\t  <B><FONT COLOR=\"#000000\">Mail Info <MM-List-Name></FONT></B>\r\n"
+"\t</TD>\r\n"
+"      </TR>\r\n"
+"      <tr>\r\n"
+"\t<td colspan=\"2\">\r\n"
+"\t  Om een bericht naar de lijst te sturen gebruik je dit e-mail adres:<br>"
+"\r\n"
+"\t  <A HREF=\"mailto:<MM-Posting-Addr>\"><MM-Posting-Addr></A>.\r\n"
+"\t  <p></td>\r\n"
+"      </tr>\r\n"
+"      <TR>\r\n"
+"\t<TD COLSPAN=\"2\" WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\">\r\n"
+"\t  <B><FONT COLOR=\"#000000\">Lid worden van deze lijst : <MM-List-Name></"
+"FONT></B>\r\n"
+"\t</TD>\r\n"
+"      </TR>\r\n"
+"      <tr>\r\n"
+"\t<td colspan=\"2\">\r\n"
+"\t  <P>\r\n"
+"\t    Om je aan te melden op de <MM-List-Name> Mailing lijst vul het "
+"onderstaande formulier in.\r\n"
+"\t  <MM-List-Subscription-Msg>\r\n"
+"\t  <ul>\r\n"
+"\t      <TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\"\r\n"
+"\t\tWIDTH=\"70%\" HEIGHT= \"112\">\r\n"
+"\t\t<TR>\r\n"
+"\t\t  <TD BGCOLOR=\"#dddddd\" WIDTH=\"55%\">Je EMail adres:</TD>\r\n"
+"\t\t  <TD WIDTH=\"33%\"><MM-Subscribe-Box>\r\n"
+"\t</TD>\r\n"
+"\t<TD WIDTH=\"12%\">&nbsp;</TD></TR>\r\n"
+"      <tr>\r\n"
+"        <td bgcolor=\"#dddddd\" width=\"55%\">Je voor/achter naam "
+"(Optioneel):</td>\r\n"
+"        <td width=\"33%\"><mm-fullname-box></td>\r\n"
+"\t<TD WIDTH=\"12%\">&nbsp;</TD></TR>\r\n"
+"      <TR>\r\n"
+"\t<TD COLSPAN=\"3\"><FONT SIZE=-1>Vul je eigen wachtwoord in of vul niets in "
+"zodat het systeem een wachtwoord aanmaakt.\r\n"
+"\t\t\t\t\t\t\t\t  Dit wachtwoord zal opgestuurd worden naar je opgegeven "
+"email adres.\r\n"
+"\t    <MM-Reminder>\r\n"
+"\t</TD>\r\n"
+"      </TR>  \r\n"
+"      <TR>\r\n"
+"\t<TD BGCOLOR=\"#dddddd\">Kies een wachtwoord:</TD>\r\n"
+"\t<TD><MM-New-Password-Box></TD>\r\n"
+"\t<TD>&nbsp;</TD></TR>\r\n"
+"      <TR> \r\n"
+"\t<TD BGCOLOR=\"#dddddd\">Vul het wachtwoord nogmaals in:</TD>\r\n"
+"\t<TD><MM-Confirm-Password></TD>\r\n"
+"\t<TD>&nbsp; </TD></TR>\r\n"
+"      <tr>\r\n"
+"        <TD BGCOLOR=\"#dddddd\">Welke taal wil je?</TD> \r\n"
+"        <TD> <MM-list-langs></TD>\r\n"
+"        <TD>&nbsp; </TD></TR>\r\n"
+"      <tr>\r\n"
+"\t<td>Wil je een dagelijkse digest ontvangen (Alle mail verzameld van 1 dag "
+"in 1 mailtje) in plaats van losse emailtjes?\r\n"
+"\t  </td>\r\n"
+"\t<td><MM-Undigest-Radio-Button> No\r\n"
+"\t    <MM-Digest-Radio-Button>  Yes\r\n"
+"\t</TD>\r\n"
+"      </tr>\r\n"
+"      <tr>\r\n"
+"\t<td colspan=\"3\">\r\n"
+"\t  <center><MM-Subscribe-Button></P></center>\r\n"
+"    </TABLE>\r\n"
+"    <MM-Form-End>\r\n"
+"    </ul>\r\n"
+"    </td>\r\n"
+"    </tr>\r\n"
+"    <TR>\r\n"
+"      <TD COLSPAN=\"2\" WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\">\r\n"
+"\t<a name=\"Subscribers\">\r\n"
+"        <B><FONT COLOR=\"#000000\"><MM-List-Name> gebruikers</FONT></B></a>"
+"\r\n"
+"      </TD>\r\n"
+"    </TR>\r\n"
+"    <tr>\r\n"
+"      <TD COLSPAN=\"2\" WIDTH=\"100%\">\r\n"
+"\t<MM-Roster-Form-Start>\r\n"
+"\t<MM-Roster-Option>\r\n"
+"\t    <MM-Form-End>\r\n"
+"\t  <p>\r\n"
+"\t<MM-Options-Form-Start>\r\n"
+"\t<MM-Editing-Options>\r\n"
+"\t\t<MM-Form-End>\r\n"
+"      </td>\r\n"
+"    </tr>\r\n"
+"  </table>\r\n"
+"<MM-Mailman-Footer>\r\n"
+"</BODY>\r\n"
+"</HTML>"
+
+#: templates/en/masthead.txt:1
+msgid ""
+"Send %(real_name)s mailing list submissions to\n"
+"\t%(got_list_email)s\n"
+"\n"
+"To subscribe or unsubscribe via the World Wide Web, visit\n"
+"\t%(got_listinfo_url)s\n"
+"or, via email, send a message with subject or body 'help' to\n"
+"\t%(got_request_email)s\n"
+"\n"
+"You can reach the person managing the list at\n"
+"\t%(got_owner_email)s\n"
+"\n"
+"When replying, please edit your Subject line so it is more specific than\n"
+"\"Re: Contents of %(real_name)s digest...\"\n"
+msgstr ""
+"Stuur %(real_name)s mailinglijst inschrijving naar\r\n"
+"\t%(got_list_email)s\r\n"
+"\r\n"
+"Om lid te worden of uit te schrijven via internet, bezoek\r\n"
+"\t%(got_listinfo_url)s\r\n"
+"of, via e-mail, stuur een bericht met als onderwerp of tekst het woord "
+"'help' naar\r\n"
+"\t%(got_request_email)s\r\n"
+"\r\n"
+"U kunt de persoon die de lijst bijhoudt bereiken op\r\n"
+"\t%(got_owner_email)s\r\n"
+"\r\n"
+"Als u een bericht beantwoord (reply) bewerk dan uw onderwerp regel zo dat "
+"het meer\r\n"
+"specifiek is dan \"Re: Contents of %(real_name)s digest...\"\r\n"
+
+#: templates/en/newlist.txt:1
+msgid ""
+"The mailing list `%(listname)s' has just been created for you.  The\n"
+"following is some basic information about your mailing list.\n"
+"\n"
+"Your mailing list password is:\n"
+"\n"
+"    %(password)s\n"
+"\n"
+"You need this password to configure your mailing list.  You also need\n"
+"it to handle administrative requests, such as approving mail if you\n"
+"choose to run a moderated list.\n"
+"\n"
+"You can configure your mailing list at the following web page:\n"
+"\n"
+"    %(admin_url)s\n"
+"\n"
+"The web page for users of your mailing list is: \n"
+"\n"
+"    %(listinfo_url)s\n"
+"\n"
+"You can even customize these web pages from the list configuration\n"
+"page.  However, you do need to know HTML to be able to do this.\n"
+"\n"
+"There is also an email-based interface for users (not administrators)\n"
+"of your list; you can get info about using it by sending a message\n"
+"with just the word `help' as subject or in the body, to:\n"
+"\n"
+"    %(requestaddr)s\n"
+"\n"
+"To unsubscribe a user: from the mailing list 'listinfo' web page,\n"
+"click on or enter the user's email address as if you were that user.\n"
+"Where that user would put in their password to unsubscribe, put in\n"
+"your admin password.  You can also use your password to change\n"
+"member's options, including digestification, delivery disabling, etc.\n"
+"\n"
+"Please address all questions to %(siteowner)s.\n"
+msgstr ""
+"De mailinglijst `%(listname)s' is zojuist voor u aangemaakt. Hier volgt\r\n"
+"wat basis informatie over uw mailinglijst.\r\n"
+"\r\n"
+"Uw mailinglijst paswoord is:\r\n"
+"\r\n"
+"    %(password)s\r\n"
+"\r\n"
+"U heeft dit paswoord nodig om uw mailinglijst te configureren. Ook heeft u"
+"\r\n"
+"dit nodig om enkele administratieve handelingen te kunnen verrichten, zoals"
+"\r\n"
+"berichten toelaten als de lijst op moderated staat.\r\n"
+"\r\n"
+"U kunt uw mailinglijst configureren op de volgende web pagina:\r\n"
+"\r\n"
+"    %(admin_url)s\r\n"
+"\r\n"
+"De web pagina voor de leden van uw mailinglijst is:\r\n"
+"\r\n"
+"    %(listinfo_url)s\r\n"
+"\r\n"
+"U kunt zelfs deze webpagina's aanpassen van de lijst configuratie-pagina.\r\n"
+"Hiervoor heeft u HTML-kennis nodig.\r\n"
+"\r\n"
+"Voor de leden is er ook de mogelijkheid om configuraties via e-mail te "
+"verrichten.\r\n"
+"Informatie hierover kunt u ontvangen door een bericht te sturen met het woord"
+"\r\n"
+"'help' als onderwerp of in de tekst, naar:\r\n"
+"\r\n"
+"    %(requestaddr)s\r\n"
+"\r\n"
+"Om een lid uit te schrijven: van de mailinglijst 'listinfo' web pagina,\r\n"
+"klik op of vul het desbetreffende e-mail adres in.\r\n"
+"Op de plaats waar het lid zijn paswoord in moet vullen om uit te schrijven, "
+"vul\r\n"
+"daar uw admin. paswoord in. U kunt ook uw paswoord gebruiken om leden-opties "
+"te\r\n"
+"wijzigen, zoals: op digest zetten, op no-mail zetten, etc.\r\n"
+"\r\n"
+"Alle vragen aub sturen naar %(siteowner)s.\r\n"
+
+#: templates/en/nomoretoday.txt:1
+msgid ""
+"We have received a message from your address `%(sender)s' requesting\n"
+"an automated response from the %(listname)s mailing list.  We have\n"
+"seen %(num)s such messages from you today.  In order to avoid problems\n"
+"such as mail loops between email robots, we will not be sending you\n"
+"any further email responses today.  Please try again tomorrow.\n"
+"\n"
+"If you believe this message is in error, or if you have any questions,\n"
+"please contact the list owner at %(owneremail)s.\n"
+msgstr ""
+
+#: templates/en/options.html:1
+msgid ""
+"<html>\n"
+"<head>\n"
+"    <link rel=\"SHORTCUT ICON\" href=\"<mm-favicon>\">\n"
+"    <title><MM-Presentable-User> membership configuration for <MM-List-"
+"Name>\n"
+"    </title>\n"
+"</head>\n"
+"<BODY BGCOLOR=\"#ffffff\">\n"
+"    <TABLE WIDTH=\"100%\" BORDER=\"0\" CELLSPACING=\"0\" CELLPADDING=\"5\">\n"
+"    <TR><TD WIDTH=\"100%\" BGCOLOR=\"#99CCFF\"><B>\n"
+"        <FONT COLOR=\"#000000\" SIZE=+1>\n"
+"        <MM-List-Name> mailing list membership configuration for\n"
+"        <MM-Presentable-User>\n"
+"        </FONT></B></TD></TR>\n"
+"    </TABLE>\n"
+"<p>\n"
+"<table width=\"100%\" border=\"0\" cellspacing=\"5\" cellpadding=\"5\">\n"
+"    <tr><td>\n"
+"        <b><MM-Presentable-User></b>'s subscription status,\n"
+"        password, and options for the <MM-List-Name> mailing list.\n"
+"        </td><td><MM-Form-Start><mm-logout-button><MM-Form-End></td>\n"
+"    </tr><tr>\n"
+"        <td colspan=\"2\">\n"
+"        <MM-Case-Preserved-User>\n"
+"\n"
+"        <MM-Disabled-Notice>\n"
+"\n"
+"        <p><mm-results>\n"
+"        </td>\n"
+"    </tr>\n"
+"</table>\n"
+"\n"
+"<MM-Form-Start>\n"
+"<p>\n"
+"<TABLE WIDTH=\"100%\" BORDER=\"0\" CELLSPACING=\"0\" CELLPADDING=\"5\">\n"
+"    <TR><TD WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\" colspan=\"2\">\n"
+"        <FONT COLOR=\"#000000\">\n"
+"        <B>Changing your <MM-List-Name> membership information</B>\n"
+"        </FONT></TD></TR>\n"
+"    <tr><td colspan=\"2\">You can change the address that you are "
+"subscribed\n"
+"        to the mailing list with by entering the new address in the\n"
+"        fields below.  Note that a confirmation email will be sent to\n"
+"        the new address, and the change must be confirmed before it is\n"
+"        processed.\n"
+"\n"
+"        <p>Confirmations time out after about <mm-pending-days>.\n"
+"\n"
+"        <p>You can also optionally set or change your real name\n"
+"        (i.e. <em>John Smith</em>).\n"
+"\n"
+"        <p>If you want to make the membership changes for all the\n"
+"        lists that you are subscribed to at <mm-host>, turn on the\n"
+"        <em>Change globally</em> check box.\n"
+"\n"
+"        </td></tr>\n"
+"    <tr><td><center>\n"
+"        <table border=\"0\" cellspacing=\"2\" cellpadding=\"2\" width=\"80%"
+"\" cols=\"2\">\n"
+"        <tr><td bgcolor=\"#dddddd\"><div align=\"right\">New address:</div></"
+"td>\n"
+"            <td><mm-new-address-box></td>\n"
+"            </tr>\n"
+"        <tr><td bgcolor=\"#dddddd\"><div align=\"right\">Again to\n"
+"            confirm:</div></td> \n"
+"            <td><mm-confirm-address-box></td>\n"
+"            </tr>\n"
+"        </tr></table></center>\n"
+"        </td>\n"
+"        <td><center>\n"
+"        <table border=\"0\" cellspacing=\"2\" cellpadding=\"2\" width=\"80%"
+"\" cols=\"2\">\n"
+"            <tr><td bgcolor=\"#dddddd\"><div align=\"right\">Your name\n"
+"            (optional):</div></td>\n"
+"            <td><mm-fullname-box></td>\n"
+"            </tr>\n"
+"        </table></center>\n"
+"        </td>\n"
+"        </tr>\n"
+"    <tr><td colspan=\"2\"><center><mm-change-address-button>\n"
+"        <p><mm-global-change-of-address>Change globally</center></td>\n"
+"    </tr>\n"
+"</table>\n"
+"\n"
+"<p>\n"
+"<TABLE WIDTH=\"100%\" BORDER=\"0\" CELLSPACING=\"5\" CELLPADDING=\"5\">\n"
+"    <TR><TD WIDTH=\"50%\" BGCOLOR=\"#FFF0D0\"><FONT COLOR=\"#000000\">\n"
+"        <B>Unsubscribing from <MM-List-Name></B></td>\n"
+"\n"
+"        <TD WIDTH=\"50%\" BGCOLOR=\"#FFF0D0\"><FONT COLOR=\"#000000\">\n"
+"        <B>Your other <MM-Host> subscriptions</B>\n"
+"        </FONT></TD></TR>\n"
+"\n"
+"    <tr><td>\n"
+"        Turn on the confirmation checkbox and hit this button to\n"
+"        unsubscribe from this mailing list.  <strong>Warning:</strong>\n"
+"        This action will be taken immediately!\n"
+"        <p>\n"
+"        <center><MM-Unsubscribe-Button></center></td>\n"
+"    <td>\n"
+"        You can view a list of all the other mailing lists at\n"
+"        <mm-host> for which you are a member.  Use this if you want to\n"
+"        make the same membership option changes to this other\n"
+"        subscriptions.\n"
+"\n"
+"        <p>\n"
+"        <center><MM-Other-Subscriptions-Submit></center>\n"
+"        </TD></TR>\n"
+"</table>\n"
+"\n"
+"<TABLE WIDTH=\"100%\" BORDER=\"0\" CELLSPACING=\"0\" CELLPADDING=\"5\">\n"
+"    <TR><TD COLSPAN=2 WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\"><FONT COLOR="
+"\"#000000\">\n"
+"        <B>Your <MM-List-Name> Password</B>\n"
+"        </FONT></TD></TR>\n"
+"\n"
+"    <tr valign=\"TOP\"><td WIDTH=\"50%\">\n"
+"        <a name=reminder>\n"
+"        <center>\n"
+"        <h3>Forgotten Your Password?</h3>\n"
+"        </center>\n"
+"        Click this button to have your password emailed to your\n"
+"        membership address.\n"
+"        <p><MM-Umbrella-Notice>\n"
+"        <center>\n"
+"        <MM-Email-My-Pw>\n"
+"        </center>\n"
+"        </td>\n"
+"\n"
+"    <td WIDTH=\"50%\">\n"
+"        <a name=changepw>\n"
+"        <center>\n"
+"        <h3>Change Your Password</h3>\n"
+"        <TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\" WIDTH=\"70%"
+"\" COLS=2>\n"
+"            <TR><TD BGCOLOR=\"#dddddd\"><div align=\"right\">New\n"
+"                password:</div></TD>\n"
+"                <TD><MM-New-Pass-Box></TD>\n"
+"                </TR>\n"
+"            <TR>\n"
+"                <TD BGCOLOR=\"#dddddd\"><div align=\"right\">Again to\n"
+"                confirm:</div></TD>\n"
+"                <TD><MM-Confirm-Pass-Box></TD>\n"
+"            </TR>\n"
+"        </table>\n"
+"\n"
+"        <MM-Change-Pass-Button>\n"
+"        <p><center><mm-global-pw-changes-button>Change globally.\n"
+"        </center>\n"
+"</TABLE>\n"
+"\n"
+"<p>\n"
+"<TABLE WIDTH=\"100%\" BORDER=\"0\" CELLSPACING=\"0\" CELLPADDING=\"5\">\n"
+"    <TR><TD WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\"><FONT COLOR=\"#000000\">\n"
+"        <B>Your <MM-List-Name> Subscription Options</B>\n"
+"        </FONT></TD></TR>\n"
+"</table>\n"
+"\n"
+"<p>\n"
+"<i><strong>Current values are checked.</strong></i>\n"
+"\n"
+"<p>Note that some of the options have a <em>Set globally</em>\n"
+"checkbox.  Checking this field will cause the changes to be made to\n"
+"every mailing list that you are a member of on <mm-host>.  Click on\n"
+"<em>List my other subscriptions</em> above to see which other mailing\n"
+"lists you are subscribed to.\n"
+"<p>\n"
+"<TABLE BORDER=\"0\" CELLSPACING=\"3\" CELLPADDING=\"4\" WIDTH=\"100%\">\n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\n"
+"        <a name=\"disable\">\n"
+"        <strong>Mail delivery</strong></a><p>\n"
+"        Set this option to <em>Enabled</em> to receive messages posted\n"
+"        to this mailing list.  Set it to <em>Disabled</em> if you want\n"
+"        to stay subscribed, but don't want mail delivered to you for a\n"
+"        while (e.g. you're going on vacation).  If you disable mail\n"
+"        delivery, don't forget to re-enable it when you come back; it\n"
+"        will not be automatically re-enabled.\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <mm-delivery-enable-button>Enabled<br>\n"
+"        <mm-delivery-disable-button>Disabled<p>\n"
+"        <mm-global-deliver-button><i>Set globally</i>\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\n"
+"        <strong>Set Digest Mode</strong><p>\n"
+"        If you turn digest mode on, you'll get posts bundled together\n"
+"        (usually one per day but possibly more on busy lists), instead\n"
+"        of singly when they're sent.  If digest mode is changed from\n"
+"        on to off, you may receive one last digest.\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <MM-Undigest-Radio-Button>Off<br>\n"
+"        <MM-Digest-Radio-Button>On\n"
+"        </td></tr>\n"
+"        \n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\n"
+"        <strong>Get MIME or Plain Text Digests?</strong><p>\n"
+"        Your mail reader may or may not support MIME digests.  In\n"
+"        general MIME digests are preferred, but if you have a problem\n"
+"        reading them, select plain text digests.\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <MM-Mime-Digests-Button>MIME<br>\n"
+"        <MM-Plain-Digests-Button>Plain Text<p>\n"
+"        <mm-global-mime-button><i>Set globally</i>\n"
+"        </td></tr>\n"
+"        \n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\n"
+"        <strong>Receive your own posts to the list?</strong><p>\n"
+"        Ordinarily, you will get a copy of every message you post to\n"
+"        the list.  If you don't want to receive this copy, set this\n"
+"        option to <em>No</em>.\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <mm-dont-receive-own-mail-button>No<br>\n"
+"        <mm-receive-own-mail-button>Yes\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\n"
+"        <strong>Receive acknowledgement mail when you send mail to\n"
+"        the list?</strong><p>\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <mm-dont-ack-posts-button>No<br>\n"
+"        <mm-ack-posts-button>Yes\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><td bgcolor=\"#cccccc\">\n"
+"        <strong>Get password reminder email for this list?</strong><p>\n"
+"        Once a month, you will get an email containing a password\n"
+"        reminder for every list at this host to which you are\n"
+"        subscribed.  You can turn this off on a per-list basis by\n"
+"        selecting <em>No</em> for this option.  If you turn off\n"
+"        password reminders for all the lists you are subscribed to, no\n"
+"        reminder email will be sent to you.\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <mm-dont-get-password-reminder-button>No<br>\n"
+"        <mm-get-password-reminder-button>Yes<p>\n"
+"        <mm-global-remind-button><i>Set globally</i>\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\n"
+"        <strong>Conceal yourself from subscriber list?</strong><p>\n"
+"        When someone views the list membership, your email address is\n"
+"        normally shown (in an obscured fashion to thwart spam\n"
+"        harvesters).  If you do not want your email address to show up\n"
+"        on this membership roster at all, select <em>Yes</em> for this "
+"option.\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <MM-Public-Subscription-Button>No<br>\n"
+"        <MM-Hide-Subscription-Button>Yes\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\n"
+"        <strong>What language do you prefer?</strong><p>\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <MM-list-langs>\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><td bgcolor=\"#cccccc\">\n"
+"        <strong>Which topic categories would you like to subscribe\n"
+"                to?</strong><p>\n"
+"                By selecting one or more topics, you can filter the\n"
+"                traffic on the mailing list, so as to receive only a\n"
+"                subset of the messages.  If a message matches one of\n"
+"                your selected topics, then you will get the message,\n"
+"                otherwise you will not.\n"
+"\n"
+"                <p>If a message does not match any topic, the delivery\n"
+"                rule depends on the setting of the option below.  If\n"
+"                you do not select any topics of interest, you will get\n"
+"                all the messages sent to the mailing list.\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <mm-topics>\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><td bgcolor=\"#cccccc\">\n"
+"        <strong>Do you want to receive messages that do not match any\n"
+"                topic filter?</strong><p>\n"
+"\n"
+"                This option only takes effect if you've subscribed to\n"
+"                at least one topic above.  It describes what the\n"
+"                default delivery rule is for messages that don't match\n"
+"                any topic filter.  Selecting <em>No</em> says that if\n"
+"                the message does not match any topic filters, then you\n"
+"                won't get the message, while selecting <em>Yes</em>\n"
+"                says to deliver such non-matching messages to you.\n"
+"\n"
+"                <p>If no topics of interest are selected above, then\n"
+"                you will receive every message sent to the mailing\n"
+"                list.\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <mm-suppress-nonmatching-topics>No<br>\n"
+"        <mm-receive-nonmatching-topics>Yes\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><td bgcolor=\"#cccccc\">\n"
+"        <strong>Avoid duplicate copies of messages?</strong><p>\n"
+"\n"
+"                When you are listed explicitly in the <tt>To:</tt> or\n"
+"                <tt>Cc:</tt> headers of a list message, you can opt to\n"
+"                not receive another copy from the mailing list.\n"
+"                Select <em>Yes</em> to avoid receiving copies from the\n"
+"                mailing list; select <em>No</em> to receive copies.\n"
+"\n"
+"                <p>If the list has member personalized messages\n"
+"                enabled, and you elect to receive copies, every copy\n"
+"                will have a <tt>X-Mailman-Copy: yes</tt> header added\n"
+"                to it.\n"
+"\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <mm-receive-duplicates-button>No<br>\n"
+"        <mm-dont-receive-duplicates-button>Yes<p>\n"
+"        <mm-global-nodupes-button><i>Set globally</i>\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><TD colspan=\"2\">\n"
+"        <center><MM-options-Submit-button></center>\n"
+"        </td></tr>\n"
+"\n"
+"</table>\n"
+"</center>\n"
+"<p>\n"
+"<MM-Form-End>\n"
+"\n"
+"<MM-Mailman-Footer>\n"
+"</body>\n"
+"</html>\n"
+msgstr ""
+"<!-- $Revision: 7626 $ -->\r\n"
+"<html>\r\n"
+"<head>\r\n"
+"    <link rel=\"SHORTCUT ICON\" href=\"<mm-favicon>\">\r\n"
+"    <title><MM-Presentable-User> instellingen voor <MM-List-Name> mailing "
+"lijst\r\n"
+"    </title>\r\n"
+"</head>\r\n"
+"<BODY BGCOLOR=\"#ffffff\">\r\n"
+"    <TABLE WIDTH=\"100%\" BORDER=\"0\" CELLSPACING=\"0\" CELLPADDING=\"5\">"
+"\r\n"
+"    <TR><TD WIDTH=\"100%\" BGCOLOR=\"#99CCFF\"><B>\r\n"
+"        <FONT COLOR=\"#000000\" SIZE=+1>\r\n"
+"        <MM-List-Name> mailing lijst instellingen voor <MM-Presentable-User>"
+"\r\n"
+"        </FONT></B></TD></TR>\r\n"
+"    </TABLE>\r\n"
+"<p>\r\n"
+"<table width=\"100%\" border=\"0\" cellspacing=\"5\" cellpadding=\"5\">\r\n"
+"    <tr><td>\r\n"
+"        <b><MM-Presentable-User></b>'s Aanmeld status,\r\n"
+"        wachtwoord, en andere opties voor <MM-List-Name> mailing lijst.\r\n"
+"        </td><td><MM-Form-Start><mm-logout-button><MM-Form-End></td>\r\n"
+"    </tr><tr>\r\n"
+"        <td colspan=\"2\">\r\n"
+"        <MM-Case-Preserved-User>\r\n"
+"\r\n"
+"        <MM-Disabled-Notice>\r\n"
+"\r\n"
+"        <p><mm-results>\r\n"
+"        </td>\r\n"
+"    </tr>\r\n"
+"</table>\r\n"
+"\r\n"
+"<MM-Form-Start>\r\n"
+"<p>\r\n"
+"<TABLE WIDTH=\"100%\" BORDER=\"0\" CELLSPACING=\"0\" CELLPADDING=\"5\">\r\n"
+"    <TR><TD WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\" colspan=\"2\">\r\n"
+"        <FONT COLOR=\"#000000\">\r\n"
+"        <B>Wijzing je <MM-List-Name> lidmaatschap informatie</B>\r\n"
+"        </FONT></TD></TR>\r\n"
+"    <tr><td colspan=\"2\">\r\n"
+"        Hier kun je je email adres veranderen. Je krijgt een nieuw emailtje "
+"toegestuurt \r\n"
+"        op je nieuwe email adres voor bevestiging. Je moet deze bevestigen "
+"voordat het nieuwe \r\n"
+"        email adres aktief wordt.\r\n"
+"        \r\n"
+"        <p>Je moet de email adres wijziging bevestigen binnen <mm-pending-"
+"days>.\r\n"
+"\r\n"
+"        <p>Je kan ook optioneel je naam invoeren (vb. <em>John Smith</em>)."
+"\r\n"
+"\r\n"
+"        <p>Wil je al je email adressen in 1 keer op <mm-host> veranderen, "
+"dan het vinkje aanzetten bij \r\n"
+"        <em>Wijzig in alle lijsten</em> keuze.\r\n"
+"\r\n"
+"        </td></tr>\r\n"
+"    <tr><td><center>\r\n"
+"        <table border=\"0\" cellspacing=\"2\" cellpadding=\"2\" width=\"80%"
+"\" cols=\"2\">\r\n"
+"        <tr><td bgcolor=\"#dddddd\"><div align=\"right\">Nieuw email adres:</"
+"div></td>\r\n"
+"            <td><mm-new-address-box></td>\r\n"
+"            </tr>\r\n"
+"        <tr><td bgcolor=\"#dddddd\"><div align=\"right\">Nogmaals het nieuwe "
+"adres:</div></td> \r\n"
+"            <td><mm-confirm-address-box></td>\r\n"
+"            </tr>\r\n"
+"        </tr></table></center>\r\n"
+"        </td>\r\n"
+"        <td><center>\r\n"
+"        <table border=\"0\" cellspacing=\"2\" cellpadding=\"2\" width=\"80%"
+"\" cols=\"2\">\r\n"
+"            <tr><td bgcolor=\"#dddddd\"><div align=\"right\">Je naam "
+"(optioneel):</div></td>\r\n"
+"            <td><mm-fullname-box></td>\r\n"
+"            </tr>\r\n"
+"        </table></center>\r\n"
+"        </td>\r\n"
+"        </tr>\r\n"
+"    <tr><td colspan=\"2\"><center><mm-change-address-button>\r\n"
+"        <p><mm-global-change-of-address>Wijzig in alle lijsten</center></td>"
+"\r\n"
+"    </tr>\r\n"
+"</table>\r\n"
+"\r\n"
+"<p>\r\n"
+"<TABLE WIDTH=\"100%\" BORDER=\"0\" CELLSPACING=\"5\" CELLPADDING=\"5\">\r\n"
+"    <TR><TD WIDTH=\"50%\" BGCOLOR=\"#FFF0D0\"><FONT COLOR=\"#000000\">\r\n"
+"        <B>Afmelden van <MM-List-Name> mailing lijst</B></td>\r\n"
+"\r\n"
+"        <TD WIDTH=\"50%\" BGCOLOR=\"#FFF0D0\"><FONT COLOR=\"#000000\">\r\n"
+"        <B>Je andere aangemelde <MM-Host> mailing lijsten</B>\r\n"
+"        </FONT></TD></TR>\r\n"
+"\r\n"
+"    <tr><td>\r\n"
+"        Zet het vinkje aan (onder de knop) om je af te melden bij deze "
+"mailing lijst. \r\n"
+"        En druk op de knop (hieronder)  <strong>Waarschuwing:</strong>\r\n"
+"        Je word meteen van de lijst verwijderd.\r\n"
+"        <p>\r\n"
+"        <center>\r\n"
+"        <p><MM-Unsubscribe-Button></p>\r\n"
+"        </center></td>\r\n"
+"    <td>\r\n"
+"        Bekijk al alle lijsten waar je je aangemeld hebt op <mm-host>. \r\n"
+"        Als je een andere lijst heb geselecteerd kun je daar ook eventueel "
+"opties wijzigen.\r\n"
+"        <p>\r\n"
+"        <center>\r\n"
+"        <p><MM-Other-Subscriptions-Submit></p>\r\n"
+"        </center>\r\n"
+"        </TD></TR>\r\n"
+"</table>\r\n"
+"\r\n"
+"<TABLE WIDTH=\"100%\" BORDER=\"0\" CELLSPACING=\"0\" CELLPADDING=\"5\">\r\n"
+"    <TR><TD COLSPAN=2 WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\"><FONT COLOR="
+"\"#000000\">\r\n"
+"        <B>Je <MM-List-Name> Wachtwoord</B>\r\n"
+"        </FONT></TD></TR>\r\n"
+"\r\n"
+"    <tr valign=\"TOP\"><td WIDTH=\"50%\">\r\n"
+"        <a name=reminder>\r\n"
+"        <center>\r\n"
+"        <h3>Je wachtwoord vergeten?</h3>\r\n"
+"        </center>\r\n"
+"        Druk op de knop, en je wachtwoord wordt toegestuurd via email.\r\n"
+"        <p><MM-Umbrella-Notice>\r\n"
+"        <center>\r\n"
+"        <p>\r\n"
+"        <MM-Email-My-Pw>\r\n"
+"        </p>\r\n"
+"        </center>\r\n"
+"        </td>\r\n"
+"\r\n"
+"    <td WIDTH=\"50%\">\r\n"
+"        <a name=changepw>\r\n"
+"        <center>\r\n"
+"        <h3>Wijzig je wachtwoord</h3>\r\n"
+"        <TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\" WIDTH=\"70%"
+"\" COLS=2>\r\n"
+"            <TR><TD BGCOLOR=\"#dddddd\"><div align=\"right\">Nieuw "
+"Wachtwoord:</div></TD>\r\n"
+"                <TD><MM-New-Pass-Box></TD>\r\n"
+"                </TR>\r\n"
+"            <TR>\r\n"
+"                <TD BGCOLOR=\"#dddddd\"><div align=\"right\">Nogmaals het "
+"nieuwe wachtwoord:</div></TD>\r\n"
+"                <TD><MM-Confirm-Pass-Box></TD>\r\n"
+"            </TR>\r\n"
+"        </table>\r\n"
+"\r\n"
+"        <MM-Change-Pass-Button>\r\n"
+"        <p><center><mm-global-pw-changes-button>Wijzig het voor alle mailing "
+"lijsten\r\n"
+"        </center>\r\n"
+"</TABLE>\r\n"
+"\r\n"
+"<p>\r\n"
+"<TABLE WIDTH=\"100%\" BORDER=\"0\" CELLSPACING=\"0\" CELLPADDING=\"5\">\r\n"
+"    <TR><TD WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\"><FONT COLOR=\"#000000\">\r\n"
+"        <B>Je <MM-List-Name> mailing lijst aanmeldings optie's</B>\r\n"
+"        </FONT></TD></TR>\r\n"
+"</table>\r\n"
+"\r\n"
+"<p>\r\n"
+"<i><strong>De optie's zoals ze nu staan zijn aktief.</strong></i>\r\n"
+"<br><br>\r\n"
+"Notitie: Sommige opties hebben de instelling <em>Globaal</em>\r\n"
+"optie.  Als je deze optie aanvinkt zal de optie ook ingesteld worden op alle "
+"andere \r\n"
+"mailing lijsten waar je lid van bent.\r\n"
+"<p>\r\n"
+"<TABLE BORDER=\"0\" CELLSPACING=\"3\" CELLPADDING=\"4\" WIDTH=\"100%\">\r\n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\r\n"
+"        <a name=\"disable\">\r\n"
+"        <strong>Mail Bezorging</strong></a><p>\r\n"
+"        Zet deze optie op <em>Aan</em> om berichten die worden gepost naar "
+"de lijst \r\n"
+"        te ontvangen.  Zet de optie op <em>Uit</em> om de bezorging van post "
+"\r\n"
+"        tijdelijk uit te schakelen. Bijvoorbeeld als je op vakantie gaat of "
+"om \r\n"
+"        andere redenen. Vergeet niet om weer de optie op <em>Aan</em> te "
+"zetten als \r\n"
+"        je weer post wilt ontvangen.\r\n"
+"        </td><td bgcolor=\"#cccccc\">\r\n"
+"        <mm-delivery-enable-button>Aan<br>\r\n"
+"        <mm-delivery-disable-button>Uit<p>\r\n"
+"        <mm-global-deliver-button><i>Globaal</i>\r\n"
+"        </td></tr>\r\n"
+"\r\n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\r\n"
+"        <strong>Digest</strong><p>\r\n"
+"        Als je deze optie op <em>Aan</em> zet dan krijg je de mail van 1 dag "
+"gebundeld \r\n"
+"        in 1 bericht. Zet je deze optie op <em>Uit</em> dan krijg je elk "
+"emailtje wat gestuurd \r\n"
+"        wordt naar de lijst appart.\r\n"
+"        </td><td bgcolor=\"#cccccc\">\r\n"
+"        <MM-Undigest-Radio-Button>Uit<br>\r\n"
+"        <MM-Digest-Radio-Button>Aan\r\n"
+"        </td></tr>\r\n"
+"        \r\n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\r\n"
+"        <strong>HTML of platte tekst Digests?</strong><p>\r\n"
+"        Als je op digest mode staat kun je keizen of je HTML of platte text "
+"berichten wilt \r\n"
+"        ontvangen.\r\n"
+"        </td><td bgcolor=\"#cccccc\">\r\n"
+"        <MM-Mime-Digests-Button>HTML<br>\r\n"
+"        <MM-Plain-Digests-Button>Platte tekst<p>\r\n"
+"        <mm-global-mime-button><i>Globaal</i>\r\n"
+"        </td></tr>\r\n"
+"        \r\n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\r\n"
+"        <strong>Ontvang je eigen verstuurde berichten naar de lijst</"
+"strong><p>\r\n"
+"        Normaal gesproken krijg je je eigen verstuurde mail terug, als je "
+"dit niet wilt, \r\n"
+"        stel de optie in op <em>Nee</em>.\r\n"
+"        </td><td bgcolor=\"#cccccc\">\r\n"
+"        <mm-dont-receive-own-mail-button>Nee<br>\r\n"
+"        <mm-receive-own-mail-button>Ja\r\n"
+"        </td></tr>\r\n"
+"\r\n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\r\n"
+"        <strong>Ontvangst bevestiging?</strong><p>\r\n"
+"        Als je een ontvangst bevestiging wilt voor elk bericht wat je stuurt "
+"\r\n"
+"        aan de lijst zet je de optie op <em>Aan</em>.\r\n"
+"        </td><td bgcolor=\"#cccccc\">\r\n"
+"        <mm-dont-ack-posts-button>Uit<br>\r\n"
+"        <mm-ack-posts-button>Aan\r\n"
+"        </td></tr>\r\n"
+"\r\n"
+"    <tr><td bgcolor=\"#cccccc\">\r\n"
+"        <strong>Wachtwoord herinneringen</strong><p>\r\n"
+"        Op de 1ste van de elke maand wordt er een herinnering gestuurd per "
+"email. \r\n"
+"        In dit emailtje staat je wachtwoord ter herinnering. Om dit uit te "
+"zetten als je dit niet wilt ontvangen zet je de optie op \r\n"
+"        <em>Nee</em>\r\n"
+"        </td><td bgcolor=\"#cccccc\">\r\n"
+"        <mm-dont-get-password-reminder-button>Nee<br>\r\n"
+"        <mm-get-password-reminder-button>Ja<p>\r\n"
+"        <mm-global-remind-button><i>Globaal</i>\r\n"
+"        </td></tr>\r\n"
+"\r\n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\r\n"
+"        <strong>Ontzichtbaar</strong><p>\r\n"
+"        Je kan jezelf op ontzichtbaar zetten op de ledenlijst. Andere leden "
+"zien dan niet dat je lid bent \r\n"
+"        van de mailing lijst. Zet de optie op <em>Ja</em> voor ontzichtbaar "
+"op de ledenlijst.\r\n"
+"        </td><td bgcolor=\"#cccccc\">\r\n"
+"        <MM-Public-Subscription-Button>Nee<br>\r\n"
+"        <MM-Hide-Subscription-Button>Ja\r\n"
+"        </td></tr>\r\n"
+"\r\n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\r\n"
+"        <strong>Welke taal wil je?</strong><p>\r\n"
+"        Deze taal instelling geld voor alle systeem berichten en webpagina's."
+"\r\n"
+"        </td><td bgcolor=\"#cccccc\">\r\n"
+"        <MM-list-langs>\r\n"
+"        </td></tr>\r\n"
+"\r\n"
+"    <tr><td bgcolor=\"#cccccc\">\r\n"
+"        <strong>Onderwerp categorie selectie</strong><p>\r\n"
+"                Bij het selecteren van 1 of meer onderwerpen, kun je "
+"berichten filteren. \r\n"
+"                Je krijgt dan alleen deze berichten toegestuurd, alle andere "
+"berichten gestuurd naar deze \r\n"
+"                lijst zul je dan niet ontvangen.\r\n"
+"                </td><td bgcolor=\"#cccccc\">\r\n"
+"        <mm-topics>\r\n"
+"        </td></tr>\r\n"
+"\r\n"
+"    <tr><td bgcolor=\"#cccccc\">\r\n"
+"        <strong>Wil je berichten ontvangen die niet overeen komen met "
+"bovenstaande onderwerp filters?</strong><p>\r\n"
+"                Optie <em>Nee</em> zorgt ervoor dat je geen berichten "
+"ontvangt die niet overeen komen met \r\n"
+"                de ingestelde Onderwerp filter. Optie <em>Ja</em> \r\n"
+"                bezorgd ook alle berichten die niet aan de onderwerp filter "
+"voldoet.\r\n"
+"                </td><td bgcolor=\"#cccccc\">\r\n"
+"        <mm-suppress-nonmatching-topics>Nee<br>\r\n"
+"        <mm-receive-nonmatching-topics>Ja\r\n"
+"        </td></tr>\r\n"
+"\r\n"
+"    <tr><td bgcolor=\"#cccccc\">\r\n"
+"        <strong>Onderschep dubbele berichten gestuurd naar de lijst?</"
+"strong><p>\r\n"
+"\r\n"
+"                Als je ook persoonlijk geadresseerd bent in <tt>Aan:</tt> of"
+"\r\n"
+"                <tt>Cc:</tt> headers van een bericht, dan kan je kiezen om "
+"\r\n"
+"                geen dubbele berichten te ontvangen. \r\n"
+"                Kies de optie <em>Ja</em> om dubbele berichten te voorkomen. "
+"\r\n"
+"                Selecteer <em>Nee</em> om dubbele berichten te ontvangen.\r\n"
+"        </td><td bgcolor=\"#cccccc\">\r\n"
+"        <mm-receive-duplicates-button>Nee<br>\r\n"
+"        <mm-dont-receive-duplicates-button>Ja<p>\r\n"
+"        <mm-global-nodupes-button><i>Globaal</i>\r\n"
+"        </td></tr>\r\n"
+"\r\n"
+"    <tr><TD colspan=\"2\">\r\n"
+"        <center>\r\n"
+"        <p><MM-options-Submit-button></p>\r\n"
+"        </center>\r\n"
+"        </td></tr>\r\n"
+"\r\n"
+"</table>\r\n"
+"</center>\r\n"
+"<p>\r\n"
+"<MM-Form-End>\r\n"
+"\r\n"
+"<MM-Mailman-Footer>\r\n"
+"</body>\r\n"
+"</html>"
+
+#: templates/en/postack.txt:1
+msgid ""
+"Your message entitled\n"
+"\n"
+"    %(subject)s\n"
+"\n"
+"was successfully received by the %(listname)s mailing list.\n"
+"\n"
+"List info page: %(listinfo_url)s\n"
+"Your preferences: %(optionsurl)s\n"
+msgstr ""
+"Uw bericht getiteld\r\n"
+"\r\n"
+"    %(subject)s\r\n"
+"\r\n"
+"is goed ontvangen door de %(listname)s mailing lijst.\r\n"
+"\r\n"
+"Lijst info pagina: %(listinfo_url)s\r\n"
+
+#: templates/en/postauth.txt:1
+msgid ""
+"As list administrator, your authorization is requested for the\n"
+"following mailing list posting:\n"
+"\n"
+"    List:    %(listname)s@%(hostname)s\n"
+"    From:    %(sender)s\n"
+"    Subject: %(subject)s\n"
+"    Reason:  %(reason)s\n"
+"\n"
+"At your convenience, visit:\n"
+"\n"
+"    %(admindb_url)s\n"
+"        \n"
+"to approve or deny the request.\n"
+msgstr ""
+"Als lijst administrator, wordt uw goedkeuring gevraagd voor de\r\n"
+"volgende mailinglijst zending:\r\n"
+"\r\n"
+"    Lijst:    %(listname)s@%(hostname)s\r\n"
+"    Van :     %(sender)s\r\n"
+"    Onderwerp: %(subject)s\r\n"
+"    Reden:  %(reason)s\r\n"
+"\r\n"
+"Bezoek:\r\n"
+"\r\n"
+"    %(admindb_url)s\r\n"
+"\r\n"
+"om het verzoek goed te keuren of te weigeren.\r\n"
+
+#: templates/en/postheld.txt:1
+msgid ""
+"Your mail to '%(listname)s' with the subject\n"
+"\n"
+"    %(subject)s\n"
+"\n"
+"Is being held until the list moderator can review it for approval.\n"
+"\n"
+"The reason it is being held:\n"
+"\n"
+"    %(reason)s\n"
+"\n"
+"Either the message will get posted to the list, or you will receive\n"
+"notification of the moderator's decision.  If you would like to cancel\n"
+"this posting, please visit the following URL:\n"
+"\n"
+"    %(confirmurl)s\n"
+msgstr ""
+"Uw e-mail naar '%(listname)s' met als onderwerp/subject\r\n"
+"\r\n"
+"    %(subject)s\r\n"
+"\r\n"
+"Wordt tegengehouden totdat de lijst moderator deze kan bekijken.\r\n"
+"\r\n"
+"De reden waarom het is tegengehouden:\r\n"
+"\r\n"
+"    %(reason)s\r\n"
+"\r\n"
+"Of het bericht wordt naar de lijst gestuurd, of u ontvangt een bericht\r\n"
+"over de beslissing van de moderator. Als u dit bericht wilt annuleren,\r\n"
+"bezoek dan de volgende pagina:\r\n"
+"\r\n"
+"    %(confirmurl)s\r\n"
+
+#: templates/en/private.html:1
+msgid ""
+"<html>\n"
+"<head>\n"
+"    <title>%(realname)s Private Archives Authentication</title>\n"
+"</head>\n"
+"<body bgcolor=\"#ffffff\">\n"
+"<FORM METHOD=POST ACTION=\"%(action)s/\">\n"
+"%(message)s\n"
+"  <TABLE WIDTH=\"100%%\" BORDER=\"0\" CELLSPACING=\"4\" CELLPADDING=\"5\">\n"
+"    <TR>\n"
+"      <TD COLSPAN=\"2\" WIDTH=\"100%%\" BGCOLOR=\"#99CCFF\" ALIGN=\"CENTER"
+"\">\n"
+"\t<B><FONT COLOR=\"#000000\" SIZE=\"+1\">%(realname)s Private\n"
+"\t    Archives Authentication</FONT></B>\n"
+"      </TD>\n"
+"    </TR>\n"
+"    <tr>\n"
+"        <TD><div ALIGN=\"Right\">Email address:</div></TD>\n"
+"        <TD><INPUT TYPE=\"text\" NAME=\"username\" SIZE=\"30\"></TD>\n"
+"    </tr>\n"
+"    <tr>\n"
+"      <TD><div ALIGN=\"Right\">Password:</div></TD>\n"
+"      <TD><INPUT TYPE=\"password\" NAME=\"password\" SIZE=\"30\"></TD>\n"
+"    </tr>\n"
+"    <tr>\n"
+"      <td colspan=2 align=\"middle\"><INPUT type=\"SUBMIT\"\n"
+"                                          name=\"submit\"\n"
+"\t\t\t\t\t  value=\"Let me in...\">\n"
+"      </td>\n"
+"    </tr>\n"
+"  </TABLE>\n"
+"      <p><strong><em>Important:</em></strong> From this point on, you\n"
+"      must have cookies enabled in your browser, otherwise\n"
+"      you will have to re-authenticate with every operation.\n"
+"\n"
+"      <p>Session cookies are used in Mailman's\n"
+"      private archive interface so that you don't need to\n"
+"      re-authenticate with every operation.  This\n"
+"      cookie will expire automatically when you exit your browser, or\n"
+"      you can explicitly expire the cookie by visiting your\n"
+"      member options page and clicking the\n"
+"      <em>Log out</em> button.\n"
+"</FORM>\n"
+"</body>\n"
+"</html>\n"
+msgstr ""
+"<html>\r\n"
+"<head>\r\n"
+"    <title>%(realname)s Prive Archief beveiligd</title>\r\n"
+"</head>\r\n"
+"<body bgcolor=\"#ffffff\">\r\n"
+"<FORM METHOD=POST ACTION=\"%(action)s/\">\r\n"
+"%(message)s\r\n"
+"  <TABLE WIDTH=\"100%%\" BORDER=\"0\" CELLSPACING=\"4\" CELLPADDING=\"5\">"
+"\r\n"
+"    <TR>\r\n"
+"      <TD COLSPAN=\"2\" WIDTH=\"100%%\" BGCOLOR=\"#99CCFF\" ALIGN=\"CENTER\">"
+"\r\n"
+"\t<B><FONT COLOR=\"#000000\" SIZE=\"+1\">%(realname)s Prive Archief "
+"inloggen</FONT></B>\r\n"
+"      </TD>\r\n"
+"    </TR>\r\n"
+"    <tr>\r\n"
+"        <TD><div ALIGN=\"Right\">Email adres:</div></TD>\r\n"
+"        <TD><INPUT TYPE=\"text\" NAME=\"username\" SIZE=\"30\"></TD>\r\n"
+"    </tr>\r\n"
+"    <tr>\r\n"
+"      <TD><div ALIGN=\"Right\">Wachtwoord:</div></TD>\r\n"
+"      <TD><INPUT TYPE=\"password\" NAME=\"password\" SIZE=\"30\"></TD>\r\n"
+"    </tr>\r\n"
+"    <tr>\r\n"
+"      <td colspan=2 align=\"middle\"><INPUT type=\"SUBMIT\"\r\n"
+"                                          name=\"submit\"\r\n"
+"\t\t\t\t\t  value=\"Inloggen\">\r\n"
+"      </td>\r\n"
+"    </tr>\r\n"
+"  </TABLE>\r\n"
+"      <p><strong><em>Belangrijk:</em></strong><br>\r\n"
+"      Je moet cookies accepteren in je browser of de cookies aanzetten.<br>"
+"\r\n"
+"      Verdere pagina's werken alleen met cookies.\r\n"
+"</FORM>\r\n"
+"</body>\r\n"
+"</html>"
+
+#: templates/en/probe.txt:1
+msgid ""
+"This is a probe message.  You can ignore this message.\n"
+"\n"
+"The %(listname)s mailing list has received a number of bounces from you,\n"
+"indicating that there may be a problem delivering messages to %(address)s.\n"
+"A bounce sample is attached below.  Please examine this message to make "
+"sure\n"
+"there are no problems with your email address.  You may want to check with\n"
+"your mail administrator for more help.\n"
+"\n"
+"If you are reading this, you don't need to do anything to remain an enabled\n"
+"member of the mailing list.  If this message had bounced, you would not be\n"
+"reading it, and your membership would have been disabled.  Normally when "
+"you\n"
+"are disabled, you receive occasional messages asking you to re-enable your\n"
+"subscription.\n"
+"\n"
+"You can also visit your membership page at\n"
+"\n"
+"    %(optionsurl)s\n"
+"\n"
+"On your membership page, you can change various delivery options such\n"
+"as your email address and whether you get digests or not.\n"
+"\n"
+"If you have any questions or problems, you can contact the list owner\n"
+"at\n"
+"\n"
+"    %(owneraddr)s\n"
+msgstr ""
+
+#: templates/en/refuse.txt:1
+msgid ""
+"Your request to the %(listname)s mailing list\n"
+"\n"
+"    %(request)s\n"
+"\n"
+"has been rejected by the list moderator.  The moderator gave the\n"
+"following reason for rejecting your request:\n"
+"\n"
+"\"%(reason)s\"\n"
+"\n"
+"Any questions or comments should be directed to the list administrator \n"
+"at:\n"
+"\n"
+"    %(adminaddr)s\n"
+msgstr ""
+"Uw verzoek aan de %(listname)s mailinglijst\r\n"
+"\r\n"
+"    %(request)s\r\n"
+"\r\n"
+"is geweigerd door de lijst moderator. De moderator gaf de volgende reden\r\n"
+"voor het weigeren van uw verzoek:\r\n"
+"\r\n"
+"\"%(reason)s\"\r\n"
+"\r\n"
+"Vragen of opmerkingen kunt u richten aan de lijst administrator op:\r\n"
+"\r\n"
+"    %(adminaddr)s\r\n"
+
+#: templates/en/roster.html:1
+msgid ""
+"<!-- $Revision: 7626 $ -->\n"
+"<HTML>\n"
+"  <HEAD>\n"
+"    <TITLE><MM-List-Name> Subscribers</TITLE>\n"
+"  \n"
+"  </HEAD>\n"
+"  <BODY BGCOLOR=\"#ffffff\">\n"
+"\n"
+"    <P>\n"
+"    <TABLE WIDTH=\"100%\" COLS=\"1\" BORDER=\"0\" CELLSPACING=\"4\" "
+"CELLPADDING=\"5\">\n"
+"      <TR>\n"
+"\t<TD COLSPAN=\"2\" WIDTH=\"100%\" BGCOLOR=\"#99CCFF\" ALIGN=\"CENTER\">\n"
+"\t  <B><FONT COLOR=\"#000000\" SIZE=\"+1\"><MM-List-Name>\n"
+"\t\tSubscribers</FONT></B>\n"
+"\t</TD>\n"
+"      </TR>\n"
+"      <TR>\n"
+"\t<TD COLSPAN=\"2\" WIDTH=\"100%\" ALIGN=\"CENTER\">\n"
+"\t    \n"
+"          <P align = \"right\"> <MM-lang-form-start><MM-displang-box>\n"
+"                       <MM-list-langs><MM-form-end></p>        \n"
+"\n"
+"\t  <P>Click on your address to visit your subscription\n"
+"\t      options page.<br><I>(Parenthesized entries have list delivery \n"
+"\t      disabled.)</I></P>\n"
+"\t</TD>\n"
+"      </TR>\n"
+"      <TR WIDTH=\"100%\" VALIGN=\"top\">\n"
+"\t<TD BGCOLOR=\"#FFF0D0\" WIDTH=\"50%\">\n"
+"\t  <center>\n"
+"\t    <B><FONT COLOR=\"#000000\"><MM-Num-Reg-Users>\n"
+"\t\t  Non-digested Members of <MM-List-Name>:</FONT></B>\n"
+"\t  </center>\n"
+"\t</TD>\n"
+"\t<TD BGCOLOR=\"#FFF0D0\" WIDTH=\"50%\">\n"
+"\t  <center>\n"
+"\t    <B><FONT COLOR=\"#000000\"><MM-Num-Digesters> Digested\n"
+"\t\t  Members of <MM-List-Name>:</FONT></B> \n"
+"\t  </center>\n"
+"\t</TD>\n"
+"      </TR>\n"
+"      <TR VALIGN=\"top\">\n"
+"\t<td>\n"
+"\t  <P><MM-Regular-Users>\n"
+"\t</td>\n"
+"\t<td>\n"
+"\t  <P><MM-Digest-Users>\n"
+"\t</td>\n"
+"      </tr>\n"
+"    </table>\n"
+"<MM-Mailman-Footer>\n"
+"</BODY>\n"
+"</HTML>\n"
+msgstr ""
+"<!-- $Revision: 7626 $ -->\r\n"
+"<HTML>\r\n"
+"  <HEAD>\r\n"
+"    <TITLE><MM-List-Name> Leden</TITLE>\r\n"
+"  \r\n"
+"  </HEAD>\r\n"
+"  <BODY BGCOLOR=\"#ffffff\">\r\n"
+"\r\n"
+"    <P>\r\n"
+"    <TABLE WIDTH=\"100%\" COLS=\"1\" BORDER=\"0\" CELLSPACING=\"4\" "
+"CELLPADDING=\"5\">\r\n"
+"      <TR>\r\n"
+"\t<TD COLSPAN=\"2\" WIDTH=\"100%\" BGCOLOR=\"#99CCFF\" ALIGN=\"CENTER\">\r\n"
+"\t  <B><FONT COLOR=\"#000000\" SIZE=\"+1\"><MM-List-Name>\r\n"
+"\t\tLeden</FONT></B>\r\n"
+"\t</TD>\r\n"
+"      </TR>\r\n"
+"      <TR>\r\n"
+"\t<TD COLSPAN=\"2\" WIDTH=\"100%\" ALIGN=\"CENTER\">\r\n"
+"\t    \r\n"
+"          <P align = \"right\"> <MM-lang-form-start><MM-displang-box>\r\n"
+"                       <MM-list-langs><MM-form-end></p>        \r\n"
+"\r\n"
+"\t  <P>Klik op je eigen email adres voor je instellingen.<br></P>\r\n"
+"\t</TD>\r\n"
+"      </TR>\r\n"
+"      <TR WIDTH=\"100%\" VALIGN=\"top\">\r\n"
+"\t<TD BGCOLOR=\"#FFF0D0\" WIDTH=\"50%\">\r\n"
+"\t  <center>\r\n"
+"\t    <B><FONT COLOR=\"#000000\"><MM-Num-Reg-Users>\r\n"
+"\t\t  Normale leden op de lijst <MM-List-Name>:</FONT></B>\r\n"
+"\t  </center>\r\n"
+"\t</TD>\r\n"
+"\t<TD BGCOLOR=\"#FFF0D0\" WIDTH=\"50%\">\r\n"
+"\t  <center>\r\n"
+"\t    <B><FONT COLOR=\"#000000\"><MM-Num-Digesters> Digest leden op de lijst "
+"<MM-List-Name>:</FONT></B> \r\n"
+"\t  </center>\r\n"
+"\t</TD>\r\n"
+"      </TR>\r\n"
+"      <TR VALIGN=\"top\">\r\n"
+"\t<td>\r\n"
+"\t  <P><MM-Regular-Users>\r\n"
+"\t</td>\r\n"
+"\t<td>\r\n"
+"\t  <P><MM-Digest-Users>\r\n"
+"\t</td>\r\n"
+"      </tr>\r\n"
+"    </table>\r\n"
+"<MM-Mailman-Footer>\r\n"
+"</BODY>\r\n"
+"</HTML>"
+
+#: templates/en/subauth.txt:1
+msgid ""
+"Your authorization is required for a mailing list subscription request\n"
+"approval:\n"
+"\n"
+"    For:  %(username)s\n"
+"    List: %(listname)s@%(hostname)s\n"
+"\n"
+"At your convenience, visit:\n"
+"\n"
+"    %(admindb_url)s\n"
+"\t\n"
+"to process the request.\n"
+msgstr ""
+"Uw toestemming wordt gevraagd voor een mailinglijst\r\n"
+"inschrijvingsverzoek:\r\n"
+"\r\n"
+"    Voor :  %(username)s\r\n"
+"    Lijst: %(listname)s@%(hostname)s\r\n"
+"\r\n"
+"Bezoek:\r\n"
+"\r\n"
+"    %(admindb_url)s\r\n"
+"\r\n"
+"om het verzoek te behandelen."
+
+#: templates/en/subscribe.html:1
+msgid ""
+"<!-- $Revision: 7626 $ -->\n"
+"<html>\n"
+"<head><title><MM-List-Name> Subscription results</title></head>\n"
+"<body bgcolor=\"white\">\n"
+"<h1><MM-List-Name> Subscription results</h1>\n"
+"<MM-Results>\n"
+"<MM-Mailman-Footer>\n"
+"</body>\n"
+"</html>\n"
+msgstr ""
+"<!-- $Revision: 7626 $ -->\r\n"
+"<html>\r\n"
+"<head><title><MM-List-Name> Subscription results</title></head>\r\n"
+"<body bgcolor=\"white\">\r\n"
+"<h1>Je aanmeldings status van :<MM-List-Name></h1>\r\n"
+"<MM-Results>\r\n"
+"<MM-Mailman-Footer>\r\n"
+"</body>\r\n"
+"</html>"
+
+#: templates/en/subscribeack.txt:1
+msgid ""
+"Welcome to the %(real_name)s@%(host_name)s mailing list!\n"
+"%(welcome)s\n"
+"To post to this list, send your email to:\n"
+"\n"
+"  %(emailaddr)s\n"
+"\n"
+"General information about the mailing list is at:\n"
+"\n"
+"  %(listinfo_url)s\n"
+"\n"
+"If you ever want to unsubscribe or change your options (eg, switch to or\n"
+"from digest mode, change your password, etc.), visit your subscription\n"
+"page at:\n"
+"\n"
+"  %(optionsurl)s\n"
+"%(umbrella)s\n"
+"You can also make such adjustments via email by sending a message to:\n"
+"\n"
+"  %(real_name)s-request@%(host_name)s\n"
+"\n"
+"with the word `help' in the subject or body (don't include the\n"
+"quotes), and you will get back a message with instructions.\n"
+"\n"
+"You must know your password to change your options (including changing\n"
+"the password, itself) or to unsubscribe.  It is:\n"
+"\n"
+"  %(password)s\n"
+"\n"
+"Normally, Mailman will remind you of your %(host_name)s mailing list\n"
+"passwords once every month, although you can disable this if you\n"
+"prefer.  This reminder will also include instructions on how to\n"
+"unsubscribe or change your account options.  There is also a button on\n"
+"your options page that will email your current password to you.\n"
+msgstr ""
+"Welkom op de %(real_name)s@%(host_name)s mailinglijst!\r\n"
+"%(welcome)s\r\n"
+"Om berichten te sturen naar deze lijst, stuur uw e-mails naar\r\n"
+"het volgende adres:\r\n"
+"\r\n"
+"  %(emailaddr)s\r\n"
+"\r\n"
+"Algemene informatie over de mailinglijst kunt u vinden op:\r\n"
+"\r\n"
+"  %(listinfo_url)s\r\n"
+"\r\n"
+"Als u ooit wilt uitschrijven of uw opties veranderen (bv. paswoord "
+"veranderen,\r\n"
+"digest aan of uitzetten, no-mail etc.), bezoek uw inschrijvingspagina op:\r\n"
+"\r\n"
+"  %(optionsurl)s\r\n"
+"%(umbrella)s\r\n"
+"Dergelijke wijzigingen kunt u ook doen via e-mail door een bericht te sturen "
+"aan:\r\n"
+"\r\n"
+"  %(real_name)s-request@%(host_name)s\r\n"
+"\r\n"
+"met het woord 'help' in de onderwerp/subject regel of in de tekst zelf. U\r\n"
+"ontvangt dan een bericht terug met aanwijzingen.\r\n"
+"\r\n"
+"Voor dergelijke wijzigingen heeft u een paswoord nodig. Deze is:\r\n"
+"\r\n"
+"  %(password)s\r\n"
+"\r\n"
+"Normaal gesproken zal Mailman u iedere maand op de hoogte houden van\r\n"
+"uw %(host_name)s mailinglijst paswoord. Deze mogelijkheid kunt u echter\r\n"
+"ook uitzetten als u dat wilt. Deze maandelijkse berichten zullen ook "
+"aanwijzingen\r\n"
+"bevatten over hoe u kunt uitschrijven of hoe u uw opties kunt veranderen.\r\n"
+"Op uw inschrijvingspagina vindt u ook een knop die, als u daarop klikt, uw"
+"\r\n"
+"huidige paswoord via e-mail naar u toestuurt."
+
+#: templates/en/unsub.txt:1
+msgid ""
+"Mailing list removal confirmation notice for mailing list %(listname)s\n"
+"\n"
+"We have received a request%(remote)s for the removal of your email\n"
+"address, \"%(email)s\" from the %(listaddr)s mailing list.  To confirm\n"
+"that you want to be removed from this mailing list, simply reply to\n"
+"this message, keeping the Subject: header intact.  Or visit this web\n"
+"page:\n"
+"\n"
+"    %(confirmurl)s\n"
+"\n"
+"Or include the following line -- and only the following line -- in a\n"
+"message to %(requestaddr)s:\n"
+"\n"
+"    confirm %(cookie)s\n"
+"\n"
+"Note that simply sending a `reply' to this message should work from\n"
+"most mail readers, since that usually leaves the Subject: line in\n"
+"the right form (additional \"Re:\" text in the Subject: is okay).\n"
+"\n"
+"If you do not wish to be removed from this list, please simply\n"
+"disregard this message.  If you think you are being maliciously\n"
+"removed from the list, or have any other questions, send them to\n"
+"%(listadmin)s.\n"
+msgstr ""
+"Bevestiging van uitschrijving van de mailinglijst %(listname)s\r\n"
+"\r\n"
+"Wij hebben een verzoek ontvangen %(remote)s voor het uitschrijven van uw\r\n"
+"e-mail adres, \"%(email)s\" van de %(listaddr)s mailinglijst. Om uw "
+"uitschrijving\r\n"
+"te bevestigen kunt u deze e-mail beantwoorden (replyen), waarbij u de\r\n"
+"onderwerp (subject) regel laat staan. Of bezoek de web pagina:\r\n"
+"\r\n"
+"    %(confirmurl)s\r\n"
+"\r\n"
+"Of stuur een bericht naar %(requestaddr)s , met de volgende regel\r\n"
+"-- en alleen deze regel --:\r\n"
+"\r\n"
+"    confirm %(cookie)s\r\n"
+"\r\n"
+"Opmerking: Dit bericht beantwoorden (replyen) is in de meeste gevallen\r\n"
+"voldoende. Waarbij u het onderwerp (subject) gewoon laat staan.\r\n"
+"\r\n"
+"Als u niet uitgeschreven wilt worden, kunt u dit bericht negeren.\r\n"
+"Wanneer u denkt dat u onterecht uitgeschreven wordt, of als u andere\r\n"
+"vragen heeft, stuur deze dan naar\r\n"
+"%(listadmin)s.\r\n"
+
+#: templates/en/unsubauth.txt:1
+msgid ""
+"Your authorization is required for a mailing list unsubscription\n"
+"request approval:\n"
+"\n"
+"    By:   %(username)s\n"
+"    From: %(listname)s@%(hostname)s\n"
+"\n"
+"At your convenience, visit:\n"
+"\n"
+"    %(admindb_url)s\n"
+"\n"
+"to process the request.\n"
+msgstr ""
+"Uw toestemming wordt gevraagd voor een verzoek tot uitschrijving:\r\n"
+"\r\n"
+"    Door:   %(username)s\r\n"
+"    Van: %(listname)s@%(hostname)s\r\n"
+"\r\n"
+"Bezoek:\r\n"
+"\r\n"
+"    %(admindb_url)s\r\n"
+"\r\n"
+"om dit verzoek te behandelen."
+
+#: templates/en/userpass.txt:1
+msgid ""
+"You, or someone posing as you, has requested a password reminder for\n"
+"your membership on the mailing list %(fqdn_lname)s.  You will need\n"
+"this password in order to change your membership options (e.g. do you\n"
+"want regular delivery or digest delivery), and having this password\n"
+"makes it easier for you to unsubscribe from the mailing list.\n"
+"\n"
+"You are subscribed with the address: %(user)s\n"
+"\n"
+"Your %(listname)s password is: %(password)s\n"
+"\n"
+"To make changes to your membership options, log in and visit your\n"
+"options web page:\n"
+"\n"
+"    %(options_url)s\n"
+"\n"
+"You can also make such changes via email by sending a message to:\n"
+"\n"
+"    %(requestaddr)s\n"
+"\n"
+"with the text \"help\" in the subject or body.  The automatic reply will\n"
+"contain more detailed instructions.\n"
+"\n"
+"Questions or comments?  Please send them to the %(listname)s mailing\n"
+"list administrator at %(owneraddr)s.\n"
+msgstr ""
+"U, of iemand anders, heeft een paswoord opgevraagd voor uw lidmaatschap\r\n"
+"van de mailinglijst %(fqdn_lname)s.  U heeft dit paswoord nodig om\r\n"
+"wijzigingen in uw lidmaatschap opties aan te brengen (bv. aan/uitzetten van"
+"\r\n"
+"de digest etc.), met dit paswoord kunt u ook makkelijker uitschrijven van\r\n"
+"deze mailinglijst.\r\n"
+"\r\n"
+"U bent ingeschreven met het adres: %(user)s\r\n"
+"\r\n"
+"Uw %(listname)s paswoord is: %(password)s\r\n"
+"\r\n"
+"Om wijzigingen aan te brengen in uw lidmaatschap opties, kunt u\r\n"
+"de volgende pagina bezoeken:\r\n"
+"\r\n"
+"    %(options_url)s\r\n"
+"\r\n"
+"U kunt deze wijzigingen ook via e-mail doen, door een bericht te sturen aan:"
+"\r\n"
+"\r\n"
+"    %(requestaddr)s\r\n"
+"\r\n"
+"Met de tekst 'help' in het onderwerp (subject) of in het tekstgedeelte.\r\n"
+"U krijgt dan automatisch een bericht terug met verdere aanwijzingen.\r\n"
+"\r\n"
+"Vragen of opmerkingen kunt u sturen aan %(listname)s mailinglijst\r\n"
+"administrator op %(owneraddr)s.\r\n"
+
+#: templates/en/verify.txt:1
+msgid ""
+"Mailing list subscription confirmation notice for mailing list %(listname)s\n"
+"\n"
+"We have received a request%(remote)s for subscription of your email\n"
+"address, \"%(email)s\", to the %(listaddr)s mailing list.  To confirm\n"
+"that you want to be added to this mailing list, simply reply to this\n"
+"message, keeping the Subject: header intact.  Or visit this web page:\n"
+"\n"
+"    %(confirmurl)s\n"
+"\n"
+"Or include the following line -- and only the following line -- in a\n"
+"message to %(requestaddr)s:\n"
+"\n"
+"    confirm %(cookie)s\n"
+"\n"
+"Note that simply sending a `reply' to this message should work from\n"
+"most mail readers, since that usually leaves the Subject: line in\n"
+"the right form (additional \"Re:\" text in the Subject: is okay).\n"
+"\n"
+"If you do not wish to be subscribed to this list, please simply\n"
+"disregard this message.  If you think you are being maliciously\n"
+"subscribed to the list, or have any other questions, send them to\n"
+"%(listadmin)s.\n"
+msgstr ""
+"Mailing lijst aanmeldingsbevestiging voor de mailinglijst %(listname)s\r\n"
+"\r\n"
+"Wij hebben een verzoek ontvangen %(remote)s voor het aanmelden van uw\r\n"
+"e-mail adres, \"%(email)s\", bij de %(listaddr)s mailinglijst. Om te "
+"bevestigen\r\n"
+"dat u lid wilt worden van deze mailinglijst kunt u dit bericht replyen "
+"(beantwoorden),\r\n"
+"laat u het onderwerp (subject) gewoon staan. U kunt ook deze website "
+"bezoeken:\r\n"
+"\r\n"
+"%(confirmurl)s\r\n"
+"\r\n"
+"Of u stuurt de volgende regel -- en alleen deze regel -- in een berichtje\r\n"
+"aan %(requestaddr)s:\r\n"
+"\r\n"
+"confirm %(cookie)s\r\n"
+"\r\n"
+"Opmerking: Enkel een 'reply' op dit bericht zou in de meeste e-mail "
+"programma's\r\n"
+"moeten werken. Omdat deze meestal de Subject (onderwerp) regel intact laat "
+"(er wordt\r\n"
+"alleen \"Re:\" toegevoegd)\r\n"
+"\r\n"
+"Als u geen lid wilt worden van deze mailinglijst, kunt u deze e-mail negeren."
+"\r\n"
+"Wanneer u denkt dat u valselijk lid bent gemaakt van deze lijst, of als u "
+"andere vragen\r\n"
+"heeft, stuur dan een e-mail naar: %(listadmin)s.\r\n"
 
 #~ msgid ""
 #~ "Approval notices are sent when mail triggers certain of the\n"

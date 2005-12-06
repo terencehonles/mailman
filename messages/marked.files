@@ -4,6 +4,7 @@ Mailman/Archiver/HyperDatabase.py
 Mailman/Archiver/__init__.py
 Mailman/Archiver/pipermail.py
 Mailman/Autoresponder.py
+Mailman/BDBMemberAdaptor.py
 Mailman/Bouncer.py
 Mailman/Deliverer.py
 Mailman/Digester.py
@@ -30,6 +31,7 @@ Mailman/__init__.py
 Mailman/htmlformat.py
 Mailman/i18n.py
 Mailman/versions.py
+Mailman/Bouncers/BouncerAPI.py
 Mailman/Bouncers/Caiwireless.py
 Mailman/Bouncers/Compuserve.py
 Mailman/Bouncers/DSN.py
@@ -48,7 +50,6 @@ Mailman/Bouncers/Sina.py
 Mailman/Bouncers/Yahoo.py
 Mailman/Bouncers/Yale.py
 Mailman/Bouncers/__init__.py
-Mailman/Bouncers/BouncerAPI.py
 Mailman/Cgi/Auth.py
 Mailman/Cgi/__init__.py
 Mailman/Cgi/admin.py
@@ -120,11 +121,10 @@ Mailman/Queue/IncomingRunner.py
 Mailman/Queue/MaildirRunner.py
 Mailman/Queue/NewsRunner.py
 Mailman/Queue/OutgoingRunner.py
+Mailman/Queue/RetryRunner.py
 Mailman/Queue/Runner.py
 Mailman/Queue/Switchboard.py
 Mailman/Queue/VirginRunner.py
 Mailman/Queue/__init__.py
 Mailman/Queue/sbcache.py
-Mailman/Queue/RetryRunner.py
 Mailman/Defaults.py
-Mailman/BDBMemberAdaptor.py

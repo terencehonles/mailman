@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: Wed Mar 23 09:55:34 2005\n"
+"POT-Creation-Date: Tue Dec  6 12:15:05 2005\n"
 "PO-Revision-Date: 2002-03-28 19:21+09:00\n"
 "Last-Translator: Hyejin Soang, Wongyo Jung<redcloak@igrus.inha.ac.kr, "
 "andsoon@igrus.inha.ac.kr>\n"
@@ -24,153 +24,154 @@ msgstr "이용할 수 없숩니다."
 msgid " %(size)i bytes "
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:281 Mailman/Archiver/HyperArch.py:454
-#: Mailman/Archiver/HyperArch.py:562 Mailman/Archiver/HyperArch.py:1031
-#: Mailman/Archiver/HyperArch.py:1160
+#: Mailman/Archiver/HyperArch.py:282 Mailman/Archiver/HyperArch.py:285
+#: Mailman/Archiver/HyperArch.py:413 Mailman/Archiver/HyperArch.py:465
+#: Mailman/Archiver/HyperArch.py:573 Mailman/Archiver/HyperArch.py:1042
+#: Mailman/Archiver/HyperArch.py:1171
 msgid " at "
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:483
+#: Mailman/Archiver/HyperArch.py:494
 msgid "Previous message:"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:505
+#: Mailman/Archiver/HyperArch.py:516
 #, fuzzy
 msgid "Next message:"
 msgstr "메세지를 기록합니까?"
 
-#: Mailman/Archiver/HyperArch.py:672 Mailman/Archiver/HyperArch.py:708
+#: Mailman/Archiver/HyperArch.py:683 Mailman/Archiver/HyperArch.py:719
 #, fuzzy
 msgid "thread"
 msgstr "  쓰레드"
 
-#: Mailman/Archiver/HyperArch.py:673 Mailman/Archiver/HyperArch.py:709
+#: Mailman/Archiver/HyperArch.py:684 Mailman/Archiver/HyperArch.py:720
 #, fuzzy
 msgid "subject"
 msgstr "제목 없음"
 
-#: Mailman/Archiver/HyperArch.py:674 Mailman/Archiver/HyperArch.py:710
+#: Mailman/Archiver/HyperArch.py:685 Mailman/Archiver/HyperArch.py:721
 msgid "author"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:675 Mailman/Archiver/HyperArch.py:711
+#: Mailman/Archiver/HyperArch.py:686 Mailman/Archiver/HyperArch.py:722
 #, fuzzy
 msgid "date"
 msgstr "날짜 없음"
 
-#: Mailman/Archiver/HyperArch.py:747
+#: Mailman/Archiver/HyperArch.py:758
 msgid "<P>Currently, there are no archives. </P>"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:785
+#: Mailman/Archiver/HyperArch.py:796
 msgid "Gzip'd Text%(sz)s"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:790
+#: Mailman/Archiver/HyperArch.py:801
 msgid "Text%(sz)s"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:880
+#: Mailman/Archiver/HyperArch.py:891
 #, fuzzy
 msgid "figuring article archives\n"
 msgstr "카테고리 구성"
 
-#: Mailman/Archiver/HyperArch.py:890
+#: Mailman/Archiver/HyperArch.py:901
 msgid "April"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:890
+#: Mailman/Archiver/HyperArch.py:901
 msgid "February"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:890
+#: Mailman/Archiver/HyperArch.py:901
 msgid "January"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:890
+#: Mailman/Archiver/HyperArch.py:901
 msgid "March"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:891
+#: Mailman/Archiver/HyperArch.py:902
 msgid "August"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:891
+#: Mailman/Archiver/HyperArch.py:902
 msgid "July"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:891
+#: Mailman/Archiver/HyperArch.py:902
 msgid "June"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:891 Mailman/i18n.py:102
+#: Mailman/Archiver/HyperArch.py:902 Mailman/i18n.py:102
 #, fuzzy
 msgid "May"
 msgstr "일"
 
-#: Mailman/Archiver/HyperArch.py:892
+#: Mailman/Archiver/HyperArch.py:903
 #, fuzzy
 msgid "December"
 msgstr "회원"
 
-#: Mailman/Archiver/HyperArch.py:892
+#: Mailman/Archiver/HyperArch.py:903
 #, fuzzy
 msgid "November"
 msgstr "회원"
 
-#: Mailman/Archiver/HyperArch.py:892
+#: Mailman/Archiver/HyperArch.py:903
 msgid "October"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:892
+#: Mailman/Archiver/HyperArch.py:903
 #, fuzzy
 msgid "September"
 msgstr "회원"
 
-#: Mailman/Archiver/HyperArch.py:900
+#: Mailman/Archiver/HyperArch.py:911
 #, fuzzy
 msgid "First"
 msgstr "메일링 리스트"
 
-#: Mailman/Archiver/HyperArch.py:900
+#: Mailman/Archiver/HyperArch.py:911
 msgid "Fourth"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:900
+#: Mailman/Archiver/HyperArch.py:911
 msgid "Second"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:900
+#: Mailman/Archiver/HyperArch.py:911
 #, fuzzy
 msgid "Third"
 msgstr "숨김"
 
-#: Mailman/Archiver/HyperArch.py:902
+#: Mailman/Archiver/HyperArch.py:913
 msgid "%(ord)s quarter %(year)i"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:909
+#: Mailman/Archiver/HyperArch.py:920
 msgid "%(month)s %(year)i"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:914
+#: Mailman/Archiver/HyperArch.py:925
 msgid "The Week Of Monday %(day)i %(month)s %(year)i"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:918
+#: Mailman/Archiver/HyperArch.py:929
 msgid "%(day)i %(month)s %(year)i"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:1018
+#: Mailman/Archiver/HyperArch.py:1029
 msgid "Computing threaded index\n"
 msgstr ""
 
-#: Mailman/Archiver/HyperArch.py:1283
+#: Mailman/Archiver/HyperArch.py:1294
 #, fuzzy
 msgid "Updating HTML for article %(seq)s"
 msgstr "저장소 [%(archive)s] 를 위한 인덱스 파일을 업데이트 중입니다."
 
-#: Mailman/Archiver/HyperArch.py:1290
+#: Mailman/Archiver/HyperArch.py:1301
 msgid "article file %(filename)s is missing!"
 msgstr ""
 
@@ -235,8 +236,8 @@ msgid " The last bounce received from you was dated %(date)s"
 msgstr ""
 
 #: Mailman/Bouncer.py:279 Mailman/Deliverer.py:144
-#: Mailman/Handlers/Acknowledge.py:44 Mailman/Handlers/CookHeaders.py:284
-#: Mailman/Handlers/Hold.py:205 Mailman/Handlers/ToDigest.py:226
+#: Mailman/Handlers/Acknowledge.py:44 Mailman/Handlers/CookHeaders.py:280
+#: Mailman/Handlers/Hold.py:209 Mailman/Handlers/ToDigest.py:237
 #: Mailman/ListAdmin.py:223
 msgid "(no subject)"
 msgstr "(제목 없음)"
@@ -255,7 +256,7 @@ msgstr "관리자"
 
 #: Mailman/Cgi/admin.py:74 Mailman/Cgi/admindb.py:89 Mailman/Cgi/confirm.py:61
 #: Mailman/Cgi/edithtml.py:68 Mailman/Cgi/listinfo.py:51
-#: Mailman/Cgi/options.py:77 Mailman/Cgi/private.py:101
+#: Mailman/Cgi/options.py:78 Mailman/Cgi/private.py:101
 #: Mailman/Cgi/rmlist.py:64 Mailman/Cgi/roster.py:57
 #: Mailman/Cgi/subscribe.py:61
 msgid "No such list <em>%(safelistname)s</em>"
@@ -279,7 +280,7 @@ msgstr ""
 "            배달 방식에서 둘 중 하나를 꼭 선택하시기 바랍니다."
 
 #: Mailman/Cgi/admin.py:183 Mailman/Cgi/admin.py:189 Mailman/Cgi/admin.py:194
-#: Mailman/Cgi/admin.py:1433 Mailman/Gui/GUIBase.py:191
+#: Mailman/Cgi/admin.py:1436 Mailman/Gui/GUIBase.py:191
 msgid "Warning: "
 msgstr "경고: "
 
@@ -525,7 +526,7 @@ msgstr "주제 이름:"
 msgid "Regexp:"
 msgstr "정규표현식:"
 
-#: Mailman/Cgi/admin.py:705 Mailman/Cgi/options.py:979
+#: Mailman/Cgi/admin.py:705 Mailman/Cgi/options.py:1029
 msgid "Description:"
 msgstr "설명:"
 
@@ -832,54 +833,55 @@ msgstr "여기서 가입된 회원들에게 환영 메일을 보낼 것인가?"
 
 #: Mailman/Cgi/admin.py:1144 Mailman/Cgi/admin.py:1153
 #: Mailman/Cgi/admin.py:1186 Mailman/Cgi/admin.py:1194
-#: Mailman/Cgi/confirm.py:289 Mailman/Cgi/create.py:339
-#: Mailman/Cgi/create.py:369 Mailman/Cgi/create.py:407
+#: Mailman/Cgi/confirm.py:289 Mailman/Cgi/create.py:340
+#: Mailman/Cgi/create.py:375 Mailman/Cgi/create.py:413
 #: Mailman/Cgi/rmlist.py:228 Mailman/Gui/Archive.py:33
 #: Mailman/Gui/Autoresponse.py:54 Mailman/Gui/Autoresponse.py:62
 #: Mailman/Gui/Autoresponse.py:71 Mailman/Gui/Bounce.py:77
 #: Mailman/Gui/Bounce.py:120 Mailman/Gui/Bounce.py:146
-#: Mailman/Gui/Bounce.py:155 Mailman/Gui/ContentFilter.py:70
-#: Mailman/Gui/ContentFilter.py:112 Mailman/Gui/Digest.py:46
-#: Mailman/Gui/Digest.py:62 Mailman/Gui/Digest.py:84 Mailman/Gui/Digest.py:89
-#: Mailman/Gui/General.py:154 Mailman/Gui/General.py:160
-#: Mailman/Gui/General.py:238 Mailman/Gui/General.py:265
-#: Mailman/Gui/General.py:292 Mailman/Gui/General.py:303
-#: Mailman/Gui/General.py:306 Mailman/Gui/General.py:316
-#: Mailman/Gui/General.py:321 Mailman/Gui/General.py:327
-#: Mailman/Gui/General.py:347 Mailman/Gui/General.py:375
-#: Mailman/Gui/General.py:398 Mailman/Gui/NonDigest.py:44
-#: Mailman/Gui/NonDigest.py:52 Mailman/Gui/NonDigest.py:139
-#: Mailman/Gui/Privacy.py:110 Mailman/Gui/Privacy.py:116
-#: Mailman/Gui/Privacy.py:149 Mailman/Gui/Privacy.py:197
-#: Mailman/Gui/Privacy.py:305 Mailman/Gui/Privacy.py:324
-#: Mailman/Gui/Usenet.py:52 Mailman/Gui/Usenet.py:56 Mailman/Gui/Usenet.py:93
-#: Mailman/Gui/Usenet.py:105
-msgid "No"
-msgstr "아니요"
-
-#: Mailman/Cgi/admin.py:1144 Mailman/Cgi/admin.py:1153
-#: Mailman/Cgi/admin.py:1186 Mailman/Cgi/admin.py:1194
-#: Mailman/Cgi/confirm.py:289 Mailman/Cgi/create.py:339
-#: Mailman/Cgi/create.py:369 Mailman/Cgi/create.py:407
-#: Mailman/Cgi/rmlist.py:228 Mailman/Gui/Archive.py:33
-#: Mailman/Gui/Autoresponse.py:54 Mailman/Gui/Autoresponse.py:62
-#: Mailman/Gui/Bounce.py:77 Mailman/Gui/Bounce.py:120
-#: Mailman/Gui/Bounce.py:146 Mailman/Gui/Bounce.py:155
-#: Mailman/Gui/ContentFilter.py:70 Mailman/Gui/ContentFilter.py:112
+#: Mailman/Gui/Bounce.py:155 Mailman/Gui/ContentFilter.py:74
+#: Mailman/Gui/ContentFilter.py:116 Mailman/Gui/ContentFilter.py:120
 #: Mailman/Gui/Digest.py:46 Mailman/Gui/Digest.py:62 Mailman/Gui/Digest.py:84
-#: Mailman/Gui/Digest.py:89 Mailman/Gui/General.py:154
-#: Mailman/Gui/General.py:160 Mailman/Gui/General.py:238
-#: Mailman/Gui/General.py:265 Mailman/Gui/General.py:292
-#: Mailman/Gui/General.py:303 Mailman/Gui/General.py:306
-#: Mailman/Gui/General.py:316 Mailman/Gui/General.py:321
-#: Mailman/Gui/General.py:327 Mailman/Gui/General.py:347
-#: Mailman/Gui/General.py:375 Mailman/Gui/General.py:398
+#: Mailman/Gui/Digest.py:89 Mailman/Gui/General.py:153
+#: Mailman/Gui/General.py:159 Mailman/Gui/General.py:237
+#: Mailman/Gui/General.py:264 Mailman/Gui/General.py:291
+#: Mailman/Gui/General.py:302 Mailman/Gui/General.py:305
+#: Mailman/Gui/General.py:315 Mailman/Gui/General.py:320
+#: Mailman/Gui/General.py:326 Mailman/Gui/General.py:346
+#: Mailman/Gui/General.py:374 Mailman/Gui/General.py:397
 #: Mailman/Gui/NonDigest.py:44 Mailman/Gui/NonDigest.py:52
 #: Mailman/Gui/NonDigest.py:139 Mailman/Gui/Privacy.py:110
 #: Mailman/Gui/Privacy.py:116 Mailman/Gui/Privacy.py:149
 #: Mailman/Gui/Privacy.py:197 Mailman/Gui/Privacy.py:305
 #: Mailman/Gui/Privacy.py:324 Mailman/Gui/Usenet.py:52
 #: Mailman/Gui/Usenet.py:56 Mailman/Gui/Usenet.py:93 Mailman/Gui/Usenet.py:105
+msgid "No"
+msgstr "아니요"
+
+#: Mailman/Cgi/admin.py:1144 Mailman/Cgi/admin.py:1153
+#: Mailman/Cgi/admin.py:1186 Mailman/Cgi/admin.py:1194
+#: Mailman/Cgi/confirm.py:289 Mailman/Cgi/create.py:340
+#: Mailman/Cgi/create.py:375 Mailman/Cgi/create.py:413
+#: Mailman/Cgi/rmlist.py:228 Mailman/Gui/Archive.py:33
+#: Mailman/Gui/Autoresponse.py:54 Mailman/Gui/Autoresponse.py:62
+#: Mailman/Gui/Bounce.py:77 Mailman/Gui/Bounce.py:120
+#: Mailman/Gui/Bounce.py:146 Mailman/Gui/Bounce.py:155
+#: Mailman/Gui/ContentFilter.py:74 Mailman/Gui/ContentFilter.py:116
+#: Mailman/Gui/ContentFilter.py:120 Mailman/Gui/Digest.py:46
+#: Mailman/Gui/Digest.py:62 Mailman/Gui/Digest.py:84 Mailman/Gui/Digest.py:89
+#: Mailman/Gui/General.py:153 Mailman/Gui/General.py:159
+#: Mailman/Gui/General.py:237 Mailman/Gui/General.py:264
+#: Mailman/Gui/General.py:291 Mailman/Gui/General.py:302
+#: Mailman/Gui/General.py:305 Mailman/Gui/General.py:315
+#: Mailman/Gui/General.py:320 Mailman/Gui/General.py:326
+#: Mailman/Gui/General.py:346 Mailman/Gui/General.py:374
+#: Mailman/Gui/General.py:397 Mailman/Gui/NonDigest.py:44
+#: Mailman/Gui/NonDigest.py:52 Mailman/Gui/NonDigest.py:139
+#: Mailman/Gui/Privacy.py:110 Mailman/Gui/Privacy.py:116
+#: Mailman/Gui/Privacy.py:149 Mailman/Gui/Privacy.py:197
+#: Mailman/Gui/Privacy.py:305 Mailman/Gui/Privacy.py:324
+#: Mailman/Gui/Usenet.py:52 Mailman/Gui/Usenet.py:56 Mailman/Gui/Usenet.py:93
+#: Mailman/Gui/Usenet.py:105
 msgid "Yes"
 msgstr "예"
 
@@ -994,47 +996,51 @@ msgstr "잘못된/없는 E메일 주소"
 msgid "Hostile address (illegal characters)"
 msgstr "악의적인 주소입니다. (허용되지 않는 문자를 사용>합니다.)"
 
-#: Mailman/Cgi/admin.py:1353
+#: Mailman/Cgi/admin.py:1350
+msgid "Banned address (matched %(pattern)s)"
+msgstr ""
+
+#: Mailman/Cgi/admin.py:1356
 msgid "Successfully invited:"
 msgstr "성공적으로 초대된 명단:"
 
-#: Mailman/Cgi/admin.py:1355
+#: Mailman/Cgi/admin.py:1358
 msgid "Successfully subscribed:"
 msgstr "성공적으로 가입된 명단:"
 
-#: Mailman/Cgi/admin.py:1360
+#: Mailman/Cgi/admin.py:1363
 msgid "Error inviting:"
 msgstr "초대 에러:"
 
-#: Mailman/Cgi/admin.py:1362
+#: Mailman/Cgi/admin.py:1365
 msgid "Error subscribing:"
 msgstr "가입 에러:"
 
-#: Mailman/Cgi/admin.py:1391
+#: Mailman/Cgi/admin.py:1394
 msgid "Successfully Unsubscribed:"
 msgstr "성공적으로 탈퇴된 명단:"
 
-#: Mailman/Cgi/admin.py:1396
+#: Mailman/Cgi/admin.py:1399
 msgid "Cannot unsubscribe non-members:"
 msgstr "비회원을 탈퇴할 수 없습니다:"
 
-#: Mailman/Cgi/admin.py:1408
+#: Mailman/Cgi/admin.py:1411
 msgid "Bad moderation flag value"
 msgstr "잘못된 글관리 기호입니다."
 
-#: Mailman/Cgi/admin.py:1429
+#: Mailman/Cgi/admin.py:1432
 msgid "Not subscribed"
 msgstr "가입이 되지 않았습니다."
 
-#: Mailman/Cgi/admin.py:1432
+#: Mailman/Cgi/admin.py:1435
 msgid "Ignoring changes to deleted member: %(user)s"
 msgstr "삭제 명단에서 무시된 회원: %(user)s"
 
-#: Mailman/Cgi/admin.py:1472
+#: Mailman/Cgi/admin.py:1475
 msgid "Successfully Removed:"
 msgstr "성공적으로 제거된 명단:"
 
-#: Mailman/Cgi/admin.py:1476
+#: Mailman/Cgi/admin.py:1479
 msgid "Error Unsubscribing:"
 msgstr "탈퇴 에러:"
 
@@ -1205,7 +1211,7 @@ msgid "Size:"
 msgstr "크기:"
 
 #: Mailman/Cgi/admindb.py:498 Mailman/Handlers/Scrubber.py:198
-#: Mailman/Handlers/Scrubber.py:295 Mailman/Handlers/Scrubber.py:296
+#: Mailman/Handlers/Scrubber.py:302 Mailman/Handlers/Scrubber.py:303
 msgid "not available"
 msgstr "이용할 수 없숩니다."
 
@@ -1262,18 +1268,22 @@ msgstr "메세지 인용:"
 msgid "No reason given"
 msgstr "이유가 없습니다."
 
-#: Mailman/Cgi/admindb.py:769 Mailman/ListAdmin.py:296
+#: Mailman/Cgi/admindb.py:770 Mailman/ListAdmin.py:296
 #: Mailman/ListAdmin.py:414
 msgid "[No reason given]"
 msgstr "[이유가 없습니다]"
 
-#: Mailman/Cgi/admindb.py:798
+#: Mailman/Cgi/admindb.py:802
 msgid "Database Updated..."
 msgstr "DB 가 업데이트되었습니다..."
 
-#: Mailman/Cgi/admindb.py:801
+#: Mailman/Cgi/admindb.py:805
 msgid " is already a member"
 msgstr " 는 이미 회원입니다."
+
+#: Mailman/Cgi/admindb.py:808
+msgid "%(addr)s is banned (matched: %(patt)s)"
+msgstr ""
 
 #: Mailman/Cgi/confirm.py:75
 msgid "Confirmation string was empty."
@@ -1462,8 +1472,8 @@ msgstr ""
 "다.당신의 요청은 메일링 리스트 글관리자에게 전달되었으며, 글관리자의 결정에 "
 "대해서는 E메일을 통해 받아 보실 수 있습니다."
 
-#: Mailman/Cgi/confirm.py:368 Mailman/Cgi/confirm.py:428
-#: Mailman/Cgi/confirm.py:517 Mailman/Cgi/confirm.py:740
+#: Mailman/Cgi/confirm.py:368 Mailman/Cgi/confirm.py:433
+#: Mailman/Cgi/confirm.py:522 Mailman/Cgi/confirm.py:751
 msgid ""
 "Invalid confirmation string.  It is\n"
 "            possible that you are attempting to confirm a request for an\n"
@@ -1477,18 +1487,29 @@ msgstr ""
 msgid "You are already a member of this mailing list!"
 msgstr "%(realname)s 메일링 리스트에서 탈퇴되셨습니다."
 
-#: Mailman/Cgi/confirm.py:374
+#: Mailman/Cgi/confirm.py:375
+#, fuzzy
+msgid ""
+"You are currently banned from subscribing to\n"
+"            this list.  If you think this restriction is erroneous, please\n"
+"            contact the list owners at %(owneraddr)s."
+msgstr ""
+"당신이 입력하신 E메일 주소는 이 메일링 리스트에서 추방당한 주소입니다. 만약 "
+"당신이 이것에 실수있다고 생각하시면 리스트 소유주(%(listowner)s)에게 연락하시"
+"기 바랍니다."
+
+#: Mailman/Cgi/confirm.py:379
 msgid ""
 "            You were not invited to this mailing list.  The invitation has\n"
 "            been discarded, and both list administrators have been\n"
 "            alerted."
 msgstr ""
 
-#: Mailman/Cgi/confirm.py:384
+#: Mailman/Cgi/confirm.py:389
 msgid "Subscription request confirmed"
 msgstr "가입 요청이 확인되었습니다."
 
-#: Mailman/Cgi/confirm.py:388
+#: Mailman/Cgi/confirm.py:393
 msgid ""
 "            You have successfully confirmed your subscription request for\n"
 "            \"%(addr)s\" to the %(listname)s mailing list.  A separate\n"
@@ -1505,15 +1526,15 @@ msgstr ""
 "<p>당신은 이제 <a href=\"%(optionsurl)s\">회원으로 로긴 페이지</a>에 접근할 "
 "수 있습니다."
 
-#: Mailman/Cgi/confirm.py:406
+#: Mailman/Cgi/confirm.py:411
 msgid "You have canceled your unsubscription request."
 msgstr "당신은 탈퇴 요청을 취소하셨습니다."
 
-#: Mailman/Cgi/confirm.py:434
+#: Mailman/Cgi/confirm.py:439
 msgid "Unsubscription request confirmed"
 msgstr "탈퇴 요청이 확인 되었습니다."
 
-#: Mailman/Cgi/confirm.py:438
+#: Mailman/Cgi/confirm.py:443
 msgid ""
 "            You have successfully unsubscribed from the %(listname)s "
 "mailing\n"
@@ -1524,15 +1545,15 @@ msgstr ""
 "%(listname)s 메일링 리스트에서 성공적으로 탈퇴 되었습니다.  당신은 이제 <a "
 "href=\"%(listinfourl)s\">메일링 리스트 정보 페이지</a>를 방문할 수 있습니다."
 
-#: Mailman/Cgi/confirm.py:449
+#: Mailman/Cgi/confirm.py:454
 msgid "Confirm unsubscription request"
 msgstr "탈퇴 요청 확인"
 
-#: Mailman/Cgi/confirm.py:464 Mailman/Cgi/confirm.py:554
+#: Mailman/Cgi/confirm.py:469 Mailman/Cgi/confirm.py:565
 msgid "<em>Not available</em>"
 msgstr "<em>이용할 수 없습니다.</em>"
 
-#: Mailman/Cgi/confirm.py:467
+#: Mailman/Cgi/confirm.py:472
 msgid ""
 "Your confirmation is required in order to complete the\n"
 "    unsubscription request from the mailing list <em>%(listname)s</em>.  "
@@ -1559,24 +1580,35 @@ msgstr ""
 "\n"
 "<p> 혹은 탈퇴 요청을 취소하기 위해서 <em>취소하고 버리기</em>를 누르세요."
 
-#: Mailman/Cgi/confirm.py:483 Mailman/Cgi/options.py:696
-#: Mailman/Cgi/options.py:837 Mailman/Cgi/options.py:847
+#: Mailman/Cgi/confirm.py:488 Mailman/Cgi/options.py:746
+#: Mailman/Cgi/options.py:887 Mailman/Cgi/options.py:897
 msgid "Unsubscribe"
 msgstr "탈퇴하기"
 
-#: Mailman/Cgi/confirm.py:484 Mailman/Cgi/confirm.py:583
+#: Mailman/Cgi/confirm.py:489 Mailman/Cgi/confirm.py:594
 msgid "Cancel and discard"
 msgstr "취소하고 버리기"
 
-#: Mailman/Cgi/confirm.py:494
+#: Mailman/Cgi/confirm.py:499
 msgid "You have canceled your change of address request."
 msgstr "당신은 주소 요청 변경을 취소하였습니다."
 
-#: Mailman/Cgi/confirm.py:523
+#: Mailman/Cgi/confirm.py:528
+#, fuzzy
+msgid ""
+"%(newaddr)s is banned from subscribing to the\n"
+"            %(realname)s list.  If you think this restriction is erroneous,\n"
+"            please contact the list owners at %(owneraddr)s."
+msgstr ""
+"당신이 입력하신 E메일 주소는 이 메일링 리스트에서 추방당한 주소입니다. 만약 "
+"당신이 이것에 실수있다고 생각하시면 리스트 소유주(%(listowner)s)에게 연락하시"
+"기 바랍니다."
+
+#: Mailman/Cgi/confirm.py:534
 msgid "Change of address request confirmed"
 msgstr "주소 요청 변경이 확인되었습니다."
 
-#: Mailman/Cgi/confirm.py:527
+#: Mailman/Cgi/confirm.py:538
 msgid ""
 "            You have successfully changed your address on the %(listname)s\n"
 "            mailing list from <b>%(oldaddr)s</b> to <b>%(newaddr)s</b>.  "
@@ -1589,15 +1621,15 @@ msgstr ""
 "<p>당신은 이제 <a href=\"%(optionsurl)s\">회원으로 로긴 페이지</a>에 접근할 "
 "수 있습니다."
 
-#: Mailman/Cgi/confirm.py:539
+#: Mailman/Cgi/confirm.py:550
 msgid "Confirm change of address request"
 msgstr "주소 변경 요청 확인"
 
-#: Mailman/Cgi/confirm.py:558
+#: Mailman/Cgi/confirm.py:569
 msgid "globally"
 msgstr "전제적으로"
 
-#: Mailman/Cgi/confirm.py:561
+#: Mailman/Cgi/confirm.py:572
 msgid ""
 "Your confirmation is required in order to complete the\n"
 "    change of address request for the mailing list <em>%(listname)s</em>.  "
@@ -1638,26 +1670,26 @@ msgstr ""
 "<p> 혹은 주소 변경 요청을 취소하기 위해서 <em>취소하고 버리기</em>를 누르세"
 "요."
 
-#: Mailman/Cgi/confirm.py:582
+#: Mailman/Cgi/confirm.py:593
 msgid "Change address"
 msgstr "주소 변경하기"
 
-#: Mailman/Cgi/confirm.py:591 Mailman/Cgi/confirm.py:705
+#: Mailman/Cgi/confirm.py:602 Mailman/Cgi/confirm.py:716
 msgid "Continue awaiting approval"
 msgstr "승인을 기다리게 하기"
 
-#: Mailman/Cgi/confirm.py:599
+#: Mailman/Cgi/confirm.py:610
 msgid ""
 "Okay, the list moderator will still have the\n"
 "    opportunity to approve or reject this message."
 msgstr ""
 "글 관리자는 이 메세지를 승인하거나 거절하는 권한을 아직 가지고 있습니다."
 
-#: Mailman/Cgi/confirm.py:625
+#: Mailman/Cgi/confirm.py:636
 msgid "Sender discarded message via web."
 msgstr "보낸이가 웹을 통해 메세지를 보렸습니다."
 
-#: Mailman/Cgi/confirm.py:627
+#: Mailman/Cgi/confirm.py:638
 msgid ""
 "The held message with the Subject:\n"
 "            header <em>%(subject)s</em> could not be found.  The most "
@@ -1671,11 +1703,11 @@ msgstr ""
 "이런 경우는 글관리자가 그 글을 이미 승인하였거나 거절했을 때 나타날 수 있습니"
 "다. 당신은 이제 그것을 취소할 수 없습니다."
 
-#: Mailman/Cgi/confirm.py:635
+#: Mailman/Cgi/confirm.py:646
 msgid "Posted message canceled"
 msgstr "배달된 메세지가 취소되었습니다."
 
-#: Mailman/Cgi/confirm.py:638
+#: Mailman/Cgi/confirm.py:649
 msgid ""
 "            You have successfully canceled the posting of your message with\n"
 "            the Subject: header <em>%(subject)s</em> to the mailing list\n"
@@ -1684,17 +1716,17 @@ msgstr ""
 "%(listname)s 로 보낸 당신의 메세지(제목 :<em>%(subject)s</em>) 가 성공적으로"
 "취소되었습니다."
 
-#: Mailman/Cgi/confirm.py:649
+#: Mailman/Cgi/confirm.py:660
 msgid "Cancel held message posting"
 msgstr "보낸 글 취소하기"
 
-#: Mailman/Cgi/confirm.py:674
+#: Mailman/Cgi/confirm.py:685
 msgid ""
 "The held message you were referred to has\n"
 "        already been handled by the list administrator."
 msgstr ""
 
-#: Mailman/Cgi/confirm.py:688
+#: Mailman/Cgi/confirm.py:699
 msgid ""
 "Your confirmation is required in order to cancel the\n"
 "    posting of your message to the mailing list <em>%(listname)s</em>:\n"
@@ -1721,11 +1753,11 @@ msgstr ""
 "<p> 혹은 글 관리자의 승인 혹은 거절을 기다릴려면 <em>승인을 기다리게 하기</"
 "em> 를 누르세요."
 
-#: Mailman/Cgi/confirm.py:704
+#: Mailman/Cgi/confirm.py:715
 msgid "Cancel posting"
 msgstr "보낸 글 취소하기"
 
-#: Mailman/Cgi/confirm.py:716
+#: Mailman/Cgi/confirm.py:727
 msgid ""
 "You have canceled the re-enabling of your membership.  If\n"
 "    we continue to receive bounces from your address, it could be deleted "
@@ -1735,11 +1767,11 @@ msgstr ""
 "당신은 회원으로 재활동하기를 취소하셨습니다. 만약 당신의 주소로 부터 바운스 "
 "를 계속적으로 받게 된다면 이 메일링 리스트에서 삭제될 것입니다."
 
-#: Mailman/Cgi/confirm.py:746
+#: Mailman/Cgi/confirm.py:757
 msgid "Membership re-enabled."
 msgstr "회원으로 재활동하기."
 
-#: Mailman/Cgi/confirm.py:750
+#: Mailman/Cgi/confirm.py:761
 msgid ""
 "            You have successfully re-enabled your membership in the\n"
 "            %(listname)s mailing list.  You can now <a\n"
@@ -1749,11 +1781,11 @@ msgstr ""
 " %(listname)s 메일링 리스트에 회원으로 재활동하기 성공적으로 이루어 졌습니다."
 "당신은 <a href=\"%(optionsurl)s\">회원 설정 페이지</a>를 방문할 수 있습니다."
 
-#: Mailman/Cgi/confirm.py:762
+#: Mailman/Cgi/confirm.py:773
 msgid "Re-enable mailing list membership"
 msgstr "메일링 리스트 회원으로 재활동하기"
 
-#: Mailman/Cgi/confirm.py:779
+#: Mailman/Cgi/confirm.py:790
 msgid ""
 "We're sorry, but you have already been unsubscribed\n"
 "        from this mailing list.  To re-subscribe, please visit the\n"
@@ -1763,11 +1795,11 @@ msgstr ""
 "려면 <a href=\"%(listinfourl)s\">메일링 리스트 정보 페이지</a>를 방문하시기 "
 "바랍니다."
 
-#: Mailman/Cgi/confirm.py:794
+#: Mailman/Cgi/confirm.py:805
 msgid "<em>not available</em>"
 msgstr "<em>이용 할 수 없습니다.</em>"
 
-#: Mailman/Cgi/confirm.py:798
+#: Mailman/Cgi/confirm.py:809
 msgid ""
 "Your membership in the %(realname)s mailing list is\n"
 "    currently disabled due to excessive bounces.  Your confirmation is\n"
@@ -1803,11 +1835,11 @@ msgstr ""
 "em> 를 누르세요. 혹은 회원으로 재활동하길 연기하실려면 <em>취소하기</em>를 누"
 "르세요."
 
-#: Mailman/Cgi/confirm.py:818
+#: Mailman/Cgi/confirm.py:829
 msgid "Re-enable membership"
 msgstr "회원으로 재활동하기"
 
-#: Mailman/Cgi/confirm.py:819
+#: Mailman/Cgi/confirm.py:830
 msgid "Cancel"
 msgstr "취소하기"
 
@@ -1831,25 +1863,25 @@ msgstr "<br>이동 :"
 msgid "administrative list overview"
 msgstr "관리 목록 소개"
 
-#: Mailman/Cgi/create.py:102
+#: Mailman/Cgi/create.py:103
 #, fuzzy
 msgid "List name must not include \"@\": %(safelistname)s"
 msgstr "메일링 리스트 이름은 \"@\" 를 포함하면 안됩니다. : %(listname)s"
 
-#: Mailman/Cgi/create.py:109
+#: Mailman/Cgi/create.py:110
 #, fuzzy
 msgid "List already exists: %(safelistname)s"
 msgstr "메일링 리스트 이름이 이미 존재합니다: %(listname)s"
 
-#: Mailman/Cgi/create.py:113
+#: Mailman/Cgi/create.py:114
 msgid "You forgot to enter the list name"
 msgstr "메일링 리스트 이름을 입력하길 잊으셨군요."
 
-#: Mailman/Cgi/create.py:117
+#: Mailman/Cgi/create.py:118
 msgid "You forgot to specify the list owner"
 msgstr "메일링 리스트 이름 소유주를 정하는 것을 잊으셨군요."
 
-#: Mailman/Cgi/create.py:124
+#: Mailman/Cgi/create.py:125
 msgid ""
 "Leave the initial password (and confirmation) fields\n"
 "                blank if you want Mailman to autogenerate the list\n"
@@ -1858,37 +1890,37 @@ msgstr ""
 "Mailman 이 메일링 리스트의 비밀번호를 자동 생성하도록 할며련 초기 비밀 번호 "
 "(그리고 확인) 항목을 그대로 남겨두십시오."
 
-#: Mailman/Cgi/create.py:133
+#: Mailman/Cgi/create.py:134
 msgid "Initial list passwords do not match"
 msgstr "초기 메일링 리스트 비밀번호가 맞지 않습니다."
 
-#: Mailman/Cgi/create.py:142
+#: Mailman/Cgi/create.py:143
 msgid "The list password cannot be empty<!-- ignore -->"
 msgstr "메일링 리스트 비밀번호는 비어있으면 안됩니다.<!-- ignore -->"
 
-#: Mailman/Cgi/create.py:154
+#: Mailman/Cgi/create.py:155
 msgid "You are not authorized to create new mailing lists"
 msgstr "당신은 새로운 메일링 리스트를 생성할 수 없습니다."
 
-#: Mailman/Cgi/create.py:162
+#: Mailman/Cgi/create.py:163
 msgid "Unknown virtual host: %(safehostname)s"
 msgstr ""
 
-#: Mailman/Cgi/create.py:193 bin/newlist:202
+#: Mailman/Cgi/create.py:194 bin/newlist:202
 #, fuzzy
 msgid "Bad owner email address: %(s)s"
 msgstr "잘못된 소유주 E메일 주소 : %(owner)s"
 
-#: Mailman/Cgi/create.py:197 bin/newlist:170 bin/newlist:204
+#: Mailman/Cgi/create.py:198 bin/newlist:170 bin/newlist:204
 msgid "List already exists: %(listname)s"
 msgstr "메일링 리스트 이름이 이미 존재합니다: %(listname)s"
 
-#: Mailman/Cgi/create.py:201 bin/newlist:200
+#: Mailman/Cgi/create.py:202 bin/newlist:200
 #, fuzzy
 msgid "Illegal list name: %(s)s"
 msgstr "메일링 리스트 이름은 \"@\" 를 포함하면 안됩니다. : %(listname)s"
 
-#: Mailman/Cgi/create.py:206
+#: Mailman/Cgi/create.py:207
 msgid ""
 "Some unknown error occurred while creating the list.\n"
 "                Please contact the site administrator for assistance."
@@ -1896,15 +1928,15 @@ msgstr ""
 "알수 없는 에러가 메일링 리스트 생성시 일어났습니다.도움을 구하기 위해서 사이"
 "트 관리자에게 연락하십시오."
 
-#: Mailman/Cgi/create.py:243 bin/newlist:245
+#: Mailman/Cgi/create.py:244 bin/newlist:245
 msgid "Your new mailing list: %(listname)s"
 msgstr "당신의 새로운 메일링 리스트 : %(listname)s"
 
-#: Mailman/Cgi/create.py:252
+#: Mailman/Cgi/create.py:253
 msgid "Mailing list creation results"
 msgstr "메일링 리스트 생성 결과물"
 
-#: Mailman/Cgi/create.py:258
+#: Mailman/Cgi/create.py:259
 msgid ""
 "You have successfully created the mailing list\n"
 "    <b>%(listname)s</b> and notification has been sent to the list owner\n"
@@ -1914,28 +1946,28 @@ msgstr ""
 "트 소유주 <b>%(owner)s</b> 에게 공지 메일을 보냈습니다. 당신은 이제 아래와 같"
 "이 할 수 있습니다:"
 
-#: Mailman/Cgi/create.py:262
+#: Mailman/Cgi/create.py:263
 msgid "Visit the list's info page"
 msgstr "메일링 리스트 정보 페이지를 방문하기"
 
-#: Mailman/Cgi/create.py:263
+#: Mailman/Cgi/create.py:264
 msgid "Visit the list's admin page"
 msgstr "메일링 리스트의 관리 페이지 방문하기"
 
-#: Mailman/Cgi/create.py:264
+#: Mailman/Cgi/create.py:265
 msgid "Create another list"
 msgstr "다른 메일링 리스트 생성하기"
 
-#: Mailman/Cgi/create.py:282
+#: Mailman/Cgi/create.py:283
 msgid "Create a %(hostname)s Mailing List"
 msgstr "%(hostname)s 메일링 리스트 생성하기"
 
-#: Mailman/Cgi/create.py:291 Mailman/Cgi/rmlist.py:199
+#: Mailman/Cgi/create.py:292 Mailman/Cgi/rmlist.py:199
 #: Mailman/Gui/Bounce.py:187 Mailman/htmlformat.py:339
 msgid "Error: "
 msgstr "에러: "
 
-#: Mailman/Cgi/create.py:293
+#: Mailman/Cgi/create.py:294
 msgid ""
 "You can create a new mailing list by entering the\n"
 "    relevant information into the form below.  The name of the mailing list\n"
@@ -1973,35 +2005,35 @@ msgstr ""
 "리스트 생성자</em> 비밀번호를 가지고 있습니다. 아래의 항목에 그 패스워드를 입"
 "력하십시오. 사이트 관리자의 비밀번호 또한 인증에 사용될 수 있습니다."
 
-#: Mailman/Cgi/create.py:319
+#: Mailman/Cgi/create.py:320
 msgid "List Identity"
 msgstr "리스트 정보"
 
-#: Mailman/Cgi/create.py:323
+#: Mailman/Cgi/create.py:324
 msgid "Name of list:"
 msgstr "메일링 리스트의 이름:"
 
-#: Mailman/Cgi/create.py:329
+#: Mailman/Cgi/create.py:330
 msgid "Initial list owner address:"
 msgstr "메일링 리스트의 소유주:"
 
-#: Mailman/Cgi/create.py:338
+#: Mailman/Cgi/create.py:339
 msgid "Auto-generate initial list password?"
 msgstr "메일링 리스트 초기 비밀번호를 자동 생성 할까요?"
 
-#: Mailman/Cgi/create.py:346
+#: Mailman/Cgi/create.py:347
 msgid "Initial list password:"
 msgstr "메일링 리스트 초기 비밀번호:"
 
-#: Mailman/Cgi/create.py:352
+#: Mailman/Cgi/create.py:353
 msgid "Confirm initial password:"
 msgstr "초기 패스워드를 한번 더 입력:"
 
-#: Mailman/Cgi/create.py:362
+#: Mailman/Cgi/create.py:368
 msgid "List Characteristics"
 msgstr "메일링 리스트 특징"
 
-#: Mailman/Cgi/create.py:366
+#: Mailman/Cgi/create.py:372
 msgid ""
 "Should new members be quarantined before they\n"
 "    are allowed to post unmoderated to this list?  Answer <em>Yes</em> to "
@@ -2009,7 +2041,7 @@ msgid ""
 "    new member postings for moderator approval by default."
 msgstr ""
 
-#: Mailman/Cgi/create.py:395
+#: Mailman/Cgi/create.py:401
 msgid ""
 "Initial list of supported languages.  <p>Note that if you do not\n"
 "        select at least one initial language, the list will use the server\n"
@@ -2018,19 +2050,19 @@ msgstr ""
 "초기 리스트가 지원하는 언어. <p>만약 초기 언어를 하나도 선택하지 않는다면 리"
 "스트는 서버 기본 언어 : %(deflang)s 를 사용할 것입니다."
 
-#: Mailman/Cgi/create.py:406
+#: Mailman/Cgi/create.py:412
 msgid "Send \"list created\" email to list owner?"
 msgstr "리스트 소유자에게 \"리스트가 생성되었습니다\" 메일을 보낼까요?"
 
-#: Mailman/Cgi/create.py:415
+#: Mailman/Cgi/create.py:421
 msgid "List creator's (authentication) password:"
 msgstr "리스트 생성자의 (인증) 비밀번호 : "
 
-#: Mailman/Cgi/create.py:420
+#: Mailman/Cgi/create.py:426
 msgid "Create List"
 msgstr "새 메일링 리스트 생성하기"
 
-#: Mailman/Cgi/create.py:421
+#: Mailman/Cgi/create.py:427
 msgid "Clear Form"
 msgstr "양식 모두 지우기"
 
@@ -2094,7 +2126,7 @@ msgstr "빈 html 페이지를 가질 수 없습니다."
 msgid "HTML Unchanged."
 msgstr "HTML 이 변경되지 않았습니다."
 
-#: Mailman/Cgi/edithtml.py:170
+#: Mailman/Cgi/edithtml.py:175
 msgid "HTML successfully updated."
 msgstr "HTML 이 성공적으로 업데이트 되었습니다."
 
@@ -2154,73 +2186,91 @@ msgstr ""
 msgid "Edit Options"
 msgstr "수정 설정 부분"
 
-#: Mailman/Cgi/listinfo.py:197 Mailman/Cgi/options.py:803
+#: Mailman/Cgi/listinfo.py:197 Mailman/Cgi/options.py:853
 #: Mailman/Cgi/roster.py:109
 msgid "View this page in"
 msgstr "이 페이지 보기"
 
-#: Mailman/Cgi/options.py:57 Mailman/Cgi/options.py:74
+#: Mailman/Cgi/options.py:58 Mailman/Cgi/options.py:75
 msgid "CGI script error"
 msgstr "CGI 스크립트 에러"
 
-#: Mailman/Cgi/options.py:60
+#: Mailman/Cgi/options.py:61
 msgid "Invalid options to CGI script."
 msgstr "잘못된 CGI 스크립트 형식입니다."
 
-#: Mailman/Cgi/options.py:104
+#: Mailman/Cgi/options.py:105
 msgid "No address given"
 msgstr "E메일 주소가 주어지지 않았습니다."
 
-#: Mailman/Cgi/options.py:116
+#: Mailman/Cgi/options.py:117
 #, fuzzy
 msgid "Illegal Email Address: %(safeuser)s"
 msgstr "이상한 형식의 E메일 주소를 주셨습니다."
 
-#: Mailman/Cgi/options.py:123 Mailman/Cgi/options.py:187
-#: Mailman/Cgi/options.py:209
+#: Mailman/Cgi/options.py:124 Mailman/Cgi/options.py:188
+#: Mailman/Cgi/options.py:210
 msgid "No such member: %(safeuser)s."
 msgstr "%(safeuser)s 라는 사용자가 없습니다."
 
-#: Mailman/Cgi/options.py:173
+#: Mailman/Cgi/options.py:174
 #, fuzzy
 msgid ""
 "Your unsubscription request has been\n"
 "                    forwarded to the list administrator for approval."
 msgstr "당신의 탈퇴 요청은 승인을 위해 리스트 관리자에게 전달되었습니다."
 
-#: Mailman/Cgi/options.py:178 Mailman/Cgi/options.py:192
+#: Mailman/Cgi/options.py:179 Mailman/Cgi/options.py:193
 msgid "The confirmation email has been sent."
 msgstr "확인 E메일이 보내졌습니다."
 
-#: Mailman/Cgi/options.py:203 Mailman/Cgi/options.py:215
-#: Mailman/Cgi/options.py:257
+#: Mailman/Cgi/options.py:204 Mailman/Cgi/options.py:216
+#: Mailman/Cgi/options.py:271
 msgid "A reminder of your password has been emailed to you."
 msgstr "당신의 패스워드를 포함한 메일을 당신에게 전달되었습니다"
 
-#: Mailman/Cgi/options.py:231
+#: Mailman/Cgi/options.py:245
 msgid "Authentication failed."
 msgstr "인증 실패"
 
-#: Mailman/Cgi/options.py:263
+#: Mailman/Cgi/options.py:278
+msgid ""
+"The list administrator may not view the other\n"
+"            subscriptions for this user."
+msgstr ""
+
+#: Mailman/Cgi/options.py:279 Mailman/Cgi/options.py:322
+#: Mailman/Cgi/options.py:442 Mailman/Cgi/options.py:658
+msgid "Note: "
+msgstr ""
+
+#: Mailman/Cgi/options.py:284
 #, fuzzy
 msgid "List subscriptions for %(safeuser)s on %(hostname)s"
 msgstr "%(hostname)s 상의 %(user)s 를 위한 리스트 가입"
 
-#: Mailman/Cgi/options.py:266
+#: Mailman/Cgi/options.py:287
 msgid ""
 "Click on a link to visit your options page for the\n"
 "        requested mailing list."
 msgstr "요청한 메일링 리스트의 설정 페이지를 방문하실려면 링크를 클릭하세요."
 
-#: Mailman/Cgi/options.py:315
+#: Mailman/Cgi/options.py:319
+msgid ""
+"The list administrator may not change the names\n"
+"            or addresses for this user's other subscriptions.  However, the\n"
+"            subscription for this mailing list has been changed."
+msgstr ""
+
+#: Mailman/Cgi/options.py:342
 msgid "Addresses did not match!"
 msgstr "E메일 주소가 맞지 않습니다!"
 
-#: Mailman/Cgi/options.py:320
+#: Mailman/Cgi/options.py:347
 msgid "You are already using that email address"
 msgstr "당신은 이미 E메일 주소를 사용중입니다."
 
-#: Mailman/Cgi/options.py:332
+#: Mailman/Cgi/options.py:359
 msgid ""
 "The new address you requested %(newaddr)s is already a member of the\n"
 "%(listname)s mailing list, however you have also requested a global change "
@@ -2229,51 +2279,73 @@ msgid ""
 "%(safeuser)s will be changed. "
 msgstr ""
 
-#: Mailman/Cgi/options.py:341
+#: Mailman/Cgi/options.py:368
 #, fuzzy
 msgid "The new address is already a member: %(newaddr)s"
 msgstr "%(newaddr)s 는 이미 리스트의 회원입니다."
 
-#: Mailman/Cgi/options.py:347
+#: Mailman/Cgi/options.py:374
 msgid "Addresses may not be blank"
 msgstr "E메일 주소는 비어 있으면 안됩니다."
 
-#: Mailman/Cgi/options.py:361
+#: Mailman/Cgi/options.py:388
 #, fuzzy
 msgid "A confirmation message has been sent to %(newaddr)s. "
 msgstr "확인 메세지가 %(newaddr)s 로 보내졌습니다."
 
-#: Mailman/Cgi/options.py:370
+#: Mailman/Cgi/options.py:397
 msgid "Bad email address provided"
 msgstr "잘못된 E메일 주소를 주셨습니다."
 
-#: Mailman/Cgi/options.py:372
+#: Mailman/Cgi/options.py:399
 msgid "Illegal email address provided"
 msgstr "이상한 형식의 E메일 주소를 주셨습니다."
 
-#: Mailman/Cgi/options.py:374
+#: Mailman/Cgi/options.py:401
 msgid "%(newaddr)s is already a member of the list."
 msgstr "%(newaddr)s 는 이미 리스트의 회원입니다."
 
-#: Mailman/Cgi/options.py:383
+#: Mailman/Cgi/options.py:404
+#, fuzzy
+msgid ""
+"%(newaddr)s is banned from this list.  If you\n"
+"                      think this restriction is erroneous, please contact\n"
+"                      the list owners at %(owneraddr)s."
+msgstr ""
+"당신이 입력하신 E메일 주소는 이 메일링 리스트에서 추방된 것입니다. 이것에 대"
+"해 문제가 있다고 생각하시면 리스트 소유주( %(listowner)s )에게 연락하시기 바"
+"랍니다."
+
+#: Mailman/Cgi/options.py:415
 #, fuzzy
 msgid "Member name successfully changed. "
 msgstr "회원 이름이 성공적으로 변경되었습니다."
 
-#: Mailman/Cgi/options.py:394
+#: Mailman/Cgi/options.py:426
 msgid "Passwords may not be blank"
 msgstr "패스워드(들)은 비어있으면 안됩니다."
 
-#: Mailman/Cgi/options.py:399
+#: Mailman/Cgi/options.py:431
 msgid "Passwords did not match!"
 msgstr "패스워드(들)이 맞지 않습니다!"
 
-#: Mailman/Cgi/options.py:414 Mailman/Commands/cmd_password.py:83
+#: Mailman/Cgi/options.py:439
+#, fuzzy
+msgid ""
+"The list administrator may not change the\n"
+"            password for this user's other subscriptions.  However, the\n"
+"            password for this mailing list has been changed."
+msgstr ""
+"리스트 관리자가 이 메일링 리스트를 개별배달 금지로 설정하였습니다. 그래서 당"
+"신의 배달 설정은 성공적으로 변경되지 않았습니다. 하지만 당신의 다른 설정은 성"
+"공적으로 변경되었습니다."
+
+#: Mailman/Cgi/options.py:456 Mailman/Commands/cmd_password.py:83
 #: Mailman/Commands/cmd_password.py:109
 msgid "Password successfully changed."
 msgstr "비밀번호가 성공적으로 변경되었습니다."
 
-#: Mailman/Cgi/options.py:423
+#: Mailman/Cgi/options.py:465
 msgid ""
 "You must confirm your unsubscription request by turning\n"
 "                on the checkbox below the <em>Unsubscribe</em> button.  You\n"
@@ -2282,11 +2354,11 @@ msgstr ""
 "당신은 아래의 <em>탈퇴하기</em>버튼 체크박스를 설정함으로써 당신의 탈퇴 요청"
 "을 확인해야 합니다. 당신은 탈퇴되지 않았습니다!"
 
-#: Mailman/Cgi/options.py:455
+#: Mailman/Cgi/options.py:497
 msgid "Unsubscription results"
 msgstr "탈퇴 결과들"
 
-#: Mailman/Cgi/options.py:459
+#: Mailman/Cgi/options.py:501
 msgid ""
 "Your unsubscription request has been received and\n"
 "            forwarded on to the list moderators for approval.  You will\n"
@@ -2296,7 +2368,7 @@ msgstr ""
 "당신의 탈퇴 요청은 리스트 글관리자의 승인을 위해 성공적으로 전달되었습니다. "
 "당신은 글관리자의 결정에 대한 공지를 E메일로 받으실 수 있습니다."
 
-#: Mailman/Cgi/options.py:464
+#: Mailman/Cgi/options.py:506
 msgid ""
 "You have been successfully unsubscribed from the\n"
 "            mailing list %(fqdn_listname)s.  If you were receiving digest\n"
@@ -2310,7 +2382,15 @@ msgstr ""
 "있습니다. 만약 여러분이 탈퇴에 대한 어떤 질문이 있으시면 %(owneraddr)s (리스"
 "트 소유주) 로 연락 주시기 바랍니다."
 
-#: Mailman/Cgi/options.py:615
+#: Mailman/Cgi/options.py:655
+msgid ""
+"The list administrator may not change the\n"
+"                options for this user's other subscriptions.  However the\n"
+"                options for this mailing list subscription has been\n"
+"                changed."
+msgstr ""
+
+#: Mailman/Cgi/options.py:665
 msgid ""
 "The list administrator has disabled digest delivery for\n"
 "            this list, so your delivery option has not been set.  However "
@@ -2321,7 +2401,7 @@ msgstr ""
 "신의 배달 설정은 성공적으로 변경되지 않았습니다. 하지만 당신의 다른 설정은 성"
 "공적으로 변경되었습니다."
 
-#: Mailman/Cgi/options.py:619
+#: Mailman/Cgi/options.py:669
 msgid ""
 "The list administrator has disabled non-digest delivery\n"
 "            for this list, so your delivery option has not been set.  "
@@ -2332,63 +2412,63 @@ msgstr ""
 "신의 배달 설정은 성공적으로 변경되지 않았습니다. 하지만 당신의 다른 설정은 성"
 "공적으로 변경되었습니다."
 
-#: Mailman/Cgi/options.py:623
+#: Mailman/Cgi/options.py:673
 msgid "You have successfully set your options."
 msgstr "설정 변경을 성공적으로 수행하였습니다."
 
-#: Mailman/Cgi/options.py:626
+#: Mailman/Cgi/options.py:676
 msgid "You may get one last digest."
 msgstr "당신은 하나 이상의 묶음배달을 받으실 수 있습니다."
 
-#: Mailman/Cgi/options.py:698
+#: Mailman/Cgi/options.py:748
 msgid "<em>Yes, I really want to unsubscribe</em>"
 msgstr "<em>예, 전 정말 탈퇴하실 원합니다.</em>"
 
-#: Mailman/Cgi/options.py:702
+#: Mailman/Cgi/options.py:752
 msgid "Change My Password"
 msgstr "나의 비밀번호 변경하기"
 
-#: Mailman/Cgi/options.py:705
+#: Mailman/Cgi/options.py:755
 msgid "List my other subscriptions"
 msgstr "나의 다른 가입 목록"
 
-#: Mailman/Cgi/options.py:711
+#: Mailman/Cgi/options.py:761
 msgid "Email My Password To Me"
 msgstr "나에게 나의 비밀번호를 E메일로 붙혀줘~"
 
-#: Mailman/Cgi/options.py:713
+#: Mailman/Cgi/options.py:763
 msgid "password"
 msgstr "비밀번호"
 
-#: Mailman/Cgi/options.py:715
+#: Mailman/Cgi/options.py:765
 msgid "Log out"
 msgstr "로그 아웃"
 
-#: Mailman/Cgi/options.py:717
+#: Mailman/Cgi/options.py:767
 msgid "Submit My Changes"
 msgstr "설정 변경하기"
 
-#: Mailman/Cgi/options.py:729
+#: Mailman/Cgi/options.py:779
 msgid "days"
 msgstr "날들"
 
-#: Mailman/Cgi/options.py:731
+#: Mailman/Cgi/options.py:781
 msgid "day"
 msgstr "일"
 
-#: Mailman/Cgi/options.py:732
+#: Mailman/Cgi/options.py:782
 msgid "%(days)d %(units)s"
 msgstr ""
 
-#: Mailman/Cgi/options.py:738
+#: Mailman/Cgi/options.py:788
 msgid "Change My Address and Name"
 msgstr "나의 E메일 주소와 이름 변경하기"
 
-#: Mailman/Cgi/options.py:762
+#: Mailman/Cgi/options.py:812
 msgid "<em>No topics defined</em>"
 msgstr "<em>주제가 정의된 것이 없습니다.</em>"
 
-#: Mailman/Cgi/options.py:770
+#: Mailman/Cgi/options.py:820
 msgid ""
 "\n"
 "You are subscribed to this list with the case-preserved address\n"
@@ -2398,20 +2478,20 @@ msgstr ""
 "이미 예약되어 있는 주소(<em>%(cpuser)s</em)로 이 메일링 리스트에 가입하셨습니"
 "다."
 
-#: Mailman/Cgi/options.py:784
+#: Mailman/Cgi/options.py:834
 msgid "%(realname)s list: member options login page"
 msgstr "%(realname)s 리스트: 회원 설정 로긴 페이지"
 
-#: Mailman/Cgi/options.py:785
+#: Mailman/Cgi/options.py:835
 msgid "email address and "
 msgstr "E메일 주소와"
 
-#: Mailman/Cgi/options.py:788
+#: Mailman/Cgi/options.py:838
 #, fuzzy
 msgid "%(realname)s list: member options for user %(safeuser)s"
 msgstr "%(realname)s 리스트: %(user)s 회원 설정"
 
-#: Mailman/Cgi/options.py:813
+#: Mailman/Cgi/options.py:863
 #, fuzzy
 msgid ""
 "In order to change your membership option, you must\n"
@@ -2440,19 +2520,19 @@ msgstr ""
 "를 끝냈거나, 관리자 화면에서 볼수 있는 \"<em>로그아웃</em>\"(여러분이 성공적"
 "으로 로긴 을 하면 볼 수 있습니다.) 를 클릭하면 자동으로 지워집니다."
 
-#: Mailman/Cgi/options.py:827
+#: Mailman/Cgi/options.py:877
 msgid "Email address:"
 msgstr "E메일 주소:"
 
-#: Mailman/Cgi/options.py:831
+#: Mailman/Cgi/options.py:881
 msgid "Password:"
 msgstr "비밀번호:"
 
-#: Mailman/Cgi/options.py:833
+#: Mailman/Cgi/options.py:883
 msgid "Log in"
 msgstr "로그인"
 
-#: Mailman/Cgi/options.py:841
+#: Mailman/Cgi/options.py:891
 msgid ""
 "By clicking on the <em>Unsubscribe</em> button, a\n"
 "    confirmation message will be emailed to you.  This message will have a\n"
@@ -2465,11 +2545,11 @@ msgstr ""
 "메일내의 안내문을 보시기 바랍니다.)를 완료하기 위해 당신이 눌러야할 링크를 포"
 "함하고 있습니다."
 
-#: Mailman/Cgi/options.py:849
+#: Mailman/Cgi/options.py:899
 msgid "Password reminder"
 msgstr "패스워드 상기자(Reminder)"
 
-#: Mailman/Cgi/options.py:853
+#: Mailman/Cgi/options.py:903
 msgid ""
 "By clicking on the <em>Remind</em> button, your\n"
 "    password will be emailed to you."
@@ -2477,27 +2557,27 @@ msgstr ""
 "<em>나의 비밀번호를 보내줘!</em> 버튼을 클릭함으로써 당신의 비밀번호가 당신에"
 "게 배달될 것입니다."
 
-#: Mailman/Cgi/options.py:856
+#: Mailman/Cgi/options.py:906
 msgid "Remind"
 msgstr "나의 비밀번호를 보내줘!"
 
-#: Mailman/Cgi/options.py:956
+#: Mailman/Cgi/options.py:1006
 msgid "<missing>"
 msgstr "<빠짐>"
 
-#: Mailman/Cgi/options.py:967
+#: Mailman/Cgi/options.py:1017
 msgid "Requested topic is not valid: %(topicname)s"
 msgstr "요청한 주제가 틀립니다: %(topicname)s"
 
-#: Mailman/Cgi/options.py:972
+#: Mailman/Cgi/options.py:1022
 msgid "Topic filter details"
 msgstr "주제 걸러내기 세부사항"
 
-#: Mailman/Cgi/options.py:975
+#: Mailman/Cgi/options.py:1025
 msgid "Name:"
 msgstr "이름: "
 
-#: Mailman/Cgi/options.py:977
+#: Mailman/Cgi/options.py:1027
 msgid "Pattern (as regexp):"
 msgstr "패턴(정규표현식으로):"
 
@@ -2776,18 +2856,29 @@ msgid ""
 "your email address?"
 msgstr "당신은 회원이 아닙니다. 이미 탈퇴되어 있는지 확인하십시오."
 
-#: Mailman/Commands/cmd_confirm.py:67
+#: Mailman/Commands/cmd_confirm.py:68
+#, fuzzy
+msgid ""
+"You are currently banned from subscribing to this list.  If you think this\n"
+"restriction is erroneous, please contact the list owners at\n"
+"%(owneraddr)s."
+msgstr ""
+"당신이 입력하신 E메일 주소는 이 메일링 리스트에서 추방된 것입니다. 이것에 대"
+"해 문제가 있다고 생각하시면 리스트 소유주( %(listowner)s )에게 연락하시기 바"
+"랍니다."
+
+#: Mailman/Commands/cmd_confirm.py:73
 msgid ""
 "You were not invited to this mailing list.  The invitation has been "
 "discarded,\n"
 "and both list administrators have been alerted."
 msgstr ""
 
-#: Mailman/Commands/cmd_confirm.py:71
+#: Mailman/Commands/cmd_confirm.py:77
 msgid "Bad approval password given.  Held message is still being held."
 msgstr ""
 
-#: Mailman/Commands/cmd_confirm.py:80
+#: Mailman/Commands/cmd_confirm.py:86
 #, fuzzy
 msgid "Confirmation succeeded"
 msgstr "확인 문자열:"
@@ -3327,128 +3418,132 @@ msgstr "개별배달(Non-Digest) 회원들:\n"
 msgid "Digest members:"
 msgstr "묶음배달(Digest) 회원들:\n"
 
-#: Mailman/Defaults.py:1310
+#: Mailman/Defaults.py:1318
 #, fuzzy
 msgid "Catalan"
 msgstr "이탈리아어"
 
-#: Mailman/Defaults.py:1311
+#: Mailman/Defaults.py:1319
 msgid "Czech"
 msgstr "체크어"
 
-#: Mailman/Defaults.py:1312
+#: Mailman/Defaults.py:1320
 #, fuzzy
 msgid "Danish"
 msgstr "핀란드어"
 
-#: Mailman/Defaults.py:1313
+#: Mailman/Defaults.py:1321
 msgid "German"
 msgstr "독일어"
 
-#: Mailman/Defaults.py:1314
+#: Mailman/Defaults.py:1322
 msgid "English (USA)"
 msgstr "영어 (USA)"
 
-#: Mailman/Defaults.py:1315
+#: Mailman/Defaults.py:1323
 msgid "Spanish (Spain)"
 msgstr "스페인어 (스페인)"
 
-#: Mailman/Defaults.py:1316
+#: Mailman/Defaults.py:1324
 msgid "Estonian"
 msgstr ""
 
-#: Mailman/Defaults.py:1317
+#: Mailman/Defaults.py:1325
 msgid "Euskara"
 msgstr ""
 
-#: Mailman/Defaults.py:1318
+#: Mailman/Defaults.py:1326
 msgid "Finnish"
 msgstr "핀란드어"
 
-#: Mailman/Defaults.py:1319
+#: Mailman/Defaults.py:1327
 msgid "French"
 msgstr "프랑스어"
 
-#: Mailman/Defaults.py:1320
+#: Mailman/Defaults.py:1328
 msgid "Croatian"
 msgstr ""
 
-#: Mailman/Defaults.py:1321
+#: Mailman/Defaults.py:1329
 msgid "Hungarian"
 msgstr "헝가리어"
 
-#: Mailman/Defaults.py:1322
+#: Mailman/Defaults.py:1330
+msgid "Interlingua"
+msgstr ""
+
+#: Mailman/Defaults.py:1331
 msgid "Italian"
 msgstr "이탈리아어"
 
-#: Mailman/Defaults.py:1323
+#: Mailman/Defaults.py:1332
 msgid "Japanese"
 msgstr "일본어"
 
-#: Mailman/Defaults.py:1324
+#: Mailman/Defaults.py:1333
 #, fuzzy
 msgid "Korean"
 msgstr "노르웨이어"
 
-#: Mailman/Defaults.py:1325
+#: Mailman/Defaults.py:1334
 msgid "Lithuanian"
 msgstr ""
 
-#: Mailman/Defaults.py:1326
+#: Mailman/Defaults.py:1335
 msgid "Dutch"
 msgstr ""
 
-#: Mailman/Defaults.py:1327
+#: Mailman/Defaults.py:1336
 msgid "Norwegian"
 msgstr "노르웨이어"
 
-#: Mailman/Defaults.py:1328
+#: Mailman/Defaults.py:1337
 msgid "Polish"
 msgstr ""
 
-#: Mailman/Defaults.py:1329
+#: Mailman/Defaults.py:1338
 msgid "Portuguese"
 msgstr ""
 
-#: Mailman/Defaults.py:1330
+#: Mailman/Defaults.py:1339
 msgid "Portuguese (Brazil)"
 msgstr ""
 
-#: Mailman/Defaults.py:1331
+#: Mailman/Defaults.py:1340
 msgid "Romanian"
 msgstr ""
 
-#: Mailman/Defaults.py:1332
+#: Mailman/Defaults.py:1341
 msgid "Russian"
 msgstr "러시아어"
 
-#: Mailman/Defaults.py:1333
+#: Mailman/Defaults.py:1342
 #, fuzzy
 msgid "Serbian"
 msgstr "독일어"
 
-#: Mailman/Defaults.py:1334
+#: Mailman/Defaults.py:1343
 #, fuzzy
 msgid "Slovenian"
 msgstr "독일어"
 
-#: Mailman/Defaults.py:1335
+#: Mailman/Defaults.py:1344
 msgid "Swedish"
 msgstr ""
 
-#: Mailman/Defaults.py:1336
+#: Mailman/Defaults.py:1345
 msgid "Turkish"
 msgstr ""
 
-#: Mailman/Defaults.py:1337
+#: Mailman/Defaults.py:1346
 msgid "Ukrainian"
 msgstr ""
 
-#: Mailman/Defaults.py:1338
+#: Mailman/Defaults.py:1347
 msgid "Chinese (China)"
 msgstr ""
 
-#: Mailman/Defaults.py:1339
+#: Mailman/Defaults.py:1348
 msgid "Chinese (Taiwan)"
 msgstr ""
 
@@ -3498,7 +3593,7 @@ msgid ""
 "is required."
 msgstr ""
 
-#: Mailman/Deliverer.py:220
+#: Mailman/Deliverer.py:219
 #, fuzzy
 msgid "%(listname)s mailing list probe message"
 msgstr "%(listfullname)s 메일링 리스트 패스워드 메일"
@@ -3818,7 +3913,7 @@ msgid ""
 msgstr ""
 "<em>회원 활동금지<em> 경고를 보내는 날의 간격. 이 값은 정수여만 합니다."
 
-#: Mailman/Gui/Bounce.py:117 Mailman/Gui/General.py:263
+#: Mailman/Gui/Bounce.py:117 Mailman/Gui/General.py:262
 msgid "Notifications"
 msgstr "공지 설정"
 
@@ -3960,11 +4055,14 @@ msgid ""
 "            attachments that are empty are removed.  If the outer message "
 "is\n"
 "            left empty after this filtering, then the whole message is\n"
-"            discarded.  Then, each <tt>multipart/alternative</tt> section "
-"will\n"
+"            discarded.\n"
+"\n"
+"            <p> Then, each <tt>multipart/alternative</tt> section will\n"
 "            be replaced by just the first alternative that is non-empty "
 "after\n"
-"            filtering.\n"
+"            filtering if\n"
+"            <a href=\"?VARHELP=contentfilter/collapse_alternatives\"\n"
+"            >collapse_alternatives</a> is enabled.\n"
 "\n"
 "            <p>Finally, any <tt>text/html</tt> parts that are left in the\n"
 "            message may be converted to <tt>text/plain</tt> if\n"
@@ -3973,19 +4071,19 @@ msgid ""
 "            configured to allow these conversions."
 msgstr ""
 
-#: Mailman/Gui/ContentFilter.py:71
+#: Mailman/Gui/ContentFilter.py:75
 msgid ""
 "Should Mailman filter the content of list traffic according\n"
 "             to the settings below?"
 msgstr ""
 
-#: Mailman/Gui/ContentFilter.py:75
+#: Mailman/Gui/ContentFilter.py:79
 msgid ""
 "Remove message attachments that have a matching content\n"
 "             type."
 msgstr ""
 
-#: Mailman/Gui/ContentFilter.py:78
+#: Mailman/Gui/ContentFilter.py:82
 msgid ""
 "Use this option to remove each message attachment that\n"
 "             matches one of these content types.  Each line should contain "
@@ -4000,14 +4098,14 @@ msgid ""
 "             >pass_mime_types</a> for a content type whitelist."
 msgstr ""
 
-#: Mailman/Gui/ContentFilter.py:90
+#: Mailman/Gui/ContentFilter.py:94
 msgid ""
 "Remove message attachments that don't have a matching\n"
 "             content type.  Leave this field blank to skip this filter\n"
 "             test."
 msgstr ""
 
-#: Mailman/Gui/ContentFilter.py:94
+#: Mailman/Gui/ContentFilter.py:98
 msgid ""
 "Use this option to remove each message attachment that does\n"
 "             not have a matching content type.  Requirements and formats "
@@ -4021,13 +4119,13 @@ msgid ""
 "             will be rejected by the pass filter."
 msgstr ""
 
-#: Mailman/Gui/ContentFilter.py:104
+#: Mailman/Gui/ContentFilter.py:108
 msgid ""
 "Remove message attachments that have a matching filename\n"
 "             extension."
 msgstr ""
 
-#: Mailman/Gui/ContentFilter.py:108
+#: Mailman/Gui/ContentFilter.py:112
 msgid ""
 "Remove message attachments that don't have a matching\n"
 "             filename extension.  Leave this field blank to skip this "
@@ -4035,7 +4133,14 @@ msgid ""
 "             test."
 msgstr ""
 
-#: Mailman/Gui/ContentFilter.py:113
+#: Mailman/Gui/ContentFilter.py:117
+#, fuzzy
+msgid ""
+"Should Mailman collapse multipart/alternative to its\n"
+"             first part content?"
+msgstr "Mailman이 메일링 리스트에 포스팅한 사람들에게 자동응답을 보냅니까?"
+
+#: Mailman/Gui/ContentFilter.py:121
 msgid ""
 "Should Mailman convert <tt>text/html</tt> parts to plain\n"
 "             text?  This conversion happens after MIME attachments have "
@@ -4043,14 +4148,14 @@ msgid ""
 "             stripped."
 msgstr ""
 
-#: Mailman/Gui/ContentFilter.py:119
+#: Mailman/Gui/ContentFilter.py:127
 #, fuzzy
 msgid ""
 "Action to take when a message matches the content filtering\n"
 "             rules."
 msgstr "글관리되는 회원이 리스트에 글을 보냈을때 취하는 행동."
 
-#: Mailman/Gui/ContentFilter.py:122
+#: Mailman/Gui/ContentFilter.py:130
 msgid ""
 "One of these actions is take when the message matches one of\n"
 "             the content filtering rules, meaning, the top-level\n"
@@ -4081,7 +4186,7 @@ msgid ""
 "             administrator."
 msgstr ""
 
-#: Mailman/Gui/ContentFilter.py:163
+#: Mailman/Gui/ContentFilter.py:171
 msgid "Bad MIME type ignored: %(spectype)s"
 msgstr ""
 
@@ -4231,41 +4336,41 @@ msgstr ""
 "으로 보입니다. 수정된 값이 대신 사용됩니다. 이 값에 대해 신경을 쓰시기 바랍니"
 "다."
 
-#: Mailman/Gui/General.py:34
+#: Mailman/Gui/General.py:33
 msgid "General Options"
 msgstr "일반적인 설정"
 
-#: Mailman/Gui/General.py:48
+#: Mailman/Gui/General.py:47
 msgid "Conceal the member's address"
 msgstr "회원의 주소 숨김"
 
-#: Mailman/Gui/General.py:49
+#: Mailman/Gui/General.py:48
 msgid "Acknowledge the member's posting"
 msgstr "회원의 보낸글 확인"
 
-#: Mailman/Gui/General.py:50
+#: Mailman/Gui/General.py:49
 msgid "Do not send a copy of a member's own post"
 msgstr "회원 자신의 글을 보내지 않기"
 
-#: Mailman/Gui/General.py:52
+#: Mailman/Gui/General.py:51
 msgid "Filter out duplicate messages to list members (if possible)"
 msgstr "(가능하다면) 회원 글 중 중복되는 것 걸러내기"
 
-#: Mailman/Gui/General.py:59
+#: Mailman/Gui/General.py:58
 msgid ""
 "Fundamental list characteristics, including descriptive\n"
 "            info and basic behaviors."
 msgstr "기본적인 리스트에 대한 설명과 기본 동작을 서술하였습니다."
 
-#: Mailman/Gui/General.py:62
+#: Mailman/Gui/General.py:61
 msgid "General list personality"
 msgstr "일반 적인 메일링 리스트 설정"
 
-#: Mailman/Gui/General.py:65
+#: Mailman/Gui/General.py:64
 msgid "The public name of this list (make case-changes only)."
 msgstr "메일링 리스트의 공식적인 이름(대소문자만 변경 가능)"
 
-#: Mailman/Gui/General.py:66
+#: Mailman/Gui/General.py:65
 msgid ""
 "The capitalization of this name can be changed to make it\n"
 "             presentable in polite company as a proper noun, or to make an\n"
@@ -4283,7 +4388,7 @@ msgstr ""
 "가 아니면 바꾸지 마십시요. (메일 주소는 대소문자를 구분하지 않지만, 그 밖의 "
 "대부분의 경우에는 구분합니다.:-)"
 
-#: Mailman/Gui/General.py:75
+#: Mailman/Gui/General.py:74
 msgid ""
 "The list administrator email addresses.  Multiple\n"
 "             administrator addresses, each on separate line is okay."
@@ -4291,7 +4396,7 @@ msgstr ""
 "이 메일링 리스트의 관리자 메일 주소 - 공동관리도 가능, 각각의 라인에 적어주"
 "면 됨"
 
-#: Mailman/Gui/General.py:78
+#: Mailman/Gui/General.py:77
 #, fuzzy
 msgid ""
 "There are two ownership roles associated with each mailing\n"
@@ -4335,7 +4440,7 @@ msgstr ""
 "를 기입하여야 합니다. 이 항목은 리스트 관리자만 변경할 수 있음을 참고하시기 "
 "바랍니다."
 
-#: Mailman/Gui/General.py:99
+#: Mailman/Gui/General.py:98
 msgid ""
 "The list moderator email addresses.  Multiple\n"
 "             moderator addresses, each on separate line is okay."
@@ -4343,7 +4448,7 @@ msgstr ""
 "글관리자 E메일 주소. 각 줄(line)마다 입력하여 다수의 글관리자를 둘 수 있습니"
 "다."
 
-#: Mailman/Gui/General.py:102
+#: Mailman/Gui/General.py:101
 msgid ""
 "There are two ownership roles associated with each mailing\n"
 "             list.  The <em>list administrators</em> are the people who "
@@ -4385,11 +4490,11 @@ msgstr ""
 "를 기입하여야 합니다. 이 항목은 리스트 관리자만 변경할 수 있음을 참고하시기 "
 "바랍니다."
 
-#: Mailman/Gui/General.py:123
+#: Mailman/Gui/General.py:122
 msgid "A terse phrase identifying this list."
 msgstr "이 리스트를 상징하는 문구"
 
-#: Mailman/Gui/General.py:125
+#: Mailman/Gui/General.py:124
 msgid ""
 "This description is used when the mailing list is listed with\n"
 "                other mailing lists, or in headers, and so forth.  It "
@@ -4401,7 +4506,7 @@ msgstr ""
 "이 설정은 다른 메일링 리스트에 소개 되거나, 헤더에 소개될 때 사용됩니다. 이 "
 "리스트가 무엇인지를 최대한 간결하게 적으시면 됩니다."
 
-#: Mailman/Gui/General.py:131
+#: Mailman/Gui/General.py:130
 msgid ""
 "An introductory description - a few paragraphs - about the\n"
 "             list.  It will be included, as html, at the top of the "
@@ -4412,7 +4517,7 @@ msgstr ""
 " 목록에 대한 소개 설명(약간의 단평) 이글은 리스트 정보 페이지 상단에 삽입 됩"
 "니다. 자세한 설명은 세부설명을 참고하세요."
 
-#: Mailman/Gui/General.py:135
+#: Mailman/Gui/General.py:134
 msgid ""
 "The text will be treated as html <em>except</em> that\n"
 "             newlines will be translated to &lt;br&gt; - so you can use "
@@ -4430,11 +4535,11 @@ msgstr ""
 "용하지 않습니다. 잘못된 형식의 html 을 넣는 것은 메일링 리스트 정보 페이지를 "
 "안보이게 할 수 있으니 주의하시기 바랍니다."
 
-#: Mailman/Gui/General.py:143
+#: Mailman/Gui/General.py:142
 msgid "Prefix for subject line of list postings."
 msgstr "메일 발송시의 제목에 붙은 접두사"
 
-#: Mailman/Gui/General.py:144
+#: Mailman/Gui/General.py:143
 #, fuzzy
 msgid ""
 "This text will be prepended to subject lines of messages\n"
@@ -4453,7 +4558,7 @@ msgstr ""
 "두사를 붇이는 것을 뜻합니다. 접두사의 이름은 간결해야 하며 메일링 리스트 잘 "
 "구분할 수 있도록 해야 합니다."
 
-#: Mailman/Gui/General.py:155
+#: Mailman/Gui/General.py:154
 #, fuzzy
 msgid ""
 "Hide the sender of a message, replacing it with the list\n"
@@ -4462,11 +4567,11 @@ msgstr ""
 "보낸이의 E메일 주소를 리스트의 주소로 바꿔 보내겠습니까? (From, Sender 그리"
 "고 Reply-To 필드 제거하게됩니다.)"
 
-#: Mailman/Gui/General.py:158
+#: Mailman/Gui/General.py:157
 msgid "<tt>Reply-To:</tt> header munging"
 msgstr "<tt>Reply-To:</tt> 헤더 다루기"
 
-#: Mailman/Gui/General.py:161
+#: Mailman/Gui/General.py:160
 msgid ""
 "Should any existing <tt>Reply-To:</tt> header found in the\n"
 "             original message be stripped?  If so, this will be done\n"
@@ -4476,19 +4581,19 @@ msgstr ""
 "원본 메세지안에 있는 <tt>Reply-To:</tt> 헤더가 존재한다면 제거 할까요? 만약 "
 "\"예\"를 선택한다면 Mailman 에 상관없이 <tt>Reply-To:</tt> 헤더가 제거됩니다."
 
-#: Mailman/Gui/General.py:167
+#: Mailman/Gui/General.py:166
 msgid "Explicit address"
 msgstr "Explicit 주소"
 
-#: Mailman/Gui/General.py:167
+#: Mailman/Gui/General.py:166
 msgid "Poster"
 msgstr "보낸이"
 
-#: Mailman/Gui/General.py:167
+#: Mailman/Gui/General.py:166
 msgid "This list"
 msgstr "현재 이 리스트"
 
-#: Mailman/Gui/General.py:168
+#: Mailman/Gui/General.py:167
 msgid ""
 "Where are replies to list messages directed?\n"
 "             <tt>Poster</tt> is <em>strongly</em> recommended for most "
@@ -4498,7 +4603,7 @@ msgstr ""
 "규제된 메세지는 어디에서 대답을 해줄건지? <tt>보낸이 방식</tt> 이 <em>가장 많"
 "이 사용</em>된다."
 
-#: Mailman/Gui/General.py:173
+#: Mailman/Gui/General.py:172
 #, fuzzy
 msgid ""
 "This option controls what Mailman does to the\n"
@@ -4524,8 +4629,8 @@ msgid ""
 "             Munging Considered Harmful</a> for a general discussion of "
 "this\n"
 "             issue.  See <a\n"
-"        href=\"http://www.metasystema.org/essays/reply-to-useful.mhtml"
-"\">Reply-To\n"
+"             href=\"http://www.metasystema.net/essays/reply-to.mhtml\">Reply-"
+"To\n"
 "             Munging Considered Useful</a> for a dissenting opinion.\n"
 "\n"
 "             <p>Some mailing lists have restricted posting privileges, with "
@@ -4561,11 +4666,12 @@ msgstr ""
 "리스트를 지원하기 위해 Explicit 주소 와 Reply-To: 로 세팅하는 것은 좋은 생각 "
 "인것 같습니다."
 
-#: Mailman/Gui/General.py:205
+#: Mailman/Gui/General.py:204
 msgid "Explicit <tt>Reply-To:</tt> header."
 msgstr "Explicit 주소 방식을 선택했을때, Reply-To: 헤더를 입력하세요"
 
-#: Mailman/Gui/General.py:207
+#: Mailman/Gui/General.py:206
+#, fuzzy
 msgid ""
 "This is the address set in the <tt>Reply-To:</tt> header\n"
 "             when the <a\n"
@@ -4583,8 +4689,8 @@ msgid ""
 "             Munging Considered Harmful</a> for a general discussion of "
 "this\n"
 "             issue.  See <a\n"
-"        href=\"http://www.metasystema.org/essays/reply-to-useful.mhtml"
-"\">Reply-To\n"
+"             href=\"http://www.metasystema.net/essays/reply-to.mhtml\">Reply-"
+"To\n"
 "             Munging Considered Useful</a> for a dissenting opinion.\n"
 "\n"
 "             <p>Some mailing lists have restricted posting privileges, with "
@@ -4620,11 +4726,11 @@ msgstr ""
 "발자 메일링 리스트에서 일어납니다. 그러한 형태의 메일링 리스트를 지원하기 위"
 "해 Explicit 주소 와 Reply-To: 로 세팅하는 것은 좋은 생각 인것 같습니다."
 
-#: Mailman/Gui/General.py:236
+#: Mailman/Gui/General.py:235
 msgid "Umbrella list settings"
 msgstr "둘러싸기 리스트 설정"
 
-#: Mailman/Gui/General.py:239
+#: Mailman/Gui/General.py:238
 msgid ""
 "Send password reminders to, eg, \"-owner\" address instead of\n"
 "             directly to user."
@@ -4632,7 +4738,7 @@ msgstr ""
 "한달에 한번 알려주는 패스워드 메일(Reminder) 를 사용자에게직접 전달하는 대신 "
 "\"-owner\" 주소로 보낼까요?"
 
-#: Mailman/Gui/General.py:242
+#: Mailman/Gui/General.py:241
 msgid ""
 "Set this to yes when this list is intended to cascade only\n"
 "             to other mailing lists.  When set, meta notices like\n"
@@ -4646,7 +4752,7 @@ msgstr ""
 "게 됩니다. 이것은 회원의 계정 이름에 \"umbrella_member_suffix\" 를 추가시킨 "
 "값이 될 것 입니다."
 
-#: Mailman/Gui/General.py:250
+#: Mailman/Gui/General.py:249
 msgid ""
 "Suffix for use when this list is an umbrella for other\n"
 "             lists, according to setting of previous \"umbrella_list\"\n"
@@ -4656,7 +4762,7 @@ msgstr ""
 "라서 이 메일링 리스트가 다른 리스트를 포함하는 umbrella 리스트 라면 사용할 접"
 "미사를 정하세요."
 
-#: Mailman/Gui/General.py:254
+#: Mailman/Gui/General.py:253
 msgid ""
 "When \"umbrella_list\" is set to indicate that this list has\n"
 "             other mailing lists as members, then administrative notices "
@@ -4677,11 +4783,11 @@ msgstr ""
 "니다. '-owner' 는 기본적인 값이며 이 설정은 \"umbrella_list\" 설정이 \"아니요"
 "\"로 설정되어 있다면 영향을 미치지 않습니다."
 
-#: Mailman/Gui/General.py:266
+#: Mailman/Gui/General.py:265
 msgid "Send monthly password reminders?"
 msgstr "한달에 한번 패스워드 메일을 보낼까요? "
 
-#: Mailman/Gui/General.py:268
+#: Mailman/Gui/General.py:267
 msgid ""
 "Turn this on if you want password reminders to be sent once\n"
 "             per month to your members.  Note that members may disable "
@@ -4689,13 +4795,13 @@ msgid ""
 "             own individual password reminders."
 msgstr ""
 
-#: Mailman/Gui/General.py:273
+#: Mailman/Gui/General.py:272
 msgid ""
 "List-specific text prepended to new-subscriber welcome\n"
 "             message"
 msgstr "미리 준비된 새로운 가입자를 위한 환영 메세지"
 
-#: Mailman/Gui/General.py:276
+#: Mailman/Gui/General.py:275
 msgid ""
 "This value, if any, will be added to the front of the\n"
 "             new-subscriber welcome message.  The rest of the welcome "
@@ -4725,11 +4831,11 @@ msgstr ""
 "길게 쓰지 마십시오.<li>공백문자로 시작하지 마십시오<li>빈 줄은 문단 구분에 사"
 "용하십시오.</ul>"
 
-#: Mailman/Gui/General.py:293
+#: Mailman/Gui/General.py:292
 msgid "Send welcome message to newly subscribed members?"
 msgstr "어떤 사람이 가입했을 때 환영 메세지를 보낼까요?"
 
-#: Mailman/Gui/General.py:294
+#: Mailman/Gui/General.py:293
 msgid ""
 "Turn this off only if you plan on subscribing people manually\n"
 "             and don't want them to know that you did so.  This option is "
@@ -4742,24 +4848,24 @@ msgstr ""
 "을 때 사용하십시오. 이 기능은 다른 메일링 리스트 관리 툴에서 Mailman 으로 리"
 "스트를 옮기는데 쓸모있을 것입니다."
 
-#: Mailman/Gui/General.py:300
+#: Mailman/Gui/General.py:299
 msgid ""
 "Text sent to people leaving the list.  If empty, no special\n"
 "             text will be added to the unsubscribe message."
 msgstr ""
 "리스트를 떠나는 사람에게 보내는 글 - 비어 있다면 메세지는 가지 않을 것입니다."
 
-#: Mailman/Gui/General.py:304
+#: Mailman/Gui/General.py:303
 msgid "Send goodbye message to members when they are unsubscribed?"
 msgstr "탈퇴하는 회원에게 \"잘가세요\" 라는 편지를 보낼까요?"
 
-#: Mailman/Gui/General.py:307
+#: Mailman/Gui/General.py:306
 msgid ""
 "Should the list moderators get immediate notice of new\n"
 "             requests, as well as daily notices about collected ones?"
 msgstr "관리자에게 새로운 요청이 들어 왔을때, 즉각적으로 공지를 보낼까요?"
 
-#: Mailman/Gui/General.py:310
+#: Mailman/Gui/General.py:309
 msgid ""
 "List moderators (and list administrators) are sent daily\n"
 "             reminders of requests pending approval, like subscriptions to "
@@ -4774,28 +4880,28 @@ msgstr ""
 "됩니다. 이 옵션을 세팅함으로써 새로운 요청이 들어 왔을때 바로 메일을 보내게 "
 "할 수 있습니다."
 
-#: Mailman/Gui/General.py:317
+#: Mailman/Gui/General.py:316
 msgid ""
 "Should administrator get notices of subscribes and\n"
 "             unsubscribes?"
 msgstr "메일링 리스트 관리자는 가입/탈퇴 사실을 받아 볼것입니까?"
 
-#: Mailman/Gui/General.py:322
+#: Mailman/Gui/General.py:321
 msgid "Send mail to poster when their posting is held for approval?"
 msgstr ""
 "편지를 쓴 사람에게 그의 편지가 현재 승인 대기상태에 있다는 사실을 알려 줄것입"
 "니까?"
 
-#: Mailman/Gui/General.py:325
+#: Mailman/Gui/General.py:324
 msgid "Additional settings"
 msgstr "추가적인 설정"
 
-#: Mailman/Gui/General.py:328
+#: Mailman/Gui/General.py:327
 #, fuzzy
 msgid "Emergency moderation of all list traffic."
 msgstr "모든 리스트 글에 대해 긴급 글관리 모드로 전환"
 
-#: Mailman/Gui/General.py:329
+#: Mailman/Gui/General.py:328
 msgid ""
 "When this option is enabled, all list traffic is emergency\n"
 "             moderated, i.e. held for moderation.  Turn this option on when\n"
@@ -4804,13 +4910,13 @@ msgid ""
 "             period."
 msgstr ""
 
-#: Mailman/Gui/General.py:341
+#: Mailman/Gui/General.py:340
 msgid ""
 "Default options for new members joining this list.<input\n"
 "             type=\"hidden\" name=\"new_member_options\" value=\"ignore\">"
 msgstr ""
 
-#: Mailman/Gui/General.py:344
+#: Mailman/Gui/General.py:343
 #, fuzzy
 msgid ""
 "When a new member is subscribed to this list, their initial\n"
@@ -4818,7 +4924,7 @@ msgid ""
 msgstr ""
 "새로운 회원이 이 리스트에 가입하면 그들의 초기 설정은 이 값들로 설정됩니다."
 
-#: Mailman/Gui/General.py:348
+#: Mailman/Gui/General.py:347
 msgid ""
 "(Administrivia filter) Check postings and intercept ones\n"
 "             that seem to be administrative requests?"
@@ -4826,7 +4932,7 @@ msgstr ""
 "(관리자 요청 걸러내기) 포스팅된 글이 관리자에게 보내는 요청인지 아닌지를 검사"
 "하게 할까요? 만약 관리자 요청 페이지면 중간에서 가로채게 됩니다."
 
-#: Mailman/Gui/General.py:351
+#: Mailman/Gui/General.py:350
 msgid ""
 "Administrivia tests will check postings to see whether it's\n"
 "             really meant as an administrative request (like subscribe,\n"
@@ -4839,18 +4945,18 @@ msgstr ""
 "검사합니다. 만약 정확하다면 관리자 요청 대기큐에 넣어지며 관리자에게 새로운 "
 "요청에 대한 공지를 보내게 됩니다."
 
-#: Mailman/Gui/General.py:358
+#: Mailman/Gui/General.py:357
 msgid ""
 "Maximum length in kilobytes (KB) of a message body.  Use 0\n"
 "             for no limit."
 msgstr ""
 "편지의 본문 최대 크기를 정해주세요. 무제한으로 하실려면 0으로 놓으세요."
 
-#: Mailman/Gui/General.py:362
+#: Mailman/Gui/General.py:361
 msgid "Host name this list prefers for email."
 msgstr "이 메일링 리스트의 호스트 이름은"
 
-#: Mailman/Gui/General.py:364
+#: Mailman/Gui/General.py:363
 msgid ""
 "The \"host_name\" is the preferred name for email to\n"
 "             mailman-related addresses on this host, and generally should "
@@ -4864,7 +4970,7 @@ msgstr ""
 " host_name 은 이 호스트 상에서 mailman 관련 주소를 처리할 때 사용 됩니다. 이 "
 "설정은 다수의 주소에서 호스트의 이름을 선택하는데 유용할 것입니다."
 
-#: Mailman/Gui/General.py:376
+#: Mailman/Gui/General.py:375
 #, fuzzy
 msgid ""
 "Should messages from this mailing list include the\n"
@@ -4877,7 +4983,7 @@ msgstr ""
 "*</tt> ) 헤드를 포함하도록 메일링 리스트를 설정하시겠습니다. <em>예</rm> 를 "
 "추천합니다."
 
-#: Mailman/Gui/General.py:381
+#: Mailman/Gui/General.py:380
 msgid ""
 "RFC 2369 defines a set of List-* headers that are\n"
 "                 normally added to every message sent to the list "
@@ -4910,11 +5016,11 @@ msgstr ""
 "합니다. 그리고 그냥 이 헤더를 금지할 수 있지만 이것은 추천하지 않습니다.(사"
 "실 이러한 헤더를 금지하는 능력은 조만간 사라 질 수 있습니다.)"
 
-#: Mailman/Gui/General.py:399
+#: Mailman/Gui/General.py:398
 msgid "Should postings include the <tt>List-Post:</tt> header?"
 msgstr ""
 
-#: Mailman/Gui/General.py:400
+#: Mailman/Gui/General.py:399
 msgid ""
 "The <tt>List-Post:</tt> header is one of the headers\n"
 "             recommended by\n"
@@ -4932,13 +5038,13 @@ msgid ""
 "             headers.)"
 msgstr ""
 
-#: Mailman/Gui/General.py:415
+#: Mailman/Gui/General.py:414
 msgid ""
 "Discard held messages older than this number of days.\n"
 "            Use 0 for no automatic discarding."
 msgstr ""
 
-#: Mailman/Gui/General.py:425
+#: Mailman/Gui/General.py:424
 #, fuzzy
 msgid ""
 "<b>real_name</b> attribute not\n"
@@ -4948,7 +5054,7 @@ msgstr ""
 "<p><b>real_name</b> 특성이 변하지 않았습니다. 이것은 단지 대소문자만 바뀔 수 "
 "있습니다.<p>"
 
-#: Mailman/Gui/General.py:455
+#: Mailman/Gui/General.py:454
 msgid ""
 "You cannot add a Reply-To: to an explicit\n"
 "            address if that address is blank.  Resetting these values."
@@ -5926,13 +6032,13 @@ msgstr ""
 "<p>또한 관계있는 메커니즘을 사용하는 <em>forbidden_posters</em> 설정 또한 참"
 "고 하시기 바랍니다."
 
-#: Mailman/Gui/Privacy.py:481
+#: Mailman/Gui/Privacy.py:485
 msgid ""
 "Header filter rules require a pattern.\n"
 "                Incomplete filter rules will be ignored."
 msgstr ""
 
-#: Mailman/Gui/Privacy.py:489
+#: Mailman/Gui/Privacy.py:493
 msgid ""
 "The header filter rule pattern\n"
 "                '%(safepattern)s' is not a legal regular expression.  This\n"
@@ -6513,55 +6619,55 @@ msgstr ""
 msgid "Emergency hold on all list traffic is in effect"
 msgstr "모든 리스트 글에 대해 긴급 글관리 모드로 전환"
 
-#: Mailman/Handlers/Emergency.py:30 Mailman/Handlers/Hold.py:58
+#: Mailman/Handlers/Emergency.py:30 Mailman/Handlers/Hold.py:57
 msgid "Your message was deemed inappropriate by the moderator."
 msgstr ""
 "당신의 메세지는 관리자가 생각하기에 이 리스트와 맞지 않다고 생각합니다."
 
-#: Mailman/Handlers/Hold.py:53
+#: Mailman/Handlers/Hold.py:52
 msgid "Sender is explicitly forbidden"
 msgstr "보낸이 는 절대금지되어 있습니다."
 
-#: Mailman/Handlers/Hold.py:54
+#: Mailman/Handlers/Hold.py:53
 msgid "You are forbidden from posting messages to this list."
 msgstr "당신은 이 리스트로 글을 보내는게 금지되어 있습니다."
 
-#: Mailman/Handlers/Hold.py:57
+#: Mailman/Handlers/Hold.py:56
 msgid "Post to moderated list"
 msgstr "Moderator 리스트에 글을 보내셨습니다."
 
-#: Mailman/Handlers/Hold.py:61
+#: Mailman/Handlers/Hold.py:60
 msgid "Post by non-member to a members-only list"
 msgstr ""
 "관리자에 의해 등록된 회원만 글쓸수 있는 리스트에 비회원이 글을 보내셨습니다."
 
-#: Mailman/Handlers/Hold.py:62
+#: Mailman/Handlers/Hold.py:61
 msgid "Non-members are not allowed to post messages to this list."
 msgstr ""
 "이 메일링 리스트에 비회원은 글을 보낼 수 없습니다. 이 리스트는 등록된 회원만 "
 "글을 보낼 수 있습니다."
 
-#: Mailman/Handlers/Hold.py:65
+#: Mailman/Handlers/Hold.py:64
 msgid "Posting to a restricted list by sender requires approval"
 msgstr "보낸이의 글은 관리자의 승인이 있어야 합니다."
 
-#: Mailman/Handlers/Hold.py:66
+#: Mailman/Handlers/Hold.py:65
 msgid "This list is restricted; your message was not approved."
 msgstr "당신의 메세지는 관리자의 승인이 있어야 비로서 보내집니다."
 
-#: Mailman/Handlers/Hold.py:69
+#: Mailman/Handlers/Hold.py:68
 msgid "Too many recipients to the message"
 msgstr "메세지에 참조자가 너무 많습니다."
 
-#: Mailman/Handlers/Hold.py:70
+#: Mailman/Handlers/Hold.py:69
 msgid "Please trim the recipient list; it is too long."
 msgstr "글의 참조자를 좀 다듬어야 할 것 같군요. 너무 깁니다."
 
-#: Mailman/Handlers/Hold.py:73
+#: Mailman/Handlers/Hold.py:72
 msgid "Message has implicit destination"
 msgstr "메세지가 알수없는 목적지를 가지고 있습니다."
 
-#: Mailman/Handlers/Hold.py:74
+#: Mailman/Handlers/Hold.py:73
 msgid ""
 "Blind carbon copies or other implicit destinations are\n"
 "not allowed.  Try reposting your message by explicitly including the list\n"
@@ -6570,11 +6676,11 @@ msgstr ""
 "알수없는 복사물 혹은 다른 Implicit 목적지는 허락되지 않습니다.여러분의 글의 "
 "To: 혹은 Cc: 항목에 Explicit 로 구성하여 다시 보내주시기 바랍니다."
 
-#: Mailman/Handlers/Hold.py:79
+#: Mailman/Handlers/Hold.py:78
 msgid "Message may contain administrivia"
 msgstr "메세지가 관리 요청을 포함하고 있습니다."
 
-#: Mailman/Handlers/Hold.py:84
+#: Mailman/Handlers/Hold.py:83
 msgid ""
 "Please do *not* post administrative requests to the mailing\n"
 "list.  If you wish to subscribe, visit %(listurl)s or send a message with "
@@ -6586,41 +6692,41 @@ msgstr ""
 "(listurl)s 을 방문하시거나 더 많은 명령어를 포함한 E메일 방법을사용하시기 바"
 "랍니다. %(request)s 요청 주소로 `help' 단어를 글에 넣어 보내십시오."
 
-#: Mailman/Handlers/Hold.py:90
+#: Mailman/Handlers/Hold.py:89
 msgid "Message has a suspicious header"
 msgstr "메세지가 의심스러운 헤더를 가지고 있습니다."
 
-#: Mailman/Handlers/Hold.py:91
+#: Mailman/Handlers/Hold.py:90
 msgid "Your message had a suspicious header."
 msgstr "당신의 글은 이상한 헤더를 가지고 있습니다."
 
-#: Mailman/Handlers/Hold.py:101
+#: Mailman/Handlers/Hold.py:100
 msgid ""
 "Message body is too big: %(size)d bytes with a limit of\n"
 "%(limit)d KB"
 msgstr ""
 "메제기 본문이 너무 큽니다 : %(size)d 바이트. 최대 크기는 %(limit)d KB 입니다."
 
-#: Mailman/Handlers/Hold.py:106
+#: Mailman/Handlers/Hold.py:105
 msgid ""
 "Your message was too big; please trim it to less than\n"
 "%(kb)d KB in size."
 msgstr "당신의 글은 너무 큽니다. 크기를 %(kb)s 이내로 다듬어 주시기 바랍니다."
 
-#: Mailman/Handlers/Hold.py:110
+#: Mailman/Handlers/Hold.py:109
 #, fuzzy
 msgid "Posting to a moderated newsgroup"
 msgstr "Moderator 리스트에 글을 보내셨습니다."
 
-#: Mailman/Handlers/Hold.py:240
+#: Mailman/Handlers/Hold.py:244
 msgid "Your message to %(listname)s awaits moderator approval"
 msgstr "%(listname)s 에 보낸 메세지가 관리자의 승인을 기다리고 있습니다."
 
-#: Mailman/Handlers/Hold.py:259
+#: Mailman/Handlers/Hold.py:263
 msgid "%(listname)s post from %(sender)s requires approval"
 msgstr " %(sender)s 로 부터 %(listname)s 에 온 글은 승인이 필요합니다."
 
-#: Mailman/Handlers/Hold.py:266
+#: Mailman/Handlers/Hold.py:270
 msgid ""
 "If you reply to this message, keeping the Subject: header intact, Mailman "
 "will\n"
@@ -6656,7 +6762,7 @@ msgstr ""
 msgid "After content filtering, the message was empty"
 msgstr ""
 
-#: Mailman/Handlers/MimeDel.py:229
+#: Mailman/Handlers/MimeDel.py:232
 msgid ""
 "The attached message matched the %(listname)s mailing list's content "
 "filtering\n"
@@ -6666,7 +6772,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: Mailman/Handlers/MimeDel.py:235
+#: Mailman/Handlers/MimeDel.py:238
 msgid "Content filtered message notification"
 msgstr ""
 
@@ -6745,7 +6851,7 @@ msgstr ""
 "크기: %(size)s\n"
 "Url: %(url)s\n"
 
-#: Mailman/Handlers/Scrubber.py:300
+#: Mailman/Handlers/Scrubber.py:307
 msgid ""
 "A non-text attachment was scrubbed...\n"
 "Name: %(filename)s\n"
@@ -6761,11 +6867,11 @@ msgstr ""
 "설명: %(desc)s\n"
 "Url : %(url)s\n"
 
-#: Mailman/Handlers/Scrubber.py:335
+#: Mailman/Handlers/Scrubber.py:342
 msgid "Skipped content of type %(partctype)s\n"
 msgstr ""
 
-#: Mailman/Handlers/Scrubber.py:370
+#: Mailman/Handlers/Scrubber.py:377
 msgid "-------------- next part --------------\n"
 msgstr ""
 
@@ -6773,43 +6879,43 @@ msgstr ""
 msgid "The message headers matched a filter rule"
 msgstr ""
 
-#: Mailman/Handlers/SpamDetect.py:135
+#: Mailman/Handlers/SpamDetect.py:136
 msgid "Message rejected by filter rule match"
 msgstr ""
 
-#: Mailman/Handlers/ToDigest.py:149
+#: Mailman/Handlers/ToDigest.py:160
 msgid "%(realname)s Digest, Vol %(volume)d, Issue %(issue)d"
 msgstr "%(realname)s 묶음배달, 글 %(volume)d, 번호 %(issue)d"
 
-#: Mailman/Handlers/ToDigest.py:195
+#: Mailman/Handlers/ToDigest.py:206
 msgid "digest header"
 msgstr "묶음배달 머릿말"
 
-#: Mailman/Handlers/ToDigest.py:198
+#: Mailman/Handlers/ToDigest.py:209
 msgid "Digest Header"
 msgstr "묶음배달 머릿말"
 
-#: Mailman/Handlers/ToDigest.py:211
+#: Mailman/Handlers/ToDigest.py:222
 msgid "Today's Topics:\n"
 msgstr "오늘의 주제:\n"
 
-#: Mailman/Handlers/ToDigest.py:291
+#: Mailman/Handlers/ToDigest.py:302
 msgid "Today's Topics (%(msgcount)d messages)"
 msgstr "오늘의 주제 (%(msgcount)d 개의 메세지)"
 
-#: Mailman/Handlers/ToDigest.py:317
+#: Mailman/Handlers/ToDigest.py:328
 msgid "[Message discarded by content filter]"
 msgstr ""
 
-#: Mailman/Handlers/ToDigest.py:343
+#: Mailman/Handlers/ToDigest.py:354
 msgid "digest footer"
 msgstr "묶음배달 꼬리말"
 
-#: Mailman/Handlers/ToDigest.py:346
+#: Mailman/Handlers/ToDigest.py:357
 msgid "Digest Footer"
 msgstr "묶음배달 꼬리말"
 
-#: Mailman/Handlers/ToDigest.py:360
+#: Mailman/Handlers/ToDigest.py:371
 msgid "End of "
 msgstr "끝부분 --"
 
@@ -6845,7 +6951,7 @@ msgstr "원본 메세지"
 msgid "Request to mailing list %(realname)s rejected"
 msgstr "%(realname)s 메일링 리스트에 대한 요청이 거절되었습니다."
 
-#: Mailman/MTA/Manual.py:64
+#: Mailman/MTA/Manual.py:65
 msgid ""
 "The mailing list `%(listname)s' has been created via the through-the-web\n"
 "interface.  In order to complete the activation of this mailing list, the\n"
@@ -6859,7 +6965,7 @@ msgstr ""
 "업데이트 하셔야 합니다. `newaliases' 명령어 또한 실행해야 합니다. 아래는 /"
 "etc/aliases 파일에 들어가야 할 내용입니다.\n"
 
-#: Mailman/MTA/Manual.py:75
+#: Mailman/MTA/Manual.py:76
 #, fuzzy
 msgid ""
 "To finish creating your mailing list, you must edit your /etc/aliases (or\n"
@@ -6872,12 +6978,12 @@ msgstr ""
 "오:\n"
 "## %(listname)s 메일링 리스트"
 
-#: Mailman/MTA/Manual.py:80
+#: Mailman/MTA/Manual.py:81
 #, fuzzy
 msgid "## %(listname)s mailing list"
 msgstr " \"%(realname)s\" 메일링 리스트"
 
-#: Mailman/MTA/Manual.py:97
+#: Mailman/MTA/Manual.py:98
 msgid "Mailing list creation request for list %(listname)s"
 msgstr "%(listname)s 메일링 리스트 생성 요청"
 
@@ -6926,9 +7032,9 @@ msgstr "%(file)s 퍼미션은 066x ( %(octmode)s )여야 합니다."
 
 #: Mailman/MTA/Postfix.py:318 Mailman/MTA/Postfix.py:345 bin/check_perms:123
 #: bin/check_perms:145 bin/check_perms:155 bin/check_perms:166
-#: bin/check_perms:191 bin/check_perms:208 bin/check_perms:227
-#: bin/check_perms:250 bin/check_perms:269 bin/check_perms:283
-#: bin/check_perms:303 bin/check_perms:340
+#: bin/check_perms:191 bin/check_perms:208 bin/check_perms:234
+#: bin/check_perms:257 bin/check_perms:276 bin/check_perms:290
+#: bin/check_perms:310 bin/check_perms:347
 msgid "(fixing)"
 msgstr "(수정중)"
 
@@ -6953,31 +7059,31 @@ msgstr "%(realname)s 메일링 리스트에서 탈퇴되셨습니다."
 msgid "Your confirmation is required to leave the %(listname)s mailing list"
 msgstr "%(realname)s 메일링 리스트에서 탈퇴되셨습니다."
 
-#: Mailman/MailList.py:888 Mailman/MailList.py:1277
+#: Mailman/MailList.py:877 Mailman/MailList.py:1289
 msgid " from %(remote)s"
 msgstr "%(remote)s 부터"
 
-#: Mailman/MailList.py:922
+#: Mailman/MailList.py:910
 msgid "subscriptions to %(realname)s require moderator approval"
 msgstr "%(realname)s 에 가입하기 위해서는 글관리자의 승인이 필요합니다."
 
-#: Mailman/MailList.py:986 bin/add_members:242
+#: Mailman/MailList.py:979 bin/add_members:242
 msgid "%(realname)s subscription notification"
 msgstr "%(realname)s 가입 공지"
 
-#: Mailman/MailList.py:1005
+#: Mailman/MailList.py:998
 msgid "unsubscriptions require moderator approval"
 msgstr "탈퇴하기는 글관리자의 승인이 필요합니다."
 
-#: Mailman/MailList.py:1025
+#: Mailman/MailList.py:1018
 msgid "%(realname)s unsubscribe notification"
 msgstr "%(realname)s 탈퇴 공지"
 
-#: Mailman/MailList.py:1186
+#: Mailman/MailList.py:1198
 msgid "subscriptions to %(name)s require administrator approval"
 msgstr "%(name)s 에 가입하기 위해서는 관리자의 승인이 필요합니다."
 
-#: Mailman/MailList.py:1449
+#: Mailman/MailList.py:1461
 msgid "Last autoresponse notification for today"
 msgstr ""
 
@@ -7218,14 +7324,14 @@ msgstr ""
 msgid "Cannot read both digest and normal members from standard input."
 msgstr ""
 
-#: bin/add_members:210 bin/config_list:105 bin/find_member:97 bin/inject:90
+#: bin/add_members:210 bin/config_list:108 bin/find_member:97 bin/inject:90
 #: bin/list_admins:89 bin/list_members:232 bin/sync_members:222
 #: cron/bumpdigests:86
 msgid "No such list: %(listname)s"
 msgstr ""
 
 #: bin/add_members:230 bin/change_pw:158 bin/check_db:114 bin/discard:83
-#: bin/sync_members:244 bin/update:555 cron/bumpdigests:78
+#: bin/sync_members:244 bin/update:564 cron/bumpdigests:78
 msgid "Nothing to do."
 msgstr ""
 
@@ -7282,7 +7388,7 @@ msgstr ""
 msgid "listname is required"
 msgstr ""
 
-#: bin/arch:143 bin/change_pw:106 bin/config_list:242
+#: bin/arch:143 bin/change_pw:106 bin/config_list:255
 msgid ""
 "No such list \"%(listname)s\"\n"
 "%(e)s"
@@ -7500,63 +7606,72 @@ msgstr ""
 msgid "%(private)s must not be other-readable"
 msgstr ""
 
-#: bin/check_perms:225
+#: bin/check_perms:215
+msgid ""
+"Warning: Private archive directory is other-executable (o+x).\n"
+"         This could allow other users on your system to read private "
+"archives.\n"
+"         If you're on a shared multiuser system, you should consult the\n"
+"         installation manual on how to fix this."
+msgstr ""
+
+#: bin/check_perms:232
 msgid "mbox file must be at least 0660:"
 msgstr ""
 
-#: bin/check_perms:248
+#: bin/check_perms:255
 msgid "%(dbdir)s \"other\" perms must be 000"
 msgstr ""
 
-#: bin/check_perms:258
+#: bin/check_perms:265
 msgid "checking cgi-bin permissions"
 msgstr ""
 
-#: bin/check_perms:263
+#: bin/check_perms:270
 msgid "    checking set-gid for %(path)s"
 msgstr ""
 
-#: bin/check_perms:267
+#: bin/check_perms:274
 msgid "%(path)s must be set-gid"
 msgstr ""
 
-#: bin/check_perms:277
+#: bin/check_perms:284
 msgid "checking set-gid for %(wrapper)s"
 msgstr ""
 
-#: bin/check_perms:281
+#: bin/check_perms:288
 msgid "%(wrapper)s must be set-gid"
 msgstr ""
 
-#: bin/check_perms:291
+#: bin/check_perms:298
 msgid "checking permissions on %(pwfile)s"
 msgstr ""
 
-#: bin/check_perms:300
+#: bin/check_perms:307
 msgid "%(pwfile)s permissions must be exactly 0640 (got %(octmode)s)"
 msgstr ""
 
-#: bin/check_perms:324
+#: bin/check_perms:331
 msgid "checking permissions on list data"
 msgstr ""
 
-#: bin/check_perms:330
+#: bin/check_perms:337
 msgid "    checking permissions on: %(path)s"
 msgstr ""
 
-#: bin/check_perms:338
+#: bin/check_perms:345
 msgid "file permissions must be at least 660: %(path)s"
 msgstr ""
 
-#: bin/check_perms:383
+#: bin/check_perms:390
 msgid "No problems found"
 msgstr ""
 
-#: bin/check_perms:385
+#: bin/check_perms:392
 msgid "Problems found:"
 msgstr ""
 
-#: bin/check_perms:386
+#: bin/check_perms:393
 msgid "Re-run as %(MAILMAN_USER)s (or root) with -f flag to fix"
 msgstr ""
 
@@ -7760,51 +7875,53 @@ msgid ""
 "\n"
 msgstr ""
 
-#: bin/config_list:109
+#: bin/config_list:116
 msgid ""
-"## \"%(listname)s\" mailing list configuration settings -*- python -*-\n"
+"# -*- python -*-\n"
+"# -*- coding: %(charset)s -*-\n"
+"## \"%(listname)s\" mailing list configuration settings\n"
 "## captured on %(when)s\n"
 msgstr ""
 
-#: bin/config_list:131
+#: bin/config_list:142
 msgid "options"
 msgstr ""
 
-#: bin/config_list:188
+#: bin/config_list:201
 msgid "legal values are:"
 msgstr ""
 
-#: bin/config_list:255
+#: bin/config_list:268
 msgid "attribute \"%(k)s\" ignored"
 msgstr ""
 
-#: bin/config_list:258
+#: bin/config_list:271
 msgid "attribute \"%(k)s\" changed"
 msgstr ""
 
-#: bin/config_list:264
+#: bin/config_list:277
 msgid "Non-standard property restored: %(k)s"
 msgstr ""
 
-#: bin/config_list:272
+#: bin/config_list:285
 #, fuzzy
 msgid "Invalid value for property: %(k)s"
 msgstr "잘못된 값은 변수값 : %(property)s"
 
-#: bin/config_list:274
+#: bin/config_list:287
 #, fuzzy
 msgid "Bad email address for option %(k)s: %(v)s"
 msgstr "%(property)s 옵션을 위한 잘못된 E메일 주소 : %(val)s"
 
-#: bin/config_list:331
+#: bin/config_list:344
 msgid "Only one of -i or -o is allowed"
 msgstr ""
 
-#: bin/config_list:333
+#: bin/config_list:346
 msgid "One of -i or -o is required"
 msgstr ""
 
-#: bin/config_list:337
+#: bin/config_list:350
 msgid "List name is required"
 msgstr ""
 
@@ -7904,15 +8021,15 @@ msgstr ""
 msgid "Please specify either -p or -m."
 msgstr ""
 
-#: bin/dumpdb:135
+#: bin/dumpdb:136
 msgid "[----- start pickle file -----]"
 msgstr ""
 
-#: bin/dumpdb:140
+#: bin/dumpdb:142
 msgid "[----- end pickle file -----]"
 msgstr ""
 
-#: bin/dumpdb:142
+#: bin/dumpdb:145
 msgid "<----- start object %(cnt)s ----->"
 msgstr ""
 
@@ -9001,6 +9118,20 @@ msgstr ""
 msgid "Removed: %(s)s"
 msgstr ""
 
+#: bin/templ2pot.py:5
+msgid ""
+"templ2pot.py -- convert mailman template (en) to pot format.\n"
+"\n"
+"Usage: templ2pot.py inputfile ...\n"
+"\n"
+"Options:\n"
+"\n"
+"    -h, --help\n"
+"\n"
+"Inputfiles are english templates.  Outputs are written to stdout.\n"
+"\n"
+msgstr ""
+
 #: bin/transcheck:18
 msgid ""
 "\n"
@@ -9103,7 +9234,7 @@ msgstr ""
 msgid "Fixing language templates: %(listname)s"
 msgstr ""
 
-#: bin/update:196 bin/update:689
+#: bin/update:196 bin/update:698
 msgid "WARNING: could not acquire lock for list: %(listname)s"
 msgstr ""
 
@@ -9214,61 +9345,69 @@ msgstr ""
 msgid "updating old qfiles"
 msgstr ""
 
-#: bin/update:512
+#: bin/update:448
+msgid "Warning!  Not a directory: %(dirpath)s"
+msgstr ""
+
+#: bin/update:517
 msgid "message is unparsable: %(filebase)s"
 msgstr ""
 
-#: bin/update:541
+#: bin/update:531
+msgid "Warning!  Deleting empty .pck file: %(pckfile)s"
+msgstr ""
+
+#: bin/update:550
 msgid "Updating Mailman 2.0 pending_subscriptions.db database"
 msgstr ""
 
-#: bin/update:552
+#: bin/update:561
 msgid "Updating Mailman 2.1.4 pending.pck database"
 msgstr ""
 
-#: bin/update:576
+#: bin/update:585
 msgid "Ignoring bad pended data: %(key)s: %(val)s"
 msgstr ""
 
-#: bin/update:592
+#: bin/update:601
 msgid "WARNING: Ignoring duplicate pending ID: %(id)s."
 msgstr ""
 
-#: bin/update:645
+#: bin/update:654
 msgid "getting rid of old source files"
 msgstr ""
 
-#: bin/update:655
+#: bin/update:664
 msgid "no lists == nothing to do, exiting"
 msgstr ""
 
-#: bin/update:662
+#: bin/update:671
 msgid ""
 "fixing all the perms on your old html archives to work with b6\n"
 "If your archives are big, this could take a minute or two..."
 msgstr ""
 
-#: bin/update:667
+#: bin/update:676
 msgid "done"
 msgstr ""
 
-#: bin/update:669
+#: bin/update:678
 msgid "Updating mailing list: %(listname)s"
 msgstr ""
 
-#: bin/update:672
+#: bin/update:681
 msgid "Updating Usenet watermarks"
 msgstr ""
 
-#: bin/update:677
+#: bin/update:686
 msgid "- nothing to update here"
 msgstr ""
 
-#: bin/update:700
+#: bin/update:709
 msgid "- usenet watermarks updated and gate_watermarks removed"
 msgstr ""
 
-#: bin/update:714
+#: bin/update:723
 msgid ""
 "\n"
 "\n"
@@ -9291,22 +9430,22 @@ msgid ""
 "\n"
 msgstr ""
 
-#: bin/update:771
+#: bin/update:780
 msgid "No updates are necessary."
 msgstr ""
 
-#: bin/update:774
+#: bin/update:783
 msgid ""
 "Downgrade detected, from version %(hexlversion)s to version %(hextversion)s\n"
 "This is probably not safe.\n"
 "Exiting."
 msgstr ""
 
-#: bin/update:779
+#: bin/update:788
 msgid "Upgrading from version %(hexlversion)s to %(hextversion)s"
 msgstr ""
 
-#: bin/update:788
+#: bin/update:797
 msgid ""
 "\n"
 "ERROR:\n"
@@ -9706,6 +9845,2677 @@ msgid ""
 "all\n"
 "        lists are sent out.\n"
 msgstr ""
+
+#: templates/en/admindbdetails.html:1
+msgid ""
+"The administrative requests are displayed in one of two ways, on a <a\n"
+"href=\"%(summaryurl)s\">summary page</a>, and on a <em>details</em>\n"
+"page.  The summary page contains pending subscription and\n"
+"unsubscription requests, as well as postings being held for your\n"
+"approval, grouped by sender email address.  The details page contains\n"
+"a more detailed view of each held message, including the all the\n"
+"message's headers and an excerpt of the message body.\n"
+"\n"
+"<p>On all the pages, the following actions are available:\n"
+"\n"
+"<ul>\n"
+"<li><b>Defer</b> -- Defer your decision until later.  No action is\n"
+"    taken now for this pending administrative request, but for held\n"
+"    postings, you can still forward or preserve the message (see\n"
+"    below).\n"
+"\n"
+"<li><b>Approve</b> -- Approve the message, sending it on to the list.\n"
+"    For membership requests, approve the change in membership status.\n"
+"\n"
+"<li><b>Reject</b> -- Reject the message, sending a rejection notice to\n"
+"    the sender, and discarding the original message.  For membership\n"
+"    requests, reject the change in membership status.  In either case,\n"
+"    you should add a reason for the rejection in the accompanying text\n"
+"    box.\n"
+"\n"
+"<li><b>Discard</b> -- Throw away the original message, without sending\n"
+"    a rejection notice.  For membership requests, this simply discards\n"
+"    the request without notice to the person making the request.  This\n"
+"    is usually the action you want to take for known spam.\n"
+"</ul>\n"
+"\n"
+"<p>For held messages, turn on the <b>Preserve</b> option if you want\n"
+"to save a copy of the message for the site administrator.  This is\n"
+"useful for abusive messages that you want to discard, but need to keep\n"
+"a record of for later inspection.\n"
+"\n"
+"<p>Turn on the <b>Forward to</b> option, and fill in the forwarding\n"
+"address if you want to forward the message to someone else not on the\n"
+"list.  To edit a held message before it is sent on to the list, you\n"
+"should forward the message to yourself (or the list owners), and\n"
+"discard the original message.  Then, when the message shows up in your\n"
+"mailbox, make your edits and resend the message to the list, including\n"
+"an <tt>Approved:</tt> header with the list password as its value.  It\n"
+"is proper netiquette in this case to include a note in the resent\n"
+"message, explaining that you have modified the text.\n"
+"\n"
+"<p>If the sender is a list member who is being moderated, you can\n"
+"optionally clear their moderation flag.  This is useful when your list\n"
+"is configured to put new members on probation, and you've decided that\n"
+"this member can be trusted to post to the list without approval.\n"
+"\n"
+"<p>If the sender is not a list member, you can add the email address to\n"
+"a <em>sender filter</em>.  Sender filters are described on the <a\n"
+"href=\"%(filterurl)s\">sender filter privacy page</a>, and may be one of\n"
+"<b>auto-accept</b> (Accepts), <b>auto-hold</b> (Holds),\n"
+"<b>auto-reject</b> (Rejects), or <b>auto-discard</b> (Discards).  This\n"
+"option will not be available if the address is already on one of the\n"
+"sender filters.\n"
+"\n"
+"<p>When you're finished, click on the <em>Submit All Data</em> button\n"
+"at the top or bottom of the page.  This button will submit all\n"
+"selected actions for all administrative requests that you've made a\n"
+"decision for.\n"
+"\n"
+"<p><a href=\"%(summaryurl)s\">Return to the summary page</a>.\n"
+msgstr ""
+"관리자 요청은 두가지 방식 중 하나로 보여집니다. 한가지는 <a\n"
+"href=\"%(summaryurl)s\">요약한 페이지</a>, 다른 한가지는 <em>자세한</em>\n"
+"페이지입니다. 요약한 페이지는 보낸이의 E메일 주소로 그룹화 하여 \n"
+"가입, 탈퇴, 당신의 승인을 기다리고 있는 글들을 포함하고 있습니다.\n"
+"자세한 페이지는 각 메세지에 대한 더 자세한 것을 보함하고 있습니다.\n"
+"예를 들면 메세지의 헤더 와 메세지 본문의 글들이 있습니다.\n"
+"\n"
+"<p>모든 페이지에서 다음의 행동을 취할 수 있습니다:\n"
+"\n"
+"<ul>\n"
+"<li><b>연기하기</b> - 나중에 결정하도록 현재 결정을 연기합니다.\n"
+"만약 당신이 메세지를 지우지 않고, 다른 사람에게 보내거나, 보관(아래를 참조하"
+"세요\n"
+".)하길\n"
+"원한다면 이 결정을 사용할 수 있습니다.\n"
+"<li><b>승인하기</b> - 메세지를 승인하여 회원들에게 보냅니다.\n"
+"<li><b>거절하기</b> - 메세지를 거절합니다. 보낸이에게 거절에 관한 공지를 보냅"
+"니>\n"
+"다.\n"
+"원래 메세지는 버려지게 됩니다.\n"
+"<li><b>버리기</b> - 보낸이에게 거절 공지를 보내지 않고 메세지를 버려 버립니"
+"다.\n"
+"이 결정은 스팸 메일의 경우 쓸모있을 것입니다.\n"
+"</ul>\n"
+"\n"
+"<p>만약 사이트 관리자를 위해 이 메세지의 복사본이 필요하다면 \n"
+"<b>보관하기</b>옵션을 체크하십시오. 이것은 독설의 메세지의 경우 쓸모\n"
+"있을 것입니다. 만약 여러분이 리스트에 없는 어떤 이에게 메세지를 \n"
+"전달하길 원한다면 전달할 주소를 기입하시고, <b>전달하기</b> 옵션을 \n"
+"체크하십시오. 리스트로 보내지 전에 잡아둔 메세지를 수정하기 위해\n"
+"당신은 자기에게(혹은 리스트 소유주)에서 메일을 전달하여야 하며,\n"
+"원본 메세지는 버려야 합니다. 그럼 당신의 메일상자에 메세지가 나타\n"
+"나면 수정을 하여 리스트에 메일을 다시 보냅니다. 물론 <tt>승인:\n"
+"</tt> 헤더에는 리스트 비밀번호를 포함해야 합니다. 여러분이 수정한\n"
+"텍스트에서 재전송한 이유에 대한 짧은 설명을 붙이는것 온라인 예절\n"
+"이라고 생각합니다.\n"
+"\n"
+"<p>만약 보낸이가 글관리되는 리스트 회원이라면 당신은 선택적으로\n"
+"그들의 글관리 기호를 없애줄 수 있습니다. 이것은 당신의 리스트가\n"
+"새로운 회원에게 글관리를 기본적으로 설정하고, 당신이 이 회원에\n"
+"대해 승인없이 리스트에 글을 써도 문제가 없겠다 생각하는 경우에\n"
+"유용하게 사용될 수 있을 것입니다.\n"
+"\n"
+"<p>만약 보낸이가 리스트 회원이 아닐 경우, 당신은 <em>보낸이 걸러내기\n"
+"</em>에 E메일 주소를 추가할 수 있습니다. 보낸이 걸러내기는 <a\n"
+"href=\"%(filterurl)s\">보낸이 걸러내기 개인정보 정책 페이지</a>에 설명\n"
+"되어 있스면 <b>자동-받아들임</b> (받아들임), <b>자동-잡아두기</b>\n"
+"(잡아두기), <b>자동-거절하기</b> (거절하기, 혹은 <b>자동-버리기</b>\n"
+"(버리기) 중 하나를 선택하실 수 있습니다. 이 설정은 주소가 이미 \n"
+"<em>보낸이 걸러내기</em>에 존재한다면 이용할 수 없습니다.\n"
+"\n"
+"<p>여러분의 결정이 끝나셨다면, 이 페이지의 윗부분과 아래부분에 있는\n"
+"<em>자료 처리하기</em> 버턴을 클릭하세요. 이 버턴은 관리적인 요청을\n"
+"요구한 모든 사항에 대한 당신이 결정한 행동을 취하도록 할 것입니다.\n"
+"만약 요청에 대한 결정을 지금 하지 않으실 거면 아무것도 손대지 말고\n"
+"(라디오버턴도 포함해서) <em>자료 처리하기</em>을 누르시면 대기상태\n"
+"DB 에서 제거되지 않을 것입니다.\n"
+"\n"
+"<p><a href=\"%(summaryurl)s\">요약한 페이지로 돌아가기</a>.\n"
+
+#: templates/en/admindbpreamble.html:1
+msgid ""
+"This page contains a subset of the <em>%(listname)s</em> mailing list\n"
+"postings that are being held for your approval.  It currently shows\n"
+"%(description)s\n"
+"\n"
+"<p>For each administrative request, please select the action to take,\n"
+"clicking on the <b>Submit All Data</b> when finished.  More detailed\n"
+"instructions are available <a href=\"%(detailsurl)s\">here</a>.\n"
+"\n"
+"<p>You can also <a href=\"%(summaryurl)s\">view a summary</a> of all\n"
+"pending requests.\n"
+msgstr ""
+"이 페이지는 당신의 승인을 기다리고 있는 글의 대한 정보를 포함하고 있습\n"
+"니다. 현재 %(description)s 로 나타나고 있습니다.\n"
+"\n"
+"<p>각각의 관리 요청에 대해 결정이 끝나셨다면 <b>자료 처리하기</b>를\n"
+"클릭하여 주시기 바랍니다. 더 자세한 명령어에 대한 정보는\n"
+"<a href=\"%(detailsurl)s\">여기</a>에서 볼 수 있습니다.\n"
+"\n"
+"<p>또한 여러분은 모든 대기 요청에 대한 <a href=\"%(summaryurl)s\">\n"
+"요약한 페이지</a>를 볼 수 있습니다.\n"
+
+#: templates/en/admindbsummary.html:1
+msgid ""
+"This page contains a summary of the current set of administrative\n"
+"requests requiring your approval for the\n"
+"<a href=\"%(adminurl)s\"><em>%(listname)s</em> mailing list</a>.\n"
+"First, you will find the list of pending\n"
+"subscription and unsubscription requests, if any, followed by any\n"
+"postings being held for your approval.\n"
+"\n"
+"<p>For each administrative request, please select the action to take,\n"
+"clicking on the <b>Submit All Data</b> button when finished.\n"
+"<a href=\"%(detailsurl)s\">More detailed instructions</a> are also\n"
+"available.\n"
+"\n"
+"<p>You can also <a href=\"%(viewallurl)s\">view the details</a> of all\n"
+"held postings.\n"
+msgstr ""
+"이 페이지는 <a href=\"%(adminurl)s\"><em>%(listname)s</em> 메일링 리스트\n"
+"</a>에서 당신의 승인을 기다리고 있는 관리 요청에 대한 현재 요약\n"
+"내용을 가지고 있습니다. 처음에 여러분은 당신의 승인을 기다리고 있는\n"
+"가입 혹은 탈퇴 요청이 있으면 그것을 보게 될것입니다.\n"
+"\n"
+"<p>각각의 관리 요청에 대한 행동을 선택하시고 결정하셨다면 <b>자료\n"
+"처리하기</b>를 클릭하시기 바랍니다. 또한 <a href=\"%(detailsurl)s\">\n"
+"더 자세한 명령</a>에 대한 것도 이용가능 합니다.\n"
+"\n"
+"<p>또한 여러분은 잡아둔 모든 글들에 대한 <a href=\"%(viewallurl)s\">\n"
+"자세한 설명</a>을 볼 수 있습니다.\n"
+
+#: templates/en/adminsubscribeack.txt:1
+msgid ""
+"%(member)s has been successfully subscribed to %(listname)s.\n"
+"\n"
+"\n"
+msgstr ""
+"%(member)s 명이 %(listname)s 메일링 리스트에 성공적으로 등록되었습니다.\n"
+"\n"
+"\n"
+
+#: templates/en/adminunsubscribeack.txt:1
+msgid ""
+"%(member)s has been removed from %(listname)s.\n"
+"\n"
+msgstr ""
+"%(member)s 명이 %(listname)s 에서 제거되었습니다.\n"
+"\n"
+
+#: templates/en/admlogin.html:1
+msgid ""
+"<html>\n"
+"<head>\n"
+"  <title>%(listname)s %(who)s Authentication</title>\n"
+"</head>\n"
+"<body bgcolor=\"#ffffff\">\n"
+"<FORM METHOD=POST ACTION=\"%(path)s\">\n"
+"%(message)s\n"
+"  <TABLE WIDTH=\"100%%\" BORDER=\"0\" CELLSPACING=\"4\" CELLPADDING=\"5\">\n"
+"    <TR>\n"
+"      <TD COLSPAN=\"2\" WIDTH=\"100%%\" BGCOLOR=\"#99CCFF\" ALIGN=\"CENTER"
+"\">\n"
+"\t<B><FONT COLOR=\"#000000\" SIZE=\"+1\">%(listname)s %(who)s\n"
+"\t    Authentication</FONT></B>\n"
+"      </TD>\n"
+"    </TR>\n"
+"    <tr>\n"
+"      <TD><div ALIGN=\"Right\">List %(who)s Password:</div></TD>\n"
+"      <TD><INPUT TYPE=\"password\" NAME=\"adminpw\" SIZE=\"30\"></TD>\n"
+"    </tr>\n"
+"    <tr>\n"
+"      <td colspan=2 align=middle><INPUT type=\"SUBMIT\"\n"
+"                                        name=\"admlogin\"\n"
+"\t\t\t\t\tvalue=\"Let me in...\">\n"
+"      </td>\n"
+"    </tr>\n"
+"  </TABLE>\n"
+"      <p><strong><em>Important:</em></strong> From this point on, you\n"
+"      must have cookies enabled in your browser, otherwise no\n"
+"      administrative changes will take effect.\n"
+"\n"
+"      <p>Session cookies are used in Mailman's\n"
+"      administrative interface so that you don't need to\n"
+"      re-authenticate with every administrative operation.  This\n"
+"      cookie will expire automatically when you exit your browser, or\n"
+"      you can explicitly expire the cookie by hitting the\n"
+"      <em>Logout</em> link under <em>Other Administrative\n"
+"      Activities</em> (which you'll see once you successfully log in).\n"
+"</FORM>\n"
+"</body>\n"
+"</html>\n"
+msgstr ""
+"<html>\n"
+"<head>\n"
+"  <title>%(listname)s 관리자 인증</title>\n"
+"</head>\n"
+"<body bgcolor=\"#ffffff\">\n"
+"<FORM METHOD=POST ACTION=\"%(path)s\">\n"
+"%(message)s\n"
+"  <TABLE WIDTH=\"100%%\" BORDER=\"0\" CELLSPACING=\"4\" CELLPADDING=\"5\">\n"
+"    <TR>\n"
+"      <TD COLSPAN=\"2\" WIDTH=\"100%%\" BGCOLOR=\"#99CCFF\" ALIGN=\"CENTER"
+"\">\n"
+"\t<B><FONT COLOR=\"#000000\" SIZE=\"+1\">%(listname)s 관리자 인증\n"
+"\t    </FONT></B>\n"
+"      </TD>\n"
+"    </TR>\n"
+"    <tr>\n"
+"      <TD> <div ALIGN=\"Right\"> 메일링 리스트 관리자 비밀번호: </div> </"
+"TD>\n"
+"      <TD> <INPUT TYPE=password NAME=adminpw SIZE=30></TD>\n"
+"    </tr>\n"
+"    <tr>\n"
+"      <td colspan=2 align=middle> <INPUT TYPE=SUBMIT name=\"request_login\"\n"
+"\t\t\t\t\t\t     value=\"나를 안으로 들여보내줘!\">\n"
+"      </td>\n"
+"    </tr>\n"
+"  </TABLE>\n"
+"      <p><strong><em>중요:</em></strong> 이 시점부터 여러분의 브라우저에\n"
+"      쿠키가 저장됩니다. 이 부분부터 시작하지 않으면, 다른 변경들은\n"
+"      실제로 적용되지 않습니다.\n"
+"\n"
+"      <p>Mailman 의 관리 인터페이스에는 세션 쿠키를 사용하기 때문에 매번\n"
+"      인증할 필요가 없으며 이 쿠키는 여러분이 브라우저를 끝냈거나, <em>관리"
+"자\n"
+"      화면</em>에서 볼수 있는 \"<em>로그아웃</em>\"(여러분이 성공적으로 로긴 "
+"을 하면 볼 수\n"
+"      있습니다.) 를 클릭하면 자동으로 지워집니다.\n"
+"</FORM>\n"
+
+#: templates/en/approve.txt:1
+msgid ""
+"Your request to %(requestaddr)s:\n"
+"\n"
+"    %(cmd)s\n"
+"\n"
+"has been forwarded to the person running the list.\n"
+"\n"
+"This is probably because you are trying to subscribe to a 'closed'\n"
+"list.\n"
+"\n"
+"You will receive email notification of the list owner's decision about\n"
+"your subscription request.\n"
+"\n"
+"Any questions about the list owner's policy should be directed to:\n"
+"\n"
+"    %(adminaddr)s\n"
+msgstr ""
+"%(requestaddr)s 로 보낸 아래의 명령어는\n"
+"\n"
+"    %(cmd)s\n"
+"\n"
+"메일링 리스트 운영자에게 포워딩 되었습니다.\n"
+"\n"
+"이것은 아마 '닫힌'(가입이 안되는) 메일링 리스트에 가입을 시도했기\n"
+"때문입니다.\n"
+"\n"
+"여러분의 가입 요청에 대한 메일링 리스트 운영자의 결정에 대한 부분을\n"
+"메일로 보내줄 것 입니다.\n"
+"\n"
+"메일링 리스트 운영자의 정책에 대한 어떤 질문은 아래의 주소로 하십시오.\n"
+"\n"
+"    %(adminaddr)s\n"
+
+#: templates/en/archidxentry.html:1
+msgid ""
+"<LI><A HREF=\"%(filename)s\">%(subject)s\n"
+"</A><A NAME=\"%(sequence)i\">&nbsp;</A>\n"
+"<I>%(author)s\n"
+"</I>\n"
+msgstr ""
+
+#: templates/en/archidxfoot.html:1
+msgid ""
+"    </ul>\n"
+"    <p>\n"
+"      <a name=\"end\"><b>Last message date:</b></a> \n"
+"       <i>%(lastdate)s</i><br>\n"
+"    <b>Archived on:</b> <i>%(archivedate)s</i>\n"
+"    <p>\n"
+"   <ul>\n"
+"         <li> <b>Messages sorted by:</b>\n"
+"\t        %(thread_ref)s\n"
+"\t\t%(subject_ref)s\n"
+"\t\t%(author_ref)s\n"
+"\t\t%(date_ref)s\n"
+"\t     <li><b><a href=\"%(listinfo)s\">More info on this list...\n"
+"                    </a></b></li>\n"
+"     </ul>\n"
+"     <p>\n"
+"     <hr>\n"
+"     <i>This archive was generated by\n"
+"     Pipermail %(version)s.</i>\n"
+"  </BODY>\n"
+"</HTML>\n"
+msgstr ""
+
+#: templates/en/archidxhead.html:1
+#, fuzzy
+msgid ""
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">\n"
+"<HTML>\n"
+"  <HEAD>\n"
+"     <title>The %(listname)s %(archive)s Archive by %(archtype)s</title>\n"
+"     <META NAME=\"robots\" CONTENT=\"noindex,follow\">\n"
+"     %(encoding)s\n"
+"  </HEAD>\n"
+"  <BODY BGCOLOR=\"#ffffff\">\n"
+"      <a name=\"start\"></A>\n"
+"      <h1>%(archive)s Archives by %(archtype)s</h1>\n"
+"      <ul>\n"
+"         <li> <b>Messages sorted by:</b>\n"
+"\t        %(thread_ref)s\n"
+"\t\t%(subject_ref)s\n"
+"\t\t%(author_ref)s\n"
+"\t\t%(date_ref)s\n"
+"\n"
+"\t     <li><b><a href=\"%(listinfo)s\">More info on this list...\n"
+"                    </a></b></li>\n"
+"      </ul>\n"
+"      <p><b>Starting:</b> <i>%(firstdate)s</i><br>\n"
+"         <b>Ending:</b> <i>%(lastdate)s</i><br>\n"
+"         <b>Messages:</b> %(size)s<p>\n"
+"     <ul>\n"
+msgstr ""
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">\n"
+"<HTML>\n"
+"  <HEAD>\n"
+"     <title>%(listname)s 저장소</title>\n"
+"     <META NAME=\"robots\" CONTENT=\"noindex,follow\">\n"
+"  </HEAD>\n"
+"  <BODY BGCOLOR=\"#ffffff\">\n"
+"     <h1>%(listname)s 저장소 </h1>\n"
+"     <p>\n"
+"      아직 이 메일링 리스트에 온 글이 없습니다. 현재 저장소는 피어 있습니"
+"다.\n"
+"      이 메일링 리스트에 대한 <a href=\"%(listinfo)s\">더 많은 정보</a>를 얻"
+"을 수 있습니다.\n"
+"     </p>\n"
+"  </BODY>\n"
+"  </HTML>\n"
+
+#: templates/en/archlistend.html:1
+msgid "         </table>\n"
+msgstr ""
+
+#: templates/en/archliststart.html:1
+msgid ""
+"\t<table border=3>\n"
+"          <tr><td>Archive</td>\n"
+"          <td>View by:</td>\n"
+"          <td>Downloadable version</td></tr>\n"
+msgstr ""
+
+#: templates/en/archtoc.html:1
+#, fuzzy
+msgid ""
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">\n"
+"<HTML>\n"
+"  <HEAD>\n"
+"     <title>The %(listname)s Archives</title>\n"
+"     <META NAME=\"robots\" CONTENT=\"noindex,follow\">\n"
+"     %(meta)s\n"
+"  </HEAD>\n"
+"  <BODY BGCOLOR=\"#ffffff\">\n"
+"     <h1>The %(listname)s Archives </h1>\n"
+"     <p>\n"
+"      You can get <a href=\"%(listinfo)s\">more information about this list</"
+"a>\n"
+"      or you can <a href=\"%(fullarch)s\">download the full raw archive</a>\n"
+"      (%(size)s).\n"
+"     </p>\n"
+"     %(noarchive_msg)s\n"
+"     %(archive_listing_start)s\n"
+"     %(archive_listing)s\n"
+"     %(archive_listing_end)s\n"
+"     </BODY>\n"
+"     </HTML>\n"
+msgstr ""
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">\n"
+"<HTML>\n"
+"  <HEAD>\n"
+"     <title>%(listname)s 저장소</title>\n"
+"     <META NAME=\"robots\" CONTENT=\"noindex,follow\">\n"
+"  </HEAD>\n"
+"  <BODY BGCOLOR=\"#ffffff\">\n"
+"     <h1>%(listname)s 저장소 </h1>\n"
+"     <p>\n"
+"      아직 이 메일링 리스트에 온 글이 없습니다. 현재 저장소는 피어 있습니"
+"다.\n"
+"      이 메일링 리스트에 대한 <a href=\"%(listinfo)s\">더 많은 정보</a>를 얻"
+"을 수 있습니다.\n"
+"     </p>\n"
+"  </BODY>\n"
+"  </HTML>\n"
+
+#: templates/en/archtocentry.html:1
+msgid ""
+"\n"
+"\t    <tr>\n"
+"            <td>%(archivelabel)s:</td>\n"
+"            <td>\n"
+"              <A href=\"%(archive)s/thread.html\">[ Thread ]</a>\n"
+"              <A href=\"%(archive)s/subject.html\">[ Subject ]</a>\n"
+"              <A href=\"%(archive)s/author.html\">[ Author ]</a>\n"
+"              <A href=\"%(archive)s/date.html\">[ Date ]</a>\n"
+"            </td>\n"
+"            %(textlink)s\n"
+"            </tr>\n"
+"\n"
+msgstr ""
+
+#: templates/en/article.html:1
+msgid ""
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">\n"
+"<HTML>\n"
+" <HEAD>\n"
+"   <TITLE> %(title)s\n"
+"   </TITLE>\n"
+"   <LINK REL=\"Index\" HREF=\"index.html\" >\n"
+"   <LINK REL=\"made\" HREF=\"mailto:%(email_url)s?Subject=%(subject_url)s&In-"
+"Reply-To=%(in_reply_to_url)s\">\n"
+"   <META NAME=\"robots\" CONTENT=\"index,nofollow\">\n"
+"   %(encoding)s\n"
+"   %(prev)s\n"
+"   %(next)s\n"
+" </HEAD>\n"
+" <BODY BGCOLOR=\"#ffffff\">\n"
+"   <H1>%(subject_html)s</H1>\n"
+"    <B>%(author_html)s</B> \n"
+"    <A HREF=\"mailto:%(email_url)s?Subject=%(subject_url)s&In-Reply-To=%"
+"(in_reply_to_url)s\"\n"
+"       TITLE=\"%(subject_html)s\">%(email_html)s\n"
+"       </A><BR>\n"
+"    <I>%(datestr_html)s</I>\n"
+"    <P><UL>\n"
+"        %(prev_wsubj)s\n"
+"        %(next_wsubj)s\n"
+"         <LI> <B>Messages sorted by:</B> \n"
+"              <a href=\"date.html#%(sequence)s\">[ date ]</a>\n"
+"              <a href=\"thread.html#%(sequence)s\">[ thread ]</a>\n"
+"              <a href=\"subject.html#%(sequence)s\">[ subject ]</a>\n"
+"              <a href=\"author.html#%(sequence)s\">[ author ]</a>\n"
+"         </LI>\n"
+"       </UL>\n"
+"    <HR>  \n"
+"<!--beginarticle-->\n"
+"%(body)s\n"
+"<!--endarticle-->\n"
+"    <HR>\n"
+"    <P><UL>\n"
+"        <!--threads-->\n"
+"\t%(prev_wsubj)s\n"
+"\t%(next_wsubj)s\n"
+"         <LI> <B>Messages sorted by:</B> \n"
+"              <a href=\"date.html#%(sequence)s\">[ date ]</a>\n"
+"              <a href=\"thread.html#%(sequence)s\">[ thread ]</a>\n"
+"              <a href=\"subject.html#%(sequence)s\">[ subject ]</a>\n"
+"              <a href=\"author.html#%(sequence)s\">[ author ]</a>\n"
+"         </LI>\n"
+"       </UL>\n"
+"\n"
+"<hr>\n"
+"<a href=\"%(listurl)s\">More information about the %(listname)s\n"
+"mailing list</a><br>\n"
+"</body></html>\n"
+msgstr ""
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">\n"
+"<HTML>\n"
+" <HEAD>\n"
+"   <TITLE> %(title)s\n"
+"   </TITLE>\n"
+"   <LINK REL=\"Index\" HREF=\"index.html\" >\n"
+"   <LINK REL=\"made\" HREF=\"mailto:%(email_url)s\">\n"
+"   <META NAME=\"robots\" CONTENT=\"index,nofollow\">\n"
+"   %(encoding)s\n"
+"   %(prev)s\n"
+"   %(next)s\n"
+" </HEAD>\n"
+" <BODY BGCOLOR=\"#ffffff\">\n"
+"   <H1>%(subject_html)s\n"
+"   </H1>\n"
+"    <B>%(author_html)s\n"
+"    </B> \n"
+"    <A HREF=\"mailto:%(email_url)s\"\n"
+"       TITLE=\"%(subject_html)s\">%(email_html)s\n"
+"       </A><BR>\n"
+"    <I>%(datestr_html)s</I>\n"
+"    <P><UL>\n"
+"        %(prev_wsubj)s\n"
+"        %(next_wsubj)s\n"
+"         <LI> <B>편지 정렬 순서:</B> \n"
+"              <a href=\"date.html#%(sequence)s\">[ 날짜 ]</a>\n"
+"              <a href=\"thread.html#%(sequence)s\">[ 쓰레드 ]</a>\n"
+"              <a href=\"subject.html#%(sequence)s\">[ 제목 ]</a>\n"
+"              <a href=\"author.html#%(sequence)s\">[ 저자 ]</a>\n"
+"         </LI>\n"
+"       </UL>\n"
+"    <HR>  \n"
+"<!--beginarticle-->\n"
+"%(body)s\n"
+"<!--endarticle-->\n"
+"    <HR>\n"
+"    <P><UL>\n"
+"        <!--threads-->\n"
+"\t%(prev_wsubj)s\n"
+"\t%(next_wsubj)s\n"
+"         <LI> <B>편지 정렬 순서:</B> \n"
+"              <a href=\"date.html#%(sequence)s\">[ 날짜 ]</a>\n"
+"              <a href=\"thread.html#%(sequence)s\">[ 쓰레드 ]</a>\n"
+"              <a href=\"subject.html#%(sequence)s\">[ 제목 ]</a>\n"
+"              <a href=\"author.html#%(sequence)s\">[ 저자 ]</a>\n"
+"         </LI>\n"
+"       </UL>\n"
+"</body></html>\n"
+
+#: templates/en/bounce.txt:1
+msgid ""
+"This is a Mailman mailing list bounce action notice:\n"
+"\n"
+"    List:       %(listname)s\n"
+"    Member:     %(addr)s\n"
+"    Action:     Subscription %(negative)s%(did)s.\n"
+"    Reason:     Excessive or fatal bounces.\n"
+"    %(but)s\n"
+"\n"
+"%(reenable)s\n"
+"The triggering bounce notice is attached below.\n"
+"\n"
+"Questions?  \n"
+"Contact the Mailman site administrator at %(owneraddr)s.\n"
+msgstr ""
+"이것은 Mailman 메일링 리스트 바운스 ACTION 에 대한 부분입니다.\n"
+"\n"
+"    리스트:     %(listname)s\n"
+"    멤버  :     %(addr)s\n"
+"    행동  :     가입 %(negative)s%(did)s.\n"
+"    이유  :     범위 초과 혹은 치명적인 에러\n"
+"    %(but)s\n"
+"\n"
+"%(reenable)s\n"
+"바운스 에 대한 부분은 아래에 첨부하였습니다.\n"
+"\n"
+"질문이 있습니까? %(owneraddr)s 의 Mailman 사이트 관리자에게 연락하십시오.\n"
+
+#: templates/en/convert.txt:1
+msgid ""
+"The %(listname)s mailing list has just undergone a big change.  It is\n"
+"running on a new mailing list package called \"Mailman\".  This will\n"
+"hopefully solve a lot of problems that administering this list has\n"
+"presented.\n"
+"\n"
+"How does this affect you?\n"
+"\n"
+"1) Mail intended for the whole list should be sent to: %(listaddr)s.\n"
+"\n"
+"2) You have been given an arbitrary password to prevent others from\n"
+"unsubscribing you without your knowledge.  It will be mailed to you in \n"
+"a separate email, which you may have already received.  Don't worry if \n"
+"you forget this password; a reminder will be sent to you via email\n"
+"every month.\n"
+"\n"
+"3) If you have World Wide Web access, you can use it any time to\n"
+"unsubscribe from this list, to switch to and from digest mode, to\n"
+"check back issues of the list (which will be available after the list\n"
+"has been getting posts for a day or so), etc.  The Web address for\n"
+"these resources is:\n"
+"\n"
+"    %(listinfo_url)s\n"
+"\n"
+"4) If you do not have WWW access, you can do these same things via\n"
+"email.  Send mail to %(requestaddr)s with a subject or body containing \n"
+"just the word \"help\" (without the quotes).  You will receive an\n"
+"automated reply giving you further directions.\n"
+"\n"
+"Please address any questions or problems with this new setup to:\n"
+"%(adminaddr)s.\n"
+"\n"
+"This message was auto-generated by Mailman %(version)s.  For more\n"
+"information on the Mailman software, visit the Mailman homepage at\n"
+"http://www.list.org/\n"
+msgstr ""
+"%(listname)s 메일링 리스트가 지금 큰 변화를 하였습니다. 이제부터\n"
+"\"Mailman\" 이라는 메일링 리스트 패키지로 운영됩니다. 메일링 리스트를\n"
+"관리하면서 격게 되는 많은 문제들을 Mailman 이 해결해 주었음 합니다.\n"
+"\n"
+"\n"
+"여러분에게 어떠한 영향을 미치게 될까요?\n"
+"\n"
+"1) 이제부터 모든 리스트의 메일은 %(listaddr)s 로 보내셔야 합니다.\n"
+"\n"
+"2) 여러분이 알지 못하는 사이게 다른 사람에 의해 탈퇴되는 경우를 막기 \n"
+"위해 임의의 비밀번호가 주어지게 됩니다. 이 메일은 여러분에게 보내지게\n"
+"되므로 비밀번호를 잊으셨다고 걱정할 필요는 없습니다. 한달에 한번 E메일로\n"
+"패스워드를 보내드립니다.\n"
+"\n"
+"3) 여러분이 WWW 에 접속할 수 있다면 이 리스트로부터 탈퇴하거나,\n"
+"Digest 여부를 설정하거나 문제점들을 검사(리스트가 하루동안 글들을\n"
+"모운 후에 이용할 수 있습니다.)하거나 등등을 언제나 할 수 있습니다.\n"
+"그러한 정보의 WWW 주소는 아래와 같습니다. \n"
+"\n"
+"    %(listinfo_url)s\n"
+"\n"
+"4) 여러분이 WWW 에 접속 할 수 없다면 E메일을 통해서 똑같은 일을\n"
+"할 수 있습니다. 제목 혹은 본문에 \"help\"(따옴표 없이) 라고 입력하시고\n"
+"%(requestaddr)s 로 메일을 보내십시오. 사용 방법에 대한 설명서를\n"
+"받아 보실 수 있습니다.\n"
+"\n"
+"이 새로운 세팅에 대한 문제점이나, 어떤 질문이 있으시면\n"
+"\n"
+"%(adminaddr)s\n"
+"\n"
+"로 연락해 주십시오.\n"
+"\n"
+"이 메세지는 Mailman %(version)s 에 의해 자동 생성되었습니다.\n"
+"Mailman 소프트웨어에 대한 더 많은 정보를 원하신다면 Mailman 홈페이지\n"
+"http://www.list.org/\n"
+"를 방문해 주시기 바랍니다.\n"
+"\n"
+
+#: templates/en/checkdbs.txt:1
+msgid ""
+"The %(real_name)s@%(host_name)s mailing list has %(count)d request(s)\n"
+"waiting for your consideration at:\n"
+"\n"
+"\t%(adminDB)s\n"
+"\t\n"
+"Please attend to this at your earliest convenience.  This notice of\n"
+"pending requests, if any, will be sent out daily.\n"
+msgstr ""
+"%(real_name)s@%(host_name)s 메일링 리스트에는 당신의 관심을 기다리는\n"
+"%(count)d 개의 요청(들)이 목이 빠질듯 기다리고 있습니다. 아래의\n"
+"사이트를 방문하시면 됩니다.\n"
+"\n"
+"\t%(adminDB)s\n"
+"\t\n"
+"당신의 이후의 편의를 위해서 관심을 가져주시기 바랍니다. 이 공기는\n"
+"대기중인 요청이 하루 이상 방치되어 있을 경우 보내집니다.\n"
+
+#: templates/en/cronpass.txt:1
+msgid ""
+"This is a reminder, sent out once a month, about your %(hostname)s\n"
+"mailing list memberships.  It includes your subscription info and how\n"
+"to use it to change it or unsubscribe from a list.\n"
+"\n"
+"You can visit the URLs to change your membership status or\n"
+"configuration, including unsubscribing, setting digest-style delivery\n"
+"or disabling delivery altogether (e.g., for a vacation), and so on.\n"
+"\n"
+"In addition to the URL interfaces, you can also use email to make such\n"
+"changes.  For more info, send a message to the '-request' address of\n"
+"the list (for example, %(exreq)s) containing just the word 'help' in\n"
+"the message body, and an email message will be sent to you with\n"
+"instructions.\n"
+"\n"
+"If you have questions, problems, comments, etc, send them to\n"
+"%(owner)s.  Thanks!\n"
+"\n"
+"Passwords for %(useraddr)s:\n"
+"\n"
+msgstr ""
+"이 메일은 %(hostname)s 메일링 리스트 멤버들에게 한달에 한번씩 보내는\n"
+"메일입니다. 이 메일은 여러분의 가입 정보와 가입 정보 변경 그리고\n"
+"메일링 리스트에서 탈퇴하는 방법을 실고 있습니다.\n"
+"\n"
+"여러분의 가입 설정, 탈퇴, Digest 여부 세팅, 잠깐동안 배달 금지(방학동안)\n"
+"등등의 여러 세팅을 URL 방문을 통해 할 수 있습니다.\n"
+"\n"
+"URL 인터페이스 뿐만 아니라 E메일을 통해서도 사용할 수 있습니다. 더 많은\n"
+"정보를 얻으실려면 본문에 'help' 라는 단어만 넣고, 메일링 리스트의 주소에\n"
+"'-request' 를 보태어서( 예를 들면, %(exreq)s ) 보내십시오. 그럼 명령어\n"
+"에 대한 설명을 E메일을 통해 받으실 수 있습니다.\n"
+"\n"
+"만약 질문이나, 문제, 논의 같은 내용이 있으시면 %(owner)s 로 보내 주십시오.\n"
+"고맙습니다.\n"
+"\n"
+"%(useraddr)s 사용자의 패스워드는 아래와 같습니다.\n"
+
+#: templates/en/disabled.txt:1
+msgid ""
+"Your membership in the mailing list %(listname)s has been disabled\n"
+"%(reason)s.  You will not get any more messages from this\n"
+"list until you re-enable your membership.  You will receive\n"
+"%(noticesleft)s more reminders like this before your membership in the\n"
+"list is deleted.\n"
+"\n"
+"To re-enable your membership, you can simply respond to this message\n"
+"(leaving the Subject: line intact), or visit the confirmation page at\n"
+"\n"
+"    %(confirmurl)s\n"
+"\n"
+"You can also visit your membership page at\n"
+"\n"
+"    %(optionsurl)s\n"
+"\n"
+"On your membership page, you can change various delivery options such\n"
+"as your email address and whether you get digests or not.  As a\n"
+"reminder, your membership password is\n"
+"\n"
+"    %(password)s\n"
+"\n"
+"If you have any questions or problems, you can contact the list owner\n"
+"at\n"
+"\n"
+"    %(owneraddr)s\n"
+msgstr ""
+"%(listname)s 메일링 리스트에서 당신의 활동이 많은 바운스 문제로 금지\n"
+"되었습니다. 당신은 스스로 활동을 재가능하기 전까지 이 메일링 리스트\n"
+"에서 더이상 메일을 받으실 수 없습니다. 당신은 이 메일링 리스트에서\n"
+"삭제되기 전에 %(noticesleft)s 번의 이와 같은 메일을 받게 될 것입니다.\n"
+"\n"
+"여러분의 회원권을 재가능하게 위해 당신은 이 메세지를 회신을 하거나\n"
+"(제목: 부분을 그대로 두어야 합니다.) 혹은 아래의 확인 페이지를 방문\n"
+"하시기 바랍니다.\n"
+"\n"
+"    %(confirmurl)s\n"
+"\n"
+"당신은 또한 회원권 페이지를 아래 링크로 방문하실 수 있습니다.\n"
+"\n"
+"    %(optionsurl)s\n"
+"\n"
+"회원권 페이지에서 당신의 E메일 주소라던가, 묶음배달 여부와 같은 배달\n"
+"관련 설정을 변경하실 수 있습니다. 당신의 회원권 비밀번호는 다음과 \n"
+"같습니다.\n"
+"\n"
+"    %(password)s\n"
+"\n"
+"만약 어떤 문제나 질문이 있으시면, 리스트 소유주에게 연락 주시기 바랍\n"
+"니다.\n"
+"\n"
+"    %(owneraddr)s\n"
+
+#: templates/en/emptyarchive.html:1
+msgid ""
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">\n"
+"<HTML>\n"
+"  <HEAD>\n"
+"     <title>The %(listname)s Archives</title>\n"
+"     <META NAME=\"robots\" CONTENT=\"noindex,follow\">\n"
+"  </HEAD>\n"
+"  <BODY BGCOLOR=\"#ffffff\">\n"
+"     <h1>The %(listname)s Archives </h1>\n"
+"     <p>\n"
+"      No messages have been posted to this list yet, so the archives are\n"
+"      currently empty.  You can get <a href=\"%(listinfo)s\">more "
+"information\n"
+"      about this list</a>.\n"
+"     </p>\n"
+"  </BODY>\n"
+"  </HTML>\n"
+msgstr ""
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">\n"
+"<HTML>\n"
+"  <HEAD>\n"
+"     <title>%(listname)s 저장소</title>\n"
+"     <META NAME=\"robots\" CONTENT=\"noindex,follow\">\n"
+"  </HEAD>\n"
+"  <BODY BGCOLOR=\"#ffffff\">\n"
+"     <h1>%(listname)s 저장소 </h1>\n"
+"     <p>\n"
+"      아직 이 메일링 리스트에 온 글이 없습니다. 현재 저장소는 피어 있습니"
+"다.\n"
+"      이 메일링 리스트에 대한 <a href=\"%(listinfo)s\">더 많은 정보</a>를 얻"
+"을 수 있습니다.\n"
+"     </p>\n"
+"  </BODY>\n"
+"  </HTML>\n"
+
+#: templates/en/headfoot.html:1
+msgid ""
+"This text can include \n"
+"<a href=\"http://www.python.org/doc/current/lib/typesseq-strings.html"
+"\">Python\n"
+"format strings</a> which are resolved against list attributes.  The\n"
+"list of substitutions allowed are:\n"
+"\n"
+"<ul>\n"
+"    <li><b>real_name</b> - The \"pretty\" name of the list; usually\n"
+"    the list name with capitalization.\n"
+"\n"
+"    <li><b>list_name</b> - The name by which the list is\n"
+"    identified in URLs, where case is significant.\n"
+"\n"
+"    <li><b>host_name</b> - The fully qualified domain name\n"
+"    that the list server runs on.\n"
+"\n"
+"    <li><b>web_page_url</b> - The base URL for Mailman.  This\n"
+"    can be appended with,\n"
+"    e.g. <em>listinfo/%(list_name)s</em> to yield the\n"
+"    listinfo page for the mailing list.\n"
+"\n"
+"    <li><b>description</b> - The brief description of the\n"
+"    mailing list.\n"
+"\n"
+"    <li><b>info</b> - The full description of the mailing\n"
+"    list.\n"
+"\n"
+"    <li><b>cgiext</b> - The extension added to CGI scripts.\n"
+"</ul>\n"
+msgstr ""
+"이 문서는 메일링 리스트에 예약되어 있는 특성의 <b>%(attribute)s</b>\n"
+"형식을 포함하고 있습니다. 더 자세한 설명은 \n"
+"<a href=\"http://www.python.org/doc/current/lib/typesseq-strings.html"
+"\">Python의\n"
+"문자열 형식 규칙</a>을 보시기 바랍니다. 몇몇 유용한 속성은 아래와 같습니다.\n"
+"\n"
+"<ul>\n"
+"    <li><b>real_name</b> - 리스트의 이름을 나타냅니다. 보통 대문자로\n"
+"    나타납니다.\n"
+"\n"
+"    <li><b>list_name</b> - 실제 URL 에서 사용되는 리스트의 이름\n"
+"\n"
+"    <li><b>host_name</b> - 메일링 리스트가 운영되는 호스트의 이름\n"
+"\n"
+"    <li><b>web_page_url</b> - Mailman 의 기본 URL 입니다.\n"
+"    이것은 메일링 리스트의 목록정보 페이지를 나타내는\n"
+"    <em>listinfo/%(list_name)s</em> 와 같이 첨가 될 수 있습니다.\n"
+"\n"
+"    <li><b>description</b> - 메일링 리스트의 간략한 설명\n"
+"\n"
+"    <li><b>info</b> - 메일링 리스트의 전체 설명\n"
+"     <li><b>cgiext</b> - CGI 스크립트를 위한 확장.\n"
+"</ul>\n"
+
+#: templates/en/help.txt:1
+msgid ""
+"Help for %(listname)s mailing list:\n"
+"\n"
+"This is email command help for version %(version)s of the \"Mailman\"\n"
+"list manager.  The following describes commands you can send to get\n"
+"information about and control your subscription to Mailman lists at\n"
+"this site.  A command can be in the subject line or in the body of the\n"
+"message.\n"
+"\n"
+"Note that much of the following can also be accomplished via the World\n"
+"Wide Web, at:\n"
+"\n"
+"    %(listinfo_url)s\n"
+"\n"
+"In particular, you can use the Web site to have your password sent to\n"
+"your delivery address.\n"
+"\n"
+"List specific commands (subscribe, who, etc) should be sent to the\n"
+"*-request address for the particular list, e.g. for the 'mailman'\n"
+"list, use 'mailman-request@...'.\n"
+"\n"
+"About the descriptions - words in \"<>\"s signify REQUIRED items and\n"
+"words in \"[]\" denote OPTIONAL items.  Do not include the \"<>\"s or\n"
+"\"[]\"s when you use the commands.\n"
+"\n"
+"The following commands are valid:\n"
+"\n"
+"    %(commands)s\n"
+"\n"
+"Commands should be sent to %(requestaddr)s\n"
+"\n"
+"Questions and concerns for the attention of a person should be sent to\n"
+"\n"
+"    %(adminaddr)s\n"
+msgstr ""
+"%(listname)s 메일링 리스트를 위한 도움말입니다 :\n"
+"\n"
+"\"Mailman\" 리스트 매니저 버젼 %(version)s을 위한 메일 명령 도움말입니다.\n"
+"다음은 이 사이트에서 Mailman 리스트에 대한 정보를 얻거나 구독설정을 위해\n"
+"보낼 수 있는 명령에 대해 설명합니다. 명령어는 제목줄에 입력하거나 메세지\n"
+"중간에 입력할 수 있습니다.\n"
+"\n"
+"대부분은 다음의 주소에서 수행될 수 있습니다 :\n"
+"\n"
+"    %(listinfo_url)s\n"
+"\n"
+"특히, 당신의 메일 배달 주소로 당신의 패스워드를 전송하기 위해 이 웹사이트를\n"
+"이용할 수 있습니다.\n"
+"\n"
+"특정 리스트에 대해 몇 가지 리스트 명령(subscribe, who, 기타 등등)은 *-"
+"request\n"
+"주소로 전송해야만 합니다.\n"
+"예를 들면 'mailman' 리스트에 대해서는 'mailman-request@...'를 사용합니다. \n"
+"\n"
+"\"<>\"안의 단어는 아이템을 요구하며, \"[]\"안의 단어는 아이템을 선택적으로\n"
+"필요합니다. \"<>\"나 \"[]\"를 명령상에 포함시키지 마십시요. \n"
+"\n"
+"다음의 명령은 유효합니다 :\n"
+"\n"
+"    %(commands)s\n"
+"\n"
+"명령어들은 %(requestaddr)s로 전송됩니다.\n"
+"\n"
+"사람들의 편의성을 제공할 수 있는 질문이나, 관심이 있으시면 아래의 주소로\n"
+"보내주시기 바랍니다.\n"
+"\n"
+"\n"
+"    %(adminaddr)s\n"
+
+#: templates/en/invite.txt:1
+msgid ""
+"Your address \"%(email)s\" has been invited to join the %(listname)s\n"
+"mailing list at %(hostname)s by the %(listname)s mailing list owner.\n"
+"You may accept the invitation by simply replying to this message,\n"
+"keeping the Subject: header intact.\n"
+"\n"
+"You can also visit this web page:\n"
+"\n"
+"    %(confirmurl)s\n"
+"\n"
+"Or you should include the following line -- and only the following\n"
+"line -- in a message to %(requestaddr)s:\n"
+"\n"
+"    confirm %(cookie)s\n"
+"\n"
+"Note that simply sending a `reply' to this message should work from\n"
+"most mail readers.\n"
+"\n"
+"If you want to decline this invitation, please simply disregard this\n"
+"message.  If you have any questions, please send them to\n"
+"%(listowner)s.\n"
+msgstr ""
+"%(hostname)s 에서 운영되는 %(listname)s 메일링 리스트 주인장이\n"
+"당신(\"%(email)s\")을 %(listname)s 메일링 리스트로 초대하였습니다.\n"
+"당신은 이 초대를 이 메세지에 대해 간단히 회신만 함으로써 요청을\n"
+"받아 들일 수 있습니다. 헤더의 제목: 부분은 그대로 유지하셔야 합\n"
+"니다.\n"
+"\n"
+"당신은 또한 아래의 웹 사이트를 방문할 수 있습니다.\n"
+"\n"
+"    %(confirmurl)s\n"
+"\n"
+"혹은 당신은 %(requestaddr)s 주소로 \n"
+"다음의 한줄을 포함하여 회신할 수 있습니다.\n"
+"\n"
+"    confirm %(cookie)s\n"
+"\n"
+"대부분의 메일 프로그램에서 이 메세지에 대해 간단히 `회신'함으로써\n"
+"손쉽게 가입할 수 있습니다.\n"
+"\n"
+"만약 이 초대를 거절하실려면 간단히 이 메세지를 지우시기 바랍니다.\n"
+"어떤 질문이 있으시면 %(listowner)s 로 해주시기 바랍니다.\n"
+
+#: templates/en/listinfo.html:1
+msgid ""
+"<!-- $Revision: 7626 $ -->\n"
+"<HTML>\n"
+"  <HEAD>\n"
+"    <TITLE><MM-List-Name> Info Page</TITLE>\n"
+"  \n"
+"  </HEAD>\n"
+"  <BODY BGCOLOR=\"#ffffff\">\n"
+"\n"
+"    <P>\n"
+"      <TABLE COLS=\"1\" BORDER=\"0\" CELLSPACING=\"4\" CELLPADDING=\"5\">\n"
+"\t<TR>\n"
+"\t  <TD COLSPAN=\"2\" WIDTH=\"100%\" BGCOLOR=\"#99CCFF\" ALIGN=\"CENTER\">\n"
+"\t    <B><FONT COLOR=\"#000000\" SIZE=\"+1\"><MM-List-Name> --\n"
+"\t<MM-List-Description></FONT></B>\n"
+"\t  </TD>\n"
+"\t</TR>\n"
+"\t<tr>\n"
+"\t    <td colspan=\"2\">\n"
+"\t      <p>&nbsp;\n"
+"\t    </td>\n"
+"\t  </tr>\n"
+"\t  <tr>\n"
+"\t    <TD COLSPAN=\"1\" WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\">\n"
+"\t      <B><FONT COLOR=\"#000000\">About <MM-List-Name></FONT></B>\n"
+"\t    </TD>\n"
+"            <TD COLSPAN=\"1\" WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\">\n"
+"              <MM-lang-form-start><MM-displang-box> <MM-list-langs>\n"
+"              <MM-form-end>\n"
+"    <MM-Subscribe-Form-Start>\n"
+"            </TD>\n"
+"\t  </TR>\n"
+"\t    <tr>\n"
+"\t      <td colspan=\"2\">\n"
+"\t\t<P><MM-List-Info></P>\n"
+"\t  <p> To see the collection of prior postings to the list,\n"
+"\t      visit the <MM-Archive><MM-List-Name>\n"
+"\t\t  Archives</MM-Archive>.\n"
+"\t      <MM-Restricted-List-Message>\n"
+"\t  </p>\n"
+"\t</TD>\n"
+"      </TR>\n"
+"      <TR>\n"
+"\t<TD COLSPAN=\"2\" WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\">\n"
+"\t  <B><FONT COLOR=\"#000000\">Using <MM-List-Name></FONT></B>\n"
+"\t</TD>\n"
+"      </TR>\n"
+"      <tr>\n"
+"\t<td colspan=\"2\">\n"
+"\t  To post a message to all the list members, send email to\n"
+"\t  <A HREF=\"mailto:<MM-Posting-Addr>\"><MM-Posting-Addr></A>.\n"
+"\n"
+"\t  <p>You can subscribe to the list, or change your existing\n"
+"\t    subscription, in the sections below.\n"
+"\t</td>\n"
+"      </tr>\n"
+"      <TR>\n"
+"\t<TD COLSPAN=\"2\" WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\">\n"
+"\t  <B><FONT COLOR=\"#000000\">Subscribing to <MM-List-Name></FONT></B>\n"
+"\t</TD>\n"
+"      </TR>\n"
+"      <tr>\n"
+"\t<td colspan=\"2\">\n"
+"\t  <P>\n"
+"\t    Subscribe to <MM-List-Name> by filling out the following\n"
+"\t      form.\n"
+"\t  <MM-List-Subscription-Msg>\n"
+"\t  <ul>\n"
+"\t      <TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\"\n"
+"\t\tWIDTH=\"70%\" HEIGHT= \"112\">\n"
+"\t\t<TR>\n"
+"\t\t  <TD BGCOLOR=\"#dddddd\" WIDTH=\"55%\">Your email address:</TD>\n"
+"\t\t  <TD WIDTH=\"33%\"><MM-Subscribe-Box>\n"
+"\t</TD>\n"
+"\t<TD WIDTH=\"12%\">&nbsp;</TD></TR>\n"
+"      <tr>\n"
+"        <td bgcolor=\"#dddddd\" width=\"55%\">Your name (optional):</td>\n"
+"        <td width=\"33%\"><mm-fullname-box></td>\n"
+"\t<TD WIDTH=\"12%\">&nbsp;</TD></TR>\n"
+"      <TR>\n"
+"\t<TD COLSPAN=\"3\"><FONT SIZE=-1>You may enter a\n"
+"\t    privacy password below. This provides only mild security,\n"
+"\t    but should prevent others from messing with your\n"
+"\t    subscription.  <b>Do not use a valuable password</b> as\n"
+"\t    it will occasionally be emailed back to you in cleartext.\n"
+"\n"
+"            <p>If you choose not to enter a password, one will be\n"
+"            automatically generated for you, and it will be sent to\n"
+"            you once you've confirmed your subscription.  You can\n"
+"            always request a mail-back of your password when you edit\n"
+"            your personal options.\n"
+"\t    <MM-Reminder>\n"
+"\t</TD>\n"
+"      </TR>  \n"
+"      <TR>\n"
+"\t<TD BGCOLOR=\"#dddddd\">Pick a password:</TD>\n"
+"\t<TD><MM-New-Password-Box></TD>\n"
+"\t<TD>&nbsp;</TD></TR>\n"
+"      <TR> \n"
+"\t<TD BGCOLOR=\"#dddddd\">Reenter password to confirm:</TD>\n"
+"\t<TD><MM-Confirm-Password></TD>\n"
+"\t<TD>&nbsp; </TD></TR>\n"
+"      <tr>\n"
+"        <TD BGCOLOR=\"#dddddd\">Which language do you prefer to display your "
+"messages?</TD> \n"
+"        <TD> <MM-list-langs></TD>\n"
+"        <TD>&nbsp; </TD></TR>\n"
+"      <mm-digest-question-start>\n"
+"      <tr>\n"
+"\t<td>Would you like to receive list mail batched in a daily\n"
+"\t  digest?\n"
+"\t  </td>\n"
+"\t<td><MM-Undigest-Radio-Button> No\n"
+"\t    <MM-Digest-Radio-Button>  Yes\n"
+"\t</TD>\n"
+"      </tr>\n"
+"      <mm-digest-question-end>\n"
+"      <tr>\n"
+"\t<td colspan=\"3\">\n"
+"\t  <center><MM-Subscribe-Button></P></center>\n"
+"    </TABLE>\n"
+"    <MM-Form-End>\n"
+"    </ul>\n"
+"    </td>\n"
+"    </tr>\n"
+"    <TR>\n"
+"      <TD COLSPAN=\"2\" WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\">\n"
+"\t<a name=\"subscribers\">\n"
+"        <B><FONT COLOR=\"#000000\"><MM-List-Name> Subscribers</FONT></B></"
+"a>\n"
+"      </TD>\n"
+"    </TR>\n"
+"    <tr>\n"
+"      <TD COLSPAN=\"2\" WIDTH=\"100%\">\n"
+"\t<MM-Roster-Form-Start>\n"
+"\t<MM-Roster-Option>\n"
+"\t    <MM-Form-End>\n"
+"\t  <p>\n"
+"\t<MM-Options-Form-Start>\n"
+"\t<MM-Editing-Options>\n"
+"\t\t<MM-Form-End>\n"
+"      </td>\n"
+"    </tr>\n"
+"  </table>\n"
+"<MM-Mailman-Footer>\n"
+"</BODY>\n"
+"</HTML>\n"
+msgstr ""
+"<!-- $Revision: 7626 $ -->\n"
+"<HTML>\n"
+"  <HEAD>\n"
+"    <TITLE><MM-List-Name> 정보 보기</TITLE>\n"
+"  \n"
+"  </HEAD>\n"
+"  <BODY BGCOLOR=\"#ffffff\">\n"
+"\n"
+"    <P>\n"
+"      <TABLE COLS=\"1\" BORDER=\"0\" CELLSPACING=\"4\" CELLPADDING=\"5\">\n"
+"\t<TR>\n"
+"\t  <TD COLSPAN=\"2\" WIDTH=\"100%\" BGCOLOR=\"#99CCFF\" ALIGN=\"CENTER\">\n"
+"\t    <B><FONT COLOR=\"#000000\" SIZE=\"+1\"><MM-List-Name> --\n"
+"\t<MM-List-Description></FONT></B>\n"
+"\t  </TD>\n"
+"\t</TR>\n"
+"\t<tr>\n"
+"\t    <td colspan=\"2\">\n"
+"\t      <p>&nbsp;\n"
+"\t    </td>\n"
+"\t  </tr>\n"
+"\t  <tr>\n"
+"\t    <TD COLSPAN=\"1\" WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\">\n"
+"\t      <B><FONT COLOR=\"#000000\"><MM-List-Name> 소개</FONT></B>\n"
+"\t    </TD>\n"
+"            <TD COLSPAN=\"1\" WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\">\n"
+"              <MM-lang-form-start><MM-displang-box> <MM-list-langs>\n"
+"              <MM-form-end>\n"
+"    <MM-Subscribe-Form-Start>\n"
+"            </TD>\n"
+"\t  </TR>\n"
+"\t    <tr>\n"
+"\t      <td colspan=\"2\">\n"
+"\t\t<P><MM-List-Info></P>\n"
+"\t  <p>  리스트에 포스팅된 이전 글들을 보실려면\n"
+"\t      <MM-Archive><MM-List-Name>\n"
+"\t\t  저장소</MM-Archive> 를 보시기 바랍니다.\n"
+"\t      <MM-Restricted-List-Message>\n"
+"\t  </p>\n"
+"\t</TD>\n"
+"      </TR>\n"
+"      <TR>\n"
+"\t<TD COLSPAN=\"2\" WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\">\n"
+"\t  <B><FONT COLOR=\"#000000\"><MM-List-Name> 사용하기</FONT></B>\n"
+"\t</TD>\n"
+"      </TR>\n"
+"      <tr>\n"
+"\t<td colspan=\"2\">\n"
+"\t  메일링 리스트 가입자들에게 메시지를 보내려면\n"
+"\t  <A HREF=\"mailto:<MM-Posting-Addr>\"><MM-Posting-Addr></A>\n"
+"\t  으로 메일을 보내시면 됩니다..\n"
+"\n"
+"\t  <p>메일링 리스트에 가입하거나 현재 가입되어 있는 상태를 \n"
+"\t  아래에서 바꾸실 수 있습니다.\n"
+"\t</td>\n"
+"      </tr>\n"
+"      <TR>\n"
+"\t<TD COLSPAN=\"2\" WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\">\n"
+"\t  <B><FONT COLOR=\"#000000\"><MM-List-Name> 가입하기</FONT></B>\n"
+"\t</TD>\n"
+"      </TR>\n"
+"      <tr>\n"
+"\t<td colspan=\"2\">\n"
+"\t  <P>\n"
+"\t     다음 항목들을 채워 주셔서 <MM-List-Name> 에 가입 하십시오.\n"
+"\t  <MM-List-Subscription-Msg>\n"
+"\t  <ul>\n"
+"\t      <TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\"\n"
+"\t\tWIDTH=\"70%\" HEIGHT= \"112\">\n"
+"\t\t<TR>\n"
+"\t\t  <TD BGCOLOR=\"#dddddd\" WIDTH=\"55%\">전자우편주소:</TD>\n"
+"\t\t  <TD WIDTH=\"33%\"><MM-Subscribe-Box>\n"
+"\t</TD>\n"
+"\t<TD WIDTH=\"12%\">&nbsp;</TD></TR>\n"
+"      <tr>\n"
+"        <td bgcolor=\"#dddddd\" width=\"55%\">이름 (선택사항):</td>\n"
+"        <td width=\"33%\"><mm-fullname-box></td>\n"
+"\t<TD WIDTH=\"12%\">&nbsp;</TD></TR>\n"
+"      <TR>\n"
+"\t<TD COLSPAN=\"3\"><FONT SIZE=-1>개인적으로 사용하지 않는 패스워드를\n"
+"            사용하십시오. 메일링리스트는 완벽한 보안을 제공하지 않습니다.\n"
+"            이 패스워드는 단지 스패머로 인해 악용되지 않도록만 합니다.\n"
+"            비밀번호는 암호화 시키지 않고 여러분에게 보내기 때문에 절대\n"
+"            <b>실제 사용하는 비밀번호는 입력하지 마십시오.</b>\n"
+"            <p>만약 여러분이 비밀번호를 입력하지 않는다면 자동으로 당신을\n"
+"            위한 비밀번호가 생성되며, 당신의 가입 확인 메일에 함께 보내\n"
+"            집니다. 개인 정보 변경을 위한 비밀번호를 언제나 다시 보내\n"
+"            드립니다.\n"
+"\t    <MM-Reminder>\n"
+"\t</TD>\n"
+"      </TR>  \n"
+"      <TR>\n"
+"\t<TD BGCOLOR=\"#dddddd\">비밀번호입력:</TD>\n"
+"\t<TD><MM-New-Password-Box></TD>\n"
+"\t<TD>&nbsp;</TD></TR>\n"
+"      <TR> \n"
+"\t<TD BGCOLOR=\"#dddddd\">다시한번입력:</TD>\n"
+"\t<TD><MM-Confirm-Password></TD>\n"
+"\t<TD>&nbsp; </TD></TR>\n"
+"      <tr>\n"
+"        <TD BGCOLOR=\"#dddddd\">사용할 언어를 선택하세요?</TD> \n"
+"        <TD> <MM-list-langs></TD>\n"
+"        <TD>&nbsp; </TD></TR>\n"
+"      <tr>\n"
+"\t<td>메시지를 하루에 한 번만 묶음 형식으로 받아보도록 설정하시겠습니까?\n"
+"\t  </td>\n"
+"\t<td><MM-Undigest-Radio-Button> 아니요\n"
+"\t    <MM-Digest-Radio-Button>  예\n"
+"\t</TD>\n"
+"      </tr>\n"
+"      <tr>\n"
+"\t<td colspan=\"3\">\n"
+"\t  <center><MM-Subscribe-Button></P></center>\n"
+"    </TABLE>\n"
+"    <MM-Form-End>\n"
+"    </ul>\n"
+"    </td>\n"
+"    </tr>\n"
+"    <TR>\n"
+"      <TD COLSPAN=\"2\" WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\">\n"
+"\t<a name=\"subscribers\">\n"
+"        <B><FONT COLOR=\"#000000\"><MM-List-Name> 가입자들</FONT></B></a>\n"
+"      </TD>\n"
+"    </TR>\n"
+"    <tr>\n"
+"      <TD COLSPAN=\"2\" WIDTH=\"100%\">\n"
+"\t<MM-Roster-Form-Start>\n"
+"\t<MM-Roster-Option>\n"
+"\t    <MM-Form-End>\n"
+"\t  <p>\n"
+"\t<MM-Options-Form-Start>\n"
+"\t<MM-Editing-Options>\n"
+"\t\t<MM-Form-End>\n"
+"      </td>\n"
+"    </tr>\n"
+"  </table>\n"
+"<MM-Mailman-Footer>\n"
+"</BODY>\n"
+"</HTML>\n"
+
+#: templates/en/masthead.txt:1
+msgid ""
+"Send %(real_name)s mailing list submissions to\n"
+"\t%(got_list_email)s\n"
+"\n"
+"To subscribe or unsubscribe via the World Wide Web, visit\n"
+"\t%(got_listinfo_url)s\n"
+"or, via email, send a message with subject or body 'help' to\n"
+"\t%(got_request_email)s\n"
+"\n"
+"You can reach the person managing the list at\n"
+"\t%(got_owner_email)s\n"
+"\n"
+"When replying, please edit your Subject line so it is more specific than\n"
+"\"Re: Contents of %(real_name)s digest...\"\n"
+msgstr ""
+"%(real_name)s 메일링 리스트 의뢰서를 아래의 주소로 보내십시오.\n"
+"\t%(got_list_email)s\n"
+"\n"
+"WWW 을 통해서 가입 혹은 탈퇴를 하실려면 아래의 사이트를 방문하세요.\n"
+"\n"
+"\t%(got_listinfo_url)s\n"
+"\n"
+"혹은 E메일을 통해서 하실려면 제목 혹은 본문에 'help' 를 넣어 아래의\n"
+"주소로 보내십시오.\n"
+"\n"
+"\t%(got_request_email)s\n"
+"\n"
+"메일링 리스트의 주인장은 아래의 주소로 연락 하시면 됩니다.\n"
+"\n"
+"\t%(got_owner_email)s\n"
+"\n"
+"답장을 쓰실때 제목을 \"Re: Contents of %(real_name)s digest...\" 보다\n"
+"간략히 하여 보내주시기 바랍니다.\n"
+
+#: templates/en/newlist.txt:1
+msgid ""
+"The mailing list `%(listname)s' has just been created for you.  The\n"
+"following is some basic information about your mailing list.\n"
+"\n"
+"Your mailing list password is:\n"
+"\n"
+"    %(password)s\n"
+"\n"
+"You need this password to configure your mailing list.  You also need\n"
+"it to handle administrative requests, such as approving mail if you\n"
+"choose to run a moderated list.\n"
+"\n"
+"You can configure your mailing list at the following web page:\n"
+"\n"
+"    %(admin_url)s\n"
+"\n"
+"The web page for users of your mailing list is: \n"
+"\n"
+"    %(listinfo_url)s\n"
+"\n"
+"You can even customize these web pages from the list configuration\n"
+"page.  However, you do need to know HTML to be able to do this.\n"
+"\n"
+"There is also an email-based interface for users (not administrators)\n"
+"of your list; you can get info about using it by sending a message\n"
+"with just the word `help' as subject or in the body, to:\n"
+"\n"
+"    %(requestaddr)s\n"
+"\n"
+"To unsubscribe a user: from the mailing list 'listinfo' web page,\n"
+"click on or enter the user's email address as if you were that user.\n"
+"Where that user would put in their password to unsubscribe, put in\n"
+"your admin password.  You can also use your password to change\n"
+"member's options, including digestification, delivery disabling, etc.\n"
+"\n"
+"Please address all questions to %(siteowner)s.\n"
+msgstr ""
+"당신의 `%(listname)s' 메일링 리스트가 이제 생성되었습니다. 메일링 리스트에\n"
+"관한 몇몇 정보가 아래에 있습니다. 읽어 보세요.\n"
+"\n"
+"메일링 리스트의 패스워드는 \n"
+"\n"
+"    %(password)s\n"
+"\n"
+"입니다. 메일링 리스트를 설정할려면 이 패스워드가 필요합니다. 또한\n"
+"moderator 리스트와 같은 당신의 승인이 필요한 부분에서 이 패스워드가\n"
+"필요합니다.\n"
+"\n"
+"아래의 사이트에 접속함으로써 당신의 메일링 리스트를 설정할 수 있습니다.\n"
+"\n"
+"    %(admin_url)s\n"
+"\n"
+"메일링 리스트 사용자 웹페이지 주소는 아래와 같습니다.\n"
+"\n"
+"    %(listinfo_url)s\n"
+"\n"
+"메일링 리스트 설정 부분에서 사용자 웹페이지를 개성있게 꾸밀 수 있습니다.\n"
+"하지만 이것을 할려면 HTML 을 다룰 수 있어야 합니다.\n"
+"\n"
+"또한 E메일에 기반한 사용자용(관리자용이 아닙니다.) 인터페이스를\n"
+"제공합니다. 더 많은 정보는 메세지 본문에 단지 'help'라는 단어만\n"
+"쓰고 아래에 주소로 보냄으로써 사용 방법을 받아 볼 수 있습니다.\n"
+"\n"
+"    %(requestaddr)s\n"
+"\n"
+"탈퇴하기 위해서 메일링 리스트의 'listinfo' 웹 페이지에서 여러분의\n"
+"E메일 주소를 입력하거나, 클릭하여 할수 있으며, 탈퇴하기 위해서는\n"
+"입력하신 패스워드가 필요합니다. 관리자 패스워드 또한 사용가능합니다.\n"
+"또한 메일링 리스트 가입자의 옵션(Digest 여부, 배달 금지 등등)을\n"
+"여러분이 설정할 수 있습니다.\n"
+"\n"
+"기타 다른 질문은 mailman-owner@%(hostname)s 으로 하여 주시기 바랍니다.\n"
+
+#: templates/en/nomoretoday.txt:1
+msgid ""
+"We have received a message from your address `%(sender)s' requesting\n"
+"an automated response from the %(listname)s mailing list.  We have\n"
+"seen %(num)s such messages from you today.  In order to avoid problems\n"
+"such as mail loops between email robots, we will not be sending you\n"
+"any further email responses today.  Please try again tomorrow.\n"
+"\n"
+"If you believe this message is in error, or if you have any questions,\n"
+"please contact the list owner at %(owneremail)s.\n"
+msgstr ""
+
+#: templates/en/options.html:1
+msgid ""
+"<html>\n"
+"<head>\n"
+"    <link rel=\"SHORTCUT ICON\" href=\"<mm-favicon>\">\n"
+"    <title><MM-Presentable-User> membership configuration for <MM-List-"
+"Name>\n"
+"    </title>\n"
+"</head>\n"
+"<BODY BGCOLOR=\"#ffffff\">\n"
+"    <TABLE WIDTH=\"100%\" BORDER=\"0\" CELLSPACING=\"0\" CELLPADDING=\"5\">\n"
+"    <TR><TD WIDTH=\"100%\" BGCOLOR=\"#99CCFF\"><B>\n"
+"        <FONT COLOR=\"#000000\" SIZE=+1>\n"
+"        <MM-List-Name> mailing list membership configuration for\n"
+"        <MM-Presentable-User>\n"
+"        </FONT></B></TD></TR>\n"
+"    </TABLE>\n"
+"<p>\n"
+"<table width=\"100%\" border=\"0\" cellspacing=\"5\" cellpadding=\"5\">\n"
+"    <tr><td>\n"
+"        <b><MM-Presentable-User></b>'s subscription status,\n"
+"        password, and options for the <MM-List-Name> mailing list.\n"
+"        </td><td><MM-Form-Start><mm-logout-button><MM-Form-End></td>\n"
+"    </tr><tr>\n"
+"        <td colspan=\"2\">\n"
+"        <MM-Case-Preserved-User>\n"
+"\n"
+"        <MM-Disabled-Notice>\n"
+"\n"
+"        <p><mm-results>\n"
+"        </td>\n"
+"    </tr>\n"
+"</table>\n"
+"\n"
+"<MM-Form-Start>\n"
+"<p>\n"
+"<TABLE WIDTH=\"100%\" BORDER=\"0\" CELLSPACING=\"0\" CELLPADDING=\"5\">\n"
+"    <TR><TD WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\" colspan=\"2\">\n"
+"        <FONT COLOR=\"#000000\">\n"
+"        <B>Changing your <MM-List-Name> membership information</B>\n"
+"        </FONT></TD></TR>\n"
+"    <tr><td colspan=\"2\">You can change the address that you are "
+"subscribed\n"
+"        to the mailing list with by entering the new address in the\n"
+"        fields below.  Note that a confirmation email will be sent to\n"
+"        the new address, and the change must be confirmed before it is\n"
+"        processed.\n"
+"\n"
+"        <p>Confirmations time out after about <mm-pending-days>.\n"
+"\n"
+"        <p>You can also optionally set or change your real name\n"
+"        (i.e. <em>John Smith</em>).\n"
+"\n"
+"        <p>If you want to make the membership changes for all the\n"
+"        lists that you are subscribed to at <mm-host>, turn on the\n"
+"        <em>Change globally</em> check box.\n"
+"\n"
+"        </td></tr>\n"
+"    <tr><td><center>\n"
+"        <table border=\"0\" cellspacing=\"2\" cellpadding=\"2\" width=\"80%"
+"\" cols=\"2\">\n"
+"        <tr><td bgcolor=\"#dddddd\"><div align=\"right\">New address:</div></"
+"td>\n"
+"            <td><mm-new-address-box></td>\n"
+"            </tr>\n"
+"        <tr><td bgcolor=\"#dddddd\"><div align=\"right\">Again to\n"
+"            confirm:</div></td> \n"
+"            <td><mm-confirm-address-box></td>\n"
+"            </tr>\n"
+"        </tr></table></center>\n"
+"        </td>\n"
+"        <td><center>\n"
+"        <table border=\"0\" cellspacing=\"2\" cellpadding=\"2\" width=\"80%"
+"\" cols=\"2\">\n"
+"            <tr><td bgcolor=\"#dddddd\"><div align=\"right\">Your name\n"
+"            (optional):</div></td>\n"
+"            <td><mm-fullname-box></td>\n"
+"            </tr>\n"
+"        </table></center>\n"
+"        </td>\n"
+"        </tr>\n"
+"    <tr><td colspan=\"2\"><center><mm-change-address-button>\n"
+"        <p><mm-global-change-of-address>Change globally</center></td>\n"
+"    </tr>\n"
+"</table>\n"
+"\n"
+"<p>\n"
+"<TABLE WIDTH=\"100%\" BORDER=\"0\" CELLSPACING=\"5\" CELLPADDING=\"5\">\n"
+"    <TR><TD WIDTH=\"50%\" BGCOLOR=\"#FFF0D0\"><FONT COLOR=\"#000000\">\n"
+"        <B>Unsubscribing from <MM-List-Name></B></td>\n"
+"\n"
+"        <TD WIDTH=\"50%\" BGCOLOR=\"#FFF0D0\"><FONT COLOR=\"#000000\">\n"
+"        <B>Your other <MM-Host> subscriptions</B>\n"
+"        </FONT></TD></TR>\n"
+"\n"
+"    <tr><td>\n"
+"        Turn on the confirmation checkbox and hit this button to\n"
+"        unsubscribe from this mailing list.  <strong>Warning:</strong>\n"
+"        This action will be taken immediately!\n"
+"        <p>\n"
+"        <center><MM-Unsubscribe-Button></center></td>\n"
+"    <td>\n"
+"        You can view a list of all the other mailing lists at\n"
+"        <mm-host> for which you are a member.  Use this if you want to\n"
+"        make the same membership option changes to this other\n"
+"        subscriptions.\n"
+"\n"
+"        <p>\n"
+"        <center><MM-Other-Subscriptions-Submit></center>\n"
+"        </TD></TR>\n"
+"</table>\n"
+"\n"
+"<TABLE WIDTH=\"100%\" BORDER=\"0\" CELLSPACING=\"0\" CELLPADDING=\"5\">\n"
+"    <TR><TD COLSPAN=2 WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\"><FONT COLOR="
+"\"#000000\">\n"
+"        <B>Your <MM-List-Name> Password</B>\n"
+"        </FONT></TD></TR>\n"
+"\n"
+"    <tr valign=\"TOP\"><td WIDTH=\"50%\">\n"
+"        <a name=reminder>\n"
+"        <center>\n"
+"        <h3>Forgotten Your Password?</h3>\n"
+"        </center>\n"
+"        Click this button to have your password emailed to your\n"
+"        membership address.\n"
+"        <p><MM-Umbrella-Notice>\n"
+"        <center>\n"
+"        <MM-Email-My-Pw>\n"
+"        </center>\n"
+"        </td>\n"
+"\n"
+"    <td WIDTH=\"50%\">\n"
+"        <a name=changepw>\n"
+"        <center>\n"
+"        <h3>Change Your Password</h3>\n"
+"        <TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\" WIDTH=\"70%"
+"\" COLS=2>\n"
+"            <TR><TD BGCOLOR=\"#dddddd\"><div align=\"right\">New\n"
+"                password:</div></TD>\n"
+"                <TD><MM-New-Pass-Box></TD>\n"
+"                </TR>\n"
+"            <TR>\n"
+"                <TD BGCOLOR=\"#dddddd\"><div align=\"right\">Again to\n"
+"                confirm:</div></TD>\n"
+"                <TD><MM-Confirm-Pass-Box></TD>\n"
+"            </TR>\n"
+"        </table>\n"
+"\n"
+"        <MM-Change-Pass-Button>\n"
+"        <p><center><mm-global-pw-changes-button>Change globally.\n"
+"        </center>\n"
+"</TABLE>\n"
+"\n"
+"<p>\n"
+"<TABLE WIDTH=\"100%\" BORDER=\"0\" CELLSPACING=\"0\" CELLPADDING=\"5\">\n"
+"    <TR><TD WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\"><FONT COLOR=\"#000000\">\n"
+"        <B>Your <MM-List-Name> Subscription Options</B>\n"
+"        </FONT></TD></TR>\n"
+"</table>\n"
+"\n"
+"<p>\n"
+"<i><strong>Current values are checked.</strong></i>\n"
+"\n"
+"<p>Note that some of the options have a <em>Set globally</em>\n"
+"checkbox.  Checking this field will cause the changes to be made to\n"
+"every mailing list that you are a member of on <mm-host>.  Click on\n"
+"<em>List my other subscriptions</em> above to see which other mailing\n"
+"lists you are subscribed to.\n"
+"<p>\n"
+"<TABLE BORDER=\"0\" CELLSPACING=\"3\" CELLPADDING=\"4\" WIDTH=\"100%\">\n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\n"
+"        <a name=\"disable\">\n"
+"        <strong>Mail delivery</strong></a><p>\n"
+"        Set this option to <em>Enabled</em> to receive messages posted\n"
+"        to this mailing list.  Set it to <em>Disabled</em> if you want\n"
+"        to stay subscribed, but don't want mail delivered to you for a\n"
+"        while (e.g. you're going on vacation).  If you disable mail\n"
+"        delivery, don't forget to re-enable it when you come back; it\n"
+"        will not be automatically re-enabled.\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <mm-delivery-enable-button>Enabled<br>\n"
+"        <mm-delivery-disable-button>Disabled<p>\n"
+"        <mm-global-deliver-button><i>Set globally</i>\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\n"
+"        <strong>Set Digest Mode</strong><p>\n"
+"        If you turn digest mode on, you'll get posts bundled together\n"
+"        (usually one per day but possibly more on busy lists), instead\n"
+"        of singly when they're sent.  If digest mode is changed from\n"
+"        on to off, you may receive one last digest.\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <MM-Undigest-Radio-Button>Off<br>\n"
+"        <MM-Digest-Radio-Button>On\n"
+"        </td></tr>\n"
+"        \n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\n"
+"        <strong>Get MIME or Plain Text Digests?</strong><p>\n"
+"        Your mail reader may or may not support MIME digests.  In\n"
+"        general MIME digests are preferred, but if you have a problem\n"
+"        reading them, select plain text digests.\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <MM-Mime-Digests-Button>MIME<br>\n"
+"        <MM-Plain-Digests-Button>Plain Text<p>\n"
+"        <mm-global-mime-button><i>Set globally</i>\n"
+"        </td></tr>\n"
+"        \n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\n"
+"        <strong>Receive your own posts to the list?</strong><p>\n"
+"        Ordinarily, you will get a copy of every message you post to\n"
+"        the list.  If you don't want to receive this copy, set this\n"
+"        option to <em>No</em>.\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <mm-dont-receive-own-mail-button>No<br>\n"
+"        <mm-receive-own-mail-button>Yes\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\n"
+"        <strong>Receive acknowledgement mail when you send mail to\n"
+"        the list?</strong><p>\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <mm-dont-ack-posts-button>No<br>\n"
+"        <mm-ack-posts-button>Yes\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><td bgcolor=\"#cccccc\">\n"
+"        <strong>Get password reminder email for this list?</strong><p>\n"
+"        Once a month, you will get an email containing a password\n"
+"        reminder for every list at this host to which you are\n"
+"        subscribed.  You can turn this off on a per-list basis by\n"
+"        selecting <em>No</em> for this option.  If you turn off\n"
+"        password reminders for all the lists you are subscribed to, no\n"
+"        reminder email will be sent to you.\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <mm-dont-get-password-reminder-button>No<br>\n"
+"        <mm-get-password-reminder-button>Yes<p>\n"
+"        <mm-global-remind-button><i>Set globally</i>\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\n"
+"        <strong>Conceal yourself from subscriber list?</strong><p>\n"
+"        When someone views the list membership, your email address is\n"
+"        normally shown (in an obscured fashion to thwart spam\n"
+"        harvesters).  If you do not want your email address to show up\n"
+"        on this membership roster at all, select <em>Yes</em> for this "
+"option.\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <MM-Public-Subscription-Button>No<br>\n"
+"        <MM-Hide-Subscription-Button>Yes\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\n"
+"        <strong>What language do you prefer?</strong><p>\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <MM-list-langs>\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><td bgcolor=\"#cccccc\">\n"
+"        <strong>Which topic categories would you like to subscribe\n"
+"                to?</strong><p>\n"
+"                By selecting one or more topics, you can filter the\n"
+"                traffic on the mailing list, so as to receive only a\n"
+"                subset of the messages.  If a message matches one of\n"
+"                your selected topics, then you will get the message,\n"
+"                otherwise you will not.\n"
+"\n"
+"                <p>If a message does not match any topic, the delivery\n"
+"                rule depends on the setting of the option below.  If\n"
+"                you do not select any topics of interest, you will get\n"
+"                all the messages sent to the mailing list.\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <mm-topics>\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><td bgcolor=\"#cccccc\">\n"
+"        <strong>Do you want to receive messages that do not match any\n"
+"                topic filter?</strong><p>\n"
+"\n"
+"                This option only takes effect if you've subscribed to\n"
+"                at least one topic above.  It describes what the\n"
+"                default delivery rule is for messages that don't match\n"
+"                any topic filter.  Selecting <em>No</em> says that if\n"
+"                the message does not match any topic filters, then you\n"
+"                won't get the message, while selecting <em>Yes</em>\n"
+"                says to deliver such non-matching messages to you.\n"
+"\n"
+"                <p>If no topics of interest are selected above, then\n"
+"                you will receive every message sent to the mailing\n"
+"                list.\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <mm-suppress-nonmatching-topics>No<br>\n"
+"        <mm-receive-nonmatching-topics>Yes\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><td bgcolor=\"#cccccc\">\n"
+"        <strong>Avoid duplicate copies of messages?</strong><p>\n"
+"\n"
+"                When you are listed explicitly in the <tt>To:</tt> or\n"
+"                <tt>Cc:</tt> headers of a list message, you can opt to\n"
+"                not receive another copy from the mailing list.\n"
+"                Select <em>Yes</em> to avoid receiving copies from the\n"
+"                mailing list; select <em>No</em> to receive copies.\n"
+"\n"
+"                <p>If the list has member personalized messages\n"
+"                enabled, and you elect to receive copies, every copy\n"
+"                will have a <tt>X-Mailman-Copy: yes</tt> header added\n"
+"                to it.\n"
+"\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <mm-receive-duplicates-button>No<br>\n"
+"        <mm-dont-receive-duplicates-button>Yes<p>\n"
+"        <mm-global-nodupes-button><i>Set globally</i>\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><TD colspan=\"2\">\n"
+"        <center><MM-options-Submit-button></center>\n"
+"        </td></tr>\n"
+"\n"
+"</table>\n"
+"</center>\n"
+"<p>\n"
+"<MM-Form-End>\n"
+"\n"
+"<MM-Mailman-Footer>\n"
+"</body>\n"
+"</html>\n"
+msgstr ""
+"<!-- $Revision: 7626 $ -->\n"
+"<html>\n"
+"<head>\n"
+"    <title><MM-Presentable-User> 의 <MM-List-Name> 에서 사용자 설정하기\n"
+"    </title>\n"
+"</head>\n"
+"<BODY BGCOLOR=\"#ffffff\">\n"
+"    <TABLE WIDTH=\"100%\" BORDER=\"0\" CELLSPACING=\"0\" CELLPADDING=\"5\">\n"
+"    <TR><TD WIDTH=\"100%\" BGCOLOR=\"#99CCFF\"><B>\n"
+"        <FONT COLOR=\"#000000\" SIZE=+1>\n"
+"        <MM-List-Name> 의 \n"
+"        <MM-Presentable-User> 사용자 설정하기\n"
+"        </FONT></B></TD></TR>\n"
+"    </TABLE>\n"
+"<MM-Form-Start>\n"
+"<p>\n"
+"<table width=\"100%\" border=\"0\" cellspacing=\"5\" cellpadding=\"5\">\n"
+"    <tr><td>\n"
+"\t<MM-List-Name> 메일링 리스트에서 <b><MM-Presentable-User></b>\n"
+"\t사용자의 가입 상태, 패스워드, 기타 옵션등을 다룹니다.\n"
+"        </td><td><mm-logout-button></td>\n"
+"    </tr><tr>\n"
+"        <td colspan=\"2\">\n"
+"        <MM-Case-Preserved-User>\n"
+"\n"
+"        <MM-Disabled-Notice>\n"
+"\n"
+"        <p><mm-results>\n"
+"        </td>\n"
+"    </tr>\n"
+"</table>\n"
+"\n"
+"<p>\n"
+"<TABLE WIDTH=\"100%\" BORDER=\"0\" CELLSPACING=\"0\" CELLPADDING=\"5\">\n"
+"    <TR><TD WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\" colspan=\"2\">\n"
+"        <FONT COLOR=\"#000000\">\n"
+"        <B><MM-List-Name> 회원 정보 변경하기</B>\n"
+"        </FONT></TD></TR>\n"
+"    <tr><td colspan=\"2\">You can change the address that you are "
+"subscribed\n"
+"        to the mailing list with by entering the new address in the\n"
+"        fields below.  Note that a confirmation email will be sent to\n"
+"        the new address, and the change must be confirmed before it is\n"
+"        processed.\n"
+"\n"
+"        <p>Confirmations time out after about <mm-pending-days>.\n"
+"\n"
+"        <p>You can also optionally set or change your real name\n"
+"        (i.e. <em>John Smith</em>).\n"
+"\n"
+"        <p>If you want to make the membership changes for all the\n"
+"        lists that you are subscribed to at <mm-host>, turn on the\n"
+"        <em>Change globally</em> check box.\n"
+"\n"
+"        </td></tr>\n"
+"    <tr><td><center>\n"
+"        <table border=\"0\" cellspacing=\"2\" cellpadding=\"2\" width=\"80%"
+"\" cols=\"2\">\n"
+"        <tr><td bgcolor=\"#dddddd\"><div align=\"right\">새로운 E메일 주소:</"
+"div></td>\n"
+"            <td><mm-new-address-box></td>\n"
+"            </tr>\n"
+"        <tr><td bgcolor=\"#dddddd\"><div align=\"right\">확인을위해 한번 더 "
+"입력\n"
+"            :</div></td> \n"
+"            <td><mm-confirm-address-box></td>\n"
+"            </tr>\n"
+"        </tr></table></center>\n"
+"        </td>\n"
+"        <td><center>\n"
+"        <table border=\"0\" cellspacing=\"2\" cellpadding=\"2\" width=\"80%"
+"\" cols=\"2\">\n"
+"            <tr><td bgcolor=\"#dddddd\"><div align=\"right\">이름\n"
+"            (선택사항):</div></td>\n"
+"            <td><mm-fullname-box></td>\n"
+"            </tr>\n"
+"        </table></center>\n"
+"        </td>\n"
+"        </tr>\n"
+"    <tr><td colspan=\"2\"><center><mm-change-address-button>\n"
+"        <p><mm-global-change-of-address>전체적으로 변경</center></td>\n"
+"    </tr>\n"
+"</table>\n"
+"\n"
+"<p>\n"
+"<TABLE WIDTH=\"100%\" BORDER=\"0\" CELLSPACING=\"5\" CELLPADDING=\"5\">\n"
+"    <TR><TD WIDTH=\"50%\" BGCOLOR=\"#FFF0D0\"><FONT COLOR=\"#000000\">\n"
+"        <B><MM-List-Name> 탈퇴하기</B></td>\n"
+"\n"
+"        <TD WIDTH=\"50%\" BGCOLOR=\"#FFF0D0\"><FONT COLOR=\"#000000\">\n"
+"        <B><MM-Host> 의 다른 메일링 리스트 가입 상황</B>\n"
+"        </FONT></TD></TR>\n"
+"\n"
+"    <tr><td>\n"
+"        이 메일링 리스트로 부터 탈퇴하기 위해 확인 체크 박스를 체크\n"
+"\t하시고 이 버튼을 누르시기 바랍니다.\n"
+"        <strong>경고:</strong>\n"
+"\t이 동작은 즉각적으로 일어 납니다. 돌이킬 수 없습니다.\n"
+"        <p>\n"
+"        <center><MM-Unsubscribe-Button></center></td>\n"
+"    <td>\n"
+"\t여러분의 회원이신 <mm-host> 상의 다른 메일링 리스트 가입 상황 \n"
+"\t및 옵션 페이지를 보시고자 한다면 이것을 사용하십시오.\n"
+"        <p>\n"
+"        <center><MM-Other-Subscriptions-Submit></center>\n"
+"        </TD></TR>\n"
+"</table>\n"
+"\n"
+"<TABLE WIDTH=\"100%\" BORDER=\"0\" CELLSPACING=\"0\" CELLPADDING=\"5\">\n"
+"    <TR><TD COLSPAN=2 WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\"><FONT COLOR="
+"\"#000000\">\n"
+"        <B>설정하신 <MM-List-Name> 비밀번호</B>\n"
+"        </FONT></TD></TR>\n"
+"\n"
+"    <tr valign=\"TOP\"><td WIDTH=\"50%\">\n"
+"        <a name=reminder>\n"
+"        <center>\n"
+"        <h3>비밀번호를 잊으셨나요?</h3>\n"
+"        </center>\n"
+"\t아래 버튼을 누르시면 메일링 리스트에 등록된 당신의 E메일 주소로 \n"
+"\t비밀번호가 보내어 집니다.\n"
+"        <p><MM-Umbrella-Notice>\n"
+"        <center>\n"
+"        <MM-Email-My-Pw>\n"
+"        </center>\n"
+"        </td>\n"
+"\n"
+"    <td WIDTH=\"50%\">\n"
+"        <a name=changepw>\n"
+"        <center>\n"
+"        <h3>Change Your Password</h3>\n"
+"        <TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\" WIDTH=\"70%"
+"\" COLS=2>\n"
+"            <TR><TD BGCOLOR=\"#dddddd\"><div align=\"right\">새 \n"
+"                비밀번호:</div></TD>\n"
+"                <TD><MM-New-Pass-Box></TD>\n"
+"                </TR>\n"
+"            <TR>\n"
+"                <TD BGCOLOR=\"#dddddd\"><div align=\"right\">한번더\n"
+"                입력:</div></TD>\n"
+"                <TD><MM-Confirm-Pass-Box></TD>\n"
+"            </TR>\n"
+"        </table>\n"
+"\n"
+"        <MM-Change-Pass-Button>\n"
+"        <p><center><mm-global-pw-changes-button>전체적으로 변경\n"
+"        </center>\n"
+"</TABLE>\n"
+"\n"
+"<p>\n"
+"<TABLE WIDTH=\"100%\" BORDER=\"0\" CELLSPACING=\"0\" CELLPADDING=\"5\">\n"
+"    <TR><TD WIDTH=\"100%\" BGCOLOR=\"#FFF0D0\"><FONT COLOR=\"#000000\">\n"
+"        <B><MM-List-Name> 메일링 리스트 구독 옵션</B>\n"
+"        </FONT></TD></TR>\n"
+"</table>\n"
+"\n"
+"<p>\n"
+"<i><strong>체크되어 있는 항목이 현재 선택되어진 것입니다.</strong></i>\n"
+"\n"
+"<p>몇몇 설정의 경우 <em>전체적으로 설정</em>할 수 있습니다. <mm-host>\n"
+"에 당신이 회원이신 이 메일링 리스트에 설정변경을 가하게 됩니다. 당신이\n"
+"<em>가입하신 다른 리스트 목록</em>을 보실려면 위에 있는 것을 클릭하여\n"
+"주시기 바랍니다.\n"
+"<p>\n"
+"<TABLE BORDER=\"0\" CELLSPACING=\"3\" CELLPADDING=\"4\" WIDTH=\"100%\">\n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\n"
+"        <a name=\"disable\">\n"
+"        <strong>편지 배달</strong></a><p>\n"
+"        이 메일링 리스트에서 발생한 글을 받아 보실려면 <em>예</em>\n"
+"\t로 설정하시기 바랍니다. 만약 여러분이 잠깐동안 메일을 받지\n"
+"\t않으실려면 <em>아니요</em>로 세팅하시기 바랍니다. (예를 들면\n"
+"\t, 방학동안) 만약 여러분이 편지 배달을 금지하신다면 여러분\n"
+"\t방학 후에 다시 재가동 시키는 걸 잊지 마시기 바랍니다.\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <mm-delivery-enable-button>예<br>\n"
+"        <mm-delivery-disable-button>아니요<p>\n"
+"        <mm-global-deliver-button><i>전체적으로 설정</i>\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\n"
+"        <strong>묶음배달 설정</strong><p>\n"
+"\t만약 여러분이 설정을 \"예\"라고 하신다면 묶음배달을 신청하는 것입니다.\n"
+"\t(보통 하루에 한번 정도 보내집니다.) 대신 보낼때, 단 한통만 보내게\n"
+"\t됩니다. 만약 묶음배달이 \"아니요\"로 바꾸게 된다면, 그 후에 한번의\n"
+"\t묶음배달 편지를 받게 될 것입니다.\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <MM-Undigest-Radio-Button>아니요<br>\n"
+"        <MM-Digest-Radio-Button>예\n"
+"        </td></tr>\n"
+"        \n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\n"
+"        <strong>MIME 혹은 평문 묶음 배달중 어떤 걸 선택하시겠습니까?</"
+"strong><p>\n"
+"\t당신의 메일 프로그램은 MIME를 지원하거나, 혹은 하지 않을 것입니다.\n"
+"\t일반적으로 MIME 묶음배달이 기본입니다. 만약 MIME 형식을 읽는데,\n"
+"\t문제가 있으면 \"평문\"을 선택하시기 바랍니다.\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <MM-Mime-Digests-Button>MIME<br>\n"
+"        <MM-Plain-Digests-Button>평문\n"
+"        </td></tr>\n"
+"        \n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\n"
+"        <strong>자신이 보낸 우편물을 받을 건가요?</strong><p>\n"
+"\t일반적으로 여러분이 리스트에 글을 보내게 되면 여러분이 보낸\n"
+"\t메세지를 다시 받게 됩니다. 만약 이 복사본을 받길 원하지 않으\n"
+"\t시면, 이 옵션을 <em>아니요</em>로 설정하시기 바랍니다.\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <mm-dont-receive-own-mail-button>아니요<br>\n"
+"        <mm-receive-own-mail-button>예\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\n"
+"        <strong>리스트에 보낸 \"메일 확인\" 메일을 받아 보실 건가요?\n"
+"        </strong><p>\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <mm-dont-ack-posts-button>아니요<br>\n"
+"        <mm-ack-posts-button>예\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><td bgcolor=\"#cccccc\">\n"
+"        <strong>이 리스트에서 보내는 비밀번호 편지를 보낼 건가요?</"
+"strong><p>\n"
+"\t한달에 한번 여러분이 가입한 호스트로 부터 비밀번호를 담은\n"
+"\t편지를 받게 될 것 입니다. 여러분이 이 설정은 <em>아니요</em>\n"
+"\t로 설정함으로써 그 메일을 받지 않을 수 있습니다. 만약 당신이\n"
+"\t가입한 모든 리스트의 이 설정 부분을 <em>아니요</em>로 설정\n"
+"\t한다면 패스워드 편지는 여러분에게 가지 않을 것입니다.\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <mm-dont-get-password-reminder-button>아니요<br>\n"
+"        <mm-get-password-reminder-button>예<p>\n"
+"        <mm-global-remind-button><i>전체적으로 변경</i>\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\n"
+"        <strong>가입자 명단에서 여러분의 이름을 숨길까요?</strong><p>\n"
+"\t어떤 사람이 리스트 회원을 볼때, 당신의 E메일 주소는 보통 \n"
+"\t보이게 됩니다. 물론 스패머가 E메일을 가져가도 상관없게 변조\n"
+"\t됩니다. 만약 여러분이 회원 목록에 자신의 E메일 주소가 보이길\n"
+"\t원하지 않으시다면 이 설정을 <em>아니요</em>를 선택하여 주십시오.\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <MM-Public-Subscription-Button>아니요<br>\n"
+"        <MM-Hide-Subscription-Button>예\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><TD BGCOLOR=\"#cccccc\">\n"
+"        <strong>여러분이 사용할 언어는 무엇입니까?</strong><p>\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <MM-list-langs>\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><td bgcolor=\"#cccccc\">\n"
+"\t<strong>가입하고자 하는 주제의 분류는 어떤 것입니까?</strong><p>\n"
+"\t\t하나 이상의 주제를 선택함으로써 당신은 메일링 리스트의\n"
+"\t\t트래픽을 걸러낼 수 있으며, 주제와 맞는 메세지만 받을\n"
+"\t\t수 있습니다. 만약 여러분이 선택한 주제와 메세지가 맞\n"
+"\t\t는 다면 여러분에게 배달되지만 그렇지 않을 경우 배달\n"
+"\t\t되지 않습니다.\n"
+"\n"
+"\t\t<p>만약 메세지가 어떠한 주제와도 맞지 않는다면 배달\n"
+"\t\t규칙은 아래 설정에 의존하게 됩니다. 만약 여러분이 \n"
+"\t\t관심있어하는 주제를 선택하지 않으시면 여러분은\n"
+"\t\t메일링 리스트로 오는 모든 메세지를 받을 것입니다.\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <mm-topics>\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><td bgcolor=\"#cccccc\">\n"
+"\t<strong>주제 걸러내기에서 어떠한 패턴과도 맞지 않는 메세지를\n"
+"\t\t받아보시겠습니까?</strong><p>\n"
+"\t\t이 설적은 단지 여러분이 위의 주제중 하나라도 가입하셔야\n"
+"\t\t적용되는 설정입니다. 주제 걸러내기 패턴과 맞지 않을 경우\n"
+"\t\t에 그 메세지를 어떻게 처리하는가에 대한 설정을 하고 있습니다.\n"
+"\t\t<em>아니요</em> 로 선택하시면, 주제 걸러내기 패턴과 \n"
+"\t\t어느것도 맞지 않은 메세지는 여러분에게 배달되지 않으면\n"
+"\t\t<em>예</em>로 선택하시면 여러분에게 배달됩니다.\n"
+"\n"
+"\t\t<p>만약 관심있는 주제가 없으시면 메일링 리스트로 오는\n"
+"\t\t모든 메세지를 받게 될 것입니다.\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <mm-suppress-nonmatching-topics>아니요<br>\n"
+"        <mm-receive-nonmatching-topics>예\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><td bgcolor=\"#cccccc\">\n"
+"        <strong>메세지가 중복되는 것은 받지 않을까요?</strong><p>\n"
+"\n"
+"\t\t여러분이 리스트 메세지의 헤더의 <tt>To:</tt> 혹은 <tt>Cc:</tt>\n"
+"\t\t부분에 여러분의 주소가 들어 있으면 메일링 리스트로 부터\n"
+"\t\t여러 중복되는 메세지를 받게 됩니다. <em>예</em>로 선택\n"
+"\t\t하시면 중복되는 것을 받지 않으며 <em>아니요</em>로 선택\n"
+"\t\t하시면 메일링 리스트로 부터 메세지를 받게 됩니다.\n"
+"\n"
+"\t\t<p>만약 리스트가 <em>회원 개별화된 메세지</em>가 가능\n"
+"\t\t하게 되어 있다면 당신은 <tt>X-Mailman-Copy: yes</tt>\n"
+"\t\t헤더를 더함으로써 모든 복사메세지에 대해 선별할 수 있\n"
+"\t\t습니다.\n"
+"\n"
+"        </td><td bgcolor=\"#cccccc\">\n"
+"        <mm-receive-duplicates-button>아니요<br>\n"
+"        <mm-dont-receive-duplicates-button>예<p>\n"
+"        <mm-global-nodupes-button><i>전체적으로 변경</i>\n"
+"        </td></tr>\n"
+"\n"
+"    <tr><TD colspan=\"2\">\n"
+"        <center><MM-options-Submit-button></center>\n"
+"        </td></tr>\n"
+"\n"
+"</table>\n"
+"</center>\n"
+"<p>\n"
+"<MM-Form-End>\n"
+"\n"
+"<MM-Mailman-Footer>\n"
+"</body>\n"
+"</html>\n"
+
+#: templates/en/postack.txt:1
+msgid ""
+"Your message entitled\n"
+"\n"
+"    %(subject)s\n"
+"\n"
+"was successfully received by the %(listname)s mailing list.\n"
+"\n"
+"List info page: %(listinfo_url)s\n"
+"Your preferences: %(optionsurl)s\n"
+msgstr ""
+"메세지 제목 : \n"
+"\n"
+"    %(subject)s\n"
+"\n"
+" %(listname)s 메일링 리스트에 메세지가 성공적으로 등록되었습니다 .\n"
+"\n"
+"메일링 리스트 정보 페이지 : %(listinfo_url)s\n"
+
+#: templates/en/postauth.txt:1
+msgid ""
+"As list administrator, your authorization is requested for the\n"
+"following mailing list posting:\n"
+"\n"
+"    List:    %(listname)s@%(hostname)s\n"
+"    From:    %(sender)s\n"
+"    Subject: %(subject)s\n"
+"    Reason:  %(reason)s\n"
+"\n"
+"At your convenience, visit:\n"
+"\n"
+"    %(admindb_url)s\n"
+"        \n"
+"to approve or deny the request.\n"
+msgstr ""
+"리스트 관리자로서, 다음의 메일링 리스트 등록을 위해 인증이 필요합니다 : \n"
+"\n"
+"\n"
+"    리스트:    %(listname)s@%(hostname)s\n"
+"    전송자:    %(sender)s\n"
+"    제목  :    %(subject)s\n"
+"    이유  :    %(reason)s\n"
+"\n"
+"편의를 위해, 요청을 승인하거나 거부하기 위해서 다음을 방문하십시요 :\n"
+"\n"
+"    %(admindb_url)s\n"
+"        \n"
+
+#: templates/en/postheld.txt:1
+msgid ""
+"Your mail to '%(listname)s' with the subject\n"
+"\n"
+"    %(subject)s\n"
+"\n"
+"Is being held until the list moderator can review it for approval.\n"
+"\n"
+"The reason it is being held:\n"
+"\n"
+"    %(reason)s\n"
+"\n"
+"Either the message will get posted to the list, or you will receive\n"
+"notification of the moderator's decision.  If you would like to cancel\n"
+"this posting, please visit the following URL:\n"
+"\n"
+"    %(confirmurl)s\n"
+msgstr ""
+"다음의 제목으로 '%(listname)s'로 보낸 메일이  \n"
+"\n"
+"    %(subject)s\n"
+"\n"
+"리스트 관리자의 승인을 얻기 위해 대기중입니다.\n"
+"\n"
+"대기중인 이유는 :\n"
+"\n"
+"    %(reason)s\n"
+"\n"
+"메세지는 메일링 리스트에 포스트되거나 관리자의 결정에 대한 공지를 \n"
+"받게 될것입니다. 만약 여러분이 보낸 글을 취소 하실려면 다음의 URL을\n"
+"방문하시기 바랍니다.\n"
+"\n"
+"    %(confirmurl)s\n"
+
+#: templates/en/private.html:1
+msgid ""
+"<html>\n"
+"<head>\n"
+"    <title>%(realname)s Private Archives Authentication</title>\n"
+"</head>\n"
+"<body bgcolor=\"#ffffff\">\n"
+"<FORM METHOD=POST ACTION=\"%(action)s/\">\n"
+"%(message)s\n"
+"  <TABLE WIDTH=\"100%%\" BORDER=\"0\" CELLSPACING=\"4\" CELLPADDING=\"5\">\n"
+"    <TR>\n"
+"      <TD COLSPAN=\"2\" WIDTH=\"100%%\" BGCOLOR=\"#99CCFF\" ALIGN=\"CENTER"
+"\">\n"
+"\t<B><FONT COLOR=\"#000000\" SIZE=\"+1\">%(realname)s Private\n"
+"\t    Archives Authentication</FONT></B>\n"
+"      </TD>\n"
+"    </TR>\n"
+"    <tr>\n"
+"        <TD><div ALIGN=\"Right\">Email address:</div></TD>\n"
+"        <TD><INPUT TYPE=\"text\" NAME=\"username\" SIZE=\"30\"></TD>\n"
+"    </tr>\n"
+"    <tr>\n"
+"      <TD><div ALIGN=\"Right\">Password:</div></TD>\n"
+"      <TD><INPUT TYPE=\"password\" NAME=\"password\" SIZE=\"30\"></TD>\n"
+"    </tr>\n"
+"    <tr>\n"
+"      <td colspan=2 align=\"middle\"><INPUT type=\"SUBMIT\"\n"
+"                                          name=\"submit\"\n"
+"\t\t\t\t\t  value=\"Let me in...\">\n"
+"      </td>\n"
+"    </tr>\n"
+"  </TABLE>\n"
+"      <p><strong><em>Important:</em></strong> From this point on, you\n"
+"      must have cookies enabled in your browser, otherwise\n"
+"      you will have to re-authenticate with every operation.\n"
+"\n"
+"      <p>Session cookies are used in Mailman's\n"
+"      private archive interface so that you don't need to\n"
+"      re-authenticate with every operation.  This\n"
+"      cookie will expire automatically when you exit your browser, or\n"
+"      you can explicitly expire the cookie by visiting your\n"
+"      member options page and clicking the\n"
+"      <em>Log out</em> button.\n"
+"</FORM>\n"
+"</body>\n"
+"</html>\n"
+msgstr ""
+"<html>\n"
+"<head>\n"
+"    <title>%(realname)s 비공개 저장소 인증</title>\n"
+"</head>\n"
+"<body bgcolor=\"#ffffff\">\n"
+"<FORM METHOD=POST ACTION=\"%(action)s/\">\n"
+"%(message)s\n"
+"  <TABLE WIDTH=\"100%%\" BORDER=\"0\" CELLSPACING=\"4\" CELLPADDING=\"5\">\n"
+"    <TR>\n"
+"      <TD COLSPAN=\"2\" WIDTH=\"100%%\" BGCOLOR=\"#99CCFF\" ALIGN=\"CENTER"
+"\">\n"
+"\t<B><FONT COLOR=\"#000000\" SIZE=\"+1\">%(realname)s 비공개\n"
+"\t    저장소 인증</FONT></B>\n"
+"      </TD>\n"
+"    </TR>\n"
+"    <tr>\n"
+"        <TD><div ALIGN=\"Right\">E메일 주소:</div></TD>\n"
+"        <TD><INPUT TYPE=\"text\" NAME=\"username\" SIZE=\"30\"></TD>\n"
+"    </tr>\n"
+"    <tr>\n"
+"      <TD><div ALIGN=\"Right\">비밀번호:</div></TD>\n"
+"      <TD><INPUT TYPE=\"password\" NAME=\"password\" SIZE=\"30\"></TD>\n"
+"    </tr>\n"
+"    <tr>\n"
+"      <td colspan=2 align=\"middle\"><INPUT type=\"SUBMIT\"\n"
+"                                          name=\"submit\"\n"
+"\t\t\t\t\t  value=\"나를 안으로 들여보내줘!\">\n"
+"      </td>\n"
+"    </tr>\n"
+"  </TABLE>\n"
+"\t<p><strong><em>중요</em></strong>: 이 시점부터 여러분의 \n"
+"\t브라우저에 쿠키가 저장됩니다. 이 부분부터 시작하지 않으면, \n"
+"\t다른 변경들은 실제로 적용되지 않습니다.\n"
+"\n"
+"\t<p>Mailman 의 관리 인터페이스에는 세션 쿠키를 사용하기 때문에 \n"
+"\t매번 인증할 필요가 없으며 이 쿠키는 여러분이 브라우저를 끝냈거나, \n"
+"\t<em>관리자 화면</em>에서 볼수 있는 \"<em>로그아웃</em>\"(여러분이 \n"
+"\t성공적으로 로긴 을 하면 볼 수 있습니다.) 를 클릭하면 \n"
+"\t자동으로 지워집니다.\n"
+"\n"
+"</FORM>\n"
+"</body>\n"
+"</html>\n"
+
+#: templates/en/probe.txt:1
+msgid ""
+"This is a probe message.  You can ignore this message.\n"
+"\n"
+"The %(listname)s mailing list has received a number of bounces from you,\n"
+"indicating that there may be a problem delivering messages to %(address)s.\n"
+"A bounce sample is attached below.  Please examine this message to make "
+"sure\n"
+"there are no problems with your email address.  You may want to check with\n"
+"your mail administrator for more help.\n"
+"\n"
+"If you are reading this, you don't need to do anything to remain an enabled\n"
+"member of the mailing list.  If this message had bounced, you would not be\n"
+"reading it, and your membership would have been disabled.  Normally when "
+"you\n"
+"are disabled, you receive occasional messages asking you to re-enable your\n"
+"subscription.\n"
+"\n"
+"You can also visit your membership page at\n"
+"\n"
+"    %(optionsurl)s\n"
+"\n"
+"On your membership page, you can change various delivery options such\n"
+"as your email address and whether you get digests or not.\n"
+"\n"
+"If you have any questions or problems, you can contact the list owner\n"
+"at\n"
+"\n"
+"    %(owneraddr)s\n"
+msgstr ""
+
+#: templates/en/refuse.txt:1
+msgid ""
+"Your request to the %(listname)s mailing list\n"
+"\n"
+"    %(request)s\n"
+"\n"
+"has been rejected by the list moderator.  The moderator gave the\n"
+"following reason for rejecting your request:\n"
+"\n"
+"\"%(reason)s\"\n"
+"\n"
+"Any questions or comments should be directed to the list administrator \n"
+"at:\n"
+"\n"
+"    %(adminaddr)s\n"
+msgstr ""
+" %(listname)s 메일링 리스트에 대한 다음의 요청이\n"
+"\n"
+"    %(request)s\n"
+"\n"
+"리스트 관리자에 의해 거부되었습니다.\n"
+"\n"
+"요청 거부이유는 다음과 같습니다 :\n"
+"\n"
+"\"%(reason)s\"\n"
+"\n"
+"의문사항이나 의견은 다음을 통해 리스트 관리자에게 직접 전달됩니다 :\n"
+"\n"
+"    %(adminaddr)s\n"
+
+#: templates/en/roster.html:1
+msgid ""
+"<!-- $Revision: 7626 $ -->\n"
+"<HTML>\n"
+"  <HEAD>\n"
+"    <TITLE><MM-List-Name> Subscribers</TITLE>\n"
+"  \n"
+"  </HEAD>\n"
+"  <BODY BGCOLOR=\"#ffffff\">\n"
+"\n"
+"    <P>\n"
+"    <TABLE WIDTH=\"100%\" COLS=\"1\" BORDER=\"0\" CELLSPACING=\"4\" "
+"CELLPADDING=\"5\">\n"
+"      <TR>\n"
+"\t<TD COLSPAN=\"2\" WIDTH=\"100%\" BGCOLOR=\"#99CCFF\" ALIGN=\"CENTER\">\n"
+"\t  <B><FONT COLOR=\"#000000\" SIZE=\"+1\"><MM-List-Name>\n"
+"\t\tSubscribers</FONT></B>\n"
+"\t</TD>\n"
+"      </TR>\n"
+"      <TR>\n"
+"\t<TD COLSPAN=\"2\" WIDTH=\"100%\" ALIGN=\"CENTER\">\n"
+"\t    \n"
+"          <P align = \"right\"> <MM-lang-form-start><MM-displang-box>\n"
+"                       <MM-list-langs><MM-form-end></p>        \n"
+"\n"
+"\t  <P>Click on your address to visit your subscription\n"
+"\t      options page.<br><I>(Parenthesized entries have list delivery \n"
+"\t      disabled.)</I></P>\n"
+"\t</TD>\n"
+"      </TR>\n"
+"      <TR WIDTH=\"100%\" VALIGN=\"top\">\n"
+"\t<TD BGCOLOR=\"#FFF0D0\" WIDTH=\"50%\">\n"
+"\t  <center>\n"
+"\t    <B><FONT COLOR=\"#000000\"><MM-Num-Reg-Users>\n"
+"\t\t  Non-digested Members of <MM-List-Name>:</FONT></B>\n"
+"\t  </center>\n"
+"\t</TD>\n"
+"\t<TD BGCOLOR=\"#FFF0D0\" WIDTH=\"50%\">\n"
+"\t  <center>\n"
+"\t    <B><FONT COLOR=\"#000000\"><MM-Num-Digesters> Digested\n"
+"\t\t  Members of <MM-List-Name>:</FONT></B> \n"
+"\t  </center>\n"
+"\t</TD>\n"
+"      </TR>\n"
+"      <TR VALIGN=\"top\">\n"
+"\t<td>\n"
+"\t  <P><MM-Regular-Users>\n"
+"\t</td>\n"
+"\t<td>\n"
+"\t  <P><MM-Digest-Users>\n"
+"\t</td>\n"
+"      </tr>\n"
+"    </table>\n"
+"<MM-Mailman-Footer>\n"
+"</BODY>\n"
+"</HTML>\n"
+msgstr ""
+"<!-- $Revision: 7626 $ -->\n"
+"<HTML>\n"
+"  <HEAD>\n"
+"    <TITLE><MM-List-Name> 가입자들</TITLE>\n"
+"  \n"
+"  </HEAD>\n"
+"  <BODY BGCOLOR=\"#ffffff\">\n"
+"\n"
+"    <P>\n"
+"    <TABLE WIDTH=\"100%\" COLS=\"1\" BORDER=\"0\" CELLSPACING=\"4\" "
+"CELLPADDING=\"5\">\n"
+"      <TR>\n"
+"\t<TD COLSPAN=\"2\" WIDTH=\"100%\" BGCOLOR=\"#99CCFF\" ALIGN=\"CENTER\">\n"
+"\t  <B><FONT COLOR=\"#000000\" SIZE=\"+1\"><MM-List-Name>\n"
+"\t\t가입자명단</FONT></B>\n"
+"\t</TD>\n"
+"      </TR>\n"
+"      <TR>\n"
+"\t<TD COLSPAN=\"2\" WIDTH=\"100%\" ALIGN=\"CENTER\">\n"
+"\t    \n"
+"\t  <P>가입 변경을 하실려면 여러분의 Email 주소를 찾아 클릭하십시오.\n"
+"\t      <br><I>(괄호 표시된 항목은 \"글쓰기 권한\"이 없는 항목을 가르킵니"
+"다.)\n"
+"\t      </I></P>\n"
+"\t</TD>\n"
+"      </TR>\n"
+"      <TR WIDTH=\"100%\" VALIGN=\"top\">\n"
+"\t<TD BGCOLOR=\"#FFF0D0\" WIDTH=\"50%\">\n"
+"\t  <center>\n"
+"\t    <B><FONT COLOR=\"#000000\">\n"
+"\t\t  <MM-List-Name> 에서 Digest를 신청 안하신 분들 : <MM-Num-Reg-Users></"
+"FONT></B>\n"
+"\t  </center>\n"
+"\t</TD>\n"
+"\t<TD BGCOLOR=\"#FFF0D0\" WIDTH=\"50%\">\n"
+"\t  <center>\n"
+"\t    <B><FONT COLOR=\"#000000\">\n"
+"\t\t  <MM-List-Name> 에서 Digest를 신청하신 분들 : <MM-Num-Digesters></"
+"FONT></B>\n"
+"\t  </center>\n"
+"\t</TD>\n"
+"      </TR>\n"
+"      <TR VALIGN=\"top\">\n"
+"\t<td>\n"
+"\t  <P><MM-Regular-Users>\n"
+"\t</td>\n"
+"\t<td>\n"
+"\t  <P><MM-Digest-Users>\n"
+"\t</td>\n"
+"      </tr>\n"
+"    </table>\n"
+"<MM-Mailman-Footer>\n"
+"</BODY>\n"
+"</HTML>\n"
+
+#: templates/en/subauth.txt:1
+msgid ""
+"Your authorization is required for a mailing list subscription request\n"
+"approval:\n"
+"\n"
+"    For:  %(username)s\n"
+"    List: %(listname)s@%(hostname)s\n"
+"\n"
+"At your convenience, visit:\n"
+"\n"
+"    %(admindb_url)s\n"
+"\t\n"
+"to process the request.\n"
+msgstr ""
+"메일링 리스트 구독 요청을 승인하기 위해서 인증이 필요합니다 :\n"
+"\n"
+"    사용자:\t%(username)s\n"
+"    리스트:\t%(listname)s@%(hostname)s\n"
+"\n"
+"편의를 위해, 요청을 처리하려면 다음을 방문하세요 :\n"
+"\n"
+"\t%(admindb_url)s\n"
+"\t\n"
+
+#: templates/en/subscribe.html:1
+msgid ""
+"<!-- $Revision: 7626 $ -->\n"
+"<html>\n"
+"<head><title><MM-List-Name> Subscription results</title></head>\n"
+"<body bgcolor=\"white\">\n"
+"<h1><MM-List-Name> Subscription results</h1>\n"
+"<MM-Results>\n"
+"<MM-Mailman-Footer>\n"
+"</body>\n"
+"</html>\n"
+msgstr ""
+"<!-- $Revision: 7626 $ -->\n"
+"<html>\n"
+"<head><title><MM-List-Name> 가입 결과</title></head>\n"
+"<body>\n"
+"<h1><MM-List-Name> 가입 결과</h1>\n"
+"<MM-Results>\n"
+"<MM-Mailman-Footer>\n"
+"</body>\n"
+"</html>\n"
+
+#: templates/en/subscribeack.txt:1
+msgid ""
+"Welcome to the %(real_name)s@%(host_name)s mailing list!\n"
+"%(welcome)s\n"
+"To post to this list, send your email to:\n"
+"\n"
+"  %(emailaddr)s\n"
+"\n"
+"General information about the mailing list is at:\n"
+"\n"
+"  %(listinfo_url)s\n"
+"\n"
+"If you ever want to unsubscribe or change your options (eg, switch to or\n"
+"from digest mode, change your password, etc.), visit your subscription\n"
+"page at:\n"
+"\n"
+"  %(optionsurl)s\n"
+"%(umbrella)s\n"
+"You can also make such adjustments via email by sending a message to:\n"
+"\n"
+"  %(real_name)s-request@%(host_name)s\n"
+"\n"
+"with the word `help' in the subject or body (don't include the\n"
+"quotes), and you will get back a message with instructions.\n"
+"\n"
+"You must know your password to change your options (including changing\n"
+"the password, itself) or to unsubscribe.  It is:\n"
+"\n"
+"  %(password)s\n"
+"\n"
+"Normally, Mailman will remind you of your %(host_name)s mailing list\n"
+"passwords once every month, although you can disable this if you\n"
+"prefer.  This reminder will also include instructions on how to\n"
+"unsubscribe or change your account options.  There is also a button on\n"
+"your options page that will email your current password to you.\n"
+msgstr ""
+"%(real_name)s@%(host_name)s 메일링 리스트에 가입하신 것을 환영합니다.\n"
+"%(welcome)s\n"
+"이 메일링 리스트에 포스팅을 하기 위해서는 아래의 주소로 하십시오.\n"
+"\n"
+"  %(emailaddr)s\n"
+"\n"
+"메일링 리스트에 대한 일반적인 정보는 아래의 사이트에 볼 수 있습니다.\n"
+"\n"
+"  %(listinfo_url)s\n"
+"\n"
+"만약 여러분이 탈퇴하거나, 여러분의 가입 설정(Digest 여부, 패스워드 변경,\n"
+"기타등등)을 바꾸길 원하신다면 아래의 사이트를 방문해 주세요.\n"
+"\n"
+"  %(optionsurl)s\n"
+"%(umbrella)s\n"
+"여러분은 또한 아래의 E메일로 메일을 보냄으로써 메일을 통해 설정을 조정\n"
+"할수 있습니다.\n"
+"\n"
+"  %(real_name)s-request@%(host_name)s\n"
+"\n"
+"편지의 제목, 혹은 본문에 단순히 'help' 라는 단어를 입력하시고 위 주소\n"
+"로 보내면 명령어에 대한 설정을 받아 보실 수 있습니다.\n"
+"\n"
+"여러분의 가입 설정(패스워드를 포함해서)을 변경하시거나, 탈퇴하시기\n"
+"위해서는 꼭 패스워드를 알아야 합니다. 패스워드는 아래와 같습니다.\n"
+"\n"
+"  %(password)s\n"
+"\n"
+"패스워드를 잊었다고, 걱정하지 마십시오. 여러분의 %(host_name)s 메일링\n"
+"리스트에서 패스워드 무엇인지 한달에 한번 여러분의 E메일로 편지를 보내\n"
+"드립니다. 그 편지에는 가입 설정 변경 혹은 탈퇴 방법을 포함하고 있습니다.\n"
+"또한 설정 관련 페이지에는 바로 여러분의 패스워드를 E메일로 보내주는\n"
+"버튼이 있으니, 필요하시면 눌러(Click)주세요.\n"
+
+#: templates/en/unsub.txt:1
+msgid ""
+"Mailing list removal confirmation notice for mailing list %(listname)s\n"
+"\n"
+"We have received a request%(remote)s for the removal of your email\n"
+"address, \"%(email)s\" from the %(listaddr)s mailing list.  To confirm\n"
+"that you want to be removed from this mailing list, simply reply to\n"
+"this message, keeping the Subject: header intact.  Or visit this web\n"
+"page:\n"
+"\n"
+"    %(confirmurl)s\n"
+"\n"
+"Or include the following line -- and only the following line -- in a\n"
+"message to %(requestaddr)s:\n"
+"\n"
+"    confirm %(cookie)s\n"
+"\n"
+"Note that simply sending a `reply' to this message should work from\n"
+"most mail readers, since that usually leaves the Subject: line in\n"
+"the right form (additional \"Re:\" text in the Subject: is okay).\n"
+"\n"
+"If you do not wish to be removed from this list, please simply\n"
+"disregard this message.  If you think you are being maliciously\n"
+"removed from the list, or have any other questions, send them to\n"
+"%(listadmin)s.\n"
+msgstr ""
+"%(listname)s 메일링 리스트 제거 확인 공지\n"
+"\n"
+"우리는 %(listaddr)s 메일링 리스트로부터 당신의 \"%(email)s\" 주소의\n"
+"제거 요청 %(remote)s 을 받았습니다. 이 메일링 리스트에서 정말 삭제\n"
+"하길 원하신다면 헤더의 제목: 을 그대로 유지한채, 그대로 회신하시기\n"
+"바랍니다. 혹은 저희 웹 페이지를 방문하시기 바랍니다.\n"
+"\n"
+"    %(confirmurl)s\n"
+"\n"
+"혹은 다음 줄(line)을 넣어 %(requestaddr)s 로 회신해 주셔도 됩니다.\n"
+"\n"
+"    confirm %(cookie)s\n"
+"\n"
+"대부분의 메일 프로그램에서 이 메세지에 대해 `회신' 버튼만 누름으로\n"
+"써 간단히 할 수 있습니다. 헤더의 제목: 은 그대로 놓아 두셔야 합니다.\n"
+"(제목에 추가적으로 \"Re:\" 가 들어 가셔도 상관없습니다.)\n"
+"\n"
+"만약 이 리스트로 부터 삭제하는 걸 원하지 않으시면 간단히 이 메세지\n"
+"를 지우십시오. 만약 당신이 스스로 메일링 리스트에서 삭제할 수 없\n"
+"거나, 어떤 질문이 있으시면 %(listadmin)s 로 보내주십시오.\n"
+
+#: templates/en/unsubauth.txt:1
+msgid ""
+"Your authorization is required for a mailing list unsubscription\n"
+"request approval:\n"
+"\n"
+"    By:   %(username)s\n"
+"    From: %(listname)s@%(hostname)s\n"
+"\n"
+"At your convenience, visit:\n"
+"\n"
+"    %(admindb_url)s\n"
+"\n"
+"to process the request.\n"
+msgstr ""
+"Your authorization is required for a mailing list unsubscription\n"
+"request approval:\n"
+"메일링 리스트 탈퇴 요청에 당신의 인증이 필요합니다.\n"
+"\n"
+"    보낸이:   %(username)s\n"
+"    보낸곳: %(listname)s@%(hostname)s\n"
+"\n"
+"웹을 통해 하시면 처리를 편리하게 하실 수 있습니다.\n"
+"\n"
+"    %(admindb_url)s\n"
+
+#: templates/en/userpass.txt:1
+msgid ""
+"You, or someone posing as you, has requested a password reminder for\n"
+"your membership on the mailing list %(fqdn_lname)s.  You will need\n"
+"this password in order to change your membership options (e.g. do you\n"
+"want regular delivery or digest delivery), and having this password\n"
+"makes it easier for you to unsubscribe from the mailing list.\n"
+"\n"
+"You are subscribed with the address: %(user)s\n"
+"\n"
+"Your %(listname)s password is: %(password)s\n"
+"\n"
+"To make changes to your membership options, log in and visit your\n"
+"options web page:\n"
+"\n"
+"    %(options_url)s\n"
+"\n"
+"You can also make such changes via email by sending a message to:\n"
+"\n"
+"    %(requestaddr)s\n"
+"\n"
+"with the text \"help\" in the subject or body.  The automatic reply will\n"
+"contain more detailed instructions.\n"
+"\n"
+"Questions or comments?  Please send them to the %(listname)s mailing\n"
+"list administrator at %(owneraddr)s.\n"
+msgstr ""
+"이 편지는 메일링 리스트 %(listname)s 상의 \"%(user)s\" 사용자의 가입 \n"
+"설정을 변경하거나, 탈퇴하는 방법을 설정한 메일입니다.\n"
+"당신의 %(listname)s 패스워드는 아래와 같습니다.\n"
+"\n"
+"    %(password)s\n"
+"\n"
+"설정 변경을 하기 위해서는 아래의 사이트에 접속하셔서 패스워드를 사용\n"
+"하십시오.\n"
+"\n"
+"    %(options_url)s\n"
+"\n"
+"또한 E메일을 통해서 처리할 수 있습니다. 아래의 주소로 \n"
+"\n"
+"    %(requestaddr)s\n"
+"\n"
+"편지의 제목 혹은 본문에 \"help\" 라는 단어를 넣어 보내시면, 명령어에\n"
+"대한 설명을 받아 보실 수 있습니다.\n"
+"\n"
+"질문이나, 건의가 있으십니까? %(adminaddr)s로 보내주시기 바랍니다.\n"
+"감사합니다.\n"
+
+#: templates/en/verify.txt:1
+msgid ""
+"Mailing list subscription confirmation notice for mailing list %(listname)s\n"
+"\n"
+"We have received a request%(remote)s for subscription of your email\n"
+"address, \"%(email)s\", to the %(listaddr)s mailing list.  To confirm\n"
+"that you want to be added to this mailing list, simply reply to this\n"
+"message, keeping the Subject: header intact.  Or visit this web page:\n"
+"\n"
+"    %(confirmurl)s\n"
+"\n"
+"Or include the following line -- and only the following line -- in a\n"
+"message to %(requestaddr)s:\n"
+"\n"
+"    confirm %(cookie)s\n"
+"\n"
+"Note that simply sending a `reply' to this message should work from\n"
+"most mail readers, since that usually leaves the Subject: line in\n"
+"the right form (additional \"Re:\" text in the Subject: is okay).\n"
+"\n"
+"If you do not wish to be subscribed to this list, please simply\n"
+"disregard this message.  If you think you are being maliciously\n"
+"subscribed to the list, or have any other questions, send them to\n"
+"%(listadmin)s.\n"
+msgstr ""
+"%(listname)s 메이링 리스트 가입 확인 공지\n"
+"\n"
+"저희는 %(remote)s 에서 당신의 E메일 주소( %(email)s )의\n"
+" %(listaddr)s 메일링 리스트 가입 요청을 받았습니다. 요청에 대한 확인\n"
+"을 위해서 이 메일을 %(requestaddr)s 로 보내주시기 바랍니다. 주의해야\n"
+"할 사항은 아래와 같습니다.\n"
+"\n"
+"- 편지의 제목을 그대로 유지하십시오. ( \"Re:\" 가 붙은 것은 허락합니다. ),\n"
+"\n"
+"- 혹은 아래의 줄만 포함하여 보내주어도 되며, 모두 보내주어도 됩니다.\n"
+"\n"
+"confirm %(cookie)s\n"
+"\n"
+"(간단히 이 메세지에 대해 'Reply' 를 함으로써 대부분의 메일 환경에서는\n"
+"손쉽게 가입하실 수 있습니다.)\n"
+"\n"
+"혹은 편리하게 웹 사이트를 방문하셔도 무방합니다.\n"
+"\n"
+"    %(confirmurl)s\n"
+"\n"
+"만약 여러분이 이 메일링 리스트에 가입하길 원하지 않는다면, 간단히 이\n"
+"메일을 무시하시기 바랍니다. 질문 사항은 %(listadmin)s 로 보내주시기\n"
+"바랍니다.\n"
 
 #~ msgid ""
 #~ "Approval notices are sent when mail triggers certain of the\n"
