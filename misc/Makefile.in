@@ -52,10 +52,8 @@ SETUPINSTOPTS=	--install-lib $(DESTDIR)$(PYTHONLIBDIR) \
 SETUPCMD=	setup.py --quiet install $(SETUPINSTOPTS)
 
 EMAILPKG=	email-2.5.6
-JACODECSPKG=	JapaneseCodecs-1.4.11
-KOCODECSPKG=	KoreanCodecs-2.0.5
 
-PACKAGES= $(EMAILPKG) $(JACODECSPKG) $(KOCODECSPKG)
+PACKAGES= $(EMAILPKG)
 
 # Modes for directories and executables created by the install
 # process.  Default to group-writable directories but

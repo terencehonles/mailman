@@ -48,16 +48,6 @@ sitedir = os.path.join(sys.prefix, 'lib', 'python'+sys.version[:3],
                        'site-packages')
 sys.path.append(sitedir)
 
-
-# In a normal interactive Python environment, the japanese.pth and korean.pth
-# files would be imported automatically.  But because we inhibit the importing
-# of the site module, we need to be explicit about importing these codecs.
-import japanese
-# As of KoreanCodecs 2.0.5, you had to do the second import to get the Korean
-# codecs installed, however leave the first import in there in case an upgrade
-# changes this.
-import korean
-import korean.aliases
 # Arabic and Hebrew (RFC-1556) encoding aliases. (temporary solution)
 import encodings.aliases
 encodings.aliases.aliases.update({
