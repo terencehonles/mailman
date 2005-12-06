@@ -20,7 +20,7 @@ def do_lang(lang):
             in_template = 1
             in_msg = 0
             filename = i[16:-3]
-            outfile = file('templates/%s/%s' % (lang, filename), 'w')
+            outfilename = 'templates/%s/%s' % (lang, filename)
             continue
         if in_template and i.startswith('#,'):
             continue
@@ -31,11 +31,20 @@ def do_lang(lang):
             if len(i.strip()) == 0:
                 in_template = 0
                 in_msg = 0
-                print >> outfile, msgstr
-                outfile.close()
+                if (len(msgstr) > 1) and outfilename:
+                    # exclude no translation ... only one LF.
+                    outfile = file(outfilename, 'w')
+                    print >> outfile, msgstr
+                    outfile.close()
+                outfilename = ''
                 msgstr = ''
                 continue
             msgstr += eval(i)
+    if (msgstr > 1) and outfilename:
+        # flush remaining msgstr
+        outfile = file(outfilename, 'w')
+        print >> outfile, msgstr
+        outfile.close()
 
 if __name__ == '__main__':
     langs = sys.argv[1:]
