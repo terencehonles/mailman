@@ -17,6 +17,9 @@ Here is a history of user visible changes to Mailman.
 
   Security
 
+    - The fix for CAN-2005-0202 has been enhanced to issue an appropriate
+      message instead of just quietly dropping ./ and ../ from URLs.
+
     - A note on CVE-2005-3573: Although the RFC2231 bug example in the
       CVE has been solved in mailman-2.1.6, there may be more cases
       where ToDigest.send_digests() can block regular delivery.
@@ -46,6 +49,8 @@ Here is a history of user visible changes to Mailman.
       to pass through after other content filtering is done.
 
   Bug fixes and other patches
+
+    - Fix private.py to go to the original URL after authorization (1080943).
 
     - Fix bounce log score messages to be more consistent.
 
