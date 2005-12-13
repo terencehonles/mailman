@@ -509,5 +509,7 @@ def save_attachment(mlist, msg, dir, filter_html=True):
     # Private archives will likely have a trailing slash.  Normalize.
     if baseurl[-1] <> '/':
         baseurl += '/'
-    url = baseurl + '%s/%s%s%s' % (dir, filebase, extra, ext)
+    # A trailing space in url string may save users who are using
+    # RFC-1738 compliant MUA (Not Mozilla).
+    url = baseurl + '%s/%s%s%s ' % (dir, filebase, extra, ext)
     return url
