@@ -71,6 +71,11 @@ Here is a history of user visible changes to Mailman.
 
     - Stop removing line following Approve(d): line in body of post (1318883).
 
+    - Remove Approve(d): <password> from all text/* parts in addition the
+      initial text/plain part. It still must be the first non-blank line in
+      the first text/plain part or it won't be found or removed at all
+      (1181161).
+
     - Log post in post log with true sender, not listname-bounces (1287921).
 
     - Correctly initialize and remember the list's default_member_moderation
