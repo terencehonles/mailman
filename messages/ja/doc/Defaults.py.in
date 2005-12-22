@@ -1,7 +1,7 @@
 # -*- python -*-
 # -*- coding: euc-jp -*-
 
-# Copyright (C) 1998-2004 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -17,9 +17,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-# [訳注] このファイルは, Mailman 2.1.6 配布物に含まれる
-#   Mailman/Defaults.py.in のコメント部分を日本語 (共通語) に翻訳した
-#   ものです. 配布等の条件は原文と同様, GNU 一般公衆利用許諾契約書(GNU
+# [訳注] このファイルは, Mailman 2.X 配布物に含まれる
+#   Mailman/Defaults.py.in (SF.net での CVS リビジョンは 2.133)
+#   のコメント部分を日本語 (共通語) に翻訳したものです.
+#   配布等の条件は原文と同様, GNU 一般公衆利用許諾契約書 (GNU
 #   General Public License) に従います (上記も参照ください). 内容の正
 #   確な理解のためには, 配布物に含まれる原文を参照されることをお勧めし
 #   ます.
@@ -390,15 +391,15 @@ PUBLIC_MBOX = No
 DELIVERY_MODULE = 'SMTPDirect'
 
 # MTA は, Mailman/MTA にあるモジュールの名前でなければならない. これは
-# リストの作成と削除のための MTA 独自の機能を提供する.
+# リストの作成と削除のための MTA 独自の機能を提供する. [>=2.1;
+# MTA_ALIASES_STYLE は廃止]
 # Exim のようないくつかのMTA は, 自動的に新しいリストを認識するように
 # 設定でき, その場合は MTA 変数は None に設定しなければならない.
 # 新しいエイリアスを標準出力に出す(またはサイトリスト管理者へ電子メー
 # ルで送る) ようにして /etc/aliases スタイルのファイルを手作業でいじる
 # ようにするときは 'Manual' にする.
 # Postfix MTA を使っているのなら 'Postfix' にする --- ただしそのときは,
-# POSTFIX_STYLE_VIRTUAL_DOMAINS も見ること. [>=2.1; MTA_ALIASES_STYLE 
-# は廃止]
+# POSTFIX_STYLE_VIRTUAL_DOMAINS も見ること.
 MTA = 'Manual'
 
 # MTA='Postfix' に設定したのなら, Postfix で仮想ドメインを使っているか
@@ -566,13 +567,13 @@ OWNER_PIPELINE = [
 
 # 配送が成功かそうでないかにかかわらず, メッセージ配送ごとに出力するメッ
 # セージの書式. このログメッセージの出力を無効にするには None を設定す
-# る.  [訳注: 2.1.6 から, リスト名 %(listname)s が含められるようになっ
-# た.]
+# る.  [訳注: 2.1.6 から, リスト名 %(listname)s を含めることができる
+# ようになった.]
 SMTP_LOG_EVERY_MESSAGE = (
     'smtp',
     '%(msg_message-id)s smtp to %(listname)s for %(#recips)d recips, completed in %(time).3f seconds')
 
-# これは, 即座に SMTP の失敗がないときだけ出力する.
+# これは, SMTP が即座には失敗しないときだけ出力する.
 # SMTP_LOG_REFUSED とは相互に排他的.
 SMTP_LOG_SUCCESS = (
     'post',
@@ -877,14 +878,15 @@ DEFAULT_MSG_FOOTER = """_______________________________________________
 """
 
 # 「Re:」のつくメッセージで, 件名の前置きをどこにつけるか [>=2.1.6]:
+#
 #     旧スタイル: Re: [前置き] テスト
 #     新スタイル: [前置き 123] Re: テスト ... (通し番号はオプション)
+#
 # 後方互換性のために, 旧スタイルを既定値とする. ただし, リスト管理者が
 # 前置きに %d (通し番号) を入れたとき [訳注: 上記参照] は, 強制的に新
-# スタイルにする.
-# サイト管理者が新スタイル化パッチ (SourceForge のパッチ置場にある) を
-# 当てているときは, この値を mm_cfg.py で No に設定するとよいかもしれ
-# ない.
+# スタイルにする. サイト管理者が以前に新スタイル化パッチ (SourceForge
+# のパッチ置場にある) を当てていたのなら, この値を mm_cfg.py で No
+# に設定するとよいかもしれない.
 OLD_STYLE_PREFIXING = Yes
 
 # 通常配送で添付削除する [>=2.1.6]
@@ -901,8 +903,8 @@ DEFAULT_ADMIN_IMMED_NOTIFY = Yes
 # 管理者に入会/退会を知らせるか.
 DEFAULT_ADMIN_NOTIFY_MCHANGES = No
 
-# この日数の後, 保留されているメッセージを破棄する [>=2.1.6]
-DEFAULT_MAX_DAYS_TO_HOLD = 3            # 日数
+# この日数の後, 保留されているメッセージを破棄する [>=2.1.6] [訳注: 0 にすると破棄しない]
+DEFAULT_MAX_DAYS_TO_HOLD = 0
 
 # リスト会員の投稿は, 既定で司会つきにするか. [>=2.1;
 # DEFAULT_MODERATED は廃止]
@@ -1036,6 +1038,9 @@ DEFAULT_FILTER_FILENAME_EXTENSIONS = [
 # 形式は DEFAULT_FILTER_FILENAME_EXTENSIONS とおなじ. [>=2.1.6]
 DEFAULT_PASS_FILENAME_EXTENSIONS = []
 
+# multipart/alternative を, そのうちの最初のパートで置き換える. [>= 2.1.X]
+DEFAULT_COLLAPSE_ALTERNATIVES = Yes
+
 # 内容フィルタを通したあとで, text/html を text/plain に変換するかどうか.
 # 変換は HTML_TO_PLAIN_TEXT_COMMAND を使って行う. [>=2.1]
 DEFAULT_CONVERT_HTML_TO_PLAINTEXT = Yes
@@ -1079,7 +1084,7 @@ MIME_DIGEST_KEEP_HEADERS = [
     # つぎのヘッダも保持したほうがいいとおもう
     'In-Reply-To', 'References', 'Content-Type', 'MIME-Version',
     'Content-Transfer-Encoding', 'Precedence', 'Reply-To',
-    # Mailman 2.0 ではつぎのヘッダを付加する [訳注: Mailman 2.1 以降でも]
+    # Mailman 2.0 [とそれ以降] ではつぎのヘッダを付加する
     'Message',
     ]
 
@@ -1357,7 +1362,14 @@ from Version import *
 # 語の説明で, これはカタログで使う. 2 つめの要素は言語のキャラクタセッ
 # ト. このコードは私の GNU/Linux の /usr/share/locale からみつけて
 # きた :-) [訳注: その後も言語が追加されている.]
-# 
+# TK: 配布ターボールにある言語をサイト管理者が選んでインストールできる
+# ようにした [>= 2.2 alpha1] [訳注: 米国英語 (en) は必ずインストールさ
+# れる].  mm_cfg.py の表記で後方互換性を取るために, add_language() 関
+# 数は変えていない.  配布物にない独自の言語を追加するときは, ソースファ
+# イルのディレクトリに言語のファイルを入れて '--with-languages' オプ
+# ションで configure しただけではだめで, mm_cfg.py でも [訳注:
+# add_language() 関数を使って] 言語を追加しなければいけない.
+#
 # [訳注]
 #   自分のサイトで「中国語」を使えるようにしている(いた)のなら注意:
 #
@@ -1373,47 +1385,55 @@ from Version import *
 #       add_language('zh_CN', _('Chinese (China)'),     'utf-8')
 #       add_language('zh_TW', _('Chinese (Taiwan)'),    'utf-8')
 #
-#   o 2.1.6 より, zh_CN の地域化テキストとカタログのメンテナンス (2.0 
-#     時点で止まっていた) が再開された.  zh_TW の地域化テキストとカタロ
-#     グは 2.0 時点のままで, 現在のところメンテナンスされていない.
+#   o 2.1.6 より, 地域化テキストとカタログのメンテナンス (2.0 時点で止
+#     まっていた) が再開された. ただし zh_TW についてはカタログのみで,
+#     地域化テキストのメンテナンスは未着手.
 #
 def _(s):
     return s
+
+LANGUAGES = 'en ' + '@LANGUAGES@'
+LANGUAGE_DICT = {
+	'ca':   (_('Catalan'),             'iso-8859-1'),
+	'cs':   (_('Czech'),               'iso-8859-2'),
+	'da':   (_('Danish'),              'iso-8859-1'),
+	'de':   (_('German'),              'iso-8859-1'),
+	'en':   (_('English (USA)'),       'us-ascii'),
+	'es':   (_('Spanish (Spain)'),     'iso-8859-1'),
+	'et':   (_('Estonian'),            'iso-8859-15'),
+	'eu':   (_('Euskara'),             'iso-8859-15'), # バスク語
+	'fi':   (_('Finnish'),             'iso-8859-1'),
+	'fr':   (_('French'),              'iso-8859-1'),
+	'hr':   (_('Croatian'),            'iso-8859-2'),
+	'hu':   (_('Hungarian'),           'iso-8859-2'),
+        'ia':   (_('Interlingua'),         'iso-8859-15'),
+	'it':   (_('Italian'),             'iso-8859-1'),
+	'ja':   (_('Japanese'),            'euc-jp'),
+	'ko':   (_('Korean'),              'euc-kr'),
+	'lt':   (_('Lithuanian'),          'iso-8859-13'),
+	'nl':   (_('Dutch'),               'iso-8859-1'),
+	'no':   (_('Norwegian'),           'iso-8859-1'),
+	'pl':   (_('Polish'),              'iso-8859-2'),
+	'pt':   (_('Portuguese'),          'iso-8859-1'),
+	'pt_BR':(_('Portuguese (Brazil)'), 'iso-8859-1'),
+	'ro':   (_('Romanian'),            'iso-8859-2'),
+	'ru':   (_('Russian'),             'koi8-r'),
+	'sr':   (_('Serbian'),             'utf-8'),
+	'sl':   (_('Slovenian'),           'iso-8859-2'),
+	'sv':   (_('Swedish'),             'iso-8859-1'),
+	'tr':   (_('Turkish'),             'iso-8859-9'),
+	'uk':   (_('Ukrainian'),           'utf-8'),
+	'zh_CN':(_('Chinese (China)'),     'utf-8'),
+	'zh_TW':(_('Chinese (Taiwan)'),    'utf-8'),
+}
 
 LC_DESCRIPTIONS = {}
 
 def add_language(code, description, charset):
     LC_DESCRIPTIONS[code] = (description, charset)
 
-add_language('ca',    _('Catalan'),             'iso-8859-1')
-add_language('cs',    _('Czech'),               'iso-8859-2')
-add_language('da',    _('Danish'),              'iso-8859-1')
-add_language('de',    _('German'),              'iso-8859-1')
-add_language('en',    _('English (USA)'),       'us-ascii')
-add_language('es',    _('Spanish (Spain)'),     'iso-8859-1')
-add_language('et',    _('Estonian'),            'iso-8859-15')
-add_language('eu',    _('Euskara'),             'iso-8859-15') # バスク語
-add_language('fi',    _('Finnish'),             'iso-8859-1')
-add_language('fr',    _('French'),              'iso-8859-1')
-add_language('hr',    _('Croatian'),            'iso-8859-2')
-add_language('hu',    _('Hungarian'),           'iso-8859-2')
-add_language('it',    _('Italian'),             'iso-8859-1')
-add_language('ja',    _('Japanese'),            'euc-jp')
-add_language('ko',    _('Korean'),              'euc-kr')
-add_language('lt',    _('Lithuanian'),          'iso-8859-13')
-add_language('nl',    _('Dutch'),               'iso-8859-1')
-add_language('no',    _('Norwegian'),           'iso-8859-1')
-add_language('pl',    _('Polish'),              'iso-8859-2')
-add_language('pt',    _('Portuguese'),          'iso-8859-1')
-add_language('pt_BR', _('Portuguese (Brazil)'), 'iso-8859-1')
-add_language('ro',    _('Romanian'),            'iso-8859-2')
-add_language('ru',    _('Russian'),             'koi8-r')
-add_language('sr',    _('Serbian'),             'utf-8')
-add_language('sl',    _('Slovenian'),           'iso-8859-2')
-add_language('sv',    _('Swedish'),             'iso-8859-1')
-add_language('tr',    _('Turkish'),             'iso-8859-9')
-add_language('uk',    _('Ukrainian'),           'utf-8')
-add_language('zh_CN', _('Chinese (China)'),     'utf-8')
-add_language('zh_TW', _('Chinese (Taiwan)'),    'utf-8')
+for lang in LANGUAGES.split():
+    if lang in LANGUAGE_DICT.keys():
+        add_language(lang, LANGUAGE_DICT[lang][0], LANGUAGE_DICT[lang][1])
 
 del _
