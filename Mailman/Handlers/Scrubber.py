@@ -161,6 +161,16 @@ def calculate_attachments_dir(mlist, msg, msgdata):
     return os.path.join('attachments', datedir, digest[:4] + digest[-4:])
 
 
+def replace_payload_by_text(msg, text, charset):
+    # TK: This is a common function in replacing the attachment and
+    # the main message by a text (scrubbing). Plus a flag indicating
+    # it has been scrubbed.
+    del msg['content-type']
+    del msg['content-transfer-encoding']
+    msg.set_payload(text, charset)
+    msg['X-Mailman-Scrubbed'] = 'Yes'
+
+
 
 def process(mlist, msg, msgdata=None):
     sanitize = mm_cfg.ARCHIVE_HTML_SANITIZER
@@ -197,9 +207,7 @@ def process(mlist, msg, msgdata=None):
                     os.umask(omask)
                 filename = part.get_filename(_('not available'))
                 filename = Utils.oneline(filename, lcset)
-                del part['content-type']
-                del part['content-transfer-encoding']
-                part.set_payload(_("""\
+                replace_payload_by_text(part, _("""\
 An embedded and charset-unspecified text was scrubbed...
 Name: %(filename)s
 Url: %(url)s
@@ -208,9 +216,8 @@ Url: %(url)s
             if sanitize == 0:
                 if outer:
                     raise DiscardMessage
-                del part['content-type']
-                del part['content-transfer-encoding']
-                part.set_payload(_('HTML attachment scrubbed and removed'),
+                replace_payload_by_text(part,
+                                 _('HTML attachment scrubbed and removed'),
                                  # Adding charset arg and removing content-tpe
                                  # sets content-type to text/plain
                                  lcset)
@@ -226,9 +233,7 @@ Url: %(url)s
                     url = save_attachment(mlist, part, dir, filter_html=False)
                 finally:
                     os.umask(omask)
-                del part['content-type']
-                del part['content-transfer-encoding']
-                part.set_payload(_("""\
+                replace_payload_by_text(part, _("""\
 An HTML attachment was scrubbed...
 URL: %(url)s
 """), lcset)
@@ -253,8 +258,7 @@ URL: %(url)s
                     url = save_attachment(mlist, part, dir, filter_html=False)
                 finally:
                     os.umask(omask)
-                del part['content-type']
-                part.set_payload(_("""\
+                replace_payload_by_text(part, _("""\
 An HTML attachment was scrubbed...
 URL: %(url)s
 """), lcset)
@@ -270,8 +274,7 @@ URL: %(url)s
             date = submsg.get('date', _('no date'))
             who = submsg.get('from', _('unknown sender'))
             size = len(str(submsg))
-            del part['content-type']
-            part.set_payload(_("""\
+            replace_payload_by_text(part, _("""\
 An embedded message was scrubbed...
 From: %(who)s
 Subject: %(subject)s
@@ -302,9 +305,7 @@ Url: %(url)s
             desc = part.get('content-description', _('not available'))
             filename = part.get_filename(_('not available'))
             filename = Utils.oneline(filename, lcset)
-            del part['content-type']
-            del part['content-transfer-encoding']
-            part.set_payload(_("""\
+            replace_payload_by_text(part, _("""\
 A non-text attachment was scrubbed...
 Name: %(filename)s
 Type: %(ctype)s
@@ -342,7 +343,12 @@ Url : %(url)s
                 text.append(_('Skipped content of type %(partctype)s\n'))
                 continue
             try:
-                t = part.get_payload(decode=True)
+                # Check if the part is replaced.
+                if part.get('x-mailman-scrubbed'):
+                    decode = False
+                else:
+                    decode = True
+                t = part.get_payload(decode=decode)
             except binascii.Error:
                 t = part.get_payload()
             # TK: get_content_charset() returns 'iso-2022-jp' for internally
@@ -375,10 +381,7 @@ Url : %(url)s
                 text.append(t)
         # Now join the text and set the payload
         sep = _('-------------- next part --------------\n')
-        del msg['content-type']
-        msg.set_payload(sep.join(text), charset)
-        del msg['content-transfer-encoding']
-        msg.add_header('Content-Transfer-Encoding', '8bit')
+        replace_payload_by_text(msg, sep.join(text), charset)
     return msg
 
 

@@ -97,7 +97,12 @@ def process(mlist, msg, msgdata):
         uheader = unicode(header, lcset)
         ufooter = unicode(footer, lcset)
         try:
-            oldpayload = unicode(msg.get_payload(decode=1), mcset)
+            # First, check if the message was Scrubber-munged
+            if msg.get('x-mailman-scrubbed'):
+                decode = False
+            else:
+                decode = True
+            oldpayload = unicode(msg.get_payload(decode=decode), mcset)
             frontsep = endsep = u''
             if header and not header.endswith('\n'):
                 frontsep = u'\n'

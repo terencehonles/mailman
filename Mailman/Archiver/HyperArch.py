@@ -303,7 +303,12 @@ class Article(pipermail.Article):
             if charset[0]=="'" and charset[-1]=="'":
                 charset = charset[1:-1]
             try:
-                body = message.get_payload(decode=True)
+                # Check Scrubber-munged payload
+                if message.get('x-mailman-scrubbed'):
+                    decode = False
+                else:
+                    decode = True
+                body = message.get_payload(decode=decode)
             except binascii.Error:
                 body = None
             if body and charset != Utils.GetCharSet(self._lang):
