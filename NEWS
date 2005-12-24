@@ -48,7 +48,26 @@ Here is a history of user visible changes to Mailman.
       multipart/alternative to its first content.  This allows HTML part
       to pass through after other content filtering is done.
 
+  Internationalization
+
+    - New language: Interlingua.
+
   Bug fixes and other patches
+
+    - Defaults.py.in: SCRUBBER_DONT_USE_ATTACHMENT_FILENAME is set to True
+      for safer operation.
+
+    - Fix Scrubber.py mungs quoted-printable bug with introducing
+      'X-Mailman-Scrubbed' header for marking that the payload is
+      scrubber-munged.  The flag is referenced in ToDigest.py, ToArchive.py,
+      Decorate.py and Archiver.  Similar problem in ToDigest.py where the
+      plain digest is generated is also fixed.
+
+    - Fix Syslog.py to write quopri encoded message when it fail to write
+      8-bit characters.
+
+    - Fix MTA/Postfix.py to check aliases group permission in check_perms
+      and fix mailman-install document on this matter (1378270).
 
     - Fix private.py to go to the original URL after authorization (1080943).
 
