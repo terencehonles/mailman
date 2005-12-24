@@ -55,7 +55,12 @@ class _Syslog:
         # It's really bad if exceptions in the syslogger cause other crashes
         except Exception, e:
             msg = 'Bad format "%s": %s: %s' % (origmsg, repr(e), e)
-        logf.write(msg + '\n')
+        try:
+            logf.write(msg + '\n')
+        except UnicodeError:
+            # Python 2.4 may fail to write 8bit (non-ascii) characters
+            import quopri
+            logf.write(quopri.encodestring(msg) + '\n')
 
     # For the ultimate in convenience
     __call__ = write
