@@ -260,10 +260,13 @@ PRIVATE_EXTERNAL_ARCHIVER = No
 # should modify the Message object as necessary.
 ARCHIVE_SCRUBBER = 'Mailman.Handlers.Scrubber'
 
-# Mailman.Handlers.Scrubber uses attachment's filename as is.
-# If you don't like this (extremely long mime-encoded filename) then set
-# this True.
-SCRUBBER_DONT_USE_ATTACHMENT_FILENAME = False
+# Control parameter whether Mailman.Handlers.Scrubber should use message
+# attachment's filename as is indicated by the filename parameter or use
+# 'attachement-xxx' instead.  The default is set True because the applications
+# on PC and Mac begin to use longer non-ascii filenames.  Historically, it
+# was set False in 2.1.6 for backward compatiblity but it was reset to True
+# for safer operation in mailman-2.1.7.
+SCRUBBER_DONT_USE_ATTACHMENT_FILENAME = True
 
 # Use of attachment filename extension per se is may be dangerous because
 # virus fakes it. You can set this True if you filter the attachment by
