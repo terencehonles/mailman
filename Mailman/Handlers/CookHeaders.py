@@ -253,6 +253,11 @@ def prefix_subject(mlist, msg, msgdata):
     # subject is mime-encoded and cset is set as us-ascii. See detail
     # for ch_oneline() (CookHeaders one line function).
     subject, cset = ch_oneline(subject)
+    # TK: Python interpreter has eveolved to be strict on ascii charset
+    # code range. It is safe to use unicode string when manupilating
+    # header contents with re module. It would be best to return unicode
+    # in ch_oneline() but here is temporary solution.
+    subject = unicode(subject, cset)
     # If the subject_prefix contains '%d', it is replaced with the
     # mailing list sequential number.  Sequential number format allows
     # '%d' or '%05d' like pattern.
@@ -279,6 +284,7 @@ def prefix_subject(mlist, msg, msgdata):
     if subject.strip() == '':
         subject = _('(no subject)')
         cset = Utils.GetCharSet(mlist.preferred_language)
+        subject = unicode(subject, cset)
     # and substitute %d in prefix with post_id
     try:
         prefix = prefix % mlist.post_id
@@ -289,21 +295,15 @@ def prefix_subject(mlist, msg, msgdata):
     if cset == 'us-ascii':
         try:
             if old_style:
-                h = ' '.join([recolon, prefix, subject])
+                h = u' '.join([recolon, prefix, subject])
             else:
-                h = ' '.join([prefix, recolon, subject])
-            if type(h) == UnicodeType:
-                h = h.encode('us-ascii')
-            else:
-                h = unicode(h, 'us-ascii').encode('us-ascii')
+                h = u' '.join([prefix, recolon, subject])
+            h = h.encode('us-ascii')
             h = uheader(mlist, h, 'Subject', continuation_ws=ws)
             del msg['subject']
             msg['Subject'] = h
-            ss = ' '.join([recolon, subject])
-            if _isunicode(ss):
-                ss = ss.encode('us-ascii')
-            else:
-                ss = unicode(ss, 'us-ascii').encode('us-ascii')
+            ss = u' '.join([recolon, subject])
+            ss = ss.encode('us-ascii')
             ss = uheader(mlist, ss, 'Subject', continuation_ws=ws)
             msgdata['stripped_subject'] = ss
             return
@@ -316,15 +316,8 @@ def prefix_subject(mlist, msg, msgdata):
     else:
         h = uheader(mlist, prefix, 'Subject', continuation_ws=ws)
         h.append(recolon)
-    # in seq version, subject header is already concatnated
-    if not _isunicode(subject):
-        try:
-            subject = unicode(subject, cset, 'replace')
-        except (LookupError, TypeError):
-            # unknown codec
-            cset = Utils.GetCharSet(mlist.preferred_language)
-            subject = unicode(subject, cset, 'replace')
-    subject = subject.encode(cset,'replace')
+    # TK: Subject is concatnated and unicode string.
+    subject = subject.encode(cset, 'replace')
     h.append(subject, cset)
     del msg['subject']
     msg['Subject'] = h
