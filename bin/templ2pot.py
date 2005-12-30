@@ -11,12 +11,13 @@ Options:
     -h, --help
 
 Inputfiles are english templates.  Outputs are written to stdout.
-
 """
 
 import sys
 import getopt
 
+
+
 try:
     import paths
     from Mailman.i18n import _
@@ -24,6 +25,7 @@ except ImportError:
     def _(s): return s
 
 EMPTYSTRING = ''
+
 
 
 def usage(code, msg=''):
@@ -111,6 +113,7 @@ def main():
         print '#, template'
         print 'msgid', normalize(s)
         print 'msgstr ""\n'
+
 
 
 if __name__ == '__main__':
