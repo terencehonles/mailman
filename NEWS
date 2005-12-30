@@ -20,33 +20,33 @@ Here is a history of user visible changes to Mailman.
     - The fix for CAN-2005-0202 has been enhanced to issue an appropriate
       message instead of just quietly dropping ./ and ../ from URLs.
 
-    - A note on CVE-2005-3573: Although the RFC2231 bug example in the
-      CVE has been solved in mailman-2.1.6, there may be more cases
-      where ToDigest.send_digests() can block regular delivery.
-      We put the send_digests() calling part in try - except clause and
-      leave a message in the error log if something happened in
-      send_digests().  Daily call of cron/senddigests will notify more
-      detail to the site administrator.
+    - A note on CVE-2005-3573: Although the RFC2231 bug example in the CVE has
+      been solved in Mailman 2.1.6, there may be more cases where
+      ToDigest.send_digests() can block regular delivery.  We put the
+      send_digests() calling part in a try/except clause and leave a message
+      in the error log if something happened in send_digests().  Daily call of
+      cron/senddigests will provide more detail to the site administrator.
 
     - List administrators can no longer change the user's option/subscription
       globally.  Site admin can change these only if
       mm_cfg.ALLOW_SITE_ADMIN_COOKIES is set to Yes.
 
-    - Script tag is disallowd in edithtml script.
+    - <script> tags are HTML-escaped in the edithtml CGI script.
 
-    - Since probe message for the disabled users may reach unexpected
-      persons, the password was excluded from sendProbe() and probe.txt.
-      Note that the default value of VERP_PROBE has been set to `No'
-      from 2.1.6., thus this change doesn't change the default behavior.
+    - Since the probe message for disabled users may reach unintended
+      recipients, the password is excluded from sendProbe() and probe.txt.
+      Note that the default value of VERP_PROBE has been set to `No' from
+      2.1.6., thus this change doesn't affect the default behavior.
 
   New Features
 
-    - Always remove DomainKey (and similar) headers (1287546) from messages
-      sent to the list.
+    - Always remove DomainKey (and similar) headers from messages sent to the
+      list. (1287546)
 
-    - List owners can customize content filter behavior as not to collapse
-      multipart/alternative to its first content.  This allows HTML part
-      to pass through after other content filtering is done.
+    - List owners can control the content filter behavior when collapsing
+      multipart/alternative parts to its first subpart.  This allows the
+      option of letting the HTML part pass through after other content
+      filtering is done.
 
   Internationalization
 
@@ -54,65 +54,69 @@ Here is a history of user visible changes to Mailman.
 
   Bug fixes and other patches
 
-    - Defaults.py.in: SCRUBBER_DONT_USE_ATTACHMENT_FILENAME is set to True
-      for safer operation.
+    - Defaults.py.in: SCRUBBER_DONT_USE_ATTACHMENT_FILENAME is set to True for
+      safer operation.
 
-    - Fix Scrubber.py mungs quoted-printable bug with introducing
-      'X-Mailman-Scrubbed' header for marking that the payload is
+    - Fixed the bug where Scrubber.py munges quoted-printable by introducing
+      the 'X-Mailman-Scrubbed' header which marks that the payload is
       scrubber-munged.  The flag is referenced in ToDigest.py, ToArchive.py,
-      Decorate.py and Archiver.  Similar problem in ToDigest.py where the
+      Decorate.py and Archiver.  A similar problem in ToDigest.py where the
       plain digest is generated is also fixed.
 
-    - Fix Syslog.py to write quopri encoded message when it fail to write
+    - Fixed Syslog.py to write quopri encoded messages when it fail to write
       8-bit characters.
 
-    - Fix MTA/Postfix.py to check aliases group permission in check_perms
-      and fix mailman-install document on this matter (1378270).
+    - Fixed MTA/Postfix.py to check aliases group permission in check_perms
+      and fixed mailman-install document on this matter (1378270).
 
-    - Fix private.py to go to the original URL after authorization (1080943).
+    - Fixed private.py to go to the original URL after authorization
+      (1080943).
 
-    - Fix bounce log score messages to be more consistent.
+    - Fixed bounce log score messages to be more consistent.
 
-    - Fix bin/remove_members to accept no arguments when both --fromall and
+    - Fixed bin/remove_members to accept no arguments when both --fromall and
       --file= options are specified.
 
-    - Change cgi-bin and mail wrapper "group not found" error message to be
+    - Changed cgi-bin and mail wrapper "group not found" error message to be
       more descriptive of the actual problem.
 
-    - Apply the list's ban_list to address changes and admin mass subscribe
-      and invite and to confirmations/approvals of address changes,
-      subscriptions and invitations.
+    - The list's ban_list now applies to address changes, admin mass
+      subscribes and invites, and to confirmations/approvals of address
+      changes, subscriptions and invitations.
 
-    - Decode quoted-printable and base64 encoded parts before passing to
+    - quoted-printable and base64 encoded parts are decoded before passing to
       HTML_TO_PLAIN_TEXT_COMMAND (1367783).
 
-    - Remove Approve: header from post - treat as Approved: (1355707).
+    - Approve: header is removed from posts, and treated the same as the
+      Approved: header. (1355707)
 
-    - Stop removing line following Approve(d): line in body of post (1318883).
+    - Fixed the removal of the line following Approve[d]: line in body of
+      post.  (1318883)
 
-    - Remove Approve(d): <password> from all text/* parts in addition the
-      initial text/plain part. It still must be the first non-blank line in
-      the first text/plain part or it won't be found or removed at all
-      (1181161).
+    - The Approve[d]: <password> header is removed from all text/* parts in
+      addition the initial text/plain part.  It must still be the first
+      non-blank line in the first text/plain part or it won't be found or
+      removed at all. (1181161)
 
-    - Log post in post log with true sender, not listname-bounces (1287921).
+    - Posts are now logged in post log file with the true sender, not
+      listname-bounces. (1287921)
 
     - Correctly initialize and remember the list's default_member_moderation
-      attribute in the web list creation page (1263213).
+      attribute in the web list creation page. (1263213)
 
-    - Add PEP263 charset in config_list output (1343100).
+    - PEP263 charset is added to the config_list output. (1343100)
 
-    - header_filter_rules get lost if accessed directly and needed authenti-
-      cation by login page (1230865).
+    - Fixed header_filter_rules getting lost if accessed directly and
+      authentication was needed by login page. (1230865)
 
     - Obscure email when the poster doesn't set full name in 'From:' header.
 
-    - Take preambles and epilogues into account when calculating message sizes
-      for holding purposes (Mark Sapiro).
+    - Preambles and epilogues are taken into account when calculating message
+      sizes for holding purposes. (Mark Sapiro)
 
-    - Logging/Logger.py unicode transform option (1235567).
+    - Logging/Logger.py unicode transform option. (1235567)
 
-    - bin/update crashes with bogus files (949117).
+    - bin/update crashes with bogus files. (949117)
 
     - Bugs and patches: 1212066/1301983 (Date header in create/remove notice)
 

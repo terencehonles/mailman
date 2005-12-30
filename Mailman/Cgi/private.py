@@ -15,8 +15,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-"""Provide a password-interface wrapper around private archives.
-"""
+"""Provide a password-interface wrapper around private archives."""
 
 import os
 import sys
@@ -136,19 +135,18 @@ def main():
         charset = Utils.GetCharSet(mlist.preferred_language)
         print 'Content-type: text/html; charset=' + charset + '\n\n'
         # Put the original full path in the authorization form, but avoid
-        # trailing slash if we're not adding parts. We add it below.
+        # trailing slash if we're not adding parts.  We add it below.
         action = mlist.GetScriptURL('private', absolute=1)
         if parts[1:]:
             action = os.path.join(action, SLASH.join(parts[1:]))
-        # If we added '/index.html' to true_filename, add a slash to the
-        # URL. We need this because we no longer add the trailing slash in
-        # the private.html template. It's always OK to test parts[-1]
-        # since we've already verified parts[0] is listname.
-        # The basic rule is if the post URL (action) is a directory, it must
-        # be slash terminated, and not if it's a file. Otherwise, relative
-        # links in the target archive page don't work.
-        if true_filename.endswith('/index.html') and \
-                parts[-1] <> 'index.html':
+        # If we added '/index.html' to true_filename, add a slash to the URL.
+        # We need this because we no longer add the trailing slash in the
+        # private.html template.  It's always OK to test parts[-1] since we've
+        # already verified parts[0] is listname.  The basic rule is if the
+        # post URL (action) is a directory, it must be slash terminated, but
+        # not if it's a file.  Otherwise, relative links in the target archive
+        # page don't work.
+        if true_filename.endswith('/index.html') and parts[-1] <> 'index.html':
             action += SLASH
         print Utils.maketext(
             'private.html',

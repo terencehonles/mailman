@@ -12,7 +12,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """Produce and process the pending-approval items for a list."""
 
@@ -688,9 +689,9 @@ def process_form(mlist, doc, cgidata):
                 senderactions.setdefault(sender, {})[action] = value
     # discard-all-defers
     try:
-	discardalldefersp = cgidata.getvalue('discardalldefersp', 0)
+        discardalldefersp = cgidata.getvalue('discardalldefersp', 0)
     except ValueError:
-	discardalldefersp = 0
+        discardalldefersp = 0
     for sender in senderactions.keys():
         actions = senderactions[sender]
         # Handle what to do about all this sender's held messages
@@ -698,8 +699,8 @@ def process_form(mlist, doc, cgidata):
             action = int(actions.get('senderaction', mm_cfg.DEFER))
         except ValueError:
             action = mm_cfg.DEFER
-	if action == mm_cfg.DEFER and discardalldefersp:
-	    action = mm_cfg.DISCARD
+        if action == mm_cfg.DEFER and discardalldefersp:
+            action = mm_cfg.DISCARD
         if action in (mm_cfg.DEFER, mm_cfg.APPROVE,
                       mm_cfg.REJECT, mm_cfg.DISCARD):
             preserve = actions.get('senderpreserve', 0)

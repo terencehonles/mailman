@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2004 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -12,7 +12,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """Do more detailed spam detection.
 
@@ -67,7 +68,7 @@ class Tee:
     def write(self, s):
         self._outfp_a.write(s)
         self._outfp_b.write(s)
-        
+
 
 # Class to capture the headers separate from the message body
 class HeaderGenerator(Generator):
@@ -91,10 +92,9 @@ class HeaderGenerator(Generator):
 
 
 def process(mlist, msg, msgdata):
-    # Don't check if the message has been approved OR it is generated
-    # internally for administration because holding '-owner' notification
-    # may cause infinite loop of checking. (Actually, it is stopped
-    # elsewhere.)
+    # Don't check for spam if the message has been approved or it is generated
+    # internally for administration because holding '-owner' notification may
+    # cause infinite loop of checking. (Actually, it is stopped elsewhere.)
     if msgdata.get('approved') or msg.get('x-list-administrivia'):
         return
     # First do site hard coded header spam checks

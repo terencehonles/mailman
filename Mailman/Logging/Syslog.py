@@ -1,23 +1,26 @@
-# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """Central logging class for the Mailman system.
 
 This might eventually be replaced by a syslog based logger, hence the name.
 """
+
+import quopri
 
 from Mailman.Logging.StampedLogger import StampedLogger
 
@@ -59,7 +62,6 @@ class _Syslog:
             logf.write(msg + '\n')
         except UnicodeError:
             # Python 2.4 may fail to write 8bit (non-ascii) characters
-            import quopri
             logf.write(quopri.encodestring(msg) + '\n')
 
     # For the ultimate in convenience

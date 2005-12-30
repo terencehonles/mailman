@@ -12,7 +12,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """MIME-stripping filter for Mailman.
 
@@ -90,7 +91,6 @@ def process(mlist, msg, msgdata):
     # headers.  For now we'll move the subpart's payload into the outer part,
     # and then copy over its Content-Type: and Content-Transfer-Encoding:
     # headers (any others?).
-    # TK: Make this configurable from Gui/ContentFilter.py.
     if mlist.collapse_alternatives:
         collapse_multipart_alternatives(msg)
         if ctype == 'multipart/alternative':

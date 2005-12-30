@@ -12,7 +12,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """Cook a message's Subject header."""
 
@@ -247,16 +248,16 @@ def prefix_subject(mlist, msg, msgdata):
     if len(lines) > 1 and lines[1] and lines[1][0] in ' \t':
         ws = lines[1][0]
     msgdata['origsubj'] = subject
-    # The subject may be multilingual but we take the first charset
-    # as major one and try to decode. If it is decodable, returned
-    # subject is in one line and cset is properly set. If fail,
-    # subject is mime-encoded and cset is set as us-ascii. See detail
-    # for ch_oneline() (CookHeaders one line function).
+    # The subject may be multilingual but we take the first charset as major
+    # one and try to decode.  If it is decodable, returned subject is in one
+    # line and cset is properly set.  If fail, subject is mime-encoded and
+    # cset is set as us-ascii.  See detail for ch_oneline() (CookHeaders one
+    # line function).
     subject, cset = ch_oneline(subject)
-    # TK: Python interpreter has eveolved to be strict on ascii charset
-    # code range. It is safe to use unicode string when manupilating
-    # header contents with re module. It would be best to return unicode
-    # in ch_oneline() but here is temporary solution.
+    # TK: Python interpreter has evolved to be strict on ascii charset code
+    # range.  It is safe to use unicode string when manupilating header
+    # contents with re module.  It would be best to return unicode in
+    # ch_oneline() but here is temporary solution.
     subject = unicode(subject, cset)
     # If the subject_prefix contains '%d', it is replaced with the
     # mailing list sequential number.  Sequential number format allows
@@ -316,7 +317,7 @@ def prefix_subject(mlist, msg, msgdata):
     else:
         h = uheader(mlist, prefix, 'Subject', continuation_ws=ws)
         h.append(recolon)
-    # TK: Subject is concatnated and unicode string.
+    # TK: Subject is concatenated and unicode string.
     subject = subject.encode(cset, 'replace')
     h.append(subject, cset)
     del msg['subject']
@@ -324,6 +325,7 @@ def prefix_subject(mlist, msg, msgdata):
     ss = uheader(mlist, recolon, 'Subject', continuation_ws=ws)
     ss.append(subject, cset)
     msgdata['stripped_subject'] = ss
+
 
 
 def ch_oneline(s):

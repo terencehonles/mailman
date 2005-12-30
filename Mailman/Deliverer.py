@@ -220,7 +220,8 @@ is required.""")))
             subject = _('%(listname)s mailing list probe message')
         finally:
             i18n.set_translation(otrans)
-        outer = Message.UserNotification(member, probeaddr, subject, lang=ulang)
+        outer = Message.UserNotification(member, probeaddr, subject,
+                                         lang=ulang)
         outer.set_type('multipart/mixed')
         text = MIMEText(text, _charset=Utils.GetCharSet(ulang))
         outer.attach(text)

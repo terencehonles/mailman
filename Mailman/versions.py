@@ -12,7 +12,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 
 """Routines which rectify an old mailing list with current structure.
@@ -29,7 +30,6 @@ changes.  Note that the routines have only one pass - when .CheckVersions()
 finds a version change it runs this routine and then updates the data_version
 number of the list, and then does a .Save(), so the transformations won't be
 run again until another version change is detected.
-
 """
 
 

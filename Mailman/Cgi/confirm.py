@@ -12,7 +12,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """Confirm a pending action via URL."""
 
@@ -792,7 +793,7 @@ def reenable_prompt(mlist, doc, cookie, list, member):
         <a href="%(listinfourl)s">list information page</a>.""")])
         return
 
-    date = time.strftime('%A, %B %d, %Y', 
+    date = time.strftime('%A, %B %d, %Y',
                          time.localtime(time.mktime(info.date + (0,)*6)))
     daysleft = int(info.noticesleft *
                    mlist.bounce_you_are_disabled_warnings_interval /

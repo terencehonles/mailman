@@ -12,7 +12,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """Cleanse a message for archiving."""
 
@@ -162,9 +163,9 @@ def calculate_attachments_dir(mlist, msg, msgdata):
 
 
 def replace_payload_by_text(msg, text, charset):
-    # TK: This is a common function in replacing the attachment and
-    # the main message by a text (scrubbing). Plus a flag indicating
-    # it has been scrubbed.
+    # TK: This is a common function in replacing the attachment and the main
+    # message by a text (scrubbing).  Also, add a flag indicating it has been
+    # scrubbed.
     del msg['content-type']
     del msg['content-transfer-encoding']
     msg.set_payload(text, charset)
@@ -218,7 +219,7 @@ Url: %(url)s
                     raise DiscardMessage
                 replace_payload_by_text(part,
                                  _('HTML attachment scrubbed and removed'),
-                                 # Adding charset arg and removing content-tpe
+                                 # Adding charset arg and removing content-type
                                  # sets content-type to text/plain
                                  lcset)
             elif sanitize == 2:

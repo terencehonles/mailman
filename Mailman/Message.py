@@ -12,7 +12,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """Standard Mailman message object.
 
@@ -189,6 +190,9 @@ class Message(email.Message.Message):
         return authors
 
     def get_filename(self, failobj=None):
+        """Some MUA have bugs in RFC2231 filename encoding and cause
+        Mailman to stop delivery in Scrubber.py (called from ToDigest.py).
+        """
         try:
             filename = email.Message.Message.get_filename(self, failobj)
             return filename

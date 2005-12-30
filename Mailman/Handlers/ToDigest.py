@@ -12,10 +12,10 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
-"""Add the message to the list's current digest and possibly send it.
-"""
+"""Add the message to the list's current digest and possibly send it."""
 
 # Messages are accumulated to a Unix mailbox compatible file containing all
 # the messages destined for the digest.  This file must be parsable by the
@@ -90,19 +90,17 @@ def process(mlist, msg, msgdata):
         # This is a bit of a kludge to get the mbox file moved to the digest
         # queue directory.
         try:
-            # Let's close in try - except here because a error in send_digest
-            # can stop regular delivery silently.  Unsuccessful digest
-            # delivery should be tried again by cron and the site
-            # administrator will be notified of any error explicitly by the
-            # cron error message.
+            # Enclose in try/except here because a error in send_digest() can
+            # silently stop regular delivery.  Unsuccessful digest delivery
+            # should be tried again by cron and the site administrator will be
+            # notified of any error explicitly by the cron error message.
             mboxfp.seek(0)
             send_digests(mlist, mboxfp)
             os.unlink(mboxfile)
         except Exception, errmsg:
-            # I know bare except is prohibited in mailman coding but we can't
-            # forcast what new exception can occur here.
+            # Bare except is generally prohibited in Mailman, but we can't
+            # forecast what exceptions can occur here.
             syslog('error', 'send_digests() failed: %s', errmsg)
-            pass
     mboxfp.close()
 
 
@@ -341,7 +339,7 @@ def send_i18n_digests(mlist, mboxfp):
         else:
             # If decoded payload is empty, this may be multipart message.
             # -- just stringfy it.
-            payload = msg.get_payload(decode=True)\
+            payload = msg.get_payload(decode=True) \
                       or msg.as_string().split('\n\n',1)[1]
         mcset = msg.get_content_charset('')
         if mcset and mcset <> lcset and mcset <> lcset_out:

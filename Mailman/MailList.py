@@ -12,7 +12,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 
 """The class representing a Mailman mailing list.
@@ -1469,13 +1470,13 @@ bad regexp in bounce_matching_header line: %s
         """Returns matched entry in ban_list if email matches.
         Otherwise returns None.
         """
-        ban = 0
+        ban = False
         for pattern in self.ban_list:
             if pattern.startswith('^'):
                 # This is a regular expression match
                 try:
                     if re.search(pattern, email, re.IGNORECASE):
-                        ban = 1
+                        ban = True
                         break
                 except re.error:
                     # BAW: we should probably remove this pattern
@@ -1483,7 +1484,7 @@ bad regexp in bounce_matching_header line: %s
             else:
                 # Do the comparison case insensitively
                 if pattern.lower() == email.lower():
-                    ban = 1
+                    ban = True
                     break
         if ban:
             return pattern

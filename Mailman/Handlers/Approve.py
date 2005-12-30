@@ -12,7 +12,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """Determine whether the message is approved for delivery.
 
@@ -74,22 +75,22 @@ def process(mlist, msg, msgdata):
                     part.set_payload(NL.join(lines))
                     stripped = True
         if stripped:
-            # MAS: Bug 1181161 - Now try all the text parts in case
-            # it's multipart/alternative with the approved line in
-            # HTML or other text part. We make a pattern from the
-            # approved line and delete it from all text/* parts in
-            # which we find it. It would be better to just iterate
-            # forward, but email compatability for pre Python 2.2
-            # returns a list, not a true iterator.
-            # This will process all the multipart/alternative parts
-            # in the message as well as all other text parts. We
-            # shouldn't find the pattern outside the mp/a parts, but
-            # if we do, it is probably best to delete it anyway as it
-            # does contain the password.
-            # Make a pattern to delete. We can't just delete a line
-            # because line of HTML or other fancy text may include
-            # additional message text. This pattern works with HTML.
-            # It may not work with rtf or whatever else is possible.
+            # MAS: Bug 1181161 - Now try all the text parts in case it's
+            # multipart/alternative with the approved line in HTML or other
+            # text part.  We make a pattern from the Approved line and delete
+            # it from all text/* parts in which we find it.  It would be
+            # better to just iterate forward, but email compatability for pre
+            # Python 2.2 returns a list, not a true iterator.
+            #
+            # This will process all the multipart/alternative parts in the
+            # message as well as all other text parts.  We shouldn't find the
+            # pattern outside the mp/a parts, but if we do, it is probably
+            # best to delete it anyway as it does contain the password.
+            #
+            # Make a pattern to delete.  We can't just delete a line because
+            # line of HTML or other fancy text may include additional message
+            # text.  This pattern works with HTML.  It may not work with rtf
+            # or whatever else is possible.
             pattern = name + ':(\s|&nbsp;)*' + re.escape(passwd)
             for part in typed_subpart_iterator(msg, 'text'):
                 if part is not None and part.get_payload() is not None:
