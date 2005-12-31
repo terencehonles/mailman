@@ -92,10 +92,7 @@ class HeaderGenerator(Generator):
 
 
 def process(mlist, msg, msgdata):
-    # Don't check for spam if the message has been approved or it is generated
-    # internally for administration because holding '-owner' notification may
-    # cause infinite loop of checking. (Actually, it is stopped elsewhere.)
-    if msgdata.get('approved') or msg.get('x-list-administrivia'):
+    if msgdata.get('approved'):
         return
     # First do site hard coded header spam checks
     for header, regex in mm_cfg.KNOWN_SPAMMERS:
@@ -107,8 +104,11 @@ def process(mlist, msg, msgdata):
                 raise SpamDetected
     # Now do header_filter_rules
     # TK: Collect headers in sub-parts because attachment filename
-    #     extension may be a clue to possible virus/spam.
-    if msg.is_multipart():
+    # extension may be a clue to possible virus/spam.
+    # Check also 'X-List-Administrivia' header if the message was owner
+    # notification.  Held message may be attached and have matching header
+    # which may cause infinite loop of holding. 	 
+    if msg.is_multipart() and not msg.get('x-list-administrivia',''):
         headers = ''
         for p in msg.walk():
             g = HeaderGenerator(StringIO())
