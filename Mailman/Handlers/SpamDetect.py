@@ -92,7 +92,8 @@ class HeaderGenerator(Generator):
 
 
 def process(mlist, msg, msgdata):
-    if msgdata.get('approved'):
+    if msgdata.get('approved') or msgdata.get('reduced_list_headers'):
+        # TK: 'reduced_list_headers' is intenally crafted message (virgin).
         return
     # First do site hard coded header spam checks
     for header, regex in mm_cfg.KNOWN_SPAMMERS:
@@ -105,10 +106,7 @@ def process(mlist, msg, msgdata):
     # Now do header_filter_rules
     # TK: Collect headers in sub-parts because attachment filename
     # extension may be a clue to possible virus/spam.
-    # Check also 'X-List-Administrivia' header if the message was owner
-    # notification.  Held message may be attached and have matching header
-    # which may cause infinite loop of holding. 	 
-    if msg.is_multipart() and not msg.get('x-list-administrivia',''):
+    if msg.is_multipart():
         headers = ''
         for p in msg.walk():
             g = HeaderGenerator(StringIO())
