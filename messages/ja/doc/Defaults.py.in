@@ -15,10 +15,11 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 # [訳注] このファイルは, Mailman 2.X 配布物に含まれる
-#   Mailman/Defaults.py.in (SF.net での CVS リビジョンは 2.133)
+#   Mailman/Defaults.py.in (SF.net での CVS リビジョンは 2.135)
 #   のコメント部分を日本語 (共通語) に翻訳したものです.
 #   配布等の条件は原文と同様, GNU 一般公衆利用許諾契約書 (GNU
 #   General Public License) に従います (上記も参照ください). 内容の正
@@ -26,8 +27,7 @@
 #   ます.
 #   訳者: IKEDA Soji <nezumi@poem.co.jp>
 
-"""配布時点の Mailman の重要な設定変数の既定値.
-"""
+"""配布時点の Mailman の重要な設定変数の既定値."""
 
 # サイト固有の設定のためにこのファイルを変更しては*いけない*. かわりに
 # そういったことは, かならず mm_cfg.py の指定された範囲に書くこと.
@@ -276,10 +276,13 @@ PRIVATE_EXTERNAL_ARCHIVER = No
 # いけない.  [>=2.1]
 ARCHIVE_SCRUBBER = 'Mailman.Handlers.Scrubber'
 
-# Mailman.Handlers.Scrubber は, 添付のファイル名をそのまま使う.  それ 
-# (すごく長い MIME エンコードされたファイル名とか) がいやなら, ここを 
-# True に設定する. [>=2.1.6]
-SCRUBBER_DONT_USE_ATTACHMENT_FILENAME = False
+# Mailman.Handlers.Scrubber で, filename パラメタで示される添付ファイ
+# ル名をそのまま使うか, それともかわりに 'attachement-xxx' を使うかを
+# 制御するパラメタ [>= 2.1.6].  PC や Mac のアプリケーションがかなり長
+# い非ASCII のファイル名を使うようになってきたので, 既定値は True とし
+# ている. 歴史的には, 2.1.6 では後方互換性のために False となっていた
+# のだが, 2.1.7 ではより安全な運用のために True に変わった.
+SCRUBBER_DONT_USE_ATTACHMENT_FILENAME = True
 
 # 添付のファイル名の拡張子をそのまま使うのは, ウィルスが拡張子を偽装し
 # ていると危険かもしれない. ファイル名の拡張子で添付をフィルタするなら, 
@@ -1038,7 +1041,7 @@ DEFAULT_FILTER_FILENAME_EXTENSIONS = [
 # 形式は DEFAULT_FILTER_FILENAME_EXTENSIONS とおなじ. [>=2.1.6]
 DEFAULT_PASS_FILENAME_EXTENSIONS = []
 
-# multipart/alternative を, そのうちの最初のパートで置き換える. [>= 2.1.X]
+# multipart/alternative を, そのうちの最初のパートで置き換える. [>= 2.1.7]
 DEFAULT_COLLAPSE_ALTERNATIVES = Yes
 
 # 内容フィルタを通したあとで, text/html を text/plain に変換するかどうか.
