@@ -13,7 +13,7 @@ Here is a history of user visible changes to Mailman.
     - Translators should work only on messages/<lang>/LC_MESSAGES/mailman.po.
       Templates files are generated from mailman.po during the make process.
 
-2.1.7 (XX-XXX-200X)
+2.1.7 (31-Dec-2005)
 
   Security
 
