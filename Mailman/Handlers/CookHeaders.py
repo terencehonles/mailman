@@ -193,10 +193,9 @@ def process(mlist, msg, msgdata):
     # We always add a List-ID: header.
     del msg['list-id']
     msg['List-Id'] = listid_h
-    # For internally crafted messages, we
-    # also add a (nonstandard), "X-List-Administrivia: yes" header.  For all
-    # others (i.e. those coming from list posts), we adda a bunch of other RFC
-    # 2369 headers.
+    # For internally crafted messages, we also add a (nonstandard),
+    # "X-List-Administrivia: yes" header.  For all others (i.e. those coming
+    # from list posts), we add a bunch of other RFC 2369 headers.
     requestaddr = mlist.GetRequestEmail()
     subfieldfmt = '<%s>, <mailto:%s?subject=%ssubscribe>'
     listinfo = mlist.GetScriptURL('listinfo', absolute=1)
