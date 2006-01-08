@@ -74,7 +74,7 @@ def escape(s):
 def normalize(s):
     # This converts the various Python string types into a format that is
     # appropriate for .po files, namely much closer to C style.
-    lines = s.split('\n')
+    lines = s.splitlines()
     if len(lines) == 1:
         s = '"' + escape(s) + '"'
     else:

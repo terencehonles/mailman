@@ -45,6 +45,8 @@ def do_lang(lang):
                 outfilename = 'templates/%s/%s' % (lang, filename)
                 continue
             if in_template and line.startswith('#,'):
+                if line.strip() == '#, fuzzy':
+                    in_template = False
                 continue
             if in_template and line.startswith('msgstr'):
                 line = line[7:]
@@ -54,23 +56,25 @@ def do_lang(lang):
                     in_template = False
                     in_msg = False
                     if len(msgstr) > 1 and outfilename:
-                        # exclude no translation ... only one LF.
+                        # exclude no translation ... 1 is for LF only
                         outfile = file(outfilename, 'w')
                         try:
                             outfile.write(msgstr)
+                            outfile.write('\n')
                         finally:
                             outfile.close()
                     outfilename = ''
                     msgstr = ''
                     continue
-                msgstr += eval(i)
+                msgstr += eval(line)
     finally:
         fp.close()
-    if msgstr > 1 and outfilename:
-        # flush remaining msgstr
+    if len(msgstr) > 1 and outfilename:
+        # flush remaining msgstr (last template file)
         outfile = file(outfilename, 'w')
         try:
             outfile.write(msgstr)
+            outfile.write('\n')
         finally:
             outfile.close()
 
