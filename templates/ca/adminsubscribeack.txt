@@ -1,3 +1,0 @@
-%(member)s s'ha subscrit amb èxit a %(listname)s.
-
-
