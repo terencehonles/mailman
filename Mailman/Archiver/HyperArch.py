@@ -569,16 +569,21 @@ class Article(pipermail.Article):
         if d['_message_id']:
             headers.append('Message-ID: %(_message_id)s')
         body = EMPTYSTRING.join(self.body)
-        if isinstance(body, types.UnicodeType):
-            body = body.encode(Utils.GetCharSet(self._lang), 'replace')
+        cset = Utils.GetCharSet(self._lang)
+        # Coerce the body to Unicode and replace any invalid characters.
+        if not isinstance(body, types.UnicodeType):
+            body = unicode(body, cset, 'replace')
         if mm_cfg.ARCHIVER_OBSCURES_EMAILADDRS:
             otrans = i18n.get_translation()
             try:
+                atmark = unicode(_(' at '), cset)
                 i18n.set_language(self._lang)
                 body = re.sub(r'([-+,.\w]+)@([-+.\w]+)',
-                              '\g<1>' + _(' at ') + '\g<2>', body)
+                              '\g<1>' + atmark + '\g<2>', body)
             finally:
                 i18n.set_translation(otrans)
+        # Return body to character set of article.
+        body = body.encode(cset, 'replace')
         return NL.join(headers) % d + '\n\n' + body + '\n'
 
     def _set_date(self, message):
