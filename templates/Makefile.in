@@ -76,7 +76,8 @@ install: all
 finish:
 
 clean:
+	-rm -rf $(MAKELANGS)
 
 distclean:
-	-rm -f Makefile; \
-	-rm -f @LANGUAGES@
+	-rm -f Makefile
+	-rm -rf $(MAKELANGS)
