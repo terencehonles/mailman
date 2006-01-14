@@ -91,6 +91,9 @@ class Topics(GUIBase):
             ]
 
     def handleForm(self, mlist, category, subcat, cgidata, doc):
+        # MAS: Did we come from the authentication page?
+        if not cgidata.has_key('topic_box_01'):
+            return
         topics = []
         # We start i at 1 and keep going until we no longer find items keyed
         # with the marked tags.
