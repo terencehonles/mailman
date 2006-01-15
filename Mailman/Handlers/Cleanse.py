@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -50,12 +50,3 @@ def process(mlist, msg, msgdata):
     del msg['x-confirm-reading-to']
     # Pegasus mail uses this one... sigh
     del msg['x-pmrqc']
-    # Remove any "DomainKeys" (or similar) header lines.  The values contained
-    # in these header lines are intended to be used by the recipient to detect
-    # forgery or tampering in transit, and the modifications made by Mailman
-    # to the headers and body of the message will cause these keys to appear
-    # invalid.  Removing them will at least avoid this misleading result, and
-    # it will also give the MTA the opportunity to regenerate valid keys
-    # originating at the Mailman server for the outgoing message.
-    del msg['domainkey-signature']
-    del msg['dkim-signature']

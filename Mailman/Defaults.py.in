@@ -1,6 +1,6 @@
 # -*- python -*-
 
-# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -476,6 +476,7 @@ GLOBAL_PIPELINE = [
     'CalcRecips',
     'AvoidDuplicates',
     'Cleanse',
+    'CleanseDKIM',
     'CookHeaders',
     # And now we send the message to the digest mbox file, and to the arch and
     # news queues.  Runners will provide further processing of the message,
@@ -494,6 +495,7 @@ GLOBAL_PIPELINE = [
 OWNER_PIPELINE = [
     'SpamDetect',
     'Replybot',
+    'CleanseDKIM',
     'OwnerRecips',
     'ToOutgoing',
     ]
