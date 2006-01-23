@@ -78,7 +78,11 @@ PATTERNS = [
     # Prodigy.net full mailbox
     (_c("User's mailbox is full:"),
      _c('Unable to deliver mail.'),
-     _c("User's mailbox is full:\s*<(?P<addr>.*)>.*$")),
+     _c("User's mailbox is full:\s*<(?P<addr>[^>]*)>")),
+    # Microsoft SMTPSVC
+    (_c('The email below could not be delivered to the following user:'),
+     _c('Old message:'),
+     _c('<(?P<addr>[^>]*)>')),
     # Next one goes here...
     ]
 
