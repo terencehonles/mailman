@@ -112,7 +112,8 @@ def main():
 
     for lang in args:
         filenames = os.listdir('templates/%s' % lang)
-        filenames.remove('CVS')
+        if 'CVS' in filenames:
+            filenames.remove('CVS')
         outfile = file('messages/%s/LC_MESSAGES/mailman.po' % lang, 'a')
         for filename in filenames:
             try:
