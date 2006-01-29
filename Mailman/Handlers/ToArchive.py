@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -20,10 +20,7 @@
 import time
 from cStringIO import StringIO
 
-from email import message_from_string
-
 from Mailman import mm_cfg
-from Mailman import Message
 from Mailman.Queue.sbcache import get_switchboard
 
 
@@ -40,10 +37,4 @@ def process(mlist, msg, msgdata):
     # Send the message to the archiver queue
     archq = get_switchboard(mm_cfg.ARCHQUEUE_DIR)
     # Send the message to the queue
-    if msg.get('x-mailman-scrubbed'):
-        # Clean Scrubber-munged message.
-        archmsg = message_from_string(msg.as_string(), Message.Message)
-        del archmsg['x-mailman-scrubbed']
-        archq.enqueue(archmsg, msgdata)
-    else:
-        archq.enqueue(msg, msgdata)
+    archq.enqueue(msg, msgdata)

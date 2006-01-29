@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -98,12 +98,7 @@ def process(mlist, msg, msgdata):
         uheader = unicode(header, lcset)
         ufooter = unicode(footer, lcset)
         try:
-            # First, check if the message was Scrubber-munged
-            if msg.get('x-mailman-scrubbed'):
-                decode = False
-            else:
-                decode = True
-            oldpayload = unicode(msg.get_payload(decode=decode), mcset)
+            oldpayload = unicode(msg.get_payload(decode=True), mcset)
             frontsep = endsep = u''
             if header and not header.endswith('\n'):
                 frontsep = u'\n'

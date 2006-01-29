@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2005 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -164,12 +164,10 @@ def calculate_attachments_dir(mlist, msg, msgdata):
 
 def replace_payload_by_text(msg, text, charset):
     # TK: This is a common function in replacing the attachment and the main
-    # message by a text (scrubbing).  Also, add a flag indicating it has been
-    # scrubbed.
+    # message by a text (scrubbing).
     del msg['content-type']
     del msg['content-transfer-encoding']
     msg.set_payload(text, charset)
-    msg['X-Mailman-Scrubbed'] = 'Yes'
 
 
 
@@ -344,12 +342,7 @@ Url : %(url)s
                 text.append(_('Skipped content of type %(partctype)s\n'))
                 continue
             try:
-                # Check if the part is replaced.
-                if part.get('x-mailman-scrubbed'):
-                    decode = False
-                else:
-                    decode = True
-                t = part.get_payload(decode=decode)
+                t = part.get_payload(decode=True)
             except binascii.Error:
                 t = part.get_payload()
             # TK: get_content_charset() returns 'iso-2022-jp' for internally

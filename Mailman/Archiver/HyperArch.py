@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -304,12 +304,7 @@ class Article(pipermail.Article):
             if charset[0]=="'" and charset[-1]=="'":
                 charset = charset[1:-1]
             try:
-                # Check Scrubber-munged payload
-                if message.get('x-mailman-scrubbed'):
-                    decode = False
-                else:
-                    decode = True
-                body = message.get_payload(decode=decode)
+                body = message.get_payload(decode=True)
             except binascii.Error:
                 body = None
             if body and charset != Utils.GetCharSet(self._lang):

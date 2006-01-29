@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -32,7 +32,6 @@ import time
 from types import ListType
 from cStringIO import StringIO
 
-from email import message_from_string
 from email.Parser import Parser
 from email.Generator import Generator
 from email.MIMEBase import MIMEBase
@@ -333,14 +332,10 @@ def send_i18n_digests(mlist, mboxfp):
                 uh = '\n\t'.join(uh.split('\n'))
                 print >> plainmsg, uh
         print >> plainmsg
-        if msg.get('x-mailman-scrubbed'):
-            # It has successfully been scrubbed, so this should be string.
-            payload = msg.get_payload()
-        else:
-            # If decoded payload is empty, this may be multipart message.
-            # -- just stringfy it.
-            payload = msg.get_payload(decode=True) \
-                      or msg.as_string().split('\n\n',1)[1]
+        # If decoded payload is empty, this may be multipart message.
+        # -- just stringfy it.
+        payload = msg.get_payload(decode=True) \
+                  or msg.as_string().split('\n\n',1)[1]
         mcset = msg.get_content_charset('')
         if mcset and mcset <> lcset and mcset <> lcset_out:
             try:
@@ -412,8 +407,6 @@ def send_i18n_digests(mlist, mboxfp):
                     isdigest=True)
     # RFC 1153
     rfc1153msg.set_payload(plainmsg.getvalue(), lcset)
-    # Re-generate it because set_payload() doesn't encode. :-(
-    rfc1153msg = message_from_string(rfc1153msg.as_string(), Message.Message)
     virginq.enqueue(rfc1153msg,
                     recips=plainrecips,
                     listname=mlist.internal_name(),

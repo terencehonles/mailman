@@ -217,12 +217,7 @@ class Article:
                 self.headers[i] = message[i]
 
         # Read the message body
-        # Check Scrubber-munged paylaod
-        if message.get('x-mailman-scrubbed'):
-            decode = False
-        else:
-            decode = True
-        s = StringIO(message.get_payload(decode=decode)\
+        s = StringIO(message.get_payload(decode=True)\
                      or message.as_string().split('\n\n',1)[1])
         self.body = s.readlines()
 
