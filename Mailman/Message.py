@@ -199,6 +199,17 @@ class Message(email.Message.Message):
         except (UnicodeError, LookupError, ValueError):
             return failobj
 
+    def set_payload(self, payload, charset=None):
+        """Set the payload to the given value (Override email package).
+        Payload is converted to a MIME message body when this is called.
+        """
+        email.Message.Message.set_payload(self, payload, charset)
+        if self.get('content-transfer-encoding') in \
+                ('quoted-printable', 'base64'):
+            cset = self.get_charset()
+            if cset:
+                self._payload = cset.body_encode(self._payload)
+                self._charset = None 
 
 
 class UserNotification(Message):
