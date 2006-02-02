@@ -83,6 +83,10 @@ PATTERNS = [
     (_c('The email below could not be delivered to the following user:'),
      _c('Old message:'),
      _c('<(?P<addr>[^>]*)>')),
+    # Yahoo on behalf of other domains like sbcglobal.net
+    (_c('Unable to deliver message to the following address\(es\)\.'),
+     _c('--- Original message follows\.'),
+     _c('<(?P<addr>[^>]*)>:')),
     # Next one goes here...
     ]
 
