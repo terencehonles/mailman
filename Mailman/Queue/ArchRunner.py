@@ -49,7 +49,7 @@ class ArchRunner(Runner):
                 elif abs(now - mktime_tz(tup)) > \
                          mm_cfg.ARCHIVER_ALLOWABLE_SANE_DATE_SKEW:
                     clobber = 1
-            except ValueError:
+            except (ValueError, OverflowError):
                 # The likely cause of this is that the year in the Date: field
                 # is horribly incorrect, e.g. (from SF bug # 571634):
                 # Date: Tue, 18 Jun 0102 05:12:09 +0500
