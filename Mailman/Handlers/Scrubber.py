@@ -111,9 +111,9 @@ class ScrubberGenerator(Generator):
             Generator._write_headers(self, msg)
 
 
-def safe_strftime(fmt, floatsecs):
+def safe_strftime(fmt, t):
     try:
-        return time.strftime(fmt, floatsecs)
+        return time.strftime(fmt, t)
     except (TypeError, ValueError, OverflowError):
         return None
 
