@@ -37,7 +37,7 @@ acre = re.compile(r'''
     user\ mailbox[^:]*:                           # have been spotted in the
     |delivery\ failed[^:]*:                       # wild...
     |unknown\ user[^:]*:
-    |undeliverable\ to
+    |undeliverable\ +to
     )
     \s*                                           # space separator
     (?P<addr>.*)                                  # and finally, the address
