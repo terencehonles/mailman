@@ -327,30 +327,33 @@ def prefix_subject(mlist, msg, msgdata):
 
 
 
-def ch_oneline(s):
+def ch_oneline(headerstr):
     # Decode header string in one line and convert into single charset
     # copied and modified from ToDigest.py and Utils.py
     # return (string, cset) tuple as check for failure
     try:
-        d = decode_header(s)
-        # at this point, we should rstrip() every string because some
+        d = decode_header(headerstr)
+        # At this point, we should rstrip() every string because some
         # MUA deliberately add trailing spaces when composing return
         # message.
-        i = 0
+        d = [(s.rstrip(),c) for (s,c) in d]
+        # Find all charsets in the original header.  We use 'utf-8' rather
+        # than using the first charset (in mailman 2.1.x) if multiple
+        # charsets are used.
+        csets = []
         for (s,c) in d:
-            s = s.rstrip()
-            d[i] = (s,c)
-            i += 1
-        cset = 'us-ascii'
-        for x in d:
-            # search for no-None charset
-            if x[1]:
-                cset = x[1]
-                break
+            if c and c not in csets:
+                csets.append(c)
+        if len(csets) == 0:
+            cset = 'us-ascii'
+        elif len(csets) == 1:
+            cset = csets[0]
+        else:
+            cset = 'utf-8'
         h = make_header(d)
-        ustr = h.__unicode__()
+        ustr = unicode(h)
         oneline = u''.join(ustr.splitlines())
         return oneline.encode(cset, 'replace'), cset
     except (LookupError, UnicodeError, ValueError, HeaderParseError):
         # possibly charset problem. return with undecoded string in one line.
-        return ''.join(s.splitlines()), 'us-ascii'
+        return ''.join(headerstr.splitlines()), 'us-ascii'
