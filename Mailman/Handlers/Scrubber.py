@@ -343,7 +343,12 @@ Url : %(url)s
                 continue
             try:
                 t = part.get_payload(decode=True)
-            except binascii.Error:
+            # MAS: TypeError exception can occur if payload is None. This
+            # was observed with a message that contained an attached
+            # message/delivery-status part. Because of the special parsing
+            # of this type, this resulted in a text/plain sub-part with a
+            # null body. See bug 1430236.
+            except (binascii.Error, TypeError):
                 t = part.get_payload()
             # TK: get_content_charset() returns 'iso-2022-jp' for internally
             # crafted (scrubbed) 'euc-jp' text part. So, first try
