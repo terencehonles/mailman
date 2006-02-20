@@ -147,5 +147,69 @@ That's it! With any luck, you're fully functional.
     on your server. Consult the sendmail documentation if you do not
     know.
 
+
+The following note is provided by Kevin McNamee <kevin.mcnamee(at)symsoft.se>
+regarding solving a problem with mail to list addresses being rejected for
+"user unknown".  Reference:
+<http://mail.python.org/pipermail/mailman-users/2006-February/049235.html>
+
+
+"User unknown" analysis
+=======================
+If the "user unknown" problem arises, then sendmail is not 
+recognising your domain as a "mailman" domain. 
+The problem could be that your mailman.mydomain.com is defined as a 
+CNAME not a real DNS record. 
+
+A hint from a tutorial about Masquerading:
+http://www.feep.net/sendmail/tutorial/config/masquerading.html
+"This address must be an address record in DNS, not simply
+a CNAME, or the remote end will canonicalize the address back 
+to the original name."
+
+First confirm the problem
+# sendmail -bv testlist<at>mailman.mydomain.com
+testlist<at>mailman.mydomain.com... User unknown
+
+Then confirm that mailertable is operational
+# sendmail -d -bv jbloggs<at>hotmail.com | egrep "map_rewrite|mailertable"
+map_lookup(host, hotmail.com) => host_map_lookup(hotmail.com) =>
+map_rewrite(hotmail.com), av =
+map_rewrite => hotmail.com.
+map_lookup(mailertable, hotmail.com) => NOT FOUND (0)
+map_lookup(mailertable, .com) => NOT FOUND (0)
+map_lookup(mailertable, .) => NOT FOUND (0)
+
+Then confirm that your domain (CNAME) is being canonicalised:
+# sendmail -d -bv testlist<at>mailman.mydomain.com | egrep
+"map_rewrite|mailertable"
+map_lookup(host, mailman.mydomain.com) =>
+host_map_lookup(mailman.mydomain.com) => map_rewrite(aserver.mydomain.com),
+av =
+map_rewrite => aserver.mydomain.com.
+
+Sendmail has done an nslookup and found the real name of your domain which
+would not match your settings in mailertable (if sendmail got that far).
+
+If you remove the CNAME and create a real subdomain, then the problem will
+go away:
+# sendmail -bv testlist<at>mailman.mydomain.com
+testlist<at>mailman.mydomain.com... deliverable: mailer mailman, host
+testlist<at>mailman.mydomain.com, user testlist
+
+You will still need to create a new CNAME in your sub-domain for Apache to
+work.
+
+Conclusion:
+It is very important to make clear in the Mailman installation instructions
+that a REAL subdomain is needed. Those of us not familiar with DNS (or
+sendmail for that matter) can succeed in getting the whole Mailman
+installation working including the (Apache) web-interface and subscription
+management using just a CNAME and then wonder why we cannot send mail to our
+list. Hope this is of use.
+
+Ed. note: the above "conclusion" applies in this mm-handler case, but it
+normally does not apply if list mail is delivered via aliases.
+
 --
-$Id: mm-handler.readme 4287 2001-10-27 02:30:51Z bwarsaw $
+$Id: README.mm-handler 7780 2006-02-20 03:33:19Z msapiro $
