@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -210,7 +210,8 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
 
     def GetConfirmJoinSubject(self, listname, cookie):
         if mm_cfg.VERP_CONFIRMATIONS and cookie:
-            cset = Utils.GetCharSet(self.preferred_language)
+            cset = i18n.get_translation().charset() or \
+                       Utils.GetCharSet(self.preferred_language)
             subj = Header(
      _('Your confirmation is required to join the %(listname)s mailing list'),
                           cset, header_name='subject')
@@ -220,7 +221,8 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
 
     def GetConfirmLeaveSubject(self, listname, cookie):
         if mm_cfg.VERP_CONFIRMATIONS and cookie:
-            cset = Utils.GetCharSet(self.preferred_language)
+            cset = i18n.get_translation().charset() or \
+                       Utils.GetCharSet(self.preferred_language)
             subj = Header(
      _('Your confirmation is required to leave the %(listname)s mailing list'),
                           cset, header_name='subject')
