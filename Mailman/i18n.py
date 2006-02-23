@@ -110,6 +110,10 @@ def ctime(date):
             year, mon, day, hh, mm, ss, wday, ydat, dst = time.strptime(date)
             if dst in (0,1):
                 tzname = time.tzname[dst]
+            else:
+                # MAS: No exception but dst = -1 so try
+                return ctime(time.mktime((year, mon, day, hh, mm, ss, wday,
+                                          ydat, dst)))
         except (ValueError, AttributeError):
             try:
                 wday, mon, day, hms, year = date.split()
