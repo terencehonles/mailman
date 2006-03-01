@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -12,7 +12,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """Parse RFC 3464 (i.e. DSN) bounce formats.
 
@@ -52,9 +53,10 @@ def check(msg):
             #
             # Also grok out Action so we can do something with that too.
             action = msgblock.get('action', '').lower()
-            if action == 'delayed':
+            # Some MTAs have been observed that put comments on the action.
+            if action.startswith('delayed'):
                 return Stop
-            if action not in ('failed', 'failure'):
+            if not action.startswith('fail'):
                 # Some non-permanent failure, so ignore this block
                 continue
             params = []

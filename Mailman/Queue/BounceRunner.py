@@ -206,6 +206,9 @@ class BounceRunner(Runner, BounceMixin):
             # That didn't give us anything useful, so try the old fashion
             # bounce matching modules.
             addrs = BouncerAPI.ScanMessages(mlist, msg)
+            if addrs is BouncerAPI.Stop:
+                # This is a recognized, non-fatal notice. Ignore it.
+                return
         # If that still didn't return us any useful addresses, then send it on
         # or discard it.
         if not addrs:
