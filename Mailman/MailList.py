@@ -1149,7 +1149,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
                     mlist.removeMember(oldaddr)
                 else:
                     mlist.changeMemberAddress(oldaddr, newaddr)
-                    self.log_and_notify_admin(oldaddr, newaddr)
+                    mlist.log_and_notify_admin(oldaddr, newaddr)
                 mlist.Save()
             finally:
                 mlist.Unlock()
