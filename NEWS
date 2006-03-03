@@ -13,6 +13,12 @@ Here is a history of user visible changes to Mailman.
     - Translators should work only on messages/<lang>/LC_MESSAGES/mailman.po.
       Templates files are generated from mailman.po during the make process.
 
+  New Features
+
+    - Confirmed member change of address is logged in the 'subscribe' log,
+      and if admin_notify_mchanges is true, a notice is sent to the list
+      owner using a new adminaddrchgack.txt template.
+
 2.1.7 (31-Dec-2005)
 
   Security

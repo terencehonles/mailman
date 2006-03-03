@@ -1125,6 +1125,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             self.removeMember(oldaddr)
         else:
             self.changeMemberAddress(oldaddr, newaddr)
+            self.log_and_notify_admin(oldaddr, newaddr)
         # If globally is true, then we also include every list for which
         # oldaddr is a member.
         if not globally:
@@ -1148,9 +1149,38 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
                     mlist.removeMember(oldaddr)
                 else:
                     mlist.changeMemberAddress(oldaddr, newaddr)
+                    self.log_and_notify_admin(oldaddr, newaddr)
                 mlist.Save()
             finally:
                 mlist.Unlock()
+
+    def log_and_notify_admin(self, oldaddr, newaddr):
+        """Log member address change and notify admin if requested."""
+        syslog('subscribe', '%s: changed member address from %s to %s',
+               self.internal_name(), oldaddr, newaddr)
+        if self.admin_notify_mchanges:
+            lang = self.preferred_language
+            otrans = i18n.get_translation()
+            i18n.set_language(lang)
+            try:
+                realname = self.real_name
+                subject = _('%(realname)s address change notification')
+            finally:
+                i18n.set_translation(otrans)
+            name = self.getMemberName(newaddr)
+            if name is None:
+                name = ''
+            if isinstance(name, UnicodeType):
+                name = name.encode(Utils.GetCharSet(lang), 'replace')
+            text = Utils.maketext(
+                'adminaddrchgack.txt',
+                {'name'    : name,
+                 'oldaddr' : oldaddr,
+                 'newaddr' : newaddr,
+                 'listname': self.real_name,
+                 }, mlist=self)
+            msg = Message.OwnerNotification(self, subject, text)
+            msg.send(self)
 
 
     #
