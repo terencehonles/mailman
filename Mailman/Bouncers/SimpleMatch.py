@@ -87,6 +87,14 @@ PATTERNS = [
     (_c('Unable to deliver message to the following address\(es\)\.'),
      _c('--- Original message follows\.'),
      _c('<(?P<addr>[^>]*)>:')),
+    # kundenserver.de
+    (_c('A message that you sent could not be delivered'),
+     _c('^--- The header of the original'),
+     _c('<(?P<addr>[^>]*)>')),
+    # another kundenserver.de
+    (_c('A message that you sent could not be delivered'),
+     _c('^--- The header of the original'),
+     _c('^(?P<addr>[^\s@]+@[^\s@:]+):')),
     # Next one goes here...
     ]
 
@@ -99,19 +107,27 @@ def process(msg, patterns=None):
     #     0 = nothing seen yet
     #     1 = intro seen
     addrs = {}
-    state = 0
-    for line in email.Iterators.body_line_iterator(msg):
-        if state == 0:
-            for scre, ecre, acre in patterns:
+    # MAS: This is a mess. The outer loop used to be over the message
+    # so we only looped through the message once.  Looping through the
+    # message for each set of patterns is obviously way more work, but
+    # if we don't do it, problems arise because scre from the wrong
+    # pattern set matches first and then acre doesn't match.  The
+    # alternative is to split things into separate modules, but then
+    # we process the message multiple times anyway.
+    for scre, ecre, acre in patterns:
+        state = 0
+        for line in email.Iterators.body_line_iterator(msg):
+            if state == 0:
                 if scre.search(line):
                     state = 1
+            if state == 1:
+                mo = acre.search(line)
+                if mo:
+                    addr = mo.group('addr')
+                    if addr:
+                        addrs[mo.group('addr')] = 1
+                elif ecre.search(line):
                     break
-        if state == 1:
-            mo = acre.search(line)
-            if mo:
-                addr = mo.group('addr')
-                if addr:
-                    addrs[mo.group('addr')] = 1
-            elif ecre.search(line):
-                break
+        if addrs:
+            break
     return addrs.keys()

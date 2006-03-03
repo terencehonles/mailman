@@ -47,6 +47,8 @@ class BounceTest(unittest.TestCase):
         ('SimpleMatch', 'simple_05.txt', ['rlosardo@sbcglobal.net']),
         ('SimpleMatch', 'simple_06.txt', ['dlyle@hamiltonpacific.com']),
         ('SimpleMatch', 'simple_07.txt', ['william.xxxx@sbcglobal.net']),
+        ('SimpleMatch', 'simple_08.txt', ['severin.XXX@t-online.de']),
+        ('SimpleMatch', 'simple_09.txt', ['RobotMail@auto-walther.de']),
         # SimpleWarning
         ('SimpleWarning', 'simple_03.txt', ['jacobus@geo.co.za']),
         # GroupWise
@@ -55,6 +57,8 @@ class BounceTest(unittest.TestCase):
         # doesn't throw an exception, but we won't get any meaningful
         # addresses back from it.
         ('GroupWise', 'groupwise_02.txt', []),
+        # Actually, it's from Exchange, and Exchange does recognize it
+        ('Exchange', 'groupwise_02.txt', ['omarmo@thebas.com']),
         # Yale's own
         ('Yale', 'yale_01.txt', ['thomas.dtankengine@cs.yale.edu',
                                  'thomas.dtankengine@yale.edu']),
