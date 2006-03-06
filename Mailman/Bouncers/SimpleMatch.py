@@ -95,6 +95,14 @@ PATTERNS = [
     (_c('A message that you sent could not be delivered'),
      _c('^--- The header of the original'),
      _c('^(?P<addr>[^\s@]+@[^\s@:]+):')),
+    # thehartford.com
+    (_c('Delivery to the following recipients failed'),
+     _c("Bogus - there actually isn't anything"),
+     _c('^\s*(?P<addr>[^\s@]+@[^\s@]+)\s*$')),
+    # and another thehartfod.com/hartfordlife.com
+    (_c('^Your message'),
+     _c('^because:'),
+     _c('^\s*(?P<addr>[^\s@]+@[^\s@]+)\s*$')),
     # Next one goes here...
     ]
 

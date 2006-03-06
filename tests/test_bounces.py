@@ -49,8 +49,10 @@ class BounceTest(unittest.TestCase):
         ('SimpleMatch', 'simple_07.txt', ['william.xxxx@sbcglobal.net']),
         ('SimpleMatch', 'simple_08.txt', ['severin.XXX@t-online.de']),
         ('SimpleMatch', 'simple_09.txt', ['RobotMail@auto-walther.de']),
+        ('SimpleMatch', 'simple_10.txt', ['sais@thehartford.com']),
+        ('SimpleMatch', 'simple_11.txt', ['carlosr73@hartfordlife.com']),
         # SimpleWarning
-        ('SimpleWarning', 'simple_03.txt', ['jacobus@geo.co.za']),
+        ('SimpleWarning', 'simple_03.txt', Stop),
         # GroupWise
         ('GroupWise', 'groupwise_01.txt', ['thoff@MAINEX1.ASU.EDU']),
         # This one really sucks 'cause it's text/html.  Just make sure it
@@ -142,6 +144,8 @@ class BounceTest(unittest.TestCase):
             if foundaddrs is None:
                 foundaddrs = []
             if foundaddrs is not Stop:
+                # MAS: The following strip() is only because of my
+                # hybrid test environment.  It is not otherwise needed.
                 foundaddrs = [found.strip() for found in foundaddrs]
                 addrs.sort()
                 foundaddrs.sort()
