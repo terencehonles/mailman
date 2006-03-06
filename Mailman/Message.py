@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -199,17 +199,6 @@ class Message(email.Message.Message):
         except (UnicodeError, LookupError, ValueError):
             return failobj
 
-    def set_payload(self, payload, charset=None):
-        """Set the payload to the given value (Override email package).
-        Payload is converted to a MIME message body when this is called.
-        """
-        email.Message.Message.set_payload(self, payload, charset)
-        if self.get('content-transfer-encoding') in \
-                ('quoted-printable', 'base64'):
-            cset = self.get_charset()
-            if cset:
-                self._payload = cset.body_encode(self._payload)
-                self._charset = None 
 
 
 class UserNotification(Message):
