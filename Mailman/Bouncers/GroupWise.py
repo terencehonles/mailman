@@ -30,7 +30,7 @@ acre = re.compile(r'<(?P<addr>[^>]*)>')
 
 
 def find_textplain(msg):
-    if msg.get_type(msg.get_default_type()) == 'text/plain':
+    if msg.get_content_type() == 'text/plain':
         return msg
     if msg.is_multipart:
         for part in msg.get_payload():
@@ -44,7 +44,7 @@ def find_textplain(msg):
 
 
 def process(msg):
-    if msg.get_type() <> 'multipart/mixed' or not msg['x-mailer']:
+    if msg.get_content_type() <> 'multipart/mixed' or not msg['x-mailer']:
         return None
     addrs = {}
     # find the first text/plain part in the message

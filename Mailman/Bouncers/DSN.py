@@ -85,6 +85,6 @@ def process(msg):
     # The report-type parameter should be "delivery-status", but it seems that
     # some DSN generating MTAs don't include this on the Content-Type: header,
     # so let's relax the test a bit.
-    if not msg.is_multipart() or msg.get_subtype() <> 'report':
+    if not msg.is_multipart() or msg.get_content_subtype() <> 'report':
         return None
     return check(msg)

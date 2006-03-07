@@ -121,7 +121,7 @@ def process(mlist, msg, msgdata):
             wrap = False
         except (LookupError, UnicodeError):
             pass
-    elif msg.get_type() == 'multipart/mixed':
+    elif msg.get_content_type() == 'multipart/mixed':
         # The next easiest thing to do is just prepend the header and append
         # the footer as additional subparts
         payload = msg.get_payload()

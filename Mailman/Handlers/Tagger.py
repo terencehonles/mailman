@@ -69,11 +69,12 @@ def scanbody(msg, numlines=None):
     # or if the outer type is multipart/alternative and there is a text/plain
     # part.  Anything else, and the body is ignored for header-scan purposes.
     found = None
-    if msg.get_type('text/plain') == 'text/plain':
+    if msg.get_content_type() == 'text/plain':
         found = msg
-    elif msg.is_multipart() and msg.get_type() == 'multipart/alternative':
+    elif msg.is_multipart()\
+         and msg.get_content_type() == 'multipart/alternative':
         for found in msg.get_payload():
-            if found.get_type('text/plain') == 'text/plain':
+            if found.get_content_type() == 'text/plain':
                 break
         else:
             found = None
