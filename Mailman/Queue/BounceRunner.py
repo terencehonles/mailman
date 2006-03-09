@@ -197,7 +197,11 @@ class BounceRunner(Runner, BounceMixin):
             return
         # Try VERP detection first, since it's quick and easy
         addrs = verp_bounce(mlist, msg)
-        if not addrs:
+        if addrs:
+            # We have an address, but check if the message is non-fatal.
+            if BouncerAPI.ScanMessages(mlist, msg) is BouncerAPI.Stop:
+                return
+        else:
             # See if this was a probe message.
             token = verp_probe(mlist, msg)
             if token:
