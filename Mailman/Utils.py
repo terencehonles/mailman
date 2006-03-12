@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -12,7 +12,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 
 """Miscellaneous essential routines.
@@ -681,7 +682,11 @@ def get_domain():
     else:
         # See the note in Defaults.py concerning DEFAULT_HOST_NAME
         # vs. DEFAULT_EMAIL_HOST.
-        hostname = mm_cfg.DEFAULT_HOST_NAME or mm_cfg.DEFAULT_EMAIL_HOST
+        # MAS: This is inconsistent - DEFAULT_URL_HOST is correct.
+        # DEFAULT_HOST_NAME should really be the host portion of
+        # DEFAULT_URL, but that's not a setting, and these have been
+        # deprecated since Aug., 2001, so leave it.
+        hostname = mm_cfg.DEFAULT_HOST_NAME or mm_cfg.DEFAULT_URL_HOST
         return hostname.lower()
 
 
