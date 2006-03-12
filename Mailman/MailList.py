@@ -969,7 +969,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         else:
             kind = ''
         syslog('subscribe', '%s: new%s %s, %s', self.internal_name(),
-               kind, formataddr((email, name)), whence)
+               kind, formataddr((name, email)), whence)
         if ack:
             self.SendSubscribeAck(email, self.getMemberPassword(email),
                                   digest, text)
