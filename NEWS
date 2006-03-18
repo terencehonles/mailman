@@ -19,6 +19,10 @@ Here is a history of user visible changes to Mailman.
       and if admin_notify_mchanges is true, a notice is sent to the list
       owner using a new adminaddrchgack.txt template.
 
+    - There is a new list attribute 'subscribe_auto_approval' which is a list
+      of email addresses and regular expressions matching email addresses
+      whose subscriptions are exempt from admin approval. RFE 403066.
+
 2.1.7 (31-Dec-2005)
 
   Security

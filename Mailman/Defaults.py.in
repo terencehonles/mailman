@@ -942,6 +942,10 @@ DEFAULT_SUBSCRIBE_POLICY = 1
 # Does this site allow completely unchecked subscriptions?
 ALLOW_OPEN_SUBSCRIBE = No
 
+# This is the default list of addresses and regular expressions (beginning
+# with ^) that are exempt from approval if SUBSCRIBE_POLICY is 2 or 3.
+DEFAULT_SUBSCRIBE_AUTO_APPROVAL = []
+
 # The default policy for unsubscriptions.  0 (unmoderated unsubscribes) is
 # highly recommended!
 # 0 - unmoderated unsubscribes

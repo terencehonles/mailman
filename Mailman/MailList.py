@@ -351,6 +351,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         self.welcome_msg = ''
         self.goodbye_msg = ''
         self.subscribe_policy = mm_cfg.DEFAULT_SUBSCRIBE_POLICY
+        self.subscribe_auto_approval = mm_cfg.DEFAULT_SUBSCRIBE_AUTO_APPROVAL
         self.unsubscribe_policy = mm_cfg.DEFAULT_UNSUBSCRIBE_POLICY
         self.private_roster = mm_cfg.DEFAULT_PRIVATE_ROSTER
         self.obscure_addresses = mm_cfg.DEFAULT_OBSCURE_ADDRESSES
@@ -905,6 +906,9 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             syslog('subscribe', '%s: pending %s %s',
                    self.internal_name(), who, by)
             raise Errors.MMSubscribeNeedsConfirmation
+        elif self.HasAutoApprovedSender(email):
+            # no approval necessary:
+            self.ApprovedAddMember(userdesc)
         else:
             # Subscription approval is required.  Add this entry to the admin
             # requests database.  BAW: this should probably take a userdesc
@@ -1225,7 +1229,8 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
                     # list administrators.
                     self.SendHostileSubscriptionNotice(invitation, addr)
                     raise Errors.HostileSubscriptionError
-            elif self.subscribe_policy in (2, 3):
+            elif self.subscribe_policy in (2, 3) and \
+                    not self.HasAutoApprovedSender(addr):
                 self.HoldSubscription(addr, fullname, password, digest, lang)
                 name = self.real_name
                 raise Errors.MMNeedApproval, _(
@@ -1502,13 +1507,30 @@ bad regexp in bounce_matching_header line: %s
         """Returns matched entry in ban_list if email matches.
         Otherwise returns None.
         """
-        ban = False
-        for pattern in self.ban_list:
+        return self.GetPattern(email, self.ban_list)
+
+    def HasAutoApprovedSender(self, sender):
+        """Returns True and logs if sender matches address or pattern
+        in subscribe_auto_approval.  Otherwise returns False.
+        """
+        auto_approve = False
+        if self.GetPattern(sender, self.subscribe_auto_approval):
+            auto_approve = True
+            syslog('vette', '%s: auto approved subscribe from %s',
+                   self.internal_name(), sender)
+        return auto_approve
+
+    def GetPattern(self, email, pattern_list):
+        """Returns matched entry in pattern_list if email matches.
+        Otherwise returns None.
+        """
+        matched = None
+        for pattern in pattern_list:
             if pattern.startswith('^'):
                 # This is a regular expression match
                 try:
                     if re.search(pattern, email, re.IGNORECASE):
-                        ban = True
+                        matched = pattern
                         break
                 except re.error:
                     # BAW: we should probably remove this pattern
@@ -1516,12 +1538,9 @@ bad regexp in bounce_matching_header line: %s
             else:
                 # Do the comparison case insensitively
                 if pattern.lower() == email.lower():
-                    ban = True
+                    matched = pattern
                     break
-        if ban:
-            return pattern
-        else:
-            return None
+        return matched
 
 
 
