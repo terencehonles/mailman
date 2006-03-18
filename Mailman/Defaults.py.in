@@ -642,8 +642,12 @@ VERP_DELIVERY_INTERVAL = 0
 VERP_CONFIRM_FORMAT = '%(addr)s+%(cookie)s'
 
 # This is analogous to VERP_REGEXP, but for splitting apart the
-# VERP_CONFIRM_FORMAT.
-VERP_CONFIRM_REGEXP = r'^(?P<addr>[^+]+?)\+(?P<cookie>[^@]+)@.*$'
+# VERP_CONFIRM_FORMAT.  MUAs have been observed that mung
+# From: local_part@host
+# into
+# To: "local_part" <local_part@host>
+# when replying, so we skip everything up to '<' if any.
+VERP_CONFIRM_REGEXP = r'^(.*<)?(?P<addr>[^+]+?)\+(?P<cookie>[^@]+)@.*$'
 
 # Set this to Yes to enable VERP-like (more user friendly) confirmations
 VERP_CONFIRMATIONS = No
