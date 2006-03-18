@@ -680,13 +680,11 @@ def get_domain():
     if mm_cfg.VIRTUAL_HOST_OVERVIEW and host:
         return host.lower()
     else:
-        # See the note in Defaults.py concerning DEFAULT_HOST_NAME
-        # vs. DEFAULT_EMAIL_HOST.
-        # MAS: This is inconsistent - DEFAULT_URL_HOST is correct.
-        # DEFAULT_HOST_NAME should really be the host portion of
-        # DEFAULT_URL, but that's not a setting, and these have been
-        # deprecated since Aug., 2001, so leave it.
-        hostname = mm_cfg.DEFAULT_HOST_NAME or mm_cfg.DEFAULT_URL_HOST
+        # See the note in Defaults.py concerning DEFAULT_URL
+        # vs. DEFAULT_URL_HOST.
+        hostname = ((mm_cfg.DEFAULT_URL
+                     and urlparse.urlparse(mm_cfg.DEFAULT_URL)[1])
+                     or mm_cfg.DEFAULT_URL_HOST)
         return hostname.lower()
 
 
