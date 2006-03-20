@@ -46,6 +46,7 @@ from email.Charset import Charset
 
 from Mailman import mm_cfg
 from Mailman import Utils
+from Mailman import Errors
 from Mailman import LockFile
 from Mailman import MailList
 from Mailman import i18n
