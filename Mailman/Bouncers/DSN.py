@@ -82,6 +82,10 @@ def check(msg):
 
 
 def process(msg):
+    # A DSN has been seen wrapped with a "legal disclaimer" by an outgoing MTA
+    # in a multipart/mixed outer part.
+    if msg.is_multipart() and msg.get_content_subtype() == 'mixed':
+        msg = msg.get_payload()[0]
     # The report-type parameter should be "delivery-status", but it seems that
     # some DSN generating MTAs don't include this on the Content-Type: header,
     # so let's relax the test a bit.

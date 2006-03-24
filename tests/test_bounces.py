@@ -51,6 +51,11 @@ class BounceTest(unittest.TestCase):
         ('SimpleMatch', 'simple_09.txt', ['RobotMail@auto-walther.de']),
         ('SimpleMatch', 'simple_10.txt', ['sais@thehartford.com']),
         ('SimpleMatch', 'simple_11.txt', ['carlosr73@hartfordlife.com']),
+        ('SimpleMatch', 'simple_12.txt', ['charrogar@rhine1.andrew.ac.jp']),
+        ('SimpleMatch', 'simple_13.txt', ['dycusibreix@ademe.fr']),
+        ('SimpleMatch', 'simple_14.txt', ['dump@dachamp.com',
+                                          'iqxwmmfauudpo@dachamp.com']),
+        ('SimpleMatch', 'simple_15.txt', ['isam@kviv.be']),
         # SimpleWarning
         ('SimpleWarning', 'simple_03.txt', Stop),
         # GroupWise
@@ -77,6 +82,7 @@ class BounceTest(unittest.TestCase):
         ('DSN', 'dsn_10.txt', ['anne.person@dom.ain']),
         ('DSN', 'dsn_11.txt', ['joem@example.com']),
         ('DSN', 'dsn_12.txt', ['auaauqdgrdz@jtc-con.co.jp']),
+        ('DSN', 'dsn_13.txt', ['marcooherbst@cardinal.com']),
         # Microsoft Exchange
         ('Exchange', 'microsoft_01.txt', ['DJBENNETT@IKON.COM']),
         ('Exchange', 'microsoft_02.txt', ['MDMOORE@BALL.COM']),

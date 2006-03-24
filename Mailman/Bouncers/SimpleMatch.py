@@ -100,9 +100,25 @@ PATTERNS = [
      _c("Bogus - there actually isn't anything"),
      _c('^\s*(?P<addr>[^\s@]+@[^\s@]+)\s*$')),
     # and another thehartfod.com/hartfordlife.com
-    (_c('^Your message'),
+    (_c('^Your message\s*$'),
      _c('^because:'),
      _c('^\s*(?P<addr>[^\s@]+@[^\s@]+)\s*$')),
+    # kviv.be (NTMail)
+    (_c('^Unable to deliver message to'),
+     _c(r'\*+\s+End of message\s+\*+'),
+     _c('<(?P<addr>[^>]*)>')),
+    # earthlink.net supported domains
+    (_c('^Sorry, unable to deliver your message to'),
+     _c('^A copy of the original message'),
+     _c('\s*(?P<addr>[^\s@]+@[^\s@]+)\s+')),
+    # ademe.fr
+    (_c('^A message could not be delivered to:'),
+     _c('^Subject:'),
+     _c('^\s*(?P<addr>[^\s@]+@[^\s@]+)\s*$')),
+    # andrew.ac.jp
+    (_c('^Invalid final delivery userid:'),
+     _c('^Original message follows.'),
+     _c('\s*(?P<addr>[^\s@]+@[^\s@]+)\s*$')),
     # Next one goes here...
     ]
 
