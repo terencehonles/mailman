@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -148,9 +148,10 @@ def main():
         # page don't work.
         if true_filename.endswith('/index.html') and parts[-1] <> 'index.html':
             action += SLASH
+        # Escape web input parameter to avoid cross-site scripting.
         print Utils.maketext(
             'private.html',
-            {'action'  : action,
+            {'action'  : Utils.websafe(action),
              'realname': mlist.real_name,
              'message' : message,
              }, mlist=mlist)
