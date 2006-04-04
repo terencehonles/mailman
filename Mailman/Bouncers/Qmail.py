@@ -32,7 +32,8 @@ import email.Iterators
 # Other (non-standard?) intros have been observed in the wild.
 introtags = [
     'Hi. This is the',
-    "We're sorry. There's a problem"
+    "We're sorry. There's a problem",
+    'Check your send e-mail address.'
     ]
 acre = re.compile(r'<(?P<addr>[^>]*)>:')
 

@@ -89,11 +89,11 @@ PATTERNS = [
      _c('<(?P<addr>[^>]*)>:')),
     # kundenserver.de
     (_c('A message that you sent could not be delivered'),
-     _c('^--- The header of the original'),
+     _c('^---'),
      _c('<(?P<addr>[^>]*)>')),
     # another kundenserver.de
     (_c('A message that you sent could not be delivered'),
-     _c('^--- The header of the original'),
+     _c('^---'),
      _c('^(?P<addr>[^\s@]+@[^\s@:]+):')),
     # thehartford.com
     (_c('Delivery to the following recipients failed'),
@@ -119,6 +119,14 @@ PATTERNS = [
     (_c('^Invalid final delivery userid:'),
      _c('^Original message follows.'),
      _c('\s*(?P<addr>[^\s@]+@[^\s@]+)\s*$')),
+    # E500_SMTP_Mail_Service@lerctr.org
+    (_c('------ Failed Recipients ------'),
+     _c('-------- Returned Mail --------'),
+     _c('<(?P<addr>[^>]*)>')),
+    # cynergycom.net
+    (_c('A message that you sent could not be delivered'),
+     _c('^---'),
+     _c('(?P<addr>[^\s@]+@[^\s@)]+)')),
     # Next one goes here...
     ]
 

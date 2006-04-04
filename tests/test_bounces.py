@@ -56,6 +56,9 @@ class BounceTest(unittest.TestCase):
         ('SimpleMatch', 'simple_14.txt', ['dump@dachamp.com',
                                           'iqxwmmfauudpo@dachamp.com']),
         ('SimpleMatch', 'simple_15.txt', ['isam@kviv.be']),
+        ('SimpleMatch', 'simple_16.txt', ['xvlogtfsei@the-messenger.com']),
+        ('SimpleMatch', 'bounce_02.txt', ['acinsp1@midsouth.rr.com']),
+        ('SimpleMatch', 'bounce_03.txt', ['james@jeborall.demon.co.uk']),
         # SimpleWarning
         ('SimpleWarning', 'simple_03.txt', Stop),
         # GroupWise
@@ -83,6 +86,7 @@ class BounceTest(unittest.TestCase):
         ('DSN', 'dsn_11.txt', ['joem@example.com']),
         ('DSN', 'dsn_12.txt', ['auaauqdgrdz@jtc-con.co.jp']),
         ('DSN', 'dsn_13.txt', ['marcooherbst@cardinal.com']),
+        ('DSN', 'dsn_14.txt', ['artboardregistration@home.dk']),
         # Microsoft Exchange
         ('Exchange', 'microsoft_01.txt', ['DJBENNETT@IKON.COM']),
         ('Exchange', 'microsoft_02.txt', ['MDMOORE@BALL.COM']),
@@ -97,6 +101,7 @@ class BounceTest(unittest.TestCase):
         # Qmail
         ('Qmail', 'qmail_01.txt', ['psadisc@wwwmail.n-h.de']),
         ('Qmail', 'qmail_02.txt', ['rauschlo@frontfin.com']),
+        ('Qmail', 'qmail_03.txt', ['crown@hbc.co.jp']),
         # LLNL's custom Sendmail
         ('LLNL', 'llnl_01.txt', ['trotts1@llnl.gov']),
         # Netscape's server...

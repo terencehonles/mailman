@@ -71,6 +71,13 @@ def check(msg):
                     # Note that params should already be unquoted.
                     addrs.extend(params)
                     break
+                else:
+                    # MAS: This is a kludge, but SMTP-GATEWAY01.intra.home.dk
+                    # has a final-recipient with an angle-addr and no
+                    # address-type parameter at all. Non-compliant, but ...
+                    for param in params:
+                        if param.startswith('<') and param.endswith('>'):
+                            addrs.append(param[1:-1])
     # Uniquify
     rtnaddrs = {}
     for a in addrs:
