@@ -29,41 +29,35 @@ import os
 import re
 import copy
 import time
-from types import ListType
+
 from cStringIO import StringIO
-
-from email.Parser import Parser
-from email.Generator import Generator
-from email.MIMEBase import MIMEBase
-from email.MIMEText import MIMEText
-from email.MIMEMessage import MIMEMessage
-from email.Utils import getaddresses, formatdate
-from email.Header import decode_header, make_header, Header
 from email.Charset import Charset
+from email.Generator import Generator
+from email.Header import decode_header, make_header, Header
+from email.MIMEBase import MIMEBase
+from email.MIMEMessage import MIMEMessage
+from email.MIMEText import MIMEText
+from email.Parser import Parser
+from email.Utils import getaddresses, formatdate
+from types import ListType
 
-from Mailman import mm_cfg
-from Mailman import Utils
-from Mailman import Message
-from Mailman import i18n
 from Mailman import Errors
-from Mailman.Mailbox import Mailbox
-from Mailman.MemberAdaptor import ENABLED
+from Mailman import Message
+from Mailman import Utils
+from Mailman import i18n
+from Mailman import mm_cfg
 from Mailman.Handlers.Decorate import decorate
-from Mailman.Queue.sbcache import get_switchboard
-from Mailman.Mailbox import Mailbox
 from Mailman.Handlers.Scrubber import process as scrubber
 from Mailman.Logging.Syslog import syslog
+from Mailman.Mailbox import Mailbox
+from Mailman.Mailbox import Mailbox
+from Mailman.MemberAdaptor import ENABLED
+from Mailman.Queue.sbcache import get_switchboard
 
 _ = i18n._
 
 UEMPTYSTRING = u''
 EMPTYSTRING = ''
-
-try:
-    True, False
-except NameError:
-    True = 1
-    False = 0
 
 
 

@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2004 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -23,35 +23,26 @@
 
 
 
-# BAW: get rid of this when we Python 2.2 is a minimum requirement.
-from __future__ import nested_scopes
-
 import re
 import sys
+
+from email.Errors import HeaderParseError
+from email.Header import decode_header, make_header, Header
+from email.Iterators import typed_subpart_iterator
+from email.MIMEMessage import MIMEMessage
+from email.MIMEText import MIMEText
 from types import StringType, UnicodeType
 
-from Mailman import mm_cfg
-from Mailman import Utils
-from Mailman import Message
-from Mailman.Handlers import Replybot
-from Mailman.i18n import _
-from Mailman.Queue.Runner import Runner
-from Mailman.Logging.Syslog import syslog
 from Mailman import LockFile
-
-from email.Header import decode_header, make_header, Header
-from email.Errors import HeaderParseError
-from email.Iterators import typed_subpart_iterator
-from email.MIMEText import MIMEText
-from email.MIMEMessage import MIMEMessage
+from Mailman import Message
+from Mailman import Utils
+from Mailman import mm_cfg
+from Mailman.Handlers import Replybot
+from Mailman.Logging.Syslog import syslog
+from Mailman.Queue.Runner import Runner
+from Mailman.i18n import _
 
 NL = '\n'
-
-try:
-    True, False
-except NameError:
-    True = 1
-    False = 0
 
 
 

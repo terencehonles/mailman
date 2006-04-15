@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2004 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -25,24 +25,24 @@ elsewhere.
 
 import os
 import time
+import email
 import errno
 import cPickle
 import marshal
-from cStringIO import StringIO
 
-import email
-from email.MIMEMessage import MIMEMessage
+from cStringIO import StringIO
 from email.Generator import Generator
+from email.MIMEMessage import MIMEMessage
 from email.Utils import getaddresses
 
-from Mailman import mm_cfg
-from Mailman import Utils
-from Mailman import Message
 from Mailman import Errors
-from Mailman.UserDesc import UserDesc
-from Mailman.Queue.sbcache import get_switchboard
-from Mailman.Logging.Syslog import syslog
+from Mailman import Message
+from Mailman import Utils
 from Mailman import i18n
+from Mailman import mm_cfg
+from Mailman.Logging.Syslog import syslog
+from Mailman.Queue.sbcache import get_switchboard
+from Mailman.UserDesc import UserDesc
 
 _ = i18n._
 
@@ -59,12 +59,6 @@ LOST = 2
 
 DASH = '-'
 NL = '\n'
-
-try:
-    True, False
-except NameError:
-    True = 1
-    False = 0
 
 
 

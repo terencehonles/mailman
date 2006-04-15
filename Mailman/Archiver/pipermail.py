@@ -1,24 +1,24 @@
 #! /usr/bin/env python
 
-from __future__ import nested_scopes
-
-import mailbox
 import os
 import re
 import sys
 import time
-from email.Utils import parseaddr, parsedate_tz, mktime_tz, formatdate
+import mailbox
+
 import cPickle as pickle
+
 from cStringIO import StringIO
+from email.Utils import parseaddr, parsedate_tz, mktime_tz, formatdate
 from string import lowercase
 
-__version__ = '0.09 (Mailman edition)'
+__version__ = '0.10 (Mailman edition)'
 VERSION = __version__
 CACHESIZE = 100    # Number of slots in the cache
 
 from Mailman import Errors
-from Mailman.Mailbox import ArchiverMailbox
 from Mailman.Logging.Syslog import syslog
+from Mailman.Mailbox import ArchiverMailbox
 from Mailman.i18n import _
 
 SPACE = ' '

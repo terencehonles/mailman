@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -59,23 +59,18 @@ tempfile.mktemp()).
 # for unit testing.
 
 import os
-import socket
 import time
 import errno
 import random
+import socket
 import traceback
+
 from stat import ST_NLINK, ST_MTIME
 
 # Units are floating-point seconds.
 DEFAULT_LOCK_LIFETIME  = 15
 # Allowable a bit of clock skew
 CLOCK_SLOP = 10
-
-try:
-    True, False
-except NameError:
-    True = 1
-    False = 0
 
 
 
@@ -195,7 +190,7 @@ class LockFile:
         self.__logprefix = os.path.split(self.__lockfile)[1]
         # For transferring ownership across a fork.
         self.__owned = True
-	
+
     def __repr__(self):
         return '<LockFile %s: %s [%s: %ssec] pid=%s>' % (
             id(self), self.__lockfile,

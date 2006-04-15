@@ -23,12 +23,6 @@ from Mailman.i18n import _
 from Mailman.Logging.Syslog import syslog
 from Mailman.Gui.GUIBase import GUIBase
 
-try:
-    True, False
-except NameError:
-    True = 1
-    False = 0
-
 
 
 class Topics(GUIBase):

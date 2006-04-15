@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -23,24 +23,19 @@ archival.
 """
 
 import os
+import re
 import errno
 import traceback
-import re
+
 from cStringIO import StringIO
 
+from Mailman import Site
+from Mailman import Utils
 from Mailman import mm_cfg
 from Mailman import Mailbox
-from Mailman import Utils
-from Mailman import Site
-from Mailman.SafeDict import SafeDict
-from Mailman.Logging.Syslog import syslog
 from Mailman.i18n import _
-
-try:
-    True, False
-except NameError:
-    True = 1
-    False = 0
+from Mailman.Logging.Syslog import syslog
+from Mailman.SafeDict import SafeDict
 
 
 

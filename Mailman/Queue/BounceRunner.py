@@ -22,27 +22,21 @@ import re
 import time
 import cPickle
 
-from email.MIMEText import MIMEText
 from email.MIMEMessage import MIMEMessage
+from email.MIMEText import MIMEText
 from email.Utils import parseaddr
 
-from Mailman import mm_cfg
-from Mailman import Utils
 from Mailman import LockFile
-from Mailman.Message import UserNotification
+from Mailman import Utils
+from Mailman import mm_cfg
 from Mailman.Bouncers import BouncerAPI
+from Mailman.Logging.Syslog import syslog
+from Mailman.Message import UserNotification
 from Mailman.Queue.Runner import Runner
 from Mailman.Queue.sbcache import get_switchboard
-from Mailman.Logging.Syslog import syslog
 from Mailman.i18n import _
 
 COMMASPACE = ', '
-
-try:
-    True, False
-except NameError:
-    True = 1
-    False = 0
 
 
 

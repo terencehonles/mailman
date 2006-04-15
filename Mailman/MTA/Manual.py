@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -19,20 +19,15 @@
 
 import sys
 import email.Utils
+
 from cStringIO import StringIO
 
-from Mailman import mm_cfg
 from Mailman import Message
 from Mailman import Utils
+from Mailman import mm_cfg
+from Mailman.MTA.Utils import makealiases
 from Mailman.Queue.sbcache import get_switchboard
 from Mailman.i18n import _
-from Mailman.MTA.Utils import makealiases
-
-try:
-    True, False
-except NameError:
-    True = 1
-    False = 0
 
 
 

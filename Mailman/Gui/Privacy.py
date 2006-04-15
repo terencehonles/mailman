@@ -1,17 +1,17 @@
-# Copyright (C) 2001-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
@@ -23,12 +23,6 @@ from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman.i18n import _
 from Mailman.Gui.GUIBase import GUIBase
-
-try:
-    True, False
-except NameError:
-    True = 1
-    False = 0
 
 
 
@@ -59,7 +53,7 @@ class Privacy(GUIBase):
                             _('Confirm'),
                             _('Require approval'),
                             _('Confirm and approve')),
-                           0, 
+                           0,
                            _('What steps are required for subscription?<br>'),
                            _('''None - no verification steps (<em>Not
                            Recommended </em>)<br>
@@ -67,7 +61,7 @@ class Privacy(GUIBase):
                            Require approval - require list administrator
                            Approval for subscriptions <br>
                            Confirm and approve - both confirm and approve
-                           
+
                            <p>(*) when someone requests a subscription,
                            Mailman sends them a notice with a unique
                            subscription request number that they must reply to
@@ -88,7 +82,7 @@ class Privacy(GUIBase):
                            Require approval - require list administrator
                            approval for subscriptions <br>
                            Confirm and approve - both confirm and approve
-                           
+
                            <p>(*) when someone requests a subscription,
                            Mailman sends them a notice with a unique
                            subscription request number that they must reply to
@@ -361,18 +355,18 @@ class Privacy(GUIBase):
              against every recipient address in the message.  The matching is
              performed with Python's re.match() function, meaning they are
              anchored to the start of the string.
-             
+
              <p>For backwards compatibility with Mailman 1.1, if the regexp
              does not contain an `@', then the pattern is matched against just
              the local part of the recipient address.  If that match fails, or
              if the pattern does contain an `@', then the pattern is matched
              against the entire recipient address.
-             
+
              <p>Matching against the local part is deprecated; in a future
              release, the pattern will always be matched against the entire
              recipient address.""")),
 
-            ('max_num_recipients', mm_cfg.Number, 5, 0, 
+            ('max_num_recipients', mm_cfg.Number, 5, 0,
              _('Ceiling on acceptable number of recipients for a posting.'),
 
              _('''If a posting has this number, or more, of recipients, it is
@@ -401,7 +395,7 @@ class Privacy(GUIBase):
              case, each rule is matched in turn, with processing stopped after
              the first match.
 
-             Note that headers are collected from all the attachments 
+             Note that headers are collected from all the attachments
              (except for the mailman administrivia message) and
              matched against the regular expressions. With this feature,
              you can effectively sort out messages with dangerous file

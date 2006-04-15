@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -21,21 +21,16 @@
 from email.MIMEText import MIMEText
 from email.MIMEMessage import MIMEMessage
 
-from Mailman import mm_cfg
-from Mailman import Errors
-from Mailman import Utils
-from Mailman import Message
 from Mailman import i18n
+from Mailman import Errors
+from Mailman import Message
+from Mailman import mm_cfg
+from Mailman import Utils
 from Mailman import Pending
+
 from Mailman.Logging.Syslog import syslog
 
 _ = i18n._
-
-try:
-    True, False
-except NameError:
-    True = 1
-    False = 0
 
 
 

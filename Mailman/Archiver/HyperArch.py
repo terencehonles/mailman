@@ -26,33 +26,32 @@
        (probably in the 'update_dirty_archives' method).
 """
 
-from __future__ import nested_scopes
-
-import sys
-import re
-import errno
-import urllib
-import time
 import os
+import re
+import sys
+import time
+import errno
 import types
-import HyperDatabase
-import pipermail
+import urllib
 import weakref
 import binascii
 
-from email.Header import decode_header, make_header
-from email.Errors import HeaderParseError
 from email.Charset import Charset
+from email.Errors import HeaderParseError
+from email.Header import decode_header, make_header
 
-from Mailman import mm_cfg
+from Mailman import i18n
 from Mailman import Utils
 from Mailman import Errors
+from Mailman import mm_cfg
 from Mailman import LockFile
 from Mailman import MailList
-from Mailman import i18n
-from Mailman.SafeDict import SafeDict
+from Mailman.Archiver import HyperDatabase
+from Mailman.Archiver import pipermail
 from Mailman.Logging.Syslog import syslog
 from Mailman.Mailbox import ArchiverMailbox
+from Mailman.SafeDict import SafeDict
+
 
 # Set up i18n.  Assume the current language has already been set in the caller.
 _ = i18n._
@@ -85,13 +84,6 @@ if sys.platform == 'darwin':
         soft, hard = resource.getrlimit(resource.RLIMIT_STACK)
         newsoft = min(hard, max(soft, 1024*2048))
         resource.setrlimit(resource.RLIMIT_STACK, (newsoft, hard))
-
-
-try:
-    True, False
-except NameError:
-    True = 1
-    False = 0
 
 
 

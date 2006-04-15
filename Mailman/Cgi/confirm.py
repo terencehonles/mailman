@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2005 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -17,28 +17,23 @@
 
 """Confirm a pending action via URL."""
 
-import signal
 import cgi
 import time
+import signal
 
-from Mailman import mm_cfg
 from Mailman import Errors
 from Mailman import i18n
 from Mailman import MailList
+from Mailman import mm_cfg
 from Mailman import Pending
-from Mailman.UserDesc import UserDesc
+
 from Mailman.htmlformat import *
 from Mailman.Logging.Syslog import syslog
+from Mailman.UserDesc import UserDesc
 
 # Set up i18n
 _ = i18n._
 i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
-
-try:
-    True, False
-except NameError:
-    True = 1
-    False = 0
 
 
 

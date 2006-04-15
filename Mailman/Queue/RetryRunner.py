@@ -1,4 +1,4 @@
-# Copyright (C) 2003 by the Free Software Foundation, Inc.
+# Copyright (C) 2003-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -19,12 +19,6 @@ import time
 from Mailman import mm_cfg
 from Mailman.Queue.Runner import Runner
 from Mailman.Queue.Switchboard import Switchboard
-
-try:
-    True, False
-except NameError:
-    True = 1
-    False = 0
 
 
 

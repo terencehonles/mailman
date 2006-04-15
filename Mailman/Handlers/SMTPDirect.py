@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -28,29 +28,23 @@ for a threaded implementation.
 
 import copy
 import time
+import email
 import socket
 import smtplib
+
+from email.Utils import formataddr
+from email.Header import Header
+from email.Charset import Charset
 from types import UnicodeType
 
+from Mailman import Errors
 from Mailman import mm_cfg
 from Mailman import Utils
-from Mailman import Errors
 from Mailman.Handlers import Decorate
 from Mailman.Logging.Syslog import syslog
 from Mailman.SafeDict import MsgSafeDict
 
-import email
-from email.Utils import formataddr
-from email.Header import Header
-from email.Charset import Charset
-
 DOT = '.'
-
-try:
-    True, False
-except NameError:
-    True = 1
-    False = 0
 
 
 

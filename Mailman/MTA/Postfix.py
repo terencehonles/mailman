@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2005 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -18,28 +18,23 @@
 """Creation/deletion hooks for the Postfix MTA."""
 
 import os
-import pwd
 import grp
+import pwd
 import time
 import errno
+
 from stat import *
 
-from Mailman import mm_cfg
-from Mailman import Utils
 from Mailman import LockFile
-from Mailman.i18n import _
-from Mailman.MTA.Utils import makealiases
+from Mailman import Utils
+from Mailman import mm_cfg
 from Mailman.Logging.Syslog import syslog
+from Mailman.MTA.Utils import makealiases
+from Mailman.i18n import _
 
 LOCKFILE = os.path.join(mm_cfg.LOCK_DIR, 'creator')
 ALIASFILE = os.path.join(mm_cfg.DATA_DIR, 'aliases')
 VIRTFILE = os.path.join(mm_cfg.DATA_DIR, 'virtual-mailman')
-
-try:
-    True, False
-except NameError:
-    True = 1
-    False = 0
 
 
 

@@ -26,20 +26,14 @@ TBD: This needs to be made more configurable and robust.
 """
 
 import re
-from cStringIO import StringIO
 
+from cStringIO import StringIO
 from email.Generator import Generator
 
-from Mailman import mm_cfg
 from Mailman import Errors
 from Mailman import i18n
+from Mailman import mm_cfg
 from Mailman.Handlers.Hold import hold_for_approval
-
-try:
-    True, False
-except NameError:
-    True = 1
-    False = 0
 
 # First, play footsie with _ so that the following are marked as translated,
 # but aren't actually translated until we need the text later on.

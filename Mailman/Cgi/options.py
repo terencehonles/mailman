@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -17,19 +17,21 @@
 
 """Produce and handle the member options."""
 
-import sys
 import os
 import cgi
+import sys
 import signal
 import urllib
+
 from types import ListType
 
+from Mailman import Errors
+from Mailman import i18n
+from Mailman import MailList
+from Mailman import MemberAdaptor
 from Mailman import mm_cfg
 from Mailman import Utils
-from Mailman import MailList
-from Mailman import Errors
-from Mailman import MemberAdaptor
-from Mailman import i18n
+
 from Mailman.htmlformat import *
 from Mailman.Logging.Syslog import syslog
 
@@ -39,12 +41,6 @@ SETLANGUAGE = -1
 # Set up i18n
 _ = i18n._
 i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
-
-try:
-    True, False
-except NameError:
-    True = 1
-    False = 0
 
 
 

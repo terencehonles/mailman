@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -17,14 +17,13 @@
 
 """Cook a message's Subject header."""
 
-from __future__ import nested_scopes
 import re
 from types import UnicodeType
 
 from email.Charset import Charset
+from email.Errors import HeaderParseError
 from email.Header import Header, decode_header, make_header
 from email.Utils import parseaddr, formataddr, getaddresses
-from email.Errors import HeaderParseError
 
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -34,13 +33,6 @@ from Mailman.Logging.Syslog import syslog
 CONTINUATION = ',\n\t'
 COMMASPACE = ', '
 MAXLINELEN = 78
-
-# True/False
-try:
-    True, False
-except NameError:
-    True = 1
-    False = 0
 
 
 

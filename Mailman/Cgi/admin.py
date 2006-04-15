@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -17,31 +17,29 @@
 
 """Process and produce the list-administration options forms."""
 
-# For Python 2.1.x compatibility
-from __future__ import nested_scopes
-
-import sys
 import os
 import re
 import cgi
 import sha
-import urllib
+import sys
 import signal
-from types import *
-from string import lowercase, digits
+import urllib
 
 from email.Utils import unquote, parseaddr, formataddr
+from string import lowercase, digits
+from types import *
 
+from Mailman import Errors
+from Mailman import i18n
+from Mailman import MailList
+from Mailman import MemberAdaptor
 from Mailman import mm_cfg
 from Mailman import Utils
-from Mailman import MailList
-from Mailman import Errors
-from Mailman import MemberAdaptor
-from Mailman import i18n
-from Mailman.UserDesc import UserDesc
-from Mailman.htmlformat import *
+
 from Mailman.Cgi import Auth
+from Mailman.htmlformat import *
 from Mailman.Logging.Syslog import syslog
+from Mailman.UserDesc import UserDesc
 
 # Set up i18n
 _ = i18n._
@@ -49,12 +47,6 @@ i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
 
 NL = '\n'
 OPTCOLUMNS = 11
-
-try:
-    True, False
-except NameError:
-    True = 1
-    False = 0
 
 
 

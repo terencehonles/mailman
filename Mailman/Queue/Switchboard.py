@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2004 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -14,8 +14,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-"""Reading and writing message objects and message metadata.
-"""
+"""Reading and writing message objects and message metadata."""
 
 # enqueue() and dequeue() are not symmetric.  enqueue() takes a Message
 # object.  dequeue() returns a email.Message object tree.
@@ -41,19 +40,13 @@ import errno
 import cPickle
 import marshal
 
-from Mailman import mm_cfg
-from Mailman import Utils
 from Mailman import Message
+from Mailman import Utils
+from Mailman import mm_cfg
 from Mailman.Logging.Syslog import syslog
 
 # 20 bytes of all bits set, maximum sha.digest() value
 shamax = 0xffffffffffffffffffffffffffffffffffffffffL
-
-try:
-    True, False
-except NameError:
-    True = 1
-    False = 0
 
 # This flag causes messages to be written as pickles (when True) or text files
 # (when False).  Pickles are more efficient because the message doesn't need

@@ -17,8 +17,6 @@
 
 """Cleanse a message for archiving."""
 
-from __future__ import nested_scopes
-
 import os
 import re
 import sha
@@ -26,18 +24,20 @@ import time
 import errno
 import binascii
 import tempfile
+
 from cStringIO import StringIO
+from mimetypes import guess_all_extensions
 from types import IntType, StringType
 
-from email.Utils import parsedate
-from email.Parser import HeaderParser
-from email.Generator import Generator
 from email.Charset import Charset
+from email.Generator import Generator
+from email.Parser import HeaderParser
+from email.Utils import parsedate
 
-from Mailman import mm_cfg
-from Mailman import Utils
-from Mailman import LockFile
 from Mailman import Message
+from Mailman import mm_cfg
+from Mailman import LockFile
+from Mailman import Utils
 from Mailman.Errors import DiscardMessage
 from Mailman.i18n import _
 from Mailman.Logging.Syslog import syslog
@@ -52,30 +52,6 @@ dre = re.compile(r'^\.*')
 
 BR = '<br>\n'
 SPACE = ' '
-
-try:
-    True, False
-except NameError:
-    True = 1
-    False = 0
-
-
-try:
-    from mimetypes import guess_all_extensions
-except ImportError:
-    import mimetypes
-    def guess_all_extensions(ctype, strict=True):
-        # BAW: sigh, guess_all_extensions() is new in Python 2.3
-        all = []
-        def check(map):
-            for e, t in map.items():
-                if t == ctype:
-                    all.append(e)
-        check(mimetypes.types_map)
-        # Python 2.1 doesn't have common_types.  Sigh, sigh.
-        if not strict and hasattr(mimetypes, 'common_types'):
-            check(mimetypes.common_types)
-        return all
 
 
 

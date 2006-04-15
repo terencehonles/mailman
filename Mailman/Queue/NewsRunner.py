@@ -1,4 +1,4 @@
-# Copyright (C) 2000-2005 by the Free Software Foundation, Inc.
+# Copyright (C) 2000-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -17,19 +17,19 @@
 """NNTP queue runner."""
 
 import re
+import email
 import socket
 import nntplib
-from cStringIO import StringIO
 
-import email
+from cStringIO import StringIO
 from email.Utils import getaddresses
 
 COMMASPACE = ', '
 
-from Mailman import mm_cfg
 from Mailman import Utils
-from Mailman.Queue.Runner import Runner
+from Mailman import mm_cfg
 from Mailman.Logging.Syslog import syslog
+from Mailman.Queue.Runner import Runner
 
 
 # Matches our Mailman crafted Message-IDs.  See Utils.unique_message_id()
@@ -43,13 +43,6 @@ mcre = re.compile(r"""
     (?P<hostname>[^>]+)                           # list's host_name
     >                                             # trailer
     """, re.VERBOSE)
-
-
-try:
-    True, False
-except NameError:
-    True = 1
-    False = 0
 
 
 

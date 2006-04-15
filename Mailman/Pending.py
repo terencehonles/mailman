@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2004 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -26,26 +26,23 @@ import cPickle
 from Mailman import mm_cfg
 
 # Types of pending records
-SUBSCRIPTION = 'S'
-UNSUBSCRIPTION = 'U'
-CHANGE_OF_ADDRESS = 'C'
-HELD_MESSAGE = 'H'
-RE_ENABLE = 'E'
-PROBE_BOUNCE = 'P'
+CHANGE_OF_ADDRESS   = 'C'
+HELD_MESSAGE        = 'H'
+PROBE_BOUNCE        = 'P'
+RE_ENABLE           = 'E'
+SUBSCRIPTION        = 'S'
+UNSUBSCRIPTION      = 'U'
 
-_ALLKEYS = (SUBSCRIPTION, UNSUBSCRIPTION,
-            CHANGE_OF_ADDRESS, HELD_MESSAGE,
-            RE_ENABLE, PROBE_BOUNCE,
-            )
+_ALLKEYS = (
+    CHANGE_OF_ADDRESS,
+    HELD_MESSAGE,
+    PROBE_BOUNCE,
+    RE_ENABLE,
+    SUBSCRIPTION,
+    UNSUBSCRIPTION,
+    )
 
-try:
-    True, False
-except NameError:
-    True = 1
-    False = 0
-
-
-_missing = []
+_missing = object()
 
 
 

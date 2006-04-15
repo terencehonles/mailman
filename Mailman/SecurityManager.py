@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2004 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -48,31 +48,26 @@
 
 import os
 import re
+import md5
 import sha
 import time
+import urllib
 import Cookie
 import marshal
 import binascii
-import urllib
+
 from types import StringType, TupleType
 from urlparse import urlparse
+
+from Mailman import Errors
+from Mailman import Utils
+from Mailman import mm_cfg
+from Mailman.Logging.Syslog import syslog
 
 try:
     import crypt
 except ImportError:
     crypt = None
-import md5
-
-from Mailman import mm_cfg
-from Mailman import Utils
-from Mailman import Errors
-from Mailman.Logging.Syslog import syslog
-
-try:
-    True, False
-except NameError:
-    True = 1
-    False = 0
 
 
 

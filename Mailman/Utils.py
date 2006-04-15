@@ -21,10 +21,7 @@
 This includes actual message transmission routines, address checking and
 message and address munging, a handy-dandy routine to map a function on all
 the mailing lists, and whatever else doesn't belong elsewhere.
-
 """
-
-from __future__ import nested_scopes
 
 import os
 import re
@@ -38,27 +35,15 @@ import urlparse
 import htmlentitydefs
 import email.Header
 import email.Iterators
-from email.Errors import HeaderParseError
-from types import UnicodeType
-from string import whitespace, digits
-try:
-    # Python 2.2
-    from string import ascii_letters
-except ImportError:
-    # Older Pythons
-    _lower = 'abcdefghijklmnopqrstuvwxyz'
-    ascii_letters = _lower + _lower.upper()
 
-from Mailman import mm_cfg
+from email.Errors import HeaderParseError
+from string import ascii_letters, digits, whitespace
+from types import UnicodeType
+
 from Mailman import Errors
 from Mailman import Site
+from Mailman import mm_cfg
 from Mailman.SafeDict import SafeDict
-
-try:
-    True, False
-except NameError:
-    True = 1
-    False = 0
 
 EMPTYSTRING = ''
 UEMPTYSTRING = u''

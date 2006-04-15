@@ -1,6 +1,6 @@
 #! @PYTHON@
 #
-# Copyright (C) 2004 by the Free Software Foundation, Inc.
+# Copyright (C) 2004-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -39,13 +39,6 @@ import getopt
 import paths
 from Mailman import Utils
 from Mailman.i18n import _
-
-
-try:
-    True, False
-except NameError:
-    True = 1
-    False = 0
 
 
 

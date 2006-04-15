@@ -1,4 +1,4 @@
-# Copyright (C) 2000-2004 by the Free Software Foundation, Inc.
+# Copyright (C) 2000-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -20,28 +20,21 @@ import os
 import sys
 import copy
 import time
+import email
 import socket
 
-import email
-
-from Mailman import mm_cfg
-from Mailman import Message
 from Mailman import Errors
 from Mailman import LockFile
+from Mailman import Message
+from Mailman import mm_cfg
+from Mailman.Logging.Syslog import syslog
+from Mailman.Queue.BounceRunner import BounceMixin
 from Mailman.Queue.Runner import Runner
 from Mailman.Queue.Switchboard import Switchboard
-from Mailman.Queue.BounceRunner import BounceMixin
-from Mailman.Logging.Syslog import syslog
 
 # This controls how often _doperiodic() will try to deal with deferred
 # permanent failures.  It is a count of calls to _doperiodic()
 DEAL_WITH_PERMFAILURES_EVERY = 10
-
-try:
-    True, False
-except NameError:
-    True = 1
-    False = 0
 
 
 

@@ -21,33 +21,34 @@
 Mixes in many task-specific classes.
 """
 
-import sys
 import os
-import time
-import marshal
-import errno
 import re
+import sys
+import time
+import errno
 import shutil
 import socket
 import urllib
 import cPickle
-
-from cStringIO import StringIO
-from UserDict import UserDict
-from urlparse import urlparse
-from types import *
-
+import marshal
 import email.Iterators
-from email.Utils import getaddresses, formataddr, parseaddr
-from email.Header import Header
 
-from Mailman import mm_cfg
-from Mailman import Utils
+from UserDict import UserDict
+from cStringIO import StringIO
+from types import *
+from urlparse import urlparse
+
+from email.Header import Header
+from email.Utils import getaddresses, formataddr, parseaddr
+
 from Mailman import Errors
 from Mailman import LockFile
+from Mailman import Utils
+from Mailman import mm_cfg
 from Mailman.UserDesc import UserDesc
 
-# base classes
+# Base classes
+from Mailman import Pending
 from Mailman.Archiver import Archiver
 from Mailman.Autoresponder import Autoresponder
 from Mailman.Bouncer import Bouncer
@@ -58,28 +59,21 @@ from Mailman.HTMLFormatter import HTMLFormatter
 from Mailman.ListAdmin import ListAdmin
 from Mailman.SecurityManager import SecurityManager
 from Mailman.TopicMgr import TopicMgr
-from Mailman import Pending
 
-# gui components package
+# GUI components package
 from Mailman import Gui
 
-# other useful classes
+# Other useful classes
 from Mailman import MemberAdaptor
-from Mailman.OldStyleMemberships import OldStyleMemberships
 from Mailman import Message
 from Mailman import Site
 from Mailman import i18n
 from Mailman.Logging.Syslog import syslog
+from Mailman.OldStyleMemberships import OldStyleMemberships
 
 _ = i18n._
 
 EMPTYSTRING = ''
-
-try:
-    True, False
-except NameError:
-    True = 1
-    False = 0
 
 
 
@@ -87,7 +81,6 @@ except NameError:
 class MailList(HTMLFormatter, Deliverer, ListAdmin,
                Archiver, Digester, SecurityManager, Bouncer, GatewayManager,
                Autoresponder, TopicMgr, Pending.Pending):
-
     #
     # A MailList object's basic Python object model support
     #

@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2004 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -14,30 +14,22 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-"""Generic queue runner class.
-"""
+"""Generic queue runner class."""
 
 import time
-import traceback
 import weakref
-from cStringIO import StringIO
-
-from Mailman import mm_cfg
-from Mailman import Utils
-from Mailman import Errors
-from Mailman import MailList
-from Mailman import i18n
-
-from Mailman.Queue.Switchboard import Switchboard
-from Mailman.Logging.Syslog import syslog
-
+import traceback
 import email.Errors
 
-try:
-    True, False
-except NameError:
-    True = 1
-    False = 0
+from cStringIO import StringIO
+
+from Mailman import Errors
+from Mailman import MailList
+from Mailman import Utils
+from Mailman import i18n
+from Mailman import mm_cfg
+from Mailman.Logging.Syslog import syslog
+from Mailman.Queue.Switchboard import Switchboard
 
 
 

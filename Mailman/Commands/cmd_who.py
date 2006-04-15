@@ -1,4 +1,4 @@
-# Copyright (C) 2002 by the Free Software Foundation, Inc.
+# Copyright (C) 2002-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -13,9 +13,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-
-# Remove this when base minimal compatibility is Python 2.2
-from __future__ import nested_scopes
 
 from email.Utils import parseaddr
 
