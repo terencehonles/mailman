@@ -12411,8 +12411,9 @@ msgstr ""
 " %(listowner)s。"
 
 #: templates/en/listinfo.html:1
+#, fuzzy
 msgid ""
-"<!-- $Revision: 7717 $ -->\n"
+"<!-- $Revision: 7853 $ -->\n"
 "<HTML>\n"
 "  <HEAD>\n"
 "    <TITLE><MM-List-Name> Info Page</TITLE>\n"
@@ -13692,8 +13693,9 @@ msgstr ""
 "\t%(adminaddr)s"
 
 #: templates/en/roster.html:1
+#, fuzzy
 msgid ""
-"<!-- $Revision: 7717 $ -->\n"
+"<!-- $Revision: 7853 $ -->\n"
 "<HTML>\n"
 "  <HEAD>\n"
 "    <TITLE><MM-List-Name> Subscribers</TITLE>\n"
@@ -13827,8 +13829,9 @@ msgstr ""
 "来处理此请求。"
 
 #: templates/en/subscribe.html:1
+#, fuzzy
 msgid ""
-"<!-- $Revision: 7717 $ -->\n"
+"<!-- $Revision: 7853 $ -->\n"
 "<html>\n"
 "<head><title><MM-List-Name> Subscription results</title></head>\n"
 "<body bgcolor=\"white\">\n"

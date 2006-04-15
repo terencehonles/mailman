@@ -12809,8 +12809,9 @@ msgstr ""
 "%(listowner)s."
 
 #: templates/en/listinfo.html:1
+#, fuzzy
 msgid ""
-"<!-- $Revision: 2.4 $ -->\n"
+"<!-- $Revision: 7726 $ -->\n"
 "<HTML>\n"
 "  <HEAD>\n"
 "    <TITLE><MM-List-Name> Info Page</TITLE>\n"
@@ -14145,8 +14146,9 @@ msgstr ""
 "    %(adminaddr)s"
 
 #: templates/en/roster.html:1
+#, fuzzy
 msgid ""
-"<!-- $Revision: 2.0 $ -->\n"
+"<!-- $Revision: 7726 $ -->\n"
 "<HTML>\n"
 "  <HEAD>\n"
 "    <TITLE><MM-List-Name> Subscribers</TITLE>\n"
@@ -14289,8 +14291,9 @@ msgstr ""
 "pentru a procesa cererea."
 
 #: templates/en/subscribe.html:1
+#, fuzzy
 msgid ""
-"<!-- $Revision: 2.1 $ -->\n"
+"<!-- $Revision: 7726 $ -->\n"
 "<html>\n"
 "<head><title><MM-List-Name> Subscription results</title></head>\n"
 "<body bgcolor=\"white\">\n"
