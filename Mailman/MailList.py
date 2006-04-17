@@ -598,7 +598,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         try:
             try:
                 d = loadfunc(fp)
-                if isinstance(d, dict):
+                if not isinstance(d, dict):
                     return None, 'Load() expected to return a dictionary'
             except (EOFError, ValueError, TypeError, MemoryError,
                     cPickle.PicklingError, cPickle.UnpicklingError), e:
