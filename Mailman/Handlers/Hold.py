@@ -281,6 +281,8 @@ also appear in the first line of the body of the reply.""")),
             dmsg['Subject'] = 'confirm ' + cookie
             dmsg['Sender'] = requestaddr
             dmsg['From'] = requestaddr
+            dmsg['Date'] = email.Utils.formatdate(localtime=True)
+            dmsg['Message-ID'] = Utils.unique_message_id(mlist)
             nmsg.attach(text)
             nmsg.attach(MIMEMessage(msg))
             nmsg.attach(MIMEMessage(dmsg))
