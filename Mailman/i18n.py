@@ -18,7 +18,6 @@
 import sys
 import time
 import gettext
-from types import StringType, UnicodeType
 
 from Mailman import mm_cfg
 from Mailman.SafeDict import SafeDict
@@ -85,7 +84,7 @@ def _(s):
     if not charset:
         charset = 'us-ascii'
     for k, v in dict.items():
-        if isinstance(v, UnicodeType):
+        if isinstance(v, unicode):
             dict[k] = v.encode(charset, 'replace')
     return tns % dict
 
@@ -105,7 +104,7 @@ def ctime(date):
         ]
 
     tzname = _('Server Local Time')
-    if isinstance(date, StringType):
+    if isinstance(date, str):
         try:
             year, mon, day, hh, mm, ss, wday, ydat, dst = time.strptime(date)
             if dst in (0,1):

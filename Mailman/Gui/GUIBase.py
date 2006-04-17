@@ -1,4 +1,4 @@
-# Copyright (C) 2002-2004 by the Free Software Foundation, Inc.
+# Copyright (C) 2002-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -12,12 +12,12 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """Base class for all web GUI components."""
 
 import re
-from types import TupleType, ListType
 
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -59,7 +59,7 @@ class GUIBase:
         if wtype in (mm_cfg.EmailList, mm_cfg.EmailListEx):
             # BAW: value might already be a list, if this is coming from
             # config_list input.  Sigh.
-            if isinstance(val, ListType):
+            if isinstance(val, list):
                 return val
             addrs = []
             for addr in [s.strip() for s in val.split(NL)]:
@@ -101,7 +101,7 @@ class GUIBase:
         # Checkboxes return a list of the selected items, even if only one is
         # selected.
         if wtype == mm_cfg.Checkbox:
-            if isinstance(val, ListType):
+            if isinstance(val, list):
                 return val
             return [val]
         if wtype == mm_cfg.FileUpload:
@@ -129,7 +129,7 @@ class GUIBase:
     def handleForm(self, mlist, category, subcat, cgidata, doc):
         for item in self.GetConfigInfo(mlist, category, subcat):
             # Skip descriptions and legacy non-attributes
-            if not isinstance(item, TupleType) or len(item) < 5:
+            if not isinstance(item, tuple) or len(item) < 5:
                 continue
             # Unpack the gui item description
             property, wtype, args, deps, desc = item[0:5]
@@ -143,7 +143,7 @@ class GUIBase:
                 val = cgidata[uploadprop].value
             elif not cgidata.has_key(property):
                 continue
-            elif isinstance(cgidata[property], ListType):
+            elif isinstance(cgidata[property], list):
                 val = [self._escape(property, x.value)
                        for x in cgidata[property]]
             else:

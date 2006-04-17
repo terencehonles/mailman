@@ -36,7 +36,7 @@ import email.Iterators
 
 from UserDict import UserDict
 from cStringIO import StringIO
-from types import *
+from types import MethodType
 from urlparse import urlparse
 
 from email.Header import Header
@@ -549,7 +549,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         # copy all public attributes to serializable dictionary
         dict = {}
         for key, value in self.__dict__.items():
-            if key[0] == '_' or type(value) is MethodType:
+            if key[0] == '_' or isinstance(value, MethodType):
                 continue
             dict[key] = value
         # Make config.pck unreadable by `other', as it contains all the
@@ -597,8 +597,8 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             return None, e
         try:
             try:
-                dict = loadfunc(fp)
-                if type(dict) <> DictType:
+                d = loadfunc(fp)
+                if isinstance(d, dict):
                     return None, 'Load() expected to return a dictionary'
             except (EOFError, ValueError, TypeError, MemoryError,
                     cPickle.PicklingError, cPickle.UnpicklingError), e:
@@ -607,7 +607,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             fp.close()
         # Update timestamp
         self.__timestamp = mtime
-        return dict, None
+        return d, None
 
     def Load(self, check_version=True):
         if not Utils.list_exists(self.internal_name()):
@@ -981,7 +981,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
                 subject = _('%(realname)s subscription notification')
             finally:
                 i18n.set_translation(otrans)
-            if isinstance(name, UnicodeType):
+            if isinstance(name, unicode):
                 name = name.encode(Utils.GetCharSet(lang), 'replace')
             text = Utils.maketext(
                 "adminsubscribeack.txt",
@@ -1167,7 +1167,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             name = self.getMemberName(newaddr)
             if name is None:
                 name = ''
-            if isinstance(name, UnicodeType):
+            if isinstance(name, unicode):
                 name = name.encode(Utils.GetCharSet(lang), 'replace')
             text = Utils.maketext(
                 'adminaddrchgack.txt',

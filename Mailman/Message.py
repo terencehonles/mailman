@@ -25,10 +25,9 @@ import re
 import email
 import email.Message
 import email.Utils
+
 from email.Charset import Charset
 from email.Header import Header
-
-from types import ListType, StringType
 
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -79,7 +78,7 @@ class Message(email.Message.Message):
                 chunks = []
                 cchanged = 0
                 for s, charset in v._chunks:
-                    if isinstance(charset, StringType):
+                    if isinstance(charset, str):
                         charset = Charset(charset)
                         cchanged = 1
                     chunks.append((s, charset))
@@ -216,7 +215,7 @@ class UserNotification(Message):
         self['Subject'] = Header(subject, charset, header_name='Subject',
                                  errors='replace')
         self['From'] = sender
-        if isinstance(recip, ListType):
+        if isinstance(recip, list):
             self['To'] = COMMASPACE.join(recip)
             self.recips = recip
         else:

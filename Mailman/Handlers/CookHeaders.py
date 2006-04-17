@@ -18,7 +18,6 @@
 """Cook a message's Subject header."""
 
 import re
-from types import UnicodeType
 
 from email.Charset import Charset
 from email.Errors import HeaderParseError
@@ -33,13 +32,10 @@ CONTINUATION = ',\n\t'
 COMMASPACE = ', '
 MAXLINELEN = 78
 
-
-
-def _isunicode(s):
-    return isinstance(s, UnicodeType)
-
 nonascii = re.compile('[^\s!-~]')
 
+
+
 def uheader(mlist, s, header_name=None, continuation_ws='\t', maxlinelen=None):
     # Get the charset to encode the string in. Then search if there is any
     # non-ascii character is in the string. If there is and the charset is

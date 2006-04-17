@@ -36,7 +36,6 @@ import smtplib
 from email.Charset import Charset
 from email.Header import Header
 from email.Utils import formataddr
-from types import UnicodeType
 
 from Mailman import Errors
 from Mailman import mm_cfg
@@ -323,7 +322,7 @@ def verpdeliver(mlist, msg, msgdata, envsender, failures, conn):
                     charset = 'iso-8859-1'
                 charset = Charset(charset)
                 codec = charset.input_codec or 'ascii'
-                if not isinstance(name, UnicodeType):
+                if not isinstance(name, unicode):
                     name = unicode(name, codec, 'replace')
                 name = Header(name, charset).encode()
                 msgcopy['To'] = formataddr((name, recip))

@@ -23,7 +23,6 @@ import logging
 
 from email.MIMEMessage import MIMEMessage
 from email.MIMEText import MIMEText
-from types import StringType
 
 from Mailman import MemberAdaptor
 from Mailman import Message
@@ -207,7 +206,7 @@ class Bouncer:
         umsg.set_type('multipart/mixed')
         umsg.attach(
             MIMEText(text, _charset=Utils.GetCharSet(self.preferred_language)))
-        if isinstance(msg, StringType):
+        if isinstance(msg, str):
             umsg.attach(MIMEText(msg))
         else:
             umsg.attach(MIMEMessage(msg))

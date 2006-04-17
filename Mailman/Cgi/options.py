@@ -24,8 +24,6 @@ import signal
 import urllib
 import logging
 
-from types import ListType
-
 from Mailman import Errors
 from Mailman import i18n
 from Mailman import MailList
@@ -152,7 +150,7 @@ def main():
         # POST methods, even if their actions have a query string, don't get
         # put into FieldStorage's keys :-(
         qs = cgi.parse_qs(os.environ['QUERY_STRING']).get('VARHELP')
-        if qs and type(qs) == types.ListType:
+        if qs and isinstance(qs, list):
             varhelp = qs[0]
     if varhelp:
         topic_details(mlist, doc, user, cpuser, userlang, varhelp)
@@ -569,7 +567,7 @@ address.  Upon confirmation, any other mailing list containing the address
             # Some topics were selected.  topicnames can actually be a string
             # or a list of strings depending on whether more than one topic
             # was selected or not.
-            if not isinstance(topicnames, ListType):
+            if not isinstance(topicnames, list):
                 # Assume it was a bare string, so listify it
                 topicnames = [topicnames]
             # unquote the topic names

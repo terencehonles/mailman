@@ -30,7 +30,6 @@ from email.Header import decode_header, make_header, Header
 from email.Iterators import typed_subpart_iterator
 from email.MIMEMessage import MIMEMessage
 from email.MIMEText import MIMEText
-from types import StringType, UnicodeType
 
 from Mailman import LockFile
 from Mailman import Message
@@ -86,7 +85,7 @@ class Results:
             return
         body = part.get_payload()
         # text/plain parts better have string payloads
-        assert isinstance(body, StringType) or isinstance(body, UnicodeType)
+        assert isinstance(body, basestring)
         lines = body.splitlines()
         # Use no more lines than specified
         self.commands.extend(lines[:mm_cfg.DEFAULT_MAIL_COMMANDS_MAX_LINES])
@@ -164,7 +163,7 @@ To obtain instructions, send a message containing just the word "help".
         charset = Utils.GetCharSet(self.msgdata['lang'])
         encoded_resp = []
         for item in resp:
-            if isinstance(item, UnicodeType):
+            if isinstance(item, unicode):
                 item = item.encode(charset, 'replace')
             encoded_resp.append(item)
         results = MIMEText(NL.join(encoded_resp), _charset=charset)

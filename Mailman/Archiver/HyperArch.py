@@ -31,7 +31,6 @@ import re
 import sys
 import time
 import errno
-import types
 import urllib
 import logging
 import weakref
@@ -133,7 +132,7 @@ html_charset = '<META http-equiv="Content-Type" ' \
                'content="text/html; charset=%s">'
 
 def CGIescape(arg, lang=None):
-    if isinstance(arg, types.UnicodeType):
+    if isinstance(arg, unicode):
         s = Utils.websafe(arg)
     else:
         s = Utils.websafe(str(arg))
@@ -560,7 +559,7 @@ class Article(pipermail.Article):
         body = EMPTYSTRING.join(self.body)
         cset = Utils.GetCharSet(self._lang)
         # Coerce the body to Unicode and replace any invalid characters.
-        if not isinstance(body, types.UnicodeType):
+        if not isinstance(body, unicode):
             body = unicode(body, cset, 'replace')
         if mm_cfg.ARCHIVER_OBSCURES_EMAILADDRS:
             otrans = i18n.get_translation()
@@ -1168,7 +1167,7 @@ class HyperArchive(pipermail.T):
         # 3. make it faster
         # TK: Prepare for unicode obscure.
         atmark = _(' at ')
-        if lines and isinstance(lines[0], types.UnicodeType):
+        if lines and isinstance(lines[0], unicode):
             atmark = unicode(atmark, Utils.GetCharSet(self.lang), 'replace')
         source = lines[:]
         dest = lines

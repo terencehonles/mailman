@@ -24,8 +24,6 @@ import sys
 import signal
 import logging
 
-from types import ListType
-
 from Mailman import Errors
 from Mailman import i18n
 from Mailman import MailList
@@ -99,7 +97,7 @@ def process_request(doc, cgidata):
     auth     = cgidata.getvalue('auth', '').strip()
     langs    = cgidata.getvalue('langs', [mm_cfg.DEFAULT_SERVER_LANGUAGE])
 
-    if not isinstance(langs, ListType):
+    if not isinstance(langs, list):
         langs = [langs]
     # Sanity check
     safelistname = Utils.websafe(listname)

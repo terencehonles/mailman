@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -12,10 +12,10 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
-"""Unit tests for the various Mailman/Handlers/*.py modules.
-"""
+"""Unit tests for the various Mailman/Handlers/*.py modules."""
 
 import os
 import sha
@@ -24,14 +24,14 @@ import email
 import errno
 import cPickle
 import unittest
-from types import ListType
+
 from email.Generator import Generator
 
-from Mailman import mm_cfg
-from Mailman.MailList import MailList
-from Mailman import Message
 from Mailman import Errors
+from Mailman import Message
+from Mailman import mm_cfg
 from Mailman import Pending
+from Mailman.MailList import MailList
 from Mailman.Queue.Switchboard import Switchboard
 
 from Mailman.Handlers import Acknowledge

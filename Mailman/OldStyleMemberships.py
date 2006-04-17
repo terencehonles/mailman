@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -12,7 +12,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """Old style Mailman membership adaptor.
 
@@ -24,12 +25,11 @@ This is the adaptor used by default in Mailman 2.1.
 """
 
 import time
-from types import StringType
 
-from Mailman import mm_cfg
-from Mailman import Utils
 from Mailman import Errors
+from Mailman import mm_cfg
 from Mailman import MemberAdaptor
+from Mailman import Utils
 
 ISREGULAR = 1
 ISDIGEST = 2
@@ -63,13 +63,13 @@ class OldStyleMemberships(MemberAdaptor.MemberAdaptor):
         missing = []
         val = self.__mlist.members.get(lcmember, missing)
         if val is not missing:
-            if isinstance(val, StringType):
+            if isinstance(val, str):
                 return val, ISREGULAR
             else:
                 return lcmember, ISREGULAR
         val = self.__mlist.digest_members.get(lcmember, missing)
         if val is not missing:
-            if isinstance(val, StringType):
+            if isinstance(val, str):
                 return val, ISDIGEST
             else:
                 return lcmember, ISDIGEST

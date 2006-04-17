@@ -28,7 +28,6 @@ import logging
 
 from email.Utils import unquote, parseaddr, formataddr
 from string import lowercase, digits
-from types import *
 
 from Mailman import Errors
 from Mailman import i18n
@@ -119,7 +118,7 @@ def main():
         # POST methods, even if their actions have a query string, don't get
         # put into FieldStorage's keys :-(
         qs = parsedqs.get('VARHELP')
-        if qs and isinstance(qs, ListType):
+        if qs and isinstance(qs, list):
             varhelp = qs[0]
     if varhelp:
         option_help(mlist, varhelp)
@@ -536,7 +535,7 @@ def show_variables(mlist, category, subcat, cgidata, doc):
     # The very first item in the config info will be treated as a general
     # description if it is a string
     description = options[0]
-    if isinstance(description, StringType):
+    if isinstance(description, str):
         table.AddRow([description])
         table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
         options = options[1:]
@@ -553,7 +552,7 @@ def show_variables(mlist, category, subcat, cgidata, doc):
                       width='85%')
 
     for item in options:
-        if type(item) == StringType:
+        if isinstance(type, str):
             # The very first banner option (string in an options list) is
             # treated as a general description, while any others are
             # treated as section headers - centered and italicized...
@@ -1084,7 +1083,7 @@ def membership_options(mlist, subcat, cgidata, doc, form):
     qsenviron = os.environ.get('QUERY_STRING')
     if qsenviron:
         qs = cgi.parse_qs(qsenviron).get('legend')
-        if qs and isinstance(qs, ListType):
+        if qs and isinstance(qs, list):
             qs = qs[0]
         if qs == 'yes':
             addlegend = 'legend=yes&'
@@ -1409,7 +1408,7 @@ def change_options(mlist, category, subcat, cgidata, doc):
     # do the user options for members category
     if cgidata.has_key('setmemberopts_btn') and cgidata.has_key('user'):
         user = cgidata['user']
-        if type(user) is ListType:
+        if isinstance(user, list):
             users = []
             for ui in range(len(user)):
                 users.append(urllib.unquote(user[ui].value))

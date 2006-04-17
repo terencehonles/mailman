@@ -25,7 +25,6 @@ import email
 import errno
 import signal
 
-from types import ListType
 from urllib import quote_plus, unquote_plus
 
 from Mailman import Errors
@@ -126,13 +125,13 @@ def main():
         # POST methods, even if their actions have a query string, don't get
         # put into FieldStorage's keys :-(
         qs = cgi.parse_qs(envar).get('sender')
-        if qs and type(qs) == ListType:
+        if qs and isinstance(qs, list):
             sender = qs[0]
         qs = cgi.parse_qs(envar).get('msgid')
-        if qs and type(qs) == ListType:
+        if qs and isinstance(qs, list):
             msgid = qs[0]
         qs = cgi.parse_qs(envar).get('details')
-        if qs and type(qs) == ListType:
+        if qs and isinstance(qs, list):
             details = qs[0]
 
     # We need a signal handler to catch the SIGTERM that can come from Apache
@@ -753,7 +752,7 @@ def process_form(mlist, doc, cgidata):
     erroraddrs = []
     for k in cgidata.keys():
         formv = cgidata[k]
-        if type(formv) == ListType:
+        if isinstance(formv, list):
             continue
         try:
             v = int(formv.value)

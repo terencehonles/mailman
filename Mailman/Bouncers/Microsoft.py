@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -12,13 +12,13 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """Microsoft's `SMTPSVC' nears I kin tell."""
 
 import re
 from cStringIO import StringIO
-from types import ListType
 
 scre = re.compile(r'transcript of session follows', re.IGNORECASE)
 
@@ -34,7 +34,7 @@ def process(msg):
         # The message *looked* like a multipart but wasn't
         return None
     data = subpart.get_payload()
-    if isinstance(data, ListType):
+    if isinstance(data, list):
         # The message is a multi-multipart, so not a matching bounce
         return None
     body = StringIO(data)

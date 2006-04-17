@@ -27,8 +27,6 @@ for python and, recursively, for nested HTML formatting objects.
 # shouldn't be adding their own newlines.  The next object should.
 
 
-import types
-
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman.i18n import _
@@ -641,11 +639,11 @@ class SelectOptions:
       self.multiple = multiple
       # we convert any type to tuple, commas are needed
       if not multiple:
-         if type(selected) == types.IntType:
+         if isinstance(selected, int):
              self.selected = (selected,)
-         elif type(selected) == types.TupleType:
+         elif isinstance(selected, tuple):
              self.selected = (selected[0],)
-         elif type(selected) == types.ListType:
+         elif isinstance(selected, list):
              self.selected = (selected[0],)
          else:
              self.selected = (0,)

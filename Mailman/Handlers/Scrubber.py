@@ -28,7 +28,6 @@ import tempfile
 
 from cStringIO import StringIO
 from mimetypes import guess_all_extensions
-from types import IntType, StringType
 
 from email.Charset import Charset
 from email.Generator import Generator
@@ -189,7 +188,7 @@ An embedded and charset-unspecified text was scrubbed...
 Name: %(filename)s
 Url: %(url)s
 """), lcset)
-        elif ctype == 'text/html' and isinstance(sanitize, IntType):
+        elif ctype == 'text/html' and isinstance(sanitize, int):
             if sanitize == 0:
                 if outer:
                     raise DiscardMessage
@@ -352,7 +351,7 @@ Url : %(url)s
                 except (UnicodeError, LookupError, ValueError):
                     t = t.encode(lcset, 'replace')
             # Separation is useful
-            if isinstance(t, StringType):
+            if isinstance(t, str):
                 if not t.endswith('\n'):
                     t += '\n'
                 text.append(t)

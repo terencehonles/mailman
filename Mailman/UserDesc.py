@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2004 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -12,12 +12,10 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """User description class/structure, for ApprovedAddMember and friends."""
-
-
-from types import UnicodeType
 
 
 
@@ -59,9 +57,9 @@ class UserDesc:
             digest = 'yes'
         language = getattr(self, 'language', 'n/a')
         # Make sure fullname and password are encoded if they're strings
-        if isinstance(fullname, UnicodeType):
+        if isinstance(fullname, unicode):
             fullname = fullname.encode('ascii', 'replace')
-        if isinstance(password, UnicodeType):
+        if isinstance(password, unicode):
             password = password.encode('ascii', 'replace')
         return '<UserDesc %s (%s) [%s] [digest? %s] [%s]>' % (
             address, fullname, password, digest, language)

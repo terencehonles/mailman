@@ -39,7 +39,6 @@ import email.Iterators
 
 from email.Errors import HeaderParseError
 from string import ascii_letters, digits, whitespace
-from types import UnicodeType
 
 from Mailman import Errors
 from Mailman import Site
@@ -787,7 +786,7 @@ def canonstr(s, lang=None):
             else:
                 newparts.append(c)
     newstr = EMPTYSTRING.join(newparts)
-    if isinstance(newstr, UnicodeType):
+    if isinstance(newstr, unicode):
         return newstr
     # We want the default fallback to be iso-8859-1 even if the language is
     # English (us-ascii).  This seems like a practical compromise so that
@@ -818,7 +817,7 @@ def uncanonstr(s, lang=None):
     # set.  If so, return it unchanged, except for coercing it to a byte
     # string.
     try:
-        if isinstance(s, UnicodeType):
+        if isinstance(s, unicode):
             return s.encode(charset)
         else:
             u = unicode(s, charset)

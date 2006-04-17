@@ -57,7 +57,6 @@ import logging
 import marshal
 import binascii
 
-from types import StringType, TupleType
 from urlparse import urlparse
 
 from Mailman import Errors
@@ -228,7 +227,7 @@ class SecurityManager:
 
     def MakeCookie(self, authcontext, user=None):
         key, secret = self.AuthContextInfo(authcontext, user)
-        if key is None or secret is None or not isinstance(secret, StringType):
+        if key is None or secret is None or not isinstance(secret, str):
             raise ValueError
         # Timestamp
         issued = int(time.time())
@@ -310,7 +309,7 @@ class SecurityManager:
             key, secret = self.AuthContextInfo(authcontext, user)
         except Errors.NotAMemberError:
             return False
-        if not c.has_key(key) or not isinstance(secret, StringType):
+        if not c.has_key(key) or not isinstance(secret, str):
             return False
         # Undo the encoding we performed in MakeCookie() above.  BAW: I
         # believe this is safe from exploit because marshal can't be forced to
