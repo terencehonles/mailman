@@ -22,6 +22,7 @@ import re
 import sha
 import time
 import errno
+import logging
 import binascii
 import tempfile
 
@@ -40,7 +41,6 @@ from Mailman import LockFile
 from Mailman import Utils
 from Mailman.Errors import DiscardMessage
 from Mailman.i18n import _
-from Mailman.Logging.Syslog import syslog
 
 # Path characters for common platforms
 pre = re.compile(r'[/\\:]')
@@ -52,6 +52,8 @@ dre = re.compile(r'^\.*')
 
 BR = '<br>\n'
 SPACE = ' '
+
+log = logging.getLogger('mailman.error')
 
 
 
@@ -464,9 +466,8 @@ def save_attachment(mlist, msg, dir, filter_html=True):
             decodedpayload = progfp.read()
             status = progfp.close()
             if status:
-                syslog('error',
-                       'HTML sanitizer exited with non-zero status: %s',
-                       status)
+                log.error('HTML sanitizer exited with non-zero status: %s',
+                          status)
         finally:
             os.unlink(tmppath)
         # BAW: Since we've now sanitized the document, it should be plain

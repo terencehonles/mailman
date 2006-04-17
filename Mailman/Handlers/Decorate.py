@@ -17,22 +17,19 @@
 
 """Decorate a message by sticking the header and footer around it."""
 
-from types import ListType
-from email.MIMEText import MIMEText
+import logging
 
+from email.MIMEText import MIMEText
+from types import ListType
+
+from Mailman import Errors
 from Mailman import mm_cfg
 from Mailman import Utils
-from Mailman import Errors
-from Mailman.Message import Message
 from Mailman.i18n import _
+from Mailman.Message import Message
 from Mailman.SafeDict import SafeDict
-from Mailman.Logging.Syslog import syslog
 
-try:
-    True, False
-except:
-    True = 1
-    False = 0
+log = logging.getLogger('mailman.error')
 
 
 
@@ -213,7 +210,7 @@ def decorate(mlist, template, what, extradict={}):
     try:
         text = (template % d).replace('\r\n', '\n')
     except (ValueError, TypeError), e:
-        syslog('error', 'Exception while calculating %s:\n%s', what, e)
+        log.error('Exception while calculating %s:\n%s', what, e)
         what = what.upper()
         text = template
     return text

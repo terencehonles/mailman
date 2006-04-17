@@ -18,20 +18,22 @@
 """Script which implements admin editing of the list's html templates."""
 
 import os
+import re
 import cgi
 import errno
-import re
+import logging
 
-from Mailman import Utils
+from Mailman import Errors
+from Mailman import i18n
 from Mailman import MailList
+from Mailman import Utils
+from Mailman.Cgi import Auth
 from Mailman.htmlformat import *
 from Mailman.HTMLFormatter import HTMLFormatter
-from Mailman import Errors
-from Mailman.Cgi import Auth
-from Mailman.Logging.Syslog import syslog
-from Mailman import i18n
 
 _ = i18n._
+
+log = logging.getLogger('mailman.error')
 
 
 
@@ -69,7 +71,7 @@ def main():
         safelistname = Utils.websafe(listname)
         doc.AddItem(Header(2, _('No such list <em>%(safelistname)s</em>')))
         print doc.Format()
-        syslog('error', 'No such list "%s": %s', listname, e)
+        log.error('No such list "%s": %s', listname, e)
         return
 
     # Now that we have a valid list, set the language to its default

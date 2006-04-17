@@ -49,7 +49,7 @@ VAR_DIRS= \
 
 ARCH_INDEP_DIRS= \
 	bin templates scripts cron pythonlib \
-	Mailman Mailman/Cgi Mailman/Logging Mailman/Archiver \
+	Mailman Mailman/Cgi Mailman/Archiver \
 	Mailman/Handlers Mailman/Queue Mailman/Bouncers	 \
 	Mailman/MTA Mailman/Gui Mailman/Commands messages icons \
 	tests tests/bounces tests/msgs

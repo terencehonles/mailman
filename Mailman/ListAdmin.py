@@ -28,6 +28,7 @@ import time
 import email
 import errno
 import cPickle
+import logging
 import marshal
 
 from cStringIO import StringIO
@@ -36,11 +37,10 @@ from email.MIMEMessage import MIMEMessage
 from email.Utils import getaddresses
 
 from Mailman import Errors
-from Mailman import Message
-from Mailman import Utils
 from Mailman import i18n
+from Mailman import Message
 from Mailman import mm_cfg
-from Mailman.Logging.Syslog import syslog
+from Mailman import Utils
 from Mailman.Queue.sbcache import get_switchboard
 from Mailman.UserDesc import UserDesc
 
@@ -59,6 +59,8 @@ LOST = 2
 
 DASH = '-'
 NL = '\n'
+
+log = logging.getLogger('mailman.vette')
 
 
 
@@ -277,8 +279,8 @@ class ListAdmin:
             # message directly here can lead to a huge delay in web
             # turnaround.  Log the moderation and add a header.
             msg['X-Mailman-Approved-At'] = email.Utils.formatdate(localtime=1)
-            syslog('vette', 'held message approved, message-id: %s',
-                   msg.get('message-id', 'n/a'))
+            log.info('held message approved, message-id: %s',
+                     msg.get('message-id', 'n/a'))
             # Stick the message back in the incoming queue for further
             # processing.
             inq = get_switchboard(mm_cfg.INQUEUE_DIR)
@@ -344,7 +346,7 @@ class ListAdmin:
                 }
             if comment:
                 note += '\n\tReason: ' + comment.replace('%', '%%')
-            syslog('vette', note)
+            log.info('%s', note)
         # Always unlink the file containing the message text.  It's not
         # necessary anymore, regardless of the disposition of the message.
         if status <> DEFER:
@@ -376,8 +378,8 @@ class ListAdmin:
         #
         # TBD: this really shouldn't go here but I'm not sure where else is
         # appropriate.
-        syslog('vette', '%s: held subscription request from %s',
-               self.internal_name(), addr)
+        log.info('%s: held subscription request from %s',
+                 self.internal_name(), addr)
         # Possibly notify the administrator in default list language
         if self.admin_immed_notify:
             realname = self.real_name
@@ -428,8 +430,8 @@ class ListAdmin:
         id = self.__nextid()
         # All we need to do is save the unsubscribing address
         self.__db[id] = (UNSUBSCRIPTION, addr)
-        syslog('vette', '%s: held unsubscription request from %s',
-               self.internal_name(), addr)
+        log.info('%s: held unsubscription request from %s',
+                 self.internal_name(), addr)
         # Possibly notify the administrator of the hold
         if self.admin_immed_notify:
             realname = self.real_name

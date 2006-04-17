@@ -1,4 +1,4 @@
-# Copyright (C) 2002 by the Free Software Foundation, Inc.
+# Copyright (C) 2002-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -12,7 +12,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """Maildir pre-queue runner.
 
@@ -51,6 +52,7 @@ mechanism.
 import os
 import re
 import errno
+import logging
 
 from email.Parser import Parser
 from email.Utils import parseaddr
@@ -60,7 +62,6 @@ from Mailman import Utils
 from Mailman.Message import Message
 from Mailman.Queue.Runner import Runner
 from Mailman.Queue.sbcache import get_switchboard
-from Mailman.Logging.Syslog import syslog
 
 # We only care about the listname and the subq as in listname@ or
 # listname-request@
@@ -72,6 +73,8 @@ lre = re.compile(r"""
    (?P<subq>[^-+@]+)      # everything up to + or - or @
  )?                       # if it exists
  """, re.VERBOSE | re.IGNORECASE)
+
+log = logging.getLogger('mailman.error')
 
 
 
@@ -110,7 +113,7 @@ class MaildirRunner(Runner):
                 if e.errno == errno.ENOENT:
                     # Some other MaildirRunner beat us to it
                     continue
-                syslog('error', 'Could not rename maildir file: %s', srcname)
+                log.error('Could not rename maildir file: %s', srcname)
                 raise
             # Now open, read, parse, and enqueue this message
             try:
@@ -139,8 +142,8 @@ class MaildirRunner(Runner):
                 else:
                     # As far as we can tell, this message isn't destined for
                     # any list on the system.  What to do?
-                    syslog('error', 'Message apparently not for any list: %s',
-                           xdstname)
+                    log.error('Message apparently not for any list: %s',
+                              xdstname)
                     os.rename(dstname, xdstname)
                     continue
                 # BAW: blech, hardcoded
@@ -171,14 +174,14 @@ class MaildirRunner(Runner):
                     msgdata['torequest'] = 1
                     queue = get_switchboard(mm_cfg.CMDQUEUE_DIR)
                 else:
-                    syslog('error', 'Unknown sub-queue: %s', subq)
+                    log.error('Unknown sub-queue: %s', subq)
                     os.rename(dstname, xdstname)
                     continue
                 queue.enqueue(msg, msgdata)
                 os.unlink(dstname)
             except Exception, e:
                 os.rename(dstname, xdstname)
-                syslog('error', str(e))
+                log.error('%s', e)
 
     def _cleanup(self):
         pass

@@ -30,6 +30,7 @@ import shutil
 import socket
 import urllib
 import cPickle
+import logging
 import marshal
 import email.Iterators
 
@@ -64,16 +65,20 @@ from Mailman.TopicMgr import TopicMgr
 from Mailman import Gui
 
 # Other useful classes
+from Mailman import i18n
 from Mailman import MemberAdaptor
 from Mailman import Message
 from Mailman import Site
-from Mailman import i18n
-from Mailman.Logging.Syslog import syslog
 from Mailman.OldStyleMemberships import OldStyleMemberships
 
 _ = i18n._
 
 EMPTYSTRING = ''
+
+clog    = logging.getLogger('mailman.config')
+elog    = logging.getLogger('mailman.error')
+vlog    = logging.getLogger('mailman.vette')
+slog    = logging.getLogger('mailman.subscribe')
 
 
 
@@ -111,7 +116,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             if e.errno == errno.ENOENT:
                 pass
             else:
-                syslog('error', 'IOError reading list extension: %s', e)
+                elog.error('IOError reading list extension: %s', e)
         else:
             func = dict.get('extend')
             if func:
@@ -515,8 +520,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
                 os.fsync(fp.fileno())
             fp.close()
         except IOError, e:
-            syslog('error',
-                   'Failed config.pck write, retaining old state.\n%s', e)
+            elog.error('Failed config.pck write, retaining old state.\n%s', e)
             if fp is not None:
                 os.unlink(fname_tmp)
             raise
@@ -624,8 +628,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             if dict is None:
                 if e is not None:
                     # Had problems with this file; log it and try the next one.
-                    syslog('error', "couldn't load config file %s\n%s",
-                           file, e)
+                    elog.error("couldn't load config file %s\n%s", file, e)
                 else:
                     # We already have the most up-to-date state
                     return
@@ -633,15 +636,15 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
                 break
         else:
             # Nothing worked, so we have to give up
-            syslog('error', 'All %s fallbacks were corrupt, giving up',
-                   self.internal_name())
+            elog.error('All %s fallbacks were corrupt, giving up',
+                       self.internal_name())
             raise Errors.MMCorruptListDatabaseError, e
         # Now, if we didn't end up using the primary database file, we want to
         # copy the fallback into the primary so that the logic in Save() will
         # still work.  For giggles, we'll copy it to a safety backup.  Note we
         # MUST do this with the underlying list lock acquired.
         if file == plast or file == dlast:
-            syslog('error', 'fixing corrupt config file, using: %s', file)
+            elog.error('fixing corrupt config file, using: %s', file)
             unlock = True
             try:
                 try:
@@ -733,8 +736,8 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             if self.reply_to_address.strip() and self.reply_goes_to_list:
                 Utils.ValidateEmail(self.reply_to_address)
         except Errors.EmailAddressError:
-            syslog('error', 'Bad reply_to_address "%s" cleared for list: %s',
-                   self.reply_to_address, self.internal_name())
+            elog.error('Bad reply_to_address "%s" cleared for list: %s',
+                       self.reply_to_address, self.internal_name())
             self.reply_to_address = ''
             self.reply_goes_to_list = 0
         # Legacy topics may have bad regular expressions in their patterns
@@ -743,8 +746,8 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             try:
                 re.compile(pattern)
             except (re.error, TypeError):
-                syslog('error', 'Bad topic pattern "%s" for list: %s',
-                       pattern, self.internal_name())
+                elog.error('Bad topic pattern "%s" for list: %s',
+                           pattern, self.internal_name())
             else:
                 goodtopics.append((name, pattern, desc, emptyflag))
         self.topics = goodtopics
@@ -842,8 +845,8 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         # Is the subscribing address banned from this list?
         pattern = self.GetBannedPattern(email)
         if pattern:
-            syslog('vette', '%s banned subscription: %s (matched: %s)',
-                   realname, email, pattern)
+            vlog.error('%s banned subscription: %s (matched: %s)',
+                       realname, email, pattern)
             raise Errors.MembershipIsBanned, pattern
         # Sanity check the digest flag
         if digest and not self.digestable:
@@ -896,8 +899,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             msg['Reply-To'] = self.GetRequestEmail(cookie)
             msg.send(self)
             who = formataddr((name, email))
-            syslog('subscribe', '%s: pending %s %s',
-                   self.internal_name(), who, by)
+            slog.info('%s: pending %s %s', self.internal_name(), who, by)
             raise Errors.MMSubscribeNeedsConfirmation
         elif self.HasAutoApprovedSender(email):
             # no approval necessary:
@@ -965,8 +967,8 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             kind = ' (digest)'
         else:
             kind = ''
-        syslog('subscribe', '%s: new%s %s, %s', self.internal_name(),
-               kind, formataddr((name, email)), whence)
+        slog.info('%s: new%s %s, %s', self.internal_name(),
+                  kind, formataddr((name, email)), whence)
         if ack:
             self.SendSubscribeAck(email, self.getMemberPassword(email),
                                   digest, text)
@@ -1027,8 +1029,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             whence = "; %s" % whence
         else:
             whence = ""
-        syslog('subscribe', '%s: deleted %s%s',
-               self.internal_name(), name, whence)
+        slog.info('%s: deleted %s%s', self.internal_name(), name, whence)
 
     def ChangeMemberName(self, addr, name, globally):
         self.setMemberName(addr, name)
@@ -1071,9 +1072,8 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         # too harsh.
         pattern = self.GetBannedPattern(newaddr)
         if pattern:
-            syslog('vette',
-                   '%s banned address change: %s -> %s (matched: %s)',
-                   realname, oldaddr, newaddr, pattern)
+            vlog.error('%s banned address change: %s -> %s (matched: %s)',
+                       realname, oldaddr, newaddr, pattern)
             raise Errors.MembershipIsBanned, pattern
         # Pend the subscription change
         cookie = self.pend_new(Pending.CHANGE_OF_ADDRESS,
@@ -1153,8 +1153,8 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
 
     def log_and_notify_admin(self, oldaddr, newaddr):
         """Log member address change and notify admin if requested."""
-        syslog('subscribe', '%s: changed member address from %s to %s',
-               self.internal_name(), oldaddr, newaddr)
+        slog.info('%s: changed member address from %s to %s',
+                  self.internal_name(), oldaddr, newaddr)
         if self.admin_notify_mchanges:
             lang = self.preferred_language
             otrans = i18n.get_translation()
@@ -1299,7 +1299,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             except KeyError:
                 # Most likely because the message has already been disposed of
                 # via the admindb page.
-                syslog('error', 'Could not process HELD_MESSAGE: %s', id)
+                elog.error('Could not process HELD_MESSAGE: %s', id)
             return (op,)
         elif op == Pending.RE_ENABLE:
             member = data[1]
@@ -1417,8 +1417,8 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             if i < 0:
                 # This didn't look like a header line.  BAW: should do a
                 # better job of informing the list admin.
-                syslog('config', 'bad bounce_matching_header line: %s\n%s',
-                       self.real_name, line)
+                clog.error('bad bounce_matching_header line: %s\n%s',
+                           self.real_name, line)
             else:
                 header = line[:i]
                 value = line[i+1:].lstrip()
@@ -1427,9 +1427,9 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
                 except re.error, e:
                     # The regexp was malformed.  BAW: should do a better
                     # job of informing the list admin.
-                    syslog('config', '''\
+                    clog.error("""\
 bad regexp in bounce_matching_header line: %s
-\n%s (cause: %s)''', self.real_name, value, e)
+\n%s (cause: %s)""", self.real_name, value, e)
                 else:
                     all.append((header, cre, line))
         return all
@@ -1471,12 +1471,10 @@ bad regexp in bounce_matching_header line: %s
         date, count = info
         if count < 0:
             # They've already hit the limit for today.
-            syslog('vette', '-request/hold autoresponse discarded for: %s',
-                   sender)
+            vlog.info('-request/hold autoresponse discarded for: %s', sender)
             return 0
         if count >= mm_cfg.MAX_AUTORESPONSES_PER_DAY:
-            syslog('vette', '-request/hold autoresponse limit hit for: %s',
-                   sender)
+            vlog.info('-request/hold autoresponse limit hit for: %s', sender)
             self.hold_and_cmd_autoresponses[sender] = (today, -1)
             # Send this notification message instead
             text = Utils.maketext(
@@ -1509,8 +1507,8 @@ bad regexp in bounce_matching_header line: %s
         auto_approve = False
         if self.GetPattern(sender, self.subscribe_auto_approval):
             auto_approve = True
-            syslog('vette', '%s: auto approved subscribe from %s',
-                   self.internal_name(), sender)
+            vlog.info('%s: auto approved subscribe from %s',
+                      self.internal_name(), sender)
         return auto_approve
 
     def GetPattern(self, email, pattern_list):

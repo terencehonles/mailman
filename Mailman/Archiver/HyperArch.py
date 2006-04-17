@@ -33,6 +33,7 @@ import time
 import errno
 import types
 import urllib
+import logging
 import weakref
 import binascii
 
@@ -48,10 +49,10 @@ from Mailman import LockFile
 from Mailman import MailList
 from Mailman.Archiver import HyperDatabase
 from Mailman.Archiver import pipermail
-from Mailman.Logging.Syslog import syslog
 from Mailman.Mailbox import ArchiverMailbox
 from Mailman.SafeDict import SafeDict
 
+log = logging.getLogger('mailman.error')
 
 # Set up i18n.  Assume the current language has already been set in the caller.
 _ = i18n._
@@ -329,7 +330,7 @@ class Article(pipermail.Article):
             try:
                 mlist = MailList.MailList(listname, lock=0)
             except Errors.MMListError, e:
-                syslog('error', 'error opening list: %s\n%s', listname, e)
+                log.error('error opening list: %s\n%s', listname, e)
                 return None
             else:
                 self._listcache[listname] = mlist
@@ -854,10 +855,9 @@ class HyperArchive(pipermail.T):
         # crashed during archiving. Save it, log an error, and move on.
         try:
             wf = open(wname)
-            syslog('error',
-                   'Archive working file %s present.  '
-                   'Check %s for possibly unarchived msgs',
-                   wname, ename)
+            log.error('Archive working file %s present.  '
+                      'Check %s for possibly unarchived msgs',
+                      wname, ename)
             omask = os.umask(007)
             try:
                 ef = open(ename, 'a+')

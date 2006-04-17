@@ -25,6 +25,7 @@ archival.
 import os
 import re
 import errno
+import logging
 import traceback
 
 from cStringIO import StringIO
@@ -34,8 +35,9 @@ from Mailman import Utils
 from Mailman import mm_cfg
 from Mailman import Mailbox
 from Mailman.i18n import _
-from Mailman.Logging.Syslog import syslog
 from Mailman.SafeDict import SafeDict
+
+log = logging.getLogger('mailman.error')
 
 
 
@@ -165,7 +167,7 @@ class Archiver:
             mbox.AppendMessage(post)
             mbox.fp.close()
         except IOError, msg:
-            syslog('error', 'Archive file access failure:\n\t%s %s', afn, msg)
+            log.error('Archive file access failure:\n\t%s %s', afn, msg)
             raise
 
     def ExternalArchive(self, ar, txt):
@@ -177,8 +179,8 @@ class Archiver:
         extarch.write(txt)
         status = extarch.close()
         if status:
-            syslog('error', 'external archiver non-zero exit status: %d\n',
-                   (status & 0xff00) >> 8)
+            log.error('external archiver non-zero exit status: %d\n',
+                      (status & 0xff00) >> 8)
 
     #
     # archiving in real time  this is called from list.post(msg)

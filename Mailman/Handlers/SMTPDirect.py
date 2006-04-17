@@ -30,21 +30,28 @@ import copy
 import time
 import email
 import socket
+import logging
 import smtplib
 
-from email.Utils import formataddr
-from email.Header import Header
 from email.Charset import Charset
+from email.Header import Header
+from email.Utils import formataddr
 from types import UnicodeType
 
 from Mailman import Errors
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman.Handlers import Decorate
-from Mailman.Logging.Syslog import syslog
 from Mailman.SafeDict import MsgSafeDict
 
 DOT = '.'
+
+log         = logging.getLogger('mailman.smtp')
+flog        = logging.getLogger('mailman.smtp-failure')
+every_log   = logging.getLogger('mailman.' + mm_cfg.SMTP_LOG_EVERY_MESSAGE[0])
+success_log = logging.getLogger('mailman.' + mm_cfg.SMTP_LOG_SUCCESS[0])
+refused_log = logging.getLogger('mailman.' + mm_cfg.SMTP_LOG_REFUSED[0])
+failure_log = logging.getLogger('mailman.' + mm_cfg.SMTP_LOG_EACH_FAILURE[0])
 
 
 
@@ -173,17 +180,14 @@ def process(mlist, msg, msgdata):
                           'sender'  : origsender,
                           })
     # We have to use the copy() method because extended call syntax requires a
-    # concrete dictionary object; it does not allow a generic mapping.  It's
-    # still worthwhile doing the interpolation in syslog() because it'll catch
-    # any catastrophic exceptions due to bogus format strings.
+    # concrete dictionary object; it does not allow a generic mapping (XXX is
+    # this still true in Python 2.3?).
     if mm_cfg.SMTP_LOG_EVERY_MESSAGE:
-        syslog.write_ex(mm_cfg.SMTP_LOG_EVERY_MESSAGE[0],
-                        mm_cfg.SMTP_LOG_EVERY_MESSAGE[1], kws=d)
+        every_log.info('%s', mm_cfg.SMTP_LOG_EVERY_MESSAGE[1] % d)
 
     if refused:
         if mm_cfg.SMTP_LOG_REFUSED:
-            syslog.write_ex(mm_cfg.SMTP_LOG_REFUSED[0],
-                            mm_cfg.SMTP_LOG_REFUSED[1], kws=d)
+            refused_log.info('%s', mm_cfg.SMTP_LOG_REFUSED[1] % d)
 
     elif msgdata.get('tolist'):
         # Log the successful post, but only if it really was a post to the
@@ -192,8 +196,7 @@ def process(mlist, msg, msgdata):
         # the other messages, but in that case, we should probably have a
         # separate configuration variable to control that.
         if mm_cfg.SMTP_LOG_SUCCESS:
-            syslog.write_ex(mm_cfg.SMTP_LOG_SUCCESS[0],
-                            mm_cfg.SMTP_LOG_SUCCESS[1], kws=d)
+            success_log.info('%s', mm_cfg.SMTP_LOG_SUCCESS[1] % d)
 
     # Process any failed deliveries.
     tempfailures = []
@@ -219,8 +222,7 @@ def process(mlist, msg, msgdata):
             d.update({'recipient': recip,
                       'failcode' : code,
                       'failmsg'  : smtpmsg})
-            syslog.write_ex(mm_cfg.SMTP_LOG_EACH_FAILURE[0],
-                            mm_cfg.SMTP_LOG_EACH_FAILURE[1], kws=d)
+            failure_log.info('%s', mm_cfg.SMTP_LOG_EACH_FAILURE[1] % d)
     # Return the results
     if tempfailures or permfailures:
         raise Errors.SomeRecipientsFailed(tempfailures, permfailures)
@@ -293,8 +295,7 @@ def verpdeliver(mlist, msg, msgdata, envsender, failures, conn):
                 # deliver it to this person, nor can we craft a valid verp
                 # header.  I don't think there's much we can do except ignore
                 # this recipient.
-                syslog('smtp', 'Skipping VERP delivery to unqual recip: %s',
-                       recip)
+                log.info('Skipping VERP delivery to unqual recip: %s', recip)
                 continue
             d = {'bounces': bmailbox,
                  'mailbox': rmailbox,
@@ -362,12 +363,11 @@ def bulkdeliver(mlist, msg, msgdata, envsender, failures, conn):
         # Send the message
         refused = conn.sendmail(envsender, recips, msgtext)
     except smtplib.SMTPRecipientsRefused, e:
-        syslog('smtp-failure', 'All recipients refused: %s, msgid: %s',
-               e, msgid)
+        flog.error('All recipients refused: %s, msgid: %s', e, msgid)
         refused = e.recipients
     except smtplib.SMTPResponseException, e:
-        syslog('smtp-failure', 'SMTP session failure: %s, %s, msgid: %s',
-               e.smtp_code, e.smtp_error, msgid)
+        flog.error('SMTP session failure: %s, %s, msgid: %s',
+                   e.smtp_code, e.smtp_error, msgid)
         # If this was a permanent failure, don't add the recipients to the
         # refused, because we don't want them to be added to failures.
         # Otherwise, if the MTA rejects the message because of the message
@@ -382,7 +382,7 @@ def bulkdeliver(mlist, msg, msgdata, envsender, failures, conn):
         # MTA not responding, or other socket problems, or any other kind of
         # SMTPException.  In that case, nothing got delivered, so treat this
         # as a temporary failure.
-        syslog('smtp-failure', 'Low level smtp error: %s, msgid: %s', e, msgid)
+        flog.error('Low level smtp error: %s, msgid: %s', e, msgid)
         error = str(e)
         for r in recips:
             refused[r] = (-1, error)

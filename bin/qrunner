@@ -75,11 +75,12 @@ operation.  It is only useful for debugging if it is run separately.
 import sys
 import getopt
 import signal
+import logging
 
 import paths
 from Mailman import mm_cfg
+from Mailman import loginit
 from Mailman.i18n import _
-from Mailman.Logging.Syslog import syslog
 from Mailman.Logging.Utils import LogStdErr
 
 PROGRAM = sys.argv[0]
@@ -87,6 +88,8 @@ COMMASPACE = ', '
 
 # Flag which says whether we're running under mailmanctl or not.
 AS_SUBPROC = 0
+
+log = logging.getLogger('mailman.qrunner')
 
 
 
@@ -133,7 +136,7 @@ def set_signals(loop):
         # Exit the qrunner cleanly
         loop.stop()
         loop.status = signal.SIGTERM
-        syslog('qrunner', '%s qrunner caught SIGTERM.  Stopping.', loop.name())
+        log.info('%s qrunner caught SIGTERM.  Stopping.', loop.name())
     signal.signal(signal.SIGTERM, sigterm_handler)
     # Set up the SIGINT handler for stopping the loop.  For us, SIGINT is
     # the same as SIGTERM, but our parent treats the exit statuses
@@ -142,14 +145,12 @@ def set_signals(loop):
         # Exit the qrunner cleanly
         loop.stop()
         loop.status = signal.SIGINT
-        syslog('qrunner', '%s qrunner caught SIGINT.  Stopping.', loop.name())
+        log.info('%s qrunner caught SIGINT.  Stopping.', loop.name())
     signal.signal(signal.SIGINT, sigint_handler)
-    # SIGHUP just tells us to close our log files.  They'll be
-    # automatically reopened at the next log print :)
+    # SIGHUP just tells us to rotate our log files.
     def sighup_handler(signum, frame, loop=loop):
-        syslog.close()
-        syslog('qrunner', '%s qrunner caught SIGHUP.  Reopening logs.',
-               loop.name())
+        loginit.reopen()
+        log.info('%s qrunner caught SIGHUP.  Reopening logs.', loop.name())
     signal.signal(signal.SIGHUP, sighup_handler)
 
 
@@ -214,11 +215,11 @@ def main():
     if len(runners) == 0:
         usage(1, _('No runner name given.'))
 
-    # Before we startup qrunners, we redirect the stderr to mailman syslog.
-    # We assume !AS_SUBPROC is running for debugging purpose and don't
-    # log errors in mailman logs/error but keep printing to stderr.
-    if AS_SUBPROC:
-        LogStdErr('error', 'qrunner', manual_reprime=0, tee_to_real_stderr=0)
+    # If we're not running as a subprocess of mailmanctl, then we'll log to
+    # stderr in addition to logging to the log files.  We do this by passing a
+    # value of True to propagate, which allows the 'mailman' root logger to
+    # see the log messages.
+    loginit.initialize(not AS_SUBPROC)
 
     # Fast track for one infinite runner
     if len(runners) == 1 and not once:
@@ -234,9 +235,9 @@ def main():
         loop = Loop(qrunner)
         set_signals(loop)
         # Now start up the main loop
-        syslog('qrunner', '%s qrunner started.', loop.name())
+        log.info('%s qrunner started.', loop.name())
         qrunner.run()
-        syslog('qrunner', '%s qrunner exiting.', loop.name())
+        log.info('%s qrunner exiting.', loop.name())
     else:
         # Anything else we have to handle a bit more specially
         qrunners = []
@@ -256,19 +257,19 @@ def main():
                 return self.__isdone
         loop = Loop()
         set_signals(loop)
-        syslog('qrunner', 'Main qrunner loop started.')
+        log.info('Main qrunner loop started.')
         while not loop.isdone():
             for qrunner in qrunners:
                 # In case the SIGTERM came in the middle of this iteration
                 if loop.isdone():
                     break
                 if verbose:
-                    syslog('qrunner', 'Now doing a %s qrunner iteration',
-                           qrunner.__class__.__bases__[0].__name__)
+                    log.info('Now doing a %s qrunner iteration',
+                             qrunner.__class__.__bases__[0].__name__)
                 qrunner.run()
             if once:
                 break
-        syslog('qrunner', 'Main qrunner loop exiting.')
+        log.info('Main qrunner loop exiting.')
     # All done
     sys.exit(loop.status)
 

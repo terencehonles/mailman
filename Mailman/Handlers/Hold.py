@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -12,7 +12,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """Determine whether this message should be held for approval.
 
@@ -28,21 +29,24 @@ message handling should stop.
 """
 
 import email
-from email.MIMEText import MIMEText
-from email.MIMEMessage import MIMEMessage
+import logging
 import email.Utils
+
+from email.MIMEMessage import MIMEMessage
+from email.MIMEText import MIMEText
 from types import ClassType
 
-from Mailman import mm_cfg
-from Mailman import Utils
 from Mailman import Errors
-from Mailman import Message
 from Mailman import i18n
+from Mailman import mm_cfg
+from Mailman import Message
 from Mailman import Pending
-from Mailman.Logging.Syslog import syslog
+from Mailman import Utils
 
-# First, play footsie with _ so that the following are marked as translated,
-# but aren't actually translated until we need the text later on.
+log = logging.getLogger('mailman.vette')
+
+# Play footsie with _ so that the following are marked as translated, but
+# aren't actually translated until we need the text later on.
 def _(s):
     return s
 
@@ -284,8 +288,8 @@ also appear in the first line of the body of the reply.""")),
         finally:
             i18n.set_translation(otranslation)
     # Log the held message
-    syslog('vette', '%s post from %s held, message-id=%s: %s',
-           listname, sender, message_id, reason)
+    log.info('%s post from %s held, message-id=%s: %s',
+             listname, sender, message_id, reason)
     # raise the specific MessageHeld exception to exit out of the message
     # delivery pipeline
     raise exc

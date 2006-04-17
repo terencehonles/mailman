@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -12,27 +12,29 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
-"""Produce listinfo page, primary web entry-point to mailing lists.
-"""
+"""Produce listinfo page, primary web entry-point to mailing lists."""
 
 # No lock needed in this script, because we don't change data.
 
 import os
 import cgi
+import logging
 
-from Mailman import mm_cfg
-from Mailman import Utils
-from Mailman import MailList
 from Mailman import Errors
 from Mailman import i18n
+from Mailman import MailList
+from Mailman import mm_cfg
+from Mailman import Utils
 from Mailman.htmlformat import *
-from Mailman.Logging.Syslog import syslog
 
 # Set up i18n
 _ = i18n._
 i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+
+log = logging.getLogger('mailman.error')
 
 
 
@@ -49,7 +51,7 @@ def main():
         # Avoid cross-site scripting attacks
         safelistname = Utils.websafe(listname)
         listinfo_overview(_('No such list <em>%(safelistname)s</em>'))
-        syslog('error', 'No such list "%s": %s', listname, e)
+        log.error('No such list "%s": %s', listname, e)
         return
 
     # See if the user want to see this page in other language

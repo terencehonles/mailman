@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -19,18 +19,18 @@
 
 import sys
 import time
+import logging
+
+from email.MIMEMessage import MIMEMessage
+from email.MIMEText import MIMEText
 from types import StringType
 
-from email.MIMEText import MIMEText
-from email.MIMEMessage import MIMEMessage
-
-from Mailman import mm_cfg
-from Mailman import Utils
-from Mailman import Message
 from Mailman import MemberAdaptor
+from Mailman import Message
 from Mailman import Pending
-from Mailman.Logging.Syslog import syslog
+from Mailman import Utils
 from Mailman import i18n
+from Mailman import mm_cfg
 
 EMPTYSTRING = ''
 
@@ -48,6 +48,9 @@ REASONS = {MemberAdaptor.BYBOUNCE: _('due to excessive bounces'),
            }
 
 _ = i18n._
+
+log     = logging.getLogger('mailman.bounce')
+slog    = logging.getLogger('mailman.subscribe')
 
 
 
@@ -114,21 +117,21 @@ class Bouncer:
             info = _BounceInfo(member, weight, day,
                                self.bounce_you_are_disabled_warnings)
             self.setBounceInfo(member, info)
-            syslog('bounce', '%s: %s bounce score: %s', self.internal_name(),
-                   member, info.score)
+            log.info('%s: %s bounce score: %s', self.internal_name(),
+                     member, info.score)
             # Continue to the check phase below
         elif self.getDeliveryStatus(member) <> MemberAdaptor.ENABLED:
             # The user is already disabled, so we can just ignore subsequent
             # bounces.  These are likely due to residual messages that were
             # sent before disabling the member, but took a while to bounce.
-            syslog('bounce', '%s: %s residual bounce received',
-                   self.internal_name(), member)
+            log.info('%s: %s residual bounce received',
+                     self.internal_name(), member)
             return
         elif info.date == day:
             # We've already scored any bounces for this day, so ignore it.
-            syslog('bounce', '%s: %s already scored a bounce for date %s',
-                   self.internal_name(), member,
-                   time.strftime('%d-%b-%Y', day + (0,0,0,0,1,0)))
+            log.info('%s: %s already scored a bounce for date %s',
+                     self.internal_name(), member,
+                     time.strftime('%d-%b-%Y', day + (0,0,0,0,1,0)))
             # Continue to check phase below
         else:
             # See if this member's bounce information is stale.
@@ -137,25 +140,24 @@ class Bouncer:
             if lastbounce + self.bounce_info_stale_after < now:
                 # Information is stale, so simply reset it
                 info.reset(weight, day, self.bounce_you_are_disabled_warnings)
-                syslog('bounce', '%s: %s has stale bounce info, resetting',
-                       self.internal_name(), member)
+                log.info('%s: %s has stale bounce info, resetting',
+                         self.internal_name(), member)
             else:
                 # Nope, the information isn't stale, so add to the bounce
                 # score and take any necessary action.
                 info.score += weight
                 info.date = day
-                syslog('bounce', '%s: %s current bounce score: %s',
-                       self.internal_name(), member, info.score)
+                log.info('%s: %s current bounce score: %s',
+                         self.internal_name(), member, info.score)
             # Continue to the check phase below
         #
         # Now that we've adjusted the bounce score for this bounce, let's
         # check to see if the disable-by-bounce threshold has been reached.
         if info.score >= self.bounce_score_threshold:
             if mm_cfg.VERP_PROBES:
-                syslog('bounce',
-                   'sending %s list probe to: %s (score %s >= %s)',
-                   self.internal_name(), member, info.score,
-                   self.bounce_score_threshold)
+                log.info('sending %s list probe to: %s (score %s >= %s)',
+                         self.internal_name(), member, info.score,
+                         self.bounce_score_threshold)
                 self.sendProbe(member, msg)
                 info.reset(0, info.date, info.noticesleft)
             else:
@@ -168,12 +170,12 @@ class Bouncer:
         info.cookie = cookie
         # Disable them
         if mm_cfg.VERP_PROBES:
-            syslog('bounce', '%s: %s disabling due to probe bounce received',
-                   self.internal_name(), member)
+            log.info('%s: %s disabling due to probe bounce received',
+                     self.internal_name(), member)
         else:
-            syslog('bounce', '%s: %s disabling due to bounce score %s >= %s',
-                   self.internal_name(), member,
-                   info.score, self.bounce_score_threshold)
+            log.info('%s: %s disabling due to bounce score %s >= %s',
+                     self.internal_name(), member,
+                     info.score, self.bounce_score_threshold)
         self.setDeliveryStatus(member, MemberAdaptor.BYBOUNCE)
         self.sendNextNotification(member)
         if self.bounce_notify_owner_on_disable:
@@ -226,14 +228,14 @@ class Bouncer:
             # returned data.
             self.pend_confirm(info.cookie)
             if reason == MemberAdaptor.BYBOUNCE:
-                syslog('bounce', '%s: %s deleted after exhausting notices',
-                       self.internal_name(), member)
-            syslog('subscribe', '%s: %s auto-unsubscribed [reason: %s]',
-                   self.internal_name(), member,
-                   {MemberAdaptor.BYBOUNCE: 'BYBOUNCE',
-                    MemberAdaptor.BYUSER: 'BYUSER',
-                    MemberAdaptor.BYADMIN: 'BYADMIN',
-                    MemberAdaptor.UNKNOWN: 'UNKNOWN'}.get(
+                log.info('%s: %s deleted after exhausting notices',
+                         self.internal_name(), member)
+            slog.info('%s: %s auto-unsubscribed [reason: %s]',
+                      self.internal_name(), member,
+                      {MemberAdaptor.BYBOUNCE: 'BYBOUNCE',
+                       MemberAdaptor.BYUSER: 'BYUSER',
+                       MemberAdaptor.BYADMIN: 'BYADMIN',
+                       MemberAdaptor.UNKNOWN: 'UNKNOWN'}.get(
                 reason, 'invalid value'))
             return
         # Send the next notification

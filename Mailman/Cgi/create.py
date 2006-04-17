@@ -22,6 +22,7 @@ import cgi
 import sha
 import sys
 import signal
+import logging
 
 from types import ListType
 
@@ -32,11 +33,12 @@ from Mailman import Message
 from Mailman import mm_cfg
 
 from Mailman.htmlformat import *
-from Mailman.Logging.Syslog import syslog
 
 # Set up i18n
 _ = i18n._
 i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+
+log = logging.getLogger('mailman.error')
 
 
 
@@ -52,7 +54,7 @@ def main():
         doc.SetTitle(title)
         doc.AddItem(
             Header(3, Bold(FontAttr(title, color='#ff0000', size='+2'))))
-        syslog('error', 'Bad URL specification: %s', parts)
+        log.error('Bad URL specification: %s', parts)
     elif cgidata.has_key('doit'):
         # We must be processing the list creation request
         process_request(doc, cgidata)

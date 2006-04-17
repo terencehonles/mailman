@@ -41,9 +41,8 @@ import cPickle
 import marshal
 
 from Mailman import Message
-from Mailman import Utils
 from Mailman import mm_cfg
-from Mailman.Logging.Syslog import syslog
+from Mailman import Utils
 
 # 20 bytes of all bits set, maximum sha.digest() value
 shamax = 0xffffffffffffffffffffffffffffffffffffffffL

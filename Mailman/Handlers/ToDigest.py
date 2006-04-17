@@ -29,6 +29,7 @@ import os
 import re
 import copy
 import time
+import logging
 
 from cStringIO import StringIO
 from email.Charset import Charset
@@ -42,13 +43,12 @@ from email.Utils import getaddresses, formatdate
 from types import ListType
 
 from Mailman import Errors
-from Mailman import Message
-from Mailman import Utils
 from Mailman import i18n
+from Mailman import Message
 from Mailman import mm_cfg
+from Mailman import Utils
 from Mailman.Handlers.Decorate import decorate
 from Mailman.Handlers.Scrubber import process as scrubber
-from Mailman.Logging.Syslog import syslog
 from Mailman.Mailbox import Mailbox
 from Mailman.Mailbox import Mailbox
 from Mailman.MemberAdaptor import ENABLED
@@ -58,6 +58,8 @@ _ = i18n._
 
 UEMPTYSTRING = u''
 EMPTYSTRING = ''
+
+log = logging.getLogger('mailman.error')
 
 
 
@@ -93,7 +95,7 @@ def process(mlist, msg, msgdata):
         except Exception, errmsg:
             # Bare except is generally prohibited in Mailman, but we can't
             # forecast what exceptions can occur here.
-            syslog('error', 'send_digests() failed: %s', errmsg)
+            log.error('send_digests() failed: %s', errmsg)
     mboxfp.close()
 
 

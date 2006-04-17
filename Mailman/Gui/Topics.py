@@ -20,7 +20,6 @@ import re
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman.i18n import _
-from Mailman.Logging.Syslog import syslog
 from Mailman.Gui.GUIBase import GUIBase
 
 

@@ -1,4 +1,4 @@
-# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -12,27 +12,25 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """A `safe' dictionary for string interpolation."""
-
-from types import StringType
-from UserDict import UserDict
 
 COMMASPACE = ', '
 
 
 
-class SafeDict(UserDict):
+class SafeDict(dict):
     """Dictionary which returns a default value for unknown keys.
 
     This is used in maketext so that editing templates is a bit more robust.
     """
     def __getitem__(self, key):
         try:
-            return self.data[key]
+            return super(SafeDict, self).__getitem__(key)
         except KeyError:
-            if isinstance(key, StringType):
+            if isinstance(key, basestring):
                 return '%('+key+')s'
             else:
                 return '<Missing key: %s>' % `key`
@@ -43,9 +41,11 @@ class SafeDict(UserDict):
 
 
 class MsgSafeDict(SafeDict):
-    def __init__(self, msg, dict=None):
+    def __init__(self, msg, d=None):
         self.__msg = msg
-        SafeDict.__init__(self, dict)
+        if d is None:
+            d = {}
+        super(MsgSafeDict, self).__init__(d)
 
     def __getitem__(self, key):
         if key.startswith('msg_'):
@@ -57,10 +57,10 @@ class MsgSafeDict(SafeDict):
                 return 'n/a'
             return COMMASPACE.join(all)
         else:
-            return SafeDict.__getitem__(self, key)
+            return super(MsgSafeDict, self).__getitem__(key)
 
     def copy(self):
-        d = self.data.copy()
+        d = super(MsgSafeDict, self).copy()
         for k in self.__msg.keys():
             vals = self.__msg.get_all(k)
             if len(vals) == 1:

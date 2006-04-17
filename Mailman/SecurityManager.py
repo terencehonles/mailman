@@ -12,8 +12,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """Handle passwords and sanitize approved messages."""
 
@@ -53,6 +53,7 @@ import sha
 import time
 import urllib
 import Cookie
+import logging
 import marshal
 import binascii
 
@@ -60,14 +61,15 @@ from types import StringType, TupleType
 from urlparse import urlparse
 
 from Mailman import Errors
-from Mailman import Utils
 from Mailman import mm_cfg
-from Mailman.Logging.Syslog import syslog
+from Mailman import Utils
 
 try:
     import crypt
 except ImportError:
     crypt = None
+
+log = logging.getLogger('mailman.error')
 
 
 
@@ -201,8 +203,8 @@ class SecurityManager:
                         pass
             else:
                 # What is this context???
-                syslog('error', 'Bad authcontext: %s', ac)
-                raise ValueError, 'Bad authcontext: %s' % ac
+                log.error('Bad authcontext: %s', ac)
+                raise ValueError('Bad authcontext: %s' % ac)
         return mm_cfg.UnAuthorized
 
     def WebAuthenticate(self, authcontexts, response, user=None):

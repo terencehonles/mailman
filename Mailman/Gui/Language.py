@@ -1,4 +1,4 @@
-# Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -12,17 +12,16 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
-"""MailList mixin class managing the language options.
-"""
+"""MailList mixin class managing the language options."""
 
 import codecs
 
+from Mailman import i18n
 from Mailman import mm_cfg
 from Mailman import Utils
-from Mailman import i18n
-from Mailman.Logging.Syslog import syslog
 from Mailman.Gui.GUIBase import GUIBase
 
 _ = i18n._

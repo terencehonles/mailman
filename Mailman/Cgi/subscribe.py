@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -12,24 +12,25 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """Process subscription or roster requests from listinfo form."""
 
-import sys
 import os
 import cgi
+import sys
 import signal
+import logging
 
-from Mailman import mm_cfg
-from Mailman import Utils
-from Mailman import MailList
 from Mailman import Errors
 from Mailman import i18n
+from Mailman import MailList
 from Mailman import Message
-from Mailman.UserDesc import UserDesc
+from Mailman import mm_cfg
+from Mailman import Utils
 from Mailman.htmlformat import *
-from Mailman.Logging.Syslog import syslog
+from Mailman.UserDesc import UserDesc
 
 SLASH = '/'
 ERRORSEP = '\n\n<p>'
@@ -37,6 +38,9 @@ ERRORSEP = '\n\n<p>'
 # Set up i18n
 _ = i18n._
 i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+
+log     = logging.getLogger('mailman.error')
+mlog    = logging.getLogger('mailman.mischief')
 
 
 
@@ -60,7 +64,7 @@ def main():
         doc.AddItem(Header(2, _("Error")))
         doc.AddItem(Bold(_('No such list <em>%(safelistname)s</em>')))
         print doc.Format()
-        syslog('error', 'No such list "%s": %s\n', listname, e)
+        log.error('No such list "%s": %s\n', listname, e)
         return
 
     # See if the form data has a preferred language set, in which case, use it
@@ -119,7 +123,7 @@ def process_form(mlist, doc, cgidata, lang):
                                            'unidentified origin'))
     # Was an attempt made to subscribe the list to itself?
     if email == mlist.GetListEmail():
-        syslog('mischief', 'Attempt to self subscribe %s: %s', email, remote)
+        mlog.error('Attempt to self subscribe %s: %s', email, remote)
         results.append(_('You may not subscribe a list to itself!'))
     # If the user did not supply a password, generate one for him
     password = cgidata.getvalue('pw')

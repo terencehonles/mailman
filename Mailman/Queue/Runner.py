@@ -19,17 +19,19 @@
 import time
 import weakref
 import traceback
+import logging
 import email.Errors
 
 from cStringIO import StringIO
 
 from Mailman import Errors
-from Mailman import MailList
-from Mailman import Utils
 from Mailman import i18n
+from Mailman import MailList
 from Mailman import mm_cfg
-from Mailman.Logging.Syslog import syslog
+from Mailman import Utils
 from Mailman.Queue.Switchboard import Switchboard
+
+log = logging.getLogger('mailman.error')
 
 
 
@@ -97,7 +99,7 @@ class Runner:
                 # There's not much we can do (and we didn't even get the
                 # metadata, so just log the exception and continue.
                 self._log(e)
-                syslog('error', 'Ignoring unparseable message: %s', filebase)
+                log.error('Ignoring unparseable message: %s', filebase)
                 continue
             try:
                 self._onefile(msg, msgdata)
@@ -112,7 +114,7 @@ class Runner:
                 # Put a marker in the metadata for unshunting
                 msgdata['whichq'] = self._switchboard.whichq()
                 filebase = self._shunt.enqueue(msg, msgdata)
-                syslog('error', 'SHUNTING: %s', filebase)
+                log.error('SHUNTING: %s', filebase)
             # Other work we want to do each time through the loop
             Utils.reap(self._kids, once=True)
             self._doperiodic()
@@ -133,9 +135,8 @@ class Runner:
             listname = mm_cfg.MAILMAN_SITE_LIST
         mlist = self._open_list(listname)
         if not mlist:
-            syslog('error',
-                   'Dequeuing message destined for missing list: %s',
-                   listname)
+            log.error('Dequeuing message destined for missing list: %s',
+                      listname)
             self._shunt.enqueue(msg, msgdata)
             return
         # Now process this message, keeping track of any subprocesses that may
@@ -178,17 +179,17 @@ class Runner:
             try:
                 mlist = MailList.MailList(listname, lock=False)
             except Errors.MMListError, e:
-                syslog('error', 'error opening list: %s\n%s', listname, e)
+                log.error('error opening list: %s\n%s', listname, e)
                 return None
             else:
                 self._listcache[listname] = mlist
         return mlist
 
     def _log(self, exc):
-        syslog('error', 'Uncaught runner exception: %s', exc)
+        log.error('Uncaught runner exception: %s', exc)
         s = StringIO()
         traceback.print_exc(file=s)
-        syslog('error', s.getvalue())
+        log.error('%s', s.getvalue())
 
     #
     # Subclasses can override these methods.

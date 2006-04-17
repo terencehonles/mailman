@@ -22,19 +22,21 @@ import grp
 import pwd
 import time
 import errno
+import logging
 
 from stat import *
 
 from Mailman import LockFile
-from Mailman import Utils
 from Mailman import mm_cfg
-from Mailman.Logging.Syslog import syslog
-from Mailman.MTA.Utils import makealiases
+from Mailman import Utils
 from Mailman.i18n import _
+from Mailman.MTA.Utils import makealiases
 
 LOCKFILE = os.path.join(mm_cfg.LOCK_DIR, 'creator')
 ALIASFILE = os.path.join(mm_cfg.DATA_DIR, 'aliases')
 VIRTFILE = os.path.join(mm_cfg.DATA_DIR, 'virtual-mailman')
+
+log = logging.getLogger('mailman.error')
 
 
 
@@ -44,15 +46,15 @@ def _update_maps():
     status = (os.system(acmd) >> 8) & 0xff
     if status:
         errstr = os.strerror(status)
-        syslog('error', msg, acmd, status, errstr)
-        raise RuntimeError, msg % (acmd, status, errstr)
+        log.error(msg, acmd, status, errstr)
+        raise RuntimeError(msg % (acmd, status, errstr))
     if os.path.exists(VIRTFILE):
         vcmd = mm_cfg.POSTFIX_MAP_CMD + ' ' + VIRTFILE
         status = (os.system(vcmd) >> 8) & 0xff
         if status:
             errstr = os.strerror(status)
-            syslog('error', msg, vcmd, status, errstr)
-            raise RuntimeError, msg % (vcmd, status, errstr)
+            log.error(msg, vcmd, status, errstr)
+            raise RuntimeError(msg % (vcmd, status, errstr))
 
 
 

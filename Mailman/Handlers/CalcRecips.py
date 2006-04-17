@@ -1,18 +1,19 @@
-# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """Calculate the regular (i.e. non-digest) recipients of the message.
 
@@ -22,13 +23,12 @@ on the `recips' attribute of the message.  This attribute is used by the
 SendmailDeliver and BulkDeliver modules.
 """
 
+from Mailman import Errors
+from Mailman import Message
 from Mailman import mm_cfg
 from Mailman import Utils
-from Mailman import Message
-from Mailman import Errors
-from Mailman.MemberAdaptor import ENABLED
 from Mailman.i18n import _
-from Mailman.Logging.Syslog import syslog
+from Mailman.MemberAdaptor import ENABLED
 
 
 
@@ -130,4 +130,3 @@ def do_topic_filters(mlist, msg, msgdata, recips):
     # Prune out the non-receiving users
     for user in zaprecips:
         recips.remove(user)
-    

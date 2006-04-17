@@ -21,10 +21,9 @@
 # bounce messages (i.e. -admin or -bounces), nor does it handle mail to
 # -owner.
 
-
-
 import re
 import sys
+import logging
 
 from email.Errors import HeaderParseError
 from email.Header import decode_header, make_header, Header
@@ -35,14 +34,15 @@ from types import StringType, UnicodeType
 
 from Mailman import LockFile
 from Mailman import Message
-from Mailman import Utils
 from Mailman import mm_cfg
+from Mailman import Utils
 from Mailman.Handlers import Replybot
-from Mailman.Logging.Syslog import syslog
-from Mailman.Queue.Runner import Runner
 from Mailman.i18n import _
+from Mailman.Queue.Runner import Runner
 
 NL = '\n'
+
+log = logging.getLogger('mailman.vette')
 
 
 
@@ -202,14 +202,14 @@ class CommandRunner(Runner):
         precedence = msg.get('precedence', '').lower()
         ack = msg.get('x-ack', '').lower()
         if ack <> 'yes' and precedence in ('bulk', 'junk', 'list'):
-            syslog('vette', 'Precedence: %s message discarded by: %s',
-                   precedence, mlist.GetRequestEmail())
+            log.info('Precedence: %s message discarded by: %s',
+                     precedence, mlist.GetRequestEmail())
             return False
         # Do replybot for commands
         mlist.Load()
         Replybot.process(mlist, msg, msgdata)
         if mlist.autorespond_requests == 1:
-            syslog('vette', 'replied and discard')
+            log.info('replied and discard')
             # w/discard
             return False
         # Now craft the response

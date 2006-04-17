@@ -20,20 +20,15 @@
 This module can also be used as the basis for a bounce detection testing
 framework.  When run as a script, it expects two arguments, the listname and
 the filename containing the bounce message.
-
 """
 
 import sys
-
-from Mailman.Logging.Syslog import syslog
 
 # If a bounce detector returns Stop, that means to just discard the message.
 # An example is warning messages for temporary delivery problems.  These
 # shouldn't trigger a bounce notification, but we also don't want to send them
 # on to the list administrator.
-class _Stop:
-    pass
-Stop = _Stop()
+Stop = object()
 
 
 BOUNCE_PIPELINE = [

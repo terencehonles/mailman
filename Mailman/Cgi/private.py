@@ -20,6 +20,7 @@
 import os
 import sys
 import cgi
+import logging
 import mimetypes
 
 from Mailman import mm_cfg
@@ -28,7 +29,6 @@ from Mailman import MailList
 from Mailman import Errors
 from Mailman import i18n
 from Mailman.htmlformat import *
-from Mailman.Logging.Syslog import syslog
 
 # Set up i18n.  Until we know which list is being requested, we use the
 # server's default.
@@ -36,6 +36,9 @@ _ = i18n._
 i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
 
 SLASH = '/'
+
+log     = logging.getLogger('mailman.error')
+mlog    = logging.getLogger('mailman.mischief')
 
 
 
@@ -73,7 +76,7 @@ def main():
         doc.SetTitle(msg)
         doc.AddItem(Header(2, msg))
         print doc.Format()
-        syslog('mischief', 'Private archive hostile path: %s', path)
+        mlog.error('Private archive hostile path: %s', path)
         return
     # BAW: This needs to be converted to the Site module abstraction
     true_filename = os.path.join(
@@ -109,7 +112,7 @@ def main():
         doc.SetTitle(_("Private Archive Error - %(msg)s"))
         doc.AddItem(Header(2, msg))
         print doc.Format()
-        syslog('error', 'No such list "%s": %s\n', listname, e)
+        log.error('No such list "%s": %s\n', listname, e)
         return
 
     i18n.set_language(mlist.preferred_language)
@@ -180,7 +183,7 @@ def main():
         doc.SetTitle(msg)
         doc.AddItem(Header(2, msg))
         print doc.Format()
-        syslog('error', 'Private archive file not found: %s', true_filename)
+        log.error('Private archive file not found: %s', true_filename)
     else:
         print 'Content-type: %s\n' % ctype
         sys.stdout.write(f.read())

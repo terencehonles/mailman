@@ -28,12 +28,13 @@ from Mailman import mm_cfg
 from Mailman import Pending
 
 from Mailman.htmlformat import *
-from Mailman.Logging.Syslog import syslog
 from Mailman.UserDesc import UserDesc
 
 # Set up i18n
 _ = i18n._
 i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+
+log = logging.getLogger('mailman.error')
 
 
 
@@ -57,7 +58,7 @@ def main():
         bad_confirmation(doc, _('No such list <em>%(safelistname)s</em>'))
         doc.AddItem(MailmanLogo())
         print doc.Format()
-        syslog('error', 'No such list "%s": %s', listname, e)
+        log.error('No such list "%s": %s', listname, e)
         return
 
     # Set the language for the list

@@ -19,6 +19,7 @@
 import re
 import email
 import socket
+import logging
 import nntplib
 
 from cStringIO import StringIO
@@ -26,11 +27,11 @@ from email.Utils import getaddresses
 
 COMMASPACE = ', '
 
-from Mailman import Utils
 from Mailman import mm_cfg
-from Mailman.Logging.Syslog import syslog
+from Mailman import Utils
 from Mailman.Queue.Runner import Runner
 
+log = logging.getLogger('mailman.error')
 
 # Matches our Mailman crafted Message-IDs.  See Utils.unique_message_id()
 mcre = re.compile(r"""
@@ -67,13 +68,11 @@ class NewsRunner(Runner):
                                         password=mm_cfg.NNTP_PASSWORD)
                     conn.post(fp)
                 except nntplib.error_temp, e:
-                    syslog('error',
-                           '(NNTPDirect) NNTP error for list "%s": %s',
-                           mlist.internal_name(), e)
+                    log.error('(NNTPDirect) NNTP error for list "%s": %s',
+                              mlist.internal_name(), e)
                 except socket.error, e:
-                    syslog('error',
-                           '(NNTPDirect) socket error for list "%s": %s',
-                           mlist.internal_name(), e)
+                    log.error('(NNTPDirect) socket error for list "%s": %s',
+                              mlist.internal_name(), e)
             finally:
                 if conn:
                     conn.quit()

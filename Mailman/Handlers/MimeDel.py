@@ -1,4 +1,4 @@
-# Copyright (C) 2002-2005 by the Free Software Foundation, Inc.
+# Copyright (C) 2002-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -26,19 +26,21 @@ contents.
 
 import os
 import errno
+import logging
 import tempfile
-from os.path import splitext
 
 from email.Iterators import typed_subpart_iterator
+from os.path import splitext
 
-from Mailman import mm_cfg
 from Mailman import Errors
+from Mailman import mm_cfg
+from Mailman.i18n import _
 from Mailman.Message import UserNotification
 from Mailman.Queue.sbcache import get_switchboard
-from Mailman.Logging.Syslog import syslog
-from Mailman.Version import VERSION
-from Mailman.i18n import _
 from Mailman.Utils import oneline
+from Mailman.Version import VERSION
+
+log = logging.getLogger('mailman.error')
 
 
 
@@ -204,7 +206,7 @@ def to_plaintext(msg):
             plaintext = cmd.read()
             rtn = cmd.close()
             if rtn:
-                syslog('error', 'HTML->text/plain error: %s', rtn)
+                log.error('HTML->text/plain error: %s', rtn)
         finally:
             try:
                 os.unlink(filename)

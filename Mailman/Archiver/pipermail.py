@@ -4,6 +4,7 @@ import os
 import re
 import sys
 import time
+import logging
 import mailbox
 
 import cPickle as pickle
@@ -17,11 +18,12 @@ VERSION = __version__
 CACHESIZE = 100    # Number of slots in the cache
 
 from Mailman import Errors
-from Mailman.Logging.Syslog import syslog
 from Mailman.Mailbox import ArchiverMailbox
 from Mailman.i18n import _
 
 SPACE = ' '
+
+log = logging.getLogger('mailman.error')
 
 
 
@@ -558,8 +560,7 @@ class T:
             except Errors.DiscardMessage:
                 continue
             except Exception:
-                syslog('error', 'uncaught archiver exception at filepos: %s',
-                       pos)
+                log.error('uncaught archiver exception at filepos: %s', pos)
                 raise
             if m is None:
                 break

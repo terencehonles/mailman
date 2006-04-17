@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -32,14 +32,16 @@ number of the list, and then does a .Save(), so the transformations won't be
 run again until another version change is detected.
 """
 
+import logging
 
 from types import ListType, StringType
 
 from Mailman import mm_cfg
-from Mailman import Utils
 from Mailman import Message
+from Mailman import Utils
 from Mailman.MemberAdaptor import UNKNOWN
-from Mailman.Logging.Syslog import syslog
+
+log = logging.getLogger('mailman.error')
 
 
 
@@ -172,7 +174,6 @@ def UpdateOldVars(l, stored_state):
     if hasattr(l, 'moderated'):
         # We'll assume we're converting all these attributes at once
         if l.moderated:
-            #syslog('debug', 'Case 1')
             for addr in l.posters:
                 if not l.isMember(addr):
                     l.accept_these_nonmembers.append(addr)
@@ -183,7 +184,6 @@ def UpdateOldVars(l, stored_state):
             l.generic_nonmember_action = 1
             l.default_member_moderation = 1
         elif l.member_posting_only:
-            #syslog('debug', 'Case 2')
             for addr in l.posters:
                 if not l.isMember(addr):
                     l.accept_these_nonmembers.append(addr)
@@ -192,13 +192,11 @@ def UpdateOldVars(l, stored_state):
             l.generic_nonmember_action = 1
             l.default_member_moderation = 0
         elif not l.posters:
-            #syslog('debug', 'Case 3')
             for member in l.getMembers():
                 l.setMemberOption(member, mm_cfg.Moderate, 0)
             l.generic_nonmember_action = 0
             l.default_member_moderation = 0
         else:
-            #syslog('debug', 'Case 4')
             for addr in l.posters:
                 if not l.isMember(addr):
                     l.accept_these_nonmembers.append(addr)
@@ -506,6 +504,6 @@ def NewRequestsDatabase(l):
                                    mm_cfg.DEFAULT_SERVER_LANGUAGE)
             del r[k]
         else:
-            syslog('error', """\
+            log.error("""\
 VERY BAD NEWS.  Unknown pending request type `%s' found for list: %s""",
                    k, l.internal_name())

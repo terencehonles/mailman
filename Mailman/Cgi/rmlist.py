@@ -1,4 +1,4 @@
-# Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -12,7 +12,8 @@
 # 
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software 
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """Remove/delete mailing lists through the web."""
 
@@ -21,18 +22,21 @@ import cgi
 import sys
 import errno
 import shutil
+import logging
 
-from Mailman import mm_cfg
-from Mailman import Utils
-from Mailman import MailList
 from Mailman import Errors
 from Mailman import i18n
+from Mailman import MailList
+from Mailman import mm_cfg
+from Mailman import Utils
 from Mailman.htmlformat import *
-from Mailman.Logging.Syslog import syslog
 
 # Set up i18n
 _ = i18n._
 i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+
+log     = logging.getLogger('mailman.error')
+mlog    = logging.getLogger('mailman.mischief')
 
 
 
@@ -52,7 +56,7 @@ def main():
         doc.AddItem('<hr>')
         doc.AddItem(MailmanLogo())
         print doc.Format()
-        syslog('error', 'Bad URL specification: %s', parts)
+        log.error('Bad URL specification: %s', parts)
         return
         
     listname = parts[0].lower()
@@ -69,7 +73,7 @@ def main():
         doc.AddItem('<hr>')
         doc.AddItem(MailmanLogo())
         print doc.Format()
-        syslog('error', 'No such list "%s": %s\n', listname, e)
+        log.error('No such list "%s": %s\n', listname, e)
         return
 
     # Now that we have a valid mailing list, set the language
@@ -84,7 +88,7 @@ def main():
             Header(3, Bold(FontAttr(title, color='#ff0000', size='+2'))))
         doc.AddItem(mlist.GetMailmanFooter())
         print doc.Format()
-        syslog('mischief', 'Attempt to sneakily delete a list: %s', listname)
+        mlog.error('Attempt to sneakily delete a list: %s', listname)
         return
 
     if cgidata.has_key('doit'):
@@ -144,18 +148,15 @@ def process_request(doc, cgidata, mlist):
             except OSError, e:
                 if e.errno not in (errno.EACCES, errno.EPERM): raise
                 problems += 1
-                syslog('error',
-                       'link %s not deleted due to permission problems',
-                       dir)
+                log.error('link %s not deleted due to permission problems', dir)
         elif os.path.isdir(dir):
             try:
                 shutil.rmtree(dir)
             except OSError, e:
                 if e.errno not in (errno.EACCES, errno.EPERM): raise
                 problems += 1
-                syslog('error',
-                       'directory %s not deleted due to permission problems',
-                       dir)
+                log.error('directory %s not deleted due to permission problems',
+                          dir)
 
     title = _('Mailing list deletion results')
     doc.SetTitle(title)

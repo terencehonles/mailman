@@ -21,22 +21,25 @@ import os
 import re
 import time
 import cPickle
+import logging
 
 from email.MIMEMessage import MIMEMessage
 from email.MIMEText import MIMEText
 from email.Utils import parseaddr
 
 from Mailman import LockFile
-from Mailman import Utils
 from Mailman import mm_cfg
+from Mailman import Utils
 from Mailman.Bouncers import BouncerAPI
-from Mailman.Logging.Syslog import syslog
+from Mailman.i18n import _
 from Mailman.Message import UserNotification
 from Mailman.Queue.Runner import Runner
 from Mailman.Queue.sbcache import get_switchboard
-from Mailman.i18n import _
 
 COMMASPACE = ', '
+
+log     = logging.getLogger('mailman.bounce')
+elog    = logging.getLogger('mailman.error')
 
 
 
@@ -96,8 +99,7 @@ class BounceMixin:
         self._bouncecnt += len(addrs)
 
     def _register_bounces(self):
-        syslog('bounce', '%s processing %s queued bounces',
-               self, self._bouncecnt)
+        log.info('%s processing %s queued bounces', self, self._bouncecnt)
         # Read all the records from the bounce file, then unlink it.  Sort the
         # records by listname for more efficient processing.
         events = {}
@@ -106,7 +108,7 @@ class BounceMixin:
             try:
                 listname, addr, day, msg = cPickle.load(self._bounce_events_fp)
             except ValueError, e:
-                syslog('bounce', 'Error reading bounce events: %s', e)
+                log.error('Error reading bounce events: %s', e)
             except EOFError:
                 break
             events.setdefault(listname, []).append((addr, day, msg))
@@ -210,8 +212,8 @@ class BounceRunner(Runner, BounceMixin):
         # If that still didn't return us any useful addresses, then send it on
         # or discard it.
         if not addrs:
-            syslog('bounce', 'bounce message w/no discernable addresses: %s',
-                   msg.get('message-id'))
+            log.info('bounce message w/no discernable addresses: %s',
+                     msg.get('message-id'))
             maybe_forward(mlist, msg)
             return
         # BAW: It's possible that there are None's in the list of addresses,
@@ -252,9 +254,8 @@ def verp_bounce(mlist, msg):
             # All is good
             addr = '%s@%s' % mo.group('mailbox', 'host')
         except IndexError:
-            syslog('error',
-                   "VERP_REGEXP doesn't yield the right match groups: %s",
-                   mm_cfg.VERP_REGEXP)
+            elog.error("VERP_REGEXP doesn't yield the right match groups: %s",
+                       mm_cfg.VERP_REGEXP)
             return []
         return [addr]
 
@@ -287,8 +288,7 @@ def verp_probe(mlist, msg):
             if data is not None:
                 return token
         except IndexError:
-            syslog(
-                'error',
+            elog.error(
                 "VERP_PROBE_REGEXP doesn't yield the right match groups: %s",
                 mm_cfg.VERP_PROBE_REGEXP)
     return None
@@ -313,8 +313,8 @@ For more information see:
 """),
                              subject=_('Uncaught bounce notification'),
                              tomoderators=0)
-        syslog('bounce', 'forwarding unrecognized, message-id: %s',
-               msg.get('message-id', 'n/a'))
+        log.error('forwarding unrecognized, message-id: %s',
+                  msg.get('message-id', 'n/a'))
     else:
-        syslog('bounce', 'discarding unrecognized, message-id: %s',
-               msg.get('message-id', 'n/a'))
+        log.error('discarding unrecognized, message-id: %s',
+                  msg.get('message-id', 'n/a'))

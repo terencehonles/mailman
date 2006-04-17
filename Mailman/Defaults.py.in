@@ -495,7 +495,7 @@ OWNER_PIPELINE = [
     ]
 
 
-# This defines syslog() format strings for the SMTPDirect delivery module (see
+# This defines log format strings for the SMTPDirect delivery module (see
 # DELIVERY_MODULE above).  Valid %()s string substitutions include:
 #
 #     time -- the time in float seconds that it took to complete the smtp
@@ -524,10 +524,10 @@ OWNER_PIPELINE = [
 #     below.
 #
 # The format of the entries is a 2-tuple with the first element naming the
-# file in logs/ to print the message to, and the second being a format string
-# appropriate for Python's %-style string interpolation.  The file name is
-# arbitrary; qfiles/<name> will be created automatically if it does not
-# exist.
+# logger (as a child of the root 'mailman' logger) to print the message to,
+# and the second being a format string appropriate for Python's %-style string
+# interpolation.  The file name is arbitrary; qfiles/<name> will be created
+# automatically if it does not exist.
 
 # The format of the message printed for every delivered message, regardless of
 # whether the delivery was successful or not.  Set to None to disable the

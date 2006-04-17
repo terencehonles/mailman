@@ -22,12 +22,12 @@ import copy
 import time
 import email
 import socket
+import logging
 
 from Mailman import Errors
 from Mailman import LockFile
 from Mailman import Message
 from Mailman import mm_cfg
-from Mailman.Logging.Syslog import syslog
 from Mailman.Queue.BounceRunner import BounceMixin
 from Mailman.Queue.Runner import Runner
 from Mailman.Queue.Switchboard import Switchboard
@@ -35,6 +35,8 @@ from Mailman.Queue.Switchboard import Switchboard
 # This controls how often _doperiodic() will try to deal with deferred
 # permanent failures.  It is a count of calls to _doperiodic()
 DEAL_WITH_PERMFAILURES_EVERY = 10
+
+log = logging.getLogger('mailman.error')
 
 
 
@@ -66,7 +68,7 @@ class OutgoingRunner(Runner, BounceMixin):
             self._func(mlist, msg, msgdata)
             # Failsafe -- a child may have leaked through.
             if pid <> os.getpid():
-                syslog('error', 'child process leaked thru: %s', modname)
+                log.error('child process leaked thru: %s', modname)
                 os._exit(1)
             self.__logged = False
         except socket.error:
@@ -78,8 +80,8 @@ class OutgoingRunner(Runner, BounceMixin):
                 port = 'smtp'
             # Log this just once.
             if not self.__logged:
-                syslog('error', 'Cannot connect to SMTP server %s on port %s',
-                       mm_cfg.SMTPHOST, port)
+                log.error('Cannot connect to SMTP server %s on port %s',
+                          mm_cfg.SMTPHOST, port)
                 self.__logged = True
             return True
         except Errors.SomeRecipientsFailed, e:

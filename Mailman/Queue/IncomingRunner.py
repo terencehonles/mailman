@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -93,16 +93,21 @@
 # performed.  Results notifications are sent to the author of the message,
 # which all bounces pointing back to the -bounces address.
 
+
 
-import sys
 import os
+import sys
+import logging
+
 from cStringIO import StringIO
 
-from Mailman import mm_cfg
 from Mailman import Errors
 from Mailman import LockFile
+from Mailman import mm_cfg
 from Mailman.Queue.Runner import Runner
-from Mailman.Logging.Syslog import syslog
+
+log     = logging.getLogger('mailman.error')
+vlog    = logging.getLogger('mailman.vette')
 
 
 
@@ -153,12 +158,12 @@ class IncomingRunner(Runner):
                 sys.modules[modname].process(mlist, msg, msgdata)
                 # Failsafe -- a child may have leaked through.
                 if pid <> os.getpid():
-                    syslog('error', 'child process leaked thru: %s', modname)
+                    log.error('child process leaked thru: %s', modname)
                     os._exit(1)
             except Errors.DiscardMessage:
                 # Throw the message away; we need do nothing else with it.
-                syslog('vette', 'Message discarded, msgid: %s',
-                       msg.get('message-id', 'n/a'))
+                vlog.info('Message discarded, msgid: %s',
+                          msg.get('message-id', 'n/a'))
                 return 0
             except Errors.HoldMessage:
                 # Let the approval process take it from here.  The message no

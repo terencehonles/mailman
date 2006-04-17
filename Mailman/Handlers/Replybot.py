@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -12,18 +12,20 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
-"""Handler for auto-responses.
-"""
+"""Handler for auto-responses."""
 
 import time
+import logging
 
-from Mailman import Utils
 from Mailman import Message
+from Mailman import Utils
 from Mailman.i18n import _
 from Mailman.SafeDict import SafeDict
-from Mailman.Logging.Syslog import syslog
+
+log = logging.getLogger('mailman.error')
 
 
 
@@ -97,8 +99,8 @@ def process(mlist, msg, msgdata):
     try:
         text = rtext % d
     except Exception:
-        syslog('error', 'Bad autoreply text for list: %s\n%s',
-               mlist.internal_name(), rtext)
+        log.error('Bad autoreply text for list: %s\n%s',
+                  mlist.internal_name(), rtext)
         text = rtext
     # Wrap the response.
     text = Utils.wrap(text)

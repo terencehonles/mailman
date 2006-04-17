@@ -24,6 +24,7 @@ import sha
 import sys
 import signal
 import urllib
+import logging
 
 from email.Utils import unquote, parseaddr, formataddr
 from string import lowercase, digits
@@ -38,7 +39,6 @@ from Mailman import Utils
 
 from Mailman.Cgi import Auth
 from Mailman.htmlformat import *
-from Mailman.Logging.Syslog import syslog
 from Mailman.UserDesc import UserDesc
 
 # Set up i18n
@@ -47,6 +47,8 @@ i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
 
 NL = '\n'
 OPTCOLUMNS = 11
+
+log = logging.getLogger('mailman.error')
 
 
 
@@ -65,8 +67,7 @@ def main():
         # Avoid cross-site scripting attacks
         safelistname = Utils.websafe(listname)
         admin_overview(_('No such list <em>%(safelistname)s</em>'))
-        syslog('error', 'admin.py access for non-existent list: %s',
-               listname)
+        log.error('admin.py access for non-existent list: %s', listname)
         return
     # Now that we know what list has been requested, all subsequent admin
     # pages are shown in that list's preferred language.

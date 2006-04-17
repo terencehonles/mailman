@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -17,27 +17,28 @@
 
 """Produce and process the pending-approval items for a list."""
 
-import sys
 import os
 import cgi
+import sys
+import time
+import email
 import errno
 import signal
-import email
-import time
+
 from types import ListType
 from urllib import quote_plus, unquote_plus
 
+from Mailman import Errors
+from Mailman import i18n
+from Mailman import MailList
+from Mailman import Message
 from Mailman import mm_cfg
 from Mailman import Utils
-from Mailman import MailList
-from Mailman import Errors
-from Mailman import Message
-from Mailman import i18n
-from Mailman.Handlers.Moderate import ModeratedMemberPost
-from Mailman.ListAdmin import readMessage
+
 from Mailman.Cgi import Auth
+from Mailman.Handlers.Moderate import ModeratedMemberPost
 from Mailman.htmlformat import *
-from Mailman.Logging.Syslog import syslog
+from Mailman.ListAdmin import readMessage
 
 EMPTYSTRING = ''
 NL = '\n'
@@ -49,6 +50,8 @@ i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
 
 EXCERPT_HEIGHT = 10
 EXCERPT_WIDTH = 76
+
+log = logging.getLogger('mailman.error')
 
 
 
@@ -88,7 +91,7 @@ def main():
         # Avoid cross-site scripting attacks
         safelistname = Utils.websafe(listname)
         handle_no_list(_('No such list <em>%(safelistname)s</em>'))
-        syslog('error', 'No such list "%s": %s\n', listname, e)
+        log.error('No such list "%s": %s\n', listname, e)
         return
 
     # Now that we know which list to use, set the system's language to it.

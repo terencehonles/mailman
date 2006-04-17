@@ -22,6 +22,7 @@ import cgi
 import sys
 import signal
 import urllib
+import logging
 
 from types import ListType
 
@@ -33,7 +34,6 @@ from Mailman import mm_cfg
 from Mailman import Utils
 
 from Mailman.htmlformat import *
-from Mailman.Logging.Syslog import syslog
 
 SLASH = '/'
 SETLANGUAGE = -1
@@ -41,6 +41,9 @@ SETLANGUAGE = -1
 # Set up i18n
 _ = i18n._
 i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+
+log     = logging.getLogger('mailman.error')
+mlog    = logging.getLogger('mailman.mischief')
 
 
 
@@ -75,7 +78,7 @@ def main():
         doc.AddItem('<hr>')
         doc.AddItem(MailmanLogo())
         print doc.Format()
-        syslog('error', 'No such list "%s": %s\n', listname, e)
+        log.error('No such list "%s": %s\n', listname, e)
         return
 
     # The total contents of the user's response
@@ -183,9 +186,8 @@ def main():
                 # Public rosters
                 doc.addError(_('No such member: %(safeuser)s.'))
             else:
-                syslog('mischief',
-                       'Unsub attempt of non-member w/ private rosters: %s',
-                       user)
+                mlog.error('Unsub attempt of non-member w/ private rosters: %s',
+                           user)
                 doc.addError(_('The confirmation email has been sent.'),
                              tag='')
         loginpage(mlist, doc, user, language)
@@ -205,9 +207,9 @@ def main():
                 # Public rosters
                 doc.addError(_('No such member: %(safeuser)s.'))
             else:
-                syslog('mischief',
-                       'Reminder attempt of non-member w/ private rosters: %s',
-                       user)
+                mlog.error(
+                    'Reminder attempt of non-member w/ private rosters: %s',
+                    user)
                 doc.addError(
                     _('A reminder of your password has been emailed to you.'),
                     tag='')
@@ -242,9 +244,7 @@ def main():
             # So as not to allow membership leakage, prompt for the email
             # address and the password here.
             if mlist.private_roster <> 0:
-                syslog('mischief',
-                       'Login failure with private rosters: %s',
-                       user)
+                mlog.error('Login failure with private rosters: %s', user)
                 user = None
         loginpage(mlist, doc, user, language)
         print doc.Format()

@@ -28,7 +28,6 @@ from email.Utils import parseaddr, formataddr, getaddresses
 from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman.i18n import _
-from Mailman.Logging.Syslog import syslog
 
 CONTINUATION = ',\n\t'
 COMMASPACE = ', '

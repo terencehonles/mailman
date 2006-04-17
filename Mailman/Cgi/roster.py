@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -23,22 +23,24 @@ Takes listname in PATH_INFO.
 # We don't need to lock in this script, because we're never going to change
 # data.
 
-import sys
 import os
 import cgi
+import sys
 import urllib
+import logging
 
-from Mailman import mm_cfg
-from Mailman import Utils
-from Mailman import MailList
 from Mailman import Errors
 from Mailman import i18n
+from Mailman import MailList
+from Mailman import mm_cfg
+from Mailman import Utils
 from Mailman.htmlformat import *
-from Mailman.Logging.Syslog import syslog
 
 # Set up i18n
 _ = i18n._
 i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+
+log = logging.getLogger('mailman.error')
 
 
 
@@ -55,7 +57,7 @@ def main():
         # Avoid cross-site scripting attacks
         safelistname = Utils.websafe(listname)
         error_page(_('No such list <em>%(safelistname)s</em>'))
-        syslog('error', 'roster: no such list "%s": %s', listname, e)
+        log.error('roster: no such list "%s": %s', listname, e)
         return
 
     cgidata = cgi.FieldStorage()

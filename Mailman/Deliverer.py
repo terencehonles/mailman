@@ -18,19 +18,22 @@
 
 """Mixin class with message delivery routines."""
 
-from email.MIMEText import MIMEText
+import logging
+
 from email.MIMEMessage import MIMEMessage
+from email.MIMEText import MIMEText
 
 from Mailman import i18n
 from Mailman import Errors
 from Mailman import Message
 from Mailman import mm_cfg
-from Mailman import Utils
 from Mailman import Pending
-
-from Mailman.Logging.Syslog import syslog
+from Mailman import Utils
 
 _ = i18n._
+
+log     = logging.getLogger('mailman.error')
+mlog    = logging.getLogger('mailman.mischief')
 
 
 
@@ -93,8 +96,8 @@ your membership administrative address, %(addr)s.'''))
         if not self.getMemberPassword(user):
             # The user's password somehow got corrupted.  Generate a new one
             # for him, after logging this bogosity.
-            syslog('error', 'User %s had a false password for list %s',
-                   user, self.internal_name())
+            log.error('User %s had a false password for list %s',
+                      user, self.internal_name())
             waslocked = self.Locked()
             if not waslocked:
                 self.Lock()
@@ -154,8 +157,8 @@ your membership administrative address, %(addr)s.'''))
         # list.  We inform both list owners of the bogosity, but be careful
         # not to reveal too much information.
         selfname = self.internal_name()
-        syslog('mischief', '%s was invited to %s but confirmed to %s',
-               address, listname, selfname)
+        mlog.error('%s was invited to %s but confirmed to %s',
+                   address, listname, selfname)
         # First send a notice to the attacked list
         msg = Message.OwnerNotification(
             self,

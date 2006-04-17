@@ -31,6 +31,7 @@ import time
 import errno
 import base64
 import random
+import logging
 import urlparse
 import htmlentitydefs
 import email.Header
@@ -56,6 +57,8 @@ IDENTCHARS = ascii_letters + digits + '_'
 cre = re.compile(r'%\(([_a-z]\w*?)\)s?', re.IGNORECASE)
 # Search for $$, $identifier, or ${identifier}
 dre = re.compile(r'(\${2})|\$([_a-z]\w*)|\${([_a-z]\w*)}', re.IGNORECASE)
+
+log = logging.getLogger('mailman.error')
 
 
 
@@ -311,9 +314,7 @@ def Secure_MakeRandomPassword(length):
                         # We have no available source of cryptographically
                         # secure random characters.  Log an error and fallback
                         # to the user friendly passwords.
-                        from Mailman.Logging.Syslog import syslog
-                        syslog('error',
-                               'urandom not available, passwords not secure')
+                        log.error('urandom not available, passwords not secure')
                         return UserFriendly_MakeRandomPassword(length)
                 newbytes = os.read(fd, length - bytesread)
             bytes.append(newbytes)
@@ -526,8 +527,7 @@ def findtext(templatefile, dict=None, raw=False, lang=None, mlist=None):
                 text = sdict.interpolate(utemplate)
         except (TypeError, ValueError), e:
             # The template is really screwed up
-            from Mailman.Logging.Syslog import syslog
-            syslog('error', 'broken template: %s\n%s', filename, e)
+            log.error('broken template: %s\n%s', filename, e)
             pass
     if raw:
         return text, filename

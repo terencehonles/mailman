@@ -17,12 +17,16 @@
 
 """Cleanse certain headers from all messages."""
 
+import logging
+
 from email.Utils import formataddr
 
-from Mailman.Logging.Syslog import syslog
 from Mailman.Handlers.CookHeaders import uheader
 
+log = logging.getLogger('mailman.post')
 
+
+
 def process(mlist, msg, msgdata):
     # Always remove this header from any outgoing messages.  Be sure to do
     # this after the information on the header is actually used, but before a
@@ -34,8 +38,8 @@ def process(mlist, msg, msgdata):
     del msg['urgent']
     # We remove other headers from anonymous lists
     if mlist.anonymous_list:
-        syslog('post', 'post to %s from %s anonymized',
-               mlist.internal_name(), msg.get('from'))
+        log.info('post to %s from %s anonymized',
+                 mlist.internal_name(), msg.get('from'))
         del msg['from']
         del msg['reply-to']
         del msg['sender']
