@@ -552,7 +552,7 @@ def show_variables(mlist, category, subcat, cgidata, doc):
                       width='85%')
 
     for item in options:
-        if isinstance(type, str):
+        if isinstance(item, str):
             # The very first banner option (string in an options list) is
             # treated as a general description, while any others are
             # treated as section headers - centered and italicized...

@@ -24,6 +24,7 @@ import time
 import email
 import errno
 import signal
+import logging
 
 from urllib import quote_plus, unquote_plus
 
