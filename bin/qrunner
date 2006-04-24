@@ -81,7 +81,6 @@ import paths
 from Mailman import mm_cfg
 from Mailman import loginit
 from Mailman.i18n import _
-from Mailman.Logging.Utils import LogStdErr
 
 PROGRAM = sys.argv[0]
 COMMASPACE = ', '
@@ -219,7 +218,7 @@ def main():
     # stderr in addition to logging to the log files.  We do this by passing a
     # value of True to propagate, which allows the 'mailman' root logger to
     # see the log messages.
-    loginit.initialize(not AS_SUBPROC)
+    loginit.initialize(propagate=not AS_SUBPROC)
 
     # Fast track for one infinite runner
     if len(runners) == 1 and not once:

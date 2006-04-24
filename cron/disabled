@@ -1,6 +1,6 @@
 #! @PYTHON@
 #
-# Copyright (C) 2001-2004 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -14,7 +14,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """Process disabled members, recommended once per day.
 
@@ -63,19 +64,21 @@ Options:
 import sys
 import time
 import getopt
+import logging
 
 import paths
 # mm_cfg must be imported before the other modules, due to the side-effect of
 # it hacking sys.paths to include site-packages.  Without this, running this
 # script from cron with python -S will fail.
 from Mailman import mm_cfg
-from Mailman import Utils
-from Mailman import MailList
-from Mailman import Pending
-from Mailman import MemberAdaptor
+
 from Mailman import Errors
+from Mailman import MailList
+from Mailman import MemberAdaptor
+from Mailman import Pending
+from Mailman import Utils
+from Mailman import loginit
 from Mailman.Bouncer import _BounceInfo
-from Mailman.Logging.Syslog import syslog
 from Mailman.i18n import _
 
 # Work around known problems with some RedHat cron daemons
@@ -83,6 +86,10 @@ import signal
 signal.signal(signal.SIGCHLD, signal.SIG_DFL)
 
 PROGRAM = sys.argv[0]
+
+loginit.initialize(properly=True)
+elog = logging.getLogger('mailman.error')
+blog = logging.getLogger('mailman.bounce')
 
 
 
@@ -181,8 +188,7 @@ def main():
                     # other reason.
                     status = mlist.getDeliveryStatus(member)
                     if status == MemberAdaptor.BYBOUNCE:
-                        syslog(
-                            'error',
+                        elog.error(
                             '%s disabled BYBOUNCE lacks bounce info, list: %s',
                             member, mlist.internal_name())
                         continue
@@ -198,17 +204,17 @@ def main():
                     notify.append(member)
             # Now, send notifications to anyone who is due
             for member in notify:
-                syslog('bounce', 'Notifying disabled member %s for list: %s',
-                       member, mlist.internal_name())
+                blog.info('Notifying disabled member %s for list: %s',
+                          member, mlist.internal_name())
                 try:
                     mlist.sendNextNotification(member)
                 except Errors.NotAMemberError:
                     # There must have been some problem with the data we have
                     # on this member.  Most likely it's that they don't have a
                     # password assigned.  Log this and delete the member.
-                    syslog('bounce',
-                           'NotAMemberError when sending disabled notice: %s',
-                           member)
+                    blog.info(
+                        'NotAMemberError when sending disabled notice: %s',
+                        member)
                     mlist.ApprovedDeleteMember(member, 'cron/disabled')
             mlist.Save()
         finally:

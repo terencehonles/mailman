@@ -1,6 +1,6 @@
 #! @PYTHON@
 #
-# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -14,7 +14,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """Poll the NNTP servers for messages to be gatewayed to mailing lists.
 
@@ -28,27 +29,31 @@ Where options are
 
 """
 
-import sys
 import os
+import sys
 import time
 import getopt
 import socket
+import logging
 import nntplib
 
 import paths
+# mm_cfg must be imported before the other modules, due to the side-effect of
+# it hacking sys.paths to include site-packages.  Without this, running this
+# script from cron with python -S will fail.
+from Mailman import mm_cfg
+
 # Import this /after/ paths so that the sys.path is properly hacked
 import email.Errors
 from email.Parser import Parser
 
-from Mailman import mm_cfg
-from Mailman import MailList
-from Mailman import Utils
-from Mailman import Message
 from Mailman import LockFile
-from Mailman.i18n import _
+from Mailman import MailList
+from Mailman import Message
+from Mailman import Utils
+from Mailman import loginit
 from Mailman.Queue.sbcache import get_switchboard
-from Mailman.Logging.Utils import LogStdErr
-from Mailman.Logging.Syslog import syslog
+from Mailman.i18n import _
 
 # Work around known problems with some RedHat cron daemons
 import signal
@@ -56,22 +61,11 @@ signal.signal(signal.SIGCHLD, signal.SIG_DFL)
 
 GATENEWS_LOCK_FILE = os.path.join(mm_cfg.LOCK_DIR, 'gate_news.lock')
 
-LogStdErr('error', 'gate_news', manual_reprime=0)
-
 LOCK_LIFETIME = mm_cfg.hours(2)
 NL = '\n'
 
-# Continues inside try: block are not allowed in Python versions before 2.1.
-# This exception is used to work around that.
-class _ContinueLoop(Exception):
-    pass
-
-
-try:
-    True, False
-except NameError:
-    True = 1
-    False = 0
+loginit.initialize(propagate=True)
+log = logging.getLogger('mailman.fromusenet')
 
 
 
@@ -102,9 +96,8 @@ def open_newsgroup(mlist):
                                 user=mm_cfg.NNTP_USERNAME,
                                 password=mm_cfg.NNTP_PASSWORD)
         except (socket.error, nntplib.NNTPError, IOError), e:
-            syslog('fromusenet',
-                   'error opening connection to nntp_host: %s\n%s',
-                   mlist.nntp_host, e)
+            log.error('error opening connection to nntp_host: %s\n%s',
+                      mlist.nntp_host, e)
             raise
         _hostcache[mlist.nntp_host] = conn
     # Get the GROUP information for the list, but we're only really interested
@@ -162,9 +155,8 @@ def poll_newsgroup(mlist, conn, first, last, glock):
                 try:
                     msg = p.parsestr(NL.join(lines))
                 except email.Errors.MessageError, e:
-                    syslog('fromusenet',
-                           'email package exception for %s:%d\n%s',
-                           mlist.linked_newsgroup, num, e)
+                    log.error('email package exception for %s:%d\n%s',
+                              mlist.linked_newsgroup, num, e)
                     raise _ContinueLoop
                 if found_to:
                     del msg['X-Originally-To']
@@ -176,12 +168,9 @@ def poll_newsgroup(mlist, conn, first, last, glock):
                 inq.enqueue(msg,
                             listname = mlist.internal_name(),
                             fromusenet = 1)
-                syslog('fromusenet',
-                       'posted to list %s: %7d' % (listname, num))
+                log.info('posted to list %s: %7d', listname, num)
         except nntplib.NNTPError, e:
-            syslog('fromusenet',
-                   'NNTP error for list %s: %7d' % (listname, num))
-            syslog('fromusenet', str(e))
+            log.exception('NNTP error for list %s: %7d', listname, num)
         except _ContinueLoop:
             continue
         # Even if we don't post the message because it was seen on the
@@ -208,7 +197,7 @@ def process_lists(glock):
             conn, first, last = open_newsgroup(mlist)
         except (socket.error, nntplib.NNTPError):
             break
-        syslog('fromusenet', '%s: [%d..%d]' % (listname, first, last))
+        log.info('%s: [%d..%d]', listname, first, last)
         try:
             try:
                 if watermark is None:
@@ -217,8 +206,7 @@ def process_lists(glock):
                     # newsgroup.  We essentially do a mass catch-up, otherwise
                     # we'd flood the mailing list.
                     mlist.usenet_watermark = last
-                    syslog('fromusenet', '%s caught up to article %d' %
-                           (listname, last))
+                    log.info('%s caught up to article %d', listname, last)
                 else:
                     # The list has been polled previously, so now we simply
                     # grab all the messages on the newsgroup that have not
@@ -229,25 +217,22 @@ def process_lists(glock):
                     # has run.  Not much we can do about that.
                     start = max(watermark+1, first)
                     if start > last:
-                        syslog('fromusenet', 'nothing new for list %s' %
-                               listname)
+                        log.info('nothing new for list %s', listname)
                     else:
                         mlist.Lock(timeout=mm_cfg.LIST_LOCK_TIMEOUT)
-                        syslog('fromusenet', 'gating %s articles [%d..%d]' %
-                               (listname, start, last))
+                        log.info('gating %s articles [%d..%d]',
+                                 listname, start, last)
                         # Use last+1 because poll_newsgroup() employes a for
                         # loop over range, and this will not include the last
                         # element in the list.
                         poll_newsgroup(mlist, conn, start, last+1, glock)
             except LockFile.TimeOutError:
-                syslog('fromusenet', 'Could not acquire list lock: %s' %
-                       listname)
+                log.error('Could not acquire list lock: %s', listname)
         finally:
             if mlist.Locked():
                 mlist.Save()
                 mlist.Unlock()
-        syslog('fromusenet', '%s watermark: %d' %
-               (listname, mlist.usenet_watermark))
+        log.info('%s watermark: %d', listname, mlist.usenet_watermark)
 
 
 
@@ -258,13 +243,13 @@ def main():
     try:
         lock.lock(timeout=0.5)
     except LockFile.TimeOutError:
-        syslog('fromusenet', 'Could not acquire gate_news lock')
+        log.error('Could not acquire gate_news lock')
         return
     try:
         process_lists(lock)
     finally:
         clearcache()
-        lock.unlock(unconditionally=1)
+        lock.unlock(unconditionally=True)
 
 
 

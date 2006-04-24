@@ -21,8 +21,8 @@ import below.  Ah, for Python 2.5 and absolute imports.
 """
 
 import os
+import codecs
 import logging
-import logging.handlers
 
 from Mailman import mm_cfg
 
@@ -34,6 +34,25 @@ LOGGERS = ('bounce', 'mischief', 'post', 'vette', 'smtp',
            )
 
 _handlers = []
+
+
+
+class ReopenableFileHandler(logging.FileHandler):
+    def __init__(self, filename, mode='a', encoding=None):
+        # Unfortunately, FileHandler's __init__() doesn't store encoding.
+        logging.FileHandler.__init__(self, filename, mode, encoding)
+        self.encoding = encoding
+
+    def reopen(self):
+        # Flush and close the file/stream, then reopen it.  WIBNI the base
+        # FileHandler supported this?
+        self.flush()
+        self.stream.close()
+        if self.encoding is None:
+            stream = open(self.baseFilename, self.mode)
+        else:
+            stream = codecs.open(self.baseFilename, mode, self.encoding)
+        self.stream = stream
 
 
 
@@ -72,9 +91,7 @@ def initialize(propagate=False):
         # Propagation to the root logger is how we handle logging to stderr
         # when the qrunners are not run as a subprocess of mailmanctl.
         log.propagate = propagate
-        handler = logging.handlers.RotatingFileHandler(
-            os.path.join(mm_cfg.LOG_DIR, logger),
-            maxBytes=0, backupCount=0)
+        handler = ReopenableFileHandler(os.path.join(mm_cfg.LOG_DIR, logger))
         _handlers.append(handler)
         handler.setFormatter(formatter)
         log.addHandler(handler)
@@ -83,6 +100,4 @@ def initialize(propagate=False):
 
 def reopen():
     for handler in _handlers:
-        meth = getattr(handler, 'doRollover', None)
-        if meth:
-            meth()
+        handler.reopen()

@@ -92,25 +92,24 @@ Commands:
               next time a message is written to them
 """
 
-import sys
 import os
-import time
+import grp
+import pwd
+import sys
+import errno
 import getopt
 import signal
-import errno
-import pwd
-import grp
 import socket
+import logging
 
 import paths
-from Mailman import mm_cfg
-from Mailman import Utils
-from Mailman import LockFile
 from Mailman import Errors
+from Mailman import LockFile
+from Mailman import Utils
+from Mailman import loginit
+from Mailman import mm_cfg
 from Mailman.MailList import MailList
 from Mailman.i18n import _
-from Mailman.Logging.Syslog import syslog
-from Mailman.Logging.Utils import LogStdErr
 
 PROGRAM = sys.argv[0]
 COMMASPACE = ', '
@@ -124,7 +123,9 @@ LOCK_LIFETIME = mm_cfg.days(1) + mm_cfg.hours(6)
 SNOOZE = mm_cfg.days(1)
 MAX_RESTARTS = 10
 
-LogStdErr('error', 'mailmanctl', manual_reprime=0)
+loginit.initialize()
+elog = logging.getLogger('mailman.error')
+qlog = logging.getLogger('mailman.qrunner')
 
 
 
@@ -167,8 +168,10 @@ def kill_watcher(sig):
 def get_lock_data():
     # Return the hostname, pid, and tempfile
     fp = open(LOCKFILE)
-    filename = os.path.split(fp.read().strip())[1]
-    fp.close()
+    try:
+        filename = os.path.split(fp.read().strip())[1]
+    finally:
+        fp.close()
     parts = filename.split('.')
     hostname = DOT.join(parts[1:-1])
     pid = int(parts[-1])
@@ -186,7 +189,8 @@ def qrunner_state():
     try:
         os.kill(pid, 0)
     except OSError, e:
-        if e.errno <> errno.ESRCH: raise
+        if e.errno <> errno.ESRCH:
+            raise
         return 0
     return 1
 
@@ -274,10 +278,10 @@ def start_all_runners():
 def check_for_site_list():
     sitelistname = mm_cfg.MAILMAN_SITE_LIST
     try:
-        sitelist = MailList(sitelistname, lock=0)
+        sitelist = MailList(sitelistname, lock=False)
     except Errors.MMUnknownListError:
         print >> sys.stderr, _('Site list is missing: %(sitelistname)s')
-        syslog('error', 'Site list is missing: %s', mm_cfg.MAILMAN_SITE_LIST)
+        elog.error('Site list is missing: %s', mm_cfg.MAILMAN_SITE_LIST)
         sys.exit(1)
 
 
@@ -292,11 +296,7 @@ def check_privs():
         # Set the process's supplimental groups.
         groups = [x[2] for x in grp.getgrall() if mm_cfg.MAILMAN_USER in x[3]]
         groups.append(gid)
-        try:
-            os.setgroups(groups)
-        except AttributeError:
-            # Python 2.1 doesn't have setgroups
-            syslog('error', 'Warning: unable to setgroups(%s)' % groups)
+        os.setgroups(groups)
         os.setgid(gid)
         os.setuid(uid)
     elif myuid <> uid:
@@ -439,14 +439,11 @@ def main():
         # to all the qrunner children.  This will tell them to close and
         # reopen their log files
         def sighup_handler(signum, frame, kids=kids):
-            # Closing our syslog will cause it to be re-opened at the next log
-            # print output.
-            syslog.close()
+            loginit.reopen()
             for pid in kids.keys():
                 os.kill(pid, signal.SIGHUP)
             # And just to tweak things...
-            syslog('qrunner',
-                   'Master watcher caught SIGHUP.  Re-opening log files.')
+            qlog.info('Master watcher caught SIGHUP.  Re-opening log files.')
         signal.signal(signal.SIGHUP, sighup_handler)
         # We also need to install a SIGTERM handler because that's what init
         # will kill this process with when changing run levels.
@@ -456,7 +453,7 @@ def main():
                     os.kill(pid, signal.SIGTERM)
                 except OSError, e:
                     if e.errno <> errno.ESRCH: raise
-            syslog('qrunner', 'Master watcher caught SIGTERM.  Exiting.')
+            qlog.info('Master watcher caught SIGTERM.  Exiting.')
         signal.signal(signal.SIGTERM, sigterm_handler)
         # Finally, we need a SIGINT handler which will cause the sub-qrunners
         # to exit, but the master will restart SIGINT'd sub-processes unless
@@ -464,12 +461,12 @@ def main():
         def sigint_handler(signum, frame, kids=kids):
             for pid in kids.keys():
                 os.kill(pid, signal.SIGINT)
-            syslog('qrunner', 'Master watcher caught SIGINT.  Restarting.')
+            qlog.info('Master watcher caught SIGINT.  Restarting.')
         signal.signal(signal.SIGINT, sigint_handler)
         # Now we're ready to simply do our wait/restart loop.  This is the
         # master qrunner watcher.
         try:
-            while 1:
+            while True:
                 try:
                     pid, status = os.wait()
                 except OSError, e:
@@ -498,7 +495,7 @@ def main():
                         restarting = '[restarting]'
                 qrname, slice, count, restarts = kids[pid]
                 del kids[pid]
-                syslog('qrunner', """\
+                qlog.info("""\
 Master qrunner detected subprocess exit
 (pid: %d, sig: %s, sts: %s, class: %s, slice: %d/%d) %s""",
                        pid, killsig, exitstatus, qrname,
@@ -507,7 +504,7 @@ Master qrunner detected subprocess exit
                 if exitstatus <> signal.SIGINT:
                     restarts += 1
                 if restarts > MAX_RESTARTS:
-                    syslog('qrunner', """\
+                    qlog.info("""\
 Qrunner %s reached maximum restart limit of %d, not restarting.""",
                            qrname, MAX_RESTARTS)
                     restarting = ''
@@ -526,10 +523,10 @@ Qrunner %s reached maximum restart limit of %d, not restarting.""",
                 except OSError, e:
                     if e.errno == errno.ESRCH:
                         # The child has already exited
-                        syslog('qrunner', 'ESRCH on pid: %d', pid)
+                        qlog.info('ESRCH on pid: %d', pid)
                         del kids[pid]
             # Wait for all the children to go away
-            while 1:
+            while True:
                 try:
                     pid, status = os.wait()
                 except OSError, e:
@@ -539,7 +536,7 @@ Qrunner %s reached maximum restart limit of %d, not restarting.""",
                         raise
                     continue
         # Finally, give up the lock
-        lock.unlock(unconditionally=1)
+        lock.unlock(unconditionally=True)
         os._exit(0)
 
 
