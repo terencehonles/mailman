@@ -1351,6 +1351,7 @@ LANGUAGE_DICT = {
 	'sv':   (_('Swedish'),             'iso-8859-1'),
 	'tr':   (_('Turkish'),             'iso-8859-9'),
 	'uk':   (_('Ukrainian'),           'utf-8'),
+    'vi':   (_('Vietnamese'),           'utf-8'),
 	'zh_CN':(_('Chinese (China)'),     'utf-8'),
 	'zh_TW':(_('Chinese (Taiwan)'),    'utf-8'),
 }
