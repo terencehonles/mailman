@@ -1,0 +1,48 @@
+#! @PYTHON@
+#
+# Copyright (C) 2006 by the Free Software Foundation, Inc.
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
+
+"""Driver for all command line scripts in Mailman.
+
+This works by interrogating sys.argv[0] to determine which module actually
+implements the script's functionality.
+"""
+
+import os
+import sys
+
+import paths
+from Mailman.i18n import _
+
+
+
+def main():
+    script_name = os.path.basename(sys.argv[0])
+    module_name = 'Mailman.bin.' + script_name
+    __import__(module_name)
+    try:
+        status = sys.modules[module_name].main()
+    except KeyboardInterrupt:
+        print >> sys.stderr, _('Interrupted')
+        status = 0
+    sys.exit(status)
+
+
+
+if __name__ == '__main__':
+    main()
