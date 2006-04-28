@@ -28,10 +28,19 @@ from Mailman import mm_cfg
 
 FMT     = '%(asctime)s (%(process)d) %(message)s'
 DATEFMT = '%b %d %H:%M:%S %Y'
-LOGGERS = ('bounce', 'mischief', 'post', 'vette', 'smtp',
-           'smtp-failure', 'subscribe', 'config', 'error',
-           'qrunner',
-           )
+LOGGERS = (
+    'bounce',
+    'config',
+    'error',
+    'locks',
+    'mischief',
+    'post',
+    'qrunner',
+    'smtp',
+    'smtp-failure',
+    'subscribe',
+    'vette',
+    )
 
 _handlers = []
 

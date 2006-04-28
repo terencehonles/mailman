@@ -1,20 +1,21 @@
 # -*- python -*-
 #
-# Copyright (C) 2002 by the Free Software Foundation, Inc.
+# Copyright (C) 2002-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """Simple confirm via VERP-ish sender.
 
@@ -31,9 +32,6 @@ from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman.i18n import _
 from Mailman.Queue.sbcache import get_switchboard
-from Mailman.Logging.Utils import LogStdErr
-
-LogStdErr('error', 'confirm')
 
 
 
@@ -53,8 +51,8 @@ def main():
     # is a good example; if the limit is hit, the proc is SIGKILL'd giving us
     # no chance to save the message.
     cmdq = get_switchboard(mm_cfg.CMDQUEUE_DIR)
-    cmdq.enqueue(sys.stdin.read(), listname=listname, toconfirm=1,
-                 _plaintext=1)
+    cmdq.enqueue(sys.stdin.read(), listname=listname,
+                 toconfirm=True, _plaintext=True)
 
 
 

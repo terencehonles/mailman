@@ -269,9 +269,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         self.__timestamp = 0
         self.__lock = LockFile.LockFile(
             os.path.join(mm_cfg.LOCK_DIR, name or '<site>') + '.lock',
-            # TBD: is this a good choice of lifetime?
-            lifetime = mm_cfg.LIST_LOCK_LIFETIME,
-            withlogging = mm_cfg.LIST_LOCK_DEBUGGING)
+            lifetime=mm_cfg.LIST_LOCK_LIFETIME)
         self._internal_name = name
         if name:
             self._full_path = Site.get_listpath(name)
