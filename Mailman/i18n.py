@@ -19,6 +19,8 @@ import sys
 import time
 import gettext
 
+from string import Template
+
 from Mailman import mm_cfg
 from Mailman.SafeDict import SafeDict
 
@@ -38,8 +40,10 @@ def set_language(language=None):
         # untranslated English.
         _translation = gettext.NullTranslations()
 
+
 def get_translation():
     return _translation
+
 
 def set_translation(translation):
     global _translation
@@ -68,25 +72,32 @@ def _(s):
     # and have it Just Work.  Note that the lookup order for keys in the
     # original string is 1) locals dictionary, 2) globals dictionary.
     #
-    # First, get the frame of the caller
+    # We inspect the frame's globals to see if __i18n_templates__ is set.  If
+    # so, we use string.Template style $-variables instead of more traditional
+    # %-strings.
+    #
+    # Get the frame of the caller
     frame = sys._getframe(1)
     # A `safe' dictionary is used so we won't get an exception if there's a
     # missing key in the dictionary.
-    dict = SafeDict(frame.f_globals.copy())
-    dict.update(frame.f_locals)
+    substitutions = SafeDict(frame.f_globals.copy())
+    substitutions.update(frame.f_locals)
     # Translating the string returns an encoded 8-bit string.  Rather than
     # turn that into a Unicode, we turn any Unicodes in the dictionary values
-    # into encoded 8-bit strings.  BAW: Returning a Unicode here broke too
+    # into encoded 8-bit strings.  XXX: Returning a Unicode here broke too
     # much other stuff and _() has many tentacles.  Eventually I think we want
     # to use Unicode everywhere.
     tns = _translation.gettext(s)
     charset = _translation.charset()
     if not charset:
         charset = 'us-ascii'
-    for k, v in dict.items():
+    for k, v in substitutions.items():
         if isinstance(v, unicode):
-            dict[k] = v.encode(charset, 'replace')
-    return tns % dict
+            substitutions[k] = v.encode(charset, 'replace')
+    # Are we using $-strings or %-strings?
+    if substitutions.get('__i18n_templates__', False):
+        return Template(tns).substitute(substitutions)
+    return tns % substitutions
 
 
 
@@ -137,7 +148,7 @@ def ctime(date):
                         break
     else:
         year, mon, day, hh, mm, ss, wday, yday, dst = time.localtime(date)
-        if dst in (0,1):
+        if dst in (0, 1):
             tzname = time.tzname[dst]
 
     wday = daysofweek[wday]

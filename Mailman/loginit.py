@@ -37,22 +37,37 @@ _handlers = []
 
 
 
-class ReopenableFileHandler(logging.FileHandler):
-    def __init__(self, filename, mode='a', encoding=None):
-        # Unfortunately, FileHandler's __init__() doesn't store encoding.
-        logging.FileHandler.__init__(self, filename, mode, encoding)
-        self.encoding = encoding
+class ReopenableFileHandler(logging.Handler):
+    def __init__(self, filename):
+        self._filename = filename
+        self._stream = self._open()
+        logging.Handler.__init__(self)
+
+    def _open(self):
+        return codecs.open(self._filename, 'a', 'utf-8')
+
+    def flush(self):
+        self._stream.flush()
+
+    def emit(self, record):
+        try:
+            msg = self.format(record)
+            try:
+                self._stream.write(msg)
+            except UnicodeError:
+                self._stream.write(msg.encode('string-escape'))
+            self.flush()
+        except:
+            self.handleError(record)
+
+    def close(self):
+        self.flush()
+        self._stream.close()
+        logging.Handler.close(self)
 
     def reopen(self):
-        # Flush and close the file/stream, then reopen it.  WIBNI the base
-        # FileHandler supported this?
-        self.flush()
-        self.stream.close()
-        if self.encoding is None:
-            stream = open(self.baseFilename, self.mode)
-        else:
-            stream = codecs.open(self.baseFilename, mode, self.encoding)
-        self.stream = stream
+        self._stream.close()
+        self._stream = self._open()
 
 
 

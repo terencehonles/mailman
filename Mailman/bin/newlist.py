@@ -25,20 +25,21 @@ from Mailman import Errors
 from Mailman import MailList
 from Mailman import Message
 from Mailman import Utils
-from Mailman import Version
 from Mailman import i18n
 from Mailman import mm_cfg
 
 _ = i18n._
 
+__i18n_templates__ = True
+
 
 
 def parseargs():
-    parser = optparse.OptionParser(version='GNU Mailman ' + Version.VERSION,
+    parser = optparse.OptionParser(version='GNU Mailman ' + mm_cfg.VERSION,
                                    usage=_("""\
-Create a new, unpopulated mailing list.
+%%prog [options] [listname [listadmin-addr [admin-password]]]
 
-Usage: %%prog [options] [listname [listadmin-addr [admin-password]]]
+Create a new, unpopulated mailing list.
 
 You can specify as many of the arguments as you want on the command line:
 you will be prompted for the missing ones.
