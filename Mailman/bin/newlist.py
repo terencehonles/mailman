@@ -35,7 +35,7 @@ __i18n_templates__ = True
 
 
 def parseargs():
-    parser = optparse.OptionParser(version='GNU Mailman ' + mm_cfg.VERSION,
+    parser = optparse.OptionParser(version=mm_cfg.MAILMAN_VERSION,
                                    usage=_("""\
 %%prog [options] [listname [listadmin-addr [admin-password]]]
 

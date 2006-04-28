@@ -44,16 +44,16 @@ SCRIPTSDIR= 	$(prefix)/bin
 
 SHELL=		/bin/sh
 
-SCRIPTS=	mmsitepass mmshell add_members \
-		list_members remove_members clone_member update arch \
+SCRIPTS=	mmshell add_members \
+		list_members remove_members clone_member update \
 		sync_members check_db withlist check_perms find_member \
 		version config_list list_lists dumpdb cleanarch \
 		list_admins genaliases change_pw mailmanctl qrunner inject \
-		unshunt fix_url.py convert.py transcheck b4b5-archfix \
+		fix_url.py convert.py transcheck \
 		list_owners msgfmt.py show_qfiles discard rb-archfix \
 		reset_pw.py templ2pot.py po2templ.py
 
-LN_SCRIPTS=	newlist rmlist
+LN_SCRIPTS=	arch mmsitepass newlist rmlist unshunt
 
 BUILDDIR=	../build/bin
 
@@ -77,8 +77,8 @@ install:
 	done
 	for f in $(LN_SCRIPTS); \
 	do \
-	    rm -f $(DESTDIR)/$(SCRIPTSDIR)/$$f; \
-	    (cd $(DESTDIR)/$(SCRIPTSDIR); $(LN_S) mmshell $$f); \
+	    rm -f $(DESTDIR)$(SCRIPTSDIR)/$$f; \
+	    (cd $(DESTDIR)$(SCRIPTSDIR); $(LN_S) mmshell $$f); \
 	done
 
 finish:
