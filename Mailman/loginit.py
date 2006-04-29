@@ -61,10 +61,11 @@ class ReopenableFileHandler(logging.Handler):
     def emit(self, record):
         try:
             msg = self.format(record)
+            fs = '%s\n'
             try:
-                self._stream.write(msg)
+                self._stream.write(fs % msg)
             except UnicodeError:
-                self._stream.write(msg.encode('string-escape'))
+                self._stream.write(fs % msg.encode('string-escape'))
             self.flush()
         except:
             self.handleError(record)

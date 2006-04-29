@@ -17,14 +17,28 @@
 
 import sys
 import time
+import string
 import gettext
-
-from string import Template
 
 from Mailman import mm_cfg
 from Mailman.SafeDict import SafeDict
 
 _translation = None
+_missing = object()
+
+class Template(string.Template):
+    idpattern = r'[_a-z][_a-z0-9.]*'
+
+
+class attrdict(dict):
+    def __getitem__(self, key):
+        parts = key.split('.')
+        value = super(attrdict, self).__getitem__(parts.pop(0))
+        while parts:
+            value = getattr(value, parts.pop(0), _missing)
+            if value is _missing:
+                raise KeyError(key)
+        return value
 
 
 
@@ -80,8 +94,9 @@ def _(s):
     frame = sys._getframe(1)
     # A `safe' dictionary is used so we won't get an exception if there's a
     # missing key in the dictionary.
-    substitutions = SafeDict(frame.f_globals.copy())
-    substitutions.update(frame.f_locals)
+    d = frame.f_globals.copy()
+    d.update(frame.f_locals)
+    use_templates = d.get('__i18n_templates__', False)
     # Translating the string returns an encoded 8-bit string.  Rather than
     # turn that into a Unicode, we turn any Unicodes in the dictionary values
     # into encoded 8-bit strings.  XXX: Returning a Unicode here broke too
@@ -91,13 +106,13 @@ def _(s):
     charset = _translation.charset()
     if not charset:
         charset = 'us-ascii'
-    for k, v in substitutions.items():
+    for k, v in d.items():
         if isinstance(v, unicode):
-            substitutions[k] = v.encode(charset, 'replace')
+            d[k] = v.encode(charset, 'replace')
     # Are we using $-strings or %-strings?
-    if substitutions.get('__i18n_templates__', False):
-        return Template(tns).substitute(substitutions)
-    return tns % substitutions
+    if d.get('__i18n_templates__', False):
+        return Template(tns).safe_substitute(attrdict(d))
+    return tns % SafeDict(d)
 
 
 

@@ -15,7 +15,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 7881 $)
+AC_REVISION($Revision: 7882 $)
 AC_PREREQ(2.0)
 AC_INIT(src/common.h)
 
@@ -609,8 +609,6 @@ bin/fix_url.py \
 bin/genaliases \
 bin/inject \
 bin/list_admins \
-bin/list_lists \
-bin/list_members \
 bin/list_owners \
 bin/mailmanctl \
 bin/mmshell \
