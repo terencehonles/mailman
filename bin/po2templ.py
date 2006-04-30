@@ -1,6 +1,6 @@
 #! @PYTHON@
 #
-# Copyright (C) 2005 by the Free Software Foundation, Inc.
+# Copyright (C) 2005-6 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -27,7 +27,10 @@ Extract templates from language po file.
 Usage: po2templ.py languages
 """
 
+import re
 import sys
+
+cre = re.compile('^#:\s*templates/en/(?P<filename>.*?):1')
 
 
 
@@ -38,10 +41,11 @@ def do_lang(lang):
     fp = file('messages/%s/LC_MESSAGES/mailman.po' % lang)
     try:
         for line in fp:
-            if line.startswith('#: templates'):
+            m = cre.search(line)
+            if m:
                 in_template = True
                 in_msg = False
-                filename = line[16:-3]
+                filename = m.group('filename')
                 outfilename = 'templates/%s/%s' % (lang, filename)
                 continue
             if in_template and line.startswith('#,'):
