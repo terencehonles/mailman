@@ -19,6 +19,7 @@ import sys
 import optparse
 from cPickle import load
 
+from Mailman import mm_cfg
 from Mailman.i18n import _
 
 __i18_templates__ = True
@@ -36,7 +37,6 @@ Show the contents of one or more Mailman queue files."""))
                       help=_("Don't print 'helpful' message delimiters."))
     opts, args = parser.parse_args()
     return parser, opts, args
-    
 
 
 
@@ -44,7 +44,7 @@ def main():
     parser, opts, args = parseargs()
 
     for filename in args:
-        if not quiet:
+        if not opts.quiet:
             print '====================>', filename
         fp = open(filename)
         if filename.endswith(".pck"):

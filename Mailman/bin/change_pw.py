@@ -54,7 +54,7 @@ Thus, this script generates new passwords for a list, and optionally sends it
 to all the owners of the list."""))
     parser.add_option('-a', '--all',
                       default=False, action='store_true',
-                      help_('Change the password for all lists'))
+                      help=_('Change the password for all lists'))
     parser.add_option('-d', '--domain',
                       default=[], type='string', action='append',
                       dest='domains', help=_("""\
@@ -127,7 +127,7 @@ def main():
 
     # Set the password on the lists
     if opts.password:
-        shapassword = sha.new(password).hexdigest()
+        shapassword = sha.new(opts.password).hexdigest()
 
     for listname in listnames:
         mlist = openlist(listname)
@@ -139,7 +139,7 @@ def main():
                 shapassword = sha.new(randompw).hexdigest()
                 notifypassword = randompw
             else:
-                notifypassword = password
+                notifypassword = opts.password
 
             mlist.password = shapassword
             mlist.Save()
@@ -148,7 +148,7 @@ def main():
 
         # Notification
         print _('New $listname password: $notifypassword')
-        if not quiet:
+        if not opts.quiet:
             otrans = i18n.get_translation()
             i18n.set_language(mlist.preferred_language)
             try:
