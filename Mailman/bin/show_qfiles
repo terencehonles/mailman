@@ -1,5 +1,3 @@
-#! @PYTHON@
-#
 # Copyright (C) 2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
@@ -17,63 +15,33 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-"""Show the contents of one or more Mailman queue files.
-
-Usage: show_qfiles [options] qfile ...
-
-Options:
-
-    -q / --quiet
-        Don't print `helpful' message delimiters.
-
-    -h / --help
-        Print this text and exit.
-
-Example: show_qfiles qfiles/shunt/*.pck
-"""
-
 import sys
-import getopt
+import optparse
 from cPickle import load
 
-import paths
 from Mailman.i18n import _
 
-try:
-    True, False
-except NameError:
-    True = 1
-    False = 0
+__i18_templates__ = True
 
 
 
-def usage(code, msg=''):
-    if code:
-        fd = sys.stderr
-    else:
-        fd = sys.stdout
-    print >> fd, _(__doc__)
-    if msg:
-        print >> fd, msg
-    sys.exit(code)
+def parseargs():
+    parser = optparse.OptionParser(version=mm_cfg.MAILMAN_VERSION,
+                                   usage=_("""\
+%%prog [options] qfiles ...
+
+Show the contents of one or more Mailman queue files."""))
+    parser.add_option('-q', '--quiet',
+                      default=False, action='store_true',
+                      help=_("Don't print 'helpful' message delimiters."))
+    opts, args = parser.parse_args()
+    return parser, opts, args
+    
 
 
 
 def main():
-    try:
-        opts, args = getopt.getopt(sys.argv[1:], 'hq', ['help', 'quiet'])
-    except getopt.error, msg:
-        usage(1, msg)
-
-    quiet = False
-    for opt, arg in opts:
-        if opt in ('-h', '--help'):
-            usage(0)
-        elif opt in ('-q', '--quiet'):
-            quiet = True
-
-    if not args:
-        usage(1, "Not enough arguments")
+    parser, opts, args = parseargs()
 
     for filename in args:
         if not quiet:
