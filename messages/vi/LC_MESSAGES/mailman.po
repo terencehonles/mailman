@@ -13023,8 +13023,9 @@ msgstr ""
 "này. Mỗi câu hỏi, vui lòng gởi thư cho %(listowner)s."
 
 #: templates/en/listinfo.html:1
+#, fuzzy
 msgid ""
-"<!-- $Revision: 7726 $ -->\n"
+"<!-- $Revision: 7880 $ -->\n"
 "<HTML>\n"
 "  <HEAD>\n"
 "    <TITLE><MM-List-Name> Info Page</TITLE>\n"
@@ -14353,8 +14354,9 @@ msgstr ""
 "    %(adminaddr)s"
 
 #: templates/en/roster.html:1
+#, fuzzy
 msgid ""
-"<!-- $Revision: 7726 $ -->\n"
+"<!-- $Revision: 7880 $ -->\n"
 "<HTML>\n"
 "  <HEAD>\n"
 "    <TITLE><MM-List-Name> Subscribers</TITLE>\n"
@@ -14492,8 +14494,9 @@ msgstr ""
 "để xử lý yêu cầu này."
 
 #: templates/en/subscribe.html:1
+#, fuzzy
 msgid ""
-"<!-- $Revision: 7726 $ -->\n"
+"<!-- $Revision: 7880 $ -->\n"
 "<html>\n"
 "<head><title><MM-List-Name> Subscription results</title></head>\n"
 "<body bgcolor=\"white\">\n"
@@ -14795,3 +14798,13 @@ msgstr ""
 "     %(archive_listing_end)s\n"
 "     </BODY>\n"
 "     </HTML>"
+
+#: templates/en/adminaddrchgack.txt:1
+#, fuzzy
+msgid ""
+"Address for member %(name)s has been successfully changed\n"
+"from %(oldaddr)s to %(newaddr)s for list %(listname)s.\n"
+"\n"
+msgstr ""
+"%(member)s đã được đăng ký với hộp thư chung %(listname)s.\n"
+"\n"
