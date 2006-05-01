@@ -46,7 +46,7 @@ def remove_it(listname, filename, msg):
 def parseargs():
     parser = optparse.OptionParser(version=mm_cfg.MAILMAN_VERSION,
                                    usage=_("""\
-%%prog [options] listname
+%prog [options] listname
 
 Remove the components of a mailing list with impunity - beware!
 
