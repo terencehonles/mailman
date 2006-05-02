@@ -15,7 +15,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 7891 $)
+AC_REVISION($Revision: 7892 $)
 AC_PREREQ(2.0)
 AC_INIT(src/common.h)
 
@@ -594,7 +594,6 @@ AC_CHECK_FUNCS(vsnprintf)
 dnl Expand PYTHON path in the scripts, output into build/scriptname
 
 AC_DEFUN(MM_SCRIPTS, [dnl
-bin/add_members \
 bin/check_db \
 bin/check_perms \
 bin/cleanarch \
