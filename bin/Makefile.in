@@ -50,11 +50,11 @@ SCRIPTS=	mmshell add_members \
 		config_list dumpdb cleanarch \
 		list_admins genaliases mailmanctl qrunner \
 		fix_url.py convert.py transcheck \
-		list_owners msgfmt.py discard \
+		msgfmt.py discard \
 		reset_pw.py templ2pot.py po2templ.py
 
-LN_SCRIPTS=	arch change_pw inject list_lists list_members mmsitepass \
-		newlist rmlist show_qfiles unshunt version
+LN_SCRIPTS=	arch change_pw inject list_lists list_members list_owners \
+		mmsitepass newlist rmlist show_qfiles unshunt version
 
 BUILDDIR=	../build/bin
 
