@@ -87,7 +87,7 @@ signal.signal(signal.SIGCHLD, signal.SIG_DFL)
 
 PROGRAM = sys.argv[0]
 
-loginit.initialize(properly=True)
+loginit.initialize(propagate=True)
 elog = logging.getLogger('mailman.error')
 blog = logging.getLogger('mailman.bounce')
 
