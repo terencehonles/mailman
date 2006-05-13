@@ -1,5 +1,3 @@
-#! @PYTHON@
-#
 # Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
@@ -17,60 +15,10 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-"""Process disabled members, recommended once per day.
-
-This script cruises through every mailing list looking for members whose
-delivery is disabled.  If they have been disabled due to bounces, they will
-receive another notification, or they may be removed if they've received the
-maximum number of notifications.
-
-Use the --byadmin, --byuser, and --unknown flags to also send notifications to
-members whose accounts have been disabled for those reasons.  Use --all to
-send the notification to all disabled members.
-
-Usage: %(PROGRAM)s [options]
-
-Options:
-    -h / --help
-        Print this message and exit.
-
-    -o / --byadmin
-        Also send notifications to any member disabled by the list
-        owner/administrator.
-
-    -m / --byuser
-        Also send notifications to any member disabled by themselves.
-
-    -u / --unknown
-        Also send notifications to any member disabled for unknown reasons
-        (usually a legacy disabled address).
-
-    -b / --notbybounce
-        Don't send notifications to members disabled because of bounces (the
-        default is to notify bounce disabled members).
-
-    -a / --all
-        Send notifications to all disabled members.
-
-    -f / --force
-        Send notifications to disabled members even if they're not due a new
-        notification yet.
-
-    -l listname
-    --listname=listname
-        Process only the given list, otherwise do all lists.
-"""
-
 import sys
 import time
-import getopt
 import logging
-
-import paths
-# mm_cfg must be imported before the other modules, due to the side-effect of
-# it hacking sys.paths to include site-packages.  Without this, running this
-# script from cron with python -S will fail.
-from Mailman import mm_cfg
+import optparse
 
 from Mailman import Errors
 from Mailman import MailList
@@ -78,75 +26,101 @@ from Mailman import MemberAdaptor
 from Mailman import Pending
 from Mailman import Utils
 from Mailman import loginit
+from Mailman import mm_cfg
 from Mailman.Bouncer import _BounceInfo
 from Mailman.i18n import _
+
+__i18n_templates__ = True
 
 # Work around known problems with some RedHat cron daemons
 import signal
 signal.signal(signal.SIGCHLD, signal.SIG_DFL)
 
-PROGRAM = sys.argv[0]
-
 loginit.initialize(propagate=True)
 elog = logging.getLogger('mailman.error')
 blog = logging.getLogger('mailman.bounce')
 
+ALL = (MemberAdaptor.BYBOUNCE,
+       MemberAdaptor.BYADMIN,
+       MemberAdaptor.BYUSER,
+       MemberAdaptor.UNKNOWN,
+       )
+
 
 
-def usage(code, msg=''):
-    if code:
-        fd = sys.stderr
-    else:
-        fd = sys.stdout
-    print >> fd, _(__doc__)
-    if msg:
-        print >> fd, msg
-    sys.exit(code)
+def who_callback(option, opt, value, parser):
+    dest = getattr(parser.values, option.dest)
+    if opt in ('-o', '--byadmin'):
+        dest.add(MemberAdaptor.BYADMIN)
+    elif opt in ('-m', '--byuser'):
+        dest.add(MemberAdaptor.BYUSER)
+    elif opt in ('-u', '--unknown'):
+        dest.add(MemberAdaptor.UNKNOWN)
+    elif opt in ('-b', '--notbybounce'):
+        dest.discard(MemberAdaptor.BYBOUNCE)
+    elif opt in ('-a', '--all'):
+        dest.update(ALL)
+
+
+def parseargs():
+    parser = optparse.OptionParser(version=mm_cfg.MAILMAN_VERSION,
+                                   usage=_("""\
+%prog [options]
+
+Process disabled members, recommended once per day.
+
+This script iterates through every mailing list looking for members whose
+delivery is disabled.  If they have been disabled due to bounces, they will
+receive another notification, or they may be removed if they've received the
+maximum number of notifications.
+
+Use the --byadmin, --byuser, and --unknown flags to also send notifications to
+members whose accounts have been disabled for those reasons.  Use --all to
+send the notification to all disabled members."""))
+    # This is the set of working flags for who to send notifications to.  By
+    # default, we notify anybody who has been disable due to bounces.
+    parser.set_defaults(who=set([MemberAdaptor.BYBOUNCE]))
+    parser.add_option('-o', '--byadmin',
+                      callback=who_callback, action='callback', dest='who',
+                      help=_("""\
+Also send notifications to any member disabled by the list
+owner/administrator."""))
+    parser.add_option('-m', '--byuser',
+                      callback=who_callback, action='callback', dest='who',
+                      help=_("""\
+Also send notifications to any member who has disabled themself."""))
+    parser.add_option('-u', '--unknown',
+                      callback=who_callback, action='callback', dest='who',
+                      help=_("""\
+Also send notifications to any member disabled for unknown reasons
+(usually a legacy disabled address)."""))
+    parser.add_option('-b', '--notbybounce',
+                      callback=who_callback, action='callback', dest='who',
+                      help=_("""\
+Don't send notifications to members disabled because of bounces (the
+default is to notify bounce disabled members)."""))
+    parser.add_option('-a', '--all',
+                      callback=who_callback, action='callback', dest='who',
+                      help=_('Send notifications to all disabled members'))
+    parser.add_option('-f', '--force',
+                      default=False, action='store_true',
+                      help=_("""\
+Send notifications to disabled members even if they're not due a new
+notification yet."""))
+    parser.add_option('-l', '--listname',
+                      dest='listnames', action='append', default=[],
+                      type='string', help=_("""\
+Process only the given list, otherwise do all lists."""))
+    opts, args = parser.parse_args()
+    return opts, args, parser
 
 
 
 def main():
-    try:
-        opts, args = getopt.getopt(
-            sys.argv[1:], 'hl:omubaf',
-            ['byadmin', 'byuser', 'unknown', 'notbybounce', 'all',
-             'listname=', 'help', 'force'])
-    except getopt.error, msg:
-        usage(1, msg)
+    opts, args, parser = parseargs()
 
-    if args:
-        usage(1)
-
-    force = 0
-    listnames = []
-    who = [MemberAdaptor.BYBOUNCE]
-    for opt, arg in opts:
-        if opt in ('-h', '--help'):
-            usage(0)
-        elif opt in ('-l', '--list'):
-            listnames.append(arg)
-        elif opt in ('-o', '--byadmin'):
-            who.append(MemberAdaptor.BYADMIN)
-        elif opt in ('-m', '--byuser'):
-            who.append(MemberAdaptor.BYUSER)
-        elif opt in ('-u', '--unknown'):
-            who.append(MemberAdaptor.UNKNOWN)
-        elif opt in ('-b', '--notbybounce'):
-            try:
-                who.remove(MemberAdaptor.BYBOUNCE)
-            except ValueError:
-                # Already removed
-                pass
-        elif opt in ('-a', '--all'):
-            who = [MemberAdaptor.BYBOUNCE, MemberAdaptor.BYADMIN,
-                   MemberAdaptor.BYUSER, MemberAdaptor.UNKNOWN]
-        elif opt in ('-f', '--force'):
-            force = 1
-
-    who = tuple(who)
-
-    if not listnames:
-        listnames = Utils.list_names()
+    listnames = set(opts.listnames or Utils.list_names())
+    who = tuple(opts.who)
 
     msg = _('[disabled by periodic sweep and cull, no message available]')
     today = time.mktime(time.localtime()[:3] + (0,) * 6)
@@ -200,7 +174,7 @@ def main():
                                        member))
                     mlist.setBounceInfo(member, info)
                 lastnotice = time.mktime(info.lastnotice + (0,) * 6)
-                if force or today >= lastnotice + interval:
+                if opts.force or today >= lastnotice + interval:
                     notify.append(member)
             # Now, send notifications to anyone who is due
             for member in notify:

@@ -15,7 +15,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 7893 $)
+AC_REVISION($Revision: 7895 $)
 AC_PREREQ(2.0)
 AC_INIT(src/common.h)
 
@@ -621,13 +621,6 @@ bin/po2templ.py \
 contrib/check_perms_grsecurity.py \
 contrib/qmail-to-mailman.py \
 contrib/rotatelogs.py \
-cron/bumpdigests \
-cron/checkdbs \
-cron/disabled \
-cron/gate_news \
-cron/mailpasswds \
-cron/nightly_gzip \
-cron/senddigests \
 ])
 
 dnl Please make sure to leave a space at the end of the last entry.

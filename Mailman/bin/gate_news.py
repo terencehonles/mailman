@@ -1,5 +1,3 @@
-#! @PYTHON@
-#
 # Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
@@ -17,33 +15,14 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-"""Poll the NNTP servers for messages to be gatewayed to mailing lists.
-
-Usage: gate_news [options]
-
-Where options are
-
-    --help
-    -h
-        Print this text and exit.
-
-"""
-
 import os
 import sys
 import time
-import getopt
 import socket
 import logging
 import nntplib
+import optparse
 
-import paths
-# mm_cfg must be imported before the other modules, due to the side-effect of
-# it hacking sys.paths to include site-packages.  Without this, running this
-# script from cron with python -S will fail.
-from Mailman import mm_cfg
-
-# Import this /after/ paths so that the sys.path is properly hacked
 import email.Errors
 from email.Parser import Parser
 
@@ -52,6 +31,7 @@ from Mailman import MailList
 from Mailman import Message
 from Mailman import Utils
 from Mailman import loginit
+from Mailman import mm_cfg
 from Mailman.Queue.sbcache import get_switchboard
 from Mailman.i18n import _
 
@@ -67,17 +47,25 @@ NL = '\n'
 loginit.initialize(propagate=True)
 log = logging.getLogger('mailman.fromusenet')
 
+class _ContinueLoop(Exception):
+    pass
+
+__i18n_templates__ = True
+
 
 
-def usage(status, msg=''):
-    if code:
-        fd = sys.stderr
-    else:
-        fd = sys.stdout
-    print >> fd, _(__doc__)
-    if msg:
-        print >> fd, msg
-    sys.exit(code)
+def parseargs():
+    parser = optparse.OptionParser(version=mm_cfg.MAILMAN_VERSION,
+                                   usage=_("""\
+%prog [options]
+
+Poll the NNTP servers for messages to be gatewayed to mailing lists."""))
+    opts, args = parser.parse_args()
+    if args:
+        parser.print_help()
+        print >> sys.stderr, _('Unexpected arguments')
+        sys.exit(1)
+    return opts, args, parser
 
 
 
@@ -102,15 +90,12 @@ def open_newsgroup(mlist):
         _hostcache[mlist.nntp_host] = conn
     # Get the GROUP information for the list, but we're only really interested
     # in the first article number and the last article number
-    r,c,f,l,n = conn.group(mlist.linked_newsgroup)
+    r, c, f, l, n = conn.group(mlist.linked_newsgroup)
     return conn, int(f), int(l)
 
 
 def clearcache():
-    reverse = {}
-    for conn in _hostcache.values():
-        reverse[conn] = 1
-    for conn in reverse.keys():
+    for conn in set(_hostcache.values()):
         conn.quit()
     _hostcache.clear()
 
@@ -123,21 +108,21 @@ def poll_newsgroup(mlist, conn, first, last, glock):
     for num in range(first, last):
         glock.refresh()
         try:
-            headers = conn.head(`num`)[3]
-            found_to = 0
-            beenthere = 0
+            headers = conn.head(repr(num))[3]
+            found_to = False
+            beenthere = False
             for header in headers:
                 i = header.find(':')
                 value = header[:i].lower()
                 if i > 0 and value == 'to':
-                    found_to = 1
+                    found_to = True
                 if value <> 'x-beenthere':
                     continue
                 if header[i:] == ': %s' % mlist.GetListEmail():
-                    beenthere = 1
+                    beenthere = True
                     break
             if not beenthere:
-                body = conn.body(`num`)[3]
+                body = conn.body(repr(num))[3]
                 # Usenet originated messages will not have a Unix envelope
                 # (i.e. "From " header).  This breaks Pipermail archiving, so
                 # we will synthesize one.  Be sure to use the format searched
@@ -166,8 +151,8 @@ def poll_newsgroup(mlist, conn, first, last, glock):
                 # Post the message to the locked list
                 inq = get_switchboard(mm_cfg.INQUEUE_DIR)
                 inq.enqueue(msg,
-                            listname = mlist.internal_name(),
-                            fromusenet = 1)
+                            listname=mlist.internal_name(),
+                            fromusenet=True)
                 log.info('posted to list %s: %7d', listname, num)
         except nntplib.NNTPError, e:
             log.exception('NNTP error for list %s: %7d', listname, num)
@@ -185,11 +170,11 @@ def process_lists(glock):
         # Open the list unlocked just to check to see if it is gating news to
         # mail.  If not, we're done with the list.  Otherwise, lock the list
         # and gate the group.
-        mlist = MailList.MailList(listname, lock=0)
+        mlist = MailList.MailList(listname, lock=False)
         if not mlist.gateway_to_mail:
             continue
         # Get the list's watermark, i.e. the last article number that we gated
-        # from news to mail.  `None' means that this list has never polled its
+        # from news to mail.  None means that this list has never polled its
         # newsgroup and that we should do a catch up.
         watermark = getattr(mlist, 'usenet_watermark', None)
         # Open the newsgroup, but let most exceptions percolate up.
@@ -215,7 +200,7 @@ def process_lists(glock):
                     # newsgroup and the watermark.  It's possible that some
                     # articles have been expired since the last time gate_news
                     # has run.  Not much we can do about that.
-                    start = max(watermark+1, first)
+                    start = max(watermark + 1, first)
                     if start > last:
                         log.info('nothing new for list %s', listname)
                     else:
@@ -225,7 +210,7 @@ def process_lists(glock):
                         # Use last+1 because poll_newsgroup() employes a for
                         # loop over range, and this will not include the last
                         # element in the list.
-                        poll_newsgroup(mlist, conn, start, last+1, glock)
+                        poll_newsgroup(mlist, conn, start, last + 1, glock)
             except LockFile.TimeOutError:
                 log.error('Could not acquire list lock: %s', listname)
         finally:
@@ -237,8 +222,9 @@ def process_lists(glock):
 
 
 def main():
+    opts, args, parser = parseargs()
     lock = LockFile.LockFile(GATENEWS_LOCK_FILE,
-                             # it's okay to hijack this
+                             # It's okay to hijack this
                              lifetime=LOCK_LIFETIME)
     try:
         lock.lock(timeout=0.5)
@@ -254,16 +240,4 @@ def main():
 
 
 if __name__ == '__main__':
-    try:
-        opts, args = getopt.getopt(sys.argv[1:], 'h', ['help'])
-    except getopt.error, msg:
-        usage(1, msg)
-
-    if args:
-        usage(1, 'No args are expected')
-
-    for opt, arg in opts:
-        if opt in ('-h', '--help'):
-            usage(0)
-
     main()
