@@ -57,6 +57,7 @@ class BounceTest(unittest.TestCase):
                                           'iqxwmmfauudpo@dachamp.com']),
         ('SimpleMatch', 'simple_15.txt', ['isam@kviv.be']),
         ('SimpleMatch', 'simple_16.txt', ['xvlogtfsei@the-messenger.com']),
+        ('SimpleMatch', 'simple_17.txt', ['internetsailing@gmail.com']),
         ('SimpleMatch', 'bounce_02.txt', ['acinsp1@midsouth.rr.com']),
         ('SimpleMatch', 'bounce_03.txt', ['james@jeborall.demon.co.uk']),
         # SimpleWarning
@@ -102,6 +103,7 @@ class BounceTest(unittest.TestCase):
         ('Qmail', 'qmail_01.txt', ['psadisc@wwwmail.n-h.de']),
         ('Qmail', 'qmail_02.txt', ['rauschlo@frontfin.com']),
         ('Qmail', 'qmail_03.txt', ['crown@hbc.co.jp']),
+        ('Qmail', 'qmail_04.txt', ['merotiia@tennisnsw.com.au']),
         # LLNL's custom Sendmail
         ('LLNL', 'llnl_01.txt', ['trotts1@llnl.gov']),
         # Netscape's server...

@@ -87,6 +87,10 @@ PATTERNS = [
     (_c('Unable to deliver message to the following address\(es\)\.'),
      _c('--- Original message follows\.'),
      _c('<(?P<addr>[^>]*)>:')),
+    # googlemail.com
+    (_c('Delivery to the following recipient failed'),
+     _c('----- Original message -----'),
+     _c('^\s*(?P<addr>[^\s@]+@[^\s@]+)\s*$')),
     # kundenserver.de
     (_c('A message that you sent could not be delivered'),
      _c('^---'),

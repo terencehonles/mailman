@@ -33,7 +33,8 @@ import email.Iterators
 introtags = [
     'Hi. This is the',
     "We're sorry. There's a problem",
-    'Check your send e-mail address.'
+    'Check your send e-mail address.',
+    'This is the mail delivery agent at'
     ]
 acre = re.compile(r'<(?P<addr>[^>]*)>:')
 
