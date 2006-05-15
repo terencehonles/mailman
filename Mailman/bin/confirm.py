@@ -1,5 +1,3 @@
-# -*- python -*-
-#
 # Copyright (C) 2002-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
@@ -28,12 +26,13 @@ Errors are redirected to logs/error.
 import sys
 import logging
 
-import paths
 from Mailman import Utils
-from Mailman import mm_cfg
 from Mailman import loginit
+from Mailman import mm_cfg
 from Mailman.Queue.sbcache import get_switchboard
 from Mailman.i18n import _
+
+__i18n_templates__ = True
 
 
 
@@ -48,7 +47,7 @@ def main():
         sys.exit(1)
     # Make sure the list exists
     if not Utils.list_exists(listname):
-        log.error(_('confirm script, list not found: %(listname)s'))
+        log.error(_('confirm script, list not found: $listname'))
         sys.exit(1)
     # Immediately queue the message for the bounce/cmd qrunner to process.
     # The advantage to this approach is that messages should never get lost --

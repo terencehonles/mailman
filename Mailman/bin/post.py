@@ -1,5 +1,3 @@
-# -*- python -*-
-#
 # Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
@@ -17,11 +15,11 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-"""Send a message to the mailing list owner.
+"""Accept posts to a list and handle them properly.
 
-All messages to a list's -owner address should be piped through this script.
-The -owner address is defined to be delivered directly to the list owners plus
-the list moderators, with no intervention for bounce processing.
+The main advertised address for a list should be filtered to this program,
+through the mail wrapper.  E.g. for list `test@yourdomain.com', the `test'
+alias would deliver to this script.
 
 Stdin is the mail message, and argv[1] is the name of the target mailing list.
 
@@ -31,12 +29,13 @@ Errors are redirected to logs/error.
 import sys
 import logging
 
-import paths
 from Mailman import Utils
-from Mailman import mm_cfg
 from Mailman import loginit
+from Mailman import mm_cfg
 from Mailman.Queue.sbcache import get_switchboard
 from Mailman.i18n import _
+
+__i18n_templates__ = True
 
 
 
@@ -44,26 +43,28 @@ def main():
     # Setup logging to stderr stream and error log.
     loginit.initialize(propagate=True)
     log = logging.getLogger('mailman.error')
+    # XXX If you've configured your list or aliases so poorly as to get either
+    # of these first two errors, there's little that can be done to save your
+    # messages.  They will be lost.  Minimal testing of new lists should avoid
+    # either of these problems.
     try:
         listname = sys.argv[1]
     except IndexError:
-        log.error(_('mailowner script got no listname.'))
+        log.error(_('post script got no listname.'))
         sys.exit(1)
     # Make sure the list exists
     if not Utils.list_exists(listname):
-        log.error(_('mailowner script, list not found: %(listname)s'))
+        log.error(_('post script, list not found: $listname'))
         sys.exit(1)
-    # Queue the message for the owners.  We will send them through the
-    # incoming queue because we need some processing done on the message.  The
-    # processing is minimal though, so craft our own pipeline, expressly for
-    # the purpose of delivering to the list owners.
+    # Immediately queue the message for the incoming qrunner to process.  The
+    # advantage to this approach is that messages should never get lost --
+    # some MTAs have a hard limit to the time a filter prog can run.  Postfix
+    # is a good example; if the limit is hit, the proc is SIGKILL'd giving us
+    # no chance to save the message.
     inq = get_switchboard(mm_cfg.INQUEUE_DIR)
     inq.enqueue(sys.stdin.read(),
                 listname=listname,
-                _plaintext=True,
-                envsender=Utils.get_site_email(extra='bounces'),
-                pipeline=mm_cfg.OWNER_PIPELINE,
-                toowner=True)
+                tolist=True, _plaintext=True)
 
 
 

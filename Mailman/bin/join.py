@@ -1,5 +1,3 @@
-# -*- python -*-
-#
 # Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
@@ -17,7 +15,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-"""Simple leave-a-list email address.
+"""Simple join-a-list email address.
 
 Called by the wrapper, stdin is the mail message, and argv[1] is the name
 of the target mailing list.
@@ -28,12 +26,13 @@ Errors are redirected to logs/error.
 import sys
 import logging
 
-import paths
 from Mailman import Utils
-from Mailman import mm_cfg
 from Mailman import loginit
+from Mailman import mm_cfg
 from Mailman.Queue.sbcache import get_switchboard
 from Mailman.i18n import _
+
+__i18n_templates__ = True
 
 
 
@@ -44,11 +43,11 @@ def main():
     try:
         listname = sys.argv[1]
     except IndexError:
-        log.error(_('leave script got no listname.'))
+        log.error(_('join script got no listname.'))
         sys.exit(1)
     # Make sure the list exists
     if not Utils.list_exists(listname):
-        log.error(_('leave script, list not found: %(listname)s'))
+        log.error(_('join script, list not found: $listname'))
         sys.exit(1)
     # Immediately queue the message for the bounce/cmd qrunner to process.
     # The advantage to this approach is that messages should never get lost --
@@ -57,7 +56,7 @@ def main():
     # no chance to save the message.
     cmdq = get_switchboard(mm_cfg.CMDQUEUE_DIR)
     cmdq.enqueue(sys.stdin.read(), listname=listname,
-                 toleave=True, _plaintext=True)
+                 tojoin=True, _plaintext=True)
 
 
 

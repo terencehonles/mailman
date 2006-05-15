@@ -15,10 +15,9 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 7895 $)
+AC_REVISION($Revision: 7897 $)
 AC_PREREQ(2.0)
-AC_INIT(src/common.h)
-
+AC_INIT([GNU Mailman], [2.2.0a0])
 
 # /usr/local/mailman is the default installation directory
 AC_PREFIX_DEFAULT(/usr/local/mailman)
@@ -52,8 +51,7 @@ AC_SUBST(PYTHON)
 PYTHON=$with_python
 AC_MSG_RESULT($PYTHON)
 
-# See if Python is new enough.  2.1 or better is required, with 2.1.3
-# recommended.
+# See if Python is new enough.  2.3 or better is required.
 AC_MSG_CHECKING(Python version)
 changequote(,)
 cat > conftest.py <<EOF
@@ -62,8 +60,7 @@ try:
     v = sys.hexversion
 except AttributeError:
     v = 0
-# int of hexversion 0x2010000
-if v >= 0x2010000:
+if v >= 0x2030000:
     s = sys.version.split()[0]
 else:
     s = ""

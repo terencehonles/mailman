@@ -1,6 +1,4 @@
-# -*- python -*-
-#
-# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -17,10 +15,13 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-"""Process VERP'd bounces.
+"""Send a message to the mailing list owner.
 
-Called by the wrapper, stdin is the mail message, and argv[1] is the name
-of the target mailing list.
+All messages to a list's -owner address should be piped through this script.
+The -owner address is defined to be delivered directly to the list owners plus
+the list moderators, with no intervention for bounce processing.
+
+Stdin is the mail message, and argv[1] is the name of the target mailing list.
 
 Errors are redirected to logs/error.
 """
@@ -28,12 +29,13 @@ Errors are redirected to logs/error.
 import sys
 import logging
 
-import paths
 from Mailman import Utils
-from Mailman import mm_cfg
 from Mailman import loginit
+from Mailman import mm_cfg
 from Mailman.Queue.sbcache import get_switchboard
 from Mailman.i18n import _
+
+__i18n_templates__ = True
 
 
 
@@ -44,19 +46,23 @@ def main():
     try:
         listname = sys.argv[1]
     except IndexError:
-        log.error(_('bounces script got no listname.'))
+        log.error(_('owner script got no listname.'))
         sys.exit(1)
     # Make sure the list exists
     if not Utils.list_exists(listname):
-        log.error(_('bounces script, list not found: %(listname)s'))
+        log.error(_('owner script, list not found: $listname'))
         sys.exit(1)
-    # Immediately queue the message for the bounces qrunner to process.  The
-    # advantage to this approach is that messages should never get lost --
-    # some MTAs have a hard limit to the time a filter prog can run.  Postfix
-    # is a good example; if the limit is hit, the proc is SIGKILL'd giving us
-    # no chance to save the message.
-    bounceq = get_switchboard(mm_cfg.BOUNCEQUEUE_DIR)
-    bounceq.enqueue(sys.stdin.read(), listname=listname, _plaintext=True)
+    # Queue the message for the owners.  We will send them through the
+    # incoming queue because we need some processing done on the message.  The
+    # processing is minimal though, so craft our own pipeline, expressly for
+    # the purpose of delivering to the list owners.
+    inq = get_switchboard(mm_cfg.INQUEUE_DIR)
+    inq.enqueue(sys.stdin.read(),
+                listname=listname,
+                _plaintext=True,
+                envsender=Utils.get_site_email(extra='bounces'),
+                pipeline=mm_cfg.OWNER_PIPELINE,
+                toowner=True)
 
 
 

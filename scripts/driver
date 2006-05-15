@@ -29,7 +29,7 @@ import sys
 # comfortable with.  By setting STEALTH_MODE to True, you disable the printing
 # of this information to the web pages.  This information is still, and
 # always, printed in the error logs.
-STEALTH_MODE = True
+STEALTH_MODE = False
 
 # This will be set to the entity escaper.
 def websafe(s):
