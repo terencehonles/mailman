@@ -91,6 +91,10 @@ delivery.  The original message as received by Mailman is attached.
 
 
 def do_topic_filters(mlist, msg, msgdata, recips):
+    if not mlist.topics_enabled:
+        # MAS: if topics are currently disabled for the list, send to all
+        # regardless of ReceiveNonmatchingTopics
+        return
     hits = msgdata.get('topichits')
     zaprecips = []
     if hits:

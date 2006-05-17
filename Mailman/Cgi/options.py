@@ -791,6 +791,8 @@ def options_page(mlist, doc, user, cpuser, userlang, message=''):
     if mlist.topics:
         table = Table(border="0")
         for name, pattern, description, emptyflag in mlist.topics:
+            if emptyflag:
+                continue
             quotedname = urllib.quote_plus(name)
             details = Link(mlist.GetScriptURL('options') +
                            '/%s/?VARHELP=%s' % (user, quotedname),
