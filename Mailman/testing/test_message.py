@@ -1,30 +1,29 @@
-# Copyright (C) 2001 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
-"""Unit tests for the various Message class methods.
-"""
+"""Unit tests for the various Message class methods."""
 
-import unittest
 import email
+import unittest
 
+from Mailman import Errors
 from Mailman import Message
 from Mailman import Version
-from Mailman import Errors
-
-from EmailBase import EmailBase
+from Mailman.testing.emailbase import EmailBase
 
 
 
@@ -55,11 +54,11 @@ class TestSentMessage(EmailBase):
         eq(qmsg['list-post'], '<mailto:_xtest@dom.ain>')
         eq(qmsg['list-subscribe'], """\
 <http://www.dom.ain/mailman/listinfo/_xtest>,
-	<mailto:_xtest-request@dom.ain?subject=subscribe>""")
+        <mailto:_xtest-request@dom.ain?subject=subscribe>""")
         eq(qmsg['list-id'], '<_xtest.dom.ain>')
         eq(qmsg['list-unsubscribe'], """\
 <http://www.dom.ain/mailman/listinfo/_xtest>,
-	<mailto:_xtest-request@dom.ain?subject=unsubscribe>""")
+        <mailto:_xtest-request@dom.ain?subject=unsubscribe>""")
         eq(qmsg['list-archive'], '<http://www.dom.ain/pipermail/_xtest>')
         eq(qmsg.get_payload(), 'About your test list')
 
@@ -91,12 +90,7 @@ yadda yadda yadda
 
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestSentMessage))
     return suite
-
-
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='suite')

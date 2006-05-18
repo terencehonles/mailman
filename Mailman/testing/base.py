@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -12,15 +12,16 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
-"""Test base class which handles creating and deleting a test list.
-"""
+"""Test base class which handles creating and deleting a test list."""
 
 import os
 import shutil
 import difflib
 import unittest
+
 from cStringIO import StringIO
 
 from Mailman import MailList
@@ -32,20 +33,15 @@ NL = '\n'
 
 
 class TestBase(unittest.TestCase):
-    if hasattr(difflib, 'ndiff'):
-        # Python 2.2 and beyond
-        def ndiffAssertEqual(self, first, second):
-            """Like failUnlessEqual except use ndiff for readable output."""
-            if first <> second:
-                sfirst = str(first)
-                ssecond = str(second)
-                diff = difflib.ndiff(sfirst.splitlines(), ssecond.splitlines())
-                fp = StringIO()
-                print >> fp, NL, NL.join(diff)
-                raise self.failureException, fp.getvalue()
-    else:
-        # Python 2.1
-        ndiffAssertEqual = unittest.TestCase.assertEqual
+    def ndiffAssertEqual(self, first, second):
+        """Like failUnlessEqual except use ndiff for readable output."""
+        if first <> second:
+            sfirst = str(first)
+            ssecond = str(second)
+            diff = difflib.ndiff(sfirst.splitlines(), ssecond.splitlines())
+            fp = StringIO()
+            print >> fp, NL, NL.join(diff)
+            raise self.failureException(fp.getvalue())
 
     def setUp(self):
         mlist = MailList.MailList()

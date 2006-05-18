@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -12,18 +12,18 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
-"""Base class for tests that email things.
-"""
+"""Base class for tests that email things."""
 
+import smtpd
 import socket
 import asyncore
-import smtpd
+import subprocess
 
 from Mailman import mm_cfg
-
-from TestBase import TestBase
+from Mailman.testing.base import TestBase
 
 
 
@@ -49,9 +49,11 @@ class SinkServer(smtpd.SMTPServer):
 class EmailBase(TestBase):
     def setUp(self):
         TestBase.setUp(self)
-        # Second argument tuple is ignored.
-        self._server = SinkServer(('localhost', mm_cfg.SMTPPORT),
-                                  ('localhost', 25))
+        # Find an unused non-root requiring port to listen on
+        oldport = mm_cfg.SMTPPORT
+        mm_cfg.SMTPPORT = port = 10825
+        # Second argument is ignored.
+        self._server = SinkServer(('localhost', port), None)
 
     def tearDown(self):
         self._server.close()

@@ -17,10 +17,10 @@
 
 """Test the bounce detection modules."""
 
-import sys
 import os
-import unittest
+import sys
 import email
+import unittest
 
 from Mailman.Bouncers.BouncerAPI import Stop
 
@@ -203,12 +203,7 @@ Content-Type: multipart/report; boundary=BOUNDARY
 
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(BounceTest))
     return suite
-
-
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='suite')

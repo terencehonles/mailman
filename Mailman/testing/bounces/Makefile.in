@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -10,13 +10,10 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 # 
-# You should have received a copy of the GNU General Public License
+# You should have received a copy of the GNU General Public Licenseo
 # along with this program; if not, write to the Free Software 
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-
-# NOTE: Makefile.in is converted into Makefile by the configure script
-# in the parent directory.  Once configure has run, you can recreate
-# the Makefile by running just config.status.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 # Variables set by configure
 
@@ -37,10 +34,11 @@ DEFS=   	@DEFS@
 
 OPT=		@OPT@
 CFLAGS=		$(OPT) $(DEFS)
-TESTDIR=	$(prefix)/tests
+BOUNCEDIR=	$(prefix)/Mailman/testing/bounces
 SHELL=		/bin/sh
 
-EXECS=  	$(srcdir)/onebounce.py $(srcdir)/fblast.py
+BOUNCE_FILES=	$(srcdir)/*.txt
+
 
 # Modes for directories and executables created by the install
 # process.  Default to group-writable directories but
@@ -50,20 +48,13 @@ EXEMODE=	755
 FILEMODE=	644
 INSTALL_PROGRAM=$(INSTALL) -m $(EXEMODE)
 
-# Directories make should decend into
-SUBDIRS=	bounces msgs
-
 # Rules
 all:
 
 install:
-	for f in $(EXECS); \
+	for f in $(BOUNCE_FILES); \
 	do \
-	    $(INSTALL) -m $(EXEMODE) $$f $(DESTDIR)$(TESTDIR); \
-	done
-	for d in $(SUBDIRS); \
-	do \
-	    (cd $$d; $(MAKE) DESTDIR=$(DESTDIR) install); \
+	    $(INSTALL) -m $(FILEMODE) $$f $(DESTDIR)$(BOUNCEDIR); \
 	done
 
 finish:
@@ -73,7 +64,3 @@ clean:
 distclean:
 	-rm *.pyc
 	-rm Makefile
-	@for d in $(SUBDIRS); \
-	do \
-	    (cd $$d; $(MAKE) distclean); \
-	done

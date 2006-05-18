@@ -30,9 +30,9 @@ from email.Generator import Generator
 from Mailman import Errors
 from Mailman import Message
 from Mailman import mm_cfg
-from Mailman import Pending
 from Mailman.MailList import MailList
 from Mailman.Queue.Switchboard import Switchboard
+from Mailman.testing.base import TestBase
 
 from Mailman.Handlers import Acknowledge
 from Mailman.Handlers import AfterDelivery
@@ -53,8 +53,6 @@ from Mailman.Handlers import ToArchive
 from Mailman.Handlers import ToDigest
 from Mailman.Handlers import ToOutgoing
 from Mailman.Handlers import ToUsenet
-
-from TestBase import TestBase
 
 
 
@@ -708,7 +706,7 @@ From: aperson@dom.ain
 
 """, Message.Message)
         CookHeaders.process(self._mlist, msg, {})
-        eq(msg['list-id'].__unicode__(), 'A Test List <_xtest.dom.ain>')
+        eq(unicode(msg['list-id']), u'A Test List <_xtest.dom.ain>')
         eq(msg['list-help'], '<mailto:_xtest-request@dom.ain?subject=help>')
         eq(msg['list-unsubscribe'],
            '<http://www.dom.ain/mailman/listinfo/_xtest>,'
@@ -1113,8 +1111,8 @@ From: aperson@dom.ain
         confirmlines = pmsg.get_payload().split('\n')
         cookie = confirmlines[-3].split('/')[-1]
         # We also need to make sure there's an entry in the Pending database
-        # for the heold message.
-        data = Pending.confirm(cookie)
+        # for the hold message.
+        data = self._mlist.pend_confirm(cookie)
         eq(data, ('H', 1))
         heldmsg = os.path.join(mm_cfg.DATA_DIR, 'heldmsg-_xtest-1.pck')
         self.failUnless(os.path.exists(heldmsg))
@@ -1204,9 +1202,12 @@ yyy
         eq(subpart.get_payload(), 'yyy')
 
     def test_convert_to_plaintext(self):
-        # BAW: This test is dependent on your particular lynx version
         eq = self.assertEqual
-        msg = email.message_from_string("""\
+        # XXX Skip this test if the html->text converter program is not
+        # available.
+        program = mm_cfg.HTML_TO_PLAIN_TEXT_COMMAND.split()[0]
+        if os.path.isfile(program):
+            msg = email.message_from_string("""\
 From: aperson@dom.ain
 Content-Type: text/html
 MIME-Version: 1.0
@@ -1214,9 +1215,9 @@ MIME-Version: 1.0
 <html><head></head>
 <body></body></html>
 """)
-        MimeDel.process(self._mlist, msg, {})
-        eq(msg.get_type(), 'text/plain')
-        eq(msg.get_payload(), '\n\n\n')
+            MimeDel.process(self._mlist, msg, {})
+            eq(msg.get_type(), 'text/plain')
+            eq(msg.get_payload(), '\n\n\n')
 
     def test_deep_structure(self):
         eq = self.assertEqual
@@ -1498,7 +1499,7 @@ It rocks!
         files = self._sb.files()
         eq(len(files), 1)
         msg2, data = self._sb.dequeue(files[0])
-        eq(len(data), 2)
+        eq(len(data), 3)
         eq(data['version'], 3)
         # Clock skew makes this unreliable
         #self.failUnless(data['received_time'] <= time.time())
@@ -1591,8 +1592,13 @@ class TestToOutgoing(TestBase):
         TestBase.setUp(self)
         # We're going to want to inspect this queue directory
         self._sb = Switchboard(mm_cfg.OUTQUEUE_DIR)
+        # Save and set this value
+        self._interval = mm_cfg.VERP_DELIVERY_INTERVAL
+        mm_cfg.VERP_DELIVERY_INTERVAL = 1
 
     def tearDown(self):
+        # Restore this value
+        mm_cfg.VERP_DELIVERY_INTERVAL = self._interval
         for f in os.listdir(mm_cfg.OUTQUEUE_DIR):
             os.unlink(os.path.join(mm_cfg.OUTQUEUE_DIR, f))
         TestBase.tearDown(self)
@@ -1610,7 +1616,7 @@ It rocks!
         eq(len(files), 1)
         msg2, data = self._sb.dequeue(files[0])
         eq(msg.as_string(unixfrom=0), msg2.as_string(unixfrom=0))
-        eq(len(data), 6)
+        eq(len(data), 7)
         eq(data['foo'], 1)
         eq(data['bar'], 2)
         eq(data['version'], 3)
@@ -1669,7 +1675,7 @@ Mailman rocks!
 
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestAcknowledge))
     suite.addTest(unittest.makeSuite(TestAfterDelivery))
@@ -1690,8 +1696,3 @@ def suite():
     suite.addTest(unittest.makeSuite(TestToOutgoing))
     suite.addTest(unittest.makeSuite(TestToUsenet))
     return suite
-
-
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='suite')

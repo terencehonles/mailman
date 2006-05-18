@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -12,29 +12,30 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
-"""Unit tests for Mailman/SecurityManager.py
-"""
+"""Unit tests for the SecurityManager module"""
 
 import os
-import unittest
-import errno
 import md5
 import sha
+import errno
 import Cookie
+import unittest
+
 try:
     import crypt
 except ImportError:
     crypt = None
+
 # Don't use cStringIO because we're going to inherit
 from StringIO import StringIO
 
-from Mailman import mm_cfg
-from Mailman import Utils
 from Mailman import Errors
-
-from TestBase import TestBase
+from Mailman import Utils
+from Mailman import mm_cfg
+from Mailman.testing.base import TestBase
 
 
 
@@ -171,14 +172,15 @@ class TestAuthenticate(TestBase):
     def test_wrong_user(self):
         mlist = self._mlist
         mlist.addNewMember('aperson@dom.ain', password='nosrepa')
-        self.assertRaises(Errors.NotAMemberError, mlist.Authenticate,
-                          [mm_cfg.AuthUser], 'nosrepa', 'bperson@dom.ain')
+        self.assertEqual(
+            mlist.Authenticate([mm_cfg.AuthUser], 'nosrepa', 'bperson@dom.ain'),
+            mm_cfg.UnAuthorized)
 
     def test_no_user(self):
         mlist = self._mlist
         mlist.addNewMember('aperson@dom.ain', password='nosrepa')
-        self.assertRaises(AttributeError, mlist.Authenticate,
-                          [mm_cfg.AuthUser], 'nosrepa')
+        self.assertEqual(mlist.Authenticate([mm_cfg.AuthUser], 'norespa'),
+                         mm_cfg.UnAuthorized)
 
     def test_user_unauth(self):
         mlist = self._mlist
@@ -260,14 +262,9 @@ class TestWebAuthenticate(TestBase):
 
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestSecurityManager))
     suite.addTest(unittest.makeSuite(TestAuthenticate))
     suite.addTest(unittest.makeSuite(TestWebAuthenticate))
     return suite
-
-
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='suite')

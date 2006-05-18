@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -12,23 +12,22 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
-"""Unit tests for OldStyleMemberships.
-"""
+"""Unit tests for OldStyleMemberships."""
 
 import os
 import time
 import unittest
 
-from Mailman import mm_cfg
-from Mailman import Utils
 from Mailman import MailList
 from Mailman import MemberAdaptor
+from Mailman import Utils
+from Mailman import mm_cfg
 from Mailman.Errors import NotAMemberError
 from Mailman.UserDesc import UserDesc
-
-from TestBase import TestBase
+from Mailman.testing.base import TestBase
 
 
 
@@ -195,9 +194,18 @@ class TestMembers(TestBase):
         self.failIf(mlist.authenticateMember('person@dom.ain', 'xxXXxx'))
 
     def test_set_language(self):
-        self._mlist.available_languages.append('xx')
-        self._mlist.setMemberLanguage('person@dom.ain', 'xx')
-        self.assertEqual(self._mlist.getMemberLanguage('person@dom.ain'), 'xx')
+        # This test requires that the 'xx' language be in the global
+        # mm_cfg.LC_DESCRIPTIONS.  Save that value and be sure to restore it
+        # after the test is done.
+        odesc = mm_cfg.LC_DESCRIPTIONS.copy()
+        try:
+            mm_cfg.add_language('xx', 'Xxian', 'utf-8')
+            self._mlist.available_languages.append('xx')
+            self._mlist.setMemberLanguage('person@dom.ain', 'xx')
+            self.assertEqual(self._mlist.getMemberLanguage('person@dom.ain'),
+                             'xx')
+        finally:
+            mm_cfg.LC_DESCRIPTIONS = odesc
 
     def test_basic_option(self):
         eq = self.assertEqual
@@ -369,13 +377,8 @@ class TestMembers(TestBase):
 
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestNoMembers))
     suite.addTest(unittest.makeSuite(TestMembers))
     return suite
-
-
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='suite')

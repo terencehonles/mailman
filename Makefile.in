@@ -52,7 +52,7 @@ ARCH_INDEP_DIRS= \
 	Mailman Mailman/bin Mailman/Cgi Mailman/Archiver \
 	Mailman/Handlers Mailman/Queue Mailman/Bouncers	 \
 	Mailman/MTA Mailman/Gui Mailman/Commands messages icons \
-	tests tests/bounces tests/msgs
+	Mailman/testing Mailman/testing/bounces tests tests/msgs
 
 ARCH_DEP_DIRS=	cgi-bin mail
 

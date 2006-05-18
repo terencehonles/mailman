@@ -19,6 +19,8 @@
 
 COMMASPACE = ', '
 
+# XXX This module should go away.
+
 
 
 class SafeDict(dict):
