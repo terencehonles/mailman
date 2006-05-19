@@ -51,7 +51,7 @@ FILEMODE=	644
 INSTALL_PROGRAM=$(INSTALL) -m $(EXEMODE)
 
 # Directories make should decend into
-SUBDIRS=	bounces msgs
+SUBDIRS=	msgs
 
 # Rules
 all:
