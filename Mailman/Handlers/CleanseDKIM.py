@@ -30,4 +30,5 @@ originating at the Mailman server for the outgoing message.
 def process(mlist, msg, msgdata):
     del msg['domainkey-signature']
     del msg['dkim-signature']
+    del msg['authentication-results']
 
