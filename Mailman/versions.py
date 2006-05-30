@@ -32,6 +32,7 @@ number of the list, and then does a .Save(), so the transformations won't be
 run again until another version change is detected.
 """
 
+import email
 import logging
 
 from Mailman import mm_cfg
@@ -484,7 +485,7 @@ def NewRequestsDatabase(l):
             for p in v:
                 author, text = p[2]
                 reason = p[3]
-                msg = Message.OutgoingMessage(text)
+                msg = email.message_from_string(text, Message.Message)
                 l.HoldMessage(msg, reason)
             del r[k]
         elif k == 'add_member':
