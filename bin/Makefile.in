@@ -55,7 +55,7 @@ SCRIPTS=	mmshell \
 
 LN_SCRIPTS=	add_members arch change_pw find_member inject list_lists \
 		list_members list_owners mmsitepass newlist rmlist \
-		show_qfiles testall unshunt version
+		show_qfiles show_mm_cfg testall unshunt version
 
 BUILDDIR=	../build/bin
 
