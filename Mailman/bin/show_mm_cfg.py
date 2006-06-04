@@ -17,6 +17,7 @@
 
 import re
 import sys
+import pprint
 import optparse
 
 from Mailman import mm_cfg
@@ -56,6 +57,7 @@ def main():
     for pattern in args:
         patterns.append(re.compile(pattern, flag))
 
+    pp = pprint.PrettyPrinter(indent=4)
     names = mm_cfg.__dict__.keys()
     names.sort()
     for name in names:
@@ -70,7 +72,15 @@ def main():
                     break
             if not hit:
                 continue
-        print name, '=', mm_cfg.__dict__[name]
+        value = mm_cfg.__dict__[name]
+        if isinstance(value, str):
+            if re.search('\n', value):
+                print '%s = """%s"""' %(name, value)
+            else:
+                print "%s = '%s'" % (name, value)
+        else:
+            print '%s = ' % name,
+            pp.pprint(value)
 
 
 
