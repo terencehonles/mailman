@@ -103,6 +103,13 @@ language code."""))
 Normally the administrator is notified by email (after a prompt) that their
 list has been created.  This option suppresses the prompt and
 notification."""))
+    parser.add_option('-a', '--automate',
+                      default=False, action='store_true',
+                      help=_("""\
+This option suppresses the prompt prior to administrator notification but
+still sends the notification.  It can be used to make newlist totally
+non-interactive but still send the notification, assuming listname,
+listadmin-addr and admin-password are all specified on the command line."""))
     opts, args = parser.parse_args()
     # Is the language known?
     if opts.language not in mm_cfg.LC_DESCRIPTIONS:
@@ -197,9 +204,10 @@ def main():
         sys.modules[modname].create(mlist)
 
     # And send the notice to the list owner
-    if not opts.quiet:
+    if not opts.quiet and not opts.automate:
         print _('Hit enter to notify $listname owner...'),
         sys.stdin.readline()
+    if not opts.quiet:
         siteowner = Utils.get_site_email(mlist.host_name, 'owner')
         d = dict(
             listname        = listname,
