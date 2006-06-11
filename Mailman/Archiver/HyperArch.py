@@ -485,7 +485,7 @@ class Article(pipermail.Article):
             subject = self._get_subject_enc(self.prev)
             prev = ('<LINK REL="Previous"  HREF="%s">'
                     % (url_quote(self.prev.filename)))
-            prev_wsubj = ('<LI>' + _('Previous message:') +
+            prev_wsubj = ('<LI>' + _('Previous message (by thread):') +
                           ' <A HREF="%s">%s\n</A></li>'
                           % (url_quote(self.prev.filename),
                              self.quote(subject)))
@@ -507,7 +507,7 @@ class Article(pipermail.Article):
             subject = self._get_subject_enc(self.next)
             next = ('<LINK REL="Next"  HREF="%s">'
                     % (url_quote(self.next.filename)))
-            next_wsubj = ('<LI>' + _('Next message:') +
+            next_wsubj = ('<LI>' + _('Next message (by thread):') +
                           ' <A HREF="%s">%s\n</A></li>'
                           % (url_quote(self.next.filename),
                              self.quote(subject)))
