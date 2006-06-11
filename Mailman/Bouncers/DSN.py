@@ -87,6 +87,11 @@ def process(msg):
     # in a multipart/mixed outer part.
     if msg.is_multipart() and msg.get_content_subtype() == 'mixed':
         msg = msg.get_payload()[0]
+    # The above will suffice if the original message 'parts' were wrapped with
+    # the disclaimer added, but the original DSN can be wrapped as a
+    # message/rfc822 part.  We need to test that too.
+    if msg.is_multipart() and msg.get_content_type() == 'message/rfc822':
+        msg = msg.get_payload()[0]
     # The report-type parameter should be "delivery-status", but it seems that
     # some DSN generating MTAs don't include this on the Content-Type: header,
     # so let's relax the test a bit.

@@ -37,6 +37,18 @@ patterns = [
     (_c('The address to which the message has not yet been delivered is'),
      _c('No action is required on your part'),
      _c(r'\s*(?P<addr>\S+@\S+)\s*')),
+    # This is from MessageSwitch.  It is a kludge because the text that
+    # identifies it as a warning only comes after the address.  We can't
+    # use ecre, because it really isn't significant, so we fake it.  Once
+    # we see the start, we know it's a warning, and we're going to return
+    # Stop anyway, so we match anything for the address and end.
+    (_c('This is just a warning, you do not need to take any action'),
+     _c('.+'),
+     _c('(?P<addr>.+)')),
+    # Symantec_AntiVirus_for_SMTP_Gateways - see comments for MessageSwitch
+    (_c('Delivery attempts will continue to be made'),
+     _c('.+'),
+     _c('(?P<addr>.+)')),
     # Next one goes here...
     ]
 

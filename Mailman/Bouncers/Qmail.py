@@ -34,7 +34,8 @@ introtags = [
     'Hi. This is the',
     "We're sorry. There's a problem",
     'Check your send e-mail address.',
-    'This is the mail delivery agent at'
+    'This is the mail delivery agent at',
+    'Unfortunately, your mail was not delivered'
     ]
 acre = re.compile(r'<(?P<addr>[^>]*)>:')
 
