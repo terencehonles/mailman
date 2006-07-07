@@ -23,6 +23,31 @@ Here is a history of user visible changes to Mailman.
       of email addresses and regular expressions matching email addresses
       whose subscriptions are exempt from admin approval. RFE 403066.
 
+  Bug fixes and other patches
+
+    - The processing of Topics regular expressions has changed. Previously the
+      Topics regexp was compiled in verbose mode but not documented as such
+      which caused some confusion.  Also, the documentation indicated that topic
+      keywords could be entered one per line, but these entries were not
+      properly.  Topics regexps are now compiled in non-verbose mode and multi-
+      line entries are 'ored'.  Existing Topics regexps will be converted when
+      the list is updated so they will continue to work.
+
+2.1.9 (xx-xxx-xxxx)
+
+  Security
+
+    - A malicious user could visit a specially crafted URI and inject an
+      apparent log message into Mailman's error log which might induce an
+      unsuspecting administrator to visit a phishing site.  This has been
+      blocked.  Thanks to Moritz Naumann for its discovery.
+
+  Bug fixes and other patches
+
+    - Fixed Decorate.py so that characters in message header/footer which
+      are not in the character set of the list's language are ignored rather
+      than causing shunted messages (1507248).
+
 2.1.8 (15-Apr-2006)
 
   Security

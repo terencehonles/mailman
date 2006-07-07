@@ -33,6 +33,7 @@ from Mailman import Utils
 
 from Mailman.htmlformat import *
 
+OR = '|'
 SLASH = '/'
 SETLANGUAGE = -1
 
@@ -1021,7 +1022,8 @@ def topic_details(mlist, doc, user, cpuser, userlang, varhelp):
     table.AddRow([Bold(Label(_('Name:'))),
                   Utils.websafe(name)])
     table.AddRow([Bold(Label(_('Pattern (as regexp):'))),
-                  '<pre>' + Utils.websafe(pattern) + '</pre>'])
+                  '<pre>' + Utils.websafe(OR.join(pattern.splitlines()))
+                   + '</pre>'])
     table.AddRow([Bold(Label(_('Description:'))),
                   Utils.websafe(description)])
     # Make colors look nice

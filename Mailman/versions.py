@@ -307,6 +307,15 @@ def UpdateOldVars(l, stored_state):
             pass
         else:
             l.digest_members[k] = 0
+    #
+    # Convert pre 2.2 topics regexps which were compiled in verbose mode
+    # to a non-verbose equivalent.
+    #
+    if stored_state['data_version'] <= 97 and stored_state.has_key('topics'):
+        l.topics = []
+        for name, pattern, description, emptyflag in stored_state['topics']:
+            pattern = Utils.strip_verbose_pattern(pattern)
+            l.topics.append((name, pattern, description, emptyflag))
 
 
 

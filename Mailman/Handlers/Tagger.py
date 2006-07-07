@@ -23,6 +23,7 @@ import email.Errors
 import email.Iterators
 import email.Parser
 
+OR = '|'
 CRNL = '\r\n'
 EMPTYSTRING = ''
 NLTAB = '\n\t'
@@ -51,7 +52,8 @@ def process(mlist, msg, msgdata):
     # added to the specific topics bucket.
     hits = {}
     for name, pattern, desc, emptyflag in mlist.topics:
-        cre = re.compile(pattern, re.IGNORECASE | re.VERBOSE)
+        pattern = OR.join(pattern.splitlines())
+        cre = re.compile(pattern, re.IGNORECASE)
         for line in matchlines:
             if cre.search(line):
                 hits[name] = 1

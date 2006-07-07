@@ -74,6 +74,7 @@ from Mailman.OldStyleMemberships import OldStyleMemberships
 _ = i18n._
 
 EMPTYSTRING = ''
+OR = '|'
 
 clog    = logging.getLogger('mailman.config')
 elog    = logging.getLogger('mailman.error')
@@ -742,10 +743,11 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         goodtopics = []
         for name, pattern, desc, emptyflag in self.topics:
             try:
-                re.compile(pattern)
+                orpattern = OR.join(pattern.splitlines())
+                re.compile(orpattern)
             except (re.error, TypeError):
                 elog.error('Bad topic pattern "%s" for list: %s',
-                           pattern, self.internal_name())
+                           orpattern, self.internal_name())
             else:
                 goodtopics.append((name, pattern, desc, emptyflag))
         self.topics = goodtopics

@@ -22,6 +22,8 @@ from Mailman import Utils
 from Mailman.i18n import _
 from Mailman.Gui.GUIBase import GUIBase
 
+OR = '|'
+
 
 
 class Topics(GUIBase):
@@ -119,9 +121,10 @@ class Topics(GUIBase):
             # Make sure the pattern was a legal regular expression
             name = Utils.websafe(name)
             try:
-                re.compile(pattern)
+                orpattern = OR.join(pattern.splitlines())
+                re.compile(orpattern)
             except (re.error, TypeError):
-                safepattern = Utils.websafe(pattern)
+                safepattern = Utils.websafe(orpattern)
                 doc.addError(_("""The topic pattern '%(safepattern)s' is not a
                 legal regular expression.  It will be discarded."""))
                 continue
