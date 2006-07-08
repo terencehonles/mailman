@@ -57,11 +57,11 @@ import logging
 from email.Parser import Parser
 from email.Utils import parseaddr
 
-from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman.Message import Message
 from Mailman.Queue.Runner import Runner
 from Mailman.Queue.sbcache import get_switchboard
+from Mailman.configuration import config
 
 # We only care about the listname and the subq as in listname@ or
 # listname-request@
@@ -88,8 +88,8 @@ class MaildirRunner(Runner):
         # Don't call the base class constructor, but build enough of the
         # underlying attributes to use the base class's implementation.
         self._stop = 0
-        self._dir = os.path.join(mm_cfg.MAILDIR_DIR, 'new')
-        self._cur = os.path.join(mm_cfg.MAILDIR_DIR, 'cur')
+        self._dir = os.path.join(config.MAILDIR_DIR, 'new')
+        self._cur = os.path.join(config.MAILDIR_DIR, 'cur')
         self._parser = Parser(Message)
 
     def _oneloop(self):
@@ -150,29 +150,29 @@ class MaildirRunner(Runner):
                 msgdata = {'listname': listname}
                 # -admin is deprecated
                 if subq in ('bounces', 'admin'):
-                    queue = get_switchboard(mm_cfg.BOUNCEQUEUE_DIR)
+                    queue = get_switchboard(config.BOUNCEQUEUE_DIR)
                 elif subq == 'confirm':
                     msgdata['toconfirm'] = 1
-                    queue = get_switchboard(mm_cfg.CMDQUEUE_DIR)
+                    queue = get_switchboard(config.CMDQUEUE_DIR)
                 elif subq in ('join', 'subscribe'):
                     msgdata['tojoin'] = 1
-                    queue = get_switchboard(mm_cfg.CMDQUEUE_DIR)
+                    queue = get_switchboard(config.CMDQUEUE_DIR)
                 elif subq in ('leave', 'unsubscribe'):
                     msgdata['toleave'] = 1
-                    queue = get_switchboard(mm_cfg.CMDQUEUE_DIR)
+                    queue = get_switchboard(config.CMDQUEUE_DIR)
                 elif subq == 'owner':
                     msgdata.update({
                         'toowner': 1,
                         'envsender': Utils.get_site_email(extra='bounces'),
-                        'pipeline': mm_cfg.OWNER_PIPELINE,
+                        'pipeline': config.OWNER_PIPELINE,
                         })
-                    queue = get_switchboard(mm_cfg.INQUEUE_DIR)
+                    queue = get_switchboard(config.INQUEUE_DIR)
                 elif subq is None:
                     msgdata['tolist'] = 1
-                    queue = get_switchboard(mm_cfg.INQUEUE_DIR)
+                    queue = get_switchboard(config.INQUEUE_DIR)
                 elif subq == 'request':
                     msgdata['torequest'] = 1
-                    queue = get_switchboard(mm_cfg.CMDQUEUE_DIR)
+                    queue = get_switchboard(config.CMDQUEUE_DIR)
                 else:
                     log.error('Unknown sub-queue: %s', subq)
                     os.rename(dstname, xdstname)

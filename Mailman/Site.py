@@ -12,7 +12,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """Provide some customization for site-wide behavior.
 
@@ -23,7 +24,7 @@ implementation should work for standard Mailman.
 import os
 import errno
 
-from Mailman import mm_cfg
+from Mailman.configuration import config
 
 
 
@@ -54,7 +55,7 @@ def get_listpath(listname, domain=None, create=0):
     should not attempt to create the path heirarchy (and in fact the absence
     of the path might be significant).
     """
-    path = os.path.join(mm_cfg.LIST_DATA_DIR, listname)
+    path = os.path.join(config.LIST_DATA_DIR, listname)
     if create:
         _makedir(path)
     return path
@@ -79,9 +80,9 @@ def get_archpath(listname, domain=None, create=False, public=False):
     is usually a symlink instead of a directory).
     """
     if public:
-        subdir = mm_cfg.PUBLIC_ARCHIVE_FILE_DIR
+        subdir = config.PUBLIC_ARCHIVE_FILE_DIR
     else:
-        subdir = mm_cfg.PRIVATE_ARCHIVE_FILE_DIR
+        subdir = config.PRIVATE_ARCHIVE_FILE_DIR
     path = os.path.join(subdir, listname)
     if create:
         _makedir(path)
@@ -101,7 +102,7 @@ def get_listnames(domain=None):
     from Mailman.Utils import list_exists
     # We don't currently support separate virtual domain directories
     got = []
-    for fn in os.listdir(mm_cfg.LIST_DATA_DIR):
+    for fn in os.listdir(config.LIST_DATA_DIR):
         if list_exists(fn):
             got.append(fn)
     return got

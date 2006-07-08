@@ -46,3 +46,7 @@ PENDING_FILE_SCHEMA_VERSION = 2
 
 # version number for the lists/<listname>/request.db file schema
 REQUESTS_FILE_SCHEMA_VERSION = 1
+
+# Printable version string used by command line scripts
+MAILMAN_VERSION = 'GNU Mailman ' + VERSION
+

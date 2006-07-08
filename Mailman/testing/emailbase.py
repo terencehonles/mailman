@@ -17,13 +17,17 @@
 
 """Base class for tests that email things."""
 
+import os
 import smtpd
 import socket
 import asyncore
+import tempfile
 import subprocess
 
 from Mailman import mm_cfg
 from Mailman.testing.base import TestBase
+
+TESTPORT = 10825
 
 
 
@@ -49,15 +53,23 @@ class SinkServer(smtpd.SMTPServer):
 class EmailBase(TestBase):
     def setUp(self):
         TestBase.setUp(self)
-        # Find an unused non-root requiring port to listen on
-        oldport = mm_cfg.SMTPPORT
-        mm_cfg.SMTPPORT = port = 10825
+        # Find an unused non-root requiring port to listen on.  Set up a
+        # configuration file that causes the underlying outgoing runner to use
+        # the same port, then start Mailman.
+        fd, self._configfile = tempfile.mkstemp(suffix='.cfg')
+        print 'config file:', self._configfile
+        fp = os.fdopen(fd, 'w')
+        print >> fp, 'SMTPPORT =', TESTPORT
+        fp.close()
         # Second argument is ignored.
-        self._server = SinkServer(('localhost', port), None)
+        self._server = SinkServer(('localhost', TESTPORT), None)
+        os.system('bin/mailmanctl start')
 
     def tearDown(self):
+        os.system('bin/mailmanctl stop')
         self._server.close()
         TestBase.tearDown(self)
+        os.remove(self._configfile)
 
     def _readmsg(self):
         global MSGTEXT

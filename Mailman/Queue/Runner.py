@@ -12,7 +12,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """Generic queue runner class."""
 
@@ -25,11 +26,11 @@ import email.Errors
 from cStringIO import StringIO
 
 from Mailman import Errors
-from Mailman import i18n
 from Mailman import MailList
-from Mailman import mm_cfg
 from Mailman import Utils
+from Mailman import i18n
 from Mailman.Queue.Switchboard import Switchboard
+from Mailman.configuration import config
 
 log = logging.getLogger('mailman.error')
 
@@ -37,7 +38,7 @@ log = logging.getLogger('mailman.error')
 
 class Runner:
     QDIR = None
-    SLEEPTIME = mm_cfg.QRUNNER_SLEEP_TIME
+    SLEEPTIME = config.QRUNNER_SLEEP_TIME
 
     def __init__(self, slice=None, numslices=1):
         self._kids = {}
@@ -45,7 +46,7 @@ class Runner:
         # we want to provide slice and numslice arguments.
         self._switchboard = Switchboard(self.QDIR, slice, numslices)
         # Create the shunt switchboard
-        self._shunt = Switchboard(mm_cfg.SHUNTQUEUE_DIR)
+        self._shunt = Switchboard(config.SHUNTQUEUE_DIR)
         self._stop = False
 
     def __repr__(self):
@@ -132,7 +133,7 @@ class Runner:
         # Find out which mailing list this message is destined for.
         listname = msgdata.get('listname')
         if not listname:
-            listname = mm_cfg.MAILMAN_SITE_LIST
+            listname = config.MAILMAN_SITE_LIST
         mlist = self._open_list(listname)
         if not mlist:
             log.error('Dequeuing message destined for missing list: %s',
@@ -153,7 +154,7 @@ class Runner:
         if mlist:
             lang = mlist.getMemberLanguage(sender)
         else:
-            lang = mm_cfg.DEFAULT_SERVER_LANGUAGE
+            lang = config.DEFAULT_SERVER_LANGUAGE
         i18n.set_language(lang)
         msgdata['lang'] = lang
         try:

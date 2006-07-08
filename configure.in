@@ -15,7 +15,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 7899 $)
+AC_REVISION($Revision: 7926 $)
 AC_PREREQ(2.0)
 AC_INIT([GNU Mailman], [2.2.0a0])
 
@@ -602,16 +602,13 @@ bin/dumpdb \
 bin/fix_url.py \
 bin/genaliases \
 bin/list_admins \
-bin/mailmanctl \
 bin/mmshell \
 bin/msgfmt.py \
 bin/pygettext.py \
-bin/qrunner \
 bin/remove_members \
 bin/reset_pw.py \
 bin/sync_members \
 bin/transcheck \
-bin/update \
 bin/withlist \
 bin/templ2pot.py \
 bin/po2templ.py \

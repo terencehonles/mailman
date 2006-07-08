@@ -38,19 +38,19 @@ from email.Header import Header
 from email.Utils import formataddr
 
 from Mailman import Errors
-from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman.Handlers import Decorate
 from Mailman.SafeDict import MsgSafeDict
+from Mailman.configuration import config
 
 DOT = '.'
 
 log         = logging.getLogger('mailman.smtp')
 flog        = logging.getLogger('mailman.smtp-failure')
-every_log   = logging.getLogger('mailman.' + mm_cfg.SMTP_LOG_EVERY_MESSAGE[0])
-success_log = logging.getLogger('mailman.' + mm_cfg.SMTP_LOG_SUCCESS[0])
-refused_log = logging.getLogger('mailman.' + mm_cfg.SMTP_LOG_REFUSED[0])
-failure_log = logging.getLogger('mailman.' + mm_cfg.SMTP_LOG_EACH_FAILURE[0])
+every_log   = logging.getLogger('mailman.' + config.SMTP_LOG_EVERY_MESSAGE[0])
+success_log = logging.getLogger('mailman.' + config.SMTP_LOG_SUCCESS[0])
+refused_log = logging.getLogger('mailman.' + config.SMTP_LOG_REFUSED[0])
+failure_log = logging.getLogger('mailman.' + config.SMTP_LOG_EACH_FAILURE[0])
 
 
 
@@ -61,8 +61,8 @@ class Connection:
 
     def __connect(self):
         self.__conn = smtplib.SMTP()
-        self.__conn.connect(mm_cfg.SMTPHOST, mm_cfg.SMTPPORT)
-        self.__numsessions = mm_cfg.SMTP_MAX_SESSIONS_PER_CONNECTION
+        self.__conn.connect(config.SMTPHOST, config.SMTPPORT)
+        self.__numsessions = config.SMTP_MAX_SESSIONS_PER_CONNECTION
 
     def sendmail(self, envsender, recips, msgtext):
         if self.__conn is None:
@@ -118,10 +118,10 @@ def process(mlist, msg, msgdata):
         chunks = [[recip] for recip in recips]
         msgdata['personalize'] = 1
         deliveryfunc = verpdeliver
-    elif mm_cfg.SMTP_MAX_RCPTS <= 0:
+    elif config.SMTP_MAX_RCPTS <= 0:
         chunks = [recips]
     else:
-        chunks = chunkify(recips, mm_cfg.SMTP_MAX_RCPTS)
+        chunks = chunkify(recips, config.SMTP_MAX_RCPTS)
     # See if this is an unshunted message for which some were undelivered
     if msgdata.has_key('undelivered'):
         chunks = msgdata['undelivered']
@@ -181,12 +181,12 @@ def process(mlist, msg, msgdata):
     # We have to use the copy() method because extended call syntax requires a
     # concrete dictionary object; it does not allow a generic mapping (XXX is
     # this still true in Python 2.3?).
-    if mm_cfg.SMTP_LOG_EVERY_MESSAGE:
-        every_log.info('%s', mm_cfg.SMTP_LOG_EVERY_MESSAGE[1] % d)
+    if config.SMTP_LOG_EVERY_MESSAGE:
+        every_log.info('%s', config.SMTP_LOG_EVERY_MESSAGE[1] % d)
 
     if refused:
-        if mm_cfg.SMTP_LOG_REFUSED:
-            refused_log.info('%s', mm_cfg.SMTP_LOG_REFUSED[1] % d)
+        if config.SMTP_LOG_REFUSED:
+            refused_log.info('%s', config.SMTP_LOG_REFUSED[1] % d)
 
     elif msgdata.get('tolist'):
         # Log the successful post, but only if it really was a post to the
@@ -194,8 +194,8 @@ def process(mlist, msg, msgdata):
         # -request addrs should never get here.  BAW: it may be useful to log
         # the other messages, but in that case, we should probably have a
         # separate configuration variable to control that.
-        if mm_cfg.SMTP_LOG_SUCCESS:
-            success_log.info('%s', mm_cfg.SMTP_LOG_SUCCESS[1] % d)
+        if config.SMTP_LOG_SUCCESS:
+            success_log.info('%s', config.SMTP_LOG_SUCCESS[1] % d)
 
     # Process any failed deliveries.
     tempfailures = []
@@ -217,11 +217,11 @@ def process(mlist, msg, msgdata):
             # Deal with persistent transient failures by queuing them up for
             # future delivery.  TBD: this could generate lots of log entries!
             tempfailures.append(recip)
-        if mm_cfg.SMTP_LOG_EACH_FAILURE:
+        if config.SMTP_LOG_EACH_FAILURE:
             d.update({'recipient': recip,
                       'failcode' : code,
                       'failmsg'  : smtpmsg})
-            failure_log.info('%s', mm_cfg.SMTP_LOG_EACH_FAILURE[1] % d)
+            failure_log.info('%s', config.SMTP_LOG_EACH_FAILURE[1] % d)
     # Return the results
     if tempfailures or permfailures:
         raise Errors.SomeRecipientsFailed(tempfailures, permfailures)
@@ -300,7 +300,7 @@ def verpdeliver(mlist, msg, msgdata, envsender, failures, conn):
                  'mailbox': rmailbox,
                  'host'   : DOT.join(rdomain),
                  }
-            envsender = '%s@%s' % ((mm_cfg.VERP_FORMAT % d), DOT.join(bdomain))
+            envsender = '%s@%s' % ((config.VERP_FORMAT % d), DOT.join(bdomain))
         if mlist.personalize == 2:
             # When fully personalizing, we want the To address to point to the
             # recipient, not to the mailing list

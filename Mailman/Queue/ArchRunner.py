@@ -1,4 +1,4 @@
-# Copyright (C) 2000,2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 2000-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -12,21 +12,22 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """Archive queue runner."""
 
 import time
 from email.Utils import parsedate_tz, mktime_tz, formatdate
 
-from Mailman import mm_cfg
 from Mailman import LockFile
 from Mailman.Queue.Runner import Runner
+from Mailman.configuration import config
 
 
 
 class ArchRunner(Runner):
-    QDIR = mm_cfg.ARCHQUEUE_DIR
+    QDIR = config.ARCHQUEUE_DIR
 
     def _dispose(self, mlist, msg, msgdata):
         # Support clobber_date, i.e. setting the date in the archive to the
@@ -37,9 +38,9 @@ class ArchRunner(Runner):
         receivedtime = formatdate(msgdata['received_time'])
         if not originaldate:
             clobber = 1
-        elif mm_cfg.ARCHIVER_CLOBBER_DATE_POLICY == 1:
+        elif config.ARCHIVER_CLOBBER_DATE_POLICY == 1:
             clobber = 1
-        elif mm_cfg.ARCHIVER_CLOBBER_DATE_POLICY == 2:
+        elif config.ARCHIVER_CLOBBER_DATE_POLICY == 2:
             # what's the timestamp on the original message?
             tup = parsedate_tz(originaldate)
             now = time.time()
@@ -47,7 +48,7 @@ class ArchRunner(Runner):
                 if not tup:
                     clobber = 1
                 elif abs(now - mktime_tz(tup)) > \
-                         mm_cfg.ARCHIVER_ALLOWABLE_SANE_DATE_SKEW:
+                         config.ARCHIVER_ALLOWABLE_SANE_DATE_SKEW:
                     clobber = 1
             except (ValueError, OverflowError):
                 # The likely cause of this is that the year in the Date: field
@@ -65,7 +66,7 @@ class ArchRunner(Runner):
         msg['X-List-Received-Date'] = receivedtime
         # Now try to get the list lock
         try:
-            mlist.Lock(timeout=mm_cfg.LIST_LOCK_TIMEOUT)
+            mlist.Lock(timeout=config.LIST_LOCK_TIMEOUT)
         except LockFile.TimeOutError:
             # oh well, try again later
             return 1

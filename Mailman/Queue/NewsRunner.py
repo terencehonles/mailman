@@ -12,7 +12,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """NNTP queue runner."""
 
@@ -27,9 +28,9 @@ from email.Utils import getaddresses
 
 COMMASPACE = ', '
 
-from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman.Queue.Runner import Runner
+from Mailman.configuration import config
 
 log = logging.getLogger('mailman.error')
 
@@ -48,7 +49,7 @@ mcre = re.compile(r"""
 
 
 class NewsRunner(Runner):
-    QDIR = mm_cfg.NEWSQUEUE_DIR
+    QDIR = config.NEWSQUEUE_DIR
 
     def _dispose(self, mlist, msg, msgdata):
         # Make sure we have the most up-to-date state
@@ -64,8 +65,8 @@ class NewsRunner(Runner):
                     nntp_host, nntp_port = Utils.nntpsplit(mlist.nntp_host)
                     conn = nntplib.NNTP(nntp_host, nntp_port,
                                         readermode=True,
-                                        user=mm_cfg.NNTP_USERNAME,
-                                        password=mm_cfg.NNTP_PASSWORD)
+                                        user=config.NNTP_USERNAME,
+                                        password=config.NNTP_PASSWORD)
                     conn.post(fp)
                 except nntplib.error_temp, e:
                     log.error('(NNTPDirect) NNTP error for list "%s": %s',
@@ -146,9 +147,9 @@ def prepare_message(mlist, msg, msgdata):
     # woon't completely sanitize the message, but it will eliminate the bulk
     # of the rejections based on message headers.  The NNTP server may still
     # reject the message because of other problems.
-    for header in mm_cfg.NNTP_REMOVE_HEADERS:
+    for header in config.NNTP_REMOVE_HEADERS:
         del msg[header]
-    for header, rewrite in mm_cfg.NNTP_REWRITE_DUPLICATE_HEADERS:
+    for header, rewrite in config.NNTP_REWRITE_DUPLICATE_HEADERS:
         values = msg.get_all(header, [])
         if len(values) < 2:
             # We only care about duplicates

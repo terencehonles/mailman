@@ -24,7 +24,7 @@ import os
 import codecs
 import logging
 
-from Mailman import mm_cfg
+from Mailman.configuration import config
 
 FMT     = '%(asctime)s (%(process)d) %(message)s'
 DATEFMT = '%b %d %H:%M:%S %Y'
@@ -116,7 +116,7 @@ def initialize(propagate=False):
         # Propagation to the root logger is how we handle logging to stderr
         # when the qrunners are not run as a subprocess of mailmanctl.
         log.propagate = propagate
-        handler = ReopenableFileHandler(os.path.join(mm_cfg.LOG_DIR, logger))
+        handler = ReopenableFileHandler(os.path.join(config.LOG_DIR, logger))
         _handlers.append(handler)
         handler.setFormatter(formatter)
         log.addHandler(handler)

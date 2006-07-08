@@ -103,8 +103,8 @@ from cStringIO import StringIO
 
 from Mailman import Errors
 from Mailman import LockFile
-from Mailman import mm_cfg
 from Mailman.Queue.Runner import Runner
+from Mailman.configuration import config
 
 log     = logging.getLogger('mailman.error')
 vlog    = logging.getLogger('mailman.vette')
@@ -112,12 +112,12 @@ vlog    = logging.getLogger('mailman.vette')
 
 
 class IncomingRunner(Runner):
-    QDIR = mm_cfg.INQUEUE_DIR
+    QDIR = config.INQUEUE_DIR
 
     def _dispose(self, mlist, msg, msgdata):
         # Try to get the list lock.
         try:
-            mlist.Lock(timeout=mm_cfg.LIST_LOCK_TIMEOUT)
+            mlist.Lock(timeout=config.LIST_LOCK_TIMEOUT)
         except LockFile.TimeOutError:
             # Oh well, try again later
             return 1
@@ -146,7 +146,7 @@ class IncomingRunner(Runner):
         # flows through the pipeline will empty it out!
         return msgdata.get('pipeline',
                            getattr(mlist, 'pipeline',
-                                   mm_cfg.GLOBAL_PIPELINE))[:]
+                                   config.GLOBAL_PIPELINE))[:]
 
     def _dopipeline(self, mlist, msg, msgdata, pipeline):
         while pipeline:

@@ -18,9 +18,11 @@
 import sys
 import optparse
 
+from Mailman import Defaults
 from Mailman import MailList
 from Mailman import Utils
-from Mailman import mm_cfg
+from Mailman import Version
+from Mailman.configuration import config
 from Mailman.i18n import _
 
 __i18n_templates__ = True
@@ -28,7 +30,7 @@ __i18n_templates__ = True
 
 
 def parseargs():
-    parser = optparse.OptionParser(version=mm_cfg.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
                                    usage=_("""\
 %prog [options]
 
@@ -46,6 +48,8 @@ Displays only the list name, with no description."""))
                       help=_("""\
 List only those mailing lists that are homed to the given virtual domain.
 This only works if the VIRTUAL_HOST_OVERVIEW variable is set."""))
+    parser.add_option('-C', '--config',
+                      help=_('Alternative configuration file to use'))
     opts, args = parser.parse_args()
     if args:
         parser.print_help()
@@ -57,6 +61,7 @@ This only works if the VIRTUAL_HOST_OVERVIEW variable is set."""))
 
 def main():
     parser, opts, args = parseargs()
+    config.load(opts.config)
 
     names = Utils.list_names()
     names.sort()
@@ -67,7 +72,7 @@ def main():
         mlist = MailList.MailList(n, lock=False)
         if opts.advertised and not mlist.advertised:
             continue
-        if opts.vhost and mm_cfg.VIRTUAL_HOST_OVERVIEW and \
+        if opts.vhost and config.VIRTUAL_HOST_OVERVIEW and \
                opts.vhost.find(mlist.web_page_url) == -1 and \
                mlist.web_page_url.find(opts.vhost) == -1:
             continue

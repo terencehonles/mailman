@@ -48,7 +48,7 @@ VAR_DIRS= \
 	archives/private archives/public
 
 ARCH_INDEP_DIRS= \
-	bin templates scripts cron pythonlib \
+	bin etc templates scripts cron pythonlib \
 	Mailman Mailman/bin Mailman/Cgi Mailman/Archiver \
 	Mailman/Handlers Mailman/Queue Mailman/Bouncers	 \
 	Mailman/MTA Mailman/Gui Mailman/Commands messages icons \

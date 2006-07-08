@@ -12,23 +12,24 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 import time
 
-from Mailman import mm_cfg
 from Mailman.Queue.Runner import Runner
 from Mailman.Queue.Switchboard import Switchboard
+from Mailman.configuration import config
 
 
 
 class RetryRunner(Runner):
-    QDIR = mm_cfg.RETRYQUEUE_DIR
-    SLEEPTIME = mm_cfg.minutes(15)
+    QDIR = config.RETRYQUEUE_DIR
+    SLEEPTIME = config.minutes(15)
 
     def __init__(self, slice=None, numslices=1):
         Runner.__init__(self, slice, numslices)
-        self.__outq = Switchboard(mm_cfg.OUTQUEUE_DIR)
+        self.__outq = Switchboard(config.OUTQUEUE_DIR)
 
     def _dispose(self, mlist, msg, msgdata):
         # Move it to the out queue for another retry

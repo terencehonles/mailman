@@ -15,7 +15,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-
 """Miscellaneous essential routines.
 
 This includes actual message transmission routines, address checking and
@@ -42,8 +41,8 @@ from string import ascii_letters, digits, whitespace
 
 from Mailman import Errors
 from Mailman import Site
-from Mailman import mm_cfg
 from Mailman.SafeDict import SafeDict
+from Mailman.configuration import config
 
 EMPTYSTRING = ''
 UEMPTYSTRING = u''
@@ -228,7 +227,7 @@ def ScriptURL(target, web_page_url=None, absolute=False):
     absolute - a flag which if set, generates an absolute url
     """
     if web_page_url is None:
-        web_page_url = mm_cfg.DEFAULT_URL_PATTERN % get_domain()
+        web_page_url = config.DEFAULT_URL_PATTERN % get_domain()
         if web_page_url[-1] <> '/':
             web_page_url = web_page_url + '/'
     fullpath = os.environ.get('REQUEST_URI')
@@ -247,7 +246,7 @@ def ScriptURL(target, web_page_url=None, absolute=False):
         path = ('../' * count) + target
     else:
         path = web_page_url + target
-    return path + mm_cfg.CGIEXT
+    return path + config.CGIEXT
 
 
 
@@ -334,8 +333,10 @@ def Secure_MakeRandomPassword(length):
             os.close(fd)
 
 
-def MakeRandomPassword(length=mm_cfg.MEMBER_PASSWORD_LENGTH):
-    if mm_cfg.USER_FRIENDLY_PASSWORDS:
+def MakeRandomPassword(length=None):
+    if length is None:
+        length = config.MEMBER_PASSWORD_LENGTH
+    if config.USER_FRIENDLY_PASSWORDS:
         return UserFriendly_MakeRandomPassword(length)
     return Secure_MakeRandomPassword(length)
 
@@ -356,9 +357,9 @@ def GetRandomSeed():
 
 def set_global_password(pw, siteadmin=True):
     if siteadmin:
-        filename = mm_cfg.SITE_PW_FILE
+        filename = config.SITE_PW_FILE
     else:
-        filename = mm_cfg.LISTCREATOR_PW_FILE
+        filename = config.LISTCREATOR_PW_FILE
     # rw-r-----
     omask = os.umask(026)
     try:
@@ -371,9 +372,9 @@ def set_global_password(pw, siteadmin=True):
 
 def get_global_password(siteadmin=True):
     if siteadmin:
-        filename = mm_cfg.SITE_PW_FILE
+        filename = config.SITE_PW_FILE
     else:
-        filename = mm_cfg.LISTCREATOR_PW_FILE
+        filename = config.LISTCREATOR_PW_FILE
     try:
         fp = open(filename)
         challenge = fp.read()[:-1]                # strip off trailing nl
@@ -486,14 +487,14 @@ def findtext(templatefile, dict=None, raw=False, lang=None, mlist=None):
         languages.append(lang)
     if mlist is not None:
         languages.append(mlist.preferred_language)
-    languages.append(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+    languages.append(config.DEFAULT_SERVER_LANGUAGE)
     # Calculate the locations to scan
     searchdirs = []
     if mlist is not None:
         searchdirs.append(mlist.fullpath())
-        searchdirs.append(os.path.join(mm_cfg.TEMPLATE_DIR, mlist.host_name))
-    searchdirs.append(os.path.join(mm_cfg.TEMPLATE_DIR, 'site'))
-    searchdirs.append(mm_cfg.TEMPLATE_DIR)
+        searchdirs.append(os.path.join(config.TEMPLATE_DIR, mlist.host_name))
+    searchdirs.append(os.path.join(config.TEMPLATE_DIR, 'site'))
+    searchdirs.append(config.TEMPLATE_DIR)
     # Start scanning
     quickexit = 'quickexit'
     fp = None
@@ -514,7 +515,7 @@ def findtext(templatefile, dict=None, raw=False, lang=None, mlist=None):
         # Try one last time with the distro English template, which, unless
         # you've got a really broken installation, must be there.
         try:
-            filename = os.path.join(mm_cfg.TEMPLATE_DIR, 'en', templatefile)
+            filename = os.path.join(config.TEMPLATE_DIR, 'en', templatefile)
             fp = open(filename)
         except IOError, e:
             if e.errno <> errno.ENOENT: raise
@@ -573,7 +574,7 @@ def is_administrivia(msg):
             break
         if line.strip():
             linecnt += 1
-        if linecnt > mm_cfg.DEFAULT_MAIL_COMMANDS_MAX_LINES:
+        if linecnt > config.DEFAULT_MAIL_COMMANDS_MAX_LINES:
             return False
         lines.append(line)
     bodytext = NL.join(lines)
@@ -652,14 +653,14 @@ def reap(kids, func=None, once=False):
 
 
 def GetLanguageDescr(lang):
-    return mm_cfg.LC_DESCRIPTIONS[lang][0]
+    return config.LC_DESCRIPTIONS[lang][0]
 
 
 def GetCharSet(lang):
-    return mm_cfg.LC_DESCRIPTIONS[lang][1]
+    return config.LC_DESCRIPTIONS[lang][1]
 
 def IsLanguage(lang):
-    return mm_cfg.LC_DESCRIPTIONS.has_key(lang)
+    return config.LC_DESCRIPTIONS.has_key(lang)
 
 
 
@@ -669,23 +670,23 @@ def get_domain():
     # Strip off the port if there is one
     if port and host.endswith(':' + port):
         host = host[:-len(port)-1]
-    if mm_cfg.VIRTUAL_HOST_OVERVIEW and host:
+    if config.VIRTUAL_HOST_OVERVIEW and host:
         return host.lower()
     else:
         # See the note in Defaults.py concerning DEFAULT_URL
         # vs. DEFAULT_URL_HOST.
-        hostname = ((mm_cfg.DEFAULT_URL
-                     and urlparse.urlparse(mm_cfg.DEFAULT_URL)[1])
-                     or mm_cfg.DEFAULT_URL_HOST)
+        hostname = ((config.DEFAULT_URL
+                     and urlparse.urlparse(config.DEFAULT_URL)[1])
+                     or config.DEFAULT_URL_HOST)
         return hostname.lower()
 
 
 def get_site_email(hostname=None, extra=None):
     if hostname is None:
-        hostname = mm_cfg.VIRTUAL_HOSTS.get(get_domain(), get_domain())
+        hostname = config.VIRTUAL_HOSTS.get(get_domain(), get_domain())
     if extra is None:
-        return '%s@%s' % (mm_cfg.MAILMAN_SITE_LIST, hostname)
-    return '%s-%s@%s' % (mm_cfg.MAILMAN_SITE_LIST, extra, hostname)
+        return '%s@%s' % (config.MAILMAN_SITE_LIST, hostname)
+    return '%s-%s@%s' % (config.MAILMAN_SITE_LIST, extra, hostname)
 
 
 

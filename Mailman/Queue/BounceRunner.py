@@ -28,13 +28,13 @@ from email.MIMEText import MIMEText
 from email.Utils import parseaddr
 
 from Mailman import LockFile
-from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman.Bouncers import BouncerAPI
-from Mailman.i18n import _
 from Mailman.Message import UserNotification
 from Mailman.Queue.Runner import Runner
 from Mailman.Queue.sbcache import get_switchboard
+from Mailman.configuration import config
+from Mailman.i18n import _
 
 COMMASPACE = ', '
 
@@ -78,10 +78,10 @@ class BounceMixin:
         # their lists.  So now we ignore site list bounces.  Ce La Vie for
         # password reminder bounces.
         self._bounce_events_file = os.path.join(
-            mm_cfg.DATA_DIR, 'bounce-events-%05d.pck' % os.getpid())
+            config.DATA_DIR, 'bounce-events-%05d.pck' % os.getpid())
         self._bounce_events_fp = None
         self._bouncecnt = 0
-        self._nextaction = time.time() + mm_cfg.REGISTER_BOUNCES_EVERY
+        self._nextaction = time.time() + config.REGISTER_BOUNCES_EVERY
 
     def _queue_bounces(self, listname, addrs, msg):
         today = time.localtime()[:3]
@@ -137,7 +137,7 @@ class BounceMixin:
         if self._nextaction > now or self._bouncecnt == 0:
             return
         # Let's go ahead and register the bounces we've got stored up
-        self._nextaction = now + mm_cfg.REGISTER_BOUNCES_EVERY
+        self._nextaction = now + config.REGISTER_BOUNCES_EVERY
         self._register_bounces()
 
     def _probe_bounce(self, mlist, token):
@@ -158,7 +158,7 @@ class BounceMixin:
 
 
 class BounceRunner(Runner, BounceMixin):
-    QDIR = mm_cfg.BOUNCEQUEUE_DIR
+    QDIR = config.BOUNCEQUEUE_DIR
 
     def __init__(self, slice=None, numslices=1):
         Runner.__init__(self, slice, numslices)
@@ -167,7 +167,7 @@ class BounceRunner(Runner, BounceMixin):
     def _dispose(self, mlist, msg, msgdata):
         # Make sure we have the most up-to-date state
         mlist.Load()
-        outq = get_switchboard(mm_cfg.OUTQUEUE_DIR)
+        outq = get_switchboard(config.OUTQUEUE_DIR)
         # There are a few possibilities here:
         #
         # - the message could have been VERP'd in which case, we know exactly
@@ -245,7 +245,7 @@ def verp_bounce(mlist, msg):
         to = parseaddr(field)[1]
         if not to:
             continue                          # empty header
-        mo = re.search(mm_cfg.VERP_REGEXP, to)
+        mo = re.search(config.VERP_REGEXP, to)
         if not mo:
             continue                          # no match of regexp
         try:
@@ -255,7 +255,7 @@ def verp_bounce(mlist, msg):
             addr = '%s@%s' % mo.group('mailbox', 'host')
         except IndexError:
             elog.error("VERP_REGEXP doesn't yield the right match groups: %s",
-                       mm_cfg.VERP_REGEXP)
+                       config.VERP_REGEXP)
             return []
         return [addr]
 
@@ -276,7 +276,7 @@ def verp_probe(mlist, msg):
         to = parseaddr(field)[1]
         if not to:
             continue                          # empty header
-        mo = re.search(mm_cfg.VERP_PROBE_REGEXP, to)
+        mo = re.search(config.VERP_PROBE_REGEXP, to)
         if not mo:
             continue                          # no match of regexp
         try:
@@ -290,7 +290,7 @@ def verp_probe(mlist, msg):
         except IndexError:
             elog.error(
                 "VERP_PROBE_REGEXP doesn't yield the right match groups: %s",
-                mm_cfg.VERP_PROBE_REGEXP)
+                config.VERP_PROBE_REGEXP)
     return None
 
 

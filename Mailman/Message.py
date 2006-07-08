@@ -29,8 +29,8 @@ import email.Utils
 from email.Charset import Charset
 from email.Header import Header
 
-from Mailman import mm_cfg
 from Mailman import Utils
+from Mailman.configuration import config
 
 COMMASPACE = ', '
 
@@ -113,7 +113,7 @@ class Message(email.Message.Message):
         This method differs from get_senders() in that it returns one and only
         one address, and uses a different search order.
         """
-        senderfirst = mm_cfg.USE_ENVELOPE_SENDER
+        senderfirst = config.USE_ENVELOPE_SENDER
         if use_envelope is not None:
             senderfirst = use_envelope
         if senderfirst:
@@ -165,7 +165,7 @@ class Message(email.Message.Message):
         names without the trailing colon.
         """
         if headers is None:
-            headers = mm_cfg.SENDER_HEADERS
+            headers = config.SENDER_HEADERS
         pairs = []
         for h in headers:
             if h is None:
@@ -245,7 +245,7 @@ class UserNotification(Message):
     def _enqueue(self, mlist, **_kws):
         # Not imported at module scope to avoid import loop
         from Mailman.Queue.sbcache import get_switchboard
-        virginq = get_switchboard(mm_cfg.VIRGINQUEUE_DIR)
+        virginq = get_switchboard(config.VIRGINQUEUE_DIR)
         # The message metadata better have a `recip' attribute
         virginq.enqueue(self,
                         listname = mlist.internal_name(),
@@ -276,7 +276,7 @@ class OwnerNotification(UserNotification):
     def _enqueue(self, mlist, **_kws):
         # Not imported at module scope to avoid import loop
         from Mailman.Queue.sbcache import get_switchboard
-        virginq = get_switchboard(mm_cfg.VIRGINQUEUE_DIR)
+        virginq = get_switchboard(config.VIRGINQUEUE_DIR)
         # The message metadata better have a `recip' attribute
         virginq.enqueue(self,
                         listname = mlist.internal_name(),

@@ -22,7 +22,8 @@ import optparse
 
 from Mailman import MailList
 from Mailman import Utils
-from Mailman import mm_cfg
+from Mailman import Version
+from Mailman.configuration import config
 from Mailman.i18n import _
 
 __i18n_templates__ = True
@@ -44,7 +45,7 @@ def remove_it(listname, filename, msg):
 
 
 def parseargs():
-    parser = optparse.OptionParser(version=mm_cfg.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
                                    usage=_("""\
 %prog [options] listname
 
@@ -57,6 +58,8 @@ archives are not removed, which is very handy for retiring old lists.
                       default=False, action='store_true', help=_("""\
 Remove the list's archives too, or if the list has already been deleted,
 remove any residual archives."""))
+    parser.add_option('-C', '--config',
+                      help=_('Alternative configuration file to use'))
     opts, args = parser.parse_args()
     if not args:
         parser.print_help()
@@ -72,6 +75,8 @@ remove any residual archives."""))
 
 def main():
     parser, opts, args = parseargs()
+    config.load(opts.config)
+
     listname = args[0].lower().strip()
     if not Utils.list_exists(listname):
         if not opts.archives:
@@ -89,18 +94,18 @@ def main():
     if Utils.list_exists(listname):
         mlist = MailList.MailList(listname, lock=False)
         # Do the MTA-specific list deletion tasks
-        if mm_cfg.MTA:
-            modname = 'Mailman.MTA.' + mm_cfg.MTA
+        if config.MTA:
+            modname = 'Mailman.MTA.' + config.MTA
             __import__(modname)
             sys.modules[modname].remove(mlist)
 
         removeables.append((os.path.join('lists', listname), _('list info')))
 
     # Remove any stale locks associated with the list
-    for filename in os.listdir(mm_cfg.LOCK_DIR):
+    for filename in os.listdir(config.LOCK_DIR):
         fn_listname = filename.split('.')[0]
         if fn_listname == listname:
-            removeables.append((os.path.join(mm_cfg.LOCK_DIR, filename),
+            removeables.append((os.path.join(config.LOCK_DIR, filename),
                                 _('stale lock file')))
 
     if opts.archives:
@@ -116,7 +121,7 @@ def main():
             ])
 
     for dirtmpl, msg in removeables:
-        path = os.path.join(mm_cfg.VAR_PREFIX, dirtmpl)
+        path = os.path.join(config.VAR_PREFIX, dirtmpl)
         remove_it(listname, path, msg)
 
 

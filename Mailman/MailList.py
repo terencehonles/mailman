@@ -45,8 +45,8 @@ from email.Utils import getaddresses, formataddr, parseaddr
 from Mailman import Errors
 from Mailman import LockFile
 from Mailman import Utils
-from Mailman import mm_cfg
 from Mailman.UserDesc import UserDesc
+from Mailman.configuration import config
 
 # Base classes
 from Mailman import Pending
@@ -196,19 +196,19 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         return self.getListAddress('owner')
 
     def GetRequestEmail(self, cookie=''):
-        if mm_cfg.VERP_CONFIRMATIONS and cookie:
+        if config.VERP_CONFIRMATIONS and cookie:
             return self.GetConfirmEmail(cookie)
         else:
             return self.getListAddress('request')
 
     def GetConfirmEmail(self, cookie):
-        return mm_cfg.VERP_CONFIRM_FORMAT % {
+        return config.VERP_CONFIRM_FORMAT % {
             'addr'  : '%s-confirm' % self.internal_name(),
             'cookie': cookie,
             } + '@' + self.host_name
 
     def GetConfirmJoinSubject(self, listname, cookie):
-        if mm_cfg.VERP_CONFIRMATIONS and cookie:
+        if config.VERP_CONFIRMATIONS and cookie:
             cset = i18n.get_translation().charset() or \
                        Utils.GetCharSet(self.preferred_language)
             subj = Header(
@@ -219,7 +219,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             return 'confirm ' + cookie
 
     def GetConfirmLeaveSubject(self, listname, cookie):
-        if mm_cfg.VERP_CONFIRMATIONS and cookie:
+        if config.VERP_CONFIRMATIONS and cookie:
             cset = i18n.get_translation().charset() or \
                        Utils.GetCharSet(self.preferred_language)
             subj = Header(
@@ -269,8 +269,8 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         # need to reload, otherwise... we do.
         self.__timestamp = 0
         self.__lock = LockFile.LockFile(
-            os.path.join(mm_cfg.LOCK_DIR, name or '<site>') + '.lock',
-            lifetime=mm_cfg.LIST_LOCK_LIFETIME)
+            os.path.join(config.LOCK_DIR, name or '<site>') + '.lock',
+            lifetime=config.LIST_LOCK_LIFETIME)
         self._internal_name = name
         if name:
             self._full_path = Site.get_listpath(name)
@@ -299,7 +299,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         # Must save this state, even though it isn't configurable
         self.volume = 1
         self.members = {} # self.digest_members is initted in mm_digest
-        self.data_version = mm_cfg.DATA_FILE_VERSION
+        self.data_version = config.DATA_FILE_VERSION
         self.last_post_time = 0
 
         self.post_id = 1.  # A float so it never has a chance to overflow.
@@ -307,76 +307,76 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         self.language = {}
         self.usernames = {}
         self.passwords = {}
-        self.new_member_options = mm_cfg.DEFAULT_NEW_MEMBER_OPTIONS
+        self.new_member_options = config.DEFAULT_NEW_MEMBER_OPTIONS
 
         # This stuff is configurable
         self.respond_to_post_requests = 1
-        self.advertised = mm_cfg.DEFAULT_LIST_ADVERTISED
-        self.max_num_recipients = mm_cfg.DEFAULT_MAX_NUM_RECIPIENTS
-        self.max_message_size = mm_cfg.DEFAULT_MAX_MESSAGE_SIZE
+        self.advertised = config.DEFAULT_LIST_ADVERTISED
+        self.max_num_recipients = config.DEFAULT_MAX_NUM_RECIPIENTS
+        self.max_message_size = config.DEFAULT_MAX_MESSAGE_SIZE
         # See the note in Defaults.py concerning DEFAULT_HOST_NAME
         # vs. DEFAULT_EMAIL_HOST.
-        self.host_name = mm_cfg.DEFAULT_HOST_NAME or mm_cfg.DEFAULT_EMAIL_HOST
+        self.host_name = config.DEFAULT_HOST_NAME or config.DEFAULT_EMAIL_HOST
         self.web_page_url = (
-            mm_cfg.DEFAULT_URL or
-            mm_cfg.DEFAULT_URL_PATTERN % mm_cfg.DEFAULT_URL_HOST)
+            config.DEFAULT_URL or
+            config.DEFAULT_URL_PATTERN % config.DEFAULT_URL_HOST)
         self.owner = [admin]
         self.moderator = []
-        self.reply_goes_to_list = mm_cfg.DEFAULT_REPLY_GOES_TO_LIST
+        self.reply_goes_to_list = config.DEFAULT_REPLY_GOES_TO_LIST
         self.reply_to_address = ''
-        self.first_strip_reply_to = mm_cfg.DEFAULT_FIRST_STRIP_REPLY_TO
-        self.admin_immed_notify = mm_cfg.DEFAULT_ADMIN_IMMED_NOTIFY
+        self.first_strip_reply_to = config.DEFAULT_FIRST_STRIP_REPLY_TO
+        self.admin_immed_notify = config.DEFAULT_ADMIN_IMMED_NOTIFY
         self.admin_notify_mchanges = \
-                mm_cfg.DEFAULT_ADMIN_NOTIFY_MCHANGES
+                config.DEFAULT_ADMIN_NOTIFY_MCHANGES
         self.require_explicit_destination = \
-                mm_cfg.DEFAULT_REQUIRE_EXPLICIT_DESTINATION
-        self.acceptable_aliases = mm_cfg.DEFAULT_ACCEPTABLE_ALIASES
-        self.umbrella_list = mm_cfg.DEFAULT_UMBRELLA_LIST
+                config.DEFAULT_REQUIRE_EXPLICIT_DESTINATION
+        self.acceptable_aliases = config.DEFAULT_ACCEPTABLE_ALIASES
+        self.umbrella_list = config.DEFAULT_UMBRELLA_LIST
         self.umbrella_member_suffix = \
-                mm_cfg.DEFAULT_UMBRELLA_MEMBER_ADMIN_SUFFIX
-        self.send_reminders = mm_cfg.DEFAULT_SEND_REMINDERS
-        self.send_welcome_msg = mm_cfg.DEFAULT_SEND_WELCOME_MSG
-        self.send_goodbye_msg = mm_cfg.DEFAULT_SEND_GOODBYE_MSG
+                config.DEFAULT_UMBRELLA_MEMBER_ADMIN_SUFFIX
+        self.send_reminders = config.DEFAULT_SEND_REMINDERS
+        self.send_welcome_msg = config.DEFAULT_SEND_WELCOME_MSG
+        self.send_goodbye_msg = config.DEFAULT_SEND_GOODBYE_MSG
         self.bounce_matching_headers = \
-                mm_cfg.DEFAULT_BOUNCE_MATCHING_HEADERS
+                config.DEFAULT_BOUNCE_MATCHING_HEADERS
         self.header_filter_rules = []
-        self.anonymous_list = mm_cfg.DEFAULT_ANONYMOUS_LIST
+        self.anonymous_list = config.DEFAULT_ANONYMOUS_LIST
         internalname = self.internal_name()
         self.real_name = internalname[0].upper() + internalname[1:]
         self.description = ''
         self.info = ''
         self.welcome_msg = ''
         self.goodbye_msg = ''
-        self.subscribe_policy = mm_cfg.DEFAULT_SUBSCRIBE_POLICY
-        self.subscribe_auto_approval = mm_cfg.DEFAULT_SUBSCRIBE_AUTO_APPROVAL
-        self.unsubscribe_policy = mm_cfg.DEFAULT_UNSUBSCRIBE_POLICY
-        self.private_roster = mm_cfg.DEFAULT_PRIVATE_ROSTER
-        self.obscure_addresses = mm_cfg.DEFAULT_OBSCURE_ADDRESSES
-        self.admin_member_chunksize = mm_cfg.DEFAULT_ADMIN_MEMBER_CHUNKSIZE
-        self.administrivia = mm_cfg.DEFAULT_ADMINISTRIVIA
-        self.preferred_language = mm_cfg.DEFAULT_SERVER_LANGUAGE
+        self.subscribe_policy = config.DEFAULT_SUBSCRIBE_POLICY
+        self.subscribe_auto_approval = config.DEFAULT_SUBSCRIBE_AUTO_APPROVAL
+        self.unsubscribe_policy = config.DEFAULT_UNSUBSCRIBE_POLICY
+        self.private_roster = config.DEFAULT_PRIVATE_ROSTER
+        self.obscure_addresses = config.DEFAULT_OBSCURE_ADDRESSES
+        self.admin_member_chunksize = config.DEFAULT_ADMIN_MEMBER_CHUNKSIZE
+        self.administrivia = config.DEFAULT_ADMINISTRIVIA
+        self.preferred_language = config.DEFAULT_SERVER_LANGUAGE
         self.available_languages = []
         self.include_rfc2369_headers = 1
         self.include_list_post_header = 1
-        self.filter_mime_types = mm_cfg.DEFAULT_FILTER_MIME_TYPES
-        self.pass_mime_types = mm_cfg.DEFAULT_PASS_MIME_TYPES
+        self.filter_mime_types = config.DEFAULT_FILTER_MIME_TYPES
+        self.pass_mime_types = config.DEFAULT_PASS_MIME_TYPES
         self.filter_filename_extensions = \
-            mm_cfg.DEFAULT_FILTER_FILENAME_EXTENSIONS
-        self.pass_filename_extensions = mm_cfg.DEFAULT_PASS_FILENAME_EXTENSIONS
-        self.filter_content = mm_cfg.DEFAULT_FILTER_CONTENT
-        self.collapse_alternatives = mm_cfg.DEFAULT_COLLAPSE_ALTERNATIVES
+            config.DEFAULT_FILTER_FILENAME_EXTENSIONS
+        self.pass_filename_extensions = config.DEFAULT_PASS_FILENAME_EXTENSIONS
+        self.filter_content = config.DEFAULT_FILTER_CONTENT
+        self.collapse_alternatives = config.DEFAULT_COLLAPSE_ALTERNATIVES
         self.convert_html_to_plaintext = \
-            mm_cfg.DEFAULT_CONVERT_HTML_TO_PLAINTEXT
-        self.filter_action = mm_cfg.DEFAULT_FILTER_ACTION
+            config.DEFAULT_CONVERT_HTML_TO_PLAINTEXT
+        self.filter_action = config.DEFAULT_FILTER_ACTION
         # Analogs to these are initted in Digester.InitVars
-        self.nondigestable = mm_cfg.DEFAULT_NONDIGESTABLE
+        self.nondigestable = config.DEFAULT_NONDIGESTABLE
         self.personalize = 0
         # New sender-centric moderation (privacy) options
         self.default_member_moderation = \
-                                       mm_cfg.DEFAULT_DEFAULT_MEMBER_MODERATION
+                                       config.DEFAULT_DEFAULT_MEMBER_MODERATION
         # Emergency moderation bit
         self.emergency = 0
-        # This really ought to default to mm_cfg.HOLD, but that doesn't work
+        # This really ought to default to config.HOLD, but that doesn't work
         # with the current GUI description model.  So, 0==Hold, 1==Reject,
         # 2==Discard
         self.member_moderation_action = 0
@@ -385,8 +385,8 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         self.hold_these_nonmembers = []
         self.reject_these_nonmembers = []
         self.discard_these_nonmembers = []
-        self.forward_auto_discards = mm_cfg.DEFAULT_FORWARD_AUTO_DISCARDS
-        self.generic_nonmember_action = mm_cfg.DEFAULT_GENERIC_NONMEMBER_ACTION
+        self.forward_auto_discards = config.DEFAULT_FORWARD_AUTO_DISCARDS
+        self.generic_nonmember_action = config.DEFAULT_GENERIC_NONMEMBER_ACTION
         self.nonmember_rejection_notice = ''
         # Ban lists
         self.ban_list = []
@@ -403,9 +403,9 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
 
         # These need to come near the bottom because they're dependent on
         # other settings.
-        self.subject_prefix = mm_cfg.DEFAULT_SUBJECT_PREFIX % self.__dict__
-        self.msg_header = mm_cfg.DEFAULT_MSG_HEADER
-        self.msg_footer = mm_cfg.DEFAULT_MSG_FOOTER
+        self.subject_prefix = config.DEFAULT_SUBJECT_PREFIX % self.__dict__
+        self.msg_header = config.DEFAULT_MSG_HEADER
+        self.msg_footer = config.DEFAULT_MSG_FOOTER
         # Set this to Never if the list's preferred language uses us-ascii,
         # otherwise set it to As Needed
         if Utils.GetCharSet(self.preferred_language) == 'us-ascii':
@@ -413,9 +413,9 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         else:
             self.encode_ascii_prefixes = 2
         # scrub regular delivery
-        self.scrub_nondigest = mm_cfg.DEFAULT_SCRUB_NONDIGEST
+        self.scrub_nondigest = config.DEFAULT_SCRUB_NONDIGEST
         # automatic discarding
-        self.max_days_to_hold = mm_cfg.DEFAULT_MAX_DAYS_TO_HOLD
+        self.max_days_to_hold = config.DEFAULT_MAX_DAYS_TO_HOLD
 
 
     #
@@ -425,17 +425,17 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         class CategoryDict(UserDict):
             def __init__(self):
                 UserDict.__init__(self)
-                self.keysinorder = mm_cfg.ADMIN_CATEGORIES[:]
+                self.keysinorder = config.ADMIN_CATEGORIES[:]
             def keys(self):
                 return self.keysinorder
             def items(self):
                 items = []
-                for k in mm_cfg.ADMIN_CATEGORIES:
+                for k in config.ADMIN_CATEGORIES:
                     items.append((k, self.data[k]))
                 return items
             def values(self):
                 values = []
-                for k in mm_cfg.ADMIN_CATEGORIES:
+                for k in config.ADMIN_CATEGORIES:
                     values.append(self.data[k])
                 return values
 
@@ -476,7 +476,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         # However, most scripts already catch MMBadEmailError as exceptions on
         # the admin's email address, so transform the exception.
         if emailhost is None:
-            emailhost = mm_cfg.DEFAULT_EMAIL_HOST
+            emailhost = config.DEFAULT_EMAIL_HOST
         postingaddr = '%s@%s' % (name, emailhost)
         try:
             Utils.ValidateEmail(postingaddr)
@@ -515,7 +515,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             # Use a binary format... it's more efficient.
             cPickle.dump(dict, fp, 1)
             fp.flush()
-            if mm_cfg.SYNC_AFTER_WRITE:
+            if config.SYNC_AFTER_WRITE:
                 os.fsync(fp.fileno())
             fp.close()
         except IOError, e:
@@ -697,7 +697,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
     #
     def CheckVersion(self, stored_state):
         """Auto-update schema if necessary."""
-        if self.data_version >= mm_cfg.DATA_FILE_VERSION:
+        if self.data_version >= config.DATA_FILE_VERSION:
             return
         # Initialize any new variables
         self.InitVars()
@@ -712,7 +712,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         try:
             from versions import Update
             Update(self, stored_state)
-            self.data_version = mm_cfg.DATA_FILE_VERSION
+            self.data_version = config.DATA_FILE_VERSION
             self.Save()
         finally:
             if not waslocked:
@@ -725,8 +725,8 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             # URL is empty; substitute faulty value with (hopefully sane)
             # default.  Note that DEFAULT_URL is obsolete.
             self.web_page_url = (
-                mm_cfg.DEFAULT_URL or
-                mm_cfg.DEFAULT_URL_PATTERN % mm_cfg.DEFAULT_URL_HOST)
+                config.DEFAULT_URL or
+                config.DEFAULT_URL_PATTERN % config.DEFAULT_URL_HOST)
         if self.web_page_url and self.web_page_url[-1] <> '/':
             self.web_page_url = self.web_page_url + '/'
         # Legacy reply_to_address could be an illegal value.  We now verify
@@ -958,9 +958,9 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         # Do the actual addition
         self.addNewMember(email, realname=name, digest=digest,
                           password=password, language=lang)
-        self.setMemberOption(email, mm_cfg.DisableMime,
+        self.setMemberOption(email, config.DisableMime,
                              1 - self.mime_is_default_digest)
-        self.setMemberOption(email, mm_cfg.Moderate,
+        self.setMemberOption(email, config.Moderate,
                              self.default_member_moderation)
         # Now send and log results
         if digest:
@@ -1283,17 +1283,17 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             if approved is not None:
                 # Does it match the list password?  Note that we purposefully
                 # do not allow the site password here.
-                if self.Authenticate([mm_cfg.AuthListAdmin,
-                                      mm_cfg.AuthListModerator],
-                                     approved) <> mm_cfg.UnAuthorized:
-                    action = mm_cfg.APPROVE
+                if self.Authenticate([config.AuthListAdmin,
+                                      config.AuthListModerator],
+                                     approved) <> config.UnAuthorized:
+                    action = config.APPROVE
                 else:
                     # The password didn't match.  Re-pend the message and
                     # inform the list moderators about the problem.
                     self.pend_repend(cookie, rec)
                     raise Errors.MMBadPasswordError
             else:
-                action = mm_cfg.DISCARD
+                action = config.DISCARD
             try:
                 self.HandleRequest(id, action)
             except KeyError:
@@ -1459,7 +1459,7 @@ bad regexp in bounce_matching_header line: %s
             lang = self.preferred_language
         i18n.set_language(lang)
         # No limit
-        if mm_cfg.MAX_AUTORESPONSES_PER_DAY == 0:
+        if config.MAX_AUTORESPONSES_PER_DAY == 0:
             return 1
         today = time.localtime()[:3]
         info = self.hold_and_cmd_autoresponses.get(sender)
@@ -1473,7 +1473,7 @@ bad regexp in bounce_matching_header line: %s
             # They've already hit the limit for today.
             vlog.info('-request/hold autoresponse discarded for: %s', sender)
             return 0
-        if count >= mm_cfg.MAX_AUTORESPONSES_PER_DAY:
+        if count >= config.MAX_AUTORESPONSES_PER_DAY:
             vlog.info('-request/hold autoresponse limit hit for: %s', sender)
             self.hold_and_cmd_autoresponses[sender] = (today, -1)
             # Send this notification message instead
@@ -1544,8 +1544,8 @@ bad regexp in bounce_matching_header line: %s
         # language support to the list, then the general admin page may have a
         # blank field where the list owner is supposed to chose the list's
         # preferred language.
-        if mm_cfg.DEFAULT_SERVER_LANGUAGE not in langs:
-            langs.append(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+        if config.DEFAULT_SERVER_LANGUAGE not in langs:
+            langs.append(config.DEFAULT_SERVER_LANGUAGE)
         # When testing, it's possible we've disabled a language, so just
         # filter things out so we don't get tracebacks.
-        return [lang for lang in langs if mm_cfg.LC_DESCRIPTIONS.has_key(lang)]
+        return [lang for lang in langs if config.LC_DESCRIPTIONS.has_key(lang)]

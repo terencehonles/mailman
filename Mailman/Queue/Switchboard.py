@@ -12,7 +12,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """Reading and writing message objects and message metadata."""
 
@@ -41,8 +42,8 @@ import cPickle
 import marshal
 
 from Mailman import Message
-from Mailman import mm_cfg
 from Mailman import Utils
+from Mailman.configuration import config
 
 # 20 bytes of all bits set, maximum sha.digest() value
 shamax = 0xffffffffffffffffffffffffffffffffffffffffL
@@ -104,7 +105,7 @@ class Switchboard:
         filename = os.path.join(self.__whichq, filebase + '.pck')
         tmpfile = filename + '.tmp'
         # Always add the metadata schema version number
-        data['version'] = mm_cfg.QFILE_SCHEMA_VERSION
+        data['version'] = config.QFILE_SCHEMA_VERSION
         # Filter out volatile entries
         for k in data.keys():
             if k.startswith('_'):

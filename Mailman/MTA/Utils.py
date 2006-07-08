@@ -1,25 +1,26 @@
-# Copyright (C) 2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """Utilities for list creation/deletion hooks."""
 
 import os
 import pwd
 
-from Mailman import mm_cfg
+from Mailman.configuration import config
 
 
 
@@ -35,7 +36,7 @@ def getusername():
 
 
 def _makealiases_mailprog(listname):
-    wrapper = os.path.join(mm_cfg.WRAPPER_DIR, 'mailman')
+    wrapper = os.path.join(config.WRAPPER_DIR, 'mailman')
     # Most of the list alias extensions are quite regular.  I.e. if the
     # message is delivered to listname-foobar, it will be filtered to a
     # program called foobar.  There are two exceptions:
@@ -57,7 +58,7 @@ def _makealiases_mailprog(listname):
 
 
 def _makealiases_maildir(listname):
-    maildir = mm_cfg.MAILDIR_DIR
+    maildir = config.MAILDIR_DIR
     if not maildir.endswith('/'):
         maildir += '/'
     # Deliver everything using maildir style.  This way there's no mail
@@ -73,7 +74,9 @@ def _makealiases_maildir(listname):
 
 
 
-if mm_cfg.USE_MAILDIR:
+# XXX This won't work if Mailman.MTA.Utils is imported before the
+# configuration is loaded.
+if config.USE_MAILDIR:
     makealiases = _makealiases_maildir
 else:
     makealiases = _makealiases_mailprog

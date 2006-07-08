@@ -33,11 +33,11 @@ from email.MIMEText import MIMEText
 
 from Mailman import LockFile
 from Mailman import Message
-from Mailman import mm_cfg
 from Mailman import Utils
 from Mailman.Handlers import Replybot
-from Mailman.i18n import _
 from Mailman.Queue.Runner import Runner
+from Mailman.configuration import config
+from Mailman.i18n import _
 
 NL = '\n'
 
@@ -88,8 +88,8 @@ class Results:
         assert isinstance(body, basestring)
         lines = body.splitlines()
         # Use no more lines than specified
-        self.commands.extend(lines[:mm_cfg.DEFAULT_MAIL_COMMANDS_MAX_LINES])
-        self.ignored.extend(lines[mm_cfg.DEFAULT_MAIL_COMMANDS_MAX_LINES:])
+        self.commands.extend(lines[:config.DEFAULT_MAIL_COMMANDS_MAX_LINES])
+        self.ignored.extend(lines[config.DEFAULT_MAIL_COMMANDS_MAX_LINES:])
 
     def process(self):
         # Now, process each line until we find an error.  The first
@@ -192,7 +192,7 @@ To obtain instructions, send a message containing just the word "help".
 
 
 class CommandRunner(Runner):
-    QDIR = mm_cfg.CMDQUEUE_DIR
+    QDIR = config.CMDQUEUE_DIR
 
     def _dispose(self, mlist, msg, msgdata):
         # The policy here is similar to the Replybot policy.  If a message has
@@ -217,7 +217,7 @@ class CommandRunner(Runner):
         # locked.  Still, it's more convenient to lock it here and now and
         # deal with lock failures in one place.
         try:
-            mlist.Lock(timeout=mm_cfg.LIST_LOCK_TIMEOUT)
+            mlist.Lock(timeout=config.LIST_LOCK_TIMEOUT)
         except LockFile.TimeOutError:
             # Oh well, try again later
             return True
@@ -232,7 +232,7 @@ class CommandRunner(Runner):
             elif msgdata.get('toleave'):
                 res.do_command('leave')
             elif msgdata.get('toconfirm'):
-                mo = re.match(mm_cfg.VERP_CONFIRM_REGEXP, msg.get('to', ''))
+                mo = re.match(config.VERP_CONFIRM_REGEXP, msg.get('to', ''))
                 if mo:
                     res.do_command('confirm', (mo.group('cookie'),))
             res.send_response()

@@ -20,8 +20,8 @@ import time
 import string
 import gettext
 
-from Mailman import mm_cfg
 from Mailman.SafeDict import SafeDict
+from Mailman.configuration import config
 
 _translation = None
 _missing = object()
@@ -47,7 +47,7 @@ def set_language(language=None):
     if language is not None:
         language = [language]
     try:
-        _translation = gettext.translation('mailman', mm_cfg.MESSAGES_DIR,
+        _translation = gettext.translation('mailman', config.MESSAGES_DIR,
                                            language)
     except IOError:
         # The selected language was not installed in messages, so fall back to
@@ -67,7 +67,7 @@ def set_translation(translation):
 # Set up the global translation based on environment variables.  Mostly used
 # for command line scripts.
 if _translation is None:
-    set_language()
+    _translation = gettext.NullTranslations()
 
 
 

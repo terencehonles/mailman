@@ -25,8 +25,9 @@ from Mailman import Errors
 from Mailman import MailList
 from Mailman import Message
 from Mailman import Utils
+from Mailman import Version
 from Mailman import i18n
-from Mailman import mm_cfg
+from Mailman.configuration import config
 
 _ = i18n._
 
@@ -35,7 +36,7 @@ __i18n_templates__ = True
 
 
 def parseargs():
-    parser = optparse.OptionParser(version=mm_cfg.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
                                    usage=_("""\
 %%prog [options] [listname [listadmin-addr [admin-password]]]
 
@@ -87,7 +88,6 @@ defined in your Defaults.py file or overridden by settings in mm_cfg.py).
 Note that listnames are forced to lowercase."""))
     parser.add_option('-l', '--language',
                       type='string', action='store',
-                      default=mm_cfg.DEFAULT_SERVER_LANGUAGE,
                       help=_("""\
 Make the list's preferred language LANGUAGE, which must be a two letter
 language code."""))
@@ -110,18 +110,27 @@ This option suppresses the prompt prior to administrator notification but
 still sends the notification.  It can be used to make newlist totally
 non-interactive but still send the notification, assuming listname,
 listadmin-addr and admin-password are all specified on the command line."""))
+    parser.add_option('-C', '--config',
+                      help=_('Alternative configuration file to use'))
     opts, args = parser.parse_args()
-    # Is the language known?
-    if opts.language not in mm_cfg.LC_DESCRIPTIONS:
-        parser.print_help()
-        print >> sys.stderr, _('Unknown language: $opts.language')
-        sys.exit(1)
+    # Can't verify opts.language here because the configuration isn't loaded
+    # yet.
     return parser, opts, args
 
 
 
 def main():
     parser, opts, args = parseargs()
+    config.load(opts.config)
+
+    # Set up some defaults we couldn't set up in parseargs()
+    if opts.language is None:
+        opts.language = config.DEFAULT_SERVER_LANGUAGE
+    # Is the language known?
+    if opts.language not in config.LC_DESCRIPTIONS:
+        parser.print_help()
+        print >> sys.stderr, _('Unknown language: $opts.language')
+        sys.exit(1)
 
     # Handle variable number of positional arguments
     if args:
@@ -134,12 +143,12 @@ def main():
         # Note that --urlhost and --emailhost have precedence
         listname, domain = listname.split('@', 1)
         urlhost = opts.urlhost or domain
-        emailhost = opts.emailhost or mm_cfg.VIRTUAL_HOSTS.get(domain, domain)
+        emailhost = opts.emailhost or config.VIRTUAL_HOSTS.get(domain, domain)
 
-    urlhost = opts.urlhost or mm_cfg.DEFAULT_URL_HOST
+    urlhost = opts.urlhost or config.DEFAULT_URL_HOST
     host_name = (opts.emailhost or
-                 mm_cfg.VIRTUAL_HOSTS.get(urlhost, mm_cfg.DEFAULT_EMAIL_HOST))
-    web_page_url = mm_cfg.DEFAULT_URL_PATTERN % urlhost
+                 config.VIRTUAL_HOSTS.get(urlhost, config.DEFAULT_EMAIL_HOST))
+    web_page_url = config.DEFAULT_URL_PATTERN % urlhost
 
     if Utils.list_exists(listname):
         parser.print_help()
@@ -154,7 +163,12 @@ def main():
     if args:
         listpasswd = args.pop(0)
     else:
-        listpasswd = getpass.getpass(_('Initial $listname password: '))
+        while True:
+            listpasswd = getpass.getpass(_('Initial $listname password: '))
+            confirm = getpass.getpass(_('Confirm $listname password: '))
+            if listpasswd == confirm:
+                break
+            print _('Passwords did not match, try again (Ctrl-C to quit)')
 
     # List passwords cannot be empty
     listpasswd = listpasswd.strip()
@@ -198,8 +212,8 @@ def main():
         mlist.Unlock()
 
     # Now do the MTA-specific list creation tasks
-    if mm_cfg.MTA:
-        modname = 'Mailman.MTA.' + mm_cfg.MTA
+    if config.MTA:
+        modname = 'Mailman.MTA.' + config.MTA
         __import__(modname)
         sys.modules[modname].create(mlist)
 

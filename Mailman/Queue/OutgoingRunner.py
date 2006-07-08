@@ -12,7 +12,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """Outgoing queue runner."""
 
@@ -27,10 +28,10 @@ import logging
 from Mailman import Errors
 from Mailman import LockFile
 from Mailman import Message
-from Mailman import mm_cfg
 from Mailman.Queue.BounceRunner import BounceMixin
 from Mailman.Queue.Runner import Runner
 from Mailman.Queue.Switchboard import Switchboard
+from Mailman.configuration import config
 
 # This controls how often _doperiodic() will try to deal with deferred
 # permanent failures.  It is a count of calls to _doperiodic()
@@ -41,20 +42,20 @@ log = logging.getLogger('mailman.error')
 
 
 class OutgoingRunner(Runner, BounceMixin):
-    QDIR = mm_cfg.OUTQUEUE_DIR
+    QDIR = config.OUTQUEUE_DIR
 
     def __init__(self, slice=None, numslices=1):
         Runner.__init__(self, slice, numslices)
         BounceMixin.__init__(self)
         # We look this function up only at startup time
-        modname = 'Mailman.Handlers.' + mm_cfg.DELIVERY_MODULE
+        modname = 'Mailman.Handlers.' + config.DELIVERY_MODULE
         mod = __import__(modname)
         self._func = getattr(sys.modules[modname], 'process')
         # This prevents smtp server connection problems from filling up the
         # error log.  It gets reset if the message was successfully sent, and
         # set if there was a socket.error.
         self.__logged = False
-        self.__retryq = Switchboard(mm_cfg.RETRYQUEUE_DIR)
+        self.__retryq = Switchboard(config.RETRYQUEUE_DIR)
 
     def _dispose(self, mlist, msg, msgdata):
         # See if we should retry delivery of this message again.
@@ -75,13 +76,13 @@ class OutgoingRunner(Runner, BounceMixin):
             # There was a problem connecting to the SMTP server.  Log this
             # once, but crank up our sleep time so we don't fill the error
             # log.
-            port = mm_cfg.SMTPPORT
+            port = config.SMTPPORT
             if port == 0:
                 port = 'smtp'
             # Log this just once.
             if not self.__logged:
                 log.error('Cannot connect to SMTP server %s on port %s',
-                          mm_cfg.SMTPHOST, port)
+                          config.SMTPHOST, port)
                 self.__logged = True
             return True
         except Errors.SomeRecipientsFailed, e:
@@ -115,7 +116,7 @@ class OutgoingRunner(Runner, BounceMixin):
                             return False
                     else:
                         # Keep trying to delivery this message for a while
-                        deliver_until = now + mm_cfg.DELIVERY_RETRY_PERIOD
+                        deliver_until = now + config.DELIVERY_RETRY_PERIOD
                     msgdata['last_recip_count'] = len(recips)
                     msgdata['deliver_until'] = deliver_until
                     msgdata['recips'] = recips
