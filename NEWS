@@ -6,6 +6,49 @@ Here is a history of user visible changes to Mailman.
 
 2.2 alpha 1 (XX-XXX-200X)
 
+  Architecture
+
+    - Virtual domains are now fully supported in that mailing lists of the
+      same name can exist in more than one domain.  This is accomplished by
+      renaming the lists/ and archives/ subdirectories after the list's
+      posting address.  For example, data for list foo in example.com and list
+      foo in example.org will be stored in lists/foo@example.com and
+      lists/foo@example.org.
+
+      For Postfix or manual MTA users, you will need to regenerate your mail
+      aliases.  Use bin/genaliases.
+
+      VIRTUAL_HOST_OVERVIEW has been removed, effectively Mailman now operates
+      as if it were always enabled.  If your site has more than one domain,
+      you must configure all domains by using add_domain() in your
+      etc/mailman.cfg flie (see below -- add_virtual() has been removed).  If
+      you have only one domain, and Mailman's configure script correctly
+      guesses that domain, you do not need to do anything.
+
+    - If you had customizations based on Site.py, you will need to
+      re-implement them.  Site.py has been removed.
+
+    - Mailman can now be configured via a 'mailman.cfg' file which lives in
+      $VAR_PREFIX/etc.  This can be used to separate the configuration from
+      the source directory.  Alternative configuration files can be specified
+      via -C/--config for most command line scripts.  The format of
+      mailman.cfg is identical to that for mm_cfg.py; IOW, they are both
+      Python files.  mm_cfg.py is still supported for backward compatibility,
+      but settings in etc/mailman.cfg take precedence.  You do not need to
+      import Defaults.py in etc/mailman.cfg.  You should still consult
+      Defaults.py for the list of site configuration variables available to
+      you.
+
+      See the etc/mailman.cfg.sample file.
+
+    - The site list is no more.  You can remove your 'mailman' site list
+      unless you want to retain it for other purposes, but it is no longer
+      used (or required) by Mailman.  You should set NO_REPLY_ADDRESS to an
+      address that throws away replies, and you should set SITE_OWNER_ADDRESS
+      to an email address that reaches the person ultimately responsible for
+      the Mailman installation.  The MAILMAN_SITE_LIST variable has been
+      removed.
+
   Internationalization Big Changes
 
     - Now the languages should be selected during the 'configure' run.
@@ -23,6 +66,21 @@ Here is a history of user visible changes to Mailman.
       of email addresses and regular expressions matching email addresses
       whose subscriptions are exempt from admin approval. RFE 403066.
 
+  Command line scripts
+
+    - Most scripts have grown a -C/--config flag to allow you to specify a
+      different configuration file.  Without this, the default etc/mailman.cfg
+      file will be used.
+
+    - the -V/--virtual-host-overview switch in list_lists has been removed,
+      while -d/--domain and -f/--full have been added.
+
+    - newlist and rmlist take fully-qualified list names now (i.e. the list's
+      posting address), but also accept short names, in which case the default
+      domain is used.  newlist's -u/--urlhost and -e/--emailhost switches have
+      been removed.  The domain that the list is being added to must already
+      exist.
+
   Bug fixes and other patches
 
     - The processing of Topics regular expressions has changed. Previously the
@@ -32,6 +90,10 @@ Here is a history of user visible changes to Mailman.
       properly.  Topics regexps are now compiled in non-verbose mode and multi-
       line entries are 'ored'.  Existing Topics regexps will be converted when
       the list is updated so they will continue to work.
+
+    - The List-Help, List-Subscribe, and List-Unsubscribe headers were
+      incorrectly suppressed in messages that Mailman sends directly to
+      users.
 
 2.1.9 (xx-xxx-xxxx)
 
