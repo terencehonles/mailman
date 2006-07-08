@@ -398,11 +398,11 @@ def send_i18n_digests(mlist, mboxfp):
     # MIME
     virginq.enqueue(mimemsg,
                     recips=mimerecips,
-                    listname=mlist.internal_name(),
+                    listname=mlist.fqdn_listname,
                     isdigest=True)
     # RFC 1153
     rfc1153msg.set_payload(plainmsg.getvalue(), lcset)
     virginq.enqueue(rfc1153msg,
                     recips=plainrecips,
-                    listname=mlist.internal_name(),
+                    listname=mlist.fqdn_listname,
                     isdigest=True)

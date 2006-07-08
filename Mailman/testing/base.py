@@ -18,8 +18,10 @@
 """Test base class which handles creating and deleting a test list."""
 
 import os
+import stat
 import shutil
 import difflib
+import tempfile
 import unittest
 
 from cStringIO import StringIO
@@ -29,10 +31,17 @@ from Mailman import Utils
 from Mailman.configuration import config
 
 NL = '\n'
+PERMISSIONS = stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH
 
 
 
 class TestBase(unittest.TestCase):
+    def _configure(self, fp):
+        print >> fp, 'add_domain("example.com", "www.example.com")'
+        # Only add this domain once to the current process
+        if 'example.com' not in config.domains:
+            config.add_domain('example.com', 'www.example.com')
+
     def ndiffAssertEqual(self, first, second):
         """Like failUnlessEqual except use ndiff for readable output."""
         if first <> second:
@@ -44,17 +53,25 @@ class TestBase(unittest.TestCase):
             raise self.failureException(fp.getvalue())
 
     def setUp(self):
+        # Write a temporary configuration file, but allow for subclasses to
+        # add additional data.
+        fd, self._config = tempfile.mkstemp(suffix='.cfg')
+        os.close(fd)
+        fp = open(self._config, 'w')
+        try:
+            self._configure(fp)
+        finally:
+            fp.close()
+        os.chmod(self._config, PERMISSIONS)
         mlist = MailList.MailList()
-        mlist.Create('_xtest', 'test@dom.ain', 'xxxxx')
-        mlist.host_name = 'dom.ain'
-        mlist.web_page_url = 'http://www.dom.ain/mailman/'
+        mlist.Create('_xtest@example.com', 'owner@example.com', 'xxxxx')
         mlist.Save()
         # This leaves the list in a locked state
         self._mlist = mlist
 
     def tearDown(self):
         self._mlist.Unlock()
-        listname = self._mlist.internal_name()
+        listname = self._mlist.fqdn_listname
         for dirtmpl in ['lists/%s',
                         'archives/private/%s',
                         'archives/private/%s.mbox',

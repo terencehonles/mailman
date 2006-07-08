@@ -217,7 +217,6 @@ def process_request(doc, cgidata):
         sys.modules[modname].create(mlist, cgi=True)
     # And send the notice to the list owner.
     if notify:
-        siteowner = mlist.GetNoReplyEmail()
         text = Utils.maketext(
             'newlist.txt',
             {'listname'    : listname,
@@ -225,10 +224,10 @@ def process_request(doc, cgidata):
              'admin_url'   : mlist.GetScriptURL('admin', absolute=True),
              'listinfo_url': mlist.GetScriptURL('listinfo', absolute=True),
              'requestaddr' : mlist.GetRequestEmail(),
-             'siteowner'   : siteowner,
+             'siteowner'   : mlist.no_reply_address,
              }, mlist=mlist)
         msg = Message.UserNotification(
-            owner, siteowner,
+            owner, mlist.no_reply_address,
             _('Your new mailing list: $listname'),
             text, mlist.preferred_language)
         msg.send(mlist)

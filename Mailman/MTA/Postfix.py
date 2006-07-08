@@ -118,7 +118,7 @@ def _addvirtual(mlist, fp):
     fieldsz = len(listname) + len('-unsubscribe')
     hostname = mlist.host_name
     # Set up the mailman-loop address
-    loopaddr = mlist.GetNoReplyEmail()
+    loopaddr = mlist.no_reply_address
     loopdest = Utils.ParseEmail(loopaddr)[0]
     # Seek to the end of the text file, but if it's empty write the standard
     # disclaimer, and the loop catch address.
@@ -152,7 +152,7 @@ def _addvirtual(mlist, fp):
 
 # Blech.
 def _check_for_virtual_loopaddr(mlist, filename):
-    loopaddr = mlist.GetNoReplyEmail()
+    loopaddr = mlist.no_reply_address
     loopdest = Utils.ParseEmail(loopaddr)[0]
     infp = open(filename)
     omask = os.umask(007)

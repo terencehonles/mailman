@@ -125,7 +125,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             # This will load the database.
             self.Lock()
         else:
-            self.Load()
+            self.Load(name)
 
     def __getattr__(self, name):
         # Because we're using delegation, we want to be sure that attribute
@@ -160,7 +160,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         # Must reload our database for consistency.  Watch out for lists that
         # don't exist.
         try:
-            self.Load()
+            self.Load(self.fqdn_listname)
         except Exception:
             self.Unlock()
             raise
@@ -186,6 +186,10 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
     def fqdn_listname(self):
         return '%s@%s' % (self._internal_name, self.host_name)
 
+    @property
+    def no_reply_address(self):
+        return '%s@%s' % (config.NO_REPLY_ADDRESS, self.host_name)
+
     def getListAddress(self, extra=None):
         if extra is None:
             return self.fqdn_listname
@@ -197,9 +201,6 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
 
     def GetOwnerEmail(self):
         return self.getListAddress('owner')
-
-    def GetNoReplyEmail(self):
-        return '%s@%s' % (config.NO_REPLY_ADDRESS, self.host_name)
 
     def GetRequestEmail(self, cookie=''):
         if config.VERP_CONFIRMATIONS and cookie:
@@ -277,7 +278,11 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         self.__lock = LockFile.LockFile(
             os.path.join(config.LOCK_DIR, name or '<site>') + '.lock',
             lifetime=config.LIST_LOCK_LIFETIME)
-        self._internal_name = name
+        # XXX FIXME Sometimes name is fully qualified, sometimes it's not.
+        if name and '@' in name:
+            self._internal_name, email_host = name.split('@', 1)
+        else:
+            self._internal_name = name
         if name:
             self._full_path = os.path.join(config.LIST_DATA_DIR, name)
         else:
@@ -621,8 +626,10 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         self.__timestamp = mtime
         return d, None
 
-    def Load(self, check_version=True):
-        if not Utils.list_exists(self.internal_name()):
+    def Load(self, fqdn_listname=None, check_version=True):
+        if fqdn_listname is None:
+            fqdn_listname = self.fqdn_listname
+        if not Utils.list_exists(fqdn_listname):
             raise Errors.MMUnknownListError
         # We first try to load config.pck, which contains the up-to-date
         # version of the database.  If that fails, perhaps because it's
@@ -717,7 +724,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         # Then reload the database (but don't recurse).  Force a reload even
         # if we have the most up-to-date state.
         self.__timestamp = 0
-        self.Load(check_version=0)
+        self.Load(self.fqdn_listname, check_version=False)
         # We must hold the list lock in order to update the schema
         waslocked = self.Locked()
         if not waslocked:

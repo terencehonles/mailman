@@ -18,18 +18,15 @@
 """Base class for tests that email things."""
 
 import os
-import stat
 import smtpd
 import socket
 import asyncore
-import tempfile
 import subprocess
 
 from Mailman.configuration import config
 from Mailman.testing.base import TestBase
 
 TESTPORT    = 10825
-PERMISSIONS = stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH
 
 
 
@@ -53,31 +50,28 @@ class SinkServer(smtpd.SMTPServer):
 
 
 class EmailBase(TestBase):
-    def setUp(self):
-        # Find an unused non-root requiring port to listen on.  Set up a
-        # configuration file that causes the underlying outgoing runner to use
-        # the same port, then start Mailman.
-        fd, self._configfile = tempfile.mkstemp(suffix='.cfg')
-        fp = os.fdopen(fd, 'w')
+    def _configure(self, fp):
+        TestBase._configure(self, fp)
         print >> fp, 'SMTPPORT =', TESTPORT
-        config.SMTPPORT = TESTPORT
-        fp.close()
-        # Loosen up the permissions
-        os.chmod(self._configfile, PERMISSIONS)
+        config.SMTPPORT
+
+    def setUp(self):
+        TestBase.setUp(self)
         # Second argument is ignored.
         self._server = SinkServer(('localhost', TESTPORT), None)
-        os.system('bin/mailmanctl -C %s -q start' % self._configfile)
-        # Don't call our superclass's setUp until the above succeeds,
-        # otherwise, should it fail, we'll be left with a stale _xtest list
-        # which would have to be manually removed.  unittest doesn't call
-        # tearDown() for errors in setUp().
-        TestBase.setUp(self)
+        try:
+            os.system('bin/mailmanctl -C %s -q start' % self._config)
+            # If any errors occur in the above, be sure to manually call
+            # tearDown().  unittest doesn't call tearDown() for errors in
+            # setUp().
+        except:
+            self.tearDown()
 
     def tearDown(self):
-        os.system('bin/mailmanctl -C %s -q stop' % self._configfile)
+        os.system('bin/mailmanctl -C %s -q stop' % self._config)
         self._server.close()
         TestBase.tearDown(self)
-        os.remove(self._configfile)
+        os.remove(self._config)
 
     def _readmsg(self):
         global MSGTEXT

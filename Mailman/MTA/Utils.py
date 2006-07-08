@@ -35,7 +35,7 @@ def getusername():
 
 
 
-def _makealiases_mailprog(listname):
+def _makealiases_mailprog(mlist):
     wrapper = os.path.join(config.WRAPPER_DIR, 'mailman')
     # Most of the list alias extensions are quite regular.  I.e. if the
     # message is delivered to listname-foobar, it will be filtered to a
@@ -47,18 +47,23 @@ def _makealiases_mailprog(listname):
     #    need for the -admin address anymore).
     #
     # Seed this with the special cases.
-    aliases = [(listname,          '"|%s post %s"' % (wrapper, listname)),
-               ]
+    listname = mlist.internal_name()
+    fqdn_listname = mlist.fqdn_listname
+    aliases = [
+        (listname, '"|%s post %s"' % (wrapper, fqdn_listname)),
+        ]
     for ext in ('admin', 'bounces', 'confirm', 'join', 'leave', 'owner',
                 'request', 'subscribe', 'unsubscribe'):
         aliases.append(('%s-%s' % (listname, ext),
-                        '"|%s %s %s"' % (wrapper, ext, listname)))
+                        '"|%s %s %s"' % (wrapper, ext, fqdn_listname)))
     return aliases
 
 
 
-def _makealiases_maildir(listname):
+def _makealiases_maildir(mlist):
     maildir = config.MAILDIR_DIR
+    listname = mlist.internal_name()
+    fqdn_listname = mlist.fqdn_listname
     if not maildir.endswith('/'):
         maildir += '/'
     # Deliver everything using maildir style.  This way there's no mail

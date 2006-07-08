@@ -68,7 +68,7 @@ class TestAcknowledge(TestBase):
         # We're going to want to inspect this queue directory
         self._sb = Switchboard(config.VIRGINQUEUE_DIR)
         # Add a member
-        self._mlist.addNewMember('aperson@dom.ain')
+        self._mlist.addNewMember('aperson@example.org')
         self._mlist.personalize = False
 
     def tearDown(self):
@@ -81,11 +81,11 @@ class TestAcknowledge(TestBase):
         # Make sure there are no files in the virgin queue already
         eq(len(self._sb.files()), 0)
         msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 
 """, Message.Message)
         Acknowledge.process(self._mlist, msg,
-                            {'original_sender': 'aperson@dom.ain'})
+                            {'original_sender': 'aperson@example.org'})
         eq(len(self._sb.files()), 0)
 
     def test_no_ack_not_a_member(self):
@@ -93,18 +93,18 @@ From: aperson@dom.ain
         # Make sure there are no files in the virgin queue already
         eq(len(self._sb.files()), 0)
         msg = email.message_from_string("""\
-From: bperson@dom.ain
+From: bperson@example.com
 
 """, Message.Message)
         Acknowledge.process(self._mlist, msg,
-                            {'original_sender': 'bperson@dom.ain'})
+                            {'original_sender': 'bperson@example.com'})
         eq(len(self._sb.files()), 0)
 
     def test_no_ack_sender(self):
         eq = self.assertEqual
         eq(len(self._sb.files()), 0)
         msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 
 """, Message.Message)
         Acknowledge.process(self._mlist, msg, {})
@@ -113,10 +113,10 @@ From: aperson@dom.ain
     def test_ack_no_subject(self):
         eq = self.assertEqual
         self._mlist.setMemberOption(
-            'aperson@dom.ain', config.AcknowledgePosts, 1)
+            'aperson@example.org', config.AcknowledgePosts, 1)
         eq(len(self._sb.files()), 0)
         msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 
 """, Message.Message)
         Acknowledge.process(self._mlist, msg, {})
@@ -124,18 +124,18 @@ From: aperson@dom.ain
         eq(len(files), 1)
         qmsg, qdata = self._sb.dequeue(files[0])
         # Check the .db file
-        eq(qdata.get('listname'), '_xtest')
-        eq(qdata.get('recips'), ['aperson@dom.ain'])
+        eq(qdata.get('listname'), '_xtest@example.com')
+        eq(qdata.get('recips'), ['aperson@example.org'])
         eq(qdata.get('version'), 3)
         # Check the .pck
         eq(str(str(qmsg['subject'])), '_xtest post acknowledgement')
-        eq(qmsg['to'], 'aperson@dom.ain')
-        eq(qmsg['from'], '_xtest-bounces@dom.ain')
+        eq(qmsg['to'], 'aperson@example.org')
+        eq(qmsg['from'], '_xtest-bounces@example.com')
         eq(qmsg.get_type(), 'text/plain')
         eq(qmsg.get_param('charset'), 'us-ascii')
         msgid = qmsg['message-id']
         self.failUnless(msgid.startswith('<mailman.'))
-        self.failUnless(msgid.endswith('._xtest@dom.ain>'))
+        self.failUnless(msgid.endswith('._xtest@example.com>'))
         eq(qmsg.get_payload(), """\
 Your message entitled
 
@@ -143,8 +143,8 @@ Your message entitled
 
 was successfully received by the _xtest mailing list.
 
-List info page: http://www.dom.ain/mailman/listinfo/_xtest
-Your preferences: http://www.dom.ain/mailman/options/_xtest/aperson%40dom.ain
+List info page: http://www.example.com/mailman/listinfo/_xtest
+Your preferences: http://www.example.com/mailman/options/_xtest/aperson%40example.org
 """)
         # Make sure we dequeued the only message
         eq(len(self._sb.files()), 0)
@@ -152,10 +152,10 @@ Your preferences: http://www.dom.ain/mailman/options/_xtest/aperson%40dom.ain
     def test_ack_with_subject(self):
         eq = self.assertEqual
         self._mlist.setMemberOption(
-            'aperson@dom.ain', config.AcknowledgePosts, 1)
+            'aperson@example.org', config.AcknowledgePosts, 1)
         eq(len(self._sb.files()), 0)
         msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 Subject: Wish you were here
 
 """, Message.Message)
@@ -164,18 +164,18 @@ Subject: Wish you were here
         eq(len(files), 1)
         qmsg, qdata = self._sb.dequeue(files[0])
         # Check the .db file
-        eq(qdata.get('listname'), '_xtest')
-        eq(qdata.get('recips'), ['aperson@dom.ain'])
+        eq(qdata.get('listname'), '_xtest@example.com')
+        eq(qdata.get('recips'), ['aperson@example.org'])
         eq(qdata.get('version'), 3)
         # Check the .pck
         eq(str(qmsg['subject']), '_xtest post acknowledgement')
-        eq(qmsg['to'], 'aperson@dom.ain')
-        eq(qmsg['from'], '_xtest-bounces@dom.ain')
+        eq(qmsg['to'], 'aperson@example.org')
+        eq(qmsg['from'], '_xtest-bounces@example.com')
         eq(qmsg.get_type(), 'text/plain')
         eq(qmsg.get_param('charset'), 'us-ascii')
         msgid = qmsg['message-id']
         self.failUnless(msgid.startswith('<mailman.'))
-        self.failUnless(msgid.endswith('._xtest@dom.ain>'))
+        self.failUnless(msgid.endswith('._xtest@example.com>'))
         eq(qmsg.get_payload(), """\
 Your message entitled
 
@@ -183,8 +183,8 @@ Your message entitled
 
 was successfully received by the _xtest mailing list.
 
-List info page: http://www.dom.ain/mailman/listinfo/_xtest
-Your preferences: http://www.dom.ain/mailman/options/_xtest/aperson%40dom.ain
+List info page: http://www.example.com/mailman/listinfo/_xtest
+Your preferences: http://www.example.com/mailman/options/_xtest/aperson%40example.org
 """)
         # Make sure we dequeued the only message
         eq(len(self._sb.files()), 0)
@@ -284,13 +284,13 @@ class TestCalcRecips(TestBase):
         TestBase.setUp(self)
         # Add a bunch of regular members
         mlist = self._mlist
-        mlist.addNewMember('aperson@dom.ain')
-        mlist.addNewMember('bperson@dom.ain')
-        mlist.addNewMember('cperson@dom.ain')
+        mlist.addNewMember('aperson@example.org')
+        mlist.addNewMember('bperson@example.com')
+        mlist.addNewMember('cperson@example.com')
         # And a bunch of digest members
-        mlist.addNewMember('dperson@dom.ain', digest=1)
-        mlist.addNewMember('eperson@dom.ain', digest=1)
-        mlist.addNewMember('fperson@dom.ain', digest=1)
+        mlist.addNewMember('dperson@example.com', digest=1)
+        mlist.addNewMember('eperson@example.com', digest=1)
+        mlist.addNewMember('fperson@example.com', digest=1)
 
     def test_short_circuit(self):
         msgdata = {'recips': 1}
@@ -301,35 +301,35 @@ class TestCalcRecips(TestBase):
     def test_simple_path(self):
         msgdata = {}
         msg = email.message_from_string("""\
-From: dperson@dom.ain
+From: dperson@example.com
 
 """, Message.Message)
         CalcRecips.process(self._mlist, msg, msgdata)
         self.failUnless(msgdata.has_key('recips'))
         recips = msgdata['recips']
         recips.sort()
-        self.assertEqual(recips, ['aperson@dom.ain', 'bperson@dom.ain',
-                                  'cperson@dom.ain'])
+        self.assertEqual(recips, ['aperson@example.org', 'bperson@example.com',
+                                  'cperson@example.com'])
 
     def test_exclude_sender(self):
         msgdata = {}
         msg = email.message_from_string("""\
-From: cperson@dom.ain
+From: cperson@example.com
 
 """, Message.Message)
-        self._mlist.setMemberOption('cperson@dom.ain',
+        self._mlist.setMemberOption('cperson@example.com',
                                     config.DontReceiveOwnPosts, 1)
         CalcRecips.process(self._mlist, msg, msgdata)
         self.failUnless(msgdata.has_key('recips'))
         recips = msgdata['recips']
         recips.sort()
-        self.assertEqual(recips, ['aperson@dom.ain', 'bperson@dom.ain'])
+        self.assertEqual(recips, ['aperson@example.org', 'bperson@example.com'])
 
     def test_urgent_moderator(self):
         self._mlist.mod_password = password('xxXXxx')
         msgdata = {}
         msg = email.message_from_string("""\
-From: dperson@dom.ain
+From: dperson@example.com
 Urgent: xxXXxx
 
 """, Message.Message)
@@ -337,16 +337,16 @@ Urgent: xxXXxx
         self.failUnless(msgdata.has_key('recips'))
         recips = msgdata['recips']
         recips.sort()
-        self.assertEqual(recips, ['aperson@dom.ain', 'bperson@dom.ain',
-                                  'cperson@dom.ain', 'dperson@dom.ain',
-                                  'eperson@dom.ain', 'fperson@dom.ain'])
+        self.assertEqual(recips, ['aperson@example.org', 'bperson@example.com',
+                                  'cperson@example.com', 'dperson@example.com',
+                                  'eperson@example.com', 'fperson@example.com'])
 
     def test_urgent_admin(self):
         self._mlist.mod_password = password('yyYYyy')
         self._mlist.password = password('xxXXxx')
         msgdata = {}
         msg = email.message_from_string("""\
-From: dperson@dom.ain
+From: dperson@example.com
 Urgent: xxXXxx
 
 """, Message.Message)
@@ -354,16 +354,16 @@ Urgent: xxXXxx
         self.failUnless(msgdata.has_key('recips'))
         recips = msgdata['recips']
         recips.sort()
-        self.assertEqual(recips, ['aperson@dom.ain', 'bperson@dom.ain',
-                                  'cperson@dom.ain', 'dperson@dom.ain',
-                                  'eperson@dom.ain', 'fperson@dom.ain'])
+        self.assertEqual(recips, ['aperson@example.org', 'bperson@example.com',
+                                  'cperson@example.com', 'dperson@example.com',
+                                  'eperson@example.com', 'fperson@example.com'])
 
     def test_urgent_reject(self):
         self._mlist.mod_password = password('yyYYyy')
         self._mlist.password = password('xxXXxx')
         msgdata = {}
         msg = email.message_from_string("""\
-From: dperson@dom.ain
+From: dperson@example.com
 Urgent: zzZZzz
 
 """, Message.Message)
@@ -382,15 +382,15 @@ class TestCleanse(TestBase):
     def test_simple_cleanse(self):
         eq = self.assertEqual
         msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 Approved: yes
 Urgent: indeed
-Reply-To: bperson@dom.ain
-Sender: asystem@dom.ain
-Return-Receipt-To: another@dom.ain
-Disposition-Notification-To: athird@dom.ain
-X-Confirm-Reading-To: afourth@dom.ain
-X-PMRQC: afifth@dom.ain
+Reply-To: bperson@example.com
+Sender: asystem@example.com
+Return-Receipt-To: another@example.com
+Disposition-Notification-To: athird@example.com
+X-Confirm-Reading-To: afourth@example.com
+X-PMRQC: afifth@example.com
 Subject: a message to you
 
 """, Message.Message)
@@ -401,23 +401,23 @@ Subject: a message to you
         eq(msg['disposition-notification-to'], None)
         eq(msg['x-confirm-reading-to'], None)
         eq(msg['x-pmrqc'], None)
-        eq(msg['from'], 'aperson@dom.ain')
-        eq(msg['reply-to'], 'bperson@dom.ain')
-        eq(msg['sender'], 'asystem@dom.ain')
+        eq(msg['from'], 'aperson@example.org')
+        eq(msg['reply-to'], 'bperson@example.com')
+        eq(msg['sender'], 'asystem@example.com')
         eq(msg['subject'], 'a message to you')
 
     def test_anon_cleanse(self):
         eq = self.assertEqual
         msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 Approved: yes
 Urgent: indeed
-Reply-To: bperson@dom.ain
-Sender: asystem@dom.ain
-Return-Receipt-To: another@dom.ain
-Disposition-Notification-To: athird@dom.ain
-X-Confirm-Reading-To: afourth@dom.ain
-X-PMRQC: afifth@dom.ain
+Reply-To: bperson@example.com
+Sender: asystem@example.com
+Return-Receipt-To: another@example.com
+Disposition-Notification-To: athird@example.com
+X-Confirm-Reading-To: afourth@example.com
+X-PMRQC: afifth@example.com
 Subject: a message to you
 
 """, Message.Message)
@@ -431,8 +431,8 @@ Subject: a message to you
         eq(msg['x-pmrqc'], None)
         eq(len(msg.get_all('from')), 1)
         eq(len(msg.get_all('reply-to')), 1)
-        eq(msg['from'], '_xtest@dom.ain')
-        eq(msg['reply-to'], '_xtest@dom.ain')
+        eq(msg['from'], '_xtest@example.com')
+        eq(msg['reply-to'], '_xtest@example.com')
         eq(msg['sender'], None)
         eq(msg['subject'], 'a message to you')
 
@@ -451,12 +451,12 @@ X-Ack: yes
 
     def test_original_sender(self):
         msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 
 """, Message.Message)
         msgdata = {}
         CookHeaders.process(self._mlist, msg, msgdata)
-        self.assertEqual(msgdata.get('original_sender'), 'aperson@dom.ain')
+        self.assertEqual(msgdata.get('original_sender'), 'aperson@example.org')
 
     def test_no_original_sender(self):
         msg = email.message_from_string("""\
@@ -469,29 +469,29 @@ Subject: about this message
 
     def test_xbeenthere(self):
         msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 
 """, Message.Message)
         CookHeaders.process(self._mlist, msg, {})
-        self.assertEqual(msg['x-beenthere'], '_xtest@dom.ain')
+        self.assertEqual(msg['x-beenthere'], '_xtest@example.com')
 
     def test_multiple_xbeentheres(self):
         eq = self.assertEqual
         msg = email.message_from_string("""\
-From: aperson@dom.ain
-X-BeenThere: alist@another.dom.ain
+From: aperson@example.org
+X-BeenThere: alist@another.example.com
 
 """, Message.Message)
         CookHeaders.process(self._mlist, msg, {})
         eq(len(msg.get_all('x-beenthere')), 2)
         beentheres = msg.get_all('x-beenthere')
         beentheres.sort()
-        eq(beentheres, ['_xtest@dom.ain', 'alist@another.dom.ain'])
+        eq(beentheres, ['_xtest@example.com', 'alist@another.example.com'])
 
     def test_nonexisting_mmversion(self):
         eq = self.assertEqual
         msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 
 """, Message.Message)
         CookHeaders.process(self._mlist, msg, {})
@@ -500,7 +500,7 @@ From: aperson@dom.ain
     def test_existing_mmversion(self):
         eq = self.assertEqual
         msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 X-Mailman-Version: 3000
 
 """, Message.Message)
@@ -511,7 +511,7 @@ X-Mailman-Version: 3000
     def test_nonexisting_precedence(self):
         eq = self.assertEqual
         msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 
 """, Message.Message)
         CookHeaders.process(self._mlist, msg, {})
@@ -520,7 +520,7 @@ From: aperson@dom.ain
     def test_existing_precedence(self):
         eq = self.assertEqual
         msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 Precedence: junk
 
 """, Message.Message)
@@ -531,7 +531,7 @@ Precedence: junk
     def test_subject_munging_no_subject(self):
         self._mlist.subject_prefix = '[XTEST] '
         msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 
 """, Message.Message)
         msgdata = {}
@@ -542,7 +542,7 @@ From: aperson@dom.ain
     def test_subject_munging(self):
         self._mlist.subject_prefix = '[XTEST] '
         msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 Subject: About Mailman...
 
 """, Message.Message)
@@ -552,7 +552,7 @@ Subject: About Mailman...
     def test_no_subject_munging_for_digests(self):
         self._mlist.subject_prefix = '[XTEST] '
         msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 Subject: About Mailman...
 
 """, Message.Message)
@@ -562,7 +562,7 @@ Subject: About Mailman...
     def test_no_subject_munging_for_fasttrack(self):
         self._mlist.subject_prefix = '[XTEST] '
         msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 Subject: About Mailman...
 
 """, Message.Message)
@@ -572,7 +572,7 @@ Subject: About Mailman...
     def test_no_subject_munging_has_prefix(self):
         self._mlist.subject_prefix = '[XTEST] '
         msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 Subject: Re: [XTEST] About Mailman...
 
 """, Message.Message)
@@ -584,12 +584,12 @@ Subject: Re: [XTEST] About Mailman...
         mlist = self._mlist
         mlist.reply_goes_to_list = 1
         msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 
 """, Message.Message)
         CookHeaders.process(mlist, msg, {})
-        eq(msg['reply-to'], '_xtest@dom.ain')
-        eq(msg.get_all('reply-to'), ['_xtest@dom.ain'])
+        eq(msg['reply-to'], '_xtest@example.com')
+        eq(msg.get_all('reply-to'), ['_xtest@example.com'])
 
     def test_reply_to_list_with_strip(self):
         eq = self.assertEqual
@@ -597,41 +597,41 @@ From: aperson@dom.ain
         mlist.reply_goes_to_list = 1
         mlist.first_strip_reply_to = 1
         msg = email.message_from_string("""\
-From: aperson@dom.ain
-Reply-To: bperson@dom.ain
+From: aperson@example.org
+Reply-To: bperson@example.com
 
 """, Message.Message)
         CookHeaders.process(mlist, msg, {})
-        eq(msg['reply-to'], '_xtest@dom.ain')
-        eq(msg.get_all('reply-to'), ['_xtest@dom.ain'])
+        eq(msg['reply-to'], '_xtest@example.com')
+        eq(msg.get_all('reply-to'), ['_xtest@example.com'])
 
     def test_reply_to_explicit(self):
         eq = self.assertEqual
         mlist = self._mlist
         mlist.reply_goes_to_list = 2
-        mlist.reply_to_address = 'mlist@dom.ain'
+        mlist.reply_to_address = 'mlist@example.com'
         msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 
 """, Message.Message)
         CookHeaders.process(mlist, msg, {})
-        eq(msg['reply-to'], 'mlist@dom.ain')
-        eq(msg.get_all('reply-to'), ['mlist@dom.ain'])
+        eq(msg['reply-to'], 'mlist@example.com')
+        eq(msg.get_all('reply-to'), ['mlist@example.com'])
 
     def test_reply_to_explicit_with_strip(self):
         eq = self.assertEqual
         mlist = self._mlist
         mlist.reply_goes_to_list = 2
         mlist.first_strip_reply_to = 1
-        mlist.reply_to_address = 'mlist@dom.ain'
+        mlist.reply_to_address = 'mlist@example.com'
         msg = email.message_from_string("""\
-From: aperson@dom.ain
-Reply-To: bperson@dom.ain
+From: aperson@example.org
+Reply-To: bperson@example.com
 
 """, Message.Message)
         CookHeaders.process(self._mlist, msg, {})
-        eq(msg['reply-to'], 'mlist@dom.ain')
-        eq(msg.get_all('reply-to'), ['mlist@dom.ain'])
+        eq(msg['reply-to'], 'mlist@example.com')
+        eq(msg.get_all('reply-to'), ['mlist@example.com'])
 
     def test_reply_to_extends_to_list(self):
         eq = self.assertEqual
@@ -639,31 +639,31 @@ Reply-To: bperson@dom.ain
         mlist.reply_goes_to_list = 1
         mlist.first_strip_reply_to = 0
         msg = email.message_from_string("""\
-From: aperson@dom.ain
-Reply-To: bperson@dom.ain
+From: aperson@example.org
+Reply-To: bperson@example.com
 
 """, Message.Message)
         CookHeaders.process(mlist, msg, {})
-        eq(msg['reply-to'], 'bperson@dom.ain, _xtest@dom.ain')
+        eq(msg['reply-to'], 'bperson@example.com, _xtest@example.com')
 
     def test_reply_to_extends_to_explicit(self):
         eq = self.assertEqual
         mlist = self._mlist
         mlist.reply_goes_to_list = 2
         mlist.first_strip_reply_to = 0
-        mlist.reply_to_address = 'mlist@dom.ain'
+        mlist.reply_to_address = 'mlist@example.com'
         msg = email.message_from_string("""\
-From: aperson@dom.ain
-Reply-To: bperson@dom.ain
+From: aperson@example.org
+Reply-To: bperson@example.com
 
 """, Message.Message)
         CookHeaders.process(mlist, msg, {})
-        eq(msg['reply-to'], 'mlist@dom.ain, bperson@dom.ain')
+        eq(msg['reply-to'], 'mlist@example.com, bperson@example.com')
 
     def test_list_headers_nolist(self):
         eq = self.assertEqual
         msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 
 """, Message.Message)
         CookHeaders.process(self._mlist, msg, {'_nolist': 1})
@@ -678,44 +678,44 @@ From: aperson@dom.ain
         eq = self.assertEqual
         self._mlist.archive = 1
         msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 
 """, Message.Message)
         oldval = config.DEFAULT_URL_HOST
-        config.DEFAULT_URL_HOST = 'www.dom.ain'
+        config.DEFAULT_URL_HOST = 'www.example.com'
         try:
             CookHeaders.process(self._mlist, msg, {})
         finally:
             config.DEFAULT_URL_HOST = oldval
-        eq(msg['list-id'], '<_xtest.dom.ain>')
-        eq(msg['list-help'], '<mailto:_xtest-request@dom.ain?subject=help>')
+        eq(msg['list-id'], '<_xtest.example.com>')
+        eq(msg['list-help'], '<mailto:_xtest-request@example.com?subject=help>')
         eq(msg['list-unsubscribe'],
-           '<http://www.dom.ain/mailman/listinfo/_xtest>,'
-           '\n\t<mailto:_xtest-request@dom.ain?subject=unsubscribe>')
+           '<http://www.example.com/mailman/listinfo/_xtest>,'
+           '\n\t<mailto:_xtest-request@example.com?subject=unsubscribe>')
         eq(msg['list-subscribe'],
-           '<http://www.dom.ain/mailman/listinfo/_xtest>,'
-           '\n\t<mailto:_xtest-request@dom.ain?subject=subscribe>')
-        eq(msg['list-post'], '<mailto:_xtest@dom.ain>')
-        eq(msg['list-archive'], '<http://www.dom.ain/pipermail/_xtest>')
+           '<http://www.example.com/mailman/listinfo/_xtest>,'
+           '\n\t<mailto:_xtest-request@example.com?subject=subscribe>')
+        eq(msg['list-post'], '<mailto:_xtest@example.com>')
+        eq(msg['list-archive'], '<http://www.example.com/pipermail/_xtest>')
 
     def test_list_headers_with_description(self):
         eq = self.assertEqual
         self._mlist.archive = 1
         self._mlist.description = 'A Test List'
         msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 
 """, Message.Message)
         CookHeaders.process(self._mlist, msg, {})
-        eq(unicode(msg['list-id']), u'A Test List <_xtest.dom.ain>')
-        eq(msg['list-help'], '<mailto:_xtest-request@dom.ain?subject=help>')
+        eq(unicode(msg['list-id']), u'A Test List <_xtest.example.com>')
+        eq(msg['list-help'], '<mailto:_xtest-request@example.com?subject=help>')
         eq(msg['list-unsubscribe'],
-           '<http://www.dom.ain/mailman/listinfo/_xtest>,'
-           '\n\t<mailto:_xtest-request@dom.ain?subject=unsubscribe>')
+           '<http://www.example.com/mailman/listinfo/_xtest>,'
+           '\n\t<mailto:_xtest-request@example.com?subject=unsubscribe>')
         eq(msg['list-subscribe'],
-           '<http://www.dom.ain/mailman/listinfo/_xtest>,'
-           '\n\t<mailto:_xtest-request@dom.ain?subject=subscribe>')
-        eq(msg['list-post'], '<mailto:_xtest@dom.ain>')
+           '<http://www.example.com/mailman/listinfo/_xtest>,'
+           '\n\t<mailto:_xtest-request@example.com?subject=subscribe>')
+        eq(msg['list-post'], '<mailto:_xtest@example.com>')
 
 
 
@@ -731,7 +731,7 @@ class TestDecorate(TestBase):
         mlist.msg_header = 'header\n'
         mlist.msg_footer = 'footer'
         msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 
 Here is a message.
 """)
@@ -747,7 +747,7 @@ footer""")
         mlist.msg_footer = '%(real_name)s footer'
         mlist.real_name = 'XTest'
         msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 
 Here is a message.
 """)
@@ -763,7 +763,7 @@ XTest footer""")
         mlist.msg_footer = '%(real_name) footer'
         mlist.real_name = 'XTest'
         msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 
 Here is a message.
 """)
@@ -780,7 +780,7 @@ Here is a message.
         mlist.msg_footer = '%(real_name)p footer'
         mlist.real_name = 'XTest'
         msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 
 Here is a message.
 """)
@@ -795,7 +795,7 @@ Here is a message.
         mlist.msg_header = '%(spooge)s header\n'
         mlist.msg_footer = '%(spooge)s footer'
         msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 
 Here is a message.
 """)
@@ -811,12 +811,12 @@ Here is a message.
         mlist.msg_header = 'header'
         mlist.msg_footer = 'footer'
         msg1 = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 
 Here is the first message.
 """)
         msg2 = email.message_from_string("""\
-From: bperson@dom.ain
+From: bperson@example.com
 
 Here is the second message.
 """)
@@ -838,12 +838,12 @@ Content-Disposition: inline
 
 header
 --BOUNDARY
-From: aperson@dom.ain
+From: aperson@example.org
 
 Here is the first message.
 
 --BOUNDARY
-From: bperson@dom.ain
+From: bperson@example.com
 
 Here is the second message.
 
@@ -862,7 +862,7 @@ footer
         mlist.msg_header = 'header\n'
         mlist.msg_footer = 'footer'
         msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 Content-type: image/x-spooge
 
 IMAGEDATAIMAGEDATAIMAGEDATA
@@ -897,13 +897,13 @@ class TestFileRecips(TestBase):
 
     def test_file_exists_no_sender(self):
         msg = email.message_from_string("""\
-To: yall@dom.ain
+To: yall@example.com
 
 """, Message.Message)
         msgdata = {}
         file = os.path.join(self._mlist.fullpath(), 'members.txt')
-        addrs = ['aperson@dom.ain', 'bperson@dom.ain',
-                 'cperson@dom.ain', 'dperson@dom.ain']
+        addrs = ['aperson@example.org', 'bperson@example.com',
+                 'cperson@example.com', 'dperson@example.com']
         fp = open(file, 'w')
         try:
             for addr in addrs:
@@ -919,14 +919,14 @@ To: yall@dom.ain
 
     def test_file_exists_no_member(self):
         msg = email.message_from_string("""\
-From: eperson@dom.ain
-To: yall@dom.ain
+From: eperson@example.com
+To: yall@example.com
 
 """, Message.Message)
         msgdata = {}
         file = os.path.join(self._mlist.fullpath(), 'members.txt')
-        addrs = ['aperson@dom.ain', 'bperson@dom.ain',
-                 'cperson@dom.ain', 'dperson@dom.ain']
+        addrs = ['aperson@example.org', 'bperson@example.com',
+                 'cperson@example.com', 'dperson@example.com']
         fp = open(file, 'w')
         try:
             for addr in addrs:
@@ -942,14 +942,14 @@ To: yall@dom.ain
 
     def test_file_exists_is_member(self):
         msg = email.message_from_string("""\
-From: aperson@dom.ain
-To: yall@dom.ain
+From: aperson@example.org
+To: yall@example.com
 
 """, Message.Message)
         msgdata = {}
         file = os.path.join(self._mlist.fullpath(), 'members.txt')
-        addrs = ['aperson@dom.ain', 'bperson@dom.ain',
-                 'cperson@dom.ain', 'dperson@dom.ain']
+        addrs = ['aperson@example.org', 'bperson@example.com',
+                 'cperson@example.com', 'dperson@example.com']
         fp = open(file, 'w')
         try:
             for addr in addrs:
@@ -995,7 +995,7 @@ class TestHold(TestBase):
 
     def test_administrivia(self):
         msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 Subject: unsubscribe
 
 """, Message.Message)
@@ -1005,11 +1005,11 @@ Subject: unsubscribe
     def test_max_recips(self):
         self._mlist.max_num_recipients = 5
         msg = email.message_from_string("""\
-From: aperson@dom.ain
-To: _xtest@dom.ain, bperson@dom.ain
-Cc: cperson@dom.ain
-Cc: dperson@dom.ain (Jimmy D. Person)
-To: Billy E. Person <eperson@dom.ain>
+From: aperson@example.org
+To: _xtest@example.com, bperson@example.com
+Cc: cperson@example.com
+Cc: dperson@example.com (Jimmy D. Person)
+To: Billy E. Person <eperson@example.com>
 
 Hey folks!
 """, Message.Message)
@@ -1019,7 +1019,7 @@ Hey folks!
     def test_implicit_destination(self):
         self._mlist.require_explicit_destination = 1
         msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 Subject: An implicit message
 
 """, Message.Message)
@@ -1029,7 +1029,7 @@ Subject: An implicit message
     def test_implicit_destination_fromusenet(self):
         self._mlist.require_explicit_destination = 1
         msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 Subject: An implicit message
 
 """, Message.Message)
@@ -1037,10 +1037,10 @@ Subject: An implicit message
         self.assertEqual(rtn, None)
 
     def test_suspicious_header(self):
-        self._mlist.bounce_matching_headers = 'From: .*person@(blah.)?dom.ain'
+        self._mlist.bounce_matching_headers = 'From: .*person@(blah.)?example.org'
         msg = email.message_from_string("""\
-From: aperson@dom.ain
-To: _xtest@dom.ain
+From: aperson@example.org
+To: _xtest@example.net
 Subject: An implicit message
 
 """, Message.Message)
@@ -1048,10 +1048,10 @@ Subject: An implicit message
                           self._mlist, msg, {})
 
     def test_suspicious_header_ok(self):
-        self._mlist.bounce_matching_headers = 'From: .*person@blah.dom.ain'
+        self._mlist.bounce_matching_headers = 'From: .*person@blah.example.com'
         msg = email.message_from_string("""\
-From: aperson@dom.ain
-To: _xtest@dom.ain
+From: aperson@example.org
+To: _xtest@example.com
 Subject: An implicit message
 
 """, Message.Message)
@@ -1061,8 +1061,8 @@ Subject: An implicit message
     def test_max_message_size(self):
         self._mlist.max_message_size = 1
         msg = email.message_from_string("""\
-From: aperson@dom.ain
-To: _xtest@dom.ain
+From: aperson@example.org
+To: _xtest@example.com
 
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -1088,7 +1088,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
         self._mlist.admin_immed_notify = 1
         # Now cause an implicit destination hold
         msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 
 """, Message.Message)
         self.assertRaises(Hold.ImplicitDestination, Hold.process,
@@ -1106,9 +1106,9 @@ From: aperson@dom.ain
         # messages or the metadata files...
         keys = qfiles.keys()
         keys.sort()
-        eq(keys, ['_xtest-owner@dom.ain', 'aperson@dom.ain'])
+        eq(keys, ['_xtest-owner@example.com', 'aperson@example.org'])
         # Get the pending cookie from the message to the sender
-        pmsg, pdata = qfiles['aperson@dom.ain']
+        pmsg, pdata = qfiles['aperson@example.org']
         confirmlines = pmsg.get_payload().split('\n')
         cookie = confirmlines[-3].split('/')[-1]
         # We also need to make sure there's an entry in the Pending database
@@ -1134,7 +1134,7 @@ class TestMimeDel(TestBase):
 
     def test_outer_matches(self):
         msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 Content-Type: image/jpeg
 MIME-Version: 1.0
 
@@ -1146,7 +1146,7 @@ xxxxx
     def test_strain_multipart(self):
         eq = self.assertEqual
         msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 Content-Type: multipart/mixed; boundary=BOUNDARY
 MIME-Version: 1.0
 
@@ -1172,7 +1172,7 @@ yyy
     def test_collapse_multipart_alternative(self):
         eq = self.assertEqual
         msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 Content-Type: multipart/mixed; boundary=BOUNDARY
 MIME-Version: 1.0
 
@@ -1209,7 +1209,7 @@ yyy
         program = config.HTML_TO_PLAIN_TEXT_COMMAND.split()[0]
         if os.path.isfile(program):
             msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 Content-Type: text/html
 MIME-Version: 1.0
 
@@ -1224,7 +1224,7 @@ MIME-Version: 1.0
         eq = self.assertEqual
         self._mlist.filter_mime_types.append('text/html')
         msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 Content-Type: multipart/mixed; boundary=AAA
 
 --AAA
@@ -1279,7 +1279,7 @@ aaa
         eq = self.assertEqual
         self._mlist.filter_mime_types.append('text/html')
         msg = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 Content-Type: multipart/alternative; boundary=AAA
 
 --AAA
@@ -1317,12 +1317,12 @@ class TestSpamDetect(TestBase):
 
     def test_spam_detect(self):
         msg1 = email.message_from_string("""\
-From: aperson@dom.ain
+From: aperson@example.org
 
 A message.
 """)
         msg2 = email.message_from_string("""\
-To: xlist@dom.ain
+To: xlist@example.com
 
 A message.
 """)
@@ -1510,8 +1510,8 @@ It rocks!
 
 class TestToDigest(TestBase):
     def _makemsg(self, i=0):
-        msg = email.message_from_string("""From: aperson@dom.ain
-To: _xtest@dom.ain
+        msg = email.message_from_string("""From: aperson@example.org
+To: _xtest@example.com
 Subject: message number %(i)d
 
 Here is message %(i)d
@@ -1621,7 +1621,7 @@ It rocks!
         eq(data['foo'], 1)
         eq(data['bar'], 2)
         eq(data['version'], 3)
-        eq(data['listname'], '_xtest')
+        eq(data['listname'], '_xtest@example.com')
         eq(data['verp'], 1)
         # Clock skew makes this unreliable
         #self.failUnless(data['received_time'] <= time.time())
@@ -1670,7 +1670,7 @@ Mailman rocks!
         msg2, data = self._sb.dequeue(files[0])
         eq(msg.as_string(unixfrom=0), msg2.as_string(unixfrom=0))
         eq(data['version'], 3)
-        eq(data['listname'], '_xtest')
+        eq(data['listname'], '_xtest@example.com')
         # Clock skew makes this unreliable
         #self.failUnless(data['received_time'] <= time.time())
 

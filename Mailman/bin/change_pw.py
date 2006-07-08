@@ -155,7 +155,7 @@ def main():
                 hostname = mlist.host_name
                 adminurl = mlist.GetScriptURL('admin', absolute=True)
                 msg = Message.UserNotification(
-                    mlist.owner[:], mlist.GetNoReplyEmail(),
+                    mlist.owner[:], mlist.no_reply_address,
                     _('Your new $listname list password'),
                     _('''\
 The site administrator at $hostname has changed the password for your

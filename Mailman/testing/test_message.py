@@ -32,43 +32,44 @@ class TestSentMessage(EmailBase):
         eq = self.assertEqual
         unless = self.failUnless
         msg = Message.UserNotification(
-            'aperson@dom.ain',
-            '_xtest@dom.ain',
+            'aperson@example.org',
+            '_xtest@example.com',
             'Your Test List',
             'About your test list')
         msg.send(self._mlist)
         qmsg = email.message_from_string(self._readmsg())
         eq(qmsg['subject'], 'Your Test List')
-        eq(qmsg['from'], '_xtest@dom.ain')
-        eq(qmsg['to'], 'aperson@dom.ain')
+        eq(qmsg['from'], '_xtest@example.com')
+        eq(qmsg['to'], 'aperson@example.org')
         # The Message-ID: header has some time-variant information
         msgid = qmsg['message-id']
         unless(msgid.startswith('<mailman.'))
-        unless(msgid.endswith('._xtest@dom.ain>'))
-        eq(qmsg['sender'], '_xtest-bounces@dom.ain')
-        eq(qmsg['errors-to'], '_xtest-bounces@dom.ain')
-        eq(qmsg['x-beenthere'], '_xtest@dom.ain')
+        unless(msgid.endswith('._xtest@example.com>'))
+        eq(qmsg['sender'], '_xtest-bounces@example.com')
+        eq(qmsg['errors-to'], '_xtest-bounces@example.com')
+        eq(qmsg['x-beenthere'], '_xtest@example.com')
         eq(qmsg['x-mailman-version'], Version.VERSION)
         eq(qmsg['precedence'], 'bulk')
         # UserNotifications have reduced_list_headers so it won't have
         # List-Help, List-Subscribe, or List-Unsubscribe.  XXX Why would that
         # possibly be?
-        eq(qmsg['list-help'], '<mailto:_xtest-request@dom.ain?subject=help>')
+        eq(qmsg['list-help'],
+           '<mailto:_xtest-request@example.com?subject=help>')
         eq(qmsg['list-subscribe'], """\
-<http://www.dom.ain/mailman/listinfo/_xtest>,
-\t<mailto:_xtest-request@dom.ain?subject=subscribe>""")
-        eq(qmsg['list-id'], '<_xtest.dom.ain>')
+<http://www.example.com/mailman/listinfo/_xtest>,
+\t<mailto:_xtest-request@example.com?subject=subscribe>""")
+        eq(qmsg['list-id'], '<_xtest.example.com>')
         eq(qmsg['list-unsubscribe'], """\
-<http://www.dom.ain/mailman/listinfo/_xtest>,
-\t<mailto:_xtest-request@dom.ain?subject=unsubscribe>""")
+<http://www.example.com/mailman/listinfo/_xtest>,
+\t<mailto:_xtest-request@example.com?subject=unsubscribe>""")
         eq(qmsg.get_payload(), 'About your test list')
 
     def test_bounce_message(self):
         eq = self.assertEqual
         unless = self.failUnless
         msg = email.message_from_string("""\
-To: _xtest@dom.ain
-From: nobody@dom.ain
+To: _xtest@example.com
+From: nobody@example.com
 Subject: and another thing
 
 yadda yadda yadda

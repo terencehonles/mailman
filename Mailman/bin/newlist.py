@@ -189,7 +189,7 @@ def main():
             admin_url       = mlist.GetScriptURL('admin', absolute=True),
             listinfo_url    = mlist.GetScriptURL('listinfo', absolute=True),
             requestaddr     = mlist.GetRequestEmail(),
-            siteowner       = mlist.GetNoReplyEmail(),
+            siteowner       = mlist.no_reply_address,
             )
         text = Utils.maketext('newlist.txt', d, mlist=mlist)
         # Set the I18N language to the list's preferred language so the header
@@ -199,7 +199,7 @@ def main():
         i18n.set_language(mlist.preferred_language)
         try:
             msg = Message.UserNotification(
-                owner_mail, mlist.GetNoReplyEmail(),
+                owner_mail, mlist.no_reply_address,
                 _('Your new mailing list: $listname'),
                 text, mlist.preferred_language)
             msg.send(mlist)

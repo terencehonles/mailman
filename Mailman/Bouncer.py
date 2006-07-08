@@ -194,11 +194,11 @@ class Bouncer:
              'did'      : _('disabled'),
              'but'      : '',
              'reenable' : '',
-             'owneraddr': self.GetNoReplyEmail(),
+             'owneraddr': self.no_reply_address,
              }, mlist=self)
         subject = _('Bounce action notification')
         umsg = Message.UserNotification(self.GetOwnerEmail(),
-                                        self.GetNoReplyEmail(),
+                                        self.no_reply_address,
                                         subject,
                                         lang=self.preferred_language)
         # BAW: Be sure you set the type before trying to attach, or you'll get

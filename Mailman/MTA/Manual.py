@@ -78,7 +78,7 @@ equivalent) file by adding the following lines, and possibly running the
 ## %(listname)s mailing list""")
         outfp = sys.stdout
     # Common path
-    for k, v in makealiases(listname):
+    for k, v in makealiases(mlist):
         print >> outfp, k + ':', ((fieldsz - len(k)) * ' '), v
     # If we're using the command line interface, we're done.  For ttw, we need
     # to actually send the message to mailman-owner now.
@@ -121,7 +121,7 @@ equivalent) file by removing the following lines, and possibly running the
 ## %(listname)s mailing list""")
         outfp = sys.stdout
     # Common path
-    for k, v in makealiases(listname):
+    for k, v in makealiases(mlist):
         print >> outfp, k + ':', ((fieldsz - len(k)) * ' '), v
     # If we're using the command line interface, we're done.  For ttw, we need
     # to actually send the message to mailman-owner now.

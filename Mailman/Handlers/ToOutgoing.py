@@ -53,4 +53,4 @@ def process(mlist, msg, msgdata):
         msgdata['verp'] = not (int(mlist.post_id) % interval)
     # And now drop the message in qfiles/out
     outq = get_switchboard(config.OUTQUEUE_DIR)
-    outq.enqueue(msg, msgdata, listname=mlist.internal_name())
+    outq.enqueue(msg, msgdata, listname=mlist.fqdn_listname)
