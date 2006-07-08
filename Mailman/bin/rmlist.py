@@ -78,6 +78,9 @@ def main():
     config.load(opts.config)
 
     listname = args[0].lower().strip()
+    if '@' not in listname:
+        listname = '%s@%s' % (listname, config.DEFAULT_EMAIL_HOST)
+
     if not Utils.list_exists(listname):
         if not opts.archives:
             print >> sys.stderr, _(
@@ -85,7 +88,7 @@ def main():
             sys.exit(1)
         else:
             print _(
-                'No such list: $listname.  Removing its residual archives.')
+                'No such list: ${listname}.  Removing its residual archives.')
 
     if not opts.archives:
         print _('Not removing archives.  Reinvoke with -a to remove them.')

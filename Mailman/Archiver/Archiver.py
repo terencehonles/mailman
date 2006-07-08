@@ -12,8 +12,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+ # USA.
 
 """Mixin class for putting new messages in the right place for archival.
 
@@ -30,12 +30,12 @@ import traceback
 
 from cStringIO import StringIO
 
-from Mailman import Site
+from Mailman import Mailbox
 from Mailman import Utils
 from Mailman import mm_cfg
-from Mailman import Mailbox
-from Mailman.i18n import _
 from Mailman.SafeDict import SafeDict
+from Mailman.configuration import config
+from Mailman.i18n import _
 
 log = logging.getLogger('mailman.error')
 
@@ -125,7 +125,9 @@ class Archiver:
             os.umask(omask)
 
     def archive_dir(self):
-        return Site.get_archpath(self.internal_name())
+        # Return the private archive directory
+        return os.path.join(config.PRIVATE_ARCHIVE_FILE_DIR,
+                            self.fqdn_listname)
 
     def ArchiveFileName(self):
         """The mbox name where messages are left for archive construction."""
@@ -225,7 +227,8 @@ class Archiver:
         if mm_cfg.ARCHIVE_TO_MBOX == -1:
             # Archiving is completely disabled, don't require the skeleton.
             return
-        pubdir = Site.get_archpath(self.internal_name(), public=True)
+        pubdir = os.path.join(config.PUBLIC_ARCHIVE_FILE_DIR,
+                              self.fqdn_listname)
         privdir = self.archive_dir()
         pubmbox = pubdir + '.mbox'
         privmbox = privdir + '.mbox'

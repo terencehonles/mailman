@@ -60,7 +60,6 @@ def main():
     inq.enqueue(sys.stdin.read(),
                 listname=listname,
                 _plaintext=True,
-                envsender=Utils.get_site_email(extra='bounces'),
                 pipeline=mm_cfg.OWNER_PIPELINE,
                 toowner=True)
 

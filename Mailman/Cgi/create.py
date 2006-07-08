@@ -25,16 +25,16 @@ import signal
 import logging
 
 from Mailman import Errors
-from Mailman import i18n
 from Mailman import MailList
 from Mailman import Message
-from Mailman import mm_cfg
-
+from Mailman import i18n
+from Mailman.configuration import config
 from Mailman.htmlformat import *
 
 # Set up i18n
 _ = i18n._
-i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+i18n.set_language(config.DEFAULT_SERVER_LANGUAGE)
+__i18n_templates__ = True
 
 log = logging.getLogger('mailman.error')
 
@@ -42,7 +42,7 @@ log = logging.getLogger('mailman.error')
 
 def main():
     doc = Document()
-    doc.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+    doc.set_language(config.DEFAULT_SERVER_LANGUAGE)
 
     cgidata = cgi.FieldStorage()
     parts = Utils.GetPathPieces()
@@ -75,42 +75,35 @@ def main():
 
 
 def process_request(doc, cgidata):
-    # Lowercase the listname since this is treated as the "internal" name.
+    # Lowercase the listname since this is treated as the 'internal' name.
     listname = cgidata.getvalue('listname', '').strip().lower()
     owner    = cgidata.getvalue('owner', '').strip()
     try:
-        autogen  = int(cgidata.getvalue('autogen', '0'))
+        autogen = bool(cgidata.getvalue('autogen', '0'))
     except ValueError:
-        autogen = 0
+        autogen = False
     try:
-        notify  = int(cgidata.getvalue('notify', '0'))
+        notify = bool(cgidata.getvalue('notify', '0'))
     except ValueError:
-        notify = 0
+        notify = False
     try:
-        moderate = int(cgidata.getvalue('moderate',
-                       mm_cfg.DEFAULT_DEFAULT_MEMBER_MODERATION))
+        moderate = bool(cgidata.getvalue('moderate',
+                        config.DEFAULT_DEFAULT_MEMBER_MODERATION))
     except ValueError:
-        moderate = mm_cfg.DEFAULT_DEFAULT_MEMBER_MODERATION
+        moderate = config.DEFAULT_DEFAULT_MEMBER_MODERATION
 
     password = cgidata.getvalue('password', '').strip()
     confirm  = cgidata.getvalue('confirm', '').strip()
     auth     = cgidata.getvalue('auth', '').strip()
-    langs    = cgidata.getvalue('langs', [mm_cfg.DEFAULT_SERVER_LANGUAGE])
+    langs    = cgidata.getvalue('langs', [config.DEFAULT_SERVER_LANGUAGE])
 
     if not isinstance(langs, list):
         langs = [langs]
-    # Sanity check
+    # Sanity checks
     safelistname = Utils.websafe(listname)
     if '@' in listname:
         request_creation(doc, cgidata,
-                         _('List name must not include "@": %(safelistname)s'))
-        return
-    if Utils.list_exists(listname):
-        # BAW: should we tell them the list already exists?  This could be
-        # used to mine/guess the existance of non-advertised lists.  Then
-        # again, that can be done in other ways already, so oh well.
-        request_creation(doc, cgidata,
-                         _('List already exists: %(safelistname)s'))
+                         _('List name must not include "@": $safelistname'))
         return
     if not listname:
         request_creation(doc, cgidata,
@@ -120,17 +113,16 @@ def process_request(doc, cgidata):
         request_creation(doc, cgidata,
                          _('You forgot to specify the list owner'))
         return
-
     if autogen:
         if password or confirm:
             request_creation(
                 doc, cgidata,
-                _('''Leave the initial password (and confirmation) fields
+                _("""Leave the initial password (and confirmation) fields
                 blank if you want Mailman to autogenerate the list
-                passwords.'''))
+                passwords."""))
             return
         password = confirm = Utils.MakeRandomPassword(
-            mm_cfg.ADMIN_PASSWORD_LENGTH)
+            config.ADMIN_PASSWORD_LENGTH)
     else:
         if password <> confirm:
             request_creation(doc, cgidata,
@@ -147,9 +139,9 @@ def process_request(doc, cgidata):
             return
     # The authorization password must be non-empty, and it must match either
     # the list creation password or the site admin password
-    ok = 0
+    ok = False
     if auth:
-        ok = Utils.check_global_password(auth, 0)
+        ok = Utils.check_global_password(auth, False)
         if not ok:
             ok = Utils.check_global_password(auth)
     if not ok:
@@ -157,27 +149,26 @@ def process_request(doc, cgidata):
             doc, cgidata,
             _('You are not authorized to create new mailing lists'))
         return
-    # Make sure the web hostname matches one of our virtual domains
-    hostname = Utils.get_domain()
-    if mm_cfg.VIRTUAL_HOST_OVERVIEW and \
-           not mm_cfg.VIRTUAL_HOSTS.has_key(hostname):
-        safehostname = Utils.websafe(hostname)
+    # Make sure the url host name matches one of our virtual domains.  Then
+    # calculate the list's posting address.
+    url_host = Utils.get_request_domain()
+    email_host = config.get_email_host(url_host)
+    if not email_host:
+        safehostname = Utils.websafe(email_host)
         request_creation(doc, cgidata,
-                         _('Unknown virtual host: %(safehostname)s'))
+                         _('Unknown virtual host: $safehostname'))
         return
-    emailhost = mm_cfg.VIRTUAL_HOSTS.get(hostname, mm_cfg.DEFAULT_EMAIL_HOST)
+    fqdn_listname = '%s@%s' % (listname, email_host)
     # We've got all the data we need, so go ahead and try to create the list
-    # See admin.py for why we need to set up the signal handler.
     mlist = MailList.MailList()
-
-    def sigterm_handler(signum, frame, mlist=mlist):
+    # See admin.py for why we need to set up the signal handler.
+    def sigterm_handler(signum, frame):
         # Make sure the list gets unlocked...
         mlist.Unlock()
         # ...and ensure we exit, otherwise race conditions could cause us to
         # enter MailList.Save() while we're in the unlocked state, and that
         # could be bad!
         sys.exit(0)
-
     try:
         # Install the emergency shutdown signal handler
         signal.signal(signal.SIGTERM, sigterm_handler)
@@ -189,33 +180,29 @@ def process_request(doc, cgidata):
         oldmask = os.umask(002)
         try:
             try:
-                mlist.Create(listname, owner, pw, langs, emailhost)
+                mlist.Create(fqdn_listname, owner, pw, langs)
             finally:
                 os.umask(oldmask)
         except Errors.EmailAddressError, s:
-            request_creation(doc, cgidata,
-                             _('Bad owner email address: %(s)s'))
+            request_creation(doc, cgidata, _('Bad owner email address: $s'))
             return
         except Errors.MMListAlreadyExistsError:
+            safelistname = Utils.websafe(listname)
             request_creation(doc, cgidata,
-                             _('List already exists: %(listname)s'))
+                             _('List already exists: $safelistname'))
             return
         except Errors.BadListNameError, s:
-            request_creation(doc, cgidata,
-                             _('Illegal list name: %(s)s'))
+            request_creation(doc, cgidata, _('Illegal list name: $s'))
             return
         except Errors.MMListError:
             request_creation(
                 doc, cgidata,
-                _('''Some unknown error occurred while creating the list.
-                Please contact the site administrator for assistance.'''))
+                _("""Some unknown error occurred while creating the list.
+                Please contact the site administrator for assistance."""))
             return
-
         # Initialize the host_name and web_page_url attributes, based on
         # virtual hosting settings and the request environment variables.
         mlist.default_member_moderation = moderate
-        mlist.web_page_url = mm_cfg.DEFAULT_URL_PATTERN % hostname
-        mlist.host_name = emailhost
         mlist.Save()
     finally:
         # Now be sure to unlock the list.  It's okay if we get a signal here
@@ -223,34 +210,31 @@ def process_request(doc, cgidata):
         # unlocking is unconditional, so it's not an error if we unlock while
         # we're already unlocked.
         mlist.Unlock()
-
     # Now do the MTA-specific list creation tasks
-    if mm_cfg.MTA:
-        modname = 'Mailman.MTA.' + mm_cfg.MTA
+    if config.MTA:
+        modname = 'Mailman.MTA.' + config.MTA
         __import__(modname)
-        sys.modules[modname].create(mlist, cgi=1)
-
+        sys.modules[modname].create(mlist, cgi=True)
     # And send the notice to the list owner.
     if notify:
-        siteowner = Utils.get_site_email(mlist.host_name, 'owner')
+        siteowner = mlist.GetNoReplyEmail()
         text = Utils.maketext(
             'newlist.txt',
             {'listname'    : listname,
              'password'    : password,
-             'admin_url'   : mlist.GetScriptURL('admin', absolute=1),
-             'listinfo_url': mlist.GetScriptURL('listinfo', absolute=1),
+             'admin_url'   : mlist.GetScriptURL('admin', absolute=True),
+             'listinfo_url': mlist.GetScriptURL('listinfo', absolute=True),
              'requestaddr' : mlist.GetRequestEmail(),
              'siteowner'   : siteowner,
              }, mlist=mlist)
         msg = Message.UserNotification(
             owner, siteowner,
-            _('Your new mailing list: %(listname)s'),
+            _('Your new mailing list: $listname'),
             text, mlist.preferred_language)
         msg.send(mlist)
-
     # Success!
-    listinfo_url = mlist.GetScriptURL('listinfo', absolute=1)
-    admin_url = mlist.GetScriptURL('admin', absolute=1)
+    listinfo_url = mlist.GetScriptURL('listinfo', absolute=True)
+    admin_url = mlist.GetScriptURL('admin', absolute=True)
     create_url = Utils.ScriptURL('create')
 
     title = _('Mailing list creation results')
@@ -258,10 +242,10 @@ def process_request(doc, cgidata):
     table = Table(border=0, width='100%')
     table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0,
-                      bgcolor=mm_cfg.WEB_HEADER_COLOR)
-    table.AddRow([_('''You have successfully created the mailing list
-    <b>%(listname)s</b> and notification has been sent to the list owner
-    <b>%(owner)s</b>.  You can now:''')])
+                      bgcolor=config.WEB_HEADER_COLOR)
+    table.AddRow([_("""You have successfully created the mailing list
+    <b>$listname</b> and notification has been sent to the list owner
+    <b>$owner</b>.  You can now:""")])
     ullist = UnorderedList()
     ullist.AddItem(Link(listinfo_url, _("Visit the list's info page")))
     ullist.AddItem(Link(admin_url, _("Visit the list's admin page")))
@@ -281,14 +265,14 @@ dummy = Dummy()
 
 def request_creation(doc, cgidata=dummy, errmsg=None):
     # What virtual domain are we using?
-    hostname = Utils.get_domain()
+    hostname = Utils.get_request_domain()
     # Set up the document
-    title = _('Create a %(hostname)s Mailing List')
+    title = _('Create a $hostname Mailing List')
     doc.SetTitle(title)
     table = Table(border=0, width='100%')
     table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0,
-                      bgcolor=mm_cfg.WEB_HEADER_COLOR)
+                      bgcolor=config.WEB_HEADER_COLOR)
     # Add any error message
     if errmsg:
         table.AddRow([Header(3, Bold(
@@ -315,7 +299,7 @@ def request_creation(doc, cgidata=dummy, errmsg=None):
     password can also be used for authentication.
     """)])
     # Build the form for the necessary input
-    GREY = mm_cfg.WEB_ADMINITEM_COLOR
+    GREY = config.WEB_ADMINITEM_COLOR
     form = Form(Utils.ScriptURL('create'))
     ftable = Table(border=0, cols='2', width='100%',
                    cellspacing=3, cellpadding=4)
@@ -336,9 +320,9 @@ def request_creation(doc, cgidata=dummy, errmsg=None):
     ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor=GREY)
 
     try:
-        autogen = int(cgidata.getvalue('autogen', '0'))
+        autogen = bool(cgidata.getvalue('autogen', '0'))
     except ValueError:
-        autogen = 0
+        autogen = False
     ftable.AddRow([Label(_('Auto-generate initial list password?')),
                    RadioButtonArray('autogen', (_('No'), _('Yes')),
                                     checked=autogen,
@@ -359,14 +343,14 @@ def request_creation(doc, cgidata=dummy, errmsg=None):
     ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor=GREY)
 
     try:
-        notify = int(cgidata.getvalue('notify', '1'))
+        notify = bool(cgidata.getvalue('notify', '1'))
     except ValueError:
-        notify = 1
+        notify = True
     try:
-        moderate = int(cgidata.getvalue('moderate',
-                       mm_cfg.DEFAULT_DEFAULT_MEMBER_MODERATION))
+        moderate = bool(cgidata.getvalue('moderate',
+                        config.DEFAULT_DEFAULT_MEMBER_MODERATION))
     except ValueError:
-        moderate = mm_cfg.DEFAULT_DEFAULT_MEMBER_MODERATION
+        moderate = config.DEFAULT_DEFAULT_MEMBER_MODERATION
 
     ftable.AddRow([Center(Italic(_('List Characteristics')))])
     ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, colspan=2)
@@ -383,7 +367,7 @@ def request_creation(doc, cgidata=dummy, errmsg=None):
     # Create the table of initially supported languages, sorted on the long
     # name of the language.
     revmap = {}
-    for key, (name, charset) in mm_cfg.LC_DESCRIPTIONS.items():
+    for key, (name, charset) in config.LC_DESCRIPTIONS.items():
         revmap[_(name)] = key
     langnames = revmap.keys()
     langnames.sort()
@@ -391,7 +375,7 @@ def request_creation(doc, cgidata=dummy, errmsg=None):
     for name in langnames:
         langs.append(revmap[name])
     try:
-        langi = langs.index(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+        langi = langs.index(config.DEFAULT_SERVER_LANGUAGE)
     except ValueError:
         # Someone must have deleted the servers's preferred language.  Could
         # be other trouble lurking!
@@ -400,11 +384,11 @@ def request_creation(doc, cgidata=dummy, errmsg=None):
     # invocations.
     checked = [0] * len(langs)
     checked[langi] = 1
-    deflang = _(Utils.GetLanguageDescr(mm_cfg.DEFAULT_SERVER_LANGUAGE))
+    deflang = _(Utils.GetLanguageDescr(config.DEFAULT_SERVER_LANGUAGE))
     ftable.AddRow([Label(_(
-        '''Initial list of supported languages.  <p>Note that if you do not
+        """Initial list of supported languages.  <p>Note that if you do not
         select at least one initial language, the list will use the server
-        default language of %(deflang)s''')),
+        default language of $deflang""")),
                    CheckBoxArray('langs',
                                  [_(Utils.GetLanguageDescr(L)) for L in langs],
                                  checked=checked,

@@ -130,12 +130,7 @@ from Mailman import MailList
 from Mailman import Utils
 from Mailman import loginit
 from Mailman.i18n import _
-
-try:
-    True, False
-except NameError:
-    True = 1
-    False = 0
+from Mailman.configuration import config
 
 
 # `m' will be the MailList object and `r' will be the results of the callable
@@ -245,6 +240,9 @@ def main():
 
     if all and not run:
         usage(1, _('--all requires --run'))
+
+    # XXX Allow for specifying the configuration file via -C/--config
+    config.load()
 
     # The default for interact is 1 unless -r was given
     if interact is None:

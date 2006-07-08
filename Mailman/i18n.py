@@ -110,7 +110,7 @@ def _(s):
         if isinstance(v, unicode):
             d[k] = v.encode(charset, 'replace')
     # Are we using $-strings or %-strings?
-    if d.get('__i18n_templates__', False):
+    if use_templates:
         return Template(tns).safe_substitute(attrdict(d))
     return tns % SafeDict(d)
 

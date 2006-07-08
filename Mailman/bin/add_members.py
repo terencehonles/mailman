@@ -202,7 +202,7 @@ def main():
         if admin_notify:
             subject = _('$mlist.real_name subscription notification')
             msg = Message.UserNotification(
-                mlist.owner, Utils.get_site_email(), subject, s.getvalue(),
+                mlist.owner, mlist.GetNoReplyEmail(), subject, s.getvalue(),
                 mlist.preferred_language)
             msg.send(mlist)
 

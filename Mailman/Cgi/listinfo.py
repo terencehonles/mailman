@@ -66,7 +66,7 @@ def main():
 
 def listinfo_overview(msg=''):
     # Present the general listinfo overview
-    hostname = Utils.get_domain()
+    hostname = Utils.get_request_domain()
     # Set up the document and assign it the correct language.  The only one we
     # know about at the moment is the server's default.
     doc = Document()
@@ -86,11 +86,10 @@ def listinfo_overview(msg=''):
     listnames.sort()
 
     for name in listnames:
-        mlist = MailList.MailList(name, lock=0)
+        mlist = MailList.MailList(name, lock=False)
         if mlist.advertised:
-            if mm_cfg.VIRTUAL_HOST_OVERVIEW and \
-                   mlist.web_page_url.find(hostname) == -1:
-                # List is for different identity of this host - skip it.
+            if hostname not in mlist.web_page_url:
+                # This list is situated in a different virtual domain
                 continue
             else:
                 advertised.append((mlist.GetScriptURL('listinfo'),
@@ -116,7 +115,7 @@ def listinfo_overview(msg=''):
 
     # set up some local variables
     adj = msg and _('right') or ''
-    siteowner = Utils.get_site_email()
+    siteowner = Utils.get_site_noreply()
     welcome.extend(
         (_(''' To visit the general information page for an unadvertised list,
         open a URL similar to this one, but with a '/' and the %(adj)s

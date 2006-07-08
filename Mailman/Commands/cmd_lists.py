@@ -1,4 +1,4 @@
-# Copyright (C) 2002 by the Free Software Foundation, Inc.
+# Copyright (C) 2002-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -12,7 +12,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """
     lists
@@ -53,10 +54,8 @@ def process(res, args):
         # We can mention this list if you already know about it
         if not xlist.advertised and xlist is not mlist:
             continue
-        # Skip the list if it isn't in the same virtual domain.  BAW: should a
-        # message to the site list include everything regardless of domain?
-        if mm_cfg.VIRTUAL_HOST_OVERVIEW and \
-               xlist.host_name <> mlist.host_name:
+        # Skip the list if it isn't in the same virtual domain.
+        if xlist.host_name <> mlist.host_name:
             continue
         realname = xlist.real_name
         description = xlist.description or _('n/a')

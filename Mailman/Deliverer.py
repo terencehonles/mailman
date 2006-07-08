@@ -88,7 +88,7 @@ your membership administrative address, %(addr)s.'''))
         msg.send(self, verp=mm_cfg.VERP_PERSONALIZED_DELIVERIES)
 
     def MailUserPassword(self, user):
-        listfullname = '%s@%s' % (self.real_name, self.host_name)
+        listfullname = self.fqdn_listname
         requestaddr = self.GetRequestEmail()
         # find the lowercased version of the user's address
         adminaddr = self.GetBouncesEmail()

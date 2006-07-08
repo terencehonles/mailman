@@ -58,28 +58,20 @@ MAILMAN_URL = 'http://www.gnu.org/software/mailman/index.html'
 #MAILMAN_URL = 'http://www.list.org/'
 #MAILMAN_URL = 'http://mailman.sf.net/'
 
-# Mailman needs to know about (at least) two fully-qualified domain names
-# (fqdn); 1) the hostname used in your urls, and 2) the hostname used in email
-# addresses for your domain.  For example, if people visit your Mailman system
-# with "http://www.dom.ain/mailman" then your url fqdn is "www.dom.ain", and
-# if people send mail to your system via "yourlist@dom.ain" then your email
-# fqdn is "dom.ain".  DEFAULT_URL_HOST controls the former, and
-# DEFAULT_EMAIL_HOST controls the latter.  Mailman also needs to know how to
-# map from one to the other (this is especially important if you're running
-# with virtual domains).  You use "add_virtualhost(urlfqdn, emailfqdn)" to add
-# new mappings.
-#
-# If you don't need to change DEFAULT_EMAIL_HOST and DEFAULT_URL_HOST in your
-# mm_cfg.py, then you're done; the default mapping is added automatically.  If
-# however you change either variable in your mm_cfg.py, then be sure to also
-# include the following:
-#
-#     add_virtualhost(DEFAULT_URL_HOST, DEFAULT_EMAIL_HOST)
-#
-# because otherwise the default mappings won't be correct.
-DEFAULT_EMAIL_HOST = '@MAILHOST@'
-DEFAULT_URL_HOST = '@URLHOST@'
 DEFAULT_URL_PATTERN = 'http://%s/mailman/'
+
+# This address is used as the from address whenever a message comes from some
+# entity to which there is no natural reply recipient.  Set this to a real
+# human or to /dev/null.  It will be appended with the hostname of the list
+# involved or the DEFAULT_EMAIL_HOST if none is available.  Address must not
+# bounce and it must not point to a Mailman process.
+NO_REPLY_ADDRESS = 'noreply'
+
+# This address is the "site owner" address.  Certain messages which must be
+# delivered to a human, but which can't be delivered to a list owner (e.g. a
+# bounce from a list owner), will be sent to this address.  It should point to
+# a human.
+SITE_OWNER_ADDRESS = 'changeme@example.com'
 
 # DEFAULT_HOST_NAME has been replaced with DEFAULT_EMAIL_HOST, however some
 # sites may have the former in their mm_cfg.py files.  If so, we'll believe
@@ -88,7 +80,6 @@ DEFAULT_HOST_NAME = None
 DEFAULT_URL = None
 
 HOME_PAGE         = 'index.html'
-MAILMAN_SITE_LIST = 'mailman'
 
 # Normally when a site administrator authenticates to a web page with the site
 # password, they get a cookie which authorizes them as the list admin.  It
@@ -109,36 +100,29 @@ HTML_TO_PLAIN_TEXT_COMMAND = '/usr/bin/lynx -dump %(filename)s'
 # Virtual domains
 #####
 
-# Set up your virtual host mappings here.  This is primarily used for the
-# thru-the-web list creation, so its effects are currently fairly limited.
-# Use add_virtualhost() call to add new mappings.  The keys are strings as
-# determined by Utils.get_domain(), the values are as appropriate for
-# DEFAULT_HOST_NAME.
-VIRTUAL_HOSTS = {}
-
-# When set to Yes, the listinfo and admin overviews of lists on the machine
-# will be confined to only those lists whose web_page_url configuration option
-# host is included within the URL by which the page is visited - only those
-# "on the virtual host".  When set to No, all advertised (i.e. public) lists
-# are included in the overview.
-VIRTUAL_HOST_OVERVIEW = On
-
-
-# Helper function; use this in your mm_cfg.py files.  If optional emailhost is
-# omitted it defaults to urlhost with the first name stripped off, e.g.
+# Mailman needs to know about at least one domain, called the 'site default
+# domain'.  If you run only one domain with Mailman, this will generally be
+# calculated automatically when you configured Mailman.  You can always change
+# this in your mailman.cfg file.  You can also add additional virtual domains
+# in your mailman.cfg file to enable multiple virtual domains.  Every mailing
+# list will be situated in exactly one virtual domain.
 #
-# add_virtualhost('www.dom.ain')
-# VIRTUAL_HOST['www.dom.ain']
-# ==> 'dom.ain'
+# For Mailman's purposes, a virtual domain associates an email host name with
+# a web host name.  These may be the same, but often they are different, and
+# the list is always referred to by its fully-qualified posting address.  For
+# example, if you created 'mylist' in the example.com domain, people can post
+# to your list via 'mylist@example.com'.  They may refer to the web pages via
+# 'www.example.com'.  So your email host name is 'example.com' and your web
+# host name is 'www.example.com'.
 #
-def add_virtualhost(urlhost, emailhost=None):
-    DOT = '.'
-    if emailhost is None:
-        emailhost = DOT.join(urlhost.split(DOT)[1:])
-    VIRTUAL_HOSTS[urlhost.lower()] = emailhost.lower()
-
-# And set the default
-add_virtualhost(DEFAULT_URL_HOST, DEFAULT_EMAIL_HOST)
+# To add a virtual domain, put a call to add_domain(email_host, url_host) in
+# your mailman.cfg file.  If no add_domain() calls are found, Mailman will
+# automatically add a virtual domain for the following defaults.  However if
+# you explicit add domains, you will need to add these defaults as well.
+#
+# These defaults will be filled in by configure.
+DEFAULT_EMAIL_HOST  = '@MAILHOST@'
+DEFAULT_URL_HOST    = '@URLHOST@'
 
 # Note that you will want to run bin/fix_url.py to change the domain of an
 # existing list.  bin/fix_url.py must be run within the bin/withlist script,

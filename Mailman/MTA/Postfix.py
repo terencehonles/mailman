@@ -78,7 +78,7 @@ def clear():
 
 def _addlist(mlist, fp):
     # Set up the mailman-loop address
-    loopaddr = Utils.ParseEmail(Utils.get_site_email(extra='loop'))[0]
+    loopaddr = Utils.ParseEmail(Utils.get_site_noreply())[0]
     loopmbox = os.path.join(mm_cfg.DATA_DIR, 'owner-bounces.mbox')
     # Seek to the end of the text file, but if it's empty write the standard
     # disclaimer, and the loop catch address.
@@ -118,7 +118,7 @@ def _addvirtual(mlist, fp):
     fieldsz = len(listname) + len('-unsubscribe')
     hostname = mlist.host_name
     # Set up the mailman-loop address
-    loopaddr = Utils.get_site_email(mlist.host_name, extra='loop')
+    loopaddr = mlist.GetNoReplyEmail()
     loopdest = Utils.ParseEmail(loopaddr)[0]
     # Seek to the end of the text file, but if it's empty write the standard
     # disclaimer, and the loop catch address.
@@ -142,9 +142,8 @@ def _addvirtual(mlist, fp):
     print >> fp, '# CREATED:', time.ctime(time.time())
     # Now add all the standard alias entries
     for k, v in makealiases(listname):
-        fqdnaddr = '%s@%s' % (k, hostname)
         # Format the text file nicely
-        print >> fp, fqdnaddr, ((fieldsz - len(k)) * ' '), k
+        print >> fp, mlist.fqdn_listname, ((fieldsz - len(k)) * ' '), k
     # Finish the text file stanza
     print >> fp, '# STANZA END:', listname
     print >> fp
@@ -153,7 +152,7 @@ def _addvirtual(mlist, fp):
 
 # Blech.
 def _check_for_virtual_loopaddr(mlist, filename):
-    loopaddr = Utils.get_site_email(mlist.host_name, extra='loop')
+    loopaddr = mlist.GetNoReplyEmail()
     loopdest = Utils.ParseEmail(loopaddr)[0]
     infp = open(filename)
     omask = os.umask(007)

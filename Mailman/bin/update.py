@@ -196,6 +196,23 @@ def move_language_templates(mlist):
 
 
 
+def situate_list(listname):
+    # This turns the directory called 'listname' into a directory called
+    # 'listname@domain'.  Start by finding out what the domain should be.
+    # A list's domain is its email host.
+    mlist = MailList.MailList(listname, lock=False)
+    fullname = mlist.fqdn_listname
+    oldpath = os.path.join(config.VAR_PREFIX, 'lists', listname)
+    newpath = os.path.join(config.VAR_PREFIX, 'lists', fullname)
+    if os.path.exists(newpath):
+        print >> sys.stderr, _('WARNING: could not situate list: $listname')
+    else:
+        os.rename(oldpath, newpath)
+        print _('situated list $listname to $fullname')
+    return fullname
+
+
+
 def dolist(listname):
     mlist = MailList.MailList(listname, lock=False)
     try:
@@ -672,10 +689,8 @@ Exiting.""")
     if not listnames:
         print _('no lists == nothing to do, exiting')
         return
-    #
-    # for people with web archiving, make sure the directories
+    # For people with web archiving, make sure the directories
     # in the archiving are set with proper perms for b6.
-    #
     if os.path.isdir("%s/public_html/archives" % config.PREFIX):
         print _("""\
 fixing all the perms on your old html archives to work with b6
@@ -684,8 +699,12 @@ If your archives are big, this could take a minute or two...""")
                      archive_path_fixer, "")
         print _('done')
     for listname in listnames:
+        # With 2.2.0a0, all list names grew an @domain suffix.  If you find a
+        # list without that, move it now.
+        if not '@' in listname:
+            listname = situate_list(listname)
         print _('Updating mailing list: $listname')
-        errors = errors + dolist(listname)
+        errors += dolist(listname)
         print
     print _('Updating Usenet watermarks')
     wmfile = os.path.join(config.DATA_DIR, 'gate_watermarks')

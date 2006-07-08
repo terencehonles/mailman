@@ -40,7 +40,6 @@ from email.Errors import HeaderParseError
 from string import ascii_letters, digits, whitespace
 
 from Mailman import Errors
-from Mailman import Site
 from Mailman.SafeDict import SafeDict
 from Mailman.configuration import config
 
@@ -68,7 +67,7 @@ def list_exists(listname):
     #
     # The former two are for 2.1alpha3 and beyond, while the latter two are
     # for all earlier versions.
-    basepath = Site.get_listpath(listname)
+    basepath = os.path.join(config.LIST_DATA_DIR, listname)
     for ext in ('.pck', '.pck.last', '.db', '.db.last'):
         dbfile = os.path.join(basepath, 'config' + ext)
         if os.path.exists(dbfile):
@@ -78,8 +77,11 @@ def list_exists(listname):
 
 def list_names():
     """Return the names of all lists in default list directory."""
-    # We don't currently support separate listings of virtual domains
-    return Site.get_listnames()
+    got = set()
+    for fn in os.listdir(config.LIST_DATA_DIR):
+        if list_exists(fn):
+            got.add(fn)
+    return got
 
 
 
@@ -227,7 +229,7 @@ def ScriptURL(target, web_page_url=None, absolute=False):
     absolute - a flag which if set, generates an absolute url
     """
     if web_page_url is None:
-        web_page_url = config.DEFAULT_URL_PATTERN % get_domain()
+        web_page_url = config.DEFAULT_URL_PATTERN % get_request_domain()
         if web_page_url[-1] <> '/':
             web_page_url = web_page_url + '/'
     fullpath = os.environ.get('REQUEST_URI')
@@ -389,7 +391,7 @@ def get_global_password(siteadmin=True):
 def check_global_password(response, siteadmin=True):
     challenge = get_global_password(siteadmin)
     if challenge is None:
-        return None
+        return False
     return challenge == sha.new(response).hexdigest()
 
 
@@ -651,6 +653,21 @@ def reap(kids, func=None, once=False):
         if once:
             break
 
+
+
+def makedirs(path):
+    try:
+        omask = os.umask(0)
+        try:
+            os.makedirs(path, 02775)
+        finally:
+            os.umask(omask)
+    except OSError, e:
+        # Ignore the exceptions if the directory already exists
+        if e.errno <> errno.EEXIST:
+            raise
+
+
 
 def GetLanguageDescr(lang):
     return config.LC_DESCRIPTIONS[lang][0]
@@ -664,29 +681,17 @@ def IsLanguage(lang):
 
 
 
-def get_domain():
+def get_request_domain():
     host = os.environ.get('HTTP_HOST', os.environ.get('SERVER_NAME'))
     port = os.environ.get('SERVER_PORT')
     # Strip off the port if there is one
     if port and host.endswith(':' + port):
         host = host[:-len(port)-1]
-    if config.VIRTUAL_HOST_OVERVIEW and host:
-        return host.lower()
-    else:
-        # See the note in Defaults.py concerning DEFAULT_URL
-        # vs. DEFAULT_URL_HOST.
-        hostname = ((config.DEFAULT_URL
-                     and urlparse.urlparse(config.DEFAULT_URL)[1])
-                     or config.DEFAULT_URL_HOST)
-        return hostname.lower()
+    return host.lower()
 
 
-def get_site_email(hostname=None, extra=None):
-    if hostname is None:
-        hostname = config.VIRTUAL_HOSTS.get(get_domain(), get_domain())
-    if extra is None:
-        return '%s@%s' % (config.MAILMAN_SITE_LIST, hostname)
-    return '%s-%s@%s' % (config.MAILMAN_SITE_LIST, extra, hostname)
+def get_site_noreply():
+    return '%s@%s' % (config.NO_REPLY_ADDRESS, config.DEFAULT_EMAIL_HOST)
 
 
 
@@ -700,9 +705,8 @@ def get_site_email(hostname=None, extra=None):
 _serial = 0
 def unique_message_id(mlist):
     global _serial
-    msgid = '<mailman.%d.%d.%d.%s@%s>' % (
-        _serial, time.time(), os.getpid(),
-        mlist.internal_name(), mlist.host_name)
+    msgid = '<mailman.%d.%d.%d.%s>' % (
+        _serial, time.time(), os.getpid(), mlist.fqdn_listname)
     _serial += 1
     return msgid
 

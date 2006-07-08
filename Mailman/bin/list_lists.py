@@ -43,11 +43,17 @@ List only those mailing lists that are publicly advertised"""))
                       default=False, action='store_true',
                       help=_("""\
 Displays only the list name, with no description."""))
-    parser.add_option('-V', '--virtual-host-overview',
-                      default=None, type='string', dest='vhost',
+    parser.add_option('-d', '--domain',
+                      default=[], type='string', action='append',
+                      dest='domains', help=_("""\
+List only those mailing lists that match the given virtual domain, which may
+be either the email host or the url host name.  Multiple -d options may be
+given."""))
+    parser.add_option('-f', '--full',
+                      default=False, action='store_true',
                       help=_("""\
-List only those mailing lists that are homed to the given virtual domain.
-This only works if the VIRTUAL_HOST_OVERVIEW variable is set."""))
+Print the full list name, including the posting address.  This option is
+ignored when -b is given."""))
     parser.add_option('-C', '--config',
                       help=_('Alternative configuration file to use'))
     opts, args = parser.parse_args()
@@ -72,12 +78,18 @@ def main():
         mlist = MailList.MailList(n, lock=False)
         if opts.advertised and not mlist.advertised:
             continue
-        if opts.vhost and config.VIRTUAL_HOST_OVERVIEW and \
-               opts.vhost.find(mlist.web_page_url) == -1 and \
-               mlist.web_page_url.find(opts.vhost) == -1:
-            continue
-        mlists.append(mlist)
-        longest = max(len(mlist.real_name), longest)
+        if opts.domains:
+            for domain in opts.domains:
+                if domain in mlist.web_page_url or domain == mlist.host_name:
+                    mlists.append(mlist)
+                    break
+        else:
+            mlists.append(mlist)
+        if opts.full:
+            name = mlist.internal_name()
+        else:
+            name = mlist.real_name
+        longest = max(len(name), longest)
 
     if not mlists and not opts.bare:
         print _('No matching mailing lists found')
@@ -92,8 +104,12 @@ def main():
         if opts.bare:
             print mlist.internal_name()
         else:
+            if opts.full:
+                name = mlist.internal_name()
+            else:
+                name = mlist.real_name
             description = mlist.description or _('[no description available]')
-            print '   ', format % (mlist.real_name, description)
+            print '   ', format % (name, description)
 
 
 

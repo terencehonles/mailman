@@ -132,8 +132,6 @@ class Runner:
         #
         # Find out which mailing list this message is destined for.
         listname = msgdata.get('listname')
-        if not listname:
-            listname = config.MAILMAN_SITE_LIST
         mlist = self._open_list(listname)
         if not mlist:
             log.error('Dequeuing message destined for missing list: %s',

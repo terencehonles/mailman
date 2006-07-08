@@ -115,6 +115,8 @@ class IncomingRunner(Runner):
     QDIR = config.INQUEUE_DIR
 
     def _dispose(self, mlist, msg, msgdata):
+        if msgdata.get('envsender') is None:
+            msg['envsender'] = mlist.GetNoReplyEmail()
         # Try to get the list lock.
         try:
             mlist.Lock(timeout=config.LIST_LOCK_TIMEOUT)

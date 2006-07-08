@@ -162,8 +162,8 @@ class MaildirRunner(Runner):
                     queue = get_switchboard(config.CMDQUEUE_DIR)
                 elif subq == 'owner':
                     msgdata.update({
-                        'toowner': 1,
-                        'envsender': Utils.get_site_email(extra='bounces'),
+                        'toowner': True,
+                        'envsender': config.SITE_OWNER_ADDRESS,
                         'pipeline': config.OWNER_PIPELINE,
                         })
                     queue = get_switchboard(config.INQUEUE_DIR)

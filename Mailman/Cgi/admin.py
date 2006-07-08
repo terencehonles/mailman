@@ -205,7 +205,7 @@ def admin_overview(msg=''):
     #
     # This page should be displayed in the server's default language, which
     # should have already been set.
-    hostname = Utils.get_domain()
+    hostname = Utils.get_request_domain()
     legend = _('%(hostname)s mailing lists - Admin Links')
     # The html `document'
     doc = Document()
@@ -222,11 +222,10 @@ def admin_overview(msg=''):
     listnames.sort()
 
     for name in listnames:
-        mlist = MailList.MailList(name, lock=0)
+        mlist = MailList.MailList(name, lock=False)
         if mlist.advertised:
-            if mm_cfg.VIRTUAL_HOST_OVERVIEW and \
-                   mlist.web_page_url.find(hostname) == -1:
-                # List is for different identity of this host - skip it.
+            if hostname not in mlist.web_page_url:
+                # This list is situated in a different virtual domain
                 continue
             else:
                 advertised.append((mlist.GetScriptURL('admin'),
@@ -255,7 +254,7 @@ def admin_overview(msg=''):
             ])
 
     creatorurl = Utils.ScriptURL('create')
-    mailman_owner = Utils.get_site_email()
+    mailman_owner = Utils.get_site_noreply()
     extra = msg and _('right ') or ''
     welcome.extend([
         _('''To visit the administrators configuration page for an
@@ -408,9 +407,7 @@ def show_results(mlist, doc, category, subcat, cgidata):
     otherlinks.AddItem(Link(mlist.GetBaseArchiveURL(),
                             _('Go to list archives')).Format() +
                        '<br>&nbsp;<br>')
-    # We do not allow through-the-web deletion of the site list!
-    if mm_cfg.OWNERS_CAN_DELETE_THEIR_OWN_LISTS and \
-           mlist.internal_name() <> mm_cfg.MAILMAN_SITE_LIST:
+    if mm_cfg.OWNERS_CAN_DELETE_THEIR_OWN_LISTS:
         otherlinks.AddItem(Link(mlist.GetScriptURL('rmlist'),
                                 _('Delete this mailing list')).Format() +
                            _(' (requires confirmation)<br>&nbsp;<br>'))

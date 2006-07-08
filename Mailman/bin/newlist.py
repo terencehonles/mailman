@@ -38,52 +38,20 @@ __i18n_templates__ = True
 def parseargs():
     parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
                                    usage=_("""\
-%%prog [options] [listname [listadmin-addr [admin-password]]]
+%prog [options] [listname [listadmin-addr [admin-password]]]
 
-Create a new, unpopulated mailing list.
+Create a new empty mailing list.
 
 You can specify as many of the arguments as you want on the command line:
 you will be prompted for the missing ones.
 
-Every Mailman list has two parameters which define the default host name for
-outgoing email, and the default URL for all web interfaces.  When you
-configured Mailman, certain defaults were calculated, but if you are running
-multiple virtual Mailman sites, then the defaults may not be appropriate for
-the list you are creating.
+Every Mailman mailing list is situated in a domain, and Mailman supports
+multiple virtual domains.  'listname' is required, and if it contains an '@',
+it should specify the posting address for your mailing list and the right-hand
+side of the email address must be an existing domain.
 
-You also specify the domain to create your new list in by typing the command
-like so:
-
-    newlist --urlhost=www.mydom.ain mylist
-
-where `www.mydom.ain' should be the base hostname for the URL to this virtual
-hosts's lists.  E.g. with this setting people will view the general list
-overviews at http://www.mydom.ain/mailman/listinfo.  Also, www.mydom.ain
-should be a key in the VIRTUAL_HOSTS mapping in mm_cfg.py/Defaults.py if
-the email hostname to be automatically determined.
-
-If you want the email hostname to be different from the one looked up by the
-VIRTUAL_HOSTS or if urlhost is not registered in VIRTUAL_HOSTS, you can specify
-`emailhost' like so:
-
-    newlist --urlhost=www.mydom.ain --emailhost=mydom.ain mylist
-
-where `mydom.ain' is the mail domain name. If you don't specify emailhost but
-urlhost is not in the virtual host list, then mm_cfg.DEFAULT_EMAIL_HOST will
-be used for the email interface.
-
-For backward compatibility, you can also specify the domain to create your
-new list in by spelling the listname like so:
-
-    mylist@www.mydom.ain
-
-where www.mydom.ain is used for `urlhost' but it will also be used for
-`emailhost' if it is not found in the virtual host table. Note that
-'--urlhost' and '--emailhost' have precedence to this notation.
-
-If you spell the list name as just `mylist', then the email hostname will be
-taken from DEFAULT_EMAIL_HOST and the url will be taken from DEFAULT_URL (as
-defined in your Defaults.py file or overridden by settings in mm_cfg.py).
+If 'listname' does not have an '@', the list will be situated in the default
+domain, which Mailman created when you configured the system.
 
 Note that listnames are forced to lowercase."""))
     parser.add_option('-l', '--language',
@@ -91,12 +59,6 @@ Note that listnames are forced to lowercase."""))
                       help=_("""\
 Make the list's preferred language LANGUAGE, which must be a two letter
 language code."""))
-    parser.add_option('-u', '--urlhost',
-                      type='string', action='store',
-                      help=_('The hostname for the web interface'))
-    parser.add_option('-e', '--emailhost',
-                      type='string', action='store',
-                      help=_('The hostname for the email server'))
     parser.add_option('-q', '--quiet',
                       default=False, action='store_true',
                       help=_("""\
@@ -140,17 +102,20 @@ def main():
 
     listname = listname.lower()
     if '@' in listname:
-        # Note that --urlhost and --emailhost have precedence
-        listname, domain = listname.split('@', 1)
-        urlhost = opts.urlhost or domain
-        emailhost = opts.emailhost or config.VIRTUAL_HOSTS.get(domain, domain)
-
-    urlhost = opts.urlhost or config.DEFAULT_URL_HOST
-    host_name = (opts.emailhost or
-                 config.VIRTUAL_HOSTS.get(urlhost, config.DEFAULT_EMAIL_HOST))
-    web_page_url = config.DEFAULT_URL_PATTERN % urlhost
-
-    if Utils.list_exists(listname):
+        fqdn_listname = listname
+        listname, email_host = listname.split('@', 1)
+        url_host = config.domains.get(email_host)
+        if not url_host:
+            print >> sys.stderr, _('Undefined domain: $email_host')
+            sys.exit(1)
+    else:
+        email_host = config.DEFAULT_EMAIL_HOST
+        url_host = config.DEFAULT_URL_HOST
+        fqdn_listname = '%s@%s' % (listname, email_host)
+    web_page_url = config.DEFAULT_URL_PATTERN % url_host
+    # Even though MailList.Create() will check to make sure the list doesn't
+    # yet exist, do it now for better usability.
+    if Utils.list_exists(fqdn_listname):
         parser.print_help()
         print >> sys.stderr, _('List already exists: $listname')
 
@@ -177,6 +142,9 @@ def main():
         print >> sys.stderr, _('The list password cannot be empty')
 
     mlist = MailList.MailList()
+    # Assign the preferred language before Create() since that will use it to
+    # set available_languages.
+    mlist.preferred_language = opts.language
     try:
         pw = sha.new(listpasswd).hexdigest()
         # Guarantee that all newly created files have the proper permission.
@@ -185,7 +153,7 @@ def main():
         oldmask = os.umask(002)
         try:
             try:
-                mlist.Create(listname, owner_mail, pw)
+                mlist.Create(fqdn_listname, owner_mail, pw)
             except Errors.BadListNameError, s:
                 parser.print_help()
                 print >> sys.stderr, _('Illegal list name: $s')
@@ -200,13 +168,6 @@ def main():
                 sys.exit(1)
         finally:
             os.umask(oldmask)
-
-        # Assign domain-specific attributes
-        mlist.host_name = host_name
-        mlist.web_page_url = web_page_url
-
-        # And assign the preferred language
-        mlist.preferred_language = opts.language
         mlist.Save()
     finally:
         mlist.Unlock()
@@ -222,14 +183,13 @@ def main():
         print _('Hit enter to notify $listname owner...'),
         sys.stdin.readline()
     if not opts.quiet:
-        siteowner = Utils.get_site_email(mlist.host_name, 'owner')
         d = dict(
             listname        = listname,
             password        = listpasswd,
             admin_url       = mlist.GetScriptURL('admin', absolute=True),
             listinfo_url    = mlist.GetScriptURL('listinfo', absolute=True),
             requestaddr     = mlist.GetRequestEmail(),
-            siteowner       = siteowner,
+            siteowner       = mlist.GetNoReplyEmail(),
             )
         text = Utils.maketext('newlist.txt', d, mlist=mlist)
         # Set the I18N language to the list's preferred language so the header
@@ -239,7 +199,7 @@ def main():
         i18n.set_language(mlist.preferred_language)
         try:
             msg = Message.UserNotification(
-                owner_mail, siteowner,
+                owner_mail, mlist.GetNoReplyEmail(),
                 _('Your new mailing list: $listname'),
                 text, mlist.preferred_language)
             msg.send(mlist)

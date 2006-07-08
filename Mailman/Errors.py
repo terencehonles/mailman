@@ -12,15 +12,22 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
-
-"""Shared Mailman errors and messages."""
+"""Mailman errors."""
 
 
 
-# exceptions for problems related to opening a list
-class MMListError(Exception): pass
+# Base class for all exceptions raised in Mailman (XXX except legacy string
+# exceptions).
+class MailmanException(Exception):
+    pass
+
+
+
+# Exceptions for problems related to opening a list
+class MMListError(MailmanException): pass
 class MMUnknownListError(MMListError): pass
 class MMCorruptListDatabaseError(MMListError): pass
 class MMListNotReadyError(MMListError): pass
@@ -28,12 +35,12 @@ class MMListAlreadyExistsError(MMListError): pass
 class BadListNameError(MMListError): pass
 
 # Membership exceptions
-class MMMemberError(Exception): pass
+class MMMemberError(MailmanException): pass
 class MMBadUserError(MMMemberError): pass
 class MMAlreadyAMember(MMMemberError): pass
 
 # "New" style membership exceptions (new w/ MM2.1)
-class MemberError(Exception): pass
+class MemberError(MailmanException): pass
 class NotAMemberError(MemberError): pass
 class AlreadyReceivingDigests(MemberError): pass
 class AlreadyReceivingRegularDeliveries(MemberError): pass
@@ -43,7 +50,7 @@ class MembershipIsBanned(MemberError): pass
 
 # Exception hierarchy for various authentication failures, can be
 # raised from functions in SecurityManager.py
-class MMAuthenticationError(Exception): pass
+class MMAuthenticationError(MailmanException): pass
 class MMBadPasswordError(MMAuthenticationError): pass
 class MMPasswordsMustMatch(MMAuthenticationError): pass
 class MMCookieError(MMAuthenticationError): pass
@@ -69,10 +76,12 @@ FORBIDDEN_SENDER_MSG  = "Forbidden sender"
 # New style class based exceptions.  All the above errors should eventually be
 # converted.
 
-class MailmanError(Exception):
-    """Base class for all Mailman exceptions."""
+class MailmanError(MailmanException):
+    """Base class for all Mailman errors."""
     pass
 
+class BadDomainSpecificationError(MailmanError):
+    """The specification of a virtual domain is invalid or duplicated."""
 
 class MMLoopingPost(MailmanError):
     """Post already went through this list!"""

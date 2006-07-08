@@ -68,7 +68,6 @@ from Mailman import Gui
 from Mailman import i18n
 from Mailman import MemberAdaptor
 from Mailman import Message
-from Mailman import Site
 from Mailman.OldStyleMemberships import OldStyleMemberships
 
 _ = i18n._
@@ -183,9 +182,13 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
     def fullpath(self):
         return self._full_path
 
+    @property
+    def fqdn_listname(self):
+        return '%s@%s' % (self._internal_name, self.host_name)
+
     def getListAddress(self, extra=None):
         if extra is None:
-            return '%s@%s' % (self.internal_name(), self.host_name)
+            return self.fqdn_listname
         return '%s-%s@%s' % (self.internal_name(), extra, self.host_name)
 
     # For backwards compatibility
@@ -194,6 +197,9 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
 
     def GetOwnerEmail(self):
         return self.getListAddress('owner')
+
+    def GetNoReplyEmail(self):
+        return '%s@%s' % (config.NO_REPLY_ADDRESS, self.host_name)
 
     def GetRequestEmail(self, cookie=''):
         if config.VERP_CONFIRMATIONS and cookie:
@@ -273,7 +279,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             lifetime=config.LIST_LOCK_LIFETIME)
         self._internal_name = name
         if name:
-            self._full_path = Site.get_listpath(name)
+            self._full_path = os.path.join(config.LIST_DATA_DIR, name)
         else:
             self._full_path = ''
         # Only one level of mixin inheritance allowed
@@ -466,34 +472,41 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
     #
     # List creation
     #
-    def Create(self, name, admin, crypted_password,
-               langs=None, emailhost=None):
-        if Utils.list_exists(name):
-            raise Errors.MMListAlreadyExistsError, name
-        # Validate what will be the list's posting address.  If that's
-        # invalid, we don't want to create the mailing list.  The hostname
-        # part doesn't really matter, since that better already be valid.
-        # However, most scripts already catch MMBadEmailError as exceptions on
-        # the admin's email address, so transform the exception.
-        if emailhost is None:
-            emailhost = config.DEFAULT_EMAIL_HOST
-        postingaddr = '%s@%s' % (name, emailhost)
+    def Create(self, fqdn_listname, admin_email, crypted_password, langs=None):
+        # Validate the list's posting address, which should be fqdn_listname.
+        # If that's invalid, do not create any of the mailing list artifacts
+        # (the subdir in lists/ and the subdirs in archives/public and
+        # archives/private.  Most scripts already catch MMBadEmailError as
+        # exceptions on the admin's email address, so transform the exception.
+        if '@' not in fqdn_listname:
+            raise Errors.BadListNameError(fqdn_listname)
+        listname, email_host = fqdn_listname.split('@', 1)
+        if email_host not in config.domains:
+            raise Errors.BadDomainSpecificationError(email_host)
         try:
-            Utils.ValidateEmail(postingaddr)
+            Utils.ValidateEmail(fqdn_listname)
         except Errors.MMBadEmailError:
-            raise Errors.BadListNameError, postingaddr
+            raise Errors.BadListNameError(fqdn_listname)
+        # See if the mailing list already exists.
+        if Utils.list_exists(fqdn_listname):
+            raise Errors.MMListAlreadyExistsError(fqdn_listname)
         # Validate the admin's email address
-        Utils.ValidateEmail(admin)
-        self._internal_name = name
-        self._full_path = Site.get_listpath(name, create=1)
+        Utils.ValidateEmail(admin_email)
+        self._internal_name = listname
+        self._full_path = os.path.join(config.LIST_DATA_DIR, fqdn_listname)
+        Utils.makedirs(self._full_path)
         # Don't use Lock() since that tries to load the non-existant config.pck
         self.__lock.lock()
-        self.InitVars(name, admin, crypted_password)
+        self.InitVars(listname, admin_email, crypted_password)
         self.CheckValues()
         if langs is None:
             self.available_languages = [self.preferred_language]
         else:
             self.available_languages = langs
+        # Set the various host names
+        self.host_name = email_host
+        url_host = config.domains[email_host]
+        self.web_page_url = config.DEFAULT_URL_PATTERN % url_host
 
 
 
@@ -1350,7 +1363,6 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         addresses in the recipient headers.
         """
         # This is the list's full address.
-        listfullname = '%s@%s' % (self.internal_name(), self.host_name)
         recips = []
         # Check all recipient addresses against the list's explicit addresses,
         # specifically To: Cc: and Resent-to:
@@ -1367,7 +1379,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             if (# TBD: backwards compatibility: deprecated
                     localpart == self.internal_name() or
                     # exact match against the complete list address
-                    addr == listfullname):
+                    addr == self.fqdn_listname):
                 return True
             recips.append((addr, localpart))
         # Helper function used to match a pattern against an address.
@@ -1480,7 +1492,7 @@ bad regexp in bounce_matching_header line: %s
             text = Utils.maketext(
                 'nomoretoday.txt',
                 {'sender' : sender,
-                 'listname': '%s@%s' % (self.real_name, self.host_name),
+                 'listname': self.fqdn_listname,
                  'num' : count,
                  'owneremail': self.GetOwnerEmail(),
                  },

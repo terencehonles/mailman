@@ -85,9 +85,7 @@ equivalent) file by adding the following lines, and possibly running the
     if not cgi:
         print >> outfp
         return
-    # Send the message to the site -owner so someone can do something about
-    # this request.
-    siteowner = Utils.get_site_email(extra='owner')
+    siteowner = Utils.get_site_noreply()
     # Should this be sent in the site list's preferred language?
     msg = Message.UserNotification(
         siteowner, siteowner,
@@ -130,7 +128,7 @@ equivalent) file by removing the following lines, and possibly running the
     if not cgi:
         print >> outfp
         return
-    siteowner = Utils.get_site_email(extra='owner')
+    siteowner = Utils.get_site_noreply()
     # Should this be sent in the site list's preferred language?
     msg = Message.UserNotification(
         siteowner, siteowner,

@@ -21,12 +21,17 @@ import os
 import errno
 
 from Mailman import Defaults
+from Mailman import Errors
 
 _missing = object()
 
 
 
 class Configuration(object):
+    def __init__(self):
+        self.domains = {}
+        self._reverse = None
+
     def load(self, filename=None):
         # Load the configuration from the named file, or if not given, search
         # in VAR_PREFIX for an etc/mailman.cfg file.  If that file is missing,
@@ -39,10 +44,11 @@ class Configuration(object):
             filename = os.path.join(Defaults.VAR_PREFIX, 'etc', 'mailman.cfg')
         # Set up the execfile namespace
         ns = Defaults.__dict__.copy()
-        # Prune a few things
+        # Prune a few things, add a few things
         del ns['__file__']
         del ns['__name__']
         del ns['__doc__']
+        ns['add_domain'] = self.add_domain
         # Attempt our first choice
         path = os.path.abspath(os.path.expanduser(filename))
         try:
@@ -95,7 +101,41 @@ class Configuration(object):
         self.CONFIG_FILE            = os.path.join(etcdir, 'mailman.cfg')
         self.LOCK_FILE              = os.path.join(lockdir, 'master-qrunner')
         # Now update our dict so attribute syntax just works
+        if 'add_domain' in ns:
+            del ns['add_domain']
         self.__dict__.update(ns)
+        # Add the default domain if there are no virtual domains currently
+        # defined.
+        if not self.domains:
+            self.add_domain(self.DEFAULT_EMAIL_HOST, self.DEFAULT_URL_HOST)
+
+    def add_domain(self, email_host, url_host):
+        """Add the definition of a virtual domain.
+
+        email_host is the right-hand side of the posting email address,
+        e.g. 'example.com' in 'mylist@example.com'.  url_host is the host name
+        part of the exposed web pages, e.g. 'www.example.com'."""
+        if email_host in self.domains:
+            raise Errors.BadDomainSpecificationError(
+                'Duplicate email host: %s' % email_host)
+        # Make sure there's only one mapping for the url_host
+        if url_host in self.domains.values():
+            raise Errors.BadDomainSpecificationError(
+                'Duplicate url host: %s' % url_host)
+        # We'll do the reverse mappings on-demand.  There shouldn't be too
+        # many virtual hosts that it will really matter that much.
+        self.domains[email_host] = url_host
+        # Invalidate the reverse mapping cache
+        self._reverse = None
+
+    # Given an email host name, the url host name can be looked up directly.
+    # This does the reverse mapping.
+    def get_email_host(self, url_host, default=None):
+        if self._reverse is None:
+            # XXX Can't use a generator comprehension until Python 2.4 is
+            # minimum requirement.
+            self._reverse = dict([(v, k) for k, v in self.domains.items()])
+        return self._reverse.get(url_host, default)
 
 
 

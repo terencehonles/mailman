@@ -177,16 +177,17 @@ class BounceRunner(Runner, BounceMixin):
         #   we'll simply log the problem and attempt to deliver the message to
         #   the site owner.
         #
-        # All messages to list-owner@vdom.ain have their envelope sender set
-        # to site-owner@dom.ain (no virtual domain).  Is this a bounce for a
+        # All messages sent to list owners have their sender set to the site
+        # owner address.  That way, if a list owner address bounces, at least
+        # some human has a chance to deal with it.  Is this a bounce for a
         # message to a list owner, coming to the site owner?
-        if msg.get('to', '') == Utils.get_site_email(extra='owner'):
+        if msg.get('to', '') == config.SITE_OWNER_ADDRESS:
             # Send it on to the site owners, but craft the envelope sender to
-            # be the -loop detection address, so if /they/ bounce, we won't
+            # be the noreply address, so if the site owner bounce, we won't
             # get stuck in a bounce loop.
             outq.enqueue(msg, msgdata,
-                         recips=[Utils.get_site_email()],
-                         envsender=Utils.get_site_email(extra='loop'),
+                         recips=[config.SITE_OWNER_ADDRESS],
+                         envsender=config.NO_REPLY_ADDRESS,
                          )
         # List isn't doing bounce processing?
         if not mlist.bounce_processing:

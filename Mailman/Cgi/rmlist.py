@@ -168,7 +168,7 @@ def process_request(doc, cgidata, mlist):
         table.AddRow([_('''You have successfully deleted the mailing list
     <b>%(listname)s</b>.''')])
     else:
-        sitelist = Utils.get_site_email(mlist.host_name)
+        sitelist = mlist.GetNoReplyEmail()
         table.AddRow([_('''There were some problems deleting the mailing list
         <b>%(listname)s</b>.  Contact your site administrator at %(sitelist)s
         for details.''')])
