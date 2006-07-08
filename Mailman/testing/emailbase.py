@@ -18,6 +18,8 @@
 """Base class for tests that email things."""
 
 import os
+import time
+import errno
 import smtpd
 import socket
 import asyncore
@@ -26,7 +28,7 @@ import subprocess
 from Mailman.configuration import config
 from Mailman.testing.base import TestBase
 
-TESTPORT    = 10825
+TESTPORT = 10825
 
 
 
@@ -53,7 +55,7 @@ class EmailBase(TestBase):
     def _configure(self, fp):
         TestBase._configure(self, fp)
         print >> fp, 'SMTPPORT =', TESTPORT
-        config.SMTPPORT
+        config.SMTPPORT = TESTPORT
 
     def setUp(self):
         TestBase.setUp(self)
@@ -70,6 +72,19 @@ class EmailBase(TestBase):
     def tearDown(self):
         os.system('bin/mailmanctl -C %s -q stop' % self._config)
         self._server.close()
+        # Wait a while until the server actually goes away
+        while True:
+            try:
+                s = socket.socket()
+                s.connect(('localhost', TESTPORT))
+                s.close()
+                time.sleep(3)
+            except socket.error, e:
+                # IWBNI e had an errno attribute
+                if e[0] == errno.ECONNREFUSED:
+                    break
+                else:
+                    raise
         TestBase.tearDown(self)
         os.remove(self._config)
 

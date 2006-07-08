@@ -209,7 +209,7 @@ def decorate(mlist, template, what, extradict={}):
     try:
         text = (template % d).replace('\r\n', '\n')
     except (ValueError, TypeError), e:
-        log.error('Exception while calculating %s:\n%s', what, e)
+        log.exception('Exception while calculating %s:\n%s', what, e)
         what = what.upper()
         text = template
     return text
