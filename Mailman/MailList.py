@@ -325,9 +325,14 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         self.advertised = config.DEFAULT_LIST_ADVERTISED
         self.max_num_recipients = config.DEFAULT_MAX_NUM_RECIPIENTS
         self.max_message_size = config.DEFAULT_MAX_MESSAGE_SIZE
-        # See the note in Defaults.py concerning DEFAULT_HOST_NAME
-        # vs. DEFAULT_EMAIL_HOST.
-        self.host_name = config.DEFAULT_HOST_NAME or config.DEFAULT_EMAIL_HOST
+        # XXX Don't set host_name if the attribute is already set.  This is a
+        # hack to ensure that MailList.Create() doesn't create a bogus private
+        # archive directory via Archiver.InitVars().  The problem is that
+        # there's no way to set this value to what Create() knows it should be
+        # for Archiver.Initvars(), before MailList.InitVar() blows it away.
+        if not hasattr(self, 'host_name'):
+            self.host_name = config.DEFAULT_HOST_NAME or \
+                             config.DEFAULT_EMAIL_HOST
         self.web_page_url = (
             config.DEFAULT_URL or
             config.DEFAULT_URL_PATTERN % config.DEFAULT_URL_HOST)
@@ -502,14 +507,17 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         Utils.makedirs(self._full_path)
         # Don't use Lock() since that tries to load the non-existant config.pck
         self.__lock.lock()
+        # We need to set this attribute before calling InitVars() because
+        # Archiver.InitVars() depends on this to calculate and create the
+        # archive directory.  Without this, Archiver will create a bogus
+        # archive directory using the default host name.
+        self.host_name = email_host
         self.InitVars(listname, admin_email, crypted_password)
         self.CheckValues()
         if langs is None:
             self.available_languages = [self.preferred_language]
         else:
             self.available_languages = langs
-        # Set the various host names
-        self.host_name = email_host
         url_host = config.domains[email_host]
         self.web_page_url = config.DEFAULT_URL_PATTERN % url_host
 
