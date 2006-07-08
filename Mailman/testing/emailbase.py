@@ -54,7 +54,6 @@ class SinkServer(smtpd.SMTPServer):
 
 class EmailBase(TestBase):
     def setUp(self):
-        TestBase.setUp(self)
         # Find an unused non-root requiring port to listen on.  Set up a
         # configuration file that causes the underlying outgoing runner to use
         # the same port, then start Mailman.
@@ -68,6 +67,11 @@ class EmailBase(TestBase):
         # Second argument is ignored.
         self._server = SinkServer(('localhost', TESTPORT), None)
         os.system('bin/mailmanctl -C %s -q start' % self._configfile)
+        # Don't call our superclass's setUp until the above succeeds,
+        # otherwise, should it fail, we'll be left with a stale _xtest list
+        # which would have to be manually removed.  unittest doesn't call
+        # tearDown() for errors in setUp().
+        TestBase.setUp(self)
 
     def tearDown(self):
         os.system('bin/mailmanctl -C %s -q stop' % self._configfile)
