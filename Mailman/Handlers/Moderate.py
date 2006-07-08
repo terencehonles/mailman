@@ -24,10 +24,10 @@ from email.MIMEText import MIMEText
 
 from Mailman import Errors
 from Mailman import Message
-from Mailman import mm_cfg
 from Mailman import Utils
-from Mailman.i18n import _
 from Mailman.Handlers import Hold
+from Mailman.configuration import config
+from Mailman.i18n import _
 
 
 
@@ -56,7 +56,7 @@ def process(mlist, msg, msgdata):
     if sender:
         # If the member's moderation flag is on, then perform the moderation
         # action.
-        if mlist.getMemberOption(sender, mm_cfg.Moderate):
+        if mlist.getMemberOption(sender, config.Moderate):
             # Note that for member_moderation_action, 0==Hold, 1=Reject,
             # 2==Discard
             if mlist.member_moderation_action == 0:

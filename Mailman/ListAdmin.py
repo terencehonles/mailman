@@ -12,7 +12,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """Mixin class for MailList which handles administrative requests.
 
@@ -37,12 +38,12 @@ from email.MIMEMessage import MIMEMessage
 from email.Utils import getaddresses
 
 from Mailman import Errors
-from Mailman import i18n
 from Mailman import Message
-from Mailman import mm_cfg
 from Mailman import Utils
+from Mailman import i18n
 from Mailman.Queue.sbcache import get_switchboard
 from Mailman.UserDesc import UserDesc
+from Mailman.configuration import config
 
 _ = i18n._
 
@@ -86,13 +87,13 @@ class ListAdmin:
                 if e.errno <> errno.ENOENT: raise
                 self.__db = {}
                 # put version number in new database
-                self.__db['version'] = IGN, mm_cfg.REQUESTS_FILE_SCHEMA_VERSION
+                self.__db['version'] = IGN, config.REQUESTS_FILE_SCHEMA_VERSION
 
     def __closedb(self):
         if self.__db is not None:
             assert self.Locked()
             # Save the version number
-            self.__db['version'] = IGN, mm_cfg.REQUESTS_FILE_SCHEMA_VERSION
+            self.__db['version'] = IGN, config.REQUESTS_FILE_SCHEMA_VERSION
             # Now save a temp file and do the tmpfile->real file dance.  BAW:
             # should we be as paranoid as for the config.pck file?  Should we
             # use pickle?
@@ -185,16 +186,16 @@ class ListAdmin:
         # get the message sender
         sender = msg.get_sender()
         # calculate the file name for the message text and write it to disk
-        if mm_cfg.HOLD_MESSAGES_AS_PICKLES:
+        if config.HOLD_MESSAGES_AS_PICKLES:
             ext = 'pck'
         else:
             ext = 'txt'
         filename = 'heldmsg-%s-%d.%s' % (self.internal_name(), id, ext)
         omask = os.umask(002)
         try:
-            fp = open(os.path.join(mm_cfg.DATA_DIR, filename), 'w')
+            fp = open(os.path.join(config.DATA_DIR, filename), 'w')
             try:
-                if mm_cfg.HOLD_MESSAGES_AS_PICKLES:
+                if config.HOLD_MESSAGES_AS_PICKLES:
                     cPickle.dump(msg, fp, 1)
                 else:
                     g = Generator(fp)
@@ -224,7 +225,7 @@ class ListAdmin:
     def __handlepost(self, record, value, comment, preserve, forward, addr):
         # For backwards compatibility with pre 2.0beta3
         ptime, sender, subject, reason, filename, msgdata = record
-        path = os.path.join(mm_cfg.DATA_DIR, filename)
+        path = os.path.join(config.DATA_DIR, filename)
         # Handle message preservation
         if preserve:
             parts = os.path.split(path)[1].split(DASH)
@@ -241,7 +242,7 @@ class ListAdmin:
             finally:
                 fp.close()
             # Save the plain text to a .msg file, not a .pck file
-            outpath = os.path.join(mm_cfg.SPAM_DIR, spamfile)
+            outpath = os.path.join(config.SPAM_DIR, spamfile)
             head, ext = os.path.splitext(outpath)
             outpath = head + '.msg'
             outfp = open(outpath, 'w')
@@ -255,10 +256,10 @@ class ListAdmin:
         fp = None
         msg = None
         status = REMOVE
-        if value == mm_cfg.DEFER:
+        if value == config.DEFER:
             # Defer
             status = DEFER
-        elif value == mm_cfg.APPROVE:
+        elif value == config.APPROVE:
             # Approved.
             try:
                 msg = readMessage(path)
@@ -283,16 +284,16 @@ class ListAdmin:
                      msg.get('message-id', 'n/a'))
             # Stick the message back in the incoming queue for further
             # processing.
-            inq = get_switchboard(mm_cfg.INQUEUE_DIR)
+            inq = get_switchboard(config.INQUEUE_DIR)
             inq.enqueue(msg, _metadata=msgdata)
-        elif value == mm_cfg.REJECT:
+        elif value == config.REJECT:
             # Rejected
             rejection = 'Refused'
             self.__refuse(_('Posting of your message titled "%(subject)s"'),
                           sender, comment or _('[No reason given]'),
                           lang=self.getMemberLanguage(sender))
         else:
-            assert value == mm_cfg.DISCARD
+            assert value == config.DISCARD
             # Discarded
             rejection = 'Discarded'
         # Forward the message
@@ -401,17 +402,17 @@ class ListAdmin:
 
     def __handlesubscription(self, record, value, comment):
         stime, addr, fullname, password, digest, lang = record
-        if value == mm_cfg.DEFER:
+        if value == config.DEFER:
             return DEFER
-        elif value == mm_cfg.DISCARD:
+        elif value == config.DISCARD:
             pass
-        elif value == mm_cfg.REJECT:
+        elif value == config.REJECT:
             self.__refuse(_('Subscription request'), addr,
                           comment or _('[No reason given]'),
                           lang=lang)
         else:
             # subscribe
-            assert value == mm_cfg.SUBSCRIBE
+            assert value == config.SUBSCRIBE
             try:
                 userdesc = UserDesc(addr, fullname, password, digest, lang)
                 self.ApprovedAddMember(userdesc, whence='via admin approval')
@@ -453,14 +454,14 @@ class ListAdmin:
 
     def __handleunsubscription(self, record, value, comment):
         addr = record
-        if value == mm_cfg.DEFER:
+        if value == config.DEFER:
             return DEFER
-        elif value == mm_cfg.DISCARD:
+        elif value == config.DISCARD:
             pass
-        elif value == mm_cfg.REJECT:
+        elif value == config.REJECT:
             self.__refuse(_('Unsubscription request'), addr, comment)
         else:
-            assert value == mm_cfg.UNSUBSCRIBE
+            assert value == config.UNSUBSCRIBE
             try:
                 self.ApprovedDeleteMember(addr)
             except Errors.NotAMemberError:

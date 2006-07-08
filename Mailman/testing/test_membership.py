@@ -24,9 +24,9 @@ import unittest
 from Mailman import MailList
 from Mailman import MemberAdaptor
 from Mailman import Utils
-from Mailman import mm_cfg
 from Mailman.Errors import NotAMemberError
 from Mailman.UserDesc import UserDesc
+from Mailman.configuration import config
 from Mailman.testing.base import TestBase
 
 
@@ -49,7 +49,7 @@ class TestNoMembers(TestBase):
                'nobody@dom.ain', 'blarg')
         eq(mlist.getMemberLanguage('nobody@dom.ain'), mlist.preferred_language)
         raises(NotAMemberError, mlist.getMemberOption,
-               'nobody@dom.ain', mm_cfg.AcknowledgePosts)
+               'nobody@dom.ain', config.AcknowledgePosts)
         raises(NotAMemberError, mlist.getMemberName, 'nobody@dom.ain')
         raises(NotAMemberError, mlist.getMemberTopics, 'nobody@dom.ain')
         raises(NotAMemberError, mlist.removeMember, 'nobody@dom.ain')
@@ -97,8 +97,8 @@ class TestMembers(TestBase):
            ['person@dom.ain', None])
         eq(mlist.getMemberPassword('person@dom.ain'), 'xxXXxx')
         eq(mlist.getMemberLanguage('person@dom.ain'), 'en')
-        eq(mlist.getMemberOption('person@dom.ain', mm_cfg.Digests), 0)
-        eq(mlist.getMemberOption('person@dom.ain', mm_cfg.AcknowledgePosts), 0)
+        eq(mlist.getMemberOption('person@dom.ain', config.Digests), 0)
+        eq(mlist.getMemberOption('person@dom.ain', config.AcknowledgePosts), 0)
         eq(mlist.getMemberName('person@dom.ain'), 'A. Nice Person')
         eq(mlist.getMemberTopics('person@dom.ain'), [])
 
@@ -126,7 +126,7 @@ class TestMembers(TestBase):
                'person@dom.ain', 'blarg')
         eq(mlist.getMemberLanguage('person@dom.ain'), mlist.preferred_language)
         raises(NotAMemberError, mlist.getMemberOption,
-               'person@dom.ain', mm_cfg.AcknowledgePosts)
+               'person@dom.ain', config.AcknowledgePosts)
         raises(NotAMemberError, mlist.getMemberName, 'person@dom.ain')
         raises(NotAMemberError, mlist.getMemberTopics, 'person@dom.ain')
 
@@ -163,8 +163,8 @@ class TestMembers(TestBase):
            ['nice@dom.ain', None])
         eq(mlist.getMemberPassword('nice@dom.ain'), 'xxXXxx')
         eq(mlist.getMemberLanguage('nice@dom.ain'), 'en')
-        eq(mlist.getMemberOption('nice@dom.ain', mm_cfg.Digests), 0)
-        eq(mlist.getMemberOption('nice@dom.ain', mm_cfg.AcknowledgePosts), 0)
+        eq(mlist.getMemberOption('nice@dom.ain', config.Digests), 0)
+        eq(mlist.getMemberOption('nice@dom.ain', config.AcknowledgePosts), 0)
         eq(mlist.getMemberName('nice@dom.ain'), 'A. Nice Person')
         eq(mlist.getMemberTopics('nice@dom.ain'), [])
         # Check the old address
@@ -181,7 +181,7 @@ class TestMembers(TestBase):
                'person@dom.ain', 'blarg')
         eq(mlist.getMemberLanguage('person@dom.ain'), mlist.preferred_language)
         raises(NotAMemberError, mlist.getMemberOption,
-               'person@dom.ain', mm_cfg.AcknowledgePosts)
+               'person@dom.ain', config.AcknowledgePosts)
         raises(NotAMemberError, mlist.getMemberName, 'person@dom.ain')
         raises(NotAMemberError, mlist.getMemberTopics, 'person@dom.ain')
 
@@ -195,41 +195,41 @@ class TestMembers(TestBase):
 
     def test_set_language(self):
         # This test requires that the 'xx' language be in the global
-        # mm_cfg.LC_DESCRIPTIONS.  Save that value and be sure to restore it
+        # config.LC_DESCRIPTIONS.  Save that value and be sure to restore it
         # after the test is done.
-        odesc = mm_cfg.LC_DESCRIPTIONS.copy()
+        odesc = config.LC_DESCRIPTIONS.copy()
         try:
-            mm_cfg.add_language('xx', 'Xxian', 'utf-8')
+            config.add_language('xx', 'Xxian', 'utf-8')
             self._mlist.available_languages.append('xx')
             self._mlist.setMemberLanguage('person@dom.ain', 'xx')
             self.assertEqual(self._mlist.getMemberLanguage('person@dom.ain'),
                              'xx')
         finally:
-            mm_cfg.LC_DESCRIPTIONS = odesc
+            config.LC_DESCRIPTIONS = odesc
 
     def test_basic_option(self):
         eq = self.assertEqual
         gmo = self._mlist.getMemberOption
         # First test the current option values
-        eq(gmo('person@dom.ain', mm_cfg.Digests), 0)
-        eq(gmo('person@dom.ain', mm_cfg.DontReceiveOwnPosts), 0)
-        eq(gmo('person@dom.ain', mm_cfg.AcknowledgePosts), 0)
-        eq(gmo('person@dom.ain', mm_cfg.DisableMime), 0)
-        eq(gmo('person@dom.ain', mm_cfg.ConcealSubscription), 0)
-        eq(gmo('person@dom.ain', mm_cfg.SuppressPasswordReminder), 0)
-        eq(gmo('person@dom.ain', mm_cfg.ReceiveNonmatchingTopics), 0)
+        eq(gmo('person@dom.ain', config.Digests), 0)
+        eq(gmo('person@dom.ain', config.DontReceiveOwnPosts), 0)
+        eq(gmo('person@dom.ain', config.AcknowledgePosts), 0)
+        eq(gmo('person@dom.ain', config.DisableMime), 0)
+        eq(gmo('person@dom.ain', config.ConcealSubscription), 0)
+        eq(gmo('person@dom.ain', config.SuppressPasswordReminder), 0)
+        eq(gmo('person@dom.ain', config.ReceiveNonmatchingTopics), 0)
 
     def test_set_digests(self):
         eq = self.assertEqual
         gmo = self._mlist.getMemberOption
-        self._mlist.setMemberOption('person@dom.ain', mm_cfg.Digests, 1)
-        eq(gmo('person@dom.ain', mm_cfg.Digests), 1)
-        eq(gmo('person@dom.ain', mm_cfg.DontReceiveOwnPosts), 0)
-        eq(gmo('person@dom.ain', mm_cfg.AcknowledgePosts), 0)
-        eq(gmo('person@dom.ain', mm_cfg.DisableMime), 0)
-        eq(gmo('person@dom.ain', mm_cfg.ConcealSubscription), 0)
-        eq(gmo('person@dom.ain', mm_cfg.SuppressPasswordReminder), 0)
-        eq(gmo('person@dom.ain', mm_cfg.ReceiveNonmatchingTopics), 0)
+        self._mlist.setMemberOption('person@dom.ain', config.Digests, 1)
+        eq(gmo('person@dom.ain', config.Digests), 1)
+        eq(gmo('person@dom.ain', config.DontReceiveOwnPosts), 0)
+        eq(gmo('person@dom.ain', config.AcknowledgePosts), 0)
+        eq(gmo('person@dom.ain', config.DisableMime), 0)
+        eq(gmo('person@dom.ain', config.ConcealSubscription), 0)
+        eq(gmo('person@dom.ain', config.SuppressPasswordReminder), 0)
+        eq(gmo('person@dom.ain', config.ReceiveNonmatchingTopics), 0)
 
     def test_set_disable_delivery(self):
         eq = self.assertEqual
@@ -260,79 +260,79 @@ class TestMembers(TestBase):
         eq = self.assertEqual
         gmo = self._mlist.getMemberOption
         self._mlist.setMemberOption('person@dom.ain',
-                                    mm_cfg.DontReceiveOwnPosts, 1)
-        eq(gmo('person@dom.ain', mm_cfg.Digests), 0)
-        eq(gmo('person@dom.ain', mm_cfg.DontReceiveOwnPosts), 1)
-        eq(gmo('person@dom.ain', mm_cfg.AcknowledgePosts), 0)
-        eq(gmo('person@dom.ain', mm_cfg.DisableMime), 0)
-        eq(gmo('person@dom.ain', mm_cfg.ConcealSubscription), 0)
-        eq(gmo('person@dom.ain', mm_cfg.SuppressPasswordReminder), 0)
-        eq(gmo('person@dom.ain', mm_cfg.ReceiveNonmatchingTopics), 0)
+                                    config.DontReceiveOwnPosts, 1)
+        eq(gmo('person@dom.ain', config.Digests), 0)
+        eq(gmo('person@dom.ain', config.DontReceiveOwnPosts), 1)
+        eq(gmo('person@dom.ain', config.AcknowledgePosts), 0)
+        eq(gmo('person@dom.ain', config.DisableMime), 0)
+        eq(gmo('person@dom.ain', config.ConcealSubscription), 0)
+        eq(gmo('person@dom.ain', config.SuppressPasswordReminder), 0)
+        eq(gmo('person@dom.ain', config.ReceiveNonmatchingTopics), 0)
 
     def test_set_acknowledge_posts(self):
         eq = self.assertEqual
         gmo = self._mlist.getMemberOption
         self._mlist.setMemberOption('person@dom.ain',
-                                    mm_cfg.AcknowledgePosts, 1)
-        eq(gmo('person@dom.ain', mm_cfg.Digests), 0)
-        eq(gmo('person@dom.ain', mm_cfg.DontReceiveOwnPosts), 0)
-        eq(gmo('person@dom.ain', mm_cfg.AcknowledgePosts), 1)
-        eq(gmo('person@dom.ain', mm_cfg.DisableMime), 0)
-        eq(gmo('person@dom.ain', mm_cfg.ConcealSubscription), 0)
-        eq(gmo('person@dom.ain', mm_cfg.SuppressPasswordReminder), 0)
-        eq(gmo('person@dom.ain', mm_cfg.ReceiveNonmatchingTopics), 0)
+                                    config.AcknowledgePosts, 1)
+        eq(gmo('person@dom.ain', config.Digests), 0)
+        eq(gmo('person@dom.ain', config.DontReceiveOwnPosts), 0)
+        eq(gmo('person@dom.ain', config.AcknowledgePosts), 1)
+        eq(gmo('person@dom.ain', config.DisableMime), 0)
+        eq(gmo('person@dom.ain', config.ConcealSubscription), 0)
+        eq(gmo('person@dom.ain', config.SuppressPasswordReminder), 0)
+        eq(gmo('person@dom.ain', config.ReceiveNonmatchingTopics), 0)
 
     def test_disable_mime(self):
         eq = self.assertEqual
         gmo = self._mlist.getMemberOption
         self._mlist.setMemberOption('person@dom.ain',
-                                    mm_cfg.DisableMime, 1)
-        eq(gmo('person@dom.ain', mm_cfg.Digests), 0)
-        eq(gmo('person@dom.ain', mm_cfg.DontReceiveOwnPosts), 0)
-        eq(gmo('person@dom.ain', mm_cfg.AcknowledgePosts), 0)
-        eq(gmo('person@dom.ain', mm_cfg.DisableMime), 1)
-        eq(gmo('person@dom.ain', mm_cfg.ConcealSubscription), 0)
-        eq(gmo('person@dom.ain', mm_cfg.SuppressPasswordReminder), 0)
-        eq(gmo('person@dom.ain', mm_cfg.ReceiveNonmatchingTopics), 0)
+                                    config.DisableMime, 1)
+        eq(gmo('person@dom.ain', config.Digests), 0)
+        eq(gmo('person@dom.ain', config.DontReceiveOwnPosts), 0)
+        eq(gmo('person@dom.ain', config.AcknowledgePosts), 0)
+        eq(gmo('person@dom.ain', config.DisableMime), 1)
+        eq(gmo('person@dom.ain', config.ConcealSubscription), 0)
+        eq(gmo('person@dom.ain', config.SuppressPasswordReminder), 0)
+        eq(gmo('person@dom.ain', config.ReceiveNonmatchingTopics), 0)
 
     def test_conceal_subscription(self):
         eq = self.assertEqual
         gmo = self._mlist.getMemberOption
         self._mlist.setMemberOption('person@dom.ain',
-                                    mm_cfg.ConcealSubscription, 1)
-        eq(gmo('person@dom.ain', mm_cfg.Digests), 0)
-        eq(gmo('person@dom.ain', mm_cfg.DontReceiveOwnPosts), 0)
-        eq(gmo('person@dom.ain', mm_cfg.AcknowledgePosts), 0)
-        eq(gmo('person@dom.ain', mm_cfg.DisableMime), 0)
-        eq(gmo('person@dom.ain', mm_cfg.ConcealSubscription), 1)
-        eq(gmo('person@dom.ain', mm_cfg.SuppressPasswordReminder), 0)
-        eq(gmo('person@dom.ain', mm_cfg.ReceiveNonmatchingTopics), 0)
+                                    config.ConcealSubscription, 1)
+        eq(gmo('person@dom.ain', config.Digests), 0)
+        eq(gmo('person@dom.ain', config.DontReceiveOwnPosts), 0)
+        eq(gmo('person@dom.ain', config.AcknowledgePosts), 0)
+        eq(gmo('person@dom.ain', config.DisableMime), 0)
+        eq(gmo('person@dom.ain', config.ConcealSubscription), 1)
+        eq(gmo('person@dom.ain', config.SuppressPasswordReminder), 0)
+        eq(gmo('person@dom.ain', config.ReceiveNonmatchingTopics), 0)
 
     def test_suppress_password_reminder(self):
         eq = self.assertEqual
         gmo = self._mlist.getMemberOption
         self._mlist.setMemberOption('person@dom.ain',
-                                    mm_cfg.SuppressPasswordReminder, 1)
-        eq(gmo('person@dom.ain', mm_cfg.Digests), 0)
-        eq(gmo('person@dom.ain', mm_cfg.DontReceiveOwnPosts), 0)
-        eq(gmo('person@dom.ain', mm_cfg.AcknowledgePosts), 0)
-        eq(gmo('person@dom.ain', mm_cfg.DisableMime), 0)
-        eq(gmo('person@dom.ain', mm_cfg.ConcealSubscription), 0)
-        eq(gmo('person@dom.ain', mm_cfg.SuppressPasswordReminder), 1)
-        eq(gmo('person@dom.ain', mm_cfg.ReceiveNonmatchingTopics), 0)
+                                    config.SuppressPasswordReminder, 1)
+        eq(gmo('person@dom.ain', config.Digests), 0)
+        eq(gmo('person@dom.ain', config.DontReceiveOwnPosts), 0)
+        eq(gmo('person@dom.ain', config.AcknowledgePosts), 0)
+        eq(gmo('person@dom.ain', config.DisableMime), 0)
+        eq(gmo('person@dom.ain', config.ConcealSubscription), 0)
+        eq(gmo('person@dom.ain', config.SuppressPasswordReminder), 1)
+        eq(gmo('person@dom.ain', config.ReceiveNonmatchingTopics), 0)
 
     def test_receive_nonmatching_topics(self):
         eq = self.assertEqual
         gmo = self._mlist.getMemberOption
         self._mlist.setMemberOption('person@dom.ain',
-                                    mm_cfg.ReceiveNonmatchingTopics, 1)
-        eq(gmo('person@dom.ain', mm_cfg.Digests), 0)
-        eq(gmo('person@dom.ain', mm_cfg.DontReceiveOwnPosts), 0)
-        eq(gmo('person@dom.ain', mm_cfg.AcknowledgePosts), 0)
-        eq(gmo('person@dom.ain', mm_cfg.DisableMime), 0)
-        eq(gmo('person@dom.ain', mm_cfg.ConcealSubscription), 0)
-        eq(gmo('person@dom.ain', mm_cfg.SuppressPasswordReminder), 0)
-        eq(gmo('person@dom.ain', mm_cfg.ReceiveNonmatchingTopics), 1)
+                                    config.ReceiveNonmatchingTopics, 1)
+        eq(gmo('person@dom.ain', config.Digests), 0)
+        eq(gmo('person@dom.ain', config.DontReceiveOwnPosts), 0)
+        eq(gmo('person@dom.ain', config.AcknowledgePosts), 0)
+        eq(gmo('person@dom.ain', config.DisableMime), 0)
+        eq(gmo('person@dom.ain', config.ConcealSubscription), 0)
+        eq(gmo('person@dom.ain', config.SuppressPasswordReminder), 0)
+        eq(gmo('person@dom.ain', config.ReceiveNonmatchingTopics), 1)
 
     def test_member_name(self):
         self._mlist.setMemberName('person@dom.ain', 'A. Good Person')

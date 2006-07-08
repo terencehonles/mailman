@@ -164,7 +164,7 @@ def kill_watcher(sig):
 
 def get_lock_data():
     # Return the hostname, pid, and tempfile
-    fp = open(config.LOCKFILE)
+    fp = open(config.LOCK_FILE)
     try:
         filename = os.path.split(fp.read().strip())[1]
     finally:
@@ -205,7 +205,7 @@ def acquire_lock_1(force):
         # Force removal of lock first
         lock._disown()
         hostname, pid, tempfile = get_lock_data()
-        os.unlink(config.LOCKFILE)
+        os.unlink(config.LOCK_FILE)
         os.unlink(os.path.join(config.LOCK_DIR, tempfile))
         return acquire_lock_1(force=False)
 
@@ -236,7 +236,7 @@ process on some other host may have acquired it.  We can't test for stale
 locks across host boundaries, so you'll have to do this manually.  Or, if you
 know the lock is stale, re-run mailmanctl with the -s flag.
 
-Lock file: $config.LOCKFILE
+Lock file: $config.LOCK_FILE
 Lock host: $status
 
 Exiting.""")
@@ -255,7 +255,10 @@ def start_runner(qrname, slice, count):
     exe = os.path.join(config.BIN_DIR, 'qrunner')
     # config.PYTHON, which is the absolute path to the Python interpreter,
     # must be given as argv[0] due to Python's library search algorithm.
-    os.execl(config.PYTHON, config.PYTHON, exe, rswitch, '-s')
+    args = [config.PYTHON, config.PYTHON, exe, rswitch, '-s']
+    if opts.config:
+        args.extend(['-C', opts.config])
+    os.execl(*args)
     # Should never get here
     raise RuntimeError, 'os.execl() failed'
 
@@ -304,7 +307,7 @@ def check_privs():
 
 
 def main():
-    global elog, qlog
+    global elog, qlog, opts
 
     parser, opts, args = parseargs()
     config.load(opts.config)

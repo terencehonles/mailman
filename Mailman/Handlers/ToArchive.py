@@ -20,8 +20,8 @@
 import time
 from cStringIO import StringIO
 
-from Mailman import mm_cfg
 from Mailman.Queue.sbcache import get_switchboard
+from Mailman.configuration import config
 
 
 
@@ -35,6 +35,6 @@ def process(mlist, msg, msgdata):
     if msg.has_key('x-no-archive') or msg.get('x-archive', '').lower() == 'no':
         return
     # Send the message to the archiver queue
-    archq = get_switchboard(mm_cfg.ARCHQUEUE_DIR)
+    archq = get_switchboard(config.ARCHQUEUE_DIR)
     # Send the message to the queue
     archq.enqueue(msg, msgdata)

@@ -248,10 +248,10 @@ class UserNotification(Message):
         virginq = get_switchboard(config.VIRGINQUEUE_DIR)
         # The message metadata better have a `recip' attribute
         virginq.enqueue(self,
-                        listname = mlist.internal_name(),
-                        recips = self.recips,
-                        nodecorate = 1,
-                        reduced_list_headers = 1,
+                        listname=mlist.internal_name(),
+                        recips=self.recips,
+                        nodecorate=True,
+                        reduced_list_headers=True,
                         **_kws)
 
 
@@ -279,9 +279,9 @@ class OwnerNotification(UserNotification):
         virginq = get_switchboard(config.VIRGINQUEUE_DIR)
         # The message metadata better have a `recip' attribute
         virginq.enqueue(self,
-                        listname = mlist.internal_name(),
-                        recips = self.recips,
-                        nodecorate = 1,
-                        reduced_list_headers = 1,
-                        envsender = self._sender,
+                        listname=mlist.internal_name(),
+                        recips=self.recips,
+                        nodecorate=True,
+                        reduced_list_headers=True,
+                        envsender=self._sender,
                         **_kws)

@@ -25,10 +25,10 @@ SendmailDeliver and BulkDeliver modules.
 
 from Mailman import Errors
 from Mailman import Message
-from Mailman import mm_cfg
 from Mailman import Utils
-from Mailman.i18n import _
 from Mailman.MemberAdaptor import ENABLED
+from Mailman.configuration import config
+from Mailman.i18n import _
 
 
 
@@ -41,7 +41,7 @@ def process(mlist, msg, msgdata):
     include_sender = 1
     sender = msg.get_sender()
     try:
-        if mlist.getMemberOption(sender, mm_cfg.DontReceiveOwnPosts):
+        if mlist.getMemberOption(sender, config.DontReceiveOwnPosts):
             include_sender = 0
     except Errors.NotAMemberError:
         pass
@@ -53,8 +53,8 @@ def process(mlist, msg, msgdata):
     missing = []
     password = msg.get('urgent', missing)
     if password is not missing:
-        if mlist.Authenticate((mm_cfg.AuthListModerator,
-                               mm_cfg.AuthListAdmin),
+        if mlist.Authenticate((config.AuthListModerator,
+                               config.AuthListAdmin),
                               password):
             recips = mlist.getMemberCPAddresses(mlist.getRegularMemberKeys() +
                                                 mlist.getDigestMemberKeys())
@@ -126,7 +126,7 @@ def do_topic_filters(mlist, msg, msgdata, recips):
                 # this message by default.
                 continue
             if not mlist.getMemberOption(user,
-                                         mm_cfg.ReceiveNonmatchingTopics):
+                                         config.ReceiveNonmatchingTopics):
                 # The user has interest in some topics, but elects not to
                 # receive message that match no topics, so zap him.
                 zaprecips.append(user)

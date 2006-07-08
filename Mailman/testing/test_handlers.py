@@ -29,9 +29,10 @@ from email.Generator import Generator
 
 from Mailman import Errors
 from Mailman import Message
-from Mailman import mm_cfg
+from Mailman import Version
 from Mailman.MailList import MailList
 from Mailman.Queue.Switchboard import Switchboard
+from Mailman.configuration import config
 from Mailman.testing.base import TestBase
 
 from Mailman.Handlers import Acknowledge
@@ -65,14 +66,14 @@ class TestAcknowledge(TestBase):
     def setUp(self):
         TestBase.setUp(self)
         # We're going to want to inspect this queue directory
-        self._sb = Switchboard(mm_cfg.VIRGINQUEUE_DIR)
+        self._sb = Switchboard(config.VIRGINQUEUE_DIR)
         # Add a member
         self._mlist.addNewMember('aperson@dom.ain')
         self._mlist.personalize = False
 
     def tearDown(self):
-        for f in os.listdir(mm_cfg.VIRGINQUEUE_DIR):
-            os.unlink(os.path.join(mm_cfg.VIRGINQUEUE_DIR, f))
+        for f in os.listdir(config.VIRGINQUEUE_DIR):
+            os.unlink(os.path.join(config.VIRGINQUEUE_DIR, f))
         TestBase.tearDown(self)
 
     def test_no_ack_msgdata(self):
@@ -112,7 +113,7 @@ From: aperson@dom.ain
     def test_ack_no_subject(self):
         eq = self.assertEqual
         self._mlist.setMemberOption(
-            'aperson@dom.ain', mm_cfg.AcknowledgePosts, 1)
+            'aperson@dom.ain', config.AcknowledgePosts, 1)
         eq(len(self._sb.files()), 0)
         msg = email.message_from_string("""\
 From: aperson@dom.ain
@@ -151,7 +152,7 @@ Your preferences: http://www.dom.ain/mailman/options/_xtest/aperson%40dom.ain
     def test_ack_with_subject(self):
         eq = self.assertEqual
         self._mlist.setMemberOption(
-            'aperson@dom.ain', mm_cfg.AcknowledgePosts, 1)
+            'aperson@dom.ain', config.AcknowledgePosts, 1)
         eq(len(self._sb.files()), 0)
         msg = email.message_from_string("""\
 From: aperson@dom.ain
@@ -317,7 +318,7 @@ From: cperson@dom.ain
 
 """, Message.Message)
         self._mlist.setMemberOption('cperson@dom.ain',
-                                    mm_cfg.DontReceiveOwnPosts, 1)
+                                    config.DontReceiveOwnPosts, 1)
         CalcRecips.process(self._mlist, msg, msgdata)
         self.failUnless(msgdata.has_key('recips'))
         recips = msgdata['recips']
@@ -494,7 +495,7 @@ From: aperson@dom.ain
 
 """, Message.Message)
         CookHeaders.process(self._mlist, msg, {})
-        eq(msg['x-mailman-version'], mm_cfg.VERSION)
+        eq(msg['x-mailman-version'], Version.VERSION)
 
     def test_existing_mmversion(self):
         eq = self.assertEqual
@@ -680,12 +681,12 @@ From: aperson@dom.ain
 From: aperson@dom.ain
 
 """, Message.Message)
-        oldval = mm_cfg.DEFAULT_URL_HOST
-        mm_cfg.DEFAULT_URL_HOST = 'www.dom.ain'
+        oldval = config.DEFAULT_URL_HOST
+        config.DEFAULT_URL_HOST = 'www.dom.ain'
         try:
             CookHeaders.process(self._mlist, msg, {})
         finally:
-            mm_cfg.DEFAULT_URL_HOST = oldval
+            config.DEFAULT_URL_HOST = oldval
         eq(msg['list-id'], '<_xtest.dom.ain>')
         eq(msg['list-help'], '<mailto:_xtest-request@dom.ain?subject=help>')
         eq(msg['list-unsubscribe'],
@@ -972,19 +973,19 @@ class TestHold(TestBase):
         self._mlist.respond_to_post_requests = 0
         self._mlist.admin_immed_notify = 0
         # We're going to want to inspect this queue directory
-        self._sb = Switchboard(mm_cfg.VIRGINQUEUE_DIR)
+        self._sb = Switchboard(config.VIRGINQUEUE_DIR)
 
     def tearDown(self):
-        for f in os.listdir(mm_cfg.VIRGINQUEUE_DIR):
-            os.unlink(os.path.join(mm_cfg.VIRGINQUEUE_DIR, f))
+        for f in os.listdir(config.VIRGINQUEUE_DIR):
+            os.unlink(os.path.join(config.VIRGINQUEUE_DIR, f))
         TestBase.tearDown(self)
         try:
-            os.unlink(os.path.join(mm_cfg.DATA_DIR, 'pending.db'))
+            os.unlink(os.path.join(config.DATA_DIR, 'pending.db'))
         except OSError, e:
             if e.errno <> errno.ENOENT: raise
-        for f in [holdfile for holdfile in os.listdir(mm_cfg.DATA_DIR)
+        for f in [holdfile for holdfile in os.listdir(config.DATA_DIR)
                   if holdfile.startswith('heldmsg-')]:
-            os.unlink(os.path.join(mm_cfg.DATA_DIR, f))
+            os.unlink(os.path.join(config.DATA_DIR, f))
 
     def test_short_circuit(self):
         msgdata = {'approved': 1}
@@ -1114,10 +1115,10 @@ From: aperson@dom.ain
         # for the hold message.
         data = self._mlist.pend_confirm(cookie)
         eq(data, ('H', 1))
-        heldmsg = os.path.join(mm_cfg.DATA_DIR, 'heldmsg-_xtest-1.pck')
+        heldmsg = os.path.join(config.DATA_DIR, 'heldmsg-_xtest-1.pck')
         self.failUnless(os.path.exists(heldmsg))
         os.unlink(heldmsg)
-        holdfiles = [f for f in os.listdir(mm_cfg.DATA_DIR)
+        holdfiles = [f for f in os.listdir(config.DATA_DIR)
                      if f.startswith('heldmsg-')]
         eq(len(holdfiles), 0)
 
@@ -1205,7 +1206,7 @@ yyy
         eq = self.assertEqual
         # XXX Skip this test if the html->text converter program is not
         # available.
-        program = mm_cfg.HTML_TO_PLAIN_TEXT_COMMAND.split()[0]
+        program = config.HTML_TO_PLAIN_TEXT_COMMAND.split()[0]
         if os.path.isfile(program):
             msg = email.message_from_string("""\
 From: aperson@dom.ain
@@ -1325,15 +1326,15 @@ To: xlist@dom.ain
 
 A message.
 """)
-        spammers = mm_cfg.KNOWN_SPAMMERS[:]
+        spammers = config.KNOWN_SPAMMERS[:]
         try:
-            mm_cfg.KNOWN_SPAMMERS.append(('from', '.?person'))
+            config.KNOWN_SPAMMERS.append(('from', '.?person'))
             self.assertRaises(SpamDetect.SpamDetected,
                               SpamDetect.process, self._mlist, msg1, {})
             rtn = SpamDetect.process(self._mlist, msg2, {})
             self.assertEqual(rtn, None)
         finally:
-            mm_cfg.KNOWN_SPAMMERS = spammers
+            config.KNOWN_SPAMMERS = spammers
 
 
 
@@ -1456,11 +1457,11 @@ class TestToArchive(TestBase):
     def setUp(self):
         TestBase.setUp(self)
         # We're going to want to inspect this queue directory
-        self._sb = Switchboard(mm_cfg.ARCHQUEUE_DIR)
+        self._sb = Switchboard(config.ARCHQUEUE_DIR)
 
     def tearDown(self):
-        for f in os.listdir(mm_cfg.ARCHQUEUE_DIR):
-            os.unlink(os.path.join(mm_cfg.ARCHQUEUE_DIR, f))
+        for f in os.listdir(config.ARCHQUEUE_DIR):
+            os.unlink(os.path.join(config.ARCHQUEUE_DIR, f))
         TestBase.tearDown(self)
 
     def test_short_circuit(self):
@@ -1525,15 +1526,15 @@ Here is message %(i)d
         for i in range(5):
             g.flatten(self._makemsg(i), unixfrom=1)
         fp.close()
-        self._sb = Switchboard(mm_cfg.VIRGINQUEUE_DIR)
+        self._sb = Switchboard(config.VIRGINQUEUE_DIR)
 
     def tearDown(self):
         try:
             os.unlink(self._path)
         except OSError, e:
             if e.errno <> errno.ENOENT: raise
-        for f in os.listdir(mm_cfg.VIRGINQUEUE_DIR):
-            os.unlink(os.path.join(mm_cfg.VIRGINQUEUE_DIR, f))
+        for f in os.listdir(config.VIRGINQUEUE_DIR):
+            os.unlink(os.path.join(config.VIRGINQUEUE_DIR, f))
         TestBase.tearDown(self)
 
     def test_short_circuit(self):
@@ -1591,16 +1592,16 @@ class TestToOutgoing(TestBase):
     def setUp(self):
         TestBase.setUp(self)
         # We're going to want to inspect this queue directory
-        self._sb = Switchboard(mm_cfg.OUTQUEUE_DIR)
+        self._sb = Switchboard(config.OUTQUEUE_DIR)
         # Save and set this value
-        self._interval = mm_cfg.VERP_DELIVERY_INTERVAL
-        mm_cfg.VERP_DELIVERY_INTERVAL = 1
+        self._interval = config.VERP_DELIVERY_INTERVAL
+        config.VERP_DELIVERY_INTERVAL = 1
 
     def tearDown(self):
         # Restore this value
-        mm_cfg.VERP_DELIVERY_INTERVAL = self._interval
-        for f in os.listdir(mm_cfg.OUTQUEUE_DIR):
-            os.unlink(os.path.join(mm_cfg.OUTQUEUE_DIR, f))
+        config.VERP_DELIVERY_INTERVAL = self._interval
+        for f in os.listdir(config.OUTQUEUE_DIR):
+            os.unlink(os.path.join(config.OUTQUEUE_DIR, f))
         TestBase.tearDown(self)
 
     def test_outgoing(self):
@@ -1631,11 +1632,11 @@ class TestToUsenet(TestBase):
     def setUp(self):
         TestBase.setUp(self)
         # We're going to want to inspect this queue directory
-        self._sb = Switchboard(mm_cfg.NEWSQUEUE_DIR)
+        self._sb = Switchboard(config.NEWSQUEUE_DIR)
 
     def tearDown(self):
-        for f in os.listdir(mm_cfg.NEWSQUEUE_DIR):
-            os.unlink(os.path.join(mm_cfg.NEWSQUEUE_DIR, f))
+        for f in os.listdir(config.NEWSQUEUE_DIR):
+            os.unlink(os.path.join(config.NEWSQUEUE_DIR, f))
         TestBase.tearDown(self)
 
     def test_short_circuit(self):

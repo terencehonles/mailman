@@ -34,11 +34,11 @@ from email.Generator import Generator
 from email.Parser import HeaderParser
 from email.Utils import parsedate
 
-from Mailman import Message
-from Mailman import mm_cfg
 from Mailman import LockFile
+from Mailman import Message
 from Mailman import Utils
 from Mailman.Errors import DiscardMessage
+from Mailman.configuration import config
 from Mailman.i18n import _
 
 # Path characters for common platforms
@@ -149,7 +149,7 @@ def replace_payload_by_text(msg, text, charset):
 
 
 def process(mlist, msg, msgdata=None):
-    sanitize = mm_cfg.ARCHIVE_HTML_SANITIZER
+    sanitize = config.ARCHIVE_HTML_SANITIZER
     outer = True
     if msgdata is None:
         msgdata = {}
@@ -391,7 +391,7 @@ def save_attachment(mlist, msg, dir, filter_html=True):
     fnext = os.path.splitext(filename)[1]
     # For safety, we should confirm this is valid ext for content-type
     # but we can use fnext if we introduce fnext filtering
-    if mm_cfg.SCRUBBER_USE_ATTACHMENT_FILENAME_EXTENSION:
+    if config.SCRUBBER_USE_ATTACHMENT_FILENAME_EXTENSION:
         # HTML message doesn't have filename :-(
         ext = fnext or guess_extension(ctype, fnext)
     else:
@@ -414,7 +414,7 @@ def save_attachment(mlist, msg, dir, filter_html=True):
         # Now base the filename on what's in the attachment, uniquifying it if
         # necessary.
         filename = msg.get_filename()
-        if not filename or mm_cfg.SCRUBBER_DONT_USE_ATTACHMENT_FILENAME:
+        if not filename or config.SCRUBBER_DONT_USE_ATTACHMENT_FILENAME:
             filebase = 'attachment'
         else:
             # Sanitize the filename given in the message headers
@@ -460,7 +460,7 @@ def save_attachment(mlist, msg, dir, filter_html=True):
         try:
             fp.write(decodedpayload)
             fp.close()
-            cmd = mm_cfg.ARCHIVE_HTML_SANITIZER % {'filename' : tmppath}
+            cmd = config.ARCHIVE_HTML_SANITIZER % {'filename' : tmppath}
             progfp = os.popen(cmd, 'r')
             decodedpayload = progfp.read()
             status = progfp.close()

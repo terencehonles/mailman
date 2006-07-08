@@ -42,16 +42,16 @@ from email.Parser import Parser
 from email.Utils import getaddresses, formatdate
 
 from Mailman import Errors
-from Mailman import i18n
 from Mailman import Message
-from Mailman import mm_cfg
 from Mailman import Utils
+from Mailman import i18n
 from Mailman.Handlers.Decorate import decorate
 from Mailman.Handlers.Scrubber import process as scrubber
 from Mailman.Mailbox import Mailbox
 from Mailman.Mailbox import Mailbox
 from Mailman.MemberAdaptor import ENABLED
 from Mailman.Queue.sbcache import get_switchboard
+from Mailman.configuration import config
 
 _ = i18n._
 
@@ -267,8 +267,8 @@ def send_i18n_digests(mlist, mboxfp):
         # for the specific MIME or plain digests.
         keeper = {}
         all_keepers = {}
-        for header in (mm_cfg.MIME_DIGEST_KEEP_HEADERS +
-                       mm_cfg.PLAIN_DIGEST_KEEP_HEADERS):
+        for header in (config.MIME_DIGEST_KEEP_HEADERS +
+                       config.PLAIN_DIGEST_KEEP_HEADERS):
             all_keepers[header] = True
         all_keepers = all_keepers.keys()
         for keep in all_keepers:
@@ -321,7 +321,7 @@ def send_i18n_digests(mlist, mboxfp):
             print >> plainmsg, _('[Message discarded by content filter]')
             continue
         # Honor the default setting
-        for h in mm_cfg.PLAIN_DIGEST_KEEP_HEADERS:
+        for h in config.PLAIN_DIGEST_KEEP_HEADERS:
             if msg[h]:
                 uh = Utils.wrap('%s: %s' % (h, Utils.oneline(msg[h], lcset)))
                 uh = '\n\t'.join(uh.split('\n'))
@@ -377,7 +377,7 @@ def send_i18n_digests(mlist, mboxfp):
     # Do our final bit of housekeeping, and then send each message to the
     # outgoing queue for delivery.
     mlist.next_digest_number += 1
-    virginq = get_switchboard(mm_cfg.VIRGINQUEUE_DIR)
+    virginq = get_switchboard(config.VIRGINQUEUE_DIR)
     # Calculate the recipients lists
     plainrecips = []
     mimerecips = []
@@ -389,7 +389,7 @@ def send_i18n_digests(mlist, mboxfp):
         if user is None or mlist.getDeliveryStatus(user) <> ENABLED:
             continue
         # Otherwise, decide whether they get MIME or RFC 1153 digests
-        if mlist.getMemberOption(user, mm_cfg.DisableMime):
+        if mlist.getMemberOption(user, config.DisableMime):
             plainrecips.append(user)
         else:
             mimerecips.append(user)

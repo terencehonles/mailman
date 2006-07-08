@@ -12,7 +12,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """If the user wishes it, do not send duplicates of the same message.
 
@@ -23,7 +24,7 @@ warning header, or pass it through, depending on the user's preferences.
 """
 
 from email.Utils import getaddresses, formataddr
-from Mailman import mm_cfg
+from Mailman.configuration import config
 
 COMMASPACE = ', '
 
@@ -67,7 +68,7 @@ def process(mlist, msg, msgdata):
             # is not a member at all, just flag the X-Mailman-Duplicate: yes
             # header.
             if mlist.isMember(r) and \
-                   mlist.getMemberOption(r, mm_cfg.DontReceiveDuplicates):
+                   mlist.getMemberOption(r, config.DontReceiveDuplicates):
                 send_duplicate = False
             # We'll send a duplicate unless the user doesn't wish it.  If
             # personalization is enabled, the add-dupe-header flag will add a

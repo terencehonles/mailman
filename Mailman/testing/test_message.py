@@ -45,21 +45,22 @@ class TestSentMessage(EmailBase):
         msgid = qmsg['message-id']
         unless(msgid.startswith('<mailman.'))
         unless(msgid.endswith('._xtest@dom.ain>'))
-        eq(qmsg['sender'], '_xtest-admin@dom.ain')
-        eq(qmsg['errors-to'], '_xtest-admin@dom.ain')
+        eq(qmsg['sender'], '_xtest-bounces@dom.ain')
+        eq(qmsg['errors-to'], '_xtest-bounces@dom.ain')
         eq(qmsg['x-beenthere'], '_xtest@dom.ain')
         eq(qmsg['x-mailman-version'], Version.VERSION)
         eq(qmsg['precedence'], 'bulk')
+        # UserNotifications have reduced_list_headers so it won't have
+        # List-Help, List-Subscribe, or List-Unsubscribe.  XXX Why would that
+        # possibly be?
         eq(qmsg['list-help'], '<mailto:_xtest-request@dom.ain?subject=help>')
-        eq(qmsg['list-post'], '<mailto:_xtest@dom.ain>')
         eq(qmsg['list-subscribe'], """\
 <http://www.dom.ain/mailman/listinfo/_xtest>,
-        <mailto:_xtest-request@dom.ain?subject=subscribe>""")
+\t<mailto:_xtest-request@dom.ain?subject=subscribe>""")
         eq(qmsg['list-id'], '<_xtest.dom.ain>')
         eq(qmsg['list-unsubscribe'], """\
 <http://www.dom.ain/mailman/listinfo/_xtest>,
-        <mailto:_xtest-request@dom.ain?subject=unsubscribe>""")
-        eq(qmsg['list-archive'], '<http://www.dom.ain/pipermail/_xtest>')
+\t<mailto:_xtest-request@dom.ain?subject=unsubscribe>""")
         eq(qmsg.get_payload(), 'About your test list')
 
     def test_bounce_message(self):
@@ -81,11 +82,11 @@ yadda yadda yadda
         # message.
         msg1 = qmsg.get_payload(0)
         eq(msg1.get_type(), 'text/plain')
-        eq(msg1.get_payload(), '[No bounce details are available]\n')
+        eq(msg1.get_payload(), '[No bounce details are available]')
         msg2 = qmsg.get_payload(1)
         eq(msg2.get_type(), 'message/rfc822')
-        unless(not msg2.is_multipart())
-        msg3 = msg2.get_payload()
+        unless(msg2.is_multipart())
+        msg3 = msg2.get_payload(0)
         eq(msg3.get_payload(), 'yadda yadda yadda\n')
 
 

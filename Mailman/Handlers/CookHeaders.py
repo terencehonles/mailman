@@ -24,8 +24,9 @@ from email.Errors import HeaderParseError
 from email.Header import Header, decode_header, make_header
 from email.Utils import parseaddr, formataddr, getaddresses
 
-from Mailman import mm_cfg
 from Mailman import Utils
+from Mailman import Version
+from Mailman.configuration import config
 from Mailman.i18n import _
 
 CONTINUATION = ',\n\t'
@@ -89,7 +90,7 @@ def process(mlist, msg, msgdata):
     # using such an old version, they may be vulnerable.  It's too easy to
     # edit the code to add a configuration variable to handle this.
     if not msg.has_key('x-mailman-version'):
-        msg['X-Mailman-Version'] = mm_cfg.VERSION
+        msg['X-Mailman-Version'] = Version.VERSION
     # We set "Precedence: list" because this is the recommendation from the
     # sendmail docs, the most authoritative source of this header's semantics.
     if not msg.has_key('precedence'):
@@ -187,14 +188,18 @@ def process(mlist, msg, msgdata):
     subfieldfmt = '<%s>, <mailto:%s?subject=%ssubscribe>'
     listinfo = mlist.GetScriptURL('listinfo', absolute=1)
     headers = {}
+    # XXX reduced_list_headers used to suppress List-Help, List-Subject, and
+    # List-Unsubscribe from UserNotification.  That doesn't seem to make sense
+    # any more, so always add those three headers (others will still be
+    # suppressed).
+    headers.update({
+        'List-Help'       : '<mailto:%s?subject=help>' % requestaddr,
+        'List-Unsubscribe': subfieldfmt % (listinfo, requestaddr, 'un'),
+        'List-Subscribe'  : subfieldfmt % (listinfo, requestaddr, ''),
+        })
     if msgdata.get('reduced_list_headers'):
         headers['X-List-Administrivia'] = 'yes'
     else:
-        headers.update({
-            'List-Help'       : '<mailto:%s?subject=help>' % requestaddr,
-            'List-Unsubscribe': subfieldfmt % (listinfo, requestaddr, 'un'),
-            'List-Subscribe'  : subfieldfmt % (listinfo, requestaddr, ''),
-            })
         # List-Post: is controlled by a separate attribute
         if mlist.include_list_post_header:
             headers['List-Post'] = '<mailto:%s>' % mlist.GetListEmail()
@@ -258,7 +263,7 @@ def prefix_subject(mlist, msg, msgdata):
         prefix_pattern = p.sub(r'\s*\d+\s*', prefix_pattern)
         old_style = False
     else:
-        old_style = mm_cfg.OLD_STYLE_PREFIXING
+        old_style = config.OLD_STYLE_PREFIXING
     subject = re.sub(prefix_pattern, '', subject)
     rematch = re.match('((RE|AW|SV|VS)(\[\d+\])?:\s*)+', subject, re.I)
     if rematch:

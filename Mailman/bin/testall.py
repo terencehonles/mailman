@@ -23,8 +23,9 @@ import sys
 import optparse
 import unittest
 
+from Mailman import Version
 from Mailman import loginit
-from Mailman import mm_cfg
+from Mailman.configuration import config
 from Mailman.i18n import _
 
 __i18n_templates__ = True
@@ -43,7 +44,7 @@ def v_callback(option, opt, value, parser):
 
 
 def parseargs():
-    parser = optparse.OptionParser(version=mm_cfg.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
                                    usage=_("""\
 %prog [options] [tests]
 
@@ -63,6 +64,8 @@ Reduce verbosity by 1 (but not below 0)."""))
     parser.add_option('-e', '--stderr',
                       default=False, action='store_true',
                       help=_('Propagate log errors to stderr.'))
+    parser.add_option('-C', '--config',
+                      help=_('Alternative configuration file to use'))
     opts, args = parser.parse_args()
     return parser, opts, args
 
@@ -135,6 +138,7 @@ def main():
     global basedir
 
     parser, opts, args = parseargs()
+    config.load(opts.config)
     if not args:
         args = ['.']
     loginit.initialize(propagate=opts.stderr)

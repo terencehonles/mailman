@@ -18,16 +18,18 @@
 """Base class for tests that email things."""
 
 import os
+import stat
 import smtpd
 import socket
 import asyncore
 import tempfile
 import subprocess
 
-from Mailman import mm_cfg
+from Mailman.configuration import config
 from Mailman.testing.base import TestBase
 
-TESTPORT = 10825
+TESTPORT    = 10825
+PERMISSIONS = stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH
 
 
 
@@ -57,16 +59,18 @@ class EmailBase(TestBase):
         # configuration file that causes the underlying outgoing runner to use
         # the same port, then start Mailman.
         fd, self._configfile = tempfile.mkstemp(suffix='.cfg')
-        print 'config file:', self._configfile
         fp = os.fdopen(fd, 'w')
         print >> fp, 'SMTPPORT =', TESTPORT
+        config.SMTPPORT = TESTPORT
         fp.close()
+        # Loosen up the permissions
+        os.chmod(self._configfile, PERMISSIONS)
         # Second argument is ignored.
         self._server = SinkServer(('localhost', TESTPORT), None)
-        os.system('bin/mailmanctl start')
+        os.system('bin/mailmanctl -C %s -q start' % self._configfile)
 
     def tearDown(self):
-        os.system('bin/mailmanctl stop')
+        os.system('bin/mailmanctl -C %s -q stop' % self._configfile)
         self._server.close()
         TestBase.tearDown(self)
         os.remove(self._configfile)
@@ -80,7 +84,7 @@ class EmailBase(TestBase):
         try:
             try:
                 # timeout is in milliseconds, see asyncore.py poll3()
-                asyncore.loop(timeout=30.0)
+                asyncore.loop()
                 MSGTEXT = None
             except asyncore.ExitNow:
                 pass

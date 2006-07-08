@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -27,8 +27,8 @@ import re
 
 from email.Iterators import typed_subpart_iterator
 
-from Mailman import mm_cfg
 from Mailman import Errors
+from Mailman.configuration import config
 
 NL = '\n'
 
@@ -98,14 +98,14 @@ def process(mlist, msg, msgdata):
                     lines = part.get_payload()
                     if re.search(pattern, lines):
                         part.set_payload(re.sub(pattern, '', lines))
-    if passwd is not missing and mlist.Authenticate((mm_cfg.AuthListModerator,
-                                                     mm_cfg.AuthListAdmin),
+    if passwd is not missing and mlist.Authenticate((config.AuthListModerator,
+                                                     config.AuthListAdmin),
                                                     passwd):
         # BAW: should we definitely deny if the password exists but does not
         # match?  For now we'll let it percolate up for further determination.
-        msgdata['approved'] = 1
+        msgdata['approved'] = True
         # Used by the Emergency module
-        msgdata['adminapproved'] = 1
+        msgdata['adminapproved'] = True
     # has this message already been posted to this list?
     beentheres = [s.strip().lower() for s in msg.get_all('x-beenthere', [])]
     if mlist.GetListEmail().lower() in beentheres:

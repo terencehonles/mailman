@@ -33,12 +33,12 @@ from email.Iterators import typed_subpart_iterator
 from os.path import splitext
 
 from Mailman import Errors
-from Mailman import mm_cfg
-from Mailman.i18n import _
 from Mailman.Message import UserNotification
 from Mailman.Queue.sbcache import get_switchboard
 from Mailman.Utils import oneline
 from Mailman.Version import VERSION
+from Mailman.configuration import config
+from Mailman.i18n import _
 
 log = logging.getLogger('mailman.error')
 
@@ -103,7 +103,7 @@ def process(mlist, msg, msgdata):
     if numparts <> len([subpart for subpart in msg.walk()]):
         changedp = 1
     # Now perhaps convert all text/html to text/plain
-    if mlist.convert_html_to_plaintext and mm_cfg.HTML_TO_PLAIN_TEXT_COMMAND:
+    if mlist.convert_html_to_plaintext and config.HTML_TO_PLAIN_TEXT_COMMAND:
         changedp += to_plaintext(msg)
     # If we're left with only two parts, an empty body and one attachment,
     # recast the message to one of just that part
@@ -201,7 +201,7 @@ def to_plaintext(msg):
         try:
             fp.write(subpart.get_payload(decode=1))
             fp.close()
-            cmd = os.popen(mm_cfg.HTML_TO_PLAIN_TEXT_COMMAND %
+            cmd = os.popen(config.HTML_TO_PLAIN_TEXT_COMMAND %
                            {'filename': filename})
             plaintext = cmd.read()
             rtn = cmd.close()
@@ -239,8 +239,8 @@ are receiving the only remaining copy of the discarded message.
 """),
             subject=_('Content filtered message notification'))
     if mlist.filter_action == 3 and \
-           mm_cfg.OWNERS_CAN_PRESERVE_FILTERED_MESSAGES:
-        badq = get_switchboard(mm_cfg.BADQUEUE_DIR)
+           config.OWNERS_CAN_PRESERVE_FILTERED_MESSAGES:
+        badq = get_switchboard(config.BADQUEUE_DIR)
         badq.enqueue(msg, msgdata)
     # Most cases also discard the message
     raise Errors.DiscardMessage

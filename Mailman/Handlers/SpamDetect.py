@@ -32,8 +32,8 @@ from email.Generator import Generator
 
 from Mailman import Errors
 from Mailman import i18n
-from Mailman import mm_cfg
 from Mailman.Handlers.Hold import hold_for_approval
+from Mailman.configuration import config
 
 # First, play footsie with _ so that the following are marked as translated,
 # but aren't actually translated until we need the text later on.
@@ -89,7 +89,7 @@ def process(mlist, msg, msgdata):
     if msgdata.get('approved'):
         return
     # First do site hard coded header spam checks
-    for header, regex in mm_cfg.KNOWN_SPAMMERS:
+    for header, regex in config.KNOWN_SPAMMERS:
         cre = re.compile(regex, re.IGNORECASE)
         for value in msg.get_all(header, []):
             mo = cre.search(value)
@@ -108,15 +108,15 @@ def process(mlist, msg, msgdata):
     headers = re.sub('\n+', '\n', headers)
     headers = re.sub('\n\s', ' ', headers)
     for patterns, action, empty in mlist.header_filter_rules:
-        if action == mm_cfg.DEFER:
+        if action == config.DEFER:
             continue
         for pattern in patterns.splitlines():
             if pattern.startswith('#'):
                 continue
             if re.search(pattern, headers, re.IGNORECASE|re.MULTILINE):
-                if action == mm_cfg.DISCARD:
+                if action == config.DISCARD:
                     raise Errors.DiscardMessage
-                if action == mm_cfg.REJECT:
+                if action == config.REJECT:
                     if msgdata.get('toowner'):
                         # Don't send rejection notice if addressed to '-owner'
                         # because it may trigger a loop of notices if the
@@ -124,12 +124,12 @@ def process(mlist, msg, msgdata):
                         raise Errors.DiscardMessage
                     raise Errors.RejectMessage(
                         _('Message rejected by filter rule match'))
-                if action == mm_cfg.HOLD:
+                if action == config.HOLD:
                     if msgdata.get('toowner'):
                         # Don't hold '-owner' addressed message.  We just
                         # pass it here but list-owner can set this to be
                         # discarded on the GUI if he wants.
                         return
                     hold_for_approval(mlist, msg, msgdata, HeaderMatchHold)
-                if action == mm_cfg.ACCEPT:
+                if action == config.ACCEPT:
                     return

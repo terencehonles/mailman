@@ -26,7 +26,7 @@ from cStringIO import StringIO
 
 from Mailman import MailList
 from Mailman import Utils
-from Mailman import mm_cfg
+from Mailman.configuration import config
 
 NL = '\n'
 
@@ -61,7 +61,7 @@ class TestBase(unittest.TestCase):
                         'archives/public/%s',
                         'archives/public/%s.mbox',
                         ]:
-            dir = os.path.join(mm_cfg.VAR_PREFIX, dirtmpl % listname)
+            dir = os.path.join(config.VAR_PREFIX, dirtmpl % listname)
             if os.path.islink(dir):
                 os.unlink(dir)
             elif os.path.isdir(dir):

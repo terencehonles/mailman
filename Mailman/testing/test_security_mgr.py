@@ -34,7 +34,7 @@ from StringIO import StringIO
 
 from Mailman import Errors
 from Mailman import Utils
-from Mailman import mm_cfg
+from Mailman.configuration import config
 from Mailman.testing.base import TestBase
 
 
@@ -52,32 +52,32 @@ class TestSecurityManager(TestBase):
 
     def test_auth_context_info_authuser(self):
         mlist = self._mlist
-        self.assertRaises(TypeError, mlist.AuthContextInfo, mm_cfg.AuthUser)
+        self.assertRaises(TypeError, mlist.AuthContextInfo, config.AuthUser)
         # Add a member
         mlist.addNewMember('aperson@dom.ain', password='xxXXxx')
         self.assertEqual(
-            mlist.AuthContextInfo(mm_cfg.AuthUser, 'aperson@dom.ain'),
+            mlist.AuthContextInfo(config.AuthUser, 'aperson@dom.ain'),
             ('_xtest+user+aperson--at--dom.ain', 'xxXXxx'))
 
     def test_auth_context_moderator(self):
         mlist = self._mlist
         mlist.mod_password = 'yyYYyy'
         self.assertEqual(
-            mlist.AuthContextInfo(mm_cfg.AuthListModerator),
+            mlist.AuthContextInfo(config.AuthListModerator),
             ('_xtest+moderator', 'yyYYyy'))
 
     def test_auth_context_admin(self):
         mlist = self._mlist
         mlist.password = 'zzZZzz'
         self.assertEqual(
-            mlist.AuthContextInfo(mm_cfg.AuthListAdmin),
+            mlist.AuthContextInfo(config.AuthListAdmin),
             ('_xtest+admin', 'zzZZzz'))
 
     def test_auth_context_site(self):
         mlist = self._mlist
         mlist.password = 'aaAAaa'
         self.assertEqual(
-            mlist.AuthContextInfo(mm_cfg.AuthSiteAdmin),
+            mlist.AuthContextInfo(config.AuthSiteAdmin),
             ('_xtest+admin', 'aaAAaa'))
 
     def test_auth_context_huh(self):
@@ -95,53 +95,53 @@ class TestAuthenticate(TestBase):
 
     def tearDown(self):
         try:
-            os.unlink(mm_cfg.SITE_PW_FILE)
+            os.unlink(config.SITE_PW_FILE)
         except OSError, e:
             if e.errno <> errno.ENOENT: raise
         try:
-            os.unlink(mm_cfg.LISTCREATOR_PW_FILE)
+            os.unlink(config.LISTCREATOR_PW_FILE)
         except OSError, e:
             if e.errno <> errno.ENOENT: raise
         TestBase.tearDown(self)
 
     def test_auth_creator(self):
         self.assertEqual(self._mlist.Authenticate(
-            [mm_cfg.AuthCreator], 'ccCCcc'), mm_cfg.AuthCreator)
+            [config.AuthCreator], 'ccCCcc'), config.AuthCreator)
 
     def test_auth_creator_unauth(self):
         self.assertEqual(self._mlist.Authenticate(
-            [mm_cfg.AuthCreator], 'xxxxxx'), mm_cfg.UnAuthorized)
+            [config.AuthCreator], 'xxxxxx'), config.UnAuthorized)
 
     def test_auth_site_admin(self):
         self.assertEqual(self._mlist.Authenticate(
-            [mm_cfg.AuthSiteAdmin], 'bbBBbb'), mm_cfg.AuthSiteAdmin)
+            [config.AuthSiteAdmin], 'bbBBbb'), config.AuthSiteAdmin)
 
     def test_auth_site_admin_unauth(self):
         self.assertEqual(self._mlist.Authenticate(
-            [mm_cfg.AuthSiteAdmin], 'xxxxxx'), mm_cfg.UnAuthorized)
+            [config.AuthSiteAdmin], 'xxxxxx'), config.UnAuthorized)
 
     def test_list_admin(self):
         self._mlist.password = password('ttTTtt')
         self.assertEqual(self._mlist.Authenticate(
-            [mm_cfg.AuthListAdmin], 'ttTTtt'), mm_cfg.AuthListAdmin)
+            [config.AuthListAdmin], 'ttTTtt'), config.AuthListAdmin)
 
     def test_list_admin_unauth(self):
         self._mlist.password = password('ttTTtt')
         self.assertEqual(self._mlist.Authenticate(
-            [mm_cfg.AuthListAdmin], 'xxxxxx'), mm_cfg.UnAuthorized)
+            [config.AuthListAdmin], 'xxxxxx'), config.UnAuthorized)
 
     def test_list_admin_upgrade(self):
         eq = self.assertEqual
         mlist = self._mlist
         mlist.password = md5.new('ssSSss').digest()
         eq(mlist.Authenticate(
-            [mm_cfg.AuthListAdmin], 'ssSSss'), mm_cfg.AuthListAdmin)
+            [config.AuthListAdmin], 'ssSSss'), config.AuthListAdmin)
         eq(mlist.password, password('ssSSss'))
         # Test crypt upgrades if crypt is supported
         if crypt:
             mlist.password = crypt.crypt('rrRRrr', 'zc')
             eq(self._mlist.Authenticate(
-                [mm_cfg.AuthListAdmin], 'rrRRrr'), mm_cfg.AuthListAdmin)
+                [config.AuthListAdmin], 'rrRRrr'), config.AuthListAdmin)
             eq(mlist.password, password('rrRRrr'))
 
     def test_list_admin_oldstyle_unauth(self):
@@ -149,45 +149,45 @@ class TestAuthenticate(TestBase):
         mlist = self._mlist
         mlist.password = md5.new('ssSSss').digest()
         eq(mlist.Authenticate(
-            [mm_cfg.AuthListAdmin], 'xxxxxx'), mm_cfg.UnAuthorized)
+            [config.AuthListAdmin], 'xxxxxx'), config.UnAuthorized)
         eq(mlist.password, md5.new('ssSSss').digest())
         # Test crypt upgrades if crypt is supported
         if crypt:
             mlist.password = crypted = crypt.crypt('rrRRrr', 'zc')
             eq(self._mlist.Authenticate(
-                [mm_cfg.AuthListAdmin], 'xxxxxx'), mm_cfg.UnAuthorized)
+                [config.AuthListAdmin], 'xxxxxx'), config.UnAuthorized)
             eq(mlist.password, crypted)
 
     def test_list_moderator(self):
         self._mlist.mod_password = password('mmMMmm')
         self.assertEqual(self._mlist.Authenticate(
-            [mm_cfg.AuthListModerator], 'mmMMmm'), mm_cfg.AuthListModerator)
+            [config.AuthListModerator], 'mmMMmm'), config.AuthListModerator)
 
     def test_user(self):
         mlist = self._mlist
         mlist.addNewMember('aperson@dom.ain', password='nosrepa')
         self.assertEqual(mlist.Authenticate(
-            [mm_cfg.AuthUser], 'nosrepa', 'aperson@dom.ain'), mm_cfg.AuthUser)
+            [config.AuthUser], 'nosrepa', 'aperson@dom.ain'), config.AuthUser)
 
     def test_wrong_user(self):
         mlist = self._mlist
         mlist.addNewMember('aperson@dom.ain', password='nosrepa')
         self.assertEqual(
-            mlist.Authenticate([mm_cfg.AuthUser], 'nosrepa', 'bperson@dom.ain'),
-            mm_cfg.UnAuthorized)
+            mlist.Authenticate([config.AuthUser], 'nosrepa', 'bperson@dom.ain'),
+            config.UnAuthorized)
 
     def test_no_user(self):
         mlist = self._mlist
         mlist.addNewMember('aperson@dom.ain', password='nosrepa')
-        self.assertEqual(mlist.Authenticate([mm_cfg.AuthUser], 'norespa'),
-                         mm_cfg.UnAuthorized)
+        self.assertEqual(mlist.Authenticate([config.AuthUser], 'norespa'),
+                         config.UnAuthorized)
 
     def test_user_unauth(self):
         mlist = self._mlist
         mlist.addNewMember('aperson@dom.ain', password='nosrepa')
         self.assertEqual(mlist.Authenticate(
-            [mm_cfg.AuthUser], 'xxxxxx', 'aperson@dom.ain'),
-                         mm_cfg.UnAuthorized)
+            [config.AuthUser], 'xxxxxx', 'aperson@dom.ain'),
+                         config.UnAuthorized)
 
     def test_value_error(self):
         self.assertRaises(ValueError, self._mlist.Authenticate,
@@ -213,22 +213,22 @@ class TestWebAuthenticate(TestBase):
         mlist.addNewMember('aperson@dom.ain', password='qqQQqq')
         # Set up the cookie data
         sfp = StripperIO()
-        print >> sfp, mlist.MakeCookie(mm_cfg.AuthSiteAdmin)
+        print >> sfp, mlist.MakeCookie(config.AuthSiteAdmin)
         # AuthCreator isn't handled in AuthContextInfo()
-        print >> sfp, mlist.MakeCookie(mm_cfg.AuthListAdmin)
-        print >> sfp, mlist.MakeCookie(mm_cfg.AuthListModerator)
-        print >> sfp, mlist.MakeCookie(mm_cfg.AuthUser, 'aperson@dom.ain')
+        print >> sfp, mlist.MakeCookie(config.AuthListAdmin)
+        print >> sfp, mlist.MakeCookie(config.AuthListModerator)
+        print >> sfp, mlist.MakeCookie(config.AuthUser, 'aperson@dom.ain')
         # Strip off the "Set-Cookie: " prefix
         cookie = sfp.getvalue()
         os.environ['HTTP_COOKIE'] = cookie
 
     def tearDown(self):
         try:
-            os.unlink(mm_cfg.SITE_PW_FILE)
+            os.unlink(config.SITE_PW_FILE)
         except OSError, e:
             if e.errno <> errno.ENOENT: raise
         try:
-            os.unlink(mm_cfg.LISTCREATOR_PW_FILE)
+            os.unlink(config.LISTCREATOR_PW_FILE)
         except OSError, e:
             if e.errno <> errno.ENOENT: raise
         del os.environ['HTTP_COOKIE']
@@ -236,24 +236,24 @@ class TestWebAuthenticate(TestBase):
 
     def test_auth_site_admin(self):
         self.assertEqual(self._mlist.WebAuthenticate(
-            [mm_cfg.AuthSiteAdmin], 'xxxxxx'), 1)
+            [config.AuthSiteAdmin], 'xxxxxx'), 1)
 
     def test_list_admin(self):
         self.assertEqual(self._mlist.WebAuthenticate(
-            [mm_cfg.AuthListAdmin], 'xxxxxx'), 1)
+            [config.AuthListAdmin], 'xxxxxx'), 1)
 
     def test_list_moderator(self):
         self.assertEqual(self._mlist.WebAuthenticate(
-            [mm_cfg.AuthListModerator], 'xxxxxx'), 1)
+            [config.AuthListModerator], 'xxxxxx'), 1)
 
     def test_user(self):
         self.assertEqual(self._mlist.WebAuthenticate(
-            [mm_cfg.AuthUser], 'xxxxxx'), 1)
+            [config.AuthUser], 'xxxxxx'), 1)
 
     def test_not_a_user(self):
         self._mlist.removeMember('aperson@dom.ain')
         self.assertEqual(self._mlist.WebAuthenticate(
-            [mm_cfg.AuthUser], 'xxxxxx', 'aperson@dom.ain'), 0)
+            [config.AuthUser], 'xxxxxx', 'aperson@dom.ain'), 0)
 
 
 

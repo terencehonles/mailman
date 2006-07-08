@@ -37,11 +37,10 @@ from email.MIMEText import MIMEText
 from types import ClassType
 
 from Mailman import Errors
-from Mailman import i18n
-from Mailman import mm_cfg
 from Mailman import Message
 from Mailman import Pending
 from Mailman import Utils
+from Mailman import i18n
 
 log = logging.getLogger('mailman.vette')
 
