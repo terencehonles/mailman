@@ -86,7 +86,7 @@ Here is a history of user visible changes to Mailman.
     - The processing of Topics regular expressions has changed. Previously the
       Topics regexp was compiled in verbose mode but not documented as such
       which caused some confusion.  Also, the documentation indicated that topic
-      keywords could be entered one per line, but these entries were not
+      keywords could be entered one per line, but these entries were not handled
       properly.  Topics regexps are now compiled in non-verbose mode and multi-
       line entries are 'ored'.  Existing Topics regexps will be converted when
       the list is updated so they will continue to work.
@@ -109,6 +109,10 @@ Here is a history of user visible changes to Mailman.
     - Fixed Decorate.py so that characters in message header/footer which
       are not in the character set of the list's language are ignored rather
       than causing shunted messages (1507248).
+
+    - Switchboard.py - Closed very tiny holes at the upper ends of queue
+      slices that could result in unprocessable queue entries.  Improved FIFO
+      processing when two queue entries have the same timestamp.
 
 2.1.8 (15-Apr-2006)
 

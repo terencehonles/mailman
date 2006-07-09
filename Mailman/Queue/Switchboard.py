@@ -52,6 +52,9 @@ shamax = 0xffffffffffffffffffffffffffffffffffffffffL
 # (when False).  Pickles are more efficient because the message doesn't need
 # to be re-parsed every time it's unqueued, but pickles are not human readable.
 SAVE_MSGS_AS_PICKLES = True
+# Small increment to add to time in case two entries have the same time.  This
+# prevents skipping one of two entries with the same time until the next pass.
+DELTA = .0001
 
 
 
@@ -156,9 +159,13 @@ class Switchboard:
             filebase = os.path.splitext(f)[0]
             when, digest = filebase.split('+')
             # Throw out any files which don't match our bitrange.  BAW: test
-            # performance and end-cases of this algorithm.
-            if lower is None or (lower <= long(digest, 16) < upper):
-                times[float(when)] = filebase
+            # performance and end-cases of this algorithm.  MAS: both
+            # comparisons need to be <= to get complete range.
+            if lower is None or (lower <= long(digest, 16) <= upper):
+                key = float(when)
+                while times.has_key(key):
+                    key += DELTA
+                times[key] = filebase
         # FIFO sort
         keys = times.keys()
         keys.sort()
