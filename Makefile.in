@@ -50,7 +50,8 @@ VAR_DIRS= \
 ARCH_INDEP_DIRS= \
 	bin etc templates scripts cron pythonlib \
 	Mailman Mailman/bin Mailman/Cgi Mailman/Archiver \
-	Mailman/Handlers Mailman/Queue Mailman/Bouncers	 \
+	Mailman/Handlers Mailman/Queue Mailman/Queue/tests \
+	Mailman/Bouncers \
 	Mailman/MTA Mailman/Gui Mailman/Commands messages icons \
 	Mailman/testing Mailman/testing/bounces tests tests/msgs
 

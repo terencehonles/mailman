@@ -51,6 +51,7 @@ def main():
         qdir = mm_cfg.SHUNTQUEUE_DIR
 
     sb = get_switchboard(qdir)
+    sb.recover_backup_files()
     for filebase in sb.files():
         try:
             msg, msgdata = sb.dequeue(filebase)
@@ -62,6 +63,9 @@ def main():
             # other shunted messages.
             print >> sys.stderr, _(
                 'Cannot unshunt message $filebase, skipping:\n$e')
+        else:
+            # Unlink the .bak file left by enqueue()
+            tosb.finish(filebase)
 
 
 

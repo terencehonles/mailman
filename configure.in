@@ -12,10 +12,11 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 7926 $)
+AC_REVISION($Revision: 7942 $)
 AC_PREREQ(2.0)
 AC_INIT([GNU Mailman], [2.2.0a0])
 
@@ -642,7 +643,8 @@ AC_OUTPUT([misc/paths.py Mailman/Defaults.py Mailman/mm_cfg.py.dist
            Mailman/Makefile Mailman/Cgi/Makefile
            Mailman/Archiver/Makefile Mailman/Commands/Makefile
            Mailman/Handlers/Makefile Mailman/Bouncers/Makefile
-           Mailman/Queue/Makefile Mailman/MTA/Makefile Mailman/Gui/Makefile
+           Mailman/Queue/Makefile Mailman/Queue/tests/Makefile
+	   Mailman/MTA/Makefile Mailman/Gui/Makefile
            templates/Makefile cron/Makefile scripts/Makefile messages/Makefile
            cron/crontab.in misc/mailman Makefile
 	   Mailman/testing/Makefile Mailman/testing/bounces/Makefile

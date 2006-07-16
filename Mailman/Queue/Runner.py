@@ -19,8 +19,8 @@
 
 import time
 import weakref
-import traceback
 import logging
+import traceback
 import email.Errors
 
 from cStringIO import StringIO
@@ -44,7 +44,7 @@ class Runner:
         self._kids = {}
         # Create our own switchboard.  Don't use the switchboard cache because
         # we want to provide slice and numslice arguments.
-        self._switchboard = Switchboard(self.QDIR, slice, numslices)
+        self._switchboard = Switchboard(self.QDIR, slice, numslices, True)
         # Create the shunt switchboard
         self._shunt = Switchboard(config.SHUNTQUEUE_DIR)
         self._stop = False
@@ -104,6 +104,7 @@ class Runner:
                 continue
             try:
                 self._onefile(msg, msgdata)
+                self._switchboard.finish(filebase)
             except Exception, e:
                 # All runners that implement _dispose() must guarantee that
                 # exceptions are caught and dealt with properly.  Still, there
@@ -114,8 +115,9 @@ class Runner:
                 self._log(e)
                 # Put a marker in the metadata for unshunting
                 msgdata['whichq'] = self._switchboard.whichq()
-                filebase = self._shunt.enqueue(msg, msgdata)
-                log.error('SHUNTING: %s', filebase)
+                new_filebase = self._shunt.enqueue(msg, msgdata)
+                log.error('SHUNTING: %s', new_filebase)
+                self._switchboard.finish(filebase)
             # Other work we want to do each time through the loop
             Utils.reap(self._kids, once=True)
             self._doperiodic()
