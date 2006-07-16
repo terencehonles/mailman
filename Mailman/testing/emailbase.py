@@ -86,7 +86,6 @@ class EmailBase(TestBase):
                 else:
                     raise
         TestBase.tearDown(self)
-        os.remove(self._config)
 
     def _readmsg(self):
         global MSGTEXT

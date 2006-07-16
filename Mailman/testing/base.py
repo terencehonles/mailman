@@ -37,6 +37,9 @@ PERMISSIONS = stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH
 
 class TestBase(unittest.TestCase):
     def _configure(self, fp):
+##         print >> fp, \
+##               "MEMBER_ADAPTOR_CLASS = 'Mailman.SAMemberships.SAMemberships'"
+##         config.MEMBER_ADAPTOR_CLASS = 'Mailman.SAMemberships.SAMemberships'
         print >> fp, 'add_domain("example.com", "www.example.com")'
         # Only add this domain once to the current process
         if 'example.com' not in config.domains:
@@ -66,6 +69,11 @@ class TestBase(unittest.TestCase):
         mlist = MailList.MailList()
         mlist.Create('_xtest@example.com', 'owner@example.com', 'xxxxx')
         mlist.Save()
+        # We need to reload the mailing list to ensure that the member
+        # adaptors are all sync'd up.  This isn't strictly necessary with the
+        # OldStyleMemberships adaptor, but it may be required for other
+        # adaptors
+        mlist.Load()
         # This leaves the list in a locked state
         self._mlist = mlist
 
@@ -83,3 +91,4 @@ class TestBase(unittest.TestCase):
                 os.unlink(dir)
             elif os.path.isdir(dir):
                 shutil.rmtree(dir)
+        os.unlink(self._config)

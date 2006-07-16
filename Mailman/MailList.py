@@ -68,10 +68,10 @@ from Mailman import Gui
 from Mailman import i18n
 from Mailman import MemberAdaptor
 from Mailman import Message
-from Mailman.OldStyleMemberships import OldStyleMemberships
 
 _ = i18n._
 
+DOT         = '.'
 EMPTYSTRING = ''
 OR = '|'
 
@@ -89,7 +89,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
     #
     # A MailList object's basic Python object model support
     #
-    def __init__(self, name=None, lock=1):
+    def __init__(self, name=None, lock=True):
         # No timeout by default.  If you want to timeout, open the list
         # unlocked, then lock explicitly.
         #
@@ -99,8 +99,13 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
                 baseclass.__init__(self)
         # Initialize volatile attributes
         self.InitTempVars(name)
-        # Default membership adaptor class
-        self._memberadaptor = OldStyleMemberships(self)
+        # Attach a membership adaptor instance.
+        parts = config.MEMBER_ADAPTOR_CLASS.split(DOT)
+        adaptor_class = parts.pop()
+        adaptor_module = DOT.join(parts)
+        __import__(adaptor_module)
+        mod = sys.modules[adaptor_module]
+        self._memberadaptor = getattr(mod, adaptor_class)(self)
         # This extension mechanism allows list-specific overrides of any
         # method (well, except __init__(), InitTempVars(), and InitVars()
         # I think).  Note that fullpath() will return None when we're creating
@@ -157,6 +162,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
     #
     def Lock(self, timeout=0):
         self.__lock.lock(timeout)
+        self._memberadaptor.lock()
         # Must reload our database for consistency.  Watch out for lists that
         # don't exist.
         try:
@@ -166,7 +172,8 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             raise
 
     def Unlock(self):
-        self.__lock.unlock(unconditionally=1)
+        self.__lock.unlock(unconditionally=True)
+        self._memberadaptor.unlock()
 
     def Locked(self):
         return self.__lock.locked()
@@ -280,9 +287,10 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             lifetime=config.LIST_LOCK_LIFETIME)
         # XXX FIXME Sometimes name is fully qualified, sometimes it's not.
         if name and '@' in name:
-            self._internal_name, email_host = name.split('@', 1)
+            self._internal_name, self.host_name = name.split('@', 1)
         else:
             self._internal_name = name
+            self.host_name = config.DEFAULT_EMAIL_HOST
         if name:
             self._full_path = os.path.join(config.LIST_DATA_DIR, name)
         else:
@@ -571,6 +579,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         # the lock (which is a serious problem!).  TBD: do we need to be more
         # defensive?
         self.__lock.refresh()
+        self._memberadaptor.save()
         # copy all public attributes to serializable dictionary
         dict = {}
         for key, value in self.__dict__.items():
@@ -639,6 +648,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             fqdn_listname = self.fqdn_listname
         if not Utils.list_exists(fqdn_listname):
             raise Errors.MMUnknownListError
+        self._memberadaptor.load()
         # We first try to load config.pck, which contains the up-to-date
         # version of the database.  If that fails, perhaps because it's
         # corrupted or missing, we'll try to load the backup file

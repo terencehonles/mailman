@@ -47,6 +47,17 @@ class OldStyleMemberships(MemberAdaptor.MemberAdaptor):
         self.__mlist = mlist
 
     #
+    # Transaction interface
+    #
+
+    # These are all no-op'd because the data is all attached to and managed by
+    # the MailList object.
+    def load(self): pass
+    def lock(self): pass
+    def save(self): pass
+    def unlock(self): pass
+
+    #
     # Read interface
     #
     def getMembers(self):
@@ -271,6 +282,10 @@ class OldStyleMemberships(MemberAdaptor.MemberAdaptor):
         # toggling the Digests flag, then we need to move their entry from
         # mlist.members to mlist.digest_members or vice versa.  Blarg.  Do
         # this before the flag setting below in case it fails.
+        #
+        # XXX Adaptors should not be doing these semantic integrity checks,
+        # but for backward compatibility I'm not changing this.  New adaptors
+        # should not mimic this behavior.
         if flag == mm_cfg.Digests:
             if value:
                 # Be sure the list supports digest delivery

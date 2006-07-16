@@ -58,7 +58,7 @@ class Configuration(object):
                 raise
             # The file didn't exist, so try mm_cfg.py
             from Mailman import mm_cfg
-            ns = mm_cfg.__dict__.copy()
+            ns.update(mm_cfg.__dict__)
         # Pull out the defaults
         PREFIX          = ns['PREFIX']
         VAR_PREFIX      = ns['VAR_PREFIX']

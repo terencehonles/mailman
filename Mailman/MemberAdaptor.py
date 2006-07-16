@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -12,7 +12,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """This is an interface to list-specific membership information.
 
@@ -56,6 +57,47 @@ BYBOUNCE = 4                                      # disabled by bounces
 
 
 class MemberAdaptor:
+    def __init__(self, mlist):
+        """Create the adaptor, attached to the given mailing list."""
+        raise NotImplementedError
+
+    #
+    # Transaction interface
+    #
+    def load(self):
+        """Called when the mailing list data is loaded.
+
+        The adaptor should refresh/clear all in-memory objects.  The reason is
+        that other processes may have changed the database since the last time
+        the adaptor has been accessed.
+        """
+
+    def lock(self):
+        """Called when the mailing list is locked.
+
+        This should correspond to a database 'begin'.
+        """
+        raise NotImplementedError
+
+    def save(self):
+        """Called when a locked mailing list is saved.
+
+        This should correspond to a database 'commit' except that the adaptor
+        should record that the database has been saved, and this flag should
+        be checked in any subsequent unlock() calls.
+        """
+        raise NotImplementedError
+
+    def unlock(self):
+        """Called when a locked mailing list is unlocked.
+
+        Generally, this can be no-op'd if save() was previously called, but if
+        not, then a database 'rollback' should be issued.  There is no
+        explicit transaction rollback operation in the MailList API, but
+        processes will unlock without saving to mean the same thing.
+        """
+        raise NotImplementedError
+
     #
     # The readable interface
     #
@@ -181,6 +223,9 @@ class MemberAdaptor:
     def getDeliveryStatusChangeTime(self, member):
         """Return the time of the last disabled delivery status change.
 
+        Time is returned in float seconds since the epoch.  XXX this should be
+        a Python datetime.
+
         If the current delivery status is ENABLED, the status change time will
         be zero.  If member is not a member of the list, raise
         NotAMemberError.
@@ -254,7 +299,7 @@ class MemberAdaptor:
         """
         raise NotImplementedError
 
-    def changeMemberAddress(self, memberkey, newaddress, nodelete=0):
+    def changeMemberAddress(self, memberkey, newaddress, nodelete=False):
         """Change the address for the member KEY.
 
         memberkey will be a KEY, not an LCE.  newaddress should be the
@@ -273,8 +318,6 @@ class MemberAdaptor:
         """Set the password for member LCE/KEY.
 
         If member does not refer to a valid member, raise NotAMemberError.
-        Also raise BadPasswordError if the password is illegal (e.g. too
-        short or easily guessed via a dictionary attack).
         """
         raise NotImplementedError
 
@@ -282,8 +325,6 @@ class MemberAdaptor:
         """Set the language for the member LCE/KEY.
 
         If member does not refer to a valid member, raise NotAMemberError.
-        Also raise BadLanguageError if the language is invalid (e.g. the list
-        is not configured to support the given language).
         """
         raise NotImplementedError
 
@@ -294,8 +335,6 @@ class MemberAdaptor:
         Default.py, and value is a boolean.
 
         If member does not refer to a valid member, raise NotAMemberError.
-        Also raise BadOptionError if the flag does not refer to a valid
-        option.
         """
         raise NotImplementedError
 
