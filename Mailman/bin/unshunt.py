@@ -64,8 +64,8 @@ def main():
             print >> sys.stderr, _(
                 'Cannot unshunt message $filebase, skipping:\n$e')
         else:
-            # Unlink the .bak file left by enqueue()
-            tosb.finish(filebase)
+            # Unlink the .bak file left by dequeue()
+            sb.finish(filebase)
 
 
 
