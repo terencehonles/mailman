@@ -57,6 +57,8 @@ SAVE_MSGS_AS_PICKLES = True
 # prevents skipping one of two entries with the same time until the next pass.
 DELTA = .0001
 
+elog = logging.getLogger('mailman.error')
+
 
 
 class Switchboard:
@@ -162,7 +164,7 @@ class Switchboard:
         try:
             os.unlink(bakfile)
         except EnvironmentError, e:
-            log.exception('Failed to unlink backup file: %s', bakfile)
+            elog.exception('Failed to unlink backup file: %s', bakfile)
 
     def files(self, extension='.pck'):
         times = {}
