@@ -40,8 +40,6 @@ mlog    = logging.getLogger('mailman.mischief')
 class Deliverer:
     def SendSubscribeAck(self, name, password, digest, text=''):
         pluser = self.getMemberLanguage(name)
-        if not self.send_welcome_msg:
-            return
         if self.welcome_msg:
             welcome = Utils.wrap(self.welcome_msg) + '\n'
         else:
