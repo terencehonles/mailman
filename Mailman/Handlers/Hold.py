@@ -199,7 +199,7 @@ def hold_for_approval(mlist, msg, msgdata, exc):
     # BAW: This should really be tied into the email confirmation system so
     # that the message can be approved or denied via email as well as the
     # web.
-    if type(exc) is ClassType:
+    if isinstance(exc, ClassType) or isinstance(exc, type):
         # Go ahead and instantiate it now.
         exc = exc()
     listname = mlist.real_name

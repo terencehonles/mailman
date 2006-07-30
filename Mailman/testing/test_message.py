@@ -82,10 +82,10 @@ yadda yadda yadda
         # second message is the message/rfc822 attachment of the original
         # message.
         msg1 = qmsg.get_payload(0)
-        eq(msg1.get_type(), 'text/plain')
+        eq(msg1.get_content_type(), 'text/plain')
         eq(msg1.get_payload(), '[No bounce details are available]')
         msg2 = qmsg.get_payload(1)
-        eq(msg2.get_type(), 'message/rfc822')
+        eq(msg2.get_content_type(), 'message/rfc822')
         unless(msg2.is_multipart())
         msg3 = msg2.get_payload(0)
         eq(msg3.get_payload(), 'yadda yadda yadda\n')

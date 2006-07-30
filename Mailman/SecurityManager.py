@@ -343,11 +343,12 @@ splitter = re.compile(';\s*')
 
 def parsecookie(s):
     c = {}
-    for p in splitter.split(s):
-        try:
-            k, v = p.split('=', 1)
-        except ValueError:
-            pass
-        else:
-            c[k] = v
+    for line in s.splitlines():
+        for p in splitter.split(line):
+            try:
+                k, v = p.split('=', 1)
+            except ValueError:
+                pass
+            else:
+                c[k] = v
     return c

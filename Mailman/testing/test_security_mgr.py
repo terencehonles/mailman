@@ -90,8 +90,8 @@ class TestSecurityManager(TestBase):
 class TestAuthenticate(TestBase):
     def setUp(self):
         TestBase.setUp(self)
-        Utils.set_global_password('bbBBbb', siteadmin=1)
-        Utils.set_global_password('ccCCcc', siteadmin=0)
+        Utils.set_global_password('bbBBbb', siteadmin=True)
+        Utils.set_global_password('ccCCcc', siteadmin=False)
 
     def tearDown(self):
         try:
@@ -206,8 +206,8 @@ class StripperIO(StringIO):
 class TestWebAuthenticate(TestBase):
     def setUp(self):
         TestBase.setUp(self)
-        Utils.set_global_password('bbBBbb', siteadmin=1)
-        Utils.set_global_password('ccCCcc', siteadmin=0)
+        Utils.set_global_password('bbBBbb', siteadmin=True)
+        Utils.set_global_password('ccCCcc', siteadmin=False)
         mlist = self._mlist
         mlist.mod_password = password('abcdefg')
         mlist.addNewMember('aperson@dom.ain', password='qqQQqq')
@@ -235,25 +235,25 @@ class TestWebAuthenticate(TestBase):
         TestBase.tearDown(self)
 
     def test_auth_site_admin(self):
-        self.assertEqual(self._mlist.WebAuthenticate(
-            [config.AuthSiteAdmin], 'xxxxxx'), 1)
+        self.failUnless(self._mlist.WebAuthenticate(
+            [config.AuthSiteAdmin], 'does not matter'))
 
     def test_list_admin(self):
-        self.assertEqual(self._mlist.WebAuthenticate(
-            [config.AuthListAdmin], 'xxxxxx'), 1)
+        self.failUnless(self._mlist.WebAuthenticate(
+            [config.AuthListAdmin], 'does not matter'))
 
     def test_list_moderator(self):
-        self.assertEqual(self._mlist.WebAuthenticate(
-            [config.AuthListModerator], 'xxxxxx'), 1)
+        self.failUnless(self._mlist.WebAuthenticate(
+            [config.AuthListModerator], 'does not matter'))
 
     def test_user(self):
-        self.assertEqual(self._mlist.WebAuthenticate(
-            [config.AuthUser], 'xxxxxx'), 1)
+        self.failUnless(self._mlist.WebAuthenticate(
+            [config.AuthUser], 'does not matter'))
 
     def test_not_a_user(self):
         self._mlist.removeMember('aperson@dom.ain')
-        self.assertEqual(self._mlist.WebAuthenticate(
-            [config.AuthUser], 'xxxxxx', 'aperson@dom.ain'), 0)
+        self.failIf(self._mlist.WebAuthenticate(
+            [config.AuthUser], 'does not matter', 'aperson@dom.ain'))
 
 
 

@@ -53,7 +53,7 @@ SETUPINSTOPTS=	--install-lib $(DESTDIR)$(PYTHONLIBDIR) \
 		--install-data $(DESTDIR)$(PYTHONLIBDIR)
 SETUPCMD=	setup.py --quiet install $(SETUPINSTOPTS)
 
-EMAILPKG=	email-2.5.7
+EMAILPKG=	email-4.0.1
 
 PACKAGES= $(EMAILPKG)
 
@@ -83,7 +83,6 @@ install-other:
 	    $(INSTALL) -m $(FILEMODE) paths.py $$dir; \
 	done
 	$(INSTALL) -m $(EXEMODE) mailman $(DESTDIR)$(SCRIPTSDIR)
-	$(INSTALL) -m $(FILEMODE) sitelist.cfg $(DESTDIR)$(DATADIR)
 	$(INSTALL) -m $(FILEMODE) mailman.cfg.sample $(DESTDIR)$(ETCDIR)
 
 install-packages:

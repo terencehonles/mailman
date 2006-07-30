@@ -432,6 +432,9 @@ def UnobscureEmail(addr):
 
 
 
+class OuterExit(Exception):
+    pass
+
 def findtext(templatefile, dict=None, raw=False, lang=None, mlist=None):
     # Make some text from a template file.  The order of searches depends on
     # whether mlist and lang are provided.  Once the templatefile is found,
@@ -498,7 +501,6 @@ def findtext(templatefile, dict=None, raw=False, lang=None, mlist=None):
     searchdirs.append(os.path.join(config.TEMPLATE_DIR, 'site'))
     searchdirs.append(config.TEMPLATE_DIR)
     # Start scanning
-    quickexit = 'quickexit'
     fp = None
     try:
         for lang in languages:
@@ -506,12 +508,12 @@ def findtext(templatefile, dict=None, raw=False, lang=None, mlist=None):
                 filename = os.path.join(dir, lang, templatefile)
                 try:
                     fp = open(filename)
-                    raise quickexit
+                    raise OuterExit
                 except IOError, e:
                     if e.errno <> errno.ENOENT: raise
                     # Okay, it doesn't exist, keep looping
                     fp = None
-    except quickexit:
+    except OuterExit:
         pass
     if fp is None:
         # Try one last time with the distro English template, which, unless

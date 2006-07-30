@@ -131,7 +131,7 @@ From: aperson@example.org
         eq(str(str(qmsg['subject'])), '_xtest post acknowledgement')
         eq(qmsg['to'], 'aperson@example.org')
         eq(qmsg['from'], '_xtest-bounces@example.com')
-        eq(qmsg.get_type(), 'text/plain')
+        eq(qmsg.get_content_type(), 'text/plain')
         eq(qmsg.get_param('charset'), 'us-ascii')
         msgid = qmsg['message-id']
         self.failUnless(msgid.startswith('<mailman.'))
@@ -171,7 +171,7 @@ Subject: Wish you were here
         eq(str(qmsg['subject']), '_xtest post acknowledgement')
         eq(qmsg['to'], 'aperson@example.org')
         eq(qmsg['from'], '_xtest-bounces@example.com')
-        eq(qmsg.get_type(), 'text/plain')
+        eq(qmsg.get_content_type(), 'text/plain')
         eq(qmsg.get_param('charset'), 'us-ascii')
         msgid = qmsg['message-id']
         self.failUnless(msgid.startswith('<mailman.'))
@@ -1166,7 +1166,7 @@ yyy
         MimeDel.process(self._mlist, msg, {})
         eq(len(msg.get_payload()), 1)
         subpart = msg.get_payload(0)
-        eq(subpart.get_type(), 'image/gif')
+        eq(subpart.get_content_type(), 'image/gif')
         eq(subpart.get_payload(), 'yyy')
 
     def test_collapse_multipart_alternative(self):
@@ -1197,9 +1197,9 @@ yyy
 """)
         MimeDel.process(self._mlist, msg, {})
         eq(len(msg.get_payload()), 1)
-        eq(msg.get_type(), 'multipart/mixed')
+        eq(msg.get_content_type(), 'multipart/mixed')
         subpart = msg.get_payload(0)
-        eq(subpart.get_type(), 'image/gif')
+        eq(subpart.get_content_type(), 'image/gif')
         eq(subpart.get_payload(), 'yyy')
 
     def test_convert_to_plaintext(self):
@@ -1217,7 +1217,7 @@ MIME-Version: 1.0
 <body></body></html>
 """)
             MimeDel.process(self._mlist, msg, {})
-            eq(msg.get_type(), 'text/plain')
+            eq(msg.get_content_type(), 'text/plain')
             eq(msg.get_payload(), '\n\n\n')
 
     def test_deep_structure(self):
@@ -1266,13 +1266,13 @@ aaa
         payload = msg.get_payload()
         eq(len(payload), 3)
         part1 = msg.get_payload(0)
-        eq(part1.get_type(), 'text/plain')
+        eq(part1.get_content_type(), 'text/plain')
         eq(part1.get_payload(), 'A different message')
         part2 = msg.get_payload(1)
-        eq(part2.get_type(), 'image/gif')
+        eq(part2.get_content_type(), 'image/gif')
         eq(part2.get_payload(), 'zzz')
         part3 = msg.get_payload(2)
-        eq(part3.get_type(), 'image/gif')
+        eq(part3.get_content_type(), 'image/gif')
         eq(part3.get_payload(), 'aaa')
 
     def test_top_multipart_alternative(self):
@@ -1293,7 +1293,7 @@ This is plain text
 --AAA--
 """)
         MimeDel.process(self._mlist, msg, {})
-        eq(msg.get_type(), 'text/plain')
+        eq(msg.get_content_type(), 'text/plain')
         eq(msg.get_payload(), 'This is plain text')
 
 
@@ -1568,7 +1568,7 @@ Here is message %(i)d
         # is the RFC 1153 digest.
         for filebase in files:
             qmsg, qdata = self._sb.dequeue(filebase)
-            if qmsg.get_main_type() == 'multipart':
+            if qmsg.get_content_maintype() == 'multipart':
                 mimemsg = qmsg
                 mimedata = qdata
             else:
