@@ -216,11 +216,13 @@ DEFAULT_ARCHIVE_PRIVATE = 0
 # ARCHIVE_TO_MBOX
 #-1 - do not do any archiving
 # 0 - do not archive to mbox, use builtin mailman html archiving only
-# 1 - archive to mbox to use an external archiving mechanism only
-# 2 - archive to both mbox and builtin mailman html archiving -
-#     use this to make both external archiving mechanism work and
-#     mailman's builtin html archiving.  the flat mail file can be
-#     useful for searching, external archivers, etc.
+# 1 - do not use builtin mailman html archiving, archive to mbox only
+# 2 - archive to both mbox and builtin mailman html archiving.
+#     See the settings below for PUBLIC_EXTERNAL_ARCHIVER and
+#     PRIVATE_EXTERNAL_ARCHIVER which can be used to replace mailman's
+#     builtin html archiving with an external archiver.  The flat mail
+#     mbox file can be useful for searching, and is another way to
+#     interface external archivers, etc.
 ARCHIVE_TO_MBOX = 2
 
 # 0 - yearly
