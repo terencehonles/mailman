@@ -138,7 +138,7 @@ docstring.files:
 
 template.files:
 	@echo "Calculating template input files for templ2pot"
-	(cd ..; find templates/en -name '*.*' >| messages/$@)
+	(cd ..; ls templates/en/*.* >| messages/$@)
 
 potfile: marked.files docstring.files template.files
 	@echo "Running pygettext on $@; this make take a while."
