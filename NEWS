@@ -104,6 +104,10 @@ Here is a history of user visible changes to Mailman.
       unsuspecting administrator to visit a phishing site.  This has been
       blocked.  Thanks to Moritz Naumann for its discovery.
 
+  Internationalization
+
+    - New languages: Arabic, Vietnamese.
+
   Bug fixes and other patches
 
     - Fixed Decorate.py so that characters in message header/footer which
