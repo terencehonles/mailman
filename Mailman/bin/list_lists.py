@@ -69,7 +69,7 @@ def main():
     parser, opts, args = parseargs()
     config.load(opts.config)
 
-    names = Utils.list_names()
+    names = list(Utils.list_names())
     names.sort()
     mlists = []
     longest = 0

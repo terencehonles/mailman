@@ -89,7 +89,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
     #
     # A MailList object's basic Python object model support
     #
-    def __init__(self, name=None, lock=True):
+    def __init__(self, name=None, lock=True, check_version=True):
         # No timeout by default.  If you want to timeout, open the list
         # unlocked, then lock explicitly.
         #
@@ -130,7 +130,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             # This will load the database.
             self.Lock()
         else:
-            self.Load(name)
+            self.Load(name, check_version)
 
     def __getattr__(self, name):
         # Because we're using delegation, we want to be sure that attribute

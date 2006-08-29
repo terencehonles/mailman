@@ -200,7 +200,7 @@ def situate_list(listname):
     # This turns the directory called 'listname' into a directory called
     # 'listname@domain'.  Start by finding out what the domain should be.
     # A list's domain is its email host.
-    mlist = MailList.MailList(listname, lock=False)
+    mlist = MailList.MailList(listname, lock=False, check_version=False)
     fullname = mlist.fqdn_listname
     oldpath = os.path.join(config.VAR_PREFIX, 'lists', listname)
     newpath = os.path.join(config.VAR_PREFIX, 'lists', fullname)
@@ -314,7 +314,7 @@ script.
         else:
             # directory
             print _("""\
-    looks like you have a really recent CVS installation...
+    looks like you have a really recent development installation...
     you're either one brave soul, or you already ran me""")
     # Move public archive mbox there if it's around
     # and take into account all sorts of absurdities.
@@ -333,7 +333,7 @@ script.
         $newname""")
         else: # directory
             print _("""\
-    looks like you have a really recent CVS installation...
+    looks like you have a really recent development installation...
     you're either one brave soul, or you already ran me""")
     # Move the html archives there
     if os.path.isdir(o_html_dir):

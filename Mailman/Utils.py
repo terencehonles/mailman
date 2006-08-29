@@ -43,6 +43,13 @@ from Mailman import Errors
 from Mailman.SafeDict import SafeDict
 from Mailman.configuration import config
 
+# REMOVEME when Python 2.4 is minimum requirement
+try:
+    set
+except NameError:
+    from sets import Set as set
+
+
 EMPTYSTRING = ''
 UEMPTYSTRING = u''
 CR = '\r'
