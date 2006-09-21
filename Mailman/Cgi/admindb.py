@@ -193,7 +193,7 @@ def main():
                 + ' <em>%s</em>' % mlist.real_name))
         if details <> 'instructions':
             form.AddItem(Center(SubmitButton('submit', _('Submit All Data'))))
-        if not (sender or msgid):
+        if not (details or sender or msgid):
             form.AddItem(Center(
                 CheckBox('discardalldefersp', 0).Format() +
                 '&nbsp;' +
@@ -241,7 +241,7 @@ def main():
         if addform:
             doc.AddItem(form)
             form.AddItem('<hr>')
-            if not (sender or msgid):
+            if not (details or sender or msgid):
                 form.AddItem(Center(
                     CheckBox('discardalldefersp', 0).Format() +
                     '&nbsp;' +
