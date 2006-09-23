@@ -25,7 +25,6 @@ import codecs
 import logging
 
 from Mailman.configuration import config
-config.load()
 
 FMT     = '%(asctime)s (%(process)d) %(message)s'
 DATEFMT = '%b %d %H:%M:%S %Y'
