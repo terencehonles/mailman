@@ -46,17 +46,17 @@ SHELL=		/bin/sh
 
 SCRIPTS=	mmshell \
 		remove_members clone_member \
-		sync_members check_db withlist check_perms \
+		sync_members check_db withlist \
 		config_list dumpdb cleanarch \
 		list_admins genaliases \
 		fix_url.py convert.py transcheck \
 		msgfmt.py discard \
 		reset_pw.py templ2pot.py po2templ.py
 
-LN_SCRIPTS=	add_members arch change_pw find_member inject list_lists \
-		list_members list_owners mailmanctl mmsitepass newlist \
-		qrunner rmlist show_qfiles show_mm_cfg testall unshunt \
-		update version
+LN_SCRIPTS=	add_members arch change_pw check_perms find_member inject \
+		list_lists list_members list_owners mailmanctl mmsitepass \
+		newlist qrunner rmlist show_qfiles show_mm_cfg testall \
+		unshunt update version
 
 BUILDDIR=	../build/bin
 

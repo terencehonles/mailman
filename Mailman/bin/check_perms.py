@@ -1,6 +1,4 @@
-#! @PYTHON@
-#
-# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -14,7 +12,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """Check the permissions for the Mailman installation.
 
@@ -30,35 +29,18 @@ import sys
 import pwd
 import grp
 import errno
-import getopt
+import optparse
+
 from stat import *
 
-try:
-    import paths
-except ImportError:
-    print '''Could not import paths!
-
-This probably means that you are trying to run check_perms from the source
-directory.  You must run this from the installation directory instead.
-'''
-    raise
-from Mailman import mm_cfg
-from Mailman.mm_cfg import MAILMAN_USER, MAILMAN_GROUP
+from Mailman import Version
+from Mailman.configuration import config
 from Mailman.i18n import _
 
-# Let KeyErrors percolate
-MAILMAN_GID = grp.getgrnam(MAILMAN_GROUP)[2]
-MAILMAN_UID = pwd.getpwnam(MAILMAN_USER)[2]
+__i18n_templates__ = True
 
-PROGRAM = sys.argv[0]
 
-# Gotta check the archives/private/*/database/* files
-
-try:
-    True, False
-except NameError:
-    True = 1
-    False = 0
+# XXX Need to check the archives/private/*/database/* files
 
 
 
@@ -69,19 +51,22 @@ class State:
 
 STATE = State()
 
-DIRPERMS = S_ISGID | S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH
-QFILEPERMS = S_ISGID | S_IRWXU | S_IRWXG
-PYFILEPERMS = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
-ARTICLEFILEPERMS = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP
+DIRPERMS            = S_ISGID | S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH
+QFILEPERMS          = S_ISGID | S_IRWXU | S_IRWXG
+PYFILEPERMS         = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
+ARTICLEFILEPERMS    = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP
+MBOXPERMS           = S_IRGRP | S_IWGRP | S_IRUSR | S_IWUSR
 
 
 
 def statmode(path):
-    return os.stat(path)[ST_MODE]
+    return os.stat(path).st_mode
+
 
 def statgidmode(path):
     stat = os.stat(path)
-    return stat[ST_MODE], stat[ST_GID]
+    return stat.st_mode, stat.st_gid
+
 
 seen = {}
 
@@ -105,7 +90,7 @@ def checkwalk(arg, dirname, names):
     for name in names:
         path = os.path.join(dirname, name)
         if arg.VERBOSE:
-            print _('    checking gid and mode for %(path)s')
+            print _('    checking gid and mode for $path')
         try:
             mode, gid = statgidmode(path)
         except OSError, e:
@@ -117,22 +102,22 @@ def checkwalk(arg, dirname, names):
             except KeyError:
                 groupname = '<anon gid %d>' % gid
             arg.ERRORS += 1
-            print _('%(path)s bad group (has: %(groupname)s, '
-                    'expected %(MAILMAN_GROUP)s)'),
+            print _(
+                '$path bad group (has: $groupname, expected $MAILMAN_GROUP)'),
             if STATE.FIX:
                 print _('(fixing)')
                 os.chown(path, -1, MAILMAN_GID)
             else:
                 print
-        # all directories must be at least rwxrwsr-x.  Don't check the private
+        # All directories must be at least rwxrwsr-x.  Don't check the private
         # archive directory or database directory themselves since these are
         # checked in checkarchives() and checkarchivedbs() below.
-        private = mm_cfg.PRIVATE_ARCHIVE_FILE_DIR
+        private = config.PRIVATE_ARCHIVE_FILE_DIR
         if path == private or (os.path.commonprefix((path, private)) == private
                                and os.path.split(path)[1] == 'database'):
             continue
         # The directories under qfiles should have a more limited permission
-        if os.path.commonprefix((path, mm_cfg.QUEUE_DIR)) == mm_cfg.QUEUE_DIR:
+        if os.path.commonprefix((path, config.QUEUE_DIR)) == config.QUEUE_DIR:
             targetperms = QFILEPERMS
             octperms = oct(targetperms)
         else:
@@ -140,7 +125,7 @@ def checkwalk(arg, dirname, names):
             octperms = oct(targetperms)
         if S_ISDIR(mode) and (mode & targetperms) <> targetperms:
             arg.ERRORS += 1
-            print _('directory permissions must be %(octperms)s: %(path)s'),
+            print _('directory permissions must be $octperms: $path'),
             if STATE.FIX:
                 print _('(fixing)')
                 os.chmod(path, mode | targetperms)
@@ -149,7 +134,7 @@ def checkwalk(arg, dirname, names):
         elif os.path.splitext(path)[1] in ('.py', '.pyc', '.pyo'):
             octperms = oct(PYFILEPERMS)
             if mode & PYFILEPERMS <> PYFILEPERMS:
-                print _('source perms must be %(octperms)s: %(path)s'),
+                print _('source perms must be $octperms: $path'),
                 arg.ERRORS += 1
                 if STATE.FIX:
                     print _('(fixing)')
@@ -160,7 +145,7 @@ def checkwalk(arg, dirname, names):
             # Article files must be group writeable
             octperms = oct(ARTICLEFILEPERMS)
             if mode & ARTICLEFILEPERMS <> ARTICLEFILEPERMS:
-                print _('article db files must be %(octperms)s: %(path)s'),
+                print _('article db files must be $octperms: $path'),
                 arg.ERRORS += 1
                 if STATE.FIX:
                     print _('(fixing)')
@@ -168,25 +153,27 @@ def checkwalk(arg, dirname, names):
                 else:
                     print
 
+
+
 def checkall():
     # first check PREFIX
     if STATE.VERBOSE:
-        prefix = mm_cfg.PREFIX
-        print _('checking mode for %(prefix)s')
+        prefix = config.PREFIX
+        print _('checking mode for $prefix')
     dirs = {}
-    for d in (mm_cfg.PREFIX, mm_cfg.EXEC_PREFIX, mm_cfg.VAR_PREFIX,
-              mm_cfg.LOG_DIR):
+    for d in (config.PREFIX, config.EXEC_PREFIX, config.VAR_PREFIX,
+              config.LOG_DIR):
         dirs[d] = True
     for d in dirs.keys():
         try:
             mode = statmode(d)
         except OSError, e:
             if e.errno <> errno.ENOENT: raise
-            print _('WARNING: directory does not exist: %(d)s')
+            print _('WARNING: directory does not exist: $d')
             continue
         if (mode & DIRPERMS) <> DIRPERMS:
             STATE.ERRORS += 1
-            print _('directory must be at least 02775: %(d)s'),
+            print _('directory must be at least 02775: $d'),
             if STATE.FIX:
                 print _('(fixing)')
                 os.chmod(d, mode | DIRPERMS)
@@ -195,15 +182,17 @@ def checkall():
         # check all subdirs
         os.path.walk(d, checkwalk, STATE)
 
+
+
 def checkarchives():
-    private = mm_cfg.PRIVATE_ARCHIVE_FILE_DIR
+    private = config.PRIVATE_ARCHIVE_FILE_DIR
     if STATE.VERBOSE:
-        print _('checking perms on %(private)s')
+        print _('checking perms on $private')
     # private archives must not be other readable
     mode = statmode(private)
     if mode & S_IROTH:
         STATE.ERRORS += 1
-        print _('%(private)s must not be other-readable'),
+        print _('$private must not be other-readable'),
         if STATE.FIX:
             print _('(fixing)')
             os.chmod(private, mode & ~S_IROTH)
@@ -218,10 +207,10 @@ Warning: Private archive directory is other-executable (o+x).
          If you're on a shared multiuser system, you should consult the
          installation manual on how to fix this.""")
 
-MBOXPERMS = S_IRGRP | S_IWGRP | S_IRUSR | S_IWUSR
 
+
 def checkmboxfile(mboxdir):
-    absdir = os.path.join(mm_cfg.PRIVATE_ARCHIVE_FILE_DIR, mboxdir)
+    absdir = os.path.join(config.PRIVATE_ARCHIVE_FILE_DIR, mboxdir)
     for f in os.listdir(absdir):
         if not f.endswith('.mbox'):
             continue
@@ -236,15 +225,17 @@ def checkmboxfile(mboxdir):
             else:
                 print
 
+
+
 def checkarchivedbs():
     # The archives/private/listname/database file must not be other readable
     # or executable otherwise those files will be accessible when the archives
     # are public.  That may not be a horrible breach, but let's close this off
     # anyway.
-    for dir in os.listdir(mm_cfg.PRIVATE_ARCHIVE_FILE_DIR):
+    for dir in os.listdir(config.PRIVATE_ARCHIVE_FILE_DIR):
         if dir.endswith('.mbox'):
             checkmboxfile(dir)
-        dbdir = os.path.join(mm_cfg.PRIVATE_ARCHIVE_FILE_DIR, dir, 'database')
+        dbdir = os.path.join(config.PRIVATE_ARCHIVE_FILE_DIR, dir, 'database')
         try:
             mode = statmode(dbdir)
         except OSError, e:
@@ -252,75 +243,84 @@ def checkarchivedbs():
             continue
         if mode & S_IRWXO:
             STATE.ERRORS += 1
-            print _('%(dbdir)s "other" perms must be 000'),
+            print _('$dbdir "other" perms must be 000'),
             if STATE.FIX:
                 print _('(fixing)')
                 os.chmod(dbdir, mode & ~S_IRWXO)
             else:
                 print
 
+
+
 def checkcgi():
-    cgidir = os.path.join(mm_cfg.EXEC_PREFIX, 'cgi-bin')
+    cgidir = os.path.join(config.EXEC_PREFIX, 'cgi-bin')
     if STATE.VERBOSE:
         print _('checking cgi-bin permissions')
     exes = os.listdir(cgidir)
     for f in exes:
         path = os.path.join(cgidir, f)
         if STATE.VERBOSE:
-            print _('    checking set-gid for %(path)s')
+            print _('    checking set-gid for $path')
         mode = statmode(path)
         if mode & S_IXGRP and not mode & S_ISGID:
             STATE.ERRORS += 1
-            print _('%(path)s must be set-gid'),
+            print _('$path must be set-gid'),
             if STATE.FIX:
                 print _('(fixing)')
                 os.chmod(path, mode | S_ISGID)
             else:
                 print
 
+
+
 def checkmail():
-    wrapper = os.path.join(mm_cfg.WRAPPER_DIR, 'mailman')
+    wrapper = os.path.join(config.WRAPPER_DIR, 'mailman')
     if STATE.VERBOSE:
-        print _('checking set-gid for %(wrapper)s')
+        print _('checking set-gid for $wrapper')
     mode = statmode(wrapper)
     if not mode & S_ISGID:
         STATE.ERRORS += 1
-        print _('%(wrapper)s must be set-gid'),
+        print _('$wrapper must be set-gid'),
         if STATE.FIX:
             print _('(fixing)')
             os.chmod(wrapper, mode | S_ISGID)
 
+
+
 def checkadminpw():
-    for pwfile in (os.path.join(mm_cfg.DATA_DIR, 'adm.pw'),
-                   os.path.join(mm_cfg.DATA_DIR, 'creator.pw')):
+    for pwfile in (os.path.join(config.DATA_DIR, 'adm.pw'),
+                   os.path.join(config.DATA_DIR, 'creator.pw')):
         targetmode = S_IFREG | S_IRUSR | S_IWUSR | S_IRGRP
         if STATE.VERBOSE:
-            print _('checking permissions on %(pwfile)s')
+            print _('checking permissions on $pwfile')
         try:
             mode = statmode(pwfile)
         except OSError, e:
-            if e.errno <> errno.ENOENT: raise
+            if e.errno <> errno.ENOENT:
+                raise
             return
         if mode <> targetmode:
             STATE.ERRORS += 1
             octmode = oct(mode)
-            print _('%(pwfile)s permissions must be exactly 0640 '
-                    '(got %(octmode)s)'),
+            print _('$pwfile permissions must be exactly 0640 (got $octmode)'),
             if STATE.FIX:
                 print _('(fixing)')
                 os.chmod(pwfile, targetmode)
             else:
                 print
 
+
 def checkmta():
-    if mm_cfg.MTA:
-        modname = 'Mailman.MTA.' + mm_cfg.MTA
+    if config.MTA:
+        modname = 'Mailman.MTA.' + config.MTA
         __import__(modname)
         try:
             sys.modules[modname].checkperms(STATE)
         except AttributeError:
             pass
 
+
+
 def checkdata():
     targetmode = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP
     checkfiles = ('config.pck', 'config.pck.last',
@@ -329,20 +329,20 @@ def checkdata():
                   'request.db', 'request.db.tmp')
     if STATE.VERBOSE:
         print _('checking permissions on list data')
-    # BAW: This needs to be converted to the Site module abstraction
-    for dir in os.listdir(mm_cfg.LIST_DATA_DIR):
+    for dir in os.listdir(config.LIST_DATA_DIR):
         for file in checkfiles:
-            path = os.path.join(mm_cfg.LIST_DATA_DIR, dir, file)
+            path = os.path.join(config.LIST_DATA_DIR, dir, file)
             if STATE.VERBOSE:
-                print _('    checking permissions on: %(path)s')
+                print _('    checking permissions on: $path')
             try:
                 mode = statmode(path)
             except OSError, e:
-                if e.errno <> errno.ENOENT: raise
+                if e.errno <> errno.ENOENT:
+                    raise
                 continue
             if (mode & targetmode) <> targetmode:
                 STATE.ERRORS += 1
-                print _('file permissions must be at least 660: %(path)s'),
+                print _('file permissions must be at least 660: $path'),
                 if STATE.FIX:
                     print _('(fixing)')
                     os.chmod(path, mode | targetmode)
@@ -351,31 +351,46 @@ def checkdata():
 
 
 
-def usage(code, msg=''):
-    if code:
-        fd = sys.stderr
-    else:
-        fd = sys.stdout
-    print >> fd, _(__doc__)
-    if msg:
-        print >> fd, msg
-    sys.exit(code)
+def parseargs():
+    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
+                                   usage=_("""\
+%prog [options]
+
+Check the permissions of all Mailman files.  With no options, just report the
+permission and ownership problems found."""))
+    parser.add_option('-f', '--fix',
+                      default=False, action='store_true',
+                      help=_("""\
+Fix all permission and ownership problems found.  With this option, you must
+run check_perms as root."""))
+    parser.add_option('-v', '--verbose',
+                      default=False, action='store_true',
+                      help=_('Produce more verbose output'))
+    parser.add_option('-C', '--config',
+                      help=_('Alternative configuration file to use'))
+    opts, args = parser.parse_args()
+    if args:
+        parser.print_help()
+        print >> sys.stderr, _('Unexpected arguments')
+        sys.exit(1)
+    return parser, opts, args
 
 
-if __name__ == '__main__':
-    try:
-        opts, args = getopt.getopt(sys.argv[1:], 'fvh',
-                                   ['fix', 'verbose', 'help'])
-    except getopt.error, msg:
-        usage(1, msg)
+
+def main():
+    global MAILMAN_USER, MAILMAN_GROUP, MAILMAN_UID, MAILMAN_GID
 
-    for opt, arg in opts:
-        if opt in ('-h', '--help'):
-            usage(0)
-        elif opt in ('-f', '--fix'):
-            STATE.FIX = True
-        elif opt in ('-v', '--verbose'):
-            STATE.VERBOSE = True
+    parser, opts, args = parseargs()
+    STATE.FIX = opts.fix
+    STATE.VERBOSE = opts.verbose
+
+    config.load(opts.config)
+
+    MAILMAN_USER  = config.MAILMAN_USER
+    MAILMAN_GROUP = config.MAILMAN_GROUP
+    # Let KeyErrors percolate
+    MAILMAN_GID = grp.getgrnam(MAILMAN_GROUP).gr_gid
+    MAILMAN_UID = pwd.getpwnam(MAILMAN_USER).pw_uid
 
     checkall()
     checkarchives()
@@ -390,4 +405,8 @@ if __name__ == '__main__':
         print _('No problems found')
     else:
         print _('Problems found:'), STATE.ERRORS
-        print _('Re-run as %(MAILMAN_USER)s (or root) with -f flag to fix')
+        print _('Re-run as $MAILMAN_USER (or root) with -f flag to fix')
+    
+
+if __name__ == '__main__':
+    main()
