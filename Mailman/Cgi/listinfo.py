@@ -82,7 +82,7 @@ def listinfo_overview(msg=''):
 
     # Skip any mailing lists that isn't advertised.
     advertised = []
-    listnames = Utils.list_names()
+    listnames = list(Utils.list_names())
     listnames.sort()
 
     for name in listnames:

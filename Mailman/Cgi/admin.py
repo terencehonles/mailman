@@ -218,7 +218,7 @@ def admin_overview(msg=''):
                       bgcolor=mm_cfg.WEB_HEADER_COLOR)
     # Skip any mailing list that isn't advertised.
     advertised = []
-    listnames = Utils.list_names()
+    listnames = list(Utils.list_names())
     listnames.sort()
 
     for name in listnames:

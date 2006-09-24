@@ -647,7 +647,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         if fqdn_listname is None:
             fqdn_listname = self.fqdn_listname
         if not Utils.list_exists(fqdn_listname):
-            raise Errors.MMUnknownListError
+            raise Errors.MMUnknownListError(fqdn_listname)
         self._memberadaptor.load()
         # We first try to load config.pck, which contains the up-to-date
         # version of the database.  If that fails, perhaps because it's

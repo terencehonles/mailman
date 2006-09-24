@@ -28,7 +28,14 @@ class MailmanException(Exception):
 
 # Exceptions for problems related to opening a list
 class MMListError(MailmanException): pass
-class MMUnknownListError(MMListError): pass
+
+class MMUnknownListError(MMListError):
+    def __init__(self, listname=None):
+        self._listname = listname
+
+    def __str__(self):
+        return self._listname
+
 class MMCorruptListDatabaseError(MMListError): pass
 class MMListNotReadyError(MMListError): pass
 class MMListAlreadyExistsError(MMListError): pass

@@ -68,6 +68,8 @@ def run_main():
     log = None
     try:
         import paths
+        from Mailman.configuration import config
+        config.load()
         # When running in non-stealth mode, we need to escape entities,
         # otherwise we're vulnerable to cross-site scripting attacks.
         try:
