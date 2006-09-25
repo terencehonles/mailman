@@ -20,7 +20,8 @@ import getpass
 import optparse
 
 from Mailman import Utils
-from Mailman import mm_cfg
+from Mailman import Version
+from Mailman.configuration import config
 from Mailman.i18n import _
 
 __i18n_templates__ = True
@@ -28,7 +29,7 @@ __i18n_templates__ = True
 
 
 def parseargs():
-    parser = optparse.OptionParser(version=mm_cfg.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
                                    usage=_("""\
 %prog [options] [password]
 
@@ -48,6 +49,8 @@ If password is not given on the command line, it will be prompted for.
 Set the list creator password instead of the site password.  The list
 creator is authorized to create and remove lists, but does not have
 the total power of the site administrator."""))
+    parser.add_option('-C', '--config',
+                      help=_('Alternative configuration file to use'))
     opts, args = parser.parse_args()
     if len(args) > 1:
         parser.print_help()
@@ -59,6 +62,7 @@ the total power of the site administrator."""))
 
 def main():
     parser, opts, args = parseargs()
+    config.load(opts.config)
     if args:
         password = args[0]
     else:

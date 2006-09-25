@@ -27,14 +27,14 @@ import logging
 from stat import *
 
 from Mailman import LockFile
-from Mailman import mm_cfg
 from Mailman import Utils
-from Mailman.i18n import _
 from Mailman.MTA.Utils import makealiases
+from Mailman.configuration import config
+from Mailman.i18n import _
 
-LOCKFILE = os.path.join(mm_cfg.LOCK_DIR, 'creator')
-ALIASFILE = os.path.join(mm_cfg.DATA_DIR, 'aliases')
-VIRTFILE = os.path.join(mm_cfg.DATA_DIR, 'virtual-mailman')
+LOCKFILE = os.path.join(config.LOCK_DIR, 'creator')
+ALIASFILE = os.path.join(config.DATA_DIR, 'aliases')
+VIRTFILE = os.path.join(config.DATA_DIR, 'virtual-mailman')
 
 log = logging.getLogger('mailman.error')
 
@@ -42,14 +42,14 @@ log = logging.getLogger('mailman.error')
 
 def _update_maps():
     msg = 'command failed: %s (status: %s, %s)'
-    acmd = mm_cfg.POSTFIX_ALIAS_CMD + ' ' + ALIASFILE
+    acmd = config.POSTFIX_ALIAS_CMD + ' ' + ALIASFILE
     status = (os.system(acmd) >> 8) & 0xff
     if status:
         errstr = os.strerror(status)
         log.error(msg, acmd, status, errstr)
         raise RuntimeError(msg % (acmd, status, errstr))
     if os.path.exists(VIRTFILE):
-        vcmd = mm_cfg.POSTFIX_MAP_CMD + ' ' + VIRTFILE
+        vcmd = config.POSTFIX_MAP_CMD + ' ' + VIRTFILE
         status = (os.system(vcmd) >> 8) & 0xff
         if status:
             errstr = os.strerror(status)
@@ -79,7 +79,7 @@ def clear():
 def _addlist(mlist, fp):
     # Set up the mailman-loop address
     loopaddr = Utils.ParseEmail(Utils.get_site_noreply())[0]
-    loopmbox = os.path.join(mm_cfg.DATA_DIR, 'owner-bounces.mbox')
+    loopmbox = os.path.join(config.DATA_DIR, 'owner-bounces.mbox')
     # Seek to the end of the text file, but if it's empty write the standard
     # disclaimer, and the loop catch address.
     fp.seek(0, 2)
@@ -104,7 +104,7 @@ def _addlist(mlist, fp):
     print >> fp, '# STANZA START:', listname
     print >> fp, '# CREATED:', time.ctime(time.time())
     # Now add all the standard alias entries
-    for k, v in makealiases(listname):
+    for k, v in makealiases(mlist):
         # Format the text file nicely
         print >> fp, k + ':', ((fieldsz - len(k)) * ' ') + v
     # Finish the text file stanza
@@ -141,7 +141,7 @@ def _addvirtual(mlist, fp):
     print >> fp, '# STANZA START:', listname
     print >> fp, '# CREATED:', time.ctime(time.time())
     # Now add all the standard alias entries
-    for k, v in makealiases(listname):
+    for k, v in makealiases(mlist):
         # Format the text file nicely
         print >> fp, mlist.fqdn_listname, ((fieldsz - len(k)) * ' '), k
     # Finish the text file stanza
@@ -223,7 +223,7 @@ def create(mlist, cgi=False, nolock=False, quiet=False):
     # Do the aliases file, which need to be done in any case
     try:
         _do_create(mlist, ALIASFILE, _addlist)
-        if mlist and mlist.host_name in mm_cfg.POSTFIX_STYLE_VIRTUAL_DOMAINS:
+        if mlist and mlist.host_name in config.POSTFIX_STYLE_VIRTUAL_DOMAINS:
             _do_create(mlist, VIRTFILE, _addvirtual)
         _update_maps()
     finally:
@@ -286,7 +286,7 @@ def remove(mlist, cgi=False):
     lock.lock()
     try:
         _do_remove(mlist, ALIASFILE, False)
-        if mlist.host_name in mm_cfg.POSTFIX_STYLE_VIRTUAL_DOMAINS:
+        if mlist.host_name in config.POSTFIX_STYLE_VIRTUAL_DOMAINS:
             _do_remove(mlist, VIRTFILE, True)
         # Regenerate the alias and map files
         _update_maps()
@@ -328,7 +328,7 @@ def checkperms(state):
             continue
         if state.VERBOSE:
             print _('checking ownership of %(dbfile)s')
-        user = mm_cfg.MAILMAN_USER
+        user = config.MAILMAN_USER
         ownerok = stat[ST_UID] == pwd.getpwnam(user)[2]
         if not ownerok:
             try:
@@ -340,7 +340,7 @@ def checkperms(state):
             if state.FIX:
                 print _('(fixing)')
                 uid = pwd.getpwnam(user)[2]
-                gid = grp.getgrnam(mm_cfg.MAILMAN_GROUP)[2]
+                gid = grp.getgrnam(config.MAILMAN_GROUP)[2]
                 os.chown(dbfile, uid, gid)
             else:
                 print

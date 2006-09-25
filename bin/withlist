@@ -187,6 +187,9 @@ def do_list(listname, args, func):
         else:
             print >> sys.stderr, _('(unlocked)')
 
+    if '@' not in listname:
+        listname += '@' + config.DEFAULT_EMAIL_HOST
+
     try:
         m = MailList.MailList(listname, lock=LOCK)
     except Errors.MMUnknownListError:

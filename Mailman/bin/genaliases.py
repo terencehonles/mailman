@@ -1,6 +1,6 @@
 #! @PYTHON@
 #
-# Copyright (C) 2001-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -14,73 +14,51 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-
-"""Regenerate Mailman specific aliases from scratch.
-
-The actual output depends on the value of the `MTA' variable in your mm_cfg.py
-file.
-
-Usage: genaliases [options]
-Options:
-
-    -q/--quiet
-        Some MTA output can include more verbose help text.  Use this to tone
-        down the verbosity.
-
-    -h/--help
-        Print this message and exit.
-"""
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 import os
 import sys
-import getopt
+import optparse
 
-import paths                                      # path hacking
-from Mailman import mm_cfg
-from Mailman import Utils
 from Mailman import MailList
+from Mailman import Utils
+from Mailman import Version
+from Mailman.configuration import config
 from Mailman.i18n import _
 
-try:
-    True, False
-except NameError:
-    True = 1
-    False = 0
+__i18n_templates__ = True
 
 
 
-def usage(code, msg=''):
-    if code:
-        fd = sys.stderr
-    else:
-        fd = sys.stdout
-    print >> fd, _(__doc__)
-    if msg:
-        print >> fd, msg
-    sys.exit(code)
+def parseargs():
+    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
+                                   usage=_("""\
+%prog [options]
+
+Regenerate the Mailman specific MTA aliases from scratch.  The actual output
+depends on the value of the 'MTA' variable in your etc/mailman.cfg file."""))
+    parser.add_option('-q', '--quiet',
+                      default=False, action='store_true', help=_("""\
+Some MTA output can include more verbose help text.  Use this to tone down the
+verbosity."""))
+    parser.add_option('-C', '--config',
+                      help=_('Alternative configuration file to use'))
+    opts, args = parser.parse_args()
+    if args:
+        parser.print_help()
+        print >> sys.stderr, _('Unexpected arguments')
+        sys.exit(1)
+    return parser, opts, args
 
 
 
 def main():
-    quiet = False
-    try:
-        opts, args = getopt.getopt(sys.argv[1:], 'hq',
-                                   ['help', 'quiet'])
-    except getopt.error, msg:
-        usage(1, msg)
-
-    for opt, arg in opts:
-        if opt in ('-h', '--help'):
-            usage(0)
-        elif opt in ('-q', '--quiet'):
-            quiet = True
-
-    if args:
-        usage(1)
+    parser, opts, args = parseargs()
+    config.load(opts.config)
 
     # Import the MTA specific module
-    modulename = 'Mailman.MTA.' + mm_cfg.MTA
+    modulename = 'Mailman.MTA.' + config.MTA
     __import__(modulename)
     MTA = sys.modules[modulename]
 
@@ -99,11 +77,11 @@ def main():
     try:
         MTA.clear()
         if not mlists:
-            MTA.create(None, nolock=True, quiet=quiet)
+            MTA.create(None, nolock=True, quiet=opts.quiet)
         else:
             for hostname, vlists in mlists.items():
                 for mlist in vlists:
-                    MTA.create(mlist, nolock=True, quiet=quiet)
+                    MTA.create(mlist, nolock=True, quiet=opts.quiet)
                     # Be verbose for only the first printed list
                     quiet = True
     finally:

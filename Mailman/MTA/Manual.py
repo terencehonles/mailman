@@ -24,10 +24,12 @@ from cStringIO import StringIO
 
 from Mailman import Message
 from Mailman import Utils
-from Mailman import mm_cfg
 from Mailman.MTA.Utils import makealiases
 from Mailman.Queue.sbcache import get_switchboard
+from Mailman.configuration import config
 from Mailman.i18n import _
+
+__i18n_templates__ = True
 
 
 
@@ -59,10 +61,10 @@ def create(mlist, cgi=False, nolock=False, quiet=False):
         sfp = StringIO()
         if not quiet:
             print >> sfp, _("""\
-The mailing list `%(listname)s' has been created via the through-the-web
+The mailing list '$listname' has been created via the through-the-web
 interface.  In order to complete the activation of this mailing list, the
 proper /etc/aliases (or equivalent) file must be updated.  The program
-`newaliases' may also have to be run.
+'newaliases' may also have to be run.
 
 Here are the entries for the /etc/aliases file:
 """)
@@ -72,10 +74,10 @@ Here are the entries for the /etc/aliases file:
             print _("""\
 To finish creating your mailing list, you must edit your /etc/aliases (or
 equivalent) file by adding the following lines, and possibly running the
-`newaliases' program:
+'newaliases' program:
 """)
         print _("""\
-## %(listname)s mailing list""")
+## $listname mailing list""")
         outfp = sys.stdout
     # Common path
     for k, v in makealiases(mlist):
@@ -89,8 +91,8 @@ equivalent) file by adding the following lines, and possibly running the
     # Should this be sent in the site list's preferred language?
     msg = Message.UserNotification(
         siteowner, siteowner,
-        _('Mailing list creation request for list %(listname)s'),
-        sfp.getvalue(), mm_cfg.DEFAULT_SERVER_LANGUAGE)
+        _('Mailing list creation request for list $listname'),
+        sfp.getvalue(), config.DEFAULT_SERVER_LANGUAGE)
     msg.send(mlist)
 
 
@@ -104,10 +106,10 @@ def remove(mlist, cgi=False):
         # aliases be deleted.
         sfp = StringIO()
         print >> sfp, _("""\
-The mailing list `%(listname)s' has been removed via the through-the-web
+The mailing list '$listname' has been removed via the through-the-web
 interface.  In order to complete the de-activation of this mailing list, the
 appropriate /etc/aliases (or equivalent) file must be updated.  The program
-`newaliases' may also have to be run.
+'newaliases' may also have to be run.
 
 Here are the entries in the /etc/aliases file that should be removed:
 """)
@@ -116,9 +118,9 @@ Here are the entries in the /etc/aliases file that should be removed:
         print _("""
 To finish removing your mailing list, you must edit your /etc/aliases (or
 equivalent) file by removing the following lines, and possibly running the
-`newaliases' program:
+'newaliases' program:
 
-## %(listname)s mailing list""")
+## $listname mailing list""")
         outfp = sys.stdout
     # Common path
     for k, v in makealiases(mlist):
@@ -132,8 +134,8 @@ equivalent) file by removing the following lines, and possibly running the
     # Should this be sent in the site list's preferred language?
     msg = Message.UserNotification(
         siteowner, siteowner,
-        _('Mailing list removal request for list %(listname)s'),
-        sfp.getvalue(), mm_cfg.DEFAULT_SERVER_LANGUAGE)
-    msg['Date'] = email.Utils.formatdate(localtime=1)
-    outq = get_switchboard(mm_cfg.OUTQUEUE_DIR)
-    outq.enqueue(msg, recips=[siteowner], nodecorate=1)
+        _('Mailing list removal request for list $listname'),
+        sfp.getvalue(), config.DEFAULT_SERVER_LANGUAGE)
+    msg['Date'] = email.Utils.formatdate(localtime=True)
+    outq = get_switchboard(config.OUTQUEUE_DIR)
+    outq.enqueue(msg, recips=[siteowner], nodecorate=True)

@@ -15,15 +15,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-"""Check the permissions for the Mailman installation.
-
-Usage: %(PROGRAM)s [-f] [-v] [-h]
-
-With no arguments, just check and report all the files that have bogus
-permissions or group ownership.  With -f (and run as root), fix all the
-permission problems found.  With -v be verbose.
-"""
-
 import os
 import sys
 import pwd
@@ -359,8 +350,7 @@ def parseargs():
 Check the permissions of all Mailman files.  With no options, just report the
 permission and ownership problems found."""))
     parser.add_option('-f', '--fix',
-                      default=False, action='store_true',
-                      help=_("""\
+                      default=False, action='store_true', help=_("""\
 Fix all permission and ownership problems found.  With this option, you must
 run check_perms as root."""))
     parser.add_option('-v', '--verbose',

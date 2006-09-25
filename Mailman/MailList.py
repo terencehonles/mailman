@@ -286,15 +286,14 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             os.path.join(config.LOCK_DIR, name or '<site>') + '.lock',
             lifetime=config.LIST_LOCK_LIFETIME)
         # XXX FIXME Sometimes name is fully qualified, sometimes it's not.
-        if name and '@' in name:
+        if '@' in name:
             self._internal_name, self.host_name = name.split('@', 1)
+            self._full_path = os.path.join(config.LIST_DATA_DIR, name)
         else:
             self._internal_name = name
             self.host_name = config.DEFAULT_EMAIL_HOST
-        if name:
-            self._full_path = os.path.join(config.LIST_DATA_DIR, name)
-        else:
-            self._full_path = ''
+            self._full_path = os.path.join(config.LIST_DATA_DIR,
+                                           self.host_name + '@' + name)
         # Only one level of mixin inheritance allowed
         for baseclass in self.__class__.__bases__:
             if hasattr(baseclass, 'InitTempVars'):

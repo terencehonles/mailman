@@ -79,7 +79,7 @@ def process_request(doc, cgidata):
     listname = cgidata.getvalue('listname', '').strip().lower()
     owner    = cgidata.getvalue('owner', '').strip()
     try:
-        autogen = bool(cgidata.getvalue('autogen', '0'))
+        autogen = bool(int(cgidata.getvalue('autogen', '0')))
     except ValueError:
         autogen = False
     try:
@@ -319,7 +319,7 @@ def request_creation(doc, cgidata=dummy, errmsg=None):
     ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor=GREY)
 
     try:
-        autogen = bool(cgidata.getvalue('autogen', '0'))
+        autogen = bool(int(cgidata.getvalue('autogen', '0')))
     except ValueError:
         autogen = False
     ftable.AddRow([Label(_('Auto-generate initial list password?')),

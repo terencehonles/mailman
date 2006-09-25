@@ -16,7 +16,7 @@
 # USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 8038 $)
+AC_REVISION($Revision: 8040 $)
 AC_PREREQ(2.0)
 AC_INIT([GNU Mailman], [2.2.0a0])
 
@@ -600,7 +600,6 @@ bin/convert.py \
 bin/discard \
 bin/dumpdb \
 bin/fix_url.py \
-bin/genaliases \
 bin/list_admins \
 bin/mmshell \
 bin/msgfmt.py \
