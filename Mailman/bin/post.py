@@ -31,8 +31,8 @@ import logging
 
 from Mailman import Utils
 from Mailman import loginit
-from Mailman import mm_cfg
 from Mailman.Queue.sbcache import get_switchboard
+from Mailman.configuration import config
 from Mailman.i18n import _
 
 __i18n_templates__ = True
@@ -40,6 +40,7 @@ __i18n_templates__ = True
 
 
 def main():
+    config.load()
     # Setup logging to stderr stream and error log.
     loginit.initialize(propagate=True)
     log = logging.getLogger('mailman.error')
@@ -61,7 +62,7 @@ def main():
     # some MTAs have a hard limit to the time a filter prog can run.  Postfix
     # is a good example; if the limit is hit, the proc is SIGKILL'd giving us
     # no chance to save the message.
-    inq = get_switchboard(mm_cfg.INQUEUE_DIR)
+    inq = get_switchboard(config.INQUEUE_DIR)
     inq.enqueue(sys.stdin.read(),
                 listname=listname,
                 tolist=True, _plaintext=True)

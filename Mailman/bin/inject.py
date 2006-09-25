@@ -21,7 +21,8 @@ import optparse
 
 from Mailman import Post
 from Mailman import Utils
-from Mailman import mm_cfg
+from Mailman import Version
+from Mailman.configuration import config
 from Mailman.i18n import _
 
 __i18n_templates__ = True
@@ -29,7 +30,7 @@ __i18n_templates__ = True
 
 
 def parseargs():
-    parser = optparse.OptionParser(version=mm_cfg.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
                                    usage=_("""\
 %prog [options] [filename]
 
@@ -45,6 +46,8 @@ The name of the list to inject this message to.  Required."""))
 The name of the queue to inject the message to.  The queuename must be one of
 the directories inside the qfiles directory.  If omitted, the incoming queue
 is used."""))
+    parser.add_option('-C', '--config',
+                      help=_('Alternative configuration file to use'))
     opts, args = parser.parse_args()
     if len(args) > 1:
         parser.print_help()
@@ -60,15 +63,16 @@ is used."""))
 
 def main():
     parser, opts, args = parseargs()
+    config.load(opts.config)
 
     if opts.queue:
-        qdir = os.path.join(mm_cfg.QUEUE_DIR, opts.queue)
+        qdir = os.path.join(config.QUEUE_DIR, opts.queue)
         if not os.path.isdir(qdir):
             parser.print_help()
             print >> sys.stderr, _('Bad queue directory: $qdir')
             sys.exit(1)
     else:
-        qdir = mm_cfg.INQUEUE_DIR
+        qdir = config.INQUEUE_DIR
 
     if not Utils.list_exists(opts.listname):
         parser.print_help()

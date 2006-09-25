@@ -61,7 +61,7 @@ def main():
     # Get the list object
     listname = parts[0].lower()
     try:
-        mlist = MailList.MailList(listname, lock=0)
+        mlist = MailList.MailList(listname, lock=False)
     except Errors.MMListError, e:
         # Avoid cross-site scripting attacks
         safelistname = Utils.websafe(listname)

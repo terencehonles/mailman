@@ -28,8 +28,8 @@ import logging
 
 from Mailman import Utils
 from Mailman import loginit
-from Mailman import mm_cfg
 from Mailman.Queue.sbcache import get_switchboard
+from Mailman.configuration import config
 from Mailman.i18n import _
 
 __i18n_templates__ = True
@@ -54,7 +54,7 @@ def main():
     # some MTAs have a hard limit to the time a filter prog can run.  Postfix
     # is a good example; if the limit is hit, the proc is SIGKILL'd giving us
     # no chance to save the message.
-    cmdq = get_switchboard(mm_cfg.CMDQUEUE_DIR)
+    cmdq = get_switchboard(config.CMDQUEUE_DIR)
     cmdq.enqueue(sys.stdin.read(), listname=listname,
                  toleave=True, _plaintext=True)
 

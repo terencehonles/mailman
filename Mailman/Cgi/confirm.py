@@ -20,19 +20,19 @@
 import cgi
 import time
 import signal
+import logging
 
 from Mailman import Errors
-from Mailman import i18n
 from Mailman import MailList
-from Mailman import mm_cfg
 from Mailman import Pending
-
-from Mailman.htmlformat import *
+from Mailman import i18n
 from Mailman.UserDesc import UserDesc
+from Mailman.configuration import config
+from Mailman.htmlformat import *
 
 # Set up i18n
 _ = i18n._
-i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+i18n.set_language(config.DEFAULT_SERVER_LANGUAGE)
 
 log = logging.getLogger('mailman.error')
 
@@ -40,7 +40,7 @@ log = logging.getLogger('mailman.error')
 
 def main():
     doc = Document()
-    doc.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+    doc.set_language(config.DEFAULT_SERVER_LANGUAGE)
 
     parts = Utils.GetPathPieces()
     if not parts or len(parts) < 1:
@@ -85,7 +85,7 @@ def main():
         ask_for_cookie(mlist, doc)
         return
 
-    days = int(mm_cfg.PENDING_REQUEST_LIFE / mm_cfg.days(1) + 0.5)
+    days = int(config.PENDING_REQUEST_LIFE / config.days(1) + 0.5)
     confirmurl = mlist.GetScriptURL('confirm', absolute=1)
     # Avoid cross-site scripting attacks
     safecookie = Utils.websafe(cookie)
@@ -193,7 +193,7 @@ def ask_for_cookie(mlist, doc, extra=''):
     table = Table(border=0, width='100%')
     table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0,
-                      colspan=2, bgcolor=mm_cfg.WEB_HEADER_COLOR)
+                      colspan=2, bgcolor=config.WEB_HEADER_COLOR)
 
     if extra:
         table.AddRow([Bold(FontAttr(extra, size='+1'))])
@@ -231,7 +231,7 @@ def subscription_prompt(mlist, doc, cookie, userdesc):
     table = Table(border=0, width='100%')
     table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0,
-                      colspan=2, bgcolor=mm_cfg.WEB_HEADER_COLOR)
+                      colspan=2, bgcolor=config.WEB_HEADER_COLOR)
 
     listname = mlist.real_name
     # This is the normal, no-confirmation required results text.
@@ -458,7 +458,7 @@ def unsubscription_prompt(mlist, doc, cookie, addr):
     table = Table(border=0, width='100%')
     table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0,
-                      colspan=2, bgcolor=mm_cfg.WEB_HEADER_COLOR)
+                      colspan=2, bgcolor=config.WEB_HEADER_COLOR)
 
     listname = mlist.real_name
     fullname = mlist.getMemberName(addr)
@@ -554,7 +554,7 @@ def addrchange_prompt(mlist, doc, cookie, oldaddr, newaddr, globally):
     table = Table(border=0, width='100%')
     table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0,
-                      colspan=2, bgcolor=mm_cfg.WEB_HEADER_COLOR)
+                      colspan=2, bgcolor=config.WEB_HEADER_COLOR)
 
     listname = mlist.real_name
     fullname = mlist.getMemberName(oldaddr)
@@ -601,7 +601,7 @@ def heldmsg_cancel(mlist, doc, cookie):
     table = Table(border=0, width='100%')
     table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0,
-                      bgcolor=mm_cfg.WEB_HEADER_COLOR)
+                      bgcolor=config.WEB_HEADER_COLOR)
     # Expunge this record from the pending database.
     expunge(mlist, cookie)
     table.AddRow([_('''Okay, the list moderator will still have the
@@ -629,7 +629,7 @@ def heldmsg_confirm(mlist, doc, cookie):
             i18n.set_language(lang)
             doc.set_language(lang)
             # Discard the message
-            mlist.HandleRequest(id, mm_cfg.DISCARD,
+            mlist.HandleRequest(id, config.DISCARD,
                                 _('Sender discarded message via web.'))
         except Errors.LostHeldMessage:
             bad_confirmation(doc, _('''The held message with the Subject:
@@ -660,7 +660,7 @@ def heldmsg_prompt(mlist, doc, cookie, id):
     table = Table(border=0, width='100%')
     table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0,
-                      colspan=2, bgcolor=mm_cfg.WEB_HEADER_COLOR)
+                      colspan=2, bgcolor=config.WEB_HEADER_COLOR)
     # Blarg.  The list must be locked in order to interact with the ListAdmin
     # database, even for read-only.  See the comment in admin.py about the
     # need for the signal handler.
@@ -773,7 +773,7 @@ def reenable_prompt(mlist, doc, cookie, list, member):
     table = Table(border=0, width='100%')
     table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0,
-                      colspan=2, bgcolor=mm_cfg.WEB_HEADER_COLOR)
+                      colspan=2, bgcolor=config.WEB_HEADER_COLOR)
 
     lang = mlist.getMemberLanguage(member)
     i18n.set_language(lang)
@@ -793,7 +793,7 @@ def reenable_prompt(mlist, doc, cookie, list, member):
                          time.localtime(time.mktime(info.date + (0,)*6)))
     daysleft = int(info.noticesleft *
                    mlist.bounce_you_are_disabled_warnings_interval /
-                   mm_cfg.days(1))
+                   config.days(1))
     # BAW: for consistency this should be changed to 'fullname' or the above
     # 'fullname's should be changed to 'username'.  Don't want to muck with
     # the i18n catalogs though.

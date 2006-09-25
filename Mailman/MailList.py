@@ -262,11 +262,12 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             acct, host = tuple(member.split('@'))
             return "%s%s@%s" % (acct, self.umbrella_member_suffix, host)
 
-    def GetScriptURL(self, scriptname, absolute=0):
-        return Utils.ScriptURL(scriptname, self.web_page_url, absolute) + \
-               '/' + self.internal_name()
+    def GetScriptURL(self, scriptname, absolute=False):
+        return '%s/%s' % (
+            Utils.ScriptURL(scriptname, self.web_page_url, absolute),
+            self.fqdn_listname)
 
-    def GetOptionsURL(self, user, obscure=0, absolute=0):
+    def GetOptionsURL(self, user, obscure=0, absolute=False):
         url = self.GetScriptURL('options', absolute)
         if obscure:
             user = Utils.ObscureEmail(user)

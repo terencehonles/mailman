@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -17,7 +17,7 @@
 
 import optparse
 
-from Mailman import mm_cfg
+from Mailman import Version
 from Mailman.i18n import _
 
 __i18n_templates__ = True
@@ -25,11 +25,11 @@ __i18n_templates__ = True
 
 
 def parseargs():
-    parser = optparse.OptionParser(version=mm_cfg.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
                                    usage=_("""\
 %prog
 
-Print the Mailman version an exit."""))
+Print the Mailman version and exit."""))
     opts, args = parser.parse_args()
     if args:
         parser.print_help()
@@ -42,7 +42,7 @@ Print the Mailman version an exit."""))
 def main():
     parser, opts, args = parseargs()
     # Yes, this is kind of silly
-    print _('Using Mailman version: $mm_cfg.VERSION')
+    print _('Using Mailman version: $Version.MAILMAN_VERSION')
 
 
 

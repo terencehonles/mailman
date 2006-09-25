@@ -31,8 +31,8 @@ import logging
 
 from Mailman import Utils
 from Mailman import loginit
-from Mailman import mm_cfg
 from Mailman.Queue.sbcache import get_switchboard
+from Mailman.configuration import config
 from Mailman.i18n import _
 
 __i18n_templates__ = True
@@ -40,6 +40,7 @@ __i18n_templates__ = True
 
 
 def main():
+    config.load()
     # Setup logging to stderr stream and error log.
     loginit.initialize(propagate=True)
     log = logging.getLogger('mailman.error')
@@ -56,11 +57,11 @@ def main():
     # incoming queue because we need some processing done on the message.  The
     # processing is minimal though, so craft our own pipeline, expressly for
     # the purpose of delivering to the list owners.
-    inq = get_switchboard(mm_cfg.INQUEUE_DIR)
+    inq = get_switchboard(config.INQUEUE_DIR)
     inq.enqueue(sys.stdin.read(),
                 listname=listname,
                 _plaintext=True,
-                pipeline=mm_cfg.OWNER_PIPELINE,
+                pipeline=config.OWNER_PIPELINE,
                 toowner=True)
 
 

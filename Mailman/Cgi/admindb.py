@@ -29,16 +29,15 @@ import logging
 from urllib import quote_plus, unquote_plus
 
 from Mailman import Errors
-from Mailman import i18n
 from Mailman import MailList
 from Mailman import Message
-from Mailman import mm_cfg
 from Mailman import Utils
-
+from Mailman import i18n
 from Mailman.Cgi import Auth
 from Mailman.Handlers.Moderate import ModeratedMemberPost
-from Mailman.htmlformat import *
 from Mailman.ListAdmin import readMessage
+from Mailman.configuration import config
+from Mailman.htmlformat import *
 
 EMPTYSTRING = ''
 NL = '\n'
@@ -46,7 +45,7 @@ NL = '\n'
 # Set up i18n.  Until we know which list is being requested, we use the
 # server's default.
 _ = i18n._
-i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+i18n.set_language(config.DEFAULT_SERVER_LANGUAGE)
 
 EXCERPT_HEIGHT = 10
 EXCERPT_WIDTH = 76
@@ -100,9 +99,9 @@ def main():
     # Make sure the user is authorized to see this page.
     cgidata = cgi.FieldStorage(keep_blank_values=1)
 
-    if not mlist.WebAuthenticate((mm_cfg.AuthListAdmin,
-                                  mm_cfg.AuthListModerator,
-                                  mm_cfg.AuthSiteAdmin),
+    if not mlist.WebAuthenticate((config.AuthListAdmin,
+                                  config.AuthListModerator,
+                                  config.AuthSiteAdmin),
                                  cgidata.getvalue('adminpw', '')):
         if cgidata.has_key('adminpw'):
             # This is a re-authorization attempt
@@ -260,7 +259,7 @@ def main():
 def handle_no_list(msg=''):
     # Print something useful if no list was given.
     doc = Document()
-    doc.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+    doc.set_language(config.DEFAULT_SERVER_LANGUAGE)
 
     header = _('Mailman Administrative Database Error')
     doc.SetTitle(header)
@@ -298,7 +297,7 @@ def show_pending_subs(mlist, form):
     for addr, ids in byaddrs.items():
         # Eliminate duplicates
         for id in ids[1:]:
-            mlist.HandleRequest(id, mm_cfg.DISCARD)
+            mlist.HandleRequest(id, config.DISCARD)
         id = ids[0]
         time, addr, fullname, passwd, digest, lang = mlist.GetRecord(id)
         fullname = Utils.uncanonstr(fullname, mlist.preferred_language)
@@ -306,10 +305,10 @@ def show_pending_subs(mlist, form):
                                       _('Approve'),
                                       _('Reject'),
                                       _('Discard')),
-                                 values=(mm_cfg.DEFER,
-                                         mm_cfg.SUBSCRIBE,
-                                         mm_cfg.REJECT,
-                                         mm_cfg.DISCARD),
+                                 values=(config.DEFER,
+                                         config.SUBSCRIBE,
+                                         config.REJECT,
+                                         config.DISCARD),
                                  checked=0).Format()
         if addr not in mlist.ban_list:
             radio += '<br>' + CheckBox('ban-%d' % id, 1).Format() + \
@@ -349,7 +348,7 @@ def show_pending_unsubs(mlist, form):
     for addr, ids in byaddrs.items():
         # Eliminate duplicates
         for id in ids[1:]:
-            mlist.HandleRequest(id, mm_cfg.DISCARD)
+            mlist.HandleRequest(id, config.DISCARD)
         id = ids[0]
         addr = mlist.GetRecord(id)
         try:
@@ -357,7 +356,7 @@ def show_pending_unsubs(mlist, form):
         except Errors.NotAMemberError:
             # They must have been unsubscribed elsewhere, so we can just
             # discard this record.
-            mlist.HandleRequest(id, mm_cfg.DISCARD)
+            mlist.HandleRequest(id, config.DISCARD)
             continue
         num += 1
         table.AddRow(['%s<br><em>%s</em>' % (addr, fullname),
@@ -365,10 +364,10 @@ def show_pending_unsubs(mlist, form):
                                             _('Approve'),
                                             _('Reject'),
                                             _('Discard')),
-                                       values=(mm_cfg.DEFER,
-                                               mm_cfg.UNSUBSCRIBE,
-                                               mm_cfg.REJECT,
-                                               mm_cfg.DISCARD),
+                                       values=(config.DEFER,
+                                               config.UNSUBSCRIBE,
+                                               config.REJECT,
+                                               config.DISCARD),
                                        checked=0),
                       TextBox('comment-%d' % id, size=45)
                       ])
@@ -405,7 +404,7 @@ def show_helds_overview(mlist, form):
         btns = hacky_radio_buttons(
             'senderaction-' + qsender,
             (_('Defer'), _('Accept'), _('Reject'), _('Discard')),
-            (mm_cfg.DEFER, mm_cfg.APPROVE, mm_cfg.REJECT, mm_cfg.DISCARD),
+            (config.DEFER, config.APPROVE, config.REJECT, config.DISCARD),
             (1, 0, 0, 0))
         left.AddRow([btns])
         left.AddCellInfo(left.GetCurrentRowIndex(), 0, colspan=2)
@@ -432,7 +431,7 @@ def show_helds_overview(mlist, form):
         # the sender filters, then give the admin a chance to add this sender
         # to one of the filters.
         if mlist.isMember(sender):
-            if mlist.getMemberOption(sender, mm_cfg.Moderate):
+            if mlist.getMemberOption(sender, config.Moderate):
                 left.AddRow([
                     CheckBox('senderclearmodp-' + qsender, 1).Format() +
                     '&nbsp;' +
@@ -455,7 +454,7 @@ def show_helds_overview(mlist, form):
             btns = hacky_radio_buttons(
                 'senderfilter-' + qsender,
                 (_('Accepts'), _('Holds'), _('Rejects'), _('Discards')),
-                (mm_cfg.ACCEPT, mm_cfg.HOLD, mm_cfg.REJECT, mm_cfg.DISCARD),
+                (config.ACCEPT, config.HOLD, config.REJECT, config.DISCARD),
                 (0, 0, 0, 1))
             left.AddRow([btns])
             left.AddCellInfo(left.GetCurrentRowIndex(), 0, colspan=2)
@@ -481,12 +480,12 @@ def show_helds_overview(mlist, form):
             # BAW: This is really the size of the message pickle, which should
             # be close, but won't be exact.  Sigh, good enough.
             try:
-                size = os.path.getsize(os.path.join(mm_cfg.DATA_DIR, filename))
+                size = os.path.getsize(os.path.join(config.DATA_DIR, filename))
             except OSError, e:
                 if e.errno <> errno.ENOENT: raise
                 # This message must have gotten lost, i.e. it's already been
                 # handled by the time we got here.
-                mlist.HandleRequest(id, mm_cfg.DISCARD)
+                mlist.HandleRequest(id, config.DISCARD)
                 continue
             dispsubj = Utils.oneline(
                 subject, Utils.GetCharSet(mlist.preferred_language))
@@ -571,7 +570,7 @@ def show_post_requests(mlist, id, info, total, count, form):
     # an actual object, which will be easier to deal with.  We probably could
     # just do raw reads on the file.
     try:
-        msg = readMessage(os.path.join(mm_cfg.DATA_DIR, filename))
+        msg = readMessage(os.path.join(config.DATA_DIR, filename))
     except IOError, e:
         if e.errno <> errno.ENOENT:
             raise
@@ -579,7 +578,7 @@ def show_post_requests(mlist, id, info, total, count, form):
         form.AddItem('<p>')
         # BAW: kludge to remove id from requests.db.
         try:
-            mlist.HandleRequest(id, mm_cfg.DISCARD)
+            mlist.HandleRequest(id, config.DISCARD)
         except Errors.LostHeldMessage:
             pass
         return
@@ -590,7 +589,7 @@ def show_post_requests(mlist, id, info, total, count, form):
         form.AddItem('<p>')
         # BAW: kludge to remove id from requests.db.
         try:
-            mlist.HandleRequest(id, mm_cfg.DISCARD)
+            mlist.HandleRequest(id, config.DISCARD)
         except Errors.LostHeldMessage:
             pass
         return
@@ -598,7 +597,7 @@ def show_post_requests(mlist, id, info, total, count, form):
     lines = []
     chars = 0
     # A negative value means, include the entire message regardless of size
-    limit = mm_cfg.ADMINDB_PAGE_TEXT_LIMIT
+    limit = config.ADMINDB_PAGE_TEXT_LIMIT
     for line in email.Iterators.body_line_iterator(msg):
         lines.append(line)
         chars += len(line)
@@ -606,7 +605,7 @@ def show_post_requests(mlist, id, info, total, count, form):
             break
     # Negative values mean display the entire message, regardless of size
     if limit > 0:
-        body = EMPTYSTRING.join(lines)[:mm_cfg.ADMINDB_PAGE_TEXT_LIMIT]
+        body = EMPTYSTRING.join(lines)[:config.ADMINDB_PAGE_TEXT_LIMIT]
     else:
         body = EMPTYSTRING.join(lines)
     # Get message charset and try encode in list charset
@@ -639,10 +638,10 @@ def show_post_requests(mlist, id, info, total, count, form):
     buttons = Table(cellspacing="5", cellpadding="0")
     buttons.AddRow(map(lambda x, s='&nbsp;'*5: s+x+s,
                        (_('Defer'), _('Approve'), _('Reject'), _('Discard'))))
-    buttons.AddRow([Center(RadioButton(id, mm_cfg.DEFER, 1)),
-                    Center(RadioButton(id, mm_cfg.APPROVE, 0)),
-                    Center(RadioButton(id, mm_cfg.REJECT, 0)),
-                    Center(RadioButton(id, mm_cfg.DISCARD, 0)),
+    buttons.AddRow([Center(RadioButton(id, config.DEFER, 1)),
+                    Center(RadioButton(id, config.APPROVE, 0)),
+                    Center(RadioButton(id, config.REJECT, 0)),
+                    Center(RadioButton(id, config.DISCARD, 0)),
                     ])
     t.AddRow([Bold(_('Action:')), buttons])
     t.AddCellInfo(row+3, col-1, align='right')
@@ -699,13 +698,13 @@ def process_form(mlist, doc, cgidata):
         actions = senderactions[sender]
         # Handle what to do about all this sender's held messages
         try:
-            action = int(actions.get('senderaction', mm_cfg.DEFER))
+            action = int(actions.get('senderaction', config.DEFER))
         except ValueError:
-            action = mm_cfg.DEFER
-        if action == mm_cfg.DEFER and discardalldefersp:
-            action = mm_cfg.DISCARD
-        if action in (mm_cfg.DEFER, mm_cfg.APPROVE,
-                      mm_cfg.REJECT, mm_cfg.DISCARD):
+            action = config.DEFER
+        if action == config.DEFER and discardalldefersp:
+            action = config.DISCARD
+        if action in (config.DEFER, config.APPROVE,
+                      config.REJECT, config.DISCARD):
             preserve = actions.get('senderpreserve', 0)
             forward = actions.get('senderforward', 0)
             forwardaddr = actions.get('senderforwardto', '')
@@ -728,19 +727,19 @@ def process_form(mlist, doc, cgidata):
             except ValueError:
                 # Bogus form
                 which = 'ignore'
-            if which == mm_cfg.ACCEPT:
+            if which == config.ACCEPT:
                 mlist.accept_these_nonmembers.append(sender)
-            elif which == mm_cfg.HOLD:
+            elif which == config.HOLD:
                 mlist.hold_these_nonmembers.append(sender)
-            elif which == mm_cfg.REJECT:
+            elif which == config.REJECT:
                 mlist.reject_these_nonmembers.append(sender)
-            elif which == mm_cfg.DISCARD:
+            elif which == config.DISCARD:
                 mlist.discard_these_nonmembers.append(sender)
             # Otherwise, it's a bogus form, so ignore it
         # And now see if we're to clear the member's moderation flag.
         if actions.get('senderclearmodp', 0):
             try:
-                mlist.setMemberOption(sender, mm_cfg.Moderate, 0)
+                mlist.setMemberOption(sender, config.Moderate, 0)
             except Errors.NotAMemberError:
                 # This person's not a member any more.  Oh well.
                 pass
@@ -760,9 +759,9 @@ def process_form(mlist, doc, cgidata):
             request_id = int(k)
         except ValueError:
             continue
-        if v not in (mm_cfg.DEFER, mm_cfg.APPROVE, mm_cfg.REJECT,
-                     mm_cfg.DISCARD, mm_cfg.SUBSCRIBE, mm_cfg.UNSUBSCRIBE,
-                     mm_cfg.ACCEPT, mm_cfg.HOLD):
+        if v not in (config.DEFER, config.APPROVE, config.REJECT,
+                     config.DISCARD, config.SUBSCRIBE, config.UNSUBSCRIBE,
+                     config.ACCEPT, config.HOLD):
             continue
         # Get the action comment and reasons if present.
         commentkey = 'comment-%d' % request_id
