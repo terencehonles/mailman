@@ -1293,6 +1293,7 @@ def _(s):
 
 LANGUAGES = 'en ' + '@LANGUAGES@'
 LANGUAGE_DICT = {
+    'ar':       (_('Arabic'),               'utf-8'),
     'ca':       (_('Catalan'),              'iso-8859-1'),
     'cs':       (_('Czech'),                'iso-8859-2'),
     'da':       (_('Danish'),               'iso-8859-1'),
