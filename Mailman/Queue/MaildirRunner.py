@@ -50,7 +50,6 @@ mechanism.
 # NOTE: Maildir delivery is experimental in Mailman 2.1.
 
 import os
-import re
 import errno
 import logging
 
@@ -63,19 +62,28 @@ from Mailman.Queue.Runner import Runner
 from Mailman.Queue.sbcache import get_switchboard
 from Mailman.configuration import config
 
-# We only care about the listname and the subq as in listname@ or
-# listname-request@
-lre = re.compile(r"""
- ^                        # start of string
- (?P<listname>[^-@]+)     # listname@ or listname-subq@
- (?:                      # non-grouping
-   -                      # dash separator
-   (?P<subq>[^-+@]+)      # everything up to + or - or @
- )?                       # if it exists
- """, re.VERBOSE | re.IGNORECASE)
-
 log = logging.getLogger('mailman.error')
 
+# We only care about the listname and the subq as in listname@ or
+# listname-request@
+subqnames = ('admin','bounces','confirm','join','leave',
+             'owner','request','subscribe','unsubscribe')
+
+def getlistq(address):
+    localpart, domain = address.split('@', 1)
+    # TK: FIXME I only know configs of Postfix.
+    if config.POSTFIX_STYLE_VIRTUAL_DOMAINS:
+        p = localpart.split(config.POSTFIX_VIRTUAL_SEPARATOR,1)
+        if len(p) == 2:
+            localpart, domain = p
+    l = localpart.split('-')
+    if l[-1] in subqnames:
+        listname = '-'.join(l[:-1])
+        subq = l[-1]
+    else:
+        listname = localpart
+        subq = None
+    return listname, subq, domain
 
 
 class MaildirRunner(Runner):
@@ -129,14 +137,11 @@ class MaildirRunner(Runner):
                 for header in ('delivered-to', 'envelope-to', 'apparently-to'):
                     vals.extend(msg.get_all(header, []))
                 for field in vals:
-                    to = parseaddr(field)[1]
+                    to = parseaddr(field)[1].lower()
                     if not to:
                         continue
-                    mo = lre.match(to)
-                    if not mo:
-                        # This isn't an address we care about
-                        continue
-                    listname, subq = mo.group('listname', 'subq')
+                    listname, subq, domain = getlistq(to)
+                    listname = listname + '@' + domain
                     if listname in listnames:
                         break
                 else:

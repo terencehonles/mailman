@@ -389,6 +389,10 @@ MTA = 'Manual'
 # of the mailing lists.  See README.POSTFIX for details.
 POSTFIX_STYLE_VIRTUAL_DOMAINS = []
 
+# We should use a separator in place of '@' for list-etc@dom2.ain in both
+# aliases and mailman-virtual files.
+POSTFIX_VIRTUAL_SEPARATOR = '_at_'
+
 # These variables describe the program to use for regenerating the aliases.db
 # and virtual-mailman.db files, respectively, from the associated plain text
 # files.  The file being updated will be appended to this string (with a

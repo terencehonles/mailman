@@ -99,14 +99,18 @@ def _addlist(mlist, fp):
     if mlist is None:
         return
     listname = mlist.internal_name()
+    hostname = mlist.host_name
     fieldsz = len(listname) + len('-unsubscribe')
     # The text file entries get a little extra info
     print >> fp, '# STANZA START:', listname
     print >> fp, '# CREATED:', time.ctime(time.time())
     # Now add all the standard alias entries
     for k, v in makealiases(mlist):
+        l = len(k)
+        if hostname in config.POSTFIX_STYLE_VIRTUAL_DOMAINS:
+            k += config.POSTFIX_VIRTUAL_SEPARATOR + hostname
         # Format the text file nicely
-        print >> fp, k + ':', ((fieldsz - len(k)) * ' ') + v
+        print >> fp, k + ':', ((fieldsz - l) * ' ') + v
     # Finish the text file stanza
     print >> fp, '# STANZA END:', listname
     print >> fp
@@ -142,8 +146,12 @@ def _addvirtual(mlist, fp):
     print >> fp, '# CREATED:', time.ctime(time.time())
     # Now add all the standard alias entries
     for k, v in makealiases(mlist):
+        fqdnaddr = '%s@%s' % (k, hostname)
+        l = len(k)
         # Format the text file nicely
-        print >> fp, mlist.fqdn_listname, ((fieldsz - len(k)) * ' '), k
+        if hostname in config.POSTFIX_STYLE_VIRTUAL_DOMAINS:
+            k += config.POSTFIX_VIRTUAL_SEPARATOR + hostname
+        print >> fp, fqdnaddr, ((fieldsz - l) * ' '), k
     # Finish the text file stanza
     print >> fp, '# STANZA END:', listname
     print >> fp
