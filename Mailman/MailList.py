@@ -295,7 +295,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
                 self._internal_name = name
                 self.host_name = config.DEFAULT_EMAIL_HOST
                 self._full_path = os.path.join(config.LIST_DATA_DIR,
-                                               self.host_name + '@' + name)
+                                               name + '@' + self.host_name)
         else:
             self._full_path = ''
         # Only one level of mixin inheritance allowed
