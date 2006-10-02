@@ -705,6 +705,27 @@ USE_MAILDIR = No
 # file (uncommented of course!)
 # QRUNNERS.append(('MaildirRunner', 1))
 
+# Set this to Yes to use the `LMTP' delivery option.  If you change this
+# you will need to re-run bin/genaliases for MTAs that don't use list
+# auto-detection.
+#
+# You have to set following line in postfix main.cf:
+#     transport_maps = hash:<prefix>/data/transport
+# Also needed is following line if your list is in $mydestination:
+#     alias_maps = hash:/etc/aliases, hash:<prefix>/data/aliases
+#
+# NOTE: LMTP delivery is experimental for Mailman 2.2.
+USE_LMTP = No
+# NOTE: If you set USE_LMTP = Yes, add the following line to your mailman.cfg 
+# file (uncommented of course!)
+# QRUNNERS.append(('LMTPRunner', 1))
+
+# Change LMTP_HOST and LMTP_PORT for your convenience.
+# You should be careful enough to use firewall if you
+# open your port on global address interface.
+LMTP_HOST = 'localhost'
+LMTP_PORT = 8025
+
 # After processing every file in the qrunner's slice, how long should the
 # runner sleep for before checking the queue directory again for new files?
 # This can be a fraction of a second, or zero to check immediately
