@@ -15,7 +15,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-import sys
 import optparse
 
 from Mailman import Defaults
@@ -59,8 +58,7 @@ ignored when -b is given."""))
     opts, args = parser.parse_args()
     if args:
         parser.print_help()
-        print >> sys.stderr, _('Unexpected arguments')
-        sys.exit(1)
+        parser.error(_('Unexpected arguments'))
     return parser, opts, args
 
 

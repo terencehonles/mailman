@@ -1,6 +1,4 @@
-#! @PYTHON@
-#
-# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -17,97 +15,92 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-"""Configure a list from a text file description.
-
-Usage: config_list [options] listname
-
-Options:
-    --inputfile filename
-    -i filename
-        Configure the list by assigning each module-global variable in the
-        file to an attribute on the list object, then saving the list.  The
-        named file is loaded with execfile() and must be legal Python code.
-        Any variable that isn't already an attribute of the list object is
-        ignored (a warning message is printed).  See also the -c option.
-
-        A special variable named `mlist' is put into the globals during the
-        execfile, which is bound to the actual MailList object.  This lets you
-        do all manner of bizarre thing to the list object, but BEWARE!  Using
-        this can severely (and possibly irreparably) damage your mailing list!
-
-    --outputfile filename
-    -o filename
-        Instead of configuring the list, print out a list's configuration
-        variables in a format suitable for input using this script.  In this
-        way, you can easily capture the configuration settings for a
-        particular list and imprint those settings on another list.  filename
-        is the file to output the settings to.  If filename is `-', standard
-        out is used.
-
-    --checkonly
-    -c
-        With this option, the modified list is not actually changed.  Only
-        useful with -i.
-
-    --verbose
-    -v
-        Print the name of each attribute as it is being changed.  Only useful
-        with -i.
-
-    --help
-    -h
-        Print this help message and exit.
-
-The options -o and -i are mutually exclusive.
-
-"""
-
-import sys
 import re
+import sys
 import time
-import getopt
-from types import TupleType
+import optparse
 
-import paths
-from Mailman import mm_cfg
+from Mailman import Errors
 from Mailman import MailList
 from Mailman import Utils
-from Mailman import Errors
+from Mailman import Version
 from Mailman import i18n
+from Mailman.configuration import config
 
 _ = i18n._
+__i18n_templates__ = True
 
 NL = '\n'
 nonasciipat = re.compile(r'[\x80-\xff]')
 
 
 
-def usage(code, msg=''):
-    if code:
-        fd = sys.stderr
-    else:
-        fd = sys.stdout
-    print >> fd, _(__doc__)
-    if msg:
-        print >> fd, msg
-    sys.exit(code)
+def parseargs():
+    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
+                                   usage=_("""\
+%prog [options] listname
+
+Configure a list from a text file description, or dump a list's configuration
+settings."""))
+    parser.add_option('-i', '--inputfile',
+                      metavar='FILENAME', default=None, type='string',
+                      help=_("""\
+Configure the list by assigning each module-global variable in the file to an
+attribute on the mailing list object, then save the list.  The named file is
+loaded with execfile() and must be legal Python code.  Any variable that isn't
+already an attribute of the list object is ignored (a warning message is
+printed).  See also the -c option.
+
+A special variable named 'mlist' is put into the globals during the execfile,
+which is bound to the actual MailList object.  This lets you do all manner of
+bizarre thing to the list object, but BEWARE!  Using this can severely (and
+possibly irreparably) damage your mailing list!
+
+The may not be used with the -o option."""))
+    parser.add_option('-o', '--outputfile',
+                      metavar='FILENAME', default=None, type='string',
+                      help=_("""\
+Instead of configuring the list, print out a mailing list's configuration
+variables in a format suitable for input using this script.  In this way, you
+can easily capture the configuration settings for a particular list and
+imprint those settings on another list.  FILENAME is the file to output the
+settings to.  If FILENAME is `-', standard out is used.
+
+This may not be used with the -i option."""))
+    parser.add_option('-c', '--checkonly',
+                      default=False, action='store_true', help=_("""\
+With this option, the modified list is not actually changed.  This is only
+useful with the -i option."""))
+    parser.add_option('-v', '--verbose',
+                      default=False, action='store_true', help=_("""\
+Print the name of each attribute as it is being changed.  This is only useful
+with the -i option."""))
+    parser.add_option('-C', '--config',
+                      help=_('Alternative configuration file to use'))
+    opts, args = parser.parse_args()
+    if len(args) > 1:
+        parser.print_help()
+        parser.error(_('Unexpected arguments'))
+    if not args:
+        parser.error(_('List name is required'))
+    return parser, opts, args
 
 
 
-def do_output(listname, outfile):
-    closep = 0
+def do_output(listname, outfile, parser):
+    closep = False
     try:
         if outfile == '-':
             outfp = sys.stdout
         else:
             outfp = open(outfile, 'w')
-            closep = 1
+            closep = True
         # Open the specified list unlocked, since we're only reading it.
         try:
-            mlist = MailList.MailList(listname, lock=0)
+            mlist = MailList.MailList(listname, lock=False)
         except Errors.MMListError:
-            usage(1, _('No such list: %(listname)s'))
-        # Preamble for the config info. PEP263 charset and capture time.
+            parser.error(_('No such list: $listname'))
+        # Preamble for the config info. PEP 263 charset and capture time.
         language = mlist.preferred_language
         charset = Utils.GetCharSet(language)
         i18n.set_language(language)
@@ -116,13 +109,13 @@ def do_output(listname, outfile):
         when = time.ctime(time.time())
         print >> outfp, _('''\
 # -*- python -*-
-# -*- coding: %(charset)s -*-
-## "%(listname)s" mailing list configuration settings
-## captured on %(when)s
+# -*- coding: $charset -*-
+## "$listname" mailing list configuration settings
+## captured on $when
 ''')
-        # get all the list config info.  all this stuff is accessible via the
-        # web interface
-        for k in mm_cfg.ADMIN_CATEGORIES:
+        # Get all the list config info.  All this stuff is accessible via the
+        # web interface.
+        for k in config.ADMIN_CATEGORIES:
             subcats = mlist.GetConfigSubCategories(k)
             if subcats is None:
                 do_list_categories(mlist, k, None, outfp)
@@ -134,6 +127,7 @@ def do_output(listname, outfile):
             outfp.close()
 
 
+
 def do_list_categories(mlist, k, subcat, outfp):
     info = mlist.GetConfigInfo(k, subcat)
     label, gui = mlist.GetConfigCategories()[k]
@@ -145,14 +139,14 @@ def do_list_categories(mlist, k, subcat, outfp):
     # First, massage the descripton text, which could have obnoxious
     # leading whitespace on second and subsequent lines due to
     # triple-quoted string nonsense in the source code.
-    desc = NL.join([s.lstrip() for s in info[0].split('\n')])
+    desc = NL.join([s.lstrip() for s in info[0].splitlines()])
     # Print out the category description
     desc = Utils.wrap(desc)
-    for line in desc.split('\n'):
+    for line in desc.splitlines():
         print >> outfp, '#', line
     print >> outfp
     for data in info[1:]:
-        if not isinstance(data, TupleType):
+        if not isinstance(data, tuple):
             continue
         varname = data[0]
         # Variable could be volatile
@@ -162,7 +156,7 @@ def do_list_categories(mlist, k, subcat, outfp):
         # First, massage the descripton text, which could have
         # obnoxious leading whitespace on second and subsequent lines
         # due to triple-quoted string nonsense in the source code.
-        desc = NL.join([s.lstrip() for s in data[-1].split('\n')])
+        desc = NL.join([s.lstrip() for s in data[-1].splitlines()])
         # Now strip out all HTML tags
         desc = re.sub('<.*?>', '', desc)
         # And convert &lt;/&gt; to <>
@@ -178,7 +172,7 @@ def do_list_categories(mlist, k, subcat, outfp):
             value = gui.getValue(mlist, vtype, varname, data[2])
         if value is None and not varname.startswith('_'):
             value = getattr(mlist, varname)
-        if vtype in (mm_cfg.String, mm_cfg.Text, mm_cfg.FileUpload):
+        if vtype in (config.String, config.Text, config.FileUpload):
             print >> outfp, varname, '=',
             lines = value.splitlines()
             if not lines:
@@ -197,13 +191,13 @@ def do_list_categories(mlist, k, subcat, outfp):
                     outfp.write(' """')
                     outfp.write(NL.join(lines).replace('"', '\\"'))
                     outfp.write('"""\n')
-        elif vtype in (mm_cfg.Radio, mm_cfg.Toggle):
+        elif vtype in (config.Radio, config.Toggle):
             print >> outfp, '#'
             print >> outfp, '#', _('legal values are:')
             # TBD: This is disgusting, but it's special cased
             # everywhere else anyway...
             if varname == 'subscribe_policy' and \
-                   not mm_cfg.ALLOW_OPEN_SUBSCRIBE:
+                   not config.ALLOW_OPEN_SUBSCRIBE:
                 i = 1
             else:
                 i = 0
@@ -228,7 +222,7 @@ def getPropertyMap(mlist):
             subcats = [(None, None)]
         for subcat, sclabel in subcats:
             for element in gui.GetConfigInfo(mlist, category, subcat):
-                if not isinstance(element, TupleType):
+                if not isinstance(element, tuple):
                     continue
                 propname = element[0]
                 wtype = element[1]
@@ -247,35 +241,36 @@ class FakeDoc:
         pass
 
 
-def do_input(listname, infile, checkonly, verbose):
+
+def do_input(listname, infile, checkonly, verbose, parser):
     fakedoc = FakeDoc()
-    # open the specified list locked, unless checkonly is set
+    # Open the specified list locked, unless checkonly is set
     try:
         mlist = MailList.MailList(listname, lock=not checkonly)
     except Errors.MMListError, e:
-        usage(1, _('No such list "%(listname)s"\n%(e)s'))
-    savelist = 0
+        parser.error(_('No such list "$listname"\n$e'))
+    savelist = False
     guibyprop = getPropertyMap(mlist)
     try:
         globals = {'mlist': mlist}
         # Any exception that occurs in execfile() will cause the list to not
         # be saved, but any other problems are not save-fatal.
         execfile(infile, globals)
-        savelist = 1
+        savelist = True
         for k, v in globals.items():
             if k in ('mlist', '__builtins__'):
                 continue
             if not hasattr(mlist, k):
-                print >> sys.stderr, _('attribute "%(k)s" ignored')
+                print >> sys.stderr, _('attribute "$k" ignored')
                 continue
             if verbose:
-                print >> sys.stderr, _('attribute "%(k)s" changed')
+                print >> sys.stderr, _('attribute "$k" changed')
             missing = []
             gui, wtype = guibyprop.get(k, (missing, missing))
             if gui is missing:
                 # This isn't an official property of the list, but that's
                 # okay, we'll just restore it the old fashioned way
-                print >> sys.stderr, _('Non-standard property restored: %(k)s')
+                print >> sys.stderr, _('Non-standard property restored: $k')
                 setattr(mlist, k, v)
             else:
                 # BAW: This uses non-public methods.  This logic taken from
@@ -283,10 +278,10 @@ def do_input(listname, infile, checkonly, verbose):
                 try:
                     validval = gui._getValidValue(mlist, k, wtype, v)
                 except ValueError:
-                    print >> sys.stderr, _('Invalid value for property: %(k)s')
+                    print >> sys.stderr, _('Invalid value for property: $k')
                 except Errors.EmailAddressError:
                     print >> sys.stderr, _(
-                        'Bad email address for option %(k)s: %(v)s')
+                        'Bad email address for option $k: $v')
                 else:
                     # BAW: Horrible hack, but then this is special cased
                     # everywhere anyway. :(  Privacy._setValue() knows that
@@ -316,45 +311,21 @@ def do_input(listname, infile, checkonly, verbose):
 
 
 def main():
-    try:
-        opts, args = getopt.getopt(
-            sys.argv[1:], 'ci:o:vh',
-            ['checkonly', 'inputfile=', 'outputfile=', 'verbose', 'help'])
-    except getopt.error, msg:
-        usage(1, msg)
+    parser, opts, args = parseargs()
+    config.load(opts.config)
+    listname = args[0]
 
-    # defaults
-    infile = None
-    outfile = None
-    checkonly = 0
-    verbose = 0
-    for opt, arg in opts:
-        if opt in ('-h', '--help'):
-            usage(0)
-        elif opt in ('-o', '--outputfile'):
-            outfile = arg
-        elif opt in ('-i', '--inputfile'):
-            infile = arg
-        elif opt in ('-c', '--checkonly'):
-            checkonly = 1
-        elif opt in ('-v', '--verbose'):
-            verbose = 1
+    # Sanity check
+    if opts.inputfile and opts.outputfile:
+        parser.error(_('Only one of -i or -o is allowed'))
+    if not opts.inputfile and not opts.outputfile:
+        parser.error(_('One of -i or -o is required'))
 
-    # sanity check
-    if infile is not None and outfile is not None:
-        usage(1, _('Only one of -i or -o is allowed'))
-    if infile is None and outfile is None:
-        usage(1, _('One of -i or -o is required'))
-
-    # get the list name
-    if len(args) <> 1:
-        usage(1, _('List name is required'))
-    listname = args[0].lower().strip()
-
-    if outfile:
-        do_output(listname, outfile)
+    if opts.outputfile:
+        do_output(listname, opts.outputfile, parser)
     else:
-        do_input(listname, infile, checkonly, verbose)
+        do_input(listname, opts.inputfile, opts.checkonly,
+                 opts.verbose, parser)
 
 
 
