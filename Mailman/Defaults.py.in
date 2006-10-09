@@ -726,6 +726,15 @@ USE_LMTP = No
 LMTP_HOST = 'localhost'
 LMTP_PORT = 8025
 
+# Experimental WSGI Server.
+# You must enable PROXY of Apache httpd server and configure to pass
+# mailman CGI requests to this WSGI Server:
+#     ProxyPass /mailman/ http://localhost:2580/
+HTTP_HOST = 'localhost'
+HTTP_PORT = 2580
+# Also you have to add following line to <prefix>/etc/mailman.cfg
+# QRUNNERS.append(('HTTPRunner', 1))
+
 # After processing every file in the qrunner's slice, how long should the
 # runner sleep for before checking the queue directory again for new files?
 # This can be a fraction of a second, or zero to check immediately

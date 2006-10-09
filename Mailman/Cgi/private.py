@@ -29,6 +29,7 @@ from Mailman import MailList
 from Mailman import Errors
 from Mailman import i18n
 from Mailman.htmlformat import *
+from Mailman.configuration import config
 
 # Set up i18n.  Until we know which list is being requested, we use the
 # server's default.
@@ -80,7 +81,7 @@ def main():
         return
     # BAW: This needs to be converted to the Site module abstraction
     true_filename = os.path.join(
-        mm_cfg.PRIVATE_ARCHIVE_FILE_DIR, tpath)
+        config.PRIVATE_ARCHIVE_FILE_DIR, tpath)
 
     listname = parts[0].lower()
     mboxfile = ''

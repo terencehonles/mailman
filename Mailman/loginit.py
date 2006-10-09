@@ -32,6 +32,7 @@ LOGGERS = (
     'bounce',
     'config',
     'error',
+    'http',
     'locks',
     'mischief',
     'post',
