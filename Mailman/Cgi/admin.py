@@ -310,10 +310,11 @@ def option_help(mlist, varhelp):
         elif len(reflist) == 3:
             category, subcat, varname = reflist
         options = mlist.GetConfigInfo(category, subcat)
-        for i in options:
-            if i and i[0] == varname:
-                item = i
-                break
+        if options:
+            for i in options:
+                if i and i[0] == varname:
+                    item = i
+                    break
     # Print an error message if we couldn't find a valid one
     if not item:
         bad = _('No valid variable name found.')
