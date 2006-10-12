@@ -20,27 +20,34 @@ import sys
 import pprint
 import optparse
 
-from Mailman import mm_cfg
+from Mailman import Version
+from Mailman.configuration import config
 from Mailman.i18n import _
 
 __i18_templates__ = True
 
+# List of names never to show even if --verbose
+NEVER_SHOW = ['__builtins__', '__doc__']
+
 
 
 def parseargs():
-    parser = optparse.OptionParser(version=mm_cfg.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
                                    usage=_("""\
 %%prog [options] [pattern ...]
 
-Show the values of various Defaults.py/mm_cfg.py variables.
+Show the values of various Defaults.py/mailman.cfg variables.
 If one or more patterns are given, show only those variables
 whose names match a pattern"""))
     parser.add_option('-v', '--verbose',
                       default=False, action='store_true',
-                      help=_("Show all mm_cfg names, not just 'settings'."))
+                      help=_(
+"Show all configuration names, not just 'settings'."))
     parser.add_option('-i', '--ignorecase',
                       default=False, action='store_true',
                       help=_("Match patterns case-insensitively."))
+    parser.add_option('-C', '--config',
+                      help=_('Alternative configuration file to use'))
     opts, args = parser.parse_args()
     return parser, opts, args
 
@@ -58,9 +65,12 @@ def main():
         patterns.append(re.compile(pattern, flag))
 
     pp = pprint.PrettyPrinter(indent=4)
-    names = mm_cfg.__dict__.keys()
+    config.load(opts.config)
+    names = config.__dict__.keys()
     names.sort()
     for name in names:
+        if name in NEVER_SHOW:
+            continue
         if not opts.verbose:
             if name.startswith('_') or re.search('[a-z]', name):
                 continue
@@ -72,7 +82,7 @@ def main():
                     break
             if not hit:
                 continue
-        value = mm_cfg.__dict__[name]
+        value = config.__dict__[name]
         if isinstance(value, str):
             if re.search('\n', value):
                 print '%s = """%s"""' %(name, value)
@@ -86,3 +96,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

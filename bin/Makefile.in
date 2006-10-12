@@ -56,7 +56,7 @@ SCRIPTS=	mmshell \
 LN_SCRIPTS=	add_members arch change_pw check_perms config_list \
 		export find_member genaliases inject list_lists \
 		list_members list_owners mailmanctl mmsitepass newlist \
-		qrunner rmlist show_qfiles show_mm_cfg testall unshunt \
+		qrunner rmlist show_config show_qfiles testall unshunt \
 		update version
 
 BUILDDIR=	../build/bin

@@ -98,7 +98,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             if hasattr(baseclass, '__init__'):
                 baseclass.__init__(self)
         # Initialize volatile attributes
-        self.InitTempVars(name)
+        self.InitTempVars(name, check_version)
         # Attach a membership adaptor instance.
         parts = config.MEMBER_ADAPTOR_CLASS.split(DOT)
         adaptor_class = parts.pop()
@@ -277,7 +277,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
     #
     # Instance and subcomponent initialization
     #
-    def InitTempVars(self, name):
+    def InitTempVars(self, name, check_version=True):
         """Set transient variables of this and inherited classes."""
         # The timestamp is set whenever we load the state from disk.  If our
         # timestamp is newer than the modtime of the config.pck file, we don't
@@ -294,8 +294,13 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             else:
                 self._internal_name = name
                 self.host_name = config.DEFAULT_EMAIL_HOST
-                self._full_path = os.path.join(config.LIST_DATA_DIR,
-                                               name + '@' + self.host_name)
+                if check_version:
+                    self._full_path = os.path.join(config.LIST_DATA_DIR,
+                                                   name + '@' +
+                                                   self.host_name)
+                else:
+                    self._full_path = os.path.join(config.LIST_DATA_DIR,
+                                                   name)
         else:
             self._full_path = ''
         # Only one level of mixin inheritance allowed
