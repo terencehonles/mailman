@@ -31,6 +31,7 @@ DATEFMT = '%b %d %H:%M:%S %Y'
 LOGGERS = (
     'bounce',
     'config',
+    'debug',
     'error',
     'http',
     'locks',

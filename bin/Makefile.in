@@ -54,7 +54,7 @@ SCRIPTS=	mmshell \
 		reset_pw.py templ2pot.py po2templ.py
 
 LN_SCRIPTS=	add_members arch change_pw check_perms config_list \
-		export find_member genaliases inject list_lists \
+		export find_member genaliases import inject list_lists \
 		list_members list_owners mailmanctl mmsitepass newlist \
 		qrunner rmlist show_config show_qfiles testall unshunt \
 		update version

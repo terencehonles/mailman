@@ -156,12 +156,15 @@ class XMLDumper(object):
                     self._element('value', v)
                 self._pop_element('option')
             else:
-                self._element('option', name=varname, value=value)
+                self._element('option', value, name=varname)
 
     def _dump_list(self, mlist, with_passwords):
         # Write list configuration values
         self._push_element('list', name=mlist.fqdn_listname)
-        self._element('language', mlist.preferred_language)
+        self._push_element('configuration')
+        self._element('option',
+                      mlist.preferred_language,
+                      name='preferred_language')
         for k in config.ADMIN_CATEGORIES:
             subcats = mlist.GetConfigSubCategories(k)
             if subcats is None:
@@ -169,6 +172,7 @@ class XMLDumper(object):
             else:
                 for subcat in [t[0] for t in subcats]:
                     self._do_list_categories(mlist, k, subcat)
+        self._pop_element('configuration')
         # Write membership
         self._push_element('roster')
         digesters = set(mlist.getDigestMemberKeys())
@@ -206,14 +210,12 @@ class XMLDumper(object):
                 when = datetime.datetime.fromtimestamp(changed)
                 attrs['changed'] = when.isoformat()
             self._element('delivery', **attrs)
-            self._push_element('options')
             for option, flag in Defaults.OPTINFO.items():
                 # Digest/Regular delivery flag must be handled separately
                 if option in ('digest', 'plain'):
                     continue
                 value = mlist.getMemberOption(member, flag)
                 self._element(option, value)
-            self._pop_element('options')
             topics = mlist.getMemberTopics(member)
             if not topics:
                 self._element('topics')

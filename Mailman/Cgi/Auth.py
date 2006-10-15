@@ -1,26 +1,25 @@
-# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """Common routines for logging in and logging out of the list administrator
 and list moderator interface.
 """
 
-from Mailman import mm_cfg
 from Mailman import Utils
-from Mailman import Errors
 from Mailman.htmlformat import FontAttr
 from Mailman.i18n import _
 
@@ -34,12 +33,14 @@ class NotLoggedInError(Exception):
 
 
 
-def loginpage(mlist, scriptname, msg='', frontpage=None):
+def loginpage(mlist, scriptname, msg='', frontpage=False):
     url = mlist.GetScriptURL(scriptname)
     if frontpage:
         actionurl = url
     else:
-        actionurl = Utils.GetRequestURI(url)
+        request = Utils.GetRequestURI(url)
+        up = '../' * request.count('/')
+        actionurl = up + request
     if msg:
         msg = FontAttr(msg, color='#ff0000', size='+1').Format()
     if scriptname == 'admindb':

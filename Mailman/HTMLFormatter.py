@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -12,19 +12,18 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """Routines for presentation of list-specific HTML text."""
 
-import time
 import re
+import time
 
-from Mailman import mm_cfg
-from Mailman import Utils
 from Mailman import MemberAdaptor
+from Mailman import Utils
+from Mailman import mm_cfg
 from Mailman.htmlformat import *
-
 from Mailman.i18n import _
 
 
@@ -42,7 +41,8 @@ class HTMLFormatter:
         # Remove the .Format() when htmlformat conversion is done.
         realname = self.real_name
         hostname = self.host_name
-        listinfo_link  = Link(self.GetScriptURL('listinfo'), realname).Format()
+        listinfo_link  = Link(self.GetScriptURL('listinfo'),
+                              realname).Format()
         owner_link = Link('mailto:' + self.GetOwnerEmail(), ownertext).Format()
         innertext = _('%(listinfo_link)s list run by %(owner_link)s')
         return Container(

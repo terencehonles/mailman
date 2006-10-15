@@ -48,14 +48,23 @@ SCRIPTSDIR=	$(prefix)/scripts
 
 SHELL=		/bin/sh
 PYTHONLIBDIR=	$(prefix)/pythonlib
+
+# Traditional distutils packages
 SETUPINSTOPTS=	--install-lib $(DESTDIR)$(PYTHONLIBDIR) \
 		--install-purelib $(DESTDIR)$(PYTHONLIBDIR) \
 		--install-data $(DESTDIR)$(PYTHONLIBDIR)
 SETUPCMD=	setup.py --quiet install $(SETUPINSTOPTS)
 
-EMAILPKG=	email-4.0.1
+EMAIL=		email-4.0.1
+SETUPTOOLS=	setuptools-0.6c3
+SETUPPKGS=	$(EMAIL) $(SETUPTOOLS)
 
-PACKAGES= $(EMAILPKG)
+EZINSTOPTS=	--install-dir $(DESTDIR)$(PYTHONLIBDIR)
+EZCMD=		$(PYTHONLIBDIR)/$(SETUPTOOLS)-py2.4.egg/easy_install.py \
+		$(EZINSTALLOPTS)
+
+WSGIREF=	wsgiref-0.1.2-py2.4.egg
+EZPKGS=		$(WSGIREF)
 
 # Modes for directories and executables created by the install
 # process.  Default to group-writable directories but
@@ -86,10 +95,15 @@ install-other:
 	$(INSTALL) -m $(FILEMODE) mailman.cfg.sample $(DESTDIR)$(ETCDIR)
 
 install-packages:
-	for p in $(PACKAGES); \
+	for p in $(SETUPPKGS); \
 	do \
 	    gunzip -c $(srcdir)/$$p.tar.gz | tar xf -; \
-	    (cd $$p ; umask 02 ; PYTHONPATH=$(PYTHONLIBDIR) $(PYTHON) $(SETUPCMD)); \
+	    (cd $$p ; umask 02 ; \
+	     PYTHONPATH=$(PYTHONLIBDIR) $(PYTHON) $(SETUPCMD)); \
+	done
+	for p in $(EZPKGS); \
+	do \
+	    (umask 02 ; PYTHONPATH=$(PYTHONLIBDIR) $(PYTHON) $(EZCMD) $$p); \
 	done
 
 finish:

@@ -99,7 +99,7 @@ def main():
     # Is this a log-out request?
     if category == 'logout':
         print mlist.ZapCookie(mm_cfg.AuthListAdmin)
-        Auth.loginpage(mlist, 'admin', frontpage=1)
+        Auth.loginpage(mlist, 'admin', frontpage=True)
         return
 
     # Sanity check
@@ -795,9 +795,9 @@ def get_item_gui_description(mlist, category, subcat,
     # the details page!
     if detailsp:
         if subcat:
-            varhelp = '/?VARHELP=%s/%s/%s' % (category, subcat, varname)
+            varhelp = '?VARHELP=%s/%s/%s' % (category, subcat, varname)
         else:
-            varhelp = '/?VARHELP=%s/%s' % (category, varname)
+            varhelp = '?VARHELP=%s/%s' % (category, varname)
         if descr == elaboration:
             linktext = _('<br>(Edit <b>%(varname)s</b>)')
         else:
@@ -817,7 +817,7 @@ def get_item_gui_description(mlist, category, subcat,
 
 def membership_options(mlist, subcat, cgidata, doc, form):
     # Show the main stuff
-    adminurl = mlist.GetScriptURL('admin', absolute=1)
+    adminurl = mlist.GetScriptURL('admin')
     container = Container()
     header = Table(width="100%")
     # If we're in the list subcategory, show the membership list
@@ -1200,7 +1200,7 @@ def mass_remove(mlist, container):
 
 
 def password_inputs(mlist):
-    adminurl = mlist.GetScriptURL('admin', absolute=1)
+    adminurl = mlist.GetScriptURL('admin')
     table = Table(cellspacing=3, cellpadding=4)
     table.AddRow([Center(Header(2, _('Change list ownership passwords')))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2,

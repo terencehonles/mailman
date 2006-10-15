@@ -154,7 +154,7 @@ def process_request(doc, cgidata):
     url_host = Utils.get_request_domain()
     email_host = config.get_email_host(url_host)
     if not email_host:
-        safehostname = Utils.websafe(email_host)
+        safehostname = Utils.websafe(url_host)
         request_creation(doc, cgidata,
                          _('Unknown virtual host: $safehostname'))
         return

@@ -23,18 +23,17 @@ import cgi
 import logging
 import mimetypes
 
-from Mailman import mm_cfg
-from Mailman import Utils
-from Mailman import MailList
 from Mailman import Errors
+from Mailman import MailList
+from Mailman import Utils
 from Mailman import i18n
-from Mailman.htmlformat import *
 from Mailman.configuration import config
+from Mailman.htmlformat import *
 
 # Set up i18n.  Until we know which list is being requested, we use the
 # server's default.
 _ = i18n._
-i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+i18n.set_language(config.DEFAULT_SERVER_LANGUAGE)
 
 SLASH = '/'
 
@@ -61,7 +60,7 @@ def guess_type(url, strict):
 
 def main():
     doc = Document()
-    doc.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+    doc.set_language(config.DEFAULT_SERVER_LANGUAGE)
 
     parts = Utils.GetPathPieces()
     if not parts:
@@ -127,10 +126,10 @@ def main():
     realname = mlist.real_name
     message = ''
 
-    if not mlist.WebAuthenticate((mm_cfg.AuthUser,
-                                  mm_cfg.AuthListModerator,
-                                  mm_cfg.AuthListAdmin,
-                                  mm_cfg.AuthSiteAdmin),
+    if not mlist.WebAuthenticate((config.AuthUser,
+                                  config.AuthListModerator,
+                                  config.AuthListAdmin,
+                                  config.AuthSiteAdmin),
                                  password, username):
         if cgidata.has_key('submit'):
             # This is a re-authorization attempt

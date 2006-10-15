@@ -262,12 +262,10 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             acct, host = tuple(member.split('@'))
             return "%s%s@%s" % (acct, self.umbrella_member_suffix, host)
 
-    def GetScriptURL(self, scriptname, absolute=False):
-        return '%s/%s' % (
-            Utils.ScriptURL(scriptname, self.web_page_url, absolute),
-            self.fqdn_listname)
+    def GetScriptURL(self, target):
+        return Utils.ScriptURL(target) + '/' + self.fqdn_listname
 
-    def GetOptionsURL(self, user, obscure=0, absolute=False):
+    def GetOptionsURL(self, user, obscure=False, absolute=False):
         url = self.GetScriptURL('options', absolute)
         if obscure:
             user = Utils.ObscureEmail(user)
@@ -299,8 +297,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
                                                    name + '@' +
                                                    self.host_name)
                 else:
-                    self._full_path = os.path.join(config.LIST_DATA_DIR,
-                                                   name)
+                    self._full_path = os.path.join(config.LIST_DATA_DIR, name)
         else:
             self._full_path = ''
         # Only one level of mixin inheritance allowed

@@ -57,8 +57,6 @@ import logging
 import marshal
 import binascii
 
-from urlparse import urlparse
-
 from Mailman import Errors
 from Mailman import mm_cfg
 from Mailman import Utils
@@ -225,6 +223,9 @@ class SecurityManager:
             return True
         return False
 
+    def _cookie_path(self):
+        return '/%s/%s' % (os.environ['SCRIPT_NAME'], self.fqdn_listname)
+
     def MakeCookie(self, authcontext, user=None):
         key, secret = self.AuthContextInfo(authcontext, user)
         if key is None or secret is None or not isinstance(secret, str):
@@ -236,10 +237,7 @@ class SecurityManager:
         # Create the cookie object.
         c = Cookie.SimpleCookie()
         c[key] = binascii.hexlify(marshal.dumps((issued, mac)))
-        # The path to all Mailman stuff, minus the scheme and host,
-        # i.e. usually the string `/mailman'
-        path = urlparse(self.web_page_url)[2]
-        c[key]['path'] = path
+        c[key]['path'] = self._cookie_path()
         # We use session cookies, so don't set `expires' or `max-age' keys.
         # Set the RFC 2109 required header.
         c[key]['version'] = 1
@@ -253,10 +251,7 @@ class SecurityManager:
         # string.
         c = Cookie.SimpleCookie()
         c[key] = ''
-        # The path to all Mailman stuff, minus the scheme and host,
-        # i.e. usually the string `/mailman'
-        path = urlparse(self.web_page_url)[2]
-        c[key]['path'] = path
+        c[key]['path'] = self._cookie_path()
         c[key]['max-age'] = 0
         # Don't set expires=0 here otherwise it'll force a persistent cookie
         c[key]['version'] = 1

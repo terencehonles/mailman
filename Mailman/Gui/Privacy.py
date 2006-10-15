@@ -160,7 +160,7 @@ class Privacy(GUIBase):
              spammers.""")),
             ]
 
-        adminurl = mlist.GetScriptURL('admin', absolute=1)
+        adminurl = mlist.GetScriptURL('admin')
         sender_rtn = [
             _("""When a message is posted to the list, a series of
             moderation steps are take to decide whether the a moderator must

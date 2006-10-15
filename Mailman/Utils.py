@@ -202,7 +202,7 @@ _badchars = re.compile(r'[][()<>|;^,\000-\037\177-\377]')
 def ValidateEmail(s):
     """Verify that the an email address isn't grossly evil."""
     # Pretty minimal, cheesy check.  We could do better...
-    if not s or s.count(' ') > 0:
+    if not s or ' ' in s:
         raise Errors.MMBadEmailError
     if _badchars.search(s) or s[0] == '-':
         raise Errors.MMHostileAddress, s
@@ -226,36 +226,13 @@ def GetPathPieces(envar='PATH_INFO'):
             path = CRNLpat.split(path)[0]
             log.error('Warning: Possible malformed path attack.')
         return [p for p in path.split('/') if p]
-    return None
+    return []
 
 
 
-def ScriptURL(target, web_page_url=None, absolute=False):
-    """target - scriptname only, nothing extra
-    web_page_url - the list's configvar of the same name
-    absolute - a flag which if set, generates an absolute url
-    """
-    if web_page_url is None:
-        web_page_url = config.DEFAULT_URL_PATTERN % get_request_domain()
-        if web_page_url[-1] <> '/':
-            web_page_url = web_page_url + '/'
-    fullpath = os.environ.get('REQUEST_URI')
-    if fullpath is None:
-        fullpath = os.environ.get('SCRIPT_NAME', '') + \
-                   os.environ.get('PATH_INFO', '')
-    baseurl = urlparse.urlparse(web_page_url)[2]
-    if not absolute and fullpath.endswith(baseurl):
-        # Use relative addressing
-        fullpath = fullpath[len(baseurl):]
-        i = fullpath.find('?')
-        if i > 0:
-            count = fullpath.count('/', 0, i)
-        else:
-            count = fullpath.count('/')
-        path = ('../' * count) + target
-    else:
-        path = web_page_url + target
-    return path + config.CGIEXT
+def ScriptURL(target):
+    up = '../' * len(GetPathPieces())
+    return '%s%s' % (up, target + config.CGIEXT)
 
 
 
@@ -630,9 +607,9 @@ def GetRequestURI(fallback=None, escape=True):
     unless `escape' is set to 0.
     """
     url = fallback
-    if os.environ.has_key('REQUEST_URI'):
+    if 'REQUEST_URI' in os.environ:
         url = os.environ['REQUEST_URI']
-    elif os.environ.has_key('SCRIPT_NAME') and os.environ.has_key('PATH_INFO'):
+    elif 'SCRIPT_NAME' in os.environ and 'PATH_INFO' in os.environ:
         url = os.environ['SCRIPT_NAME'] + os.environ['PATH_INFO']
     if escape:
         return websafe(url)

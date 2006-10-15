@@ -15,25 +15,24 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-"""Mailman HTTP runner (server).
-
-"""
+"""Mailman HTTP runner (server)."""
 
 import sys
 import logging
-import StringIO
 
+from cStringIO import StringIO
 from wsgiref.simple_server import make_server, WSGIRequestHandler
 
+from Mailman.Cgi.wsgi_app import mailman_app
 from Mailman.Queue.Runner import Runner
 from Mailman.configuration import config
-from Mailman.Cgi.wsgi_app import mailman_app
 
 hlog = logging.getLogger('mailman.http')
 qlog = logging.getLogger('mailman.qrunner')
 
-class HTTPRunner(Runner):
 
+
+class HTTPRunner(Runner):
     def __init__(self, slice=None, numslices=1):
         pass
 
@@ -41,23 +40,27 @@ class HTTPRunner(Runner):
         pass
 
 
+
 class MailmanWSGIRequestHandler(WSGIRequestHandler):
-
     def handle(self):
         """Handle a single HTTP request with error output to elog"""
-        stderr = StringIO.StringIO()
-        save_stderr = sys.stderr
+        stderr = StringIO()
+        saved_stderr = sys.stderr
         sys.stderr = stderr
-        WSGIRequestHandler.handle(self)
-        sys.stderr = save_stderr
+        try:
+            WSGIRequestHandler.handle(self)
+        finally:
+            sys.stderr = saved_stderr
         hlog.info(stderr.getvalue().strip())
 
 
+
 server = make_server(config.HTTP_HOST, config.HTTP_PORT,
                      mailman_app,
                      handler_class=MailmanWSGIRequestHandler)
+
+
 qlog.info('HTTPRunner qrunner started.')
 server.serve_forever()
 # We'll never get here, but just in case...
 qlog.info('HTTPRunner qrunner exiting.')
-

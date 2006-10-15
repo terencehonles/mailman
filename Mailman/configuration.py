@@ -29,7 +29,7 @@ _missing = object()
 
 class Configuration(object):
     def __init__(self):
-        self.domains = {}
+        self.domains = {}       # email host -> web host
         self._reverse = None
 
     def load(self, filename=None):

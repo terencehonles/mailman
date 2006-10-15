@@ -117,7 +117,7 @@ class Archiver:
                 fp.write(Utils.maketext(
                     'emptyarchive.html',
                     {'listname': self.real_name,
-                     'listinfo': self.GetScriptURL('listinfo', absolute=1),
+                     'listinfo': self.GetScriptURL('listinfo'),
                      }, mlist=self))
             if fp:
                 fp.close()
@@ -135,19 +135,17 @@ class Archiver:
                             self.internal_name() + '.mbox')
 
     def GetBaseArchiveURL(self):
-        url = self.GetScriptURL('private', absolute=1) + '/'
         if self.archive_private:
-            return url
+            url = self.GetScriptURL('private')
         else:
-            hostname = re.match('[^:]*://([^/]*)/.*', url).group(1)\
-                       or mm_cfg.DEFAULT_URL_HOST
-            url = mm_cfg.PUBLIC_ARCHIVE_URL % {
+            web_host = config.domains.get(self.host_name, self.host_name)
+            url = config.PUBLIC_ARCHIVE_URL % {
                 'listname': self.internal_name(),
-                'hostname': hostname
+                'hostname': web_host,
                 }
-            if not url.endswith('/'):
-                url += '/'
-            return url
+        if not url.endswith('/'):
+            url += '/'
+        return url
 
     def __archive_file(self, afn):
         """Open (creating, if necessary) the named archive file."""

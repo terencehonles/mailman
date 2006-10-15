@@ -1,5 +1,3 @@
-# -*- python -*-
-
 # Copyright (C) 2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
@@ -17,30 +15,36 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
+import os
 import sys
-STEALTH_MODE = False
-# Shoul this be configurable in Defaults.py?
 
+from cStringIO import StringIO
+from email import message_from_string
+
+from Mailman.configuration import config
+
+# XXX Should this be configurable in Defaults.py?
+STEALTH_MODE = False
+
+
+
 def websafe(s):
     return s
 
-import os
-import StringIO
-from email import message_from_string
-from Mailman.configuration import config
 
 SCRIPTS = ['admin', 'admindb', 'confirm', 'create',
            'edithtml', 'listinfo', 'options', 'private',
            'rmlist', 'roster', 'subscribe']
-SLASH = '/'
-NL2 = '\n\n'
-CRLF2 = '\r\n\r\n'
 
+SLASH   = '/'
+NL2     = '\n\n'
+CRLF2   = '\r\n\r\n'
+
+
+
 # WSGI to CGI wrapper.  Mostly copied from scripts/driver.
-
 def mailman_app(environ, start_response):
-    """wrapper to *.py cgi commands"""
-
+    """Wrapper to *.py CGI commands"""
     global STEALTH_MODE, websafe
     try:
         try:
@@ -65,7 +69,7 @@ def mailman_app(environ, start_response):
                 environ['PATH_INFO'] = SLASH + SLASH.join(paths[2:])
             else:
                 environ['PATH_INFO'] = ''
-	    # reverse proxy environment.
+            # Reverse proxy environment.
             if environ.has_key('HTTP_X_FORWARDED_HOST'):
                 environ['HTTP_HOST'] = environ['HTTP_X_FORWARDED_HOST']
             if environ.has_key('HTTP_X_FORWARDED_FOR'):
@@ -75,14 +79,14 @@ def mailman_app(environ, start_response):
             os.environ['HTTP_COOKIE'] = ''
             for k, v in environ.items():
                 os.environ[k] = str(v)
-            # Prepare for redirection.
+            # Prepare for redirection
             save_stdin = sys.stdin
             # CGI writes its output to sys.stdout, while wsgi app should
             # return (list of) strings.
             save_stdout = sys.stdout
             save_stderr = sys.stderr
-            tmpstdout = StringIO.StringIO()
-            tmpstderr = StringIO.StringIO()
+            tmpstdout = StringIO()
+            tmpstderr = StringIO()
             response = ''
             try:
                 try:
@@ -117,7 +121,7 @@ def mailman_app(environ, start_response):
     except:
         start_response('200 OK', [('Content-Type', 'text/html')])
         retstring = print_traceback(log)
-        retstring +=print_environment(log)
+        retstring += print_environment(log)
         return retstring
 
 
@@ -133,13 +137,13 @@ def print_traceback(log=None):
     except ImportError:
         traceback = None
     try:
-        from Mailman.mm_cfg import VERSION
+        from Mailman.Version import VERSION
     except ImportError:
         VERSION = '&lt;undetermined&gt;'
 
     # Write to the log file first.
     if log:
-        outfp = StringIO.StringIO()
+        outfp = StringIO()
 
         print >> outfp, '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'
         print >> outfp, '[----- Mailman Version: %s -----]' % VERSION
@@ -155,7 +159,7 @@ def print_traceback(log=None):
         log.error('%s', outfp.getvalue())
 
     # return HTML sink.
-    htfp = StringIO.StringIO()
+    htfp = StringIO()
     print >> htfp, """\
 <head><title>Bug in Mailman version %(VERSION)s</title></head>
 <body bgcolor=#ffffff><h2>Bug in Mailman version %(VERSION)s</h2>
@@ -192,7 +196,7 @@ def print_environment(log=None):
         os = None
 
     if log:
-        outfp = StringIO.StringIO()
+        outfp = StringIO()
 
         # Write some information about our Python executable to the log file.
         print >> outfp, '[----- Python Information -----]'
@@ -204,20 +208,20 @@ def print_environment(log=None):
         print >> outfp, 'sys.platform    =', sys.platform
 
     # Write the same information to the HTML sink.
-    htfp = StringIO.StringIO()
+    htfp = StringIO()
     if not STEALTH_MODE:
-        print >> htfp, '''\
+        print >> htfp, """\
 <p><hr><h4>Python information:</h4>
 
 <p><table>
 <tr><th>Variable</th><th>Value</th></tr>
 <tr><td><tt>sys.version</tt></td><td> %s </td></tr>
 <tr><td><tt>sys.executable</tt></td><td> %s </td></tr>
-<tr><td><tt>sys.prefix</tt></td><td> %s </td></tr>'
+<tr><td><tt>sys.prefix</tt></td><td> %s </td></tr>
 <tr><td><tt>sys.exec_prefix</tt></td><td> %s </td></tr>
 <tr><td><tt>sys.path</tt></td><td> %s </td></tr>
 <tr><td><tt>sys.platform</tt></td><td> %s </td></tr>
-</table>''' % (sys.version, sys.executable, sys.prefix,
+</table>""" % (sys.version, sys.executable, sys.prefix,
                sys.exec_prefix, sys.path, sys.platform)
 
     # Write environment variables to the log file.
@@ -231,12 +235,12 @@ def print_environment(log=None):
 
     # Write environment variables to the HTML sink.
     if not STEALTH_MODE:
-        print >> htfp, '''\
+        print >> htfp, """\
 <p><hr><h4>Environment variables:</h4>
 
 <p><table>
 <tr><th>Variable</th><th>Value</th></tr>
-'''
+"""
         if os:
             for k, v in os.environ.items():
                 print >> htfp, '<tr><td><tt>' + websafe(k) + \
