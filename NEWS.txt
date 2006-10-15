@@ -8,6 +8,22 @@ Here is a history of user visible changes to Mailman.
 
   Architecture
 
+    - Mailman's web interface is now WSGI compliant.  WSGI is a Python
+      standard (PEP 333) allowing web applications to be (more) easily
+      integrated with any number of existing Python web application
+      frameworks.  For more information see:
+
+      http://www.wsgi.org/wsgi
+      http://www.python.org/dev/peps/pep-0333/
+
+      Mailman can still be run as a traditional CGI program of course.
+
+    - Mailman now provides an LMTP server for more efficient integration with
+      supporting mail servers (e.g. Postfix, Sendmail).  The Local Mail
+      Transport Protocol is defined in RFC 2033:
+
+      http://www.faqs.org/rfcs/rfc2033.html
+
     - Virtual domains are now fully supported in that mailing lists of the
       same name can exist in more than one domain.  This is accomplished by
       renaming the lists/ and archives/ subdirectories after the list's
