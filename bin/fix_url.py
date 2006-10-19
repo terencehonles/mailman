@@ -42,7 +42,7 @@ import sys
 import getopt
 
 import paths
-from Mailman import mm_cfg
+from Mailman.configuration import config
 from Mailman.i18n import _
 
 
@@ -70,11 +70,11 @@ def fix_url(mlist, *args):
             verbose = 1
 
     if urlhost:
-        web_page_url = mm_cfg.DEFAULT_URL_PATTERN % urlhost
-        mailhost = mm_cfg.VIRTUAL_HOSTS.get(urlhost.lower(), urlhost)
+        web_page_url = config.DEFAULT_URL_PATTERN % urlhost
+        mailhost = config.VIRTUAL_HOSTS.get(urlhost.lower(), urlhost)
     else:
-        web_page_url = mm_cfg.DEFAULT_URL_PATTERN % mm_cfg.DEFAULT_URL_HOST
-        mailhost = mm_cfg.DEFAULT_EMAIL_HOST
+        web_page_url = config.DEFAULT_URL_PATTERN % config.DEFAULT_URL_HOST
+        mailhost = config.DEFAULT_EMAIL_HOST
 
     if verbose:
         print _('Setting web_page_url to: %(web_page_url)s')
