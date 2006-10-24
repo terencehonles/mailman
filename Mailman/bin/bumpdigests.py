@@ -21,7 +21,8 @@ import optparse
 from Mailman import Errors
 from Mailman import MailList
 from Mailman import Utils
-from Mailman import mm_cfg
+from Mailman import Version
+from Mailman.configuration import config
 from Mailman.i18n import _
 
 # Work around known problems with some RedHat cron daemons
@@ -33,13 +34,15 @@ __i18n_templates__ = True
 
 
 def parseargs():
-    parser = optparse.OptionParser(version=mm_cfg.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
                                    usage=_("""\
 %prog [options] [listname ...]
 
 Increment the digest volume number and reset the digest number to one.  All
 the lists named on the command line are bumped.  If no list names are given,
 all lists are bumped."""))
+    parser.add_option('-C', '--config',
+                      help=_('Alternative configuration file to use'))
     opts, args = parser.parse_args()
     return opts, args, parser
 
@@ -47,6 +50,7 @@ all lists are bumped."""))
 
 def main():
     opts, args, parser = parseargs()
+    config.load(opts.config)
 
     listnames = set(args or Utils.list_names())
     if not listnames:

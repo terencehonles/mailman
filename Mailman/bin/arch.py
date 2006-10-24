@@ -22,21 +22,20 @@ import shutil
 import optparse
 
 from Mailman import Errors
+from Mailman import Version
 from Mailman import i18n
-from Mailman import mm_cfg
 from Mailman.Archiver.HyperArch import HyperArchive
 from Mailman.LockFile import LockFile
 from Mailman.MailList import MailList
+from Mailman.configuration import config
 
 _ = i18n._
-i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
-
 __i18n_templates__ = True
 
 
 
 def parseargs():
-    parser = optparse.OptionParser(version=mm_cfg.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
                                    usage=_("""\
 %%prog [options] listname [mbox]
 
@@ -73,6 +72,8 @@ End indexing at article M.  This script is not very efficient with respect to
 memory management, and for large archives, it may not be possible to index the
 mbox entirely.  For that reason, you can specify the start and end article
 numbers."""))
+    parser.add_option('-C', '--config',
+                      help=_('Alternative configuration file to use'))
     opts, args = parser.parse_args()
     if len(args) < 1:
         parser.print_help()
@@ -88,6 +89,9 @@ numbers."""))
 
 def main():
     parser, opts, args = parseargs()
+    config.load(opts.config)
+
+    i18n.set_language(config.DEFAULT_SERVER_LANGUAGE)
 
     listname = args[0].lower().strip()
     if len(args) < 2:
@@ -119,7 +123,7 @@ def main():
         # XXX This may not be necessary because I think we lay claim to the
         # list lock up above, although that may be too short to be of use (and
         # maybe we don't really want to lock the list anyway).
-        lockfile = os.path.join(mm_cfg.LOCK_DIR, mlist._internal_name) + \
+        lockfile = os.path.join(config.LOCK_DIR, mlist._internal_name) + \
                    '.archiver.lock'
         # set the lock lifetime to 3 hours.  XXX is this reasonable???
         lock = LockFile(lockfile, lifetime=3*60*60)

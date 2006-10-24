@@ -24,7 +24,8 @@ from Mailman import Errors
 from Mailman import MailList
 from Mailman import MemberAdaptor
 from Mailman import Utils
-from Mailman import mm_cfg
+from Mailman import Version
+from Mailman.configuration import config
 from Mailman.i18n import _
 
 __i18n_templates__ = True
@@ -45,7 +46,7 @@ KINDCHOICES = set(('mime', 'plain', 'any'))
 
 
 def parseargs():
-    parser = optparse.OptionParser(version=mm_cfg.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
                                    usage=_("""\
 %prog [options] listname
 
@@ -89,6 +90,8 @@ Print only the addresses in the membership list that are invalid.  Ignores -r,
                       default=False, action='store_true', help=_("""\
 Print addresses which are stored as Unicode objects instead of normal string
 objects.  Ignores -r, -d, -n."""))
+    parser.add_option('-C', '--config',
+                      help=_('Alternative configuration file to use'))
     opts, args = parser.parse_args()
     if not args:
         parser.print_help()
@@ -154,6 +157,7 @@ def whymatches(mlist, addr, why):
 
 def main():
     parser, opts, args = parseargs()
+    config.load(opts.config)
 
     listname = args[0].lower().strip()
     if opts.output:
@@ -210,7 +214,7 @@ def main():
             if opts.nomail and not whymatches(mlist, addr, opts.why):
                 continue
             # Filter out digest kinds
-            if mlist.getMemberOption(addr, mm_cfg.DisableMime):
+            if mlist.getMemberOption(addr, config.DisableMime):
                 # They're getting plain text digests
                 if opts.kind == 'mime':
                     continue

@@ -33,6 +33,7 @@ LOGGERS = (
     'config',
     'debug',
     'error',
+    'fromusenet',
     'http',
     'locks',
     'mischief',
@@ -101,6 +102,7 @@ def initialize(propagate=False):
     # config        - Configuration issues
     # locks         - Lock steals
     # qrunner       - qrunner start/stops
+    # fromusenet    - Information related to the Usenet to Mailman gateway
     #
     # There was also a 'debug' logger, but that was mostly unused, so instead
     # we'll use debug level on existing loggers.

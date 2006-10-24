@@ -26,9 +26,10 @@ try:
 except ImportError:
     sys.exit(0)
 
-from Mailman import mm_cfg
-from Mailman import Utils
 from Mailman import MailList
+from Mailman import Utils
+from Mailman import Version
+from Mailman.configuration import config
 from Mailman.i18n import _
 
 __i18n_templates__ = True
@@ -36,7 +37,7 @@ __i18n_templates__ = True
 
 
 def parseargs():
-    parser = optparse.OptionParser(version=mm_cfg.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
                                    usage=_("""\
 %prog [options] [listname ...]
 
@@ -47,6 +48,8 @@ Re-generate the Pipermail gzip'd archive flat files."""))
     parser.add_option('-z', '--level',
                       default=6, type='int',
                       help=_('Specifies the compression level'))
+    parser.add_option('-C', '--config',
+                      help=_('Alternative configuration file to use'))
     opts, args = parser.parse_args()
     if opts.level < 1 or opts.level > 9:
         parser.print_help()
@@ -73,14 +76,15 @@ def compress(txtfile, opts):
 
 
 def main():
-    if mm_cfg.ARCHIVE_TO_MBOX not in (1, 2) or mm_cfg.GZIP_ARCHIVE_TXT_FILES:
+    opts, args, parser = parseargs()
+    config.load(opts.config)
+
+    if config.ARCHIVE_TO_MBOX not in (1, 2) or config.GZIP_ARCHIVE_TXT_FILES:
         # We're only going to run the nightly archiver if messages are
         # archived to the mbox, and the gzip file is not created on demand
         # (i.e. for every individual post).  This is the normal mode of
         # operation.
         return
-
-    opts, args, parser = parseargs()
 
     # Process all the specified lists
     for listname in set(args or Utils.list_names()):

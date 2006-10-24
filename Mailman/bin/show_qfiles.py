@@ -19,7 +19,8 @@ import sys
 import optparse
 from cPickle import load
 
-from Mailman import mm_cfg
+from Mailman import Version
+from Mailman.configuration import config
 from Mailman.i18n import _
 
 __i18_templates__ = True
@@ -27,7 +28,7 @@ __i18_templates__ = True
 
 
 def parseargs():
-    parser = optparse.OptionParser(version=mm_cfg.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
                                    usage=_("""\
 %%prog [options] qfiles ...
 
@@ -35,6 +36,8 @@ Show the contents of one or more Mailman queue files."""))
     parser.add_option('-q', '--quiet',
                       default=False, action='store_true',
                       help=_("Don't print 'helpful' message delimiters."))
+    parser.add_option('-C', '--config',
+                      help=_('Alternative configuration file to use'))
     opts, args = parser.parse_args()
     return parser, opts, args
 
@@ -42,6 +45,7 @@ Show the contents of one or more Mailman queue files."""))
 
 def main():
     parser, opts, args = parseargs()
+    config.load(opts.config)
 
     for filename in args:
         if not opts.quiet:

@@ -290,7 +290,7 @@ def do_input(listname, infile, checkonly, verbose, parser):
                     # one.  But we really do provide [0..3] so we need to undo
                     # the hack that _setValue adds. :( :(
                     if k == 'subscribe_policy' and \
-                           not mm_cfg.ALLOW_OPEN_SUBSCRIBE:
+                           not config.ALLOW_OPEN_SUBSCRIBE:
                         validval -= 1
                     # BAW: Another horrible hack.  This one is just too hard
                     # to fix in a principled way in Mailman 2.1
@@ -299,7 +299,7 @@ def do_input(listname, infile, checkonly, verbose, parser):
                         # transforms the value into a list of one item.
                         validval = validval[0]
                         validval = [bitfield for bitfield, bitval
-                                    in mm_cfg.OPTINFO.items()
+                                    in config.OPTINFO.items()
                                     if validval & bitval]
                     gui._setValue(mlist, k, validval, fakedoc)
             # BAW: when to do gui._postValidate()???

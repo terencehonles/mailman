@@ -22,7 +22,8 @@ import optparse
 from Mailman import Errors
 from Mailman import MailList
 from Mailman import Utils
-from Mailman import mm_cfg
+from Mailman import Version
+from Mailman.configuration import config
 from Mailman.i18n import _
 
 
@@ -34,7 +35,7 @@ AS_OWNER    = 0x02
 
 
 def parseargs():
-    parser = optparse.OptionParser(version=mm_cfg.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
                                    usage=_("""\
 %prog [options] regex [regex ...]
 
@@ -63,20 +64,23 @@ displayed."""))
     parser.add_option('-w', '--owners',
                       default=False, action='store_true',
                       help=_('Search list owners as well as members'))
+    parser.add_option('-C', '--config',
+                      help=_('Alternative configuration file to use'))
     opts, args = parser.parse_args()
     if not args:
         parser.print_help()
         print >> sys.stderr, _('Search regular expression required')
         sys.exit(1)
-    if not opts.listnames and opts.excludes:
-        opts.listnames = Utils.list_names()
     return parser, opts, args
 
 
 
 def main():
     parser, opts, args = parseargs()
+    config.load(opts.config)
 
+    if not opts.listnames:
+        opts.listnames = Utils.list_names()
     includes = set(listname.lower() for listname in opts.listnames)
     excludes = set(listname.lower() for listname in opts.excludes)
     listnames = includes - excludes

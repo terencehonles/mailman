@@ -26,8 +26,9 @@ from Mailman import Errors
 from Mailman import MailList
 from Mailman import Message
 from Mailman import Utils
+from Mailman import Version
 from Mailman import i18n
-from Mailman import mm_cfg
+from Mailman.configuration import config
 
 _ = i18n._
 __i18n_templates__ = True
@@ -35,7 +36,7 @@ __i18n_templates__ = True
 
 
 def parseargs():
-    parser = optparse.OptionParser(version=mm_cfg.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
                                    usage=_("""\
 %prog [options] listname
 
@@ -62,6 +63,8 @@ whatever the list's 'send_welcome_msg' setting is."""))
 Set whether or not to send the list administrators a notification on the
 success/failure of these subscriptions, overriding whatever the list's
 'admin_notify_mchanges' setting is."""))
+    parser.add_option('-C', '--config',
+                      help=_('Alternative configuration file to use'))
     opts, args = parser.parse_args()
     if not args:
         parser.print_help()
@@ -156,6 +159,7 @@ def addall(mlist, members, digest, ack, outfp):
 
 def main():
     parser, opts, args = parseargs()
+    config.load(opts.config)
 
     listname = args[0].lower().strip()
     try:

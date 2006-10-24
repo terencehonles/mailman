@@ -24,9 +24,10 @@ from Mailman import MailList
 from Mailman import MemberAdaptor
 from Mailman import Pending
 from Mailman import Utils
+from Mailman import Version
 from Mailman import loginit
-from Mailman import mm_cfg
 from Mailman.Bouncer import _BounceInfo
+from Mailman.configuration import config
 from Mailman.i18n import _
 
 __i18n_templates__ = True
@@ -34,10 +35,6 @@ __i18n_templates__ = True
 # Work around known problems with some RedHat cron daemons
 import signal
 signal.signal(signal.SIGCHLD, signal.SIG_DFL)
-
-loginit.initialize(propagate=True)
-elog = logging.getLogger('mailman.error')
-blog = logging.getLogger('mailman.bounce')
 
 ALL = (MemberAdaptor.BYBOUNCE,
        MemberAdaptor.BYADMIN,
@@ -62,7 +59,7 @@ def who_callback(option, opt, value, parser):
 
 
 def parseargs():
-    parser = optparse.OptionParser(version=mm_cfg.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
                                    usage=_("""\
 %prog [options]
 
@@ -110,6 +107,8 @@ notification yet."""))
                       dest='listnames', action='append', default=[],
                       type='string', help=_("""\
 Process only the given list, otherwise do all lists."""))
+    parser.add_option('-C', '--config',
+                      help=_('Alternative configuration file to use'))
     opts, args = parser.parse_args()
     return opts, args, parser
 
@@ -117,6 +116,11 @@ Process only the given list, otherwise do all lists."""))
 
 def main():
     opts, args, parser = parseargs()
+    config.load(opts.config)
+
+    loginit.initialize(propagate=True)
+    elog = logging.getLogger('mailman.error')
+    blog = logging.getLogger('mailman.bounce')
 
     listnames = set(opts.listnames or Utils.list_names())
     who = tuple(opts.who)

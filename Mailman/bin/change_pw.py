@@ -23,8 +23,9 @@ from Mailman import Errors
 from Mailman import MailList
 from Mailman import Message
 from Mailman import Utils
+from Mailman import Version
 from Mailman import i18n
-from Mailman import mm_cfg
+from Mailman.configuration import config
 
 _ = i18n._
 __i18n_templates__ = True
@@ -34,7 +35,7 @@ SPACE = ' '
 
 
 def parseargs():
-    parser = optparse.OptionParser(version=mm_cfg.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
                                    usage=_("""\
 %%prog [options]
 
@@ -75,6 +76,8 @@ not given, lists will be assigned a randomly generated new password."""))
 Don't notify list owners of the new password.  You'll have to have some other
 way of letting the list owners know the new password (presumably
 out-of-band)."""))
+    parser.add_option('-C', '--config',
+                      help=_('Alternative configuration file to use'))
     opts, args = parser.parse_args()
     if args:
         parser.print_help()
@@ -107,6 +110,7 @@ def openlist(listname):
 
 def main():
     parser, opts, args = parseargs()
+    config.load(opts.config)
 
     # Cull duplicates
     domains = set(opts.domains)
@@ -135,7 +139,7 @@ def main():
         try:
             if opts.password is None:
                 randompw = Utils.MakeRandomPassword(
-                    mm_cfg.ADMIN_PASSWORD_LENGTH)
+                    config.ADMIN_PASSWORD_LENGTH)
                 shapassword = sha.new(randompw).hexdigest()
                 notifypassword = randompw
             else:

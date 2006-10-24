@@ -19,8 +19,9 @@ import sys
 import optparse
 
 from Mailman import Utils
-from Mailman import mm_cfg
+from Mailman import Version
 from Mailman.MailList import MailList
+from Mailman.configuration import config
 from Mailman.i18n import _
 
 __i18n_templates__ = True
@@ -28,7 +29,7 @@ __i18n_templates__ = True
 
 
 def parseargs():
-    parser = optparse.OptionParser(version=mm_cfg.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
                                    usage=_("""\
 %prog [options] [listname ...]
 
@@ -43,6 +44,8 @@ address."""))
     parser.add_option('-m', '--moderators',
                       default=False, action='store_true',
                       help=_('Include the list moderators in the output.'))
+    parser.add_option('-C', '--config',
+                      help=_('Alternative configuration file to use'))
     opts, args = parser.parse_args()
     return parser, opts, args
 
@@ -50,6 +53,7 @@ address."""))
 
 def main():
     parser, opts, args = parseargs()
+    config.load(opts.config)
 
     listnames = args or Utils.list_names()
     bylist = {}

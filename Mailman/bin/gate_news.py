@@ -30,22 +30,19 @@ from Mailman import LockFile
 from Mailman import MailList
 from Mailman import Message
 from Mailman import Utils
+from Mailman import Version
 from Mailman import loginit
-from Mailman import mm_cfg
 from Mailman.Queue.sbcache import get_switchboard
+from Mailman.configuration import config
 from Mailman.i18n import _
 
 # Work around known problems with some RedHat cron daemons
 import signal
 signal.signal(signal.SIGCHLD, signal.SIG_DFL)
 
-GATENEWS_LOCK_FILE = os.path.join(mm_cfg.LOCK_DIR, 'gate_news.lock')
-
-LOCK_LIFETIME = mm_cfg.hours(2)
 NL = '\n'
 
-loginit.initialize(propagate=True)
-log = logging.getLogger('mailman.fromusenet')
+log = None
 
 class _ContinueLoop(Exception):
     pass
@@ -55,11 +52,13 @@ __i18n_templates__ = True
 
 
 def parseargs():
-    parser = optparse.OptionParser(version=mm_cfg.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
                                    usage=_("""\
 %prog [options]
 
 Poll the NNTP servers for messages to be gatewayed to mailing lists."""))
+    parser.add_option('-C', '--config',
+                      help=_('Alternative configuration file to use'))
     opts, args = parser.parse_args()
     if args:
         parser.print_help()
@@ -81,8 +80,8 @@ def open_newsgroup(mlist):
         try:
             conn = nntplib.NNTP(nntp_host, nntp_port,
                                 readermode=True,
-                                user=mm_cfg.NNTP_USERNAME,
-                                password=mm_cfg.NNTP_PASSWORD)
+                                user=config.NNTP_USERNAME,
+                                password=config.NNTP_PASSWORD)
         except (socket.error, nntplib.NNTPError, IOError), e:
             log.error('error opening connection to nntp_host: %s\n%s',
                       mlist.nntp_host, e)
@@ -149,7 +148,7 @@ def poll_newsgroup(mlist, conn, first, last, glock):
                     del msg['To']
                 msg['To'] = mlist.GetListEmail()
                 # Post the message to the locked list
-                inq = get_switchboard(mm_cfg.INQUEUE_DIR)
+                inq = get_switchboard(config.INQUEUE_DIR)
                 inq.enqueue(msg,
                             listname=mlist.internal_name(),
                             fromusenet=True)
@@ -186,7 +185,7 @@ def process_lists(glock):
         try:
             try:
                 if watermark is None:
-                    mlist.Lock(timeout=mm_cfg.LIST_LOCK_TIMEOUT)
+                    mlist.Lock(timeout=config.LIST_LOCK_TIMEOUT)
                     # This is the first time we've tried to gate this
                     # newsgroup.  We essentially do a mass catch-up, otherwise
                     # we'd flood the mailing list.
@@ -204,7 +203,7 @@ def process_lists(glock):
                     if start > last:
                         log.info('nothing new for list %s', listname)
                     else:
-                        mlist.Lock(timeout=mm_cfg.LIST_LOCK_TIMEOUT)
+                        mlist.Lock(timeout=config.LIST_LOCK_TIMEOUT)
                         log.info('gating %s articles [%d..%d]',
                                  listname, start, last)
                         # Use last+1 because poll_newsgroup() employes a for
@@ -223,6 +222,14 @@ def process_lists(glock):
 
 def main():
     opts, args, parser = parseargs()
+    config.load(opts.config)
+
+    GATENEWS_LOCK_FILE = os.path.join(config.LOCK_DIR, 'gate_news.lock')
+    LOCK_LIFETIME = config.hours(2)
+
+    loginit.initialize(propagate=True)
+    log = logging.getLogger('mailman.fromusenet')
+
     lock = LockFile.LockFile(GATENEWS_LOCK_FILE,
                              # It's okay to hijack this
                              lifetime=LOCK_LIFETIME)

@@ -40,6 +40,7 @@ class Configuration(object):
         # Whatever you find, create a namespace and execfile that file in it.
         # The values in that namespace are exposed as attributes on this
         # Configuration instance.
+        original_filename = filename
         if filename is None:
             filename = os.path.join(Defaults.VAR_PREFIX, 'etc', 'mailman.cfg')
         # Set up the execfile namespace
@@ -54,7 +55,7 @@ class Configuration(object):
         try:
             execfile(path, ns, ns)
         except EnvironmentError, e:
-            if e.errno <> errno.ENOENT:
+            if e.errno <> errno.ENOENT or original_filename:
                 raise
             # The file didn't exist, so try mm_cfg.py
             from Mailman import mm_cfg

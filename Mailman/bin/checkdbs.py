@@ -24,12 +24,11 @@ from email.Charset import Charset
 from Mailman import MailList
 from Mailman import Message
 from Mailman import Utils
+from Mailman import Version
 from Mailman import i18n
-from Mailman import mm_cfg
+from Mailman.configuration import config
 
 _ = i18n._
-i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
-
 __i18n_templates__ = True
 
 # Work around known problems with some RedHat cron daemons
@@ -42,11 +41,13 @@ now = time.time()
 
 
 def parseargs():
-    parser = optparse.OptionParser(version=mm_cfg.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
                                    usage=_("""\
 %prog [options]
 
 Check for pending admin requests and mail the list owners if necessary."""))
+    parser.add_option('-C', '--config',
+                      help=_('Alternative configuration file to use'))
     opts, args = parser.parse_args()
     if args:
         parser.print_help()
@@ -113,12 +114,12 @@ Cause: $reason"""))
 def auto_discard(mlist):
     # Discard old held messages
     discard_count = 0
-    expire = mm_cfg.days(mlist.max_days_to_hold)
+    expire = config.days(mlist.max_days_to_hold)
     heldmsgs = mlist.GetHeldMessageIds()
     if expire and heldmsgs:
         for id in heldmsgs:
             if now - mlist.GetRecord(id)[0] > expire:
-                mlist.HandleRequest(id, mm_cfg.DISCARD)
+                mlist.HandleRequest(id, config.DISCARD)
                 discard_count += 1
         mlist.Save()
     return discard_count
@@ -127,6 +128,9 @@ def auto_discard(mlist):
 
 def main():
     opts, args, parser = parseargs()
+    config.load(opts.config)
+
+    i18n.set_language(config.DEFAULT_SERVER_LANGUAGE)
 
     for name in Utils.list_names():
         # The list must be locked in order to open the requests database
