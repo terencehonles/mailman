@@ -57,9 +57,12 @@ import logging
 import marshal
 import binascii
 
+from urlparse import urlparse
+
+from Mailman import Defaults
 from Mailman import Errors
-from Mailman import mm_cfg
 from Mailman import Utils
+from Mailman.configuration import config
 
 try:
     import crypt
@@ -93,23 +96,23 @@ class SecurityManager:
         # NotAMemberError will be raised.  If the user's secret is None, raise
         # a MMBadUserError.
         key = self.internal_name() + '+'
-        if authcontext == mm_cfg.AuthUser:
+        if authcontext == Defaults.AuthUser:
             if user is None:
                 # A bad system error
                 raise TypeError, 'No user supplied for AuthUser context'
             secret = self.getMemberPassword(user)
             userdata = urllib.quote(Utils.ObscureEmail(user), safe='')
             key += 'user+%s' % userdata
-        elif authcontext == mm_cfg.AuthListModerator:
+        elif authcontext == Defaults.AuthListModerator:
             secret = self.mod_password
             key += 'moderator'
-        elif authcontext == mm_cfg.AuthListAdmin:
+        elif authcontext == Defaults.AuthListAdmin:
             secret = self.password
             key += 'admin'
         # BAW: AuthCreator
-        elif authcontext == mm_cfg.AuthSiteAdmin:
+        elif authcontext == Defaults.AuthSiteAdmin:
             sitepass = Utils.get_global_password()
-            if mm_cfg.ALLOW_SITE_ADMIN_COOKIES and sitepass:
+            if config.ALLOW_SITE_ADMIN_COOKIES and sitepass:
                 secret = sitepass
                 key = 'site'
             else:
@@ -132,15 +135,15 @@ class SecurityManager:
         # Return the authcontext from the argument sequence that matches the
         # response, or UnAuthorized.
         for ac in authcontexts:
-            if ac == mm_cfg.AuthCreator:
+            if ac == Defaults.AuthCreator:
                 ok = Utils.check_global_password(response, siteadmin=0)
                 if ok:
-                    return mm_cfg.AuthCreator
-            elif ac == mm_cfg.AuthSiteAdmin:
+                    return Defaults.AuthCreator
+            elif ac == Defaults.AuthSiteAdmin:
                 ok = Utils.check_global_password(response)
                 if ok:
-                    return mm_cfg.AuthSiteAdmin
-            elif ac == mm_cfg.AuthListAdmin:
+                    return Defaults.AuthSiteAdmin
+            elif ac == Defaults.AuthListAdmin:
                 def cryptmatchp(response, secret):
                     try:
                         salt = secret[:2]
@@ -186,12 +189,12 @@ class SecurityManager:
                             self.Unlock()
                 if ok:
                     return ac
-            elif ac == mm_cfg.AuthListModerator:
+            elif ac == Defaults.AuthListModerator:
                 # The list moderator password must be sha'd
                 key, secret = self.AuthContextInfo(ac)
                 if secret and sha.new(response).hexdigest() == secret:
                     return ac
-            elif ac == mm_cfg.AuthUser:
+            elif ac == Defaults.AuthUser:
                 if user is not None:
                     try:
                         if self.authenticateMember(user, response):
@@ -202,7 +205,7 @@ class SecurityManager:
                 # What is this context???
                 log.error('Bad authcontext: %s', ac)
                 raise ValueError('Bad authcontext: %s' % ac)
-        return mm_cfg.UnAuthorized
+        return Defaults.UnAuthorized
 
     def WebAuthenticate(self, authcontexts, response, user=None):
         # Given a list of authentication contexts, check to see if the cookie
@@ -224,7 +227,26 @@ class SecurityManager:
         return False
 
     def _cookie_path(self):
-        return '/%s/%s' % (os.environ['SCRIPT_NAME'], self.fqdn_listname)
+        # We could be reverse proxied, in which case our cookie path must
+        # match the path as seen by the upstream server, otherwise the client
+        # won't send us our cookie data.  We try to figure this out by looking
+        # at the HTTP_REFERER header, which should include the uri of the
+        # admin login screen as seen by the client.  This is a hack because
+        # we're not guaranteed to see that envar, but there's really no other
+        # way to do it -- the original uri that's proxied to us is not
+        # included in the backend request.  XXX what happens when Apache 2.2's
+        # ProxyPassReverseCookiePath is set?
+        target = '/%s/%s' % (os.environ['SCRIPT_NAME'], self.fqdn_listname)
+        referer = os.environ.get('HTTP_REFERER')
+        if not referer:
+            return target
+        # Python 2.5 XXX urlparse(referer).path
+        path = urlparse(referer)[2]
+        i = path.find(target)
+        if i < 0:
+            return target
+        prefix = path[:i]
+        return prefix + target
 
     def MakeCookie(self, authcontext, user=None):
         key, secret = self.AuthContextInfo(authcontext, user)
@@ -278,7 +300,7 @@ class SecurityManager:
         # can try to glean the user address from the cookie key.  There may be
         # more than one matching key (if the user has multiple accounts
         # subscribed to this list), but any are okay.
-        if authcontext == mm_cfg.AuthUser:
+        if authcontext == Defaults.AuthUser:
             if user:
                 usernames = [user]
             else:

@@ -732,10 +732,14 @@ LMTP_PORT = 8025
 # CGI requests to this WSGI Server:
 #
 #     ProxyPass /mailman/ http://localhost:2580/
-HTTP_HOST = 'localhost'
-HTTP_PORT = 2580
+#
+# XXX If you are running Apache 2.2, you will probably also want to set
+# ProxyPassReverseCookiePath
+#
 # Also you have to add following line to <prefix>/etc/mailman.cfg
 # QRUNNERS.append(('HTTPRunner', 1))
+HTTP_HOST = 'localhost'
+HTTP_PORT = 2580
 
 # After processing every file in the qrunner's slice, how long should the
 # runner sleep for before checking the queue directory again for new files?

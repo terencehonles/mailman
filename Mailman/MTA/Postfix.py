@@ -267,10 +267,11 @@ def create(mlist, cgi=False, nolock=False, quiet=False):
         lock = makelock()
         lock.lock()
     # Create transport file if USE_LMTP
+    update_maps = False
     if config.USE_LMTP:
         try:
 	    _do_create(mlist, TRPTFILE, _addtransport)
-	    _update_maps()
+	    update_maps = True
 	finally:
 	    if lock:
 	        lock.unlock(unconditionally=True)
@@ -279,10 +280,12 @@ def create(mlist, cgi=False, nolock=False, quiet=False):
         _do_create(mlist, ALIASFILE, _addlist)
         if mlist and mlist.host_name in config.POSTFIX_STYLE_VIRTUAL_DOMAINS:
             _do_create(mlist, VIRTFILE, _addvirtual)
-        _update_maps()
+        update_maps = True
     finally:
         if lock:
             lock.unlock(unconditionally=True)
+    if update_maps:
+        _update_maps()
 
 
 
