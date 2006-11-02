@@ -24,8 +24,9 @@
 # attributes that other modules may use to get the absolute path to the
 # installed Mailman distribution.
 
-import sys
 import os
+import sys
+import site
 
 # some scripts expect this attribute to be in this module
 prefix = '@prefix@'
@@ -39,15 +40,20 @@ if exec_prefix == '${prefix}':
 # directory.
 sys.path.insert(0, prefix)
 
-# We also need the pythonlib directory on the path to pick up any overrides of
-# standard modules and packages.  Note that these must go at the front of the
-# path for this reason.
-sys.path.insert(0, os.path.join(prefix, 'pythonlib'))
+# Add Python's site-packages for system add-ons.  Then add our pythonlib
+# directory on path to pick up any overrides of the standard modules and
+# packages.  In both cases, process any .pth files found in either location.
+# Order here matters: our pythonlib directory goes at the front while the
+# system site-packages goes at the end.
+sitedir     = os.path.join(sys.prefix, 'lib', 'python'+sys.version[:3],
+                           'site-packages')
+pythonlib   = os.path.join(prefix, 'pythonlib')
 
-# Include Python's site-packages directory.
-sitedir = os.path.join(sys.prefix, 'lib', 'python'+sys.version[:3],
-                       'site-packages')
+sys.path.insert(0, pythonlib)
 sys.path.append(sitedir)
+
+site.addsitedir(pythonlib)
+site.addsitedir(sitedir)
 
 # Arabic and Hebrew (RFC-1556) encoding aliases. (temporary solution)
 import encodings.aliases
