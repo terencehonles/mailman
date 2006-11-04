@@ -50,6 +50,7 @@ class Configuration(object):
         del ns['__name__']
         del ns['__doc__']
         ns['add_domain'] = self.add_domain
+        ns['add_runner'] = self.add_runner
         # Attempt our first choice
         path = os.path.abspath(os.path.expanduser(filename))
         try:
@@ -104,6 +105,8 @@ class Configuration(object):
         # Now update our dict so attribute syntax just works
         if 'add_domain' in ns:
             del ns['add_domain']
+        if 'add_runner' in ns:
+            del ns['add_runner']
         self.__dict__.update(ns)
         # Add the default domain if there are no virtual domains currently
         # defined.
@@ -138,7 +141,15 @@ class Configuration(object):
             self._reverse = dict([(v, k) for k, v in self.domains.items()])
         return self._reverse.get(url_host, default)
 
+    def add_runner(self, name, count=1):
+        """Convenient interface for adding additional qrunners.
+
+        name is the qrunner name, and must include the 'Runner' suffix.
+        E.g. 'HTTPRunner' or 'LMTPRunner'.  count is the number of qrunner
+        slices to create, by default, 1.
+        """
+        self.QRUNNERS.append((name, count))
+
 
 
 config = Configuration()
-

@@ -14,7 +14,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 import sys
 import pprint
@@ -22,18 +23,18 @@ import cPickle
 import marshal
 import optparse
 
-import paths
-
-from Mailman import mm_cfg
+from Mailman import Version
+from Mailman.configuration import config
 from Mailman.i18n import _
+
 __i18n_templates__ = True
+
+COMMASPACE = ', '
 
 
 
-COMMASPACE = ', '
-
 def parseargs():
-    parser = optparse.OptionParser(version=mm_cfg.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
                                    usage=_("""\
 %%prog [options] filename
 
@@ -60,6 +61,8 @@ Don't attempt to pretty print the object.  This is useful if there's
 some problem with the object and you just want to get an unpickled
 representation.  Useful with `python -i bin/dumpdb <file>'.  In that
 case, the root of the tree will be left in a global called "msg"."""))
+    parser.add_option('-C', '--config',
+                      help=_('Alternative configuration file to use'))
     opts, args = parser.parse_args()
     # Options.
     # None == guess, 0 == pickle, 1 == marshal
@@ -70,14 +73,10 @@ case, the root of the tree will be left in a global called "msg"."""))
         opts.filetype = 1
     opts.doprint = not opts.noprint
     if len(args) < 1:
-        parser.print_help()
-        print >> sys.stderr, _('No filename given.')
-        sys.exit(1)
+        parser.error(_('No filename given.'))
     elif len(args) > 1:
-        parser.print_help()
         pargs = COMMASPACE.join(args)
-        print >> sys.stderr, _('Bad arguments: $pargs')
-        sys.exit(1)
+        parser.error(_('Bad arguments: $pargs'))
     else:
         opts.filename = args[0]
     if opts.filetype is None:
@@ -86,21 +85,18 @@ case, the root of the tree will be left in a global called "msg"."""))
         elif opts.filename.endswith('.pck'):
             opts.filetype = 0
         else:
-            parser.print_help()
-            print >> sys.stderr, _('Please specify either -p or -m.')
-            sys.exit(1)
+            parser.error(_('Please specify either -p or -m.'))
     return parser, opts, args
 
 
 
 def main():
     parser, opts, args = parseargs()
+    config.load(opts.config)
 
     # Handle dbs
     pp = pprint.PrettyPrinter(indent=4)
     if opts.filetype == 1:
-        # BAW: this probably doesn't work if there are mixed types of .db
-        # files (i.e. some marshals, some bdbs).
         load = marshal.load
         typename = 'marshal'
     else:
@@ -129,9 +125,3 @@ def main():
             m.append(obj)
     finally:
         fp.close()
-    return m
-
-
-
-if __name__ == '__main__':
-    msg = main()

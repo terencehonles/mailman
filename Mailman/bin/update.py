@@ -76,7 +76,7 @@ def calcversions():
     #
     # See if we stored the last updated version
     lastversion = None
-    thisversion = config.HEX_VERSION
+    thisversion = Version.HEX_VERSION
     try:
         fp = open(os.path.join(config.DATA_DIR, 'last_mailman_version'))
         data = fp.read()

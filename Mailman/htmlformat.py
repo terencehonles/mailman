@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -12,8 +12,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """Library for program-based construction of an HTML documents.
 
@@ -21,14 +21,10 @@ Encapsulate HTML formatting directives in classes that act as containers
 for python and, recursively, for nested HTML formatting objects.
 """
 
-
-# Eventually could abstract down to HtmlItem, which outputs an arbitrary html
-# object given start / end tags, valid options, and a value.  Ug, objects
-# shouldn't be adding their own newlines.  The next object should.
-
-
-from Mailman import mm_cfg
+from Mailman import Defaults
 from Mailman import Utils
+from Mailman import Version
+from Mailman.configuration import config
 from Mailman.i18n import _
 
 SPACE = ' '
@@ -281,7 +277,7 @@ class Label(Container):
 class Document(Container):
     title = None
     language = None
-    bgcolor = mm_cfg.WEB_BG_COLOR
+    bgcolor = Defaults.WEB_BG_COLOR
     suppress_head = 0
 
     def set_language(self, lang=None):
@@ -305,9 +301,9 @@ class Document(Container):
                            '<HTML>',
                            '<HEAD>'
                            ])
-            if mm_cfg.IMAGE_LOGOS:
+            if config.IMAGE_LOGOS:
                 output.append('<LINK REL="SHORTCUT ICON" HREF="%s">' %
-                              (mm_cfg.IMAGE_LOGOS + mm_cfg.SHORTCUT_ICON))
+                              (config.IMAGE_LOGOS + config.SHORTCUT_ICON))
             # Hit all the bases
             output.append('<META http-equiv="Content-Type" '
                           'content="text/html; charset=%s">' % charset)
@@ -316,12 +312,12 @@ class Document(Container):
             output.append('%s</HEAD>' % tab)
             quals = []
             # Default link colors
-            if mm_cfg.WEB_VLINK_COLOR:
-                kws.setdefault('vlink', mm_cfg.WEB_VLINK_COLOR)
-            if mm_cfg.WEB_ALINK_COLOR:
-                kws.setdefault('alink', mm_cfg.WEB_ALINK_COLOR)
-            if mm_cfg.WEB_LINK_COLOR:
-                kws.setdefault('link', mm_cfg.WEB_LINK_COLOR)
+            if config.WEB_VLINK_COLOR:
+                kws.setdefault('vlink', config.WEB_VLINK_COLOR)
+            if config.WEB_ALINK_COLOR:
+                kws.setdefault('alink', config.WEB_ALINK_COLOR)
+            if config.WEB_LINK_COLOR:
+                kws.setdefault('link', config.WEB_LINK_COLOR)
             for k, v in kws.items():
                 quals.append('%s="%s"' % (k, v))
             output.append('%s<BODY %s>' % (tab, SPACE.join(quals)))
@@ -336,7 +332,7 @@ class Document(Container):
         if tag is None:
             tag = _('Error: ')
         self.AddItem(Header(3, Bold(FontAttr(
-            _(tag), color=mm_cfg.WEB_ERROR_COLOR, size='+2')).Format() +
+            _(tag), color=config.WEB_ERROR_COLOR, size='+2')).Format() +
                             Italic(errmsg).Format()))
 
 
@@ -441,11 +437,11 @@ class SubmitButton(InputObj):
         InputObj.__init__(self, name, "SUBMIT", button_text, checked=0)
 
 class PasswordBox(InputObj):
-    def __init__(self, name, value='', size=mm_cfg.TEXTFIELDWIDTH):
+    def __init__(self, name, value='', size=Defaults.TEXTFIELDWIDTH):
         InputObj.__init__(self, name, "PASSWORD", value, checked=0, size=size)
 
 class TextBox(InputObj):
-    def __init__(self, name, value='', size=mm_cfg.TEXTFIELDWIDTH):
+    def __init__(self, name, value='', size=Defaults.TEXTFIELDWIDTH):
         InputObj.__init__(self, name, "TEXT", value, checked=0, size=size)
 
 class Hidden(InputObj):
@@ -594,13 +590,12 @@ class DefinitionList(Container):
 #
 # These are the URLs which the image logos link to.  The Mailman home page now
 # points at the gnu.org site instead of the www.list.org mirror.
-#
-from mm_cfg import MAILMAN_URL
+
 PYTHON_URL  = 'http://www.python.org/'
 GNU_URL     = 'http://www.gnu.org/'
 
 # The names of the image logo files.  These are concatentated onto
-# mm_cfg.IMAGE_LOGOS (not urljoined).
+# config.IMAGE_LOGOS (not urljoined).
 DELIVERED_BY = 'mailman.jpg'
 PYTHON_POWERED = 'PythonPowered.png'
 GNU_HEAD = 'gnu-head-tiny.jpg'
@@ -608,11 +603,11 @@ GNU_HEAD = 'gnu-head-tiny.jpg'
 
 def MailmanLogo():
     t = Table(border=0, width='100%')
-    if mm_cfg.IMAGE_LOGOS:
+    if config.IMAGE_LOGOS:
         def logo(file):
-            return mm_cfg.IMAGE_LOGOS + file
+            return config.IMAGE_LOGOS + file
         mmlink = '<img src="%s" alt="Delivered by Mailman" border=0>' \
-                 '<br>version %s' % (logo(DELIVERED_BY), mm_cfg.VERSION)
+                 '<br>version %s' % (logo(DELIVERED_BY), Version.VERSION)
         pylink = '<img src="%s" alt="Python Powered" border=0>' % \
                  logo(PYTHON_POWERED)
         gnulink = '<img src="%s" alt="GNU\'s Not Unix" border=0>' % \
@@ -620,8 +615,8 @@ def MailmanLogo():
         t.AddRow([mmlink, pylink, gnulink])
     else:
         # use only textual links
-        version = mm_cfg.VERSION
-        mmlink = Link(MAILMAN_URL,
+        version = Version.VERSION
+        mmlink = Link(config.MAILMAN_URL,
                       _('Delivered by Mailman<br>version %(version)s'))
         pylink = Link(PYTHON_URL, _('Python Powered'))
         gnulink = Link(GNU_URL, _("Gnu's Not Unix"))

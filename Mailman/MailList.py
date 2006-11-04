@@ -45,6 +45,7 @@ from email.Utils import getaddresses, formataddr, parseaddr
 from Mailman import Errors
 from Mailman import LockFile
 from Mailman import Utils
+from Mailman import Version
 from Mailman.UserDesc import UserDesc
 from Mailman.configuration import config
 
@@ -740,7 +741,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
     #
     def CheckVersion(self, stored_state):
         """Auto-update schema if necessary."""
-        if self.data_version >= config.DATA_FILE_VERSION:
+        if self.data_version >= Version.DATA_FILE_VERSION:
             return
         # Initialize any new variables
         self.InitVars()
@@ -755,7 +756,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         try:
             from versions import Update
             Update(self, stored_state)
-            self.data_version = config.DATA_FILE_VERSION
+            self.data_version = Version.DATA_FILE_VERSION
             self.Save()
         finally:
             if not waslocked:
