@@ -136,15 +136,13 @@ class Archiver:
 
     def GetBaseArchiveURL(self):
         if self.archive_private:
-            url = self.GetScriptURL('private')
+            url = self.GetScriptURL('private') + '/index.html'
         else:
             web_host = config.domains.get(self.host_name, self.host_name)
             url = config.PUBLIC_ARCHIVE_URL % {
                 'listname': self.internal_name(),
                 'hostname': web_host,
                 }
-        if not url.endswith('/'):
-            url += '/'
         return url
 
     def __archive_file(self, afn):

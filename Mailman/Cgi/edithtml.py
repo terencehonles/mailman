@@ -27,9 +27,11 @@ from Mailman import Errors
 from Mailman import i18n
 from Mailman import MailList
 from Mailman import Utils
+from Mailman import Defaults
 from Mailman.Cgi import Auth
 from Mailman.htmlformat import *
 from Mailman.HTMLFormatter import HTMLFormatter
+from Mailman.configuration import config
 
 _ = i18n._
 
@@ -54,8 +56,8 @@ def main():
     doc = Document()
 
     # Set up the system default language
-    i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
-    doc.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+    i18n.set_language(config.DEFAULT_SERVER_LANGUAGE)
+    doc.set_language(config.DEFAULT_SERVER_LANGUAGE)
 
     parts = Utils.GetPathPieces()
     if not parts:
@@ -82,8 +84,8 @@ def main():
     cgidata = cgi.FieldStorage()
 
     # Editing the html for a list is limited to the list admin and site admin.
-    if not mlist.WebAuthenticate((mm_cfg.AuthListAdmin,
-                                  mm_cfg.AuthSiteAdmin),
+    if not mlist.WebAuthenticate((Defaults.AuthListAdmin,
+                                  Defaults.AuthSiteAdmin),
                                  cgidata.getvalue('adminpw', '')):
         if cgidata.has_key('admlogin'):
             # This is a re-authorization attempt

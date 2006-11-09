@@ -139,7 +139,7 @@ def main():
         print 'Content-type: text/html; charset=' + charset + '\n\n'
         # Put the original full path in the authorization form, but avoid
         # trailing slash if we're not adding parts.  We add it below.
-        action = mlist.GetScriptURL('private', absolute=1)
+        action = mlist.GetScriptURL('private')
         if parts[1:]:
             action = os.path.join(action, SLASH.join(parts[1:]))
         # If we added '/index.html' to true_filename, add a slash to the URL.

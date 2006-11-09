@@ -16,8 +16,10 @@
 # USA.
 
 import os
+import re
 import sys
 
+from urlparse import urlparse
 from cStringIO import StringIO
 from email import message_from_string
 
@@ -25,6 +27,9 @@ from Mailman.configuration import config
 
 # XXX Should this be configurable in Defaults.py?
 STEALTH_MODE = False
+MOVED_RESPONSE = '302 Found'
+# Above is for debugging convenience. We should use:
+# MOVED_RESPONSE = '301 Moved Permanently'
 
 
 
@@ -35,11 +40,15 @@ def websafe(s):
 SCRIPTS = ['admin', 'admindb', 'confirm', 'create',
            'edithtml', 'listinfo', 'options', 'private',
            'rmlist', 'roster', 'subscribe']
+ARCHVIEW = ['private']
 
 SLASH   = '/'
 NL2     = '\n\n'
 CRLF2   = '\r\n\r\n'
 
+dotonly = re.compile(r'^\.+$')
+
+SCRIPT_BASE = urlparse(config.DEFAULT_URL_PATTERN)[2]
 
 
 # WSGI to CGI wrapper.  Mostly copied from scripts/driver.
@@ -62,11 +71,40 @@ def mailman_app(environ, start_response):
 
         path = environ['PATH_INFO']
         paths = path.split(SLASH)
+        # sanity check for paths
+        spaths = [ i for i in paths[1:] if i and not dotonly.match(i) ]
+        # Do some path mangling here because someone may access with
+        # trailing slash for script.  (Eg., /mailman/listinfo/ ->
+        # /mailman/listinfo)  Use of SCRIPT_BASE breaks relative
+        # URI principle but we do believe mailman WSGI should NOT exposed
+        # to the Internet.
+        if spaths != paths[1:]:
+            if path == SLASH:
+                newpath = SCRIPT_BASE + 'listinfo'
+            else:
+                # Sanitize URI by spaths
+                if paths[1] not in ARCHVIEW:
+                    newpath = SCRIPT_BASE + SLASH.join(spaths)
+                else:
+                    # 'private' is different because, if trailing slash is
+                    # present, it silently redirecte to index.html.
+                    # Let's make it explicit here.
+                    newpath = SCRIPT_BASE + SLASH.join(spaths) + '/index.html'
+            start_response(MOVED_RESPONSE, [('Location', newpath)])
+            return 'Location: ' + newpath
         script = paths[1]
         if script in SCRIPTS:
             environ['SCRIPT_NAME'] = script
             if len(paths) > 2:
-                environ['PATH_INFO'] = SLASH + SLASH.join(paths[2:])
+                path_info = SLASH + SLASH.join(paths[2:])
+                if script in ARCHVIEW \
+                   and len(paths) in (3,4) \
+                   and not paths[-1].split('.')[-1] in ('html', 'txt', 'gz'):
+                    # /private/listname or /private/listname/YYYYmm
+                    newpath = SCRIPT_BASE + SLASH.join(spaths) + '/index.html'
+                    start_response(MOVED_RESPONSE, [('Location', newpath)])
+                    return 'Location: ' + newpath
+                environ['PATH_INFO'] = path_info
             else:
                 environ['PATH_INFO'] = ''
             # Reverse proxy environment.
