@@ -6,6 +6,24 @@ Here is a history of user visible changes to Mailman.
 
 2.2 alpha 1 (XX-XXX-200X)
 
+  Configuration
+
+    - Mailman can now be configured via a 'mailman.cfg' file which lives in
+      $VAR_PREFIX/etc.  This can be used to separate the configuration from
+      the source directory.  Alternative configuration files can be specified
+      via -C/--config for most command line scripts.  The format of
+      mailman.cfg is identical to that for mm_cfg.py; IOW, they are both
+      Python files.  mm_cfg.py is still supported for backward compatibility,
+      but settings in etc/mailman.cfg take precedence.  You do not need to
+      import Defaults.py in etc/mailman.cfg.  You should still consult
+      Defaults.py for the list of site configuration variables available to
+      you.
+
+      See the etc/mailman.cfg.sample file.
+
+    - PUBLIC_ARCHIVE_URL now takes $-string substitutions instead of %-string
+      substitutions.  See documentation in Defaults.py.in for details.
+
   Architecture
 
     - Mailman's web interface is now WSGI compliant.  WSGI is a Python
@@ -43,19 +61,6 @@ Here is a history of user visible changes to Mailman.
 
     - If you had customizations based on Site.py, you will need to
       re-implement them.  Site.py has been removed.
-
-    - Mailman can now be configured via a 'mailman.cfg' file which lives in
-      $VAR_PREFIX/etc.  This can be used to separate the configuration from
-      the source directory.  Alternative configuration files can be specified
-      via -C/--config for most command line scripts.  The format of
-      mailman.cfg is identical to that for mm_cfg.py; IOW, they are both
-      Python files.  mm_cfg.py is still supported for backward compatibility,
-      but settings in etc/mailman.cfg take precedence.  You do not need to
-      import Defaults.py in etc/mailman.cfg.  You should still consult
-      Defaults.py for the list of site configuration variables available to
-      you.
-
-      See the etc/mailman.cfg.sample file.
 
     - The site list is no more.  You can remove your 'mailman' site list
       unless you want to retain it for other purposes, but it is no longer

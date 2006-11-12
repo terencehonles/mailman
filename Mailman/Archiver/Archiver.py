@@ -29,6 +29,7 @@ import logging
 import traceback
 
 from cStringIO import StringIO
+from string import Template
 
 from Mailman import Mailbox
 from Mailman import Utils
@@ -139,10 +140,11 @@ class Archiver:
             url = self.GetScriptURL('private') + '/index.html'
         else:
             web_host = config.domains.get(self.host_name, self.host_name)
-            url = config.PUBLIC_ARCHIVE_URL % {
-                'listname': self.internal_name(),
-                'hostname': web_host,
-                }
+            url = Template(config.PUBLIC_ARCHIVE_URL).safe_substitute(
+                listname=self.internal_name(),
+                hostname=web_host,
+                fqdn_listname=self.fqdn_listname,
+                )
         return url
 
     def __archive_file(self, afn):

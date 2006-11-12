@@ -23,15 +23,15 @@ import cgi
 import errno
 import logging
 
+from Mailman import Defaults
 from Mailman import Errors
-from Mailman import i18n
 from Mailman import MailList
 from Mailman import Utils
-from Mailman import Defaults
+from Mailman import i18n
 from Mailman.Cgi import Auth
-from Mailman.htmlformat import *
 from Mailman.HTMLFormatter import HTMLFormatter
 from Mailman.configuration import config
+from Mailman.htmlformat import *
 
 _ = i18n._
 

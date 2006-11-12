@@ -19,16 +19,16 @@ import os
 import re
 import sys
 
-from urlparse import urlparse
 from cStringIO import StringIO
 from email import message_from_string
+from urlparse import urlparse
 
 from Mailman.configuration import config
 
 # XXX Should this be configurable in Defaults.py?
 STEALTH_MODE = False
 MOVED_RESPONSE = '302 Found'
-# Above is for debugging convenience. We should use:
+# Above is for debugging convenience.  We should use:
 # MOVED_RESPONSE = '301 Moved Permanently'
 
 
@@ -49,6 +49,7 @@ CRLF2   = '\r\n\r\n'
 dotonly = re.compile(r'^\.+$')
 
 SCRIPT_BASE = urlparse(config.DEFAULT_URL_PATTERN)[2]
+
 
 
 # WSGI to CGI wrapper.  Mostly copied from scripts/driver.

@@ -200,11 +200,11 @@ WEB_HIGHLIGHT_COLOR = '#dddddd'                   # If true, alternating rows
 # places, including the List-Archive: header, links to the archive on the
 # list's listinfo page, and on the list's admin page.
 #
-# This should be a string with "%(listname)s" somewhere in it.  Mailman will
-# interpolate the name of the list into this.  You can also include a
-# "%(hostname)s" in the string, into which Mailman will interpolate
-# the host name (usually DEFAULT_URL_HOST).
-PUBLIC_ARCHIVE_URL = 'http://%(hostname)s/pipermail/%(listname)s'
+# This variable supports several substitution variables
+# - $hostname       -- the host on which the archive resides
+# - $listname       -- the short name of the list being accessed
+# - $fqdn_listname  -- the long name of the list being accessed
+PUBLIC_ARCHIVE_URL = 'http://$hostname/pipermail/$fqdn_listname'
 
 # Are archives on or off by default?
 DEFAULT_ARCHIVE = On
