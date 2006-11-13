@@ -48,8 +48,6 @@ CRLF2   = '\r\n\r\n'
 
 dotonly = re.compile(r'^\.+$')
 
-SCRIPT_BASE = urlparse(config.DEFAULT_URL_PATTERN)[2]
-
 
 
 # WSGI to CGI wrapper.  Mostly copied from scripts/driver.
@@ -74,89 +72,81 @@ def mailman_app(environ, start_response):
         paths = path.split(SLASH)
         # sanity check for paths
         spaths = [ i for i in paths[1:] if i and not dotonly.match(i) ]
-        # Do some path mangling here because someone may access with
-        # trailing slash for script.  (Eg., /mailman/listinfo/ ->
-        # /mailman/listinfo)  Use of SCRIPT_BASE breaks relative
-        # URI principle but we do believe mailman WSGI should NOT exposed
-        # to the Internet.
-        if spaths != paths[1:]:
-            if path == SLASH:
-                newpath = SCRIPT_BASE + 'listinfo'
-            else:
-                # Sanitize URI by spaths
-                if paths[1] not in ARCHVIEW:
-                    newpath = SCRIPT_BASE + SLASH.join(spaths)
-                else:
-                    # 'private' is different because, if trailing slash is
-                    # present, it silently redirecte to index.html.
-                    # Let's make it explicit here.
-                    newpath = SCRIPT_BASE + SLASH.join(spaths) + '/index.html'
+        if spaths and spaths != paths[1:]:
+            newpath = SLASH + SLASH.join(spaths)
             start_response(MOVED_RESPONSE, [('Location', newpath)])
             return 'Location: ' + newpath
-        script = paths[1]
-        if script in SCRIPTS:
-            environ['SCRIPT_NAME'] = script
-            if len(paths) > 2:
-                path_info = SLASH + SLASH.join(paths[2:])
-                if script in ARCHVIEW \
-                   and len(paths) in (3,4) \
-                   and not paths[-1].split('.')[-1] in ('html', 'txt', 'gz'):
-                    # /private/listname or /private/listname/YYYYmm
-                    newpath = SCRIPT_BASE + SLASH.join(spaths) + '/index.html'
-                    start_response(MOVED_RESPONSE, [('Location', newpath)])
-                    return 'Location: ' + newpath
-                environ['PATH_INFO'] = path_info
-            else:
-                environ['PATH_INFO'] = ''
-            # Reverse proxy environment.
-            if environ.has_key('HTTP_X_FORWARDED_HOST'):
-                environ['HTTP_HOST'] = environ['HTTP_X_FORWARDED_HOST']
-            if environ.has_key('HTTP_X_FORWARDED_FOR'):
-                environ['REMOTE_HOST'] = environ['HTTP_X_FORWARDED_FOR']
-            modname = 'Mailman.Cgi.' + script
-            # Clear previous cookie before setting new one.
-            os.environ['HTTP_COOKIE'] = ''
-            for k, v in environ.items():
-                os.environ[k] = str(v)
-            # Prepare for redirection
-            save_stdin = sys.stdin
-            # CGI writes its output to sys.stdout, while wsgi app should
-            # return (list of) strings.
-            save_stdout = sys.stdout
-            save_stderr = sys.stderr
-            tmpstdout = StringIO()
-            tmpstderr = StringIO()
-            response = ''
-            try:
-                try:
-                    sys.stdin  = environ['wsgi.input']
-                    sys.stdout = tmpstdout
-                    sys.stderr = tmpstderr
-                    __import__(modname)
-                    sys.modules[modname].main()
-                    response = sys.stdout.getvalue()
-                finally:
-                    sys.stdin  = save_stdin
-                    sys.stdout = save_stdout
-                    sys.stderr = save_stderr
-            except SystemExit:
-                sys.stdout.write(tmpstdout.getvalue())
-            if response:
-                try:
-                    head, content = response.split(NL2, 1)
-                except ValueError:
-                    head, content = response.split(CRLF2, 1)
-                m = message_from_string(head + CRLF2)
-                start_response('200 OK', m.items())
-                return [content]
-            else:
-                # TBD: Error Code/Message
-                start_response('500 Server Error', [])
-                return '500 Internal Server Error'
+        # find script name
+        for script in SCRIPTS:
+            if script in spaths:
+                # Get script position in spaths and break.
+                scrpos = spaths.index(script)
+                break
         else:
-             # TBD: Error Message
-             start_response('404 Not Found', [])
-             return '404 Not Found'
+            # Can't find valid script.
+            start_response('404 Not Found', [])
+            return '404 Not Found'
+        # Conpose CGI SCRIPT_NAME and PATH_INFO from WSGI path
+        script_name = SLASH + SLASH.join(spaths[:scrpos+1])
+        environ['SCRIPT_NAME'] = script_name
+        if len(paths) > scrpos+2:
+            path_info = SLASH + SLASH.join(paths[scrpos+2:])
+            if script in ARCHVIEW \
+               and path_info.count('/') in (1,2) \
+               and not paths[-1].split('.')[-1] in ('html', 'txt', 'gz'):
+                # Add index.html if /private/listname or
+                # /private/listname/YYYYmm is requested.
+                newpath = script_name + path_info + '/index.html'
+                start_response(MOVED_RESPONSE, [('Location', newpath)])
+                return 'Location: ' + newpath
+            environ['PATH_INFO'] = path_info
+        else:
+            environ['PATH_INFO'] = ''
+        # Reverse proxy environment.
+        if environ.has_key('HTTP_X_FORWARDED_HOST'):
+            environ['HTTP_HOST'] = environ['HTTP_X_FORWARDED_HOST']
+        if environ.has_key('HTTP_X_FORWARDED_FOR'):
+            environ['REMOTE_HOST'] = environ['HTTP_X_FORWARDED_FOR']
+        modname = 'Mailman.Cgi.' + script
+        # Clear previous cookie before setting new one.
+        os.environ['HTTP_COOKIE'] = ''
+        for k, v in environ.items():
+            os.environ[k] = str(v)
+        # Prepare for redirection
+        save_stdin = sys.stdin
+        # CGI writes its output to sys.stdout, while wsgi app should
+        # return (list of) strings.
+        save_stdout = sys.stdout
+        save_stderr = sys.stderr
+        tmpstdout = StringIO()
+        tmpstderr = StringIO()
+        response = ''
+        try:
+            try:
+                sys.stdin  = environ['wsgi.input']
+                sys.stdout = tmpstdout
+                sys.stderr = tmpstderr
+                __import__(modname)
+                sys.modules[modname].main()
+                response = sys.stdout.getvalue()
+            finally:
+                sys.stdin  = save_stdin
+                sys.stdout = save_stdout
+                sys.stderr = save_stderr
+        except SystemExit:
+            sys.stdout.write(tmpstdout.getvalue())
+        if response:
+            try:
+                head, content = response.split(NL2, 1)
+            except ValueError:
+                head, content = response.split(CRLF2, 1)
+            m = message_from_string(head + CRLF2)
+            start_response('200 OK', m.items())
+            return [content]
+        else:
+            # TBD: Error Code/Message
+            start_response('500 Server Error', [])
+            return '500 Internal Server Error'
     except:
         start_response('200 OK', [('Content-Type', 'text/html')])
         retstring = print_traceback(log)

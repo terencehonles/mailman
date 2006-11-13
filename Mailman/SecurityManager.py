@@ -95,7 +95,7 @@ class SecurityManager:
         # AuthUser, but the user isn't a member of this mailing list, a
         # NotAMemberError will be raised.  If the user's secret is None, raise
         # a MMBadUserError.
-        key = self.internal_name() + '+'
+        key = urllib.quote(self.fqdn_listname) + '+'
         if authcontext == Defaults.AuthUser:
             if user is None:
                 # A bad system error
@@ -236,7 +236,7 @@ class SecurityManager:
         # way to do it -- the original uri that's proxied to us is not
         # included in the backend request.  XXX what happens when Apache 2.2's
         # ProxyPassReverseCookiePath is set?
-        target = '/%s/%s' % (os.environ['SCRIPT_NAME'], self.fqdn_listname)
+        target = '%s/%s' % (os.environ['SCRIPT_NAME'], self.fqdn_listname)
         referer = os.environ.get('HTTP_REFERER')
         if not referer:
             return target
@@ -305,7 +305,7 @@ class SecurityManager:
                 usernames = [user]
             else:
                 usernames = []
-                prefix = self.internal_name() + '+user+'
+                prefix = urllib.quote(self.fqdn_listname) + '+user+'
                 for k in c.keys():
                     if k.startswith(prefix):
                         usernames.append(k[len(prefix):])

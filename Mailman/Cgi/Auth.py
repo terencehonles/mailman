@@ -38,7 +38,7 @@ def loginpage(mlist, scriptname, msg='', frontpage=False):
     if frontpage:
         actionurl = url
     else:
-        request = Utils.GetRequestURI(url)
+        request = Utils.GetRequestURI(url).lstrip('/')
         up = '../' * request.count('/')
         actionurl = up + request
     if msg:
