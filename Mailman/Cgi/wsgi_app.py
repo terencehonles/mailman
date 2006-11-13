@@ -86,7 +86,7 @@ def mailman_app(environ, start_response):
             # Can't find valid script.
             start_response('404 Not Found', [])
             return '404 Not Found'
-        # Conpose CGI SCRIPT_NAME and PATH_INFO from WSGI path
+        # Compose CGI SCRIPT_NAME and PATH_INFO from WSGI path.
         script_name = SLASH + SLASH.join(spaths[:scrpos+1])
         environ['SCRIPT_NAME'] = script_name
         if len(paths) > scrpos+2:
