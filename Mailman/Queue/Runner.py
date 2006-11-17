@@ -101,6 +101,7 @@ class Runner:
                 # metadata, so just log the exception and continue.
                 self._log(e)
                 log.error('Ignoring unparseable message: %s', filebase)
+                self._switchboard.finish(filebase)
                 continue
             try:
                 self._onefile(msg, msgdata)
