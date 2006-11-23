@@ -45,11 +45,11 @@ def _update_maps():
     msg = 'command failed: %s (status: %s, %s)'
     if config.USE_LMTP:
         tcmd = config.POSTFIX_MAP_CMD + ' ' + TRPTFILE
-	status = (os.system(tcmd) >> 8) & 0xff
-	if status:
-	    errstr = os.strerror(status)
-	    log.error(msg, tcmd, status, errstr)
-	    raise RuntimeError(msg % (tcmd, status, errstr))
+        status = (os.system(tcmd) >> 8) & 0xff
+        if status:
+            errstr = os.strerror(status)
+            log.error(msg, tcmd, status, errstr)
+            raise RuntimeError(msg % (tcmd, status, errstr))
     acmd = config.POSTFIX_ALIAS_CMD + ' ' + ALIASFILE
     status = (os.system(acmd) >> 8) & 0xff
     if status:
@@ -111,7 +111,7 @@ def _addlist(mlist, fp):
     hostname = mlist.host_name
     fieldsz = len(listname) + len('-unsubscribe')
     # The text file entries get a little extra info
-    print >> fp, '# STANZA START:', listname
+    print >> fp, '# STANZA START: %s@%s' % (listname, hostname)
     print >> fp, '# CREATED:', time.ctime(time.time())
     # Now add all the standard alias entries
     for k, v in makealiases(mlist):
@@ -121,7 +121,7 @@ def _addlist(mlist, fp):
         # Format the text file nicely
         print >> fp, k + ':', ((fieldsz - l) * ' ') + v
     # Finish the text file stanza
-    print >> fp, '# STANZA END:', listname
+    print >> fp, '# STANZA END: %s@%s' % (listname, hostname)
     print >> fp
 
 
@@ -151,7 +151,7 @@ def _addvirtual(mlist, fp):
 # LOOP ADDRESSES END
 """ % (loopaddr, loopdest)
     # The text file entries get a little extra info
-    print >> fp, '# STANZA START:', listname
+    print >> fp, '# STANZA START: %s@%s' % (listname, hostname)
     print >> fp, '# CREATED:', time.ctime(time.time())
     # Now add all the standard alias entries
     for k, v in makealiases(mlist):
@@ -162,7 +162,7 @@ def _addvirtual(mlist, fp):
             k += config.POSTFIX_VIRTUAL_SEPARATOR + hostname
         print >> fp, fqdnaddr, ((fieldsz - l) * ' '), k
     # Finish the text file stanza
-    print >> fp, '# STANZA END:', listname
+    print >> fp, '# STANZA END: %s@%s' % (listname, hostname)
     print >> fp
 
 
@@ -227,15 +227,15 @@ def _addtransport(mlist, fp):
     hostname = mlist.host_name
     fieldsz = len(listname) + len(hostname) + len('-unsubscribe') + 1
     # The text file entries get a little extra info
-    print >> fp, '# STANZA START:', listname + '@' + hostname
+    print >> fp, '# STANZA START: %s@%s' % (listname, hostname)
     print >> fp, '# CREATED:', time.ctime(time.time())
     # Now add transport entries
     for k, v in makealiases(mlist):
         l = len(k + hostname) + 1
-	print >> fp, '%s@%s' % (k, hostname), ((fieldsz - l) * ' ')\
-	             + 'lmtp:%s:%s' % (config.LMTP_HOST, config.LMTP_PORT)
+        print >> fp, '%s@%s' % (k, hostname), ((fieldsz - l) * ' ')\
+                     + 'lmtp:%s:%s' % (config.LMTP_HOST, config.LMTP_PORT)
     #
-    print >> fp, '# STANZA END:', '%s@%s' % (listname, hostname)
+    print >> fp, '# STANZA END: %s@%s' % (listname, hostname)
     print >> fp
 
 
@@ -266,31 +266,23 @@ def create(mlist, cgi=False, nolock=False, quiet=False):
     if not nolock:
         lock = makelock()
         lock.lock()
-    # Create transport file if USE_LMTP
-    update_maps = False
-    if config.USE_LMTP:
-        try:
-	    _do_create(mlist, TRPTFILE, _addtransport)
-	    update_maps = True
-	finally:
-	    if lock:
-	        lock.unlock(unconditionally=True)
     # Do the aliases file, which need to be done in any case
     try:
         _do_create(mlist, ALIASFILE, _addlist)
+        if config.USE_LMTP:
+            _do_create(mlist, TRPTFILE, _addtransport)
         if mlist and mlist.host_name in config.POSTFIX_STYLE_VIRTUAL_DOMAINS:
             _do_create(mlist, VIRTFILE, _addvirtual)
-        update_maps = True
+        _update_maps()
     finally:
         if lock:
             lock.unlock(unconditionally=True)
-    if update_maps:
-        _update_maps()
 
 
 
-def _do_remove(mlist, textfile, virtualp):
+def _do_remove(mlist, textfile):
     listname = mlist.internal_name()
+    hostname = mlist.host_name
     # Now do our best to filter out the proper stanza from the text file.
     # The text file better exist!
     outfp = None
@@ -307,8 +299,8 @@ def _do_remove(mlist, textfile, virtualp):
         finally:
             os.umask(omask)
         filteroutp = False
-        start = '# STANZA START: ' + listname
-        end = '# STANZA END: ' + listname
+        start = '# STANZA START: %s@%s' % (listname, hostname)
+        end = '# STANZA END: %s@%s' % (listname, hostname)
         while 1:
             line = infp.readline()
             if not line:
@@ -341,16 +333,12 @@ def remove(mlist, cgi=False):
     # Acquire the global list database lock
     lock = makelock()
     lock.lock()
-    if config.USE_LMTP:
-        try:
-	    _do_remove(mlist, TRPTFILE, False)
-	    _update_maps()
-	finally:
-	    lock.unlock(unconditionally=True)
     try:
-        _do_remove(mlist, ALIASFILE, False)
+        _do_remove(mlist, ALIASFILE)
+        if config.USE_LMTP:
+            _do_remove(mlist, TRPTFILE)
         if mlist.host_name in config.POSTFIX_STYLE_VIRTUAL_DOMAINS:
-            _do_remove(mlist, VIRTFILE, True)
+            _do_remove(mlist, VIRTFILE)
         # Regenerate the alias and map files
         _update_maps()
     finally:
