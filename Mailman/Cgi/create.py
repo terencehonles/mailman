@@ -83,12 +83,12 @@ def process_request(doc, cgidata):
     except ValueError:
         autogen = False
     try:
-        notify = bool(cgidata.getvalue('notify', '0'))
+        notify = bool(int(cgidata.getvalue('notify', '0')))
     except ValueError:
         notify = False
     try:
-        moderate = bool(cgidata.getvalue('moderate',
-                        config.DEFAULT_DEFAULT_MEMBER_MODERATION))
+        moderate = bool(int(cgidata.getvalue('moderate',
+                        config.DEFAULT_DEFAULT_MEMBER_MODERATION)))
     except ValueError:
         moderate = config.DEFAULT_DEFAULT_MEMBER_MODERATION
 
@@ -342,12 +342,12 @@ def request_creation(doc, cgidata=dummy, errmsg=None):
     ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 1, bgcolor=GREY)
 
     try:
-        notify = bool(cgidata.getvalue('notify', '1'))
+        notify = bool(int(cgidata.getvalue('notify', '1')))
     except ValueError:
         notify = True
     try:
-        moderate = bool(cgidata.getvalue('moderate',
-                        config.DEFAULT_DEFAULT_MEMBER_MODERATION))
+        moderate = bool(int(cgidata.getvalue('moderate',
+                        config.DEFAULT_DEFAULT_MEMBER_MODERATION)))
     except ValueError:
         moderate = config.DEFAULT_DEFAULT_MEMBER_MODERATION
 
