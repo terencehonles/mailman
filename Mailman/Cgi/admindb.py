@@ -179,7 +179,7 @@ def main():
             mlist.Save()
             return
 
-        admindburl = mlist.GetScriptURL('admindb', absolute=1)
+        admindburl = mlist.GetScriptURL('admindb')
         form = Form(admindburl)
         # Add the instructions template
         if details == 'instructions':
@@ -199,7 +199,7 @@ def main():
                 _('Discard all messages marked <em>Defer</em>')
                 ))
         # Add a link back to the overview, if we're not viewing the overview!
-        adminurl = mlist.GetScriptURL('admin', absolute=1)
+        adminurl = mlist.GetScriptURL('admin')
         d = {'listname'  : mlist.real_name,
              'detailsurl': admindburl + '?details=instructions',
              'summaryurl': admindburl,
@@ -265,7 +265,7 @@ def handle_no_list(msg=''):
     doc.SetTitle(header)
     doc.AddItem(Header(2, header))
     doc.AddItem(msg)
-    url = Utils.ScriptURL('admin', absolute=1)
+    url = Utils.ScriptURL('admin')
     link = Link(url, _('list of available mailing lists.')).Format()
     doc.AddItem(_('You must specify a list name.  Here is the %(link)s'))
     doc.AddItem('<hr>')
@@ -385,7 +385,7 @@ def show_helds_overview(mlist, form):
     if not bysender:
         return 0
     # Add the by-sender overview tables
-    admindburl = mlist.GetScriptURL('admindb', absolute=1)
+    admindburl = mlist.GetScriptURL('admindb')
     table = Table(border=0)
     form.AddItem(table)
     senders = bysender.keys()

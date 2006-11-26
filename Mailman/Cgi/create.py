@@ -232,8 +232,8 @@ def process_request(doc, cgidata):
             text, mlist.preferred_language)
         msg.send(mlist)
     # Success!
-    listinfo_url = mlist.GetScriptURL('listinfo', absolute=True)
-    admin_url = mlist.GetScriptURL('admin', absolute=True)
+    listinfo_url = mlist.GetScriptURL('listinfo')
+    admin_url = mlist.GetScriptURL('admin')
     create_url = Utils.ScriptURL('create')
 
     title = _('Mailing list creation results')

@@ -168,9 +168,11 @@ def _addvirtual(mlist, fp):
 
 
 # Blech.
-def _check_for_virtual_loopaddr(mlist, filename):
+def _check_for_virtual_loopaddr(mlist, filename, func):
     loopaddr = mlist.no_reply_address
     loopdest = Utils.ParseEmail(loopaddr)[0]
+    if func is _addtransport:
+        loopdest = 'local:' + loopdest
     infp = open(filename)
     omask = os.umask(007)
     try:
@@ -212,6 +214,9 @@ def _check_for_virtual_loopaddr(mlist, filename):
 
 
 def _addtransport(mlist, fp):
+    # Set up the mailman-loop address
+    loopaddr = mlist.no_reply_address
+    loopdest = Utils.ParseEmail(loopaddr)[0]
     # create/add postfix transport file for mailman
     fp.seek(0, 2)
     if not fp.tell():
@@ -220,11 +225,24 @@ def _addtransport(mlist, fp):
 # binary hash file transport.db.  YOU SHOULD NOT MANUALLY EDIT THIS FILE
 # unless you know what you're doing, and can keep the two files properly
 # in sync.  If you screw it up, you're on your own.
-"""
-    if mlist is None:
-        return
+
+# LOOP ADDRESSES START
+%s\tlocal:%s
+# LOOP ADDRESSES END
+""" % (loopaddr, loopdest)
+        # List LMTP_ONLY_DOMAINS
+        if config.LMTP_ONLY_DOMAINS:
+            print >> fp, '# LMTP ONLY DOMAINS START'
+            for dom in config.LMTP_ONLY_DOMAINS:
+                print >> fp, '%s\tlmtp:%s:%s' % (dom, 
+                                                 config.LMTP_HOST,
+                                                 config.LMTP_PORT)
+            print >> fp, '# LMTP ONLY DOMAINS END\n'
     listname = mlist.internal_name()
     hostname = mlist.host_name
+    # No need of individual local part if the domain is LMTP only
+    if hostname in config.LMTP_ONLY_DOMAINS:
+        return
     fieldsz = len(listname) + len(hostname) + len('-unsubscribe') + 1
     # The text file entries get a little extra info
     print >> fp, '# STANZA START: %s@%s' % (listname, hostname)
@@ -256,8 +274,8 @@ def _do_create(mlist, textfile, func):
     finally:
         fp.close()
     # Now double check the virtual plain text file
-    if func is _addvirtual:
-        _check_for_virtual_loopaddr(mlist, textfile)
+    if func in (_addvirtual, _addtransport):
+        _check_for_virtual_loopaddr(mlist, textfile, func)
 
 
 def create(mlist, cgi=False, nolock=False, quiet=False):
@@ -268,11 +286,13 @@ def create(mlist, cgi=False, nolock=False, quiet=False):
         lock.lock()
     # Do the aliases file, which need to be done in any case
     try:
-        _do_create(mlist, ALIASFILE, _addlist)
         if config.USE_LMTP:
             _do_create(mlist, TRPTFILE, _addtransport)
-        if mlist and mlist.host_name in config.POSTFIX_STYLE_VIRTUAL_DOMAINS:
-            _do_create(mlist, VIRTFILE, _addvirtual)
+            _do_create(None, ALIASFILE, _addlist)
+        else:
+            _do_create(mlist, ALIASFILE, _addlist)
+            if mlist.host_name in config.POSTFIX_STYLE_VIRTUAL_DOMAINS:
+                _do_create(mlist, VIRTFILE, _addvirtual)
         _update_maps()
     finally:
         if lock:
@@ -334,11 +354,12 @@ def remove(mlist, cgi=False):
     lock = makelock()
     lock.lock()
     try:
-        _do_remove(mlist, ALIASFILE)
         if config.USE_LMTP:
             _do_remove(mlist, TRPTFILE)
-        if mlist.host_name in config.POSTFIX_STYLE_VIRTUAL_DOMAINS:
-            _do_remove(mlist, VIRTFILE)
+        else:
+            _do_remove(mlist, ALIASFILE)
+            if mlist.host_name in config.POSTFIX_STYLE_VIRTUAL_DOMAINS:
+                _do_remove(mlist, VIRTFILE)
         # Regenerate the alias and map files
         _update_maps()
     finally:

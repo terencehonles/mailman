@@ -86,7 +86,7 @@ def main():
         return
 
     days = int(config.PENDING_REQUEST_LIFE / config.days(1) + 0.5)
-    confirmurl = mlist.GetScriptURL('confirm', absolute=1)
+    confirmurl = mlist.GetScriptURL('confirm')
     # Avoid cross-site scripting attacks
     safecookie = Utils.websafe(cookie)
     badconfirmstr = _('''<b>Invalid confirmation string:</b>
@@ -189,7 +189,7 @@ def expunge(mlist, cookie):
 def ask_for_cookie(mlist, doc, extra=''):
     title = _('Enter confirmation cookie')
     doc.SetTitle(title)
-    form = Form(mlist.GetScriptURL('confirm', 1))
+    form = Form(mlist.GetScriptURL('confirm'))
     table = Table(border=0, width='100%')
     table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0,
@@ -227,7 +227,7 @@ def subscription_prompt(mlist, doc, cookie, userdesc):
     title = _('Confirm subscription request')
     doc.SetTitle(title)
 
-    form = Form(mlist.GetScriptURL('confirm', 1))
+    form = Form(mlist.GetScriptURL('confirm'))
     table = Table(border=0, width='100%')
     table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0,
@@ -384,7 +384,7 @@ def subscription_confirm(mlist, doc, cookie, cgidata):
             # The response
             listname = mlist.real_name
             title = _('Subscription request confirmed')
-            optionsurl = mlist.GetOptionsURL(addr, absolute=1)
+            optionsurl = mlist.GetOptionsURL(addr)
             doc.SetTitle(title)
             doc.AddItem(Header(3, Bold(FontAttr(title, size='+2'))))
             doc.AddItem(_('''\
@@ -434,7 +434,7 @@ def unsubscription_confirm(mlist, doc, cookie):
             # The response
             listname = mlist.real_name
             title = _('Unsubscription request confirmed')
-            listinfourl = mlist.GetScriptURL('listinfo', absolute=1)
+            listinfourl = mlist.GetScriptURL('listinfo')
             doc.SetTitle(title)
             doc.AddItem(Header(3, Bold(FontAttr(title, size='+2'))))
             doc.AddItem(_("""\
@@ -454,7 +454,7 @@ def unsubscription_prompt(mlist, doc, cookie, addr):
     i18n.set_language(lang)
     doc.set_language(lang)
 
-    form = Form(mlist.GetScriptURL('confirm', 1))
+    form = Form(mlist.GetScriptURL('confirm'))
     table = Table(border=0, width='100%')
     table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0,
@@ -529,7 +529,7 @@ def addrchange_confirm(mlist, doc, cookie):
             # The response
             listname = mlist.real_name
             title = _('Change of address request confirmed')
-            optionsurl = mlist.GetOptionsURL(newaddr, absolute=1)
+            optionsurl = mlist.GetOptionsURL(newaddr)
             doc.SetTitle(title)
             doc.AddItem(Header(3, Bold(FontAttr(title, size='+2'))))
             doc.AddItem(_("""\
@@ -550,7 +550,7 @@ def addrchange_prompt(mlist, doc, cookie, oldaddr, newaddr, globally):
     i18n.set_language(lang)
     doc.set_language(lang)
 
-    form = Form(mlist.GetScriptURL('confirm', 1))
+    form = Form(mlist.GetScriptURL('confirm'))
     table = Table(border=0, width='100%')
     table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0,
@@ -656,7 +656,7 @@ def heldmsg_confirm(mlist, doc, cookie):
 def heldmsg_prompt(mlist, doc, cookie, id):
     title = _('Cancel held message posting')
     doc.SetTitle(title)
-    form = Form(mlist.GetScriptURL('confirm', 1))
+    form = Form(mlist.GetScriptURL('confirm'))
     table = Table(border=0, width='100%')
     table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0,
@@ -752,7 +752,7 @@ def reenable_confirm(mlist, doc, cookie):
             # The response
             listname = mlist.real_name
             title = _('Membership re-enabled.')
-            optionsurl = mlist.GetOptionsURL(addr, absolute=1)
+            optionsurl = mlist.GetOptionsURL(addr)
             doc.SetTitle(title)
             doc.AddItem(Header(3, Bold(FontAttr(title, size='+2'))))
             doc.AddItem(_("""\
@@ -769,7 +769,7 @@ def reenable_confirm(mlist, doc, cookie):
 def reenable_prompt(mlist, doc, cookie, list, member):
     title = _('Re-enable mailing list membership')
     doc.SetTitle(title)
-    form = Form(mlist.GetScriptURL('confirm', 1))
+    form = Form(mlist.GetScriptURL('confirm'))
     table = Table(border=0, width='100%')
     table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0,
@@ -782,7 +782,7 @@ def reenable_prompt(mlist, doc, cookie, list, member):
     realname = mlist.real_name
     info = mlist.getBounceInfo(member)
     if not info:
-        listinfourl = mlist.GetScriptURL('listinfo', absolute=1)
+        listinfourl = mlist.GetScriptURL('listinfo')
         # They've already be unsubscribed
         table.AddRow([_("""We're sorry, but you have already been unsubscribed
         from this mailing list.  To re-subscribe, please visit the

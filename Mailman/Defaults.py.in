@@ -718,7 +718,7 @@ USE_MAILDIR = No
 USE_LMTP = No
 # NOTE: If you set USE_LMTP = Yes, add the following line to your mailman.cfg
 # file (uncommented of course!)
-# QRUNNERS.append(('LMTPRunner', 1))
+# add_runner('LMTPRunner')
 
 # Change LMTP_HOST and LMTP_PORT for your convenience.
 # You should be careful enough to use firewall if you
@@ -726,18 +726,30 @@ USE_LMTP = No
 LMTP_HOST = 'localhost'
 LMTP_PORT = 8025
 
+# Name of the domains which operate on LMTP mailman only.
+# Currently valid only for Postfix alias generation.
+LMTP_ONLY_DOMAINS = []
+
+# If the list is not present in LMTP_ONLY_DOMAINS, LMTPRunner would return
+# 550 response to the master SMTP agent.  This may cause 'bounce spam relay'
+# in that a spammer expects to deliver the message as bounce info to the
+# 'From:' address.  You can override this behavior by setting
+# LMTP_ERR_550 = '250 Ok. But, blackholed because mailbox unavailable'.
+LMTP_ERR_550 = '550 Requested action not taken: mailbox unavailable'
+
 # Experimental WSGI Server.
 #
 # You must enable PROXY of Apache httpd server and configure to pass Mailman
 # CGI requests to this WSGI Server:
 #
-#     ProxyPass /mailman/ http://localhost:2580/
+#     ProxyPass /mailman/ http://localhost:2580/mailman/
 #
+# Note that local URI part should be the same.
 # XXX If you are running Apache 2.2, you will probably also want to set
 # ProxyPassReverseCookiePath
 #
 # Also you have to add following line to <prefix>/etc/mailman.cfg
-# QRUNNERS.append(('HTTPRunner', 1))
+# add_runner('HTTPRunner')
 HTTP_HOST = 'localhost'
 HTTP_PORT = 2580
 

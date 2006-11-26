@@ -487,7 +487,7 @@ address.  Upon confirmation, any other mailing list containing the address
         # drop them back into their options page, because that's gone now!
         fqdn_listname = mlist.GetListEmail()
         owneraddr = mlist.GetOwnerEmail()
-        url = mlist.GetScriptURL('listinfo', absolute=1)
+        url = mlist.GetScriptURL('listinfo')
 
         title = _('Unsubscription results')
         doc.SetTitle(title)

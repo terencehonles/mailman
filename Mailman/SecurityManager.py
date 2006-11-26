@@ -227,26 +227,7 @@ class SecurityManager:
         return False
 
     def _cookie_path(self):
-        # We could be reverse proxied, in which case our cookie path must
-        # match the path as seen by the upstream server, otherwise the client
-        # won't send us our cookie data.  We try to figure this out by looking
-        # at the HTTP_REFERER header, which should include the uri of the
-        # admin login screen as seen by the client.  This is a hack because
-        # we're not guaranteed to see that envar, but there's really no other
-        # way to do it -- the original uri that's proxied to us is not
-        # included in the backend request.  XXX what happens when Apache 2.2's
-        # ProxyPassReverseCookiePath is set?
-        target = '%s/%s' % (os.environ['SCRIPT_NAME'], self.fqdn_listname)
-        referer = os.environ.get('HTTP_REFERER')
-        if not referer:
-            return target
-        # Python 2.5 XXX urlparse(referer).path
-        path = urlparse(referer)[2]
-        i = path.find(target)
-        if i < 0:
-            return target
-        prefix = path[:i]
-        return prefix + target
+        return '/'.join(os.environ['SCRIPT_NAME'].split('/')[:-1]) + '/'
 
     def MakeCookie(self, authcontext, user=None):
         key, secret = self.AuthContextInfo(authcontext, user)

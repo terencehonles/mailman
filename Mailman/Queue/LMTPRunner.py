@@ -68,7 +68,7 @@ DASH    = '-'
 CRLF    = '\r\n'
 ERR_451 = '451 Requested action aborted: error in processing'
 ERR_502 = '502 Error: command HELO not implemented'
-ERR_550 = '550 Requested action not taken: mailbox unavailable'
+ERR_550 = config.LMTP_ERR_550
 
 # XXX Blech
 smtpd.__version__ = 'Python LMTP queue runner 1.0'
