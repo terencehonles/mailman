@@ -99,7 +99,7 @@ class OutgoingRunner(Runner, BounceMixin):
                 # this is what's sent to the user in the probe message.  Maybe
                 # we should craft a bounce-like message containing information
                 # about the permanent SMTP failure?
-                self._queue_bounces(mlist.internal_name(), e.permfailures, msg)
+                self._queue_bounces(mlist.fqdn_listname, e.permfailures, msg)
                 # Move temporary failures to the qfiles/retry queue which will
                 # occasionally move them back here for another shot at
                 # delivery.

@@ -221,7 +221,7 @@ class BounceRunner(Runner, BounceMixin):
         # although I'm unsure how that could happen.  Possibly ScanMessages()
         # can let None's sneak through.  In any event, this will kill them.
         addrs = filter(None, addrs)
-        self._queue_bounces(mlist.internal_name(), addrs, msg)
+        self._queue_bounces(mlist.fqdn_listname, addrs, msg)
 
     _doperiodic = BounceMixin._doperiodic
 
