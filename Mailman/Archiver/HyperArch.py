@@ -184,7 +184,7 @@ def quick_maketext(templatefile, dict=None, lang=None, mlist=None):
     if mlist is None:
         listname = ''
     else:
-        listname = mlist._internal_name
+        listname = mlist.fqdn_listname
     if lang is None:
         if mlist is None:
             lang = mm_cfg.DEFAULT_SERVER_LANGUAGE
@@ -345,7 +345,7 @@ class Article(pipermail.Article):
         else:
             mlist = None
         if mlist:
-            d['__listname'] = self._mlist.internal_name()
+            d['__listname'] = self._mlist.fqdn_listname
         else:
             d['__listname'] = None
         # Delete a few other things we don't want in the pickle
@@ -741,7 +741,7 @@ class HyperArchive(pipermail.T):
 
     def html_TOC(self):
         mlist = self.maillist
-        listname = mlist.internal_name()
+        listname = mlist.fqdn_listname
         mbox = os.path.join(mlist.archive_dir()+'.mbox', listname+'.mbox')
         d = {"listname": mlist.real_name,
              "listinfo": mlist.GetScriptURL('listinfo', absolute=1),
@@ -823,7 +823,7 @@ class HyperArchive(pipermail.T):
             return 1
         self._lock_file = LockFile.LockFile(
             os.path.join(mm_cfg.LOCK_DIR,
-                         self.maillist.internal_name() + '-arch.lock'))
+                         self.maillist.fqdn_listname + '-arch.lock'))
         try:
             self._lock_file.lock(timeout=0.5)
         except LockFile.TimeOutError:

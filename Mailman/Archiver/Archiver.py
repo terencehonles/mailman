@@ -133,7 +133,7 @@ class Archiver:
     def ArchiveFileName(self):
         """The mbox name where messages are left for archive construction."""
         return os.path.join(self.archive_dir() + '.mbox',
-                            self.internal_name() + '.mbox')
+                            self.fqdn_listname + '.mbox')
 
     def GetBaseArchiveURL(self):
         if self.archive_private:
@@ -141,7 +141,7 @@ class Archiver:
         else:
             web_host = config.domains.get(self.host_name, self.host_name)
             url = Template(config.PUBLIC_ARCHIVE_URL).safe_substitute(
-                listname=self.internal_name(),
+                listname=self.fqdn_listname,
                 hostname=web_host,
                 fqdn_listname=self.fqdn_listname,
                 )
@@ -171,7 +171,7 @@ class Archiver:
             raise
 
     def ExternalArchive(self, ar, txt):
-        d = SafeDict({'listname': self.internal_name(),
+        d = SafeDict({'listname': self.fqdn_listname,
                       'hostname': self.host_name,
                       })
         cmd = ar % d
