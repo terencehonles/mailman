@@ -77,6 +77,7 @@ smtpd.__version__ = 'Python LMTP queue runner 1.0'
 
 def getlistq(address):
     localpart, domain = address.split('@', 1)
+    localpart = localpart.split(config.VERP_DELIMITER, 1)[0]
     l = localpart.split(DASH)
     if l[-1] in subqnames:
         listname = DASH.join(l[:-1])

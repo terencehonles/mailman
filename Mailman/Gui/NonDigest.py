@@ -17,9 +17,10 @@
 """GUI component for managing the non-digest delivery options.
 """
 
-from Mailman import mm_cfg
 from Mailman import Utils
+from Mailman import Defaults
 from Mailman.i18n import _
+from Mailman.configuration import config
 from Mailman.Gui.GUIBase import GUIBase
 
 from Mailman.Gui.Digest import ALLOWEDS
@@ -36,19 +37,19 @@ class NonDigest(GUIBase):
     def GetConfigInfo(self, mlist, category, subcat=None):
         if category <> 'nondigest':
             return None
-        WIDTH = mm_cfg.TEXTFIELDWIDTH
+        WIDTH = config.TEXTFIELDWIDTH
 
         info = [
             _("Policies concerning immediately delivered list traffic."),
 
-            ('nondigestable', mm_cfg.Toggle, (_('No'), _('Yes')), 1,
+            ('nondigestable', Defaults.Toggle, (_('No'), _('Yes')), 1,
              _("""Can subscribers choose to receive mail immediately, rather
              than in batched digests?""")),
             ]
 
-        if mm_cfg.OWNERS_CAN_ENABLE_PERSONALIZATION:
+        if config.OWNERS_CAN_ENABLE_PERSONALIZATION:
             info.extend([
-                ('personalize', mm_cfg.Radio,
+                ('personalize', Defaults.Radio,
                  (_('No'), _('Yes'), _('Full Personalization')), 1,
 
                  _('''Should Mailman personalize each non-digest delivery?
@@ -105,7 +106,7 @@ class NonDigest(GUIBase):
         # substitution variable, and we're transitioning from no
         # personalization to personalization enabled.
         headfoot = Utils.maketext('headfoot.html', mlist=mlist, raw=1)
-        if mm_cfg.OWNERS_CAN_ENABLE_PERSONALIZATION:
+        if config.OWNERS_CAN_ENABLE_PERSONALIZATION:
             extra = _("""\
 When <a href="?VARHELP=nondigest/personalize">personalization</a> is enabled
 for this list, additional substitution variables are allowed in your headers
@@ -124,19 +125,19 @@ and footers:
         else:
             extra = ''
 
-        info.extend([('msg_header', mm_cfg.Text, (10, WIDTH), 0,
+        info.extend([('msg_header', Defaults.Text, (10, WIDTH), 0,
              _('Header added to mail sent to regular list members'),
              _('''Text prepended to the top of every immediately-delivery
              message. ''') + headfoot + extra),
 
-            ('msg_footer', mm_cfg.Text, (10, WIDTH), 0,
+            ('msg_footer', Defaults.Text, (10, WIDTH), 0,
              _('Footer added to mail sent to regular list members'),
              _('''Text appended to the bottom of every immediately-delivery
              message. ''') + headfoot + extra),
             ])
 
         info.extend([
-            ('scrub_nondigest', mm_cfg.Toggle, (_('No'), _('Yes')), 0,
+            ('scrub_nondigest', Defaults.Toggle, (_('No'), _('Yes')), 0,
              _('Scrub attachments of regular delivery message?'),
              _('''When you scrub attachments, they are stored in archive
              area and links are made in the message so that the member can

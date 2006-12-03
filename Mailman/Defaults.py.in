@@ -602,6 +602,7 @@ SMTP_LOG_EACH_FAILURE = (
 #
 # Note that your MTA /must/ be configured to deliver such an addressed message
 # to mylist-bounces!
+VERP_DELIMITER = '+'
 VERP_FORMAT = '%(bounces)s+%(mailbox)s=%(host)s'
 
 # The second describes a regular expression to unambiguously decode such an
