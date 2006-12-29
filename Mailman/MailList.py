@@ -46,6 +46,7 @@ from Mailman import Errors
 from Mailman import LockFile
 from Mailman import Utils
 from Mailman import Version
+from Mailman import database
 from Mailman.UserDesc import UserDesc
 from Mailman.configuration import config
 
@@ -84,9 +85,31 @@ slog    = logging.getLogger('mailman.subscribe')
 
 
 # Use mixins here just to avoid having any one chunk be too large.
-class MailList(HTMLFormatter, Deliverer, ListAdmin,
+class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
                Archiver, Digester, SecurityManager, Bouncer, GatewayManager,
                Autoresponder, TopicMgr, Pending.Pending):
+    def __new__(cls, *args, **kws):
+        # Search positional and keyword arguments to find the name of the
+        # existing list that is being opened, with the latter taking
+        # precedence.  If no name can be found, then make sure there are no
+        # arguments, otherwise it's an error.
+        if 'name' in kws:
+            listname = kws.pop('name')
+        elif not args:
+            if not kws:
+                # We're probably being created from the ORM layer, so just let
+                # the super class do its thing.
+                return super(MailList, cls).__new__(cls, *args, **kws)
+            raise ValueError("'name' argument required'")
+        else:
+            listname = args[0]
+        fqdn_listname = Utils.fqdn_listname(listname)
+        listname, hostname = Utils.split_listname(fqdn_listname)
+        mlist = database.find_list(listname, hostname)
+        if not mlist:
+            raise Errors.MMUnknownListError(fqdn_listname)
+        return mlist
+
     #
     # A MailList object's basic Python object model support
     #
@@ -100,13 +123,6 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
                 baseclass.__init__(self)
         # Initialize volatile attributes
         self.InitTempVars(name, check_version)
-        # Attach a membership adaptor instance.
-        parts = config.MEMBER_ADAPTOR_CLASS.split(DOT)
-        adaptor_class = parts.pop()
-        adaptor_module = DOT.join(parts)
-        __import__(adaptor_module)
-        mod = sys.modules[adaptor_module]
-        self._memberadaptor = getattr(mod, adaptor_class)(self)
         # This extension mechanism allows list-specific overrides of any
         # method (well, except __init__(), InitTempVars(), and InitVars()
         # I think).  Note that fullpath() will return None when we're creating
@@ -134,6 +150,8 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             self.Load(name, check_version)
 
     def __getattr__(self, name):
+        if name.startswith('_'):
+            return super(MailList, self).__getattr__(name)
         # Because we're using delegation, we want to be sure that attribute
         # access to a delegated member function gets passed to the
         # sub-objects.  This of course imposes a specific name resolution
@@ -147,7 +165,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
                 except AttributeError:
                     pass
             else:
-                raise AttributeError, name
+                raise AttributeError(name)
 
     def __repr__(self):
         if self.Locked():
@@ -162,6 +180,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
     # Lock management
     #
     def Lock(self, timeout=0):
+        database.lock(self)
         self.__lock.lock(timeout)
         self._memberadaptor.lock()
         # Must reload our database for consistency.  Watch out for lists that
@@ -173,6 +192,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             raise
 
     def Unlock(self):
+        database.unlock(self)
         self.__lock.unlock(unconditionally=True)
         self._memberadaptor.unlock()
 
@@ -281,6 +301,13 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
     #
     def InitTempVars(self, name, check_version=True):
         """Set transient variables of this and inherited classes."""
+        # Attach a membership adaptor instance.
+        parts = config.MEMBER_ADAPTOR_CLASS.split(DOT)
+        adaptor_class = parts.pop()
+        adaptor_module = DOT.join(parts)
+        __import__(adaptor_module)
+        mod = sys.modules[adaptor_module]
+        self._memberadaptor = getattr(mod, adaptor_class)(self)
         # The timestamp is set whenever we load the state from disk.  If our
         # timestamp is newer than the modtime of the config.pck file, we don't
         # need to reload, otherwise... we do.
@@ -519,7 +546,7 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             raise Errors.MMListAlreadyExistsError(fqdn_listname)
         # Validate the admin's email address
         Utils.ValidateEmail(admin_email)
-        self._internal_name = listname
+        self._internal_name = self.list_name = listname
         self._full_path = os.path.join(config.LIST_DATA_DIR, fqdn_listname)
         Utils.makedirs(self._full_path)
         # Don't use Lock() since that tries to load the non-existant config.pck
@@ -537,120 +564,22 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
             self.available_languages = langs
         url_host = config.domains[email_host]
         self.web_page_url = config.DEFAULT_URL_PATTERN % url_host
+        database.add_list(self)
 
 
 
-    #
-    # Database and filesystem I/O
-    #
-    def __save(self, dict):
-        # Save the file as a binary pickle, and rotate the old version to a
-        # backup file.  We must guarantee that config.pck is always valid so
-        # we never rotate unless the we've successfully written the temp file.
-        # We use pickle now because marshal is not guaranteed to be compatible
-        # between Python versions.
-        fname = os.path.join(self.fullpath(), 'config.pck')
-        fname_tmp = fname + '.tmp.%s.%d' % (socket.gethostname(), os.getpid())
-        fname_last = fname + '.last'
-        fp = None
-        try:
-            fp = open(fname_tmp, 'w')
-            # Use a binary format... it's more efficient.
-            cPickle.dump(dict, fp, 1)
-            fp.flush()
-            if config.SYNC_AFTER_WRITE:
-                os.fsync(fp.fileno())
-            fp.close()
-        except IOError, e:
-            elog.error('Failed config.pck write, retaining old state.\n%s', e)
-            if fp is not None:
-                os.unlink(fname_tmp)
-            raise
-        # Now do config.pck.tmp.xxx -> config.pck -> config.pck.last rotation
-        # as safely as possible.
-        try:
-            # might not exist yet
-            os.unlink(fname_last)
-        except OSError, e:
-            if e.errno <> errno.ENOENT: raise
-        try:
-            # might not exist yet
-            os.link(fname, fname_last)
-        except OSError, e:
-            if e.errno <> errno.ENOENT: raise
-        os.rename(fname_tmp, fname)
-        # Reset the timestamp
-        self.__timestamp = os.path.getmtime(fname)
-
     def Save(self):
         # Refresh the lock, just to let other processes know we're still
         # interested in it.  This will raise a NotLockedError if we don't have
         # the lock (which is a serious problem!).  TBD: do we need to be more
         # defensive?
         self.__lock.refresh()
+        # Commit the database transaction
+        database.save(self)
+        # The member adaptor may have its own save operation
         self._memberadaptor.save()
-        # copy all public attributes to serializable dictionary
-        dict = {}
-        for key, value in self.__dict__.items():
-            if key[0] == '_' or isinstance(value, MethodType):
-                continue
-            dict[key] = value
-        # Make config.pck unreadable by `other', as it contains all the
-        # list members' passwords (in clear text).
-        omask = os.umask(007)
-        try:
-            self.__save(dict)
-        finally:
-            os.umask(omask)
-            self.SaveRequestsDb()
+        self.SaveRequestsDb()
         self.CheckHTMLArchiveDir()
-
-    def __load(self, dbfile):
-        # Attempt to load and unserialize the specified database file.  This
-        # could actually be a config.db (for pre-2.1alpha3) or config.pck,
-        # i.e. a marshal or a binary pickle.  Actually, it could also be a
-        # .last backup file if the primary storage file was corrupt.  The
-        # decision on whether to unpickle or unmarshal is based on the file
-        # extension, but we always save it using pickle (since only it, and
-        # not marshal is guaranteed to be compatible across Python versions).
-        #
-        # On success return a 2-tuple of (dictionary, None).  On error, return
-        # a 2-tuple of the form (None, errorobj).
-        if dbfile.endswith('.db') or dbfile.endswith('.db.last'):
-            loadfunc = marshal.load
-        elif dbfile.endswith('.pck') or dbfile.endswith('.pck.last'):
-            loadfunc = cPickle.load
-        else:
-            assert 0, 'Bad database file name'
-        try:
-            # Check the mod time of the file first.  If it matches our
-            # timestamp, then the state hasn't change since the last time we
-            # loaded it.  Otherwise open the file for loading, below.  If the
-            # file doesn't exist, we'll get an EnvironmentError with errno set
-            # to ENOENT (EnvironmentError is the base class of IOError and
-            # OSError).
-            mtime = os.path.getmtime(dbfile)
-            if mtime <= self.__timestamp:
-                # File is not newer
-                return None, None
-            fp = open(dbfile)
-        except EnvironmentError, e:
-            if e.errno <> errno.ENOENT: raise
-            # The file doesn't exist yet
-            return None, e
-        try:
-            try:
-                d = loadfunc(fp)
-                if not isinstance(d, dict):
-                    return None, 'Load() expected to return a dictionary'
-            except (EOFError, ValueError, TypeError, MemoryError,
-                    cPickle.PicklingError, cPickle.UnpicklingError), e:
-                return None, e
-        finally:
-            fp.close()
-        # Update timestamp
-        self.__timestamp = mtime
-        return d, None
 
     def Load(self, fqdn_listname=None, check_version=True):
         if fqdn_listname is None:
@@ -658,85 +587,12 @@ class MailList(HTMLFormatter, Deliverer, ListAdmin,
         if not Utils.list_exists(fqdn_listname):
             raise Errors.MMUnknownListError(fqdn_listname)
         self._memberadaptor.load()
-        # We first try to load config.pck, which contains the up-to-date
-        # version of the database.  If that fails, perhaps because it's
-        # corrupted or missing, we'll try to load the backup file
-        # config.pck.last.
-        #
-        # Should both of those fail, we'll look for config.db and
-        # config.db.last for backwards compatibility with pre-2.1alpha3
-        pfile = os.path.join(self.fullpath(), 'config.pck')
-        plast = pfile + '.last'
-        dfile = os.path.join(self.fullpath(), 'config.db')
-        dlast = dfile + '.last'
-        for file in (pfile, plast, dfile, dlast):
-            dict, e = self.__load(file)
-            if dict is None:
-                if e is not None:
-                    # Had problems with this file; log it and try the next one.
-                    elog.error("couldn't load config file %s\n%s", file, e)
-                else:
-                    # We already have the most up-to-date state
-                    return
-            else:
-                break
-        else:
-            # Nothing worked, so we have to give up
-            elog.error('All %s fallbacks were corrupt, giving up',
-                       self.internal_name())
-            raise Errors.MMCorruptListDatabaseError, e
-        # Now, if we didn't end up using the primary database file, we want to
-        # copy the fallback into the primary so that the logic in Save() will
-        # still work.  For giggles, we'll copy it to a safety backup.  Note we
-        # MUST do this with the underlying list lock acquired.
-        if file == plast or file == dlast:
-            elog.error('fixing corrupt config file, using: %s', file)
-            unlock = True
-            try:
-                try:
-                    self.__lock.lock()
-                except LockFile.AlreadyLockedError:
-                    unlock = False
-                self.__fix_corrupt_pckfile(file, pfile, plast, dfile, dlast)
-            finally:
-                if unlock:
-                    self.__lock.unlock()
-        # Copy the loaded dictionary into the attributes of the current
-        # mailing list object, then run sanity check on the data.
-        self.__dict__.update(dict)
         if check_version:
-            self.CheckVersion(dict)
+            # XXX for now disable version checks.  We'll fold this into schema
+            # updates eventually.
+            #self.CheckVersion(dict)
             self.CheckValues()
 
-    def __fix_corrupt_pckfile(self, file, pfile, plast, dfile, dlast):
-        if file == plast:
-            # Move aside any existing pickle file and delete any existing
-            # safety file.  This avoids EPERM errors inside the shutil.copy()
-            # calls if those files exist with different ownership.
-            try:
-                os.rename(pfile, pfile + '.corrupt')
-            except OSError, e:
-                if e.errno <> errno.ENOENT: raise
-            try:
-                os.remove(pfile + '.safety')
-            except OSError, e:
-                if e.errno <> errno.ENOENT: raise
-            shutil.copy(file, pfile)
-            shutil.copy(file, pfile + '.safety')
-        elif file == dlast:
-            # Move aside any existing marshal file and delete any existing
-            # safety file.  This avoids EPERM errors inside the shutil.copy()
-            # calls if those files exist with different ownership.
-            try:
-                os.rename(dfile, dfile + '.corrupt')
-            except OSError, e:
-                if e.errno <> errno.ENOENT: raise
-            try:
-                os.remove(dfile + '.safety')
-            except OSError, e:
-                if e.errno <> errno.ENOENT: raise
-            shutil.copy(file, dfile)
-            shutil.copy(file, dfile + '.safety')
 
 
     #

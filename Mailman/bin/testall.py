@@ -25,8 +25,8 @@ import unittest
 
 from Mailman import Version
 from Mailman import loginit
-from Mailman.configuration import config
 from Mailman.i18n import _
+from Mailman.initialize import initialize
 
 __i18n_templates__ = True
 
@@ -138,7 +138,7 @@ def main():
     global basedir
 
     parser, opts, args = parseargs()
-    config.load(opts.config)
+    initialize(opts.config)
     if not args:
         args = ['.']
     loginit.initialize(propagate=opts.stderr)

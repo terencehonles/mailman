@@ -148,7 +148,13 @@ class Configuration(object):
         E.g. 'HTTPRunner' or 'LMTPRunner'.  count is the number of qrunner
         slices to create, by default, 1.
         """
-        Defaults.QRUNNERS.append((name, count))
+        self.QRUNNERS.append((name, count))
+
+    @property
+    def paths(self):
+        return dict([(k, self.__dict__[k])
+                     for k in self.__dict__
+                     if k.endswith('_DIR')])
 
 
 

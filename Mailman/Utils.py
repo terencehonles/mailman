@@ -40,6 +40,7 @@ from email.Errors import HeaderParseError
 from string import ascii_letters, digits, whitespace
 
 from Mailman import Errors
+from Mailman import database
 from Mailman.SafeDict import SafeDict
 from Mailman.configuration import config
 
@@ -50,12 +51,13 @@ except NameError:
     from sets import Set as set
 
 
-EMPTYSTRING = ''
-UEMPTYSTRING = u''
+AT = '@'
 CR = '\r'
-NL = '\n'
 DOT = '.'
+EMPTYSTRING = ''
 IDENTCHARS = ascii_letters + digits + '_'
+NL = '\n'
+UEMPTYSTRING = u''
 
 # Search for $(identifier)s strings, except that the trailing s is optional,
 # since that's a common mistake
@@ -67,28 +69,26 @@ log = logging.getLogger('mailman.error')
 
 
 
-def list_exists(listname):
-    """Return true iff list `listname' exists."""
-    # The existance of any of the following file proves the list exists
-    # <wink>: config.pck, config.pck.last, config.db, config.db.last
-    #
-    # The former two are for 2.1alpha3 and beyond, while the latter two are
-    # for all earlier versions.
-    basepath = os.path.join(config.LIST_DATA_DIR, listname)
-    for ext in ('.pck', '.pck.last', '.db', '.db.last'):
-        dbfile = os.path.join(basepath, 'config' + ext)
-        if os.path.exists(dbfile):
-            return True
-    return False
+def list_exists(fqdn_listname):
+    """Return true iff list `fqdn_listname' exists."""
+    listname, hostname = split_listname(fqdn_listname)
+    return bool(database.find_list(listname, hostname))
 
 
 def list_names():
-    """Return the names of all lists in default list directory."""
-    got = set()
-    for fn in os.listdir(config.LIST_DATA_DIR):
-        if list_exists(fn):
-            got.add(fn)
-    return got
+    """Return the fqdn names of all lists in default list directory."""
+    return ['%s@%s' % (listname, hostname)
+            for listname, hostname in database.get_list_names()]
+
+
+def split_listname(listname):
+    if AT in listname:
+        return listname.split(AT, 1)
+    return listname, config.DEFAULT_EMAIL_HOST
+
+
+def fqdn_listname(listname):
+    return AT.join(split_listname(listname))
 
 
 

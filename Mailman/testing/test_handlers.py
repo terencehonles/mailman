@@ -143,8 +143,8 @@ Your message entitled
 
 was successfully received by the _xtest mailing list.
 
-List info page: http://www.example.com/mailman/listinfo/_xtest
-Your preferences: http://www.example.com/mailman/options/_xtest/aperson%40example.org
+List info page: http://www.example.com/mailman/listinfo/_xtest@example.com
+Your preferences: http://www.example.com/mailman/options/_xtest@example.com/aperson%40example.org
 """)
         # Make sure we dequeued the only message
         eq(len(self._sb.files()), 0)
@@ -183,8 +183,8 @@ Your message entitled
 
 was successfully received by the _xtest mailing list.
 
-List info page: http://www.example.com/mailman/listinfo/_xtest
-Your preferences: http://www.example.com/mailman/options/_xtest/aperson%40example.org
+List info page: http://www.example.com/mailman/listinfo/_xtest@example.com
+Your preferences: http://www.example.com/mailman/options/_xtest@example.com/aperson%40example.org
 """)
         # Make sure we dequeued the only message
         eq(len(self._sb.files()), 0)
@@ -690,13 +690,14 @@ From: aperson@example.org
         eq(msg['list-id'], '<_xtest.example.com>')
         eq(msg['list-help'], '<mailto:_xtest-request@example.com?subject=help>')
         eq(msg['list-unsubscribe'],
-           '<http://www.example.com/mailman/listinfo/_xtest>,'
+           '<http://www.example.com/mailman/listinfo/_xtest@example.com>,'
            '\n\t<mailto:_xtest-request@example.com?subject=unsubscribe>')
         eq(msg['list-subscribe'],
-           '<http://www.example.com/mailman/listinfo/_xtest>,'
+           '<http://www.example.com/mailman/listinfo/_xtest@example.com>,'
            '\n\t<mailto:_xtest-request@example.com?subject=subscribe>')
         eq(msg['list-post'], '<mailto:_xtest@example.com>')
-        eq(msg['list-archive'], '<http://www.example.com/pipermail/_xtest>')
+        eq(msg['list-archive'],
+           '<http://www.example.com/pipermail/_xtest@example.com>')
 
     def test_list_headers_with_description(self):
         eq = self.assertEqual
@@ -710,10 +711,10 @@ From: aperson@example.org
         eq(unicode(msg['list-id']), u'A Test List <_xtest.example.com>')
         eq(msg['list-help'], '<mailto:_xtest-request@example.com?subject=help>')
         eq(msg['list-unsubscribe'],
-           '<http://www.example.com/mailman/listinfo/_xtest>,'
+           '<http://www.example.com/mailman/listinfo/_xtest@example.com>,'
            '\n\t<mailto:_xtest-request@example.com?subject=unsubscribe>')
         eq(msg['list-subscribe'],
-           '<http://www.example.com/mailman/listinfo/_xtest>,'
+           '<http://www.example.com/mailman/listinfo/_xtest@example.com>,'
            '\n\t<mailto:_xtest-request@example.com?subject=subscribe>')
         eq(msg['list-post'], '<mailto:_xtest@example.com>')
 

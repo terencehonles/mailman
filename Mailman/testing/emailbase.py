@@ -59,8 +59,12 @@ class EmailBase(TestBase):
 
     def setUp(self):
         TestBase.setUp(self)
-        # Second argument is ignored.
-        self._server = SinkServer(('localhost', TESTPORT), None)
+        try:
+            # Second argument is ignored.
+            self._server = SinkServer(('localhost', TESTPORT), None)
+        except:
+            TestBase.tearDown(self)
+            raise
         try:
             os.system('bin/mailmanctl -C %s -q start' % self._config)
             # If any errors occur in the above, be sure to manually call
@@ -68,6 +72,7 @@ class EmailBase(TestBase):
             # setUp().
         except:
             self.tearDown()
+            raise
 
     def tearDown(self):
         os.system('bin/mailmanctl -C %s -q stop' % self._config)

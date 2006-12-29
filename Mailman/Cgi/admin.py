@@ -22,7 +22,6 @@ import re
 import cgi
 import sha
 import sys
-import signal
 import urllib
 import logging
 
@@ -127,40 +126,8 @@ def main():
     # The html page document
     doc = Document()
     doc.set_language(mlist.preferred_language)
-
-    # From this point on, the MailList object must be locked.  However, we
-    # must release the lock no matter how we exit.  try/finally isn't enough,
-    # because of this scenario: user hits the admin page which may take a long
-    # time to render; user gets bored and hits the browser's STOP button;
-    # browser shuts down socket; server tries to write to broken socket and
-    # gets a SIGPIPE.  Under Apache 1.3/mod_cgi, Apache catches this SIGPIPE
-    # (I presume it is buffering output from the cgi script), then turns
-    # around and SIGTERMs the cgi process.  Apache waits three seconds and
-    # then SIGKILLs the cgi process.  We /must/ catch the SIGTERM and do the
-    # most reasonable thing we can in as short a time period as possible.  If
-    # we get the SIGKILL we're screwed (because it's uncatchable and we'll
-    # have no opportunity to clean up after ourselves).
-    #
-    # This signal handler catches the SIGTERM, unlocks the list, and then
-    # exits the process.  The effect of this is that the changes made to the
-    # MailList object will be aborted, which seems like the only sensible
-    # semantics.
-    #
-    # BAW: This may not be portable to other web servers or cgi execution
-    # models.
-    def sigterm_handler(signum, frame, mlist=mlist):
-        # Make sure the list gets unlocked...
-        mlist.Unlock()
-        # ...and ensure we exit, otherwise race conditions could cause us to
-        # enter MailList.Save() while we're in the unlocked state, and that
-        # could be bad!
-        sys.exit(0)
-
     mlist.Lock()
     try:
-        # Install the emergency shutdown signal handler
-        signal.signal(signal.SIGTERM, sigterm_handler)
-
         if cgidata.keys():
             # There are options to change
             change_options(mlist, category, subcat, cgidata, doc)
@@ -190,10 +157,6 @@ def main():
         print doc.Format()
         mlist.Save()
     finally:
-        # Now be sure to unlock the list.  It's okay if we get a signal here
-        # because essentially, the signal handler will do the same thing.  And
-        # unlocking is unconditional, so it's not an error if we unlock while
-        # we're already unlocked.
         mlist.Unlock()
 
 

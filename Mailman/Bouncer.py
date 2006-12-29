@@ -24,19 +24,20 @@ import logging
 from email.MIMEMessage import MIMEMessage
 from email.MIMEText import MIMEText
 
+from Mailman import Defaults
 from Mailman import MemberAdaptor
 from Mailman import Message
 from Mailman import Pending
 from Mailman import Utils
 from Mailman import i18n
-from Mailman import mm_cfg
+from Mailman.configuration import config
 
 EMPTYSTRING = ''
 
 # This constant is supposed to represent the day containing the first midnight
 # after the epoch.  We'll add (0,)*6 to this tuple to get a value appropriate
 # for time.mktime().
-ZEROHOUR_PLUSONEDAY = time.localtime(mm_cfg.days(1))[:3]
+ZEROHOUR_PLUSONEDAY = time.localtime(Defaults.days(1))[:3]
 
 def _(s): return s
 
@@ -81,19 +82,19 @@ class _BounceInfo:
 class Bouncer:
     def InitVars(self):
         # Configurable...
-        self.bounce_processing = mm_cfg.DEFAULT_BOUNCE_PROCESSING
-        self.bounce_score_threshold = mm_cfg.DEFAULT_BOUNCE_SCORE_THRESHOLD
-        self.bounce_info_stale_after = mm_cfg.DEFAULT_BOUNCE_INFO_STALE_AFTER
+        self.bounce_processing = config.DEFAULT_BOUNCE_PROCESSING
+        self.bounce_score_threshold = config.DEFAULT_BOUNCE_SCORE_THRESHOLD
+        self.bounce_info_stale_after = config.DEFAULT_BOUNCE_INFO_STALE_AFTER
         self.bounce_you_are_disabled_warnings = \
-            mm_cfg.DEFAULT_BOUNCE_YOU_ARE_DISABLED_WARNINGS
+            config.DEFAULT_BOUNCE_YOU_ARE_DISABLED_WARNINGS
         self.bounce_you_are_disabled_warnings_interval = \
-            mm_cfg.DEFAULT_BOUNCE_YOU_ARE_DISABLED_WARNINGS_INTERVAL
+            config.DEFAULT_BOUNCE_YOU_ARE_DISABLED_WARNINGS_INTERVAL
         self.bounce_unrecognized_goes_to_list_owner = \
-            mm_cfg.DEFAULT_BOUNCE_UNRECOGNIZED_GOES_TO_LIST_OWNER
+            config.DEFAULT_BOUNCE_UNRECOGNIZED_GOES_TO_LIST_OWNER
         self.bounce_notify_owner_on_disable = \
-            mm_cfg.DEFAULT_BOUNCE_NOTIFY_OWNER_ON_DISABLE
+            config.DEFAULT_BOUNCE_NOTIFY_OWNER_ON_DISABLE
         self.bounce_notify_owner_on_removal = \
-            mm_cfg.DEFAULT_BOUNCE_NOTIFY_OWNER_ON_REMOVAL
+            config.DEFAULT_BOUNCE_NOTIFY_OWNER_ON_REMOVAL
         # Not configurable...
         #
         # This holds legacy member related information.  It's keyed by the
@@ -153,7 +154,7 @@ class Bouncer:
         # Now that we've adjusted the bounce score for this bounce, let's
         # check to see if the disable-by-bounce threshold has been reached.
         if info.score >= self.bounce_score_threshold:
-            if mm_cfg.VERP_PROBES:
+            if config.VERP_PROBES:
                 log.info('sending %s list probe to: %s (score %s >= %s)',
                          self.internal_name(), member, info.score,
                          self.bounce_score_threshold)
@@ -168,7 +169,7 @@ class Bouncer:
         cookie = self.pend_new(Pending.RE_ENABLE, self.internal_name(), member)
         info.cookie = cookie
         # Disable them
-        if mm_cfg.VERP_PROBES:
+        if config.VERP_PROBES:
             log.info('%s: %s disabling due to probe bounce received',
                      self.internal_name(), member)
         else:

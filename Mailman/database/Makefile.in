@@ -4,14 +4,14 @@
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-#
+# 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-#
+# 
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
+# along with this program; if not, write to the Free Software 
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
@@ -31,7 +31,6 @@ DESTDIR=
 CC=		@CC@
 CHMOD=  	@CHMOD@
 INSTALL=	@INSTALL@
-LN_S=		@LN_S@
 
 DEFS=   	@DEFS@
 
@@ -39,27 +38,10 @@ DEFS=   	@DEFS@
 
 OPT=		@OPT@
 CFLAGS=		$(OPT) $(DEFS)
-MAILDIR=	$(exec_prefix)/mail
-SCRIPTSDIR= 	$(prefix)/bin
-
+PACKAGEDIR= 	$(prefix)/Mailman/database
 SHELL=		/bin/sh
 
-SCRIPTS=	mmshell \
-		remove_members clone_member \
-		sync_members check_db \
-		cleanarch \
-		list_admins \
-		fix_url.py convert.py transcheck \
-		msgfmt.py discard \
-		reset_pw.py templ2pot.py po2templ.py
-
-LN_SCRIPTS=	add_members arch change_pw check_perms config_list dumpdb \
-		export find_member genaliases import inject list_lists \
-		list_members list_owners mailmanctl mmsitepass newlist \
-		qrunner rmlist show_config show_qfiles testall unshunt \
-		update version withlist
-
-BUILDDIR=	../build/bin
+MODULES=	*.py
 
 # Modes for directories and executables created by the install
 # process.  Default to group-writable directories but
@@ -74,15 +56,10 @@ INSTALL_PROGRAM=$(INSTALL) -m $(EXEMODE)
 
 all:
 
-install:
-	for f in $(SCRIPTS); \
+install: 
+	for f in $(MODULES); \
 	do \
-	    $(INSTALL) -m $(EXEMODE) $(BUILDDIR)/$$f $(DESTDIR)$(SCRIPTSDIR); \
-	done
-	for f in $(LN_SCRIPTS); \
-	do \
-	    rm -f $(DESTDIR)$(SCRIPTSDIR)/$$f; \
-	    (cd $(DESTDIR)$(SCRIPTSDIR); $(LN_S) mmshell $$f); \
+	    $(INSTALL) -m $(FILEMODE) $(srcdir)/$$f $(DESTDIR)$(PACKAGEDIR); \
 	done
 
 finish:
@@ -90,4 +67,5 @@ finish:
 clean:
 
 distclean:
+	-rm *.pyc
 	-rm Makefile

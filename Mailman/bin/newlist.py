@@ -28,6 +28,7 @@ from Mailman import Utils
 from Mailman import Version
 from Mailman import i18n
 from Mailman.configuration import config
+from Mailman.initialize import initialize
 
 _ = i18n._
 
@@ -83,7 +84,7 @@ listadmin-addr and admin-password are all specified on the command line."""))
 
 def main():
     parser, opts, args = parseargs()
-    config.load(opts.config)
+    initialize(opts.config)
 
     # Set up some defaults we couldn't set up in parseargs()
     if opts.language is None:
@@ -205,8 +206,3 @@ def main():
             msg.send(mlist)
         finally:
             i18n.set_translation(otrans)
-
-
-
-if __name__ == '__main__':
-    main()

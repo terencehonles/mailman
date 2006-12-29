@@ -175,3 +175,19 @@ class HostileSubscriptionError(MailmanError):
     """A cross-subscription attempt was made."""
     # This exception gets raised when an invitee attempts to use the
     # invitation to cross-subscribe to some other mailing list.
+
+
+
+# Database exceptions
+class DatabaseError(MailmanError):
+    """A problem with the database occurred."""
+
+
+class SchemaVersionMismatchError(DatabaseError):
+    def __init__(self, got):
+        self._got = got
+
+    def __str__(self):
+        from Mailman.Version import DATABASE_SCHEMA_VERSION
+        return 'Incompatible database schema version (got: %d, expected: %d)' \
+               % (self._got, DATABASE_SCHEMA_VERSION)

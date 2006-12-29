@@ -20,27 +20,71 @@ import sys
 import shutil
 import optparse
 
-from Mailman import MailList
+from Mailman import Errors
 from Mailman import Utils
 from Mailman import Version
+from Mailman import database
+from Mailman.MailList import MailList
 from Mailman.configuration import config
 from Mailman.i18n import _
+from Mailman.initialize import initialize
 
 __i18n_templates__ = True
 
 
 
-def remove_it(listname, filename, msg):
+def remove_it(listname, filename, msg, quiet=False):
     if os.path.islink(filename):
-        print _('Removing $msg')
+        if not quiet:
+            print _('Removing $msg')
         os.unlink(filename)
     elif os.path.isdir(filename):
-        print _('Removing $msg')
+        if not quiet:
+            print _('Removing $msg')
         shutil.rmtree(filename)
     elif os.path.isfile(filename):
         os.unlink(filename)
     else:
-        print _('$listname $msg not found as $filename')
+        if not quiet:
+            print _('$listname $msg not found as $filename')
+
+
+
+def delete_list(listname, mlist=None, archives=True, quiet=False):
+    removeables = []
+    if mlist:
+        # Remove the list from the database
+        database.remove_list(mlist)
+        # Do the MTA-specific list deletion tasks
+        if config.MTA:
+            modname = 'Mailman.MTA.' + config.MTA
+            __import__(modname)
+            sys.modules[modname].remove(mlist)
+        # Remove the list directory
+        removeables.append((os.path.join('lists', listname), _('list info')))
+
+    # Remove any stale locks associated with the list
+    for filename in os.listdir(config.LOCK_DIR):
+        fn_listname = filename.split('.')[0]
+        if fn_listname == listname:
+            removeables.append((os.path.join(config.LOCK_DIR, filename),
+                                _('stale lock file')))
+
+    if archives:
+        removeables.extend([
+            (os.path.join('archives', 'private', listname),
+             _('private archives')),
+            (os.path.join('archives', 'private', listname + '.mbox'),
+             _('private archives')),
+            (os.path.join('archives', 'public', listname),
+             _('public archives')),
+            (os.path.join('archives', 'public', listname + '.mbox'),
+             _('public archives')),
+            ])
+
+    for dirtmpl, msg in removeables:
+        path = os.path.join(config.VAR_PREFIX, dirtmpl)
+        remove_it(listname, path, msg, quiet)
 
 
 
@@ -75,13 +119,12 @@ remove any residual archives."""))
 
 def main():
     parser, opts, args = parseargs()
-    config.load(opts.config)
+    initialize(opts.config)
 
-    listname = args[0].lower().strip()
-    if '@' not in listname:
-        listname = '%s@%s' % (listname, config.DEFAULT_EMAIL_HOST)
-
-    if not Utils.list_exists(listname):
+    listname = Utils.fqdn_listname(args[0])
+    try:
+        mlist = MailList(listname, lock=False)
+    except Errors.MMUnknownListError:
         if not opts.archives:
             print >> sys.stderr, _(
                 'No such list (or list already deleted): $listname')
@@ -89,43 +132,12 @@ def main():
         else:
             print _(
                 'No such list: ${listname}.  Removing its residual archives.')
+            mlist = None
 
     if not opts.archives:
         print _('Not removing archives.  Reinvoke with -a to remove them.')
 
-    removeables = []
-    if Utils.list_exists(listname):
-        mlist = MailList.MailList(listname, lock=False)
-        # Do the MTA-specific list deletion tasks
-        if config.MTA:
-            modname = 'Mailman.MTA.' + config.MTA
-            __import__(modname)
-            sys.modules[modname].remove(mlist)
-
-        removeables.append((os.path.join('lists', listname), _('list info')))
-
-    # Remove any stale locks associated with the list
-    for filename in os.listdir(config.LOCK_DIR):
-        fn_listname = filename.split('.')[0]
-        if fn_listname == listname:
-            removeables.append((os.path.join(config.LOCK_DIR, filename),
-                                _('stale lock file')))
-
-    if opts.archives:
-        removeables.extend([
-            (os.path.join('archives', 'private', listname),
-             _('private archives')),
-            (os.path.join('archives', 'private', listname + '.mbox'),
-             _('private archives')),
-            (os.path.join('archives', 'public', listname),
-             _('public archives')),
-            (os.path.join('archives', 'public', listname + '.mbox'),
-             _('public archives')),
-            ])
-
-    for dirtmpl, msg in removeables:
-        path = os.path.join(config.VAR_PREFIX, dirtmpl)
-        remove_it(listname, path, msg)
+    delete_list(listname, mlist, opts.archives)
 
 
 

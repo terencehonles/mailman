@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
+# Copyright (C) 2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -15,25 +15,22 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-"""Mixin class for configuring Usenet gateway.
+"""Initialize all global state.
 
-All the actual functionality is in Handlers/ToUsenet.py for the mail->news
-gateway and cron/gate_news for the news->mail gateway.
-
+Every entrance into the Mailman system, be it by command line, mail program,
+or cgi, must call the initialize function here in order for the system's
+global state to be set up properly.  Typically this is called after command
+line argument parsing, since some of the initialization behavior is controlled
+by the command line arguments.
 """
 
-from Mailman.configuration import config
+import Mailman.configuration
+import Mailman.database
+import Mailman.loginit
 
 
 
-class GatewayManager:
-    def InitVars(self):
-        # Configurable
-        self.nntp_host = config.DEFAULT_NNTP_HOST
-        self.linked_newsgroup = ''
-        self.gateway_to_news = False
-        self.gateway_to_mail = False
-        self.news_prefix_subject_too = True
-        # In patch #401270, this was called newsgroup_is_moderated, but the
-        # semantics weren't quite the same.
-        self.news_moderation = False
+def initialize(config=None, propagate_logs=False):
+    Mailman.configuration.config.load(config)
+    Mailman.loginit.initialize(propagate_logs)
+    Mailman.database.initialize()

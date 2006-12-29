@@ -284,7 +284,7 @@ def create(mlist, cgi=False, nolock=False, quiet=False):
     if not nolock:
         lock = makelock()
         lock.lock()
-    # Do the aliases file, which need to be done in any case
+    # Do the aliases file, which always needs to be done
     try:
         if config.USE_LMTP:
             _do_create(mlist, TRPTFILE, _addtransport)

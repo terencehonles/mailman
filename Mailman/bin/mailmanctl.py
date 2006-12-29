@@ -34,6 +34,7 @@ from Mailman import loginit
 from Mailman.MailList import MailList
 from Mailman.configuration import config
 from Mailman.i18n import _
+from Mailman.initialize import initialize
 
 __i18n_templates__ = True
 
@@ -300,9 +301,8 @@ def main():
     global elog, qlog, opts
 
     parser, opts, args = parseargs()
-    config.load(opts.config)
+    initialize(opts.config)
 
-    loginit.initialize()
     elog = logging.getLogger('mailman.error')
     qlog = logging.getLogger('mailman.qrunner')
 
@@ -456,8 +456,8 @@ def main():
                 # error!)
                 restarting = ''
                 if opts.restart:
-                    if ((exitstatus == None and killsig <> signal.SIGTERM) or
-                        (killsig == None and exitstatus <> signal.SIGTERM)):
+                    if ((exitstatus is None and killsig <> signal.SIGTERM) or
+                        (killsig is None and exitstatus <> signal.SIGTERM)):
                         # Then
                         restarting = '[restarting]'
                 qrname, slice, count, restarts = kids[pid]

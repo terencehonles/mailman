@@ -36,6 +36,10 @@ REL_SERIAL = 1
 HEX_VERSION = ((MAJOR_REV << 24) | (MINOR_REV << 16) | (MICRO_REV << 8) |
                (REL_LEVEL << 4)  | (REL_SERIAL << 0))
 
+
+# SQLAlchemy database schema version
+DATABASE_SCHEMA_VERSION = 1
+
 # config.pck schema version number
 DATA_FILE_VERSION = 98
 

@@ -16,7 +16,7 @@
 # USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 8086 $)
+AC_REVISION($Revision: 8123 $)
 AC_PREREQ(2.0)
 AC_INIT([GNU Mailman], [2.2.0a0])
 
@@ -606,7 +606,6 @@ bin/remove_members \
 bin/reset_pw.py \
 bin/sync_members \
 bin/transcheck \
-bin/withlist \
 bin/templ2pot.py \
 bin/po2templ.py \
 contrib/check_perms_grsecurity.py \
@@ -636,7 +635,7 @@ mkdir -p build/bin build/contrib build/cron
 dnl Output everything
 AC_OUTPUT([misc/paths.py Mailman/Defaults.py Mailman/mm_cfg.py.dist
            src/Makefile misc/Makefile bin/Makefile Mailman/bin/Makefile
-           Mailman/Makefile Mailman/Cgi/Makefile
+           Mailman/Makefile Mailman/database/Makefile Mailman/Cgi/Makefile
            Mailman/Archiver/Makefile Mailman/Commands/Makefile
            Mailman/Handlers/Makefile Mailman/Bouncers/Makefile
            Mailman/Queue/Makefile Mailman/Queue/tests/Makefile

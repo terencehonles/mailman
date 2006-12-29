@@ -20,7 +20,6 @@
 import os
 import cgi
 import sys
-import signal
 import urllib
 import logging
 
@@ -369,13 +368,6 @@ address.  Upon confirmation, any other mailing list containing the address
                          _('Addresses may not be blank'))
             print doc.Format()
             return
-
-        # Standard sigterm handler.
-        def sigterm_handler(signum, frame, mlist=mlist):
-            mlist.Unlock()
-            sys.exit(0)
-
-        signal.signal(signal.SIGTERM, sigterm_handler)
         if set_address:
             if cpuser is None:
                 cpuser = user
@@ -463,15 +455,6 @@ address.  Upon confirmation, any other mailing list containing the address
             print doc.Format()
             return
 
-        # Standard signal handler
-        def sigterm_handler(signum, frame, mlist=mlist):
-            mlist.Unlock()
-            sys.exit(0)
-
-        # Okay, zap them.  Leave them sitting at the list's listinfo page.  We
-        # must own the list lock, and we want to make sure the user (BAW: and
-        # list admin?) is informed of the removal.
-        signal.signal(signal.SIGTERM, sigterm_handler)
         mlist.Lock()
         needapproval = False
         try:
@@ -582,7 +565,6 @@ address.  Upon confirmation, any other mailing list containing the address
         # Now, lock the list and perform the changes
         mlist.Lock()
         try:
-            signal.signal(signal.SIGTERM, sigterm_handler)
             # `values' is a tuple of flags and the web values
             for flag, newval in newvals:
                 # Handle language settings differently
@@ -926,23 +908,10 @@ def lists_of_member(mlist, user):
 
 
 def change_password(mlist, user, newpw, confirmpw):
-    # This operation requires the list lock, so let's set up the signal
-    # handling so the list lock will get released when the user hits the
-    # browser stop button.
-    def sigterm_handler(signum, frame, mlist=mlist):
-        # Make sure the list gets unlocked...
-        mlist.Unlock()
-        # ...and ensure we exit, otherwise race conditions could cause us to
-        # enter MailList.Save() while we're in the unlocked state, and that
-        # could be bad!
-        sys.exit(0)
-
     # Must own the list lock!
     mlist.Lock()
     try:
-        # Install the emergency shutdown signal handler
-        signal.signal(signal.SIGTERM, sigterm_handler)
-        # change the user's password.  The password must already have been
+        # Change the user's password.  The password must already have been
         # compared to the confirmpw and otherwise been vetted for
         # acceptability.
         mlist.setMemberPassword(user, newpw)
@@ -973,9 +942,6 @@ def global_options(mlist, user, globalopts):
     # Must own the list lock!
     mlist.Lock()
     try:
-        # Install the emergency shutdown signal handler
-        signal.signal(signal.SIGTERM, sigterm_handler)
-
         if globalopts.enable is not None:
             mlist.setDeliveryStatus(user, globalopts.enable)
 

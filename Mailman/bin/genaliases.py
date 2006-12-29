@@ -26,6 +26,7 @@ from Mailman import Utils
 from Mailman import Version
 from Mailman.configuration import config
 from Mailman.i18n import _
+from Mailman.initialize import initialize
 
 __i18n_templates__ = True
 
@@ -55,7 +56,7 @@ verbosity."""))
 
 def main():
     parser, opts, args = parseargs()
-    config.load(opts.config)
+    initialize(opts.config)
 
     # Import the MTA specific module
     modulename = 'Mailman.MTA.' + config.MTA

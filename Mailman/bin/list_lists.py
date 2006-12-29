@@ -21,8 +21,8 @@ from Mailman import Defaults
 from Mailman import MailList
 from Mailman import Utils
 from Mailman import Version
-from Mailman.configuration import config
 from Mailman.i18n import _
+from Mailman.initialize import initialize
 
 __i18n_templates__ = True
 
@@ -65,7 +65,7 @@ ignored when -b is given."""))
 
 def main():
     parser, opts, args = parseargs()
-    config.load(opts.config)
+    initialize(opts.config)
 
     names = list(Utils.list_names())
     names.sort()

@@ -36,12 +36,11 @@ NL = '\n'
 # Format an arbitrary object.
 def HTMLFormatObject(item, indent):
     "Return a presentation of an object, invoking their Format method if any."
-    if type(item) == type(''):
-        return item
-    elif not hasattr(item, "Format"):
-        return `item`
-    else:
+    if hasattr(item, 'Format'):
         return item.Format(indent)
+    if isinstance(item, basestring):
+        return item
+    return str(item)
 
 def CaseInsensitiveKeyedDict(d):
     result = {}

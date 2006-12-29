@@ -28,6 +28,7 @@ from cStringIO import StringIO
 
 from Mailman import MailList
 from Mailman import Utils
+from Mailman.bin import rmlist
 from Mailman.configuration import config
 
 NL = '\n'
@@ -37,9 +38,6 @@ PERMISSIONS = stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH
 
 class TestBase(unittest.TestCase):
     def _configure(self, fp):
-##         print >> fp, \
-##               "MEMBER_ADAPTOR_CLASS = 'Mailman.SAMemberships.SAMemberships'"
-##         config.MEMBER_ADAPTOR_CLASS = 'Mailman.SAMemberships.SAMemberships'
         print >> fp, 'add_domain("example.com", "www.example.com")'
         # Only add this domain once to the current process
         if 'example.com' not in config.domains:
@@ -79,16 +77,6 @@ class TestBase(unittest.TestCase):
 
     def tearDown(self):
         self._mlist.Unlock()
-        listname = self._mlist.fqdn_listname
-        for dirtmpl in ['lists/%s',
-                        'archives/private/%s',
-                        'archives/private/%s.mbox',
-                        'archives/public/%s',
-                        'archives/public/%s.mbox',
-                        ]:
-            dir = os.path.join(config.VAR_PREFIX, dirtmpl % listname)
-            if os.path.islink(dir):
-                os.unlink(dir)
-            elif os.path.isdir(dir):
-                shutil.rmtree(dir)
+        rmlist.delete_list(self._mlist.fqdn_listname, self._mlist,
+                           archives=True, quiet=True)
         os.unlink(self._config)

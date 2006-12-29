@@ -44,7 +44,7 @@ SHELL=		/bin/sh
 
 MODULES=	$(srcdir)/*.py
 SUBDIRS=	Cgi Archiver Handlers Bouncers Queue MTA Gui Commands \
-		bin testing
+		bin database testing
 
 # Modes for directories and executables created by the install
 # process.  Default to group-writable directories but

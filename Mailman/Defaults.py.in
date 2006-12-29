@@ -100,20 +100,18 @@ HTML_TO_PLAIN_TEXT_COMMAND = '/usr/bin/lynx -dump %(filename)s'
 # Database options
 #####
 
-# Specify the name of the membership adaptor class that implements the
-# MemberAdaptor interface you want to use.  The first is traditional
-# pickle-based adapter that was standard for Mailman 2.1 and earlier.
+# Use this to set the SQLAlchemy database engine URL.  You generally have one
+# primary database connection for all of Mailman.  List data and most rosters
+# will store their data in this database, although external rosters may access
+# other databases in their own way.  This string support substitutions using
+# any variable in the Configuration object.
+SQLALCHEMY_ENGINE_URL = 'sqlite:///$DATA_DIR/mailman.db'
+
+# For debugging purposes
+SQLALCHEMY_ECHO = False
+
+# XXX REMOVE ME
 MEMBER_ADAPTOR_CLASS = 'Mailman.OldStyleMemberships.OldStyleMemberships'
-
-# This is the SQLAlchemy-based adaptor which lets you store all membership
-# data in any of several supported RDBMs.
-#MEMBER_ADAPTOR_CLASS = 'Mailman.SAMemberships.SAMemberships'
-
-# If you choose the SAMemberships adaptor, set this variable to specify the
-# connection url to the backend database engine.  Specify the placeholder
-# $listdir for the directory that list data is stored in, and $listname for
-# the name of the mailing list.
-SQLALCHEMY_ENGINE_URL = 'sqlite:///$listdir/members.db'
 
 
 

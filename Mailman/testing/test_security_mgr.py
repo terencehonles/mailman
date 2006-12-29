@@ -57,28 +57,28 @@ class TestSecurityManager(TestBase):
         mlist.addNewMember('aperson@dom.ain', password='xxXXxx')
         self.assertEqual(
             mlist.AuthContextInfo(config.AuthUser, 'aperson@dom.ain'),
-            ('_xtest+user+aperson--at--dom.ain', 'xxXXxx'))
+            ('_xtest%40example.com+user+aperson--at--dom.ain', 'xxXXxx'))
 
     def test_auth_context_moderator(self):
         mlist = self._mlist
         mlist.mod_password = 'yyYYyy'
         self.assertEqual(
             mlist.AuthContextInfo(config.AuthListModerator),
-            ('_xtest+moderator', 'yyYYyy'))
+            ('_xtest%40example.com+moderator', 'yyYYyy'))
 
     def test_auth_context_admin(self):
         mlist = self._mlist
         mlist.password = 'zzZZzz'
         self.assertEqual(
             mlist.AuthContextInfo(config.AuthListAdmin),
-            ('_xtest+admin', 'zzZZzz'))
+            ('_xtest%40example.com+admin', 'zzZZzz'))
 
     def test_auth_context_site(self):
         mlist = self._mlist
         mlist.password = 'aaAAaa'
         self.assertEqual(
             mlist.AuthContextInfo(config.AuthSiteAdmin),
-            ('_xtest+admin', 'aaAAaa'))
+            ('_xtest%40example.com+admin', 'aaAAaa'))
 
     def test_auth_context_huh(self):
         self.assertEqual(

@@ -1,59 +1,84 @@
 # -*- python -*-
 
-# Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-# This file becomes paths.py which is installed in may directories.  By
-# importing this module, sys.path gets `hacked' so that the $prefix/Mailman
-# directory is inserted at the start of that list.  That directory really
-# contains the Mailman modules in package form.  This file exports two
-# attributes that other modules may use to get the absolute path to the
-# installed Mailman distribution.
+# configure turns this file into paths.py which is installed in the bin
+# directory.  By importing this module, sys.path gets `hacked' so that the
+# $prefix/Mailman and $prefix/pythonlib directories are inserted at the start
+# of that list.  This file exports two attributes that other modules may use
+# to get the absolute path to the installed Mailman distribution.
+#
+# Note that we can't use site.addsitedir() because that ends up appending
+# directories to sys.path and we really need to add them to the front so that
+# they override anything in the system Python.
 
 import os
 import sys
-import site
 
-# some scripts expect this attribute to be in this module
+# Some scripts expect this attribute to be in this module
 prefix = '@prefix@'
 exec_prefix = '@exec_prefix@'
 
-# work around a bogus autoconf 2.12 bug
+# Work around a bogus autoconf 2.12 bug
 if exec_prefix == '${prefix}':
     exec_prefix = prefix
 
-# Hack the path to include the parent directory of the $prefix/Mailman package
-# directory.
+pythonlib = os.path.join(prefix, 'pythonlib')
+
+# Hack the path to include the parent directory of $prefix/Mailman
 sys.path.insert(0, prefix)
 
-# Add Python's site-packages for system add-ons.  Then add our pythonlib
-# directory on path to pick up any overrides of the standard modules and
-# packages.  In both cases, process any .pth files found in either location.
-# Order here matters: our pythonlib directory goes at the front while the
-# system site-packages goes at the end.
-sitedir     = os.path.join(sys.prefix, 'lib', 'python'+sys.version[:3],
-                           'site-packages')
-pythonlib   = os.path.join(prefix, 'pythonlib')
+# Much of this is ripped off from site.py
+paths = set()
+for dirname in sys.path:
+    try:
+        if os.path.isdir(dirname):
+            paths.add(os.path.normcase(os.path.abspath(dirname)))
+    except TypeError:
+        pass
 
-sys.path.insert(0, pythonlib)
-sys.path.append(sitedir)
+extra_paths = [pythonlib]
+for name in sorted(os.listdir(pythonlib)):
+    if os.path.splitext(name)[1] == '.pth':
+        filename = os.path.join(pythonlib, name)
+        try:
+            fp = open(filename, 'rU')
+        except IOError:
+            continue
+        try:
+            for line in fp:
+                if line.startswith('#'):
+                    continue
+                if line.startswith('import'):
+                    exec line
+                    continue
+                line = line.rstrip()
+                path = os.path.abspath(os.path.join(pythonlib, line))
+                path = os.path.normcase(path)
+                if not path in paths and os.path.exists(path):
+                    # Here's what's different than site.py!
+                    extra_paths.append(path)
+                    paths.add(path)
+        finally:
+            fp.close()
+# Add the new paths to the front of sys.path
+sys.path[0:0] = extra_paths
 
-site.addsitedir(pythonlib)
-site.addsitedir(sitedir)
 
 # Arabic and Hebrew (RFC-1556) encoding aliases. (temporary solution)
 import encodings.aliases
@@ -62,4 +87,4 @@ encodings.aliases.aliases.update({
     'iso_8859_6_i': 'iso8859_6',
     'iso_8859_8_e': 'iso8859_8',
     'iso_8859_8_i': 'iso8859_8',
-})
+    })

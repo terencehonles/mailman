@@ -41,6 +41,23 @@ DOLLAR_STRINGS  = ('msg_header', 'msg_footer',
                    'autoresponse_admin_text',
                    'autoresponse_request_text')
 
+TYPES = {
+    Defaults.Toggle         : 'bool',
+    Defaults.Radio          : 'radio',
+    Defaults.String         : 'string',
+    Defaults.Text           : 'text',
+    Defaults.Email          : 'email',
+    Defaults.EmailList      : 'email_list',
+    Defaults.Host           : 'host',
+    Defaults.Number         : 'number',
+    Defaults.FileUpload     : 'upload',
+    Defaults.Select         : 'select',
+    Defaults.Topics         : 'topics',
+    Defaults.Checkbox       : 'checkbox',
+    Defaults.EmailListEx    : 'email_list_ex',
+    Defaults.HeaderFilter   : 'header_filter',
+    }
+
 
 
 class Indenter:
@@ -57,7 +74,8 @@ class Indenter:
         assert self._indent >= 0
 
     def write(self, s):
-        self._fp.write(self._indent * self._width * ' ')
+        if s <> '\n':
+            self._fp.write(self._indent * self._width * ' ')
         self._fp.write(s)
 
 
@@ -150,13 +168,14 @@ class XMLDumper(object):
                 continue
             if not is_converted and varname in DOLLAR_STRINGS:
                 value = Utils.to_dollar(value)
+            widget_type = TYPES[vtype]
             if isinstance(value, list):
-                self._push_element('option', name=varname)
+                self._push_element('option', name=varname, type=widget_type)
                 for v in value:
                     self._element('value', v)
                 self._pop_element('option')
             else:
-                self._element('option', value, name=varname)
+                self._element('option', value, name=varname, type=widget_type)
 
     def _dump_list(self, mlist, with_passwords):
         # Write list configuration values
@@ -180,7 +199,7 @@ class XMLDumper(object):
             attrs = dict(id=member)
             cased = mlist.getMemberCPAddress(member)
             if cased <> member:
-                dict['original'] = cased
+                attrs['original'] = cased
             self._push_element('member', **attrs)
             self._element('realname', mlist.getMemberName(member))
             if with_passwords:
@@ -266,7 +285,7 @@ With this option, user passwords are included in cleartext.  For this reason,
 the default is to not include passwords."""))
     parser.add_option('-l', '--listname',
                       default=[], action='append', type='string',
-                      dest='listnames', help=_("""\
+                      metavar='LISTNAME', dest='listnames', help=_("""\
 The list to include in the output.  If not given, then all mailing lists are
 included in the XML output.  Multiple -l flags may be given."""))
     parser.add_option('-C', '--config',

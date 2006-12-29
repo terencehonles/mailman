@@ -24,6 +24,7 @@ from Mailman import Version
 from Mailman import loginit
 from Mailman.configuration import config
 from Mailman.i18n import _
+from Mailman.initialize import initialize
 
 __i18n_templates__ = True
 
@@ -181,13 +182,11 @@ def main():
     global log, opts
 
     parser, opts, args = parseargs()
-    config.load(opts.config)
-
     # If we're not running as a subprocess of mailmanctl, then we'll log to
     # stderr in addition to logging to the log files.  We do this by passing a
     # value of True to propagate, which allows the 'mailman' root logger to
     # see the log messages.
-    loginit.initialize(propagate=not opts.subproc)
+    initialize(opts.config, propagate_logs=not opts.subproc)
     log = logging.getLogger('mailman.qrunner')
 
     if opts.list:

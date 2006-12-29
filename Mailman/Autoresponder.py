@@ -1,32 +1,29 @@
-# Copyright (C) 1998,1999,2000,2001,2002 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software 
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
-"""MailList mixin class managing the autoresponder.
-"""
-
-from Mailman import mm_cfg
-from Mailman.i18n import _
+"""MailList mixin class managing the autoresponder."""
 
 
 
 class Autoresponder:
     def InitVars(self):
         # configurable
-        self.autorespond_postings = 0
-        self.autorespond_admin = 0
+        self.autorespond_postings = False
+        self.autorespond_admin = False
         # this value can be
         #  0 - no autoresponse on the -request line
         #  1 - autorespond, but discard the original message
@@ -40,4 +37,3 @@ class Autoresponder:
         self.postings_responses = {}
         self.admin_responses = {}
         self.request_responses = {}
-

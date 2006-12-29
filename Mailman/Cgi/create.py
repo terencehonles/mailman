@@ -21,7 +21,6 @@ import os
 import cgi
 import sha
 import sys
-import signal
 import logging
 
 from Mailman import Errors
@@ -161,18 +160,7 @@ def process_request(doc, cgidata):
     fqdn_listname = '%s@%s' % (listname, email_host)
     # We've got all the data we need, so go ahead and try to create the list
     mlist = MailList.MailList()
-    # See admin.py for why we need to set up the signal handler.
-    def sigterm_handler(signum, frame):
-        # Make sure the list gets unlocked...
-        mlist.Unlock()
-        # ...and ensure we exit, otherwise race conditions could cause us to
-        # enter MailList.Save() while we're in the unlocked state, and that
-        # could be bad!
-        sys.exit(0)
     try:
-        # Install the emergency shutdown signal handler
-        signal.signal(signal.SIGTERM, sigterm_handler)
-
         pw = sha.new(password).hexdigest()
         # Guarantee that all newly created files have the proper permission.
         # proper group ownership should be assured by the autoconf script
@@ -205,10 +193,6 @@ def process_request(doc, cgidata):
         mlist.default_member_moderation = moderate
         mlist.Save()
     finally:
-        # Now be sure to unlock the list.  It's okay if we get a signal here
-        # because essentially, the signal handler will do the same thing.  And
-        # unlocking is unconditional, so it's not an error if we unlock while
-        # we're already unlocked.
         mlist.Unlock()
     # Now do the MTA-specific list creation tasks
     if config.MTA:

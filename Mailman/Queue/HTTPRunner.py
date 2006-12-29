@@ -61,6 +61,8 @@ server = make_server(config.HTTP_HOST, config.HTTP_PORT,
 
 
 qlog.info('HTTPRunner qrunner started.')
-server.serve_forever()
-# We'll never get here, but just in case...
-qlog.info('HTTPRunner qrunner exiting.')
+try:
+    server.serve_forever()
+except:
+    qlog.exception('HTTPRunner qrunner exiting.')
+    raise

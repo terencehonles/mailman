@@ -12,7 +12,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 """Track pending actions which require confirmation."""
 
@@ -23,7 +24,8 @@ import errno
 import random
 import cPickle
 
-from Mailman import mm_cfg
+from Mailman.configuration import config
+
 
 # Types of pending records
 CHANGE_OF_ADDRESS   = 'C'
@@ -43,6 +45,7 @@ _ALLKEYS = (
     )
 
 _missing = object()
+_default = object()
 
 
 
@@ -54,7 +57,7 @@ class Pending:
         """Create a new entry in the pending database, returning cookie for it.
         """
         assert op in _ALLKEYS, 'op: %s' % op
-        lifetime = kws.get('lifetime', mm_cfg.PENDING_REQUEST_LIFE)
+        lifetime = kws.get('lifetime', config.PENDING_REQUEST_LIFE)
         # We try the main loop several times. If we get a lock error somewhere
         # (for instance because someone broke the lock) we simply try again.
         assert self.Locked()
@@ -108,7 +111,7 @@ class Pending:
         for cookie in evictions.keys():
             if not db.has_key(cookie):
                 del evictions[cookie]
-        db['version'] = mm_cfg.PENDING_FILE_SCHEMA_VERSION
+        db['version'] = config.PENDING_FILE_SCHEMA_VERSION
         tmpfile = '%s.tmp.%d.%d' % (self.__pendfile, os.getpid(), now)
         omask = os.umask(007)
         try:
@@ -145,8 +148,10 @@ class Pending:
         self.__save(db)
         return content
 
-    def pend_repend(self, cookie, data, lifetime=mm_cfg.PENDING_REQUEST_LIFE):
+    def pend_repend(self, cookie, data, lifetime=_default):
         assert self.Locked()
+        if lifetime is _default:
+            lifetime = config.PENDING_REQUEST_LIFE
         db = self.__load()
         db[cookie] = data
         db['evictions'][cookie] = time.time() + lifetime
@@ -173,9 +178,9 @@ def _update(olddb):
         # subscription language.  Best we can do here is use the server
         # default.
         db[cookie] = (SUBSCRIPTION,) + data[:-1] + \
-                     (mm_cfg.DEFAULT_SERVER_LANGUAGE,)
+                     (config.DEFAULT_SERVER_LANGUAGE,)
         # The old database format kept the timestamp as the time the request
         # was made.  The new format keeps it as the time the request should be
         # evicted.
-        evictions[cookie] = data[-1] + mm_cfg.PENDING_REQUEST_LIFE
+        evictions[cookie] = data[-1] + config.PENDING_REQUEST_LIFE
     return db

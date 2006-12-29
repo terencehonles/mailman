@@ -56,11 +56,11 @@ class TestSentMessage(EmailBase):
         eq(qmsg['list-help'],
            '<mailto:_xtest-request@example.com?subject=help>')
         eq(qmsg['list-subscribe'], """\
-<http://www.example.com/mailman/listinfo/_xtest>,
+<http://www.example.com/mailman/listinfo/_xtest@example.com>, 
 \t<mailto:_xtest-request@example.com?subject=subscribe>""")
         eq(qmsg['list-id'], '<_xtest.example.com>')
         eq(qmsg['list-unsubscribe'], """\
-<http://www.example.com/mailman/listinfo/_xtest>,
+<http://www.example.com/mailman/listinfo/_xtest@example.com>, 
 \t<mailto:_xtest-request@example.com?subject=unsubscribe>""")
         eq(qmsg.get_payload(), 'About your test list')
 
