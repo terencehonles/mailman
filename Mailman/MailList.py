@@ -173,7 +173,7 @@ class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
         else:
             status = '(unlocked)'
         return '<mailing list "%s" %s at %x>' % (
-            self.internal_name(), status, id(self))
+            self.fqdn_listname, status, id(self))
 
 
     #

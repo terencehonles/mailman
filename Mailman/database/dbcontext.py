@@ -98,19 +98,33 @@ class DBContext(object):
             return
         txn = self.session.create_transaction()
         mref = MlistRef(mlist, self._unlock_mref)
-        self._mlist_txns[mlist.fqdn_listname] = txn
+        # If mlist.host_name is changed, its fqdn_listname attribute will no
+        # longer match, so its transaction will not get committed when the
+        # list is saved.  To avoid this, store on the mlist object the key
+        # under which its transaction is stored.
+        txnkey = mlist._txnkey = mlist.fqdn_listname
+        self._mlist_txns[txnkey] = txn
 
     def api_unlock(self, mlist):
-        txn = self._mlist_txns.pop(mlist.fqdn_listname, None)
+        try:
+            txnkey = mlist._txnkey
+        except AttributeError:
+            return
+        txn = self._mlist_txns.pop(txnkey, None)
         if txn is not None:
             txn.rollback()
+        del mlist._txnkey
 
     def api_save(self, mlist):
         # When dealing with MailLists, .Save() will always be followed by
         # .Unlock().  However lists can also be unlocked without saving.  But
         # if it's been locked it will always be unlocked.  So the rollback in
         # unlock will essentially be no-op'd if we've already saved the list.
-        txn = self._mlist_txns.pop(mlist.fqdn_listname, None)
+        try:
+            txnkey = mlist._txnkey
+        except AttributeError:
+            return
+        txn = self._mlist_txns.pop(txnkey, None)
         if txn is not None:
             txn.commit()
 
