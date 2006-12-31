@@ -96,12 +96,14 @@ def parse_config(node):
                 value = int(value)
             except ValueError:
                 value = float(value)
-        elif vtype == 'header_filter':
-            # XXX
+        elif vtype in ('header_filter', 'topics'):
             value = []
-        elif vtype == 'topics':
-            # XXX
-            value = []
+            fakebltins = dict(__builtins__ = dict(True=True, False=False))
+            for subnode in nodegen(child):
+                reprstr  = nodetext(subnode)
+                # Turn the reprs back into tuples, in a safe way
+                tupleval = eval(reprstr, fakebltins)
+                value.append(tupleval)
         else:
             value = nodetext(child)
         # And now some special casing :(
