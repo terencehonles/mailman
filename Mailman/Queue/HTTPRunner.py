@@ -1,4 +1,4 @@
-# Copyright (C) 2006 by the Free Software Foundation, Inc.
+# Copyright (C) 2006-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -63,6 +63,8 @@ server = make_server(config.HTTP_HOST, config.HTTP_PORT,
 qlog.info('HTTPRunner qrunner started.')
 try:
     server.serve_forever()
-except:
+# Do it this way because of exception hierarchy changes in Python 2.5.  XXX
+# Change this to BaseException for Python 2.5.
+except (Exception, KeyboardInterrupt):
     qlog.exception('HTTPRunner qrunner exiting.')
     raise

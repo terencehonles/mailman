@@ -1,4 +1,4 @@
-# Copyright (C) 2006 by the Free Software Foundation, Inc.
+# Copyright (C) 2006-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -18,6 +18,7 @@
 """Import the XML representation of a mailing list."""
 
 import sys
+import codecs
 import optparse
 import traceback
 
@@ -25,6 +26,7 @@ from xml.dom import minidom
 from xml.parsers.expat import ExpatError
 
 from Mailman import Defaults
+from Mailman import Errors
 from Mailman import MemberAdaptor
 from Mailman import Utils
 from Mailman import Version
@@ -135,8 +137,9 @@ def parse_roster(node):
                          'false': False,
                          }.get(nodetext(subnode).lower(), False)
             elif attr == 'topics':
-                # XXX
                 value = []
+                for subsubnode in nodegen(subnode):
+                    value.append(nodetext(subsubnode))
             else:
                 value = nodetext(subnode)
             member[attr] = value
@@ -149,7 +152,7 @@ def load(fp):
     try:
         doc = minidom.parse(fp)
     except ExpatError:
-        print _('Expat error in file: %s', fp.name)
+        print _('Expat error in file: $fp.name')
         traceback.print_exc()
         sys.exit(1)
     doc.normalize()
@@ -190,10 +193,14 @@ def create(all_listdata):
             print _('Skipping already existing list: $fqdn_listname')
             continue
         mlist = MailList()
-        mlist.Create(fqdn_listname, list_config['owner'][0],
-                     list_config['password'])
-        if VERBOSE:
-            print _('Creating mailing list: $fqdn_listname')
+        try:
+            if VERBOSE:
+                print _('Creating mailing list: $fqdn_listname')
+            mlist.Create(fqdn_listname, list_config['owner'][0],
+                         list_config['password'])
+        except Errors.BadDomainSpecificationError:
+            print _('List is not in a supported domain: $fqdn_listname')
+            continue
         # Save the list creation, then unlock and relock the list.  This is so
         # that we use normal SQLAlchemy transactions to manage all the
         # attribute and membership updates.  Without this, no transaction will
@@ -226,7 +233,9 @@ def create(all_listdata):
                     mlist.setMemberOption(mid,
                                           Defaults.OPTINFO[opt],
                                           member[opt])
-                # XXX topics
+                topics = member.get('topics')
+                if topics:
+                    mlist.setMemberTopics(mid, topics)
             mlist.Save()
         finally:
             mlist.Unlock()
@@ -271,12 +280,12 @@ def main():
     parser, opts, args = parseargs()
     initialize(opts.config)
     VERBOSE = opts.verbose
-    
+
     if opts.inputfile in (None, '-'):
         fp = sys.stdin
     else:
-        fp = open(opts.inputfile)
-        
+        fp = open(opts.inputfile, 'r')
+
     try:
         listbags = load(fp)
         create(listbags)
