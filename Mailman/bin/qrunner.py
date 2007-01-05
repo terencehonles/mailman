@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -53,7 +53,7 @@ def r_callback(option, opt, value, parser):
         print >> sys.stderr, _('Bad runner specification: $value')
         sys.exit(1)
     if runner == 'All':
-        for runnername, slices in config.QRUNNERS:
+        for runnername, slices in config.qrunners.items():
             dest.append((runnername, rslice, rrange))
     elif not runner.endswith('Runner'):
         runner += 'Runner'
@@ -190,7 +190,7 @@ def main():
     log = logging.getLogger('mailman.qrunner')
 
     if opts.list:
-        for runnername, slices in config.QRUNNERS:
+        for runnername, slices in config.qrunners.items():
             if runnername.endswith('Runner'):
                 name = runnername[:-len('Runner')]
             else:

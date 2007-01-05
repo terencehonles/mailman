@@ -64,8 +64,9 @@ qlog.info('HTTPRunner qrunner started.')
 hlog.info('HTTPRunner listening on %s:%s', config.HTTP_HOST, config.HTTP_PORT)
 try:
     server.serve_forever()
-# Do it this way because of exception hierarchy changes in Python 2.5.  XXX
-# Change this to BaseException for Python 2.5.
-except (Exception, KeyboardInterrupt):
+except KeyboardInterrupt:
+    qlog.exception('HTTPRunner qrunner exiting.')
+    sys.exit(signal.SIGTERM)
+except:
     qlog.exception('HTTPRunner qrunner exiting.')
     raise

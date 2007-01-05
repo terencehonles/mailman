@@ -266,7 +266,7 @@ def start_runner(qrname, slice, count):
 
 def start_all_runners():
     kids = {}
-    for qrname, count in config.QRUNNERS:
+    for qrname, count in config.qrunners.items():
         for slice in range(count):
             # queue runner name, slice, numslices, restart count
             info = (qrname, slice, count, 0)

@@ -1,6 +1,6 @@
 # -*- python -*-
 
-# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -671,38 +671,24 @@ MAX_AUTORESPONSES_PER_DAY = 10
 # Qrunner defaults
 #####
 
-# Which queues should the qrunner master watchdog spawn?  This is a list of
-# 2-tuples containing the name of the qrunner class (which must live in a
-# module of the same name within the Mailman.Queue package), and the number of
-# parallel processes to fork for each qrunner.  If more than one process is
-# used, each will take an equal subdivision of the hash space.
-
-# BAW: Eventually we may support weighted hash spaces.
-# BAW: Although not enforced, the # of slices must be a power of 2
-
-QRUNNERS = [
-    ('ArchRunner',     1), # messages for the archiver
-    ('BounceRunner',   1), # for processing the qfile/bounces directory
-    ('CommandRunner',  1), # commands and bounces from the outside world
-    ('IncomingRunner', 1), # posts from the outside world
-    ('NewsRunner',     1), # outgoing messages to the nntpd
-    ('OutgoingRunner', 1), # outgoing messages to the smtpd
-    ('VirginRunner',   1), # internally crafted (virgin birth) messages
-    ('RetryRunner',    1), # retry temporarily failed deliveries
-    ]
-
+# Which queues should the qrunner master watchdog spawn?  add_qrunners() takes
+# one required argument, which is the name of the qrunner to start
+# (capitalized and without the 'Runner' suffix).  Optional second argument
+# specifies the number of parallel processes to fork for each qrunner.  If
+# more than one process is used, each will take an equal subdivision of the
+# hash space, so the number must be a power of 2.
+#
+# del_qrunners() takes one argument which is the name of the qrunner not to
+# start.  This is used because by default, Mailman starts the Arch, Bounce,
+# Command, Incoming, News, Outgoing, Retry, and Virgin queues.
+#
 # Set this to Yes to use the `Maildir' delivery option.  If you change this
 # you will need to re-run bin/genaliases for MTAs that don't use list
 # auto-detection.
 #
 # WARNING: If you want to use Maildir delivery, you /must/ start Mailman's
 # qrunner as root, or you will get permission problems.
-#
-# NOTE: Maildir delivery is experimental for Mailman 2.1.
 USE_MAILDIR = No
-# NOTE: If you set USE_MAILDIR = Yes, add the following line to your mm_cfg.py
-# file (uncommented of course!)
-# QRUNNERS.append(('MaildirRunner', 1))
 
 # Set this to Yes to use the `LMTP' delivery option.  If you change this
 # you will need to re-run bin/genaliases for MTAs that don't use list
@@ -712,21 +698,15 @@ USE_MAILDIR = No
 #     transport_maps = hash:<prefix>/data/transport
 # Also needed is following line if your list is in $mydestination:
 #     alias_maps = hash:/etc/aliases, hash:<prefix>/data/aliases
-#
-# NOTE: LMTP delivery is experimental for Mailman 2.2.
 USE_LMTP = No
-# NOTE: If you set USE_LMTP = Yes, add the following line to your mailman.cfg
-# file (uncommented of course!)
-# add_runner('LMTPRunner')
 
-# Change LMTP_HOST and LMTP_PORT for your convenience.
-# You should be careful enough to use firewall if you
-# open your port on global address interface.
+# Change LMTP_HOST and LMTP_PORT for your convenience.  You should be careful
+# enough to use a firewall if you open your port on global address interface.
 LMTP_HOST = 'localhost'
 LMTP_PORT = 8025
 
-# Name of the domains which operate on LMTP mailman only.
-# Currently valid only for Postfix alias generation.
+# Name of the domains which operate on LMTP Mailman only.  Currently valid
+# only for Postfix alias generation.
 LMTP_ONLY_DOMAINS = []
 
 # If the list is not present in LMTP_ONLY_DOMAINS, LMTPRunner would return
@@ -736,7 +716,7 @@ LMTP_ONLY_DOMAINS = []
 # LMTP_ERR_550 = '250 Ok. But, blackholed because mailbox unavailable'.
 LMTP_ERR_550 = '550 Requested action not taken: mailbox unavailable'
 
-# Experimental WSGI Server.
+# WSGI Server.
 #
 # You must enable PROXY of Apache httpd server and configure to pass Mailman
 # CGI requests to this WSGI Server:
@@ -748,7 +728,7 @@ LMTP_ERR_550 = '550 Requested action not taken: mailbox unavailable'
 # ProxyPassReverseCookiePath
 #
 # Also you have to add following line to <prefix>/etc/mailman.cfg
-# add_runner('HTTPRunner')
+# add_qrunner('HTTP')
 HTTP_HOST = 'localhost'
 HTTP_PORT = 2580
 

@@ -1,4 +1,4 @@
-# Copyright (C) 2006 by the Free Software Foundation, Inc.
+# Copyright (C) 2006-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -25,12 +25,24 @@ from Mailman import Errors
 
 _missing = object()
 
+DEFAULT_QRUNNERS = (
+    'Arch',
+    'Bounce',
+    'Command',
+    'Incoming',
+    'News',
+    'Outgoing',
+    'Retry',
+    'Virgin',
+    )
+
 
 
 class Configuration(object):
     def __init__(self):
         self.domains = {}       # email host -> web host
         self._reverse = None
+        self.qrunners = {}
 
     def load(self, filename=None):
         # Load the configuration from the named file, or if not given, search
@@ -49,8 +61,13 @@ class Configuration(object):
         del ns['__file__']
         del ns['__name__']
         del ns['__doc__']
-        ns['add_domain'] = self.add_domain
-        ns['add_runner'] = self.add_runner
+        ns['add_domain']  = self.add_domain
+        ns['add_qrunner'] = self.add_qrunner
+        ns['del_qrunner'] = self.del_qrunner
+        # Set up the default list of qrunners so that the mailman.cfg file may
+        # add or delete them.
+        for name in DEFAULT_QRUNNERS:
+            self.add_qrunner(name)
         # Attempt our first choice
         path = os.path.abspath(os.path.expanduser(filename))
         try:
@@ -61,6 +78,11 @@ class Configuration(object):
             # The file didn't exist, so try mm_cfg.py
             from Mailman import mm_cfg
             ns.update(mm_cfg.__dict__)
+        # Based on values possibly set in mailman.cfg, add additional qrunners
+        if ns['USE_MAILDIR']:
+            self.add_qrunner('Maildir')
+        if ns['USE_LMTP']:
+            self.add_qrunner('LMTP')
         # Pull out the defaults
         PREFIX          = ns['PREFIX']
         VAR_PREFIX      = ns['VAR_PREFIX']
@@ -141,14 +163,23 @@ class Configuration(object):
             self._reverse = dict([(v, k) for k, v in self.domains.items()])
         return self._reverse.get(url_host, default)
 
-    def add_runner(self, name, count=1):
+    def add_qrunner(self, name, count=1):
         """Convenient interface for adding additional qrunners.
 
-        name is the qrunner name, and must include the 'Runner' suffix.
-        E.g. 'HTTPRunner' or 'LMTPRunner'.  count is the number of qrunner
-        slices to create, by default, 1.
+        name is the qrunner name and it must not include the 'Runner' suffix.
+        E.g. 'HTTP' or 'LMTP'.  count is the number of qrunner slices to
+        create, by default, 1.
         """
-        self.QRUNNERS.append((name, count))
+        name += 'Runner'
+        self.qrunners[name] = count
+
+    def del_qrunner(self, name):
+        """Remove the named qrunner so that it does not start.
+
+        name is the qrunner name and it must not include the 'Runner' suffix.
+        """
+        name += 'Runner'
+        self.qrunners.pop(name)
 
     @property
     def paths(self):
