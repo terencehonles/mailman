@@ -61,6 +61,7 @@ server = make_server(config.HTTP_HOST, config.HTTP_PORT,
 
 
 qlog.info('HTTPRunner qrunner started.')
+hlog.info('HTTPRunner listening on %s:%s', config.HTTP_HOST, config.HTTP_PORT)
 try:
     server.serve_forever()
 # Do it this way because of exception hierarchy changes in Python 2.5.  XXX

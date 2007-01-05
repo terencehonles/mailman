@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -65,15 +65,7 @@ class Switchboard:
     def __init__(self, whichq, slice=None, numslices=1, recover=False):
         self.__whichq = whichq
         # Create the directory if it doesn't yet exist.
-        # FIXME
-        omask = os.umask(0)                       # rwxrws---
-        try:
-            try:
-                os.mkdir(self.__whichq, 0770)
-            except OSError, e:
-                if e.errno <> errno.EEXIST: raise
-        finally:
-            os.umask(omask)
+        Utils.makedirs(self.__whichq, 0770)
         # Fast track for no slices
         self.__lower = None
         self.__upper = None
@@ -122,18 +114,14 @@ class Switchboard:
         # object or not.
         data['_parsemsg'] = (protocol == 0)
         # Write to the pickle file the message object and metadata.
-        omask = os.umask(007)                     # -rw-rw----
+        fp = open(tmpfile, 'w')
         try:
-            fp = open(tmpfile, 'w')
-            try:
-                fp.write(msgsave)
-                cPickle.dump(data, fp, protocol)
-                fp.flush()
-                os.fsync(fp.fileno())
-            finally:
-                fp.close()
+            fp.write(msgsave)
+            cPickle.dump(data, fp, protocol)
+            fp.flush()
+            os.fsync(fp.fileno())
         finally:
-            os.umask(omask)
+            fp.close()
         os.rename(tmpfile, filename)
         return filebase
 

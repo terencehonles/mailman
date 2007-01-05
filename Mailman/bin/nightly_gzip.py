@@ -1,6 +1,4 @@
-#! @PYTHON@
-#
-# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -31,6 +29,7 @@ from Mailman import Utils
 from Mailman import Version
 from Mailman.configuration import config
 from Mailman.i18n import _
+from Mailman.initialize import initialize
 
 __i18n_templates__ = True
 
@@ -77,7 +76,7 @@ def compress(txtfile, opts):
 
 def main():
     opts, args, parser = parseargs()
-    config.load(opts.config)
+    initialize(opts.config)
 
     if config.ARCHIVE_TO_MBOX not in (1, 2) or config.GZIP_ARCHIVE_TXT_FILES:
         # We're only going to run the nightly archiver if messages are
@@ -119,12 +118,3 @@ def main():
                 files.append(txtfile)
         for f in files:
             compress(f, opts)
-
-
-
-if __name__ == '__main__':
-    omask = os.umask(002)
-    try:
-        main()
-    finally:
-        os.umask(omask)

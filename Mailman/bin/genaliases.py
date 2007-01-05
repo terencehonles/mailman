@@ -1,6 +1,6 @@
 #! @PYTHON@
 #
-# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -17,7 +17,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-import os
 import sys
 import optparse
 
@@ -72,9 +71,6 @@ def main():
     for listname in Utils.list_names():
         mlist = MailList.MailList(listname, lock=False)
         mlists.setdefault(mlist.host_name, []).append(mlist)
-    # Make sure the files are created rw-rw-xxx; it should be okay to be world
-    # readable.
-    omask = os.umask(002)
     try:
         MTA.clear()
         if not mlists:
@@ -86,7 +82,6 @@ def main():
                     # Be verbose for only the first printed list
                     quiet = True
     finally:
-        os.umask(omask)
         lock.unlock(unconditionally=True)
 
 

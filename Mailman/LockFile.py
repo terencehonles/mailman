@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -369,15 +369,11 @@ class LockFile:
 
     def _write(self):
         # Make sure it's group writable
-        oldmask = os.umask(002)
-        fp = None
+        fp = open(self._tmpfname, 'w')
         try:
-            fp = open(self._tmpfname, 'w')
             fp.write(self._tmpfname)
         finally:
-            if fp:
-                fp.close()
-            os.umask(oldmask)
+            fp.close()
 
     def _read(self):
         try:

@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -15,7 +15,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-import os
 import sha
 import sys
 import getpass
@@ -148,27 +147,20 @@ def main():
     mlist.preferred_language = opts.language
     try:
         pw = sha.new(listpasswd).hexdigest()
-        # Guarantee that all newly created files have the proper permission.
-        # proper group ownership should be assured by the autoconf script
-        # enforcing that all directories have the group sticky bit set.
-        oldmask = os.umask(002)
         try:
-            try:
-                mlist.Create(fqdn_listname, owner_mail, pw)
-            except Errors.BadListNameError, s:
-                parser.print_help()
-                print >> sys.stderr, _('Illegal list name: $s')
-                sys.exit(1)
-            except Errors.EmailAddressError, s:
-                parser.print_help()
-                print >> sys.stderr, _('Bad owner email address: $s')
-                sys.exit(1)
-            except Errors.MMListAlreadyExistsError:
-                parser.print_help()
-                print >> sys.stderr, _('List already exists: $listname')
-                sys.exit(1)
-        finally:
-            os.umask(oldmask)
+            mlist.Create(fqdn_listname, owner_mail, pw)
+        except Errors.BadListNameError, s:
+            parser.print_help()
+            print >> sys.stderr, _('Illegal list name: $s')
+            sys.exit(1)
+        except Errors.EmailAddressError, s:
+            parser.print_help()
+            print >> sys.stderr, _('Bad owner email address: $s')
+            sys.exit(1)
+        except Errors.MMListAlreadyExistsError:
+            parser.print_help()
+            print >> sys.stderr, _('List already exists: $listname')
+            sys.exit(1)
         mlist.Save()
     finally:
         mlist.Unlock()

@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -174,11 +174,7 @@ def _check_for_virtual_loopaddr(mlist, filename, func):
     if func is _addtransport:
         loopdest = 'local:' + loopdest
     infp = open(filename)
-    omask = os.umask(007)
-    try:
-        outfp = open(filename + '.tmp', 'w')
-    finally:
-        os.umask(omask)
+    outfp = open(filename + '.tmp', 'w')
     try:
         # Find the start of the loop address block
         while True:
@@ -264,11 +260,7 @@ def _do_create(mlist, textfile, func):
         fp = open(textfile, 'r+')
     except IOError, e:
         if e.errno <> errno.ENOENT: raise
-        omask = os.umask(007)
-        try:
-            fp = open(textfile, 'w+')
-        finally:
-            os.umask(omask)
+        fp = open(textfile, 'w+')
     try:
         func(mlist, fp)
     finally:
@@ -313,11 +305,7 @@ def _do_remove(mlist, textfile):
         # Otherwise, there's no text file to filter so we're done.
         return
     try:
-        omask = os.umask(007)
-        try:
-            outfp = open(textfile + '.tmp', 'w')
-        finally:
-            os.umask(omask)
+        outfp = open(textfile + '.tmp', 'w')
         filteroutp = False
         start = '# STANZA START: %s@%s' % (listname, hostname)
         end = '# STANZA END: %s@%s' % (listname, hostname)

@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -176,11 +176,7 @@ def process(mlist, msg, msgdata=None):
             # TK: if part is attached then check charset and scrub if none
             if part.get('content-disposition') and \
                not part.get_content_charset():
-                omask = os.umask(002)
-                try:
-                    url = save_attachment(mlist, part, dir)
-                finally:
-                    os.umask(omask)
+                url = save_attachment(mlist, part, dir)
                 filename = part.get_filename(_('not available'))
                 filename = Utils.oneline(filename, lcset)
                 replace_payload_by_text(part, _("""\
@@ -204,11 +200,7 @@ Url: %(url)s
                 # Pull it out as an attachment but leave it unescaped.  This
                 # is dangerous, but perhaps useful for heavily moderated
                 # lists.
-                omask = os.umask(002)
-                try:
-                    url = save_attachment(mlist, part, dir, filter_html=False)
-                finally:
-                    os.umask(omask)
+                url = save_attachment(mlist, part, dir, filter_html=False)
                 replace_payload_by_text(part, _("""\
 An HTML attachment was scrubbed...
 URL: %(url)s
@@ -229,11 +221,7 @@ URL: %(url)s
                 # We're replacing the payload with the decoded payload so this
                 # will just get in the way.
                 del part['content-transfer-encoding']
-                omask = os.umask(002)
-                try:
-                    url = save_attachment(mlist, part, dir, filter_html=False)
-                finally:
-                    os.umask(omask)
+                url = save_attachment(mlist, part, dir, filter_html=False)
                 replace_payload_by_text(part, _("""\
 An HTML attachment was scrubbed...
 URL: %(url)s
@@ -241,11 +229,7 @@ URL: %(url)s
         elif ctype == 'message/rfc822':
             # This part contains a submessage, so it too needs scrubbing
             submsg = part.get_payload(0)
-            omask = os.umask(002)
-            try:
-                url = save_attachment(mlist, part, dir)
-            finally:
-                os.umask(omask)
+            url = save_attachment(mlist, part, dir)
             subject = submsg.get('subject', _('no subject'))
             date = submsg.get('date', _('no date'))
             who = submsg.get('from', _('unknown sender'))
@@ -273,11 +257,7 @@ Url: %(url)s
             if payload is None:
                 continue
             size = len(payload)
-            omask = os.umask(002)
-            try:
-                url = save_attachment(mlist, part, dir)
-            finally:
-                os.umask(omask)
+            url = save_attachment(mlist, part, dir)
             desc = part.get('content-description', _('not available'))
             filename = part.get_filename(_('not available'))
             filename = Utils.oneline(filename, lcset)

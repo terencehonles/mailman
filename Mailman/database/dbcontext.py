@@ -1,4 +1,4 @@
-# Copyright (C) 2006 by the Free Software Foundation, Inc.
+# Copyright (C) 2006-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -15,10 +15,12 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
+import os
 import weakref
 
 from sqlalchemy import *
 from string import Template
+from urlparse import urlparse
 
 from Mailman import Version
 from Mailman.configuration import config
@@ -49,6 +51,21 @@ class DBContext(object):
         # Calculate the engine url
         url = Template(config.SQLALCHEMY_ENGINE_URL).safe_substitute(
             config.paths)
+        # XXX By design of SQLite, database file creation does not honor
+        # umask.  See their ticket #1193:
+        # http://www.sqlite.org/cvstrac/tktview?tn=1193,31
+        #
+        # This sucks for us because the mailman.db file /must/ be group
+        # writable, however even though we guarantee our umask is 002 here, it
+        # still gets created without the necessary g+w permission, due to
+        # SQLite's policy.  This should only affect SQLite engines because its
+        # the only one that creates a little file on the local file system.
+        # This kludges around their bug by "touch"ing the database file before
+        # SQLite has any chance to create it, thus honoring the umask and
+        # ensuring the right permissions.  We only try to do this for SQLite
+        # engines, and yes, we could have chmod'd the file after the fact, but
+        # half dozen and all...
+        self._touch(url)
         self.metadata = BoundMetaData(url)
         self.metadata.engine.echo = config.SQLALCHEMY_ECHO
         # Create all the table objects, and then let SA conditionally create
@@ -73,6 +90,17 @@ class DBContext(object):
             # XXX Update schema
             raise SchemaVersionMismatchError(row.version)
         self.session = create_session()
+
+    def _touch(self, url):
+        parts = urlparse(url)
+        # XXX Python 2.5; use parts.scheme and parts.path
+        if parts[0] <> 'sqlite':
+            return
+        path = os.path.normpath(parts[2])
+        fd = os.open(path, os.O_WRONLY |  os.O_NONBLOCK | os.O_CREAT, 0666)
+        # Ignore errors
+        if fd > 0:
+            os.close(fd)
 
     # Cooperative method for use with @txn decorator
     def _withtxn(self, meth, *args, **kws):

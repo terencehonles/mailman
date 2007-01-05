@@ -1,4 +1,4 @@
-# Copyright (C) 2006 by the Free Software Foundation, Inc.
+# Copyright (C) 2006-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -24,6 +24,8 @@ line argument parsing, since some of the initialization behavior is controlled
 by the command line arguments.
 """
 
+import os
+
 import Mailman.configuration
 import Mailman.database
 import Mailman.loginit
@@ -31,6 +33,13 @@ import Mailman.loginit
 
 
 def initialize(config=None, propagate_logs=False):
+    # By default, set the umask so that only owner and group can read and
+    # write our files.  Specifically we must have g+rw and we probably want
+    # o-rwx although I think in most cases it doesn't hurt if other can read
+    # or write the files.  Note that the Pipermail archive has more
+    # restrictive permissions in order to handle private archives, but it
+    # handles that correctly.
+    os.umask(007)
     Mailman.configuration.config.load(config)
     Mailman.loginit.initialize(propagate_logs)
     Mailman.database.initialize()

@@ -48,12 +48,12 @@ def nodetext(node):
     return u''
 
 
-def nodegen(node, *entities):
+def nodegen(node, *elements):
     for child in node.childNodes:
         if child.nodeType <> minidom.Node.ELEMENT_NODE:
             continue
-        if entities and child.tagName not in entities:
-            print _('Ignoring unexpected entity: $node.tagName')
+        if elements and child.tagName not in elements:
+            print _('Ignoring unexpected element: $node.tagName')
         else:
             yield child
 

@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -255,9 +255,7 @@ def dolist(listname):
     o_html_dir = makeabs('public_html/archives/%s' % (listname))
     # Make the mbox directory if it's not there.
     if not os.path.exists(mbox_dir):
-        ou = os.umask(0)
-        os.mkdir(mbox_dir, 02775)
-        os.umask(ou)
+        Utils.makedirs(mbox_dir)
     else:
         # This shouldn't happen, but hey, just in case
         if not os.path.isdir(mbox_dir):
@@ -265,9 +263,7 @@ def dolist(listname):
 For some reason, $mbox_dir exists as a file.  This won't work with b6, so I'm
 renaming it to ${mbox_dir}.tmp and proceeding.""")
             os.rename(mbox_dir, "%s.tmp" % (mbox_dir))
-            ou = os.umask(0)
-            os.mkdir(mbox_dir, 02775)
-            os.umask(ou)
+            Utils.makedirs(mbox_dir)
     # Move any existing mboxes around, but watch out for both a public and a
     # private one existing
     if os.path.isfile(o_pri_mbox_file) and os.path.isfile(o_pub_mbox_file):

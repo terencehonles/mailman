@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -261,7 +261,7 @@ def start_runner(qrname, slice, count):
         args.extend(['-C', opts.config])
     os.execl(*args)
     # Should never get here
-    raise RuntimeError, 'os.execl() failed'
+    raise RuntimeError('os.execl() failed')
 
 
 def start_all_runners():
@@ -371,23 +371,18 @@ def main():
             return
         # child
         lock._take_possession()
-        # First, save our pid in a file for "mailmanctl stop" rendezvous.  We
-        # want the perms on the .pid file to be rw-rw----
-        omask = os.umask(6)
+        # Save our pid in a file for "mailmanctl stop" rendezvous.
+        fp = open(config.PIDFILE, 'w')
         try:
-            fp = open(config.PIDFILE, 'w')
             print >> fp, os.getpid()
-            fp.close()
         finally:
-            os.umask(omask)
+            fp.close()
         # Create a new session and become the session leader, but since we
         # won't be opening any terminal devices, don't do the ultra-paranoid
         # suggestion of doing a second fork after the setsid() call.
         os.setsid()
         # Instead of cd'ing to root, cd to the Mailman installation home
         os.chdir(config.PREFIX)
-        # Set our file mode creation umask
-        os.umask(007)
         # I don't think we have any unneeded file descriptors.
         #
         # Now start all the qrunners.  This returns a dictionary where the

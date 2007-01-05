@@ -1,4 +1,4 @@
-# Copyright (C) 2006 by the Free Software Foundation, Inc.
+# Copyright (C) 2006-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -22,12 +22,23 @@
 # from Mailman import database
 # database.add_list(foo)
 
+import os
+
 
 def initialize():
     from Mailman import database
+    from Mailman.LockFile import LockFile
+    from Mailman.configuration import config
     from Mailman.database.dbcontext import dbcontext
-
-    dbcontext.connect()
+    # Serialize this so we don't get multiple processes trying to create the
+    # database at the same time.
+    lockfile = os.path.join(config.LOCK_DIR, '<dbcreatelock>')
+    lock = LockFile(lockfile)
+    lock.lock()
+    try:
+        dbcontext.connect()
+    finally:
+        lock.unlock()
     for attr in dir(dbcontext):
         if attr.startswith('api_'):
             exposed_name = attr[4:]

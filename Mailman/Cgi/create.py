@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -17,7 +17,6 @@
 
 """Create mailing lists through the web."""
 
-import os
 import cgi
 import sha
 import sys
@@ -162,15 +161,8 @@ def process_request(doc, cgidata):
     mlist = MailList.MailList()
     try:
         pw = sha.new(password).hexdigest()
-        # Guarantee that all newly created files have the proper permission.
-        # proper group ownership should be assured by the autoconf script
-        # enforcing that all directories have the group sticky bit set
-        oldmask = os.umask(002)
         try:
-            try:
-                mlist.Create(fqdn_listname, owner, pw, langs)
-            finally:
-                os.umask(oldmask)
+            mlist.Create(fqdn_listname, owner, pw, langs)
         except Errors.EmailAddressError, s:
             request_creation(doc, cgidata, _('Bad owner email address: $s'))
             return

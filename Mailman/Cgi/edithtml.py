@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -165,14 +165,7 @@ def ChangeHTML(mlist, cgi_info, template_name, doc):
     code = re.sub(r'<([/]?script.*?)>', r'&lt;\1&gt;', code)
     langdir = os.path.join(mlist.fullpath(), mlist.preferred_language)
     # Make sure the directory exists
-    omask = os.umask(0)
-    try:
-        try:
-            os.mkdir(langdir, 02775)
-        except OSError, e:
-            if e.errno <> errno.EEXIST: raise
-    finally:
-        os.umask(omask)
+    Utils.makedirs(langdir)
     fp = open(os.path.join(langdir, template_name), 'w')
     try:
         fp.write(code)

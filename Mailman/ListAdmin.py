@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -98,17 +98,13 @@ class ListAdmin:
             # should we be as paranoid as for the config.pck file?  Should we
             # use pickle?
             tmpfile = self.__filename + '.tmp'
-            omask = os.umask(002)
+            fp = open(tmpfile, 'w')
             try:
-                fp = open(tmpfile, 'w')
-                try:
-                    cPickle.dump(self.__db, fp, 1)
-                    fp.flush()
-                    os.fsync(fp.fileno())
-                finally:
-                    fp.close()
+                cPickle.dump(self.__db, fp, 1)
+                fp.flush()
+                os.fsync(fp.fileno())
             finally:
-                os.umask(omask)
+                fp.close()
             self.__db = None
             # Do the dance
             os.rename(tmpfile, self.__filename)
@@ -191,21 +187,17 @@ class ListAdmin:
         else:
             ext = 'txt'
         filename = 'heldmsg-%s-%d.%s' % (self.internal_name(), id, ext)
-        omask = os.umask(002)
+        fp = open(os.path.join(config.DATA_DIR, filename), 'w')
         try:
-            fp = open(os.path.join(config.DATA_DIR, filename), 'w')
-            try:
-                if config.HOLD_MESSAGES_AS_PICKLES:
-                    cPickle.dump(msg, fp, 1)
-                else:
-                    g = Generator(fp)
-                    g(msg, 1)
-                fp.flush()
-                os.fsync(fp.fileno())
-            finally:
-                fp.close()
+            if config.HOLD_MESSAGES_AS_PICKLES:
+                cPickle.dump(msg, fp, 1)
+            else:
+                g = Generator(fp)
+                g(msg, 1)
+            fp.flush()
+            os.fsync(fp.fileno())
         finally:
-            os.umask(omask)
+            fp.close()
         # save the information to the request database.  for held message
         # entries, each record in the database will be of the following
         # format:

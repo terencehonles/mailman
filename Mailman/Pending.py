@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -113,18 +113,14 @@ class Pending:
                 del evictions[cookie]
         db['version'] = config.PENDING_FILE_SCHEMA_VERSION
         tmpfile = '%s.tmp.%d.%d' % (self.__pendfile, os.getpid(), now)
-        omask = os.umask(007)
+        fp = open(tmpfile, 'w')
         try:
-            fp = open(tmpfile, 'w')
-            try:
-                cPickle.dump(db, fp)
-                fp.flush()
-                os.fsync(fp.fileno())
-            finally:
-                fp.close()
-            os.rename(tmpfile, self.__pendfile)
+            cPickle.dump(db, fp)
+            fp.flush()
+            os.fsync(fp.fileno())
         finally:
-            os.umask(omask)
+            fp.close()
+        os.rename(tmpfile, self.__pendfile)
 
     def pend_confirm(self, cookie, expunge=True):
         """Return data for cookie, or None if not found.

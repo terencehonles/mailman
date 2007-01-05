@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -67,11 +67,7 @@ def process(mlist, msg, msgdata):
     if not mlist.digestable or msgdata.get('isdigest'):
         return
     mboxfile = os.path.join(mlist.fullpath(), 'digest.mbox')
-    omask = os.umask(007)
-    try:
-        mboxfp = open(mboxfile, 'a+')
-    finally:
-        os.umask(omask)
+    mboxfp = open(mboxfile, 'a+')
     mbox = Mailbox(mboxfp)
     mbox.AppendMessage(msg)
     # Calculate the current size of the accumulation file.  This will not tell

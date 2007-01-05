@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -347,6 +347,7 @@ def set_global_password(pw, siteadmin=True):
     else:
         filename = config.LISTCREATOR_PW_FILE
     # rw-r-----
+    # XXX Is the default umask of 007 good enough?
     omask = os.umask(026)
     try:
         fp = open(filename, 'w')
@@ -641,11 +642,11 @@ def reap(kids, func=None, once=False):
 
 
 
-def makedirs(path):
+def makedirs(path, mode=02775):
     try:
         omask = os.umask(0)
         try:
-            os.makedirs(path, 02775)
+            os.makedirs(path, mode)
         finally:
             os.umask(omask)
     except OSError, e:
