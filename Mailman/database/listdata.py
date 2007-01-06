@@ -122,6 +122,7 @@ def make_table(metadata):
         Column('pass_mime_types',                               PickleType),
         Column('password',                                      Unicode),
         Column('personalize',                                   Integer),
+        Column('post_id',                                       Integer),
         Column('preferred_language',                            Unicode),
         Column('private_roster',                                Boolean),
         Column('real_name',                                     Unicode),
