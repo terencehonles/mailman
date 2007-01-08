@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -51,8 +51,7 @@ given."""))
     parser.add_option('-f', '--full',
                       default=False, action='store_true',
                       help=_("""\
-Print the full list name, including the posting address.  This option is
-ignored when -b is given."""))
+Print the full list name, including the posting address."""))
     parser.add_option('-C', '--config',
                       help=_('Alternative configuration file to use'))
     opts, args = parser.parse_args()
@@ -84,7 +83,7 @@ def main():
         else:
             mlists.append(mlist)
         if opts.full:
-            name = mlist.internal_name()
+            name = mlist.fqdn_listname
         else:
             name = mlist.real_name
         longest = max(len(name), longest)
@@ -99,17 +98,12 @@ def main():
 
     format = '%%%ds - %%.%ds' % (longest, 77 - longest)
     for mlist in mlists:
-        if opts.bare:
-            print mlist.internal_name()
+        if opts.full:
+            name = mlist.fqdn_listname
         else:
-            if opts.full:
-                name = mlist.internal_name()
-            else:
-                name = mlist.real_name
+            name = mlist.real_name
+        if opts.bare:
+            print name
+        else:
             description = mlist.description or _('[no description available]')
             print '   ', format % (name, description)
-
-
-
-if __name__ == '__main__':
-    main()
