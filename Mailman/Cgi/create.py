@@ -26,6 +26,7 @@ from Mailman import Errors
 from Mailman import MailList
 from Mailman import Message
 from Mailman import i18n
+from Mailman import passwords
 from Mailman.configuration import config
 from Mailman.htmlformat import *
 
@@ -160,7 +161,7 @@ def process_request(doc, cgidata):
     # We've got all the data we need, so go ahead and try to create the list
     mlist = MailList.MailList()
     try:
-        pw = sha.new(password).hexdigest()
+        pw = passwords(password, config.PASSWORD_SCHEME)
         try:
             mlist.Create(fqdn_listname, owner, pw, langs)
         except Errors.EmailAddressError, s:

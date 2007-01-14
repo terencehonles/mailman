@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -61,6 +61,7 @@ from urlparse import urlparse
 from Mailman import Defaults
 from Mailman import Errors
 from Mailman import Utils
+from Mailman import passwords
 from Mailman.configuration import config
 
 log = logging.getLogger('mailman.error')
@@ -94,7 +95,7 @@ class SecurityManager:
         if authcontext == Defaults.AuthUser:
             if user is None:
                 # A bad system error
-                raise TypeError, 'No user supplied for AuthUser context'
+                raise TypeError('No user supplied for AuthUser context')
             secret = self.getMemberPassword(user)
             userdata = urllib.quote(Utils.ObscureEmail(user), safe='')
             key += 'user+%s' % userdata
@@ -131,7 +132,7 @@ class SecurityManager:
         # response, or UnAuthorized.
         for ac in authcontexts:
             if ac == Defaults.AuthCreator:
-                ok = Utils.check_global_password(response, siteadmin=0)
+                ok = Utils.check_global_password(response, siteadmin=False)
                 if ok:
                     return Defaults.AuthCreator
             elif ac == Defaults.AuthSiteAdmin:
@@ -146,13 +147,12 @@ class SecurityManager:
                 key, secret = self.AuthContextInfo(ac)
                 if secret is None:
                     continue
-                sharesponse = sha.new(response).hexdigest()
-                if sharesponse == secret:
+                if passwords.check_response(secret, response):
                     return ac
             elif ac == Defaults.AuthListModerator:
                 # The list moderator password must be sha'd
                 key, secret = self.AuthContextInfo(ac)
-                if secret and sha.new(response).hexdigest() == secret:
+                if secret and passwords.check_response(secret, response):
                     return ac
             elif ac == Defaults.AuthUser:
                 if user is not None:

@@ -18,6 +18,7 @@
 """Mailman HTTP runner (server)."""
 
 import sys
+import signal
 import logging
 
 from cStringIO import StringIO

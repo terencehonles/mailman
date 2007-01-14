@@ -34,9 +34,7 @@ from Mailman.MailList import MailList
 from Mailman.i18n import _
 from Mailman.initialize import initialize
 
-
 __i18n_templates__ = True
-
 
 
 
@@ -211,6 +209,20 @@ def create(all_listdata):
         mlist.Lock()
         try:
             for option, value in list_config.items():
+                # XXX Here's what sucks.  Some properties need to have
+                # _setValue() called on the gui component, because those
+                # methods do some pre-processing on the values before they're
+                # applied to the MailList instance.  But we don't have a good
+                # way to find a category and sub-category that a particular
+                # property belongs to.  Plus this will probably change.  So
+                # for now, we'll just hard code the extra post-processing
+                # here.  The good news is that not all _setValue() munging
+                # needs to be done -- for example, we've already converted
+                # everything to dollar strings.
+                if option in ('filter_mime_types', 'pass_mime_types',
+                              'filter_filename_extensions',
+                              'pass_filename_extensions'):
+                    value = value.splitlines()
                 setattr(mlist, option, value)
             for member in list_roster:
                 mid = member['id']

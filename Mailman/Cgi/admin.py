@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -29,11 +29,12 @@ from email.Utils import unquote, parseaddr, formataddr
 from string import lowercase, digits
 
 from Mailman import Errors
-from Mailman import i18n
 from Mailman import MailList
 from Mailman import MemberAdaptor
-from Mailman import mm_cfg
 from Mailman import Utils
+from Mailman import i18n
+from Mailman import mm_cfg
+from Mailman import passwords
 
 from Mailman.Cgi import Auth
 from Mailman.htmlformat import *
@@ -1225,7 +1226,8 @@ def change_options(mlist, category, subcat, cgidata, doc):
     confirm = cgidata.getvalue('confirmmodpw', '').strip()
     if new or confirm:
         if new == confirm:
-            mlist.mod_password = sha.new(new).hexdigest()
+            mlist.mod_password = passwords.make_secret(
+                new, config.PASSWORD_SCHEME)
             # No re-authentication necessary because the moderator's
             # password doesn't get you into these pages.
         else:
@@ -1235,7 +1237,7 @@ def change_options(mlist, category, subcat, cgidata, doc):
     confirm = cgidata.getvalue('confirmpw', '').strip()
     if new or confirm:
         if new == confirm:
-            mlist.password = sha.new(new).hexdigest()
+            mlist.password = passwords.make_secret(new, config.PASSWORD_SCHEME)
             # Set new cookie
             print mlist.MakeCookie(mm_cfg.AuthListAdmin)
         else:

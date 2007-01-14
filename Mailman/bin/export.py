@@ -18,8 +18,9 @@
 """Export an XML representation of a mailing list."""
 
 import os
-import sys
+import re
 import sha
+import sys
 import base64
 import codecs
 import datetime
@@ -35,16 +36,11 @@ from Mailman import Version
 from Mailman.MailList import MailList
 from Mailman.configuration import config
 from Mailman.i18n import _
+from Mailman.initialize import initialize
 
 __i18n_templates__ = True
 
 SPACE           = ' '
-DOLLAR_STRINGS  = ('msg_header', 'msg_footer',
-                   'digest_header', 'digest_footer',
-                   'autoresponse_postings_text',
-                   'autoresponse_admin_text',
-                   'autoresponse_request_text')
-SALT_LENGTH     = 4 # bytes
 
 TYPES = {
     Defaults.Toggle         : 'bool',
@@ -148,7 +144,6 @@ class XMLDumper(object):
             print >> self._fp, '<%s%s>%s</%s>' % (_name, attrs, value, _name)
 
     def _do_list_categories(self, mlist, k, subcat=None):
-        is_converted = bool(getattr(mlist, 'use_dollar_strings', False))
         info = mlist.GetConfigInfo(k, subcat)
         label, gui = mlist.GetConfigCategories()[k]
         if info is None:
@@ -167,12 +162,6 @@ class XMLDumper(object):
                 value = gui.getValue(mlist, vtype, varname, data[2])
             if value is None:
                 value = getattr(mlist, varname)
-            # Do %-string to $-string conversions if the list hasn't already
-            # been converted.
-            if varname == 'use_dollar_strings':
-                continue
-            if not is_converted and varname in DOLLAR_STRINGS:
-                value = Utils.to_dollar(value)
             widget_type = TYPES[vtype]
             if isinstance(value, list):
                 self._push_element('option', name=varname, type=widget_type)
@@ -182,7 +171,7 @@ class XMLDumper(object):
             else:
                 self._element('option', value, name=varname, type=widget_type)
 
-    def _dump_list(self, mlist, password_scheme):
+    def _dump_list(self, mlist):
         # Write list configuration values
         self._push_element('list', name=mlist.fqdn_listname)
         self._push_element('configuration')
@@ -207,8 +196,7 @@ class XMLDumper(object):
                 attrs['original'] = cased
             self._push_element('member', **attrs)
             self._element('realname', mlist.getMemberName(member))
-            self._element('password',
-                          password_scheme(mlist.getMemberPassword(member)))
+            self._element('password', mlist.getMemberPassword(member))
             self._element('language', mlist.getMemberLanguage(member))
             # Delivery status, combined with the type of delivery
             attrs = {}
@@ -252,7 +240,7 @@ class XMLDumper(object):
         self._pop_element('roster')
         self._pop_element('list')
 
-    def dump(self, listnames, password_scheme):
+    def dump(self, listnames):
         print >> self._fp, '<?xml version="1.0" encoding="UTF-8"?>'
         self._push_element('mailman', **{
             'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
@@ -264,47 +252,12 @@ class XMLDumper(object):
             except Errors.MMUnknownListError:
                 print >> sys.stderr, _('No such list: $listname')
                 continue
-            self._dump_list(mlist, password_scheme)
+            self._dump_list(mlist)
         self._pop_element('mailman')
 
     def close(self):
         while self._stack:
             self._pop_element()
-
-
-
-def no_password(password):
-    return '{NONE}'
-
-
-def plaintext_password(password):
-    return '{PLAIN}' + password
-
-
-def sha_password(password):
-    h = sha.new(password)
-    return '{SHA}' + base64.b64encode(h.digest())
-
-
-def ssha_password(password):
-    salt = os.urandom(SALT_LENGTH)
-    h = sha.new(password)
-    h.update(salt)
-    return '{SSHA}' + base64.b64encode(h.digest() + salt)
-
-
-SCHEMES = {
-    'none'  : no_password,
-    'plain' : plaintext_password,
-    'sha'   : sha_password,
-    }
-
-try:
-    os.urandom(1)
-except NotImplementedError:
-    pass
-else:
-    SCHEMES['ssha'] = ssha_password
 
 
 
@@ -319,15 +272,6 @@ Export the configuration and members of a mailing list in XML format."""))
                       help=_("""\
 Output XML to FILENAME.  If not given, or if FILENAME is '-', standard out is
 used."""))
-    parser.add_option('-p', '--password-scheme',
-                      default='none', type='string', help=_("""\
-Specify the RFC 2307 style hashing scheme for passwords included in the
-output.  Use -P to get a list of supported schemes, which are
-case-insensitive."""))
-    parser.add_option('-P', '--list-hash-schemes',
-                      default=False, action='store_true', help=_("""\
-List the supported password hashing schemes and exit.  The scheme labels are
-case-insensitive."""))
     parser.add_option('-l', '--listname',
                       default=[], action='append', type='string',
                       metavar='LISTNAME', dest='listnames', help=_("""\
@@ -339,26 +283,21 @@ included in the XML output.  Multiple -l flags may be given."""))
     if args:
         parser.print_help()
         parser.error(_('Unexpected arguments'))
-    if opts.list_hash_schemes:
-        for label in SCHEMES:
-            print label.upper()
-        sys.exit(0)
-    if opts.password_scheme.lower() not in SCHEMES:
-        parser.error(_('Invalid password scheme'))
     return parser, opts, args
 
 
 
 def main():
     parser, opts, args = parseargs()
-    config.load(opts.config)
+    initialize(opts.config)
 
+    close = False
     if opts.outputfile in (None, '-'):
-        # This will fail if there are characters in the output incompatible
-        # with system encoding.
-        fp = sys.stdout
+        writer = codecs.getwriter('utf-8')
+        fp = writer(sys.stdout)
     else:
         fp = codecs.open(opts.outputfile, 'w', 'utf-8')
+        close = True
 
     try:
         dumper = XMLDumper(fp)
@@ -370,8 +309,8 @@ def main():
                 listnames.append(listname)
         else:
             listnames = Utils.list_names()
-        dumper.dump(listnames, SCHEMES[opts.password_scheme])
+        dumper.dump(listnames)
         dumper.close()
     finally:
-        if fp is not sys.stdout:
+        if close:
             fp.close()

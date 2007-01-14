@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -27,9 +27,10 @@ This is the adaptor used by default in Mailman 2.1.
 import time
 
 from Mailman import Errors
-from Mailman import mm_cfg
 from Mailman import MemberAdaptor
 from Mailman import Utils
+from Mailman import mm_cfg
+from Mailman import passwords
 
 ISREGULAR = 1
 ISDIGEST = 2
@@ -89,8 +90,8 @@ class OldStyleMemberships(MemberAdaptor.MemberAdaptor):
     def isMember(self, member):
         cpaddr, where = self.__get_cp_member(member)
         if cpaddr is not None:
-            return 1
-        return 0
+            return True
+        return False
 
     def getMemberKey(self, member):
         cpaddr, where = self.__get_cp_member(member)
@@ -115,9 +116,9 @@ class OldStyleMemberships(MemberAdaptor.MemberAdaptor):
 
     def authenticateMember(self, member, response):
         secret = self.getMemberPassword(member)
-        if secret == response:
+        if passwords.check_response(secret, response):
             return secret
-        return 0
+        return False
 
     def __assertIsMember(self, member):
         if not self.isMember(member):

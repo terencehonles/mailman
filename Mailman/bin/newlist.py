@@ -26,6 +26,7 @@ from Mailman import Message
 from Mailman import Utils
 from Mailman import Version
 from Mailman import i18n
+from Mailman import passwords
 from Mailman.configuration import config
 from Mailman.initialize import initialize
 
@@ -72,9 +73,24 @@ This option suppresses the prompt prior to administrator notification but
 still sends the notification.  It can be used to make newlist totally
 non-interactive but still send the notification, assuming listname,
 listadmin-addr and admin-password are all specified on the command line."""))
+    parser.add_option('-p', '--password-scheme',
+                      default='ssha', type='string', help=_("""\
+Specify the RFC 2307 style hashing scheme for passwords included in the
+output.  Use -P to get a list of supported schemes, which are
+case-insensitive."""))
+    parser.add_option('-P', '--list-hash-schemes',
+                      default=False, action='store_true', help=_("""\
+List the supported password hashing schemes and exit.  The scheme labels are
+case-insensitive."""))
     parser.add_option('-C', '--config',
                       help=_('Alternative configuration file to use'))
     opts, args = parser.parse_args()
+    if opts.list_hash_schemes:
+        for label in passwords.SCHEMES:
+            print label.upper()
+        sys.exit(0)
+    if opts.password_scheme.lower() not in passwords.SCHEMES:
+        parser.error(_('Invalid password scheme'))
     # Can't verify opts.language here because the configuration isn't loaded
     # yet.
     return parser, opts, args
@@ -146,7 +162,7 @@ def main():
     # set available_languages.
     mlist.preferred_language = opts.language
     try:
-        pw = sha.new(listpasswd).hexdigest()
+        pw = passwords.make_secret(listpasswd, config.PASSWORD_SCHEME)
         try:
             mlist.Create(fqdn_listname, owner_mail, pw)
         except Errors.BadListNameError, s:

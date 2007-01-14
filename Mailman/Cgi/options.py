@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -24,13 +24,14 @@ import urllib
 import logging
 
 from Mailman import Errors
-from Mailman import i18n
 from Mailman import MailList
 from Mailman import MemberAdaptor
-from Mailman import mm_cfg
 from Mailman import Utils
-
+from Mailman import i18n
+from Mailman import mm_cfg
+from Mailman import passwords
 from Mailman.htmlformat import *
+
 
 OR = '|'
 SLASH = '/'
@@ -434,8 +435,9 @@ address.  Upon confirmation, any other mailing list containing the address
         if pw_globally:
             mlists.extend(lists_of_member(mlist, user))
 
+        pw = passwords.make_secret(newpw, config.PASSWORD_SCHEME)
         for gmlist in mlists:
-            change_password(gmlist, user, newpw, confirmpw)
+            change_password(gmlist, user, pw)
 
         # Regenerate the cookie so a re-authorization isn't necessary
         print mlist.MakeCookie(mm_cfg.AuthUser, user)
@@ -907,7 +909,7 @@ def lists_of_member(mlist, user):
 
 
 
-def change_password(mlist, user, newpw, confirmpw):
+def change_password(mlist, user, newpw):
     # Must own the list lock!
     mlist.Lock()
     try:

@@ -94,6 +94,10 @@ ALLOW_SITE_ADMIN_COOKIES = No
 # name of the temporary file that the program should operate on.
 HTML_TO_PLAIN_TEXT_COMMAND = '/usr/bin/lynx -dump %(filename)s'
 
+# Default password hashing scheme.  See 'bin/mmsitepass -P' for a list of
+# available schemes.
+PASSWORD_SCHEME = 'ssha'
+
 
 
 #####

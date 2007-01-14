@@ -1,4 +1,4 @@
-# Copyright (C) 2006 by the Free Software Foundation, Inc.
+# Copyright (C) 2006-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -92,6 +92,7 @@ def initialize(propagate=False):
     #
     # The current set of Mailman logs are:
     #
+    # debug         - Only used for development
     # error         - All exceptions go to this log
     # bounce        - All bounce processing logs go here
     # mischief      - Various types of hostile activity
@@ -104,9 +105,6 @@ def initialize(propagate=False):
     # locks         - Lock steals
     # qrunner       - qrunner start/stops
     # fromusenet    - Information related to the Usenet to Mailman gateway
-    #
-    # There was also a 'debug' logger, but that was mostly unused, so instead
-    # we'll use debug level on existing loggers.
     #
     # Start by creating a common formatter and the root logger.
     formatter = logging.Formatter(fmt=FMT, datefmt=DATEFMT)
@@ -125,6 +123,10 @@ def initialize(propagate=False):
         _handlers.append(handler)
         handler.setFormatter(formatter)
         log.addHandler(handler)
+        # It doesn't make much sense for the debug logger to ignore debug
+        # level messages.
+        if logger == 'debug':
+            log.setLevel(logging.DEBUG)
 
 
 

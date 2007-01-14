@@ -41,15 +41,9 @@ from string import ascii_letters, digits, whitespace
 
 from Mailman import Errors
 from Mailman import database
+from Mailman import passwords
 from Mailman.SafeDict import SafeDict
 from Mailman.configuration import config
-
-# REMOVEME when Python 2.4 is minimum requirement
-try:
-    set
-except NameError:
-    from sets import Set as set
-
 
 AT = '@'
 CR = '\r'
@@ -341,20 +335,16 @@ def GetRandomSeed():
 
 
 
-def set_global_password(pw, siteadmin=True):
+def set_global_password(pw, siteadmin=True, scheme='ssha'):
     if siteadmin:
         filename = config.SITE_PW_FILE
     else:
         filename = config.LISTCREATOR_PW_FILE
-    # rw-r-----
-    # XXX Is the default umask of 007 good enough?
-    omask = os.umask(026)
     try:
         fp = open(filename, 'w')
-        fp.write(sha.new(pw).hexdigest() + '\n')
-        fp.close()
+        print >> fp, passwords.make_secret(pw, scheme)
     finally:
-        os.umask(omask)
+        fp.close()
 
 
 def get_global_password(siteadmin=True):
@@ -367,8 +357,9 @@ def get_global_password(siteadmin=True):
         challenge = fp.read()[:-1]                # strip off trailing nl
         fp.close()
     except IOError, e:
-        if e.errno <> errno.ENOENT: raise
-        # It's okay not to have a site admin password, just return false
+        if e.errno <> errno.ENOENT:
+            raise
+        # It's okay not to have a site admin password
         return None
     return challenge
 
@@ -377,7 +368,7 @@ def check_global_password(response, siteadmin=True):
     challenge = get_global_password(siteadmin)
     if challenge is None:
         return False
-    return challenge == sha.new(response).hexdigest()
+    return passwords.check_response(challenge, response)
 
 
 

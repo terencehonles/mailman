@@ -1,4 +1,4 @@
-# Copyright (C) 2002-2006 by the Free Software Foundation, Inc.
+# Copyright (C) 2002-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -19,9 +19,9 @@
 
 import re
 
-from Mailman import mm_cfg
-from Mailman import Utils
+from Mailman import Defaults
 from Mailman import Errors
+from Mailman import Utils
 from Mailman.i18n import _
 
 NL = '\n'
@@ -38,17 +38,18 @@ class GUIBase:
         # Coerce and validate the new value.
         #
         # Radio buttons and boolean toggles both have integral type
-        if wtype in (mm_cfg.Radio, mm_cfg.Toggle):
+        if wtype in (Defaults.Radio, Defaults.Toggle):
             # Let ValueErrors propagate
             return int(val)
         # String and Text widgets both just return their values verbatim
-        if wtype in (mm_cfg.String, mm_cfg.Text):
+        if wtype in (Defaults.String, Defaults.Text):
             return val
         # This widget contains a single email address
-        if wtype == mm_cfg.Email:
+        if wtype == Defaults.Email:
             # BAW: We must allow blank values otherwise reply_to_address can't
-            # be cleared.  This is currently the only mm_cfg.Email type widget
-            # in the interface, so watch out if we ever add any new ones.
+            # be cleared.  This is currently the only Defaults.Email type
+            # widget in the interface, so watch out if we ever add any new
+            # ones.
             if val:
                 # Let MMBadEmailError and MMHostileAddress propagate
                 Utils.ValidateEmail(val)
@@ -56,7 +57,7 @@ class GUIBase:
         # These widget types contain lists of email addresses, one per line.
         # The EmailListEx allows each line to contain either an email address
         # or a regular expression
-        if wtype in (mm_cfg.EmailList, mm_cfg.EmailListEx):
+        if wtype in (Defaults.EmailList, Defaults.EmailListEx):
             # BAW: value might already be a list, if this is coming from
             # config_list input.  Sigh.
             if isinstance(val, list):
@@ -72,7 +73,7 @@ class GUIBase:
                 except Errors.EmailAddressError:
                     # See if this is a context that accepts regular
                     # expressions, and that the re is legal
-                    if wtype == mm_cfg.EmailListEx and addr.startswith('^'):
+                    if wtype == Defaults.EmailListEx and addr.startswith('^'):
                         try:
                             re.compile(addr)
                         except re.error:
@@ -82,10 +83,10 @@ class GUIBase:
                 addrs.append(addr)
             return addrs
         # This is a host name, i.e. verbatim
-        if wtype == mm_cfg.Host:
+        if wtype == Defaults.Host:
             return val
         # This is a number, either a float or an integer
-        if wtype == mm_cfg.Number:
+        if wtype == Defaults.Number:
             num = -1
             try:
                 num = int(val)
@@ -96,19 +97,19 @@ class GUIBase:
                 return getattr(mlist, property)
             return num
         # This widget is a select box, i.e. verbatim
-        if wtype == mm_cfg.Select:
+        if wtype == Defaults.Select:
             return val
         # Checkboxes return a list of the selected items, even if only one is
         # selected.
-        if wtype == mm_cfg.Checkbox:
+        if wtype == Defaults.Checkbox:
             if isinstance(val, list):
                 return val
             return [val]
-        if wtype == mm_cfg.FileUpload:
+        if wtype == Defaults.FileUpload:
             return val
-        if wtype == mm_cfg.Topics:
+        if wtype == Defaults.Topics:
             return val
-        if wtype == mm_cfg.HeaderFilter:
+        if wtype == Defaults.HeaderFilter:
             return val
         # Should never get here
         assert 0, 'Bad gui widget type: %s' % wtype

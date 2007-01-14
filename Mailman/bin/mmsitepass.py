@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -21,8 +21,10 @@ import optparse
 
 from Mailman import Utils
 from Mailman import Version
+from Mailman import passwords
 from Mailman.configuration import config
 from Mailman.i18n import _
+from Mailman.initialize import initialize
 
 __i18n_templates__ = True
 
@@ -49,20 +51,34 @@ If password is not given on the command line, it will be prompted for.
 Set the list creator password instead of the site password.  The list
 creator is authorized to create and remove lists, but does not have
 the total power of the site administrator."""))
+    parser.add_option('-p', '--password-scheme',
+                      default=config.PASSWORD_SCHEME, type='string',
+                      help=_("""\
+Specify the RFC 2307 style hashing scheme for passwords included in the
+output.  Use -P to get a list of supported schemes, which are
+case-insensitive."""))
+    parser.add_option('-P', '--list-hash-schemes',
+                      default=False, action='store_true', help=_("""\
+List the supported password hashing schemes and exit.  The scheme labels are
+case-insensitive."""))
     parser.add_option('-C', '--config',
                       help=_('Alternative configuration file to use'))
     opts, args = parser.parse_args()
     if len(args) > 1:
-        parser.print_help()
-        print >> sys.stderr, _('Unexpected arguments')
-        sys.exit(1)
+        parser.error(_('Unexpected arguments'))
+    if opts.list_hash_schemes:
+        for label in passwords.SCHEMES:
+            print label.upper()
+        sys.exit(0)
+    if opts.password_scheme.lower() not in passwords.SCHEMES:
+        parser.error(_('Invalid password scheme'))
     return parser, opts, args
 
 
 
 def main():
     parser, opts, args = parseargs()
-    config.load(opts.config)
+    initialize(opts.config)
     if args:
         password = args[0]
     else:
@@ -77,7 +93,8 @@ def main():
             print _('Passwords do not match; no changes made.')
             sys.exit(1)
         password = pw1
-    Utils.set_global_password(password, not opts.listcreator)
+    Utils.set_global_password(password,
+                              not opts.listcreator, opts.password_scheme)
     if Utils.check_global_password(password, not opts.listcreator):
         print _('Password changed.')
     else:
