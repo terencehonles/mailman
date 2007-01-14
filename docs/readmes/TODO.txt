@@ -4,7 +4,7 @@ Copyright (C) 1998-2003 by the Free Software Foundation, Inc.
 
 
 The Mailman Wishlist
-(Last Update: $Date: 2005-08-27 02:54:05 +0100 (Sat, 27 Aug 2005) $)
+(Last Update: $Date: 2007-01-14 04:34:29 +0000 (Sun, 14 Jan 2007) $)
 
     Here's the wish list for future versions of Mailman.  Many new
     features have been added to Mailman 2.1, and it is currently

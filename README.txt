@@ -1,5 +1,5 @@
 Mailman - The GNU Mailing List Management System
-Copyright (C) 1998-2005 by the Free Software Foundation, Inc.
+Copyright (C) 1998-2007 by the Free Software Foundation, Inc.
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 
 INTRODUCTION
@@ -29,32 +29,21 @@ INTRODUCTION
         http://www.gnu.org/software/mailman
         http://mailman.sf.net
 
-    Mailman 2.2 requires Python 2.3.5 or greater, which can be downloaded from:
+    Mailman 2.2 requires Python 2.4 or greater, which can be downloaded from:
 
         http://www.python.org
 
-    It is recommended that you use Python 2.4.1, the latest release as of this
-    writing (28-Aug-2005).
+    It is recommended that you use at least Python 2.4.4, the latest release
+    as of this writing (13-Jan-2007).  Python 2.5 should also work well.
 
-        http://www.python.org/2.4.1
-
-    You will also need an ANSI C compiler to build both Python and Mailman;
-    gcc (the GNU C compiler) works just fine.  Mailman currently works only on
+    You will need an ANSI C compiler to build both Python and Mailman; gcc
+    (the GNU C compiler) works just fine.  Mailman currently works only on
     GNU/Linux and other Unix-like operating systems (e.g. Solaris, *BSD,
     MacOSX, etc.).  It does not run on Windows, although web and mail clients
     on any platform should be able to interact with Mailman just fine.
 
-    See the INSTALL file for installation instructions.  If you are upgrading
-    from a previous version of Mailman, you need to read the UPGRADING file
-    for important information.
-
 
 FEATURES
-
-    Read the NEWS file for a list of changes since version 0.9.  Read the TODO
-    file for our (extensive) wish list.  You can see Mailman 2.1 in action at:
-
-        http://mail.python.org/mailman-21/listinfo
 
     Mailman has most of the standard features you'd expect in a mailing list
     manager, and more:
@@ -100,7 +89,7 @@ REQUIREMENTS
     friendly to most web browsers and network connections.
 
     You will need root access on the machine hosting your Mailman installation
-    in order to complete some of the configuration steps.  See the INSTALL
+    in order to complete some of the configuration steps.  See the INSTALL.txt
     file for details.
 
     Mailman's web and email user interface should be compatible with just
@@ -111,11 +100,26 @@ REQUIREMENTS
 
 FOR MORE INFORMATION
 
+    More documentation is available in the docs directory, and on-line (see
+    below).  Installation instructions are contained in the
+    docs/readmes/INSTALL.txt file.  Upgrading information is available in the
+    docs/readmes/UPGRADING.txt file.  See the docs/NEWS.txt file for a list of
+    changes since version 0.9.
+
     The online documentation can be found in
 
         file:admin/www/index.html
 
     in the directory in which you unpacked Mailman.
+
+    There is an online FAQ maintained by the Mailman community, which contains
+    a vast amount of information:
+
+        http://www.python.org/cgi-bin/faqw-mm.py
+
+    There is also a wiki for more community-driven information:
+
+        http://wiki.list.org
 
     Chris Kolar has made a list owner-oriented manual available from
     the following URL
