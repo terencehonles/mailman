@@ -45,7 +45,6 @@ DOT = '.'
 # needn't be (much) longer than SNOOZE.  We pad it 6 hours just to be safe.
 LOCK_LIFETIME = Defaults.days(1) + Defaults.hours(6)
 SNOOZE = Defaults.days(1)
-MAX_RESTARTS = 10
 
 
 
@@ -465,10 +464,10 @@ Master qrunner detected subprocess exit
                 # See if we've reached the maximum number of allowable restarts
                 if exitstatus <> signal.SIGINT:
                     restarts += 1
-                if restarts > MAX_RESTARTS:
+                if restarts > config.MAX_RESTARTS:
                     qlog.info("""\
 Qrunner %s reached maximum restart limit of %d, not restarting.""",
-                           qrname, MAX_RESTARTS)
+                           qrname, config.MAX_RESTARTS)
                     restarting = ''
                 # Now perhaps restart the process unless it exited with a
                 # SIGTERM or we aren't restarting.

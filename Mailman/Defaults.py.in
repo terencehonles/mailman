@@ -756,6 +756,10 @@ QRUNNER_SAVE_BAD_MESSAGES = Yes
 # affects both message pickles and MailList config.pck files.
 SYNC_AFTER_WRITE = No
 
+# The maximum number of times that the mailmanctl watcher will try to restart
+# a qrunner that exits uncleanly.
+MAX_RESTARTS = 10
+
 
 
 #####

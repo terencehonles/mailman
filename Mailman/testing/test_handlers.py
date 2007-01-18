@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -30,6 +30,7 @@ from email.Generator import Generator
 from Mailman import Errors
 from Mailman import Message
 from Mailman import Version
+from Mailman import passwords
 from Mailman.MailList import MailList
 from Mailman.Queue.Switchboard import Switchboard
 from Mailman.configuration import config
@@ -57,8 +58,8 @@ from Mailman.Handlers import ToUsenet
 
 
 
-def password(plaintext):
-    return sha.new(plaintext).hexdigest()
+def password(cleartext):
+    return passwords.make_secret(cleartext, 'ssha')
 
 
 

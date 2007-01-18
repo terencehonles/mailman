@@ -1,4 +1,4 @@
-# Copyright (C) 2006 by the Free Software Foundation, Inc.
+# Copyright (C) 2006-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -21,7 +21,7 @@ from sqlalchemy import *
 
 
 
-def make_table(metadata):
+def make_table(metadata, tables):
     table = Table(
         'Listdata', metadata,
         # Attributes not directly modifiable via the web u/i
@@ -59,7 +59,6 @@ def make_table(metadata):
         Column('autoresponse_graceperiod',                      Integer),
         Column('autoresponse_postings_text',                    Unicode),
         Column('autoresponse_request_text',                     Unicode),
-        Column('available_languages',                           PickleType),
         Column('ban_list',                                      PickleType),
         Column('bounce_info_stale_after',                       Integer),
         Column('bounce_matching_headers',                       Unicode),
@@ -148,10 +147,17 @@ def make_table(metadata):
         )
     # Avoid circular imports
     from Mailman.MailList import MailList
+    from Mailman.database.languages import Language
     # We need to ensure MailList.InitTempVars() is called whenever a MailList
     # instance is created from a row.  Use a mapper extension for this.
-    mapper(MailList, table, extension=MailListMapperExtension())
-    return table
+    props = dict(available_languages=
+                 relation(Language,
+                          secondary=tables.available_languages,
+                          lazy=False))
+    mapper(MailList, table,
+           extension=MailListMapperExtension(),
+           properties=props)
+    tables.bind(table)
 
 
 

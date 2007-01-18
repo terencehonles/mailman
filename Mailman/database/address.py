@@ -1,4 +1,4 @@
-# Copyright (C) 2006 by the Free Software Foundation, Inc.
+# Copyright (C) 2006-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -21,10 +21,10 @@ from sqlalchemy import *
 
 
 
-def make_table(metadata):
+def make_table(metadata, tables):
     table = Table(
         'Address', metadata,
         Column('address_id',    Integer, primary_key=True),
         Column('address',       Unicode(4096)),
         )
-    return table
+    tables.bind(table)

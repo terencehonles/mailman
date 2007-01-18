@@ -626,11 +626,11 @@ def get_item_gui_value(mlist, category, kind, varname, params, extra):
         return container
     elif kind == mm_cfg.Select:
         if params:
-           values, legend, selected = params
+            values, legend, selected = params
         else:
-           values = mlist.GetAvailableLanguages()
-           legend = map(_, map(Utils.GetLanguageDescr, values))
-           selected = values.index(mlist.preferred_language)
+            codes = mlist.language_codes
+            legend = [Utils.GetLanguageDescr(code) for code in codes]
+            selected = codes.index(mlist.preferred_language)
         return SelectOptions(varname, values, legend, selected)
     elif kind == mm_cfg.Topics:
         # A complex and specialized widget type that allows for setting of a
@@ -990,7 +990,7 @@ def membership_options(mlist, subcat, cgidata, doc, form):
         cells.append(Center(CheckBox('%s_plain' % addr, value, checked)))
         # User's preferred language
         langpref = mlist.getMemberLanguage(addr)
-        langs = mlist.GetAvailableLanguages()
+        langs = mlist.language_codes
         langdescs = [_(Utils.GetLanguageDescr(lang)) for lang in langs]
         try:
             selected = langs.index(langpref)

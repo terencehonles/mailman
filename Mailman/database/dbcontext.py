@@ -16,15 +16,17 @@
 # USA.
 
 import os
+import logging
 import weakref
 
-from sqlalchemy import *
+from sqlalchemy import BoundMetaData, create_session
 from string import Template
 from urlparse import urlparse
 
 from Mailman import Version
 from Mailman.configuration import config
 from Mailman.database import address
+from Mailman.database import languages
 from Mailman.database import listdata
 from Mailman.database import version
 from Mailman.database.txnsupport import txn
@@ -37,10 +39,17 @@ class MlistRef(weakref.ref):
         self.fqdn_listname = mlist.fqdn_listname
 
 
+class Tables(object):
+    def bind(self, table, attrname=None):
+        if attrname is None:
+            attrname = table.name.lower()
+        setattr(self, attrname, table)
+
+
 
 class DBContext(object):
     def __init__(self):
-        self.tables = {}
+        self.tables = Tables()
         self.metadata = None
         self.session = None
         # Special transaction used only for MailList.Lock() .Save() and
@@ -69,27 +78,26 @@ class DBContext(object):
         self.metadata = BoundMetaData(url)
         self.metadata.engine.echo = config.SQLALCHEMY_ECHO
         # Create all the table objects, and then let SA conditionally create
-        # them if they don't yet exist.
-        version_table = None
-        for module in (address, listdata, version):
-            table = module.make_table(self.metadata)
-            self.tables[table.name] = table
-            if module is version:
-                version_table = table
+        # them if they don't yet exist.  NOTE: this order matters!
+        for module in (languages, address, listdata, version):
+            module.make_table(self.metadata, self.tables)
         self.metadata.create_all()
         # Validate schema version, updating if necessary (XXX)
-        from Mailman.interact import interact
-        r = version_table.select(version_table.c.component=='schema').execute()
+        r = self.tables.version.select(
+            self.tables.version.c.component=='schema').execute()
         row = r.fetchone()
         if row is None:
             # Database has not yet been initialized
-            version_table.insert().execute(
+            self.tables.version.insert().execute(
                 component='schema',
                 version=Version.DATABASE_SCHEMA_VERSION)
         elif row.version <> Version.DATABASE_SCHEMA_VERSION:
             # XXX Update schema
             raise SchemaVersionMismatchError(row.version)
         self.session = create_session()
+
+    def close(self):
+        self.session.close()
 
     def _touch(self, url):
         parts = urlparse(url)
@@ -176,7 +184,7 @@ class DBContext(object):
 
     @txn
     def api_get_list_names(self):
-        table = self.tables['Listdata']
+        table = self.tables.listdata
         results = table.select().execute()
         return [(row[table.c.list_name], row[table.c.host_name])
                 for row in results.fetchall()]

@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -19,10 +19,11 @@
 
 import codecs
 
+from Mailman import Utils
 from Mailman import i18n
 from Mailman import mm_cfg
-from Mailman import Utils
 from Mailman.Gui.GUIBase import GUIBase
+from Mailman.database.languages import Language
 
 _ = i18n._
 
@@ -35,9 +36,8 @@ class Language(GUIBase):
     def GetConfigInfo(self, mlist, category, subcat=None):
         if category <> 'language':
             return None
-
         # Set things up for the language choices
-        langs = mlist.GetAvailableLanguages()
+        langs = mlist.language_codes
         langnames = [_(Utils.GetLanguageDescr(L)) for L in langs]
         try:
             langi = langs.index(mlist.preferred_language)
@@ -45,7 +45,6 @@ class Language(GUIBase):
             # Someone must have deleted the list's preferred language.  Could
             # be other trouble lurking!
             langi = 0
-
         # Only allow the admin to choose a language if the system has a
         # charset for it.  I think this is the best way to test for that.
         def checkcodec(charset):
@@ -112,10 +111,21 @@ class Language(GUIBase):
 
             ]
 
-    def _setValue(self, mlist, property, val, doc):
+    def _setValue(self, mlist, prop, val, doc):
         # If we're changing the list's preferred language, change the I18N
         # context as well
-        if property == 'preferred_language':
+        if prop == 'preferred_language':
             i18n.set_language(val)
             doc.set_language(val)
-        GUIBase._setValue(self, mlist, property, val, doc)
+        # Language codes must be wrapped
+        if prop == 'available_languages':
+            mlist.set_languages(*val)
+        else:
+            GUIBase._setValue(self, mlist, prop, val, doc)
+
+    def getValue(self, mlist, kind, varname, params):
+        if varname == 'available_languages':
+            # Unwrap Language instances, to return just the code
+            return [language.code for language in mlist.available_languages]
+        # Returning None tells the infrastructure to use getattr
+        return None

@@ -540,7 +540,7 @@ address.  Upon confirmation, any other mailing list containing the address
             newvals.append((flag, newval))
 
         # The user language is handled a little differently
-        if userlang not in mlist.GetAvailableLanguages():
+        if userlang not in mlist.language_codes:
             newvals.append((SETLANGUAGE, mlist.preferred_language))
         else:
             newvals.append((SETLANGUAGE, userlang))
@@ -828,7 +828,7 @@ def loginpage(mlist, doc, user, lang):
     table.AddRow([Center(Header(2, title))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0,
                       bgcolor=mm_cfg.WEB_HEADER_COLOR)
-    if len(mlist.GetAvailableLanguages()) > 1:
+    if len(mlist.language_codes) > 1:
         langform = Form(actionurl)
         langform.AddItem(SubmitButton('displang-button',
                                       _('View this page in')))

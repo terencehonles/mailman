@@ -223,7 +223,10 @@ def create(all_listdata):
                               'filter_filename_extensions',
                               'pass_filename_extensions'):
                     value = value.splitlines()
-                setattr(mlist, option, value)
+                if option == 'available_languages':
+                    mlist.set_languages(*value)
+                else:
+                    setattr(mlist, option, value)
             for member in list_roster:
                 mid = member['id']
                 if VERBOSE:

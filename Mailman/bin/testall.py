@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -24,7 +24,6 @@ import optparse
 import unittest
 
 from Mailman import Version
-from Mailman import loginit
 from Mailman.i18n import _
 from Mailman.initialize import initialize
 
@@ -138,10 +137,9 @@ def main():
     global basedir
 
     parser, opts, args = parseargs()
-    initialize(opts.config)
+    initialize(opts.config, propagate_logs=opts.stderr)
     if not args:
         args = ['.']
-    loginit.initialize(propagate=opts.stderr)
 
     import Mailman
     basedir = os.path.dirname(Mailman.__file__)

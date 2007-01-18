@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -56,6 +56,10 @@ class EmailBase(TestBase):
         TestBase._configure(self, fp)
         print >> fp, 'SMTPPORT =', TESTPORT
         config.SMTPPORT = TESTPORT
+        # Don't go nuts on mailmanctl restarts.  If a qrunner fails once, it
+        # will keep failing.
+        print >> fp, 'MAX_RESTARTS = 1'
+        config.MAX_RESTARTS = 1
 
     def setUp(self):
         TestBase.setUp(self)
@@ -86,7 +90,7 @@ class EmailBase(TestBase):
                 time.sleep(3)
             except socket.error, e:
                 # IWBNI e had an errno attribute
-                if e[0] == errno.ECONNREFUSED:
+                if e[0] in (errno.ECONNREFUSED, errno.ETIMEDOUT):
                     break
                 else:
                     raise
@@ -105,6 +109,7 @@ class EmailBase(TestBase):
                 MSGTEXT = None
             except asyncore.ExitNow:
                 pass
+            asyncore.close_all()
             return MSGTEXT
         finally:
             self._mlist.Lock()

@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -191,7 +191,7 @@ def list_listinfo(mlist, lang):
                                                     _('Edit Options')).Format()
     # If only one language is enabled for this mailing list, omit the choice
     # buttons.
-    if len(mlist.GetAvailableLanguages()) == 1:
+    if len(mlist.language_codes) == 1:
         displang = ''
     else:
         displang = mlist.FormatButton('displang-button',

@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -24,10 +24,16 @@ import unittest
 from Mailman import MailList
 from Mailman import MemberAdaptor
 from Mailman import Utils
+from Mailman import passwords
 from Mailman.Errors import NotAMemberError
 from Mailman.UserDesc import UserDesc
 from Mailman.configuration import config
 from Mailman.testing.base import TestBase
+
+
+
+def password(cleartext):
+    return passwords.make_secret(cleartext, 'ssha')
 
 
 
@@ -78,9 +84,10 @@ class TestNoMembers(TestBase):
 class TestMembers(TestBase):
     def setUp(self):
         TestBase.setUp(self)
+        self._member_password = password('xxXXxx')
         self._mlist.addNewMember('person@dom.ain',
                                  digest=0,
-                                 password='xxXXxx',
+                                 password=self._member_password,
                                  language='xx',
                                  realname='A. Nice Person')
 
@@ -95,7 +102,7 @@ class TestMembers(TestBase):
         eq(mlist.getMemberCPAddress('person@dom.ain'), 'person@dom.ain')
         eq(mlist.getMemberCPAddresses(('person@dom.ain', 'noperson@dom.ain')),
            ['person@dom.ain', None])
-        eq(mlist.getMemberPassword('person@dom.ain'), 'xxXXxx')
+        eq(mlist.getMemberPassword('person@dom.ain'), self._member_password)
         eq(mlist.getMemberLanguage('person@dom.ain'), 'en')
         eq(mlist.getMemberOption('person@dom.ain', config.Digests), 0)
         eq(mlist.getMemberOption('person@dom.ain', config.AcknowledgePosts), 0)
@@ -106,7 +113,7 @@ class TestMembers(TestBase):
         mlist = self._mlist
         self.failIf(mlist.authenticateMember('person@dom.ain', 'xxx'))
         self.assertEqual(mlist.authenticateMember('person@dom.ain', 'xxXXxx'),
-                         'xxXXxx')
+                         self._member_password)
 
     def test_remove_member(self):
         eq = self.assertEqual
@@ -161,7 +168,7 @@ class TestMembers(TestBase):
         eq(mlist.getMemberCPAddress('nice@dom.ain'), 'nice@dom.ain')
         eq(mlist.getMemberCPAddresses(('nice@dom.ain', 'nonice@dom.ain')),
            ['nice@dom.ain', None])
-        eq(mlist.getMemberPassword('nice@dom.ain'), 'xxXXxx')
+        eq(mlist.getMemberPassword('nice@dom.ain'), self._member_password)
         eq(mlist.getMemberLanguage('nice@dom.ain'), 'en')
         eq(mlist.getMemberOption('nice@dom.ain', config.Digests), 0)
         eq(mlist.getMemberOption('nice@dom.ain', config.AcknowledgePosts), 0)
@@ -188,9 +195,10 @@ class TestMembers(TestBase):
     def test_set_password(self):
         eq = self.assertEqual
         mlist = self._mlist
-        mlist.setMemberPassword('person@dom.ain', 'yyYYyy')
-        eq(mlist.getMemberPassword('person@dom.ain'), 'yyYYyy')
-        eq(mlist.authenticateMember('person@dom.ain', 'yyYYyy'), 'yyYYyy')
+        new_password = password('yyYYyy')
+        mlist.setMemberPassword('person@dom.ain', new_password)
+        eq(mlist.getMemberPassword('person@dom.ain'), new_password)
+        eq(mlist.authenticateMember('person@dom.ain', 'yyYYyy'), new_password)
         self.failIf(mlist.authenticateMember('person@dom.ain', 'xxXXxx'))
 
     def test_set_language(self):
@@ -200,7 +208,7 @@ class TestMembers(TestBase):
         odesc = config.LC_DESCRIPTIONS.copy()
         try:
             config.add_language('xx', 'Xxian', 'utf-8')
-            self._mlist.available_languages.append('xx')
+            self._mlist.add_language('xx')
             self._mlist.setMemberLanguage('person@dom.ain', 'xx')
             self.assertEqual(self._mlist.getMemberLanguage('person@dom.ain'),
                              'xx')

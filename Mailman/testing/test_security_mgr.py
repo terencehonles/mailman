@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -24,23 +24,19 @@ import errno
 import Cookie
 import unittest
 
-try:
-    import crypt
-except ImportError:
-    crypt = None
-
 # Don't use cStringIO because we're going to inherit
 from StringIO import StringIO
 
 from Mailman import Errors
 from Mailman import Utils
+from Mailman import passwords
 from Mailman.configuration import config
 from Mailman.testing.base import TestBase
 
 
 
-def password(plaintext):
-    return sha.new(plaintext).hexdigest()
+def password(cleartext):
+    return passwords.make_secret(cleartext, 'ssha')
 
 
 
@@ -130,34 +126,6 @@ class TestAuthenticate(TestBase):
         self.assertEqual(self._mlist.Authenticate(
             [config.AuthListAdmin], 'xxxxxx'), config.UnAuthorized)
 
-    def test_list_admin_upgrade(self):
-        eq = self.assertEqual
-        mlist = self._mlist
-        mlist.password = md5.new('ssSSss').digest()
-        eq(mlist.Authenticate(
-            [config.AuthListAdmin], 'ssSSss'), config.AuthListAdmin)
-        eq(mlist.password, password('ssSSss'))
-        # Test crypt upgrades if crypt is supported
-        if crypt:
-            mlist.password = crypt.crypt('rrRRrr', 'zc')
-            eq(self._mlist.Authenticate(
-                [config.AuthListAdmin], 'rrRRrr'), config.AuthListAdmin)
-            eq(mlist.password, password('rrRRrr'))
-
-    def test_list_admin_oldstyle_unauth(self):
-        eq = self.assertEqual
-        mlist = self._mlist
-        mlist.password = md5.new('ssSSss').digest()
-        eq(mlist.Authenticate(
-            [config.AuthListAdmin], 'xxxxxx'), config.UnAuthorized)
-        eq(mlist.password, md5.new('ssSSss').digest())
-        # Test crypt upgrades if crypt is supported
-        if crypt:
-            mlist.password = crypted = crypt.crypt('rrRRrr', 'zc')
-            eq(self._mlist.Authenticate(
-                [config.AuthListAdmin], 'xxxxxx'), config.UnAuthorized)
-            eq(mlist.password, crypted)
-
     def test_list_moderator(self):
         self._mlist.mod_password = password('mmMMmm')
         self.assertEqual(self._mlist.Authenticate(
@@ -165,7 +133,7 @@ class TestAuthenticate(TestBase):
 
     def test_user(self):
         mlist = self._mlist
-        mlist.addNewMember('aperson@dom.ain', password='nosrepa')
+        mlist.addNewMember('aperson@dom.ain', password=password('nosrepa'))
         self.assertEqual(mlist.Authenticate(
             [config.AuthUser], 'nosrepa', 'aperson@dom.ain'), config.AuthUser)
 

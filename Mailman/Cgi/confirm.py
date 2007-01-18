@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -285,7 +285,7 @@ def subscription_prompt(mlist, doc, cookie, userdesc):
         table.AddRow([Label(_('Receive digests?')),
                       RadioButtonArray('digests', (_('No'), _('Yes')),
                                        checked=digest, values=(0, 1))])
-    langs = mlist.GetAvailableLanguages()
+    langs = mlist.language_codes
     values = [_(Utils.GetLanguageDescr(l)) for l in langs]
     try:
         selected = langs.index(lang)

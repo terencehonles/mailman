@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -49,6 +49,7 @@ from Mailman import Version
 from Mailman import database
 from Mailman.UserDesc import UserDesc
 from Mailman.configuration import config
+from Mailman.database.languages import Language
 
 # Base classes
 from Mailman import Pending
@@ -295,6 +296,7 @@ class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
             user = Utils.ObscureEmail(user)
         return '%s/%s' % (url, urllib.quote(user.lower()))
 
+
 
     #
     # Instance and subcomponent initialization
@@ -415,7 +417,6 @@ class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
         self.admin_member_chunksize = config.DEFAULT_ADMIN_MEMBER_CHUNKSIZE
         self.administrivia = config.DEFAULT_ADMINISTRIVIA
         self.preferred_language = config.DEFAULT_SERVER_LANGUAGE
-        self.available_languages = []
         self.include_rfc2369_headers = 1
         self.include_list_post_header = 1
         self.filter_mime_types = config.DEFAULT_FILTER_MIME_TYPES
@@ -559,9 +560,9 @@ class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
         self.InitVars(listname, admin_email, crypted_password)
         self.CheckValues()
         if langs is None:
-            self.available_languages = [self.preferred_language]
-        else:
-            self.available_languages = langs
+            langs = [self.preferred_language]
+        for language_code in langs:
+            self.set_languages(*langs)
         url_host = config.domains[email_host]
         self.web_page_url = config.DEFAULT_URL_PATTERN % url_host
         database.add_list(self)
@@ -1440,14 +1441,26 @@ bad regexp in bounce_matching_header line: %s
     #
     # Multilingual (i18n) support
     #
-    def GetAvailableLanguages(self):
-        langs = self.available_languages
+    def set_languages(self, *language_codes):
+        # Don't use the language_codes property because that will add the
+        # default server language.  The effect would be that the default
+        # server language would never get added to the list's list of
+        # languages.
+        self.available_languages = [Language(code) for code in language_codes
+                                    if code in config.LC_DESCRIPTIONS]
+
+    def add_language(self, language_code):
+        self.available_languages.append(Language(language_code))
+
+    @property
+    def language_codes(self):
+        # Callers of this method expect a list of language codes
+        codes = [lang.code for lang in self.available_languages
+                 if lang.code in config.LC_DESCRIPTIONS]
         # If we don't add this, and the site admin has never added any
         # language support to the list, then the general admin page may have a
         # blank field where the list owner is supposed to chose the list's
         # preferred language.
-        if config.DEFAULT_SERVER_LANGUAGE not in langs:
-            langs.append(config.DEFAULT_SERVER_LANGUAGE)
-        # When testing, it's possible we've disabled a language, so just
-        # filter things out so we don't get tracebacks.
-        return [lang for lang in langs if config.LC_DESCRIPTIONS.has_key(lang)]
+        if config.DEFAULT_SERVER_LANGUAGE not in codes:
+            codes.append(config.DEFAULT_SERVER_LANGUAGE)
+        return codes

@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2006 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -20,9 +20,10 @@
 import re
 import time
 
+from Mailman import Defaults
 from Mailman import MemberAdaptor
 from Mailman import Utils
-from Mailman import mm_cfg
+from Mailman.configuration import config
 from Mailman.htmlformat import *
 from Mailman.i18n import _
 
@@ -62,7 +63,7 @@ class HTMLFormatter:
     def FormatUsers(self, digest, lang=None):
         if lang is None:
             lang = self.preferred_language
-        conceal_sub = mm_cfg.ConcealSubscription
+        conceal_sub = Defaults.ConcealSubscription
         people = []
         if digest:
             digestmembers = self.getDigestMemberKeys()
@@ -102,7 +103,7 @@ class HTMLFormatter:
         return concealed + UnorderedList(*tuple(items)).Format()
 
     def FormatOptionButton(self, option, value, user):
-        if option == mm_cfg.DisableDelivery:
+        if option == Defaults.DisableDelivery:
             optval = self.getDeliveryStatus(user) <> MemberAdaptor.ENABLED
         else:
             optval = self.getMemberOption(user, option)
@@ -110,16 +111,17 @@ class HTMLFormatter:
             checked = ' CHECKED'
         else:
             checked = ''
-        name = {mm_cfg.DontReceiveOwnPosts      : 'dontreceive',
-                mm_cfg.DisableDelivery          : 'disablemail',
-                mm_cfg.DisableMime              : 'mime',
-                mm_cfg.AcknowledgePosts         : 'ackposts',
-                mm_cfg.Digests                  : 'digest',
-                mm_cfg.ConcealSubscription      : 'conceal',
-                mm_cfg.SuppressPasswordReminder : 'remind',
-                mm_cfg.ReceiveNonmatchingTopics : 'rcvtopic',
-                mm_cfg.DontReceiveDuplicates    : 'nodupes',
-                }[option]
+        name = {
+            Defaults.DontReceiveOwnPosts      : 'dontreceive',
+            Defaults.DisableDelivery          : 'disablemail',
+            Defaults.DisableMime              : 'mime',
+            Defaults.AcknowledgePosts         : 'ackposts',
+            Defaults.Digests                  : 'digest',
+            Defaults.ConcealSubscription      : 'conceal',
+            Defaults.SuppressPasswordReminder : 'remind',
+            Defaults.ReceiveNonmatchingTopics : 'rcvtopic',
+            Defaults.DontReceiveDuplicates    : 'nodupes',
+            }[option]
         return '<input type=radio name="%s" value="%d"%s>' % (
             name, value, checked)
 
@@ -374,7 +376,7 @@ class HTMLFormatter:
         member_len = len(self.getRegularMemberKeys())
         # If only one language is enabled for this mailing list, omit the
         # language choice buttons.
-        if len(self.GetAvailableLanguages()) == 1:
+        if len(self.language_codes) == 1:
             listlangs = _(Utils.GetLanguageDescr(self.preferred_language))
         else:
             listlangs = self.GetLangSelectBox(lang).Format()
@@ -401,8 +403,8 @@ class HTMLFormatter:
             '<mm-host>' : self.host_name,
             '<mm-list-langs>' : listlangs,
             }
-        if mm_cfg.IMAGE_LOGOS:
-            d['<mm-favicon>'] = mm_cfg.IMAGE_LOGOS + mm_cfg.SHORTCUT_ICON
+        if config.IMAGE_LOGOS:
+            d['<mm-favicon>'] = config.IMAGE_LOGOS + config.SHORTCUT_ICON
         return d
 
     def GetAllReplacements(self, lang=None):
@@ -421,14 +423,14 @@ class HTMLFormatter:
         if lang is None:
             lang = self.preferred_language
         # Figure out the available languages
-        values = self.GetAvailableLanguages()
-        legend = map(_, map(Utils.GetLanguageDescr, values))
+        values = self.language_codes
+        legend = [Utils.GetLanguageDescr(code) for code in values]
         try:
             selected = values.index(lang)
         except ValueError:
             try:
                 selected = values.index(self.preferred_language)
             except ValueError:
-                selected = mm_cfg.DEFAULT_SERVER_LANGUAGE
+                selected = config.DEFAULT_SERVER_LANGUAGE
         # Return the widget
         return SelectOptions(varname, values, legend, selected)
