@@ -1,6 +1,6 @@
 Python coding style guide for Mailman
-Copyright (C) 2002-2004 Barry A. Warsaw
-$Revision: 8143 $
+Copyright (C) 2002-2007 Barry A. Warsaw
+$Revision: 8145 $
 
 NOTE: The canonical version of this style guide can be found at:
 
