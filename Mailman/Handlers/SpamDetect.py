@@ -113,6 +113,9 @@ def process(mlist, msg, msgdata):
         for pattern in patterns.splitlines():
             if pattern.startswith('#'):
                 continue
+            # ignore 'empty' patterns
+            if not pattern.strip():
+                continue
             if re.search(pattern, headers, re.IGNORECASE|re.MULTILINE):
                 if action == config.DISCARD:
                     raise Errors.DiscardMessage
