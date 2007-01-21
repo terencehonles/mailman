@@ -12,7 +12,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 from email.Utils import parseaddr
 
@@ -25,17 +26,21 @@ def _(s): return s
 
 PUBLICHELP = _("""
     who
-        See everyone who is on this mailing list.
+        See the non-hidden members of this mailing list.
+    who password
+        See everyone who is on this mailing list. The password is the
+        list's admin or moderator password.
 """)
 
 MEMBERSONLYHELP = _("""
     who password [address=<address>]
-        See everyone who is on this mailing list.  The roster is limited to
-        list members only, and you must supply your membership password to
-        retrieve it.  If you're posting from an address other than your
-        membership address, specify your membership address with
+        See the non-hidden members of this mailing list.  The roster is
+        limited to list members only, and you must supply your membership
+        password to retrieve it.  If you're posting from an address other
+        than your membership address, specify your membership address with
         `address=<address>' (no brackets around the email address, and no
-        quotes!)
+        quotes!). If you provide the list's admin or moderator password,
+        hidden members will be included.
 """)
 
 ADMINONLYHELP = _("""
@@ -68,13 +73,23 @@ def process(res, args):
     mlist = res.mlist
     address = None
     password = None
-    ok = 0
+    ok = False
+    full = False
     if mlist.private_roster == 0:
         # Public rosters
         if args:
-            usage(res)
-            return STOP
-        ok = 1
+            if len(args) == 1:
+                if mlist.Authenticate((mm_cfg.AuthListModerator,
+                                       mm_cfg.AuthListAdmin),
+                                      args[0]):
+                    full = True
+                else:
+                    usage(res)
+                    return STOP
+            else:
+                usage(res)
+                return STOP
+        ok = True
     elif mlist.private_roster == 1:
         # List members only
         if len(args) == 1:
@@ -92,7 +107,13 @@ def process(res, args):
              mm_cfg.AuthListAdmin),
             password, address):
             # Then
-            ok = 1
+            ok = True
+        if mlist.Authenticate(
+            (mm_cfg.AuthListModerator,
+             mm_cfg.AuthListAdmin),
+            password):
+            # Then
+            ok = full = True
     else:
         # Admin only
         if len(args) <> 1:
@@ -101,7 +122,7 @@ def process(res, args):
         if mlist.Authenticate((mm_cfg.AuthListModerator,
                                mm_cfg.AuthListAdmin),
                               args[0]):
-            ok = 1
+            ok = full = True
     if not ok:
         res.results.append(
             _('You are not allowed to retrieve the list membership.'))
@@ -115,7 +136,8 @@ def process(res, args):
     # Convenience function
     def addmembers(members):
         for member in members:
-            if mlist.getMemberOption(member, mm_cfg.ConcealSubscription):
+            if not full and mlist.getMemberOption(member,
+                                           mm_cfg.ConcealSubscription):
                 continue
             realname = mlist.getMemberName(member)
             if realname:
