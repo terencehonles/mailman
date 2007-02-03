@@ -52,7 +52,7 @@ Set the list creator password instead of the site password.  The list
 creator is authorized to create and remove lists, but does not have
 the total power of the site administrator."""))
     parser.add_option('-p', '--password-scheme',
-                      default=config.PASSWORD_SCHEME, type='string',
+                      default='', type='string',
                       help=_("""\
 Specify the RFC 2307 style hashing scheme for passwords included in the
 output.  Use -P to get a list of supported schemes, which are
@@ -70,15 +70,23 @@ case-insensitive."""))
         for label in passwords.SCHEMES:
             print label.upper()
         sys.exit(0)
-    if opts.password_scheme.lower() not in passwords.SCHEMES:
-        parser.error(_('Invalid password scheme'))
     return parser, opts, args
+
+
+def check_password_scheme(parser, password_scheme):
+    # shoule be checked after config is loaded.
+    if password_scheme == '':
+        password_scheme = config.PASSWORD_SCHEME
+    if password_scheme.lower() not in passwords.SCHEMES:
+        parser.error(_('Invalid password scheme'))
+    return password_scheme
 
 
 
 def main():
     parser, opts, args = parseargs()
     initialize(opts.config)
+    opts.password_scheme = check_password_scheme(parser, opts.password_scheme)
     if args:
         password = args[0]
     else:

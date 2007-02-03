@@ -45,11 +45,11 @@ OPT=		@OPT@
 CFLAGS=		@CFLAGS@ $(OPT) $(DEFS)
 
 VAR_DIRS= \
-	logs archives lists locks data spam qfiles \
+	etc logs archives lists locks data spam qfiles \
 	archives/private archives/public
 
 ARCH_INDEP_DIRS= \
-	bin etc templates scripts cron pythonlib \
+	bin templates scripts cron pythonlib \
 	Mailman Mailman/bin Mailman/database Mailman/Cgi Mailman/Archiver \
 	Mailman/Handlers Mailman/Queue Mailman/Queue/tests \
 	Mailman/Bouncers \
