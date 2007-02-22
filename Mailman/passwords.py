@@ -97,7 +97,7 @@ class SSHAPasswordScheme(PasswordScheme):
     @staticmethod
     def check_response(challenge, response):
         # Get the salt from the challenge
-        challenge_bytes = decode(challenge)
+        challenge_bytes = decode(str(challenge))
         digest = challenge_bytes[:20]
         salt = challenge_bytes[20:]
         h = sha.new(response)
