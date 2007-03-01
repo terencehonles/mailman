@@ -503,16 +503,12 @@ def findtext(templatefile, dict=None, raw=False, lang=None, mlist=None):
             raise IOError(errno.ENOENT, 'No template file found', templatefile)
     template = fp.read()
     fp.close()
+    template = unicode(template, GetCharSet(lang), 'replace')
     text = template
     if dict is not None:
         try:
-            sdict = SafeDict(dict)
-            try:
-                text = sdict.interpolate(template)
-            except UnicodeError:
-                # Try again after coercing the template to unicode
-                utemplate = unicode(template, GetCharSet(lang), 'replace')
-                text = sdict.interpolate(utemplate)
+            sdict = SafeDict(dict, lang=lang)
+            text = sdict.interpolate(template)
         except (TypeError, ValueError), e:
             # The template is really screwed up
             log.error('broken template: %s\n%s', filename, e)

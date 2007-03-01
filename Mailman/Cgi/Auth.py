@@ -56,5 +56,5 @@ def loginpage(mlist, scriptname, msg='', frontpage=False):
          'path'    : actionurl,
          'message' : msg,
          'who'     : who,
-         }, mlist=mlist)
-    print mlist.GetMailmanFooter()
+         }, mlist=mlist).encode(charset)
+    print mlist.GetMailmanFooter().encode(charset)

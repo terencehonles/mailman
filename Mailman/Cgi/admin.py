@@ -497,7 +497,7 @@ def show_variables(mlist, category, subcat, cgidata, doc):
     # The very first item in the config info will be treated as a general
     # description if it is a string
     description = options[0]
-    if isinstance(description, str):
+    if isinstance(description, basestring):
         table.AddRow([description])
         table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
         options = options[1:]
@@ -514,7 +514,7 @@ def show_variables(mlist, category, subcat, cgidata, doc):
                       width='85%')
 
     for item in options:
-        if isinstance(item, str):
+        if isinstance(item, basestring):
             # The very first banner option (string in an options list) is
             # treated as a general description, while any others are
             # treated as section headers - centered and italicized...
@@ -937,8 +937,7 @@ def membership_options(mlist, subcat, cgidata, doc, form):
     for addr in members:
         link = Link(mlist.GetOptionsURL(addr, obscure=1),
                     mlist.getMemberCPAddress(addr))
-        fullname = Utils.uncanonstr(mlist.getMemberName(addr),
-                                    mlist.preferred_language)
+        fullname = mlist.getMemberName(addr)
         name = TextBox(addr + '_realname', fullname, size=longest).Format()
         cells = [Center(CheckBox(addr + '_unsub', 'off', 0).Format()),
                  link.Format() + '<br>' +

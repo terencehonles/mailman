@@ -42,8 +42,9 @@ class GUIBase:
             # Let ValueErrors propagate
             return int(val)
         # String and Text widgets both just return their values verbatim
+        # but convert into unicode (for 2.2)
         if wtype in (Defaults.String, Defaults.Text):
-            return val
+            return unicode(val, Utils.GetCharSet(mlist.preferred_language))
         # This widget contains a single email address
         if wtype == Defaults.Email:
             # BAW: We must allow blank values otherwise reply_to_address can't

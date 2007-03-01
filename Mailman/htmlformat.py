@@ -325,7 +325,7 @@ class Document(Container):
         if not self.suppress_head:
             output.append('%s</BODY>' % tab)
             output.append('%s</HTML>' % tab)
-        return NL.join(output)
+        return NL.join(output).encode(charset, 'replace')
 
     def addError(self, errmsg, tag=None):
         if tag is None:

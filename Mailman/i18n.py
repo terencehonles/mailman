@@ -112,7 +112,9 @@ def _(s):
     # Are we using $-strings or %-strings?
     if use_templates:
         return Template(tns).safe_substitute(attrdict(d))
-    return tns % SafeDict(d)
+    if type(tns) == str:
+        tns = unicode(tns, charset)
+    return SafeDict(d, charset=charset).interpolate(tns)
 
 
 

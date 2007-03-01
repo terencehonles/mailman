@@ -207,13 +207,14 @@ class UserNotification(Message):
         Message.__init__(self)
         charset = None
         if lang is not None:
-            charset = Charset(Utils.GetCharSet(lang))
+            csetstr = Utils.GetCharSet(lang)
+            charset = Charset(csetstr)
         if text is not None:
-            self.set_payload(text, charset)
+            self.set_payload(text.encode(csetstr), charset)
         if subject is None:
             subject = '(no subject)'
-        self['Subject'] = Header(subject, charset, header_name='Subject',
-                                 errors='replace')
+        self['Subject'] = Header(subject.encode(csetstr), charset,
+                                 header_name='Subject', errors='replace')
         self['From'] = sender
         if isinstance(recip, list):
             self['To'] = COMMASPACE.join(recip)

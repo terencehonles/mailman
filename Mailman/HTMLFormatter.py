@@ -361,8 +361,8 @@ class HTMLFormatter:
             tag = parts[i].lower()
             if replacements.has_key(tag):
                 repl = replacements[tag]
-                if isinstance(repl, type(u'')):
-                    repl = repl.encode(charset, 'replace')
+                if isinstance(repl, str):
+                    repl = unicode(repl, charset, 'replace')
                 parts[i] = repl
             else:
                 parts[i] = ''

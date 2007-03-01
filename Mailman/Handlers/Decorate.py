@@ -50,11 +50,11 @@ def process(mlist, msg, msgdata):
             d['user_password'] = mlist.getMemberPassword(member)
             d['user_language'] = mlist.getMemberLanguage(member)
             username = mlist.getMemberName(member) or None
-            try:
-                username = username.encode(Utils.GetCharSet(d['user_language']))
-            except (AttributeError, UnicodeError):
-                username = member
-            d['user_name'] = username
+            #try:
+            #    username = username.encode(Utils.GetCharSet(d['user_language']))
+            #except (AttributeError, UnicodeError):
+            #    username = member
+            d['user_name'] = username or d['user_delivered_to']
             d['user_optionsurl'] = mlist.GetOptionsURL(member)
         except Errors.NotAMemberError:
             pass
@@ -88,11 +88,9 @@ def process(mlist, msg, msgdata):
     # MIME multipart chroming the message?
     wrap = True
     if not msg.is_multipart() and msgtype == 'text/plain':
-        # TK: Try to keep the message plain by converting the header/
-        # footer/oldpayload into unicode and encode with mcset/lcset.
-        # Try to decode qp/base64 also.
-        uheader = unicode(header, lcset, 'ignore')
-        ufooter = unicode(footer, lcset, 'ignore')
+        # header/footer is now in unicode (2.2)
+        uheader = header
+        ufooter = footer
         try:
             oldpayload = unicode(msg.get_payload(decode=True), mcset)
             frontsep = endsep = u''
@@ -101,20 +99,23 @@ def process(mlist, msg, msgdata):
             if footer and not oldpayload.endswith('\n'):
                 endsep = u'\n'
             payload = uheader + frontsep + oldpayload + endsep + ufooter
-            try:
-                # first, try encode with list charset
-                payload = payload.encode(lcset)
-                newcset = lcset
-            except UnicodeError:
-                if lcset != mcset:
-                    # if fail, encode with message charset (if different)
-                    payload = payload.encode(mcset)
-                    newcset = mcset
-                    # if this fails, fallback to outer try and wrap=true
-            del msg['content-transfer-encoding']
-            del msg['content-type']
-            msg.set_payload(payload, newcset)
-            wrap = False
+            # Try to set message in list charset then message charset.
+            # Fall back to 'utf-8' if both doesn't work.
+            csets = [lcset,]
+            if mcset != lcset:
+                csets.append(mcset)
+            if 'utf-8' not in csets:
+                csets.append('utf-8')
+            for cset in csets:
+                try:
+                    payload = payload.encode(cset)
+                    del msg['content-transfer-encoding']
+                    del msg['content-type']
+                    msg.set_payload(payload, cset)
+                    wrap = False
+                    break
+                except UnicodeError:
+                    continue
         except (LookupError, UnicodeError):
             pass
     elif msg.get_content_type() == 'multipart/mixed':
@@ -124,11 +125,11 @@ def process(mlist, msg, msgdata):
         if not isinstance(payload, list):
             payload = [payload]
         if footer:
-            mimeftr = MIMEText(footer, 'plain', lcset)
+            mimeftr = MIMEText(footer.encode(lcset), 'plain', lcset)
             mimeftr['Content-Disposition'] = 'inline'
             payload.append(mimeftr)
         if header:
-            mimehdr = MIMEText(header, 'plain', lcset)
+            mimehdr = MIMEText(header.encode(lcset), 'plain', lcset)
             mimehdr['Content-Disposition'] = 'inline'
             payload.insert(0, mimehdr)
         msg.set_payload(payload)
@@ -166,11 +167,11 @@ def process(mlist, msg, msgdata):
     # any).
     payload = [inner]
     if header:
-        mimehdr = MIMEText(header, 'plain', lcset)
+        mimehdr = MIMEText(header.encode(lcset), 'plain', lcset)
         mimehdr['Content-Disposition'] = 'inline'
         payload.insert(0, mimehdr)
     if footer:
-        mimeftr = MIMEText(footer, 'plain', lcset)
+        mimeftr = MIMEText(footer.encode(lcset), 'plain', lcset)
         mimeftr['Content-Disposition'] = 'inline'
         payload.append(mimeftr)
     msg.set_payload(payload)

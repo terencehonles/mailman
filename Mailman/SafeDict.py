@@ -15,6 +15,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
+from Mailman.configuration import config
+
 """A `safe' dictionary for string interpolation."""
 
 COMMASPACE = ', '
@@ -28,6 +30,15 @@ class SafeDict(dict):
 
     This is used in maketext so that editing templates is a bit more robust.
     """
+    def __init__(self, d='', charset=None, lang=None):
+        super(SafeDict, self).__init__(d)
+        if charset:
+            self.cset = charset
+        elif lang:
+            self.cset = config.LC_DESCRIPTIONS[lang][1]
+        else:
+            self.cset = 'us-ascii'
+
     def __getitem__(self, key):
         try:
             return super(SafeDict, self).__getitem__(key)
@@ -38,6 +49,9 @@ class SafeDict(dict):
                 return '<Missing key: %s>' % `key`
 
     def interpolate(self, template):
+        for k, v in self.items():
+            if isinstance(v, str):
+                self.__setitem__(k, unicode(v, self.cset))
         return template % self
 
 
