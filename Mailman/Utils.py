@@ -826,13 +826,16 @@ def uquote(s):
     return str(EMPTYSTRING.join(a))
 
 
-def oneline(s, cset):
+def oneline(s, cset='us-ascii', in_unicode=False):
     # Decode header string in one line and convert into specified charset
     try:
         h = email.Header.make_header(email.Header.decode_header(s))
         ustr = h.__unicode__()
         line = UEMPTYSTRING.join(ustr.splitlines())
-        return line.encode(cset, 'replace')
+        if in_unicode:
+            return line
+        else:
+            return line.encode(cset, 'replace')
     except (LookupError, UnicodeError, ValueError, HeaderParseError):
         # possibly charset problem. return with undecoded string in one line.
         return EMPTYSTRING.join(s.splitlines())

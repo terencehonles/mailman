@@ -31,7 +31,7 @@ import copy
 import time
 import logging
 
-from cStringIO import StringIO
+from StringIO import StringIO
 from email.Charset import Charset
 from email.Generator import Generator
 from email.Header import decode_header, make_header, Header
@@ -162,6 +162,8 @@ def send_i18n_digests(mlist, mboxfp):
     mimemsg['Message-ID'] = Utils.unique_message_id(mlist)
     # Set things up for the rfc1153 digest
     plainmsg = StringIO()
+    # cStringIO doesn't have encoding. Sigh.
+    plainmsg.encoding = 'utf-8'
     rfc1153msg = Message.Message()
     rfc1153msg['From'] = mlist.GetRequestEmail()
     rfc1153msg['Subject'] = digestsubj
@@ -184,7 +186,7 @@ def send_i18n_digests(mlist, mboxfp):
          'got_owner_email':   mlist.GetOwnerEmail(),
          }, mlist=mlist)
     # MIME
-    masthead = MIMEText(mastheadtxt, _charset=lcset)
+    masthead = MIMEText(mastheadtxt.encode(lcset), _charset=lcset)
     masthead['Content-Description'] = digestid
     mimemsg.attach(masthead)
     # RFC 1153
@@ -194,7 +196,7 @@ def send_i18n_digests(mlist, mboxfp):
     if mlist.digest_header:
         headertxt = decorate(mlist, mlist.digest_header, _('digest header'))
         # MIME
-        header = MIMEText(headertxt, _charset=lcset)
+        header = MIMEText(headertxt.encode(lcset), _charset=lcset)
         header['Content-Description'] = _('Digest Header')
         mimemsg.attach(header)
         # RFC 1153
@@ -208,6 +210,7 @@ def send_i18n_digests(mlist, mboxfp):
     #
     # Meanwhile prepare things for the table of contents
     toc = StringIO()
+    toc.encoding = 'utf-8'
     print >> toc, _("Today's Topics:\n")
     # Now cruise through all the messages in the mailbox of digest messages,
     # building the MIME payload and core of the RFC 1153 digest.  We'll also
@@ -224,14 +227,15 @@ def send_i18n_digests(mlist, mboxfp):
         messages.append(msg)
         # Get the Subject header
         msgsubj = msg.get('subject', _('(no subject)'))
-        subject = Utils.oneline(msgsubj, lcset)
+        subject = Utils.oneline(msgsubj, in_unicode=True)
         # Don't include the redundant subject prefix in the toc
         mo = re.match('(re:? *)?(%s)' % re.escape(mlist.subject_prefix),
                       subject, re.IGNORECASE)
         if mo:
             subject = subject[:mo.start(2)] + subject[mo.end(2):]
         username = ''
-        addresses = getaddresses([Utils.oneline(msg.get('from', ''), lcset)])
+        addresses = getaddresses([Utils.oneline(msg.get('from', ''),
+                                                in_unicode=True)])
         # Take only the first author we find
         if isinstance(addresses, list) and addresses:
             username = addresses[0][0]
@@ -287,7 +291,7 @@ def send_i18n_digests(mlist, mboxfp):
         return
     toctext = toc.getvalue()
     # MIME
-    tocpart = MIMEText(toctext, _charset=lcset)
+    tocpart = MIMEText(toctext.encode(lcset), _charset=lcset)
     tocpart['Content-Description']= _("Today's Topics (%(msgcount)d messages)")
     mimemsg.attach(tocpart)
     # RFC 1153
@@ -319,7 +323,8 @@ def send_i18n_digests(mlist, mboxfp):
         # Honor the default setting
         for h in config.PLAIN_DIGEST_KEEP_HEADERS:
             if msg[h]:
-                uh = Utils.wrap('%s: %s' % (h, Utils.oneline(msg[h], lcset)))
+                uh = Utils.wrap('%s: %s' % (h, Utils.oneline(msg[h],
+                                                             in_unicode=True)))
                 uh = '\n\t'.join(uh.split('\n'))
                 print >> plainmsg, uh
         print >> plainmsg
@@ -344,7 +349,7 @@ def send_i18n_digests(mlist, mboxfp):
     if mlist.digest_footer:
         footertxt = decorate(mlist, mlist.digest_footer, _('digest footer'))
         # MIME
-        footer = MIMEText(footertxt, _charset=lcset)
+        footer = MIMEText(footertxt.encode(lcset), _charset=lcset)
         footer['Content-Description'] = _('Digest Footer')
         mimemsg.attach(footer)
         # RFC 1153
@@ -397,7 +402,7 @@ def send_i18n_digests(mlist, mboxfp):
                     listname=mlist.fqdn_listname,
                     isdigest=True)
     # RFC 1153
-    rfc1153msg.set_payload(plainmsg.getvalue(), lcset)
+    rfc1153msg.set_payload(plainmsg.getvalue().encode(lcset), lcset)
     virginq.enqueue(rfc1153msg,
                     recips=plainrecips,
                     listname=mlist.fqdn_listname,

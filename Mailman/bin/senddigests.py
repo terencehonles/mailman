@@ -23,6 +23,7 @@ from Mailman import Utils
 from Mailman import Version
 from Mailman.configuration import config
 from Mailman.i18n import _
+from Mailman.initialize import initialize
 
 # Work around known problems with some RedHat cron daemons
 import signal
@@ -57,7 +58,7 @@ lists are sent out.  Multiple -l options may be given."""))
 
 def main():
     opts, args, parser = parseargs()
-    config.load(opts.config)
+    initialize(opts.config)
 
     for listname in set(opts.listnames or Utils.list_names()):
         mlist = MailList.MailList(listname, lock=False)
