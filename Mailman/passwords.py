@@ -218,7 +218,7 @@ def make_secret(password, scheme=None):
     # be a unicode.
     if isinstance(password, unicode):
         password = password.encode('utf-8')
-    scheme_class = _SCHEMES_BY_ENUM.get(scheme, _DEFAULT_SCHEME)
+    scheme_class = _SCHEMES_BY_TAG.get(scheme, _DEFAULT_SCHEME)
     secret = scheme_class.make_secret(password)
     return '{%s}%s' % (scheme_class.TAG, secret)
 
@@ -236,4 +236,7 @@ def check_response(challenge, response):
     scheme_parts = scheme_group.split()
     scheme       = scheme_parts[0].lower()
     scheme_class = _SCHEMES_BY_TAG.get(scheme, _DEFAULT_SCHEME)
+    if isinstance(rest_group, unicode):
+        # decode() fails. (challenge is from database)
+        rest_group = str(rest_group)
     return scheme_class.check_response(rest_group, response, *scheme_parts[1:])

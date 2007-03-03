@@ -75,8 +75,8 @@ class EnumMetaclass(type):
         return '<%s {%s}>' % (cls.__name__, COMMASPACE.join(enums))
 
     def __iter__(cls):
-        for i in sorted(self._enums):
-            yield self._enums[i]
+        for i in sorted(cls._enums):
+            yield cls._enums[i]
 
     def __getitem__(cls, i):
         # i can be an integer or a string
