@@ -205,15 +205,14 @@ class UserNotification(Message):
 
     def __init__(self, recip, sender, subject=None, text=None, lang=None):
         Message.__init__(self)
-        charset = None
+        charset = 'us-ascii'
         if lang is not None:
-            csetstr = Utils.GetCharSet(lang)
-            charset = Charset(csetstr)
+            charset = Utils.GetCharSet(lang)
         if text is not None:
-            self.set_payload(text.encode(csetstr), charset)
+            self.set_payload(text.encode(charset), charset)
         if subject is None:
             subject = '(no subject)'
-        self['Subject'] = Header(subject.encode(csetstr), charset,
+        self['Subject'] = Header(subject.encode(charset), charset,
                                  header_name='Subject', errors='replace')
         self['From'] = sender
         if isinstance(recip, list):
