@@ -213,7 +213,7 @@ class OldStyleMemberships(MemberAdaptor.MemberAdaptor):
             value = 0
         else:
             value = member
-            member = member.lower()
+        member = member.lower()
         if digest:
             self.__mlist.digest_members[member] = value
         else:
@@ -255,6 +255,8 @@ class OldStyleMemberships(MemberAdaptor.MemberAdaptor):
         password = self.__mlist.passwords.get(memberkey,
                                               Utils.MakeRandomPassword())
         lang = self.getMemberLanguage(memberkey)
+        delivery = self.__mlist.delivery_status.get(member.lower(),
+                                              (MemberAdaptor.ENABLED,0))
         # First, possibly delete the old member
         if not nodelete:
             self.removeMember(memberkey)
@@ -264,6 +266,11 @@ class OldStyleMemberships(MemberAdaptor.MemberAdaptor):
         # Set the entire options bitfield
         if flags:
             self.__mlist.user_options[newaddress.lower()] = flags
+        # If this is a straightforward address change, i.e. nodelete = 0,
+        # preserve the delivery status and time if BYUSER or BYADMIN
+        if delivery[0] in (MemberAdaptor.BYUSER, MemberAdaptor.BYADMIN)\
+          and not nodelete:
+            self.__mlist.delivery_status[newaddress.lower()] = delivery
 
     def setMemberPassword(self, memberkey, password):
         assert self.__mlist.Locked()
