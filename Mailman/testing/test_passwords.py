@@ -98,23 +98,23 @@ class TestBogusPasswords(TestPasswordsBase):
 
 
 class TestNonePasswords(TestBogusPasswords):
-    scheme = passwords.Schemes.no_scheme
+    scheme = 'no_scheme'
 
 
 class TestCleartextPasswords(TestPasswordsBase):
-    scheme = passwords.Schemes.cleartext
+    scheme = 'cleartext'
 
 
 class TestSHAPasswords(TestPasswordsBase):
-    scheme = passwords.Schemes.sha
+    scheme = 'sha'
 
 
 class TestSSHAPasswords(TestPasswordsBase):
-    scheme = passwords.Schemes.ssha
+    scheme = 'ssha'
 
 
 class TestPBKDF2Passwords(TestPasswordsBase):
-    scheme = passwords.Schemes.pbkdf2
+    scheme = 'pbkdf2'
 
 
 
