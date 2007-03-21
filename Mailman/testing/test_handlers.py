@@ -129,7 +129,7 @@ From: aperson@example.org
         eq(qdata.get('recips'), ['aperson@example.org'])
         eq(qdata.get('version'), 3)
         # Check the .pck
-        eq(str(str(qmsg['subject'])), '_xtest post acknowledgement')
+        eq(str(qmsg['subject']), '_xtest post acknowledgement')
         eq(qmsg['to'], 'aperson@example.org')
         eq(qmsg['from'], '_xtest-bounces@example.com')
         eq(qmsg.get_content_type(), 'text/plain')

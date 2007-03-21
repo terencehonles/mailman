@@ -403,8 +403,7 @@ class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
                 config.DEFAULT_BOUNCE_MATCHING_HEADERS
         self.header_filter_rules = []
         self.anonymous_list = config.DEFAULT_ANONYMOUS_LIST
-        internalname = self.internal_name()
-        self.real_name = internalname[0].upper() + internalname[1:]
+        self.real_name = self.internal_name().capitalize()
         self.description = ''
         self.info = ''
         self.welcome_msg = ''

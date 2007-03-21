@@ -54,6 +54,7 @@ from Mailman.Queue.sbcache import get_switchboard
 from Mailman.configuration import config
 
 _ = i18n._
+__i18n_templates__ = True
 
 UEMPTYSTRING = u''
 EMPTYSTRING = ''
@@ -146,7 +147,7 @@ def send_i18n_digests(mlist, mboxfp):
     realname = mlist.real_name
     volume = mlist.volume
     issue = mlist.next_digest_number
-    digestid = _('%(realname)s Digest, Vol %(volume)d, Issue %(issue)d')
+    digestid = _('$realname Digest, Vol $volume, Issue $issue')
     digestsubj = Header(digestid, lcset, header_name='Subject')
     # Set things up for the MIME digest.  Only headers not added by
     # CookHeaders need be added here.
@@ -292,7 +293,7 @@ def send_i18n_digests(mlist, mboxfp):
     toctext = toc.getvalue()
     # MIME
     tocpart = MIMEText(toctext.encode(lcset), _charset=lcset)
-    tocpart['Content-Description']= _("Today's Topics (%(msgcount)d messages)")
+    tocpart['Content-Description']= _("Today's Topics ($msgcount messages)")
     mimemsg.attach(tocpart)
     # RFC 1153
     print >> plainmsg, toctext

@@ -49,6 +49,8 @@ log = logging.getLogger('mailman.vette')
 def _(s):
     return s
 
+__i18n_templates__ = True
+
 
 
 class ForbiddenPoster(Errors.HoldMessage):
@@ -84,8 +86,8 @@ class Administrivia(Errors.HoldMessage):
         listurl = mlist.GetScriptURL('listinfo', absolute=1)
         request = mlist.GetRequestEmail()
         return _("""Please do *not* post administrative requests to the mailing
-list.  If you wish to subscribe, visit %(listurl)s or send a message with the
-word `help' in it to the request address, %(request)s, for further
+list.  If you wish to subscribe, visit $listurl or send a message with the
+word `help' in it to the request address, $request, for further
 instructions.""")
 
 class SuspiciousHeaders(Errors.HoldMessage):
@@ -100,13 +102,13 @@ class MessageTooBig(Errors.HoldMessage):
     def reason_notice(self):
         size = self.__msgsize
         limit = self.__limit
-        return _('''Message body is too big: %(size)d bytes with a limit of
-%(limit)d KB''')
+        return _('''Message body is too big: $size bytes with a limit of
+$limit KB''')
 
     def rejection_notice(self, mlist):
         kb = self.__limit
         return _('''Your message was too big; please trim it to less than
-%(kb)d KB in size.''')
+$kb KB in size.''')
 
 class ModeratedNewsgroup(ModeratedPost):
     reason = _('Posting to a moderated newsgroup')
@@ -244,7 +246,7 @@ def hold_for_approval(mlist, msg, msgdata, exc):
         d['confirmurl'] = '%s/%s' % (mlist.GetScriptURL('confirm', absolute=1),
                                      cookie)
         lang = msgdata.get('lang', mlist.getMemberLanguage(sender))
-        subject = _('Your message to %(listname)s awaits moderator approval')
+        subject = _('Your message to $listname awaits moderator approval')
         text = Utils.maketext('postheld.txt', d, lang=lang, mlist=mlist)
         nmsg = Message.UserNotification(sender, adminaddr, subject, text, lang)
         nmsg.send(mlist)
@@ -263,7 +265,7 @@ def hold_for_approval(mlist, msg, msgdata, exc):
             d['reason'] = _(reason)
             d['subject'] = usersubject
             # craft the admin notification message and deliver it
-            subject = _('%(listname)s post from %(sender)s requires approval')
+            subject = _('$listname post from $sender requires approval')
             nmsg = Message.UserNotification(owneraddr, owneraddr, subject,
                                             lang=lang)
             nmsg.set_type('multipart/mixed')

@@ -73,7 +73,7 @@ if _translation is None:
 
 def _(s):
     if s == '':
-        return s
+        return u''
     assert s
     # Do translation of the given string into the current language, and do
     # Ping-string interpolation into the resulting string.
@@ -97,24 +97,24 @@ def _(s):
     d = frame.f_globals.copy()
     d.update(frame.f_locals)
     use_templates = d.get('__i18n_templates__', False)
-    # Translating the string returns an encoded 8-bit string.  Rather than
-    # turn that into a Unicode, we turn any Unicodes in the dictionary values
-    # into encoded 8-bit strings.  XXX: Returning a Unicode here broke too
-    # much other stuff and _() has many tentacles.  Eventually I think we want
-    # to use Unicode everywhere.
-    tns = _translation.gettext(s)
-    charset = _translation.charset()
-    if not charset:
-        charset = 'us-ascii'
+    # Mailman must be unicode safe internally (i.e. all strings inside Mailman
+    # must be unicodes).  The translation service is one boundary to the
+    # outside world, so to honor this constraint, make sure that all strings
+    # to come out of _() are unicodes, even if the translated string or
+    # dictionary values are 8-bit strings.
+    tns = _translation.ugettext(s)
+    charset = _translation.charset() or 'us-ascii'
     for k, v in d.items():
-        if isinstance(v, unicode):
-            d[k] = v.encode(charset, 'replace')
+        if isinstance(v, str):
+            d[k] = unicode(v, charset, 'replace')
     # Are we using $-strings or %-strings?
     if use_templates:
-        return Template(tns).safe_substitute(attrdict(d))
-    if type(tns) == str:
-        tns = unicode(tns, charset)
-    return SafeDict(d, charset=charset).interpolate(tns)
+        translated_string = Template(tns).safe_substitute(attrdict(d))
+    else:
+        translated_string = SafeDict(d, charset=charset).interpolate(tns)
+    if isinstance(translated_string, str):
+        translated_string = unicode(translated_string, charset)
+    return translated_string
 
 
 

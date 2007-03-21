@@ -19,7 +19,9 @@
 
 import os
 import grp
+import new
 import pwd
+import sys
 import stat
 import shutil
 import difflib
@@ -39,6 +41,11 @@ NL = '\n'
 
 
 
+def dummy_mta_function(*args, **kws):
+    pass
+
+
+
 class TestBase(unittest.TestCase):
     def _configure(self, fp):
         # Make sure that we don't pollute the real database with our test
@@ -46,6 +53,9 @@ class TestBase(unittest.TestCase):
         test_engine_url = 'sqlite:///' + self._dbfile
         print >> fp, 'SQLALCHEMY_ENGINE_URL = "%s"' % test_engine_url
         config.SQLALCHEMY_ENGINE_URL = test_engine_url
+        # Use the Mailman.MTA.stub module
+        print >> fp, 'MTA = "stub"'
+        config.MTA = 'stub'
         print >> fp, 'add_domain("example.com", "www.example.com")'
         # Only add this domain once to the current process
         if 'example.com' not in config.domains:
@@ -80,6 +90,12 @@ class TestBase(unittest.TestCase):
             self._configure(fp)
         finally:
             fp.close()
+        # Create a fake new Mailman.MTA module which stubs out the create()
+        # and remove() functions.
+        stubmta_module = new.module('Mailman.MTA.stub')
+        sys.modules['Mailman.MTA.stub'] = stubmta_module
+        stubmta_module.create = dummy_mta_function
+        stubmta_module.remove = dummy_mta_function
         # Be sure to close the connection to the current database, and then
         # reconnect to the new temporary SQLite database.  Otherwise we end up
         # with turds in the main database and our qrunner subprocesses won't

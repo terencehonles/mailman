@@ -276,7 +276,6 @@ def prefix_subject(mlist, msg, msgdata):
     if subject.strip() == '':
         subject = _('(no subject)')
         cset = Utils.GetCharSet(mlist.preferred_language)
-        subject = unicode(subject, cset)
     # and substitute %d in prefix with post_id
     try:
         prefix = prefix % mlist.post_id

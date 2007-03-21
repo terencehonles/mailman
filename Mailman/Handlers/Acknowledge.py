@@ -29,6 +29,8 @@ from Mailman import Utils
 from Mailman.configuration import config
 from Mailman.i18n import _
 
+__i18n_templates__ = True
+
 
 
 def process(mlist, msg, msgdata):
@@ -57,7 +59,7 @@ def process(mlist, msg, msgdata):
     # Craft the outgoing message, with all headers and attributes
     # necessary for general delivery.  Then enqueue it to the outgoing
     # queue.
-    subject = _('%(realname)s post acknowledgement')
+    subject = _('$realname post acknowledgement')
     usermsg = Message.UserNotification(sender, mlist.GetBouncesEmail(),
                                        subject, text, lang)
     usermsg.send(mlist)
