@@ -94,7 +94,6 @@ class TestEnum(unittest.TestCase):
         eq(int(MoreColors.red), 1)
         eq(int(OtherColors.blue), 2)
         
-
     def test_enum_duplicates(self):
         try:
             class Bad(Enum):
@@ -108,6 +107,14 @@ class TestEnum(unittest.TestCase):
         else:
             got_error = False
         self.failUnless(got_error)
+
+    def test_enum_iteration(self):
+        eq = self.assertEqual
+        # Iteration sorts on the int value of the enum
+        values = [str(v) for v in MoreColors]
+        eq(values, ['red', 'green', 'blue', 'pink', 'cyan'])
+        values = [int(v) for v in MoreColors]
+        eq(values, [1, 2, 3, 4, 5])
 
 
 

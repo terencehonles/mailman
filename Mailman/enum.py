@@ -76,7 +76,7 @@ class EnumMetaclass(type):
 
     def __iter__(cls):
         for i in sorted(cls._enums):
-            yield cls._enums[i]
+            yield getattr(cls, cls._enums[i])
 
     def __getitem__(cls, i):
         # i can be an integer or a string
