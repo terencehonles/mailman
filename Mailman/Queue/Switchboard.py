@@ -94,7 +94,9 @@ class Switchboard:
         else:
             protocol = 0
             msgsave = cPickle.dumps(str(_msg), protocol)
-        hashfood = msgsave + str(listname) + `now`
+        # listname is unicode but the input to the hash function must be an
+        # 8-bit string (eventually, a bytes object).
+        hashfood = msgsave + listname.encode('utf-8') + `now`
         # Encode the current time into the file name for FIFO sorting in
         # files().  The file name consists of two parts separated by a `+':
         # the received time for this message (i.e. when it first showed up on

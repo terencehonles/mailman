@@ -21,7 +21,6 @@ import optparse
 from Mailman import MailList
 from Mailman import Utils
 from Mailman import Version
-from Mailman.configuration import config
 from Mailman.i18n import _
 from Mailman.initialize import initialize
 

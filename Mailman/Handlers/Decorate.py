@@ -50,10 +50,6 @@ def process(mlist, msg, msgdata):
             d['user_password'] = mlist.getMemberPassword(member)
             d['user_language'] = mlist.getMemberLanguage(member)
             username = mlist.getMemberName(member) or None
-            #try:
-            #    username = username.encode(Utils.GetCharSet(d['user_language']))
-            #except (AttributeError, UnicodeError):
-            #    username = member
             d['user_name'] = username or d['user_delivered_to']
             d['user_optionsurl'] = mlist.GetOptionsURL(member)
         except Errors.NotAMemberError:
@@ -89,8 +85,6 @@ def process(mlist, msg, msgdata):
     wrap = True
     if not msg.is_multipart() and msgtype == 'text/plain':
         # header/footer is now in unicode (2.2)
-        uheader = header
-        ufooter = footer
         try:
             oldpayload = unicode(msg.get_payload(decode=True), mcset)
             frontsep = endsep = u''
@@ -98,24 +92,22 @@ def process(mlist, msg, msgdata):
                 frontsep = u'\n'
             if footer and not oldpayload.endswith('\n'):
                 endsep = u'\n'
-            payload = uheader + frontsep + oldpayload + endsep + ufooter
-            # Try to set message in list charset then message charset.
-            # Fall back to 'utf-8' if both doesn't work.
-            csets = [lcset,]
-            if mcset != lcset:
-                csets.append(mcset)
-            if 'utf-8' not in csets:
-                csets.append('utf-8')
-            for cset in csets:
+            payload = header + frontsep + oldpayload + endsep + footer
+            # When setting the payload for the message, try various charset
+            # encodings until one does not produce a UnicodeError.  We'll try
+            # charsets in this order: the list's charset, the message's
+            # charset, then utf-8.  It's okay if some of these are duplicates.
+            for cset in (lcset, mcset, 'utf-8'):
                 try:
                     payload = payload.encode(cset)
+                except UnicodeError:
+                    pass
+                else:
                     del msg['content-transfer-encoding']
                     del msg['content-type']
                     msg.set_payload(payload, cset)
                     wrap = False
                     break
-                except UnicodeError:
-                    continue
         except (LookupError, UnicodeError):
             pass
     elif msg.get_content_type() == 'multipart/mixed':
