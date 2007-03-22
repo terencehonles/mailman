@@ -19,6 +19,7 @@
 
 import unittest
 
+from Mailman import Errors
 from Mailman import passwords
 
 
@@ -72,6 +73,27 @@ class TestBogusPasswords(TestPasswordsBase):
     scheme = -1
 
     def test_passwords(self):
+        self.assertRaises(Errors.BadPasswordSchemeError,
+                          passwords.make_secret, self.pw8a, self.scheme)
+
+    def test_unicode_passwords(self):
+        self.assertRaises(Errors.BadPasswordSchemeError,
+                          passwords.make_secret, self.pwua, self.scheme)
+
+    def test_passwords_with_funky_chars(self):
+        self.assertRaises(Errors.BadPasswordSchemeError,
+                          passwords.make_secret, self.pw8b, self.scheme)
+
+    def test_unicode_passwords_with_funky_chars(self):
+        self.assertRaises(Errors.BadPasswordSchemeError,
+                          passwords.make_secret, self.pwub, self.scheme)
+
+
+
+class TestNonePasswords(TestPasswordsBase):
+    scheme = passwords.Schemes.no_scheme
+
+    def test_passwords(self):
         failif = self.failIf
         secret = passwords.make_secret(self.pw8a, self.scheme)
         failif(passwords.check_response(secret, self.pw8a))
@@ -97,24 +119,33 @@ class TestBogusPasswords(TestPasswordsBase):
 
 
 
-class TestNonePasswords(TestBogusPasswords):
-    scheme = 'no_scheme'
-
-
 class TestCleartextPasswords(TestPasswordsBase):
-    scheme = 'cleartext'
+    scheme = passwords.Schemes.cleartext
 
 
 class TestSHAPasswords(TestPasswordsBase):
-    scheme = 'sha'
+    scheme = passwords.Schemes.sha
 
 
 class TestSSHAPasswords(TestPasswordsBase):
-    scheme = 'ssha'
+    scheme = passwords.Schemes.ssha
 
 
 class TestPBKDF2Passwords(TestPasswordsBase):
-    scheme = 'pbkdf2'
+    scheme = passwords.Schemes.pbkdf2
+
+
+
+class TestSchemeLookup(unittest.TestCase):
+    def test_scheme_name_lookup(self):
+        unless = self.failUnless
+        unless(passwords.lookup_scheme('NONE') is passwords.Schemes.no_scheme)
+        unless(passwords.lookup_scheme('CLEARTEXT') is
+               passwords.Schemes.cleartext)
+        unless(passwords.lookup_scheme('SHA') is passwords.Schemes.sha)
+        unless(passwords.lookup_scheme('SSHA') is passwords.Schemes.ssha)
+        unless(passwords.lookup_scheme('PBKDF2') is passwords.Schemes.pbkdf2)
+        unless(passwords.lookup_scheme(' -bogus- ') is None)
 
 
 
@@ -126,4 +157,5 @@ def test_suite():
     suite.addTest(unittest.makeSuite(TestSHAPasswords))
     suite.addTest(unittest.makeSuite(TestSSHAPasswords))
     suite.addTest(unittest.makeSuite(TestPBKDF2Passwords))
+    suite.addTest(unittest.makeSuite(TestSchemeLookup))
     return suite

@@ -59,7 +59,7 @@ from Mailman.Handlers import ToUsenet
 
 
 def password(cleartext):
-    return passwords.make_secret(cleartext, 'ssha')
+    return passwords.make_secret(cleartext, passwords.Schemes.ssha)
 
 
 

@@ -29,6 +29,7 @@ from array import array
 from base64 import urlsafe_b64decode as decode
 from base64 import urlsafe_b64encode as encode
 
+from Mailman import Errors
 from Mailman.enum import Enum
 
 SALT_LENGTH = 20 # bytes
@@ -202,8 +203,8 @@ _SCHEMES_BY_ENUM = {
 
 # Some scheme tags have arguments, but the key for this dictionary should just
 # be the lowercased scheme name.
-_SCHEMES_BY_TAG = dict((c.TAG.split(' ')[0].lower(), c)
-                       for c in _SCHEMES_BY_ENUM.values())
+_SCHEMES_BY_TAG = dict((_SCHEMES_BY_ENUM[e].TAG.split(' ')[0].lower(), e)
+                       for e in _SCHEMES_BY_ENUM)
 
 _DEFAULT_SCHEME = NoPasswordScheme
 
@@ -218,7 +219,9 @@ def make_secret(password, scheme=None):
     # be a unicode.
     if isinstance(password, unicode):
         password = password.encode('utf-8')
-    scheme_class = _SCHEMES_BY_TAG.get(scheme, _DEFAULT_SCHEME)
+    scheme_class = _SCHEMES_BY_ENUM.get(scheme)
+    if not scheme_class:
+        raise Errors.BadPasswordSchemeError(scheme)
     secret = scheme_class.make_secret(password)
     return '{%s}%s' % (scheme_class.TAG, secret)
 
@@ -235,8 +238,10 @@ def check_response(challenge, response):
     scheme_group, rest_group = mo.group('scheme', 'rest')
     scheme_parts = scheme_group.split()
     scheme       = scheme_parts[0].lower()
-    scheme_class = _SCHEMES_BY_TAG.get(scheme, _DEFAULT_SCHEME)
-    if isinstance(rest_group, unicode):
-        # decode() fails. (challenge is from database)
-        rest_group = str(rest_group)
+    scheme_enum  = _SCHEMES_BY_TAG.get(scheme, _DEFAULT_SCHEME)
+    scheme_class = _SCHEMES_BY_ENUM[scheme_enum]
     return scheme_class.check_response(rest_group, response, *scheme_parts[1:])
+
+
+def lookup_scheme(scheme_name):
+    return _SCHEMES_BY_TAG.get(scheme_name.lower())

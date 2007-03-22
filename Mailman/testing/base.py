@@ -118,3 +118,9 @@ class TestBase(unittest.TestCase):
                            archives=True, quiet=True)
         os.unlink(self._config)
         os.unlink(self._dbfile)
+        # Clear out any site locks, which can be left over if tests fail.
+        for filename in os.listdir(config.LOCK_DIR):
+            if filename.startswith('<site>'):
+                path = os.path.join(config.LOCK_DIR, filename)
+                print >> sys.stderr, '@@@@@ removing:', path
+                os.unlink(path)

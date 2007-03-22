@@ -36,7 +36,7 @@ from Mailman.testing.base import TestBase
 
 
 def password(cleartext):
-    return passwords.make_secret(cleartext, 'ssha')
+    return passwords.make_secret(cleartext, passwords.Schemes.ssha)
 
 
 

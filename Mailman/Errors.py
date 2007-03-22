@@ -58,8 +58,6 @@ class MembershipIsBanned(MemberError): pass
 # Exception hierarchy for various authentication failures, can be
 # raised from functions in SecurityManager.py
 class MMAuthenticationError(MailmanException): pass
-class MMBadPasswordError(MMAuthenticationError): pass
-class MMPasswordsMustMatch(MMAuthenticationError): pass
 class MMCookieError(MMAuthenticationError): pass
 class MMExpiredCookieError(MMCookieError): pass
 class MMInvalidCookieError(MMCookieError): pass
@@ -191,3 +189,26 @@ class SchemaVersionMismatchError(DatabaseError):
         from Mailman.Version import DATABASE_SCHEMA_VERSION
         return 'Incompatible database schema version (got: %d, expected: %d)' \
                % (self._got, DATABASE_SCHEMA_VERSION)
+
+
+
+class PasswordError(MailmanError):
+    """A password related error."""
+
+
+class MMBadPasswordError(PasswordError, MMAuthenticationError):
+    """A bad password was given."""
+
+
+class MMPasswordsMustMatch(PasswordError, MMAuthenticationError):
+    """The given passwords don't match."""
+
+
+class BadPasswordSchemeError(PasswordError):
+    """A bad password scheme was given."""
+
+    def __init__(self, scheme_name='unknown'):
+        self.scheme_name = scheme_name
+
+    def __str__(self):
+        return 'A bad password scheme was given: %s' % self.scheme_name

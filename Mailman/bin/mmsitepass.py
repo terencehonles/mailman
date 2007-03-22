@@ -68,7 +68,7 @@ case-insensitive."""))
         parser.error(_('Unexpected arguments'))
     if opts.list_hash_schemes:
         for label in passwords.Schemes:
-            print label.upper()
+            print str(label).upper()
         sys.exit(0)
     return parser, opts, args
 
@@ -77,9 +77,10 @@ def check_password_scheme(parser, password_scheme):
     # shoule be checked after config is loaded.
     if password_scheme == '':
         password_scheme = config.PASSWORD_SCHEME
-    if password_scheme.lower() not in passwords.Schemes:
+    scheme = passwords.lookup_scheme(password_scheme.lower())
+    if not scheme:
         parser.error(_('Invalid password scheme'))
-    return password_scheme
+    return scheme
 
 
 

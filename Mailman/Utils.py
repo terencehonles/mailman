@@ -335,7 +335,9 @@ def GetRandomSeed():
 
 
 
-def set_global_password(pw, siteadmin=True, scheme='ssha'):
+def set_global_password(pw, siteadmin=True, scheme=None):
+    if scheme is None:
+        scheme = passwords.Schemes.ssha
     if siteadmin:
         filename = config.SITE_PW_FILE
     else:
