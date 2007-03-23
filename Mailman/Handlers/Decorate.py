@@ -99,15 +99,16 @@ def process(mlist, msg, msgdata):
             # charset, then utf-8.  It's okay if some of these are duplicates.
             for cset in (lcset, mcset, 'utf-8'):
                 try:
-                    payload = payload.encode(cset)
-                except UnicodeError:
-                    pass
-                else:
+                    pld = payload.encode(cset)
                     del msg['content-transfer-encoding']
                     del msg['content-type']
-                    msg.set_payload(payload, cset)
+                    msg.set_payload(pld, cset)
                     wrap = False
                     break
+                # 'except' should be here because set_payload() may fail for
+                # 'euc-jp' which re-encode to 'iso-2022-jp'. :(
+                except UnicodeError:
+                    pass
         except (LookupError, UnicodeError):
             pass
     elif msg.get_content_type() == 'multipart/mixed':

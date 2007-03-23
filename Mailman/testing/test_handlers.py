@@ -883,6 +883,23 @@ IMAGEDATAIMAGEDATAIMAGEDATA
                self._mlist, None, {'personalize': 1,
                                    'recips': [1, 2, 3]})
 
+    def test_no_multipart_mixed_charset(self):
+        mlist = self._mlist
+        mlist.preferred_language = 'ja'
+        mlist.msg_header = '%(description)s header'
+        mlist.msg_footer = '%(description)s footer'
+        mlist.description = u'\u65e5\u672c\u8a9e'
+        msg = Message.Message()
+        msg.set_payload('Fran\xe7aise', 'iso-8859-1')
+        Decorate.process(self._mlist, msg, {})
+        self.assertEqual(msg.as_string(unixfrom=0), """\
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+
+5pel5pys6KqeIGhlYWRlcgpGcmFuw6dhaXNlCuaXpeacrOiqniBmb290ZXI=
+""")
+
 
 
 class TestFileRecips(TestBase):
