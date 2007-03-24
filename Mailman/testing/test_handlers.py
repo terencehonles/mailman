@@ -1606,6 +1606,41 @@ Here is message %(i)d
         # BAW: this test is incomplete...
 
 
+    def test_send_i18n_digest(self):
+        eq = self.assertEqual
+        mlist = self._mlist
+	mlist.preferred_language = 'fr'
+        msg = email.message_from_string("""\
+From: aperson@example.org
+To: _xtest@example.com
+Subject: =?iso-2022-jp?b?GyRCMGxIVhsoQg==?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-2022-jp
+Content-Transfer-Encoding: 7bit
+
+\x1b$B0lHV\x1b(B
+""")
+        mlist.digest_size_threshhold = 0
+        ToDigest.process(mlist, msg, {})
+	files = self._sb.files()
+        eq(len(files), 2)
+        for filebase in files:
+	    qmsg, qdata = self._sb.dequeue(filebase)
+            if qmsg.get_content_maintype() == 'multipart':
+                mimemsg = qmsg
+                mimedata = qdata
+            else:
+                rfc1153msg = qmsg
+                rfc1153data = qdata
+	eq(rfc1153msg.get_content_type(), 'text/plain')
+	eq(rfc1153msg.get_content_charset(), 'utf-8')
+	eq(rfc1153msg['content-transfer-encoding'], 'base64')
+	toc = mimemsg.get_payload()[1]
+	eq(toc.get_content_type(), 'text/plain')
+	eq(toc.get_content_charset(), 'utf-8')
+	eq(toc['content-transfer-encoding'], 'base64')
+
+
 
 class TestToOutgoing(TestBase):
     def setUp(self):

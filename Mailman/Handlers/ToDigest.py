@@ -31,7 +31,7 @@ import copy
 import time
 import logging
 
-from StringIO import StringIO
+from StringIO import StringIO          # cStringIO can't handle unicode.
 from email.Charset import Charset
 from email.Generator import Generator
 from email.Header import decode_header, make_header, Header
@@ -163,8 +163,6 @@ def send_i18n_digests(mlist, mboxfp):
     mimemsg['Message-ID'] = Utils.unique_message_id(mlist)
     # Set things up for the rfc1153 digest
     plainmsg = StringIO()
-    # cStringIO doesn't have encoding. Sigh.
-    plainmsg.encoding = 'utf-8'
     rfc1153msg = Message.Message()
     rfc1153msg['From'] = mlist.GetRequestEmail()
     rfc1153msg['Subject'] = digestsubj
@@ -211,7 +209,6 @@ def send_i18n_digests(mlist, mboxfp):
     #
     # Meanwhile prepare things for the table of contents
     toc = StringIO()
-    toc.encoding = 'utf-8'
     print >> toc, _("Today's Topics:\n")
     # Now cruise through all the messages in the mailbox of digest messages,
     # building the MIME payload and core of the RFC 1153 digest.  We'll also
@@ -292,7 +289,10 @@ def send_i18n_digests(mlist, mboxfp):
         return
     toctext = toc.getvalue()
     # MIME
-    tocpart = MIMEText(toctext.encode(lcset), _charset=lcset)
+    try:
+        tocpart = MIMEText(toctext.encode(lcset), _charset=lcset)
+    except UnicodeError:
+        tocpart = MIMEText(toctext.encode('utf-8'), _charset='utf-8')
     tocpart['Content-Description']= _("Today's Topics ($msgcount messages)")
     mimemsg.attach(tocpart)
     # RFC 1153
@@ -333,16 +333,12 @@ def send_i18n_digests(mlist, mboxfp):
         # -- just stringfy it.
         payload = msg.get_payload(decode=True) \
                   or msg.as_string().split('\n\n',1)[1]
-        mcset = msg.get_content_charset('')
-        if mcset and mcset <> lcset and mcset <> lcset_out:
-            try:
-                payload = unicode(payload, mcset, 'replace'
-                          ).encode(lcset, 'replace')
-            except (UnicodeError, LookupError):
-                # TK: Message has something unknown charset.
-                #     _out means charset in 'outer world'.
-                payload = unicode(payload, lcset_out, 'replace'
-                          ).encode(lcset, 'replace')
+        mcset = msg.get_content_charset('us-ascii')
+        try:
+            payload = unicode(payload, mcset, 'replace')
+        except (LookupError, TypeError):
+            # unknown or empty charset
+            payload = unicode(payload, 'us-ascii', 'replace')
         print >> plainmsg, payload
         if not payload.endswith('\n'):
             print >> plainmsg
@@ -403,7 +399,12 @@ def send_i18n_digests(mlist, mboxfp):
                     listname=mlist.fqdn_listname,
                     isdigest=True)
     # RFC 1153
-    rfc1153msg.set_payload(plainmsg.getvalue().encode(lcset), lcset)
+    # If the entire digest message can't be encoded by list charset, fall
+    # back to 'utf-8'.
+    try:
+        rfc1153msg.set_payload(plainmsg.getvalue().encode(lcset), lcset)
+    except UnicodeError:
+        rfc1153msg.set_payload(plainmsg.getvalue().encode('utf-8'), 'utf-8')
     virginq.enqueue(rfc1153msg,
                     recips=plainrecips,
                     listname=mlist.fqdn_listname,
