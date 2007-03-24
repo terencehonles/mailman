@@ -281,27 +281,10 @@ def prefix_subject(mlist, msg, msgdata):
         prefix = prefix % mlist.post_id
     except TypeError:
         pass
-    # If charset is 'us-ascii', try to concatnate as string because there
-    # is some weirdness in Header module (TK)
-    if cset == 'us-ascii':
-        try:
-            if old_style:
-                h = u' '.join([recolon, prefix, subject])
-            else:
-                h = u' '.join([prefix, recolon, subject])
-            h = h.encode('us-ascii')
-            h = uheader(mlist, h, 'Subject', continuation_ws=ws)
-            del msg['subject']
-            msg['Subject'] = h
-            ss = u' '.join([recolon, subject])
-            ss = ss.encode('us-ascii')
-            ss = uheader(mlist, ss, 'Subject', continuation_ws=ws)
-            msgdata['stripped_subject'] = ss
-            return
-        except UnicodeError:
-            pass
     # Get the header as a Header instance, with proper unicode conversion
-    if old_style:
+    if not recolon:
+        h = uheader(mlist, prefix, 'Subject', continuation_ws=ws)
+    elif old_style:
         h = uheader(mlist, recolon, 'Subject', continuation_ws=ws)
         h.append(prefix)
     else:
