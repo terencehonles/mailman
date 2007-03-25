@@ -17,6 +17,7 @@
 
 """Decorate a message by sticking the header and footer around it."""
 
+import re
 import logging
 
 from email.MIMEText import MIMEText
@@ -84,9 +85,15 @@ def process(mlist, msg, msgdata):
     # MIME multipart chroming the message?
     wrap = True
     if not msg.is_multipart() and msgtype == 'text/plain':
+        # Save the RFC-3676 format parameters.
+        format = msg.get_param('format')
+        delsp = msg.get_param('delsp')
+        # Save 'Content-Transfer-Encoding' header in case decoration fails.
+        cte = msg.get('content-transfer-encoding')
         # header/footer is now in unicode (2.2)
         try:
             oldpayload = unicode(msg.get_payload(decode=True), mcset)
+            del msg['content-transfer-encoding']
             frontsep = endsep = u''
             if header and not header.endswith('\n'):
                 frontsep = u'\n'
@@ -99,18 +106,21 @@ def process(mlist, msg, msgdata):
             # charset, then utf-8.  It's okay if some of these are duplicates.
             for cset in (lcset, mcset, 'utf-8'):
                 try:
-                    pld = payload.encode(cset)
-                    del msg['content-transfer-encoding']
-                    del msg['content-type']
-                    msg.set_payload(pld, cset)
-                    wrap = False
-                    break
-                # 'except' should be here because set_payload() may fail for
-                # 'euc-jp' which re-encode to 'iso-2022-jp'. :(
+                    msg.set_payload(payload.encode(cset), cset)
                 except UnicodeError:
                     pass
+                else:
+                    if format:
+                        msg.set_param('format', format)
+                    if delsp:
+                        msg.set_param('delsp', delsp)
+                    wrap = False
+                    break
         except (LookupError, UnicodeError):
-            pass
+            if cte:
+                # Restore the original c-t-e.
+                del msg['content-transfer-encoding']
+                msg['Content-Transfer-Encoding'] = cte
     elif msg.get_content_type() == 'multipart/mixed':
         # The next easiest thing to do is just prepend the header and append
         # the footer as additional subparts
@@ -201,7 +211,7 @@ def decorate(mlist, template, what, extradict={}):
         template = Utils.to_percent(template)
     # Interpolate into the template
     try:
-        text = (template % d).replace('\r\n', '\n')
+        text = re.sub(r' *\r?\n', r'\n', template % d)
     except (ValueError, TypeError), e:
         log.exception('Exception while calculating %s:\n%s', what, e)
         what = what.upper()

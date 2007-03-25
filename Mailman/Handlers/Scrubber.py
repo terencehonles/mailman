@@ -144,6 +144,10 @@ def replace_payload_by_text(msg, text, charset):
     # message by a text (scrubbing).
     del msg['content-type']
     del msg['content-transfer-encoding']
+    if isinstance(text, unicode):
+        text = text.encode(charset)
+    if not isinstance(charset, str):
+        charset = str(charset)
     msg.set_payload(text, charset)
 
 
@@ -160,7 +164,7 @@ def process(mlist, msg, msgdata=None):
         if not mlist.scrub_nondigest:
             return
     dir = calculate_attachments_dir(mlist, msg, msgdata)
-    charset = None
+    charset = format = delsp = None
     lcset = Utils.GetCharSet(mlist.preferred_language)
     lcset_out = Charset(lcset).output_charset or lcset
     # Now walk over all subparts of this message and scrub out various types
@@ -170,9 +174,11 @@ def process(mlist, msg, msgdata=None):
         if ctype == 'text/plain':
             # We need to choose a charset for the scrubbed message, so we'll
             # arbitrarily pick the charset of the first text/plain part in the
-            # message.
+            # message.  Also get the RFC 3676 stuff from this part.
             if charset is None:
                 charset = part.get_content_charset(lcset)
+                format = part.get_param('format')
+                delsp = part.get_param('delsp')
             # TK: if part is attached then check charset and scrub if none
             if part.get('content-disposition') and \
                not part.get_content_charset():
@@ -182,7 +188,7 @@ def process(mlist, msg, msgdata=None):
                 replace_payload_by_text(part, _("""\
 An embedded and charset-unspecified text was scrubbed...
 Name: %(filename)s
-Url: %(url)s
+URL: %(url)s
 """), lcset)
         elif ctype == 'text/html' and isinstance(sanitize, int):
             if sanitize == 0:
@@ -240,7 +246,7 @@ From: %(who)s
 Subject: %(subject)s
 Date: %(date)s
 Size: %(size)s
-Url: %(url)s
+URL: %(url)s
 """), lcset)
         # If the message isn't a multipart, then we'll strip it out as an
         # attachment that would have to be separately downloaded.  Pipermail
@@ -267,7 +273,7 @@ Name: %(filename)s
 Type: %(ctype)s
 Size: %(size)d bytes
 Desc: %(desc)s
-Url : %(url)s
+URL: %(url)s
 """), lcset)
         outer = False
     # We still have to sanitize multipart messages to flat text because
@@ -289,6 +295,7 @@ Url : %(url)s
         # BAW: Martin's original patch suggested we might want to try
         # generalizing to utf-8, and that's probably a good idea (eventually).
         text = []
+        charsets = []
         for part in msg.walk():
             # TK: bug-id 1099138 and multipart
             if not part or part.is_multipart():
@@ -307,37 +314,38 @@ Url : %(url)s
             # null body. See bug 1430236.
             except (binascii.Error, TypeError):
                 t = part.get_payload()
-            # TK: get_content_charset() returns 'iso-2022-jp' for internally
-            # crafted (scrubbed) 'euc-jp' text part. So, first try
-            # get_charset(), then get_content_charset() for the parts
-            # which are already embeded in the incoming message.
-            partcharset = part.get_charset()
-            if partcharset:
-                partcharset = str(partcharset)
-            else:
-                partcharset = part.get_content_charset()
-            if partcharset and partcharset <> charset:
-                try:
-                    t = unicode(t, partcharset, 'replace')
-                except (UnicodeError, LookupError, ValueError):
-                    # Replace funny characters.  We use errors='replace' for
-                    # both calls since the first replace will leave U+FFFD,
-                    # which isn't ASCII encodeable.
-                    u = unicode(t, 'ascii', 'replace')
-                    t = u.encode('ascii', 'replace')
-                try:
-                    # Should use HTML-Escape, or try generalizing to UTF-8
-                    t = t.encode(charset, 'replace')
-                except (UnicodeError, LookupError, ValueError):
-                    t = t.encode(lcset, 'replace')
+            # Email problem was solved by Mark Sapiro. (TK)
+            partcharset = part.get_content_charset('us-ascii')
+            try:
+                t = unicode(t, partcharset, 'replace')
+            except (UnicodeError, LookupError, ValueError, TypeError):
+                # What is the cause to come this exception now ?
+                # Replace funny characters.  We use errors='replace'.
+                u = unicode(t, 'ascii', 'replace')
             # Separation is useful
-            if isinstance(t, str):
+            if isinstance(t, basestring):
                 if not t.endswith('\n'):
                     t += '\n'
                 text.append(t)
+            if partcharset not in charsets:
+                charsets.append(partcharset)
         # Now join the text and set the payload
         sep = _('-------------- next part --------------\n')
-        replace_payload_by_text(msg, sep.join(text), charset)
+        rept = sep.join(text)
+        # Replace entire message with text and scrubbed notice.
+        # Try with message charsets and utf-8
+        if 'utf-8' not in charsets:
+            charsets.append('utf-8')
+        for charset in charsets:
+            try:
+                replace_payload_by_text(msg, rept, charset)
+                break
+            except UnicodeError:
+                pass
+        if format:
+            msg.set_param('format', format)
+        if delsp:
+            msg.set_param('delsp', delsp)
     return msg
 
 
@@ -467,7 +475,7 @@ def save_attachment(mlist, msg, dir, filter_html=True):
     # Private archives will likely have a trailing slash.  Normalize.
     if baseurl[-1] <> '/':
         baseurl += '/'
-    # A trailing space in url string may save users who are using
-    # RFC-1738 compliant MUA (Not Mozilla).
-    url = baseurl + '%s/%s%s%s ' % (dir, filebase, extra, ext)
+    # Trailing space will definitely be a problem with format=flowed.
+    # Bracket the URL instead.
+    url = '<' + baseurl + '%s/%s%s%s>' % (dir, filebase, extra, ext)
     return url

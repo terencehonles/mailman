@@ -240,6 +240,9 @@ def check_response(challenge, response):
     scheme       = scheme_parts[0].lower()
     scheme_enum  = _SCHEMES_BY_TAG.get(scheme, _DEFAULT_SCHEME)
     scheme_class = _SCHEMES_BY_ENUM[scheme_enum]
+    if isinstance(rest_group, unicode):
+        # decode() fails. (challenge is from database)
+        rest_group = str(rest_group)
     return scheme_class.check_response(rest_group, response, *scheme_parts[1:])
 
 
