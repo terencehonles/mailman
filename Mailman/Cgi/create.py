@@ -161,7 +161,8 @@ def process_request(doc, cgidata):
     # We've got all the data we need, so go ahead and try to create the list
     mlist = MailList.MailList()
     try:
-        pw = passwords.make_secret(password, config.PASSWORD_SCHEME)
+        scheme = passwords.lookup_scheme(config.PASSWORD_SCHEME.lower())
+        pw = passwords.make_secret(password, scheme)
         try:
             mlist.Create(fqdn_listname, owner, pw, langs)
         except Errors.EmailAddressError, s:
