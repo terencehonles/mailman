@@ -129,6 +129,7 @@ class DBContext(object):
 
     # Higher level interface
     def api_lock(self, mlist):
+        self.session.expire(mlist)
         # Don't try to re-lock a list
         if mlist.fqdn_listname in self._mlist_txns:
             return

@@ -1802,7 +1802,6 @@ Here is message %(i)d
         eq(mimemsg['to'], mlist.GetListEmail())
         # BAW: this test is incomplete...
 
-
     def test_send_i18n_digest(self):
         eq = self.assertEqual
         mlist = self._mlist
