@@ -509,6 +509,24 @@ OWNER_PIPELINE = [
     ]
 
 
+# This defines a logging subsystem confirmation file, which overrides the
+# default log settings.  This is a ConfigParser formatted file which can
+# contain sections named after the logger name (without the leading 'mailman.'
+# common prefix).  Each section may contain the following options:
+#
+# - level     -- Overrides the default level; this may be any of the
+#                standard Python logging levels, case insensitive.
+# - format    -- Overrides the default format string; see below.
+# - datefmt   -- Overrides the default date format string; see below.
+# - path      -- Overrides the default logger path.  This may be a relative
+#                path name, in which case it is relative to Mailman's LOG_DIR,
+#                or it may be an absolute path name.  You cannot change the
+#                handler class that will be used.
+# - propagate -- Boolean specifying whether to propagate log message from this
+#                logger to the root "mailman" logger.  You cannot override
+#                settings for the root logger.
+LOG_CONFIG_FILE = None
+
 # This defines log format strings for the SMTPDirect delivery module (see
 # DELIVERY_MODULE above).  Valid %()s string substitutions include:
 #
