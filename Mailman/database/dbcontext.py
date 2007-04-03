@@ -129,7 +129,6 @@ class DBContext(object):
 
     # Higher level interface
     def api_lock(self, mlist):
-        self.session.expire(mlist)
         # Don't try to re-lock a list
         if mlist.fqdn_listname in self._mlist_txns:
             return
@@ -151,6 +150,11 @@ class DBContext(object):
         if txn is not None:
             txn.rollback()
         del mlist._txnkey
+
+    def api_load(self, mlist):
+        # Mark the MailList object such that future attribute accesses will
+        # refresh from the database.
+        self.session.expire(mlist)
 
     def api_save(self, mlist):
         # When dealing with MailLists, .Save() will always be followed by

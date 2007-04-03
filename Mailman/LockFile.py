@@ -313,10 +313,12 @@ class LockFile:
         return self._read() == self._tmpfname
 
     def finalize(self):
+        log.debug('finalize')
         self.unlock(unconditionally=True)
 
     # XXX Can we just get rid of __del__()?
     def __del__(self):
+        log.debug('__del__')
         if self._owned:
             self.finalize()
 

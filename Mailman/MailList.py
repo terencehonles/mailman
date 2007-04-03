@@ -586,6 +586,7 @@ class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
             fqdn_listname = self.fqdn_listname
         if not Utils.list_exists(fqdn_listname):
             raise Errors.MMUnknownListError(fqdn_listname)
+        database.load(self)
         self._memberadaptor.load()
         if check_version:
             # XXX for now disable version checks.  We'll fold this into schema

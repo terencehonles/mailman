@@ -173,7 +173,13 @@ def make_table(metadata, tables):
 
 class MailListMapperExtension(MapperExtension):
     def populate_instance(self, mapper, context, row, mlist, ikey, isnew):
-        if isnew:
+        # isnew doesn't really seem to give us what we want.  Specifically, if
+        # we expire the MailList object from the session, we'll get called
+        # with populate_instance(..., isnew=True) when the object is reloaded
+        # from the database.  We'll still check isnew, but we'll also check to
+        # make sure there's no _memberadaptor attribute, since that is set in
+        # the InitTempVars() method.
+        if isnew and not hasattr(mlist, '_memberadaptor'):
             # Get the list name and host name -- which are required by
             # InitTempVars() from the row data.
             list_name = row['listdata_list_name']
