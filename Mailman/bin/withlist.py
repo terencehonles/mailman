@@ -218,7 +218,7 @@ def main():
     # Try to import the module for the callable
     func = None
     if opts.run:
-        i = opts.run.find('.')
+        i = opts.run.rfind('.')
         if i < 0:
             module = opts.run
             callable = opts.run
@@ -227,7 +227,8 @@ def main():
             callable = opts.run[i+1:]
         if VERBOSE:
             print >> sys.stderr, _('Importing $module ...')
-        mod = __import__(module)
+        __import__(module)
+        mod = sys.modules[module]
         if VERBOSE:
             print >> sys.stderr, _('Running ${module}.${callable}() ...')
         func = getattr(mod, callable)
