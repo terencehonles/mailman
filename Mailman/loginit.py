@@ -80,16 +80,21 @@ class ReopenableFileHandler(logging.Handler):
         return codecs.open(self._filename, 'a', 'utf-8')
 
     def flush(self):
-        self._stream.flush()
+        if self._stream:
+            self._stream.flush()
 
     def emit(self, record):
+        # It's possible for the stream to have been closed by the time we get
+        # here, due to the shut down semantics.  This mostly happens in the
+        # test suite, but be defensive anyway.
+        stream = self._stream or sys.stderr
         try:
             msg = self.format(record)
             fs = '%s\n'
             try:
-                self._stream.write(fs % msg)
+                stream.write(fs % msg)
             except UnicodeError:
-                self._stream.write(fs % msg.encode('string-escape'))
+                stream.write(fs % msg.encode('string-escape'))
             self.flush()
         except:
             self.handleError(record)
@@ -97,6 +102,7 @@ class ReopenableFileHandler(logging.Handler):
     def close(self):
         self.flush()
         self._stream.close()
+        self._stream = None
         logging.Handler.close(self)
 
     def reopen(self):

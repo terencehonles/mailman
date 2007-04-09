@@ -204,7 +204,7 @@ class LockFile:
         # very rare occurence, only happens from cron, and (only?) on Solaris
         # 2.6.
         self._touch()
-        log.debug('laying claim')
+        log.debug('laying claim: %s', self._lockfile)
         # for quieting the logging output
         loopcount = -1
         while True:
@@ -215,7 +215,7 @@ class LockFile:
                 # If we got here, we know we know we got the lock, and never
                 # had it before, so we're done.  Just touch it again for the
                 # fun of it.
-                log.debug('got the lock')
+                log.debug('got the lock: %s', self._lockfile)
                 self._touch()
                 break
             except OSError, e:
@@ -243,7 +243,7 @@ class LockFile:
                     log.error('unexpected linkcount: %d', self._linkcount())
                 elif self._read() == self._tmpfname:
                     # It was us that already had the link.
-                    log.debug('already locked')
+                    log.debug('already locked: %s', self._lockfile)
                     raise AlreadyLockedError
                 # otherwise, someone else has the lock
                 pass
@@ -263,7 +263,7 @@ class LockFile:
             # and the expected lock lifetime hasn't expired yet.  So let's
             # wait a while for the owner of the lock to give it up.
             elif not loopcount % 100:
-                log.debug('waiting for claim')
+                log.debug('waiting for claim: %s', self._lockfile)
             self._sleep()
 
     def unlock(self, unconditionally=False):
@@ -289,7 +289,7 @@ class LockFile:
         except OSError, e:
             if e.errno <> errno.ENOENT:
                 raise
-        log.debug('unlocked')
+        log.debug('unlocked: %s', self._lockfile)
 
     def locked(self):
         """Return true if we own the lock, false if we do not.
@@ -313,12 +313,11 @@ class LockFile:
         return self._read() == self._tmpfname
 
     def finalize(self):
-        log.debug('finalize')
+        log.debug('finalize: %s', self._lockfile)
         self.unlock(unconditionally=True)
 
-    # XXX Can we just get rid of __del__()?
     def __del__(self):
-        log.debug('__del__')
+        log.debug('__del__: %s', self._lockfile)
         if self._owned:
             self.finalize()
 
@@ -351,7 +350,7 @@ class LockFile:
         # And do some sanity checks
         assert self._linkcount() == 2
         assert self.locked()
-        log.debug('transferred the lock')
+        log.debug('transferred the lock: %s', self._lockfile)
 
     def _take_possession(self):
         self._tmpfname = tmpfname = '%s.%s.%d' % (
@@ -360,7 +359,7 @@ class LockFile:
         # the transfer.
         while self._linkcount() <> 2 or self._read() <> tmpfname:
             time.sleep(0.25)
-        log.debug('took possession of the lock')
+        log.debug('took possession of the lock: %s', self._lockfile)
 
     def _disown(self):
         self._owned = False

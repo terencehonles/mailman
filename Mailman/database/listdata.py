@@ -173,13 +173,15 @@ def make_table(metadata, tables):
 
 class MailListMapperExtension(MapperExtension):
     def populate_instance(self, mapper, context, row, mlist, ikey, isnew):
-        # isnew doesn't really seem to give us what we want.  Specifically, if
-        # we expire the MailList object from the session, we'll get called
-        # with populate_instance(..., isnew=True) when the object is reloaded
-        # from the database.  We'll still check isnew, but we'll also check to
-        # make sure there's no _memberadaptor attribute, since that is set in
-        # the InitTempVars() method.
-        if isnew and not hasattr(mlist, '_memberadaptor'):
+        # Michael Bayer on the sqlalchemy mailing list:
+        #
+        # "isnew" is used to indicate that we are going to populate the
+        # instance with data from the database, *and* that this particular row
+        # is the first row in the result which has indicated the presence of
+        # this entity (i.e. the primary key points to it).  this implies that
+        # populate_instance() can be called *multiple times* for the instance,
+        # if multiple successive rows all contain its particular primary key.
+        if isnew:
             # Get the list name and host name -- which are required by
             # InitTempVars() from the row data.
             list_name = row['listdata_list_name']

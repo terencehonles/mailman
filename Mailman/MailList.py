@@ -180,9 +180,16 @@ class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
     #
     # Lock management
     #
+    def _make_lock(self, name, lock=False):
+        self._lock = LockFile.LockFile(
+            os.path.join(config.LOCK_DIR, name) + '.lock',
+            lifetime=config.LIST_LOCK_LIFETIME)
+        if lock:
+            self._lock.lock()
+
     def Lock(self, timeout=0):
         database.lock(self)
-        self.__lock.lock(timeout)
+        self._lock.lock(timeout)
         self._memberadaptor.lock()
         # Must reload our database for consistency.  Watch out for lists that
         # don't exist.
@@ -194,11 +201,11 @@ class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
 
     def Unlock(self):
         database.unlock(self)
-        self.__lock.unlock(unconditionally=True)
+        self._lock.unlock(unconditionally=True)
         self._memberadaptor.unlock()
 
     def Locked(self):
-        return self.__lock.locked()
+        return self._lock.locked()
 
 
 
@@ -303,6 +310,14 @@ class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
     #
     def InitTempVars(self, name, check_version=True):
         """Set transient variables of this and inherited classes."""
+        # Because of the semantics of the database layer, it's possible that
+        # this method gets called more than once on an existing object.  For
+        # example, if the MailList object is expunged from the current db
+        # session, then this may get called again when the object's persistent
+        # attributes are re-read from the database.  This can have nasty
+        # consequences, so ensure that we're only called once.
+        if hasattr(self, '_lock'):
+            return
         # Attach a membership adaptor instance.
         parts = config.MEMBER_ADAPTOR_CLASS.split(DOT)
         adaptor_class = parts.pop()
@@ -313,10 +328,8 @@ class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
         # The timestamp is set whenever we load the state from disk.  If our
         # timestamp is newer than the modtime of the config.pck file, we don't
         # need to reload, otherwise... we do.
-        self.__timestamp = 0
-        self.__lock = LockFile.LockFile(
-            os.path.join(config.LOCK_DIR, name or '<site>') + '.lock',
-            lifetime=config.LIST_LOCK_LIFETIME)
+        self._timestamp = 0
+        self._make_lock(name or '<site>')
         # XXX FIXME Sometimes name is fully qualified, sometimes it's not.
         if name:
             if '@' in name:
@@ -549,8 +562,11 @@ class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
         self._internal_name = self.list_name = listname
         self._full_path = os.path.join(config.LIST_DATA_DIR, fqdn_listname)
         Utils.makedirs(self._full_path)
-        # Don't use Lock() since that tries to load the non-existant config.pck
-        self.__lock.lock()
+        # Don't use Lock() since that tries to load the non-existant
+        # config.pck.  However, it's likely that the current lock is a site
+        # lock because the MailList was instantiated with no name.  Blow away
+        # the current lock object and re-instantiate it.
+        self._make_lock(fqdn_listname, lock=True)
         # We need to set this attribute before calling InitVars() because
         # Archiver.InitVars() depends on this to calculate and create the
         # archive directory.  Without this, Archiver will create a bogus
@@ -573,7 +589,7 @@ class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
         # interested in it.  This will raise a NotLockedError if we don't have
         # the lock (which is a serious problem!).  TBD: do we need to be more
         # defensive?
-        self.__lock.refresh()
+        self._lock.refresh()
         # Commit the database transaction
         database.save(self)
         # The member adaptor may have its own save operation
@@ -607,7 +623,7 @@ class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
         self.InitVars()
         # Then reload the database (but don't recurse).  Force a reload even
         # if we have the most up-to-date state.
-        self.__timestamp = 0
+        self._timestamp = 0
         self.Load(self.fqdn_listname, check_version=False)
         # We must hold the list lock in order to update the schema
         waslocked = self.Locked()

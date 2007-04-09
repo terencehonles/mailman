@@ -98,6 +98,7 @@ class DBContext(object):
 
     def close(self):
         self.session.close()
+        self.session = None
 
     def _touch(self, url):
         parts = urlparse(url)
