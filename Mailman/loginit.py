@@ -22,6 +22,7 @@ import below.  Ah, for Python 2.5 and absolute imports.
 """
 
 import os
+import sys
 import codecs
 import logging
 import ConfigParser

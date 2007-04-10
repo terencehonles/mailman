@@ -16,7 +16,7 @@
 # USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 8145 $)
+AC_REVISION($Revision: 8190 $)
 AC_PREREQ(2.0)
 AC_INIT([GNU Mailman], [2.2.0a0])
 
@@ -52,7 +52,7 @@ AC_SUBST(PYTHON)
 PYTHON=$with_python
 AC_MSG_RESULT($PYTHON)
 
-# See if Python is new enough.  2.3 or better is required.
+# See if Python is new enough.  2.5 or better is required.
 AC_MSG_CHECKING(Python version)
 changequote(,)
 cat > conftest.py <<EOF
@@ -61,7 +61,7 @@ try:
     v = sys.hexversion
 except AttributeError:
     v = 0
-if v >= 0x2030000:
+if v >= 0x20500f0:
     s = sys.version.split()[0]
 else:
     s = ""
@@ -78,8 +78,7 @@ then
     AC_MSG_ERROR([
 
 ***** $PYTHON is too old (or broken)
-***** Python 2.1 or newer is required
-***** Python 2.1.3 or better is recommended])
+***** Python 2.5 or newer is required])
 fi
 AC_MSG_RESULT($version)
 
