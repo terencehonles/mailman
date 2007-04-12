@@ -55,7 +55,7 @@ SETUPINSTOPTS=	--install-lib $(DESTDIR)$(PYTHONLIBDIR) \
 		--install-data $(DESTDIR)$(PYTHONLIBDIR)
 SETUPCMD=	setup.py --quiet install $(SETUPINSTOPTS)
 
-EMAIL=		email-4.0.1
+EMAIL=		
 SETUPTOOLS=	setuptools-0.6c3
 PYSQLITE=	pysqlite-2.3.2
 SQLALCHEMY=	SQLAlchemy-0.3.3
