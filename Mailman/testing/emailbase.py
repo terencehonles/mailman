@@ -52,15 +52,6 @@ class SinkServer(smtpd.SMTPServer):
 
 
 class EmailBase(TestBase):
-    def _configure(self, fp):
-        TestBase._configure(self, fp)
-        print >> fp, 'SMTPPORT =', TESTPORT
-        config.SMTPPORT = TESTPORT
-        # Don't go nuts on mailmanctl restarts.  If a qrunner fails once, it
-        # will keep failing.
-        print >> fp, 'MAX_RESTARTS = 1'
-        config.MAX_RESTARTS = 1
-
     def setUp(self):
         TestBase.setUp(self)
         try:
@@ -70,7 +61,7 @@ class EmailBase(TestBase):
             TestBase.tearDown(self)
             raise
         try:
-            os.system('bin/mailmanctl -C %s -q start' % self._config)
+            os.system('bin/mailmanctl -C %s -q start' % config.filename)
             # If any errors occur in the above, be sure to manually call
             # tearDown().  unittest doesn't call tearDown() for errors in
             # setUp().
@@ -79,7 +70,7 @@ class EmailBase(TestBase):
             raise
 
     def tearDown(self):
-        os.system('bin/mailmanctl -C %s -q stop' % self._config)
+        os.system('bin/mailmanctl -C %s -q stop' % config.filename)
         self._server.close()
         # Wait a while until the server actually goes away
         while True:

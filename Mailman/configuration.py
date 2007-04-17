@@ -72,12 +72,14 @@ class Configuration(object):
         path = os.path.abspath(os.path.expanduser(filename))
         try:
             execfile(path, ns, ns)
+            self.filename = path
         except EnvironmentError, e:
             if e.errno <> errno.ENOENT or original_filename:
                 raise
             # The file didn't exist, so try mm_cfg.py
             from Mailman import mm_cfg
             ns.update(mm_cfg.__dict__)
+            self.filename = None
         # Based on values possibly set in mailman.cfg, add additional qrunners
         if ns['USE_MAILDIR']:
             self.add_qrunner('Maildir')

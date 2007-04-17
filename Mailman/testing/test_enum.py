@@ -93,9 +93,10 @@ class TestEnum(unittest.TestCase):
         eq(int(Colors.blue), 3)
         eq(int(MoreColors.red), 1)
         eq(int(OtherColors.blue), 2)
-        
+
     def test_enum_duplicates(self):
         try:
+            # This is bad because kyle and kenny have the same integer value.
             class Bad(Enum):
                 cartman = 1
                 stan    = 2

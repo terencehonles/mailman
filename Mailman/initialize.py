@@ -32,7 +32,12 @@ import Mailman.loginit
 
 
 
-def initialize(config=None, propagate_logs=False):
+# These initialization calls are separated for the testing framework, which
+# needs to do some internal calculations after config file loading and log
+# initialization, but before database initialization.  Generally all other
+# code will just call initialize().
+
+def initialize_1(config, propagate_logs):
     # By default, set the umask so that only owner and group can read and
     # write our files.  Specifically we must have g+rw and we probably want
     # o-rwx although I think in most cases it doesn't hurt if other can read
@@ -42,4 +47,12 @@ def initialize(config=None, propagate_logs=False):
     os.umask(007)
     Mailman.configuration.config.load(config)
     Mailman.loginit.initialize(propagate_logs)
+
+
+def initialize_2():
     Mailman.database.initialize()
+
+
+def initialize(config=None, propagate_logs=False):
+    initialize_1(config, propagate_logs)
+    initialize_2()

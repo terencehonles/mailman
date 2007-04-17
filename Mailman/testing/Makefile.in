@@ -42,6 +42,7 @@ PACKAGEDIR= 	$(prefix)/Mailman/testing
 SHELL=		/bin/sh
 
 MODULES=	*.py
+OTHERFILES=	testing.cfg.in
 
 # Modes for directories and executables created by the install
 # process.  Default to group-writable directories but
@@ -59,7 +60,7 @@ SUBDIRS=	bounces
 all:
 
 install: 
-	for f in $(MODULES); \
+	for f in $(MODULES) $(OTHERFILES); \
 	do \
 	    $(INSTALL) -m $(FILEMODE) $(srcdir)/$$f $(DESTDIR)$(PACKAGEDIR); \
 	done

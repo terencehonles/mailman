@@ -41,26 +41,7 @@ NL = '\n'
 
 
 
-def dummy_mta_function(*args, **kws):
-    pass
-
-
-
 class TestBase(unittest.TestCase):
-    def _configure(self, fp):
-        # Make sure that we don't pollute the real database with our test
-        # mailing list.
-        test_engine_url = 'sqlite:///' + self._dbfile
-        print >> fp, 'SQLALCHEMY_ENGINE_URL = "%s"' % test_engine_url
-        config.SQLALCHEMY_ENGINE_URL = test_engine_url
-        # Use the Mailman.MTA.stub module
-        print >> fp, 'MTA = "stub"'
-        config.MTA = 'stub'
-        print >> fp, 'add_domain("example.com", "www.example.com")'
-        # Only add this domain once to the current process
-        if 'example.com' not in config.domains:
-            config.add_domain('example.com', 'www.example.com')
-
     def ndiffAssertEqual(self, first, second):
         """Like failUnlessEqual except use ndiff for readable output."""
         if first <> second:
@@ -72,30 +53,6 @@ class TestBase(unittest.TestCase):
             raise self.failureException(fp.getvalue())
 
     def setUp(self):
-        mailman_uid = pwd.getpwnam(config.MAILMAN_USER).pw_uid
-        mailman_gid = grp.getgrnam(config.MAILMAN_GROUP).gr_gid
-        # Write a temporary configuration file, but allow for subclasses to
-        # add additional data.  Make sure the config and db files, which
-        # mkstemp creates, has the proper ownership and permissions.
-        fd, self._config = tempfile.mkstemp(dir=config.DATA_DIR, suffix='.cfg')
-        os.close(fd)
-        os.chmod(self._config, 0440)
-        os.chown(self._config, mailman_uid, mailman_gid)
-        fd, self._dbfile = tempfile.mkstemp(dir=config.DATA_DIR, suffix='.db')
-        os.close(fd)
-        os.chmod(self._dbfile, 0660)
-        os.chown(self._dbfile, mailman_uid, mailman_gid)
-        fp = open(self._config, 'w')
-        try:
-            self._configure(fp)
-        finally:
-            fp.close()
-        # Create a fake new Mailman.MTA module which stubs out the create()
-        # and remove() functions.
-        stubmta_module = new.module('Mailman.MTA.stub')
-        sys.modules['Mailman.MTA.stub'] = stubmta_module
-        stubmta_module.create = dummy_mta_function
-        stubmta_module.remove = dummy_mta_function
         # Be sure to close the connection to the current database, and then
         # reconnect to the new temporary SQLite database.  Otherwise we end up
         # with turds in the main database and our qrunner subprocesses won't
@@ -116,8 +73,6 @@ class TestBase(unittest.TestCase):
         self._mlist.Unlock()
         rmlist.delete_list(self._mlist.fqdn_listname, self._mlist,
                            archives=True, quiet=True)
-        os.unlink(self._config)
-        os.unlink(self._dbfile)
         # Clear out any site locks, which can be left over if tests fail.
         for filename in os.listdir(config.LOCK_DIR):
             if filename.startswith('<site>'):

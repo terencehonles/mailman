@@ -17,15 +17,26 @@
 
 """Mailman unit test driver."""
 
+from __future__ import with_statement
+
 import os
 import re
+import grp
+import pwd
 import sys
+import shutil
 import optparse
+import tempfile
 import unittest
 
+import Mailman
+import Mailman.testing
+
 from Mailman import Version
+from Mailman.configuration import config
+from Mailman.database.dbcontext import dbcontext
 from Mailman.i18n import _
-from Mailman.initialize import initialize
+from Mailman.initialize import initialize_1, initialize_2
 
 __i18n_templates__ = True
 
@@ -63,8 +74,6 @@ Reduce verbosity by 1 (but not below 0)."""))
     parser.add_option('-e', '--stderr',
                       default=False, action='store_true',
                       help=_('Propagate log errors to stderr.'))
-    parser.add_option('-C', '--config',
-                      help=_('Alternative configuration file to use'))
     opts, args = parser.parse_args()
     return parser, opts, args
 
@@ -137,14 +146,48 @@ def main():
     global basedir
 
     parser, opts, args = parseargs()
-    initialize(opts.config, propagate_logs=opts.stderr)
     if not args:
         args = ['.']
 
-    import Mailman
-    basedir = os.path.dirname(Mailman.__file__)
-    runner = unittest.TextTestRunner(verbosity=opts.verbosity)
-    results = runner.run(suite(args))
+    # Set up the testing configuration file both for this process, and for all
+    # sub-processes testing will spawn (e.g. the qrunners).
+    #
+    # Calculate various temporary files needed by the test suite, but only for
+    # those files which must also go into shared configuration file.
+    cfg_in = os.path.join(os.path.dirname(Mailman.testing.__file__),
+                           'testing.cfg.in')
+    fd, cfg_out = tempfile.mkstemp(suffix='.cfg')
+    os.close(fd)
+    shutil.copyfile(cfg_in, cfg_out)
+
+    initialize_1(cfg_out, propagate_logs=opts.stderr)
+    mailman_uid = pwd.getpwnam(config.MAILMAN_USER).pw_uid
+    mailman_gid = grp.getgrnam(config.MAILMAN_GROUP).gr_gid
+    os.chmod(cfg_out, 0660)
+    os.chown(cfg_out, mailman_uid, mailman_gid)
+
+    fd, config.dbfile = tempfile.mkstemp(dir=config.DATA_DIR, suffix='.db')
+    os.close(fd)
+    os.chmod(config.dbfile, 0660)
+    os.chown(config.dbfile, mailman_uid, mailman_gid)
+
+    # Patch ups
+    test_engine_url = 'sqlite:///' + config.dbfile
+    config.SQLALCHEMY_ENGINE_URL = test_engine_url
+
+    with open(cfg_out, 'a') as fp:
+        print >> fp, 'SQLALCHEMY_ENGINE_URL = "%s"' % test_engine_url
+
+    initialize_2()
+
+    try:
+        basedir = os.path.dirname(Mailman.__file__)
+        runner = unittest.TextTestRunner(verbosity=opts.verbosity)
+        results = runner.run(suite(args))
+    finally:
+        os.remove(cfg_out)
+        os.remove(config.dbfile)
+
     sys.exit(bool(results.failures or results.errors))
 
 

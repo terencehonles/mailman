@@ -1,0 +1,14 @@
+# -*- python -*-
+
+# Configuration file template for the unit test suite.  We need this because
+# both the process running the tests and all sub-processes (e.g. qrunners)
+# must share the same configuration file.
+
+MANAGERS_INIT_FUNCTION  = 'Mailman.testing.inmemory.initialize'
+SMTPPORT                = 10825
+MAX_RESTARTS            = 1
+MTA                     = None
+
+add_domain('example.com', 'www.example.com')
+
+# bin/testall will add a SQLALCHEMY_ENGINE_URL below
