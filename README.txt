@@ -29,12 +29,12 @@ INTRODUCTION
         http://www.gnu.org/software/mailman
         http://mailman.sf.net
 
-    Mailman 2.2 requires Python 2.4 or greater, which can be downloaded from:
+    Mailman 3.0 requires Python 2.5 or greater, which can be downloaded from:
 
         http://www.python.org
 
-    It is recommended that you use at least Python 2.4.4, the latest release
-    as of this writing (13-Jan-2007).  Python 2.5 should also work well.
+    It is recommended that you use at least Python 2.5.1, the latest release
+    as of this writing (08-May-2007).
 
     You will need an ANSI C compiler to build both Python and Mailman; gcc
     (the GNU C compiler) works just fine.  Mailman currently works only on
