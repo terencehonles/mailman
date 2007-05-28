@@ -56,7 +56,6 @@ import logging
 from email.Parser import Parser
 from email.Utils import parseaddr
 
-from Mailman import Utils
 from Mailman.Message import Message
 from Mailman.Queue.Runner import Runner
 from Mailman.Queue.sbcache import get_switchboard
@@ -101,9 +100,8 @@ class MaildirRunner(Runner):
         self._parser = Parser(Message)
 
     def _oneloop(self):
-        # Refresh this each time through the list.  BAW: could be too
-        # expensive.
-        listnames = Utils.list_names()
+        # Refresh this each time through the list.
+        listnames = list(config.list_manager.names)
         # Cruise through all the files currently in the new/ directory
         try:
             files = os.listdir(self._dir)

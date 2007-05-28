@@ -114,13 +114,10 @@ def main():
 
     # Cull duplicates
     domains = set(opts.domains)
-    if opts.all:
-        listnames = set(Utils.list_names())
-    else:
-        listnames = set(opts.listnames)
+    listnames = set(config.list_manager.names if opts.all else opts.listnames)
 
     if domains:
-        for name in Utils.list_names():
+        for name in config.list_manager.names:
             mlist = openlist(name)
             if mlist.host_name in domains:
                 listnames.add(name)

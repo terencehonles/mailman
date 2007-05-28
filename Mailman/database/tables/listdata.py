@@ -29,6 +29,12 @@ def make_table(metadata, tables):
         Column('list_name',                 Unicode),
         Column('web_page_url',              Unicode),
         Column('admin_member_chunksize',    Integer),
+        # Foreign keys - XXX ondelete='all, delete=orphan' ??
+        Column('owner',     Integer, ForeignKey('RosterSets.rosterset_id')),
+        Column('moderator', Integer, ForeignKey('RosterSets.rosterset_id')),
+        # Attributes which are directly modifiable via the web u/i.  The more
+        # complicated attributes are currently stored as pickles, though that
+        # will change as the schema and implementation is developed.
         Column('next_request_id',           Integer),
         Column('next_digest_number',        Integer),
         Column('admin_responses',           PickleType),
@@ -116,7 +122,6 @@ def make_table(metadata, tables):
         Column('member_moderation_notice',                      Unicode),
         Column('mime_is_default_digest',                        Boolean),
         Column('mod_password',                                  Unicode),
-        Column('moderator',                                     PickleType),
         Column('msg_footer',                                    Unicode),
         Column('msg_header',                                    Unicode),
         Column('new_member_options',                            Integer),
@@ -126,7 +131,6 @@ def make_table(metadata, tables):
         Column('nondigestable',                                 Boolean),
         Column('nonmember_rejection_notice',                    Unicode),
         Column('obscure_addresses',                             Boolean),
-        Column('owner',                                         PickleType),
         Column('pass_filename_extensions',                      PickleType),
         Column('pass_mime_types',                               PickleType),
         Column('password',                                      Unicode),
@@ -157,14 +161,18 @@ def make_table(metadata, tables):
         )
     # Avoid circular imports
     from Mailman.MailList import MailList
-    from Mailman.database.languages import Language
+    from Mailman.database.tables.languages import Language
+    from Mailman.database.tables.rosters import RosterSet
     # We need to ensure MailList.InitTempVars() is called whenever a MailList
     # instance is created from a row.  Use a mapper extension for this.
-    props = dict(available_languages=
-                 relation(Language,
-                          secondary=tables.available_languages,
-                          lazy=False))
+    props = dict(
+        # listdata* <-> language*
+        available_languages= relation(Language,
+                                      secondary=tables.available_languages,
+                                      lazy=False))
     mapper(MailList, table,
+           # The mapper extension ensures MailList.InitTempVars() is called
+           # whenever a MailList instance is created from a row.
            extension=MailListMapperExtension(),
            properties=props)
     tables.bind(table)

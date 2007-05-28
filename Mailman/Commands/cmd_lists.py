@@ -21,8 +21,8 @@
 """
 
 from Mailman import mm_cfg
-from Mailman import Utils
 from Mailman.MailList import MailList
+from Mailman.configuration import config
 from Mailman.i18n import _
 
 
@@ -43,10 +43,8 @@ def process(res, args):
         return STOP
     hostname = mlist.host_name
     res.results.append(_('Public mailing lists at %(hostname)s:'))
-    lists = Utils.list_names()
-    lists.sort()
     i = 1
-    for listname in lists:
+    for listname in sorted(config.list_manager.names):
         if listname == mlist.internal_name():
             xlist = mlist
         else:

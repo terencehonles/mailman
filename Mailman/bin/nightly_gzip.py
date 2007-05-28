@@ -25,7 +25,6 @@ except ImportError:
     sys.exit(0)
 
 from Mailman import MailList
-from Mailman import Utils
 from Mailman import Version
 from Mailman.configuration import config
 from Mailman.i18n import _
@@ -86,7 +85,7 @@ def main():
         return
 
     # Process all the specified lists
-    for listname in set(args or Utils.list_names()):
+    for listname in set(args or config.list_manager.names):
         mlist = MailList.MailList(listname, lock=False)
         if not mlist.archive:
             continue

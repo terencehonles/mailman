@@ -19,7 +19,6 @@ import optparse
 
 from Mailman import Defaults
 from Mailman import MailList
-from Mailman import Utils
 from Mailman import Version
 from Mailman.i18n import _
 from Mailman.initialize import initialize
@@ -66,12 +65,10 @@ def main():
     parser, opts, args = parseargs()
     initialize(opts.config)
 
-    names = list(Utils.list_names())
-    names.sort()
     mlists = []
     longest = 0
 
-    for n in names:
+    for n in sorted(config.list_manager.names):
         mlist = MailList.MailList(n, lock=False)
         if opts.advertised and not mlist.advertised:
             continue

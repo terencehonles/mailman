@@ -22,7 +22,6 @@ import optparse
 
 from Mailman import Errors
 from Mailman import MailList
-from Mailman import Utils
 from Mailman import Version
 from Mailman import interact
 from Mailman.configuration import config
@@ -235,7 +234,8 @@ def main():
 
     r = None
     if opts.all:
-        r = [do_list(listname, args, func) for listname in Utils.list_names()]
+        r = [do_list(listname, args, func)
+             for listname in config.list_manager.names]
     elif dolist:
         listname = args.pop(0).lower().strip()
         r = do_list(listname, args, func)

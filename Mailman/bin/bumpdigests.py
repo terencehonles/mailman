@@ -20,7 +20,6 @@ import optparse
 
 from Mailman import Errors
 from Mailman import MailList
-from Mailman import Utils
 from Mailman import Version
 from Mailman.configuration import config
 from Mailman.i18n import _
@@ -52,7 +51,7 @@ def main():
     opts, args, parser = parseargs()
     config.load(opts.config)
 
-    listnames = set(args or Utils.list_names())
+    listnames = set(args or config.list_manager.names)
     if not listnames:
         print _('Nothing to do.')
         sys.exit(0)

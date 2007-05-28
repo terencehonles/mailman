@@ -36,8 +36,10 @@ import email.Iterators
 
 from UserDict import UserDict
 from cStringIO import StringIO
+from string import Template
 from types import MethodType
 from urlparse import urlparse
+from zope.interface import implements
 
 from email.Header import Header
 from email.Utils import getaddresses, formataddr, parseaddr
@@ -49,7 +51,8 @@ from Mailman import Version
 from Mailman import database
 from Mailman.UserDesc import UserDesc
 from Mailman.configuration import config
-from Mailman.database.languages import Language
+from Mailman.database.tables.languages import Language
+from Mailman.interfaces import *
 
 # Base classes
 from Mailman import Pending
@@ -89,84 +92,49 @@ slog    = logging.getLogger('mailman.subscribe')
 class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
                Archiver, Digester, SecurityManager, Bouncer, GatewayManager,
                Autoresponder, TopicMgr, Pending.Pending):
-    def __new__(cls, *args, **kws):
-        # Search positional and keyword arguments to find the name of the
-        # existing list that is being opened, with the latter taking
-        # precedence.  If no name can be found, then make sure there are no
-        # arguments, otherwise it's an error.
-        if 'name' in kws:
-            listname = kws.pop('name')
-        elif not args:
-            if not kws:
-                # We're probably being created from the ORM layer, so just let
-                # the super class do its thing.
-                return super(MailList, cls).__new__(cls, *args, **kws)
-            raise ValueError("'name' argument required'")
-        else:
-            listname = args[0]
-        fqdn_listname = Utils.fqdn_listname(listname)
-        listname, hostname = Utils.split_listname(fqdn_listname)
-        mlist = database.find_list(listname, hostname)
-        if not mlist:
-            raise Errors.MMUnknownListError(fqdn_listname)
-        return mlist
 
-    #
-    # A MailList object's basic Python object model support
-    #
-    def __init__(self, name=None, lock=True, check_version=True):
-        # No timeout by default.  If you want to timeout, open the list
-        # unlocked, then lock explicitly.
-        #
+    implements(
+        IMailingList,
+        IMailingListAddresses,
+        IMailingListIdentity,
+        IMailingListRosters,
+        )
+
+    def __init__(self, data):
+        self._data = data
         # Only one level of mixin inheritance allowed
         for baseclass in self.__class__.__bases__:
             if hasattr(baseclass, '__init__'):
                 baseclass.__init__(self)
         # Initialize volatile attributes
-        self.InitTempVars(name, check_version)
-        # This extension mechanism allows list-specific overrides of any
-        # method (well, except __init__(), InitTempVars(), and InitVars()
-        # I think).  Note that fullpath() will return None when we're creating
-        # the list, which will only happen when name is None.
-        if name is None:
-            return
-        filename = os.path.join(self.fullpath(), 'extend.py')
-        dict = {}
+        self.InitTempVars()
+        # Give the extension mechanism a chance to process this list.
         try:
-            execfile(filename, dict)
-        except IOError, e:
-            # Ignore missing files, but log other errors
-            if e.errno == errno.ENOENT:
-                pass
-            else:
-                elog.error('IOError reading list extension: %s', e)
+            from Mailman.ext import init_mlist
+        except ImportError:
+            pass
         else:
-            func = dict.get('extend')
-            if func:
-                func(self)
-        if lock:
-            # This will load the database.
-            self.Lock()
-        else:
-            self.Load(name, check_version)
+            init_mlist(self)
 
     def __getattr__(self, name):
+        missing = object()
         if name.startswith('_'):
             return super(MailList, self).__getattr__(name)
-        # Because we're using delegation, we want to be sure that attribute
-        # access to a delegated member function gets passed to the
-        # sub-objects.  This of course imposes a specific name resolution
-        # order.
-        try:
-            return getattr(self._memberadaptor, name)
-        except AttributeError:
-            for guicomponent in self._gui:
-                try:
-                    return getattr(guicomponent, name)
-                except AttributeError:
-                    pass
-            else:
-                raise AttributeError(name)
+        # Delegate to the database model object if it has the attribute.
+        obj = getattr(self._data, name, missing)
+        if obj is not missing:
+            return obj
+        # Delegate to the member adapter next.
+        obj = getattr(self._memberadaptor, name, missing)
+        if obj is not missing:
+            return obj
+        # Finally, delegate to one of the gui components.
+        for guicomponent in self._gui:
+            obj = getattr(guicomponent, name, missing)
+            if obj is not missing:
+                return obj
+        # Nothing left to delegate to, so it's got to be an error.
+        raise AttributeError(name)
 
     def __repr__(self):
         if self.Locked():
@@ -212,43 +180,63 @@ class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
     #
     # Useful accessors
     #
-    def internal_name(self):
-        return self._internal_name
-
-    def fullpath(self):
+    @property
+    def full_path(self):
         return self._full_path
+
+
+
+    # IMailingListIdentity
 
     @property
     def fqdn_listname(self):
-        return '%s@%s' % (self._internal_name, self.host_name)
+        return Utils.fqdn_listname(self._data.list_name, self._data.host_name)
+
+
+
+    # IMailingListAddresses
 
     @property
-    def no_reply_address(self):
+    def posting_address(self):
+        return self.fqdn_listname
+
+    @property
+    def noreply_address(self):
         return '%s@%s' % (config.NO_REPLY_ADDRESS, self.host_name)
 
-    def getListAddress(self, extra=None):
-        if extra is None:
-            return self.fqdn_listname
-        return '%s-%s@%s' % (self.internal_name(), extra, self.host_name)
+    @property
+    def owner_address(self):
+        return '%s-owner@%s' % (self.list_name, self.host_name)
 
-    # For backwards compatibility
-    def GetBouncesEmail(self):
-        return self.getListAddress('bounces')
+    @property
+    def request_address(self):
+        return '%s-request@%s' % (self.list_name, self.host_name)
 
-    def GetOwnerEmail(self):
-        return self.getListAddress('owner')
+    @property
+    def bounces_address(self):
+        return '%s-bounces@%s' % (self.list_name, self.host_name)
 
-    def GetRequestEmail(self, cookie=''):
-        if config.VERP_CONFIRMATIONS and cookie:
-            return self.GetConfirmEmail(cookie)
-        else:
-            return self.getListAddress('request')
+    @property
+    def join_address(self):
+        return '%s-join@%s' % (self.list_name, self.host_name)
 
-    def GetConfirmEmail(self, cookie):
-        return config.VERP_CONFIRM_FORMAT % {
-            'addr'  : '%s-confirm' % self.internal_name(),
-            'cookie': cookie,
-            } + '@' + self.host_name
+    @property
+    def leave_address(self):
+        return '%s-leave@%s' % (self.list_name, self.host_name)
+
+    @property
+    def subscribe_address(self):
+        return '%s-subscribe@%s' % (self.list_name, self.host_name)
+
+    @property
+    def unsubscribe_address(self):
+        return '%s-unsubscribe@%s' % (self.list_name, self.host_name)
+
+    def confirm_address(self, cookie):
+        local_part = Template(config.VERP_CONFIRM_FORMAT).safe_substitute(
+            address = '%s-confirm' % self.list_name,
+            cookie  = cookie)
+        return '%s@%s' % (local_part, self.host_name)
 
     def GetConfirmJoinSubject(self, listname, cookie):
         if config.VERP_CONFIRMATIONS and cookie:
@@ -303,12 +291,11 @@ class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
             user = Utils.ObscureEmail(user)
         return '%s/%s' % (url, urllib.quote(user.lower()))
 
-
 
     #
     # Instance and subcomponent initialization
     #
-    def InitTempVars(self, name, check_version=True):
+    def InitTempVars(self):
         """Set transient variables of this and inherited classes."""
         # Because of the semantics of the database layer, it's possible that
         # this method gets called more than once on an existing object.  For
@@ -325,27 +312,9 @@ class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
         __import__(adaptor_module)
         mod = sys.modules[adaptor_module]
         self._memberadaptor = getattr(mod, adaptor_class)(self)
-        # The timestamp is set whenever we load the state from disk.  If our
-        # timestamp is newer than the modtime of the config.pck file, we don't
-        # need to reload, otherwise... we do.
-        self._timestamp = 0
-        self._make_lock(name or '<site>')
-        # XXX FIXME Sometimes name is fully qualified, sometimes it's not.
-        if name:
-            if '@' in name:
-                self._internal_name, self.host_name = name.split('@', 1)
-                self._full_path = os.path.join(config.LIST_DATA_DIR, name)
-            else:
-                self._internal_name = name
-                self.host_name = config.DEFAULT_EMAIL_HOST
-                if check_version:
-                    self._full_path = os.path.join(config.LIST_DATA_DIR,
-                                                   name + '@' +
-                                                   self.host_name)
-                else:
-                    self._full_path = os.path.join(config.LIST_DATA_DIR, name)
-        else:
-            self._full_path = ''
+        self._make_lock(self.fqdn_listname)
+        self._full_path = os.path.join(config.LIST_DATA_DIR,
+                                       self.fqdn_listname)
         # Only one level of mixin inheritance allowed
         for baseclass in self.__class__.__bases__:
             if hasattr(baseclass, 'InitTempVars'):
@@ -597,18 +566,9 @@ class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
         self.SaveRequestsDb()
         self.CheckHTMLArchiveDir()
 
-    def Load(self, fqdn_listname=None, check_version=True):
-        if fqdn_listname is None:
-            fqdn_listname = self.fqdn_listname
-        if not Utils.list_exists(fqdn_listname):
-            raise Errors.MMUnknownListError(fqdn_listname)
+    def Load(self):
         database.load(self)
         self._memberadaptor.load()
-        if check_version:
-            # XXX for now disable version checks.  We'll fold this into schema
-            # updates eventually.
-            #self.CheckVersion(dict)
-            self.CheckValues()
 
 
 
@@ -623,7 +583,6 @@ class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
         self.InitVars()
         # Then reload the database (but don't recurse).  Force a reload even
         # if we have the most up-to-date state.
-        self._timestamp = 0
         self.Load(self.fqdn_listname, check_version=False)
         # We must hold the list lock in order to update the schema
         waslocked = self.Locked()
@@ -955,7 +914,7 @@ class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
         self.setMemberName(addr, name)
         if not globally:
             return
-        for listname in Utils.list_names():
+        for listname in config.list_manager.names:
             # Don't bother with ourselves
             if listname == self.internal_name():
                 continue
@@ -1047,7 +1006,7 @@ class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
         # oldaddr is a member.
         if not globally:
             return
-        for listname in Utils.list_names():
+        for listname in config.list_manager.names:
             # Don't bother with ourselves
             if listname == self.internal_name():
                 continue

@@ -31,7 +31,6 @@ from xml.sax.saxutils import escape
 from Mailman import Defaults
 from Mailman import Errors
 from Mailman import MemberAdaptor
-from Mailman import Utils
 from Mailman import Version
 from Mailman.MailList import MailList
 from Mailman.configuration import config
@@ -308,7 +307,7 @@ def main():
                     listname = '%s@%s' % (listname, config.DEFAULT_EMAIL_HOST)
                 listnames.append(listname)
         else:
-            listnames = Utils.list_names()
+            listnames = config.list_manager.names
         dumper.dump(listnames)
         dumper.close()
     finally:

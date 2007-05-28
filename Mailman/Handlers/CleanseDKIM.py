@@ -25,9 +25,12 @@ and it will also give the MTA the opportunity to regenerate valid keys
 originating at the Mailman server for the outgoing message.
 """
 
+from Mailman.configuration import config
+
 
 
 def process(mlist, msg, msgdata):
-    del msg['domainkey-signature']
-    del msg['dkim-signature']
-    del msg['authentication-results']
+    if config.REMOVE_DKIM_HEADERS:
+        del msg['domainkey-signature']
+        del msg['dkim-signature']
+        del msg['authentication-results']

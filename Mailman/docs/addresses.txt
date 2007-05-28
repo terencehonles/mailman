@@ -1,0 +1,144 @@
+Email addresses and rosters
+===========================
+
+Addresses represent email address, and nothing more.  Some addresses are tied
+to users that Mailman knows about.  For example, a list member is a user that
+the system knows about, but a non-member posting from a brand new email
+address is a counter-example.
+
+
+Creating a roster
+-----------------
+
+Email address objects are tied to rosters, and rosters are tied to the user
+manager.  To get things started, access the global user manager and create a
+new roster.
+
+    >>> from Mailman.database import flush
+    >>> from Mailman.configuration import config
+    >>> mgr = config.user_manager
+    >>> roster_1 = mgr.create_roster('roster-1')
+    >>> sorted(roster_1.addresses)
+    []
+
+
+Creating addresses
+------------------
+
+Creating a simple email address object is straight forward.
+
+    >>> addr_1 = roster_1.create('aperson@example.com')
+    >>> flush()
+    >>> addr_1.address
+    'aperson@example.com'
+    >>> addr_1.real_name is None
+    True
+
+You can also create an email address object with a real name.
+
+    >>> addr_2 = roster_1.create('bperson@example.com', 'Barney Person')
+    >>> addr_2.address
+    'bperson@example.com'
+    >>> addr_2.real_name
+    'Barney Person'
+
+You can also iterate through all the addresses on a roster.
+
+    >>> sorted(addr.address for addr in roster_1.addresses)
+    ['aperson@example.com', 'bperson@example.com']
+
+You can create another roster and add a bunch of existing addresses to the
+second roster.
+
+    >>> roster_2 = mgr.create_roster('roster-2')
+    >>> flush()
+    >>> sorted(roster_2.addresses)
+    []
+    >>> for address in roster_1.addresses:
+    ...     roster_2.addresses.append(address)
+    >>> roster_2.create('cperson@example.com', 'Charlie Person')
+    <Address: Charlie Person <cperson@example.com> [not verified]>
+    >>> sorted(addr.address for addr in roster_2.addresses)
+    ['aperson@example.com', 'bperson@example.com', 'cperson@example.com']
+
+The first roster hasn't been affected.
+
+    >>> sorted(addr.address for addr in roster_1.addresses)
+    ['aperson@example.com', 'bperson@example.com']
+
+
+Removing addresses
+------------------
+
+You can remove an address from a roster just by deleting it.
+
+    >>> for addr in roster_1.addresses:
+    ...     if addr.address == 'aperson@example.com':
+    ...         break
+    >>> addr.address
+    'aperson@example.com'
+    >>> roster_1.addresses.remove(addr)
+    >>> sorted(addr.address for addr in roster_1.addresses)
+    ['bperson@example.com']
+
+Again, this doesn't affect the other rosters.
+
+    >>> sorted(addr.address for addr in roster_2.addresses)
+    ['aperson@example.com', 'bperson@example.com', 'cperson@example.com']
+
+
+Registration and validation
+---------------------------
+
+Addresses have two dates, the date the address was registered on and the date
+the address was validated on.  Neither date isset by default.
+
+    >>> addr = roster_1.create('dperson@example.com', 'David Person')
+    >>> addr.registered_on is None
+    True
+    >>> addr.validated_on is None
+    True
+
+The registered date takes a Python datetime object.
+
+    >>> from datetime import datetime
+    >>> addr.registered_on = datetime(2007, 5, 8, 22, 54, 1)
+    >>> print addr.registered_on
+    2007-05-08 22:54:01
+    >>> addr.validated_on is None
+    True
+
+And of course, you can also set the validation date.
+
+    >>> addr.validated_on = datetime(2007, 5, 13, 22, 54, 1)
+    >>> print addr.registered_on
+    2007-05-08 22:54:01
+    >>> print addr.validated_on
+    2007-05-13 22:54:01
+
+
+The null roster
+---------------
+
+All address objects that have been created are members of the null roster.
+
+    >>> all = mgr.get_roster('')
+    >>> sorted(addr.address for addr in all.addresses)
+    ['aperson@example.com', 'bperson@example.com',
+     'cperson@example.com', 'dperson@example.com']
+
+And conversely, all addresses should have the null roster on their list of
+rosters.
+
+    >>> for addr in all.addresses:
+    ...     assert all in addr.rosters, 'Address is missing null roster'
+
+
+Clean up
+--------
+
+    >>> for roster in mgr.rosters:
+    ...     mgr.delete_roster(roster)
+    >>> flush()
+    >>> sorted(roster.name for roster in mgr.rosters)
+    []

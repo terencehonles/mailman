@@ -48,25 +48,24 @@ SCRIPTSDIR=	$(prefix)/scripts
 
 SHELL=		/bin/sh
 PYTHONLIBDIR=	$(prefix)/pythonlib
+PYTHONPATHDIR=	$(PYTHONLIBDIR)/lib/python
 
 # Traditional distutils packages
-SETUPINSTOPTS=	--install-lib $(DESTDIR)$(PYTHONLIBDIR) \
-		--install-purelib $(DESTDIR)$(PYTHONLIBDIR) \
-		--install-data $(DESTDIR)$(PYTHONLIBDIR)
+SETUPINSTOPTS=	--home $(DESTDIR)$(PYTHONLIBDIR)
 SETUPCMD=	setup.py --quiet install $(SETUPINSTOPTS)
 
-EMAIL=		
 SETUPTOOLS=	setuptools-0.6c3
-PYSQLITE=	pysqlite-2.3.2
 SQLALCHEMY=	SQLAlchemy-0.3.3
-SETUPPKGS=	$(EMAIL) $(SETUPTOOLS) $(PYSQLITE) $(SQLALCHEMY)
+ZOPEIFACE=	zope.interface-3.3.0.1
+ELIXIR=		Elixir-0.3.0
+SETUPPKGS=	$(SETUPTOOLS) $(SQLALCHEMY) $(ZOPEIFACE) $(ELIXIR)
 
-EZINSTOPTS=	--install-dir $(DESTDIR)$(PYTHONLIBDIR)
-EZCMD=		$(PYTHONLIBDIR)/$(SETUPTOOLS)-py2.4.egg/easy_install.py \
-		$(EZINSTOPTS)
+EZINSTOPTS=	--install-dir $(DESTDIR)$(PYTHONPATHDIR)
+EZCMD=		$(PYTHONLIBDIR)/bin/easy_install $(EZINSTOPTS)
 
 WSGIREF=	wsgiref-0.1.2-py2.4.egg
-EZPKGS=		$(WSGIREF)
+MUNEPY=		munepy-1.1-py2.5.egg
+EZPKGS=		$(WSGIREF) $(MUNEPY)
 
 # Modes for directories and executables created by the install
 # process.  Default to group-writable directories but
@@ -97,15 +96,16 @@ install-other:
 	$(INSTALL) -m $(FILEMODE) mailman.cfg.sample $(DESTDIR)$(ETCDIR)
 
 install-packages:
+	mkdir -p $(PYTHONPATHDIR)
 	for p in $(SETUPPKGS); \
 	do \
 	    gunzip -c $(srcdir)/$$p.tar.gz | tar xf -; \
 	    (cd $$p ; umask 02 ; \
-	     PYTHONPATH=$(PYTHONLIBDIR) $(PYTHON) $(SETUPCMD)); \
+	     PYTHONPATH=$(PYTHONPATHDIR) $(PYTHON) $(SETUPCMD)); \
 	done
 	for p in $(EZPKGS); \
 	do \
-	    (umask 02 ; PYTHONPATH=$(PYTHONLIBDIR) $(PYTHON) $(EZCMD) $$p); \
+	    (umask 02 ; PYTHONPATH=$(PYTHONPATHDIR) $(EZCMD) $$p); \
 	done
 
 finish:

@@ -149,12 +149,20 @@ class Switchboard:
             msg = email.message_from_string(msg, Message.Message)
         return msg, data
 
-    def finish(self, filebase):
+    def finish(self, filebase, preserve=False):
         bakfile = os.path.join(self.__whichq, filebase + '.bak')
         try:
-            os.unlink(bakfile)
+            if preserve:
+                psvfile = os.path.join(config.SHUNTQUEUE_DIR,
+                                       filebase + '.psv')
+                # Create the directory if it doesn't yet exist.
+                Utils.makedirs(config.SHUNTQUEUE_DIR, 0770)
+                os.rename(bakfile, psvfile)
+            else:
+                os.unlink(bakfile)
         except EnvironmentError, e:
-            elog.exception('Failed to unlink backup file: %s', bakfile)
+            elog.exception('Failed to unlink/preserve backup file: %s',
+                           bakfile)
 
     def files(self, extension='.pck'):
         times = {}

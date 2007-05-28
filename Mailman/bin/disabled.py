@@ -23,7 +23,6 @@ from Mailman import Errors
 from Mailman import MailList
 from Mailman import MemberAdaptor
 from Mailman import Pending
-from Mailman import Utils
 from Mailman import Version
 from Mailman import loginit
 from Mailman.Bouncer import _BounceInfo
@@ -122,7 +121,7 @@ def main():
     elog = logging.getLogger('mailman.error')
     blog = logging.getLogger('mailman.bounce')
 
-    listnames = set(opts.listnames or Utils.list_names())
+    listnames = set(opts.listnames or config.list_manager.names)
     who = tuple(opts.who)
 
     msg = _('[disabled by periodic sweep and cull, no message available]')

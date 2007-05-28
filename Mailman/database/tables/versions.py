@@ -15,7 +15,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-"""Email addresses."""
+"""Schema versions."""
 
 from sqlalchemy import *
 
@@ -23,8 +23,9 @@ from sqlalchemy import *
 
 def make_table(metadata, tables):
     table = Table(
-        'Address', metadata,
-        Column('address_id',    Integer, primary_key=True),
-        Column('address',       Unicode(4096)),
+        'Versions', metadata,
+        Column('version_id',    Integer, primary_key=True),
+        Column('component',     String),
+        Column('version',       Integer),
         )
     tables.bind(table)

@@ -212,3 +212,33 @@ class BadPasswordSchemeError(PasswordError):
 
     def __str__(self):
         return 'A bad password scheme was given: %s' % self.scheme_name
+
+
+
+class UserError(MailmanError):
+    """A general user-related error occurred."""
+
+
+class RosterError(UserError):
+    """A roster-related error occurred."""
+
+
+class RosterExistsError(RosterError):
+    """The named roster already exists."""
+
+
+
+class AddressError(MailmanError):
+    """A general address-related error occurred."""
+
+
+class ExistingAddressError(AddressError):
+    """The given email address already exists."""
+
+
+class AddressAlreadyLinkedError(AddressError):
+    """The address is already linked to a user."""
+
+
+class AddressNotLinkedError(AddressError):
+    """The address is not linked to the user."""

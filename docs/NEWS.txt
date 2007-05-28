@@ -4,7 +4,7 @@ Copyright (C) 1998-2007 by the Free Software Foundation, Inc.
 
 Here is a history of user visible changes to Mailman.
 
-2.2 alpha 1 (XX-XXX-200X)
+3.0 alpha 1 (XX-XXX-200X)
 
   Configuration
 
@@ -25,6 +25,14 @@ Here is a history of user visible changes to Mailman.
       substitutions.  See documentation in Defaults.py.in for details.
 
   Architecture
+
+    - SQLAlchemy/Elixir based storage for all list and user data, with default
+      storage in a SQLite database.
+
+    - Zope interfaces are used to describe the major components.
+
+    - Users are now stored in a unified database, and shared across all
+      mailing lists.
 
     - Mailman's web interface is now WSGI compliant.  WSGI is a Python
       standard (PEP 333) allowing web applications to be (more) easily
@@ -104,13 +112,21 @@ Here is a history of user visible changes to Mailman.
 
   Bug fixes and other patches
 
+    - Removal of DomainKey/DKIM signatures is now controlled by Defaults.py
+      mm_cfg.py variable REMOVE_DKIM_HEADERS (default = No).
+
+    - Queue runner processing is improved to log and preserve for analysis in
+      the shunt queue certain bad queue entries that were previously logged
+      but lost.  Also, entries are preserved when an attempt to shunt throws
+      an exception (1656289).
+
     - The processing of Topics regular expressions has changed. Previously the
       Topics regexp was compiled in verbose mode but not documented as such
-      which caused some confusion.  Also, the documentation indicated that topic
-      keywords could be entered one per line, but these entries were not handled
-      properly.  Topics regexps are now compiled in non-verbose mode and multi-
-      line entries are 'ored'.  Existing Topics regexps will be converted when
-      the list is updated so they will continue to work.
+      which caused some confusion.  Also, the documentation indicated that
+      topic keywords could be entered one per line, but these entries were not
+      handled properly.  Topics regexps are now compiled in non-verbose mode
+      and multi- line entries are 'ored'.  Existing Topics regexps will be
+      converted when the list is updated so they will continue to work.
 
     - The List-Help, List-Subscribe, and List-Unsubscribe headers were
       incorrectly suppressed in messages that Mailman sends directly to

@@ -121,7 +121,8 @@ def initialize(propagate=False):
     # minimal overloading of our logger configurations.
     cp = ReallySafeConfigParser()
     if config.LOG_CONFIG_FILE:
-        cp.read(config.LOG_CONFIG_FILE)
+        path = os.path.join(config.ETC_DIR, config.LOG_CONFIG_FILE)
+        cp.read(os.path.normpath(path))
     # Create the subloggers
     for logger in LOGGERS:
         log = logging.getLogger('mailman.' + logger)

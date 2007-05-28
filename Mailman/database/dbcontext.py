@@ -16,19 +16,17 @@
 # USA.
 
 import os
+import sys
 import logging
 import weakref
 
-from sqlalchemy import BoundMetaData, create_session
+from elixir import create_all, metadata, objectstore
+from sqlalchemy import create_engine
 from string import Template
 from urlparse import urlparse
 
 from Mailman import Version
 from Mailman.configuration import config
-from Mailman.database import address
-from Mailman.database import languages
-from Mailman.database import listdata
-from Mailman.database import version
 from Mailman.database.txnsupport import txn
 
 
@@ -39,19 +37,9 @@ class MlistRef(weakref.ref):
         self.fqdn_listname = mlist.fqdn_listname
 
 
-class Tables(object):
-    def bind(self, table, attrname=None):
-        if attrname is None:
-            attrname = table.name.lower()
-        setattr(self, attrname, table)
-
-
 
 class DBContext(object):
     def __init__(self):
-        self.tables = Tables()
-        self.metadata = None
-        self.session = None
         # Special transaction used only for MailList.Lock() .Save() and
         # .Unlock() interface.
         self._mlist_txns = {}
@@ -75,37 +63,30 @@ class DBContext(object):
         # engines, and yes, we could have chmod'd the file after the fact, but
         # half dozen and all...
         self._touch(url)
-        self.metadata = BoundMetaData(url)
-        self.metadata.engine.echo = config.SQLALCHEMY_ECHO
-        # Create all the table objects, and then let SA conditionally create
-        # them if they don't yet exist.  NOTE: this order matters!
-        for module in (languages, address, listdata, version):
-            module.make_table(self.metadata, self.tables)
-        self.metadata.create_all()
-        # Validate schema version, updating if necessary (XXX)
-        r = self.tables.version.select(
-            self.tables.version.c.component=='schema').execute()
-        row = r.fetchone()
-        if row is None:
+        engine = create_engine(url)
+        engine.echo = config.SQLALCHEMY_ECHO
+        metadata.connect(engine)
+        # Load and create the Elixir active records.  This works by
+        # side-effect.
+        import Mailman.database.model
+        create_all()
+        # Validate schema version.
+        v = Mailman.database.model.Version.get_by(component='schema')
+        if not v:
             # Database has not yet been initialized
-            self.tables.version.insert().execute(
+            v = Mailman.database.model.Version(
                 component='schema',
                 version=Version.DATABASE_SCHEMA_VERSION)
-        elif row.version <> Version.DATABASE_SCHEMA_VERSION:
+            objectstore.flush()
+        elif v.version <> Version.DATABASE_SCHEMA_VERSION:
             # XXX Update schema
-            raise SchemaVersionMismatchError(row.version)
-        self.session = create_session()
-
-    def close(self):
-        self.session.close()
-        self.session = None
+            raise SchemaVersionMismatchError(v.version)
 
     def _touch(self, url):
         parts = urlparse(url)
-        # XXX Python 2.5; use parts.scheme and parts.path
-        if parts[0] <> 'sqlite':
+        if parts.scheme <> 'sqlite':
             return
-        path = os.path.normpath(parts[2])
+        path = os.path.normpath(parts.path)
         fd = os.open(path, os.O_WRONLY |  os.O_NONBLOCK | os.O_CREAT, 0666)
         # Ignore errors
         if fd > 0:
@@ -114,7 +95,7 @@ class DBContext(object):
     # Cooperative method for use with @txn decorator
     def _withtxn(self, meth, *args, **kws):
         try:
-            txn = self.session.create_transaction()
+            txn = objectstore.session.current.create_transaction()
             rtn = meth(*args, **kws)
         except:
             txn.rollback()
@@ -133,7 +114,7 @@ class DBContext(object):
         # Don't try to re-lock a list
         if mlist.fqdn_listname in self._mlist_txns:
             return
-        txn = self.session.create_transaction()
+        txn = objectstore.session.current.create_transaction()
         mref = MlistRef(mlist, self._unlock_mref)
         # If mlist.host_name is changed, its fqdn_listname attribute will no
         # longer match, so its transaction will not get committed when the
@@ -155,7 +136,7 @@ class DBContext(object):
     def api_load(self, mlist):
         # Mark the MailList object such that future attribute accesses will
         # refresh from the database.
-        self.session.expire(mlist)
+        objectstore.session.current.expire(mlist)
 
     def api_save(self, mlist):
         # When dealing with MailLists, .Save() will always be followed by
@@ -172,28 +153,21 @@ class DBContext(object):
 
     @txn
     def api_add_list(self, mlist):
-        self.session.save(mlist)
+        objectstore.session.current.save(mlist)
 
     @txn
     def api_remove_list(self, mlist):
-        self.session.delete(mlist)
+        objectstore.session.current.delete(mlist)
 
     @txn
     def api_find_list(self, listname, hostname):
         from Mailman.MailList import MailList
-        q = self.session.query(MailList)
+        q = objectstore.session.current.query(MailList)
         mlists = q.select_by(list_name=listname, host_name=hostname)
         assert len(mlists) <= 1, 'Duplicate mailing lists!'
         if mlists:
             return mlists[0]
         return None
-
-    @txn
-    def api_get_list_names(self):
-        table = self.tables.listdata
-        results = table.select().execute()
-        return [(row[table.c.list_name], row[table.c.host_name])
-                for row in results.fetchall()]
 
 
 

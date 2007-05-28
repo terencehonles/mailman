@@ -895,7 +895,7 @@ def loginpage(mlist, doc, user, lang):
 def lists_of_member(mlist, user):
     hostname = mlist.host_name
     onlists = []
-    for listname in Utils.list_names():
+    for listname in config.list_manager.names:
         # The current list will always handle things in the mainline
         if listname == mlist.internal_name():
             continue

@@ -97,6 +97,7 @@ class Configuration(object):
         self.DATA_DIR = datadir = os.path.join(VAR_PREFIX, 'data')
         self.ETC_DIR = etcdir   = os.path.join(VAR_PREFIX, 'etc')
         self.SPAM_DIR           = os.path.join(VAR_PREFIX, 'spam')
+        self.EXT_DIR            = os.path.join(VAR_PREFIX, 'ext')
         self.WRAPPER_DIR        = os.path.join(EXEC_PREFIX, 'mail')
         self.BIN_DIR            = os.path.join(PREFIX, 'bin')
         self.SCRIPTS_DIR        = os.path.join(PREFIX, 'scripts')

@@ -40,7 +40,6 @@ from email.Errors import HeaderParseError
 from string import ascii_letters, digits, whitespace
 
 from Mailman import Errors
-from Mailman import database
 from Mailman import passwords
 from Mailman.SafeDict import SafeDict
 from Mailman.configuration import config
@@ -66,13 +65,13 @@ log = logging.getLogger('mailman.error')
 def list_exists(fqdn_listname):
     """Return true iff list `fqdn_listname' exists."""
     listname, hostname = split_listname(fqdn_listname)
-    return bool(database.find_list(listname, hostname))
+    return bool(config.list_manager.find_list(listname, hostname))
 
 
 def list_names():
     """Return the fqdn names of all lists in default list directory."""
     return ['%s@%s' % (listname, hostname)
-            for listname, hostname in database.get_list_names()]
+            for listname, hostname in config.list_manager.get_list_names()]
 
 
 def split_listname(listname):
@@ -81,8 +80,10 @@ def split_listname(listname):
     return listname, config.DEFAULT_EMAIL_HOST
 
 
-def fqdn_listname(listname):
-    return AT.join(split_listname(listname))
+def fqdn_listname(listname, hostname=None):
+    if hostname is None:
+        return AT.join(split_listname(listname))
+    return AT.join((listname, hostname))
 
 
 

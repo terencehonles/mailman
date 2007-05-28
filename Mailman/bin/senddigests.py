@@ -19,7 +19,6 @@ import sys
 import optparse
 
 from Mailman import MailList
-from Mailman import Utils
 from Mailman import Version
 from Mailman.i18n import _
 from Mailman.initialize import initialize
@@ -59,7 +58,7 @@ def main():
     opts, args, parser = parseargs()
     initialize(opts.config)
 
-    for listname in set(opts.listnames or Utils.list_names()):
+    for listname in set(opts.listnames or config.list_manager.names):
         mlist = MailList.MailList(listname, lock=False)
         if mlist.digest_send_periodic:
             mlist.Lock()

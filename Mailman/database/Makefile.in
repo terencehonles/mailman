@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2007 by the Free Software Foundation, Inc.
+# Copyright (C) 2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -42,6 +42,7 @@ PACKAGEDIR= 	$(prefix)/Mailman/database
 SHELL=		/bin/sh
 
 MODULES=	*.py
+SUBDIRS=	tables model
 
 # Modes for directories and executables created by the install
 # process.  Default to group-writable directories but
@@ -55,17 +56,37 @@ INSTALL_PROGRAM=$(INSTALL) -m $(EXEMODE)
 # Rules
 
 all:
+	for d in $(SUBDIRS); \
+	do \
+	    (cd $$d; $(MAKE)); \
+	done
 
 install: 
 	for f in $(MODULES); \
 	do \
 	    $(INSTALL) -m $(FILEMODE) $(srcdir)/$$f $(DESTDIR)$(PACKAGEDIR); \
 	done
+	for d in $(SUBDIRS); \
+	do \
+	    (cd $$d; $(MAKE) DESTDIR=$(DESTDIR) install); \
+	done
 
 finish:
+	@for d in $(SUBDIRS); \
+	do \
+	    (cd $$d; $(MAKE) DESTDIR=$(DESTDIR) finish); \
+	done
 
 clean:
+	for d in $(SUBDIRS); \
+	do \
+	    (cd $$d; $(MAKE) clean); \
+	done
 
 distclean:
 	-rm *.pyc
 	-rm Makefile
+	for d in $(SUBDIRS); \
+	do \
+	    (cd $$d; $(MAKE) distclean); \
+	done

@@ -242,10 +242,6 @@ def dolist(listname):
             for addr in noinfo.keys():
                 mlist.setDeliveryStatus(addr, ENABLED)
 
-    # Update the held requests database
-    print _("""Updating the held requests database.""")
-    mlist._UpdateRecords()
-
     mbox_dir = make_varabs('archives/private/%s.mbox' % (listname))
     mbox_file = make_varabs('archives/private/%s.mbox/%s' % (listname,
                                                              listname))
@@ -538,121 +534,6 @@ def dequeue(filebase):
 
 
 
-def update_pending():
-    file20 = os.path.join(config.DATA_DIR, 'pending_subscriptions.db')
-    file214 = os.path.join(config.DATA_DIR, 'pending.pck')
-    db = None
-    # Try to load the Mailman 2.0 file
-    try:
-        fp = open(file20)
-    except IOError, e:
-        if e.errno <> errno.ENOENT:
-            raise
-    else:
-        print _('Updating Mailman 2.0 pending_subscriptions.db database')
-        db = marshal.load(fp)
-        # Convert to the pre-Mailman 2.1.5 format
-        db = Pending._update(db)
-    if db is None:
-        # Try to load the Mailman 2.1.x where x < 5, file
-        try:
-            fp = open(file214)
-        except IOError, e:
-            if e.errno <> errno.ENOENT:
-                raise
-        else:
-            print _('Updating Mailman 2.1.4 pending.pck database')
-            db = cPickle.load(fp)
-    if db is None:
-        print _('Nothing to do.')
-        return
-    # Now upgrade the database to the 2.1.5 format.  Each list now has its own
-    # pending.pck file, but only the RE_ENABLE operation actually recorded the
-    # listname in the request.  For the SUBSCRIPTION, UNSUBSCRIPTION, and
-    # CHANGE_OF_ADDRESS operations, we know the address of the person making
-    # the request so we can repend this request just for the lists the person
-    # is a member of.  For the HELD_MESSAGE operation, we can check the list's
-    # requests.pck file for correlation.  Evictions will take care of any
-    # misdirected pendings.
-    reenables_by_list = {}
-    addrops_by_address = {}
-    holds_by_id = {}
-    subs_by_address = {}
-    for key, val in db.items():
-        if key in ('evictions', 'version'):
-            continue
-        try:
-            op = val[0]
-            data = val[1:]
-        except (IndexError, ValueError):
-            print _('Ignoring bad pended data: $key: $val')
-            continue
-        if op in (Pending.UNSUBSCRIPTION, Pending.CHANGE_OF_ADDRESS):
-            # data[0] is the address being unsubscribed
-            addrops_by_address.setdefault(data[0], []).append((key, val))
-        elif op == Pending.SUBSCRIPTION:
-            # data[0] is a UserDesc object
-            addr = data[0].address
-            subs_by_address.setdefault(addr, []).append((key, val))
-        elif op == Pending.RE_ENABLE:
-            # data[0] is the mailing list's internal name
-            reenables_by_list.setdefault(data[0], []).append((key, val))
-        elif op == Pending.HELD_MESSAGE:
-            # data[0] is the hold id.  There better only be one entry per id
-            id = data[0]
-            if holds_by_id.has_key(id):
-                print _('WARNING: Ignoring duplicate pending ID: $id.')
-            else:
-                holds_by_id[id] = (key, val)
-    # Now we have to lock every list and re-pend all the appropriate
-    # requests.  Note that this will reset all the expiration dates, but that
-    # should be fine.
-    for listname in Utils.list_names():
-        mlist = MailList.MailList(listname)
-        # This is not the most efficient way to do this because it loads and
-        # saves the pending.pck file each time. :(
-        try:
-            for cookie, data in reenables_by_list.get(listname, []):
-                mlist.pend_repend(cookie, data)
-            for id, (cookie, data) in holds_by_id.items():
-                try:
-                    rec = mlist.GetRecord(id)
-                except KeyError:
-                    # Not for this list
-                    pass
-                else:
-                    mlist.pend_repend(cookie, data)
-                    del holds_by_id[id]
-            for addr, recs in subs_by_address.items():
-                # We shouldn't have a subscription confirmation if the address
-                # is already a member of the mailing list.
-                if mlist.isMember(addr):
-                    continue
-                for cookie, data in recs:
-                    mlist.pend_repend(cookie, data)
-            for addr, recs in addrops_by_address.items():
-                # We shouldn't have unsubscriptions or change of address
-                # requests for addresses which aren't members of the list.
-                if not mlist.isMember(addr):
-                    continue
-                for cookie, data in recs:
-                    mlist.pend_repend(cookie, data)
-            mlist.Save()
-        finally:
-            mlist.Unlock()
-    try:
-        os.unlink(file20)
-    except OSError, e:
-        if e.errno <> errno.ENOENT:
-            raise
-    try:
-        os.unlink(file214)
-    except OSError, e:
-        if e.errno <> errno.ENOENT:
-            raise
-
-
-
 def main():
     parser, opts, args = parseargs()
     initialize(opts.config)
@@ -682,8 +563,7 @@ Exiting.""")
                 'scripts/mailowner', 'mail/wrapper', 'Mailman/pythonlib',
                 'cgi-bin/archives', 'Mailman/MailCommandHandler'):
         remove_old_sources(mod)
-    listnames = Utils.list_names()
-    if not listnames:
+    if not config.list_manager.names:
         print _('no lists == nothing to do, exiting')
         return
     # For people with web archiving, make sure the directories
@@ -695,7 +575,7 @@ If your archives are big, this could take a minute or two...""")
         os.path.walk("%s/public_html/archives" % config.PREFIX,
                      archive_path_fixer, "")
         print _('done')
-    for listname in listnames:
+    for listname in config.list_manager.names:
         # With 2.2.0a0, all list names grew an @domain suffix.  If you find a
         # list without that, move it now.
         if not '@' in listname:
@@ -732,10 +612,6 @@ If your archives are big, this could take a minute or two...""")
                 mlist.Unlock()
         os.unlink(wmfile)
         print _('- usenet watermarks updated and gate_watermarks removed')
-    # In Mailman 2.1, the pending database format and file name changed, but
-    # in Mailman 2.1.5 it changed again.  This should update all existing
-    # files to the 2.1.5 format.
-    update_pending()
     # In Mailman 2.1, the qfiles directory has a different structure and a
     # different content.  Also, in Mailman 2.1.5 we collapsed the message
     # files from separate .msg (pickled Message objects) and .db (marshalled

@@ -82,10 +82,7 @@ def listinfo_overview(msg=''):
 
     # Skip any mailing lists that isn't advertised.
     advertised = []
-    listnames = list(Utils.list_names())
-    listnames.sort()
-
-    for name in listnames:
+    for name in sorted(config.list_manager.names):
         mlist = MailList.MailList(name, lock=False)
         if mlist.advertised:
             if hostname not in mlist.web_page_url:

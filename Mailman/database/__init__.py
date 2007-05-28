@@ -15,31 +15,35 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-# This module exposes the higher level interface methods that the rest of
-# Mailman should use.  It essentially hides the dbcontext and the SQLAlchemy
-# session from all other code.  The preferred way to use these methods is:
-#
-# from Mailman import database
-# database.add_list(foo)
+from __future__ import with_statement
 
 import os
 
+from elixir import objectstore
 
+from Mailman.database.listmanager import ListManager
+from Mailman.database.usermanager import UserManager
+
+__all__ = [
+    'initialize',
+    'flush',
+    ]
+
+
+
 def initialize():
-    from Mailman import database
     from Mailman.LockFile import LockFile
     from Mailman.configuration import config
-    from Mailman.database.dbcontext import dbcontext
+    from Mailman.database import model
     # Serialize this so we don't get multiple processes trying to create the
     # database at the same time.
     lockfile = os.path.join(config.LOCK_DIR, '<dbcreatelock>')
-    lock = LockFile(lockfile)
-    lock.lock()
-    try:
-        dbcontext.connect()
-    finally:
-        lock.unlock()
-    for attr in dir(dbcontext):
-        if attr.startswith('api_'):
-            exposed_name = attr[4:]
-            setattr(database, exposed_name, getattr(dbcontext, attr))
+    with LockFile(lockfile):
+        model.initialize()
+    config.list_manager = ListManager()
+    config.user_manager = UserManager()
+    flush()
+
+
+def flush():
+    objectstore.flush()

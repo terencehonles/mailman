@@ -174,7 +174,19 @@ def process(mlist, msg, msgdata=None):
         if ctype == 'text/plain':
             # We need to choose a charset for the scrubbed message, so we'll
             # arbitrarily pick the charset of the first text/plain part in the
-            # message.  Also get the RFC 3676 stuff from this part.
+            # message.
+            #
+            # Also get the RFC 3676 stuff from this part. This seems to
+            # work okay for scrub_nondigest.  It will also work as far as
+            # scrubbing messages for the archive is concerned, but Pipermail
+            # doesn't pay any attention to the RFC 3676 parameters.  The plain
+            # format digest is going to be a disaster in any case as some of
+            # messages will be format="flowed" and some not.  ToDigest creates
+            # its own Content-Type: header for the plain digest which won't
+            # have RFC 3676 parameters. If the message Content-Type: headers
+            # are retained for display in the digest, the parameters will be
+            # there for information, but not for the MUA. This is the best we
+            # can do without having get_payload() process the parameters.
             if charset is None:
                 charset = part.get_content_charset(lcset)
                 format = part.get_param('format')
@@ -318,7 +330,8 @@ URL: %(url)s
             partcharset = part.get_content_charset('us-ascii')
             try:
                 t = unicode(t, partcharset, 'replace')
-            except (UnicodeError, LookupError, ValueError, TypeError):
+            except (UnicodeError, LookupError, ValueError, TypeError,
+                    AssertionError):
                 # What is the cause to come this exception now ?
                 # Replace funny characters.  We use errors='replace'.
                 u = unicode(t, 'ascii', 'replace')
@@ -331,6 +344,13 @@ URL: %(url)s
                 charsets.append(partcharset)
         # Now join the text and set the payload
         sep = _('-------------- next part --------------\n')
+        # The i18n separator is in the list's charset. Coerce it to the
+        # message charset.
+        try:
+            s = unicode(sep, lcset, 'replace')
+            sep = s.encode(charset, 'replace')
+        except (UnicodeError, LookupError, ValueError):
+            pass
         rept = sep.join(text)
         # Replace entire message with text and scrubbed notice.
         # Try with message charsets and utf-8

@@ -4,7 +4,6 @@
 # both the process running the tests and all sub-processes (e.g. qrunners)
 # must share the same configuration file.
 
-MANAGERS_INIT_FUNCTION  = 'Mailman.testing.inmemory.initialize'
 SMTPPORT                = 10825
 MAX_RESTARTS            = 1
 MTA                     = None

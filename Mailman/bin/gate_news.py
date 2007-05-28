@@ -164,7 +164,7 @@ def poll_newsgroup(mlist, conn, first, last, glock):
 
 
 def process_lists(glock):
-    for listname in Utils.list_names():
+    for listname in config.list_manager.names:
         glock.refresh()
         # Open the list unlocked just to check to see if it is gating news to
         # mail.  If not, we're done with the list.  Otherwise, lock the list

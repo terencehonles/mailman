@@ -37,16 +37,16 @@ class Language(object):
 
 def make_table(metadata, tables):
     language_table = Table(
-        'Language', metadata,
+        'Languages', metadata,
         # Two letter language code
         Column('language_id',   Integer, primary_key=True),
         Column('code',          Unicode),
         )
     # Associate List
     available_languages_table = Table(
-        'AvailableLanguage', metadata,
+        'AvailableLanguages', metadata,
         Column('list_id',       Integer, ForeignKey('Listdata.list_id')),
-        Column('language_id',   Integer, ForeignKey('Language.language_id')),
+        Column('language_id',   Integer, ForeignKey('Languages.language_id')),
         )
     mapper(Language, language_table)
     tables.bind(language_table)

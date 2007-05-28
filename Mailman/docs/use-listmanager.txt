@@ -1,0 +1,124 @@
+Using the IListManager interface
+================================
+
+The IListManager is how you create, delete, and retrieve mailing list
+objects.  The Mailman system instantiates an IListManager for you based on the
+configuration variable MANAGERS_INIT_FUNCTION.  The instance is accessible
+on the global config object.
+
+    >>> from Mailman.database import flush
+    >>> from Mailman.configuration import config
+    >>> from Mailman.interfaces import IListManager
+    >>> IListManager.providedBy(config.list_manager)
+    True
+    >>> mgr = config.list_manager
+
+
+Creating a mailing list
+-----------------------
+
+Creating the list returns the newly created IMailList object.
+
+    >>> from Mailman.interfaces import IMailingList
+    >>> mlist = mgr.create('_xtest@example.com')
+    >>> flush()
+    >>> IMailingList.providedBy(mlist)
+    True
+
+This object has an identity.
+
+    >>> from Mailman.interfaces import IMailingListIdentity
+    >>> IMailingListIdentity.providedBy(mlist)
+    True
+
+All lists with identities have a short name, a host name, and a fully
+qualified listname.  This latter is what uniquely distinguishes the mailing
+list to the system.
+
+    >>> mlist.list_name
+    '_xtest'
+    >>> mlist.host_name
+    'example.com'
+    >>> mlist.fqdn_listname
+    '_xtest@example.com'
+
+If you try to create a mailing list with the same name as an existing list,
+you will get an exception.
+
+    >>> mlist_dup = mgr.create('_xtest@example.com')
+    Traceback (most recent call last):
+    ...
+    MMListAlreadyExistsError: _xtest@example.com
+
+
+Deleting a mailing list
+-----------------------
+
+Deleting an existing mailing list also deletes its rosters and roster sets.
+
+    >>> sorted(r.name for r in config.user_manager.rosters)
+    ['', '_xtest@example.com moderators', '_xtest@example.com owners']
+
+    >>> mgr.delete(mlist)
+    >>> flush()
+    >>> sorted(mgr.names)
+    []
+    >>> sorted(r.name for r in config.user_manager.rosters)
+    ['']
+
+Attempting to access attributes of the deleted mailing list raises an
+exception:
+
+    >>> mlist.fqdn_listname
+    Traceback (most recent call last):
+    ...
+    AttributeError: fqdn_listname
+
+After deleting the list, you can create it again.
+
+    >>> mlist = mgr.create('_xtest@example.com')
+    >>> flush()
+    >>> mlist.fqdn_listname
+    '_xtest@example.com'
+
+
+Retrieving a mailing list
+-------------------------
+
+When a mailing list exists, you can ask the list manager for it and you will
+always get the same object back.
+
+    >>> mlist_2 = mgr.get('_xtest@example.com')
+    >>> mlist_2 is mlist
+    True
+
+Don't try to get a list that doesn't exist yet though, or you will get an
+exception.
+
+    >>> mgr.get('_xtest_2@example.com')
+    Traceback (most recent call last):
+    ...
+    MMUnknownListError: _xtest_2@example.com
+
+
+Iterating over all mailing lists
+--------------------------------
+
+Once you've created a bunch of mailing lists, you can use the list manager to
+iterate over either the list objects, or the list names.
+
+    >>> mlist_3 = mgr.create('_xtest_3@example.com')
+    >>> mlist_4 = mgr.create('_xtest_4@example.com')
+    >>> flush()
+    >>> sorted(mgr.names)
+    ['_xtest@example.com', '_xtest_3@example.com', '_xtest_4@example.com']
+    >>> sorted(m.fqdn_listname for m in mgr.mailing_lists)
+    ['_xtest@example.com', '_xtest_3@example.com', '_xtest_4@example.com']
+
+
+Cleaning up
+-----------
+
+    >>> for mlist in mgr.mailing_lists:
+    ...     mgr.delete(mlist)
+    >>> flush()

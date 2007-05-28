@@ -25,10 +25,14 @@ by the command line arguments.
 """
 
 import os
+import sys
 
 import Mailman.configuration
 import Mailman.database
+import Mailman.ext
 import Mailman.loginit
+
+DOT = '.'
 
 
 
@@ -47,6 +51,15 @@ def initialize_1(config, propagate_logs):
     os.umask(007)
     Mailman.configuration.config.load(config)
     Mailman.loginit.initialize(propagate_logs)
+    # Set up site extensions directory
+    Mailman.ext.__path__.append(Mailman.configuration.config.EXT_DIR)
+    # Initialize the IListManager, IMemberManager, and IMessageManager
+    modparts = Mailman.configuration.config.MANAGERS_INIT_FUNCTION.split(DOT)
+    funcname = modparts.pop()
+    modname  = DOT.join(modparts)
+    __import__(modname)
+    initfunc = getattr(sys.modules[modname], funcname)
+    initfunc()
 
 
 def initialize_2():

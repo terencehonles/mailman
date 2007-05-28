@@ -24,6 +24,8 @@ Pending subscriptions which are requiring a user's confirmation are handled
 elsewhere.
 """
 
+from __future__ import with_statement
+
 import os
 import time
 import email
@@ -71,104 +73,99 @@ class ListAdmin:
         self.next_request_id = 1
 
     def InitTempVars(self):
-        self.__db = None
-        self.__filename = os.path.join(self.fullpath(), 'request.pck')
+        self._db = None
+        self._filename = os.path.join(self.full_path, 'request.pck')
 
-    def __opendb(self):
-        if self.__db is None:
+    def _opendb(self):
+        if self._db is None:
             assert self.Locked()
             try:
-                fp = open(self.__filename)
-                try:
-                    self.__db = cPickle.load(fp)
-                finally:
-                    fp.close()
+                with open(self._filename) as fp:
+                    self._db = cPickle.load(fp)
             except IOError, e:
-                if e.errno <> errno.ENOENT: raise
-                self.__db = {}
+                if e.errno <> errno.ENOENT:
+                    raise
+                self._db = {}
                 # put version number in new database
-                self.__db['version'] = IGN, config.REQUESTS_FILE_SCHEMA_VERSION
+                self._db['version'] = IGN, config.REQUESTS_FILE_SCHEMA_VERSION
 
-    def __closedb(self):
-        if self.__db is not None:
+    def _closedb(self):
+        if self._db is not None:
             assert self.Locked()
             # Save the version number
-            self.__db['version'] = IGN, config.REQUESTS_FILE_SCHEMA_VERSION
+            self._db['version'] = IGN, config.REQUESTS_FILE_SCHEMA_VERSION
             # Now save a temp file and do the tmpfile->real file dance.  BAW:
             # should we be as paranoid as for the config.pck file?  Should we
             # use pickle?
-            tmpfile = self.__filename + '.tmp'
-            fp = open(tmpfile, 'w')
-            try:
-                cPickle.dump(self.__db, fp, 1)
+            tmpfile = self._filename + '.tmp'
+            with open(tmpfile, 'w') as fp:
+                cPickle.dump(self._db, fp, 1)
                 fp.flush()
                 os.fsync(fp.fileno())
-            finally:
-                fp.close()
-            self.__db = None
+            self._db = None
             # Do the dance
-            os.rename(tmpfile, self.__filename)
+            os.rename(tmpfile, self._filename)
 
-    def __nextid(self):
+    @property
+    def _next_id(self):
         assert self.Locked()
         while True:
+            missing = object()
             next = self.next_request_id
             self.next_request_id += 1
-            if not self.__db.has_key(next):
-                break
-        return next
+            if self._db.setdefault(next, missing) is missing:
+                yield next
 
     def SaveRequestsDb(self):
-        self.__closedb()
+        self._closedb()
 
     def NumRequestsPending(self):
-        self.__opendb()
+        self._opendb()
         # Subtract one for the version pseudo-entry
-        return len(self.__db) - 1
+        return len(self._db) - 1
 
-    def __getmsgids(self, rtype):
-        self.__opendb()
-        ids = [k for k, (op, data) in self.__db.items() if op == rtype]
-        ids.sort()
+    def _getmsgids(self, rtype):
+        self._opendb()
+        ids = sorted([k for k, (op, data) in self._db.items() if op == rtype])
         return ids
 
     def GetHeldMessageIds(self):
-        return self.__getmsgids(HELDMSG)
+        return self._getmsgids(HELDMSG)
 
     def GetSubscriptionIds(self):
-        return self.__getmsgids(SUBSCRIPTION)
+        return self._getmsgids(SUBSCRIPTION)
 
     def GetUnsubscriptionIds(self):
-        return self.__getmsgids(UNSUBSCRIPTION)
+        return self._getmsgids(UNSUBSCRIPTION)
 
     def GetRecord(self, id):
-        self.__opendb()
-        type, data = self.__db[id]
+        self._opendb()
+        type, data = self._db[id]
         return data
 
     def GetRecordType(self, id):
-        self.__opendb()
-        type, data = self.__db[id]
+        self._opendb()
+        type, data = self._db[id]
         return type
 
     def HandleRequest(self, id, value, comment=None, preserve=None,
                       forward=None, addr=None):
-        self.__opendb()
-        rtype, data = self.__db[id]
+        self._opendb()
+        rtype, data = self._db[id]
         if rtype == HELDMSG:
-            status = self.__handlepost(data, value, comment, preserve,
-                                       forward, addr)
+            status = self._handlepost(data, value, comment, preserve,
+                                      forward, addr)
         elif rtype == UNSUBSCRIPTION:
-            status = self.__handleunsubscription(data, value, comment)
+            status = self._handleunsubscription(data, value, comment)
         else:
             assert rtype == SUBSCRIPTION
-            status = self.__handlesubscription(data, value, comment)
+            status = self._handlesubscription(data, value, comment)
         if status <> DEFER:
             # BAW: Held message ids are linked to Pending cookies, allowing
             # the user to cancel their post before the moderator has approved
             # it.  We should probably remove the cookie associated with this
             # id, but we have no way currently of correlating them. :(
-            del self.__db[id]
+            del self._db[id]
 
     def HoldMessage(self, msg, reason, msgdata={}):
         # Make a copy of msgdata so that subsequent changes won't corrupt the
@@ -176,9 +173,9 @@ class ListAdmin:
         # not be relevant when the message is resurrected.
         msgdata = msgdata.copy()
         # assure that the database is open for writing
-        self.__opendb()
+        self._opendb()
         # get the next unique id
-        id = self.__nextid()
+        id = self._next_id
         # get the message sender
         sender = msg.get_sender()
         # calculate the file name for the message text and write it to disk
@@ -187,8 +184,7 @@ class ListAdmin:
         else:
             ext = 'txt'
         filename = 'heldmsg-%s-%d.%s' % (self.internal_name(), id, ext)
-        fp = open(os.path.join(config.DATA_DIR, filename), 'w')
-        try:
+        with open(os.path.join(config.DATA_DIR, filename), 'w') as fp:
             if config.HOLD_MESSAGES_AS_PICKLES:
                 cPickle.dump(msg, fp, 1)
             else:
@@ -196,8 +192,6 @@ class ListAdmin:
                 g(msg, 1)
             fp.flush()
             os.fsync(fp.fileno())
-        finally:
-            fp.close()
         # save the information to the request database.  for held message
         # entries, each record in the database will be of the following
         # format:
@@ -211,10 +205,10 @@ class ListAdmin:
         #
         msgsubject = msg.get('subject', _('(no subject)'))
         data = time.time(), sender, msgsubject, reason, filename, msgdata
-        self.__db[id] = (HELDMSG, data)
+        self._db[id] = (HELDMSG, data)
         return id
 
-    def __handlepost(self, record, value, comment, preserve, forward, addr):
+    def _handlepost(self, record, value, comment, preserve, forward, addr):
         # For backwards compatibility with pre 2.0beta3
         ptime, sender, subject, reason, filename, msgdata = record
         path = os.path.join(config.DATA_DIR, filename)
@@ -225,24 +219,19 @@ class ListAdmin:
             spamfile = DASH.join(parts)
             # Preserve the message as plain text, not as a pickle
             try:
-                fp = open(path)
+                with open(path) as fp:
+                    msg = cPickle.load(fp)
             except IOError, e:
-                if e.errno <> errno.ENOENT: raise
+                if e.errno <> errno.ENOENT:
+                    raise
                 return LOST
-            try:
-                msg = cPickle.load(fp)
-            finally:
-                fp.close()
             # Save the plain text to a .msg file, not a .pck file
             outpath = os.path.join(config.SPAM_DIR, spamfile)
             head, ext = os.path.splitext(outpath)
             outpath = head + '.msg'
-            outfp = open(outpath, 'w')
-            try:
+            with open(outpath, 'w') as outfp:
                 g = Generator(outfp)
                 g(msg, 1)
-            finally:
-                outfp.close()
         # Now handle updates to the database
         rejection = None
         fp = None
@@ -256,7 +245,8 @@ class ListAdmin:
             try:
                 msg = readMessage(path)
             except IOError, e:
-                if e.errno <> errno.ENOENT: raise
+                if e.errno <> errno.ENOENT:
+                    raise
                 return LOST
             msg = readMessage(path)
             msgdata['approved'] = 1
@@ -281,7 +271,7 @@ class ListAdmin:
         elif value == config.REJECT:
             # Rejected
             rejection = 'Refused'
-            self.__refuse(_('Posting of your message titled "%(subject)s"'),
+            self._refuse(_('Posting of your message titled "%(subject)s"'),
                           sender, comment or _('[No reason given]'),
                           lang=self.getMemberLanguage(sender))
         else:
@@ -297,7 +287,8 @@ class ListAdmin:
             try:
                 copy = readMessage(path)
             except IOError, e:
-                if e.errno <> errno.ENOENT: raise
+                if e.errno <> errno.ENOENT:
+                    raise
                 raise Errors.LostHeldMessage(path)
             # It's possible the addr is a comma separated list of addresses.
             addrs = getaddresses([addr])
@@ -354,9 +345,9 @@ class ListAdmin:
 
     def HoldSubscription(self, addr, fullname, password, digest, lang):
         # Assure that the database is open for writing
-        self.__opendb()
+        self._opendb()
         # Get the next unique id
-        id = self.__nextid()
+        id = self._next_id
         # Save the information to the request database. for held subscription
         # entries, each record in the database will be one of the following
         # format:
@@ -367,7 +358,7 @@ class ListAdmin:
         # the digest flag
         # the user's preferred language
         data = time.time(), addr, fullname, password, digest, lang
-        self.__db[id] = (SUBSCRIPTION, data)
+        self._db[id] = (SUBSCRIPTION, data)
         #
         # TBD: this really shouldn't go here but I'm not sure where else is
         # appropriate.
@@ -399,7 +390,7 @@ class ListAdmin:
         elif value == config.DISCARD:
             pass
         elif value == config.REJECT:
-            self.__refuse(_('Subscription request'), addr,
+            self._refuse(_('Subscription request'), addr,
                           comment or _('[No reason given]'),
                           lang=lang)
         else:
@@ -413,16 +404,16 @@ class ListAdmin:
                 pass
             # TBD: disgusting hack: ApprovedAddMember() can end up closing
             # the request database.
-            self.__opendb()
+            self._opendb()
         return REMOVE
 
     def HoldUnsubscription(self, addr):
         # Assure the database is open for writing
-        self.__opendb()
+        self._opendb()
         # Get the next unique id
-        id = self.__nextid()
+        id = self._next_id
         # All we need to do is save the unsubscribing address
-        self.__db[id] = (UNSUBSCRIPTION, addr)
+        self._db[id] = (UNSUBSCRIPTION, addr)
         log.info('%s: held unsubscription request from %s',
                  self.internal_name(), addr)
         # Possibly notify the administrator of the hold
@@ -444,14 +435,14 @@ class ListAdmin:
                                            self.preferred_language)
             msg.send(self, **{'tomoderators': 1})
 
-    def __handleunsubscription(self, record, value, comment):
+    def _handleunsubscription(self, record, value, comment):
         addr = record
         if value == config.DEFER:
             return DEFER
         elif value == config.DISCARD:
             pass
         elif value == config.REJECT:
-            self.__refuse(_('Unsubscription request'), addr, comment)
+            self._refuse(_('Unsubscription request'), addr, comment)
         else:
             assert value == config.UNSUBSCRIBE
             try:
@@ -461,7 +452,7 @@ class ListAdmin:
                 pass
         return REMOVE
 
-    def __refuse(self, request, recip, comment, origmsg=None, lang=None):
+    def _refuse(self, request, recip, comment, origmsg=None, lang=None):
         # As this message is going to the requestor, try to set the language
         # to his/her language choice, if they are a member.  Otherwise use the
         # list's preferred language.
@@ -492,82 +483,16 @@ class ListAdmin:
                                        subject, text, lang)
         msg.send(self)
 
-    def _UpdateRecords(self):
-        # Subscription records have changed since MM2.0.x.  In that family,
-        # the records were of length 4, containing the request time, the
-        # address, the password, and the digest flag.  In MM2.1a2, they grew
-        # an additional language parameter at the end.  In MM2.1a4, they grew
-        # a fullname slot after the address.  This semi-public method is used
-        # by the update script to coerce all subscription records to the
-        # latest MM2.1 format.
-        #
-        # Held message records have historically either 5 or 6 items too.
-        # These always include the requests time, the sender, subject, default
-        # rejection reason, and message text.  When of length 6, it also
-        # includes the message metadata dictionary on the end of the tuple.
-        #
-        # In Mailman 2.1.5 we converted these files to pickles.
-        filename = os.path.join(self.fullpath(), 'request.db')
-        try:
-            fp = open(filename)
-            try:
-                self.__db = marshal.load(fp)
-            finally:
-                fp.close()
-            os.unlink(filename)
-        except IOError, e:
-            if e.errno <> errno.ENOENT: raise
-            filename = os.path.join(self.fullpath(), 'request.pck')
-            try:
-                fp = open(filename)
-                try:
-                    self.__db = cPickle.load(fp)
-                finally:
-                    fp.close()
-            except IOError, e:
-                if e.errno <> errno.ENOENT: raise
-                self.__db = {}
-        for id, (op, info) in self.__db.items():
-            if op == SUBSCRIPTION:
-                if len(info) == 4:
-                    # pre-2.1a2 compatibility
-                    when, addr, passwd, digest = info
-                    fullname = ''
-                    lang = self.preferred_language
-                elif len(info) == 5:
-                    # pre-2.1a4 compatibility
-                    when, addr, passwd, digest, lang = info
-                    fullname = ''
-                else:
-                    assert len(info) == 6, 'Unknown subscription record layout'
-                    continue
-                # Here's the new layout
-                self.__db[id] = when, addr, fullname, passwd, digest, lang
-            elif op == HELDMSG:
-                if len(info) == 5:
-                    when, sender, subject, reason, text = info
-                    msgdata = {}
-                else:
-                    assert len(info) == 6, 'Unknown held msg record layout'
-                    continue
-                # Here's the new layout
-                self.__db[id] = when, sender, subject, reason, text, msgdata
-        # All done
-        self.__closedb()
-
 
 
 def readMessage(path):
     # For backwards compatibility, we must be able to read either a flat text
     # file or a pickle.
     ext = os.path.splitext(path)[1]
-    fp = open(path)
-    try:
+    with open(path) as fp:
         if ext == '.txt':
             msg = email.message_from_file(fp, Message.Message)
         else:
             assert ext == '.pck'
             msg = cPickle.load(fp)
-    finally:
-        fp.close()
     return msg

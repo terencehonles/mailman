@@ -17,6 +17,8 @@
 
 """Track pending actions which require confirmation."""
 
+from __future__ import with_statement
+
 import os
 import sha
 import time
@@ -51,7 +53,7 @@ _default = object()
 
 class Pending:
     def InitTempVars(self):
-        self.__pendfile = os.path.join(self.fullpath(), 'pending.pck')
+        self._pendfile = os.path.join(self.full_path, 'pending.pck')
 
     def pend_new(self, op, *content, **kws):
         """Create a new entry in the pending database, returning cookie for it.
@@ -87,14 +89,12 @@ class Pending:
 
     def __load(self):
         try:
-            fp = open(self.__pendfile)
+            with open(self._pendfile) as fp:
+                return cPickle.load(fp)
         except IOError, e:
-            if e.errno <> errno.ENOENT: raise
+            if e.errno <> errno.ENOENT:
+                raise
             return {'evictions': {}}
-        try:
-            return cPickle.load(fp)
-        finally:
-            fp.close()
 
     def __save(self, db):
         evictions = db['evictions']
@@ -112,15 +112,12 @@ class Pending:
             if not db.has_key(cookie):
                 del evictions[cookie]
         db['version'] = config.PENDING_FILE_SCHEMA_VERSION
-        tmpfile = '%s.tmp.%d.%d' % (self.__pendfile, os.getpid(), now)
-        fp = open(tmpfile, 'w')
-        try:
+        tmpfile = '%s.tmp.%d.%d' % (self._pendfile, os.getpid(), now)
+        with open(tmpfile, 'w') as fp:
             cPickle.dump(db, fp)
             fp.flush()
             os.fsync(fp.fileno())
-        finally:
-            fp.close()
-        os.rename(tmpfile, self.__pendfile)
+        os.rename(tmpfile, self._pendfile)
 
     def pend_confirm(self, cookie, expunge=True):
         """Return data for cookie, or None if not found.

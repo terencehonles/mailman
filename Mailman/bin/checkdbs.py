@@ -132,7 +132,7 @@ def main():
 
     i18n.set_language(config.DEFAULT_SERVER_LANGUAGE)
 
-    for name in Utils.list_names():
+    for name in config.list_manager.names:
         # The list must be locked in order to open the requests database
         mlist = MailList.MailList(name)
         try:

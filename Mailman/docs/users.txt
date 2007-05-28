@@ -1,0 +1,180 @@
+Users
+=====
+
+Users are entities that combine addresses, preferences, and a password
+scheme.  Password schemes can be anything from a traditional
+challenge/response type password string to an OpenID url.
+
+
+Create, deleting, and managing users
+------------------------------------
+
+Users are managed by the IUserManager.  Users don't have any unique
+identifying information, and no such id is needed to create them.
+
+    >>> from Mailman.database import flush
+    >>> from Mailman.configuration import config
+    >>> mgr = config.user_manager
+    >>> user = mgr.create_user()
+
+Users have a real name, a password scheme, a default profile, and a set of
+addresses that they control.  All of these data are None or empty for a newly
+created user.
+
+    >>> user.real_name is None
+    True
+    >>> user.password is None
+    True
+    >>> user.addresses
+    []
+
+You can iterate over all the users in a user manager.
+
+    >>> another_user = mgr.create_user()
+    >>> flush()
+    >>> all_users = list(mgr.users)
+    >>> len(list(all_users))
+    2
+    >>> user is not another_user
+    True
+    >>> user in all_users
+    True
+    >>> another_user in all_users
+    True
+
+You can also delete users from the user manager.
+
+    >>> mgr.delete_user(user)
+    >>> mgr.delete_user(another_user)
+    >>> flush()
+    >>> len(list(mgr.users))
+    0
+
+
+Simple user information
+-----------------------
+
+Users may have a real name and a password scheme.
+
+    >>> user = mgr.create_user()
+    >>> user.password = 'my password'
+    >>> user.real_name = 'Zoe Person'
+    >>> flush()
+    >>> only_person = list(mgr.users)[0]
+    >>> only_person.password
+    'my password'
+    >>> only_person.real_name
+    'Zoe Person'
+
+The password and real name can be changed at any time.
+
+    >>> user.real_name = 'Zoe X. Person'
+    >>> user.password = 'another password'
+    >>> only_person.real_name
+    'Zoe X. Person'
+    >>> only_person.password
+    'another password'
+
+
+Users and addresses
+-------------------
+
+One of the pieces of information that a user links to is a set of email
+addresses, in the form of IAddress objects.  A user can control many
+addresses, but addresses may be control by only one user.
+
+Given a user and an address, you can link the two together.
+
+    >>> roster = mgr.get_roster('')
+    >>> address = roster.create('aperson@example.com', 'Anne Person')
+    >>> user.link(address)
+    >>> flush()
+    >>> sorted(address.address for address in user.addresses)
+    ['aperson@example.com']
+
+But don't try to link an address to more than one user.
+
+    >>> another_user = mgr.create_user()
+    >>> another_user.link(address)
+    Traceback (most recent call last):
+    ...
+    AddressAlreadyLinkedError: Anne Person <aperson@example.com>
+
+You can also ask whether a given user controls a given address.
+
+    >>> user.controls(address)
+    True
+    >>> not_my_address = roster.create('bperson@example.com', 'Ben Person')
+    >>> user.controls(not_my_address)
+    False
+
+Given a text email address, the user manager can find the user that controls
+that address.
+
+    >>> mgr.get_user('aperson@example.com') is user
+    True
+    >>> mgr.get_user('bperson@example.com') is None
+    True
+
+Addresses can also be unlinked from a user.
+
+    >>> user.unlink(address)
+    >>> user.controls(address)
+    False
+    >>> mgr.get_user('aperson@example.com') is None
+    True
+
+But don't try to unlink the address from a user it's not linked to.
+
+    >>> user.unlink(address)
+    Traceback (most recent call last):
+    ...
+    AddressNotLinkedError: Anne Person <aperson@example.com>
+    >>> another_user.unlink(address)
+    Traceback (most recent call last):
+    ...
+    AddressNotLinkedError: Anne Person <aperson@example.com>
+    >>> mgr.delete_user(another_user)
+
+
+Users and profiles
+------------------
+
+Users always have a default profile.
+
+    >>> from Mailman.interfaces import IProfile
+    >>> IProfile.providedBy(user.profile)
+    True
+
+A profile is a set of preferences such as whether the user wants to receive an
+acknowledgment of all of their posts to a mailing list...
+
+    >>> user.profile.acknowledge_posts
+    False
+
+...whether the user wants to hide their email addresses on web pages and in
+postings to the list...
+
+    >>> user.profile.hide_address
+    True
+
+...the language code for the user's preferred language...
+
+    >>> user.profile.preferred_language
+    'en'
+
+...whether the user wants to receive the list's copy of a message if they are
+explicitly named in one of the recipient headers...
+
+    >>> user.profile.receive_list_copy
+    True
+
+...whether the user wants to receive a copy of their own postings...
+
+    >>> user.profile.receive_own_postings
+    True
+
+...and the preferred delivery method.
+
+    >>> print user.profile.delivery_mode
+    DeliveryMode.regular

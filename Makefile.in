@@ -45,12 +45,14 @@ OPT=		@OPT@
 CFLAGS=		@CFLAGS@ $(OPT) $(DEFS)
 
 VAR_DIRS= \
-	etc logs archives lists locks data spam qfiles \
+	etc ext logs archives lists locks data spam qfiles \
 	archives/private archives/public
 
 ARCH_INDEP_DIRS= \
 	bin templates scripts cron pythonlib \
-	Mailman Mailman/bin Mailman/database Mailman/Cgi Mailman/Archiver \
+	Mailman Mailman/bin Mailman/interfaces \
+	Mailman/database Mailman/database/tables Mailman/database/model \
+	Mailman/docs Mailman/ext Mailman/Cgi Mailman/Archiver \
 	Mailman/Handlers Mailman/Queue Mailman/Queue/tests \
 	Mailman/Bouncers \
 	Mailman/MTA Mailman/Gui Mailman/Commands messages icons \
@@ -85,9 +87,9 @@ subdirs: $(SUBDIRS)
 	    (cd $$d; $(MAKE)); \
 	done
 
-install: doinstall update
+install: justinstall update
 
-doinstall: $(SUBDIRS)
+justinstall: $(SUBDIRS)
 	@echo "Creating architecture independent directories..."
 	@for d in $(VAR_DIRS); \
 	do \

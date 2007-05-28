@@ -28,9 +28,9 @@ import hmac
 from array import array
 from base64 import urlsafe_b64decode as decode
 from base64 import urlsafe_b64encode as encode
+from munepy import Enum
 
 from Mailman import Errors
-from Mailman.enum import Enum
 
 SALT_LENGTH = 20 # bytes
 ITERATIONS  = 2000

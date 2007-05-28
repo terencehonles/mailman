@@ -321,6 +321,16 @@ class LockFile:
         if self._owned:
             self.finalize()
 
+    # Python 2.5 context manager protocol support.
+    def __enter__(self):
+        self.lock()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.unlock()
+        # Don't suppress any exception that might have occurred.
+        return False
+
     # Use these only if you're transfering ownership to a child process across
     # a fork.  Use at your own risk, but it should be race-condition safe.
     # _transfer_to() is called in the parent, passing in the pid of the child.

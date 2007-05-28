@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2007 by the Free Software Foundation, Inc.
+# Copyright (C) 2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -15,17 +15,14 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-"""Schema versions."""
+"""Doctest harness for testing mailing list creation and deletion."""
 
-from sqlalchemy import *
+import doctest
+import unittest
 
 
-
-def make_table(metadata, tables):
-    table = Table(
-        'Version', metadata,
-        Column('version_id',    Integer, primary_key=True),
-        Column('component',     String(20)),
-        Column('version',       Integer),
-        )
-    tables.bind(table)
+def test_suite():
+    suite = unittest.TestSuite()
+    suite.addTest(doctest.DocFileSuite('../docs/use-usermanager.txt',
+                                       optionflags=doctest.ELLIPSIS))
+    return suite

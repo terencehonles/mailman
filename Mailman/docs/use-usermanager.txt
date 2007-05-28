@@ -1,0 +1,100 @@
+The user manager and rosters
+============================
+
+The IUserManager is how you create, delete, and roster objects.  Rosters
+manage collections of users.  The Mailman system instantiates an IUserManager
+for you based on the configuration variable MANAGERS_INIT_FUNCTION.  The
+instance is accessible on the global config object.
+
+    >>> from Mailman.configuration import config
+    >>> from Mailman.interfaces import IUserManager
+    >>> mgr = config.user_manager
+    >>> IUserManager.providedBy(mgr)
+    True
+
+
+The default roster
+------------------
+
+The user manager always contains at least one roster, the 'null' roster or
+'all inclusive roster'.
+
+    >>> sorted(roster.name for roster in mgr.rosters)
+    ['']
+
+
+Adding rosters
+--------------
+
+You create a roster to hold users.  The only thing a roster needs is a name,
+basically just an identifying string.
+
+    >>> from Mailman.database import flush
+    >>> from Mailman.interfaces import IRoster
+    >>> roster = mgr.create_roster('roster-1')
+    >>> IRoster.providedBy(roster)
+    True
+    >>> roster.name
+    'roster-1'
+    >>> flush()
+
+If you try to create a roster with the same name as an existing roster, you
+will get an exception.
+
+    >>> roster_dup = mgr.create_roster('roster-1')
+    Traceback (most recent call last):
+    ...
+    RosterExistsError: roster-1
+
+
+Deleting a roster
+-----------------
+
+Delete the roster, and you can then create it again.
+
+    >>> mgr.delete_roster(roster)
+    >>> flush()
+    >>> roster = mgr.create_roster('roster-1')
+    >>> flush()
+    >>> roster.name
+    'roster-1'
+
+
+Retrieving a roster
+-------------------
+
+When a roster exists, you can ask the user manager for it and you will always
+get the same object back.
+
+    >>> roster_2 = mgr.get_roster('roster-1')
+    >>> roster_2.name
+    'roster-1'
+    >>> roster is roster_2
+    True
+
+Trying to get a roster that does not yet exist returns None.
+
+    >>> print mgr.get_roster('no roster')
+    None
+
+
+Iterating over all the rosters
+------------------------------
+
+Once you've created a bunch of rosters, you can use the user manager to
+iterate over all the rosters.
+
+    >>> roster_2 = mgr.create_roster('roster-2')
+    >>> roster_3 = mgr.create_roster('roster-3')
+    >>> roster_4 = mgr.create_roster('roster-4')
+    >>> flush()
+    >>> sorted(roster.name for roster in mgr.rosters)
+    ['', 'roster-1', 'roster-2', 'roster-3', 'roster-4']
+
+
+Cleaning up
+-----------
+
+    >>> for roster in mgr.rosters:
+    ...     mgr.delete_roster(roster)
+    >>> flush()

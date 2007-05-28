@@ -21,7 +21,6 @@ import optparse
 
 from Mailman import Errors
 from Mailman import MailList
-from Mailman import Utils
 from Mailman import Version
 from Mailman.configuration import config
 from Mailman.i18n import _
@@ -79,9 +78,8 @@ def main():
     parser, opts, args = parseargs()
     config.load(opts.config)
 
-    if not opts.listnames:
-        opts.listnames = Utils.list_names()
-    includes = set(listname.lower() for listname in opts.listnames)
+    listnames = opts.listnames or config.list_manager.names
+    includes = set(listname.lower() for listname in listnames)
     excludes = set(listname.lower() for listname in opts.excludes)
     listnames = includes - excludes
 

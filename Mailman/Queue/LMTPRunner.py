@@ -48,7 +48,6 @@ import asyncore
 
 from email.utils import parseaddr
 
-from Mailman import Utils
 from Mailman.Message import Message
 from Mailman.Queue.Runner import Runner
 from Mailman.Queue.sbcache import get_switchboard
@@ -122,7 +121,7 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
             # since the set of mailing lists could have changed.  However, on
             # a big site this could be fairly expensive, so we may need to
             # cache this in some way.
-            listnames = Utils.list_names()
+            listnames = set(config.list_manager.names)
             # Parse the message data.  XXX Should we reject the message
             # immediately if it has defects?  Usually only spam has defects.
             msg = email.message_from_string(data, Message)

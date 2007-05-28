@@ -18,7 +18,6 @@
 import sys
 import optparse
 
-from Mailman import Utils
 from Mailman import Version
 from Mailman.MailList import MailList
 from Mailman.configuration import config
@@ -55,7 +54,7 @@ def main():
     parser, opts, args = parseargs()
     config.load(opts.config)
 
-    listnames = args or Utils.list_names()
+    listnames = set(args or config.list_manager.names)
     bylist = {}
 
     for listname in listnames:

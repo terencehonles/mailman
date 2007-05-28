@@ -134,85 +134,11 @@ class Address(object):
 
 
 
-class RegularDelivery(object):
-    implements(IRegularDelivery)
-
-
-class PlainTextDigestDelivery(object):
-    implements(IPlainTextDigestDelivery)
-
-
-class MIMEDigestDelivery(object):
-    implements(IMIMEDigestDeliver)
-
-
-
-class DeliveryEnabled(object):
-    implements(IDeliveryStatus)
-
-    @property
-    def enabled(self):
-        return True
-
-
-class DeliveryDisabled(object):
-    implements(IDeliveryStatus)
-
-    @property
-    def enabled(self):
-        return False
-
-
-class DeliveryDisabledByUser(DeliveryDisabled):
-    implements(IDeliveryDisabledByUser)
-
-
-class DeliveryDisabledbyAdministrator(DeliveryDisabled):
-    implements(IDeliveryDisabledByAdministrator)
-
-    reason = u'Unknown'
-
-
-class DeliveryDisabledByBounces(DeliveryDisabled):
-    implements(IDeliveryDisabledByBounces)
-
-    bounce_info = 'XXX'
-
-
-class DeliveryTemporarilySuspended(object):
-    implements(IDeliveryTemporarilySuspended)
-
-    def __init__(self, start_date, end_date):
-        self.start_date = start_date
-        self.end_date   = end_date
-
-    @property
-    def enabled(self):
-        now = datetime.datetime.now()
-        return not (self.start_date <= now < self.end_date)
-
-
-
 class OkayToPost(object):
     implements(IPostingPermission)
 
     # XXX
     okay_to_post = True
-
-
-
-class Profile(object):
-    implements(IProfile)
-
-    # System defaults
-    acknowledge         = False
-    hide                = True
-    language            = 'en'
-    list_copy           = True
-    own_postings        = True
-    delivery_mode       = RegularDelivery()
-    delivery_status     = DeliveryEnabled()
-    posting_permission  = OkayToPost()
 
 
 
@@ -244,24 +170,6 @@ class Roster(object):
     def members(self):
         for member in self._members:
             yield member
-
-
-
-class Member(object):
-    implements(IMember)
-
-    def __init__(self, address, roster, profile=None):
-        self._address   = address
-        self._roster    = roster
-        self.profile    = profile or Profile()
-
-    @property
-    def address(self):
-        return self._address
-
-    @property
-    def roster(self):
-        return self._roster
 
 
 

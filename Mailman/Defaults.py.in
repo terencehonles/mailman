@@ -26,6 +26,9 @@
 
 import os
 
+from munepy import Enum
+
+
 def seconds(s): return s
 def minutes(m): return m * 60
 def hours(h): return h * 60 * 60
@@ -79,7 +82,7 @@ SITE_OWNER_ADDRESS = 'changeme@example.com'
 DEFAULT_HOST_NAME = None
 DEFAULT_URL = None
 
-HOME_PAGE         = 'index.html'
+HOME_PAGE = 'index.html'
 
 # Normally when a site administrator authenticates to a web page with the site
 # password, they get a cookie which authorizes them as the list admin.  It
@@ -103,6 +106,11 @@ PASSWORD_SCHEME = 'ssha'
 #####
 # Database options
 #####
+
+# Initialization function for creating the IListManager, IUserManager, and
+# IMessageManager objects, as a Python dotted name.  This function must take
+# zero arguments.
+MANAGERS_INIT_FUNCTION = 'Mailman.database.initialize'
 
 # Use this to set the SQLAlchemy database engine URL.  You generally have one
 # primary database connection for all of Mailman.  List data and most rosters
@@ -467,6 +475,15 @@ NNTP_REWRITE_DUPLICATE_HEADERS = [
     ('mime-version', 'X-MIME-Version'),
     ]
 
+# Some list posts and mail to the -owner address may contain DomainKey or
+# DomainKeys Identified Mail (DKIM) signature headers <http://www.dkim.org/>.
+# Various list transformations to the message such as adding a list header or
+# footer or scrubbing attachments or even reply-to munging can break these
+# signatures.  It is generally felt that these signatures have value, even if
+# broken and even if the outgoing message is resigned.  However, some sites
+# may wish to remove these headers by setting this to Yes.
+REMOVE_DKIM_HEADERS = No
+
 # All `normal' messages which are delivered to the entire list membership go
 # through this pipeline of handler modules.  Lists themselves can override the
 # global pipeline by defining a `pipeline' attribute.
@@ -525,6 +542,8 @@ OWNER_PIPELINE = [
 # - propagate -- Boolean specifying whether to propagate log message from this
 #                logger to the root "mailman" logger.  You cannot override
 #                settings for the root logger.
+#
+# The file name may be absolute, or relative to Mailman's etc directory.
 LOG_CONFIG_FILE = None
 
 # This defines log format strings for the SMTPDirect delivery module (see
@@ -664,9 +683,9 @@ VERP_DELIVERY_INTERVAL = 0
 # friendly Subject: on the message, but requires cooperation from the MTA.
 # Format is like VERP_FORMAT above, but with the following substitutions:
 #
-# %(addr)s -- the list-confirm mailbox will be set here
-# %(cookie)s  -- the confirmation cookie will be set here
-VERP_CONFIRM_FORMAT = '%(addr)s+%(cookie)s'
+# $address  -- the list-confirm address
+# $cookie   -- the confirmation cookie
+VERP_CONFIRM_FORMAT = '$address+$cookie'
 
 # This is analogous to VERP_REGEXP, but for splitting apart the
 # VERP_CONFIRM_FORMAT.  MUAs have been observed that mung
@@ -1294,6 +1313,24 @@ SuppressPasswordReminder = 32
 ReceiveNonmatchingTopics = 64
 Moderate = 128
 DontReceiveDuplicates = 256
+
+
+class DeliveryMode(Enum):
+    # Non-digest delivery
+    Regular = 1
+    # Digest delivery modes
+    MIME    = 2
+    Plain   = 3
+
+
+class DeliveryStatus(Enum):
+    Enabled = 0
+    # Disabled reason
+    Unknown     = 1
+    ByUser      = 2
+    ByAdmin     = 3
+    ByBounce    = 4
+
 
 # A mapping between short option tags and their flag
 OPTINFO = {'hide'    : ConcealSubscription,

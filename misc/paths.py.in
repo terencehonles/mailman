@@ -38,7 +38,7 @@ exec_prefix = '@exec_prefix@'
 if exec_prefix == '${prefix}':
     exec_prefix = prefix
 
-pythonlib = os.path.join(prefix, 'pythonlib')
+pythonlib = os.path.join(prefix, 'pythonlib', 'lib', 'python')
 
 # Hack the path to include the parent directory of $prefix/Mailman
 sys.path.insert(0, prefix)
