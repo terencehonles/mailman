@@ -15,7 +15,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-"""Unit tests for the SecurityManager module"""
+"""Unit tests for the SecurityManager module."""
 
 import os
 import md5
