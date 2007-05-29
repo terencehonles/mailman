@@ -30,11 +30,14 @@ from Mailman import Errors
 from Mailman import MemberAdaptor
 from Mailman import Utils
 from Mailman import Version
+from Mailman import passwords
 from Mailman.MailList import MailList
 from Mailman.i18n import _
 from Mailman.initialize import initialize
 
 __i18n_templates__ = True
+
+OPTS = None
 
 
 
@@ -123,7 +126,7 @@ def parse_roster(node):
         if not mid:
             print _('Skipping member with no id')
             continue
-        if VERBOSE:
+        if OPTS.verbose:
             print _('* Processing member: $mid')
         for subnode in nodegen(child):
             attr = subnode.tagName
@@ -138,6 +141,10 @@ def parse_roster(node):
                 value = []
                 for subsubnode in nodegen(subnode):
                     value.append(nodetext(subsubnode))
+            elif attr == 'password':
+                value = nodetext(subnode)
+                if OPTS.reset_passwords or value == '{NONE}' or not value:
+                    value = passwords.make_secret(Utils.MakeRandomPassword())
             else:
                 value = nodetext(subnode)
             member[attr] = value
@@ -168,7 +175,7 @@ def load(fp):
     for listnode in nodegen(top, 'list'):
         listdata = dict()
         name = listnode.getAttribute('name')
-        if VERBOSE:
+        if OPTS.verbose:
             print _('Processing list: $name')
         if not name:
             print _('Ignoring malformed <list> node')
@@ -192,7 +199,7 @@ def create(all_listdata):
             continue
         mlist = MailList()
         try:
-            if VERBOSE:
+            if OPTS.verbose:
                 print _('Creating mailing list: $fqdn_listname')
             mlist.Create(fqdn_listname, list_config['owner'][0],
                          list_config['password'])
@@ -229,7 +236,7 @@ def create(all_listdata):
                     setattr(mlist, option, value)
             for member in list_roster:
                 mid = member['id']
-                if VERBOSE:
+                if OPTS.verbose:
                     print _('* Adding member: $mid')
                 status, delivery = member['delivery']
                 kws = {'password'   : member['password'],
@@ -290,11 +297,11 @@ XML, they will always be randomly generated."""))
 
 
 def main():
-    global VERBOSE
+    global OPTS
 
     parser, opts, args = parseargs()
     initialize(opts.config)
-    VERBOSE = opts.verbose
+    OPTS = opts
 
     if opts.inputfile in (None, '-'):
         fp = sys.stdin
