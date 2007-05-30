@@ -42,7 +42,7 @@ PACKAGEDIR= 	$(prefix)/Mailman/database
 SHELL=		/bin/sh
 
 MODULES=	*.py
-SUBDIRS=	tables model
+SUBDIRS=	model
 
 # Modes for directories and executables created by the install
 # process.  Default to group-writable directories but

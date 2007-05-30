@@ -24,6 +24,12 @@ Here is a history of user visible changes to Mailman.
     - PUBLIC_ARCHIVE_URL now takes $-string substitutions instead of %-string
       substitutions.  See documentation in Defaults.py.in for details.
 
+    - Message headers and footers now only accept $-string substitutions;
+      %-strings are no longer supported.  The substitution variable
+      '_internal_name' has been removed; use $list_name or $real_name
+      instead.  The substitution variable $fqdn_listname has been added.
+      DEFAULT_MSG_FOOTER in Defaults.py.in hsa been updated accordingly.
+
   Architecture
 
     - SQLAlchemy/Elixir based storage for all list and user data, with default

@@ -21,13 +21,13 @@ import re
 import logging
 
 from email.MIMEText import MIMEText
+from string import Template
 
 from Mailman import Errors
-from Mailman import mm_cfg
 from Mailman import Utils
-from Mailman.i18n import _
 from Mailman.Message import Message
-from Mailman.SafeDict import SafeDict
+from Mailman.configuration import config
+from Mailman.i18n import _
 
 log = logging.getLogger('mailman.error')
 
@@ -42,7 +42,8 @@ def process(mlist, msg, msgdata):
         # Calculate the extra personalization dictionary.  Note that the
         # length of the recips list better be exactly 1.
         recips = msgdata.get('recips')
-        assert isinstance(recips, list) and len(recips) == 1
+        assert isinstance(recips, list) and len(recips) == 1, (
+            'The number of intended recipients must be exactly 1')
         member = recips[0].lower()
         d['user_address'] = member
         try:
@@ -56,8 +57,8 @@ def process(mlist, msg, msgdata):
         except Errors.NotAMemberError:
             pass
     # These strings are descriptive for the log file and shouldn't be i18n'd
-    header = decorate(mlist, mlist.msg_header, 'non-digest header', d)
-    footer = decorate(mlist, mlist.msg_footer, 'non-digest footer', d)
+    header = decorate(mlist, mlist.msg_header, d)
+    footer = decorate(mlist, mlist.msg_footer, d)
     # Escape hatch if both the footer and header are empty
     if not header and not footer:
         return
@@ -185,35 +186,21 @@ def process(mlist, msg, msgdata):
 
 
 
-def decorate(mlist, template, what, extradict={}):
-    # `what' is just a descriptive phrase used in the log message
-    #
-    # BAW: We've found too many situations where Python can be fooled into
-    # interpolating too much revealing data into a format string.  For
-    # example, a footer of "% silly %(real_name)s" would give a header
-    # containing all list attributes.  While we've previously removed such
-    # really bad ones like `password' and `passwords', it's much better to
-    # provide a whitelist of known good attributes, then to try to remove a
-    # blacklist of known bad ones.
-    d = SafeDict({'real_name'     : mlist.real_name,
-                  'list_name'     : mlist.internal_name(),
-                  # For backwards compatibility
-                  '_internal_name': mlist.internal_name(),
-                  'host_name'     : mlist.host_name,
-                  'web_page_url'  : mlist.web_page_url,
-                  'description'   : mlist.description,
-                  'info'          : mlist.info,
-                  'cgiext'        : mm_cfg.CGIEXT,
-                  })
-    d.update(extradict)
-    # Using $-strings?
-    if getattr(mlist, 'use_dollar_strings', 0):
-        template = Utils.to_percent(template)
-    # Interpolate into the template
-    try:
-        text = re.sub(r' *\r?\n', r'\n', template % d)
-    except (ValueError, TypeError), e:
-        log.exception('Exception while calculating %s:\n%s', what, e)
-        what = what.upper()
-        text = template
-    return text
+def decorate(mlist, template, extradict=None):
+    # Create a dictionary which includes the default set of interpolation
+    # variables allowed in headers and footers.  These will be augmented by
+    # any key/value pairs in the extradict.
+    d = dict(real_name      = mlist.real_name,
+             list_name      = mlist.list_name,
+             fqdn_listname  = mlist.fqdn_listname,
+             host_name      = mlist.host_name,
+             web_page_url   = mlist.web_page_url,
+             description    = mlist.description,
+             info           = mlist.info,
+             cgiext         = config.CGIEXT,
+             )
+    if extradict is not None:
+        d.update(extradict)
+    text = Template(template).safe_substitute(d)
+    # Turn any \r\n line endings into just \n
+    return re.sub(r' *\r?\n', r'\n', text)

@@ -51,7 +51,7 @@ VAR_DIRS= \
 ARCH_INDEP_DIRS= \
 	bin templates scripts cron pythonlib \
 	Mailman Mailman/bin Mailman/interfaces \
-	Mailman/database Mailman/database/tables Mailman/database/model \
+	Mailman/database Mailman/database/model \
 	Mailman/docs Mailman/ext Mailman/Cgi Mailman/Archiver \
 	Mailman/Handlers Mailman/Queue Mailman/Queue/tests \
 	Mailman/Bouncers \

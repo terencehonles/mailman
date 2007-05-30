@@ -16,7 +16,7 @@
 # USA.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 8224 $)
+AC_REVISION($Revision: 8228 $)
 AC_PREREQ(2.0)
 AC_INIT([GNU Mailman], [2.2.0a0])
 
@@ -635,7 +635,7 @@ dnl Output everything
 AC_OUTPUT([misc/paths.py Mailman/Defaults.py Mailman/mm_cfg.py.dist
            src/Makefile misc/Makefile bin/Makefile Mailman/bin/Makefile
            Mailman/Makefile Mailman/Cgi/Makefile
-	   Mailman/database/Makefile Mailman/database/tables/Makefile
+	   Mailman/database/Makefile
 	   Mailman/database/model/Makefile Mailman/docs/Makefile
 	   Mailman/ext/Makefile Mailman/interfaces/Makefile
            Mailman/Archiver/Makefile Mailman/Commands/Makefile

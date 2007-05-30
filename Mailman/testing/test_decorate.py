@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2007 by the Free Software Foundation, Inc.
+# Copyright (C) 2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -15,17 +15,18 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-"""Schema versions."""
+"""Doctest harness for testing message decoration."""
 
-from sqlalchemy import *
+import doctest
+import unittest
+
+options = (doctest.ELLIPSIS
+           | doctest.NORMALIZE_WHITESPACE
+           | doctest.REPORT_NDIFF)
 
 
-
-def make_table(metadata, tables):
-    table = Table(
-        'Versions', metadata,
-        Column('version_id',    Integer, primary_key=True),
-        Column('component',     String),
-        Column('version',       Integer),
-        )
-    tables.bind(table)
+def test_suite():
+    suite = unittest.TestSuite()
+    suite.addTest(doctest.DocFileSuite('../docs/decorate.txt',
+                                       optionflags=options))
+    return suite
