@@ -23,7 +23,6 @@ from Mailman import Utils
 from Mailman import i18n
 from Mailman import mm_cfg
 from Mailman.Gui.GUIBase import GUIBase
-from Mailman.database.tables.languages import Language
 
 _ = i18n._
 

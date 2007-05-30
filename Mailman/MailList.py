@@ -51,7 +51,6 @@ from Mailman import Version
 from Mailman import database
 from Mailman.UserDesc import UserDesc
 from Mailman.configuration import config
-from Mailman.database.tables.languages import Language
 from Mailman.interfaces import *
 
 # Base classes
@@ -1417,6 +1416,8 @@ bad regexp in bounce_matching_header line: %s
     # Multilingual (i18n) support
     #
     def set_languages(self, *language_codes):
+        # XXX FIXME not to use a database entity directly.
+        from Mailman.database.model import Language
         # Don't use the language_codes property because that will add the
         # default server language.  The effect would be that the default
         # server language would never get added to the list's list of

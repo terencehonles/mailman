@@ -116,3 +116,12 @@ moderators.
     ...         addresses.append(address.address)
     >>> sorted(addresses)
     ['aperson@example.com', 'bperson@example.com', 'cperson@example.com']
+
+
+Clean up
+--------
+
+    >>> config.list_manager.delete(mlist)
+    >>> flush()
+    >>> [name for name in config.list_manager.names]
+    []
