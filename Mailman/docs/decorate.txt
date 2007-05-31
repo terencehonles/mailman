@@ -10,6 +10,7 @@ of the mailing list and the type of message being processed.
     >>> from Mailman.configuration import config
     >>> from Mailman.database import flush
     >>> mlist = config.list_manager.create('_xtest@example.com')
+    >>> flush()
     >>> msg_text = """\
     ... From: aperson@example.org
     ...
@@ -65,9 +66,6 @@ Mailman supports a number of interpolation variables, placeholders in the
 header and footer for information to be filled in with mailing list specific
 data.  An example of such information is the mailing list's "real name" (a
 short descriptive name for the mailing list).
-
-    # XXX Remove this line after converting this test
-    >>> mlist.use_dollar_strings = True
 
     >>> msg = message_from_string(msg_text)
     >>> mlist.msg_header = '$real_name header\n'

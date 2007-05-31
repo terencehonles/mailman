@@ -20,12 +20,15 @@
 import time
 import logging
 
+from string import Template
+
 from Mailman import Message
 from Mailman import Utils
 from Mailman.i18n import _
-from Mailman.SafeDict import SafeDict
 
 log = logging.getLogger('mailman.error')
+
+__i18n_templates__ = True
 
 
 
@@ -69,42 +72,26 @@ def process(mlist, msg, msgdata):
             quiet_until = mlist.postings_responses.get(sender, 0)
         if quiet_until > now:
             return
-    #
     # Okay, we know we're going to auto-respond to this sender, craft the
     # message, send it, and update the database.
     realname = mlist.real_name
     subject = _(
-        'Auto-response for your message to the "%(realname)s" mailing list')
-    # Do string interpolation
-    d = SafeDict({'listname'    : realname,
-                  'listurl'     : mlist.GetScriptURL('listinfo'),
-                  'requestemail': mlist.GetRequestEmail(),
-                  # BAW: Deprecate adminemail; it's not advertised but still
-                  # supported for backwards compatibility.
-                  'adminemail'  : mlist.GetBouncesEmail(),
-                  'owneremail'  : mlist.GetOwnerEmail(),
-                  })
-    # Just because we're using a SafeDict doesn't mean we can't get all sorts
-    # of other exceptions from the string interpolation.  Let's be ultra
-    # conservative here.
+        'Auto-response for your message to the "$realname" mailing list')
+    # Do string interpolation into the autoresponse text
+    d = dict(listname       = realname,
+             listurl        = mlist.GetScriptURL('listinfo'),
+             requestemail   = mlist.request_address,
+             owneremail     = mlist.owner_address,
+             )
     if toadmin:
         rtext = mlist.autoresponse_admin_text
     elif torequest:
         rtext = mlist.autoresponse_request_text
     else:
         rtext = mlist.autoresponse_postings_text
-    # Using $-strings?
-    if getattr(mlist, 'use_dollar_strings', 0):
-        rtext = Utils.to_percent(rtext)
-    try:
-        text = rtext % d
-    except Exception:
-        log.error('Bad autoreply text for list: %s\n%s',
-                  mlist.internal_name(), rtext)
-        text = rtext
-    # Wrap the response.
-    text = Utils.wrap(text)
-    outmsg = Message.UserNotification(sender, mlist.GetBouncesEmail(),
+    # Interpolation and Wrap the response text.
+    text = Utils.wrap(Template(rtext).safe_substitute(d))
+    outmsg = Message.UserNotification(sender, mlist.bounces_address,
                                       subject, text, mlist.preferred_language)
     outmsg['X-Mailer'] = _('The Mailman Replybot')
     # prevent recursions and mail loops!

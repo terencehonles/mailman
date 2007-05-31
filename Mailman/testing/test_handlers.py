@@ -46,7 +46,6 @@ from Mailman.Handlers import FileRecips
 from Mailman.Handlers import Hold
 from Mailman.Handlers import MimeDel
 from Mailman.Handlers import Moderate
-from Mailman.Handlers import Replybot
 from Mailman.Handlers import Scrubber
 # Don't test handlers such as SMTPDirect and Sendmail here
 from Mailman.Handlers import SpamDetect
@@ -1205,11 +1204,6 @@ class TestModerate(TestBase):
 
 
 
-class TestReplybot(TestBase):
-    pass
-
-
-
 class TestScrubber(TestBase):
     def test_save_attachment(self):
         mlist = self._mlist
@@ -1716,7 +1710,6 @@ def test_suite():
     suite.addTest(unittest.makeSuite(TestHold))
     suite.addTest(unittest.makeSuite(TestMimeDel))
     suite.addTest(unittest.makeSuite(TestModerate))
-    suite.addTest(unittest.makeSuite(TestReplybot))
     suite.addTest(unittest.makeSuite(TestScrubber))
     suite.addTest(unittest.makeSuite(TestSpamDetect))
     suite.addTest(unittest.makeSuite(TestTagger))
