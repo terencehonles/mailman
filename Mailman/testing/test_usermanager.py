@@ -23,6 +23,6 @@ import unittest
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(doctest.DocFileSuite('../docs/use-listmanager.txt',
+    suite.addTest(doctest.DocFileSuite('../docs/usermanager.txt',
                                        optionflags=doctest.ELLIPSIS))
     return suite
