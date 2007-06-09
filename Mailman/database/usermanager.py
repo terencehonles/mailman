@@ -37,16 +37,9 @@ class UserManager(object):
 
     def create_user(self, address=None, real_name=None):
         user = User()
-        # Users always have preferences
-        user.preferences = Preferences()
-        user.preferences.user = user
-        if real_name:
-            user.real_name = real_name
+        user.real_name = (real_name if real_name is not None else '')
         if address:
-            kws = dict(address=address)
-            if real_name:
-                kws['real_name'] = real_name
-            user.link(Address(**kws))
+            user.link(Address(address=address, real_name=user.real_name))
         return user
 
     def delete_user(self, user):

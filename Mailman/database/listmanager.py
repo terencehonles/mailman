@@ -54,7 +54,6 @@ class ListManager(object):
     def delete(self, mlist):
         # Delete the wrapped backing data.  XXX It's kind of icky to reach
         # into the MailList object this way.
-        mlist._data.delete_rosters()
         mlist._data.delete()
         mlist._data = None
 

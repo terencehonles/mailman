@@ -24,6 +24,7 @@ from Mailman.database.model import Address
 from Mailman.interfaces import IUser
 
 ADDRESS_KIND    = 'Mailman.database.model.address.Address'
+PREFERENCE_KIND = 'Mailman.database.model.profile.Preferences'
 
 
 
@@ -33,9 +34,13 @@ class User(Entity):
     has_field('real_name',  Unicode)
     has_field('password',   Unicode)
     # Relationships
-    has_many('addresses', of_kind=ADDRESS_KIND)
+    has_many('addresses',       of_kind=ADDRESS_KIND)
+    belongs_to('preferences',   of_kind=PREFERENCE_KIND)
     # Options
     using_options(shortnames=True)
+
+    def __repr__(self):
+        return '<User "%s" at %#x>' % (self.real_name, id(self))
 
     def link(self, address):
         if address.user is not None:

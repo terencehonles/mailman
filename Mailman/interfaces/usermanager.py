@@ -33,8 +33,16 @@ class IUserManager(Interface):
     IUsers in all IRosters.
     """
 
-    def create_user():
-        """Create and return an IUser."""
+    def create_user(address=None, real_name=None):
+        """Create and return an IUser.
+
+        When address is given, an IAddress is also created and linked to the
+        new IUser object.  It is an error if the address already exists.
+
+        When real_name is given, the IUser's real_name is set to this string.
+        If an IAddress is also created and linked, its real_name is set to the
+        same string.
+        """
 
     def delete_user(user):
         """Delete the given IUser."""
