@@ -46,27 +46,6 @@ class IMailingListRosters(Interface):
         This includes the IUsers who are both owners and moderators of the
         mailing list.""")
 
-    owner_rosters = Attribute(
-        """An iterator over the IRosters containing all the owners of this
-        mailing list.""")
-
-    moderator_rosters = Attribute(
-        """An iterator over the IRosters containing all the moderators of this
-        mailing list.""")
-
-    def add_owner_roster(roster):
-        """Add an IRoster to this mailing list's set of owner rosters."""
-
-    def delete_owner_roster(roster):
-        """Remove an IRoster from this mailing list's set of owner rosters."""
-
-    def add_moderator_roster(roster):
-        """Add an IRoster to this mailing list's set of moderator rosters."""
-
-    def delete_moderator_roster(roster):
-        """Remove an IRoster from this mailing list's set of moderator
-        rosters."""
-
     members = Attribute(
         """An iterator over all the members of the mailing list, regardless of
         whether they are to receive regular messages or digests, or whether
@@ -82,15 +61,3 @@ class IMailingListRosters(Interface):
         postings to this mailing list, regardless of whether they have their
         deliver disabled or not, or of the type of digest they are to
         receive.""")
-
-    member_rosters = Attribute(
-        """An iterator over the IRosters containing all the members of this
-        mailing list.""")
-
-    def add_member_roster(roster):
-        """Add the given IRoster to the list of rosters for the members of this
-        mailing list."""
-
-    def remove_member_roster(roster):
-        """Remove the given IRoster to the list of rosters for the members of
-        this mailing list."""

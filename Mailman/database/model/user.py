@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2007 by the Free Software Foundation, Inc.
+# Copyright (C) 2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -23,15 +23,19 @@ from Mailman import Errors
 from Mailman.database.model import Address
 from Mailman.interfaces import IUser
 
+ADDRESS_KIND    = 'Mailman.database.model.address.Address'
 
+
+
 class User(Entity):
     implements(IUser)
 
     has_field('real_name',  Unicode)
     has_field('password',   Unicode)
     # Relationships
-    has_one('profile', of_kind='Mailman.database.model.profile.Profile')
-    has_many('addresses', of_kind='Mailman.database.model.address.Address')
+    has_many('addresses', of_kind=ADDRESS_KIND)
+    # Options
+    using_options(shortnames=True)
 
     def link(self, address):
         if address.user is not None:

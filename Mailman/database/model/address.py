@@ -21,11 +21,12 @@ from zope.interface import implements
 
 from Mailman.interfaces import IAddress
 
+MEMBER_KIND     = 'Mailman.database.model.member.Member'
+PREFERENCE_KIND = 'Mailman.database.model.profile.Preferences'
+USER_KIND       = 'Mailman.database.model.user.User'
 
-ROSTER_KIND = 'Mailman.database.model.roster.Roster'
-USER_KIND   = 'Mailman.database.model.user.User'
 
-
+
 class Address(Entity):
     implements(IAddress)
 
@@ -35,8 +36,10 @@ class Address(Entity):
     has_field('registered_on',  DateTime)
     has_field('validated_on',   DateTime)
     # Relationships
-    has_and_belongs_to_many('rosters', of_kind=ROSTER_KIND)
-    belongs_to('user', of_kind=USER_KIND)
+    belongs_to('user',          of_kind=USER_KIND)
+    belongs_to('preferences',   of_kind=PREFERENCE_KIND)
+    # Options
+    using_options(shortnames=True)
 
     def __str__(self):
         return formataddr((self.real_name, self.address))
@@ -44,3 +47,11 @@ class Address(Entity):
     def __repr__(self):
         return '<Address: %s [%s]>' % (
             str(self), ('verified' if self.verified else 'not verified'))
+
+    def subscribe(self, mlist, role):
+        from Mailman.database.model import Member
+        # This member has no preferences by default.
+        member = Member(role=role,
+                        mailing_list=mlist.fqdn_listname,
+                        address=self)
+        return member

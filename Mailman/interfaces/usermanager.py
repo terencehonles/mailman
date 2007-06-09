@@ -33,27 +33,6 @@ class IUserManager(Interface):
     IUsers in all IRosters.
     """
 
-    def create_roster(name):
-        """Create and return the named IRoster.
-
-        Raises RosterExistsError if the named roster already exists.
-        """
-
-    def get_roster(name):
-        """Return the named IRoster.
-
-        Raises NoSuchRosterError if the named roster doesnot yet exist.
-        """
-
-    def delete_roster(name):
-        """Delete the named IRoster.
-
-        Raises NoSuchRosterError if the named roster doesnot yet exist.
-        """
-
-    rosters = Attribute(
-        """An iterator over all IRosters managed by this user manager.""")
-
     def create_user():
         """Create and return an IUser."""
 
@@ -68,15 +47,3 @@ class IUserManager(Interface):
 
     users = Attribute(
         """An iterator over all the IUsers managed by this user manager.""")
-
-    def create_rosterset():
-        """Create and return a new IRosterSet.
-
-        IRosterSets manage groups of IRosters.
-        """
-
-    def delete_rosterset(rosterset):
-        """Delete the given IRosterSet."""
-
-    def get_rosterset(serial):
-        """Return the IRosterSet that matches the serial number, or None."""

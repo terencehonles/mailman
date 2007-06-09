@@ -15,13 +15,13 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-"""Interface for a profile, which describes delivery related information."""
+"""Interface for preferences."""
 
 from zope.interface import Interface, Attribute
 
 
 
-class IProfile(Interface):
+class IPreferences(Interface):
     """Delivery related information."""
 
     acknowledge_posts = Attribute(

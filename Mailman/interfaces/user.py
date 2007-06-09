@@ -30,8 +30,8 @@ class IUser(Interface):
     password = Attribute(
         """This user's password information.""")
 
-    profile = Attribute(
-        """The default IProfile for this user.""")
+    preferences = Attribute(
+        """The default preferences for this user.""")
 
     addresses = Attribute(
         """An iterator over all the IAddresses controlled by this user.""")

@@ -35,47 +35,18 @@ from Mailman.interfaces import IUserManager
 class UserManager(object):
     implements(IUserManager)
 
-    def __init__(self):
-        # Create the null roster if it does not already exist.  It's more
-        # likely to exist than not so try to get it before creating it.
-        lockfile = os.path.join(config.LOCK_DIR, '<umgrcreatelock>')
-        with LockFile(lockfile):
-            roster = self.get_roster('')
-            if roster is None:
-                self.create_roster('')
-        objectstore.flush()
-
-    def create_roster(self, name):
-        roster = Roster.get_by(name=name)
-        if roster:
-            raise Errors.RosterExistsError(name)
-        return Roster(name=name)
-
-    def get_roster(self, name):
-        return Roster.get_by(name=name)
-
-    def delete_roster(self, roster):
-        roster.delete()
-
-    @property
-    def rosters(self):
-        for roster in Roster.select():
-            yield roster
-
-    def create_rosterset(self, name):
-        return RosterSet(name=name)
-
-    def delete_rosterset(self, rosterset):
-        rosterset.delete()
-
-    def get_rosterset(self, name):
-        return RosterSet.get_by(name=name)
-
-    def create_user(self):
+    def create_user(self, address=None, real_name=None):
         user = User()
-        # Users always have a profile
-        user.profile = Profile()
-        user.profile.user = user
+        # Users always have preferences
+        user.preferences = Preferences()
+        user.preferences.user = user
+        if real_name:
+            user.real_name = real_name
+        if address:
+            kws = dict(address=address)
+            if real_name:
+                kws['real_name'] = real_name
+            user.link(Address(**kws))
         return user
 
     def delete_user(self, user):

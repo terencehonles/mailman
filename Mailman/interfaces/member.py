@@ -15,32 +15,34 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-"""Interface for a roster of members."""
+
+"""Interface describing the basics of a member."""
 
 from zope.interface import Interface, Attribute
 
 
 
-class IRoster(Interface):
-    """A roster is a collection of IMembers."""
+class IMember(Interface):
+    """A member of a mailing list."""
 
-    name = Attribute(
-        """The name for this roster.
+    mailing_list = Attribute(
+        """The mailing list subscribed to.""")
 
-        Rosters are considered equal if they have the same name.""")
+    address = Attribute(
+        """The email address that's subscribed to the list.""")
 
-    members = Attribute(
-        """An iterator over all the IMembers managed by this roster.""")
+    preferences = Attribute(
+        """The set of preferences for this subscription.
 
-    users = Attribute(
-        """An iterator over all the IUsers reachable by this roster.
+        This will return an IPreferences object using the following lookup
+        rules:
 
-        This returns all the users for all the members managed by this roster.
+        1. member
+        2. address
+        3. user
+        4. mailing list
+        5. system default
         """)
 
-    addresses = Attribute(
-        """An iterator over all the IAddresses reachable by this roster.
-
-        This returns all the addresses for all the users for all the members
-        managed by this roster.
-        """)
+    role = Attribute(
+        """The role of this membership.""")

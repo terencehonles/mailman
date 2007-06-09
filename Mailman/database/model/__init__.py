@@ -19,9 +19,7 @@ __all__ = [
     'Address',
     'Language',
     'MailingList',
-    'Profile',
-    'Roster',
-    'RosterSet',
+    'Preferences',
     'User',
     'Version',
     ]
@@ -44,9 +42,8 @@ from Mailman.configuration import config
 from Mailman.database.model.address import Address
 from Mailman.database.model.language import Language
 from Mailman.database.model.mailinglist import MailingList
-from Mailman.database.model.profile import Profile
-from Mailman.database.model.roster import Roster
-from Mailman.database.model.rosterset import RosterSet
+from Mailman.database.model.member import Member
+from Mailman.database.model.profile import Preferences
 from Mailman.database.model.user import User
 from Mailman.database.model.version import Version
 

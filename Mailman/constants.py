@@ -18,6 +18,9 @@
 """Various constants and enumerations."""
 
 from munepy import Enum
+from zope.interface import implements
+
+from Mailman.interfaces import IPreferences
 
 
 
@@ -42,3 +45,22 @@ class DeliveryStatus(Enum):
     by_bounces = 3
     # Delivery was disabled by an administrator or moderator
     by_moderator = 4
+
+
+
+class MemberRole(Enum):
+    member = 1
+    owner = 2
+    moderator = 3
+
+
+
+class SystemDefaultPreferences(object):
+    implements(IPreferences)
+
+    acknowledge_posts = False
+    hide_address = True
+    preferred_language = 'en'
+    receive_list_copy = True
+    receive_own_postings = True
+    delivery_mode = DeliveryMode.regular
