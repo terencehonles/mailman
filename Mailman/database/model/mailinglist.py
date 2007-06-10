@@ -22,6 +22,8 @@ from Mailman.Utils import fqdn_listname, split_listname
 from Mailman.configuration import config
 from Mailman.interfaces import *
 
+PREFERENCE_KIND = 'Mailman.database.model.profile.Preferences'
+
 
 
 class MailingList(Entity):
@@ -154,6 +156,7 @@ class MailingList(Entity):
     has_field('unsubscribe_policy',                         Integer),
     has_field('welcome_msg',                                Unicode),
     # Relationships
+    belongs_to('preferences',   of_kind=PREFERENCE_KIND)
 ##     has_and_belongs_to_many(
 ##         'available_languages',
 ##         of_kind='Mailman.database.model.languages.Language')

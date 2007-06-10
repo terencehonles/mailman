@@ -51,7 +51,8 @@ class Member(Entity):
             return self._preferences
         if self.address.preferences:
             return self.address.preferences
-        if self.address.user.preferences:
+        # It's possible this address isn't linked to a user.
+        if self.address.user and self.address.user.preferences:
             return self.address.user.preferences
         list_name, host_name = split_listname(self.mailing_list)
         mlist = MailingList.get_by(list_name=list_name,

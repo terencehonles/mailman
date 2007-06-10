@@ -53,3 +53,27 @@ class UserManager(object):
     def get_user(self, address):
         found = Address.get_by(address=address)
         return found and found.user
+
+    def create_address(self, address, real_name=None):
+        found = Address.get_by(address=address)
+        if found:
+            raise Errors.ExistingAddressError(address)
+        if real_name is None:
+            real_name = ''
+        address = Address(address=address, real_name=real_name)
+        return address
+
+    def delete_address(self, address):
+        # If there's a user controlling this address, it has to first be
+        # unlinked before the address can be deleted.
+        if address.user:
+            address.user.unlink(address)
+        address.delete()
+
+    def get_address(self, address):
+        return Address.get_by(address=address)
+
+    @property
+    def addresses(self):
+        for address in Address.select():
+            yield address

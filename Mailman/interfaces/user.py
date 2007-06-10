@@ -36,6 +36,15 @@ class IUser(Interface):
     addresses = Attribute(
         """An iterator over all the IAddresses controlled by this user.""")
 
+    def register(address):
+        """Register the given email address and link it to this user.
+
+        In this case, 'address' is a text email address, not an IAddress
+        object.  Raises AddressAlreadyLinkedError if this IAddress is already
+        linked to another user.  If the corresponding IAddress already exists
+        but is not linked, then it is simply linked to the user.
+        """
+
     def link(address):
         """Link this user to the given IAddress.
 

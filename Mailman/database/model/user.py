@@ -55,5 +55,5 @@ class User(Entity):
         self.addresses.remove(address)
 
     def controls(self, address):
-        found = Address.get_by(address=address.address)
+        found = Address.get_by(address=address)
         return bool(found and found.user is self)
