@@ -136,9 +136,9 @@ def main():
     mlist.Lock()
     try:
         realname = mlist.real_name
-        if not cgidata.keys():
+        if not cgidata.keys() or cgidata.has_key('admlogin'):
             # If this is not a form submission (i.e. there are no keys in the
-            # form), then we don't need to do much special.
+            # form) or it's a login, then we don't need to do much special.
             doc.SetTitle(_('%(realname)s Administrative Database'))
         elif not details:
             # This is a form submission
@@ -172,7 +172,8 @@ def main():
                 + ' <em>%s</em>' % mlist.real_name))
         if details <> 'instructions':
             form.AddItem(Center(SubmitButton('submit', _('Submit All Data'))))
-        if not (details or sender or msgid):
+        nomessages = not mlist.GetHeldMessageIds()
+        if not (details or sender or msgid or nomessages):
             form.AddItem(Center(
                 CheckBox('discardalldefersp', 0).Format() +
                 '&nbsp;' +
@@ -220,7 +221,7 @@ def main():
         if addform:
             doc.AddItem(form)
             form.AddItem('<hr>')
-            if not (details or sender or msgid):
+            if not (details or sender or msgid or nomessages):
                 form.AddItem(Center(
                     CheckBox('discardalldefersp', 0).Format() +
                     '&nbsp;' +
@@ -364,6 +365,8 @@ def show_helds_overview(mlist, form):
     bysender = helds_by_sender(mlist)
     if not bysender:
         return 0
+    form.AddItem('<hr>')
+    form.AddItem(Center(Header(2, _('Held Messages'))))
     # Add the by-sender overview tables
     admindburl = mlist.GetScriptURL('admindb')
     table = Table(border=0)
