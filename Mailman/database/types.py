@@ -28,11 +28,15 @@ class EnumType(types.TypeDecorator):
     impl = types.String
 
     def convert_bind_param(self, value, engine):
+        if value is None:
+            return None
         return '%s:%s.%d' % (value.enumclass.__module__,
                              value.enumclass.__name__,
                              int(value))
 
     def convert_result_value(self, value, engine):
+        if value is None:
+            return None
         path, intvalue = value.rsplit(':', 1)
         modulename, classname = intvalue.rsplit('.', 1)
         __import__(modulename)

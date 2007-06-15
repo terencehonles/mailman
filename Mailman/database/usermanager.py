@@ -40,6 +40,7 @@ class UserManager(object):
         user.real_name = (real_name if real_name is not None else '')
         if address:
             user.link(Address(address=address, real_name=user.real_name))
+        user.preferences = Preferences()
         return user
 
     def delete_user(self, user):
@@ -61,6 +62,7 @@ class UserManager(object):
         if real_name is None:
             real_name = ''
         address = Address(address=address, real_name=real_name)
+        address.preferences = Preferences()
         return address
 
     def delete_address(self, address):

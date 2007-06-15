@@ -19,7 +19,6 @@ from elixir import *
 from zope.interface import implements
 
 from Mailman.Utils import split_listname
-from Mailman.constants import SystemDefaultPreferences
 from Mailman.database.types import EnumType
 from Mailman.interfaces import IMember, IPreferences
 
@@ -36,27 +35,10 @@ class Member(Entity):
     has_field('mailing_list',   Unicode)
     # Relationships
     belongs_to('address',       of_kind=ADDRESS_KIND)
-    belongs_to('_preferences',  of_kind=PREFERENCE_KIND)
+    belongs_to('preferences',   of_kind=PREFERENCE_KIND)
     # Options
     using_options(shortnames=True)
 
     def __repr__(self):
         return '<Member: %s on %s as %s>' % (
             self.address, self.mailing_list, self.role)
-
-    @property
-    def preferences(self):
-        from Mailman.database.model import MailingList
-        if self._preferences:
-            return self._preferences
-        if self.address.preferences:
-            return self.address.preferences
-        # It's possible this address isn't linked to a user.
-        if self.address.user and self.address.user.preferences:
-            return self.address.user.preferences
-        list_name, host_name = split_listname(self.mailing_list)
-        mlist = MailingList.get_by(list_name=list_name,
-                                   host_name=host_name)
-        if mlist.preferences:
-            return mlist.preferences
-        return SystemDefaultPreferences

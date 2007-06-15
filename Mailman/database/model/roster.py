@@ -25,6 +25,7 @@ moderator, and administrator roster filters.
 from zope.interface import implements
 
 from Mailman.constants import DeliveryMode, MemberRole
+from Mailman.constants import SystemDefaultPreferences
 from Mailman.database.model import Member
 from Mailman.interfaces import IRoster
 
@@ -137,6 +138,17 @@ class AdministratorRoster(AbstractRoster):
 
 
 
+def _delivery_mode(member):
+    if member.preferences.delivery_mode is not None:
+        return member.preferences.delivery_mode
+    if member.address.preferences.delivery_mode is not None:
+        return member.address.preferences.delivery_mode
+    if (member.address.user and
+        member.address.user.preferences.delivery_mode is not None):
+        return member.address.user.preferences.delivery_mode
+    return SystemDefaultPreferences.delivery_mode
+
+
 class RegularMemberRoster(AbstractRoster):
     """Return all the regular delivery members of a list."""
 
@@ -149,7 +161,7 @@ class RegularMemberRoster(AbstractRoster):
         # that have a regular delivery mode.
         for member in Member.select_by(mailing_list=self._mlist.fqdn_listname,
                                        role=MemberRole.member):
-            if member.preferences.delivery_mode == DeliveryMode.regular:
+            if _delivery_mode(member) == DeliveryMode.regular:
                 yield member
 
 
@@ -174,5 +186,5 @@ class DigestMemberRoster(AbstractRoster):
         # that have one of the digest delivery modes.
         for member in Member.select_by(mailing_list=self._mlist.fqdn_listname,
                                        role=MemberRole.member):
-            if member.preferences.delivery_mode in _digest_modes:
+            if _delivery_mode(member) in _digest_modes:
                 yield member

@@ -20,7 +20,7 @@ Creating users
 There are several ways you can create a user object.  The simplest is to
 create a 'blank' user by not providing an address or real name at creation
 time.  This user will have an empty string as their real name, but will not
-have a password or preferences.
+have a password.
 
     >>> from Mailman.interfaces import IUser
     >>> user = mgr.create_user()
@@ -31,10 +31,13 @@ have a password or preferences.
     []
     >>> user.real_name
     ''
-    >>> print user.preferences
-    None
     >>> print user.password
     None
+
+The user has preferences, but none of them will be specified.
+
+    >>> print user.preferences
+    <Preferences ...>
 
 A user can be assigned a real name.
 

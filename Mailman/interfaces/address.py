@@ -48,3 +48,6 @@ class IAddress(Interface):
 
         role is a Mailman.constants.MemberRole enum.
         """
+
+    preferences = Attribute(
+        """This address's preferences.""")
