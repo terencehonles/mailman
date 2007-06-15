@@ -50,8 +50,10 @@ class Address(Entity):
 
     def subscribe(self, mlist, role):
         from Mailman.database.model import Member
+        from Mailman.database.model import Preferences
         # This member has no preferences by default.
         member = Member(role=role,
                         mailing_list=mlist.fqdn_listname,
                         address=self)
+        member.preferences = Preferences()
         return member

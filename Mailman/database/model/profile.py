@@ -19,7 +19,6 @@ from elixir import *
 from email.utils import formataddr
 from zope.interface import implements
 
-from Mailman.constants import SystemDefaultPreferences as Prefs
 from Mailman.database.types import EnumType
 from Mailman.interfaces import IPreferences
 
@@ -41,11 +40,5 @@ class Preferences(Entity):
     # Options
     using_options(shortnames=True)
 
-    def __init__(self):
-        super(Preferences, self).__init__()
-        self.acknowledge_posts      = Prefs.acknowledge_posts
-        self.hide_address           = Prefs.hide_address
-        self.preferred_language     = Prefs.preferred_language
-        self.receive_list_copy      = Prefs.receive_list_copy
-        self.receive_own_postings   = Prefs.receive_own_postings
-        self.delivery_mode          = Prefs.delivery_mode
+    def __repr__(self):
+        return '<Preferences object at %#x>' % id(self)

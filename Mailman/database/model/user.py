@@ -21,6 +21,7 @@ from zope.interface import implements
 
 from Mailman import Errors
 from Mailman.database.model import Address
+from Mailman.database.model import Preferences
 from Mailman.interfaces import IUser
 
 ADDRESS_KIND    = 'Mailman.database.model.address.Address'
@@ -57,3 +58,17 @@ class User(Entity):
     def controls(self, address):
         found = Address.get_by(address=address)
         return bool(found and found.user is self)
+
+    def register(self, address, real_name=None):
+        # First, see if the address already exists
+        addrobj = Address.get_by(address=address)
+        if addrobj is None:
+            if real_name is None:
+                real_name = ''
+            addrobj = Address(address=address, real_name=real_name)
+        # Link the address to the user if it is not already linked.
+        if addrobj.user is not None:
+            raise Errors.AddressAlreadyLinkedError(addrobj)
+        addrobj.user = self
+        self.addresses.append(addrobj)
+        return addrobj

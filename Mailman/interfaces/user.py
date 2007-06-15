@@ -30,19 +30,21 @@ class IUser(Interface):
     password = Attribute(
         """This user's password information.""")
 
-    preferences = Attribute(
-        """The default preferences for this user.""")
-
     addresses = Attribute(
         """An iterator over all the IAddresses controlled by this user.""")
 
-    def register(address):
+    def register(address, real_name=None):
         """Register the given email address and link it to this user.
 
         In this case, 'address' is a text email address, not an IAddress
-        object.  Raises AddressAlreadyLinkedError if this IAddress is already
-        linked to another user.  If the corresponding IAddress already exists
-        but is not linked, then it is simply linked to the user.
+        object.  If real_name is not given, the empty string is used.
+
+        Raises AddressAlreadyLinkedError if this IAddress is already linked to
+        another user.  If the corresponding IAddress already exists but is not
+        linked, then it is simply linked to the user, in which case
+        real_name is ignored.
+
+        Return the new IAddress object.
         """
 
     def link(address):
@@ -66,3 +68,6 @@ class IUser(Interface):
         'address' is a text email address.  This method returns true if the
         user controls the given email address, otherwise false.
         """
+
+    preferences = Attribute(
+        """This user's preferences.""")

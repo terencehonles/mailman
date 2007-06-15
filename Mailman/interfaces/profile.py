@@ -25,29 +25,37 @@ class IPreferences(Interface):
     """Delivery related information."""
 
     acknowledge_posts = Attribute(
-        """Boolean specifying whether to send an acknowledgment receipt for
-        every posting to the mailing list.
-        """)
+        """Send an acknowledgment for every posting?
 
-    hide_address = Attribute(
-        """Boolean specifying whether to hide this email address from fellow
-        list members.
-        """)
+        This preference can be True, False, or None.  True means the user is
+        sent a receipt for each message they send to the mailing list.  False
+        means that no receipt is sent.  None means no preference is
+        specified.""")
 
     preferred_language = Attribute(
-        """Preferred language for interacting with a mailing list.""")
+        """The preferred language for interacting with a mailing list.
+
+        This is either the language code for the preferred language, or None
+        meaning no preferred language is specified.""")
 
     receive_list_copy = Attribute(
-        """Boolean specifying whether to receive a list copy if the user is
-        explicitly named in one of the recipient headers.
-        """)
+        """Should an explicit recipient receive a list copy?
+
+        When a list member is explicitly named in a message's recipients
+        (e.g. the To or CC headers), and this preference is True, the
+        recipient will still receive a list copy of the message.  When False,
+        this list copy will be suppressed.  None means no preference is
+        specified.""")
 
     receive_own_postings = Attribute(
-        """Boolean specifying whether to receive a list copy of the user's own
-        postings to the mailing list.
-        """)
+        """Should the poster get a list copy of their own messages?
+
+        When this preference is True, a list copy will be sent to the poster
+        of all messages.  When False, this list copy will be suppressed.  None
+        means no preference is specified.""")
 
     delivery_mode = Attribute(
         """The preferred delivery mode.
 
-        This is an enum constant of the type DeliveryMode.""")
+        This is an enum constant of the type DeliveryMode.  It may also be
+        None which means that no preference is specified.""")
