@@ -15,6 +15,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
+import os
 import sys
 import optparse
 
@@ -63,8 +64,18 @@ def main():
         if mlist.digest_send_periodic:
             mlist.Lock()
             try:
-                mlist.send_digest_now()
-                mlist.Save()
+                try:
+                    mlist.send_digest_now()
+                    mlist.Save()
+                # We are unable to predict what exception may occur in digest
+                # processing and we don't want to lose the other digests, so
+                # we catch everything.
+                except Exception, errmsg:
+                    print >> sys.stderr, \
+                      'List: %s: problem processing %s:\n%s' % \
+                        (listname,
+                         os.path.join(mlist.full_path(), 'digest.mbox'),
+                         errmsg)
             finally:
                 mlist.Unlock()
 
