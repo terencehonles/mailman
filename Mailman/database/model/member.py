@@ -24,7 +24,7 @@ from Mailman.interfaces import IMember, IPreferences
 
 
 ADDRESS_KIND    = 'Mailman.database.model.address.Address'
-PREFERENCE_KIND = 'Mailman.database.model.profile.Preferences'
+PREFERENCE_KIND = 'Mailman.database.model.preferences.Preferences'
 
 
 

@@ -22,7 +22,7 @@ from zope.interface import implements
 from Mailman.interfaces import IAddress
 
 MEMBER_KIND     = 'Mailman.database.model.member.Member'
-PREFERENCE_KIND = 'Mailman.database.model.profile.Preferences'
+PREFERENCE_KIND = 'Mailman.database.model.preferences.Preferences'
 USER_KIND       = 'Mailman.database.model.user.User'
 
 

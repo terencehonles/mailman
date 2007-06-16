@@ -25,7 +25,7 @@ from Mailman.database.model import Preferences
 from Mailman.interfaces import IUser
 
 ADDRESS_KIND    = 'Mailman.database.model.address.Address'
-PREFERENCE_KIND = 'Mailman.database.model.profile.Preferences'
+PREFERENCE_KIND = 'Mailman.database.model.preferences.Preferences'
 
 
 
@@ -66,6 +66,7 @@ class User(Entity):
             if real_name is None:
                 real_name = ''
             addrobj = Address(address=address, real_name=real_name)
+            addrobj.preferences = Preferences()
         # Link the address to the user if it is not already linked.
         if addrobj.user is not None:
             raise Errors.AddressAlreadyLinkedError(addrobj)

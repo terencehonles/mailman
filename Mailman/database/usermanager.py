@@ -39,7 +39,9 @@ class UserManager(object):
         user = User()
         user.real_name = (real_name if real_name is not None else '')
         if address:
-            user.link(Address(address=address, real_name=user.real_name))
+            addrobj = Address(address=address, real_name=user.real_name)
+            addrobj.preferences = Preferences()
+            user.link(addrobj)
         user.preferences = Preferences()
         return user
 

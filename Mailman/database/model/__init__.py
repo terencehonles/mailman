@@ -43,7 +43,7 @@ from Mailman.database.model.address import Address
 from Mailman.database.model.language import Language
 from Mailman.database.model.mailinglist import MailingList
 from Mailman.database.model.member import Member
-from Mailman.database.model.profile import Preferences
+from Mailman.database.model.preferences import Preferences
 from Mailman.database.model.user import User
 from Mailman.database.model.version import Version
 
