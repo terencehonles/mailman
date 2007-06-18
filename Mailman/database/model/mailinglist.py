@@ -30,6 +30,7 @@ class MailingList(Entity):
         IMailingListAddresses,
         IMailingListIdentity,
         IMailingListRosters,
+        IMailingListWeb,
         )
 
     # List identity
@@ -179,3 +180,14 @@ class MailingList(Entity):
     def fqdn_listname(self):
         """See IMailingListIdentity."""
         return fqdn_listname(self.list_name, self.host_name)
+
+    @property
+    def web_host(self):
+        """See IMailingListWeb."""
+        return config.domains[self.host_name]
+
+    def script_url(self, target, context=None):
+        """See IMailingListWeb."""
+        # XXX Handle the case for when context is not None; those would be
+        # relative URLs.
+        return self.web_page_url + target + '/' + self.fqdn_listname

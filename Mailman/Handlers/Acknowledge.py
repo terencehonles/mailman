@@ -36,30 +36,30 @@ __i18n_templates__ = True
 def process(mlist, msg, msgdata):
     # Extract the sender's address and find them in the user database
     sender = msgdata.get('original_sender', msg.get_sender())
-    try:
-        ack = mlist.getMemberOption(sender, config.AcknowledgePosts)
-        if not ack:
-            return
-    except Errors.NotAMemberError:
+    member = mlist.members.get_member(sender)
+    if member is None:
+        return
+    ack = member.acknowledge_posts
+    if not ack:
         return
     # Okay, they want acknowledgement of their post.  Give them their original
     # subject.  BAW: do we want to use the decoded header?
     origsubj = msgdata.get('origsubj', msg.get('subject', _('(no subject)')))
     # Get the user's preferred language
-    lang = msgdata.get('lang', mlist.getMemberLanguage(sender))
+    lang = msgdata.get('lang', member.preferred_language)
     # Now get the acknowledgement template
     realname = mlist.real_name
     text = Utils.maketext(
         'postack.txt',
         {'subject'     : Utils.oneline(origsubj, Utils.GetCharSet(lang)),
          'listname'    : realname,
-         'listinfo_url': mlist.GetScriptURL('listinfo', absolute=1),
-         'optionsurl'  : mlist.GetOptionsURL(sender, absolute=1),
-         }, lang=lang, mlist=mlist, raw=1)
+         'listinfo_url': mlist.script_url('listinfo'),
+         'optionsurl'  : member.options_url,
+         }, lang=lang, mlist=mlist, raw=True)
     # Craft the outgoing message, with all headers and attributes
     # necessary for general delivery.  Then enqueue it to the outgoing
     # queue.
-    subject = _('$realname post acknowledgement')
-    usermsg = Message.UserNotification(sender, mlist.GetBouncesEmail(),
+    subject = _('$realname post acknowledgment')
+    usermsg = Message.UserNotification(sender, mlist.bounces_address,
                                        subject, text, lang)
     usermsg.send(mlist)

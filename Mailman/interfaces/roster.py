@@ -44,3 +44,10 @@ class IRoster(Interface):
         This returns all the addresses for all the users for all the members
         managed by this roster.
         """)
+
+    def get_member(address):
+        """Return the IMember for the given address.
+
+        'address' is a text email address.  If no matching member is found,
+        None is returned.
+        """

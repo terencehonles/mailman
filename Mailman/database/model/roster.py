@@ -22,11 +22,12 @@ the ones that fit a particular role.  These are used as the member, owner,
 moderator, and administrator roster filters.
 """
 
+from sqlalchemy import *
 from zope.interface import implements
 
 from Mailman.constants import DeliveryMode, MemberRole
 from Mailman.constants import SystemDefaultPreferences
-from Mailman.database.model import Member
+from Mailman.database.model import Address, Member
 from Mailman.interfaces import IRoster
 
 
@@ -42,12 +43,16 @@ class AbstractRoster(object):
     """
     implements(IRoster)
 
+    role = None
+
     def __init__(self, mlist):
         self._mlist = mlist
 
     @property
     def members(self):
-        raise NotImplementedError
+        for member in Member.select_by(mailing_list=self._mlist.fqdn_listname,
+                                       role=self.role):
+            yield member
 
     @property
     def users(self):
@@ -67,21 +72,27 @@ class AbstractRoster(object):
         for member in self.members:
             yield member.address
 
+    def get_member(self, address):
+        results = Member.select(
+            and_(Member.c.mailing_list == self._mlist.fqdn_listname,
+                 Member.c.role == self.role,
+                 Address.c.address == address,
+                 Member.c.address_id == Address.c.id))
+        if len(results) == 0:
+            return None
+        elif len(results) == 1:
+            return results[0]
+        else:
+            assert len(results) <= 1, (
+                'Too many matching member results: %s' % results)
+
 
 
 class MemberRoster(AbstractRoster):
     """Return all the members of a list."""
 
     name = 'member'
-
-    @property
-    def members(self):
-        # Query for all the Members which have a role of MemberRole.member and
-        # are subscribed to this mailing list.  XXX we have to use a private
-        # data attribute of MailList for now.
-        for member in Member.select_by(mailing_list=self._mlist.fqdn_listname,
-                                       role=MemberRole.member):
-            yield member
+    role = MemberRole.member
 
 
 
@@ -89,15 +100,7 @@ class OwnerRoster(AbstractRoster):
     """Return all the owners of a list."""
 
     name = 'owner'
-
-    @property
-    def members(self):
-        # Query for all the Members which have a role of MemberRole.member and
-        # are subscribed to this mailing list.  XXX we have to use a private
-        # data attribute of MailList for now.
-        for member in Member.select_by(mailing_list=self._mlist.fqdn_listname,
-                                       role=MemberRole.owner):
-            yield member
+    role = MemberRole.owner
 
 
 
@@ -105,15 +108,7 @@ class ModeratorRoster(AbstractRoster):
     """Return all the owners of a list."""
 
     name = 'moderator'
-
-    @property
-    def members(self):
-        # Query for all the Members which have a role of MemberRole.member and
-        # are subscribed to this mailing list.  XXX we have to use a private
-        # data attribute of MailList for now.
-        for member in Member.select_by(mailing_list=self._mlist.fqdn_listname,
-                                       role=MemberRole.moderator):
-            yield member
+    role = MemberRole.moderator
 
 
 
@@ -125,30 +120,31 @@ class AdministratorRoster(AbstractRoster):
     @property
     def members(self):
         # Administrators are defined as the union of the owners and the
-        # moderators.  Until I figure out a more efficient way of doing this,
-        # this will have to do.
-        owners = Member.select_by(mailing_list=self._mlist.fqdn_listname,
-                                  role=MemberRole.owner)
-        moderators = Member.select_by(mailing_list=self._mlist.fqdn_listname,
-                                      role=MemberRole.moderator)
-        members = set(owners)
-        members.update(set(moderators))
+        # moderators.
+        members = Member.select(
+            and_(Member.c.mailing_list == self._mlist.fqdn_listname,
+                 or_(Member.c.role == MemberRole.owner,
+                     Member.c.role == MemberRole.moderator)))
         for member in members:
             yield member
 
+    def get_member(self, address):
+        results = Member.select(
+            and_(Member.c.mailing_list == self._mlist.fqdn_listname,
+                 or_(Member.c.role == MemberRole.moderator,
+                     Member.c.role == MemberRole.owner),
+                 Address.c.address == address,
+                 Member.c.address_id == Address.c.id))
+        if len(results) == 0:
+            return None
+        elif len(results) == 1:
+            return results[0]
+        else:
+            assert len(results) <= 1, (
+                'Too many matching member results: %s' % results)
+
 
 
-def _delivery_mode(member):
-    if member.preferences.delivery_mode is not None:
-        return member.preferences.delivery_mode
-    if member.address.preferences.delivery_mode is not None:
-        return member.address.preferences.delivery_mode
-    if (member.address.user and
-        member.address.user.preferences.delivery_mode is not None):
-        return member.address.user.preferences.delivery_mode
-    return SystemDefaultPreferences.delivery_mode
-
-
 class RegularMemberRoster(AbstractRoster):
     """Return all the regular delivery members of a list."""
 
@@ -161,7 +157,7 @@ class RegularMemberRoster(AbstractRoster):
         # that have a regular delivery mode.
         for member in Member.select_by(mailing_list=self._mlist.fqdn_listname,
                                        role=MemberRole.member):
-            if _delivery_mode(member) == DeliveryMode.regular:
+            if member.delivery_mode == DeliveryMode.regular:
                 yield member
 
 
@@ -186,5 +182,5 @@ class DigestMemberRoster(AbstractRoster):
         # that have one of the digest delivery modes.
         for member in Member.select_by(mailing_list=self._mlist.fqdn_listname,
                                        role=MemberRole.member):
-            if _delivery_mode(member) in _digest_modes:
+            if member.delivery_mode in _digest_modes:
                 yield member

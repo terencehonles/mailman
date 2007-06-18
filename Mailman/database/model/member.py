@@ -19,6 +19,7 @@ from elixir import *
 from zope.interface import implements
 
 from Mailman.Utils import split_listname
+from Mailman.constants import SystemDefaultPreferences
 from Mailman.database.types import EnumType
 from Mailman.interfaces import IMember, IPreferences
 
@@ -42,3 +43,37 @@ class Member(Entity):
     def __repr__(self):
         return '<Member: %s on %s as %s>' % (
             self.address, self.mailing_list, self.role)
+
+    def _lookup(self, preference):
+        pref = getattr(self.preferences, preference)
+        if pref is not None:
+            return pref
+        pref = getattr(self.address.preferences, preference)
+        if pref is not None:
+            return pref
+        if self.address.user:
+            pref = getattr(self.address.user.preferences, preference)
+            if pref is not None:
+                return pref
+        return getattr(SystemDefaultPreferences, preference)
+
+    @property
+    def delivery_mode(self):
+        return self._lookup('delivery_mode')
+
+    @property
+    def acknowledge_posts(self):
+        return self._lookup('acknowledge_posts')
+
+    @property
+    def preferred_language(self):
+        return self._lookup('preferred_language')
+
+    def unsubscribe(self):
+        self.preferences.delete()
+        self.delete()
+
+    @property
+    def options_url(self):
+        # XXX Um, this is definitely wrong
+        return 'http://example.com/' + self.address.address

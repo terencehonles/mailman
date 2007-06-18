@@ -168,16 +168,73 @@ Claire will be a regular delivery member but not a digest member.
 
 It's easy to make the list administrators members of the mailing list too.
 
+    >>> members = []
     >>> for address in mlist.administrators.addresses:
-    ...     address.subscribe(mlist, MemberRole.member)
-    <Member: Ben Person <bperson@example.com> on
-             _xtest@example.com as MemberRole.member>
-    <Member: Anne Person <aperson@example.com> on
-             _xtest@example.com as MemberRole.member>
+    ...     member = address.subscribe(mlist, MemberRole.member)
+    ...     members.append(member)
+    >>> sorted(members, key=lambda m: m.address.address)
+    [<Member: Anne Person <aperson@example.com> on
+              _xtest@example.com as MemberRole.member>,
+     <Member: Ben Person <bperson@example.com> on
+              _xtest@example.com as MemberRole.member>]
     >>> flush()
     >>> sorted(address.address for address in mlist.members.addresses)
     ['aperson@example.com', 'bperson@example.com', 'cperson@example.com']
     >>> sorted(address.address for address in mlist.regular_members.addresses)
     ['aperson@example.com', 'bperson@example.com', 'cperson@example.com']
     >>> sorted(address.address for address in mlist.digest_members.addresses)
+    []
+
+
+Finding members
+---------------
+
+You can find the IMember object that is a member of a roster for a given text
+email address by using an IRoster's .get_member() method.
+
+    >>> mlist.owners.get_member('aperson@example.com')
+    <Member: Anne Person <aperson@example.com> on
+             _xtest@example.com as MemberRole.owner>
+    >>> mlist.administrators.get_member('aperson@example.com')
+    <Member: Anne Person <aperson@example.com> on
+             _xtest@example.com as MemberRole.owner>
+    >>> mlist.members.get_member('aperson@example.com')
+    <Member: Anne Person <aperson@example.com> on
+             _xtest@example.com as MemberRole.member>
+
+However, if the address is not subscribed with the appropriate role, then None
+is returned.
+
+    >>> print mlist.administrators.get_member('zperson@example.com')
+    None
+    >>> print mlist.moderators.get_member('aperson@example.com')
+    None
+    >>> print mlist.members.get_member('zperson@example.com')
+    None
+
+
+Clean up
+--------
+
+    >>> for member in mlist.members.members:
+    ...     member.unsubscribe()
+    >>> for admin in mlist.administrators.members:
+    ...     admin.unsubscribe()
+    >>> flush()
+    >>> list(mlist.members.members)
+    []
+    >>> list(mlist.administrators.members)
+    []
+    >>> for user in config.user_manager.users:
+    ...     config.user_manager.delete_user(user)
+    >>> for address in config.user_manager.addresses:
+    ...     config.user_manager.delete_address(address)
+    >>> for mlist in config.list_manager.mailing_lists:
+    ...     config.list_manager.delete(mlist)
+    >>> flush()
+    >>> list(config.user_manager.users)
+    []
+    >>> list(config.user_manager.addresses)
+    []
+    >>> list(config.list_manager.mailing_lists)
     []

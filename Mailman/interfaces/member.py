@@ -32,17 +32,54 @@ class IMember(Interface):
         """The email address that's subscribed to the list.""")
 
     preferences = Attribute(
-        """The set of preferences for this subscription.
-
-        This will return an IPreferences object using the following lookup
-        rules:
-
-        1. member
-        2. address
-        3. user
-        4. mailing list
-        5. system default
-        """)
+        """This member's preferences.""")
 
     role = Attribute(
         """The role of this membership.""")
+
+    def unsubscribe():
+        """Unsubscribe (and delete) this member from the mailing list."""
+
+    acknowledge_posts = Attribute(
+        """This is the actual acknowledgment setting for this member.
+
+        Unlike going through the preferences, this attribute return the
+        preference value based on the following lookup order:
+
+        1. The member
+        2. The address
+        3. The user
+        4. System default
+        """)
+
+    delivery_mode = Attribute(
+        """This is the actual delivery mode for this member.
+
+        Unlike going through the preferences, this attribute return the
+        preference value based on the following lookup order:
+
+        1. The member
+        2. The address
+        3. The user
+        4. System default
+        """)
+
+    preferred_language = Attribute(
+        """This is the actual preferred language for this member.
+
+        Unlike going through the preferences, this attribute return the
+        preference value based on the following lookup order:
+
+        1. The member
+        2. The address
+        3. The user
+        4. System default
+        """)
+
+    options_url = Attribute(
+        """Return the url for the given member's option page.
+
+        XXX This needs a serious re-think in the face of the unified user
+        database, since a member's options aren't tied to any specific mailing
+        list.  So in what part of the web-space does the user's options live?
+        """)

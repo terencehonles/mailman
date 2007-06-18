@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2007 by the Free Software Foundation, Inc.
+# Copyright (C) 2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -15,27 +15,18 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-from elixir import *
-from zope.interface import implements
+"""Doctest harness for testing message acknowledgment."""
 
-from Mailman.interfaces import IRosterSet
+import doctest
+import unittest
 
-ROSTER_KIND = 'Mailman.database.model.roster.Roster'
+options = (doctest.ELLIPSIS
+           | doctest.NORMALIZE_WHITESPACE
+           | doctest.REPORT_NDIFF)
 
 
-
-# Internal implementation of roster sets for use with mailing lists.  These
-# are owned by the user storage.
-class RosterSet(Entity):
-    implements(IRosterSet)
-
-    has_field('name',   Unicode)
-    has_and_belongs_to_many('rosters', of_kind=ROSTER_KIND)
-
-    def add(self, roster):
-        if roster not in self.rosters:
-            self.rosters.append(roster)
-
-    def delete(self, roster):
-        if roster in self.rosters:
-            self.rosters.remove(roster)
+def test_suite():
+    suite = unittest.TestSuite()
+    suite.addTest(doctest.DocFileSuite('../docs/acknowledge.txt',
+                                       optionflags=options))
+    return suite
