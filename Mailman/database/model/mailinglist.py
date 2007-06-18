@@ -50,7 +50,7 @@ class MailingList(Entity):
     has_field('digest_last_sent_at',                        Float),
     has_field('one_last_digest',                            PickleType),
     has_field('volume',                                     Integer),
-    has_field('last_post_time',                             Float),
+    has_field('last_post_time',                             DateTime),
     # Attributes which are directly modifiable via the web u/i.  The more
     # complicated attributes are currently stored as pickles, though that
     # will change as the schema and implementation is developed.

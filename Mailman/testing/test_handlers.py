@@ -62,18 +62,6 @@ def password(cleartext):
 
 
 
-class TestAfterDelivery(TestBase):
-    # Both msg and msgdata are ignored
-    def test_process(self):
-        mlist = self._mlist
-        last_post_time = mlist.last_post_time
-        post_id = mlist.post_id
-        AfterDelivery.process(mlist, None, None)
-        self.failUnless(mlist.last_post_time > last_post_time)
-        self.assertEqual(mlist.post_id, post_id + 1)
-
-
-
 class TestApprove(TestBase):
     def test_short_circuit(self):
         msgdata = {'approved': 1}
@@ -1571,8 +1559,6 @@ Mailman rocks!
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestAcknowledge))
-    suite.addTest(unittest.makeSuite(TestAfterDelivery))
     suite.addTest(unittest.makeSuite(TestApprove))
     suite.addTest(unittest.makeSuite(TestCalcRecips))
     suite.addTest(unittest.makeSuite(TestCleanse))
