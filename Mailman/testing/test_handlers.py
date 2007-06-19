@@ -39,7 +39,6 @@ from Mailman.testing.base import TestBase
 from Mailman.Handlers import Acknowledge
 from Mailman.Handlers import AfterDelivery
 from Mailman.Handlers import Approve
-from Mailman.Handlers import Cleanse
 from Mailman.Handlers import CookHeaders
 from Mailman.Handlers import FileRecips
 from Mailman.Handlers import Hold
@@ -134,69 +133,6 @@ X-BeenThere: %s
 
 """ % mlist.GetListEmail())
         self.assertRaises(Errors.LoopError, Approve.process, mlist, msg, {})
-
-
-
-class TestCleanse(TestBase):
-    def setUp(self):
-        TestBase.setUp(self)
-
-    def test_simple_cleanse(self):
-        eq = self.assertEqual
-        msg = email.message_from_string("""\
-From: aperson@example.org
-Approved: yes
-Urgent: indeed
-Reply-To: bperson@example.com
-Sender: asystem@example.com
-Return-Receipt-To: another@example.com
-Disposition-Notification-To: athird@example.com
-X-Confirm-Reading-To: afourth@example.com
-X-PMRQC: afifth@example.com
-Subject: a message to you
-
-""", Message.Message)
-        Cleanse.process(self._mlist, msg, {})
-        eq(msg['approved'], None)
-        eq(msg['urgent'], None)
-        eq(msg['return-receipt-to'], None)
-        eq(msg['disposition-notification-to'], None)
-        eq(msg['x-confirm-reading-to'], None)
-        eq(msg['x-pmrqc'], None)
-        eq(msg['from'], 'aperson@example.org')
-        eq(msg['reply-to'], 'bperson@example.com')
-        eq(msg['sender'], 'asystem@example.com')
-        eq(msg['subject'], 'a message to you')
-
-    def test_anon_cleanse(self):
-        eq = self.assertEqual
-        msg = email.message_from_string("""\
-From: aperson@example.org
-Approved: yes
-Urgent: indeed
-Reply-To: bperson@example.com
-Sender: asystem@example.com
-Return-Receipt-To: another@example.com
-Disposition-Notification-To: athird@example.com
-X-Confirm-Reading-To: afourth@example.com
-X-PMRQC: afifth@example.com
-Subject: a message to you
-
-""", Message.Message)
-        self._mlist.anonymous_list = 1
-        Cleanse.process(self._mlist, msg, {})
-        eq(msg['approved'], None)
-        eq(msg['urgent'], None)
-        eq(msg['return-receipt-to'], None)
-        eq(msg['disposition-notification-to'], None)
-        eq(msg['x-confirm-reading-to'], None)
-        eq(msg['x-pmrqc'], None)
-        eq(len(msg.get_all('from')), 1)
-        eq(len(msg.get_all('reply-to')), 1)
-        eq(msg['from'], '_xtest@example.com')
-        eq(msg['reply-to'], '_xtest@example.com')
-        eq(msg['sender'], None)
-        eq(msg['subject'], 'a message to you')
 
 
 
@@ -1463,7 +1399,6 @@ Mailman rocks!
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestApprove))
-    suite.addTest(unittest.makeSuite(TestCleanse))
     suite.addTest(unittest.makeSuite(TestCookHeaders))
     suite.addTest(unittest.makeSuite(TestFileRecips))
     suite.addTest(unittest.makeSuite(TestHold))

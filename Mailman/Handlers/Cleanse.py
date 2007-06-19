@@ -39,15 +39,15 @@ def process(mlist, msg, msgdata):
     # We remove other headers from anonymous lists
     if mlist.anonymous_list:
         log.info('post to %s from %s anonymized',
-                 mlist.internal_name(), msg.get('from'))
+                 mlist.fqdn_listname, msg.get('from'))
         del msg['from']
         del msg['reply-to']
         del msg['sender']
         # Hotmail sets this one
         del msg['x-originating-email']
         i18ndesc = str(uheader(mlist, mlist.description, 'From'))
-        msg['From'] = formataddr((i18ndesc, mlist.GetListEmail()))
-        msg['Reply-To'] = mlist.GetListEmail()
+        msg['From'] = formataddr((i18ndesc, mlist.posting_address))
+        msg['Reply-To'] = mlist.posting_address
     # Some headers can be used to fish for membership
     del msg['return-receipt-to']
     del msg['disposition-notification-to']
