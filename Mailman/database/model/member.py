@@ -58,10 +58,6 @@ class Member(Entity):
         return getattr(SystemDefaultPreferences, preference)
 
     @property
-    def delivery_mode(self):
-        return self._lookup('delivery_mode')
-
-    @property
     def acknowledge_posts(self):
         return self._lookup('acknowledge_posts')
 
@@ -69,11 +65,27 @@ class Member(Entity):
     def preferred_language(self):
         return self._lookup('preferred_language')
 
-    def unsubscribe(self):
-        self.preferences.delete()
-        self.delete()
+    @property
+    def receive_list_copy(self):
+        return self._lookup('receive_list_copy')
+
+    @property
+    def receive_own_postings(self):
+        return self._lookup('receive_own_postings')
+
+    @property
+    def delivery_mode(self):
+        return self._lookup('delivery_mode')
+
+    @property
+    def delivery_status(self):
+        return self._lookup('delivery_status')
 
     @property
     def options_url(self):
         # XXX Um, this is definitely wrong
         return 'http://example.com/' + self.address.address
+
+    def unsubscribe(self):
+        self.preferences.delete()
+        self.delete()

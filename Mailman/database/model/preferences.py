@@ -37,6 +37,7 @@ class Preferences(Entity):
     has_field('receive_list_copy',      Boolean)
     has_field('receive_own_postings',   Boolean)
     has_field('delivery_mode',          EnumType)
+    has_field('delivery_status',        EnumType)
     # Options
     using_options(shortnames=True)
 

@@ -15,7 +15,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-"""Doctest harness for testing bookkeeping done after message delivery."""
+"""Doctest harness for testing the recipient calculation handler."""
 
 import doctest
 import unittest
@@ -27,6 +27,6 @@ options = (doctest.ELLIPSIS
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(doctest.DocFileSuite('../docs/after-delivery.txt',
+    suite.addTest(doctest.DocFileSuite('../docs/calc-recips.txt',
                                        optionflags=options))
     return suite

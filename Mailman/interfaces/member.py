@@ -41,19 +41,7 @@ class IMember(Interface):
         """Unsubscribe (and delete) this member from the mailing list."""
 
     acknowledge_posts = Attribute(
-        """This is the actual acknowledgment setting for this member.
-
-        Unlike going through the preferences, this attribute return the
-        preference value based on the following lookup order:
-
-        1. The member
-        2. The address
-        3. The user
-        4. System default
-        """)
-
-    delivery_mode = Attribute(
-        """This is the actual delivery mode for this member.
+        """Send an acknowledgment for every posting?
 
         Unlike going through the preferences, this attribute return the
         preference value based on the following lookup order:
@@ -65,7 +53,7 @@ class IMember(Interface):
         """)
 
     preferred_language = Attribute(
-        """This is the actual preferred language for this member.
+        """The preferred language for interacting with a mailing list.
 
         Unlike going through the preferences, this attribute return the
         preference value based on the following lookup order:
@@ -75,6 +63,55 @@ class IMember(Interface):
         3. The user
         4. System default
         """)
+
+    receive_list_copy = Attribute(
+        """Should an explicit recipient receive a list copy?
+
+        Unlike going through the preferences, this attribute return the
+        preference value based on the following lookup order:
+
+        1. The member
+        2. The address
+        3. The user
+        4. System default
+        """)
+
+    receive_own_postings = Attribute(
+        """Should the poster get a list copy of their own messages?
+
+        Unlike going through the preferences, this attribute return the
+        preference value based on the following lookup order:
+
+        1. The member
+        2. The address
+        3. The user
+        4. System default
+        """)
+
+    delivery_mode = Attribute(
+        """The preferred delivery mode.
+
+        Unlike going through the preferences, this attribute return the
+        preference value based on the following lookup order:
+
+        1. The member
+        2. The address
+        3. The user
+        4. System default
+        """)
+
+    delivery_status = Attribute(
+        """The delivery status.
+
+        Unlike going through the preferences, this attribute return the
+        preference value based on the following lookup order:
+
+        1. The member
+        2. The address
+        3. The user
+        4. System default
+
+        XXX I'm not sure this is the right place to put this.""")
 
     options_url = Attribute(
         """Return the url for the given member's option page.

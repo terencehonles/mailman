@@ -39,7 +39,6 @@ from Mailman.testing.base import TestBase
 from Mailman.Handlers import Acknowledge
 from Mailman.Handlers import AfterDelivery
 from Mailman.Handlers import Approve
-from Mailman.Handlers import CalcRecips
 from Mailman.Handlers import Cleanse
 from Mailman.Handlers import CookHeaders
 from Mailman.Handlers import FileRecips
@@ -135,102 +134,6 @@ X-BeenThere: %s
 
 """ % mlist.GetListEmail())
         self.assertRaises(Errors.LoopError, Approve.process, mlist, msg, {})
-
-
-
-class TestCalcRecips(TestBase):
-    def setUp(self):
-        TestBase.setUp(self)
-        # Add a bunch of regular members
-        mlist = self._mlist
-        mlist.addNewMember('aperson@example.org')
-        mlist.addNewMember('bperson@example.com')
-        mlist.addNewMember('cperson@example.com')
-        # And a bunch of digest members
-        mlist.addNewMember('dperson@example.com', digest=1)
-        mlist.addNewMember('eperson@example.com', digest=1)
-        mlist.addNewMember('fperson@example.com', digest=1)
-
-    def test_short_circuit(self):
-        msgdata = {'recips': 1}
-        rtn = CalcRecips.process(self._mlist, None, msgdata)
-        # Not really a great test, but there's little else to assert
-        self.assertEqual(rtn, None)
-
-    def test_simple_path(self):
-        msgdata = {}
-        msg = email.message_from_string("""\
-From: dperson@example.com
-
-""", Message.Message)
-        CalcRecips.process(self._mlist, msg, msgdata)
-        self.failUnless(msgdata.has_key('recips'))
-        recips = msgdata['recips']
-        recips.sort()
-        self.assertEqual(recips, ['aperson@example.org', 'bperson@example.com',
-                                  'cperson@example.com'])
-
-    def test_exclude_sender(self):
-        msgdata = {}
-        msg = email.message_from_string("""\
-From: cperson@example.com
-
-""", Message.Message)
-        self._mlist.setMemberOption('cperson@example.com',
-                                    config.DontReceiveOwnPosts, 1)
-        CalcRecips.process(self._mlist, msg, msgdata)
-        self.failUnless(msgdata.has_key('recips'))
-        recips = msgdata['recips']
-        recips.sort()
-        self.assertEqual(recips, ['aperson@example.org', 'bperson@example.com'])
-
-    def test_urgent_moderator(self):
-        self._mlist.mod_password = password('xxXXxx')
-        msgdata = {}
-        msg = email.message_from_string("""\
-From: dperson@example.com
-Urgent: xxXXxx
-
-""", Message.Message)
-        CalcRecips.process(self._mlist, msg, msgdata)
-        self.failUnless(msgdata.has_key('recips'))
-        recips = msgdata['recips']
-        recips.sort()
-        self.assertEqual(recips, ['aperson@example.org', 'bperson@example.com',
-                                  'cperson@example.com', 'dperson@example.com',
-                                  'eperson@example.com', 'fperson@example.com'])
-
-    def test_urgent_admin(self):
-        self._mlist.mod_password = password('yyYYyy')
-        self._mlist.password = password('xxXXxx')
-        msgdata = {}
-        msg = email.message_from_string("""\
-From: dperson@example.com
-Urgent: xxXXxx
-
-""", Message.Message)
-        CalcRecips.process(self._mlist, msg, msgdata)
-        self.failUnless(msgdata.has_key('recips'))
-        recips = msgdata['recips']
-        recips.sort()
-        self.assertEqual(recips, ['aperson@example.org', 'bperson@example.com',
-                                  'cperson@example.com', 'dperson@example.com',
-                                  'eperson@example.com', 'fperson@example.com'])
-
-    def test_urgent_reject(self):
-        self._mlist.mod_password = password('yyYYyy')
-        self._mlist.password = password('xxXXxx')
-        msgdata = {}
-        msg = email.message_from_string("""\
-From: dperson@example.com
-Urgent: zzZZzz
-
-""", Message.Message)
-        self.assertRaises(Errors.RejectMessage,
-                          CalcRecips.process,
-                          self._mlist, msg, msgdata)
-
-    # BAW: must test the do_topic_filters() path...
 
 
 
@@ -1560,7 +1463,6 @@ Mailman rocks!
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestApprove))
-    suite.addTest(unittest.makeSuite(TestCalcRecips))
     suite.addTest(unittest.makeSuite(TestCleanse))
     suite.addTest(unittest.makeSuite(TestCookHeaders))
     suite.addTest(unittest.makeSuite(TestFileRecips))

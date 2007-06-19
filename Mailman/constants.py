@@ -64,3 +64,4 @@ class SystemDefaultPreferences(object):
     receive_list_copy = True
     receive_own_postings = True
     delivery_mode = DeliveryMode.regular
+    delivery_status = DeliveryStatus.enabled

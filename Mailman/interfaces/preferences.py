@@ -59,3 +59,11 @@ class IPreferences(Interface):
 
         This is an enum constant of the type DeliveryMode.  It may also be
         None which means that no preference is specified.""")
+
+    delivery_status = Attribute(
+        """The delivery status.
+
+        This is an enum constant of type DeliveryStatus.  It may also be None
+        which means that no preference is specified.
+
+        XXX I'm not sure this is the right place to put this.""")
