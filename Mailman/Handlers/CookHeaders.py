@@ -15,7 +15,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-"""Cook a message's Subject header."""
+"""Cook a message's headers."""
 
 import re
 
@@ -27,6 +27,7 @@ from email.Utils import parseaddr, formataddr, getaddresses
 from Mailman import Utils
 from Mailman import Version
 from Mailman.configuration import config
+from Mailman.constants import ReplyToMunging
 from Mailman.i18n import _
 
 CONTINUATION = ',\n\t'
@@ -75,7 +76,7 @@ def process(mlist, msg, msgdata):
             pass
     # Mark message so we know we've been here, but leave any existing
     # X-BeenThere's intact.
-    msg['X-BeenThere'] = mlist.GetListEmail()
+    msg['X-BeenThere'] = mlist.posting_address
     # Add Precedence: and other useful headers.  None of these are standard
     # and finding information on some of them are fairly difficult.  Some are
     # just common practice, and we'll add more here as they become necessary.
@@ -89,11 +90,11 @@ def process(mlist, msg, msgdata):
     # known exploits in a particular version of Mailman and we know a site is
     # using such an old version, they may be vulnerable.  It's too easy to
     # edit the code to add a configuration variable to handle this.
-    if not msg.has_key('x-mailman-version'):
+    if 'x-mailman-version' not in msg:
         msg['X-Mailman-Version'] = Version.VERSION
     # We set "Precedence: list" because this is the recommendation from the
     # sendmail docs, the most authoritative source of this header's semantics.
-    if not msg.has_key('precedence'):
+    if 'precedence' not in msg:
         msg['Precedence'] = 'list'
     # Reply-To: munging.  Do not do this if the message is "fast tracked",
     # meaning it is internally crafted and delivered to a specific user.  BAW:
@@ -109,12 +110,12 @@ def process(mlist, msg, msgdata):
         d = {}
         def add(pair):
             lcaddr = pair[1].lower()
-            if d.has_key(lcaddr):
+            if lcaddr in d:
                 return
             d[lcaddr] = pair
             new.append(pair)
         # List admin wants an explicit Reply-To: added
-        if mlist.reply_goes_to_list == 2:
+        if mlist.reply_goes_to_list == ReplyToMunging.explicit_header:
             add(parseaddr(mlist.reply_to_address))
         # If we're not first stripping existing Reply-To: then we need to add
         # the original Reply-To:'s to the list we're building up.  In both
@@ -127,9 +128,9 @@ def process(mlist, msg, msgdata):
         # Set Reply-To: header to point back to this list.  Add this last
         # because some folks think that some MUAs make it easier to delete
         # addresses from the right than from the left.
-        if mlist.reply_goes_to_list == 1:
+        if mlist.reply_goes_to_list == ReplyToMunging.point_to_list:
             i18ndesc = uheader(mlist, mlist.description, 'Reply-To')
-            add((str(i18ndesc), mlist.GetListEmail()))
+            add((str(i18ndesc), mlist.posting_address))
         del msg['reply-to']
         # Don't put Reply-To: back if there's nothing to add!
         if new:
@@ -146,8 +147,9 @@ def process(mlist, msg, msgdata):
         # above code?
         # Also skip Cc if this is an anonymous list as list posting address
         # is already in From and Reply-To in this case.
-        if mlist.personalize == 2 and mlist.reply_goes_to_list <> 1 \
-           and not mlist.anonymous_list:
+        if (mlist.personalize == 2 and
+            mlist.reply_goes_to_list <> ReplyToMunging.point_to_list and
+            not mlist.anonymous_list):
             # Watch out for existing Cc headers, merge, and remove dups.  Note
             # that RFC 2822 says only zero or one Cc header is allowed.
             new = []
@@ -168,7 +170,7 @@ def process(mlist, msg, msgdata):
     if msgdata.get('_nolist') or not mlist.include_rfc2369_headers:
         return
     # This will act like an email address for purposes of formataddr()
-    listid = '%s.%s' % (mlist.internal_name(), mlist.host_name)
+    listid = '%s.%s' % (mlist.list_name, mlist.host_name)
     cset = Utils.GetCharSet(mlist.preferred_language)
     if mlist.description:
         # Don't wrap the header since here we just want to get it properly RFC
@@ -184,9 +186,9 @@ def process(mlist, msg, msgdata):
     # For internally crafted messages, we also add a (nonstandard),
     # "X-List-Administrivia: yes" header.  For all others (i.e. those coming
     # from list posts), we add a bunch of other RFC 2369 headers.
-    requestaddr = mlist.GetRequestEmail()
-    subfieldfmt = '<%s>, <mailto:%s?subject=%ssubscribe>'
-    listinfo = mlist.GetScriptURL('listinfo', absolute=1)
+    requestaddr = mlist.request_address
+    subfieldfmt = '<%s>, <mailto:%s>'
+    listinfo = mlist.script_url('listinfo')
     headers = {}
     # XXX reduced_list_headers used to suppress List-Help, List-Subject, and
     # List-Unsubscribe from UserNotification.  That doesn't seem to make sense
@@ -194,15 +196,15 @@ def process(mlist, msg, msgdata):
     # suppressed).
     headers.update({
         'List-Help'       : '<mailto:%s?subject=help>' % requestaddr,
-        'List-Unsubscribe': subfieldfmt % (listinfo, requestaddr, 'un'),
-        'List-Subscribe'  : subfieldfmt % (listinfo, requestaddr, ''),
+        'List-Unsubscribe': subfieldfmt % (listinfo, mlist.leave_address),
+        'List-Subscribe'  : subfieldfmt % (listinfo, mlist.join_address),
         })
     if msgdata.get('reduced_list_headers'):
         headers['X-List-Administrivia'] = 'yes'
     else:
         # List-Post: is controlled by a separate attribute
         if mlist.include_list_post_header:
-            headers['List-Post'] = '<mailto:%s>' % mlist.GetListEmail()
+            headers['List-Post'] = '<mailto:%s>' % mlist.posting_address
         # Add this header if we're archiving
         if mlist.archive:
             archiveurl = mlist.GetBaseArchiveURL()
@@ -226,9 +228,9 @@ def prefix_subject(mlist, msg, msgdata):
     # Add the subject prefix unless the message is a digest or is being fast
     # tracked (e.g. internally crafted, delivered to a single user such as the
     # list admin).
-    prefix = mlist.subject_prefix.strip()
-    if not prefix:
+    if not mlist.subject_prefix.strip():
         return
+    prefix = mlist.subject_prefix
     subject = msg.get('subject', '')
     # Try to figure out what the continuation_ws is for the header
     if isinstance(subject, Header):
@@ -261,9 +263,6 @@ def prefix_subject(mlist, msg, msgdata):
         # prefix have number, so we should search prefix w/number in subject.
         # Also, force new style.
         prefix_pattern = p.sub(r'\s*\d+\s*', prefix_pattern)
-        old_style = False
-    else:
-        old_style = config.OLD_STYLE_PREFIXING
     subject = re.sub(prefix_pattern, '', subject)
     rematch = re.match('((RE|AW|SV|VS)(\[\d+\])?:\s*)+', subject, re.I)
     if rematch:
@@ -284,9 +283,6 @@ def prefix_subject(mlist, msg, msgdata):
     # Get the header as a Header instance, with proper unicode conversion
     if not recolon:
         h = uheader(mlist, prefix, 'Subject', continuation_ws=ws)
-    elif old_style:
-        h = uheader(mlist, recolon, 'Subject', continuation_ws=ws)
-        h.append(prefix)
     else:
         h = uheader(mlist, prefix, 'Subject', continuation_ws=ws)
         h.append(recolon)

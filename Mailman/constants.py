@@ -65,3 +65,13 @@ class SystemDefaultPreferences(object):
     receive_own_postings = True
     delivery_mode = DeliveryMode.regular
     delivery_status = DeliveryStatus.enabled
+
+
+
+class ReplyToMunging(Enum):
+    # The Reply-To header is passed through untouched
+    no_munging = 0
+    # The mailing list's posting address is appended to the Reply-To header
+    point_to_list = 1
+    # An explicit Reply-To header is added
+    explicit_header = 2

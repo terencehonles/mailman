@@ -21,6 +21,7 @@ from zope.interface import implements
 from Mailman.Utils import fqdn_listname, split_listname
 from Mailman.configuration import config
 from Mailman.interfaces import *
+from Mailman.database.types import EnumType
 
 
 
@@ -136,7 +137,7 @@ class MailingList(Entity):
     has_field('private_roster',                             Boolean),
     has_field('real_name',                                  Unicode),
     has_field('reject_these_nonmembers',                    PickleType),
-    has_field('reply_goes_to_list',                         Boolean),
+    has_field('reply_goes_to_list',                         EnumType),
     has_field('reply_to_address',                           Unicode),
     has_field('require_explicit_destination',               Boolean),
     has_field('respond_to_post_requests',                   Boolean),

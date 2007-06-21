@@ -6,6 +6,16 @@ Here is a history of user visible changes to Mailman.
 
 3.0 alpha 1 (XX-XXX-200X)
 
+  User visible changes
+
+    - So called 'new style' subject prefixing is the default now, and the only
+      option.  When a list's subject prefix is added, it's always done so
+      before any Re: tag, not after.  E.g. '[My List] Re: The subject'.
+
+    - RFC 2369 headers List-Subscribe and List-Unsubscribe now use the
+      preferred -join and -leave addresses instead of the -request address
+      with a subject value.
+
   Configuration
 
     - Mailman can now be configured via a 'mailman.cfg' file which lives in

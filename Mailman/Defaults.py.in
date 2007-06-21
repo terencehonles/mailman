@@ -916,17 +916,6 @@ $fqdn_realname
 ${web_page_url}listinfo${cgiext}/${list_name}
 """
 
-# Where to put subject prefix for 'Re:' messages:
-#
-#     old style: Re: [prefix] test
-#     new style: [prefix 123] Re: test ... (number is optional)
-#
-# Old style is default for backward compatibility.  New style is forced if a
-# list owner set %d (numbering) in prefix.  If the site owner had applied new
-# style patch (from SF patch area) before, he/she may want to set this No in
-# mm_cfg.py.
-OLD_STYLE_PREFIXING = Yes
-
 # Scrub regular delivery
 DEFAULT_SCRUB_NONDIGEST = False
 
