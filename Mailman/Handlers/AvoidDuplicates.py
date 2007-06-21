@@ -31,61 +31,63 @@ COMMASPACE = ', '
 
 
 def process(mlist, msg, msgdata):
-    recips = msgdata['recips']
+    recips = msgdata.get('recips')
     # Short circuit
     if not recips:
         return
-    # Seed this set with addresses we don't care about dup avoiding
-    explicit_recips = {}
-    listaddrs = [mlist.GetListEmail(), mlist.GetBouncesEmail(),
-                 mlist.GetOwnerEmail(), mlist.GetRequestEmail()]
-    for addr in listaddrs:
-        explicit_recips[addr] = True
+    # Seed this set with addresses we don't care about dup avoiding.
+    listaddrs = set((mlist.posting_address,
+                     mlist.bounces_address,
+                     mlist.owner_address,
+                     mlist.request_address))
+    explicit_recips = listaddrs.copy()
     # Figure out the set of explicit recipients
-    ccaddrs = {}
+    cc_addresses = {}
     for header in ('to', 'cc', 'resent-to', 'resent-cc'):
         addrs = getaddresses(msg.get_all(header, []))
+        header_addresses = dict((addr, formataddr((name, addr)))
+                                for name, addr in addrs
+                                if addr)
         if header == 'cc':
-            for name, addr in addrs:
-                ccaddrs[addr] = name, addr
-        for name, addr in addrs:
-            if not addr:
-                continue
-            # Ignore the list addresses for purposes of dup avoidance
-            explicit_recips[addr] = True
+            # Yes, it's possible that an address is mentioned in multiple CC
+            # headers using different names.  In that case, the last real name
+            # will win, but that doesn't seem like such a big deal.  Besides,
+            # how else would you chose?
+            cc_addresses.update(header_addresses)
+        # Ignore the list addresses for purposes of dup avoidance.
+        explicit_recips |= set(header_addresses)
     # Now strip out the list addresses
-    for addr in listaddrs:
-        del explicit_recips[addr]
+    explicit_recips -= listaddrs
     if not explicit_recips:
         # No one was explicitly addressed, so we can't do any dup collapsing
         return
-    newrecips = []
+    newrecips = set()
     for r in recips:
         # If this recipient is explicitly addressed...
-        if explicit_recips.has_key(r):
+        if r in explicit_recips:
             send_duplicate = True
             # If the member wants to receive duplicates, or if the recipient
-            # is not a member at all, just flag the X-Mailman-Duplicate: yes
+            # is not a member at all, they will get a copy.
             # header.
-            if mlist.isMember(r) and \
-                   mlist.getMemberOption(r, config.DontReceiveDuplicates):
+            member = mlist.members.get_member(r)
+            if member and not member.receive_list_copy:
                 send_duplicate = False
             # We'll send a duplicate unless the user doesn't wish it.  If
             # personalization is enabled, the add-dupe-header flag will add a
             # X-Mailman-Duplicate: yes header for this user's message.
             if send_duplicate:
-                msgdata.setdefault('add-dup-header', {})[r] = True
-                newrecips.append(r)
-            elif ccaddrs.has_key(r):
-                del ccaddrs[r]
+                msgdata.setdefault('add-dup-header', set()).add(r)
+                newrecips.add(r)
+            elif r in cc_addresses:
+                del cc_addresses[r]
         else:
             # Otherwise, this is the first time they've been in the recips
             # list.  Add them to the newrecips list and flag them as having
             # received this message.
-            newrecips.append(r)
-    # Set the new list of recipients
-    msgdata['recips'] = newrecips
+            newrecips.add(r)
+    # Set the new list of recipients.  XXX recips should always be a set.
+    msgdata['recips'] = list(newrecips)
     # RFC 2822 specifies zero or one CC header
-    del msg['cc']
-    if ccaddrs:
-        msg['Cc'] = COMMASPACE.join([formataddr(i) for i in ccaddrs.values()])
+    if cc_addresses:
+        del msg['cc']
+        msg['CC'] = COMMASPACE.join(cc_addresses.values())
