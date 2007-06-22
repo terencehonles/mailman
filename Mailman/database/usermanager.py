@@ -35,47 +35,14 @@ from Mailman.interfaces import IUserManager
 class UserManager(object):
     implements(IUserManager)
 
-    def __init__(self):
-        # Create the null roster if it does not already exist.  It's more
-        # likely to exist than not so try to get it before creating it.
-        lockfile = os.path.join(config.LOCK_DIR, '<umgrcreatelock>')
-        with LockFile(lockfile):
-            roster = self.get_roster('')
-            if roster is None:
-                self.create_roster('')
-        objectstore.flush()
-
-    def create_roster(self, name):
-        roster = Roster.get_by(name=name)
-        if roster:
-            raise Errors.RosterExistsError(name)
-        return Roster(name=name)
-
-    def get_roster(self, name):
-        return Roster.get_by(name=name)
-
-    def delete_roster(self, roster):
-        roster.delete()
-
-    @property
-    def rosters(self):
-        for roster in Roster.select():
-            yield roster
-
-    def create_rosterset(self, name):
-        return RosterSet(name=name)
-
-    def delete_rosterset(self, rosterset):
-        rosterset.delete()
-
-    def get_rosterset(self, name):
-        return RosterSet.get_by(name=name)
-
-    def create_user(self):
+    def create_user(self, address=None, real_name=None):
         user = User()
-        # Users always have a profile
-        user.profile = Profile()
-        user.profile.user = user
+        user.real_name = (real_name if real_name is not None else '')
+        if address:
+            addrobj = Address(address=address, real_name=user.real_name)
+            addrobj.preferences = Preferences()
+            user.link(addrobj)
+        user.preferences = Preferences()
         return user
 
     def delete_user(self, user):
@@ -89,3 +56,28 @@ class UserManager(object):
     def get_user(self, address):
         found = Address.get_by(address=address)
         return found and found.user
+
+    def create_address(self, address, real_name=None):
+        found = Address.get_by(address=address)
+        if found:
+            raise Errors.ExistingAddressError(address)
+        if real_name is None:
+            real_name = ''
+        address = Address(address=address, real_name=real_name)
+        address.preferences = Preferences()
+        return address
+
+    def delete_address(self, address):
+        # If there's a user controlling this address, it has to first be
+        # unlinked before the address can be deleted.
+        if address.user:
+            address.user.unlink(address)
+        address.delete()
+
+    def get_address(self, address):
+        return Address.get_by(address=address)
+
+    @property
+    def addresses(self):
+        for address in Address.select():
+            yield address

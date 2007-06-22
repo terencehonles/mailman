@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2007 by the Free Software Foundation, Inc.
+# Copyright (C) 2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -21,17 +21,27 @@ from zope.interface import implements
 
 from Mailman import Errors
 from Mailman.database.model import Address
+from Mailman.database.model import Preferences
 from Mailman.interfaces import IUser
 
+ADDRESS_KIND    = 'Mailman.database.model.address.Address'
+PREFERENCE_KIND = 'Mailman.database.model.preferences.Preferences'
 
+
+
 class User(Entity):
     implements(IUser)
 
     has_field('real_name',  Unicode)
     has_field('password',   Unicode)
     # Relationships
-    has_one('profile', of_kind='Mailman.database.model.profile.Profile')
-    has_many('addresses', of_kind='Mailman.database.model.address.Address')
+    has_many('addresses',       of_kind=ADDRESS_KIND)
+    belongs_to('preferences',   of_kind=PREFERENCE_KIND)
+    # Options
+    using_options(shortnames=True)
+
+    def __repr__(self):
+        return '<User "%s" at %#x>' % (self.real_name, id(self))
 
     def link(self, address):
         if address.user is not None:
@@ -46,5 +56,20 @@ class User(Entity):
         self.addresses.remove(address)
 
     def controls(self, address):
-        found = Address.get_by(address=address.address)
+        found = Address.get_by(address=address)
         return bool(found and found.user is self)
+
+    def register(self, address, real_name=None):
+        # First, see if the address already exists
+        addrobj = Address.get_by(address=address)
+        if addrobj is None:
+            if real_name is None:
+                real_name = ''
+            addrobj = Address(address=address, real_name=real_name)
+            addrobj.preferences = Preferences()
+        # Link the address to the user if it is not already linked.
+        if addrobj.user is not None:
+            raise Errors.AddressAlreadyLinkedError(addrobj)
+        addrobj.user = self
+        self.addresses.append(addrobj)
+        return addrobj

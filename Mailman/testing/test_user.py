@@ -20,7 +20,9 @@
 import doctest
 import unittest
 
-options = doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE
+options = (doctest.ELLIPSIS
+           | doctest.NORMALIZE_WHITESPACE
+           | doctest.REPORT_NDIFF)
 
 
 def test_suite():

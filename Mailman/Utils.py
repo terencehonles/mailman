@@ -475,7 +475,7 @@ def findtext(templatefile, dict=None, raw=False, lang=None, mlist=None):
     # Calculate the locations to scan
     searchdirs = []
     if mlist is not None:
-        searchdirs.append(mlist.fullpath())
+        searchdirs.append(mlist.full_path)
         searchdirs.append(os.path.join(config.TEMPLATE_DIR, mlist.host_name))
     searchdirs.append(os.path.join(config.TEMPLATE_DIR, 'site'))
     searchdirs.append(config.TEMPLATE_DIR)

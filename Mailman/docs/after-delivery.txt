@@ -1,0 +1,43 @@
+After delivery
+==============
+
+After a message is delivered, or more correctly, after it has been processed
+by the rest of the handlers in the incoming queue pipeline, a couple of
+bookkeeping pieces of information are updated.
+
+    >>> import datetime
+    >>> from email import message_from_string
+    >>> from Mailman.Message import Message
+    >>> from Mailman.Handlers.AfterDelivery import process
+    >>> from Mailman.configuration import config
+    >>> from Mailman.database import flush
+    >>> mlist = config.list_manager.create('_xtest@example.com')
+    >>> post_time = datetime.datetime.now() - datetime.timedelta(minutes=10)
+    >>> mlist.last_post_time = post_time
+    >>> mlist.post_id = 10
+    >>> flush()
+
+Processing a message with this handler updates the last_post_time and post_id
+attributes.
+
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.com
+    ...
+    ... Something interesting.
+    ... """, Message)
+    >>> process(mlist, msg, {})
+    >>> flush()
+    >>> mlist.last_post_time > post_time
+    True
+    >>> mlist.post_id
+    11
+
+
+Clean up
+--------
+
+    >>> for mlist in config.list_manager.mailing_lists:
+    ...     config.list_manager.delete(mlist)
+    >>> flush()
+    >>> list(config.list_manager.mailing_lists)
+    []

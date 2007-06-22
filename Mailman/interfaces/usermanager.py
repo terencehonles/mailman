@@ -33,29 +33,18 @@ class IUserManager(Interface):
     IUsers in all IRosters.
     """
 
-    def create_roster(name):
-        """Create and return the named IRoster.
+    def create_user(address=None, real_name=None):
+        """Create and return an IUser.
 
-        Raises RosterExistsError if the named roster already exists.
+        When address is given, an IAddress is also created and linked to the
+        new IUser object.  If the address already exists, an
+        ExistingAddressError is raised.  If the address exists but is already
+        linked to another user, an AddressAlreadyLinkedError is raised.
+
+        When real_name is given, the IUser's real_name is set to this string.
+        If an IAddress is also created and linked, its real_name is set to the
+        same string.
         """
-
-    def get_roster(name):
-        """Return the named IRoster.
-
-        Raises NoSuchRosterError if the named roster doesnot yet exist.
-        """
-
-    def delete_roster(name):
-        """Delete the named IRoster.
-
-        Raises NoSuchRosterError if the named roster doesnot yet exist.
-        """
-
-    rosters = Attribute(
-        """An iterator over all IRosters managed by this user manager.""")
-
-    def create_user():
-        """Create and return an IUser."""
 
     def delete_user(user):
         """Delete the given IUser."""
@@ -69,14 +58,27 @@ class IUserManager(Interface):
     users = Attribute(
         """An iterator over all the IUsers managed by this user manager.""")
 
-    def create_rosterset():
-        """Create and return a new IRosterSet.
+    def create_address(address, real_name=None):
+        """Create and return an unlinked IAddress object.
 
-        IRosterSets manage groups of IRosters.
+        address is the text email address.  If real_name is not given, it
+        defaults to the empty string.  If the IAddress already exists an
+        ExistingAddressError is raised.
         """
 
-    def delete_rosterset(rosterset):
-        """Delete the given IRosterSet."""
+    def delete_address(address):
+        """Delete the given IAddress object.
 
-    def get_rosterset(serial):
-        """Return the IRosterSet that matches the serial number, or None."""
+        If this IAddress linked to a user, it is first unlinked before it is
+        deleted.
+        """
+
+    def get_address(address):
+        """Find and return an IAddress.
+
+        'address' is a text email address.  None is returned if there is no
+        registered IAddress for the given text address.
+        """
+
+    addresses = Attribute(
+        """An iterator over all the IAddresses managed by this manager.""")

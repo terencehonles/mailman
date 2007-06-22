@@ -19,13 +19,17 @@ from elixir import *
 from email.utils import formataddr
 from zope.interface import implements
 
-from Mailman.constants import DeliveryMode
 from Mailman.database.types import EnumType
-from Mailman.interfaces import IProfile
+from Mailman.interfaces import IPreferences
+
+ADDRESS_KIND    = 'Mailman.database.model.address.Address'
+MEMBER_KIND     = 'Mailman.database.model.member.Member'
+USER_KIND       = 'Mailman.database.model.user.User'
 
 
-class Profile(Entity):
-    implements(IProfile)
+
+class Preferences(Entity):
+    implements(IPreferences)
 
     has_field('acknowledge_posts',      Boolean)
     has_field('hide_address',           Boolean)
@@ -33,14 +37,9 @@ class Profile(Entity):
     has_field('receive_list_copy',      Boolean)
     has_field('receive_own_postings',   Boolean)
     has_field('delivery_mode',          EnumType)
-    # Relationships
-    belongs_to('user', of_kind='Mailman.database.model.user.User')
+    has_field('delivery_status',        EnumType)
+    # Options
+    using_options(shortnames=True)
 
-    def __init__(self):
-        super(Profile, self).__init__()
-        self.acknowledge_posts      = False
-        self.hide_address           = True
-        self.preferred_language     = 'en'
-        self.receive_list_copy      = True
-        self.receive_own_postings   = True
-        self.delivery_mode          = DeliveryMode.regular
+    def __repr__(self):
+        return '<Preferences object at %#x>' % id(self)

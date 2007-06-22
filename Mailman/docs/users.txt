@@ -1,180 +1,164 @@
 Users
 =====
 
-Users are entities that combine addresses, preferences, and a password
-scheme.  Password schemes can be anything from a traditional
-challenge/response type password string to an OpenID url.
+Users are entities that represent people.  A user has a real name and a
+password.  Optionally a user may have some preferences and a set of addresses
+they control.
 
-
-Create, deleting, and managing users
-------------------------------------
-
-Users are managed by the IUserManager.  Users don't have any unique
-identifying information, and no such id is needed to create them.
+See usermanager.txt for examples of how to create, delete, and find users.
 
     >>> from Mailman.database import flush
     >>> from Mailman.configuration import config
     >>> mgr = config.user_manager
-    >>> user = mgr.create_user()
 
-Users have a real name, a password scheme, a default profile, and a set of
-addresses that they control.  All of these data are None or empty for a newly
-created user.
 
-    >>> user.real_name is None
-    True
-    >>> user.password is None
-    True
-    >>> user.addresses
-    []
+User data
+---------
 
-You can iterate over all the users in a user manager.
+Users may have a real name and a password.
 
-    >>> another_user = mgr.create_user()
+    >>> user_1 = mgr.create_user()
+    >>> user_1.password = 'my password'
+    >>> user_1.real_name = 'Zoe Person'
     >>> flush()
-    >>> all_users = list(mgr.users)
-    >>> len(list(all_users))
-    2
-    >>> user is not another_user
-    True
-    >>> user in all_users
-    True
-    >>> another_user in all_users
-    True
-
-You can also delete users from the user manager.
-
-    >>> mgr.delete_user(user)
-    >>> mgr.delete_user(another_user)
-    >>> flush()
-    >>> len(list(mgr.users))
-    0
-
-
-Simple user information
------------------------
-
-Users may have a real name and a password scheme.
-
-    >>> user = mgr.create_user()
-    >>> user.password = 'my password'
-    >>> user.real_name = 'Zoe Person'
-    >>> flush()
-    >>> only_person = list(mgr.users)[0]
-    >>> only_person.password
-    'my password'
-    >>> only_person.real_name
-    'Zoe Person'
+    >>> sorted(user.real_name for user in mgr.users)
+    ['Zoe Person']
+    >>> sorted(user.password for user in mgr.users)
+    ['my password']
 
 The password and real name can be changed at any time.
 
-    >>> user.real_name = 'Zoe X. Person'
-    >>> user.password = 'another password'
-    >>> only_person.real_name
-    'Zoe X. Person'
-    >>> only_person.password
-    'another password'
+    >>> user_1.real_name = 'Zoe X. Person'
+    >>> user_1.password = 'another password'
+    >>> flush()
+    >>> sorted(user.real_name for user in mgr.users)
+    ['Zoe X. Person']
+    >>> sorted(user.password for user in mgr.users)
+    ['another password']
 
 
-Users and addresses
--------------------
+Users addresses
+---------------
 
 One of the pieces of information that a user links to is a set of email
-addresses, in the form of IAddress objects.  A user can control many
-addresses, but addresses may be control by only one user.
+addresses they control, in the form of IAddress objects.  A user can control
+many addresses, but addresses may be controlled by only one user.
 
-Given a user and an address, you can link the two together.
+The easiest way to link a user to an address is to just register the new
+address on a user object.
 
-    >>> roster = mgr.get_roster('')
-    >>> address = roster.create('aperson@example.com', 'Anne Person')
-    >>> user.link(address)
+    >>> user_1.register('zperson@example.com', 'Zoe Person')
+    <Address: Zoe Person <zperson@example.com> [not verified]>
+    >>> user_1.register('zperson@example.org')
+    <Address: zperson@example.org [not verified]>
     >>> flush()
-    >>> sorted(address.address for address in user.addresses)
-    ['aperson@example.com']
+    >>> sorted(address.address for address in user_1.addresses)
+    ['zperson@example.com', 'zperson@example.org']
+    >>> sorted(address.real_name for address in user_1.addresses)
+    ['', 'Zoe Person']
+
+You can also create the address separately and then link it to the user.
+
+    >>> address_1 = mgr.create_address('zperson@example.net')
+    >>> user_1.link(address_1)
+    >>> flush()
+    >>> sorted(address.address for address in user_1.addresses)
+    ['zperson@example.com', 'zperson@example.net', 'zperson@example.org']
+    >>> sorted(address.real_name for address in user_1.addresses)
+    ['', '', 'Zoe Person']
 
 But don't try to link an address to more than one user.
 
     >>> another_user = mgr.create_user()
-    >>> another_user.link(address)
+    >>> another_user.link(address_1)
     Traceback (most recent call last):
     ...
-    AddressAlreadyLinkedError: Anne Person <aperson@example.com>
+    AddressAlreadyLinkedError: zperson@example.net
 
 You can also ask whether a given user controls a given address.
 
-    >>> user.controls(address)
+    >>> user_1.controls(address_1.address)
     True
-    >>> not_my_address = roster.create('bperson@example.com', 'Ben Person')
-    >>> user.controls(not_my_address)
+    >>> user_1.controls('bperson@example.com')
     False
 
 Given a text email address, the user manager can find the user that controls
 that address.
 
-    >>> mgr.get_user('aperson@example.com') is user
+    >>> mgr.get_user('zperson@example.com') is user_1
     True
-    >>> mgr.get_user('bperson@example.com') is None
+    >>> mgr.get_user('zperson@example.net') is user_1
     True
+    >>> mgr.get_user('zperson@example.org') is user_1
+    True
+    >>> print mgr.get_user('bperson@example.com')
+    None
 
 Addresses can also be unlinked from a user.
 
-    >>> user.unlink(address)
-    >>> user.controls(address)
+    >>> user_1.unlink(address_1)
+    >>> user_1.controls('zperson@example.net')
     False
-    >>> mgr.get_user('aperson@example.com') is None
-    True
+    >>> print mgr.get_user('aperson@example.net')
+    None
 
 But don't try to unlink the address from a user it's not linked to.
 
-    >>> user.unlink(address)
+    >>> user_1.unlink(address_1)
     Traceback (most recent call last):
     ...
-    AddressNotLinkedError: Anne Person <aperson@example.com>
-    >>> another_user.unlink(address)
+    AddressNotLinkedError: zperson@example.net
+    >>> another_user.unlink(address_1)
     Traceback (most recent call last):
     ...
-    AddressNotLinkedError: Anne Person <aperson@example.com>
-    >>> mgr.delete_user(another_user)
+    AddressNotLinkedError: zperson@example.net
 
 
-Users and profiles
-------------------
+Users and preferences
+---------------------
 
-Users always have a default profile.
+This is a helper function for the following section.
 
-    >>> from Mailman.interfaces import IProfile
-    >>> IProfile.providedBy(user.profile)
-    True
+    >>> def show_prefs(prefs):
+    ...     print 'acknowledge_posts    :', prefs.acknowledge_posts
+    ...     print 'preferred_language   :', prefs.preferred_language
+    ...     print 'receive_list_copy    :', prefs.receive_list_copy
+    ...     print 'receive_own_postings :', prefs.receive_own_postings
+    ...     print 'delivery_mode        :', prefs.delivery_mode
 
-A profile is a set of preferences such as whether the user wants to receive an
-acknowledgment of all of their posts to a mailing list...
+Users have preferences, but these preferences have no default settings.
 
-    >>> user.profile.acknowledge_posts
-    False
+    >>> from Mailman.interfaces import IPreferences
+    >>> show_prefs(user_1.preferences)
+    acknowledge_posts    : None
+    preferred_language   : None
+    receive_list_copy    : None
+    receive_own_postings : None
+    delivery_mode        : None
 
-...whether the user wants to hide their email addresses on web pages and in
-postings to the list...
+Some of these preferences are booleans and they can be set to True or False.
 
-    >>> user.profile.hide_address
-    True
+    >>> from Mailman.constants import DeliveryMode
+    >>> prefs = user_1.preferences
+    >>> prefs.acknowledge_posts = True
+    >>> prefs.preferred_language = 'it'
+    >>> prefs.receive_list_copy = False
+    >>> prefs.receive_own_postings = False
+    >>> prefs.delivery_mode = DeliveryMode.regular
+    >>> flush()
+    >>> show_prefs(user_1.preferences)
+    acknowledge_posts    : True
+    preferred_language   : it
+    receive_list_copy    : False
+    receive_own_postings : False
+    delivery_mode        : DeliveryMode.regular
 
-...the language code for the user's preferred language...
 
-    >>> user.profile.preferred_language
-    'en'
+Clean up
+--------
 
-...whether the user wants to receive the list's copy of a message if they are
-explicitly named in one of the recipient headers...
-
-    >>> user.profile.receive_list_copy
-    True
-
-...whether the user wants to receive a copy of their own postings...
-
-    >>> user.profile.receive_own_postings
-    True
-
-...and the preferred delivery method.
-
-    >>> print user.profile.delivery_mode
-    DeliveryMode.regular
+    >>> for user in mgr.users:
+    ...     mgr.delete_user(user)
+    >>> flush()
+    >>> sorted(mgr.users)
+    []

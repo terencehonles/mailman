@@ -185,14 +185,6 @@ class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
 
 
 
-    # IMailingListIdentity
-
-    @property
-    def fqdn_listname(self):
-        return Utils.fqdn_listname(self._data.list_name, self._data.host_name)
-
-
-
     # IMailingListAddresses
 
     @property

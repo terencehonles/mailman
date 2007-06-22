@@ -26,8 +26,8 @@ SendmailDeliver and BulkDeliver modules.
 from Mailman import Errors
 from Mailman import Message
 from Mailman import Utils
-from Mailman.MemberAdaptor import ENABLED
 from Mailman.configuration import config
+from Mailman.constants import DeliveryStatus
 from Mailman.i18n import _
 
 
@@ -35,16 +35,14 @@ from Mailman.i18n import _
 def process(mlist, msg, msgdata):
     # Short circuit if we've already calculated the recipients list,
     # regardless of whether the list is empty or not.
-    if msgdata.has_key('recips'):
+    if 'recips' in msgdata:
         return
     # Should the original sender should be included in the recipients list?
-    include_sender = 1
+    include_sender = True
     sender = msg.get_sender()
-    try:
-        if mlist.getMemberOption(sender, config.DontReceiveOwnPosts):
-            include_sender = 0
-    except Errors.NotAMemberError:
-        pass
+    member = mlist.members.get_member(sender)
+    if member and not member.receive_own_postings:
+        include_sender = False
     # Support for urgent messages, which bypasses digests and disabled
     # delivery and forces an immediate delivery to all members Right Now.  We
     # are specifically /not/ allowing the site admins password to work here
@@ -71,18 +69,12 @@ delivery.  The original message as received by Mailman is attached.
 """)
             raise Errors.RejectMessage, Utils.wrap(text)
     # Calculate the regular recipients of the message
-    recips = [mlist.getMemberCPAddress(m)
-              for m in mlist.getRegularMemberKeys()
-              if mlist.getDeliveryStatus(m) == ENABLED]
+    recips = set(member.address.address
+                 for member in mlist.regular_members.members
+                 if member.delivery_status == DeliveryStatus.enabled)
     # Remove the sender if they don't want to receive their own posts
-    if not include_sender:
-        try:
-            recips.remove(mlist.getMemberCPAddress(sender))
-        except (Errors.NotAMemberError, ValueError):
-            # Sender does not want to get copies of their own messages (not
-            # metoo), but delivery to their address is disabled (nomail).  Or
-            # the sender is not a member of the mailing list.
-            pass
+    if not include_sender and member.address.address in recips:
+        recips.remove(member.address.address)
     # Handle topic classifications
     do_topic_filters(mlist, msg, msgdata, recips)
     # Bookkeeping

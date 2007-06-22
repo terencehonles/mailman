@@ -15,16 +15,18 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-"""Doctest harness for the IMailingListRosters interface."""
+"""Doctest harness for testing the recipient calculation handler."""
 
 import doctest
 import unittest
 
-options = doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE
+options = (doctest.ELLIPSIS
+           | doctest.NORMALIZE_WHITESPACE
+           | doctest.REPORT_NDIFF)
 
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(doctest.DocFileSuite('../docs/mlist-rosters.txt',
+    suite.addTest(doctest.DocFileSuite('../docs/calc-recips.txt',
                                        optionflags=options))
     return suite

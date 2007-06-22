@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2007 by the Free Software Foundation, Inc.
+# Copyright (C) 2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -15,15 +15,18 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-"""Perform some bookkeeping after a successful post.
+"""Doctest harness for testing bookkeeping done after message delivery."""
 
-This module must appear after the delivery module in the message pipeline.
-"""
+import doctest
+import unittest
 
-import datetime
+options = (doctest.ELLIPSIS
+           | doctest.NORMALIZE_WHITESPACE
+           | doctest.REPORT_NDIFF)
 
 
-
-def process(mlist, msg, msgdata):
-    mlist.last_post_time = datetime.datetime.now()
-    mlist.post_id += 1
+def test_suite():
+    suite = unittest.TestSuite()
+    suite.addTest(doctest.DocFileSuite('../docs/after-delivery.txt',
+                                       optionflags=options))
+    return suite

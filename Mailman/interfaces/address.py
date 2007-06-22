@@ -42,3 +42,12 @@ class IAddress(Interface):
         """The date and time at which this email address was validated, or
         None if the email address has not yet been validated.  The specific
         method of validation is not defined here.""")
+
+    def subscribe(mlist, role):
+        """Subscribe the address to the given mailing list with the given role.
+
+        role is a Mailman.constants.MemberRole enum.
+        """
+
+    preferences = Attribute(
+        """This address's preferences.""")

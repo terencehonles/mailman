@@ -20,3 +20,5 @@ from elixir import *
 
 class Language(Entity):
     has_field('code',   Unicode)
+    # Options
+    using_options(shortnames=True)

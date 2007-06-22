@@ -19,6 +19,7 @@
 
 import os
 import time
+import doctest
 import unittest
 
 from Mailman import MailList
@@ -29,6 +30,8 @@ from Mailman.Errors import NotAMemberError
 from Mailman.UserDesc import UserDesc
 from Mailman.configuration import config
 from Mailman.testing.base import TestBase
+
+OPTIONFLAGS = doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE
 
 
 
@@ -387,6 +390,6 @@ class TestMembers(TestBase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestNoMembers))
-    suite.addTest(unittest.makeSuite(TestMembers))
+    suite.addTest(doctest.DocFileSuite('../docs/membership.txt',
+                                       optionflags=OPTIONFLAGS))
     return suite

@@ -54,17 +54,12 @@ you will get an exception.
 Deleting a mailing list
 -----------------------
 
-Deleting an existing mailing list also deletes its rosters and roster sets.
-
-    >>> sorted(r.name for r in config.user_manager.rosters)
-    ['', '_xtest@example.com moderators', '_xtest@example.com owners']
+Use the list manager to delete a mailing list.
 
     >>> mgr.delete(mlist)
     >>> flush()
     >>> sorted(mgr.names)
     []
-    >>> sorted(r.name for r in config.user_manager.rosters)
-    ['']
 
 Attempting to access attributes of the deleted mailing list raises an
 exception:

@@ -21,6 +21,7 @@ from zope.interface import implements
 from Mailman.Utils import fqdn_listname, split_listname
 from Mailman.configuration import config
 from Mailman.interfaces import *
+from Mailman.database.types import EnumType
 
 
 
@@ -30,6 +31,7 @@ class MailingList(Entity):
         IMailingListAddresses,
         IMailingListIdentity,
         IMailingListRosters,
+        IMailingListWeb,
         )
 
     # List identity
@@ -49,17 +51,7 @@ class MailingList(Entity):
     has_field('digest_last_sent_at',                        Float),
     has_field('one_last_digest',                            PickleType),
     has_field('volume',                                     Integer),
-    has_field('last_post_time',                             Float),
-    # OldStyleMemberships attributes, temporarily stored as pickles.
-    has_field('bounce_info',                                PickleType),
-    has_field('delivery_status',                            PickleType),
-    has_field('digest_members',                             PickleType),
-    has_field('language',                                   PickleType),
-    has_field('members',                                    PickleType),
-    has_field('passwords',                                  PickleType),
-    has_field('topics_userinterest',                        PickleType),
-    has_field('user_options',                               PickleType),
-    has_field('usernames',                                  PickleType),
+    has_field('last_post_time',                             DateTime),
     # Attributes which are directly modifiable via the web u/i.  The more
     # complicated attributes are currently stored as pickles, though that
     # will change as the schema and implementation is developed.
@@ -145,7 +137,7 @@ class MailingList(Entity):
     has_field('private_roster',                             Boolean),
     has_field('real_name',                                  Unicode),
     has_field('reject_these_nonmembers',                    PickleType),
-    has_field('reply_goes_to_list',                         Boolean),
+    has_field('reply_goes_to_list',                         EnumType),
     has_field('reply_to_address',                           Unicode),
     has_field('require_explicit_destination',               Boolean),
     has_field('respond_to_post_requests',                   Boolean),
@@ -163,113 +155,40 @@ class MailingList(Entity):
     has_field('umbrella_member_suffix',                     Unicode),
     has_field('unsubscribe_policy',                         Integer),
     has_field('welcome_msg',                                Unicode),
-    # Indirect relationships
-    has_field('owner_rosterset',                            Unicode),
-    has_field('moderator_rosterset',                        Unicode),
     # Relationships
 ##     has_and_belongs_to_many(
 ##         'available_languages',
 ##         of_kind='Mailman.database.model.languages.Language')
+    # Options
+    using_options(shortnames=True)
 
     def __init__(self, fqdn_listname):
         super(MailingList, self).__init__()
         listname, hostname = split_listname(fqdn_listname)
         self.list_name = listname
         self.host_name = hostname
-        # Create two roster sets, one for the owners and one for the
-        # moderators.  MailingLists are connected to RosterSets indirectly, in
-        # order to preserve the ability to store user data and list data in
-        # different databases.
-        name = fqdn_listname + ' owners'
-        self.owner_rosterset = name
-        roster = config.user_manager.create_roster(name)
-        config.user_manager.create_rosterset(name).add(roster)
-        name = fqdn_listname + ' moderators'
-        self.moderator_rosterset = name
-        roster = config.user_manager.create_roster(name)
-        config.user_manager.create_rosterset(name).add(roster)
-
-    def delete_rosters(self):
-        listname = fqdn_listname(self.list_name, self.host_name)
-        # Delete the list owner roster and roster set.
-        name = listname + ' owners'
-        roster = config.user_manager.get_roster(name)
-        assert roster, 'Missing roster: %s' % name
-        config.user_manager.delete_roster(roster)
-        rosterset = config.user_manager.get_rosterset(name)
-        assert rosterset, 'Missing roster set: %s' % name
-        config.user_manager.delete_rosterset(rosterset)
-        name = listname + ' moderators'
-        roster = config.user_manager.get_roster(name)
-        assert roster, 'Missing roster: %s' % name
-        config.user_manager.delete_roster(roster)
-        rosterset = config.user_manager.get_rosterset(name)
-        assert rosterset, 'Missing roster set: %s' % name
-        config.user_manager.delete_rosterset(rosterset)
-
-    # IMailingListRosters
+        # Create several rosters for filtering out or querying the membership
+        # table.
+        from Mailman.database.model import roster
+        self.owners = roster.OwnerRoster(self)
+        self.moderators = roster.ModeratorRoster(self)
+        self.administrators = roster.AdministratorRoster(self)
+        self.members = roster.MemberRoster(self)
+        self.regular_members = roster.RegularMemberRoster(self)
+        self.digest_members = roster.DigestMemberRoster(self)
 
     @property
-    def owners(self):
-        for user in _collect_users(self.owner_rosterset):
-            yield user
+    def fqdn_listname(self):
+        """See IMailingListIdentity."""
+        return fqdn_listname(self.list_name, self.host_name)
 
     @property
-    def moderators(self):
-        for user in _collect_users(self.moderator_rosterset):
-            yield user
+    def web_host(self):
+        """See IMailingListWeb."""
+        return config.domains[self.host_name]
 
-    @property
-    def administrators(self):
-        for user in _collect_users(self.owner_rosterset,
-                                   self.moderator_rosterset):
-            yield user
-
-    @property
-    def owner_rosters(self):
-        rosterset = config.user_manager.get_rosterset(self.owner_rosterset)
-        for roster in rosterset.rosters:
-            yield roster
-
-    @property
-    def moderator_rosters(self):
-        rosterset = config.user_manager.get_rosterset(self.moderator_rosterset)
-        for roster in rosterset.rosters:
-            yield roster
-
-    def add_owner_roster(self, roster):
-        rosterset = config.user_manager.get_rosterset(self.owner_rosterset)
-        rosterset.add(roster)
-
-    def delete_owner_roster(self, roster):
-        rosterset = config.user_manager.get_rosterset(self.owner_rosterset)
-        rosterset.delete(roster)
-
-    def add_moderator_roster(self, roster):
-        rosterset = config.user_manager.get_rosterset(self.moderator_rosterset)
-        rosterset.add(roster)
-
-    def delete_moderator_roster(self, roster):
-        rosterset = config.user_manager.get_rosterset(self.moderator_rosterset)
-        rosterset.delete(roster)
-
-
-
-def _collect_users(*rosterset_names):
-    users = set()
-    for name in rosterset_names:
-        # We have to indirectly look up the roster set's name in the user
-        # manager.  This is how we enforce separation between the list manager
-        # and the user manager storages.
-        rosterset = config.user_manager.get_rosterset(name)
-        assert rosterset is not None, 'No RosterSet named: %s' % name
-        for roster in rosterset.rosters:
-            # Rosters collect addresses.  It's not required that an address is
-            # linked to a user, but it must be the case that all addresses on
-            # the owner roster are linked to a user.  Get the user that's
-            # linked to each address and add it to the set.
-            for address in roster.addresses:
-                user = config.user_manager.get_user(address.address)
-                assert user is not None, 'Unlinked address: ' + address.address
-                users.add(user)
-    return users
+    def script_url(self, target, context=None):
+        """See IMailingListWeb."""
+        # XXX Handle the case for when context is not None; those would be
+        # relative URLs.
+        return self.web_page_url + target + '/' + self.fqdn_listname

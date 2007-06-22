@@ -22,21 +22,32 @@ from zope.interface import Interface, Attribute
 
 
 class IRoster(Interface):
-    """A roster is a collection of IUsers."""
+    """A roster is a collection of IMembers."""
 
     name = Attribute(
         """The name for this roster.
 
         Rosters are considered equal if they have the same name.""")
 
+    members = Attribute(
+        """An iterator over all the IMembers managed by this roster.""")
+
+    users = Attribute(
+        """An iterator over all the IUsers reachable by this roster.
+
+        This returns all the users for all the members managed by this roster.
+        """)
+
     addresses = Attribute(
-        """An iterator over all the addresses managed by this roster.""")
+        """An iterator over all the IAddresses reachable by this roster.
 
-    def create(email_address, real_name=None):
-        """Create an IAddress and return it.
+        This returns all the addresses for all the users for all the members
+        managed by this roster.
+        """)
 
-        email_address is textual email address to add.  real_name is the
-        optional real name that gets associated with the email address.
+    def get_member(address):
+        """Return the IMember for the given address.
 
-        Raises ExistingAddressError if address already exists.
+        'address' is a text email address.  If no matching member is found,
+        None is returned.
         """
