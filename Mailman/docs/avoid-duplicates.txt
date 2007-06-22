@@ -171,13 +171,3 @@ Other headers checked for recipients include the To...
     <BLANKLINE>
     Something of great import.
     <BLANKLINE>
-
-
-Clean up
---------
-
-    >>> for mlist in config.list_manager.mailing_lists:
-    ...     config.list_manager.delete(mlist)
-    >>> flush()
-    >>> list(config.list_manager.mailing_lists)
-    []

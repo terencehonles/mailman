@@ -31,13 +31,3 @@ attributes.
     True
     >>> mlist.post_id
     11
-
-
-Clean up
---------
-
-    >>> for mlist in config.list_manager.mailing_lists:
-    ...     config.list_manager.delete(mlist)
-    >>> flush()
-    >>> list(config.list_manager.mailing_lists)
-    []

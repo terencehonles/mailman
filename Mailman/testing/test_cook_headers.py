@@ -18,12 +18,9 @@
 """Doctest harness for the CookHeaders handler."""
 
 import os
-import doctest
 import unittest
 
-options = (doctest.ELLIPSIS
-           | doctest.NORMALIZE_WHITESPACE
-           | doctest.REPORT_NDIFF)
+from Mailman.testing.base import make_docfile_suite
 
 
 def test_suite():
@@ -31,5 +28,5 @@ def test_suite():
     for filename in ('ack-headers', 'cook-headers', 'subject-munging',
                      'reply-to'):
         path = os.path.join('..', 'docs', filename + '.txt')
-        suite.addTest(doctest.DocFileSuite(path, optionflags=options))
+        suite.addTest(make_docfile_suite(path))
     return suite

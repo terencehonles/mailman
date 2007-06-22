@@ -17,16 +17,11 @@
 
 """Doctest harness for testing message decoration."""
 
-import doctest
 import unittest
-
-options = (doctest.ELLIPSIS
-           | doctest.NORMALIZE_WHITESPACE
-           | doctest.REPORT_NDIFF)
+from Mailman.testing.base import make_docfile_suite
 
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(doctest.DocFileSuite('../docs/decorate.txt',
-                                       optionflags=options))
+    suite.addTest(make_docfile_suite('../docs/decorate.txt'))
     return suite

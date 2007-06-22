@@ -17,16 +17,12 @@
 
 """Doctest harness for testing bookkeeping done after message delivery."""
 
-import doctest
 import unittest
 
-options = (doctest.ELLIPSIS
-           | doctest.NORMALIZE_WHITESPACE
-           | doctest.REPORT_NDIFF)
+from Mailman.testing.base import make_docfile_suite
 
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(doctest.DocFileSuite('../docs/after-delivery.txt',
-                                       optionflags=options))
+    suite.addTest(make_docfile_suite('../docs/after-delivery.txt'))
     return suite

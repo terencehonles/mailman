@@ -17,14 +17,11 @@
 
 """Doctest harness for testing IAddress interface."""
 
-import doctest
 import unittest
-
-options = doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE
+from Mailman.testing.base import make_docfile_suite
 
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(doctest.DocFileSuite('../docs/addresses.txt',
-                                       optionflags=options))
+    suite.addTest(make_docfile_suite('../docs/addresses.txt'))
     return suite

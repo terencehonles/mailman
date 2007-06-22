@@ -174,21 +174,3 @@ Now that Elly is both an owner and a member of the mailing list.
               _xtext@example.com as MemberRole.member>]
     >>> sorted(mlist.digest_members.members)
     []
-
-
-Clean up
---------
-
-    >>> for mlist in config.list_manager.mailing_lists:
-    ...     config.list_manager.delete(mlist)
-    >>> for user in mgr.users:
-    ...     mgr.delete_user(user)
-    >>> for address in mgr.addresses:
-    ...     mgr.delete_address(address)
-    >>> flush()
-    >>> sorted(config.list_manager.names)
-    []
-    >>> sorted(mgr.users)
-    []
-    >>> sorted(mgr.addresses)
-    []

@@ -17,12 +17,11 @@
 
 """Doctest harness for the IMailingListAddresses interface."""
 
-import doctest
 import unittest
+from Mailman.testing.base import make_docfile_suite
 
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(doctest.DocFileSuite('../docs/mlist-addresses.txt',
-                                       optionflags=doctest.ELLIPSIS))
+    suite.addTest(make_docfile_suite('../docs/mlist-addresses.txt'))
     return suite

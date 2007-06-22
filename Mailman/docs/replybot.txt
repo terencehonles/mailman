@@ -219,12 +219,3 @@ be sent.  This is so as not to bombard the sender with responses.  The grace
 period is measured in days.
 
 XXX Add grace period tests.
-
-
-Clean up
---------
-
-    >>> config.list_manager.delete(mlist)
-    >>> flush()
-    >>> [name for name in config.list_manager.names]
-    []

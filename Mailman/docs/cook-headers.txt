@@ -292,13 +292,3 @@ List-Archive header either.
     List-Unsubscribe: <http://lists.example.com/listinfo/_xtest@example.com>,
     	<mailto:_xtest-leave@example.com>
     ---end---
-
-
-Clean up
---------
-
-    >>> for mlist in config.list_manager.mailing_lists:
-    ...     config.list_manager.delete(mlist)
-    >>> flush()
-    >>> list(config.list_manager.mailing_lists)
-    []

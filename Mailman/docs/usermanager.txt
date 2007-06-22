@@ -132,13 +132,3 @@ with it, you will get None back.
     >>> flush()
     >>> print mgr.get_user(address.address)
     None
-
-
-Clean up
---------
-
-    >>> for user in mgr.users:
-    ...     mgr.delete_user(user)
-    >>> flush()
-    >>> list(mgr.users)
-    []

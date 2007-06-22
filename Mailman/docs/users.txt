@@ -152,13 +152,3 @@ Some of these preferences are booleans and they can be set to True or False.
     receive_list_copy    : False
     receive_own_postings : False
     delivery_mode        : DeliveryMode.regular
-
-
-Clean up
---------
-
-    >>> for user in mgr.users:
-    ...     mgr.delete_user(user)
-    >>> flush()
-    >>> sorted(mgr.users)
-    []

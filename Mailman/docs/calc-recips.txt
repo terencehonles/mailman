@@ -105,26 +105,3 @@ XXX Test various urgent deliveries:
     * test_urgent_moderator()
     * test_urgent_admin()
     * test_urgent_reject()
-
-
-Clean up
---------
-
-    >>> for member in mlist.members.members:
-    ...     member.unsubscribe()
-    >>> flush()
-    >>> list(mlist.members.members)
-    []
-    >>> for user in config.user_manager.users:
-    ...     config.user_manager.delete_user(user)
-    >>> for address in config.user_manager.addresses:
-    ...     config.user_manager.delete_address(address)
-    >>> for mlist in config.list_manager.mailing_lists:
-    ...     config.list_manager.delete(mlist)
-    >>> flush()
-    >>> list(config.user_manager.users)
-    []
-    >>> list(config.user_manager.addresses)
-    []
-    >>> list(config.list_manager.mailing_lists)
-    []

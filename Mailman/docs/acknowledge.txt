@@ -174,13 +174,3 @@ If there is no subject, then the receipt will use a generic message.
     List info page: http://lists.example.com/listinfo/_xtest@example.com
     Your preferences: http://example.com/aperson@example.com
     <BLANKLINE>
-
-
-Clean up
---------
-
-    >>> for mlist in config.list_manager.mailing_lists:
-    ...     config.list_manager.delete(mlist)
-    >>> flush()
-    >>> list(config.list_manager.mailing_lists)
-    []

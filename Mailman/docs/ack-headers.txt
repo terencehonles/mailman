@@ -53,13 +53,3 @@ Any existing X-Ack header in the original message is removed.
     <BLANKLINE>
     A message of great import.
     <BLANKLINE>
-
-
-Clean up
---------
-
-    >>> for mlist in config.list_manager.mailing_lists:
-    ...     config.list_manager.delete(mlist)
-    >>> flush()
-    >>> list(config.list_manager.mailing_lists)
-    []

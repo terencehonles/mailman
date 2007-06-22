@@ -250,13 +250,3 @@ And again, with an RFC 2047 encoded header.
 # to get Tokio to look at this.
 #    >>> print msg['subject']
 #    [XTest] =?iso-2022-jp?b?IBskQiVhITwlayVeJXMbKEI=?=
-
-
-Clean up
---------
-
-    >>> for mlist in config.list_manager.mailing_lists:
-    ...     config.list_manager.delete(mlist)
-    >>> flush()
-    >>> list(config.list_manager.mailing_lists)
-    []

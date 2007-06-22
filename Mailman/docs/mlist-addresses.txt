@@ -6,7 +6,9 @@ These are defined in the IMailingListAddresses interface.
 
     >>> from Mailman.configuration import config
     >>> from Mailman.interfaces import IMailingListAddresses
+    >>> from Mailman.database import flush
     >>> mlist = config.list_manager.create('_xtest@example.com')
+    >>> flush()
     >>> IMailingListAddresses.providedBy(mlist)
     True
 
@@ -76,10 +78,3 @@ dependent on the VERP_CONFIRM_FORMAT configuration variable.
     >>> mlist.confirm_address('cookie')
     '_xtest-confirm---cookie@example.com'
     >>> config.VERP_CONFIRM_FORMAT = old_format
-
-
-Clean up
---------
-
-    >>> for mlist in config.list_manager.mailing_lists:
-    ...     config.list_manager.delete(mlist)

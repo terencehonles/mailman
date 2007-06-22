@@ -98,13 +98,3 @@ Hotmail apparently sets X-Originating-Email.
     <BLANKLINE>
     How are you doing?
     <BLANKLINE>
-
-
-Clean up
---------
-
-    >>> for mlist in config.list_manager.mailing_lists:
-    ...     config.list_manager.delete(mlist)
-    >>> flush()
-    >>> list(config.list_manager.mailing_lists)
-    []

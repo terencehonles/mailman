@@ -17,12 +17,11 @@
 
 """Doctest harness for testing mailing list creation and deletion."""
 
-import doctest
 import unittest
+from Mailman.testing.base import make_docfile_suite
 
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(doctest.DocFileSuite('../docs/usermanager.txt',
-                                       optionflags=doctest.ELLIPSIS))
+    suite.addTest(make_docfile_suite('../docs/usermanager.txt'))
     return suite

@@ -17,17 +17,11 @@
 
 """Doctest harness for the AvoidDuplicates handler."""
 
-import os
-import doctest
 import unittest
-
-options = (doctest.ELLIPSIS
-           | doctest.NORMALIZE_WHITESPACE
-           | doctest.REPORT_NDIFF)
+from Mailman.testing.base import make_docfile_suite
 
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(doctest.DocFileSuite('../docs/avoid-duplicates.txt',
-                                       optionflags=options))
+    suite.addTest(make_docfile_suite('../docs/avoid-duplicates.txt'))
     return suite

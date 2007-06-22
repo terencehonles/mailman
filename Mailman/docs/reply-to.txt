@@ -136,13 +136,3 @@ And as before, it's possible to either strip any existing Reply-To header...
     1
     >>> msg['reply-to']
     'my-list@example.com, bperson@example.com'
-
-
-Clean up
---------
-
-    >>> for mlist in config.list_manager.mailing_lists:
-    ...     config.list_manager.delete(mlist)
-    >>> flush()
-    >>> list(config.list_manager.mailing_lists)
-    []
