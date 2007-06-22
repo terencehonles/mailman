@@ -87,7 +87,7 @@ class OutgoingRunner(Runner, BounceMixin):
             return True
         except Errors.SomeRecipientsFailed, e:
             # Handle local rejects of probe messages differently.
-            if msgdata.get('probe_token'):
+            if msgdata.get('probe_token') and e.permfailures:
                 self._probe_bounce(mlist, msgdata['probe_token'])
             else:
                 # Delivery failed at SMTP time for some or all of the
@@ -99,7 +99,9 @@ class OutgoingRunner(Runner, BounceMixin):
                 # this is what's sent to the user in the probe message.  Maybe
                 # we should craft a bounce-like message containing information
                 # about the permanent SMTP failure?
-                self._queue_bounces(mlist.fqdn_listname, e.permfailures, msg)
+                if e.permfailures:
+                    self._queue_bounces(mlist.fqdn_listname, e.permfailures,
+                                        msg)
                 # Move temporary failures to the qfiles/retry queue which will
                 # occasionally move them back here for another shot at
                 # delivery.
