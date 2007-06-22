@@ -277,6 +277,7 @@ URL: %(url)s
             size = len(payload)
             url = save_attachment(mlist, part, dir)
             desc = part.get('content-description', _('not available'))
+            desc = Utils.oneline(desc, lcset)
             filename = part.get_filename(_('not available'))
             filename = Utils.oneline(filename, lcset)
             replace_payload_by_text(part, _("""\
@@ -318,23 +319,23 @@ URL: %(url)s
                 text.append(_('Skipped content of type %(partctype)s\n'))
                 continue
             try:
-                t = part.get_payload(decode=True)
+                t = part.get_payload(decode=True) or ''
             # MAS: TypeError exception can occur if payload is None. This
             # was observed with a message that contained an attached
             # message/delivery-status part. Because of the special parsing
             # of this type, this resulted in a text/plain sub-part with a
             # null body. See bug 1430236.
             except (binascii.Error, TypeError):
-                t = part.get_payload()
+                t = part.get_payload() or ''
             # Email problem was solved by Mark Sapiro. (TK)
             partcharset = part.get_content_charset('us-ascii')
             try:
                 t = unicode(t, partcharset, 'replace')
             except (UnicodeError, LookupError, ValueError, TypeError,
                     AssertionError):
-                # What is the cause to come this exception now ?
+                # We can get here if partcharset is bogus in come way.
                 # Replace funny characters.  We use errors='replace'.
-                u = unicode(t, 'ascii', 'replace')
+                t = unicode(t, 'ascii', 'replace')
             # Separation is useful
             if isinstance(t, basestring):
                 if not t.endswith('\n'):
@@ -344,12 +345,11 @@ URL: %(url)s
                 charsets.append(partcharset)
         # Now join the text and set the payload
         sep = _('-------------- next part --------------\n')
-        # The i18n separator is in the list's charset. Coerce it to the
-        # message charset.
+        # The i18n separator is in the list's charset. Coerce to unicode.
         try:
-            s = unicode(sep, lcset, 'replace')
-            sep = s.encode(charset, 'replace')
+            sep = unicode(sep, lcset, 'replace')
         except (UnicodeError, LookupError, ValueError):
+            # This shouldn't occur.
             pass
         rept = sep.join(text)
         # Replace entire message with text and scrubbed notice.
@@ -360,7 +360,9 @@ URL: %(url)s
             try:
                 replace_payload_by_text(msg, rept, charset)
                 break
-            except UnicodeError:
+            # Bogus charset can throw several exceptions
+            except (UnicodeError, LookupError, ValueError, TypeError,
+                    AssertionError):
                 pass
         if format:
             msg.set_param('format', format)
@@ -396,7 +398,7 @@ def save_attachment(mlist, msg, dir, filter_html=True):
     # i18n file name is encoded
     lcset = Utils.GetCharSet(mlist.preferred_language)
     filename = Utils.oneline(msg.get_filename(''), lcset)
-    fnext = os.path.splitext(filename)[1]
+    filename, fnext = os.path.splitext(filename)
     # For safety, we should confirm this is valid ext for content-type
     # but we can use fnext if we introduce fnext filtering
     if config.SCRUBBER_USE_ATTACHMENT_FILENAME_EXTENSION:
@@ -404,6 +406,8 @@ def save_attachment(mlist, msg, dir, filter_html=True):
         ext = fnext or guess_extension(ctype, fnext)
     else:
         ext = guess_extension(ctype, fnext)
+    # Allow only alphanumerics, dash, underscore, and dot
+    ext = sre.sub('', ext)
     if not ext:
         # We don't know what it is, so assume it's just a shapeless
         # application/octet-stream, unless the Content-Type: is
@@ -421,7 +425,6 @@ def save_attachment(mlist, msg, dir, filter_html=True):
     try:
         # Now base the filename on what's in the attachment, uniquifying it if
         # necessary.
-        filename = msg.get_filename()
         if not filename or config.SCRUBBER_DONT_USE_ATTACHMENT_FILENAME:
             filebase = 'attachment'
         else:
@@ -436,7 +439,8 @@ def save_attachment(mlist, msg, dir, filter_html=True):
             # which one should we go with?  For now, let's go with the one we
             # guessed so attachments can't lie about their type.  Also, if the
             # filename /has/ no extension, then tack on the one we guessed.
-            filebase, ignore = os.path.splitext(filename)
+            # The extension was removed from the name above.
+            filebase = filename
         # Now we're looking for a unique name for this file on the file
         # system.  If msgdir/filebase.ext isn't unique, we'll add a counter
         # after filebase, e.g. msgdir/filebase-cnt.ext
