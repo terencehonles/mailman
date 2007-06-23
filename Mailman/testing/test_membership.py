@@ -28,7 +28,7 @@ from Mailman import passwords
 from Mailman.Errors import NotAMemberError
 from Mailman.UserDesc import UserDesc
 from Mailman.configuration import config
-from Mailman.testing.base import TestBase, make_docfile_suite
+from Mailman.testing.base import TestBase
 
 
 
@@ -387,5 +387,4 @@ class TestMembers(TestBase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(make_docfile_suite('../docs/membership.txt'))
     return suite

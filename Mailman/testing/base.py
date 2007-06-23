@@ -24,7 +24,6 @@ import pwd
 import sys
 import stat
 import shutil
-import doctest
 import difflib
 import tempfile
 import unittest
@@ -36,11 +35,9 @@ from Mailman import MailList
 from Mailman import Utils
 from Mailman.bin import rmlist
 from Mailman.configuration import config
-from Mailman.database import flush
 from Mailman.database.dbcontext import dbcontext
 
 NL = '\n'
-COMMASPACE = ', '
 
 
 
@@ -82,34 +79,3 @@ class TestBase(unittest.TestCase):
                 path = os.path.join(config.LOCK_DIR, filename)
                 print >> sys.stderr, '@@@@@ removing:', path
                 os.unlink(path)
-
-
-
-def cleaning_teardown(testobj):
-    for user in config.user_manager.users:
-        config.user_manager.delete_user(user)
-    for address in config.user_manager.addresses:
-        config.user_manager.delete_address(address)
-    for mlist in config.list_manager.mailing_lists:
-        for member in mlist.members.members:
-            member.unsubscribe()
-        for admin in mlist.administrators.members:
-            admin.unsubscribe()
-        config.list_manager.delete(mlist)
-    flush()
-    assert not list(config.list_manager.mailing_lists), (
-        'There should be no mailing lists left: %s' %
-        COMMASPACE.join(sorted(config.list_manager.names)))
-    assert not list(config.user_manager.users), (
-        'There should be no users left!')
-    assert not list(config.user_manager.addresses), (
-        'There should be no addresses left!')
-
-
-def make_docfile_suite(path):
-    return doctest.DocFileSuite(
-        path,
-        optionflags=(doctest.ELLIPSIS
-                     | doctest.NORMALIZE_WHITESPACE
-                     | doctest.REPORT_NDIFF),
-        tearDown=cleaning_teardown)
