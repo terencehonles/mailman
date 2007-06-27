@@ -152,41 +152,57 @@ def main():
     # Set up the testing configuration file both for this process, and for all
     # sub-processes testing will spawn (e.g. the qrunners).
     #
-    # Calculate various temporary files needed by the test suite, but only for
-    # those files which must also go into shared configuration file.
+    # Calculate a temporary VAR_PREFIX directory so that run-time artifacts of
+    # the tests won't tread on the installation's data.  This also makes it
+    # easier to clean up after the tests are done, and insures isolation of
+    # test suite runs.
     cfg_in = os.path.join(os.path.dirname(Mailman.testing.__file__),
                            'testing.cfg.in')
     fd, cfg_out = tempfile.mkstemp(suffix='.cfg')
     os.close(fd)
     shutil.copyfile(cfg_in, cfg_out)
 
-    initialize_1(cfg_out, propagate_logs=opts.stderr)
-    mailman_uid = pwd.getpwnam(config.MAILMAN_USER).pw_uid
-    mailman_gid = grp.getgrnam(config.MAILMAN_GROUP).gr_gid
-    os.chmod(cfg_out, 0660)
-    os.chown(cfg_out, mailman_uid, mailman_gid)
-
-    fd, config.dbfile = tempfile.mkstemp(dir=config.DATA_DIR, suffix='.db')
-    os.close(fd)
-    os.chmod(config.dbfile, 0660)
-    os.chown(config.dbfile, mailman_uid, mailman_gid)
-
-    # Patch ups
-    test_engine_url = 'sqlite:///' + config.dbfile
-    config.SQLALCHEMY_ENGINE_URL = test_engine_url
-
-    with open(cfg_out, 'a') as fp:
-        print >> fp, 'SQLALCHEMY_ENGINE_URL = "%s"' % test_engine_url
-
-    initialize_2()
+    var_prefix = tempfile.mkdtemp()
+    if opts.verbosity > 2:
+        print 'VAR_PREFIX :', var_prefix
+        print 'config file:', cfg_out
 
     try:
+        with open(cfg_out, 'a') as fp:
+            print >> fp, 'VAR_PREFIX = "%s"' % var_prefix
+
+        initialize_1(cfg_out, propagate_logs=opts.stderr)
+        mailman_uid = pwd.getpwnam(config.MAILMAN_USER).pw_uid
+        mailman_gid = grp.getgrnam(config.MAILMAN_GROUP).gr_gid
+        os.chmod(cfg_out, 0660)
+        os.chown(cfg_out, mailman_uid, mailman_gid)
+
+        # Create an empty SQLite database file with the proper permissions and
+        # calculate the SQLAlchemy engine url to this database file.
+        fd, config.dbfile = tempfile.mkstemp(dir=config.DATA_DIR, suffix='.db')
+        os.close(fd)
+        os.chmod(config.dbfile, 0660)
+        os.chown(config.dbfile, mailman_uid, mailman_gid)
+
+        # Patch ups
+        test_engine_url = 'sqlite:///' + config.dbfile
+        config.SQLALCHEMY_ENGINE_URL = test_engine_url
+
+        # Write this to the config file so subprocesses share the same testing
+        # database file.
+        with open(cfg_out, 'a') as fp:
+            print >> fp, 'SQLALCHEMY_ENGINE_URL = "%s"' % test_engine_url
+
+        initialize_2()
+
+        # Run the tests
         basedir = os.path.dirname(Mailman.__file__)
         runner = unittest.TextTestRunner(verbosity=opts.verbosity)
         results = runner.run(suite(args))
+
     finally:
         os.remove(cfg_out)
-        os.remove(config.dbfile)
+        shutil.rmtree(var_prefix)
 
     sys.exit(bool(results.failures or results.errors))
 

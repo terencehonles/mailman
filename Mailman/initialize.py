@@ -50,6 +50,8 @@ def initialize_1(config, propagate_logs):
     # handles that correctly.
     os.umask(007)
     Mailman.configuration.config.load(config)
+    # Create the queue and log directories if they don't already exist.
+    Mailman.configuration.config.ensure_directories_exist()
     Mailman.loginit.initialize(propagate_logs)
     # Set up site extensions directory
     Mailman.ext.__path__.append(Mailman.configuration.config.EXT_DIR)

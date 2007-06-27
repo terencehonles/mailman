@@ -190,6 +190,14 @@ class Configuration(object):
                      for k in self.__dict__
                      if k.endswith('_DIR')])
 
+    def ensure_directories_exist(self):
+        for variable, directory in self.paths.items():
+            try:
+                os.makedirs(directory, 02775)
+            except OSError, e:
+                if e.errno <> errno.EEXIST:
+                    raise
+
 
 
 config = Configuration()

@@ -114,78 +114,6 @@ A message
 
 
 
-class TestSwitchboard(TestBase):
-    def setUp(self):
-        TestBase.setUp(self)
-        self._tmpdir = tempfile.mkdtemp()
-        self._msg = email.message_from_string("""\
-From: aperson@dom.ain
-To: _xtest@dom.ain
-
-A test message.
-""")
-        self._sb = Switchboard(self._tmpdir)
-
-    def tearDown(self):
-        shutil.rmtree(self._tmpdir, True)
-        TestBase.tearDown(self)
-
-    def _count_qfiles(self):
-        files = {}
-        for qfile in os.listdir(self._tmpdir):
-            root, ext = os.path.splitext(qfile)
-            files[ext] = files.get(ext, 0) + 1
-        return files
-
-    def test_whichq(self):
-        self.assertEqual(self._sb.whichq(), self._tmpdir)
-
-    def test_enqueue(self):
-        eq = self.assertEqual
-        self._sb.enqueue(self._msg, listname='_xtest@dom.ain')
-        files = self._count_qfiles()
-        eq(len(files), 1)
-        eq(files['.pck'], 1)
-
-    def test_dequeue(self):
-        eq = self.assertEqual
-        self._sb.enqueue(self._msg, listname='_xtest@dom.ain', foo='yes')
-        count = 0
-        for filebase in self._sb.files():
-            msg, data = self._sb.dequeue(filebase)
-            self._sb.finish(filebase)
-            count += 1
-            eq(msg['from'], self._msg['from'])
-            eq(msg['to'], self._msg['to'])
-            eq(data['foo'], 'yes')
-        eq(count, 1)
-        files = self._count_qfiles()
-        eq(len(files), 0)
-
-    def test_bakfile(self):
-        eq = self.assertEqual
-        self._sb.enqueue(self._msg, listname='_xtest@dom.ain')
-        self._sb.enqueue(self._msg, listname='_xtest@dom.ain')
-        self._sb.enqueue(self._msg, listname='_xtest@dom.ain')
-        for filebase in self._sb.files():
-            self._sb.dequeue(filebase)
-        files = self._count_qfiles()
-        eq(len(files), 1)
-        eq(files['.bak'], 3)
-
-    def test_recover(self):
-        eq = self.assertEqual
-        self._sb.enqueue(self._msg, listname='_xtest@dom.ain')
-        for filebase in self._sb.files():
-            self._sb.dequeue(filebase)
-            # Not calling sb.finish() leaves .bak files
-        sb2 = Switchboard(self._tmpdir, recover=True)
-        files = self._count_qfiles()
-        eq(len(files), 1)
-        eq(files['.pck'], 1)
-
-
-
 class TestableRunner(Runner):
     def _dispose(self, mlist, msg, msgdata):
         self.msg = msg
@@ -231,6 +159,5 @@ A test message.
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestPrepMessage))
-    suite.addTest(unittest.makeSuite(TestSwitchboard))
     suite.addTest(unittest.makeSuite(TestRunner))
     return suite

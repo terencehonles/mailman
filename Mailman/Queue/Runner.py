@@ -115,7 +115,7 @@ class Runner:
                 # intervention.
                 self._log(e)
                 # Put a marker in the metadata for unshunting
-                msgdata['whichq'] = self._switchboard.whichq()
+                msgdata['whichq'] = self._switchboard.queue_directory
                 # It is possible that shunting can throw an exception, e.g. a
                 # permissions problem or a MemoryError due to a really large
                 # message.  Try to be graceful.
