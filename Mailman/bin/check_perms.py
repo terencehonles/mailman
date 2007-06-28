@@ -47,6 +47,7 @@ QFILEPERMS          = S_ISGID | S_IRWXU | S_IRWXG
 PYFILEPERMS         = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
 ARTICLEFILEPERMS    = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP
 MBOXPERMS           = S_IRGRP | S_IWGRP | S_IRUSR | S_IWUSR
+PRIVATEPERMS        = QFILEPERMS
 
 
 
@@ -100,20 +101,25 @@ def checkwalk(arg, dirname, names):
                 os.chown(path, -1, MAILMAN_GID)
             else:
                 print
-        # All directories must be at least rwxrwsr-x.  Don't check the private
-        # archive directory or database directory themselves since these are
-        # checked in checkarchives() and checkarchivedbs() below.
+        # Most directories must be at least rwxrwsr-x.
+        # The private archive directory  and database directory must be at
+        # least rwxrws---.  Their 'other' permissions are checked in
+        # checkarchives() and checkarchivedbs() below.  Their 'user' and
+        # 'group' permissions are checked here.
+        # The directories under qfiles should be rwxrws---.  Their 'user' and
+        # 'group' permissions are checked here.  Their 'other' permissions
+        # aren't checked.
         private = config.PRIVATE_ARCHIVE_FILE_DIR
-        if path == private or (os.path.commonprefix((path, private)) == private
-                               and os.path.split(path)[1] == 'database'):
-            continue
-        # The directories under qfiles should have a more limited permission
-        if os.path.commonprefix((path, config.QUEUE_DIR)) == config.QUEUE_DIR:
+        if path == private or \
+                  (os.path.commonprefix((path, private)) == private
+                   and os.path.split(path)[1] == 'database'):
+            targetperms = PRIVATEPERMS
+        elif os.path.commonprefix((path, config.QUEUE_DIR)) \
+              == config.QUEUE_DIR:
             targetperms = QFILEPERMS
-            octperms = oct(targetperms)
         else:
             targetperms = DIRPERMS
-            octperms = oct(targetperms)
+        octperms = oct(targetperms)
         if S_ISDIR(mode) and (mode & targetperms) <> targetperms:
             arg.ERRORS += 1
             print _('directory permissions must be $octperms: $path'),
