@@ -148,7 +148,7 @@ Here is a history of user visible changes to Mailman.
       incorrectly suppressed in messages that Mailman sends directly to
       users.
 
-2.1.9 (xx-xxx-xxxx)
+2.1.9 (12-Sep-2006)
 
   Security
 
@@ -156,6 +156,16 @@ Here is a history of user visible changes to Mailman.
       apparent log message into Mailman's error log which might induce an
       unsuspecting administrator to visit a phishing site.  This has been
       blocked.  Thanks to Moritz Naumann for its discovery.
+
+    - Fixed denial of service attack which can be caused by some
+      standards-breaking RFC 2231 formatted headers.  CVE-2006-2941.
+
+    - Several cross-site scripting issues have been fixed.  Thanks to Moritz
+      Naumann for their discovery.  CVE-2006-3636
+
+    - Fixed an unexploitable format string vulnerability.  Discovery and fix
+      by Karl Chen.  Analysis of non-exploitability by Martin 'Joey' Schulze.
+      Also thanks go to Lionel Elie Mamane.  CVE-2006-2191.
 
   Internationalization
 

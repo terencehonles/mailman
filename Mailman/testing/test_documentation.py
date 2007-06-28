@@ -31,6 +31,7 @@ COMMASPACE = ', '
 
 
 def cleaning_teardown(testobj):
+    # Remove all users, addresses and members, then delete all mailing lists.
     for user in config.user_manager.users:
         config.user_manager.delete_user(user)
     for address in config.user_manager.addresses:
@@ -49,6 +50,10 @@ def cleaning_teardown(testobj):
         'There should be no users left!')
     assert not list(config.user_manager.addresses), (
         'There should be no addresses left!')
+    # Remove all queue files.
+    for dirpath, dirnames, filenames in os.walk(config.QUEUE_DIR):
+        for filename in filenames:
+            os.remove(os.path.join(dirpath, filename))
 
 
 
