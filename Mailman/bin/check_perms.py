@@ -110,12 +110,13 @@ def checkwalk(arg, dirname, names):
         # 'group' permissions are checked here.  Their 'other' permissions
         # aren't checked.
         private = config.PRIVATE_ARCHIVE_FILE_DIR
-        if path == private or \
-                  (os.path.commonprefix((path, private)) == private
-                   and os.path.split(path)[1] == 'database'):
+        if path == private or (
+            os.path.commonprefix((path, private)) == private
+            and os.path.split(path)[1] == 'database'):
+            # then...
             targetperms = PRIVATEPERMS
-        elif os.path.commonprefix((path, config.QUEUE_DIR)) \
-              == config.QUEUE_DIR:
+        elif (os.path.commonprefix((path, config.QUEUE_DIR))
+              == config.QUEUE_DIR):
             targetperms = QFILEPERMS
         else:
             targetperms = DIRPERMS
@@ -402,7 +403,7 @@ def main():
     else:
         print _('Problems found:'), STATE.ERRORS
         print _('Re-run as $MAILMAN_USER (or root) with -f flag to fix')
-    
+
 
 if __name__ == '__main__':
     main()
