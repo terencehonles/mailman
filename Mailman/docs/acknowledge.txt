@@ -21,7 +21,7 @@ acknowledgment.
     >>> # for new auto-response messages.
     >>> from Mailman.Queue.sbcache import get_switchboard
     >>> virginq = get_switchboard(config.VIRGINQUEUE_DIR)
-    >>> list(virginq.files)
+    >>> virginq.files
     []
 
 Subscribe a user to the mailing list.
@@ -44,7 +44,7 @@ Non-members can't get acknowledgments of their posts to the mailing list.
     ...
     ... """, Message)
     >>> process(mlist, msg, {})
-    >>> list(virginq.files)
+    >>> virginq.files
     []
 
 We can also specify the original sender in the message's metadata.  If that
@@ -55,7 +55,7 @@ person is also not a member, no acknowledgment will be sent either.
     ...
     ... """, Message)
     >>> process(mlist, msg, dict(original_sender='cperson@example.com'))
-    >>> list(virginq.files)
+    >>> virginq.files
     []
 
 
@@ -69,7 +69,7 @@ Unless the user has requested acknowledgments, they will not get one.
     ...
     ... """, Message)
     >>> process(mlist, msg, {})
-    >>> list(virginq.files)
+    >>> virginq.files
     []
 
 Similarly if the original sender is specified in the message metadata, and
@@ -83,7 +83,7 @@ will be sent.
     >>> flush()
 
     >>> process(mlist, msg, dict(original_sender='dperson@example.com'))
-    >>> list(virginq.files)
+    >>> virginq.files
     []
 
 
@@ -104,11 +104,10 @@ The receipt will include the original message's subject in the response body,
     ...
     ... """, Message)
     >>> process(mlist, msg, {})
-    >>> files = list(virginq.files)
-    >>> len(files)
+    >>> len(virginq.files)
     1
-    >>> qmsg, qdata = virginq.dequeue(files[0])
-    >>> list(virginq.files)
+    >>> qmsg, qdata = virginq.dequeue(virginq.files[0])
+    >>> virginq.files
     []
     >>> # Print only some of the meta data.  The rest is uninteresting.
     >>> qdata['listname']
@@ -143,11 +142,10 @@ If there is no subject, then the receipt will use a generic message.
     ...
     ... """, Message)
     >>> process(mlist, msg, {})
-    >>> files = list(virginq.files)
-    >>> len(files)
+    >>> len(virginq.files)
     1
-    >>> qmsg, qdata = virginq.dequeue(files[0])
-    >>> list(virginq.files)
+    >>> qmsg, qdata = virginq.dequeue(virginq.files[0])
+    >>> virginq.files
     []
     >>> # Print only some of the meta data.  The rest is uninteresting.
     >>> qdata['listname']

@@ -19,7 +19,7 @@ message or the amount of time since the last auto-response.
     >>> # for new auto-response messages.
     >>> from Mailman.Queue.sbcache import get_switchboard
     >>> virginq = get_switchboard(config.VIRGINQUEUE_DIR)
-    >>> list(virginq.files)
+    >>> virginq.files
     []
 
 
@@ -43,10 +43,9 @@ will be sent, with 0 meaning "there is no grace period".
     ... help
     ... """, Message)
     >>> process(mlist, msg, dict(toowner=True))
-    >>> files = list(virginq.files)
-    >>> len(files)
+    >>> len(virginq.files)
     1
-    >>> qmsg, qdata = virginq.dequeue(files[0])
+    >>> qmsg, qdata = virginq.dequeue(virginq.files[0])
     >>> # Print only some of the meta data.  The rest is uninteresting.
     >>> qdata['listname']
     '_xtest@example.com'
@@ -67,7 +66,7 @@ will be sent, with 0 meaning "there is no grace period".
     Precedence: bulk
     <BLANKLINE>
     admin autoresponse text
-    >>> list(virginq.files)
+    >>> virginq.files
     []
 
 
@@ -85,7 +84,7 @@ no auto-response is sent.
     ... help me
     ... """, Message)
     >>> process(mlist, msg, dict(toowner=True))
-    >>> list(virginq.files)
+    >>> virginq.files
     []
 
 Mailman itself can suppress autoresponses for certain types of internally
@@ -97,7 +96,7 @@ crafted messages, by setting the 'noack' metadata key.
     ... help for you
     ... """, Message)
     >>> process(mlist, msg, dict(noack=True, toowner=True))
-    >>> list(virginq.files)
+    >>> virginq.files
     []
 
 If there is a Precedence: header with any of the values 'bulk', 'junk', or
@@ -110,16 +109,16 @@ If there is a Precedence: header with any of the values 'bulk', 'junk', or
     ... hey!
     ... """, Message)
     >>> process(mlist, msg, dict(toowner=True))
-    >>> list(virginq.files)
+    >>> virginq.files
     []
 
     >>> msg.replace_header('precedence', 'junk')
     >>> process(mlist, msg, dict(toowner=True))
-    >>> list(virginq.files)
+    >>> virginq.files
     []
     >>> msg.replace_header('precedence', 'list')
     >>> process(mlist, msg, dict(toowner=True))
-    >>> list(virginq.files)
+    >>> virginq.files
     []
 
 Unless the X-Ack: header has a value of "yes", in which case, the Precedence
@@ -127,10 +126,9 @@ header is ignored.
 
     >>> msg['X-Ack'] = 'yes'
     >>> process(mlist, msg, dict(toowner=True))
-    >>> files = list(virginq.files)
-    >>> len(files)
+    >>> len(virginq.files)
     1
-    >>> qmsg, qdata = virginq.dequeue(files[0])
+    >>> qmsg, qdata = virginq.dequeue(virginq.files[0])
     >>> del qmsg['message-id']
     >>> del qmsg['date']
     >>> print qmsg.as_string()
@@ -164,10 +162,9 @@ auto-responses: those sent to the -request address...
     ... help me
     ... """, Message)
     >>> process(mlist, msg, dict(torequest=True))
-    >>> files = list(virginq.files)
-    >>> len(files)
+    >>> len(virginq.files)
     1
-    >>> qmsg, qdata = virginq.dequeue(files[0])
+    >>> qmsg, qdata = virginq.dequeue(virginq.files[0])
     >>> del qmsg['message-id']
     >>> del qmsg['date']
     >>> print qmsg.as_string()
@@ -195,10 +192,9 @@ auto-responses: those sent to the -request address...
     ... help me
     ... """, Message)
     >>> process(mlist, msg, {})
-    >>> files = list(virginq.files)
-    >>> len(files)
+    >>> len(virginq.files)
     1
-    >>> qmsg, qdata = virginq.dequeue(files[0])
+    >>> qmsg, qdata = virginq.dequeue(virginq.files[0])
     >>> del qmsg['message-id']
     >>> del qmsg['date']
     >>> print qmsg.as_string()

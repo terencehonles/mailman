@@ -72,8 +72,8 @@ keyword arguments.
     >>> switchboard.finish(filebase)
     >>> sorted(msgdata.items())
     [('_parsemsg', False),
-    ('bar', 2), ('foo', 1),
-    ('received_time', ...), ('version', 3)]
+     ('bar', 2), ('foo', 1),
+     ('received_time', ...), ('version', 3)]
 
 Keyword arguments override keys from the metadata dictionary.
 
@@ -82,8 +82,8 @@ Keyword arguments override keys from the metadata dictionary.
     >>> switchboard.finish(filebase)
     >>> sorted(msgdata.items())
     [('_parsemsg', False),
-    ('foo', 2),
-    ('received_time', ...), ('version', 3)]
+     ('foo', 2),
+     ('received_time', ...), ('version', 3)]
 
 
 Iterating over files

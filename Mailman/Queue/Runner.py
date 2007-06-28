@@ -86,7 +86,7 @@ class Runner:
         # Switchboard.files() is guaranteed to hand us the files in FIFO
         # order.  Return an integer count of the number of files that were
         # available for this qrunner to process.
-        files = self._switchboard.files()
+        files = self._switchboard.files
         for filebase in files:
             try:
                 # Ask the switchboard for the message and metadata objects
@@ -147,7 +147,7 @@ class Runner:
         #
         # Find out which mailing list this message is destined for.
         listname = msgdata.get('listname')
-        mlist = self._open_list(listname)
+        mlist = config.list_manager.get(listname)
         if not mlist:
             log.error('Dequeuing message destined for missing list: %s',
                       listname)
@@ -164,10 +164,11 @@ class Runner:
         # approach, but I can't think of anything better right now.
         otranslation = i18n.get_translation()
         sender = msg.get_sender()
-        if mlist:
-            lang = mlist.getMemberLanguage(sender)
+        member = mlist.members.get_member(sender)
+        if member:
+            lang = member.preferred_language
         else:
-            lang = config.DEFAULT_SERVER_LANGUAGE
+            lang = mlist.preferred_language
         i18n.set_language(lang)
         msgdata['lang'] = lang
         try:
@@ -180,24 +181,6 @@ class Runner:
             self._kids.update(kids)
         if keepqueued:
             self._switchboard.enqueue(msg, msgdata)
-
-    # Mapping of listnames to MailList instances as a weak value dictionary.
-    _listcache = weakref.WeakValueDictionary()
-
-    def _open_list(self, listname):
-        # Cache the open list so that any use of the list within this process
-        # uses the same object.  We use a WeakValueDictionary so that when the
-        # list is no longer necessary, its memory is freed.
-        mlist = self._listcache.get(listname)
-        if not mlist:
-            try:
-                mlist = MailList.MailList(listname, lock=False)
-            except Errors.MMListError, e:
-                log.error('error opening list: %s\n%s', listname, e)
-                return None
-            else:
-                self._listcache[listname] = mlist
-        return mlist
 
     def _log(self, exc):
         log.error('Uncaught runner exception: %s', exc)

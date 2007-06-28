@@ -469,10 +469,10 @@ NNTP_REMOVE_HEADERS = ['nntp-posting-host', 'nntp-posting-date', 'x-trace',
 # original message.  Any second and subsequent headers are rewritten to the
 # second named header (case preserved).
 NNTP_REWRITE_DUPLICATE_HEADERS = [
-    ('to', 'X-Original-To'),
-    ('cc', 'X-Original-Cc'),
-    ('content-transfer-encoding', 'X-Original-Content-Transfer-Encoding'),
-    ('mime-version', 'X-MIME-Version'),
+    ('To', 'X-Original-To'),
+    ('CC', 'X-Original-CC'),
+    ('Content-Transfer-Encoding', 'X-Original-Content-Transfer-Encoding'),
+    ('MIME-Version', 'X-MIME-Version'),
     ]
 
 # Some list posts and mail to the -owner address may contain DomainKey or

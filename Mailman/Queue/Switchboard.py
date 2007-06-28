@@ -178,8 +178,7 @@ class Switchboard:
                     key += DELTA
                 times[key] = filebase
         # FIFO sort
-        for key in sorted(times):
-            yield times[key]
+        return [times[key] for key in sorted(times)]
 
     def recover_backup_files(self):
         # Move all .bak files in our slice to .pck.  It's impossible for both
