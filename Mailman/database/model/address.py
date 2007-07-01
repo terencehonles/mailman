@@ -31,6 +31,7 @@ class Address(Entity):
     implements(IAddress)
 
     has_field('address',        Unicode)
+    has_field('_original',      Unicode)
     has_field('real_name',      Unicode)
     has_field('verified',       Boolean)
     has_field('registered_on',  DateTime)
@@ -41,12 +42,26 @@ class Address(Entity):
     # Options
     using_options(shortnames=True)
 
+    def __init__(self, address, real_name):
+        super(Address, self).__init__()
+        lower_case = address.lower()
+        self.address = lower_case
+        self.real_name = real_name
+        self._original = (None if lower_case == address else address)
+
     def __str__(self):
-        return formataddr((self.real_name, self.address))
+        addr = (self.address if self._original is None else self._original)
+        return formataddr((self.real_name, addr))
 
     def __repr__(self):
-        return '<Address: %s [%s]>' % (
-            str(self), ('verified' if self.verified else 'not verified'))
+        verified = ('verified' if self.verified else 'not verified')
+        address_str = str(self)
+        if self._original is None:
+            return '<Address: %s [%s] at %#x>' % (
+                address_str, verified, id(self))
+        else:
+            return '<Address: %s [%s] key: %s at %#x>' % (
+                address_str, verified, self.address, id(self))
 
     def subscribe(self, mlist, role):
         from Mailman.database.model import Member
@@ -57,3 +72,7 @@ class Address(Entity):
                         address=self)
         member.preferences = Preferences()
         return member
+
+    @property
+    def original_address(self):
+        return (self.address if self._original is None else self._original)

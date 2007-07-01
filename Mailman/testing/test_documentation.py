@@ -67,7 +67,8 @@ def test_suite():
                 package=Mailman,
                 optionflags=(doctest.ELLIPSIS
                              | doctest.NORMALIZE_WHITESPACE
-                             | doctest.REPORT_NDIFF),
+                             | doctest.REPORT_NDIFF
+                             | doctest.REPORT_ONLY_FIRST_FAILURE),
                 tearDown=cleaning_teardown)
             suite.addTest(test)
     return suite

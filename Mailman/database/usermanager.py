@@ -39,7 +39,7 @@ class UserManager(object):
         user = User()
         user.real_name = (real_name if real_name is not None else '')
         if address:
-            addrobj = Address(address=address, real_name=user.real_name)
+            addrobj = Address(address, user.real_name)
             addrobj.preferences = Preferences()
             user.link(addrobj)
         user.preferences = Preferences()
@@ -54,16 +54,16 @@ class UserManager(object):
             yield user
 
     def get_user(self, address):
-        found = Address.get_by(address=address)
+        found = Address.get_by(address=address.lower())
         return found and found.user
 
     def create_address(self, address, real_name=None):
-        found = Address.get_by(address=address)
+        found = Address.get_by(address=address.lower())
         if found:
-            raise Errors.ExistingAddressError(address)
+            raise Errors.ExistingAddressError(found.original_address)
         if real_name is None:
             real_name = ''
-        address = Address(address=address, real_name=real_name)
+        address = Address(address, real_name)
         address.preferences = Preferences()
         return address
 
@@ -75,7 +75,7 @@ class UserManager(object):
         address.delete()
 
     def get_address(self, address):
-        return Address.get_by(address=address)
+        return Address.get_by(address=address.lower())
 
     @property
     def addresses(self):

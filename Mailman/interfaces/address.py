@@ -27,6 +27,19 @@ class IAddress(Interface):
     address = Attribute(
         """Read-only text email address.""")
 
+    original_address = Attribute(
+        """Read-only original case-preserved address.
+
+        For almost all intents and purposes, addresses in Mailman are case
+        insensitive, however because RFC 2821 allows for case sensitive local
+        parts, Mailman preserves the case of the original address when
+        emailing the user.
+
+        `original_address` will be the same as address if the original address
+        was all lower case.  Otherwise `original_address` will be the case
+        preserved address; `address` will always be lower case.
+        """)
+
     real_name = Attribute(
         """Optional real name associated with the email address.""")
 

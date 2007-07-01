@@ -41,6 +41,14 @@ You can also create an email address object with a real name.
     >>> sorted(address.real_name for address in mgr.addresses)
     ['', 'Ben Person']
 
+The str() of the address is the RFC 2822 preferred originator format, while
+the repr() carries more information.
+
+    >>> str(address_2)
+    'Ben Person <bperson@example.com>'
+    >>> repr(address_2)
+    '<Address: Ben Person <bperson@example.com> [not verified] at 0x...>'
+
 You can assign real names to existing addresses.
 
     >>> address_1.real_name = 'Anne Person'
@@ -156,7 +164,7 @@ subscribed, a role is specified.
              _xtext@example.com as MemberRole.member>
     >>> flush()
 
-Now that Elly is both an owner and a member of the mailing list.
+Now Elly is both an owner and a member of the mailing list.
 
     >>> sorted(mlist.owners.members)
     [<Member: Elly Person <eperson@example.com> on
@@ -174,3 +182,57 @@ Now that Elly is both an owner and a member of the mailing list.
               _xtext@example.com as MemberRole.member>]
     >>> sorted(mlist.digest_members.members)
     []
+
+
+Case-preserved addresses
+------------------------
+
+Technically speaking, email addresses are case sensitive in the local part.
+Mailman preserves the case of addresses and uses the case preserved version
+when sending the user a message, but it treats addresses that are different in
+case equivalently in all other situations.
+
+    >>> address_6 = mgr.create_address('FPERSON@example.com', 'Frank Person')
+    >>> flush()
+
+The str() of such an address prints the RFC 2822 preferred originator format
+with the original case-preserved address.  The repr() contains all the gory
+details.
+
+    >>> str(address_6)
+    'Frank Person <FPERSON@example.com>'
+    >>> repr(address_6)
+    '<Address: Frank Person <FPERSON@example.com> [not verified]
+               key: fperson@example.com at 0x...>'
+
+Both the case-insensitive version of the address and the original
+case-preserved version are available on attributes of the IAddress object.
+
+    >>> address_6.address
+    'fperson@example.com'
+    >>> address_6.original_address
+    'FPERSON@example.com'
+
+Because addresses are case-insensitive for all other purposes, you cannot
+create an address that differs only in case.
+
+    >>> mgr.create_address('fperson@example.com')
+    Traceback (most recent call last):
+    ...
+    ExistingAddressError: FPERSON@example.com
+    >>> mgr.create_address('fperson@EXAMPLE.COM')
+    Traceback (most recent call last):
+    ...
+    ExistingAddressError: FPERSON@example.com
+    >>> mgr.create_address('FPERSON@example.com')
+    Traceback (most recent call last):
+    ...
+    ExistingAddressError: FPERSON@example.com
+
+You can get the address using either the lower cased version or case-preserved
+version.  In fact, searching for an address is case insensitive.
+
+    >>> mgr.get_address('fperson@example.com').address
+    'fperson@example.com'
+    >>> mgr.get_address('FPERSON@example.com').address
+    'fperson@example.com'

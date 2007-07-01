@@ -48,9 +48,9 @@ The easiest way to link a user to an address is to just register the new
 address on a user object.
 
     >>> user_1.register('zperson@example.com', 'Zoe Person')
-    <Address: Zoe Person <zperson@example.com> [not verified]>
+    <Address: Zoe Person <zperson@example.com> [not verified] at 0x...>
     >>> user_1.register('zperson@example.org')
-    <Address: zperson@example.org [not verified]>
+    <Address: zperson@example.org [not verified] at 0x...>
     >>> flush()
     >>> sorted(address.address for address in user_1.addresses)
     ['zperson@example.com', 'zperson@example.org']
