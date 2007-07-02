@@ -274,7 +274,7 @@ class Bouncer:
         info.noticesleft -= 1
         info.lastnotice = time.localtime()[:3]
 
-    def BounceMessage(self, msg, msgdata, e=None):
+    def bounce_message(self, msg, e=None):
         # Bounce a message back to the sender, with an error message if
         # provided in the exception argument.
         sender = msg.get_sender()
@@ -284,10 +284,10 @@ class Bouncer:
         if e is None:
             notice = _('[No bounce details are available]')
         else:
-            notice = _(e.notice())
+            notice = _(e.notice)
         # Currently we always craft bounces as MIME messages.
         bmsg = Message.UserNotification(msg.get_sender(),
-                                        self.GetOwnerEmail(),
+                                        self.owner_address,
                                         subject,
                                         lang=self.preferred_language)
         # BAW: Be sure you set the type before trying to attach, or you'll get

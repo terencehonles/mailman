@@ -92,7 +92,6 @@ install-other:
 	    dir=$(DESTDIR)$(prefix)/$$d; \
 	    $(INSTALL) -m $(FILEMODE) paths.py $$dir; \
 	done
-	$(INSTALL) -m $(FILEMODE) coverage.py $(PYTHONPATHDIR)
 	$(INSTALL) -m $(EXEMODE) mailman $(DESTDIR)$(SCRIPTSDIR)
 	$(INSTALL) -m $(FILEMODE) mailman.cfg.sample $(DESTDIR)$(ETCDIR)
 
@@ -108,6 +107,7 @@ install-packages:
 	do \
 	    (umask 02 ; PYTHONPATH=$(PYTHONPATHDIR) $(EZCMD) $$p); \
 	done
+	$(INSTALL) -m $(FILEMODE) coverage.py $(PYTHONPATHDIR)
 
 finish:
 

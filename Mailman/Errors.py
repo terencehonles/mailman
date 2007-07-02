@@ -162,10 +162,8 @@ class RejectMessage(HandlerError):
             notice += '\n'
         else:
             notice += '\n\n'
-        self.__notice = notice
+        self.notice = notice
 
-    def notice(self):
-        return self.__notice
 
 
 # Additional exceptions

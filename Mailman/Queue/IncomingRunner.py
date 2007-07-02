@@ -172,7 +172,7 @@ class IncomingRunner(Runner):
                 # longer needs to be queued.
                 return 0
             except Errors.RejectMessage, e:
-                mlist.BounceMessage(msg, msgdata, e)
+                mlist.bounce_message(msg, e)
                 return 0
             except:
                 # Push this pipeline module back on the stack, then re-raise
