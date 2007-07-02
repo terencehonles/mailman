@@ -92,6 +92,7 @@ install-other:
 	    dir=$(DESTDIR)$(prefix)/$$d; \
 	    $(INSTALL) -m $(FILEMODE) paths.py $$dir; \
 	done
+	$(INSTALL) -m $(FILEMODE) coverage.py $(PYTHONPATHDIR)
 	$(INSTALL) -m $(EXEMODE) mailman $(DESTDIR)$(SCRIPTSDIR)
 	$(INSTALL) -m $(FILEMODE) mailman.cfg.sample $(DESTDIR)$(ETCDIR)
 

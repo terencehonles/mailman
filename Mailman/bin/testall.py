@@ -74,6 +74,9 @@ Reduce verbosity by 1 (but not below 0)."""))
     parser.add_option('-e', '--stderr',
                       default=False, action='store_true',
                       help=_('Propagate log errors to stderr.'))
+    parser.add_option('-c', '--coverage',
+                      default=False, action='store_true',
+                      help=_('Enable code coverage.'))
     opts, args = parser.parse_args()
     return parser, opts, args
 
@@ -149,6 +152,15 @@ def main():
     if not args:
         args = ['.']
 
+    # Turn on code coverage if selected.
+    if opts.coverage:
+        try:
+            import coverage
+        except ImportError:
+            opts.coverage = False
+        else:
+            coverage.start()
+
     # Set up the testing configuration file both for this process, and for all
     # sub-processes testing will spawn (e.g. the qrunners).
     #
@@ -199,11 +211,18 @@ def main():
         basedir = os.path.dirname(Mailman.__file__)
         runner = unittest.TextTestRunner(verbosity=opts.verbosity)
         results = runner.run(suite(args))
-
     finally:
         os.remove(cfg_out)
         shutil.rmtree(var_prefix)
 
+    # Turn off coverage and print a report
+    if opts.coverage:
+        coverage.stop()
+        modules = [module for name, module in sys.modules.items()
+                   if module
+                   and name is not None
+                   and name.split('.')[0] == 'Mailman']
+        coverage.report(modules)
     sys.exit(bool(results.failures or results.errors))
 
 
