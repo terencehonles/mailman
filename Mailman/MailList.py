@@ -304,8 +304,9 @@ class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
         mod = sys.modules[adaptor_module]
         self._memberadaptor = getattr(mod, adaptor_class)(self)
         self._make_lock(self.fqdn_listname)
-        self._full_path = os.path.join(config.LIST_DATA_DIR,
-                                       self.fqdn_listname)
+        # Create the list's data directory.
+        self._full_path = os.path.join(config.LIST_DATA_DIR, self.fqdn_listname)
+        Utils.makedirs(self._full_path)
         # Only one level of mixin inheritance allowed
         for baseclass in self.__class__.__bases__:
             if hasattr(baseclass, 'InitTempVars'):

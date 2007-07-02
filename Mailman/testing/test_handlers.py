@@ -39,7 +39,6 @@ from Mailman.testing.base import TestBase
 from Mailman.Handlers import Acknowledge
 from Mailman.Handlers import AfterDelivery
 from Mailman.Handlers import Approve
-from Mailman.Handlers import FileRecips
 from Mailman.Handlers import Hold
 from Mailman.Handlers import MimeDel
 from Mailman.Handlers import Moderate
@@ -132,89 +131,6 @@ X-BeenThere: %s
 
 """ % mlist.GetListEmail())
         self.assertRaises(Errors.LoopError, Approve.process, mlist, msg, {})
-
-
-
-class TestFileRecips(TestBase):
-    def test_short_circuit(self):
-        msgdata = {'recips': 1}
-        rtn = FileRecips.process(self._mlist, None, msgdata)
-        # Not really a great test, but there's little else to assert
-        self.assertEqual(rtn, None)
-
-    def test_file_nonexistant(self):
-        msgdata = {}
-        FileRecips.process(self._mlist, None, msgdata)
-        self.assertEqual(msgdata.get('recips'), [])
-
-    def test_file_exists_no_sender(self):
-        msg = email.message_from_string("""\
-To: yall@example.com
-
-""", Message.Message)
-        msgdata = {}
-        file = os.path.join(self._mlist.fullpath(), 'members.txt')
-        addrs = ['aperson@example.org', 'bperson@example.com',
-                 'cperson@example.com', 'dperson@example.com']
-        fp = open(file, 'w')
-        try:
-            for addr in addrs:
-                print >> fp, addr
-            fp.close()
-            FileRecips.process(self._mlist, msg, msgdata)
-            self.assertEqual(msgdata.get('recips'), addrs)
-        finally:
-            try:
-                os.unlink(file)
-            except OSError, e:
-                if e.errno <> e.ENOENT: raise
-
-    def test_file_exists_no_member(self):
-        msg = email.message_from_string("""\
-From: eperson@example.com
-To: yall@example.com
-
-""", Message.Message)
-        msgdata = {}
-        file = os.path.join(self._mlist.fullpath(), 'members.txt')
-        addrs = ['aperson@example.org', 'bperson@example.com',
-                 'cperson@example.com', 'dperson@example.com']
-        fp = open(file, 'w')
-        try:
-            for addr in addrs:
-                print >> fp, addr
-            fp.close()
-            FileRecips.process(self._mlist, msg, msgdata)
-            self.assertEqual(msgdata.get('recips'), addrs)
-        finally:
-            try:
-                os.unlink(file)
-            except OSError, e:
-                if e.errno <> e.ENOENT: raise
-
-    def test_file_exists_is_member(self):
-        msg = email.message_from_string("""\
-From: aperson@example.org
-To: yall@example.com
-
-""", Message.Message)
-        msgdata = {}
-        file = os.path.join(self._mlist.fullpath(), 'members.txt')
-        addrs = ['aperson@example.org', 'bperson@example.com',
-                 'cperson@example.com', 'dperson@example.com']
-        fp = open(file, 'w')
-        try:
-            for addr in addrs:
-                print >> fp, addr
-                self._mlist.addNewMember(addr)
-            fp.close()
-            FileRecips.process(self._mlist, msg, msgdata)
-            self.assertEqual(msgdata.get('recips'), addrs[1:])
-        finally:
-            try:
-                os.unlink(file)
-            except OSError, e:
-                if e.errno <> e.ENOENT: raise
 
 
 
@@ -1052,7 +968,6 @@ Mailman rocks!
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestApprove))
-    suite.addTest(unittest.makeSuite(TestFileRecips))
     suite.addTest(unittest.makeSuite(TestHold))
     suite.addTest(unittest.makeSuite(TestMimeDel))
     suite.addTest(unittest.makeSuite(TestModerate))

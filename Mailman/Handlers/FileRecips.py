@@ -17,6 +17,8 @@
 
 """Get the normal delivery recipients from a Sendmail style :include: file."""
 
+from __future__ import with_statement
+
 import os
 import errno
 
@@ -25,25 +27,20 @@ from Mailman import Errors
 
 
 def process(mlist, msg, msgdata):
-    if msgdata.has_key('recips'):
+    if 'recips' in msgdata:
         return
-    filename = os.path.join(mlist.fullpath(), 'members.txt')
+    filename = os.path.join(mlist.full_path, 'members.txt')
     try:
-        fp = open(filename)
+        with open(filename) as fp:
+            addrs = set(line.strip() for line in fp)
     except IOError, e:
         if e.errno <> errno.ENOENT:
             raise
-        # If the file didn't exist, just set an empty recipients list
-        msgdata['recips'] = []
+        msgdata['recips'] = set()
         return
-    # Read all the lines out of the file, and strip them of the trailing nl
-    addrs = [line.strip() for line in fp.readlines()]
-    # If the sender is in that list, remove him
+    # If the sender is a member of the list, remove them from the file recips.
     sender = msg.get_sender()
-    if mlist.isMember(sender):
-        try:
-            addrs.remove(mlist.getMemberCPAddress(sender))
-        except ValueError:
-            # Don't worry if the sender isn't in the list
-            pass
+    member = mlist.members.get_member(sender)
+    if member is not None:
+        addrs.discard(member.address.address)
     msgdata['recips'] = addrs

@@ -1,0 +1,101 @@
+File recipients
+===============
+
+Mailman can calculate the recipients for a message from a Sendmail-style
+include file.  This file must be called members.txt and it must live in the
+list's data directory.
+
+    >>> from email import message_from_string
+    >>> from Mailman.Message import Message
+    >>> from Mailman.Handlers.FileRecips import process
+    >>> from Mailman.configuration import config
+    >>> from Mailman.database import flush
+    >>> mlist = config.list_manager.create('_xtest@example.com')
+    >>> flush()
+
+
+Short circuiting
+----------------
+
+If the message's metadata already has recipients, this handler immediately
+returns.
+
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.com
+    ...
+    ... A message.
+    ... """, Message)
+    >>> msgdata = {'recips': 7}
+    >>> process(mlist, msg, msgdata)
+    >>> print msg.as_string()
+    From: aperson@example.com
+    <BLANKLINE>
+    A message.
+    <BLANKLINE>
+    >>> msgdata
+    {'recips': 7}
+
+
+Missing file
+------------
+
+The include file must live inside the list's data directory, under the name
+members.txt.  If the file doesn't exist, the list of recipients will be
+empty.
+
+    >>> import os
+    >>> file_path = os.path.join(mlist.full_path, 'members.txt')
+    >>> open(file_path)
+    Traceback (most recent call last):
+    ...
+    IOError: [Errno ...]
+    No such file or directory: '.../_xtest@example.com/members.txt'
+    >>> msgdata = {}
+    >>> process(mlist, msg, msgdata)
+    >>> sorted(msgdata['recips'])
+    []
+
+
+Existing file
+-------------
+
+If the file exists, it contains a list of addresses, one per line.  These
+addresses are returned as the set of recipients.
+
+    >>> fp = open(file_path, 'w')
+    >>> try:
+    ...     print >> fp, 'bperson@example.com'
+    ...     print >> fp, 'cperson@example.com'
+    ...     print >> fp, 'dperson@example.com'
+    ...     print >> fp, 'eperson@example.com'
+    ...     print >> fp, 'fperson@example.com'
+    ...     print >> fp, 'gperson@example.com'
+    ... finally:
+    ...     fp.close()
+
+    >>> msgdata = {}
+    >>> process(mlist, msg, msgdata)
+    >>> sorted(msgdata['recips'])
+    ['bperson@example.com', 'cperson@example.com', 'dperson@example.com',
+     'eperson@example.com', 'fperson@example.com', 'gperson@example.com']
+
+However, if the sender of the original message is a member of the list and
+their address is in the include file, the sender's address is /not/ included
+in the recipients list.
+
+    >>> from Mailman.constants import MemberRole
+    >>> address_1 = config.user_manager.create_address('cperson@example.com')
+    >>> address_1.subscribe(mlist, MemberRole.member)
+    <Member: cperson@example.com on _xtest@example.com as MemberRole.member>
+    >>> flush()
+
+    >>> msg = message_from_string("""\
+    ... From: cperson@example.com
+    ...
+    ... A message.
+    ... """, Message)
+    >>> msgdata = {}
+    >>> process(mlist, msg, msgdata)
+    >>> sorted(msgdata['recips'])
+    ['bperson@example.com', 'dperson@example.com',
+     'eperson@example.com', 'fperson@example.com', 'gperson@example.com']
