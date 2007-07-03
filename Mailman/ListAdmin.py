@@ -68,10 +68,6 @@ log = logging.getLogger('mailman.vette')
 
 
 class ListAdmin:
-    def InitVars(self):
-        # non-configurable data
-        self.next_request_id = 1
-
     def InitTempVars(self):
         self._db = None
         self._filename = os.path.join(self.full_path, 'request.pck')
@@ -114,7 +110,7 @@ class ListAdmin:
             next = self.next_request_id
             self.next_request_id += 1
             if self._db.setdefault(next, missing) is missing:
-                yield next
+                return next
 
     def SaveRequestsDb(self):
         self._closedb()
@@ -183,7 +179,7 @@ class ListAdmin:
             ext = 'pck'
         else:
             ext = 'txt'
-        filename = 'heldmsg-%s-%d.%s' % (self.internal_name(), id, ext)
+        filename = 'heldmsg-%s-%d.%s' % (self.fqdn_listname, id, ext)
         with open(os.path.join(config.DATA_DIR, filename), 'w') as fp:
             if config.HOLD_MESSAGES_AS_PICKLES:
                 cPickle.dump(msg, fp, 1)

@@ -84,7 +84,7 @@ class Administrivia(Errors.HoldMessage):
 
     def rejection_notice(self, mlist):
         listurl = mlist.GetScriptURL('listinfo', absolute=1)
-        request = mlist.GetRequestEmail()
+        request = mlist.request_address
         return _("""Please do *not* post administrative requests to the mailing
 list.  If you wish to subscribe, visit $listurl or send a message with the
 word `help' in it to the request address, $request, for further
@@ -133,7 +133,7 @@ def process(mlist, msg, msgdata):
     if msgdata.get('approved'):
         return
     # Get the sender of the message
-    listname = mlist.internal_name()
+    listname = mlist.list_name
     adminaddr = listname + '-admin'
     sender = msg.get_sender()
     # Special case an ugly sendmail feature: If there exists an alias of the
@@ -204,7 +204,7 @@ def hold_for_approval(mlist, msg, msgdata, exc):
     if isinstance(exc, ClassType) or isinstance(exc, type):
         # Go ahead and instantiate it now.
         exc = exc()
-    listname = mlist.real_name
+    listname = mlist.list_name
     sender = msgdata.get('sender', msg.get_sender())
     usersubject = msg.get('subject')
     charset = Utils.GetCharSet(mlist.preferred_language)
@@ -213,9 +213,9 @@ def hold_for_approval(mlist, msg, msgdata, exc):
     else:
         usersubject = _('(no subject)')
     message_id = msg.get('message-id', 'n/a')
-    owneraddr = mlist.GetOwnerEmail()
-    adminaddr = mlist.GetBouncesEmail()
-    requestaddr = mlist.GetRequestEmail()
+    owneraddr = mlist.owner_address
+    adminaddr = mlist.bounces_address
+    requestaddr = mlist.request_address
     # We need to send both the reason and the rejection notice through the
     # translator again, because of the games we play above
     reason = Utils.wrap(exc.reason_notice())
@@ -240,12 +240,17 @@ def hold_for_approval(mlist, msg, msgdata, exc):
     # This message should appear to come from <list>-admin so as to handle any
     # bounce processing that might be needed.
     cookie = mlist.pend_new(Pending.HELD_MESSAGE, id)
+    # Get the language to send the response in.  If the sender is a member,
+    # then send it in the member's language, otherwise send it in the mailing
+    # list's preferred language.
+    member = mlist.members.get_member(sender)
+    lang = (member.preferred_language if member else mlist.preferred_language)
     if not fromusenet and ackp(msg) and mlist.respond_to_post_requests and \
-           mlist.autorespondToSender(sender, mlist.getMemberLanguage(sender)):
+           mlist.autorespondToSender(sender, lang):
         # Get a confirmation cookie
         d['confirmurl'] = '%s/%s' % (mlist.GetScriptURL('confirm', absolute=1),
                                      cookie)
-        lang = msgdata.get('lang', mlist.getMemberLanguage(sender))
+        lang = msgdata.get('lang', lang)
         subject = _('Your message to $listname awaits moderator approval')
         text = Utils.maketext('postheld.txt', d, lang=lang, mlist=mlist)
         nmsg = Message.UserNotification(sender, adminaddr, subject, text, lang)

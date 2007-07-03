@@ -40,6 +40,7 @@ class MailingList(Entity):
     # Attributes not directly modifiable via the web u/i
     has_field('web_page_url',                               Unicode),
     has_field('admin_member_chunksize',                     Integer),
+    has_field('hold_and_cmd_autoresponses',                 PickleType),
     # Attributes which are directly modifiable via the web u/i.  The more
     # complicated attributes are currently stored as pickles, though that
     # will change as the schema and implementation is developed.
@@ -167,6 +168,8 @@ class MailingList(Entity):
         listname, hostname = split_listname(fqdn_listname)
         self.list_name = listname
         self.host_name = hostname
+        # For the pending database
+        self.next_request_id = 1
         # Create several rosters for filtering out or querying the membership
         # table.
         from Mailman.database.model import roster
@@ -176,6 +179,10 @@ class MailingList(Entity):
         self.members = roster.MemberRoster(self)
         self.regular_members = roster.RegularMemberRoster(self)
         self.digest_members = roster.DigestMemberRoster(self)
+        # Max autoresponses per day.  A mapping between addresses and a
+        # 2-tuple of the date of the last autoresponse and the number of
+        # autoresponses sent on that date.
+        self.hold_and_cmd_autoresponses = {}
 
     @property
     def fqdn_listname(self):

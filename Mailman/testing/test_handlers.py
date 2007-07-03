@@ -39,7 +39,6 @@ from Mailman.testing.base import TestBase
 from Mailman.Handlers import Acknowledge
 from Mailman.Handlers import AfterDelivery
 from Mailman.Handlers import Approve
-from Mailman.Handlers import Hold
 from Mailman.Handlers import MimeDel
 from Mailman.Handlers import Moderate
 from Mailman.Handlers import Scrubber
@@ -131,164 +130,6 @@ X-BeenThere: %s
 
 """ % mlist.GetListEmail())
         self.assertRaises(Errors.LoopError, Approve.process, mlist, msg, {})
-
-
-
-class TestHold(TestBase):
-    def setUp(self):
-        TestBase.setUp(self)
-        self._mlist.administrivia = 1
-        self._mlist.respond_to_post_requests = 0
-        self._mlist.admin_immed_notify = 0
-        # We're going to want to inspect this queue directory
-        self._sb = Switchboard(config.VIRGINQUEUE_DIR)
-
-    def tearDown(self):
-        for f in os.listdir(config.VIRGINQUEUE_DIR):
-            os.unlink(os.path.join(config.VIRGINQUEUE_DIR, f))
-        TestBase.tearDown(self)
-        try:
-            os.unlink(os.path.join(config.DATA_DIR, 'pending.db'))
-        except OSError, e:
-            if e.errno <> errno.ENOENT: raise
-        for f in [holdfile for holdfile in os.listdir(config.DATA_DIR)
-                  if holdfile.startswith('heldmsg-')]:
-            os.unlink(os.path.join(config.DATA_DIR, f))
-
-    def test_short_circuit(self):
-        msgdata = {'approved': 1}
-        rtn = Hold.process(self._mlist, None, msgdata)
-        # Not really a great test, but there's little else to assert
-        self.assertEqual(rtn, None)
-
-    def test_administrivia(self):
-        msg = email.message_from_string("""\
-From: aperson@example.org
-Subject: unsubscribe
-
-""", Message.Message)
-        self.assertRaises(Hold.Administrivia, Hold.process,
-                          self._mlist, msg, {})
-
-    def test_max_recips(self):
-        self._mlist.max_num_recipients = 5
-        msg = email.message_from_string("""\
-From: aperson@example.org
-To: _xtest@example.com, bperson@example.com
-Cc: cperson@example.com
-Cc: dperson@example.com (Jimmy D. Person)
-To: Billy E. Person <eperson@example.com>
-
-Hey folks!
-""", Message.Message)
-        self.assertRaises(Hold.TooManyRecipients, Hold.process,
-                          self._mlist, msg, {})
-
-    def test_implicit_destination(self):
-        self._mlist.require_explicit_destination = 1
-        msg = email.message_from_string("""\
-From: aperson@example.org
-Subject: An implicit message
-
-""", Message.Message)
-        self.assertRaises(Hold.ImplicitDestination, Hold.process,
-                          self._mlist, msg, {})
-
-    def test_implicit_destination_fromusenet(self):
-        self._mlist.require_explicit_destination = 1
-        msg = email.message_from_string("""\
-From: aperson@example.org
-Subject: An implicit message
-
-""", Message.Message)
-        rtn = Hold.process(self._mlist, msg, {'fromusenet': 1})
-        self.assertEqual(rtn, None)
-
-    def test_suspicious_header(self):
-        self._mlist.bounce_matching_headers = 'From: .*person@(blah.)?example.org'
-        msg = email.message_from_string("""\
-From: aperson@example.org
-To: _xtest@example.net
-Subject: An implicit message
-
-""", Message.Message)
-        self.assertRaises(Hold.SuspiciousHeaders, Hold.process,
-                          self._mlist, msg, {})
-
-    def test_suspicious_header_ok(self):
-        self._mlist.bounce_matching_headers = 'From: .*person@blah.example.com'
-        msg = email.message_from_string("""\
-From: aperson@example.org
-To: _xtest@example.com
-Subject: An implicit message
-
-""", Message.Message)
-        rtn = Hold.process(self._mlist, msg, {})
-        self.assertEqual(rtn, None)
-
-    def test_max_message_size(self):
-        self._mlist.max_message_size = 1
-        msg = email.message_from_string("""\
-From: aperson@example.org
-To: _xtest@example.com
-
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-""", Message.Message)
-        self.assertRaises(Hold.MessageTooBig, Hold.process,
-                          self._mlist, msg, {})
-
-    def test_hold_notifications(self):
-        eq = self.assertEqual
-        self._mlist.respond_to_post_requests = 1
-        self._mlist.admin_immed_notify = 1
-        # Now cause an implicit destination hold
-        msg = email.message_from_string("""\
-From: aperson@example.org
-
-""", Message.Message)
-        self.assertRaises(Hold.ImplicitDestination, Hold.process,
-                          self._mlist, msg, {})
-        # Now we have to make sure there are two messages in the virgin queue,
-        # one to the sender and one to the list owners.
-        qfiles = {}
-        files = self._sb.files()
-        eq(len(files), 2)
-        for filebase in files:
-            qmsg, qdata = self._sb.dequeue(filebase)
-            to = qmsg['to']
-            qfiles[to] = qmsg, qdata
-        # BAW: We could be testing many other attributes of either the
-        # messages or the metadata files...
-        keys = qfiles.keys()
-        keys.sort()
-        eq(keys, ['_xtest-owner@example.com', 'aperson@example.org'])
-        # Get the pending cookie from the message to the sender
-        pmsg, pdata = qfiles['aperson@example.org']
-        confirmlines = pmsg.get_payload().split('\n')
-        cookie = confirmlines[-3].split('/')[-1]
-        # We also need to make sure there's an entry in the Pending database
-        # for the hold message.
-        data = self._mlist.pend_confirm(cookie)
-        eq(data, ('H', 1))
-        heldmsg = os.path.join(config.DATA_DIR, 'heldmsg-_xtest-1.pck')
-        self.failUnless(os.path.exists(heldmsg))
-        os.unlink(heldmsg)
-        holdfiles = [f for f in os.listdir(config.DATA_DIR)
-                     if f.startswith('heldmsg-')]
-        eq(len(holdfiles), 0)
 
 
 
@@ -968,7 +809,6 @@ Mailman rocks!
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestApprove))
-    suite.addTest(unittest.makeSuite(TestHold))
     suite.addTest(unittest.makeSuite(TestMimeDel))
     suite.addTest(unittest.makeSuite(TestModerate))
     suite.addTest(unittest.makeSuite(TestScrubber))

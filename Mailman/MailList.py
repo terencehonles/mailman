@@ -155,19 +155,17 @@ class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
             self._lock.lock()
 
     def Lock(self, timeout=0):
-        database.lock(self)
         self._lock.lock(timeout)
         self._memberadaptor.lock()
         # Must reload our database for consistency.  Watch out for lists that
         # don't exist.
         try:
-            self.Load(self.fqdn_listname)
+            self.Load()
         except Exception:
             self.Unlock()
             raise
 
     def Unlock(self):
-        database.unlock(self)
         self._lock.unlock(unconditionally=True)
         self._memberadaptor.unlock()
 
@@ -551,15 +549,12 @@ class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
         # the lock (which is a serious problem!).  TBD: do we need to be more
         # defensive?
         self._lock.refresh()
-        # Commit the database transaction
-        database.save(self)
         # The member adaptor may have its own save operation
         self._memberadaptor.save()
         self.SaveRequestsDb()
         self.CheckHTMLArchiveDir()
 
     def Load(self):
-        database.load(self)
         self._memberadaptor.load()
 
 
@@ -1235,7 +1230,7 @@ class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
             addr = addr.lower()
             localpart = addr.split('@')[0]
             if (# TBD: backwards compatibility: deprecated
-                    localpart == self.internal_name() or
+                    localpart == self.list_name or
                     # exact match against the complete list address
                     addr == self.fqdn_listname):
                 return True
