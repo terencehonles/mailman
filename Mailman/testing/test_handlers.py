@@ -44,7 +44,6 @@ from Mailman.Handlers import Moderate
 from Mailman.Handlers import Scrubber
 # Don't test handlers such as SMTPDirect and Sendmail here
 from Mailman.Handlers import SpamDetect
-from Mailman.Handlers import Tagger
 from Mailman.Handlers import ToArchive
 from Mailman.Handlers import ToDigest
 from Mailman.Handlers import ToOutgoing
@@ -434,121 +433,6 @@ A message.
 
 
 
-class TestTagger(TestBase):
-    def setUp(self):
-        TestBase.setUp(self)
-        self._mlist.topics = [('bar fight', '.*bar.*', 'catch any bars', 1)]
-        self._mlist.topics_enabled = 1
-
-    def test_short_circuit(self):
-        self._mlist.topics_enabled = 0
-        rtn = Tagger.process(self._mlist, None, {})
-        # Not really a great test, but there's little else to assert
-        self.assertEqual(rtn, None)
-
-    def test_simple(self):
-        eq = self.assertEqual
-        mlist = self._mlist
-        mlist.topics_bodylines_limit = 0
-        msg = email.message_from_string("""\
-Subject: foobar
-Keywords: barbaz
-
-""")
-        msgdata = {}
-        Tagger.process(mlist, msg, msgdata)
-        eq(msg['x-topics'], 'bar fight')
-        eq(msgdata.get('topichits'), ['bar fight'])
-
-    def test_all_body_lines_plain_text(self):
-        eq = self.assertEqual
-        mlist = self._mlist
-        mlist.topics_bodylines_limit = -1
-        msg = email.message_from_string("""\
-Subject: Was
-Keywords: Raw
-
-Subject: farbaw
-Keywords: barbaz
-""")
-        msgdata = {}
-        Tagger.process(mlist, msg, msgdata)
-        eq(msg['x-topics'], 'bar fight')
-        eq(msgdata.get('topichits'), ['bar fight'])
-
-    def test_no_body_lines(self):
-        eq = self.assertEqual
-        mlist = self._mlist
-        mlist.topics_bodylines_limit = 0
-        msg = email.message_from_string("""\
-Subject: Was
-Keywords: Raw
-
-Subject: farbaw
-Keywords: barbaz
-""")
-        msgdata = {}
-        Tagger.process(mlist, msg, msgdata)
-        eq(msg['x-topics'], None)
-        eq(msgdata.get('topichits'), None)
-
-    def test_body_lines_in_multipart(self):
-        eq = self.assertEqual
-        mlist = self._mlist
-        mlist.topics_bodylines_limit = -1
-        msg = email.message_from_string("""\
-Subject: Was
-Keywords: Raw
-Content-Type: multipart/alternative; boundary="BOUNDARY"
-
---BOUNDARY
-From: sabo
-To: obas
-
-Subject: farbaw
-Keywords: barbaz
-
---BOUNDARY--
-""")
-        msgdata = {}
-        Tagger.process(mlist, msg, msgdata)
-        eq(msg['x-topics'], 'bar fight')
-        eq(msgdata.get('topichits'), ['bar fight'])
-
-    def test_body_lines_no_part(self):
-        eq = self.assertEqual
-        mlist = self._mlist
-        mlist.topics_bodylines_limit = -1
-        msg = email.message_from_string("""\
-Subject: Was
-Keywords: Raw
-Content-Type: multipart/alternative; boundary=BOUNDARY
-
---BOUNDARY
-From: sabo
-To: obas
-Content-Type: message/rfc822
-
-Subject: farbaw
-Keywords: barbaz
-
---BOUNDARY
-From: sabo
-To: obas
-Content-Type: message/rfc822
-
-Subject: farbaw
-Keywords: barbaz
-
---BOUNDARY--
-""")
-        msgdata = {}
-        Tagger.process(mlist, msg, msgdata)
-        eq(msg['x-topics'], None)
-        eq(msgdata.get('topichits'), None)
-
-
-
 class TestToArchive(TestBase):
     def setUp(self):
         TestBase.setUp(self)
@@ -813,7 +697,6 @@ def test_suite():
     suite.addTest(unittest.makeSuite(TestModerate))
     suite.addTest(unittest.makeSuite(TestScrubber))
     suite.addTest(unittest.makeSuite(TestSpamDetect))
-    suite.addTest(unittest.makeSuite(TestTagger))
     suite.addTest(unittest.makeSuite(TestToArchive))
     suite.addTest(unittest.makeSuite(TestToDigest))
     suite.addTest(unittest.makeSuite(TestToOutgoing))
