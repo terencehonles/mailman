@@ -43,7 +43,6 @@ from Mailman.Handlers import MimeDel
 from Mailman.Handlers import Moderate
 from Mailman.Handlers import Scrubber
 # Don't test handlers such as SMTPDirect and Sendmail here
-from Mailman.Handlers import SpamDetect
 from Mailman.Handlers import ToArchive
 from Mailman.Handlers import ToDigest
 from Mailman.Handlers import ToOutgoing
@@ -306,11 +305,6 @@ This is plain text
 
 
 
-class TestModerate(TestBase):
-    pass
-
-
-
 class TestScrubber(TestBase):
     def test_save_attachment(self):
         mlist = self._mlist
@@ -400,36 +394,6 @@ This is a message.
 -------------- next part --------------
 An embedded and charset-unspecified text was scrubbed...
 Name: xtext.txt""")
-
-
-
-class TestSpamDetect(TestBase):
-    def test_short_circuit(self):
-        msgdata = {'approved': 1}
-        rtn = SpamDetect.process(self._mlist, None, msgdata)
-        # Not really a great test, but there's little else to assert
-        self.assertEqual(rtn, None)
-
-    def test_spam_detect(self):
-        msg1 = email.message_from_string("""\
-From: aperson@example.org
-
-A message.
-""")
-        msg2 = email.message_from_string("""\
-To: xlist@example.com
-
-A message.
-""")
-        spammers = config.KNOWN_SPAMMERS[:]
-        try:
-            config.KNOWN_SPAMMERS.append(('from', '.?person'))
-            self.assertRaises(SpamDetect.SpamDetected,
-                              SpamDetect.process, self._mlist, msg1, {})
-            rtn = SpamDetect.process(self._mlist, msg2, {})
-            self.assertEqual(rtn, None)
-        finally:
-            config.KNOWN_SPAMMERS = spammers
 
 
 
@@ -694,9 +658,7 @@ def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestApprove))
     suite.addTest(unittest.makeSuite(TestMimeDel))
-    suite.addTest(unittest.makeSuite(TestModerate))
     suite.addTest(unittest.makeSuite(TestScrubber))
-    suite.addTest(unittest.makeSuite(TestSpamDetect))
     suite.addTest(unittest.makeSuite(TestToArchive))
     suite.addTest(unittest.makeSuite(TestToDigest))
     suite.addTest(unittest.makeSuite(TestToOutgoing))

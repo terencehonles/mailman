@@ -1,0 +1,75 @@
+Anti-spam defences
+==================
+
+By design, Mailman does not have very sophisticated anti-spam measures because
+this type of filtering is done much more efficiently at the MTA level.  For
+example, if Mailman were to do spam detection, it could not reject the message
+at SMTP time.
+
+Still, Mailman does employ a small number of rather ham-handed anti-spam
+measures.
+
+    >>> from Mailman.Handlers.SpamDetect import process
+    >>> from Mailman.Message import Message
+    >>> from Mailman.Queue.Switchboard import Switchboard
+    >>> from Mailman.configuration import config
+    >>> from Mailman.database import flush
+    >>> from email import message_from_string
+    >>> mlist = config.list_manager.create('_xtest@example.com')
+    >>> flush()
+
+
+Short circuiting
+----------------
+
+If a message is pre-approved, this handler does nothing.
+
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.com
+    ...
+    ... An important message.
+    ... """, Message)
+    >>> msgdata = {'approved': True}
+    >>> process(mlist, msg, msgdata)
+    >>> print msg.as_string()
+    From: aperson@example.com
+    <BLANKLINE>
+    An important message.
+    <BLANKLINE>
+    >>> msgdata
+    {'approved': True}
+
+
+Header matching
+---------------
+
+There is a global configuration variable that can be set to a list of header
+matches.  Each item in that list is a 2-tuple of the header to match and a
+regular expression.  For example, if we wanted to block all message that come
+from 'aperson' regardless of the domain, we'd do something like the following
+in our mailman.cfg file:
+
+    >>> config.KNOWN_SPAMMERS.append(('from', 'aperson'))
+
+Now if the same message is posted to the mailing list, and that message is not
+pre-approved.  The handler will throw an exception that signals the message is
+spam.
+
+    >>> msgdata = {}
+    >>> process(mlist, msg, msgdata)
+    Traceback (most recent call last):
+    ...
+    SpamDetected
+    >>> print msg.as_string()
+    From: aperson@example.com
+    <BLANKLINE>
+    An important message.
+    <BLANKLINE>
+    >>> msgdata
+    {}
+
+
+Header filter rules
+-------------------
+
+XXX Need tests.
