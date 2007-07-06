@@ -39,7 +39,6 @@ from Mailman.testing.base import TestBase
 from Mailman.Handlers import Acknowledge
 from Mailman.Handlers import AfterDelivery
 from Mailman.Handlers import Approve
-from Mailman.Handlers import MimeDel
 from Mailman.Handlers import Moderate
 from Mailman.Handlers import Scrubber
 # Don't test handlers such as SMTPDirect and Sendmail here
@@ -128,180 +127,6 @@ X-BeenThere: %s
 
 """ % mlist.GetListEmail())
         self.assertRaises(Errors.LoopError, Approve.process, mlist, msg, {})
-
-
-
-class TestMimeDel(TestBase):
-    def setUp(self):
-        TestBase.setUp(self)
-        self._mlist.filter_content = 1
-        self._mlist.filter_mime_types = ['image/jpeg']
-        self._mlist.pass_mime_types = []
-        self._mlist.convert_html_to_plaintext = 1
-
-    def test_outer_matches(self):
-        msg = email.message_from_string("""\
-From: aperson@example.org
-Content-Type: image/jpeg
-MIME-Version: 1.0
-
-xxxxx
-""")
-        self.assertRaises(Errors.DiscardMessage, MimeDel.process,
-                          self._mlist, msg, {})
-
-    def test_strain_multipart(self):
-        eq = self.assertEqual
-        msg = email.message_from_string("""\
-From: aperson@example.org
-Content-Type: multipart/mixed; boundary=BOUNDARY
-MIME-Version: 1.0
-
---BOUNDARY
-Content-Type: image/jpeg
-MIME-Version: 1.0
-
-xxx
-
---BOUNDARY
-Content-Type: image/gif
-MIME-Version: 1.0
-
-yyy
---BOUNDARY--
-""")
-        MimeDel.process(self._mlist, msg, {})
-        eq(len(msg.get_payload()), 1)
-        subpart = msg.get_payload(0)
-        eq(subpart.get_content_type(), 'image/gif')
-        eq(subpart.get_payload(), 'yyy')
-
-    def test_collapse_multipart_alternative(self):
-        eq = self.assertEqual
-        msg = email.message_from_string("""\
-From: aperson@example.org
-Content-Type: multipart/mixed; boundary=BOUNDARY
-MIME-Version: 1.0
-
---BOUNDARY
-Content-Type: multipart/alternative; boundary=BOUND2
-MIME-Version: 1.0
-
---BOUND2
-Content-Type: image/jpeg
-MIME-Version: 1.0
-
-xxx
-
---BOUND2
-Content-Type: image/gif
-MIME-Version: 1.0
-
-yyy
---BOUND2--
-
---BOUNDARY--
-""")
-        MimeDel.process(self._mlist, msg, {})
-        eq(len(msg.get_payload()), 1)
-        eq(msg.get_content_type(), 'multipart/mixed')
-        subpart = msg.get_payload(0)
-        eq(subpart.get_content_type(), 'image/gif')
-        eq(subpart.get_payload(), 'yyy')
-
-    def test_convert_to_plaintext(self):
-        eq = self.assertEqual
-        # XXX Skip this test if the html->text converter program is not
-        # available.
-        program = config.HTML_TO_PLAIN_TEXT_COMMAND.split()[0]
-        if os.path.isfile(program):
-            msg = email.message_from_string("""\
-From: aperson@example.org
-Content-Type: text/html
-MIME-Version: 1.0
-
-<html><head></head>
-<body></body></html>
-""")
-            MimeDel.process(self._mlist, msg, {})
-            eq(msg.get_content_type(), 'text/plain')
-            eq(msg.get_payload(), '\n\n\n')
-
-    def test_deep_structure(self):
-        eq = self.assertEqual
-        self._mlist.filter_mime_types.append('text/html')
-        msg = email.message_from_string("""\
-From: aperson@example.org
-Content-Type: multipart/mixed; boundary=AAA
-
---AAA
-Content-Type: multipart/mixed; boundary=BBB
-
---BBB
-Content-Type: image/jpeg
-
-xxx
---BBB
-Content-Type: image/jpeg
-
-yyy
---BBB---
---AAA
-Content-Type: multipart/alternative; boundary=CCC
-
---CCC
-Content-Type: text/html
-
-<h2>This is a header</h2>
-
---CCC
-Content-Type: text/plain
-
-A different message
---CCC--
---AAA
-Content-Type: image/gif
-
-zzz
---AAA
-Content-Type: image/gif
-
-aaa
---AAA--
-""")
-        MimeDel.process(self._mlist, msg, {})
-        payload = msg.get_payload()
-        eq(len(payload), 3)
-        part1 = msg.get_payload(0)
-        eq(part1.get_content_type(), 'text/plain')
-        eq(part1.get_payload(), 'A different message')
-        part2 = msg.get_payload(1)
-        eq(part2.get_content_type(), 'image/gif')
-        eq(part2.get_payload(), 'zzz')
-        part3 = msg.get_payload(2)
-        eq(part3.get_content_type(), 'image/gif')
-        eq(part3.get_payload(), 'aaa')
-
-    def test_top_multipart_alternative(self):
-        eq = self.assertEqual
-        self._mlist.filter_mime_types.append('text/html')
-        msg = email.message_from_string("""\
-From: aperson@example.org
-Content-Type: multipart/alternative; boundary=AAA
-
---AAA
-Content-Type: text/html
-
-<b>This is some html</b>
---AAA
-Content-Type: text/plain
-
-This is plain text
---AAA--
-""")
-        MimeDel.process(self._mlist, msg, {})
-        eq(msg.get_content_type(), 'text/plain')
-        eq(msg.get_payload(), 'This is plain text')
 
 
 
@@ -657,7 +482,6 @@ Mailman rocks!
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestApprove))
-    suite.addTest(unittest.makeSuite(TestMimeDel))
     suite.addTest(unittest.makeSuite(TestScrubber))
     suite.addTest(unittest.makeSuite(TestToArchive))
     suite.addTest(unittest.makeSuite(TestToDigest))
