@@ -45,7 +45,6 @@ from Mailman.Handlers import Scrubber
 from Mailman.Handlers import ToArchive
 from Mailman.Handlers import ToDigest
 from Mailman.Handlers import ToOutgoing
-from Mailman.Handlers import ToUsenet
 
 
 
@@ -431,54 +430,6 @@ It rocks!
 
 
 
-class TestToUsenet(TestBase):
-    def setUp(self):
-        TestBase.setUp(self)
-        # We're going to want to inspect this queue directory
-        self._sb = Switchboard(config.NEWSQUEUE_DIR)
-
-    def tearDown(self):
-        for f in os.listdir(config.NEWSQUEUE_DIR):
-            os.unlink(os.path.join(config.NEWSQUEUE_DIR, f))
-        TestBase.tearDown(self)
-
-    def test_short_circuit(self):
-        eq = self.assertEqual
-        mlist = self._mlist
-        mlist.gateway_to_news = 0
-        ToUsenet.process(mlist, None, {})
-        eq(len(self._sb.files()), 0)
-        mlist.gateway_to_news = 1
-        ToUsenet.process(mlist, None, {'isdigest': 1})
-        eq(len(self._sb.files()), 0)
-        ToUsenet.process(mlist, None, {'fromusenet': 1})
-        eq(len(self._sb.files()), 0)
-
-    def test_to_usenet(self):
-        # BAW: Should we, can we, test the error conditions that only log to a
-        # file instead of raising an exception?
-        eq = self.assertEqual
-        mlist = self._mlist
-        mlist.gateway_to_news = 1
-        mlist.linked_newsgroup = 'foo'
-        mlist.nntp_host = 'bar'
-        msg = email.message_from_string("""\
-Subject: About Mailman
-
-Mailman rocks!
-""")
-        ToUsenet.process(mlist, msg, {})
-        files = self._sb.files()
-        eq(len(files), 1)
-        msg2, data = self._sb.dequeue(files[0])
-        eq(msg.as_string(unixfrom=0), msg2.as_string(unixfrom=0))
-        eq(data['version'], 3)
-        eq(data['listname'], '_xtest@example.com')
-        # Clock skew makes this unreliable
-        #self.failUnless(data['received_time'] <= time.time())
-
-
-
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestApprove))
@@ -486,5 +437,4 @@ def test_suite():
     suite.addTest(unittest.makeSuite(TestToArchive))
     suite.addTest(unittest.makeSuite(TestToDigest))
     suite.addTest(unittest.makeSuite(TestToOutgoing))
-    suite.addTest(unittest.makeSuite(TestToUsenet))
     return suite
