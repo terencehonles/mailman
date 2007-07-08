@@ -44,7 +44,6 @@ from Mailman.Handlers import Scrubber
 # Don't test handlers such as SMTPDirect and Sendmail here
 from Mailman.Handlers import ToArchive
 from Mailman.Handlers import ToDigest
-from Mailman.Handlers import ToOutgoing
 
 
 
@@ -390,51 +389,10 @@ Content-Transfer-Encoding: 7bit
 
 
 
-class TestToOutgoing(TestBase):
-    def setUp(self):
-        TestBase.setUp(self)
-        # We're going to want to inspect this queue directory
-        self._sb = Switchboard(config.OUTQUEUE_DIR)
-        # Save and set this value
-        self._interval = config.VERP_DELIVERY_INTERVAL
-        config.VERP_DELIVERY_INTERVAL = 1
-
-    def tearDown(self):
-        # Restore this value
-        config.VERP_DELIVERY_INTERVAL = self._interval
-        for f in os.listdir(config.OUTQUEUE_DIR):
-            os.unlink(os.path.join(config.OUTQUEUE_DIR, f))
-        TestBase.tearDown(self)
-
-    def test_outgoing(self):
-        eq = self.assertEqual
-        msg = email.message_from_string("""\
-Subject: About Mailman
-
-It rocks!
-""")
-        msgdata = {'foo': 1, 'bar': 2}
-        ToOutgoing.process(self._mlist, msg, msgdata)
-        files = self._sb.files()
-        eq(len(files), 1)
-        msg2, data = self._sb.dequeue(files[0])
-        eq(msg.as_string(unixfrom=0), msg2.as_string(unixfrom=0))
-        eq(len(data), 7)
-        eq(data['foo'], 1)
-        eq(data['bar'], 2)
-        eq(data['version'], 3)
-        eq(data['listname'], '_xtest@example.com')
-        eq(data['verp'], 1)
-        # Clock skew makes this unreliable
-        #self.failUnless(data['received_time'] <= time.time())
-
-
-
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestApprove))
     suite.addTest(unittest.makeSuite(TestScrubber))
     suite.addTest(unittest.makeSuite(TestToArchive))
     suite.addTest(unittest.makeSuite(TestToDigest))
-    suite.addTest(unittest.makeSuite(TestToOutgoing))
     return suite
