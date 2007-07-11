@@ -60,15 +60,19 @@ def cleaning_teardown(testobj):
 def test_suite():
     suite = unittest.TestSuite()
     docsdir = os.path.join(os.path.dirname(Mailman.__file__), 'docs')
+    # Under higher verbosity settings, report all doctest errors, not just the
+    # first one.
+    flags = (doctest.ELLIPSIS |
+             doctest.NORMALIZE_WHITESPACE |
+             doctest.REPORT_NDIFF)
+    if config.opts.verbosity <= 2:
+        flags |= doctest.REPORT_ONLY_FIRST_FAILURE
     for filename in os.listdir(docsdir):
         if os.path.splitext(filename)[1] == '.txt':
             test = doctest.DocFileSuite(
                 'docs/' + filename,
                 package=Mailman,
-                optionflags=(doctest.ELLIPSIS
-                             | doctest.NORMALIZE_WHITESPACE
-                             | doctest.REPORT_NDIFF
-                             | doctest.REPORT_ONLY_FIRST_FAILURE),
+                optionflags=flags,
                 tearDown=cleaning_teardown)
             suite.addTest(test)
     return suite

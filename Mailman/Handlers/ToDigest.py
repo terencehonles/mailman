@@ -52,6 +52,7 @@ from Mailman.Mailbox import Mailbox
 from Mailman.MemberAdaptor import ENABLED
 from Mailman.Queue.sbcache import get_switchboard
 from Mailman.configuration import config
+from Mailman.constants import DeliveryMode, DeliveryStatus
 
 _ = i18n._
 __i18n_templates__ = True
@@ -67,7 +68,7 @@ def process(mlist, msg, msgdata):
     # Short circuit non-digestable lists.
     if not mlist.digestable or msgdata.get('isdigest'):
         return
-    mboxfile = os.path.join(mlist.fullpath(), 'digest.mbox')
+    mboxfile = os.path.join(mlist.full_path, 'digest.mbox')
     mboxfp = open(mboxfile, 'a+')
     mbox = Mailbox(mboxfp)
     mbox.AppendMessage(msg)
@@ -77,7 +78,7 @@ def process(mlist, msg, msgdata):
     # whether the size threshold has been reached.
     mboxfp.flush()
     size = os.path.getsize(mboxfile)
-    if size / 1024.0 >= mlist.digest_size_threshhold:
+    if size / 1024.0 >= mlist.digest_size_threshold:
         # This is a bit of a kludge to get the mbox file moved to the digest
         # queue directory.
         try:
@@ -91,7 +92,7 @@ def process(mlist, msg, msgdata):
         except Exception, errmsg:
             # Bare except is generally prohibited in Mailman, but we can't
             # forecast what exceptions can occur here.
-            log.error('send_digests() failed: %s', errmsg)
+            log.exception('send_digests() failed: %s', errmsg)
     mboxfp.close()
 
 
@@ -155,19 +156,19 @@ def send_i18n_digests(mlist, mboxfp):
     mimemsg = Message.Message()
     mimemsg['Content-Type'] = 'multipart/mixed'
     mimemsg['MIME-Version'] = '1.0'
-    mimemsg['From'] = mlist.GetRequestEmail()
+    mimemsg['From'] = mlist.request_address
     mimemsg['Subject'] = digestsubj
-    mimemsg['To'] = mlist.GetListEmail()
-    mimemsg['Reply-To'] = mlist.GetListEmail()
+    mimemsg['To'] = mlist.posting_address
+    mimemsg['Reply-To'] = mlist.posting_address
     mimemsg['Date'] = formatdate(localtime=1)
     mimemsg['Message-ID'] = Utils.unique_message_id(mlist)
     # Set things up for the rfc1153 digest
     plainmsg = StringIO()
     rfc1153msg = Message.Message()
-    rfc1153msg['From'] = mlist.GetRequestEmail()
+    rfc1153msg['From'] = mlist.request_address
     rfc1153msg['Subject'] = digestsubj
-    rfc1153msg['To'] = mlist.GetListEmail()
-    rfc1153msg['Reply-To'] = mlist.GetListEmail()
+    rfc1153msg['To'] = mlist.posting_address
+    rfc1153msg['Reply-To'] = mlist.posting_address
     rfc1153msg['Date'] = formatdate(localtime=1)
     rfc1153msg['Message-ID'] = Utils.unique_message_id(mlist)
     separator70 = '-' * 70
@@ -179,10 +180,10 @@ def send_i18n_digests(mlist, mboxfp):
     mastheadtxt = Utils.maketext(
         'masthead.txt',
         {'real_name' :        mlist.real_name,
-         'got_list_email':    mlist.GetListEmail(),
+         'got_list_email':    mlist.posting_address,
          'got_listinfo_url':  mlist.GetScriptURL('listinfo', absolute=1),
-         'got_request_email': mlist.GetRequestEmail(),
-         'got_owner_email':   mlist.GetOwnerEmail(),
+         'got_request_email': mlist.request_address,
+         'got_owner_email':   mlist.owner_address,
          }, mlist=mlist)
     # MIME
     masthead = MIMEText(mastheadtxt.encode(lcset), _charset=lcset)
@@ -377,20 +378,31 @@ def send_i18n_digests(mlist, mboxfp):
     mlist.next_digest_number += 1
     virginq = get_switchboard(config.VIRGINQUEUE_DIR)
     # Calculate the recipients lists
-    plainrecips = []
-    mimerecips = []
-    drecips = mlist.getDigestMemberKeys() + mlist.one_last_digest.keys()
-    for user in mlist.getMemberCPAddresses(drecips):
-        # user might be None if someone who toggled off digest delivery
-        # subsequently unsubscribed from the mailing list.  Also, filter out
-        # folks who have disabled delivery.
-        if user is None or mlist.getDeliveryStatus(user) <> ENABLED:
+    plainrecips = set()
+    mimerecips = set()
+    # When someone turns off digest delivery, they will get one last digest to
+    # ensure that there will be no gaps in the messages they receive.
+    # Currently, this dictionary contains the email addresses of those folks
+    # who should get one last digest.  We need to find the corresponding
+    # IMember records.
+    digest_members = set(mlist.digest_members.members)
+    for address in mlist.one_last_digest:
+        member = mlist.digest_members.get_member(address)
+        if member:
+            digest_members.add(member)
+    for member in digest_members:
+        if member.delivery_status <> DeliveryStatus.enabled:
             continue
-        # Otherwise, decide whether they get MIME or RFC 1153 digests
-        if mlist.getMemberOption(user, config.DisableMime):
-            plainrecips.append(user)
+        # Send the digest to the case-preserved address of the digest members.
+        email_address = member.address.original_address
+        if member.delivery_mode == DeliveryMode.plaintext_digests:
+            plainrecips.add(email_address)
+        elif member.delivery_mode == DeliveryMode.mime_digests:
+            mimerecips.add(email_address)
         else:
-            mimerecips.append(user)
+            raise AssertionError(
+                'Digest member "%s" unexpected delivery mode: %s' %
+                (email_address, member.delivery_mode))
     # Zap this since we're now delivering the last digest to these folks.
     mlist.one_last_digest.clear()
     # MIME

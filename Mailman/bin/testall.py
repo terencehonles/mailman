@@ -152,6 +152,9 @@ def main():
     if not args:
         args = ['.']
 
+    # Store the options some place that other code can get to it.
+    config.opts = opts
+
     # Turn on code coverage if selected.
     if opts.coverage:
         try:

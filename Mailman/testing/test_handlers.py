@@ -43,7 +43,6 @@ from Mailman.Handlers import Moderate
 from Mailman.Handlers import Scrubber
 # Don't test handlers such as SMTPDirect and Sendmail here
 from Mailman.Handlers import ToArchive
-from Mailman.Handlers import ToDigest
 
 
 
@@ -275,124 +274,9 @@ It rocks!
 
 
 
-class TestToDigest(TestBase):
-    def _makemsg(self, i=0):
-        msg = email.message_from_string("""From: aperson@example.org
-To: _xtest@example.com
-Subject: message number %(i)d
-
-Here is message %(i)d
-""" % {'i' : i})
-        return msg
-
-    def setUp(self):
-        TestBase.setUp(self)
-        self._path = os.path.join(self._mlist.fullpath(), 'digest.mbox')
-        fp = open(self._path, 'w')
-        g = Generator(fp)
-        for i in range(5):
-            g.flatten(self._makemsg(i), unixfrom=1)
-        fp.close()
-        self._sb = Switchboard(config.VIRGINQUEUE_DIR)
-
-    def tearDown(self):
-        try:
-            os.unlink(self._path)
-        except OSError, e:
-            if e.errno <> errno.ENOENT: raise
-        for f in os.listdir(config.VIRGINQUEUE_DIR):
-            os.unlink(os.path.join(config.VIRGINQUEUE_DIR, f))
-        TestBase.tearDown(self)
-
-    def test_short_circuit(self):
-        eq = self.assertEqual
-        mlist = self._mlist
-        mlist.digestable = 0
-        eq(ToDigest.process(mlist, None, {}), None)
-        mlist.digestable = 1
-        eq(ToDigest.process(mlist, None, {'isdigest': 1}), None)
-        eq(self._sb.files(), [])
-
-    def test_undersized(self):
-        msg = self._makemsg(99)
-        size = os.path.getsize(self._path) + len(str(msg))
-        self._mlist.digest_size_threshhold = (size + 1) * 1024
-        ToDigest.process(self._mlist, msg, {})
-        self.assertEqual(self._sb.files(), [])
-
-    def test_send_a_digest(self):
-        eq = self.assertEqual
-        mlist = self._mlist
-        msg = self._makemsg(99)
-        size = os.path.getsize(self._path) + len(str(msg))
-        mlist.digest_size_threshhold = 0
-        ToDigest.process(mlist, msg, {})
-        files = self._sb.files()
-        # There should be two files in the queue, one for the MIME digest and
-        # one for the RFC 1153 digest.
-        eq(len(files), 2)
-        # Now figure out which of the two files is the MIME digest and which
-        # is the RFC 1153 digest.
-        for filebase in files:
-            qmsg, qdata = self._sb.dequeue(filebase)
-            if qmsg.get_content_maintype() == 'multipart':
-                mimemsg = qmsg
-                mimedata = qdata
-            else:
-                rfc1153msg = qmsg
-                rfc1153data = qdata
-        eq(rfc1153msg.get_content_type(), 'text/plain')
-        eq(mimemsg.get_content_type(), 'multipart/mixed')
-        eq(mimemsg['from'], mlist.GetRequestEmail())
-        eq(mimemsg['subject'],
-           '%(realname)s Digest, Vol %(volume)d, Issue %(issue)d' % {
-            'realname': mlist.real_name,
-            'volume'  : mlist.volume,
-            'issue'   : mlist.next_digest_number - 1,
-            })
-        eq(mimemsg['to'], mlist.GetListEmail())
-        # BAW: this test is incomplete...
-
-    def test_send_i18n_digest(self):
-        eq = self.assertEqual
-        mlist = self._mlist
-        mlist.preferred_language = 'fr'
-        msg = email.message_from_string("""\
-From: aperson@example.org
-To: _xtest@example.com
-Subject: =?iso-2022-jp?b?GyRCMGxIVhsoQg==?=
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-2022-jp
-Content-Transfer-Encoding: 7bit
-
-\x1b$B0lHV\x1b(B
-""")
-        mlist.digest_size_threshhold = 0
-        ToDigest.process(mlist, msg, {})
-        files = self._sb.files()
-        eq(len(files), 2)
-        for filebase in files:
-            qmsg, qdata = self._sb.dequeue(filebase)
-            if qmsg.get_content_maintype() == 'multipart':
-                mimemsg = qmsg
-                mimedata = qdata
-            else:
-                rfc1153msg = qmsg
-                rfc1153data = qdata
-        eq(rfc1153msg.get_content_type(), 'text/plain')
-        eq(rfc1153msg.get_content_charset(), 'utf-8')
-        eq(rfc1153msg['content-transfer-encoding'], 'base64')
-        toc = mimemsg.get_payload()[1]
-        eq(toc.get_content_type(), 'text/plain')
-        eq(toc.get_content_charset(), 'utf-8')
-        eq(toc['content-transfer-encoding'], 'base64')
-
-
-
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestApprove))
     suite.addTest(unittest.makeSuite(TestScrubber))
     suite.addTest(unittest.makeSuite(TestToArchive))
-    suite.addTest(unittest.makeSuite(TestToDigest))
     return suite

@@ -91,7 +91,7 @@ class MailingList(Entity):
     has_field('digest_header',                              Unicode),
     has_field('digest_is_default',                          Boolean),
     has_field('digest_send_periodic',                       Boolean),
-    has_field('digest_size_threshhold',                     Integer),
+    has_field('digest_size_threshold',                      Integer),
     has_field('digest_volume_frequency',                    Integer),
     has_field('digestable',                                 Boolean),
     has_field('discard_these_nonmembers',                   PickleType),
