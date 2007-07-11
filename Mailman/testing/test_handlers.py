@@ -42,7 +42,6 @@ from Mailman.Handlers import Approve
 from Mailman.Handlers import Moderate
 from Mailman.Handlers import Scrubber
 # Don't test handlers such as SMTPDirect and Sendmail here
-from Mailman.Handlers import ToArchive
 
 
 
@@ -219,64 +218,8 @@ Name: xtext.txt""")
 
 
 
-class TestToArchive(TestBase):
-    def setUp(self):
-        TestBase.setUp(self)
-        # We're going to want to inspect this queue directory
-        self._sb = Switchboard(config.ARCHQUEUE_DIR)
-
-    def tearDown(self):
-        for f in os.listdir(config.ARCHQUEUE_DIR):
-            os.unlink(os.path.join(config.ARCHQUEUE_DIR, f))
-        TestBase.tearDown(self)
-
-    def test_short_circuit(self):
-        eq = self.assertEqual
-        msgdata = {'isdigest': 1}
-        ToArchive.process(self._mlist, None, msgdata)
-        eq(len(self._sb.files()), 0)
-        # Try the other half of the or...
-        self._mlist.archive = 0
-        ToArchive.process(self._mlist, None, msgdata)
-        eq(len(self._sb.files()), 0)
-        # Now try the various message header shortcuts
-        msg = email.message_from_string("""\
-X-No-Archive: YES
-
-""")
-        self._mlist.archive = 1
-        ToArchive.process(self._mlist, msg, {})
-        eq(len(self._sb.files()), 0)
-        # And for backwards compatibility
-        msg = email.message_from_string("""\
-X-Archive: NO
-
-""")
-        ToArchive.process(self._mlist, msg, {})
-        eq(len(self._sb.files()), 0)
-
-    def test_normal_archiving(self):
-        eq = self.assertEqual
-        msg = email.message_from_string("""\
-Subject: About Mailman
-
-It rocks!
-""")
-        ToArchive.process(self._mlist, msg, {})
-        files = self._sb.files()
-        eq(len(files), 1)
-        msg2, data = self._sb.dequeue(files[0])
-        eq(len(data), 3)
-        eq(data['version'], 3)
-        # Clock skew makes this unreliable
-        #self.failUnless(data['received_time'] <= time.time())
-        eq(msg.as_string(unixfrom=0), msg2.as_string(unixfrom=0))
-
-
-
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestApprove))
     suite.addTest(unittest.makeSuite(TestScrubber))
-    suite.addTest(unittest.makeSuite(TestToArchive))
     return suite
