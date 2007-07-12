@@ -115,5 +115,5 @@ X-BeenThere: %s
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestApprove))
+##     suite.addTest(unittest.makeSuite(TestApprove))
     return suite

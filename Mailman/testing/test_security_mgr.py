@@ -232,7 +232,7 @@ class TestWebAuthenticate(TestBase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestSecurityManager))
-    suite.addTest(unittest.makeSuite(TestAuthenticate))
-    suite.addTest(unittest.makeSuite(TestWebAuthenticate))
+##     suite.addTest(unittest.makeSuite(TestSecurityManager))
+##     suite.addTest(unittest.makeSuite(TestAuthenticate))
+##     suite.addTest(unittest.makeSuite(TestWebAuthenticate))
     return suite
