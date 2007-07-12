@@ -345,12 +345,8 @@ URL: %(url)s
                 charsets.append(partcharset)
         # Now join the text and set the payload
         sep = _('-------------- next part --------------\n')
-        # The i18n separator is in the list's charset. Coerce to unicode.
-        try:
-            sep = unicode(sep, lcset, 'replace')
-        except (UnicodeError, LookupError, ValueError):
-            # This shouldn't occur.
-            pass
+        assert isinstance(sep, unicode), (
+            'Expected a unicode separator, got %s' % type(sep))
         rept = sep.join(text)
         # Replace entire message with text and scrubbed notice.
         # Try with message charsets and utf-8
@@ -373,16 +369,21 @@ URL: %(url)s
 
 
 def makedirs(dir):
-    # Create all the directories to store this attachment in
+    # Create all the directories to store this attachment in and try to make
+    # sure that the permissions of the directories are set correctly.
     try:
         os.makedirs(dir, 02775)
-        # Unfortunately, FreeBSD seems to be broken in that it doesn't honor
-        # the mode arg of mkdir().
-        def twiddle(arg, dirname, names):
-            os.chmod(dirname, 02775)
-        os.path.walk(dir, twiddle, None)
     except OSError, e:
-        if e.errno <> errno.EEXIST: raise
+        if e.errno == errno.EEXIST:
+            return
+    # Some systems such as FreeBSD ignore mkdir's mode, so walk the just
+    # created directories and try to set the mode, ignoring any OSErrors that
+    # occur here.
+    for dirpath, dirnames, filenames in os.walk(dir):
+        try:
+            os.chmod(dirpath, 02775)
+        except OSError:
+            pass
 
 
 

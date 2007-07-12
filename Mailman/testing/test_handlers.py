@@ -17,30 +17,17 @@
 
 """Unit tests for the various Mailman/Handlers/*.py modules."""
 
-import os
-import sha
-import time
 import email
-import errno
-import cPickle
 import unittest
-
-from email.Generator import Generator
 
 from Mailman import Errors
 from Mailman import Message
-from Mailman import Version
 from Mailman import passwords
 from Mailman.MailList import MailList
-from Mailman.Queue.Switchboard import Switchboard
 from Mailman.configuration import config
 from Mailman.testing.base import TestBase
 
-from Mailman.Handlers import Acknowledge
-from Mailman.Handlers import AfterDelivery
 from Mailman.Handlers import Approve
-from Mailman.Handlers import Moderate
-from Mailman.Handlers import Scrubber
 # Don't test handlers such as SMTPDirect and Sendmail here
 
 
@@ -126,100 +113,7 @@ X-BeenThere: %s
 
 
 
-class TestScrubber(TestBase):
-    def test_save_attachment(self):
-        mlist = self._mlist
-        msg = email.message_from_string("""\
-Content-Type: image/gif; name="xtest.gif"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="xtest.gif"
-
-R0lGODdhAQABAIAAAAAAAAAAACwAAAAAAQABAAACAQUAOw==
-""")
-        Scrubber.save_attachment(mlist, msg, '')
-        f = open(os.path.join(mlist.archive_dir(), 'attachment.gif'))
-        img = f.read()
-        self.assertEqual(img.startswith('GIF87a'), True)
-        self.assertEqual(len(img), 34)
-
-    def _saved_file(self, s):
-        # a convenient function to get the saved attachment file
-        for i in s.splitlines():
-            if i.startswith('URL: '):
-                f = i.replace(
-                      'URL: <' + self._mlist.GetBaseArchiveURL() + '/' , '')
-        f = os.path.join(self._mlist.archive_dir(), f.rstrip('>'))
-        return f
-
-    def test_scrub_image(self):
-        mlist = self._mlist
-        msg = email.message_from_string("""\
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="BOUNDARY"
-
---BOUNDARY
-Content-type: text/plain; charset=us-ascii
-
-This is a message.
---BOUNDARY
-Content-Type: image/gif; name="xtest.gif"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="xtest.gif"
-
-R0lGODdhAQABAIAAAAAAAAAAACwAAAAAAQABAAACAQUAOw==
---BOUNDARY--
-""")
-        Scrubber.process(mlist, msg, {})
-        # saved file
-        img = open(self._saved_file(msg.get_payload())).read()
-        self.assertEqual(img.startswith('GIF87a'), True)
-        self.assertEqual(len(img), 34)
-        # scrubbed message
-        s = '\n'.join([l for l in msg.get_payload().splitlines()
-                               if not l.startswith('URL: ')])
-        self.assertEqual(s, """\
-This is a message.
--------------- next part --------------
-A non-text attachment was scrubbed...
-Name: xtest.gif
-Type: image/gif
-Size: 34 bytes
-Desc: not available""")
-
-    def test_scrub_text(self):
-        mlist = self._mlist
-        msg = email.message_from_string("""\
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="BOUNDARY"
-
---BOUNDARY
-Content-type: text/plain; charset=us-ascii; format=flowed; delsp=no
-
-This is a message.
---BOUNDARY
-Content-type: text/plain; name="xtext.txt"
-Content-Disposition: attachment; filename="xtext.txt"
-
-This is a text attachment.
---BOUNDARY--
-""")
-        Scrubber.process(mlist, msg, {})
-        self.assertEqual(msg.get_param('format'), 'flowed')
-        self.assertEqual(msg.get_param('delsp'), 'no')
-        txt = open(self._saved_file(msg.get_payload())).read()
-        self.assertEqual(txt, 'This is a text attachment.')
-        s = '\n'.join([l for l in msg.get_payload().splitlines()
-                               if not l.startswith('URL: ')])
-        self.assertEqual(s, """\
-This is a message.
--------------- next part --------------
-An embedded and charset-unspecified text was scrubbed...
-Name: xtext.txt""")
-
-
-
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestApprove))
-    suite.addTest(unittest.makeSuite(TestScrubber))
     return suite
