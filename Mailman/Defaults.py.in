@@ -1237,27 +1237,16 @@ PENDINGDB_LOCK_DEBUGGING = Off
 #####
 # Nothing below here is user configurable.  Most of these values are in this
 # file for internal system convenience.  Don't change any of them or override
-# any of them in your mm_cfg.py file!
+# any of them in your mailman.cfg file!
 #####
 
-# These directories are used to find various important files in the Mailman
-# installation.  PREFIX and EXEC_PREFIX are set by configure and should point
-# to the installation directory of the Mailman package.
-PYTHON          = '@PYTHON@'
-PREFIX          = '@prefix@'
-EXEC_PREFIX     = '@exec_prefix@'
-VAR_PREFIX      = '@VAR_PREFIX@'
-
-# Work around a bogus autoconf 2.12 bug
-if EXEC_PREFIX == '${prefix}':
-    EXEC_PREFIX = PREFIX
-
-# CGI extension, change using configure script
-CGIEXT = '@CGIEXT@'
+# This is the top-level run-time data directory.  All other runtime data by
+# default lives under this directory.
+RUNTIME_DIR = '$runtime_dir'
 
 # Group id that group-owns the Mailman installation
-MAILMAN_USER = '@MAILMAN_USER@'
-MAILMAN_GROUP = '@MAILMAN_GROUP@'
+MAILMAN_USER = '$user_name'
+MAILMAN_GROUP = '$group_name'
 
 # Enumeration for Mailman cgi widget types
 Toggle      = 1
