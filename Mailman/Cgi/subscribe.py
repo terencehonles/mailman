@@ -23,20 +23,20 @@ import sys
 import logging
 
 from Mailman import Errors
-from Mailman import i18n
 from Mailman import MailList
 from Mailman import Message
-from Mailman import mm_cfg
 from Mailman import Utils
-from Mailman.htmlformat import *
+from Mailman import i18n
 from Mailman.UserDesc import UserDesc
+from Mailman.configuration import config
+from Mailman.htmlformat import *
 
 SLASH = '/'
 ERRORSEP = '\n\n<p>'
 
 # Set up i18n
 _ = i18n._
-i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+i18n.set_language(config.DEFAULT_SERVER_LANGUAGE)
 
 log     = logging.getLogger('mailman.error')
 mlog    = logging.getLogger('mailman.mischief')
@@ -45,7 +45,7 @@ mlog    = logging.getLogger('mailman.mischief')
 
 def main():
     doc = Document()
-    doc.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+    doc.set_language(config.DEFAULT_SERVER_LANGUAGE)
 
     parts = Utils.GetPathPieces()
     if not parts:

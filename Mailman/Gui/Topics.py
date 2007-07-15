@@ -17,10 +17,10 @@
 
 import re
 
-from Mailman import mm_cfg
 from Mailman import Utils
-from Mailman.i18n import _
 from Mailman.Gui.GUIBase import GUIBase
+from Mailman.configuration import config
+from Mailman.i18n import _
 
 OR = '|'
 
@@ -33,12 +33,12 @@ class Topics(GUIBase):
     def GetConfigInfo(self, mlist, category, subcat=None):
         if category <> 'topics':
             return None
-        WIDTH = mm_cfg.TEXTFIELDWIDTH
+        WIDTH = config.TEXTFIELDWIDTH
 
         return [
             _('List topic keywords'),
 
-            ('topics_enabled', mm_cfg.Radio, (_('Disabled'), _('Enabled')), 0,
+            ('topics_enabled', config.Radio, (_('Disabled'), _('Enabled')), 0,
              _('''Should the topic filter be enabled or disabled?'''),
 
              _("""The topic filter categorizes each incoming email message
@@ -61,7 +61,7 @@ class Topics(GUIBase):
        href="?VARHELP=topics/topics_bodylines_limit">topics_bodylines_limit</a>
              configuration variable.""")),
 
-            ('topics_bodylines_limit', mm_cfg.Number, 5, 0,
+            ('topics_bodylines_limit', config.Number, 5, 0,
              _('How many body lines should the topic matcher scan?'),
 
              _("""The topic matcher will scan this many lines of the message
@@ -74,7 +74,7 @@ class Topics(GUIBase):
              until a non-header-like line is encountered.
              """)),
 
-            ('topics', mm_cfg.Topics, 0, 0,
+            ('topics', config.Topics, 0, 0,
              _('Topic keywords, one per line, to match against each message.'),
 
              _("""Each topic keyword is actually a regular expression, which is

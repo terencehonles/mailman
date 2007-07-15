@@ -19,11 +19,11 @@
         Print this help message.
 """
 
-import sys
 import os
+import sys
 
-from Mailman import mm_cfg
 from Mailman import Utils
+from Mailman.configuration import config
 from Mailman.i18n import _
 
 EMPTYSTRING = ''
@@ -81,7 +81,7 @@ def process(res, args):
     helptext = Utils.maketext(
         'help.txt',
         {'listname'    : mlist.real_name,
-         'version'     : mm_cfg.VERSION,
+         'version'     : config.VERSION,
          'listinfo_url': mlist.GetScriptURL('listinfo', absolute=1),
          'requestaddr' : mlist.GetRequestEmail(),
          'adminaddr'   : mlist.GetOwnerEmail(),

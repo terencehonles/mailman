@@ -23,12 +23,12 @@ import logging
 from email.MIMEMessage import MIMEMessage
 from email.MIMEText import MIMEText
 
-from Mailman import i18n
 from Mailman import Errors
 from Mailman import Message
-from Mailman import mm_cfg
 from Mailman import Pending
 from Mailman import Utils
+from Mailman import i18n
+from Mailman.configuration import config
 
 _ = i18n._
 
@@ -75,7 +75,7 @@ your membership administrative address, %(addr)s.'''))
             _('Welcome to the "%(realname)s" mailing list%(digmode)s'),
             text, pluser)
         msg['X-No-Archive'] = 'yes'
-        msg.send(self, verp=mm_cfg.VERP_PERSONALIZED_DELIVERIES)
+        msg.send(self, verp=config.VERP_PERSONALIZED_DELIVERIES)
 
     def SendUnsubscribeAck(self, addr, lang):
         realname = self.real_name
@@ -83,7 +83,7 @@ your membership administrative address, %(addr)s.'''))
             self.GetMemberAdminEmail(addr), self.GetBouncesEmail(),
             _('You have been unsubscribed from the %(realname)s mailing list'),
             Utils.wrap(self.goodbye_msg), lang)
-        msg.send(self, verp=mm_cfg.VERP_PERSONALIZED_DELIVERIES)
+        msg.send(self, verp=config.VERP_PERSONALIZED_DELIVERIES)
 
     def MailUserPassword(self, user):
         listfullname = self.fqdn_listname
@@ -131,7 +131,7 @@ your membership administrative address, %(addr)s.'''))
         msg = Message.UserNotification(recipient, adminaddr, subject, text,
                                        lang)
         msg['X-No-Archive'] = 'yes'
-        msg.send(self, verp=mm_cfg.VERP_PERSONALIZED_DELIVERIES)
+        msg.send(self, verp=config.VERP_PERSONALIZED_DELIVERIES)
 
     def ForwardMessage(self, msg, text=None, subject=None, tomoderators=True):
         # Wrap the message as an attachment
@@ -206,7 +206,7 @@ is required.""")))
             'bounces': self.internal_name() + '-bounces',
             'token': token,
             }
-        probeaddr = '%s@%s' % ((mm_cfg.VERP_PROBE_FORMAT % probedict),
+        probeaddr = '%s@%s' % ((config.VERP_PROBE_FORMAT % probedict),
                                self.host_name)
         # Calculate the Subject header, in the member's preferred language
         ulang = self.getMemberLanguage(member)

@@ -25,15 +25,15 @@ import shutil
 import logging
 
 from Mailman import Errors
-from Mailman import i18n
 from Mailman import MailList
-from Mailman import mm_cfg
 from Mailman import Utils
+from Mailman import i18n
+from Mailman.configuration import config
 from Mailman.htmlformat import *
 
 # Set up i18n
 _ = i18n._
-i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+i18n.set_language(config.DEFAULT_SERVER_LANGUAGE)
 
 log     = logging.getLogger('mailman.error')
 mlog    = logging.getLogger('mailman.mischief')
@@ -42,7 +42,7 @@ mlog    = logging.getLogger('mailman.mischief')
 
 def main():
     doc = Document()
-    doc.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+    doc.set_language(config.DEFAULT_SERVER_LANGUAGE)
 
     cgidata = cgi.FieldStorage()
     parts = Utils.GetPathPieces()
@@ -81,7 +81,7 @@ def main():
     doc.set_language(mlist.preferred_language)
 
     # Be sure the list owners are not sneaking around!
-    if not mm_cfg.OWNERS_CAN_DELETE_THEIR_OWN_LISTS:
+    if not config.OWNERS_CAN_DELETE_THEIR_OWN_LISTS:
         title = _("You're being a sneaky list owner!")
         doc.SetTitle(title)
         doc.AddItem(
@@ -114,18 +114,18 @@ def process_request(doc, cgidata, mlist):
     # the list-admin, or the site-admin.  Don't use WebAuthenticate here
     # because we want to be sure the actual typed password is valid, not some
     # password sitting in a cookie.
-    if mlist.Authenticate((mm_cfg.AuthCreator,
-                           mm_cfg.AuthListAdmin,
-                           mm_cfg.AuthSiteAdmin),
-                          password) == mm_cfg.UnAuthorized:
+    if mlist.Authenticate((config.AuthCreator,
+                           config.AuthListAdmin,
+                           config.AuthSiteAdmin),
+                          password) == config.UnAuthorized:
         request_deletion(
             doc, mlist,
             _('You are not authorized to delete this mailing list'))
         return
 
     # Do the MTA-specific list deletion tasks
-    if mm_cfg.MTA:
-        modname = 'Mailman.MTA.' + mm_cfg.MTA
+    if config.MTA:
+        modname = 'Mailman.MTA.' + config.MTA
         __import__(modname)
         sys.modules[modname].remove(mlist, cgi=1)
     
@@ -141,7 +141,7 @@ def process_request(doc, cgidata, mlist):
     problems = 0
     listname = mlist.internal_name()
     for dirtmpl in REMOVABLES:
-        dir = os.path.join(mm_cfg.VAR_PREFIX, dirtmpl % listname)
+        dir = os.path.join(config.VAR_PREFIX, dirtmpl % listname)
         if os.path.islink(dir):
             try:
                 os.unlink(dir)
@@ -163,7 +163,7 @@ def process_request(doc, cgidata, mlist):
     table = Table(border=0, width='100%')
     table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0,
-                      bgcolor=mm_cfg.WEB_HEADER_COLOR)
+                      bgcolor=config.WEB_HEADER_COLOR)
     if not problems:
         table.AddRow([_('''You have successfully deleted the mailing list
     <b>%(listname)s</b>.''')])
@@ -192,7 +192,7 @@ def request_deletion(doc, mlist, errmsg=None):
     table = Table(border=0, width='100%')
     table.AddRow([Center(Bold(FontAttr(title, size='+1')))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0,
-                      bgcolor=mm_cfg.WEB_HEADER_COLOR)
+                      bgcolor=config.WEB_HEADER_COLOR)
 
     # Add any error message
     if errmsg:
@@ -216,7 +216,7 @@ def request_deletion(doc, mlist, errmsg=None):
 
     <p>For your safety, you will be asked to reconfirm the list password.
     """)])
-    GREY = mm_cfg.WEB_ADMINITEM_COLOR
+    GREY = config.WEB_ADMINITEM_COLOR
     form = Form(mlist.GetScriptURL('rmlist'))
     ftable = Table(border=0, cols='2', width='100%',
                    cellspacing=3, cellpadding=4)

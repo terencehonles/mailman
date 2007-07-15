@@ -19,11 +19,11 @@
 
 import re
 
-from Mailman import mm_cfg
-from Mailman import Utils
 from Mailman import Errors
-from Mailman.i18n import _
+from Mailman import Utils
 from Mailman.Gui.GUIBase import GUIBase
+from Mailman.configuration import config
+from Mailman.i18n import _
 
 OPTIONS = ('hide', 'ack', 'notmetoo', 'nodupes')
 
@@ -36,13 +36,13 @@ class General(GUIBase):
     def GetConfigInfo(self, mlist, category, subcat):
         if category <> 'general':
             return None
-        WIDTH = mm_cfg.TEXTFIELDWIDTH
+        WIDTH = config.TEXTFIELDWIDTH
 
         # These are for the default_options checkboxes below.
-        bitfields = {'hide'     : mm_cfg.ConcealSubscription,
-                     'ack'      : mm_cfg.AcknowledgePosts,
-                     'notmetoo' : mm_cfg.DontReceiveOwnPosts,
-                     'nodupes'  : mm_cfg.DontReceiveDuplicates
+        bitfields = {'hide'     : config.ConcealSubscription,
+                     'ack'      : config.AcknowledgePosts,
+                     'notmetoo' : config.DontReceiveOwnPosts,
+                     'nodupes'  : config.DontReceiveDuplicates
                      }
         bitdescrs = {
             'hide'     : _("Conceal the member's address"),
@@ -61,7 +61,7 @@ class General(GUIBase):
 
             _('General list personality'),
 
-            ('real_name', mm_cfg.String, WIDTH, 0,
+            ('real_name', config.String, WIDTH, 0,
              _('The public name of this list (make case-changes only).'),
              _('''The capitalization of this name can be changed to make it
              presentable in polite company as a proper noun, or to make an
@@ -71,7 +71,7 @@ class General(GUIBase):
              addresses are not case sensitive, but they are sensitive to
              almost everything else :-)''')),
 
-            ('owner', mm_cfg.EmailList, (3, WIDTH), 0,
+            ('owner', config.EmailList, (3, WIDTH), 0,
              _("""The list administrator email addresses.  Multiple
              administrator addresses, each on separate line is okay."""),
 
@@ -95,7 +95,7 @@ class General(GUIBase):
              addresses of the list moderators</a>.  Note that the field you
              are changing here specifies the list administrators.''')),
 
-            ('moderator', mm_cfg.EmailList, (3, WIDTH), 0,
+            ('moderator', config.EmailList, (3, WIDTH), 0,
              _("""The list moderator email addresses.  Multiple
              moderator addresses, each on separate line is okay."""),
 
@@ -119,7 +119,7 @@ class General(GUIBase):
              this section.  Note that the field you are changing here
              specifies the list moderators.''')),
 
-            ('description', mm_cfg.String, WIDTH, 0,
+            ('description', config.String, WIDTH, 0,
              _('A terse phrase identifying this list.'),
 
              _('''This description is used when the mailing list is listed with
@@ -127,7 +127,7 @@ class General(GUIBase):
                 be as succinct as you can get it, while still identifying what
                 the list is.''')),
 
-            ('info', mm_cfg.Text, (7, WIDTH), 0,
+            ('info', config.Text, (7, WIDTH), 0,
              _('''An introductory description - a few paragraphs - about the
              list.  It will be included, as html, at the top of the listinfo
              page.  Carriage returns will end a paragraph - see the details
@@ -139,7 +139,7 @@ class General(GUIBase):
              bad html (like some unterminated HTML constructs) can prevent
              display of the entire listinfo page.""")),
 
-            ('subject_prefix', mm_cfg.String, WIDTH, 0,
+            ('subject_prefix', config.String, WIDTH, 0,
              _('Prefix for subject line of list postings.'),
              _("""This text will be prepended to subject lines of messages
              posted to the list, to distinguish mailing list messages in in
@@ -151,19 +151,19 @@ class General(GUIBase):
                             (listname %%05d) -> (listname 00123)
              """)),
 
-            ('anonymous_list', mm_cfg.Radio, (_('No'), _('Yes')), 0,
+            ('anonymous_list', config.Radio, (_('No'), _('Yes')), 0,
              _("""Hide the sender of a message, replacing it with the list
              address (Removes From, Sender and Reply-To fields)""")),
 
             _('''<tt>Reply-To:</tt> header munging'''),
 
-            ('first_strip_reply_to', mm_cfg.Radio, (_('No'), _('Yes')), 0,
+            ('first_strip_reply_to', config.Radio, (_('No'), _('Yes')), 0,
              _('''Should any existing <tt>Reply-To:</tt> header found in the
              original message be stripped?  If so, this will be done
              regardless of whether an explict <tt>Reply-To:</tt> header is
              added by Mailman or not.''')),
 
-            ('reply_goes_to_list', mm_cfg.Radio,
+            ('reply_goes_to_list', config.Radio,
              (_('Poster'), _('This list'), _('Explicit address')), 0,
              _('''Where are replies to list messages directed?
              <tt>Poster</tt> is <em>strongly</em> recommended for most mailing
@@ -201,7 +201,7 @@ class General(GUIBase):
              <tt>Reply-To:</tt> address below to point to the parallel
              list.""")),
 
-            ('reply_to_address', mm_cfg.Email, WIDTH, 0,
+            ('reply_to_address', config.Email, WIDTH, 0,
              _('Explicit <tt>Reply-To:</tt> header.'),
              # Details for reply_to_address
              _("""This is the address set in the <tt>Reply-To:</tt> header
@@ -235,7 +235,7 @@ class General(GUIBase):
 
             _('Umbrella list settings'),
 
-            ('umbrella_list', mm_cfg.Radio, (_('No'), _('Yes')), 0,
+            ('umbrella_list', config.Radio, (_('No'), _('Yes')), 0,
              _('''Send password reminders to, eg, "-owner" address instead of
              directly to user.'''),
 
@@ -246,7 +246,7 @@ class General(GUIBase):
              value of "umbrella_member_suffix" appended to the member's
              account name.""")),
 
-            ('umbrella_member_suffix', mm_cfg.String, WIDTH, 0,
+            ('umbrella_member_suffix', config.String, WIDTH, 0,
              _('''Suffix for use when this list is an umbrella for other
              lists, according to setting of previous "umbrella_list"
              setting.'''),
@@ -262,14 +262,14 @@ class General(GUIBase):
 
             _('Notifications'),
 
-            ('send_reminders', mm_cfg.Radio, (_('No'), _('Yes')), 0,
+            ('send_reminders', config.Radio, (_('No'), _('Yes')), 0,
              _('''Send monthly password reminders?'''),
 
              _('''Turn this on if you want password reminders to be sent once
              per month to your members.  Note that members may disable their
              own individual password reminders.''')),
 
-            ('welcome_msg', mm_cfg.Text, (4, WIDTH), 0,
+            ('welcome_msg', config.Text, (4, WIDTH), 0,
              _('''List-specific text prepended to new-subscriber welcome
              message'''),
 
@@ -289,21 +289,21 @@ class General(GUIBase):
                  <li>A blank line separates paragraphs.
              </ul>""")),
 
-            ('send_welcome_msg', mm_cfg.Radio, (_('No'), _('Yes')), 0,
+            ('send_welcome_msg', config.Radio, (_('No'), _('Yes')), 0,
              _('Send welcome message to newly subscribed members?'),
              _("""Turn this off only if you plan on subscribing people manually
              and don't want them to know that you did so.  This option is most
              useful for transparently migrating lists from some other mailing
              list manager to Mailman.""")),
 
-            ('goodbye_msg', mm_cfg.Text, (4, WIDTH), 0,
+            ('goodbye_msg', config.Text, (4, WIDTH), 0,
              _('''Text sent to people leaving the list.  If empty, no special
              text will be added to the unsubscribe message.''')),
 
-            ('send_goodbye_msg', mm_cfg.Radio, (_('No'), _('Yes')), 0,
+            ('send_goodbye_msg', config.Radio, (_('No'), _('Yes')), 0,
              _('Send goodbye message to members when they are unsubscribed?')),
 
-            ('admin_immed_notify', mm_cfg.Radio, (_('No'), _('Yes')), 0,
+            ('admin_immed_notify', config.Radio, (_('No'), _('Yes')), 0,
              _('''Should the list moderators get immediate notice of new
              requests, as well as daily notices about collected ones?'''),
 
@@ -313,25 +313,25 @@ class General(GUIBase):
              another.  Setting this option causes notices to be sent
              immediately on the arrival of new requests as well.''')),
 
-            ('admin_notify_mchanges', mm_cfg.Radio, (_('No'), _('Yes')), 0,
+            ('admin_notify_mchanges', config.Radio, (_('No'), _('Yes')), 0,
              _('''Should administrator get notices of subscribes and
              unsubscribes?''')),
 
-            ('respond_to_post_requests', mm_cfg.Radio,
+            ('respond_to_post_requests', config.Radio,
              (_('No'), _('Yes')), 0,
              _('Send mail to poster when their posting is held for approval?')
             ),
 
             _('Additional settings'),
 
-            ('emergency', mm_cfg.Toggle, (_('No'), _('Yes')), 0,
+            ('emergency', config.Toggle, (_('No'), _('Yes')), 0,
              _('Emergency moderation of all list traffic.'),
              _("""When this option is enabled, all list traffic is emergency
              moderated, i.e. held for moderation.  Turn this option on when
              your list is experiencing a flamewar and you want a cooling off
              period.""")),
 
-            ('new_member_options', mm_cfg.Checkbox,
+            ('new_member_options', config.Checkbox,
              (opttext, optvals, 0, OPTIONS),
              # The description for new_member_options includes a kludge where
              # we add a hidden field so that even when all the checkboxes are
@@ -344,7 +344,7 @@ class General(GUIBase):
              _("""When a new member is subscribed to this list, their initial
              set of options is taken from the this variable's setting.""")),
 
-            ('administrivia', mm_cfg.Radio, (_('No'), _('Yes')), 0,
+            ('administrivia', config.Radio, (_('No'), _('Yes')), 0,
              _('''(Administrivia filter) Check postings and intercept ones
              that seem to be administrative requests?'''),
 
@@ -354,11 +354,11 @@ class General(GUIBase):
              requests queue, notifying the administrator of the new request,
              in the process.""")),
 
-            ('max_message_size', mm_cfg.Number, 7, 0,
+            ('max_message_size', config.Number, 7, 0,
              _('''Maximum length in kilobytes (KB) of a message body.  Use 0
              for no limit.''')),
 
-            ('host_name', mm_cfg.Host, WIDTH, 0,
+            ('host_name', config.Host, WIDTH, 0,
              _('Host name this list prefers for email.'),
 
              _("""The "host_name" is the preferred name for email to
@@ -369,9 +369,9 @@ class General(GUIBase):
 
           ]
 
-        if mm_cfg.ALLOW_RFC2369_OVERRIDES:
+        if config.ALLOW_RFC2369_OVERRIDES:
             rtn.append(
-                ('include_rfc2369_headers', mm_cfg.Radio,
+                ('include_rfc2369_headers', config.Radio,
                  (_('No'), _('Yes')), 0,
                  _("""Should messages from this mailing list include the
                  <a href="http://www.faqs.org/rfcs/rfc2369.html">RFC 2369</a>
@@ -394,7 +394,7 @@ class General(GUIBase):
                 )
         # Suppression of List-Post: headers
         rtn.append(
-            ('include_list_post_header', mm_cfg.Radio,
+            ('include_list_post_header', config.Radio,
              (_('No'), _('Yes')), 0,
              _('Should postings include the <tt>List-Post:</tt> header?'),
              _("""The <tt>List-Post:</tt> header is one of the headers
@@ -411,7 +411,7 @@ class General(GUIBase):
 
         # Discard held messages after this number of days
         rtn.append(
-            ('max_days_to_hold', mm_cfg.Number, 7, 0,
+            ('max_days_to_hold', config.Number, 7, 0,
             _("""Discard held messages older than this number of days.
             Use 0 for no automatic discarding."""))
             )
@@ -428,7 +428,7 @@ class General(GUIBase):
         elif property == 'new_member_options':
             newopts = 0
             for opt in OPTIONS:
-                bitfield = mm_cfg.OPTINFO[opt]
+                bitfield = config.OPTINFO[opt]
                 if opt in val:
                     newopts |= bitfield
             mlist.new_member_options = newopts

@@ -15,9 +15,9 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-from Mailman import mm_cfg
-from Mailman.i18n import _
 from Mailman.Gui.GUIBase import GUIBase
+from Mailman.configuration import config
+from Mailman.i18n import _
 
 
 
@@ -31,13 +31,13 @@ class Archive(GUIBase):
 	return [
             _("List traffic archival policies."),
 
-	    ('archive', mm_cfg.Toggle, (_('No'), _('Yes')), 0, 
+	    ('archive', config.Toggle, (_('No'), _('Yes')), 0, 
 	     _('Archive messages?')),
 
-	    ('archive_private', mm_cfg.Radio, (_('public'), _('private')), 0,
+	    ('archive_private', config.Radio, (_('public'), _('private')), 0,
              _('Is archive file source for public or private archival?')),
 
- 	    ('archive_volume_frequency', mm_cfg.Radio, 
+ 	    ('archive_volume_frequency', config.Radio, 
              (_('Yearly'), _('Monthly'), _('Quarterly'),
               _('Weekly'), _('Daily')),
              0,

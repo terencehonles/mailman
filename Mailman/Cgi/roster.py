@@ -30,15 +30,15 @@ import urllib
 import logging
 
 from Mailman import Errors
-from Mailman import i18n
 from Mailman import MailList
-from Mailman import mm_cfg
 from Mailman import Utils
+from Mailman import i18n
+from Mailman.configuration import config
 from Mailman.htmlformat import *
 
 # Set up i18n
 _ = i18n._
-i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+i18n.set_language(config.DEFAULT_SERVER_LANGUAGE)
 
 log = logging.getLogger('mailman.error')
 
@@ -80,17 +80,17 @@ def main():
         # Members only
         addr = cgidata.getvalue('roster-email', '')
         password = cgidata.getvalue('roster-pw', '')
-        ok = mlist.WebAuthenticate((mm_cfg.AuthUser,
-                                    mm_cfg.AuthListModerator,
-                                    mm_cfg.AuthListAdmin,
-                                    mm_cfg.AuthSiteAdmin),
+        ok = mlist.WebAuthenticate((config.AuthUser,
+                                    config.AuthListModerator,
+                                    config.AuthListAdmin,
+                                    config.AuthSiteAdmin),
                                    password, addr)
     else:
         # Admin only, so we can ignore the address field
         password = cgidata.getvalue('roster-pw', '')
-        ok = mlist.WebAuthenticate((mm_cfg.AuthListModerator,
-                                    mm_cfg.AuthListAdmin,
-                                    mm_cfg.AuthSiteAdmin),
+        ok = mlist.WebAuthenticate((config.AuthListModerator,
+                                    config.AuthListAdmin,
+                                    config.AuthSiteAdmin),
                                    password)
     if not ok:
         realname = mlist.real_name
@@ -117,7 +117,7 @@ def main():
 
 def error_page(errmsg):
     doc = Document()
-    doc.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+    doc.set_language(config.DEFAULT_SERVER_LANGUAGE)
     error_page_doc(doc, errmsg)
     print doc.Format()
 

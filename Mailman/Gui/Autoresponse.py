@@ -17,10 +17,10 @@
 
 """Administrative GUI for the autoresponder."""
 
-from Mailman import mm_cfg
 from Mailman import Utils
-from Mailman.i18n import _
 from Mailman.Gui.GUIBase import GUIBase
+from Mailman.configuration import config
+from Mailman.i18n import _
 
 # These are the allowable string substitution variables
 ALLOWEDS = ('listname', 'listurl', 'requestemail', 'adminemail', 'owneremail')
@@ -34,7 +34,7 @@ class Autoresponse(GUIBase):
     def GetConfigInfo(self, mlist, category, subcat=None):
         if category <> 'autoreply':
             return None
-        WIDTH = mm_cfg.TEXTFIELDWIDTH
+        WIDTH = config.TEXTFIELDWIDTH
 
         return [
             _("""\
@@ -52,34 +52,34 @@ the following key/value substitutions:
 <p>For each text field, you can either enter the text directly into the text
 box, or you can specify a file on your local system to upload as the text."""),
 
-            ('autorespond_postings', mm_cfg.Toggle, (_('No'), _('Yes')), 0,
+            ('autorespond_postings', config.Toggle, (_('No'), _('Yes')), 0,
              _('''Should Mailman send an auto-response to mailing list
              posters?''')),
 
-            ('autoresponse_postings_text', mm_cfg.FileUpload,
+            ('autoresponse_postings_text', config.FileUpload,
              (6, WIDTH), 0,
              _('Auto-response text to send to mailing list posters.')),
 
-            ('autorespond_admin', mm_cfg.Toggle, (_('No'), _('Yes')), 0,
+            ('autorespond_admin', config.Toggle, (_('No'), _('Yes')), 0,
              _('''Should Mailman send an auto-response to emails sent to the
              -owner address?''')),
 
-            ('autoresponse_admin_text', mm_cfg.FileUpload,
+            ('autoresponse_admin_text', config.FileUpload,
              (6, WIDTH), 0,
              _('Auto-response text to send to -owner emails.')),
 
-            ('autorespond_requests', mm_cfg.Radio,
+            ('autorespond_requests', config.Radio,
              (_('No'), _('Yes, w/discard'), _('Yes, w/forward')), 0,
              _('''Should Mailman send an auto-response to emails sent to the
              -request address?  If you choose yes, decide whether you want
              Mailman to discard the original email, or forward it on to the
              system as a normal mail command.''')),
 
-            ('autoresponse_request_text', mm_cfg.FileUpload,
+            ('autoresponse_request_text', config.FileUpload,
              (6, WIDTH), 0,
              _('Auto-response text to send to -request emails.')),
 
-            ('autoresponse_graceperiod', mm_cfg.Number, 3, 0,
+            ('autoresponse_graceperiod', config.Number, 3, 0,
              _('''Number of days between auto-responses to either the mailing
              list or -request/-owner address from the same poster.  Set to
              zero (or negative) for no grace period (i.e. auto-respond to

@@ -17,9 +17,9 @@
 
 """GUI component managing the content filtering options."""
 
-from Mailman import mm_cfg
-from Mailman.i18n import _
 from Mailman.Gui.GUIBase import GUIBase
+from Mailman.configuration import config
+from Mailman.i18n import _
 
 NL = '\n'
 
@@ -32,10 +32,10 @@ class ContentFilter(GUIBase):
     def GetConfigInfo(self, mlist, category, subcat=None):
         if category <> 'contentfilter':
             return None
-        WIDTH = mm_cfg.TEXTFIELDWIDTH
+        WIDTH = config.TEXTFIELDWIDTH
 
         actions = [_('Discard'), _('Reject'), _('Forward to List Owner')]
-        if mm_cfg.OWNERS_CAN_PRESERVE_FILTERED_MESSAGES:
+        if config.OWNERS_CAN_PRESERVE_FILTERED_MESSAGES:
             actions.append(_('Preserve'))
 
         return [
@@ -71,11 +71,11 @@ class ContentFilter(GUIBase):
             >convert_html_to_plaintext</a> is enabled and the site is
             configured to allow these conversions."""),
 
-            ('filter_content', mm_cfg.Radio, (_('No'), _('Yes')), 0,
+            ('filter_content', config.Radio, (_('No'), _('Yes')), 0,
              _("""Should Mailman filter the content of list traffic according
              to the settings below?""")),
 
-            ('filter_mime_types', mm_cfg.Text, (10, WIDTH), 0,
+            ('filter_mime_types', config.Text, (10, WIDTH), 0,
              _("""Remove message attachments that have a matching content
              type."""),
 
@@ -90,7 +90,7 @@ class ContentFilter(GUIBase):
              <p>See also <a href="?VARHELP=contentfilter/pass_mime_types"
              >pass_mime_types</a> for a content type whitelist.""")),
 
-            ('pass_mime_types', mm_cfg.Text, (10, WIDTH), 0,
+            ('pass_mime_types', config.Text, (10, WIDTH), 0,
              _("""Remove message attachments that don't have a matching
              content type.  Leave this field blank to skip this filter
              test."""),
@@ -104,25 +104,25 @@ class ContentFilter(GUIBase):
              <tt>multipart</tt> to this list, any messages with attachments
              will be rejected by the pass filter.""")),
 
-            ('filter_filename_extensions', mm_cfg.Text, (10, WIDTH), 0,
+            ('filter_filename_extensions', config.Text, (10, WIDTH), 0,
              _("""Remove message attachments that have a matching filename
              extension."""),),
 
-            ('pass_filename_extensions', mm_cfg.Text, (10, WIDTH), 0,
+            ('pass_filename_extensions', config.Text, (10, WIDTH), 0,
              _("""Remove message attachments that don't have a matching
              filename extension.  Leave this field blank to skip this filter
              test."""),),
 
-            ('collapse_alternatives', mm_cfg.Radio, (_('No'), _('Yes')), 0,
+            ('collapse_alternatives', config.Radio, (_('No'), _('Yes')), 0,
              _("""Should Mailman collapse multipart/alternative to its
              first part content?""")),
 
-            ('convert_html_to_plaintext', mm_cfg.Radio, (_('No'), _('Yes')), 0,
+            ('convert_html_to_plaintext', config.Radio, (_('No'), _('Yes')), 0,
              _("""Should Mailman convert <tt>text/html</tt> parts to plain
              text?  This conversion happens after MIME attachments have been
              stripped.""")),
 
-            ('filter_action', mm_cfg.Radio, tuple(actions), 0,
+            ('filter_action', config.Radio, tuple(actions), 0,
 
              _("""Action to take when a message matches the content filtering
              rules."""),

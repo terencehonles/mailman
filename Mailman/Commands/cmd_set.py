@@ -12,14 +12,15 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+# USA.
 
 from email.Utils import parseaddr, formatdate
 
-from Mailman import mm_cfg
 from Mailman import Errors
 from Mailman import MemberAdaptor
 from Mailman import i18n
+from Mailman.configuration import config
 
 def _(s): return s
 
@@ -149,13 +150,13 @@ class SetCommands:
                 _('You are not a member of the %(listname)s mailing list'))
             return STOP
         res.results.append(_('Your current option settings:'))
-        opt = mlist.getMemberOption(address, mm_cfg.AcknowledgePosts)
+        opt = mlist.getMemberOption(address, config.AcknowledgePosts)
         onoff = opt and _('on') or _('off')
         res.results.append(_('    ack %(onoff)s'))
         # Digests are a special ternary value
-        digestsp = mlist.getMemberOption(address, mm_cfg.Digests)
+        digestsp = mlist.getMemberOption(address, config.Digests)
         if digestsp:
-            plainp = mlist.getMemberOption(address, mm_cfg.DisableMime)
+            plainp = mlist.getMemberOption(address, config.DisableMime)
             if plainp:
                 res.results.append(_('    digest plain'))
             else:
@@ -186,18 +187,18 @@ class SetCommands:
             res.results.append(_('    %(status)s (%(how)s on %(date)s)'))
         else:
             res.results.append('    ' + status)
-        opt = mlist.getMemberOption(address, mm_cfg.DontReceiveOwnPosts)
+        opt = mlist.getMemberOption(address, config.DontReceiveOwnPosts)
         # sense is reversed
         onoff = (not opt) and _('on') or _('off')
         res.results.append(_('    myposts %(onoff)s'))
-        opt = mlist.getMemberOption(address, mm_cfg.ConcealSubscription)
+        opt = mlist.getMemberOption(address, config.ConcealSubscription)
         onoff = opt and _('on') or _('off')
         res.results.append(_('    hide %(onoff)s'))
-        opt = mlist.getMemberOption(address, mm_cfg.DontReceiveDuplicates)
+        opt = mlist.getMemberOption(address, config.DontReceiveDuplicates)
         # sense is reversed
         onoff = (not opt) and _('on') or _('off')
         res.results.append(_('    duplicates %(onoff)s'))
-        opt = mlist.getMemberOption(address, mm_cfg.SuppressPasswordReminder)
+        opt = mlist.getMemberOption(address, config.SuppressPasswordReminder)
         # sense is reversed
         onoff = (not opt) and _('on') or _('off')
         res.results.append(_('    reminders %(onoff)s'))
@@ -218,8 +219,8 @@ class SetCommands:
             res.results.append(
                 _('You are not a member of the %(listname)s mailing list'))
             return STOP
-        if not mlist.Authenticate((mm_cfg.AuthUser,
-                                   mm_cfg.AuthListAdmin),
+        if not mlist.Authenticate((config.AuthUser,
+                                   config.AuthListAdmin),
                                   password, address):
             res.results.append(_('You did not give the correct password'))
             return STOP
@@ -250,7 +251,7 @@ class SetCommands:
         status = self._status(res, args[0])
         if status < 0:
             return STOP
-        mlist.setMemberOption(self.__address, mm_cfg.AcknowledgePosts, status)
+        mlist.setMemberOption(self.__address, config.AcknowledgePosts, status)
         res.results.append(_('ack option set'))
 
     def set_digest(self, res, args):
@@ -264,21 +265,21 @@ class SetCommands:
         arg = args[0].lower()
         if arg == 'off':
             try:
-                mlist.setMemberOption(self.__address, mm_cfg.Digests, 0)
+                mlist.setMemberOption(self.__address, config.Digests, 0)
             except Errors.AlreadyReceivingRegularDeliveries:
                 pass
         elif arg == 'plain':
             try:
-                mlist.setMemberOption(self.__address, mm_cfg.Digests, 1)
+                mlist.setMemberOption(self.__address, config.Digests, 1)
             except Errors.AlreadyReceivingDigests:
                 pass
-            mlist.setMemberOption(self.__address, mm_cfg.DisableMime, 1)
+            mlist.setMemberOption(self.__address, config.DisableMime, 1)
         elif arg == 'mime':
             try:
-                mlist.setMemberOption(self.__address, mm_cfg.Digests, 1)
+                mlist.setMemberOption(self.__address, config.Digests, 1)
             except Errors.AlreadyReceivingDigests:
                 pass
-            mlist.setMemberOption(self.__address, mm_cfg.DisableMime, 0)
+            mlist.setMemberOption(self.__address, config.DisableMime, 0)
         else:
             res.results.append(_('Bad argument: %(arg)s'))
             self._usage(res)
@@ -311,7 +312,7 @@ class SetCommands:
         if status < 0:
             return STOP
         # sense is reversed
-        mlist.setMemberOption(self.__address, mm_cfg.DontReceiveOwnPosts,
+        mlist.setMemberOption(self.__address, config.DontReceiveOwnPosts,
                               not status)
         res.results.append(_('myposts option set'))
 
@@ -322,7 +323,7 @@ class SetCommands:
         status = self._status(res, args[0])
         if status < 0:
             return STOP
-        mlist.setMemberOption(self.__address, mm_cfg.ConcealSubscription,
+        mlist.setMemberOption(self.__address, config.ConcealSubscription,
                               status)
         res.results.append(_('hide option set'))
 
@@ -334,7 +335,7 @@ class SetCommands:
         if status < 0:
             return STOP
         # sense is reversed
-        mlist.setMemberOption(self.__address, mm_cfg.DontReceiveDuplicates,
+        mlist.setMemberOption(self.__address, config.DontReceiveDuplicates,
                               not status)
         res.results.append(_('duplicates option set'))
 
@@ -346,7 +347,7 @@ class SetCommands:
         if status < 0:
             return STOP
         # sense is reversed
-        mlist.setMemberOption(self.__address, mm_cfg.SuppressPasswordReminder,
+        mlist.setMemberOption(self.__address, config.SuppressPasswordReminder,
                               not status)
         res.results.append(_('reminder option set'))
 

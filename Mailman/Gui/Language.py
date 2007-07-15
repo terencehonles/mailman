@@ -21,8 +21,8 @@ import codecs
 
 from Mailman import Utils
 from Mailman import i18n
-from Mailman import mm_cfg
 from Mailman.Gui.GUIBase import GUIBase
+from Mailman.configuration import config
 
 _ = i18n._
 
@@ -53,7 +53,7 @@ class Language(GUIBase):
             except LookupError:
                 return 0
 
-        all = [key for key in mm_cfg.LC_DESCRIPTIONS.keys()
+        all = [key for key in config.LC_DESCRIPTIONS.keys()
                if checkcodec(Utils.GetCharSet(key))]
         all.sort()
         checked = [L in langs for L in all]
@@ -62,7 +62,7 @@ class Language(GUIBase):
         return [
             _('Natural language (internationalization) options.'),
 
-            ('preferred_language', mm_cfg.Select,
+            ('preferred_language', config.Select,
              (langs, langnames, langi),
              0,
              _('Default language for this list.'),
@@ -74,7 +74,7 @@ class Language(GUIBase):
              applies to both web-based and email-based messages, but not to
              email posted by list members.''')),
 
-            ('available_languages', mm_cfg.Checkbox,
+            ('available_languages', config.Checkbox,
              (allnames, checked, 0, all), 0,
              _('Languages supported by this list.'),
 
@@ -83,7 +83,7 @@ class Language(GUIBase):
              <a href="?VARHELP=language/preferred_language">default
              language</a> must be included.''')),
 
-            ('encode_ascii_prefixes', mm_cfg.Radio,
+            ('encode_ascii_prefixes', config.Radio,
              (_('Never'), _('Always'), _('As needed')), 0,
              _("""Encode the
              <a href="?VARHELP=general/subject_prefix">subject

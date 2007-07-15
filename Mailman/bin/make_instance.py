@@ -22,27 +22,36 @@ import grp
 import pwd
 import sys
 import optparse
+import setuptools
 from string import Template
 
 import Mailman
 from Mailman.Version import MAILMAN_VERSION
-from Mailman.i18n import _
+
+# Until an instance is actually created, this module won't be importable
+# because the Defaults.py module won't have been created yet.
+try:
+    from Mailman.i18n import _
+except ImportError:
+    def _(s): return s
 
 __i18n_templates__ = True
 SPACE = ' '
+DEFAULT_RUNTIME_DIR = '/var/mailman'
 
 
 
 def parseargs():
-    parser = optparse.OptionParser(MAILMAN_VERSION, usage=_("""\
+    parser = optparse.OptionParser(version=MAILMAN_VERSION,
+                                   usage=_("""\
 %prog [options]
 
 Create a Mailman instance by generating all the necessary basic configuration
 support and intervening directories.
 """))
     parser.add_option('-r', '--runtime-dir',
-                      type='string', default='/var/mailman', help=_("""\
-The top-level run-time data directory.  All supporting run-time data will be
+                      type='string', default=DEFAULT_RUNTIME_DIR, help=_("""\
+The top-level runtime data directory.  All supporting runtime data will be
 placed in subdirectories of this directory.  It will be created if necessary,
 although this might require superuser privileges."""))
     parser.add_option('-p', '--permchecks',
@@ -50,11 +59,11 @@ although this might require superuser privileges."""))
 Perform permission checks on the runtime directory."""))
     parser.add_option('-u', '--user',
                       type='string', default=None, help=_("""\
-The user id or name to use for the run-time directory.  If not specified, the
+The user id or name to use for the runtime environment.  If not specified, the
 current user is used."""))
     parser.add_option('-g', '--group',
                       type='string', default=None, help=_("""\
-The group id or name to use for the run-time directory.  If not specified, the
+The group id or name to use for the runtime environment.  If not specified, the
 current group is used."""))
     parser.add_option('-l', '--language',
                       default=[], type='string', action='append', help=_("""\
@@ -67,8 +76,7 @@ Enable the given language.  Use 'all' to enable all supported languages."""))
 
 
 
-def main():
-    parser, opts, args = parseargs()
+def instantiate(user=None, group=None, runtime_dir=None):
     # Create the Defaults.py file using substitutions.
     in_file_path = os.path.join(os.path.dirname(Mailman.__file__),
                                 'Defaults.py.in')
@@ -76,42 +84,48 @@ def main():
     with open(in_file_path) as fp:
         raw = Template(fp.read())
     # Figure out which user name and group name to use.
-    if opts.user is None:
+    if user is None:
         uid = os.getuid()
     else:
         try:
-            uid = int(opts.user)
+            uid = int(user)
         except ValueError:
             try:
-                uid = pwd.getpwnam(opts.user).pw_uid
+                uid = pwd.getpwnam(user).pw_uid
             except KeyError:
-                parser.print_error(_('Unknown user: $opts.user'))
+                parser.print_error(_('Unknown user: $user'))
     try:
-        user_name = pwd.getpwuid(uid)
+        user_name = pwd.getpwuid(uid).pw_name
     except KeyError:
-        parser.print_error(_('Unknown user: $opts.user'))
-    if opts.group is None:
+        parser.print_error(_('Unknown user: $user'))
+    if group is None:
         gid = os.getgid()
     else:
         try:
-            gid = int(opts.group)
+            gid = int(group)
         except ValueError:
             try:
-                gid = grp.getgrnam(opts.group).gr_gid
+                gid = grp.getgrnam(group).gr_gid
             except KeyError:
-                parser.print_error(_('Unknown group: $opts.group'))
+                parser.print_error(_('Unknown group: $group'))
     try:
-        group_name = grp.getgrgid(gid)
+        group_name = grp.getgrgid(gid).gr_name
     except KeyError:
-        parser.print_error(_('Unknown group: $opts.group'))
+        parser.print_error(_('Unknown group: $group'))
     # Process the .in file and write it to Defaults.py.
-    processed = raw.safe_substitute(runtime_dir=opts.runtime_dir,
+    processed = raw.safe_substitute(runtime_dir=runtime_dir,
                                     user_name=user_name,
                                     group_name=group_name)
     with open(out_file_path, 'w') as fp:
         fp.write(processed)
     # XXX Do --permchecks
     # XXX Do --language
+    
+
+
+def main():
+    parser, opts, args = parseargs()
+    instantiate(opts.user, opts.group, opts.runtime_dir)
 
 
 

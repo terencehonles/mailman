@@ -33,8 +33,8 @@ from string import Template
 
 from Mailman import Mailbox
 from Mailman import Utils
-from Mailman import mm_cfg
 from Mailman.SafeDict import SafeDict
+from Mailman.configuration import config
 from Mailman.configuration import config
 from Mailman.i18n import _
 
@@ -65,11 +65,11 @@ class Archiver:
     #
     def InitVars(self):
         # Configurable
-        self.archive = mm_cfg.DEFAULT_ARCHIVE
+        self.archive = config.DEFAULT_ARCHIVE
         # 0=public, 1=private:
-        self.archive_private = mm_cfg.DEFAULT_ARCHIVE_PRIVATE
+        self.archive_private = config.DEFAULT_ARCHIVE_PRIVATE
         self.archive_volume_frequency = \
-                mm_cfg.DEFAULT_ARCHIVE_VOLUME_FREQUENCY
+                config.DEFAULT_ARCHIVE_VOLUME_FREQUENCY
         # The archive file structure by default is:
         #
         # archives/
@@ -188,23 +188,23 @@ class Archiver:
     def ArchiveMail(self, msg):
         """Store postings in mbox and/or pipermail archive, depending."""
         # Fork so archival errors won't disrupt normal list delivery
-        if mm_cfg.ARCHIVE_TO_MBOX == -1:
+        if config.ARCHIVE_TO_MBOX == -1:
             return
         #
         # We don't need an extra archiver lock here because we know the list
         # itself must be locked.
-        if mm_cfg.ARCHIVE_TO_MBOX in (1, 2):
+        if config.ARCHIVE_TO_MBOX in (1, 2):
             self.__archive_to_mbox(msg)
-            if mm_cfg.ARCHIVE_TO_MBOX == 1:
+            if config.ARCHIVE_TO_MBOX == 1:
                 # Archive to mbox only.
                 return
         txt = str(msg)
         # should we use the internal or external archiver?
         private_p = self.archive_private
-        if mm_cfg.PUBLIC_EXTERNAL_ARCHIVER and not private_p:
-            self.ExternalArchive(mm_cfg.PUBLIC_EXTERNAL_ARCHIVER, txt)
-        elif mm_cfg.PRIVATE_EXTERNAL_ARCHIVER and private_p:
-            self.ExternalArchive(mm_cfg.PRIVATE_EXTERNAL_ARCHIVER, txt)
+        if config.PUBLIC_EXTERNAL_ARCHIVER and not private_p:
+            self.ExternalArchive(config.PUBLIC_EXTERNAL_ARCHIVER, txt)
+        elif config.PRIVATE_EXTERNAL_ARCHIVER and private_p:
+            self.ExternalArchive(config.PRIVATE_EXTERNAL_ARCHIVER, txt)
         else:
             # use the internal archiver
             f = StringIO(txt)
@@ -222,7 +222,7 @@ class Archiver:
         # for public vs private.  If it doesn't exist, or some weird
         # permissions errors prevent us from stating the directory, it's
         # pointless to try to fix the perms, so we just return -scott
-        if mm_cfg.ARCHIVE_TO_MBOX == -1:
+        if config.ARCHIVE_TO_MBOX == -1:
             # Archiving is completely disabled, don't require the skeleton.
             return
         pubdir = os.path.join(config.PUBLIC_ARCHIVE_FILE_DIR,
@@ -238,5 +238,5 @@ class Archiver:
             # OSError, ENOENT which should be caught and reported properly.
             makelink(privdir, pubdir)
             # Only make this link if the site has enabled public mbox files
-            if mm_cfg.PUBLIC_MBOX:
+            if config.PUBLIC_MBOX:
                 makelink(privmbox, pubmbox)

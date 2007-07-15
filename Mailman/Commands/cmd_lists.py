@@ -20,7 +20,6 @@
         See a list of the public mailing lists on this GNU Mailman server.
 """
 
-from Mailman import mm_cfg
 from Mailman.MailList import MailList
 from Mailman.configuration import config
 from Mailman.i18n import _

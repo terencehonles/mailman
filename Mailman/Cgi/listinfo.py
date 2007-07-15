@@ -24,15 +24,15 @@ import cgi
 import logging
 
 from Mailman import Errors
-from Mailman import i18n
 from Mailman import MailList
-from Mailman import mm_cfg
 from Mailman import Utils
+from Mailman import i18n
+from Mailman.configuration import config
 from Mailman.htmlformat import *
 
 # Set up i18n
 _ = i18n._
-i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+i18n.set_language(config.DEFAULT_SERVER_LANGUAGE)
 
 log = logging.getLogger('mailman.error')
 
@@ -70,7 +70,7 @@ def listinfo_overview(msg=''):
     # Set up the document and assign it the correct language.  The only one we
     # know about at the moment is the server's default.
     doc = Document()
-    doc.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+    doc.set_language(config.DEFAULT_SERVER_LANGUAGE)
 
     legend = _("%(hostname)s Mailing Lists")
     doc.SetTitle(legend)
@@ -78,7 +78,7 @@ def listinfo_overview(msg=''):
     table = Table(border=0, width="100%")
     table.AddRow([Center(Header(2, legend))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2,
-                      bgcolor=mm_cfg.WEB_HEADER_COLOR)
+                      bgcolor=config.WEB_HEADER_COLOR)
 
     # Skip any mailing lists that isn't advertised.
     advertised = []
@@ -98,7 +98,7 @@ def listinfo_overview(msg=''):
         greeting = FontAttr(_('Welcome!'), size='+2')
 
     welcome = [greeting]
-    mailmanlink = Link(mm_cfg.MAILMAN_URL, _('Mailman')).Format()
+    mailmanlink = Link(config.MAILMAN_URL, _('Mailman')).Format()
     if not advertised:
         welcome.extend(
             _('''<p>There currently are no publicly-advertised
@@ -138,9 +138,9 @@ def listinfo_overview(msg=''):
             table.AddRow(
                 [Link(url, Bold(real_name)),
                       description or Italic(_('[no description available]'))])
-            if highlight and mm_cfg.WEB_HIGHLIGHT_COLOR:
+            if highlight and config.WEB_HIGHLIGHT_COLOR:
                 table.AddRowInfo(table.GetCurrentRowIndex(),
-                                 bgcolor=mm_cfg.WEB_HIGHLIGHT_COLOR)
+                                 bgcolor=config.WEB_HIGHLIGHT_COLOR)
             highlight = not highlight
 
     doc.AddItem(table)

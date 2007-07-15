@@ -28,8 +28,8 @@ from Mailman import MailList
 from Mailman import MemberAdaptor
 from Mailman import Utils
 from Mailman import i18n
-from Mailman import mm_cfg
 from Mailman import passwords
+from Mailman.configuration import config
 from Mailman.htmlformat import *
 
 
@@ -39,7 +39,7 @@ SETLANGUAGE = -1
 
 # Set up i18n
 _ = i18n._
-i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+i18n.set_language(config.DEFAULT_SERVER_LANGUAGE)
 
 log     = logging.getLogger('mailman.error')
 mlog    = logging.getLogger('mailman.mischief')
@@ -48,7 +48,7 @@ mlog    = logging.getLogger('mailman.mischief')
 
 def main():
     doc = Document()
-    doc.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+    doc.set_language(config.DEFAULT_SERVER_LANGUAGE)
 
     parts = Utils.GetPathPieces()
     lenparts = parts and len(parts)
@@ -222,18 +222,18 @@ def main():
     # or the site admin, because they are the only ones who are allowed to
     # change things globally.  Specifically, the list admin may not change
     # values globally.
-    if mm_cfg.ALLOW_SITE_ADMIN_COOKIES:
-        user_or_siteadmin_context = (mm_cfg.AuthUser, mm_cfg.AuthSiteAdmin)
+    if config.ALLOW_SITE_ADMIN_COOKIES:
+        user_or_siteadmin_context = (config.AuthUser, config.AuthSiteAdmin)
     else:
         # Site and list admins are treated equal so that list admin can pass
         # site admin test. :-(
-        user_or_siteadmin_context = (mm_cfg.AuthUser,)
+        user_or_siteadmin_context = (config.AuthUser,)
     is_user_or_siteadmin = mlist.WebAuthenticate(
         user_or_siteadmin_context, password, user)
     # Authenticate, possibly using the password supplied in the login page
     if not is_user_or_siteadmin and \
-       not mlist.WebAuthenticate((mm_cfg.AuthListAdmin,
-                                  mm_cfg.AuthSiteAdmin),
+       not mlist.WebAuthenticate((config.AuthListAdmin,
+                                  config.AuthSiteAdmin),
                                  password, user):
         # Not authenticated, so throw up the login page again.  If they tried
         # to authenticate via cgi (instead of cookie), then print an error
@@ -254,7 +254,7 @@ def main():
     # locked.
 
     if cgidata.has_key('logout'):
-        print mlist.ZapCookie(mm_cfg.AuthUser, user)
+        print mlist.ZapCookie(config.AuthUser, user)
         loginpage(mlist, doc, user, language)
         print doc.Format()
         return
@@ -440,7 +440,7 @@ address.  Upon confirmation, any other mailing list containing the address
             change_password(gmlist, user, pw)
 
         # Regenerate the cookie so a re-authorization isn't necessary
-        print mlist.MakeCookie(mm_cfg.AuthUser, user)
+        print mlist.MakeCookie(config.AuthUser, user)
         options_page(mlist, doc, user, cpuser, userlang,
                      _('Password successfully changed.'))
         print doc.Format()
@@ -501,15 +501,15 @@ address.  Upon confirmation, any other mailing list containing the address
         newvals = []
         # First figure out which options have changed.  The item names come
         # from FormatOptionButton() in HTMLFormatter.py
-        for item, flag in (('digest',      mm_cfg.Digests),
-                           ('mime',        mm_cfg.DisableMime),
-                           ('dontreceive', mm_cfg.DontReceiveOwnPosts),
-                           ('ackposts',    mm_cfg.AcknowledgePosts),
-                           ('disablemail', mm_cfg.DisableDelivery),
-                           ('conceal',     mm_cfg.ConcealSubscription),
-                           ('remind',      mm_cfg.SuppressPasswordReminder),
-                           ('rcvtopic',    mm_cfg.ReceiveNonmatchingTopics),
-                           ('nodupes',     mm_cfg.DontReceiveDuplicates),
+        for item, flag in (('digest',      config.Digests),
+                           ('mime',        config.DisableMime),
+                           ('dontreceive', config.DontReceiveOwnPosts),
+                           ('ackposts',    config.AcknowledgePosts),
+                           ('disablemail', config.DisableDelivery),
+                           ('conceal',     config.ConcealSubscription),
+                           ('remind',      config.SuppressPasswordReminder),
+                           ('rcvtopic',    config.ReceiveNonmatchingTopics),
+                           ('nodupes',     config.DontReceiveDuplicates),
                            ):
             try:
                 newval = int(cgidata.getvalue(item))
@@ -521,7 +521,7 @@ address.  Upon confirmation, any other mailing list containing the address
             # flags.
             if newval is None:
                 continue
-            elif flag == mm_cfg.DisableDelivery:
+            elif flag == config.DisableDelivery:
                 status = mlist.getDeliveryStatus(user)
                 # Here, newval == 0 means enable, newval == 1 means disable
                 if not newval and status <> MemberAdaptor.ENABLED:
@@ -533,7 +533,7 @@ address.  Upon confirmation, any other mailing list containing the address
             elif newval == mlist.getMemberOption(user, flag):
                 continue
             # Should we warn about one more digest?
-            if flag == mm_cfg.Digests and \
+            if flag == config.Digests and \
                    newval == 0 and mlist.getMemberOption(user, flag):
                 digestwarn = 1
 
@@ -573,7 +573,7 @@ address.  Upon confirmation, any other mailing list containing the address
                 if flag == SETLANGUAGE:
                     mlist.setMemberLanguage(user, newval)
                 # Handle delivery status separately
-                elif flag == mm_cfg.DisableDelivery:
+                elif flag == config.DisableDelivery:
                     mlist.setDeliveryStatus(user, newval)
                 else:
                     try:
@@ -605,25 +605,25 @@ address.  Upon confirmation, any other mailing list containing the address
             # Yes, this is inefficient, but the list is so small it shouldn't
             # make much of a difference.
             for flag, newval in newvals:
-                if flag == mm_cfg.DisableDelivery:
+                if flag == config.DisableDelivery:
                     globalopts.enable = newval
                     break
 
         if cgidata.getvalue('remind-globally'):
             for flag, newval in newvals:
-                if flag == mm_cfg.SuppressPasswordReminder:
+                if flag == config.SuppressPasswordReminder:
                     globalopts.remind = newval
                     break
 
         if cgidata.getvalue('nodupes-globally'):
             for flag, newval in newvals:
-                if flag == mm_cfg.DontReceiveDuplicates:
+                if flag == config.DontReceiveDuplicates:
                     globalopts.nodupes = newval
                     break
 
         if cgidata.getvalue('mime-globally'):
             for flag, newval in newvals:
-                if flag == mm_cfg.DisableMime:
+                if flag == config.DisableMime:
                     globalopts.mime = newval
                     break
 
@@ -687,40 +687,40 @@ def options_page(mlist, doc, user, cpuser, userlang, message=''):
     replacements = mlist.GetStandardReplacements(userlang)
     replacements['<mm-results>'] = Bold(FontSize('+1', message)).Format()
     replacements['<mm-digest-radio-button>'] = mlist.FormatOptionButton(
-        mm_cfg.Digests, 1, user)
+        config.Digests, 1, user)
     replacements['<mm-undigest-radio-button>'] = mlist.FormatOptionButton(
-        mm_cfg.Digests, 0, user)
+        config.Digests, 0, user)
     replacements['<mm-plain-digests-button>'] = mlist.FormatOptionButton(
-        mm_cfg.DisableMime, 1, user)
+        config.DisableMime, 1, user)
     replacements['<mm-mime-digests-button>'] = mlist.FormatOptionButton(
-        mm_cfg.DisableMime, 0, user)
+        config.DisableMime, 0, user)
     replacements['<mm-global-mime-button>'] = (
         CheckBox('mime-globally', 1, checked=0).Format())
     replacements['<mm-delivery-enable-button>'] = mlist.FormatOptionButton(
-        mm_cfg.DisableDelivery, 0, user)
+        config.DisableDelivery, 0, user)
     replacements['<mm-delivery-disable-button>'] = mlist.FormatOptionButton(
-        mm_cfg.DisableDelivery, 1, user)
+        config.DisableDelivery, 1, user)
     replacements['<mm-disabled-notice>'] = mlist.FormatDisabledNotice(user)
     replacements['<mm-dont-ack-posts-button>'] = mlist.FormatOptionButton(
-        mm_cfg.AcknowledgePosts, 0, user)
+        config.AcknowledgePosts, 0, user)
     replacements['<mm-ack-posts-button>'] = mlist.FormatOptionButton(
-        mm_cfg.AcknowledgePosts, 1, user)
+        config.AcknowledgePosts, 1, user)
     replacements['<mm-receive-own-mail-button>'] = mlist.FormatOptionButton(
-        mm_cfg.DontReceiveOwnPosts, 0, user)
+        config.DontReceiveOwnPosts, 0, user)
     replacements['<mm-dont-receive-own-mail-button>'] = (
-        mlist.FormatOptionButton(mm_cfg.DontReceiveOwnPosts, 1, user))
+        mlist.FormatOptionButton(config.DontReceiveOwnPosts, 1, user))
     replacements['<mm-dont-get-password-reminder-button>'] = (
-        mlist.FormatOptionButton(mm_cfg.SuppressPasswordReminder, 1, user))
+        mlist.FormatOptionButton(config.SuppressPasswordReminder, 1, user))
     replacements['<mm-get-password-reminder-button>'] = (
-        mlist.FormatOptionButton(mm_cfg.SuppressPasswordReminder, 0, user))
+        mlist.FormatOptionButton(config.SuppressPasswordReminder, 0, user))
     replacements['<mm-public-subscription-button>'] = (
-        mlist.FormatOptionButton(mm_cfg.ConcealSubscription, 0, user))
+        mlist.FormatOptionButton(config.ConcealSubscription, 0, user))
     replacements['<mm-hide-subscription-button>'] = mlist.FormatOptionButton(
-        mm_cfg.ConcealSubscription, 1, user)
+        config.ConcealSubscription, 1, user)
     replacements['<mm-dont-receive-duplicates-button>'] = (
-        mlist.FormatOptionButton(mm_cfg.DontReceiveDuplicates, 1, user))
+        mlist.FormatOptionButton(config.DontReceiveDuplicates, 1, user))
     replacements['<mm-receive-duplicates-button>'] = (
-        mlist.FormatOptionButton(mm_cfg.DontReceiveDuplicates, 0, user))
+        mlist.FormatOptionButton(config.DontReceiveDuplicates, 0, user))
     replacements['<mm-unsubscribe-button>'] = (
         mlist.FormatButton('unsub', _('Unsubscribe')) + '<br>' +
         CheckBox('unsubconfirm', 1, checked=0).Format() +
@@ -753,7 +753,7 @@ def options_page(mlist, doc, user, cpuser, userlang, message=''):
     replacements['<mm-global-nodupes-button>'] = (
         CheckBox('nodupes-globally', 1, checked=0).Format())
 
-    days = int(mm_cfg.PENDING_REQUEST_LIFE / mm_cfg.days(1))
+    days = int(config.PENDING_REQUEST_LIFE / config.days(1))
     if days > 1:
         units = _('days')
     else:
@@ -793,9 +793,9 @@ def options_page(mlist, doc, user, cpuser, userlang, message=''):
         topicsfield = _('<em>No topics defined</em>')
     replacements['<mm-topics>'] = topicsfield
     replacements['<mm-suppress-nonmatching-topics>'] = (
-        mlist.FormatOptionButton(mm_cfg.ReceiveNonmatchingTopics, 0, user))
+        mlist.FormatOptionButton(config.ReceiveNonmatchingTopics, 0, user))
     replacements['<mm-receive-nonmatching-topics>'] = (
-        mlist.FormatOptionButton(mm_cfg.ReceiveNonmatchingTopics, 1, user))
+        mlist.FormatOptionButton(config.ReceiveNonmatchingTopics, 1, user))
 
     if cpuser is not None:
         replacements['<mm-case-preserved-user>'] = _('''
@@ -827,7 +827,7 @@ def loginpage(mlist, doc, user, lang):
     # buttons.
     table.AddRow([Center(Header(2, title))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0,
-                      bgcolor=mm_cfg.WEB_HEADER_COLOR)
+                      bgcolor=config.WEB_HEADER_COLOR)
     if len(mlist.language_codes) > 1:
         langform = Form(actionurl)
         langform.AddItem(SubmitButton('displang-button',
@@ -867,7 +867,7 @@ def loginpage(mlist, doc, user, lang):
     # Unsubscribe section
     table.AddRow([Center(Header(2, _('Unsubscribe')))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0,
-                      bgcolor=mm_cfg.WEB_HEADER_COLOR)
+                      bgcolor=config.WEB_HEADER_COLOR)
 
     table.AddRow([_("""By clicking on the <em>Unsubscribe</em> button, a
     confirmation message will be emailed to you.  This message will have a
@@ -879,7 +879,7 @@ def loginpage(mlist, doc, user, lang):
     # Password reminder section
     table.AddRow([Center(Header(2, _('Password reminder')))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0,
-                      bgcolor=mm_cfg.WEB_HEADER_COLOR)
+                      bgcolor=config.WEB_HEADER_COLOR)
 
     table.AddRow([_("""By clicking on the <em>Remind</em> button, your
     password will be emailed to you.""")])
@@ -948,15 +948,15 @@ def global_options(mlist, user, globalopts):
             mlist.setDeliveryStatus(user, globalopts.enable)
 
         if globalopts.remind is not None:
-            mlist.setMemberOption(user, mm_cfg.SuppressPasswordReminder,
+            mlist.setMemberOption(user, config.SuppressPasswordReminder,
                                   globalopts.remind)
 
         if globalopts.nodupes is not None:
-            mlist.setMemberOption(user, mm_cfg.DontReceiveDuplicates,
+            mlist.setMemberOption(user, config.DontReceiveDuplicates,
                                   globalopts.nodupes)
 
         if globalopts.mime is not None:
-            mlist.setMemberOption(user, mm_cfg.DisableMime, globalopts.mime)
+            mlist.setMemberOption(user, config.DisableMime, globalopts.mime)
 
         mlist.Save()
     finally:
@@ -986,7 +986,7 @@ def topic_details(mlist, doc, user, cpuser, userlang, varhelp):
     table = Table(border=3, width='100%')
     table.AddRow([Center(Bold(_('Topic filter details')))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2,
-                      bgcolor=mm_cfg.WEB_SUBHEADER_COLOR)
+                      bgcolor=config.WEB_SUBHEADER_COLOR)
     table.AddRow([Bold(Label(_('Name:'))),
                   Utils.websafe(name)])
     table.AddRow([Bold(Label(_('Pattern (as regexp):'))),
@@ -996,7 +996,7 @@ def topic_details(mlist, doc, user, cpuser, userlang, varhelp):
                   Utils.websafe(description)])
     # Make colors look nice
     for row in range(1, 4):
-        table.AddCellInfo(row, 0, bgcolor=mm_cfg.WEB_ADMINITEM_COLOR)
+        table.AddCellInfo(row, 0, bgcolor=config.WEB_ADMINITEM_COLOR)
 
     options_page(mlist, doc, user, cpuser, userlang, table.Format())
     print doc.Format()

@@ -7,6 +7,7 @@ build/
 config.log
 config.status
 cron/crontab.in
+mailman.egg-info
 misc/Elixir-0.3.0/
 misc/SQLAlchemy-0.3.3/
 misc/mailman

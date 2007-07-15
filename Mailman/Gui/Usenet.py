@@ -15,9 +15,9 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-from Mailman import mm_cfg
-from Mailman.i18n import _
 from Mailman.Gui.GUIBase import GUIBase
+from Mailman.configuration import config
+from Mailman.i18n import _
 
 
 
@@ -29,7 +29,7 @@ class Usenet(GUIBase):
         if category <> 'gateway':
             return None
 
-        WIDTH = mm_cfg.TEXTFIELDWIDTH
+        WIDTH = config.TEXTFIELDWIDTH
         VERTICAL = 1
 
         return [
@@ -37,7 +37,7 @@ class Usenet(GUIBase):
 
             _('News server settings'),
 
-            ('nntp_host', mm_cfg.String, WIDTH, 0,
+            ('nntp_host', config.String, WIDTH, 0,
              _('The hostname of the machine your news server is running on.'),
              _('''This value may be either the name of your news server, or
              optionally of the format name:port, where port is a port number.
@@ -47,20 +47,20 @@ class Usenet(GUIBase):
              recognize the machine this mailing list runs on as a machine
              capable of reading and posting news.''')),
 
-            ('linked_newsgroup', mm_cfg.String, WIDTH, 0,
+            ('linked_newsgroup', config.String, WIDTH, 0,
               _('The name of the Usenet group to gateway to and/or from.')),
 
-            ('gateway_to_news',  mm_cfg.Toggle, (_('No'), _('Yes')), 0,
+            ('gateway_to_news',  config.Toggle, (_('No'), _('Yes')), 0,
              _('''Should new posts to the mailing list be sent to the
              newsgroup?''')),
 
-            ('gateway_to_mail',  mm_cfg.Toggle, (_('No'), _('Yes')), 0,
+            ('gateway_to_mail',  config.Toggle, (_('No'), _('Yes')), 0,
              _('''Should new posts to the newsgroup be sent to the mailing
              list?''')),
 
             _('Forwarding options'),
 
-            ('news_moderation', mm_cfg.Radio,
+            ('news_moderation', config.Radio,
              (_('None'), _('Open list, moderated group'), _('Moderated')),
              VERTICAL,
 
@@ -91,7 +91,7 @@ class Usenet(GUIBase):
              Mailman moderation facilities, but to add an <tt>Approved</tt>
              header to all messages that are gatewayed to Usenet.""")),
 
-            ('news_prefix_subject_too', mm_cfg.Toggle, (_('No'), _('Yes')), 0,
+            ('news_prefix_subject_too', config.Toggle, (_('No'), _('Yes')), 0,
              _('Prefix <tt>Subject:</tt> headers on postings gated to news?'),
              _("""Mailman prefixes <tt>Subject:</tt> headers with
              <a href="?VARHELP=general/subject_prefix">text you can
@@ -103,7 +103,7 @@ class Usenet(GUIBase):
 
             _('Mass catch up'),
 
-            ('_mass_catchup', mm_cfg.Toggle, (_('No'), _('Yes')), 0,
+            ('_mass_catchup', config.Toggle, (_('No'), _('Yes')), 0,
              _('Should Mailman perform a <em>catchup</em> on the newsgroup?'),
              _('''When you tell Mailman to perform a catchup on the newsgroup,
              this means that you want to start gating messages to the mailing

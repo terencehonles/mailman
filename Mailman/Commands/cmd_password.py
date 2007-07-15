@@ -28,7 +28,7 @@
 
 from email.Utils import parseaddr
 
-from Mailman import mm_cfg
+from Mailman.configuration import config
 from Mailman.i18n import _
 
 STOP = 1
@@ -77,7 +77,7 @@ def process(res, args):
         newpasswd = args[1]
         realname, address = parseaddr(res.msg['from'])
         if mlist.isMember(address):
-            if mlist.Authenticate((mm_cfg.AuthUser, mm_cfg.AuthListAdmin),
+            if mlist.Authenticate((config.AuthUser, config.AuthListAdmin),
                                   oldpasswd, address):
                 mlist.setMemberPassword(address, newpasswd)
                 res.results.append(_('Password successfully changed.'))
@@ -103,7 +103,7 @@ current password, then try again."""))
         address = args[2][8:]
         res.returnaddr = address
         if mlist.isMember(address):
-            if mlist.Authenticate((mm_cfg.AuthUser, mm_cfg.AuthListAdmin),
+            if mlist.Authenticate((config.AuthUser, config.AuthListAdmin),
                                   oldpasswd, address):
                 mlist.setMemberPassword(address, newpasswd)
                 res.results.append(_('Password successfully changed.'))

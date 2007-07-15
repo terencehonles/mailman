@@ -33,16 +33,15 @@ from Mailman import MailList
 from Mailman import MemberAdaptor
 from Mailman import Utils
 from Mailman import i18n
-from Mailman import mm_cfg
 from Mailman import passwords
-
 from Mailman.Cgi import Auth
-from Mailman.htmlformat import *
 from Mailman.UserDesc import UserDesc
+from Mailman.configuration import config
+from Mailman.htmlformat import *
 
 # Set up i18n
 _ = i18n._
-i18n.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+i18n.set_language(config.DEFAULT_SERVER_LANGUAGE)
 
 NL = '\n'
 OPTCOLUMNS = 11
@@ -74,8 +73,8 @@ def main():
     # If the user is not authenticated, we're done.
     cgidata = cgi.FieldStorage(keep_blank_values=1)
 
-    if not mlist.WebAuthenticate((mm_cfg.AuthListAdmin,
-                                  mm_cfg.AuthSiteAdmin),
+    if not mlist.WebAuthenticate((config.AuthListAdmin,
+                                  config.AuthSiteAdmin),
                                  cgidata.getvalue('adminpw', '')):
         if cgidata.has_key('adminpw'):
             # This is a re-authorization attempt
@@ -98,7 +97,7 @@ def main():
 
     # Is this a log-out request?
     if category == 'logout':
-        print mlist.ZapCookie(mm_cfg.AuthListAdmin)
+        print mlist.ZapCookie(config.AuthListAdmin)
         Auth.loginpage(mlist, 'admin', frontpage=True)
         return
 
@@ -173,13 +172,13 @@ def admin_overview(msg=''):
     legend = _('%(hostname)s mailing lists - Admin Links')
     # The html `document'
     doc = Document()
-    doc.set_language(mm_cfg.DEFAULT_SERVER_LANGUAGE)
+    doc.set_language(config.DEFAULT_SERVER_LANGUAGE)
     doc.SetTitle(legend)
     # The table that will hold everything
     table = Table(border=0, width="100%")
     table.AddRow([Center(Header(2, legend))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2,
-                      bgcolor=mm_cfg.WEB_HEADER_COLOR)
+                      bgcolor=config.WEB_HEADER_COLOR)
     # Skip any mailing list that isn't advertised.
     advertised = []
     for name in sorted(config.list_manager.names):
@@ -199,7 +198,7 @@ def admin_overview(msg=''):
         greeting = _("Welcome!")
 
     welcome = []
-    mailmanlink = Link(mm_cfg.MAILMAN_URL, _('Mailman')).Format()
+    mailmanlink = Link(config.MAILMAN_URL, _('Mailman')).Format()
     if not advertised:
         welcome.extend([
             greeting,
@@ -245,9 +244,9 @@ def admin_overview(msg=''):
             table.AddRow(
                 [Link(url, Bold(real_name)),
                       description or Italic(_('[no description available]'))])
-            if highlight and mm_cfg.WEB_HIGHLIGHT_COLOR:
+            if highlight and config.WEB_HIGHLIGHT_COLOR:
                 table.AddRowInfo(table.GetCurrentRowIndex(),
-                                 bgcolor=mm_cfg.WEB_HIGHLIGHT_COLOR)
+                                 bgcolor=config.WEB_HIGHLIGHT_COLOR)
             highlight = not highlight
 
     doc.AddItem(table)
@@ -294,7 +293,7 @@ def option_help(mlist, varhelp):
     header = Table(width='100%')
     header.AddRow([Center(Header(3, legend))])
     header.AddCellInfo(header.GetCurrentRowIndex(), 0, colspan=2,
-                       bgcolor=mm_cfg.WEB_HEADER_COLOR)
+                       bgcolor=config.WEB_HEADER_COLOR)
     doc.SetTitle(_("Mailman %(varname)s List Option Help"))
     doc.AddItem(header)
     doc.AddItem("<b>%s</b> (%s): %s<p>" % (varname, category, description))
@@ -369,7 +368,7 @@ def show_results(mlist, doc, category, subcat, cgidata):
     otherlinks.AddItem(Link(mlist.GetBaseArchiveURL(),
                             _('Go to list archives')).Format() +
                        '<br>&nbsp;<br>')
-    if mm_cfg.OWNERS_CAN_DELETE_THEIR_OWN_LISTS:
+    if config.OWNERS_CAN_DELETE_THEIR_OWN_LISTS:
         otherlinks.AddItem(Link(mlist.GetScriptURL('rmlist'),
                                 _('Delete this mailing list')).Format() +
                            _(' (requires confirmation)<br>&nbsp;<br>'))
@@ -425,7 +424,7 @@ def show_results(mlist, doc, category, subcat, cgidata):
         label = _('Emergency moderation of all list traffic is enabled')
         etable.AddRow([Center(
             Link('?VARHELP=general/emergency', Bold(label)))])
-        color = mm_cfg.WEB_ERROR_COLOR
+        color = config.WEB_ERROR_COLOR
         etable.AddCellInfo(etable.GetCurrentRowIndex(), 0,
                            colspan=2, bgcolor=color)
     linktable.AddRow([etable, otherlinks])
@@ -453,7 +452,7 @@ def show_results(mlist, doc, category, subcat, cgidata):
             table = Table(width='100%')
             table.AddRow([Center(Header(2, _('Additional Member Tasks')))])
             table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2,
-                              bgcolor=mm_cfg.WEB_HEADER_COLOR)
+                              bgcolor=config.WEB_HEADER_COLOR)
             # Add a blank separator row
             table.AddRow(['&nbsp;', '&nbsp;'])
             # Add a section to set the moderation bit for all members
@@ -489,7 +488,7 @@ def show_variables(mlist, category, subcat, cgidata, doc):
 
     table.AddRow([Center(Header(2, label))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2,
-                      bgcolor=mm_cfg.WEB_HEADER_COLOR)
+                      bgcolor=config.WEB_HEADER_COLOR)
 
     # The very first item in the config info will be treated as a general
     # description if it is a string
@@ -536,9 +535,9 @@ def add_options_table_item(mlist, category, subcat, table, item, detailsp=1):
     val = get_item_gui_value(mlist, category, kind, varname, params, extra)
     table.AddRow([descr, val])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0,
-                      bgcolor=mm_cfg.WEB_ADMINITEM_COLOR)
+                      bgcolor=config.WEB_ADMINITEM_COLOR)
     table.AddCellInfo(table.GetCurrentRowIndex(), 1,
-                      bgcolor=mm_cfg.WEB_ADMINITEM_COLOR)
+                      bgcolor=config.WEB_ADMINITEM_COLOR)
 
 
 
@@ -574,7 +573,7 @@ def get_item_gui_value(mlist, category, kind, varname, params, extra):
     if value is None and not varname.startswith('_'):
         value = getattr(mlist, varname)
     # Now create the widget for this value
-    if kind == mm_cfg.Radio or kind == mm_cfg.Toggle:
+    if kind == config.Radio or kind == config.Toggle:
         # If we are returning the option for subscribe policy and this site
         # doesn't allow open subscribes, then we have to alter the value of
         # mlist.subscribe_policy as passed to RadioButtonArray in order to
@@ -587,29 +586,29 @@ def get_item_gui_value(mlist, category, kind, varname, params, extra):
             checked = 0
         else:
             checked = value
-        if varname == 'subscribe_policy' and not mm_cfg.ALLOW_OPEN_SUBSCRIBE:
+        if varname == 'subscribe_policy' and not config.ALLOW_OPEN_SUBSCRIBE:
             checked = checked - 1
         # For Radio buttons, we're going to interpret the extra stuff as a
         # horizontal/vertical flag.  For backwards compatibility, the value 0
         # means horizontal, so we use "not extra" to get the parity right.
         return RadioButtonArray(varname, params, checked, not extra)
-    elif (kind == mm_cfg.String or kind == mm_cfg.Email or
-          kind == mm_cfg.Host or kind == mm_cfg.Number):
+    elif (kind == config.String or kind == config.Email or
+          kind == config.Host or kind == config.Number):
         return TextBox(varname, value, params)
-    elif kind == mm_cfg.Text:
+    elif kind == config.Text:
         if params:
             r, c = params
         else:
             r, c = None, None
         return TextArea(varname, value or '', r, c)
-    elif kind in (mm_cfg.EmailList, mm_cfg.EmailListEx):
+    elif kind in (config.EmailList, config.EmailListEx):
         if params:
             r, c = params
         else:
             r, c = None, None
         res = NL.join(value)
         return TextArea(varname, res, r, c, wrap='off')
-    elif kind == mm_cfg.FileUpload:
+    elif kind == config.FileUpload:
         # like a text area, but also with uploading
         if params:
             r, c = params
@@ -621,7 +620,7 @@ def get_item_gui_value(mlist, category, kind, varname, params, extra):
         container.AddItem(_('<br><em>...specify a file to upload</em><br>'))
         container.AddItem(FileUpload(varname+'_upload', r, c))
         return container
-    elif kind == mm_cfg.Select:
+    elif kind == config.Select:
         if params:
             values, legend, selected = params
         else:
@@ -629,7 +628,7 @@ def get_item_gui_value(mlist, category, kind, varname, params, extra):
             legend = [Utils.GetLanguageDescr(code) for code in codes]
             selected = codes.index(mlist.preferred_language)
         return SelectOptions(varname, values, legend, selected)
-    elif kind == mm_cfg.Topics:
+    elif kind == config.Topics:
         # A complex and specialized widget type that allows for setting of a
         # topic name, a mark button, a regexp text box, an "add after mark",
         # and a delete button.  Yeesh!  params are ignored.
@@ -677,7 +676,7 @@ def get_item_gui_value(mlist, category, kind, varname, params, extra):
         if i == 1:
             makebox(i, '', '', '', empty=True)
         return table
-    elif kind == mm_cfg.HeaderFilter:
+    elif kind == config.HeaderFilter:
         # A complex and specialized widget type that allows for setting of a
         # spam filter rule including, a mark button, a regexp text box, an
         # "add after mark", up and down buttons, and a delete button.  Yeesh!
@@ -702,8 +701,8 @@ def get_item_gui_value(mlist, category, kind, varname, params, extra):
             table.AddRow([Label(_('Spam Filter Regexp:')),
                           TextArea(reboxtag, text=pattern,
                                    rows=4, cols=30, wrap='off')])
-            values = [mm_cfg.DEFER, mm_cfg.HOLD, mm_cfg.REJECT,
-                      mm_cfg.DISCARD, mm_cfg.ACCEPT]
+            values = [config.DEFER, config.HOLD, config.REJECT,
+                      config.DISCARD, config.ACCEPT]
             try:
                 checked = values.index(action)
             except ValueError:
@@ -739,9 +738,9 @@ def get_item_gui_value(mlist, category, kind, varname, params, extra):
         # Add one more non-deleteable widget as the first blank entry, but
         # only if there are no real entries.
         if i == 1:
-            makebox(i, '', mm_cfg.DEFER, empty=True)
+            makebox(i, '', config.DEFER, empty=True)
         return table
-    elif kind == mm_cfg.Checkbox:
+    elif kind == config.Checkbox:
         return CheckBoxArray(varname, *params)
     else:
         assert 0, 'Bad gui widget type: %s' % kind
@@ -785,21 +784,21 @@ def membership_options(mlist, subcat, cgidata, doc, form):
     if subcat == 'add':
         header.AddRow([Center(Header(2, _('Mass Subscriptions')))])
         header.AddCellInfo(header.GetCurrentRowIndex(), 0, colspan=2,
-                           bgcolor=mm_cfg.WEB_HEADER_COLOR)
+                           bgcolor=config.WEB_HEADER_COLOR)
         container.AddItem(header)
         mass_subscribe(mlist, container)
         return container
     if subcat == 'remove':
         header.AddRow([Center(Header(2, _('Mass Removals')))])
         header.AddCellInfo(header.GetCurrentRowIndex(), 0, colspan=2,
-                           bgcolor=mm_cfg.WEB_HEADER_COLOR)
+                           bgcolor=config.WEB_HEADER_COLOR)
         container.AddItem(header)
         mass_remove(mlist, container)
         return container
     # Otherwise...
     header.AddRow([Center(Header(2, _('Membership List')))])
     header.AddCellInfo(header.GetCurrentRowIndex(), 0, colspan=2,
-                       bgcolor=mm_cfg.WEB_HEADER_COLOR)
+                       bgcolor=config.WEB_HEADER_COLOR)
     container.AddItem(header)
     # Add a "search for member" button
     table = Table(width='100%')
@@ -888,7 +887,7 @@ def membership_options(mlist, subcat, cgidata, doc, form):
     usertable.AddCellInfo(usertable.GetCurrentRowIndex(),
                           usertable.GetCurrentCellIndex(),
                           colspan=OPTCOLUMNS,
-                          bgcolor=mm_cfg.WEB_ADMINITEM_COLOR)
+                          bgcolor=config.WEB_ADMINITEM_COLOR)
     # Add the alphabetical links
     if bucket:
         cells = []
@@ -906,7 +905,7 @@ def membership_options(mlist, subcat, cgidata, doc, form):
     usertable.AddCellInfo(usertable.GetCurrentRowIndex(),
                           usertable.GetCurrentCellIndex(),
                           colspan=OPTCOLUMNS,
-                          bgcolor=mm_cfg.WEB_ADMINITEM_COLOR)
+                          bgcolor=config.WEB_ADMINITEM_COLOR)
     usertable.AddRow([Center(h) for h in (_('unsub'),
                                           _('member address<br>member name'),
                                           _('mod'), _('hide'),
@@ -917,7 +916,7 @@ def membership_options(mlist, subcat, cgidata, doc, form):
                                           _('language'))])
     rowindex = usertable.GetCurrentRowIndex()
     for i in range(OPTCOLUMNS):
-        usertable.AddCellInfo(rowindex, i, bgcolor=mm_cfg.WEB_ADMINITEM_COLOR)
+        usertable.AddCellInfo(rowindex, i, bgcolor=config.WEB_ADMINITEM_COLOR)
     # Find the longest name in the list
     longest = 0
     if members:
@@ -942,7 +941,7 @@ def membership_options(mlist, subcat, cgidata, doc, form):
                  Hidden('user', urllib.quote(addr)).Format(),
                  ]
         # Do the `mod' option
-        if mlist.getMemberOption(addr, mm_cfg.Moderate):
+        if mlist.getMemberOption(addr, config.Moderate):
             value = 'on'
             checked = 1
         else:
@@ -961,7 +960,7 @@ def membership_options(mlist, subcat, cgidata, doc, form):
                     value = 'on'
                     checked = 1
                     extra = '[%s]' % ds_abbrevs[status]
-            elif mlist.getMemberOption(addr, mm_cfg.OPTINFO[opt]):
+            elif mlist.getMemberOption(addr, config.OPTINFO[opt]):
                 value = 'on'
                 checked = 1
             else:
@@ -977,7 +976,7 @@ def membership_options(mlist, subcat, cgidata, doc, form):
             cells.append(Center(CheckBox(addr + '_digest', 'off', 0).Format()))
         else:
             cells.append(Center(CheckBox(addr + '_digest', 'on', 1).Format()))
-        if mlist.getMemberOption(addr, mm_cfg.OPTINFO['plain']):
+        if mlist.getMemberOption(addr, config.OPTINFO['plain']):
             value = 'on'
             checked = 1
         else:
@@ -1079,7 +1078,7 @@ def membership_options(mlist, subcat, cgidata, doc, form):
 
 def mass_subscribe(mlist, container):
     # MASS SUBSCRIBE
-    GREY = mm_cfg.WEB_ADMINITEM_COLOR
+    GREY = config.WEB_ADMINITEM_COLOR
     table = Table(width='90%')
     table.AddRow([
         Label(_('Subscribe these users now or invite them?')),
@@ -1129,7 +1128,7 @@ def mass_subscribe(mlist, container):
 
 def mass_remove(mlist, container):
     # MASS UNSUBSCRIBE
-    GREY = mm_cfg.WEB_ADMINITEM_COLOR
+    GREY = config.WEB_ADMINITEM_COLOR
     table = Table(width='90%')
     table.AddRow([
         Label(_('Send unsubscription acknowledgement to the user?')),
@@ -1164,7 +1163,7 @@ def password_inputs(mlist):
     table = Table(cellspacing=3, cellpadding=4)
     table.AddRow([Center(Header(2, _('Change list ownership passwords')))])
     table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2,
-                      bgcolor=mm_cfg.WEB_HEADER_COLOR)
+                      bgcolor=config.WEB_HEADER_COLOR)
     table.AddRow([_("""\
 The <em>list administrators</em> are the people who have ultimate control over
 all parameters of this mailing list.  They are able to change any list
@@ -1183,14 +1182,14 @@ and also provide the email addresses of the list moderators in the
     table.AddCellInfo(table.GetCurrentRowIndex(), 0, colspan=2)
     # Set up the admin password table on the left
     atable = Table(border=0, cellspacing=3, cellpadding=4,
-                   bgcolor=mm_cfg.WEB_ADMINPW_COLOR)
+                   bgcolor=config.WEB_ADMINPW_COLOR)
     atable.AddRow([Label(_('Enter new administrator password:')),
                    PasswordBox('newpw', size=20)])
     atable.AddRow([Label(_('Confirm administrator password:')),
                    PasswordBox('confirmpw', size=20)])
     # Set up the moderator password table on the right
     mtable = Table(border=0, cellspacing=3, cellpadding=4,
-                   bgcolor=mm_cfg.WEB_ADMINPW_COLOR)
+                   bgcolor=config.WEB_ADMINPW_COLOR)
     mtable.AddRow([Label(_('Enter new moderator password:')),
                    PasswordBox('newmodpw', size=20)])
     mtable.AddRow([Label(_('Confirm moderator password:')),
@@ -1235,7 +1234,7 @@ def change_options(mlist, category, subcat, cgidata, doc):
         if new == confirm:
             mlist.password = passwords.make_secret(new, config.PASSWORD_SCHEME)
             # Set new cookie
-            print mlist.MakeCookie(mm_cfg.AuthListAdmin)
+            print mlist.MakeCookie(config.AuthListAdmin)
         else:
             doc.addError(_('Administrator passwords did not match'))
     # Give the individual gui item a chance to process the form data
@@ -1363,7 +1362,7 @@ def change_options(mlist, category, subcat, cgidata, doc):
             doc.addError(_('Bad moderation flag value'))
         else:
             for member in mlist.getMembers():
-                mlist.setMemberOption(member, mm_cfg.Moderate, val)
+                mlist.setMemberOption(member, config.Moderate, val)
     # do the user options for members category
     if cgidata.has_key('setmemberopts_btn') and cgidata.has_key('user'):
         user = cgidata['user']
@@ -1389,7 +1388,7 @@ def change_options(mlist, category, subcat, cgidata, doc):
                 continue
             value = cgidata.has_key('%s_digest' % user)
             try:
-                mlist.setMemberOption(user, mm_cfg.Digests, value)
+                mlist.setMemberOption(user, config.Digests, value)
             except (Errors.AlreadyReceivingDigests,
                     Errors.AlreadyReceivingRegularDeliveries,
                     Errors.CantDigestError,
@@ -1407,7 +1406,7 @@ def change_options(mlist, category, subcat, cgidata, doc):
                 mlist.setMemberLanguage(user, newlang)
 
             moderate = not not cgidata.getvalue(user+'_mod')
-            mlist.setMemberOption(user, mm_cfg.Moderate, moderate)
+            mlist.setMemberOption(user, config.Moderate, moderate)
 
             # Set the `nomail' flag, but only if the user isn't already
             # disabled (otherwise we might change BYUSER into BYADMIN).
@@ -1417,7 +1416,7 @@ def change_options(mlist, category, subcat, cgidata, doc):
             else:
                 mlist.setDeliveryStatus(user, MemberAdaptor.ENABLED)
             for opt in ('hide', 'ack', 'notmetoo', 'nodupes', 'plain'):
-                opt_code = mm_cfg.OPTINFO[opt]
+                opt_code = config.OPTINFO[opt]
                 if cgidata.has_key('%s_%s' % (user, opt)):
                     mlist.setMemberOption(user, opt_code, 1)
                 else:

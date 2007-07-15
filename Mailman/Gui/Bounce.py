@@ -15,10 +15,9 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-from Mailman import mm_cfg
-from Mailman.i18n import _
-from Mailman.mm_cfg import days
 from Mailman.Gui.GUIBase import GUIBase
+from Mailman.configuration import config
+from Mailman.i18n import _
 
 
 
@@ -75,14 +74,14 @@ class Bounce(GUIBase):
 
             _('Bounce detection sensitivity'),
 
-            ('bounce_processing', mm_cfg.Toggle, (_('No'), _('Yes')), 0,
+            ('bounce_processing', config.Toggle, (_('No'), _('Yes')), 0,
              _('Should Mailman perform automatic bounce processing?'),
              _("""By setting this value to <em>No</em>, you disable all
              automatic bounce processing for this list, however bounce
              messages will still be discarded so that the list administrator
              isn't inundated with them.""")),
 
-            ('bounce_score_threshold', mm_cfg.Number, 5, 0,
+            ('bounce_score_threshold', config.Number, 5, 0,
              _("""The maximum member bounce score before the member's
              subscription is disabled.  This value can be a floating point
              number."""),
@@ -99,25 +98,25 @@ class Bounce(GUIBase):
              score, above which they are automatically disabled, but not
              removed from the mailing list.""")),
 
-            ('bounce_info_stale_after', mm_cfg.Number, 5, 0,
+            ('bounce_info_stale_after', config.Number, 5, 0,
              _("""The number of days after which a member's bounce information
              is discarded, if no new bounces have been received in the
              interim.  This value must be an integer.""")),
 
-            ('bounce_you_are_disabled_warnings', mm_cfg.Number, 5, 0,
+            ('bounce_you_are_disabled_warnings', config.Number, 5, 0,
              _("""How many <em>Your Membership Is Disabled</em> warnings a
              disabled member should get before their address is removed from
              the mailing list.  Set to 0 to immediately remove an address from
              the list once their bounce score exceeds the threshold.  This
              value must be an integer.""")),
 
-            ('bounce_you_are_disabled_warnings_interval', mm_cfg.Number, 5, 0,
+            ('bounce_you_are_disabled_warnings_interval', config.Number, 5, 0,
              _("""The number of days between sending the <em>Your Membership
              Is Disabled</em> warnings.  This value must be an integer.""")),
 
             _('Notifications'),
 
-            ('bounce_unrecognized_goes_to_list_owner', mm_cfg.Toggle,
+            ('bounce_unrecognized_goes_to_list_owner', config.Toggle,
              (_('No'), _('Yes')), 0,
              _('''Should Mailman send you, the list owner, any bounce messages
              that failed to be detected by the bounce processor?  <em>Yes</em>
@@ -143,7 +142,7 @@ class Bounce(GUIBase):
              <a href="?VARHELP=autoreply/autoresponse_admin_text">autoresponse
              message</a> for email to the -owner and -admin address.""")),
 
-            ('bounce_notify_owner_on_disable', mm_cfg.Toggle,
+            ('bounce_notify_owner_on_disable', config.Toggle,
              (_('No'), _('Yes')), 0,
              _("""Should Mailman notify you, the list owner, when bounces
              cause a member's subscription to be disabled?"""),
@@ -152,7 +151,7 @@ class Bounce(GUIBase):
              when a member's delivery is disabled due to excessive bounces.
              An attempt to notify the member will always be made.""")),
 
-            ('bounce_notify_owner_on_removal', mm_cfg.Toggle,
+            ('bounce_notify_owner_on_removal', config.Toggle,
              (_('No'), _('Yes')), 0,
              _("""Should Mailman notify you, the list owner, when bounces
              cause a member to be unsubscribed?"""),
@@ -172,11 +171,11 @@ class Bounce(GUIBase):
             elif property == 'bounce_score_threshold':
                 val = float(val)
             elif property == 'bounce_info_stale_after':
-                val = days(int(val))
+                val = config.days(int(val))
             elif property == 'bounce_you_are_disabled_warnings':
                 val = int(val)
             elif property == 'bounce_you_are_disabled_warnings_interval':
-                val = days(int(val))
+                val = config.days(int(val))
             elif property == 'bounce_notify_owner_on_disable':
                 val = int(val)
             elif property == 'bounce_notify_owner_on_removal':
@@ -193,4 +192,4 @@ class Bounce(GUIBase):
         if varname not in ('bounce_info_stale_after',
                            'bounce_you_are_disabled_warnings_interval'):
             return None
-        return int(getattr(mlist, varname) / days(1))
+        return int(getattr(mlist, varname) / config.days(1))

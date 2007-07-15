@@ -71,6 +71,7 @@ class Configuration(object):
             self.add_qrunner(name)
         # Attempt our first choice
         path = os.path.abspath(os.path.expanduser(filename))
+        print 'path:', path
         try:
             execfile(path, ns, ns)
             self.filename = path

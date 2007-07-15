@@ -17,8 +17,8 @@
 
 """Administrative GUI for digest deliveries."""
 
-from Mailman import mm_cfg
 from Mailman import Utils
+from Mailman.configuration import config
 from Mailman.i18n import _
 
 # Intra-package import
@@ -39,62 +39,62 @@ class Digest(GUIBase):
     def GetConfigInfo(self, mlist, category, subcat=None):
         if category <> 'digest':
             return None
-        WIDTH = mm_cfg.TEXTFIELDWIDTH
+        WIDTH = config.TEXTFIELDWIDTH
 
 	info = [
             _("Batched-delivery digest characteristics."),
 
-	    ('digestable', mm_cfg.Toggle, (_('No'), _('Yes')), 1,
+	    ('digestable', config.Toggle, (_('No'), _('Yes')), 1,
 	     _('Can list members choose to receive list traffic '
 	       'bunched in digests?')),
 
-	    ('digest_is_default', mm_cfg.Radio, 
+	    ('digest_is_default', config.Radio, 
 	     (_('Regular'), _('Digest')), 0,
 	     _('Which delivery mode is the default for new users?')),
 
-	    ('mime_is_default_digest', mm_cfg.Radio, 
+	    ('mime_is_default_digest', config.Radio, 
 	     (_('Plain'), _('MIME')), 0,
 	     _('When receiving digests, which format is default?')),
 
-	    ('digest_size_threshhold', mm_cfg.Number, 3, 0,
+	    ('digest_size_threshhold', config.Number, 3, 0,
 	     _('How big in Kb should a digest be before it gets sent out?')),
             # Should offer a 'set to 0' for no size threshhold.
 
- 	    ('digest_send_periodic', mm_cfg.Radio, (_('No'), _('Yes')), 1,
+ 	    ('digest_send_periodic', config.Radio, (_('No'), _('Yes')), 1,
 	     _('Should a digest be dispatched daily when the size threshold '
 	       "isn't reached?")),
 
-            ('digest_header', mm_cfg.Text, (4, WIDTH), 0,
+            ('digest_header', config.Text, (4, WIDTH), 0,
 	     _('Header added to every digest'),
              _("Text attached (as an initial message, before the table"
                " of contents) to the top of digests. ")
              + Utils.maketext('headfoot.html', raw=1, mlist=mlist)),
 
-	    ('digest_footer', mm_cfg.Text, (4, WIDTH), 0,
+	    ('digest_footer', config.Text, (4, WIDTH), 0,
 	     _('Footer added to every digest'),
              _("Text attached (as a final message) to the bottom of digests. ")
              + Utils.maketext('headfoot.html', raw=1, mlist=mlist)),
 
-            ('digest_volume_frequency', mm_cfg.Radio,
+            ('digest_volume_frequency', config.Radio,
              (_('Yearly'), _('Monthly'), _('Quarterly'),
               _('Weekly'), _('Daily')), 0,
              _('How often should a new digest volume be started?'),
              _('''When a new digest volume is started, the volume number is
              incremented and the issue number is reset to 1.''')),
 
-            ('_new_volume', mm_cfg.Toggle, (_('No'), _('Yes')), 0,
+            ('_new_volume', config.Toggle, (_('No'), _('Yes')), 0,
              _('Should Mailman start a new digest volume?'),
              _('''Setting this option instructs Mailman to start a new volume
              with the next digest sent out.''')),
 
-            ('_send_digest_now', mm_cfg.Toggle, (_('No'), _('Yes')), 0,
+            ('_send_digest_now', config.Toggle, (_('No'), _('Yes')), 0,
              _('''Should Mailman send the next digest right now, if it is not
              empty?''')),
 	    ]
 
-##        if mm_cfg.OWNERS_CAN_ENABLE_PERSONALIZATION:
+##        if config.OWNERS_CAN_ENABLE_PERSONALIZATION:
 ##            info.extend([
-##                ('digest_personalize', mm_cfg.Toggle, (_('No'), _('Yes')), 1,
+##                ('digest_personalize', config.Toggle, (_('No'), _('Yes')), 1,
 
 ##                 _('''Should Mailman personalize each digest delivery?
 ##                 This is often useful for announce-only lists, but <a

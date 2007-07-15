@@ -30,6 +30,16 @@ if sys.hexversion < 0x20500f0:
 
 
 
+scripts = ['%(script)s = Mailman.bin.%(script)s:main' % dict(script=script)
+           for script in (
+               'make_instance',
+               'testall',
+               'withlist',
+               )
+           ]
+
+
+
 setup(
     name            = 'mailman',
     version         = __version__,
@@ -45,6 +55,18 @@ Any other spelling is incorrect.""",
     url             = 'http://www.list.org',
     keywords        = 'email',
     packages        = find_packages(),
+    # Executable scripts
+    entry_points    = {
+        'console_scripts': scripts,
+        },
+    # Third-party requirements.
+    install_requires = [
+        'Elixir',
+        'SQLAlchemy',
+        'munepy',
+        'wsgiref',
+        'zope.interface',
+        ],
     # Optionally use 'nose' for unit test sniffing.
     extras_require  = {
         'nose': ['nose'],
