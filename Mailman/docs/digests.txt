@@ -461,7 +461,7 @@ Set the digest threshold to zero so that the digests will be sent immediately.
     Content-Type: multipart/mixed; boundary="..."
     MIME-Version: 1.0
     From: _xtest-request@example.com
-    Subject: XTest Digest, Vol 2, Issue 11
+    Subject: Groupe XTest, Vol. 2, Parution 11
     To: _xtest@example.com
     Reply-To: _xtest@example.com
     Date: ...
@@ -471,7 +471,7 @@ Set the digest threshold to zero so that the digests will be sent immediately.
     Content-Type: text/plain; charset="iso-8859-1"
     MIME-Version: 1.0
     Content-Transfer-Encoding: quoted-printable
-    Content-Description: XTest Digest, Vol 2, Issue 11
+    Content-Description: Groupe XTest, Vol. 2, Parution 11
     <BLANKLINE>
     Envoyez vos messages pour la liste XTest =E0
         _xtest@example.com
@@ -527,7 +527,7 @@ Set the digest threshold to zero so that the digests will be sent immediately.
      ('recips', set([])), ('version', 3)]
     >>> print rfc1153msg.as_string()
     From: _xtest-request@example.com
-    Subject: XTest Digest, Vol 2, Issue 11
+    Subject: Groupe XTest, Vol. 2, Parution 11
     To: _xtest@example.com
     Reply-To: _xtest@example.com
     Date: ...
