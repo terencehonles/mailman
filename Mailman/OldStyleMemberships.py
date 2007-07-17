@@ -29,8 +29,8 @@ import time
 from Mailman import Errors
 from Mailman import MemberAdaptor
 from Mailman import Utils
-from Mailman import mm_cfg
 from Mailman import passwords
+from Mailman.configuration import config
 
 ISREGULAR = 1
 ISDIGEST = 2

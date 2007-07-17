@@ -30,6 +30,22 @@ if sys.hexversion < 0x20500f0:
 
 
 
+# Ensure that all the .mo files are generated from the corresponding .po file.
+# This procedure needs to be made sane, probably when the language packs are
+# properly split out.
+import os
+import Mailman.messages
+start_dir = os.path.dirname(Mailman.messages.__file__)
+for dirpath, dirnames, filenames in os.walk(start_dir):
+    for filename in filenames:
+        po_file = os.path.join(dirpath, filename)
+        basename, ext = os.path.splitext(po_file)
+        mo_file = basename + '.mo'
+        if ext == '.po' and not os.path.exists(mo_file):
+            os.system('bin/msgfmt.py -o %s %s' % (mo_file, po_file))
+
+
+
 scripts = ['%(script)s = Mailman.bin.%(script)s:main' % dict(script=script)
            for script in (
                'make_instance',
@@ -55,6 +71,7 @@ Any other spelling is incorrect.""",
     url             = 'http://www.list.org',
     keywords        = 'email',
     packages        = find_packages(),
+    include_package_data = True,
     # Executable scripts
     entry_points    = {
         'console_scripts': scripts,

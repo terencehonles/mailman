@@ -104,7 +104,7 @@ def main():
     if opts.language is None:
         opts.language = config.DEFAULT_SERVER_LANGUAGE
     # Is the language known?
-    if opts.language not in config.LC_DESCRIPTIONS:
+    if opts.language not in config.languages.enabled_codes:
         parser.print_help()
         print >> sys.stderr, _('Unknown language: $opts.language')
         sys.exit(1)

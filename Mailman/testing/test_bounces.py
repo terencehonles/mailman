@@ -17,13 +17,17 @@
 
 """Test the bounce detection modules."""
 
+from __future__ import with_statement
+
 import os
 import sys
 import email
 import unittest
 
-from paths import prefix
+import Mailman.testing.bounces
 from Mailman.Bouncers.BouncerAPI import Stop
+
+MSGDIR = os.path.dirname(Mailman.testing.bounces.__file__)
 
 
 
@@ -157,15 +161,13 @@ class BounceTest(unittest.TestCase):
         )
 
     def test_bounce(self):
-        for modname, file, addrs in self.DATA:
+        for modname, filename, addrs in self.DATA:
             module = 'Mailman.Bouncers.' + modname
             __import__(module)
-            fp = open(os.path.join(prefix, 'Mailman', 'testing', 'bounces',
-                                   file))
-            try:
+            # XXX Convert this tousing package resources
+            path = os.path.join(MSGDIR, filename)
+            with open(path) as fp:
                 msg = email.message_from_file(fp)
-            finally:
-                fp.close()
             foundaddrs = sys.modules[module].process(msg)
             # Some modules return None instead of [] for failure
             if foundaddrs is None:
@@ -181,12 +183,8 @@ class BounceTest(unittest.TestCase):
     def test_SMTP32_failure(self):
         from Mailman.Bouncers import SMTP32
         # This file has no X-Mailer: header
-        fp = open(os.path.join(prefix, 'Mailman', 'testing', 'bounces',
-                              'postfix_01.txt'))
-        try:
+        with open(os.path.join(MSGDIR, 'postfix_01.txt')) as fp:
             msg = email.message_from_file(fp)
-        finally:
-            fp.close()
         self.failIf(msg['x-mailer'] is not None)
         self.failIf(SMTP32.process(msg))
 

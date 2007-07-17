@@ -7958,8 +7958,8 @@ msgid "Message rejected by filter rule match"
 msgstr "Message rejeté par correspondance avec une règle de filtrage"
 
 #: Mailman/Handlers/ToDigest.py:159
-msgid "%(realname)s Digest, Vol %(volume)d, Issue %(issue)d"
-msgstr "Groupe %(realname)s, Vol. %(volume)d, Parution %(issue)d"
+msgid "$realname Digest, Vol $volume, Issue $issue"
+msgstr "Groupe $realname, Vol. $volume, Parution $issue"
 
 #: Mailman/Handlers/ToDigest.py:205
 msgid "digest header"

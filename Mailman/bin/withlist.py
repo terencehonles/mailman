@@ -190,10 +190,6 @@ def main():
     VERBOSE = not opts.quiet
     LOCK = opts.lock
 
-    # Append our bin directory to sys.path so that any withlist scripts living
-    # their can be simply imported.
-    sys.path.append(config.BIN_DIR)
-
     # The default for interact is true unless -r was given
     if opts.interactive is None:
         if not opts.run:

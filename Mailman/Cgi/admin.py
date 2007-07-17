@@ -625,7 +625,8 @@ def get_item_gui_value(mlist, category, kind, varname, params, extra):
             values, legend, selected = params
         else:
             codes = mlist.language_codes
-            legend = [Utils.GetLanguageDescr(code) for code in codes]
+            legend = [config.languages.get_language_data(code)[0]
+                      for code in codes]
             selected = codes.index(mlist.preferred_language)
         return SelectOptions(varname, values, legend, selected)
     elif kind == config.Topics:
@@ -986,7 +987,8 @@ def membership_options(mlist, subcat, cgidata, doc, form):
         # User's preferred language
         langpref = mlist.getMemberLanguage(addr)
         langs = mlist.language_codes
-        langdescs = [_(Utils.GetLanguageDescr(lang)) for lang in langs]
+        langdescs = [_(config.languges.get_language_data(code)[0])
+                     for code in langs]
         try:
             selected = langs.index(langpref)
         except ValueError:
@@ -1402,7 +1404,9 @@ def change_options(mlist, category, subcat, cgidata, doc):
 
             newlang = cgidata.getvalue(user+'_language')
             oldlang = mlist.getMemberLanguage(user)
-            if Utils.IsLanguage(newlang) and newlang <> oldlang:
+            if (newlang not in config.languages.enabled_codes
+                and newlang <> oldlang):
+                # Then
                 mlist.setMemberLanguage(user, newlang)
 
             moderate = not not cgidata.getvalue(user+'_mod')

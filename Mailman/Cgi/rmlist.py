@@ -141,7 +141,7 @@ def process_request(doc, cgidata, mlist):
     problems = 0
     listname = mlist.internal_name()
     for dirtmpl in REMOVABLES:
-        dir = os.path.join(config.VAR_PREFIX, dirtmpl % listname)
+        dir = os.path.join(config.VAR_DIR, dirtmpl % listname)
         if os.path.islink(dir):
             try:
                 os.unlink(dir)

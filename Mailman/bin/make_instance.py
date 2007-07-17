@@ -21,23 +21,21 @@ import os
 import grp
 import pwd
 import sys
+import errno
+import shutil
 import optparse
 import setuptools
 from string import Template
 
-import Mailman
-from Mailman.Version import MAILMAN_VERSION
+import Mailman.data
 
-# Until an instance is actually created, this module won't be importable
-# because the Defaults.py module won't have been created yet.
-try:
-    from Mailman.i18n import _
-except ImportError:
-    def _(s): return s
+from Mailman import Defaults
+from Mailman.Version import MAILMAN_VERSION
+from Mailman.i18n import _
 
 __i18n_templates__ = True
 SPACE = ' '
-DEFAULT_RUNTIME_DIR = '/var/mailman'
+DATA_DIR = os.path.dirname(Mailman.data.__file__)
 
 
 
@@ -49,11 +47,17 @@ def parseargs():
 Create a Mailman instance by generating all the necessary basic configuration
 support and intervening directories.
 """))
-    parser.add_option('-r', '--runtime-dir',
-                      type='string', default=DEFAULT_RUNTIME_DIR, help=_("""\
+    parser.add_option('-d', '--var-dir',
+                      type='string', default=Defaults.DEFAULT_VAR_DIRECTORY,
+                      help=_("""\
 The top-level runtime data directory.  All supporting runtime data will be
 placed in subdirectories of this directory.  It will be created if necessary,
 although this might require superuser privileges."""))
+    parser.add_option('-f', '--force',
+                      default=False, action='store_true', help=_("""\
+Force overwriting of mailman.cfg file with new values.  Ordinarily, Mailman
+will never overwrite this file because it would cause you to lose your
+configuration data."""))
     parser.add_option('-p', '--permchecks',
                       default=False, action='store_true', help=_("""\
 Perform permission checks on the runtime directory."""))
@@ -65,9 +69,13 @@ current user is used."""))
                       type='string', default=None, help=_("""\
 The group id or name to use for the runtime environment.  If not specified, the
 current group is used."""))
-    parser.add_option('-l', '--language',
-                      default=[], type='string', action='append', help=_("""\
-Enable the given language.  Use 'all' to enable all supported languages."""))
+    parser.add_option('-l', '--languages',
+                      default=Defaults.DEFAULT_SERVER_LANGUAGE, type='string',
+                      help=_("""\
+Space separated list of language codes to enable.  Use -L to print all
+available language codes and the name of the associated native language.
+Default is to enable just English.  Use the special code 'all' to enable all
+available languages."""))
     opts, args = parser.parse_args()
     if args:
         unexpected = SPACE.join(args)
@@ -76,13 +84,9 @@ Enable the given language.  Use 'all' to enable all supported languages."""))
 
 
 
-def instantiate(user=None, group=None, runtime_dir=None):
-    # Create the Defaults.py file using substitutions.
-    in_file_path = os.path.join(os.path.dirname(Mailman.__file__),
-                                'Defaults.py.in')
-    out_file_path = os.path.splitext(in_file_path)[0]
-    with open(in_file_path) as fp:
-        raw = Template(fp.read())
+def instantiate(var_dir, user, group, languages, force):
+    # XXX This needs to be converted to use package resources.
+    etc_dir = os.path.join(var_dir, 'etc')
     # Figure out which user name and group name to use.
     if user is None:
         uid = os.getuid()
@@ -112,20 +116,56 @@ def instantiate(user=None, group=None, runtime_dir=None):
         group_name = grp.getgrgid(gid).gr_name
     except KeyError:
         parser.print_error(_('Unknown group: $group'))
-    # Process the .in file and write it to Defaults.py.
-    processed = raw.safe_substitute(runtime_dir=runtime_dir,
-                                    user_name=user_name,
-                                    group_name=group_name)
-    with open(out_file_path, 'w') as fp:
-        fp.write(processed)
+    # Make the runtime dir if it doesn't yet exist.
+    try:
+        omask = os.umask(0)
+        try:
+            os.makedirs(etc_dir, 02775)
+        finally:
+            os.umask(omask)
+    except OSError, e:
+        # Ignore the exceptions if the directory already exists
+        if e.errno <> errno.EEXIST:
+            raise
+    os.chown(etc_dir, uid, gid)
+    # Create an etc/mailman.cfg file which contains just a few configuration
+    # variables about the run-time environment that can't be calculated.
+    # Don't overwrite mailman.cfg unless the -f flag was given.
+    in_file_path  = os.path.join(DATA_DIR, 'mailman.cfg.in')
+    out_file_path = os.path.join(etc_dir, 'mailman.cfg')
+    if os.path.exists(out_file_path) and not force:
+        # The logging subsystem isn't up yet, so just print this to stderr.
+        print >> sys.stderr, 'File exists:', out_file_path
+        print >> sys.stderr, 'Use --force to override.'
+    else:
+        with open(in_file_path) as fp:
+            raw = Template(fp.read())
+        processed = raw.safe_substitute(var_dir=var_dir,
+                                        user_id=uid,
+                                        user_name=user_name,
+                                        group_name=group_name,
+                                        group_id=gid,
+                                        languages=SPACE.join(languages),
+                                        )
+        with open(out_file_path, 'w') as fp:
+            fp.write(processed)
     # XXX Do --permchecks
-    # XXX Do --language
     
 
 
 def main():
     parser, opts, args = parseargs()
-    instantiate(opts.user, opts.group, opts.runtime_dir)
+    available_languages = set(Defaults.LANGUAGE_DICT)
+    enable_languages = set(opts.languages.split())
+    if 'all' in enable_languages:
+        languages = available_languages
+    else:
+        unknown_language = enable_languages - available_languages
+        if unknown_language:
+            print >> sys.stderr, 'Ignoring unknown language codes:', \
+                  SPACE.join(unknown_language)
+        languages = available_languages & enable_languages
+    instantiate(opts.var_dir, opts.user, opts.group, languages, opts.force)
 
 
 

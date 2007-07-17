@@ -361,13 +361,15 @@ def request_creation(doc, cgidata=dummy, errmsg=None):
     # invocations.
     checked = [0] * len(langs)
     checked[langi] = 1
-    deflang = _(Utils.GetLanguageDescr(config.DEFAULT_SERVER_LANGUAGE))
+    deflang = _(config.languages.get_language_data(
+        config.DEFAULT_SERVER_LANGUAGE)[0])
     ftable.AddRow([Label(_(
         """Initial list of supported languages.  <p>Note that if you do not
         select at least one initial language, the list will use the server
         default language of $deflang""")),
                    CheckBoxArray('langs',
-                                 [_(Utils.GetLanguageDescr(L)) for L in langs],
+                                 [_(config.languges.get_language_data(code)[0])
+                                  for code in langs],
                                  checked=checked,
                                  values=langs)])
     ftable.AddCellInfo(ftable.GetCurrentRowIndex(), 0, bgcolor=GREY)

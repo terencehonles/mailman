@@ -15,17 +15,23 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
+import os
 import sys
 import time
 import string
 import gettext
 
+import Mailman.messages
 from Mailman.SafeDict import SafeDict
 from Mailman.configuration import config
 
 _translation = None
 _missing = object()
 
+MESSAGES_DIR = os.path.dirname(Mailman.messages.__file__)
+
+
+
 class Template(string.Template):
     idpattern = r'[_a-z][_a-z0-9.]*'
 
@@ -47,8 +53,7 @@ def set_language(language=None):
     if language is not None:
         language = [language]
     try:
-        _translation = gettext.translation('mailman', config.MESSAGES_DIR,
-                                           language)
+        _translation = gettext.translation('mailman', MESSAGES_DIR, language)
     except IOError:
         # The selected language was not installed in messages, so fall back to
         # untranslated English.

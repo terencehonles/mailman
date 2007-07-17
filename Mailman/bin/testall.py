@@ -167,7 +167,7 @@ def main():
     # Set up the testing configuration file both for this process, and for all
     # sub-processes testing will spawn (e.g. the qrunners).
     #
-    # Calculate a temporary VAR_PREFIX directory so that run-time artifacts of
+    # Calculate a temporary VAR_DIR directory so that run-time artifacts of
     # the tests won't tread on the installation's data.  This also makes it
     # easier to clean up after the tests are done, and insures isolation of
     # test suite runs.
@@ -177,14 +177,24 @@ def main():
     os.close(fd)
     shutil.copyfile(cfg_in, cfg_out)
 
-    var_prefix = tempfile.mkdtemp()
+    var_dir = tempfile.mkdtemp()
     if opts.verbosity > 2:
-        print 'VAR_PREFIX :', var_prefix
+        print 'VAR_DIR :', var_dir
         print 'config file:', cfg_out
+
+    user_id = os.getuid()
+    user_name = pwd.getpwuid(user_id).pw_name
+    group_id = os.getgid()
+    group_name = grp.getgrgid(group_id).gr_name
 
     try:
         with open(cfg_out, 'a') as fp:
-            print >> fp, 'VAR_PREFIX = "%s"' % var_prefix
+            print >> fp, 'VAR_DIR = "%s"' % var_dir
+            print >> fp, 'MAILMAN_USER = "%s"' % user_name
+            print >> fp, 'MAILMAN_UID = %d' % user_id
+            print >> fp, 'MAILMAN_GROUP = "%s"' % group_name
+            print >> fp, 'MAILMAN_GID = %d' % group_id
+            print >> fp, "LANGUAGES = 'en'"
 
         initialize_1(cfg_out, propagate_logs=opts.stderr)
         mailman_uid = pwd.getpwnam(config.MAILMAN_USER).pw_uid
@@ -216,7 +226,7 @@ def main():
         results = runner.run(suite(args))
     finally:
         os.remove(cfg_out)
-        shutil.rmtree(var_prefix)
+        shutil.rmtree(var_dir)
 
     # Turn off coverage and print a report
     if opts.coverage:

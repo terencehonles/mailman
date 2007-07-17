@@ -70,7 +70,7 @@ def main():
     # for the results.  If not, use the list's preferred language.
     cgidata = cgi.FieldStorage()
     language = cgidata.getvalue('language')
-    if not Utils.IsLanguage(language):
+    if language not in config.languages.enabled_codes:
         language = mlist.preferred_language
     i18n.set_language(language)
     doc.set_language(language)

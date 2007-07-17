@@ -418,9 +418,16 @@ Internationalized digests
 -------------------------
 
 When messages come in with a content-type character set different than that of
-the list's preferred language, recipients wil get an internationalized digest.
+the list's preferred language, recipients wil get an internationalized
+digest.  French is not enabled by default site-wide, so enable that now.
 
+XXX We also have to set the default server language to French, otherwise the
+English template will be found and the masthead won't be translated.
+
+    >>> config.languages.enable_language('fr')
+    >>> config.DEFAULT_SERVER_LANGUAGE = 'fr'
     >>> mlist.preferred_language = 'fr'
+    >>> flush()
     >>> msg = message_from_string("""\
     ... From: aperson@example.org
     ... To: _xtest@example.com
@@ -537,3 +544,9 @@ Set the digest threshold to zero so that the digests will be sent immediately.
      ('listname', '_xtest@example.com'),
      ('received_time', ...),
      ('recips', set([])), ('version', 3)]
+
+
+Clean up
+--------
+
+    >>> config.DEFAULT_SERVER_LANGUAGE = 'en'

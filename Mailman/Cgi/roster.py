@@ -64,7 +64,7 @@ def main():
 
     # messages in form should go in selected language (if any...)
     lang = cgidata.getvalue('language')
-    if not Utils.IsLanguage(lang):
+    if lang not in config.languages.enabled_codes:
         lang = mlist.preferred_language
     i18n.set_language(lang)
 

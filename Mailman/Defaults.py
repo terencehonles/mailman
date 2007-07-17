@@ -101,6 +101,9 @@ HTML_TO_PLAIN_TEXT_COMMAND = '/usr/bin/lynx -dump %(filename)s'
 # available schemes.
 PASSWORD_SCHEME = 'ssha'
 
+# Default run-time directory.
+DEFAULT_VAR_DIRECTORY = '/var/mailman'
+
 
 
 #####
@@ -200,6 +203,9 @@ WEB_ALINK_COLOR = ''                              # If true, forces ALINK=
 WEB_VLINK_COLOR = ''                              # If true, forces VLINK=
 WEB_HIGHLIGHT_COLOR = '#dddddd'                   # If true, alternating rows
                                                   # in listinfo & admin display
+# CGI file extension.
+CGIEXT = ''
+
 
 
 #####
@@ -804,8 +810,8 @@ MAX_RESTARTS = 10
 #####
 
 # The default language for this server.  Whenever we can't figure out the list
-# context or user context, we'll fall back to using this language.  See
-# LC_DESCRIPTIONS below for legal values.
+# context or user context, we'll fall back to using this language.  This code
+# must be in the list of available language codes.
 DEFAULT_SERVER_LANGUAGE = 'en'
 
 # When allowing only members to post to a mailing list, how is the sender of
@@ -1240,14 +1246,6 @@ PENDINGDB_LOCK_DEBUGGING = Off
 # any of them in your mailman.cfg file!
 #####
 
-# This is the top-level run-time data directory.  All other runtime data by
-# default lives under this directory.
-RUNTIME_DIR = '$runtime_dir'
-
-# Group id that group-owns the Mailman installation
-MAILMAN_USER = '$user_name'
-MAILMAN_GROUP = '$group_name'
-
 # Enumeration for Mailman cgi widget types
 Toggle      = 1
 Radio       = 2
@@ -1365,8 +1363,7 @@ from Version import *
 def _(s):
     return s
 
-LANGUAGES = 'en ' + '@LANGUAGES@'
-LANGUAGE_DICT = {
+_DEFAULT_LANGUAGE_DATA = {
     'ar':       (_('Arabic'),               'utf-8'),
     'ca':       (_('Catalan'),              'iso-8859-1'),
     'cs':       (_('Czech'),                'iso-8859-2'),
@@ -1402,13 +1399,5 @@ LANGUAGE_DICT = {
     'zh_TW':    (_('Chinese (Taiwan)'),     'utf-8'),
 }
 
-LC_DESCRIPTIONS = {}
-
-def add_language(code, description, charset):
-    LC_DESCRIPTIONS[code] = (description, charset)
-
-for lang in LANGUAGES.split():
-    if lang in LANGUAGE_DICT.keys():
-        add_language(lang, LANGUAGE_DICT[lang][0], LANGUAGE_DICT[lang][1])
 
 del _

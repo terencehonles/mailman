@@ -39,6 +39,7 @@ import email.Iterators
 from email.Errors import HeaderParseError
 from string import ascii_letters, digits, whitespace
 
+import Mailman.templates
 from Mailman import Errors
 from Mailman import passwords
 from Mailman.SafeDict import SafeDict
@@ -51,6 +52,7 @@ EMPTYSTRING = ''
 IDENTCHARS = ascii_letters + digits + '_'
 NL = '\n'
 UEMPTYSTRING = u''
+TEMPLATE_DIR = os.path.dirname(Mailman.templates.__file__)
 
 # Search for $(identifier)s strings, except that the trailing s is optional,
 # since that's a common mistake
@@ -450,7 +452,9 @@ def findtext(templatefile, dict=None, raw=False, lang=None, mlist=None):
     # language.  After that, the server default language is used for
     # <language>.  If that still doesn't yield a template, then the standard
     # distribution's English language template is used as an ultimate
-    # fallback.  If that's missing you've got big problems. ;)
+    # fallback, and when lang is not 'en', the resulting template is passed
+    # through the translation service.  If this template is missing you've got
+    # big problems. ;)
     #
     # A word on backwards compatibility: Mailman versions prior to 2.1 stored
     # templates in templates/*.{html,txt} and lists/<listname>/*.{html,txt}.
@@ -466,19 +470,19 @@ def findtext(templatefile, dict=None, raw=False, lang=None, mlist=None):
     # item returned.
     #
     # Calculate the languages to scan
-    languages = []
+    languages = set()
     if lang is not None:
-        languages.append(lang)
+        languages.add(lang)
     if mlist is not None:
-        languages.append(mlist.preferred_language)
-    languages.append(config.DEFAULT_SERVER_LANGUAGE)
+        languages.add(mlist.preferred_language)
+    languages.add(config.DEFAULT_SERVER_LANGUAGE)
     # Calculate the locations to scan
     searchdirs = []
     if mlist is not None:
         searchdirs.append(mlist.full_path)
-        searchdirs.append(os.path.join(config.TEMPLATE_DIR, mlist.host_name))
-    searchdirs.append(os.path.join(config.TEMPLATE_DIR, 'site'))
-    searchdirs.append(config.TEMPLATE_DIR)
+        searchdirs.append(os.path.join(TEMPLATE_DIR, mlist.host_name))
+    searchdirs.append(os.path.join(TEMPLATE_DIR, 'site'))
+    searchdirs.append(TEMPLATE_DIR)
     # Start scanning
     fp = None
     try:
@@ -498,24 +502,31 @@ def findtext(templatefile, dict=None, raw=False, lang=None, mlist=None):
         # Try one last time with the distro English template, which, unless
         # you've got a really broken installation, must be there.
         try:
-            filename = os.path.join(config.TEMPLATE_DIR, 'en', templatefile)
+            filename = os.path.join(TEMPLATE_DIR, 'en', templatefile)
             fp = open(filename)
         except IOError, e:
-            if e.errno <> errno.ENOENT: raise
+            if e.errno <> errno.ENOENT:
+                raise
             # We never found the template.  BAD!
             raise IOError(errno.ENOENT, 'No template file found', templatefile)
-    template = fp.read()
-    fp.close()
-    template = unicode(template, GetCharSet(lang), 'replace')
+        else:
+            from Mailman.i18n import get_translation
+            # XXX BROKEN HACK
+            data = fp.read()[:-1]
+            template = get_translation().ugettext(data)
+            fp.close()
+    else:
+        template = fp.read()
+        fp.close()
+        template = unicode(template, GetCharSet(lang), 'replace')
     text = template
     if dict is not None:
         try:
             sdict = SafeDict(dict, lang=lang)
             text = sdict.interpolate(template)
-        except (TypeError, ValueError), e:
+        except (TypeError, ValueError):
             # The template is really screwed up
-            log.error('broken template: %s\n%s', filename, e)
-            pass
+            log.exception('broken template: %s', filename)
     if raw:
         return text, filename
     return wrap(text), filename
@@ -646,15 +657,10 @@ def makedirs(path, mode=02775):
 
 
 
-def GetLanguageDescr(lang):
-    return config.LC_DESCRIPTIONS[lang][0]
-
-
+# XXX Replace this with direct calls.  For now, existing uses of GetCharSet()
+# are too numerous to change.
 def GetCharSet(lang):
-    return config.LC_DESCRIPTIONS[lang][1]
-
-def IsLanguage(lang):
-    return config.LC_DESCRIPTIONS.has_key(lang)
+    return config.languages.get_language_data(lang)[1]
 
 
 

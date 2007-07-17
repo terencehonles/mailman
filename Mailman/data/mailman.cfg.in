@@ -19,15 +19,27 @@
 
 """This module contains your site-specific settings.
 
-Use this to override the default settings in Mailman/Defaults.py.  You only
+Use this to override the default settings in `Mailman/Defaults.py`.  You only
 need to include those settings that you want to change, and unlike the old
-mm_cfg.py file, you do /not/ need to import Defaults.  Its variables will
+`mm_cfg.py` file, you do /not/ need to `import Defaults`.  Its variables will
 automatically be available in this module's namespace.
 
-You should consult Defaults.py though for a complete listing of configuration
-variables that you can change.
+You should consult `Defaults.py` though for a complete listing of
+configuration variables that you can change.
 
-To use this, copy this file to $VAR_PREFIX/etc/mailman.cfg
-
-Mailman's installation procedure will never overwrite mailman.cfg.
+Mailman's installation procedure will never overwrite `mailman.cfg`.
 """
+
+# This is the top-level run-time data directory.  All other runtime data by
+# default lives under this directory.
+VAR_DIR = '$var_dir'
+
+# User name and id that owns the Mailman process and files.
+MAILMAN_UID  = '$user_id'
+MAILMAN_USER = '$user_name'
+
+# Group name and id that owns the Mailman process and files.
+MAILMAN_GID   = '$group_id'
+MAILMAN_GROUP = '$group_name'
+
+LANGUAGES = '$languages'

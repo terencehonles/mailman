@@ -10,4 +10,4 @@ MTA                     = None
 
 add_domain('example.com', 'www.example.com')
 
-# bin/testall will add a SQLALCHEMY_ENGINE_URL below
+# bin/testall will add additional runtime configuration variables here.

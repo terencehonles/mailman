@@ -37,7 +37,7 @@ class Language(GUIBase):
             return None
         # Set things up for the language choices
         langs = mlist.language_codes
-        langnames = [_(Utils.GetLanguageDescr(L)) for L in langs]
+        langnames = [_(description) for description in config.enabled_names]
         try:
             langi = langs.index(mlist.preferred_language)
         except ValueError:
@@ -53,12 +53,11 @@ class Language(GUIBase):
             except LookupError:
                 return 0
 
-        all = [key for key in config.LC_DESCRIPTIONS.keys()
-               if checkcodec(Utils.GetCharSet(key))]
-        all.sort()
+        all = sorted(code for code in config.languages.enabled_codes
+                     if checkcodec(Utils.GetCharSet(code)))
         checked = [L in langs for L in all]
-        allnames = [_(Utils.GetLanguageDescr(L)) for L in all]
-
+        allnames = [_(config.languages.get_language_data(code)[0])
+                    for code in all]
         return [
             _('Natural language (internationalization) options.'),
 
