@@ -538,7 +538,7 @@ ADMINDATA = {
     'set':         (3, 3),
     'subscribe':   (0, 3),
     'unsubscribe': (0, 1),
-    'who':         (0, 0),
+    'who':         (0, 2),
     }
 
 # Given a Message.Message object, test for administrivia (eg subscribe,
