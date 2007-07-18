@@ -40,8 +40,12 @@ for dirpath, dirnames, filenames in os.walk(start_dir):
     for filename in filenames:
         po_file = os.path.join(dirpath, filename)
         basename, ext = os.path.splitext(po_file)
+        if ext <> '.po':
+            continue
         mo_file = basename + '.mo'
-        if ext == '.po' and not os.path.exists(mo_file):
+        if (not os.path.exists(mo_file) or
+            os.path.getmtime(po_file) > os.path.getmtime(mo_file)):
+            # The mo file doesn't exist or is older than the po file.
             os.system('bin/msgfmt.py -o %s %s' % (mo_file, po_file))
 
 
