@@ -47,12 +47,20 @@ class ILanguageManager(Interface):
             language code.
         """
 
-    def get_language_data(code):
-        """Return the description and charset for the given `code`.
+    def get_description(code):
+        """Return the language description for the given code.
 
-        :param code: The code to lookup.
-        :returns: A 2-tuple of the description and charset for the code.
-        :raises KeyError: when the code is unknown.
+        :param code: The two letter language code to look up.
+        :returns: The English description of the language.
+        :raises KeyError: when the code has not been added.
+        """
+
+    def get_charset(code):
+        """Return the character set for the given code.
+
+        :param code: The two letter language code to look up.
+        :returns: The character set of the language.
+        :raises KeyError: when the code has not been added.
         """
 
     known_codes = Attribute(

@@ -25,7 +25,7 @@ from Mailman import Message
 from Mailman import passwords
 from Mailman.MailList import MailList
 from Mailman.configuration import config
-from Mailman.testing.base import TestBase
+from Mailman.tests.base import TestBase
 
 from Mailman.Handlers import Approve
 # Don't test handlers such as SMTPDirect and Sendmail here

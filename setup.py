@@ -18,6 +18,7 @@ import ez_setup
 ez_setup.use_setuptools()
 
 import sys
+from string import Template
 
 from Mailman.Version import VERSION as __version__
 from setuptools import setup, find_packages
@@ -25,7 +26,7 @@ from setuptools import setup, find_packages
 
 
 if sys.hexversion < 0x20500f0:
-    print 'replybot requires at least Python 2.5'
+    print 'Mailman requires at least Python 2.5'
     sys.exit(1)
 
 
@@ -50,13 +51,12 @@ for dirpath, dirnames, filenames in os.walk(start_dir):
 
 
 
-scripts = ['%(script)s = Mailman.bin.%(script)s:main' % dict(script=script)
-           for script in (
-               'make_instance',
-               'testall',
-               'withlist',
-               )
-           ]
+template = Template('$script = Mailman.bin.$script:main')
+scripts = set(
+    template.substitute(script=os.path.splitext(script)[0])
+    for script in os.listdir(os.path.join('Mailman', 'bin'))
+    if not script.startswith('_')
+    )
 
 
 
@@ -78,7 +78,7 @@ Any other spelling is incorrect.""",
     include_package_data = True,
     # Executable scripts
     entry_points    = {
-        'console_scripts': scripts,
+        'console_scripts': list(scripts),
         },
     # Third-party requirements.
     install_requires = [

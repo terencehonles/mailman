@@ -155,7 +155,7 @@ def instantiate(var_dir, user, group, languages, force):
 
 def main():
     parser, opts, args = parseargs()
-    available_languages = set(Defaults.LANGUAGE_DICT)
+    available_languages = set(Defaults._DEFAULT_LANGUAGE_DATA)
     enable_languages = set(opts.languages.split())
     if 'all' in enable_languages:
         languages = available_languages

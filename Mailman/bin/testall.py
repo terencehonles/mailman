@@ -30,7 +30,7 @@ import tempfile
 import unittest
 
 import Mailman
-import Mailman.testing
+import Mailman.tests
 
 from Mailman import Version
 from Mailman.configuration import config
@@ -171,7 +171,7 @@ def main():
     # the tests won't tread on the installation's data.  This also makes it
     # easier to clean up after the tests are done, and insures isolation of
     # test suite runs.
-    cfg_in = os.path.join(os.path.dirname(Mailman.testing.__file__),
+    cfg_in = os.path.join(os.path.dirname(Mailman.tests.__file__),
                            'testing.cfg.in')
     fd, cfg_out = tempfile.mkstemp(suffix='.cfg')
     os.close(fd)

@@ -286,7 +286,7 @@ def subscription_prompt(mlist, doc, cookie, userdesc):
                       RadioButtonArray('digests', (_('No'), _('Yes')),
                                        checked=digest, values=(0, 1))])
     langs = mlist.language_codes
-    values = [_(config.languages.get_language_data(code)[0]) for code in langs]
+    values = [_(config.languages.get_description(code)) for code in langs]
     try:
         selected = langs.index(lang)
     except ValueError:

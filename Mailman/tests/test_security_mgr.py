@@ -31,7 +31,7 @@ from Mailman import Errors
 from Mailman import Utils
 from Mailman import passwords
 from Mailman.configuration import config
-from Mailman.testing.base import TestBase
+from Mailman.tests.base import TestBase
 
 
 

@@ -40,6 +40,9 @@ __i18n_templates__ = True
 
 COMMASPACE = ', '
 DOT = '.'
+# Calculate this here and now, because we're going to do a chdir later on, and
+# if the path is relative, the qrunner script won't be found.
+BIN_DIR = os.path.abspath(os.path.dirname(sys.argv[0]))
 
 # Since we wake up once per day and refresh the lock, the LOCK_LIFETIME
 # needn't be (much) longer than SNOOZE.  We pad it 6 hours just to be safe.
@@ -252,10 +255,11 @@ def start_runner(qrname, slice, count):
     #
     # Craft the command line arguments for the exec() call.
     rswitch = '--runner=%s:%d:%d' % (qrname, slice, count)
-    exe = os.path.join(config.BIN_DIR, 'qrunner')
+    # Wherever mailmanctl lives, so too must live the qrunner script.
+    exe = os.path.join(BIN_DIR, 'qrunner')
     # config.PYTHON, which is the absolute path to the Python interpreter,
     # must be given as argv[0] due to Python's library search algorithm.
-    args = [config.PYTHON, config.PYTHON, exe, rswitch, '-s']
+    args = [sys.executable, sys.executable, exe, rswitch, '-s']
     if opts.config:
         args.extend(['-C', opts.config])
     os.execl(*args)
@@ -380,8 +384,8 @@ def main():
         # won't be opening any terminal devices, don't do the ultra-paranoid
         # suggestion of doing a second fork after the setsid() call.
         os.setsid()
-        # Instead of cd'ing to root, cd to the Mailman installation home
-        os.chdir(config.PREFIX)
+        # Instead of cd'ing to root, cd to the Mailman runtime directory.
+        os.chdir(config.VAR_DIR)
         # I don't think we have any unneeded file descriptors.
         #
         # Now start all the qrunners.  This returns a dictionary where the

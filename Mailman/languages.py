@@ -39,8 +39,11 @@ class LanguageManager:
         self._language_data[code]
         self._enabled.add(code)
 
-    def get_language_data(self, code):
-        return self._language_data[code]
+    def get_description(self, code):
+        return self._language_data[code][0]
+
+    def get_charset(self, code):
+        return self._language_data[code][1]
 
     @property
     def known_codes(self):

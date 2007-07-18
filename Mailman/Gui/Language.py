@@ -56,8 +56,7 @@ class Language(GUIBase):
         all = sorted(code for code in config.languages.enabled_codes
                      if checkcodec(Utils.GetCharSet(code)))
         checked = [L in langs for L in all]
-        allnames = [_(config.languages.get_language_data(code)[0])
-                    for code in all]
+        allnames = [_(config.languages.get_description(code)) for code in all]
         return [
             _('Natural language (internationalization) options.'),
 

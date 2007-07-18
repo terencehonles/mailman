@@ -377,8 +377,8 @@ class HTMLFormatter:
         # If only one language is enabled for this mailing list, omit the
         # language choice buttons.
         if len(self.language_codes) == 1:
-            listlangs = _(config.languages.get_language_data(
-                self.preferred_language))
+            listlangs = _(
+                config.languages.get_description(self.preferred_language))
         else:
             listlangs = self.GetLangSelectBox(lang).Format()
         d = {
@@ -425,8 +425,7 @@ class HTMLFormatter:
             lang = self.preferred_language
         # Figure out the available languages
         values = self.language_codes
-        legend = [config.languages.get_language_data(code)[0]
-                  for code in values]
+        legend = [config.languages.get_description(code) for code in values]
         try:
             selected = values.index(lang)
         except ValueError:

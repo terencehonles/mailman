@@ -625,8 +625,7 @@ def get_item_gui_value(mlist, category, kind, varname, params, extra):
             values, legend, selected = params
         else:
             codes = mlist.language_codes
-            legend = [config.languages.get_language_data(code)[0]
-                      for code in codes]
+            legend = [config.languages.get_description(code) for code in codes]
             selected = codes.index(mlist.preferred_language)
         return SelectOptions(varname, values, legend, selected)
     elif kind == config.Topics:
@@ -987,7 +986,7 @@ def membership_options(mlist, subcat, cgidata, doc, form):
         # User's preferred language
         langpref = mlist.getMemberLanguage(addr)
         langs = mlist.language_codes
-        langdescs = [_(config.languges.get_language_data(code)[0])
+        langdescs = [_(config.languges.get_description(code))
                      for code in langs]
         try:
             selected = langs.index(langpref)

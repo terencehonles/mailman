@@ -28,7 +28,7 @@ from Mailman import passwords
 from Mailman.Errors import NotAMemberError
 from Mailman.UserDesc import UserDesc
 from Mailman.configuration import config
-from Mailman.testing.base import TestBase
+from Mailman.tests.base import TestBase
 
 
 

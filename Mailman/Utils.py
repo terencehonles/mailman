@@ -660,7 +660,7 @@ def makedirs(path, mode=02775):
 # XXX Replace this with direct calls.  For now, existing uses of GetCharSet()
 # are too numerous to change.
 def GetCharSet(lang):
-    return config.languages.get_language_data(lang)[1]
+    return config.languages.get_charset(lang)
 
 
 

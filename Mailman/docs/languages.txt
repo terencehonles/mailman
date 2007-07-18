@@ -23,7 +23,11 @@ languages which are enabled.  By default, none are known or enabled.
 The language manager also keeps track of information for each known language,
 but you obviously can't get information for an unknown language.
 
-    >>> mgr.get_language_data('en')
+    >>> mgr.get_description('en')
+    Traceback (most recent call last):
+    ...
+    KeyError: 'en'
+    >>> mgr.get_charset('en')
     Traceback (most recent call last):
     ...
     KeyError: 'en'
@@ -48,10 +52,14 @@ By default, added languages are also enabled.
 
 And you can get information for all known languages.
 
-    >>> mgr.get_language_data('en')
-    ('English', 'us-ascii')
-    >>> mgr.get_language_data('it')
-    ('Italian', 'iso-8859-1')
+    >>> mgr.get_description('en')
+    'English'
+    >>> mgr.get_charset('en')
+    'us-ascii'
+    >>> mgr.get_description('it')
+    'Italian'
+    >>> mgr.get_charset('it')
+    'iso-8859-1'
 
 You can also add a language without enabling it.
 
@@ -63,8 +71,10 @@ You can also add a language without enabling it.
 
 You can get language data for disabled languages.
 
-    >>> mgr.get_language_data('pl')
-    ('Polish', 'iso-8859-2')
+    >>> mgr.get_description('pl')
+    'Polish'
+    >>> mgr.get_charset('pl')
+    'iso-8859-2'
 
 And of course you can enable a known language.
 

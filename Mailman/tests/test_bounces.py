@@ -24,10 +24,10 @@ import sys
 import email
 import unittest
 
-import Mailman.testing.bounces
+import Mailman.tests.bounces
 from Mailman.Bouncers.BouncerAPI import Stop
 
-MSGDIR = os.path.dirname(Mailman.testing.bounces.__file__)
+MSGDIR = os.path.dirname(Mailman.tests.bounces.__file__)
 
 
 

@@ -26,7 +26,7 @@ import asyncore
 import subprocess
 
 from Mailman.configuration import config
-from Mailman.testing.base import TestBase
+from Mailman.tests.base import TestBase
 
 TESTPORT = 10825
 
