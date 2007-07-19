@@ -20,6 +20,7 @@ ez_setup.use_setuptools()
 import sys
 from string import Template
 
+import Mailman.bin
 from Mailman.Version import VERSION as __version__
 from setuptools import setup, find_packages
 
@@ -51,10 +52,11 @@ for dirpath, dirnames, filenames in os.walk(start_dir):
 
 
 
-template = Template('$script = Mailman.bin.$script:main')
+# XXX The 'bin/' prefix here should be configurable.
+template = Template('bin/$script = Mailman.bin.$script:main')
 scripts = set(
     template.substitute(script=os.path.splitext(script)[0])
-    for script in os.listdir(os.path.join('Mailman', 'bin'))
+    for script in Mailman.bin.__all__
     if not script.startswith('_')
     )
 
