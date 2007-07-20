@@ -2,5 +2,6 @@
 .bzrignore
 build/
 cron/crontab.in
+dist/
 mailman.egg-info
 misc/mailman

@@ -35,8 +35,10 @@ if sys.hexversion < 0x20500f0:
 # Ensure that all the .mo files are generated from the corresponding .po file.
 # This procedure needs to be made sane, probably when the language packs are
 # properly split out.
+
 import os
 import Mailman.messages
+
 start_dir = os.path.dirname(Mailman.messages.__file__)
 for dirpath, dirnames, filenames in os.walk(start_dir):
     for filename in filenames:
@@ -78,9 +80,19 @@ Any other spelling is incorrect.""",
     keywords        = 'email',
     packages        = find_packages(),
     include_package_data = True,
+    # This doesn't work to include the generated .mo files because they are
+    # neither maintained under revision control, nor do they live in a Python
+    # package directory.
+##     package_data    = {
+##         # Include .mo generated files
+##         'Mailman/messages': ['*.mo'],
+##         },
     # Executable scripts
     entry_points    = {
         'console_scripts': list(scripts),
+        'setuptools.file_finders': [
+            'bzr = setupbzr:find_files_for_bzr',
+            ],
         },
     # Third-party requirements.
     install_requires = [
