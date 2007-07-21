@@ -10,7 +10,11 @@ INTRODUCTION
     case second `m'.  Any other spelling is incorrect.
 
     Mailman is written primarily in Python, a free object-oriented scripting
-    language.  There is some ANSI C code for security purposes.
+    language.  Python is available for all platforms that Mailman is supported
+    on, which includes GNU/Linux and most other Unix-like operating systems
+    (e.g. Solaris, *BSD, MacOSX, etc.).  It does not run on Windows, although
+    web and mail clients on any platform should be able to interact with
+    Mailman just fine.
 
     Mailman was originally developed by John Viega.  Subsequent development
     (through version 1.0b3) was by Ken Manheimer.  Further work towards the
@@ -19,6 +23,8 @@ INTRODUCTION
     Version 1.0 and beyond have been primarily maintained by Barry Warsaw with
     contributions from many; see the ACKNOWLEDGMENTS file for details.  Jeremy
     Hylton helped considerably with the Pipermail code in Mailman 2.0.
+    Mailman 2.1 is now being primarily maintained by Mark Sapiro and Tokio
+    Kikuchi.  Barry Warsaw is the lead developer on Mailman 3.
 
     The Mailman home page is:
 
@@ -29,18 +35,16 @@ INTRODUCTION
         http://www.gnu.org/software/mailman
         http://mailman.sf.net
 
+    You might also be interested in the Mailman wiki at:
+
+        http://wiki.list.org
+
     Mailman 3.0 requires Python 2.5 or greater, which can be downloaded from:
 
         http://www.python.org
 
     It is recommended that you use at least Python 2.5.1, the latest release
     as of this writing (08-May-2007).
-
-    You will need an ANSI C compiler to build both Python and Mailman; gcc
-    (the GNU C compiler) works just fine.  Mailman currently works only on
-    GNU/Linux and other Unix-like operating systems (e.g. Solaris, *BSD,
-    MacOSX, etc.).  It does not run on Windows, although web and mail clients
-    on any platform should be able to interact with Mailman just fine.
 
 
 FEATURES
@@ -65,7 +69,7 @@ FEATURES
 
     - Integrated auto-replies.
 
-    - Majordomo-style email based commands.
+    - Email commands.
 
     - Integrated bounce detection within an extensible framework.
 
@@ -85,8 +89,7 @@ REQUIREMENTS
     mailing lists.
 
     Mailman works with any web server that supports CGI/1.1.  The HTML it
-    generates is quite pedestrian and stingy on the graphics so it should be
-    friendly to most web browsers and network connections.
+    generates should be friendly to most web browsers and network connections.
 
     You will need root access on the machine hosting your Mailman installation
     in order to complete some of the configuration steps.  See the INSTALL.txt
