@@ -80,18 +80,10 @@ Any other spelling is incorrect.""",
     keywords        = 'email',
     packages        = find_packages(),
     include_package_data = True,
-    # This doesn't work to include the generated .mo files because they are
-    # neither maintained under revision control, nor do they live in a Python
-    # package directory.
-##     package_data    = {
-##         # Include .mo generated files
-##         'Mailman/messages': ['*.mo'],
-##         },
-    # Executable scripts
     entry_points    = {
         'console_scripts': list(scripts),
         'setuptools.file_finders': [
-            'bzr = setupbzr:find_files_for_bzr',
+            'bzr = setuptoolsbzr:find_files_for_bzr',
             ],
         },
     # Third-party requirements.
@@ -102,9 +94,7 @@ Any other spelling is incorrect.""",
         'wsgiref',
         'zope.interface',
         ],
-    # Optionally use 'nose' for unit test sniffing.
-    extras_require  = {
-        'nose': ['nose'],
-        },
-    test_suite      = 'nose.collector',
+    setup_requires = [
+        'setuptoolsbzr',
+        ],
     )

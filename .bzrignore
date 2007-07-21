@@ -5,3 +5,5 @@ cron/crontab.in
 dist/
 mailman.egg-info
 misc/mailman
+setuptoolsbzr-*.egg
+staging
