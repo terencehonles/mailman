@@ -35,7 +35,7 @@ class SafeDict(dict):
         if charset:
             self.cset = charset
         elif lang:
-            self.cset = config.LC_DESCRIPTIONS[lang][1]
+            self.cset = config.languages.get_charset(lang)
         else:
             self.cset = 'us-ascii'
 

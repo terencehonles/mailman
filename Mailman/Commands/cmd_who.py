@@ -17,8 +17,8 @@
 
 from email.Utils import parseaddr
 
-from Mailman import mm_cfg
 from Mailman import i18n
+from Mailman.configuration import config
 
 STOP = 1
 
@@ -79,8 +79,8 @@ def process(res, args):
         # Public rosters
         if args:
             if len(args) == 1:
-                if mlist.Authenticate((mm_cfg.AuthListModerator,
-                                       mm_cfg.AuthListAdmin),
+                if mlist.Authenticate((config.AuthListModerator,
+                                       config.AuthListAdmin),
                                       args[0]):
                     full = True
                 else:
@@ -102,15 +102,15 @@ def process(res, args):
             usage(res)
             return STOP
         if mlist.isMember(address) and mlist.Authenticate(
-            (mm_cfg.AuthUser,
-             mm_cfg.AuthListModerator,
-             mm_cfg.AuthListAdmin),
+            (config.AuthUser,
+             config.AuthListModerator,
+             config.AuthListAdmin),
             password, address):
             # Then
             ok = True
         if mlist.Authenticate(
-            (mm_cfg.AuthListModerator,
-             mm_cfg.AuthListAdmin),
+            (config.AuthListModerator,
+             config.AuthListAdmin),
             password):
             # Then
             ok = full = True
@@ -119,8 +119,8 @@ def process(res, args):
         if len(args) <> 1:
             usage(res)
             return STOP
-        if mlist.Authenticate((mm_cfg.AuthListModerator,
-                               mm_cfg.AuthListAdmin),
+        if mlist.Authenticate((config.AuthListModerator,
+                               config.AuthListAdmin),
                               args[0]):
             ok = full = True
     if not ok:
@@ -137,7 +137,7 @@ def process(res, args):
     def addmembers(members):
         for member in members:
             if not full and mlist.getMemberOption(member,
-                                           mm_cfg.ConcealSubscription):
+                                           config.ConcealSubscription):
                 continue
             realname = mlist.getMemberName(member)
             if realname:

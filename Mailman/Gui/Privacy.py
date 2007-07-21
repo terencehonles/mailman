@@ -19,10 +19,10 @@
 
 import re
 
-from Mailman import mm_cfg
 from Mailman import Utils
-from Mailman.i18n import _
 from Mailman.Gui.GUIBase import GUIBase
+from Mailman.configuration import config
+from Mailman.i18n import _
 
 
 
@@ -45,9 +45,9 @@ class Privacy(GUIBase):
         # Pre-calculate some stuff.  Technically, we shouldn't do the
         # sub_cfentry calculation here, but it's too ugly to indent it any
         # further, and besides, that'll mess up i18n catalogs.
-        WIDTH = mm_cfg.TEXTFIELDWIDTH
-        if mm_cfg.ALLOW_OPEN_SUBSCRIBE:
-            sub_cfentry = ('subscribe_policy', mm_cfg.Radio,
+        WIDTH = config.TEXTFIELDWIDTH
+        if config.ALLOW_OPEN_SUBSCRIBE:
+            sub_cfentry = ('subscribe_policy', config.Radio,
                            # choices
                            (_('None'),
                             _('Confirm'),
@@ -71,7 +71,7 @@ class Privacy(GUIBase):
                            from creating subscriptions for others without
                            their consent.'''))
         else:
-            sub_cfentry = ('subscribe_policy', mm_cfg.Radio,
+            sub_cfentry = ('subscribe_policy', config.Radio,
                            # choices
                            (_('Confirm'),
                             _('Require approval'),
@@ -101,13 +101,13 @@ class Privacy(GUIBase):
             separate archive-related privacy settings."""),
 
             _('Subscribing'),
-            ('advertised', mm_cfg.Radio, (_('No'), _('Yes')), 0,
+            ('advertised', config.Radio, (_('No'), _('Yes')), 0,
              _('''Advertise this list when people ask what lists are on this
              machine?''')),
 
             sub_cfentry,
 
-            ('subscribe_auto_approval', mm_cfg.EmailListEx, (10, WIDTH), 1,
+            ('subscribe_auto_approval', config.EmailListEx, (10, WIDTH), 1,
              _("""List of addresses (or regexps) whose subscriptions do not
              require approval."""),
 
@@ -116,7 +116,7 @@ class Privacy(GUIBase):
              addresses one per line. You may begin a line with a ^ character
              to designate a (case insensitive) regular expression match.""")),
 
-            ('unsubscribe_policy', mm_cfg.Radio, (_('No'), _('Yes')), 0,
+            ('unsubscribe_policy', config.Radio, (_('No'), _('Yes')), 0,
              _("""Is the list moderator's approval required for unsubscription
              requests?  (<em>No</em> is recommended)"""),
 
@@ -132,7 +132,7 @@ class Privacy(GUIBase):
              are required to be members of.""")),
 
             _('Ban list'),
-            ('ban_list', mm_cfg.EmailListEx, (10, WIDTH), 1,
+            ('ban_list', config.EmailListEx, (10, WIDTH), 1,
              _("""List of addresses which are banned from membership in this
              mailing list."""),
 
@@ -142,14 +142,14 @@ class Privacy(GUIBase):
              designate a regular expression match.""")),
 
             _("Membership exposure"),
-            ('private_roster', mm_cfg.Radio,
+            ('private_roster', config.Radio,
              (_('Anyone'), _('List members'), _('List admin only')), 0,
              _('Who can view subscription list?'),
 
              _('''When set, the list of subscribers is protected by member or
              admin password authentication.''')),
 
-            ('obscure_addresses', mm_cfg.Radio, (_('No'), _('Yes')), 0,
+            ('obscure_addresses', config.Radio, (_('No'), _('Yes')), 0,
              _("""Show member addresses so they're not directly recognizable
              as email addresses?"""),
              _("""Setting this option causes member email addresses to be
@@ -197,7 +197,7 @@ class Privacy(GUIBase):
 
             _('Member filters'),
 
-            ('default_member_moderation', mm_cfg.Radio, (_('No'), _('Yes')),
+            ('default_member_moderation', config.Radio, (_('No'), _('Yes')),
              0, _('By default, should new list member postings be moderated?'),
 
              _("""Each list member has a <em>moderation flag</em> which says
@@ -215,7 +215,7 @@ class Privacy(GUIBase):
              <a href="%(adminurl)s/members">membership management
              screens</a>.""")),
 
-            ('member_moderation_action', mm_cfg.Radio,
+            ('member_moderation_action', config.Radio,
              (_('Hold'), _('Reject'), _('Discard')), 0,
              _("""Action to take when a moderated member posts to the
              list."""),
@@ -232,7 +232,7 @@ class Privacy(GUIBase):
              no notice sent to the post's author.
              </ul>""")),
 
-            ('member_moderation_notice', mm_cfg.Text, (10, WIDTH), 1,
+            ('member_moderation_notice', config.Text, (10, WIDTH), 1,
              _("""Text to include in any
              <a href="?VARHELP/privacy/sender/member_moderation_action"
              >rejection notice</a> to
@@ -240,7 +240,7 @@ class Privacy(GUIBase):
 
             _('Non-member filters'),
 
-            ('accept_these_nonmembers', mm_cfg.EmailListEx, (10, WIDTH), 1,
+            ('accept_these_nonmembers', config.EmailListEx, (10, WIDTH), 1,
              _("""List of non-member addresses whose postings should be
              automatically accepted."""),
 
@@ -249,7 +249,7 @@ class Privacy(GUIBase):
              addresses one per line; start the line with a ^ character to
              designate a regular expression match.""")),
 
-            ('hold_these_nonmembers', mm_cfg.EmailListEx, (10, WIDTH), 1,
+            ('hold_these_nonmembers', config.EmailListEx, (10, WIDTH), 1,
              _("""List of non-member addresses whose postings will be
              immediately held for moderation."""),
 
@@ -260,7 +260,7 @@ class Privacy(GUIBase):
              line; start the line with a ^ character to designate a regular
              expression match.""")),
 
-            ('reject_these_nonmembers', mm_cfg.EmailListEx, (10, WIDTH), 1,
+            ('reject_these_nonmembers', config.EmailListEx, (10, WIDTH), 1,
              _("""List of non-member addresses whose postings will be
              automatically rejected."""),
 
@@ -275,7 +275,7 @@ class Privacy(GUIBase):
              <p>Add member addresses one per line; start the line with a ^
              character to designate a regular expression match.""")),
 
-            ('discard_these_nonmembers', mm_cfg.EmailListEx, (10, WIDTH), 1,
+            ('discard_these_nonmembers', config.EmailListEx, (10, WIDTH), 1,
              _("""List of non-member addresses whose postings will be
              automatically discarded."""),
 
@@ -289,7 +289,7 @@ class Privacy(GUIBase):
              <p>Add member addresses one per line; start the line with a ^
              character to designate a regular expression match.""")),
 
-            ('generic_nonmember_action', mm_cfg.Radio,
+            ('generic_nonmember_action', config.Radio,
              (_('Accept'), _('Hold'), _('Reject'), _('Discard')), 0,
              _("""Action to take for postings from non-members for which no
              explicit action is defined."""),
@@ -305,11 +305,11 @@ class Privacy(GUIBase):
              >discarded</a> addresses.  If no match is found, then this action
              is taken.""")),
 
-            ('forward_auto_discards', mm_cfg.Radio, (_('No'), _('Yes')), 0,
+            ('forward_auto_discards', config.Radio, (_('No'), _('Yes')), 0,
              _("""Should messages from non-members, which are automatically
              discarded, be forwarded to the list moderator?""")),
 
-            ('nonmember_rejection_notice', mm_cfg.Text, (10, WIDTH), 1,
+            ('nonmember_rejection_notice', config.Text, (10, WIDTH), 1,
              _("""Text to include in any rejection notice to be sent to
              non-members who post to this list. This notice can include
              the list's owner address by %%(listowner)s and replaces the
@@ -323,7 +323,7 @@ class Privacy(GUIBase):
 
             _('Recipient filters'),
 
-            ('require_explicit_destination', mm_cfg.Radio,
+            ('require_explicit_destination', config.Radio,
              (_('No'), _('Yes')), 0,
              _("""Must posts have list named in destination (to, cc) field
              (or be among the acceptable alias names, specified below)?"""),
@@ -345,7 +345,7 @@ class Privacy(GUIBase):
 
              </ol>""")),
 
-            ('acceptable_aliases', mm_cfg.Text, (4, WIDTH), 0,
+            ('acceptable_aliases', config.Text, (4, WIDTH), 0,
              _("""Alias names (regexps) which qualify as explicit to or cc
              destination names for this list."""),
 
@@ -366,7 +366,7 @@ class Privacy(GUIBase):
              release, the pattern will always be matched against the entire
              recipient address.""")),
 
-            ('max_num_recipients', mm_cfg.Number, 5, 0,
+            ('max_num_recipients', config.Number, 5, 0,
              _('Ceiling on acceptable number of recipients for a posting.'),
 
              _('''If a posting has this number, or more, of recipients, it is
@@ -381,7 +381,7 @@ class Privacy(GUIBase):
 
             _('Header filters'),
 
-            ('header_filter_rules', mm_cfg.HeaderFilter, 0, 0,
+            ('header_filter_rules', config.HeaderFilter, 0, 0,
              _('Filter rules to match against the headers of a message.'),
 
              _("""Each header filter rule has two parts, a list of regular
@@ -403,7 +403,7 @@ class Privacy(GUIBase):
 
             _('Legacy anti-spam filters'),
 
-            ('bounce_matching_headers', mm_cfg.Text, (6, WIDTH), 0,
+            ('bounce_matching_headers', config.Text, (6, WIDTH), 0,
              _('Hold posts with header value matching a specified regexp.'),
              _("""Use this option to prohibit posts according to specific
              header values.  The target value is a regular-expression for
@@ -436,7 +436,7 @@ class Privacy(GUIBase):
         # For subscribe_policy when ALLOW_OPEN_SUBSCRIBE is true, we need to
         # add one to the value because the page didn't present an open list as
         # an option.
-        if property == 'subscribe_policy' and not mm_cfg.ALLOW_OPEN_SUBSCRIBE:
+        if property == 'subscribe_policy' and not config.ALLOW_OPEN_SUBSCRIBE:
             val += 1
         setattr(mlist, property, val)
 
@@ -476,7 +476,7 @@ class Privacy(GUIBase):
                 # We'll get a TypeError when the actiontag is missing and the
                 # .getvalue() call returns None.
             except (ValueError, TypeError):
-                action = mm_cfg.DEFER
+                action = config.DEFER
             if pattern is None:
                 # We came to the end of the boxes
                 break
@@ -503,12 +503,12 @@ class Privacy(GUIBase):
                 where = cgidata.getvalue(wheretag)
                 if where == 'before':
                     # Add a new empty rule box before the current one
-                    rules.append(('', mm_cfg.DEFER, True))
+                    rules.append(('', config.DEFER, True))
                     rules.append((pattern, action, False))
                     # Default is to add it after...
                 else:
                     rules.append((pattern, action, False))
-                    rules.append(('', mm_cfg.DEFER, True))
+                    rules.append(('', config.DEFER, True))
             # Was this an up movement?
             elif cgidata.has_key(uptag):
                 # As long as this one isn't the first rule, move it up

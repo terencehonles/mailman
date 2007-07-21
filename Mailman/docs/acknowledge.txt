@@ -12,6 +12,7 @@ acknowledgment.
     >>> from Mailman.database import flush
     >>> mlist = config.list_manager.create('_xtest@example.com')
     >>> mlist.real_name = 'XTest'
+    >>> mlist.preferred_language = 'en'
     >>> # XXX This will almost certainly change once we've worked out the web
     >>> # space layout for mailing lists now.
     >>> mlist._data.web_page_url = 'http://lists.example.com/'

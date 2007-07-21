@@ -286,7 +286,7 @@ def subscription_prompt(mlist, doc, cookie, userdesc):
                       RadioButtonArray('digests', (_('No'), _('Yes')),
                                        checked=digest, values=(0, 1))])
     langs = mlist.language_codes
-    values = [_(Utils.GetLanguageDescr(l)) for l in langs]
+    values = [_(config.languages.get_description(code)) for code in langs]
     try:
         selected = langs.index(lang)
     except ValueError:
@@ -332,7 +332,7 @@ def subscription_confirm(mlist, doc, cookie, cgidata):
             # Some pending values may be overridden in the form.  email of
             # course is hardcoded. ;)
             lang = cgidata.getvalue('language')
-            if not Utils.IsLanguage(lang):
+            if lang not in config.languages.enabled_codes:
                 lang = mlist.preferred_language
             i18n.set_language(lang)
             doc.set_language(lang)

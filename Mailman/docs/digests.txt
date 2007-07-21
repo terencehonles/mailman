@@ -418,9 +418,16 @@ Internationalized digests
 -------------------------
 
 When messages come in with a content-type character set different than that of
-the list's preferred language, recipients wil get an internationalized digest.
+the list's preferred language, recipients wil get an internationalized
+digest.  French is not enabled by default site-wide, so enable that now.
 
+XXX We also have to set the default server language to French, otherwise the
+English template will be found and the masthead won't be translated.
+
+    >>> config.languages.enable_language('fr')
+    >>> config.DEFAULT_SERVER_LANGUAGE = 'fr'
     >>> mlist.preferred_language = 'fr'
+    >>> flush()
     >>> msg = message_from_string("""\
     ... From: aperson@example.org
     ... To: _xtest@example.com
@@ -454,7 +461,7 @@ Set the digest threshold to zero so that the digests will be sent immediately.
     Content-Type: multipart/mixed; boundary="..."
     MIME-Version: 1.0
     From: _xtest-request@example.com
-    Subject: XTest Digest, Vol 2, Issue 11
+    Subject: Groupe XTest, Vol. 2, Parution 11
     To: _xtest@example.com
     Reply-To: _xtest@example.com
     Date: ...
@@ -464,7 +471,7 @@ Set the digest threshold to zero so that the digests will be sent immediately.
     Content-Type: text/plain; charset="iso-8859-1"
     MIME-Version: 1.0
     Content-Transfer-Encoding: quoted-printable
-    Content-Description: XTest Digest, Vol 2, Issue 11
+    Content-Description: Groupe XTest, Vol. 2, Parution 11
     <BLANKLINE>
     Envoyez vos messages pour la liste XTest =E0
         _xtest@example.com
@@ -520,7 +527,7 @@ Set the digest threshold to zero so that the digests will be sent immediately.
      ('recips', set([])), ('version', 3)]
     >>> print rfc1153msg.as_string()
     From: _xtest-request@example.com
-    Subject: XTest Digest, Vol 2, Issue 11
+    Subject: Groupe XTest, Vol. 2, Parution 11
     To: _xtest@example.com
     Reply-To: _xtest@example.com
     Date: ...
@@ -537,3 +544,9 @@ Set the digest threshold to zero so that the digests will be sent immediately.
      ('listname', '_xtest@example.com'),
      ('received_time', ...),
      ('recips', set([])), ('version', 3)]
+
+
+Clean up
+--------
+
+    >>> config.DEFAULT_SERVER_LANGUAGE = 'en'

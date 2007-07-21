@@ -1,0 +1,13 @@
+# -*- python -*-
+
+# Configuration file template for the unit test suite.  We need this because
+# both the process running the tests and all sub-processes (e.g. qrunners)
+# must share the same configuration file.
+
+SMTPPORT                = 10825
+MAX_RESTARTS            = 1
+MTA                     = None
+
+add_domain('example.com', 'www.example.com')
+
+# bin/testall will add additional runtime configuration variables here.

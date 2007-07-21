@@ -21,8 +21,8 @@ import codecs
 
 from Mailman import Utils
 from Mailman import i18n
-from Mailman import mm_cfg
 from Mailman.Gui.GUIBase import GUIBase
+from Mailman.configuration import config
 
 _ = i18n._
 
@@ -37,7 +37,7 @@ class Language(GUIBase):
             return None
         # Set things up for the language choices
         langs = mlist.language_codes
-        langnames = [_(Utils.GetLanguageDescr(L)) for L in langs]
+        langnames = [_(description) for description in config.enabled_names]
         try:
             langi = langs.index(mlist.preferred_language)
         except ValueError:
@@ -53,16 +53,14 @@ class Language(GUIBase):
             except LookupError:
                 return 0
 
-        all = [key for key in mm_cfg.LC_DESCRIPTIONS.keys()
-               if checkcodec(Utils.GetCharSet(key))]
-        all.sort()
+        all = sorted(code for code in config.languages.enabled_codes
+                     if checkcodec(Utils.GetCharSet(code)))
         checked = [L in langs for L in all]
-        allnames = [_(Utils.GetLanguageDescr(L)) for L in all]
-
+        allnames = [_(config.languages.get_description(code)) for code in all]
         return [
             _('Natural language (internationalization) options.'),
 
-            ('preferred_language', mm_cfg.Select,
+            ('preferred_language', config.Select,
              (langs, langnames, langi),
              0,
              _('Default language for this list.'),
@@ -74,7 +72,7 @@ class Language(GUIBase):
              applies to both web-based and email-based messages, but not to
              email posted by list members.''')),
 
-            ('available_languages', mm_cfg.Checkbox,
+            ('available_languages', config.Checkbox,
              (allnames, checked, 0, all), 0,
              _('Languages supported by this list.'),
 
@@ -83,7 +81,7 @@ class Language(GUIBase):
              <a href="?VARHELP=language/preferred_language">default
              language</a> must be included.''')),
 
-            ('encode_ascii_prefixes', mm_cfg.Radio,
+            ('encode_ascii_prefixes', config.Radio,
              (_('Never'), _('Always'), _('As needed')), 0,
              _("""Encode the
              <a href="?VARHELP=general/subject_prefix">subject

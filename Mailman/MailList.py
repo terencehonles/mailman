@@ -1410,8 +1410,10 @@ bad regexp in bounce_matching_header line: %s
         # default server language.  The effect would be that the default
         # server language would never get added to the list's list of
         # languages.
-        self.available_languages = [Language(code) for code in language_codes
-                                    if code in config.LC_DESCRIPTIONS]
+        requested_codes = set(language_codes)
+        enabled_codes = set(config.languages.enabled_codes)
+        self.available_languages = [
+            Language(code) for code in requested_codes & enabled_codes]
 
     def add_language(self, language_code):
         self.available_languages.append(Language(language_code))
@@ -1419,12 +1421,13 @@ bad regexp in bounce_matching_header line: %s
     @property
     def language_codes(self):
         # Callers of this method expect a list of language codes
-        codes = [lang.code for lang in self.available_languages
-                 if lang.code in config.LC_DESCRIPTIONS]
+        available_codes = set(self.available_languages)
+        enabled_codes = set(config.languages.enabled_codes)
+        codes = available_codes & enabled_codes
         # If we don't add this, and the site admin has never added any
         # language support to the list, then the general admin page may have a
         # blank field where the list owner is supposed to chose the list's
         # preferred language.
         if config.DEFAULT_SERVER_LANGUAGE not in codes:
-            codes.append(config.DEFAULT_SERVER_LANGUAGE)
-        return codes
+            codes.add(config.DEFAULT_SERVER_LANGUAGE)
+        return list(codes)

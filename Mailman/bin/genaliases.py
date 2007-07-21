@@ -45,9 +45,7 @@ verbosity."""))
                       help=_('Alternative configuration file to use'))
     opts, args = parser.parse_args()
     if args:
-        parser.print_help()
-        print >> sys.stderr, _('Unexpected arguments')
-        sys.exit(1)
+        parser.print_error(_('Unexpected arguments'))
     return parser, opts, args
 
 

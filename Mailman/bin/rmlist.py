@@ -83,7 +83,7 @@ def delete_list(listname, mlist=None, archives=True, quiet=False):
             ])
 
     for dirtmpl, msg in removeables:
-        path = os.path.join(config.VAR_PREFIX, dirtmpl)
+        path = os.path.join(config.VAR_DIR, dirtmpl)
         remove_it(listname, path, msg, quiet)
 
 

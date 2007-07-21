@@ -18,10 +18,12 @@
 """Configuration file loading and management."""
 
 import os
+import sys
 import errno
 
 from Mailman import Defaults
 from Mailman import Errors
+from Mailman.languages import LanguageManager
 
 _missing = object()
 
@@ -45,98 +47,126 @@ class Configuration(object):
         self.qrunners = {}
 
     def load(self, filename=None):
-        # Load the configuration from the named file, or if not given, search
-        # in VAR_PREFIX for an etc/mailman.cfg file.  If that file is missing,
-        # use Mailman/mm_cfg.py for backward compatibility.
-        #
-        # Whatever you find, create a namespace and execfile that file in it.
-        # The values in that namespace are exposed as attributes on this
-        # Configuration instance.
-        original_filename = filename
-        if filename is None:
-            filename = os.path.join(Defaults.VAR_PREFIX, 'etc', 'mailman.cfg')
+        join = os.path.join
         # Set up the execfile namespace
         ns = Defaults.__dict__.copy()
         # Prune a few things, add a few things
         del ns['__file__']
         del ns['__name__']
         del ns['__doc__']
-        ns['add_domain']  = self.add_domain
+        ns['add_domain'] = self.add_domain
         ns['add_qrunner'] = self.add_qrunner
         ns['del_qrunner'] = self.del_qrunner
+        self._languages = LanguageManager()
+        ns['add_language'] = self._languages.add_language
+        ns['enable_language'] = self._languages.enable_language
+        # Add all known languages, but don't enable them.
+        for code, (desc, charset) in Defaults._DEFAULT_LANGUAGE_DATA.items():
+            self._languages.add_language(code, desc, charset, False)
         # Set up the default list of qrunners so that the mailman.cfg file may
         # add or delete them.
         for name in DEFAULT_QRUNNERS:
             self.add_qrunner(name)
-        # Attempt our first choice
-        path = os.path.abspath(os.path.expanduser(filename))
-        try:
-            execfile(path, ns, ns)
-            self.filename = path
-        except EnvironmentError, e:
-            if e.errno <> errno.ENOENT or original_filename:
-                raise
-            # The file didn't exist, so try mm_cfg.py
-            from Mailman import mm_cfg
-            ns.update(mm_cfg.__dict__)
-            self.filename = None
-        # Based on values possibly set in mailman.cfg, add additional qrunners
+        # Load the configuration from the named file, or if not given, search
+        # in the runtime data directory for an etc/mailman.cfg file.  If there
+        # is an instance.cfg file in the same directory, load that first, then
+        # mailman.cfg.
+        #
+        # Whatever you find, create a namespace and execfile that file in it.
+        # The values in that namespace are exposed as attributes on this
+        # Configuration instance.
+        self.filename = None
+        paths = [
+            # Development directories.
+            join(os.getcwd(), 'etc', 'mailman.cfg'),
+            join(os.getcwd(), 'var', 'etc', 'mailman.cfg'),
+            # Standard installation directories.
+            join('/etc', 'mailman.cfg'),
+            join(Defaults.DEFAULT_VAR_DIRECTORY, 'etc', 'mailman.cfg'),
+            ]
+        if filename is not None:
+            paths.insert(0, filename)
+        for cfg_path in paths:
+            path = os.path.abspath(os.path.expanduser(cfg_path))
+            try:
+                execfile(path, ns, ns)
+            except EnvironmentError, e:
+                if e.errno <> errno.ENOENT:
+                    # It's okay if the instance.cfg file does not exist.  This
+                    # can happen for example in the test suite.
+                    raise
+            else:
+                self.filename = cfg_path
+                break
+        if self.filename is None:
+            # The logging subsystem isn't running yet, so use stderr.
+            print >> sys.stderr, 'No runtime configuration file file.  Use -C'
+            sys.exit(-1)
+        # Based on values possibly set in mailman.cfg, add additional qrunners.
         if ns['USE_MAILDIR']:
             self.add_qrunner('Maildir')
         if ns['USE_LMTP']:
             self.add_qrunner('LMTP')
-        # Pull out the defaults
-        PREFIX          = ns['PREFIX']
-        VAR_PREFIX      = ns['VAR_PREFIX']
-        EXEC_PREFIX     = ns['EXEC_PREFIX']
+        # Pull out the defaults.
+        VAR_DIR = ns['VAR_DIR']
         # Now that we've loaded all the configuration files we're going to
         # load, set up some useful directories.
-        self.LIST_DATA_DIR      = os.path.join(VAR_PREFIX, 'lists')
-        self.LOG_DIR            = os.path.join(VAR_PREFIX, 'logs')
-        self.LOCK_DIR = lockdir = os.path.join(VAR_PREFIX, 'locks')
-        self.DATA_DIR = datadir = os.path.join(VAR_PREFIX, 'data')
-        self.ETC_DIR = etcdir   = os.path.join(VAR_PREFIX, 'etc')
-        self.SPAM_DIR           = os.path.join(VAR_PREFIX, 'spam')
-        self.EXT_DIR            = os.path.join(VAR_PREFIX, 'ext')
-        self.WRAPPER_DIR        = os.path.join(EXEC_PREFIX, 'mail')
-        self.BIN_DIR            = os.path.join(PREFIX, 'bin')
-        self.SCRIPTS_DIR        = os.path.join(PREFIX, 'scripts')
-        self.TEMPLATE_DIR       = os.path.join(PREFIX, 'templates')
-        self.MESSAGES_DIR       = os.path.join(PREFIX, 'messages')
-        self.PUBLIC_ARCHIVE_FILE_DIR  = os.path.join(VAR_PREFIX,
-                                                     'archives', 'public')
-        self.PRIVATE_ARCHIVE_FILE_DIR = os.path.join(VAR_PREFIX,
-                                                     'archives', 'private')
+        self.LIST_DATA_DIR      = join(VAR_DIR, 'lists')
+        self.LOG_DIR            = join(VAR_DIR, 'logs')
+        self.LOCK_DIR = lockdir = join(VAR_DIR, 'locks')
+        self.DATA_DIR = datadir = join(VAR_DIR, 'data')
+        self.ETC_DIR = etcdir   = join(VAR_DIR, 'etc')
+        self.SPAM_DIR           = join(VAR_DIR, 'spam')
+        self.EXT_DIR            = join(VAR_DIR, 'ext')
+        self.PUBLIC_ARCHIVE_FILE_DIR  = join(VAR_DIR, 'archives', 'public')
+        self.PRIVATE_ARCHIVE_FILE_DIR = join(VAR_DIR, 'archives', 'private')
         # Directories used by the qrunner subsystem
-        self.QUEUE_DIR = qdir   = os.path.join(VAR_PREFIX, 'qfiles')
-        self.INQUEUE_DIR        = os.path.join(qdir, 'in')
-        self.OUTQUEUE_DIR       = os.path.join(qdir, 'out')
-        self.CMDQUEUE_DIR       = os.path.join(qdir, 'commands')
-        self.BOUNCEQUEUE_DIR    = os.path.join(qdir, 'bounces')
-        self.NEWSQUEUE_DIR      = os.path.join(qdir, 'news')
-        self.ARCHQUEUE_DIR      = os.path.join(qdir, 'archive')
-        self.SHUNTQUEUE_DIR     = os.path.join(qdir, 'shunt')
-        self.VIRGINQUEUE_DIR    = os.path.join(qdir, 'virgin')
-        self.BADQUEUE_DIR       = os.path.join(qdir, 'bad')
-        self.RETRYQUEUE_DIR     = os.path.join(qdir, 'retry')
-        self.MAILDIR_DIR        = os.path.join(qdir, 'maildir')
+        self.QUEUE_DIR = qdir   = join(VAR_DIR, 'qfiles')
+        self.INQUEUE_DIR        = join(qdir, 'in')
+        self.OUTQUEUE_DIR       = join(qdir, 'out')
+        self.CMDQUEUE_DIR       = join(qdir, 'commands')
+        self.BOUNCEQUEUE_DIR    = join(qdir, 'bounces')
+        self.NEWSQUEUE_DIR      = join(qdir, 'news')
+        self.ARCHQUEUE_DIR      = join(qdir, 'archive')
+        self.SHUNTQUEUE_DIR     = join(qdir, 'shunt')
+        self.VIRGINQUEUE_DIR    = join(qdir, 'virgin')
+        self.BADQUEUE_DIR       = join(qdir, 'bad')
+        self.RETRYQUEUE_DIR     = join(qdir, 'retry')
+        self.MAILDIR_DIR        = join(qdir, 'maildir')
         # Other useful files
-        self.PIDFILE                = os.path.join(datadir,
-                                                   'master-qrunner.pid')
-        self.SITE_PW_FILE           = os.path.join(datadir, 'adm.pw')
-        self.LISTCREATOR_PW_FILE    = os.path.join(datadir, 'creator.pw')
-        self.CONFIG_FILE            = os.path.join(etcdir, 'mailman.cfg')
-        self.LOCK_FILE              = os.path.join(lockdir, 'master-qrunner')
+        self.PIDFILE                = join(datadir, 'master-qrunner.pid')
+        self.SITE_PW_FILE           = join(datadir, 'adm.pw')
+        self.LISTCREATOR_PW_FILE    = join(datadir, 'creator.pw')
+        self.CONFIG_FILE            = join(etcdir, 'mailman.cfg')
+        self.LOCK_FILE              = join(lockdir, 'master-qrunner')
         # Now update our dict so attribute syntax just works
-        if 'add_domain' in ns:
-            del ns['add_domain']
-        if 'add_runner' in ns:
-            del ns['add_runner']
+        del ns['add_domain']
+        del ns['add_qrunner']
+        del ns['del_qrunner']
         self.__dict__.update(ns)
         # Add the default domain if there are no virtual domains currently
         # defined.
         if not self.domains:
             self.add_domain(self.DEFAULT_EMAIL_HOST, self.DEFAULT_URL_HOST)
+        # Enable all specified languages, and promote the language manager to
+        # a public attribute.
+        self.languages = self._languages
+        del self._languages
+        available_languages = set(self._DEFAULT_LANGUAGE_DATA)
+        enabled_languages = set(self.LANGUAGES.split())
+        if 'all' in enabled_languages:
+            languages = available_languages
+        else:
+            unknown_language = enabled_languages - available_languages
+            if unknown_language:
+                print >> sys.stderr, 'Ignoring unknown language codes:', \
+                      SPACE.join(unknown_language)
+            languages = available_languages & enabled_languages
+        for code in languages:
+            self.languages.enable_language(code)
+        # Always add and enable the default server language.
+        code = self.DEFAULT_SERVER_LANGUAGE
+        self.languages.enable_language(code)
 
     def add_domain(self, email_host, url_host):
         """Add the definition of a virtual domain.

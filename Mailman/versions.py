@@ -35,10 +35,10 @@ run again until another version change is detected.
 import email
 import logging
 
-from Mailman import mm_cfg
 from Mailman import Message
 from Mailman import Utils
 from Mailman.MemberAdaptor import UNKNOWN
+from Mailman.configuration import config
 
 log = logging.getLogger('mailman.error')
 
@@ -101,7 +101,7 @@ def UpdateOldVars(l, stored_state):
     # Migrate to 2.1b3, baw 13-Oct-2001
     # Basic defaults for new variables
     if not hasattr(l, 'default_member_moderation'):
-        l.default_member_moderation = mm_cfg.DEFAULT_DEFAULT_MEMBER_MODERATION
+        l.default_member_moderation = config.DEFAULT_DEFAULT_MEMBER_MODERATION
     if not hasattr(l, 'accept_these_nonmembers'):
         l.accept_these_nonmembers = []
     if not hasattr(l, 'hold_these_nonmembers'):
@@ -111,9 +111,9 @@ def UpdateOldVars(l, stored_state):
     if not hasattr(l, 'discard_these_nonmembers'):
         l.discard_these_nonmembers = []
     if not hasattr(l, 'forward_auto_discards'):
-        l.forward_auto_discards = mm_cfg.DEFAULT_FORWARD_AUTO_DISCARDS
+        l.forward_auto_discards = config.DEFAULT_FORWARD_AUTO_DISCARDS
     if not hasattr(l, 'generic_nonmember_action'):
-        l.generic_nonmember_action = mm_cfg.DEFAULT_GENERIC_NONMEMBER_ACTION
+        l.generic_nonmember_action = config.DEFAULT_GENERIC_NONMEMBER_ACTION
     # Now convert what we can...  Note that the interaction between the
     # MM2.0.x attributes `moderated', `member_posting_only', and `posters' is
     # so confusing, it makes my brain really ache.  Which is why they go away
@@ -177,7 +177,7 @@ def UpdateOldVars(l, stored_state):
                 if not l.isMember(addr):
                     l.accept_these_nonmembers.append(addr)
             for member in l.getMembers():
-                l.setMemberOption(member, mm_cfg.Moderate,
+                l.setMemberOption(member, config.Moderate,
                                   # reset for explicitly named members
                                   member not in l.posters)
             l.generic_nonmember_action = 1
@@ -187,12 +187,12 @@ def UpdateOldVars(l, stored_state):
                 if not l.isMember(addr):
                     l.accept_these_nonmembers.append(addr)
             for member in l.getMembers():
-                l.setMemberOption(member, mm_cfg.Moderate, 0)
+                l.setMemberOption(member, config.Moderate, 0)
             l.generic_nonmember_action = 1
             l.default_member_moderation = 0
         elif not l.posters:
             for member in l.getMembers():
-                l.setMemberOption(member, mm_cfg.Moderate, 0)
+                l.setMemberOption(member, config.Moderate, 0)
             l.generic_nonmember_action = 0
             l.default_member_moderation = 0
         else:
@@ -200,7 +200,7 @@ def UpdateOldVars(l, stored_state):
                 if not l.isMember(addr):
                     l.accept_these_nonmembers.append(addr)
             for member in l.getMembers():
-                l.setMemberOption(member, mm_cfg.Moderate,
+                l.setMemberOption(member, config.Moderate,
                                   # reset for explicitly named members
                                   member not in l.posters)
             l.generic_nonmember_action = 1
@@ -216,14 +216,14 @@ def UpdateOldVars(l, stored_state):
         forbiddens = l.forbidden_posters
         for addr in forbiddens:
             if l.isMember(addr):
-                l.setMemberOption(addr, mm_cfg.Moderate, 1)
+                l.setMemberOption(addr, config.Moderate, 1)
             else:
                 l.hold_these_nonmembers.append(addr)
         del l.forbidden_posters
 
     # Migrate to 1.0b6, klm 10/22/1998:
     PreferStored('reminders_to_admins', 'umbrella_list',
-                 mm_cfg.DEFAULT_UMBRELLA_LIST)
+                 config.DEFAULT_UMBRELLA_LIST)
 
     # Migrate up to 1.0b5:
     PreferStored('auto_subscribe', 'open_subscribe')
@@ -234,7 +234,7 @@ def UpdateOldVars(l, stored_state):
     PreferStored('automatically_remove', 'automatic_bounce_action')
     if hasattr(l, "open_subscribe"):
         if l.open_subscribe:
-            if mm_cfg.ALLOW_OPEN_SUBSCRIBE:
+            if config.ALLOW_OPEN_SUBSCRIBE:
                 l.subscribe_policy = 0
             else:
                 l.subscribe_policy = 1
@@ -242,10 +242,10 @@ def UpdateOldVars(l, stored_state):
             l.subscribe_policy = 2      # admin approval
         delattr(l, "open_subscribe")
     if not hasattr(l, "administrivia"):
-        setattr(l, "administrivia", mm_cfg.DEFAULT_ADMINISTRIVIA)
+        setattr(l, "administrivia", config.DEFAULT_ADMINISTRIVIA)
     if not hasattr(l, "admin_member_chunksize"):
         setattr(l, "admin_member_chunksize",
-                mm_cfg.DEFAULT_ADMIN_MEMBER_CHUNKSIZE)
+                config.DEFAULT_ADMIN_MEMBER_CHUNKSIZE)
     #
     # this attribute was added then deleted, so there are a number of
     # cases to take care of
@@ -282,7 +282,7 @@ def UpdateOldVars(l, stored_state):
     #
     if not hasattr(l, "admin_notify_mchanges"):
         setattr(l, "admin_notify_mchanges",
-                mm_cfg.DEFAULT_ADMIN_NOTIFY_MCHANGES)
+                config.DEFAULT_ADMIN_NOTIFY_MCHANGES)
     #
     # Convert the members and digest_members addresses so that the keys of
     # both these are always lowercased, but if there is a case difference, the
@@ -336,10 +336,10 @@ def NewVars(l):
     add_only_if_missing('postings_responses', {})
     add_only_if_missing('admin_responses', {})
     add_only_if_missing('reply_goes_to_list', '')
-    add_only_if_missing('preferred_language', mm_cfg.DEFAULT_SERVER_LANGUAGE)
+    add_only_if_missing('preferred_language', config.DEFAULT_SERVER_LANGUAGE)
     add_only_if_missing('available_languages', [])
     add_only_if_missing('digest_volume_frequency',
-                        mm_cfg.DEFAULT_DIGEST_VOLUME_FREQUENCY)
+                        config.DEFAULT_DIGEST_VOLUME_FREQUENCY)
     add_only_if_missing('digest_last_sent_at', 0)
     add_only_if_missing('mod_password', None)
     add_only_if_missing('moderator', [])
@@ -350,46 +350,46 @@ def NewVars(l):
     add_only_if_missing('usernames', {})
     add_only_if_missing('personalize', 0)
     add_only_if_missing('first_strip_reply_to',
-                        mm_cfg.DEFAULT_FIRST_STRIP_REPLY_TO)
+                        config.DEFAULT_FIRST_STRIP_REPLY_TO)
     add_only_if_missing('subscribe_auto_approval',
-                        mm_cfg.DEFAULT_SUBSCRIBE_AUTO_APPROVAL)
+                        config.DEFAULT_SUBSCRIBE_AUTO_APPROVAL)
     add_only_if_missing('unsubscribe_policy',
-                        mm_cfg.DEFAULT_UNSUBSCRIBE_POLICY)
-    add_only_if_missing('send_goodbye_msg', mm_cfg.DEFAULT_SEND_GOODBYE_MSG)
+                        config.DEFAULT_UNSUBSCRIBE_POLICY)
+    add_only_if_missing('send_goodbye_msg', config.DEFAULT_SEND_GOODBYE_MSG)
     add_only_if_missing('include_rfc2369_headers', 1)
     add_only_if_missing('include_list_post_header', 1)
     add_only_if_missing('bounce_score_threshold',
-                        mm_cfg.DEFAULT_BOUNCE_SCORE_THRESHOLD)
+                        config.DEFAULT_BOUNCE_SCORE_THRESHOLD)
     add_only_if_missing('bounce_info_stale_after',
-                        mm_cfg.DEFAULT_BOUNCE_INFO_STALE_AFTER)
+                        config.DEFAULT_BOUNCE_INFO_STALE_AFTER)
     add_only_if_missing('bounce_you_are_disabled_warnings',
-                        mm_cfg.DEFAULT_BOUNCE_YOU_ARE_DISABLED_WARNINGS)
+                        config.DEFAULT_BOUNCE_YOU_ARE_DISABLED_WARNINGS)
     add_only_if_missing(
         'bounce_you_are_disabled_warnings_interval',
-        mm_cfg.DEFAULT_BOUNCE_YOU_ARE_DISABLED_WARNINGS_INTERVAL)
+        config.DEFAULT_BOUNCE_YOU_ARE_DISABLED_WARNINGS_INTERVAL)
     add_only_if_missing(
         'bounce_unrecognized_goes_to_list_owner',
-        mm_cfg.DEFAULT_BOUNCE_UNRECOGNIZED_GOES_TO_LIST_OWNER)
+        config.DEFAULT_BOUNCE_UNRECOGNIZED_GOES_TO_LIST_OWNER)
     add_only_if_missing(
         'bounce_notify_owner_on_disable',
-        mm_cfg.DEFAULT_BOUNCE_NOTIFY_OWNER_ON_DISABLE)
+        config.DEFAULT_BOUNCE_NOTIFY_OWNER_ON_DISABLE)
     add_only_if_missing(
         'bounce_notify_owner_on_removal',
-        mm_cfg.DEFAULT_BOUNCE_NOTIFY_OWNER_ON_REMOVAL)
+        config.DEFAULT_BOUNCE_NOTIFY_OWNER_ON_REMOVAL)
     add_only_if_missing('ban_list', [])
-    add_only_if_missing('filter_mime_types', mm_cfg.DEFAULT_FILTER_MIME_TYPES)
-    add_only_if_missing('pass_mime_types', mm_cfg.DEFAULT_PASS_MIME_TYPES)
-    add_only_if_missing('filter_content', mm_cfg.DEFAULT_FILTER_CONTENT)
+    add_only_if_missing('filter_mime_types', config.DEFAULT_FILTER_MIME_TYPES)
+    add_only_if_missing('pass_mime_types', config.DEFAULT_PASS_MIME_TYPES)
+    add_only_if_missing('filter_content', config.DEFAULT_FILTER_CONTENT)
     add_only_if_missing('convert_html_to_plaintext',
-                        mm_cfg.DEFAULT_CONVERT_HTML_TO_PLAINTEXT)
-    add_only_if_missing('filter_action', mm_cfg.DEFAULT_FILTER_ACTION)
+                        config.DEFAULT_CONVERT_HTML_TO_PLAINTEXT)
+    add_only_if_missing('filter_action', config.DEFAULT_FILTER_ACTION)
     add_only_if_missing('delivery_status', {})
-    # This really ought to default to mm_cfg.HOLD, but that doesn't work with
+    # This really ought to default to config.HOLD, but that doesn't work with
     # the current GUI description model.  So, 0==Hold, 1==Reject, 2==Discard
     add_only_if_missing('member_moderation_action', 0)
     add_only_if_missing('member_moderation_notice', '')
     add_only_if_missing('new_member_options',
-                        mm_cfg.DEFAULT_NEW_MEMBER_OPTIONS)
+                        config.DEFAULT_NEW_MEMBER_OPTIONS)
     # Emergency moderation flag
     add_only_if_missing('emergency', 0)
     add_only_if_missing('hold_and_cmd_autoresponses', {})
@@ -406,14 +406,14 @@ def NewVars(l):
     add_only_if_missing('scrub_nondigest', 0)
     # ContentFilter by file extensions
     add_only_if_missing('filter_filename_extensions',
-                        mm_cfg.DEFAULT_FILTER_FILENAME_EXTENSIONS)
+                        config.DEFAULT_FILTER_FILENAME_EXTENSIONS)
     add_only_if_missing('pass_filename_extensions', [])
     # automatic discard
     add_only_if_missing('max_days_to_hold', 0)
     add_only_if_missing('nonmember_rejection_notice', '')
     # multipart/alternative collapse
     add_only_if_missing('collapse_alternatives',
-                        mm_cfg.DEFAULT_COLLAPSE_ALTERNATIVES)
+                        config.DEFAULT_COLLAPSE_ALTERNATIVES)
 
 
 
@@ -463,10 +463,10 @@ def CanonicalizeUserOptions(l):
             # member address.  This is likely caused by an earlier bug.
             del l.user_options[k]
             continue
-        if l.getMemberOption(k, mm_cfg.DisableDelivery):
+        if l.getMemberOption(k, config.DisableDelivery):
             # Convert this flag into a legacy disable
             l.setDeliveryStatus(k, UNKNOWN)
-            l.setMemberOption(k, mm_cfg.DisableDelivery, 0)
+            l.setMemberOption(k, config.DisableDelivery, 0)
     l.useropts_version = 1
 
 
@@ -509,7 +509,7 @@ def NewRequestsDatabase(l):
             # See the note above; the same holds true.
             for ign, ign, digest, addr, password in v:
                 l.HoldSubscription(addr, '', password, digest,
-                                   mm_cfg.DEFAULT_SERVER_LANGUAGE)
+                                   config.DEFAULT_SERVER_LANGUAGE)
             del r[k]
         else:
             log.error("""\
