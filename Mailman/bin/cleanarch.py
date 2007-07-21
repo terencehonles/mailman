@@ -1,6 +1,4 @@
-#! @PYTHON@
-
-# Copyright (C) 2001-2006 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -17,46 +15,19 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-"""Clean up an .mbox archive file.
-
-The archiver looks for Unix-From lines separating messages in an mbox archive
-file.  For compatibility, it specifically looks for lines that start with
-"From " -- i.e. the letters capital-F, lowercase-r, o, m, space, ignoring
-everything else on the line.
-
-Normally, any lines that start "From " in the body of a message should be
-escaped such that a > character is actually the first on a line.  It is
-possible though that body lines are not actually escaped.  This script
-attempts to fix these by doing a stricter test of the Unix-From lines.  Any
-lines that start "From " but do not pass this stricter test are escaped with a
-> character.
-
-Usage: cleanarch [options] < inputfile > outputfile
-Options:
-    -s n
-    --status=n
-        Print a # character every n lines processed
-
-    -q / --quiet
-        Don't print changed line information to standard error.
-
-    -n / --dry-run
-        Don't actually output anything.
-
-    -h / --help
-        Print this message and exit
-"""
+"""Clean up an .mbox archive file."""
 
 import re
 import sys
-import getopt
 import mailbox
+import optparse
 
-import paths
+from Mailman import Version
 from Mailman.i18n import _
 
-cre = re.compile(mailbox.UnixMailbox._fromlinepattern)
+__i18n_templates = True
 
+cre = re.compile(mailbox.UnixMailbox._fromlinepattern)
 # From RFC 2822, a header field name must contain only characters from 33-126
 # inclusive, excluding colon.  I.e. from oct 41 to oct 176 less oct 072.  Must
 # use re.match() so that it's anchored at the beginning of the line.
@@ -64,15 +35,36 @@ fre = re.compile(r'[\041-\071\073-\176]+')
 
 
 
-def usage(code, msg=''):
-    if code:
-        fd = sys.stderr
-    else:
-        fd = sys.stdout
-    print >> fd, _(__doc__)
-    if msg:
-        print >> fd, msg
-    sys.exit(code)
+def parseargs():
+    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
+                                   usage=_("""\
+%prog [options] < inputfile > outputfile
+
+The archiver looks for Unix-From lines separating messages in an mbox archive
+file.  For compatibility, it specifically looks for lines that start with
+'From ' -- i.e. the letters capital-F, lowercase-r, o, m, space, ignoring
+everything else on the line.
+
+Normally, any lines that start 'From ' in the body of a message should be
+escaped such that a > character is actually the first on a line.  It is
+possible though that body lines are not actually escaped.  This script
+attempts to fix these by doing a stricter test of the Unix-From lines.  Any
+lines that start From ' but do not pass this stricter test are escaped with a
+'>' character."""))
+    parser.add_option('-q', '--quiet',
+                      default=False, action='store_true', help=_("""\
+Don't print changed line information to standard error."""))
+    parser.add_option('-s', '--status',
+                      default=-1, type='int', help=_("""\
+Print a '#' character for every n lines processed.  With a number less than or
+equal to zero, suppress the '#' characters."""))
+    parser.add_option('-n', '--dry-run',
+                      default=False, action='store_true', help=_("""\
+Don't actually output anything."""))
+    opts, args = parser.parser_args()
+    if args:
+        parser.print_error(_('Unexpected arguments'))
+    return parser, opts, args
 
 
 
@@ -80,38 +72,13 @@ def escape_line(line, lineno, quiet, output):
     if output:
         sys.stdout.write('>' + line)
     if not quiet:
-        print >> sys.stderr, _('Unix-From line changed: %(lineno)d')
+        print >> sys.stderr, _('Unix-From line changed: $lineno')
         print >> sys.stderr, line[:-1]
 
 
 
 def main():
-    try:
-        opts, args = getopt.getopt(
-            sys.argv[1:], 'hqns:',
-            ['help', 'quiet', 'dry-run', 'status='])
-    except getopt.error, msg:
-        usage(1, msg)
-
-    quiet = False
-    output = True
-    status = -1
-
-    for opt, arg in opts:
-        if opt in ('-h', '--help'):
-            usage(0)
-        elif opt in ('-q', '--quiet'):
-            quiet = True
-        elif opt in ('-n', '--dry-run'):
-            output = False
-        elif opt in ('-s', '--status'):
-            try:
-                status = int(arg)
-            except ValueError:
-                usage(1, _('Bad status number: %(arg)s'))
-
-    if args:
-        usage(1)
+    parser, opts, args = parseargs()
 
     lineno = 0
     statuscnt = 0
@@ -165,8 +132,3 @@ def main():
                 statuscnt = 0
         prevline = line
     print >> sys.stderr, _('%(messages)d messages found')
-
-
-
-if __name__ == '__main__':
-    main()

@@ -23,6 +23,7 @@ __all__ = [
     'change_pw',
     'check_perms',
     'checkdbs',
+    'cleanarch',
     'config_list',
     'confirm',
     'disabled',
