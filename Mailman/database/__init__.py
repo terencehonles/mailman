@@ -23,6 +23,7 @@ from elixir import objectstore
 
 from Mailman.database.listmanager import ListManager
 from Mailman.database.usermanager import UserManager
+from Mailman.database.messagestore import MessageStore
 
 __all__ = [
     'initialize',
@@ -42,6 +43,7 @@ def initialize():
         model.initialize()
     config.list_manager = ListManager()
     config.user_manager = UserManager()
+    config.message_store = MessageStore()
     flush()
 
 

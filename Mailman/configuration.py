@@ -133,6 +133,7 @@ class Configuration(object):
         self.BADQUEUE_DIR       = join(qdir, 'bad')
         self.RETRYQUEUE_DIR     = join(qdir, 'retry')
         self.MAILDIR_DIR        = join(qdir, 'maildir')
+        self.MESSAGES_DIR       = join(VAR_DIR, 'messages')
         # Other useful files
         self.PIDFILE                = join(datadir, 'master-qrunner.pid')
         self.SITE_PW_FILE           = join(datadir, 'adm.pw')

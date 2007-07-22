@@ -25,7 +25,6 @@ A helper function.
     ...         msg, msgdata = switchboard.dequeue(filebase)
     ...         switchboard.finish(filebase)
 
-
 The purpose of the ToArchive handler is to make a simple decision as to
 whether the message should get archived and if so, to drop the message in the
 archiving queue.  Really the most important things are to determine when a
