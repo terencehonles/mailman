@@ -34,7 +34,6 @@ import Mailman.tests
 
 from Mailman import Version
 from Mailman.configuration import config
-from Mailman.database.dbcontext import dbcontext
 from Mailman.i18n import _
 from Mailman.initialize import initialize_1, initialize_2
 
