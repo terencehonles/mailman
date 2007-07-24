@@ -1,5 +1,3 @@
-# -*- python -*-
-
 # Copyright (C) 1998-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
@@ -18,11 +16,6 @@
 # USA.
 
 """Distributed default settings for significant Mailman config variables."""
-
-# NEVER make site configuration changes to this file.  ALWAYS make them in
-# mm_cfg.py instead, in the designated area.  See the comments in that file
-# for details.
-
 
 import os
 
@@ -109,11 +102,6 @@ DEFAULT_VAR_DIRECTORY = '/var/mailman'
 #####
 # Database options
 #####
-
-# Initialization function for creating the IListManager, IUserManager, and
-# IMessageManager objects, as a Python dotted name.  This function must take
-# zero arguments.
-MANAGERS_INIT_FUNCTION = 'Mailman.database.initialize'
 
 # Use this to set the SQLAlchemy database engine URL.  You generally have one
 # primary database connection for all of Mailman.  List data and most rosters
