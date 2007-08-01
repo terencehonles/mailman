@@ -25,8 +25,8 @@ from zope.interface import implements
 from Mailman import Errors
 from Mailman.Utils import split_listname, fqdn_listname
 from Mailman.configuration import config
-from Mailman.database.model import MailingList
-from Mailman.interfaces import IListManager
+from Mailman.database.model import MailingList, Pendings
+from Mailman.interfaces import IListManager, IPending
 
 
 

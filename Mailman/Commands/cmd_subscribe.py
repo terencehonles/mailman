@@ -107,15 +107,9 @@ The email address you supplied is banned from this mailing list.
 If you think this restriction is erroneous, please contact the list
 owners at %(listowner)s."""))
         return STOP
-    except Errors.MMBadEmailError:
+    except Errors.InvalidEmailAddress:
         res.results.append(_("""\
-Mailman won't accept the given email address as a valid address.
-(E.g. it must have an @ in it.)"""))
-        return STOP
-    except Errors.MMHostileAddress:
-        res.results.append(_("""\
-Your subscription is not allowed because
-the email address you gave is insecure."""))
+Mailman won't accept the given email address as a valid address."""))
         return STOP
     except Errors.MMAlreadyAMember:
         res.results.append(_('You are already subscribed!'))

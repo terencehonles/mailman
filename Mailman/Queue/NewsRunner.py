@@ -24,7 +24,7 @@ import logging
 import nntplib
 
 from cStringIO import StringIO
-from email.Utils import getaddresses
+from email.utils import getaddresses, make_msgid
 
 COMMASPACE = ', '
 
@@ -35,6 +35,7 @@ from Mailman.configuration import config
 log = logging.getLogger('mailman.error')
 
 # Matches our Mailman crafted Message-IDs.  See Utils.unique_message_id()
+# XXX The move to email.utils.make_msgid() breaks this.
 mcre = re.compile(r"""
     <mailman.                                     # match the prefix
     \d+.                                          # serial number

@@ -145,13 +145,11 @@ def addall(mlist, members, digest, ack, outfp):
             mlist.ApprovedAddMember(userdesc, ack, 0)
         except Errors.MMAlreadyAMember:
             print >> tee, _('Already a member: $member')
-        except Errors.MMBadEmailError:
+        except Errors.InvalidEmailAddress:
             if userdesc.address == '':
                 print >> tee, _('Bad/Invalid email address: blank line')
             else:
                 print >> tee, _('Bad/Invalid email address: $member')
-        except Errors.MMHostileAddress:
-            print >> tee, _('Hostile address (illegal characters): $member')
         else:
             print >> tee, _('Subscribed: $member')
 

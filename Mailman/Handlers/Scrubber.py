@@ -29,10 +29,10 @@ import tempfile
 from cStringIO import StringIO
 from mimetypes import guess_all_extensions
 
-from email.Charset import Charset
-from email.Generator import Generator
-from email.Parser import HeaderParser
-from email.Utils import parsedate
+from email.charset import Charset
+from email.generator import Generator
+from email.parser import HeaderParser
+from email.utils import make_msgid, parsedate
 
 from Mailman import LockFile
 from Mailman import Message
@@ -133,7 +133,7 @@ def calculate_attachments_dir(mlist, msg, msgdata):
     # still gives us a 32-bit space to work with.
     msgid = msg['message-id']
     if msgid is None:
-        msgid = msg['Message-ID'] = Utils.unique_message_id(mlist)
+        msgid = msg['Message-ID'] = make_msgid()
     # We assume that the message id actually /is/ unique!
     digest = sha.new(msgid).hexdigest()
     return os.path.join('attachments', datedir, digest[:4] + digest[-4:])

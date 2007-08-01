@@ -1287,16 +1287,13 @@ def change_options(mlist, category, subcat, cgidata, doc):
                                             whence='admin mass sub')
             except Errors.MMAlreadyAMember:
                 subscribe_errors.append((entry, _('Already a member')))
-            except Errors.MMBadEmailError:
+            except Errors.InvalidEmailAddress:
                 if userdesc.address == '':
                     subscribe_errors.append((_('&lt;blank line&gt;'),
                                              _('Bad/Invalid email address')))
                 else:
                     subscribe_errors.append((entry,
                                              _('Bad/Invalid email address')))
-            except Errors.MMHostileAddress:
-                subscribe_errors.append(
-                    (entry, _('Hostile address (illegal characters)')))
             except Errors.MembershipIsBanned, pattern:
                 subscribe_errors.append(
                     (entry, _('Banned address (matched %(pattern)s)')))

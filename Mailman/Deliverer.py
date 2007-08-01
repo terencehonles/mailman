@@ -25,7 +25,6 @@ from email.MIMEText import MIMEText
 
 from Mailman import Errors
 from Mailman import Message
-from Mailman import Pending
 from Mailman import Utils
 from Mailman import i18n
 from Mailman.configuration import config

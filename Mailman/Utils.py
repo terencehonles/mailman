@@ -200,15 +200,15 @@ def ValidateEmail(s):
     """Verify that the an email address isn't grossly evil."""
     # Pretty minimal, cheesy check.  We could do better...
     if not s or ' ' in s:
-        raise Errors.MMBadEmailError
+        raise Errors.InvalidEmailAddress(repr(s))
     if _badchars.search(s) or s[0] == '-':
-        raise Errors.MMHostileAddress, s
+        raise Errors.InvalidEmailAddress(repr(s))
     user, domain_parts = ParseEmail(s)
-    # This means local, unqualified addresses, are no allowed
+    # Local, unqualified addresses are not allowed.
     if not domain_parts:
-        raise Errors.MMBadEmailError, s
+        raise Errors.InvalidEmailAddress(repr(s))
     if len(domain_parts) < 2:
-        raise Errors.MMBadEmailError, s
+        raise Errors.InvalidEmailAddress(repr(s))
 
 
 
@@ -678,22 +678,6 @@ def get_site_noreply():
 
 
 
-# This algorithm crafts a guaranteed unique message-id.  The theory here is
-# that pid+listname+host will distinguish the message-id for every process on
-# the system, except when process ids wrap around.  To further distinguish
-# message-ids, we prepend the integral time in seconds since the epoch.  It's
-# still possible that we'll vend out more than one such message-id per second,
-# so we prepend a monotonically incrementing serial number.  It's highly
-# unlikely that within a single second, there'll be a pid wraparound.
-_serial = 0
-def unique_message_id(mlist):
-    global _serial
-    msgid = '<mailman.%d.%d.%d.%s>' % (
-        _serial, time.time(), os.getpid(), mlist.fqdn_listname)
-    _serial += 1
-    return msgid
-
-
 # Figure out epoch seconds of midnight at the start of today (or the given
 # 3-tuple date of (year, month, day).
 def midnight(date=None):

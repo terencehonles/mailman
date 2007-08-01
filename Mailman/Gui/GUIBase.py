@@ -52,7 +52,7 @@ class GUIBase:
             # widget in the interface, so watch out if we ever add any new
             # ones.
             if val:
-                # Let MMBadEmailError and MMHostileAddress propagate
+                # Let InvalidEmailAddress propagate.
                 Utils.ValidateEmail(val)
             return val
         # These widget types contain lists of email addresses, one per line.
@@ -156,7 +156,7 @@ class GUIBase:
                 val = self._getValidValue(mlist, property, wtype, val)
             except ValueError:
                 doc.addError(_('Invalid value for variable: %(property)s'))
-            # This is the parent of MMBadEmailError and MMHostileAddress
+            # This is the parent of InvalidEmailAddress
             except Errors.EmailAddressError:
                 doc.addError(
                     _('Bad email address for option %(property)s: %(val)s'))

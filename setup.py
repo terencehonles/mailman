@@ -82,9 +82,9 @@ Any other spelling is incorrect.""",
     include_package_data = True,
     entry_points    = {
         'console_scripts': list(scripts),
-        'setuptools.file_finders': [
-            'bzr = setuptoolsbzr:find_files_for_bzr',
-            ],
+        'setuptools.file_finders': 'bzr = setuptoolsbzr:find_files_for_bzr',
+        # Entry point for plugging in different database backends.
+        'mailman.database': 'stock = Mailman.database:StockDatabase',
         },
     # Third-party requirements.
     install_requires = [

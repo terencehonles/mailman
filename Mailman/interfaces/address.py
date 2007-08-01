@@ -51,7 +51,7 @@ class IAddress(Interface):
         been implicitly registered, e.g. by showing up in a non-member
         posting.""")
 
-    validated_on = Attribute(
+    verified_on = Attribute(
         """The date and time at which this email address was validated, or
         None if the email address has not yet been validated.  The specific
         method of validation is not defined here.""")

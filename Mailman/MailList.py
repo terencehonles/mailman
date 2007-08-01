@@ -54,7 +54,6 @@ from Mailman.configuration import config
 from Mailman.interfaces import *
 
 # Base classes
-from Mailman import Pending
 from Mailman.Archiver import Archiver
 from Mailman.Autoresponder import Autoresponder
 from Mailman.Bouncer import Bouncer
@@ -90,7 +89,7 @@ slog    = logging.getLogger('mailman.subscribe')
 # Use mixins here just to avoid having any one chunk be too large.
 class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
                Archiver, Digester, SecurityManager, Bouncer, GatewayManager,
-               Autoresponder, TopicMgr, Pending.Pending):
+               Autoresponder, TopicMgr):
 
     implements(
         IMailingList,
@@ -502,7 +501,7 @@ class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
         # Validate the list's posting address, which should be fqdn_listname.
         # If that's invalid, do not create any of the mailing list artifacts
         # (the subdir in lists/ and the subdirs in archives/public and
-        # archives/private.  Most scripts already catch MMBadEmailError as
+        # archives/private.  Most scripts already catch InvalidEmailAddress as
         # exceptions on the admin's email address, so transform the exception.
         if '@' not in fqdn_listname:
             raise Errors.BadListNameError(fqdn_listname)
@@ -511,7 +510,7 @@ class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
             raise Errors.BadDomainSpecificationError(email_host)
         try:
             Utils.ValidateEmail(fqdn_listname)
-        except Errors.MMBadEmailError:
+        except Errors.InvalidEmailAddress:
             raise Errors.BadListNameError(fqdn_listname)
         # See if the mailing list already exists.
         if Utils.list_exists(fqdn_listname):
@@ -706,7 +705,7 @@ class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
             raise Errors.MMAlreadyAMember, email
         if email.lower() == self.GetListEmail().lower():
             # Trying to subscribe the list to itself!
-            raise Errors.MMBadEmailError
+            raise Errors.InvalidEmailAddress
         realname = self.real_name
         # Is the subscribing address banned from this list?
         pattern = self.GetBannedPattern(email)
@@ -931,7 +930,7 @@ class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
         if not globally and newaddr == oldaddr and self.isMember(newaddr):
             raise Errors.MMAlreadyAMember
         if newaddr == self.GetListEmail().lower():
-            raise Errors.MMBadEmailError
+            raise Errors.InvalidEmailAddress
         realname = self.real_name
         # Don't allow changing to a banned address. MAS: maybe we should
         # unsubscribe the oldaddr too just for trying, but that's probably

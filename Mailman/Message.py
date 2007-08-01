@@ -23,11 +23,11 @@ which is more convenient for use inside Mailman.
 
 import re
 import email
-import email.Message
-import email.Utils
+import email.message
+import email.utils
 
-from email.Charset import Charset
-from email.Header import Header
+from email.charset import Charset
+from email.header import Header
 
 from Mailman import Utils
 from Mailman.configuration import config
@@ -39,11 +39,11 @@ VERSION = tuple([int(s) for s in mo.group().split('.')])
 
 
 
-class Message(email.Message.Message):
+class Message(email.message.Message):
     def __init__(self):
         # We need a version number so that we can optimize __setstate__()
         self.__version__ = VERSION
-        email.Message.Message.__init__(self)
+        email.message.Message.__init__(self)
 
     # BAW: For debugging w/ bin/dumpdb.  Apparently pprint uses repr.
     def __repr__(self):
@@ -126,7 +126,7 @@ class Message(email.Message.Message):
             fieldval = self[h]
             if not fieldval:
                 continue
-            addrs = email.Utils.getaddresses([fieldval])
+            addrs = email.utils.getaddresses([fieldval])
             try:
                 realname, address = addrs[0]
             except IndexError:
@@ -179,7 +179,7 @@ class Message(email.Message.Message):
             else:
                 fieldvals = self.get_all(h)
                 if fieldvals:
-                    pairs.extend(email.Utils.getaddresses(fieldvals))
+                    pairs.extend(email.utils.getaddresses(fieldvals))
         authors = []
         for pair in pairs:
             address = pair[1]
@@ -193,7 +193,7 @@ class Message(email.Message.Message):
         Mailman to stop delivery in Scrubber.py (called from ToDigest.py).
         """
         try:
-            filename = email.Message.Message.get_filename(self, failobj)
+            filename = email.message.Message.get_filename(self, failobj)
             return filename
         except (UnicodeError, LookupError, ValueError):
             return failobj
@@ -223,22 +223,22 @@ class UserNotification(Message):
             self.recips = [recip]
 
     def send(self, mlist, **_kws):
-        """Sends the message by enqueuing it to the `virgin' queue.
+        """Sends the message by enqueuing it to the 'virgin' queue.
 
         This is used for all internally crafted messages.
         """
         # Since we're crafting the message from whole cloth, let's make sure
         # this message has a Message-ID.  Yes, the MTA would give us one, but
         # this is useful for logging to logs/smtp.
-        if not self.has_key('message-id'):
-            self['Message-ID'] = Utils.unique_message_id(mlist)
+        if 'message-id' not in self:
+            self['Message-ID'] = email.utils.make_msgid()
         # Ditto for Date: which is required by RFC 2822
-        if not self.has_key('date'):
-            self['Date'] = email.Utils.formatdate(localtime=1)
+        if 'date' not in self:
+            self['Date'] = email.utils.formatdate(localtime=True)
         # UserNotifications are typically for admin messages, and for messages
         # other than list explosions.  Send these out as Precedence: bulk, but
         # don't override an existing Precedence: header.
-        if not self.has_key('precedence'):
+        if 'precedence' not in self:
             self['Precedence'] = 'bulk'
         self._enqueue(mlist, **_kws)
 
@@ -246,13 +246,16 @@ class UserNotification(Message):
         # Not imported at module scope to avoid import loop
         from Mailman.Queue.sbcache import get_switchboard
         virginq = get_switchboard(config.VIRGINQUEUE_DIR)
-        # The message metadata better have a `recip' attribute
-        virginq.enqueue(self,
-                        listname=mlist.fqdn_listname,
-                        recips=self.recips,
-                        nodecorate=True,
-                        reduced_list_headers=True,
-                        **_kws)
+        # The message metadata better have a 'recip' attribute.
+        enqueue_kws = dict(
+            recips=self.recips,
+            nodecorate=True,
+            reduced_list_headers=True,
+            )
+        if mlist is not None:
+            enqueue_kws[listname] = mlist.fqdn_listname
+        enqueue_kws.update(_kws)
+        virginq.enqueue(self, **enqueue_kws)
 
 
 

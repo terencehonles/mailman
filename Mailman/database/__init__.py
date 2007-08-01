@@ -17,35 +17,59 @@
 
 from __future__ import with_statement
 
+__metaclass__ = type
+__all__ = [
+    'StockDatabase',
+    'flush', # for test convenience
+    ]
+
 import os
 
 from elixir import objectstore
+from zope.interface import implements
 
+from Mailman.interfaces import IDatabase, IPending
 from Mailman.database.listmanager import ListManager
 from Mailman.database.usermanager import UserManager
 from Mailman.database.messagestore import MessageStore
+from Mailman.database.model import Pendings
 
-__all__ = [
-    'initialize',
-    'flush',
-    ]
+# Test suite convenience.
+flush = None
 
 
 
-def initialize():
-    from Mailman.LockFile import LockFile
-    from Mailman.configuration import config
-    from Mailman.database import model
-    # Serialize this so we don't get multiple processes trying to create the
-    # database at the same time.
-    lockfile = os.path.join(config.LOCK_DIR, '<dbcreatelock>')
-    with LockFile(lockfile):
-        model.initialize()
-    config.list_manager = ListManager()
-    config.user_manager = UserManager()
-    config.message_store = MessageStore()
-    flush()
+class StockDatabase:
+    implements(IDatabase)
 
+    def __init__(self):
+        # Expose the flush() method for test case convenience using the stock
+        # database.
+        global flush
+        flush = self.flush
+        self.list_manager = None
+        self.user_manager = None
+        self.message_store = None
 
-def flush():
-    objectstore.flush()
+    def initialize(self):
+        from Mailman.LockFile import LockFile
+        from Mailman.configuration import config
+        from Mailman.database import model
+        # Serialize this so we don't get multiple processes trying to create the
+        # database at the same time.
+        lockfile = os.path.join(config.LOCK_DIR, '<dbcreatelock>')
+        with LockFile(lockfile):
+            model.initialize()
+        self.list_manager = ListManager()
+        self.user_manager = UserManager()
+        self.message_store = MessageStore()
+        self.flush()
+
+    def flush(self):
+        objectstore.flush()
+
+    def __conform__(self, protocol):
+        if protocol is IPending:
+            return Pendings()
+        # Let the rest of the adaptation machinery take a crack at it.
+        return None

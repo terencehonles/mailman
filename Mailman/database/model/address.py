@@ -33,9 +33,8 @@ class Address(Entity):
     has_field('address',        Unicode)
     has_field('_original',      Unicode)
     has_field('real_name',      Unicode)
-    has_field('verified',       Boolean)
+    has_field('verified_on',   DateTime)
     has_field('registered_on',  DateTime)
-    has_field('validated_on',   DateTime)
     # Relationships
     belongs_to('user',          of_kind=USER_KIND)
     belongs_to('preferences',   of_kind=PREFERENCE_KIND)
@@ -54,7 +53,7 @@ class Address(Entity):
         return formataddr((self.real_name, addr))
 
     def __repr__(self):
-        verified = ('verified' if self.verified else 'not verified')
+        verified = ('verified' if self.verified_on else 'not verified')
         address_str = str(self)
         if self._original is None:
             return '<Address: %s [%s] at %#x>' % (

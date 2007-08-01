@@ -27,7 +27,6 @@ from email.MIMEText import MIMEText
 from Mailman import Defaults
 from Mailman import MemberAdaptor
 from Mailman import Message
-from Mailman import Pending
 from Mailman import Utils
 from Mailman import i18n
 from Mailman.configuration import config
@@ -37,7 +36,7 @@ EMPTYSTRING = ''
 # This constant is supposed to represent the day containing the first midnight
 # after the epoch.  We'll add (0,)*6 to this tuple to get a value appropriate
 # for time.mktime().
-ZEROHOUR_PLUSONEDAY = time.localtime(Defaults.days(1))[:3]
+ZEROHOUR_PLUSONEDAY = time.localtime(60 * 60 * 24)[:3]
 
 def _(s): return s
 

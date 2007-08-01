@@ -381,10 +381,8 @@ address.  Upon confirmation, any other mailing list containing the address
                     mlist.Save()
                 finally:
                     mlist.Unlock()
-            except Errors.MMBadEmailError:
-                msg = _('Bad email address provided')
-            except Errors.MMHostileAddress:
-                msg = _('Illegal email address provided')
+            except Errors.InvalidEmailAddress:
+                msg = _('Invalid email address provided')
             except Errors.MMAlreadyAMember:
                 msg = _('%(newaddr)s is already a member of the list.')
             except Errors.MembershipIsBanned:

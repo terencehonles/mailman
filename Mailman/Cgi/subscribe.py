@@ -165,14 +165,8 @@ email which contains further instructions.""")
         results = _("""The email address you supplied is banned from this
         mailing list.  If you think this restriction is erroneous, please
         contact the list owners at %(listowner)s.""")
-    except Errors.MMBadEmailError:
-        results = _("""\
-The email address you supplied is not valid.  (E.g. it must contain an
-`@'.)""")
-    except Errors.MMHostileAddress:
-        results = _("""\
-Your subscription is not allowed because the email address you gave is
-insecure.""")
+    except Errors.InvalidEmailAddress:
+        results = _('The email address you supplied is not valid.')
     except Errors.MMSubscribeNeedsConfirmation:
         # Results string depends on whether we have private rosters or not
         if privacy_results:

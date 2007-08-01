@@ -93,21 +93,18 @@ class MMLoopingPost(MailmanError):
     pass
 
 
+
 # Exception hierarchy for bad email address errors that can be raised from
 # Utils.ValidateEmail()
 class EmailAddressError(MailmanError):
     """Base class for email address validation errors."""
-    pass
-
-class MMBadEmailError(EmailAddressError):
-    """Email address is invalid (empty string or not fully qualified)."""
-    pass
-
-class MMHostileAddress(EmailAddressError):
-    """Email address has potentially hostile characters in it."""
-    pass
 
 
+class InvalidEmailAddress(EmailAddressError):
+    """Email address is invalid."""
+
+
+
 # Exceptions for admin request database
 class LostHeldMessage(MailmanError):
     """Held message was lost."""

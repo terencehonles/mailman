@@ -1,22 +1,19 @@
-Mailing list subscription confirmation notice for mailing list %(listname)s
+Email Address Registration Confirmation
 
-We have received a request%(remote)s for subscription of your email
-address, "%(email)s", to the %(listaddr)s mailing list.  To confirm
-that you want to be added to this mailing list, simply reply to this
-message, keeping the Subject: header intact.  Or visit this web page:
+Hello, this is the GNU Mailman server at ${domain_name}.
 
-    %(confirmurl)s
+We have received a registration request for the email address
 
-Or include the following line -- and only the following line -- in a
-message to %(requestaddr)s:
+    $email_address
 
-    confirm %(cookie)s
+Before you can start using GNU Mailman at this site, you must first confirm
+that this is your email address.  You can do this by replying to this message,
+keeping the Subject header intact.  Or you can visit this web page
 
-Note that simply sending a `reply' to this message should work from
-most mail readers, since that usually leaves the Subject: line in
-the right form (additional "Re:" text in the Subject: is okay).
+    $confirm_url
 
-If you do not wish to be subscribed to this list, please simply
-disregard this message.  If you think you are being maliciously
-subscribed to the list, or have any other questions, send them to
-%(listadmin)s.
+If you do not wish to register this email address simply disregard this
+message.  If you think you are being maliciously subscribed to the list, or
+have any other questions, you may contact
+
+    $contact_address

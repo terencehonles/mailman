@@ -32,14 +32,14 @@ import time
 import logging
 
 from StringIO import StringIO          # cStringIO can't handle unicode.
-from email.Charset import Charset
-from email.Generator import Generator
-from email.Header import decode_header, make_header, Header
-from email.MIMEBase import MIMEBase
-from email.MIMEMessage import MIMEMessage
-from email.MIMEText import MIMEText
-from email.Parser import Parser
-from email.Utils import getaddresses, formatdate
+from email.charset import Charset
+from email.generator import Generator
+from email.header import decode_header, make_header, Header
+from email.mime.base import MIMEBase
+from email.mime.message import MIMEMessage
+from email.mime.text import MIMEText
+from email.parser import Parser
+from email.utils import formatdate, getaddresses, make_msgid
 
 from Mailman import Errors
 from Mailman import Message
@@ -161,7 +161,7 @@ def send_i18n_digests(mlist, mboxfp):
     mimemsg['To'] = mlist.posting_address
     mimemsg['Reply-To'] = mlist.posting_address
     mimemsg['Date'] = formatdate(localtime=1)
-    mimemsg['Message-ID'] = Utils.unique_message_id(mlist)
+    mimemsg['Message-ID'] = make_msgid()
     # Set things up for the rfc1153 digest
     plainmsg = StringIO()
     rfc1153msg = Message.Message()
@@ -170,7 +170,7 @@ def send_i18n_digests(mlist, mboxfp):
     rfc1153msg['To'] = mlist.posting_address
     rfc1153msg['Reply-To'] = mlist.posting_address
     rfc1153msg['Date'] = formatdate(localtime=1)
-    rfc1153msg['Message-ID'] = Utils.unique_message_id(mlist)
+    rfc1153msg['Message-ID'] = make_msgid()
     separator70 = '-' * 70
     separator30 = '-' * 30
     # In the rfc1153 digest, the masthead contains the digest boilerplate plus
