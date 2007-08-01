@@ -59,12 +59,13 @@ import errno
 import random
 import socket
 import logging
+import datetime
 import traceback
 
 # Units are floating-point seconds.
-DEFAULT_LOCK_LIFETIME  = 15
+DEFAULT_LOCK_LIFETIME  = datetime.timedelta(seconds=15)
 # Allowable a bit of clock skew
-CLOCK_SLOP = 10
+CLOCK_SLOP = datetime.timedelta(seconds=10)
 # This is appropriate for Mailman, but you may want to change this if you're
 # using this code outside Mailman.
 log = logging.getLogger('mailman.locks')
@@ -95,8 +96,8 @@ class LockFile:
         Create the resource lock using lockfile as the global lock file.  Each
         process laying claim to this resource lock will create their own
         temporary lock files based on the path specified by lockfile.
-        Optional lifetime is the number of seconds the process expects to hold
-        the lock.
+        Optional lifetime is a timedelta specifying the number of seconds the
+        process expects to hold the lock.
 
     set_lifetime(lifetime):
         Set a new lock lifetime.  This takes affect the next time the file is
@@ -155,7 +156,7 @@ class LockFile:
         self._owned = True
 
     def __repr__(self):
-        return '<LockFile %s: %s [%s: %ssec] pid=%s>' % (
+        return '<LockFile %s: %s [%s: %s] pid=%s>' % (
             id(self), self._lockfile,
             self.locked() and 'locked' or 'unlocked',
             self._lifetime, os.getpid())
@@ -400,7 +401,8 @@ class LockFile:
             return None
 
     def _touch(self, filename=None):
-        t = time.time() + self._lifetime
+        expiration_date = datetime.datetime.now() + self._lifetime
+        t = time.mktime(expiration_date.timetuple())
         try:
             # XXX We probably don't need to modify atime, but this is easier.
             os.utime(filename or self._tmpfname, (t, t))

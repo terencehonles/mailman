@@ -44,7 +44,7 @@ prohibited headers.
     From: aperson@example.com
     To: _xtest@example.com
     Newsgroups: comp.lang.python
-    Message-ID: <mailman..._xtest@example.com>
+    Message-ID: ...
     Lines: 1
     <BLANKLINE>
     A message
@@ -74,7 +74,7 @@ X-Original-* header that the news server doesn't care about.
     >>> print msg.as_string()
     From: aperson@example.com
     Newsgroups: comp.lang.python
-    Message-ID: <mailman..._xtest@example.com>
+    Message-ID: ...
     Lines: 1
     To: _xtest@example.com
     X-Original-To: two@example.com
@@ -109,7 +109,7 @@ the message.
     Cc: someother@example.com
     Content-Transfer-Encoding: yes
     Newsgroups: comp.lang.python
-    Message-ID: <mailman..._xtest@example.com>
+    Message-ID: ...
     Lines: 1
     <BLANKLINE>
     A message

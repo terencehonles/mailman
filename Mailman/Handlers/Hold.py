@@ -35,12 +35,14 @@ import email.utils
 from email.mime.message import MIMEMessage
 from email.mime.text import MIMEText
 from types import ClassType
+from zope.interface import implements
 
 from Mailman import Errors
 from Mailman import Message
-from Mailman import Pending
 from Mailman import Utils
 from Mailman import i18n
+from Mailman.configuration import config
+from Mailman.interfaces import IPendable, IPending
 
 log = logging.getLogger('mailman.vette')
 
@@ -126,6 +128,12 @@ def ackp(msg):
     if ack <> 'yes' and precedence in ('bulk', 'junk', 'list'):
         return 0
     return 1
+
+
+
+class HeldMessagePendable(dict):
+    implements(IPendable)
+    PEND_KEY = 'held message'
 
 
 
@@ -239,7 +247,9 @@ def hold_for_approval(mlist, msg, msgdata, exc):
     #
     # This message should appear to come from <list>-admin so as to handle any
     # bounce processing that might be needed.
-    cookie = mlist.pend_new(Pending.HELD_MESSAGE, id)
+    pendable = HeldMessagePendable(type=HeldMessagePendable.PEND_KEY,
+                                   id=str(id))
+    token = IPending(config.db).add(pendable)
     # Get the language to send the response in.  If the sender is a member,
     # then send it in the member's language, otherwise send it in the mailing
     # list's preferred language.
@@ -247,9 +257,9 @@ def hold_for_approval(mlist, msg, msgdata, exc):
     lang = (member.preferred_language if member else mlist.preferred_language)
     if not fromusenet and ackp(msg) and mlist.respond_to_post_requests and \
            mlist.autorespondToSender(sender, lang):
-        # Get a confirmation cookie
+        # Get a confirmation token
         d['confirmurl'] = '%s/%s' % (mlist.GetScriptURL('confirm', absolute=1),
-                                     cookie)
+                                     token)
         lang = msgdata.get('lang', lang)
         subject = _('Your message to $listname awaits moderator approval')
         text = Utils.maketext('postheld.txt', d, lang=lang, mlist=mlist)
@@ -284,7 +294,7 @@ this message and include an Approved: header with the list password in it, the
 message will be approved for posting to the list.  The Approved: header can
 also appear in the first line of the body of the reply.""")),
                             _charset=Utils.GetCharSet(lang))
-            dmsg['Subject'] = 'confirm ' + cookie
+            dmsg['Subject'] = 'confirm ' + token
             dmsg['Sender'] = requestaddr
             dmsg['From'] = requestaddr
             dmsg['Date'] = email.utils.formatdate(localtime=True)

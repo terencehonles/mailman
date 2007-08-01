@@ -253,7 +253,7 @@ class UserNotification(Message):
             reduced_list_headers=True,
             )
         if mlist is not None:
-            enqueue_kws[listname] = mlist.fqdn_listname
+            enqueue_kws['listname'] = mlist.fqdn_listname
         enqueue_kws.update(_kws)
         virginq.enqueue(self, **enqueue_kws)
 

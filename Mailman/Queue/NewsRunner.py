@@ -138,7 +138,7 @@ def prepare_message(mlist, msg, msgdata):
                 hackmsgid = False
     if hackmsgid:
         del msg['message-id']
-        msg['Message-ID'] = Utils.unique_message_id(mlist)
+        msg['Message-ID'] = email.utils.make_msgid()
     # Lines: is useful
     if msg['Lines'] is None:
         # BAW: is there a better way?

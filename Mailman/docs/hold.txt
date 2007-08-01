@@ -229,6 +229,7 @@ can show this by first holding a message.
     Traceback (most recent call last):
     ...
     ImplicitDestination
+    >>> flush()
 
 There should be two messages in the virgin queue, one to the list owner and
 one to the original author.
@@ -352,10 +353,11 @@ first item is a type code and the second item is a message id.
     ...     if mo:
     ...         cookie = mo.group('cookie')
     ...         break
-    >>> data = mlist.pend_confirm(cookie)
-    >>> data
-    ('H', ...)
-    >>> filename = 'heldmsg-_xtest@example.com-%d.pck' % data[1]
+    >>> from Mailman.interfaces import IPending
+    >>> data = IPending(config.db).confirm(cookie)
+    >>> sorted(data.items())
+    [('id', '...'), ('type', 'held message')]
+    >>> filename = 'heldmsg-_xtest@example.com-%s.pck' % data['id']
     >>> heldmsg = os.path.join(config.DATA_DIR, filename)
 
 Use helper function to read the held message.

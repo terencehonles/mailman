@@ -124,7 +124,7 @@ the address was validated on.  Neither date is set by default.
     >>> flush()
     >>> print address_4.registered_on
     None
-    >>> print address_4.validated_on
+    >>> print address_4.verified_on
     None
 
 The registered date takes a Python datetime object.
@@ -134,16 +134,16 @@ The registered date takes a Python datetime object.
     >>> flush()
     >>> print address_4.registered_on
     2007-05-08 22:54:01
-    >>> print address_4.validated_on
+    >>> print address_4.verified_on
     None
 
 And of course, you can also set the validation date.
 
-    >>> address_4.validated_on = datetime(2007, 5, 13, 22, 54, 1)
+    >>> address_4.verified_on = datetime(2007, 5, 13, 22, 54, 1)
     >>> flush()
     >>> print address_4.registered_on
     2007-05-08 22:54:01
-    >>> print address_4.validated_on
+    >>> print address_4.verified_on
     2007-05-13 22:54:01
 
 
