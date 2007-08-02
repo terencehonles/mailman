@@ -15,7 +15,7 @@ lists can bounce a message with an optional error message.
 
     >>> from Mailman.configuration import config
     >>> from Mailman.database import flush
-    >>> mlist = config.list_manager.create('_xtest@example.com')
+    >>> mlist = config.db.list_manager.create('_xtest@example.com')
     >>> mlist.preferred_language = u'en'
     >>> flush()
 

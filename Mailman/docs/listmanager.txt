@@ -9,9 +9,9 @@ on the global config object.
     >>> from Mailman.database import flush
     >>> from Mailman.configuration import config
     >>> from Mailman.interfaces import IListManager
-    >>> IListManager.providedBy(config.list_manager)
+    >>> listmgr = config.db.list_manager
+    >>> IListManager.providedBy(listmgr)
     True
-    >>> mgr = config.list_manager
 
 
 Creating a mailing list
@@ -20,7 +20,7 @@ Creating a mailing list
 Creating the list returns the newly created IMailList object.
 
     >>> from Mailman.interfaces import IMailingList
-    >>> mlist = mgr.create('_xtest@example.com')
+    >>> mlist = listmgr.create('_xtest@example.com')
     >>> flush()
     >>> IMailingList.providedBy(mlist)
     True
@@ -45,7 +45,7 @@ list to the system.
 If you try to create a mailing list with the same name as an existing list,
 you will get an exception.
 
-    >>> mlist_dup = mgr.create('_xtest@example.com')
+    >>> mlist_dup = listmgr.create('_xtest@example.com')
     Traceback (most recent call last):
     ...
     MMListAlreadyExistsError: _xtest@example.com
@@ -56,9 +56,9 @@ Deleting a mailing list
 
 Use the list manager to delete a mailing list.
 
-    >>> mgr.delete(mlist)
+    >>> listmgr.delete(mlist)
     >>> flush()
-    >>> sorted(mgr.names)
+    >>> sorted(listmgr.names)
     []
 
 Attempting to access attributes of the deleted mailing list raises an
@@ -71,7 +71,7 @@ exception:
 
 After deleting the list, you can create it again.
 
-    >>> mlist = mgr.create('_xtest@example.com')
+    >>> mlist = listmgr.create('_xtest@example.com')
     >>> flush()
     >>> mlist.fqdn_listname
     '_xtest@example.com'
@@ -83,14 +83,14 @@ Retrieving a mailing list
 When a mailing list exists, you can ask the list manager for it and you will
 always get the same object back.
 
-    >>> mlist_2 = mgr.get('_xtest@example.com')
+    >>> mlist_2 = listmgr.get('_xtest@example.com')
     >>> mlist_2 is mlist
     True
 
 Don't try to get a list that doesn't exist yet though, or you will get an
 exception.
 
-    >>> mgr.get('_xtest_2@example.com')
+    >>> listmgr.get('_xtest_2@example.com')
     Traceback (most recent call last):
     ...
     MMUnknownListError: _xtest_2@example.com
@@ -102,18 +102,18 @@ Iterating over all mailing lists
 Once you've created a bunch of mailing lists, you can use the list manager to
 iterate over either the list objects, or the list names.
 
-    >>> mlist_3 = mgr.create('_xtest_3@example.com')
-    >>> mlist_4 = mgr.create('_xtest_4@example.com')
+    >>> mlist_3 = listmgr.create('_xtest_3@example.com')
+    >>> mlist_4 = listmgr.create('_xtest_4@example.com')
     >>> flush()
-    >>> sorted(mgr.names)
+    >>> sorted(listmgr.names)
     ['_xtest@example.com', '_xtest_3@example.com', '_xtest_4@example.com']
-    >>> sorted(m.fqdn_listname for m in mgr.mailing_lists)
+    >>> sorted(m.fqdn_listname for m in listmgr.mailing_lists)
     ['_xtest@example.com', '_xtest_3@example.com', '_xtest_4@example.com']
 
 
 Cleaning up
 -----------
 
-    >>> for mlist in mgr.mailing_lists:
-    ...     mgr.delete(mlist)
+    >>> for mlist in listmgr.mailing_lists:
+    ...     listmgr.delete(mlist)
     >>> flush()

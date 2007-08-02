@@ -11,7 +11,7 @@ bookkeeping pieces of information are updated.
     >>> from Mailman.Handlers.AfterDelivery import process
     >>> from Mailman.configuration import config
     >>> from Mailman.database import flush
-    >>> mlist = config.list_manager.create('_xtest@example.com')
+    >>> mlist = config.db.list_manager.create('_xtest@example.com')
     >>> post_time = datetime.datetime.now() - datetime.timedelta(minutes=10)
     >>> mlist.last_post_time = post_time
     >>> mlist.post_id = 10

@@ -42,7 +42,7 @@ from Mailman import Message
 from Mailman import Utils
 from Mailman import i18n
 from Mailman.configuration import config
-from Mailman.interfaces import IPendable, IPending
+from Mailman.interfaces import IPendable
 
 log = logging.getLogger('mailman.vette')
 
@@ -249,7 +249,7 @@ def hold_for_approval(mlist, msg, msgdata, exc):
     # bounce processing that might be needed.
     pendable = HeldMessagePendable(type=HeldMessagePendable.PEND_KEY,
                                    id=str(id))
-    token = IPending(config.db).add(pendable)
+    token = config.db.pendings.add(pendable)
     # Get the language to send the response in.  If the sender is a member,
     # then send it in the member's language, otherwise send it in the mailing
     # list's preferred language.

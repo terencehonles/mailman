@@ -49,3 +49,6 @@ class IDatabase(Interface):
 
     message_store = Attribute(
         """The IMessageStore instance provided by the database layer.""")
+
+    pendings = Attribute(
+        """The IPending instance provided by the database layer.""")

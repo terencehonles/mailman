@@ -12,7 +12,7 @@ is getting sent through the system.  We'll take things one-by-one.
     >>> from Mailman.Handlers.CookHeaders import process
     >>> from Mailman.configuration import config
     >>> from Mailman.database import flush
-    >>> mlist = config.list_manager.create('_xtest@example.com')
+    >>> mlist = config.db.list_manager.create('_xtest@example.com')
     >>> mlist.subject_prefix = u''
     >>> flush()
 

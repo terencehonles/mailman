@@ -9,7 +9,7 @@ of the mailing list and the type of message being processed.
     >>> from Mailman.Handlers.Decorate import process
     >>> from Mailman.configuration import config
     >>> from Mailman.database import flush
-    >>> mlist = config.list_manager.create('_xtest@example.com')
+    >>> mlist = config.db.list_manager.create('_xtest@example.com')
     >>> flush()
     >>> msg_text = """\
     ... From: aperson@example.org

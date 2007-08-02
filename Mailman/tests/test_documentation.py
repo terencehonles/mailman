@@ -31,24 +31,26 @@ COMMASPACE = ', '
 
 
 def cleaning_teardown(testobj):
+    usermgr = config.db.user_manager
+    listmgr = config.db.list_manager
     # Remove all users, addresses and members, then delete all mailing lists.
-    for user in config.user_manager.users:
-        config.user_manager.delete_user(user)
-    for address in config.user_manager.addresses:
-        config.user_manager.delete_address(address)
-    for mlist in config.list_manager.mailing_lists:
+    for user in usermgr.users:
+        usermgr.delete_user(user)
+    for address in usermgr.addresses:
+        usermgr.delete_address(address)
+    for mlist in listmgr.mailing_lists:
         for member in mlist.members.members:
             member.unsubscribe()
         for admin in mlist.administrators.members:
             admin.unsubscribe()
-        config.list_manager.delete(mlist)
+        listmgr.delete(mlist)
     flush()
-    assert not list(config.list_manager.mailing_lists), (
+    assert not list(listmgr.mailing_lists), (
         'There should be no mailing lists left: %s' %
-        COMMASPACE.join(sorted(config.list_manager.names)))
-    assert not list(config.user_manager.users), (
+        COMMASPACE.join(sorted(listmgr.names)))
+    assert not list(usermgr.users), (
         'There should be no users left!')
-    assert not list(config.user_manager.addresses), (
+    assert not list(usermgr.addresses), (
         'There should be no addresses left!')
     # Remove all queue files.
     for dirpath, dirnames, filenames in os.walk(config.QUEUE_DIR):

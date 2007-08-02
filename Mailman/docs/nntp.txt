@@ -11,7 +11,7 @@ NNTP is to Usenet as IP is to the web, it's more general than that.
     >>> from Mailman.configuration import config
     >>> from Mailman.database import flush
     >>> from email import message_from_string
-    >>> mlist = config.list_manager.create('_xtest@example.com')
+    >>> mlist = config.db.list_manager.create('_xtest@example.com')
     >>> mlist.preferred_language = 'en'
     >>> flush()
     >>> switchboard = Switchboard(config.NEWSQUEUE_DIR)

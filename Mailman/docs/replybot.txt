@@ -11,7 +11,7 @@ message or the amount of time since the last auto-response.
     >>> from Mailman.Message import Message
     >>> from Mailman.configuration import config
     >>> from Mailman.database import flush
-    >>> mlist = config.list_manager.create('_xtest@example.com')
+    >>> mlist = config.db.list_manager.create('_xtest@example.com')
     >>> mlist.real_name = 'XTest'
     >>> flush()
 

@@ -34,10 +34,7 @@ import Mailman.configuration
 import Mailman.ext
 import Mailman.loginit
 
-from Mailman.interfaces import (
-    IDatabase, IListManager, IMessageStore, IUserManager)
-
-DOT = '.'
+from Mailman.interfaces import IDatabase
 
 
 
@@ -94,12 +91,6 @@ def initialize_2():
     verifyObject(IDatabase, db)
     db.initialize()
     Mailman.configuration.config.db = db
-    verifyObject(IListManager, db.list_manager)
-    Mailman.configuration.config.list_manager = db.list_manager
-    verifyObject(IUserManager, db.user_manager)
-    Mailman.configuration.config.user_manager = db.user_manager
-    verifyObject(IMessageStore, db.message_store)
-    Mailman.configuration.config.message_store = db.message_store
 
 
 def initialize(config=None, propagate_logs=False):

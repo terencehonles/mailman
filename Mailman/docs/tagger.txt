@@ -14,7 +14,7 @@ expressions.  The message then gets tagged with the topic names of each hit.
     >>> from Mailman.configuration import config
     >>> from Mailman.database import flush
     >>> from email import message_from_string
-    >>> mlist = config.list_manager.create('_xtest@example.com')
+    >>> mlist = config.db.list_manager.create('_xtest@example.com')
 
 Topics must be enabled for Mailman to do any topic matching, even if topics
 are defined.

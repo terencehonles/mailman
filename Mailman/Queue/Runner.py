@@ -147,7 +147,7 @@ class Runner:
         #
         # Find out which mailing list this message is destined for.
         listname = msgdata.get('listname')
-        mlist = config.list_manager.get(listname)
+        mlist = config.db.list_manager.get(listname)
         if not mlist:
             log.error('Dequeuing message destined for missing list: %s',
                       listname)

@@ -12,7 +12,7 @@ digests, although only two are currently supported: MIME digests and RFC 1153
     >>> from Mailman.configuration import config
     >>> from Mailman.database import flush
     >>> from email import message_from_string
-    >>> mlist = config.list_manager.create('_xtest@example.com')
+    >>> mlist = config.db.list_manager.create('_xtest@example.com')
     >>> mlist.preferred_language = 'en'
     >>> mlist.web_page_url = 'http://www.example.com/'
     >>> mlist.real_name = 'XTest'

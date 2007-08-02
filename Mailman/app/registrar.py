@@ -32,7 +32,7 @@ from Mailman.Message import UserNotification
 from Mailman.Utils import ValidateEmail
 from Mailman.configuration import config
 from Mailman.i18n import _
-from Mailman.interfaces import IDomain, IPendable, IPending, IRegistrar
+from Mailman.interfaces import IDomain, IPendable, IRegistrar
 
 __i18n_templates__ = True
 
@@ -57,7 +57,7 @@ class Registrar:
         ValidateEmail(address)
         # Check to see if there is already a verified IAddress in the database
         # matching this address.  If so, there's nothing to do.
-        usermgr = config.user_manager
+        usermgr = config.db.user_manager
         addr = usermgr.get_address(address)
         if addr and addr.verified_on:
             # Before returning, see if this address is linked to a user.  If
@@ -73,8 +73,7 @@ class Registrar:
         pendable = PendableRegistration(type=PendableRegistration.PEND_KEY,
                                         address=address,
                                         real_name=real_name)
-        pendingdb = IPending(config.db)
-        token = pendingdb.add(pendable)
+        token = config.db.pendings.add(pendable)
         # Set up some local variables for translation interpolation.
         domain = IDomain(self._context)
         domain_name = _(domain.domain_name)
@@ -96,8 +95,7 @@ class Registrar:
     def confirm(self, token):
         """See `IUserRegistrar`."""
         # For convenience
-        pendingdb = IPending(config.db)
-        pendable = pendingdb.confirm(token)
+        pendable = config.db.pendings.confirm(token)
         if pendable is None:
             return False
         missing = object()
@@ -114,7 +112,7 @@ class Registrar:
         # We are going to end up with an IAddress for the verified address
         # and an IUser linked to this IAddress.  See if any of these objects
         # currently exist in our database.
-        usermgr = config.user_manager
+        usermgr = config.db.user_manager
         addr = usermgr.get_address(address)
         user = usermgr.get_user(address)
         # If there is neither an address nor a user matching the confirmed
@@ -144,6 +142,5 @@ class Registrar:
         return True
 
     def discard(self, token):
-        pendingdb = IPending(config.db)
         # Throw the record away.
-        pendingdb.confirm(token)
+        config.db.pendings.confirm(token)

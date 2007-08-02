@@ -21,7 +21,7 @@ continuously in a loop until the .stop() method is called.
     >>> from Mailman.Queue.Switchboard import Switchboard
     >>> from Mailman.configuration import config
     >>> from Mailman.database import flush
-    >>> mlist = config.list_manager.create('_xtest@example.com')
+    >>> mlist = config.db.list_manager.create('_xtest@example.com')
     >>> mlist.preferred_language = 'en'
     >>> flush()
 

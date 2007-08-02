@@ -15,7 +15,7 @@ headers for unambigous bounce processing.
     >>> from Mailman.configuration import config
     >>> from Mailman.database import flush
     >>> from email import message_from_string
-    >>> mlist = config.list_manager.create('_xtest@example.com')
+    >>> mlist = config.db.list_manager.create('_xtest@example.com')
     >>> flush()
     >>> switchboard = Switchboard(config.OUTQUEUE_DIR)
 

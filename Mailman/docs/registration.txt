@@ -112,7 +112,7 @@ returned.
 
 There should be no records in the user manager for this address yet.
 
-    >>> usermgr = config.user_manager
+    >>> usermgr = config.db.user_manager
     >>> print usermgr.get_user('aperson@example.com')
     None
     >>> print usermgr.get_address('aperson@example.com')
@@ -120,8 +120,7 @@ There should be no records in the user manager for this address yet.
 
 But this address is waiting for confirmation.
 
-    >>> from Mailman.interfaces import IPending
-    >>> pendingdb = IPending(config.db)
+    >>> pendingdb = config.db.pendings
     >>> sorted(pendingdb.confirm(token, expunge=False).items())
     [('address', 'aperson@example.com'),
      ('real_name', 'Anne Person'),
@@ -358,8 +357,7 @@ Likewise, if you try to confirm, through the IUserRegistrar interface, a token
 that doesn't match a registration even, you will get None.  However, the
 pending even matched with that token will still be removed.
 
-    >>> from Mailman.interfaces import IPendable, IPending
-    >>> pendingdb = IPending(config.db)
+    >>> from Mailman.interfaces import IPendable
     >>> class SimplePendable(dict):
     ...     implements(IPendable)
     >>> pendable = SimplePendable(type='foo', bar='baz')

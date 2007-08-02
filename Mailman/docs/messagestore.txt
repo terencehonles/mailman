@@ -13,7 +13,7 @@ X-List-ID-Hash collides.
     >>> from email import message_from_string
     >>> from Mailman.configuration import config
     >>> from Mailman.database import flush
-    >>> store = config.message_store
+    >>> store = config.db.message_store
 
 If you try to add a message to the store which is missing either the
 Message-ID header or the Date header, you will get a ValueError.

@@ -15,7 +15,7 @@ This is not where messages held for administrator approval are kept.
 In order to pend an event, you first need a pending database, which is
 available by adapting the list manager.
 
-    >>> pendingdb = IPending(config.db)
+    >>> pendingdb = config.db.pendings
     >>> verifyObject(IPending, pendingdb)
     True
 

@@ -9,7 +9,7 @@ See usermanager.txt for examples of how to create, delete, and find users.
 
     >>> from Mailman.database import flush
     >>> from Mailman.configuration import config
-    >>> mgr = config.user_manager
+    >>> usermgr = config.db.user_manager
 
 
 User data
@@ -17,13 +17,13 @@ User data
 
 Users may have a real name and a password.
 
-    >>> user_1 = mgr.create_user()
+    >>> user_1 = usermgr.create_user()
     >>> user_1.password = 'my password'
     >>> user_1.real_name = 'Zoe Person'
     >>> flush()
-    >>> sorted(user.real_name for user in mgr.users)
+    >>> sorted(user.real_name for user in usermgr.users)
     ['Zoe Person']
-    >>> sorted(user.password for user in mgr.users)
+    >>> sorted(user.password for user in usermgr.users)
     ['my password']
 
 The password and real name can be changed at any time.
@@ -31,9 +31,9 @@ The password and real name can be changed at any time.
     >>> user_1.real_name = 'Zoe X. Person'
     >>> user_1.password = 'another password'
     >>> flush()
-    >>> sorted(user.real_name for user in mgr.users)
+    >>> sorted(user.real_name for user in usermgr.users)
     ['Zoe X. Person']
-    >>> sorted(user.password for user in mgr.users)
+    >>> sorted(user.password for user in usermgr.users)
     ['another password']
 
 
@@ -59,7 +59,7 @@ address on a user object.
 
 You can also create the address separately and then link it to the user.
 
-    >>> address_1 = mgr.create_address('zperson@example.net')
+    >>> address_1 = usermgr.create_address('zperson@example.net')
     >>> user_1.link(address_1)
     >>> flush()
     >>> sorted(address.address for address in user_1.addresses)
@@ -69,7 +69,7 @@ You can also create the address separately and then link it to the user.
 
 But don't try to link an address to more than one user.
 
-    >>> another_user = mgr.create_user()
+    >>> another_user = usermgr.create_user()
     >>> another_user.link(address_1)
     Traceback (most recent call last):
     ...
@@ -85,13 +85,13 @@ You can also ask whether a given user controls a given address.
 Given a text email address, the user manager can find the user that controls
 that address.
 
-    >>> mgr.get_user('zperson@example.com') is user_1
+    >>> usermgr.get_user('zperson@example.com') is user_1
     True
-    >>> mgr.get_user('zperson@example.net') is user_1
+    >>> usermgr.get_user('zperson@example.net') is user_1
     True
-    >>> mgr.get_user('zperson@example.org') is user_1
+    >>> usermgr.get_user('zperson@example.org') is user_1
     True
-    >>> print mgr.get_user('bperson@example.com')
+    >>> print usermgr.get_user('bperson@example.com')
     None
 
 Addresses can also be unlinked from a user.
@@ -99,7 +99,7 @@ Addresses can also be unlinked from a user.
     >>> user_1.unlink(address_1)
     >>> user_1.controls('zperson@example.net')
     False
-    >>> print mgr.get_user('aperson@example.net')
+    >>> print usermgr.get_user('aperson@example.net')
     None
 
 But don't try to unlink the address from a user it's not linked to.

@@ -10,7 +10,7 @@ acknowledgment.
     >>> from Mailman.Handlers.Acknowledge import process
     >>> from Mailman.configuration import config
     >>> from Mailman.database import flush
-    >>> mlist = config.list_manager.create('_xtest@example.com')
+    >>> mlist = config.db.list_manager.create('_xtest@example.com')
     >>> mlist.real_name = 'XTest'
     >>> mlist.preferred_language = 'en'
     >>> # XXX This will almost certainly change once we've worked out the web
@@ -27,8 +27,9 @@ acknowledgment.
 
 Subscribe a user to the mailing list.
 
+    >>> usermgr = config.db.user_manager
     >>> from Mailman.constants import MemberRole
-    >>> user_1 = config.user_manager.create_user('aperson@example.com')
+    >>> user_1 = usermgr.create_user('aperson@example.com')
     >>> address_1 = list(user_1.addresses)[0]
     >>> address_1.subscribe(mlist, MemberRole.member)
     <Member: aperson@example.com on _xtest@example.com as MemberRole.member>
@@ -77,7 +78,7 @@ Similarly if the original sender is specified in the message metadata, and
 that sender is a member but not one who has requested acknowledgments, none
 will be sent.
 
-    >>> user_2 = config.user_manager.create_user('dperson@example.com')
+    >>> user_2 = usermgr.create_user('dperson@example.com')
     >>> address_2 = list(user_2.addresses)[0]
     >>> address_2.subscribe(mlist, MemberRole.member)
     <Member: dperson@example.com on _xtest@example.com as MemberRole.member>

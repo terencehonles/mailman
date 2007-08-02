@@ -7,7 +7,7 @@ These are defined in the IMailingListAddresses interface.
     >>> from Mailman.configuration import config
     >>> from Mailman.interfaces import IMailingListAddresses
     >>> from Mailman.database import flush
-    >>> mlist = config.list_manager.create('_xtest@example.com')
+    >>> mlist = config.db.list_manager.create('_xtest@example.com')
     >>> flush()
     >>> IMailingListAddresses.providedBy(mlist)
     True

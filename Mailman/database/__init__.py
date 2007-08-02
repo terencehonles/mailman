@@ -50,6 +50,7 @@ class StockDatabase:
         self.list_manager = None
         self.user_manager = None
         self.message_store = None
+        self.pendings = None
 
     def initialize(self):
         from Mailman.LockFile import LockFile
@@ -63,13 +64,8 @@ class StockDatabase:
         self.list_manager = ListManager()
         self.user_manager = UserManager()
         self.message_store = MessageStore()
+        self.pendings = Pendings()
         self.flush()
 
     def flush(self):
         objectstore.flush()
-
-    def __conform__(self, protocol):
-        if protocol is IPending:
-            return Pendings()
-        # Let the rest of the adaptation machinery take a crack at it.
-        return None

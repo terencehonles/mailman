@@ -11,14 +11,14 @@ recipients from the list of recipients that earlier handler modules
     >>> from Mailman.Handlers.AvoidDuplicates import process
     >>> from Mailman.configuration import config
     >>> from Mailman.database import flush
-    >>> mlist = config.list_manager.create('_xtest@example.com')
+    >>> mlist = config.db.list_manager.create('_xtest@example.com')
     >>> flush()
 
 Create some members we're going to use.
 
     >>> from Mailman.constants import MemberRole
-    >>> address_a = config.user_manager.create_address('aperson@example.com')
-    >>> address_b = config.user_manager.create_address('bperson@example.com')
+    >>> address_a = config.db.user_manager.create_address('aperson@example.com')
+    >>> address_b = config.db.user_manager.create_address('bperson@example.com')
     >>> member_a = address_a.subscribe(mlist, MemberRole.member)
     >>> member_b = address_b.subscribe(mlist, MemberRole.member)
     >>> flush()

@@ -10,7 +10,7 @@ list's data directory.
     >>> from Mailman.Handlers.FileRecips import process
     >>> from Mailman.configuration import config
     >>> from Mailman.database import flush
-    >>> mlist = config.list_manager.create('_xtest@example.com')
+    >>> mlist = config.db.list_manager.create('_xtest@example.com')
     >>> flush()
 
 
@@ -84,7 +84,7 @@ their address is in the include file, the sender's address is /not/ included
 in the recipients list.
 
     >>> from Mailman.constants import MemberRole
-    >>> address_1 = config.user_manager.create_address('cperson@example.com')
+    >>> address_1 = config.db.user_manager.create_address('cperson@example.com')
     >>> address_1.subscribe(mlist, MemberRole.member)
     <Member: cperson@example.com on _xtest@example.com as MemberRole.member>
     >>> flush()
