@@ -173,7 +173,7 @@ def process_request(doc, cgidata):
             request_creation(doc, cgidata,
                              _('List already exists: $safelistname'))
             return
-        except Errors.BadListNameError, s:
+        except Errors.InvalidEmailAddress, s:
             request_creation(doc, cgidata, _('Illegal list name: $s'))
             return
         except Errors.MMListError:

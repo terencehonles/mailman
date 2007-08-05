@@ -22,6 +22,8 @@ import doctest
 import unittest
 
 import Mailman
+
+from Mailman.app.styles import style_manager
 from Mailman.configuration import config
 from Mailman.database import flush
 
@@ -56,6 +58,10 @@ def cleaning_teardown(testobj):
     for dirpath, dirnames, filenames in os.walk(config.QUEUE_DIR):
         for filename in filenames:
             os.remove(os.path.join(dirpath, filename))
+    # Remove all but the default style.
+    for style in style_manager.styles:
+        if style.name <> 'default':
+            style_manager.unregister(style)
 
 
 

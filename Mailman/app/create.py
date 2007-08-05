@@ -23,11 +23,14 @@ from Mailman.Utils import ValidateEmail
 from Mailman.app.plugins import get_plugin
 from Mailman.app.styles import style_manager
 from Mailman.configuration import config
+from Mailman.constants import MemberRole
 
 
 
-def create_list(fqdn_listname):
+def create_list(fqdn_listname, owners=None):
     """Create the named list and apply styles."""
+    if owners is None:
+        owners = []
     ValidateEmail(fqdn_listname)
     listname, domain = Utils.split_listname(fqdn_listname)
     if domain not in config.domains:
@@ -43,4 +46,15 @@ def create_list(fqdn_listname):
     # XXX FIXME
 ##     mta_plugin = get_plugin('mailman.mta')
 ##     mta_plugin().create(mlist)
+    # Create any owners that don't yet exist, and subscribe all addresses as
+    # owners of the mailing list.
+    usermgr = config.db.user_manager
+    for owner_address in owners:
+        addr = usermgr.get_address(owner_address)
+        if addr is None:
+            # XXX Make this use an IRegistrar instead, but that requires
+            # sussing out the IDomain stuff.  For now, fake it.
+            user = usermgr.create_user(owner_address)
+            addr = list(user.addresses)[0]
+        addr.subscribe(mlist, MemberRole.owner)
     return mlist

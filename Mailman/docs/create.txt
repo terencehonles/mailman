@@ -1,0 +1,123 @@
+Application level list creation
+-------------------------------
+
+The low-level way to create a new mailing list is to use the IListManager
+interface.  This interface simply adds the appropriate database entries to
+record the list's creation.
+
+There is a higher level interface for creating mailing lists which performs a
+few additional tasks such as:
+
+ * validating the list's posting address (which also serves as the list's
+   fully qualified name);
+ * ensuring that the list's domain is registered;
+ * applying all matching styles to the new list;
+ * creating and assigning list owners;
+ * notifying watchers of list creation;
+ * creating ancillary artifacts (such as the list's on-disk directory)
+
+    >>> from Mailman.app.create import create_list
+
+
+Posting address validation
+--------------------------
+
+If you try to use the higher-level interface to create a mailing list with a
+bogus posting address, you get an exception.
+
+    >>> create_list('not a valid address')
+    Traceback (most recent call last):
+    ...
+    InvalidEmailAddress: 'not a valid address'
+
+If the posting address is valid, but the domain has not been registered with
+Mailman yet, you get an exception.
+
+    >>> create_list('test@example.org')
+    Traceback (most recent call last):
+    ...
+    BadDomainSpecificationError: example.org
+
+
+Creating a list applies its styles
+----------------------------------
+
+Start by registering a test style.
+
+    >>> from zope.interface import implements
+    >>> from Mailman.interfaces import IStyle
+    >>> class TestStyle(object):
+    ...     implements(IStyle)
+    ...     name = 'test'
+    ...     priority = 10
+    ...     def apply(self, mailing_list):
+    ...         # Just does something very simple.
+    ...         mailing_list.msg_footer = u'test footer'
+    ...     def match(self, mailing_list, styles):
+    ...         # Applies to any test list
+    ...         if 'test' in mailing_list.fqdn_listname:
+    ...             styles.append(self)
+    >>> from Mailman.app.styles import style_manager
+    >>> style_manager.register(TestStyle())
+
+Using the higher level interface for creating a list, applies all matching
+list styles.
+
+    >>> mlist_1 = create_list('test_1@example.com')
+    >>> from Mailman.database import flush
+    >>> flush()
+    >>> mlist_1.fqdn_listname
+    'test_1@example.com'
+    >>> mlist_1.msg_footer
+    u'test footer'
+
+
+Creating a list with owners
+---------------------------
+
+You can also specify a list of owner email addresses.  If these addresses are
+not yet known, they will be registered, and new users will be linked to them.
+However the addresses are not verified.
+
+    >>> owners = ['aperson@example.com', 'bperson@example.com',
+    ...           'cperson@example.com', 'dperson@example.com']
+    >>> mlist_2 = create_list('test_2@example.com', owners)
+    >>> flush()
+    >>> mlist_2.fqdn_listname
+    'test_2@example.com'
+    >>> mlist_2.msg_footer
+    u'test footer'
+    >>> sorted(addr.address for addr in mlist_2.owners.addresses)
+    ['aperson@example.com', 'bperson@example.com',
+     'cperson@example.com', 'dperson@example.com']
+
+None of the owner addresses are verified.
+
+    >>> any(addr.verified_on is not None for addr in mlist_2.owners.addresses)
+    False
+
+However, all addresses are linked to users.
+
+    >>> # The owners have no names yet
+    >>> len(list(mlist_2.owners.users))
+    4
+
+If you create a mailing list with owner addresses that are already known to
+the system, they won't be created again.
+
+    >>> from Mailman.configuration import config
+    >>> usermgr = config.db.user_manager
+    >>> user_a = usermgr.get_user('aperson@example.com')
+    >>> user_b = usermgr.get_user('bperson@example.com')
+    >>> user_c = usermgr.get_user('cperson@example.com')
+    >>> user_d = usermgr.get_user('dperson@example.com')
+    >>> user_a.real_name = 'Anne Person'
+    >>> user_b.real_name = 'Bart Person'
+    >>> user_c.real_name = 'Caty Person'
+    >>> user_d.real_name = 'Dirk Person'
+    >>> flush()
+
+    >>> mlist_3 = create_list('test_3@example.com', owners)
+    >>> flush()
+    >>> sorted(user.real_name for user in mlist_3.owners.users)
+    ['Anne Person', 'Bart Person', 'Caty Person', 'Dirk Person']

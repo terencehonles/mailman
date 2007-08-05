@@ -21,6 +21,7 @@ import datetime
 
 from operator import attrgetter
 from zope.interface import implements
+from zope.interface.verify import verifyObject
 
 from Mailman import Utils
 from Mailman.Errors import DuplicateStyleError
@@ -261,9 +262,14 @@ class StyleManager:
             yield style
 
     def register(self, style):
+        verifyObject(IStyle, style)
         if style.name in self._styles:
             raise DuplicateStyleError(style.name)
         self._styles[style.name] = style
+
+    def unregister(self, style):
+        # Let KeyErrors percolate up.
+        del self._styles[style.name]
 
 
 

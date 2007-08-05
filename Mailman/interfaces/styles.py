@@ -84,3 +84,10 @@ class IStyleManager(Interface):
         :raises DuplicateStyleError: if a style with the same name was already
             registered.
         """
+
+    def unregister(style):
+        """Unregister the style.
+
+        :param style: an IStyle.
+        :raises KeyError: If the style's name is not currently registered.
+        """

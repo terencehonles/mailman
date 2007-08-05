@@ -29,7 +29,6 @@ from Mailman import Version
 from Mailman import i18n
 from Mailman.app.create import create_list
 from Mailman.configuration import config
-from Mailman.constants import MemberRole
 from Mailman.initialize import initialize
 
 _ = i18n._
@@ -104,29 +103,14 @@ def main():
 
     # Create the mailing list, applying styles as appropriate.
     try:
-        mlist = create_list(fqdn_listname)
+        mlist = create_list(fqdn_listname, opts.owners)
         mlist.preferred_language = opts.language
-    except Errors.BadListNameError:
+    except Errors.InvalidEmailAddress:
         parser.error(_('Illegal list name: $fqdn_listname'))
     except Errors.MMListAlreadyExistsError:
         parser.error(_('List already exists: $fqdn_listname'))
     except Errors.BadDomainSpecificationError, domain:
         parser.error(_('Undefined domain: $domain'))
-    except Errors.MMListAlreadyExistsError:
-        parser.error(_('List already exists: $fqdn_listname'))
-
-    # Create any owners that don't yet exist, and subscribe all addresses as
-    # owners of the mailing list.
-    usermgr = config.db.user_manager
-    for owner_address in opts.owners:
-        addr = usermgr.get_address(owner_address)
-        if addr is None:
-            # XXX Make this use an IRegistrar instead, but that requires
-            # sussing out the IDomain stuff.  For now, fake it.
-            user = usermgr.create_user(owner_address)
-            addr = list(user.addresses)[0]
-            addr.verified_on = datetime.datetime.now()
-        addr.subscribe(mlist, MemberRole.owner)
 
     config.db.flush()
 

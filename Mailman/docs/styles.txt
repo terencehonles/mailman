@@ -64,6 +64,7 @@ New styles must implement the IStyle interface.
     >>> from zope.interface import implements
     >>> from Mailman.interfaces import IStyle
     >>> class TestStyle(object):
+    ...     implements(IStyle)
     ...     name = 'test'
     ...     priority = 10
     ...     def apply(self, mailing_list):
@@ -130,13 +131,38 @@ will take effect in the new priority order.
     u'test footer'
 
 
+Unregistering styles
+--------------------
+
+You can unregister a style, making it unavailable in the future.
+
+    >>> style_manager.unregister(style_2)
+    >>> sorted(style.name for style in style_manager.lookup(mlist))
+    ['test']
+
+
 Corner cases
 ------------
 
 If you register a style with the same name as an already registered style, you
 get an exception.
 
-    >>> style_manager.register(AnotherTestStyle())
+    >>> style_manager.register(TestStyle())
     Traceback (most recent call last):
     ...
-    DuplicateStyleError: another
+    DuplicateStyleError: test
+
+If you try to register an object that isn't a style, you get an exception.
+
+    >>> style_manager.register(object())
+    Traceback (most recent call last):
+    ...
+    DoesNotImplement: An object does not implement interface
+    <InterfaceClass Mailman.interfaces.styles.IStyle>
+
+If you try to unregister a style that isn't registered, you get an exception.
+
+    >>> style_manager.unregister(style_2)
+    Traceback (most recent call last):
+    ...
+    KeyError: 'another'
