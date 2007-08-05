@@ -76,10 +76,13 @@ class Configuration(object):
         # The values in that namespace are exposed as attributes on this
         # Configuration instance.
         self.filename = None
+        bin_dir = os.path.dirname(sys.argv[0])
+        dev_dir = join(os.path.dirname(bin_dir))
         paths = [
             # Development directories.
-            join(os.getcwd(), 'etc', 'mailman.cfg'),
+            join(dev_dir, 'var', 'etc', 'mailman.cfg'),
             join(os.getcwd(), 'var', 'etc', 'mailman.cfg'),
+            join(os.getcwd(), 'etc', 'mailman.cfg'),
             # Standard installation directories.
             join('/etc', 'mailman.cfg'),
             join(Defaults.DEFAULT_VAR_DIRECTORY, 'etc', 'mailman.cfg'),
@@ -108,7 +111,7 @@ class Configuration(object):
         if ns['USE_LMTP']:
             self.add_qrunner('LMTP')
         # Pull out the defaults.
-        VAR_DIR = ns['VAR_DIR']
+        VAR_DIR = os.path.abspath(ns['VAR_DIR'])
         # Now that we've loaded all the configuration files we're going to
         # load, set up some useful directories.
         self.LIST_DATA_DIR      = join(VAR_DIR, 'lists')

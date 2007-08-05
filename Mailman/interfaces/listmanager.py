@@ -48,8 +48,9 @@ class IListManager(Interface):
     def get(fqdn_listname):
         """Find the IMailingList with the matching fully qualified list name.
 
-        Returns the matching IMailList instance or None if there was no
-        matching mailing list.  fqdn_listname
+        :param fqdn_listname: Fully qualified list name to get.
+        :return: The matching IMailingList or None if there was no such
+            matching mailing list.
         """
 
     mailing_lists = Attribute(

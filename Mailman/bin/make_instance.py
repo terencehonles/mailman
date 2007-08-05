@@ -79,7 +79,7 @@ available languages."""))
     opts, args = parser.parse_args()
     if args:
         unexpected = SPACE.join(args)
-        parser.print_error(_('Unexpected arguments: $unexpected'))
+        parser.error(_('Unexpected arguments: $unexpected'))
     return parser, opts, args
 
 

@@ -55,15 +55,12 @@ from Mailman.interfaces import *
 
 # Base classes
 from Mailman.Archiver import Archiver
-from Mailman.Autoresponder import Autoresponder
 from Mailman.Bouncer import Bouncer
 from Mailman.Deliverer import Deliverer
 from Mailman.Digester import Digester
-from Mailman.GatewayManager import GatewayManager
 from Mailman.HTMLFormatter import HTMLFormatter
 from Mailman.ListAdmin import ListAdmin
 from Mailman.SecurityManager import SecurityManager
-from Mailman.TopicMgr import TopicMgr
 
 # GUI components package
 from Mailman import Gui
@@ -88,8 +85,7 @@ slog    = logging.getLogger('mailman.subscribe')
 
 # Use mixins here just to avoid having any one chunk be too large.
 class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
-               Archiver, Digester, SecurityManager, Bouncer, GatewayManager,
-               Autoresponder, TopicMgr):
+               Archiver, Digester, SecurityManager, Bouncer):
 
     implements(
         IMailingList,
@@ -315,139 +311,6 @@ class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
                 continue
             self._gui.append(getattr(Gui, component)())
 
-    def InitVars(self, name=None, admin='', crypted_password=''):
-        """Assign default values - some will be overriden by stored state."""
-        # Non-configurable list info
-        if name:
-          self._internal_name = name
-
-        # When was the list created?
-        self.created_at = time.time()
-
-        # Must save this state, even though it isn't configurable
-        self.volume = 1
-        self.members = {} # self.digest_members is initted in mm_digest
-        self.data_version = config.DATA_FILE_VERSION
-        self.last_post_time = 0
-
-        self.post_id = 1.  # A float so it never has a chance to overflow.
-        self.user_options = {}
-        self.language = {}
-        self.usernames = {}
-        self.passwords = {}
-        self.new_member_options = config.DEFAULT_NEW_MEMBER_OPTIONS
-
-        # This stuff is configurable
-        self.respond_to_post_requests = 1
-        self.advertised = config.DEFAULT_LIST_ADVERTISED
-        self.max_num_recipients = config.DEFAULT_MAX_NUM_RECIPIENTS
-        self.max_message_size = config.DEFAULT_MAX_MESSAGE_SIZE
-        # XXX Don't set host_name if the attribute is already set.  This is a
-        # hack to ensure that MailList.Create() doesn't create a bogus private
-        # archive directory via Archiver.InitVars().  The problem is that
-        # there's no way to set this value to what Create() knows it should be
-        # for Archiver.Initvars(), before MailList.InitVar() blows it away.
-        if not hasattr(self, 'host_name'):
-            self.host_name = config.DEFAULT_HOST_NAME or \
-                             config.DEFAULT_EMAIL_HOST
-        self.web_page_url = (
-            config.DEFAULT_URL or
-            config.DEFAULT_URL_PATTERN % config.DEFAULT_URL_HOST)
-        self.owner = [admin]
-        self.moderator = []
-        self.reply_goes_to_list = config.DEFAULT_REPLY_GOES_TO_LIST
-        self.reply_to_address = ''
-        self.first_strip_reply_to = config.DEFAULT_FIRST_STRIP_REPLY_TO
-        self.admin_immed_notify = config.DEFAULT_ADMIN_IMMED_NOTIFY
-        self.admin_notify_mchanges = \
-                config.DEFAULT_ADMIN_NOTIFY_MCHANGES
-        self.require_explicit_destination = \
-                config.DEFAULT_REQUIRE_EXPLICIT_DESTINATION
-        self.acceptable_aliases = config.DEFAULT_ACCEPTABLE_ALIASES
-        self.umbrella_list = config.DEFAULT_UMBRELLA_LIST
-        self.umbrella_member_suffix = \
-                config.DEFAULT_UMBRELLA_MEMBER_ADMIN_SUFFIX
-        self.send_reminders = config.DEFAULT_SEND_REMINDERS
-        self.send_welcome_msg = config.DEFAULT_SEND_WELCOME_MSG
-        self.send_goodbye_msg = config.DEFAULT_SEND_GOODBYE_MSG
-        self.bounce_matching_headers = \
-                config.DEFAULT_BOUNCE_MATCHING_HEADERS
-        self.header_filter_rules = []
-        self.anonymous_list = config.DEFAULT_ANONYMOUS_LIST
-        self.real_name = self.internal_name().capitalize()
-        self.description = ''
-        self.info = ''
-        self.welcome_msg = ''
-        self.goodbye_msg = ''
-        self.subscribe_policy = config.DEFAULT_SUBSCRIBE_POLICY
-        self.subscribe_auto_approval = config.DEFAULT_SUBSCRIBE_AUTO_APPROVAL
-        self.unsubscribe_policy = config.DEFAULT_UNSUBSCRIBE_POLICY
-        self.private_roster = config.DEFAULT_PRIVATE_ROSTER
-        self.obscure_addresses = config.DEFAULT_OBSCURE_ADDRESSES
-        self.admin_member_chunksize = config.DEFAULT_ADMIN_MEMBER_CHUNKSIZE
-        self.administrivia = config.DEFAULT_ADMINISTRIVIA
-        self.preferred_language = config.DEFAULT_SERVER_LANGUAGE
-        self.include_rfc2369_headers = 1
-        self.include_list_post_header = 1
-        self.filter_mime_types = config.DEFAULT_FILTER_MIME_TYPES
-        self.pass_mime_types = config.DEFAULT_PASS_MIME_TYPES
-        self.filter_filename_extensions = \
-            config.DEFAULT_FILTER_FILENAME_EXTENSIONS
-        self.pass_filename_extensions = config.DEFAULT_PASS_FILENAME_EXTENSIONS
-        self.filter_content = config.DEFAULT_FILTER_CONTENT
-        self.collapse_alternatives = config.DEFAULT_COLLAPSE_ALTERNATIVES
-        self.convert_html_to_plaintext = \
-            config.DEFAULT_CONVERT_HTML_TO_PLAINTEXT
-        self.filter_action = config.DEFAULT_FILTER_ACTION
-        # Analogs to these are initted in Digester.InitVars
-        self.nondigestable = config.DEFAULT_NONDIGESTABLE
-        self.personalize = 0
-        # New sender-centric moderation (privacy) options
-        self.default_member_moderation = \
-                                       config.DEFAULT_DEFAULT_MEMBER_MODERATION
-        # Emergency moderation bit
-        self.emergency = 0
-        # This really ought to default to config.HOLD, but that doesn't work
-        # with the current GUI description model.  So, 0==Hold, 1==Reject,
-        # 2==Discard
-        self.member_moderation_action = 0
-        self.member_moderation_notice = ''
-        self.accept_these_nonmembers = []
-        self.hold_these_nonmembers = []
-        self.reject_these_nonmembers = []
-        self.discard_these_nonmembers = []
-        self.forward_auto_discards = config.DEFAULT_FORWARD_AUTO_DISCARDS
-        self.generic_nonmember_action = config.DEFAULT_GENERIC_NONMEMBER_ACTION
-        self.nonmember_rejection_notice = ''
-        # Ban lists
-        self.ban_list = []
-        # BAW: This should really be set in SecurityManager.InitVars()
-        self.password = crypted_password
-        # Max autoresponses per day.  A mapping between addresses and a
-        # 2-tuple of the date of the last autoresponse and the number of
-        # autoresponses sent on that date.
-        self.hold_and_cmd_autoresponses = {}
-        # Only one level of mixin inheritance allowed
-        for baseclass in self.__class__.__bases__:
-            if hasattr(baseclass, 'InitVars'):
-                baseclass.InitVars(self)
-
-        # These need to come near the bottom because they're dependent on
-        # other settings.
-        self.subject_prefix = config.DEFAULT_SUBJECT_PREFIX % self.__dict__
-        self.msg_header = config.DEFAULT_MSG_HEADER
-        self.msg_footer = config.DEFAULT_MSG_FOOTER
-        # Set this to Never if the list's preferred language uses us-ascii,
-        # otherwise set it to As Needed
-        if Utils.GetCharSet(self.preferred_language) == 'us-ascii':
-            self.encode_ascii_prefixes = 0
-        else:
-            self.encode_ascii_prefixes = 2
-        # scrub regular delivery
-        self.scrub_nondigest = config.DEFAULT_SCRUB_NONDIGEST
-        # automatic discarding
-        self.max_days_to_hold = config.DEFAULT_MAX_DAYS_TO_HOLD
-
 
     #
     # Web API support via administrative categories
@@ -494,54 +357,6 @@ class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
                     return value
 
 
-    #
-    # List creation
-    #
-    def Create(self, fqdn_listname, admin_email, crypted_password, langs=None):
-        # Validate the list's posting address, which should be fqdn_listname.
-        # If that's invalid, do not create any of the mailing list artifacts
-        # (the subdir in lists/ and the subdirs in archives/public and
-        # archives/private.  Most scripts already catch InvalidEmailAddress as
-        # exceptions on the admin's email address, so transform the exception.
-        if '@' not in fqdn_listname:
-            raise Errors.BadListNameError(fqdn_listname)
-        listname, email_host = fqdn_listname.split('@', 1)
-        if email_host not in config.domains:
-            raise Errors.BadDomainSpecificationError(email_host)
-        try:
-            Utils.ValidateEmail(fqdn_listname)
-        except Errors.InvalidEmailAddress:
-            raise Errors.BadListNameError(fqdn_listname)
-        # See if the mailing list already exists.
-        if Utils.list_exists(fqdn_listname):
-            raise Errors.MMListAlreadyExistsError(fqdn_listname)
-        # Validate the admin's email address
-        Utils.ValidateEmail(admin_email)
-        self._internal_name = self.list_name = listname
-        self._full_path = os.path.join(config.LIST_DATA_DIR, fqdn_listname)
-        Utils.makedirs(self._full_path)
-        # Don't use Lock() since that tries to load the non-existant
-        # config.pck.  However, it's likely that the current lock is a site
-        # lock because the MailList was instantiated with no name.  Blow away
-        # the current lock object and re-instantiate it.
-        self._make_lock(fqdn_listname, lock=True)
-        # We need to set this attribute before calling InitVars() because
-        # Archiver.InitVars() depends on this to calculate and create the
-        # archive directory.  Without this, Archiver will create a bogus
-        # archive directory using the default host name.
-        self.host_name = email_host
-        self.InitVars(listname, admin_email, crypted_password)
-        self.CheckValues()
-        if langs is None:
-            langs = [self.preferred_language]
-        for language_code in langs:
-            self.set_languages(*langs)
-        url_host = config.domains[email_host]
-        self.web_page_url = config.DEFAULT_URL_PATTERN % url_host
-        database.add_list(self)
-
-
-
     def Save(self):
         # Refresh the lock, just to let other processes know we're still
         # interested in it.  This will raise a NotLockedError if we don't have
@@ -565,8 +380,6 @@ class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
         """Auto-update schema if necessary."""
         if self.data_version >= Version.DATA_FILE_VERSION:
             return
-        # Initialize any new variables
-        self.InitVars()
         # Then reload the database (but don't recurse).  Force a reload even
         # if we have the most up-to-date state.
         self.Load(self.fqdn_listname, check_version=False)

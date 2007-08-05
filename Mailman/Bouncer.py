@@ -79,31 +79,6 @@ class _BounceInfo:
 
 
 class Bouncer:
-    def InitVars(self):
-        # Configurable...
-        self.bounce_processing = config.DEFAULT_BOUNCE_PROCESSING
-        self.bounce_score_threshold = config.DEFAULT_BOUNCE_SCORE_THRESHOLD
-        self.bounce_info_stale_after = config.DEFAULT_BOUNCE_INFO_STALE_AFTER
-        self.bounce_you_are_disabled_warnings = \
-            config.DEFAULT_BOUNCE_YOU_ARE_DISABLED_WARNINGS
-        self.bounce_you_are_disabled_warnings_interval = \
-            config.DEFAULT_BOUNCE_YOU_ARE_DISABLED_WARNINGS_INTERVAL
-        self.bounce_unrecognized_goes_to_list_owner = \
-            config.DEFAULT_BOUNCE_UNRECOGNIZED_GOES_TO_LIST_OWNER
-        self.bounce_notify_owner_on_disable = \
-            config.DEFAULT_BOUNCE_NOTIFY_OWNER_ON_DISABLE
-        self.bounce_notify_owner_on_removal = \
-            config.DEFAULT_BOUNCE_NOTIFY_OWNER_ON_REMOVAL
-        # Not configurable...
-        #
-        # This holds legacy member related information.  It's keyed by the
-        # member address, and the value is an object containing the bounce
-        # score, the date of the last received bounce, and a count of the
-        # notifications left to send.
-        self.bounce_info = {}
-        # New style delivery status
-        self.delivery_status = {}
-
     def registerBounce(self, member, msg, weight=1.0, day=None):
         if not self.isMember(member):
             return

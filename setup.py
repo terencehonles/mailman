@@ -84,7 +84,9 @@ Any other spelling is incorrect.""",
         'console_scripts': list(scripts),
         'setuptools.file_finders': 'bzr = setuptoolsbzr:find_files_for_bzr',
         # Entry point for plugging in different database backends.
-        'mailman.database': 'stock = Mailman.database:StockDatabase',
+        'mailman.database'  : 'stock = Mailman.database:StockDatabase',
+        'mailman.styles'    : 'default = Mailman.app.styles:DefaultStyle',
+        'mailman.mta'       : 'stock = Mailman.MTA:Manual',
         },
     # Third-party requirements.
     install_requires = [

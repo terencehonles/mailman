@@ -18,6 +18,7 @@
 """SQLAlchemy/Elixir based provider of IListManager."""
 
 import weakref
+import datetime
 
 from elixir import *
 from zope.interface import implements
@@ -43,6 +44,7 @@ class ListManager(object):
         if mlist:
             raise Errors.MMListAlreadyExistsError(fqdn_listname)
         mlist = MailingList(fqdn_listname)
+        mlist.created_at = datetime.datetime.now()
         # Wrap the database model object in an application MailList object and
         # return the latter.  Keep track of the wrapper so we can clean it up
         # when we're done with it.
@@ -62,7 +64,8 @@ class ListManager(object):
         mlist = MailingList.get_by(list_name=listname,
                                    host_name=hostname)
         if not mlist:
-            raise Errors.MMUnknownListError(fqdn_listname)
+            return None
+        mlist._restore()
         from Mailman.MailList import MailList
         wrapper = self._objectmap.setdefault(mlist, MailList(mlist))
         return wrapper

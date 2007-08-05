@@ -72,13 +72,6 @@ SLASH = '/'
 
 
 class SecurityManager:
-    def InitVars(self):
-        # self.password is really a SecurityManager attribute, but it's set in
-        # MailList.InitVars().
-        self.mod_password = None
-        # Non configurable
-        self.passwords = {}
-
     def AuthContextInfo(self, authcontext, user=None):
         # authcontext may be one of AuthUser, AuthListModerator,
         # AuthListAdmin, AuthSiteAdmin.  Not supported is the AuthCreator

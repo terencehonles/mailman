@@ -237,3 +237,8 @@ class AddressAlreadyLinkedError(AddressError):
 
 class AddressNotLinkedError(AddressError):
     """The address is not linked to the user."""
+
+
+
+class DuplicateStyleError(MailmanError):
+    """A style with the same name is already registered."""

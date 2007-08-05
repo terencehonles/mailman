@@ -20,9 +20,10 @@
 import os
 from datetime import timedelta
 
-from munepy import Enum
+from Mailman.constants import *
 
 
+
 def seconds(s):
     return timedelta(seconds=s)
 
@@ -994,7 +995,7 @@ from: .*@uplinkpro.com
 # 0 - Reply-To: not munged
 # 1 - Reply-To: set back to the list
 # 2 - Reply-To: set to an explicit value (reply_to_address)
-DEFAULT_REPLY_GOES_TO_LIST = 0
+DEFAULT_REPLY_GOES_TO_LIST = ReplyToMunging.no_munging
 
 # Mailman can be configured to strip any existing Reply-To: header, or simply
 # extend any existing Reply-To: with one based on the above setting.
@@ -1287,23 +1288,6 @@ SuppressPasswordReminder = 32
 ReceiveNonmatchingTopics = 64
 Moderate = 128
 DontReceiveDuplicates = 256
-
-
-class DeliveryMode(Enum):
-    # Non-digest delivery
-    Regular = 1
-    # Digest delivery modes
-    MIME    = 2
-    Plain   = 3
-
-
-class DeliveryStatus(Enum):
-    Enabled = 0
-    # Disabled reason
-    Unknown     = 1
-    ByUser      = 2
-    ByAdmin     = 3
-    ByBounce    = 4
 
 
 # A mapping between short option tags and their flag

@@ -17,11 +17,12 @@
 
 import sys
 
+from datetime import timedelta
 from sqlalchemy import types
 
 
 
-# SQLAlchemy custom type for storing enums in the database.
+# SQLAlchemy custom type for storing munepy Enums in the database.
 class EnumType(types.TypeDecorator):
     # Enums can be stored as strings of the form:
     # full.path.to.Enum:intval
@@ -30,7 +31,7 @@ class EnumType(types.TypeDecorator):
     def convert_bind_param(self, value, engine):
         if value is None:
             return None
-        return '%s:%s.%d' % (value.enumclass.__module__,
+        return '%s.%s:%d' % (value.enumclass.__module__,
                              value.enumclass.__name__,
                              int(value))
 
@@ -38,7 +39,27 @@ class EnumType(types.TypeDecorator):
         if value is None:
             return None
         path, intvalue = value.rsplit(':', 1)
-        modulename, classname = intvalue.rsplit('.', 1)
+        modulename, classname = path.rsplit('.', 1)
         __import__(modulename)
         cls = getattr(sys.modules[modulename], classname)
         return cls[int(intvalue)]
+
+
+
+class TimeDeltaType(types.TypeDecorator):
+    # timedeltas are stored as the string representation of three integers,
+    # separated by colons.  The values represent the three timedelta
+    # attributes days, seconds, microseconds.
+    impl = types.String
+
+    def convert_bind_param(self, value, engine):
+        if value is None:
+            return None
+        return '%s:%s:%s' % (value.days, value.seconds, value.microseconds)
+
+    def convert_result_value(self, value, engine):
+        if value is None:
+            return None
+        parts = value.split(':')
+        assert len(parts) == 3, 'Bad timedelta representation: %s' % value
+        return timedelta(*(int(value) for value in parts))

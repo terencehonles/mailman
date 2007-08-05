@@ -30,22 +30,6 @@ from Mailman.i18n import _
 
 
 class Digester:
-    def InitVars(self):
-        # Configurable
-        self.digestable = config.DEFAULT_DIGESTABLE
-        self.digest_is_default = config.DEFAULT_DIGEST_IS_DEFAULT
-        self.mime_is_default_digest = config.DEFAULT_MIME_IS_DEFAULT_DIGEST
-        self.digest_size_threshhold = config.DEFAULT_DIGEST_SIZE_THRESHHOLD
-        self.digest_send_periodic = config.DEFAULT_DIGEST_SEND_PERIODIC
-        self.digest_header = config.DEFAULT_DIGEST_HEADER
-        self.digest_footer = config.DEFAULT_DIGEST_FOOTER
-        self.digest_volume_frequency = config.DEFAULT_DIGEST_VOLUME_FREQUENCY
-        # Non-configurable.
-        self.one_last_digest = {}
-        self.digest_members = {}
-        self.next_digest_number = 1
-        self.digest_last_sent_at = 0
-
     def send_digest_now(self):
         # Note: Handler.ToDigest.send_digests() handles bumping the digest
         # volume and issue number.

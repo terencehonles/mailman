@@ -64,12 +64,6 @@ class Archiver:
     # archive directory for the mailing list
     #
     def InitVars(self):
-        # Configurable
-        self.archive = config.DEFAULT_ARCHIVE
-        # 0=public, 1=private:
-        self.archive_private = config.DEFAULT_ARCHIVE_PRIVATE
-        self.archive_volume_frequency = \
-                config.DEFAULT_ARCHIVE_VOLUME_FREQUENCY
         # The archive file structure by default is:
         #
         # archives/

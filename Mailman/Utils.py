@@ -66,14 +66,13 @@ log = logging.getLogger('mailman.error')
 
 def list_exists(fqdn_listname):
     """Return true iff list `fqdn_listname' exists."""
-    listname, hostname = split_listname(fqdn_listname)
-    return bool(config.list_manager.find_list(listname, hostname))
+    return config.db.list_manager.get(fqdn_listname) is not None
 
 
 def list_names():
     """Return the fqdn names of all lists in default list directory."""
     return ['%s@%s' % (listname, hostname)
-            for listname, hostname in config.list_manager.get_list_names()]
+            for listname, hostname in config.db.list_manager.get_list_names()]
 
 
 def split_listname(listname):

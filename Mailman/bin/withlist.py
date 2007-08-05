@@ -62,14 +62,13 @@ def do_list(listname, args, func):
         else:
             print >> sys.stderr, _('(unlocked)')
 
-    try:
-        mlist = MailList.MailList(listname, lock=LOCK)
+    mlist = config.db.list_manager.get(listname)
+    if mlist is None:
+        print >> sys.stderr, _('Unknown list: $listname')
+    else:
         atexit.register(exitfunc, mlist)
         LAST_MLIST = mlist
-    except Errors.MMUnknownListError:
-        print >> sys.stderr, _('Unknown list: $listname')
-
-    # try to import the module and run the callable
+    # Try to import the module and run the callable.
     if func:
         return func(mlist, *args)
     return None

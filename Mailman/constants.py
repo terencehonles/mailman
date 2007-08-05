@@ -22,6 +22,15 @@ from zope.interface import implements
 
 from Mailman.interfaces import IPreferences
 
+__all__ = [
+    'Action',
+    'DeliveryMode',
+    'DeliveryStatus',
+    'MemberRole',
+    'ReplyToMunging',
+    'SystemDefaultPreferences',
+    ]
+
 
 
 class DeliveryMode(Enum):
@@ -75,3 +84,12 @@ class ReplyToMunging(Enum):
     point_to_list = 1
     # An explicit Reply-To header is added
     explicit_header = 2
+
+
+
+class Action(Enum):
+    hold    = 0
+    reject  = 1
+    discard = 2
+    accept  = 3
+    defer   = 4

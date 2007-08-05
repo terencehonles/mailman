@@ -87,13 +87,10 @@ always get the same object back.
     >>> mlist_2 is mlist
     True
 
-Don't try to get a list that doesn't exist yet though, or you will get an
-exception.
+If you try to get a list that doesn't existing yet, you get None.
 
-    >>> listmgr.get('_xtest_2@example.com')
-    Traceback (most recent call last):
-    ...
-    MMUnknownListError: _xtest_2@example.com
+    >>> print listmgr.get('_xtest_2@example.com')
+    None
 
 
 Iterating over all mailing lists

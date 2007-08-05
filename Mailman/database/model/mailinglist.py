@@ -21,7 +21,7 @@ from zope.interface import implements
 from Mailman.Utils import fqdn_listname, split_listname
 from Mailman.configuration import config
 from Mailman.interfaces import *
-from Mailman.database.types import EnumType
+from Mailman.database.types import EnumType, TimeDeltaType
 
 
 
@@ -38,6 +38,7 @@ class MailingList(Entity):
     has_field('list_name',                                  Unicode),
     has_field('host_name',                                  Unicode),
     # Attributes not directly modifiable via the web u/i
+    has_field('created_at',                                 DateTime),
     has_field('web_page_url',                               Unicode),
     has_field('admin_member_chunksize',                     Integer),
     has_field('hold_and_cmd_autoresponses',                 PickleType),
@@ -70,11 +71,11 @@ class MailingList(Entity):
     has_field('autorespond_postings',                       Boolean),
     has_field('autorespond_requests',                       Integer),
     has_field('autoresponse_admin_text',                    Unicode),
-    has_field('autoresponse_graceperiod',                   Integer),
+    has_field('autoresponse_graceperiod',                   TimeDeltaType),
     has_field('autoresponse_postings_text',                 Unicode),
     has_field('autoresponse_request_text',                  Unicode),
     has_field('ban_list',                                   PickleType),
-    has_field('bounce_info_stale_after',                    Integer),
+    has_field('bounce_info_stale_after',                    TimeDeltaType),
     has_field('bounce_matching_headers',                    Unicode),
     has_field('bounce_notify_owner_on_disable',             Boolean),
     has_field('bounce_notify_owner_on_removal',             Boolean),
@@ -82,7 +83,7 @@ class MailingList(Entity):
     has_field('bounce_score_threshold',                     Integer),
     has_field('bounce_unrecognized_goes_to_list_owner',     Boolean),
     has_field('bounce_you_are_disabled_warnings',           Integer),
-    has_field('bounce_you_are_disabled_warnings_interval',  Integer),
+    has_field('bounce_you_are_disabled_warnings_interval',  TimeDeltaType),
     has_field('collapse_alternatives',                      Boolean),
     has_field('convert_html_to_plaintext',                  Boolean),
     has_field('default_member_moderation',                  Boolean),
@@ -152,8 +153,6 @@ class MailingList(Entity):
     has_field('topics',                                     PickleType),
     has_field('topics_bodylines_limit',                     Integer),
     has_field('topics_enabled',                             Boolean),
-    has_field('umbrella_list',                              Boolean),
-    has_field('umbrella_member_suffix',                     Unicode),
     has_field('unsubscribe_policy',                         Integer),
     has_field('welcome_msg',                                Unicode),
     # Relationships
@@ -170,8 +169,15 @@ class MailingList(Entity):
         self.host_name = hostname
         # For the pending database
         self.next_request_id = 1
-        # Create several rosters for filtering out or querying the membership
-        # table.
+        self._restore()
+        # Max autoresponses per day.  A mapping between addresses and a
+        # 2-tuple of the date of the last autoresponse and the number of
+        # autoresponses sent on that date.
+        self.hold_and_cmd_autoresponses = {}
+
+    # XXX FIXME
+    def _restore(self):
+        # Avoid circular imports.
         from Mailman.database.model import roster
         self.owners = roster.OwnerRoster(self)
         self.moderators = roster.ModeratorRoster(self)
@@ -179,10 +185,6 @@ class MailingList(Entity):
         self.members = roster.MemberRoster(self)
         self.regular_members = roster.RegularMemberRoster(self)
         self.digest_members = roster.DigestMemberRoster(self)
-        # Max autoresponses per day.  A mapping between addresses and a
-        # 2-tuple of the date of the last autoresponse and the number of
-        # autoresponses sent on that date.
-        self.hold_and_cmd_autoresponses = {}
 
     @property
     def fqdn_listname(self):

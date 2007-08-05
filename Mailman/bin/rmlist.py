@@ -23,7 +23,6 @@ import optparse
 from Mailman import Errors
 from Mailman import Utils
 from Mailman import Version
-from Mailman import database
 from Mailman.MailList import MailList
 from Mailman.configuration import config
 from Mailman.i18n import _
@@ -54,7 +53,7 @@ def delete_list(listname, mlist=None, archives=True, quiet=False):
     removeables = []
     if mlist:
         # Remove the list from the database
-        database.remove_list(mlist)
+        config.db.list_manager.delete(mlist)
         # Do the MTA-specific list deletion tasks
         if config.MTA:
             modname = 'Mailman.MTA.' + config.MTA
@@ -106,13 +105,9 @@ remove any residual archives."""))
                       help=_('Alternative configuration file to use'))
     opts, args = parser.parse_args()
     if not args:
-        parser.print_help()
-        print >> sys.stderr, _('Missing listname')
-        sys.exit(1)
+        parser.error(_('Missing listname'))
     if len(args) > 1:
-        parser.print_help()
-        print >> sys.stderr, _('Unexpected arguments')
-        sys.exit(1)
+        parser.error(_('Unexpected arguments'))
     return parser, opts, args
 
 
@@ -121,23 +116,22 @@ def main():
     parser, opts, args = parseargs()
     initialize(opts.config)
 
-    listname = Utils.fqdn_listname(args[0])
-    try:
-        mlist = MailList(listname, lock=False)
-    except Errors.MMUnknownListError:
+    fqdn_listname = args[0]
+    mlist = config.db.list_manager.get(fqdn_listname)
+    if mlist is None:
         if not opts.archives:
             print >> sys.stderr, _(
-                'No such list (or list already deleted): $listname')
+                'No such list (or list already deleted): $fqdn_listname')
             sys.exit(1)
         else:
-            print _(
-                'No such list: ${listname}.  Removing its residual archives.')
-            mlist = None
+            print _("""\
+No such list: ${fqdn_listname}.  Removing its residual archives.""")
 
     if not opts.archives:
         print _('Not removing archives.  Reinvoke with -a to remove them.')
 
-    delete_list(listname, mlist, opts.archives)
+    delete_list(fqdn_listname, mlist, opts.archives)
+    config.db.flush()
 
 
 
