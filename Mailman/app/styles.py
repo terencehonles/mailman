@@ -45,6 +45,8 @@ class DefaultStyle:
     priority = 0    # the lowest priority style
 
     def apply(self, mailing_list):
+        # For cut-n-paste convenience.
+        mlist = mailing_list
         # Most of these were ripped from the old MailList.InitVars() method.
         mlist.volume = 1
         mlist.post_id = 1
@@ -248,12 +250,14 @@ class StyleManager:
         matched_styles = []
         for style in self.styles:
             style.match(mailing_list, matched_styles)
-        for style in sorted(matched_styles, key=attrgetter('priority')):
+        for style in matched_styles:
             yield style
 
     @property
     def styles(self):
-        for style in sorted(self._styles.values(), key=attrgetter('priority')):
+        for style in sorted(self._styles.values(),
+                            key=attrgetter('priority'),
+                            reverse=True):
             yield style
 
     def register(self, style):
