@@ -22,6 +22,8 @@ from Mailman import Version
 from Mailman.MailList import MailList
 from Mailman.configuration import config
 from Mailman.i18n import _
+from Mailman.initialize import initialize
+
 
 __i18n_templates__ = True
 
@@ -52,16 +54,17 @@ address."""))
 
 def main():
     parser, opts, args = parseargs()
-    config.load(opts.config)
+    initialize(opts.config)
 
-    listnames = set(args or config.list_manager.names)
+    listmgr = config.db.list_manager
+    listnames = set(args or listmgr.names)
     bylist = {}
 
     for listname in listnames:
-        mlist = MailList(listname, lock=False)
-        addrs = mlist.owner[:]
+        mlist = listmgr.get(listname)
+        addrs = [addr.address for addr in mlist.owners.addresses]
         if opts.moderators:
-            addrs.extend(mlist.moderator)
+            addrs.extend([addr.address for addr in mlist.moderators.addresses])
         bylist[listname] = addrs
 
     if opts.with_listnames:
@@ -79,9 +82,7 @@ def main():
         for listname in listnames:
             for addr in bylist[listname]:
                 unique.add(addr)
-        keys = list(unique)
-        keys.sort()
-        for k in keys:
+        for k in sorted(unique):
             print k
 
 
