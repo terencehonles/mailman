@@ -32,9 +32,7 @@ def parseargs():
 Print the Mailman version and exit."""))
     opts, args = parser.parse_args()
     if args:
-        parser.print_help()
-        print >> sys.stderr, _('Unexpected arguments')
-        sys.exit(1)
+        parser.error(_('Unexpected arguments'))
     return parser, opts, args
 
 
@@ -42,7 +40,7 @@ Print the Mailman version and exit."""))
 def main():
     parser, opts, args = parseargs()
     # Yes, this is kind of silly
-    print _('Using Mailman version: $Version.MAILMAN_VERSION')
+    print _('Using $Version.MAILMAN_VERSION')
 
 
 
