@@ -209,3 +209,32 @@ is returned.
     None
     >>> print mlist.members.get_member('zperson@example.com')
     None
+
+
+All subscribers
+---------------
+
+There is also a roster containing all the subscribers of a mailing list,
+regardless of their role.
+
+    >>> def sortkey(member):
+    ...     return (member.address.address, int(member.role))
+    >>> [(member.address.address, str(member.role))
+    ...  for member in sorted(mlist.subscribers.members, key=sortkey)]
+    [('aperson@example.com', 'MemberRole.member'),
+     ('aperson@example.com', 'MemberRole.owner'),
+     ('bperson@example.com', 'MemberRole.member'),
+     ('bperson@example.com', 'MemberRole.moderator'),
+     ('cperson@example.com', 'MemberRole.member')]
+
+
+Double subscriptions
+--------------------
+
+It is an error to subscribe someone to a list with the same role twice.
+
+    >>> address_1.subscribe(mlist, MemberRole.owner)
+    Traceback (most recent call last):
+    ...
+    AlreadySubscribedError: aperson@example.com is already a MemberRole.owner
+    of mailing list _xtest@example.com

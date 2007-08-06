@@ -17,6 +17,10 @@
 
 """Application level list creation."""
 
+import os
+import shutil
+import logging
+
 from Mailman import Errors
 from Mailman import Utils
 from Mailman.Utils import ValidateEmail
@@ -24,6 +28,14 @@ from Mailman.app.plugins import get_plugin
 from Mailman.app.styles import style_manager
 from Mailman.configuration import config
 from Mailman.constants import MemberRole
+
+__all__ = [
+    'create_list',
+    'remove_list',
+    ]
+
+
+log = logging.getLogger('mailman.error')
 
 
 
@@ -58,3 +70,47 @@ def create_list(fqdn_listname, owners=None):
             addr = list(user.addresses)[0]
         addr.subscribe(mlist, MemberRole.owner)
     return mlist
+
+
+
+def remove_list(fqdn_listname, mailing_list=None, archives=True):
+    """Remove the list and all associated artifacts and subscriptions."""
+    removeables = []
+    # mailing_list will be None when only residual archives are being removed.
+    if mailing_list:
+        # Remove all subscriptions, regardless of role.
+        for member in mailing_list.subscribers.members:
+            member.unsubscribe()
+        # Delete the mailing list from the database.
+        config.db.list_manager.delete(mailing_list)
+        # Do the MTA-specific list deletion tasks
+        if config.MTA:
+            modname = 'Mailman.MTA.' + config.MTA
+            __import__(modname)
+            sys.modules[modname].remove(mailing_list)
+        # Remove the list directory.
+        removeables.append(os.path.join(config.LIST_DATA_DIR, fqdn_listname))
+    # Remove any stale locks associated with the list.
+    for filename in os.listdir(config.LOCK_DIR):
+        fn_listname = filename.split('.')[0]
+        if fn_listname == fqdn_listname:
+            removeables.append(os.path.join(config.LOCK_DIR, filename))
+    if archives:
+        private_dir = config.PRIVATE_ARCHIVE_FILE_DIR
+        public_dir  = config.PUBLIC_ARCHIVE_FILE_DIR
+        removeables.extend([
+            os.path.join(private_dir, fqdn_listname),
+            os.path.join(private_dir, fqdn_listname + '.mbox'),
+            os.path.join(public_dir, fqdn_listname),
+            os.path.join(public_dir, fqdn_listname + '.mbox'),
+            ])
+    # Now that we know what files and directories to delete, delete them.
+    for target in removeables:
+        if os.path.islink(target):
+            os.unlink(target)
+        elif os.path.isdir(target):
+            shutil.rmtree(target)
+        elif os.path.isfile(target):
+            os.unlink(target)
+        else:
+            log.error('Could not delete list artifact: $target')

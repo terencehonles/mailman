@@ -1,12 +1,12 @@
-Application level list creation
--------------------------------
+Application level list lifecycle
+--------------------------------
 
-The low-level way to create a new mailing list is to use the IListManager
-interface.  This interface simply adds the appropriate database entries to
-record the list's creation.
+The low-level way to create and delete a mailing list is to use the
+IListManager interface.  This interface simply adds or removes the appropriate
+database entries to record the list's creation.
 
-There is a higher level interface for creating mailing lists which performs a
-few additional tasks such as:
+There is a higher level interface for creating and deleting mailing lists
+which performs additional tasks such as:
 
  * validating the list's posting address (which also serves as the list's
    fully qualified name);
@@ -16,7 +16,7 @@ few additional tasks such as:
  * notifying watchers of list creation;
  * creating ancillary artifacts (such as the list's on-disk directory)
 
-    >>> from Mailman.app.create import create_list
+    >>> from Mailman.app.lifecycle import create_list
 
 
 Posting address validation
@@ -121,3 +121,25 @@ the system, they won't be created again.
     >>> flush()
     >>> sorted(user.real_name for user in mlist_3.owners.users)
     ['Anne Person', 'Bart Person', 'Caty Person', 'Dirk Person']
+
+
+Removing a list
+---------------
+
+Removing a mailing list deletes the list, all its subscribers, and any related
+artifacts.
+
+    >>> from Mailman import Utils
+    >>> from Mailman.app.lifecycle import remove_list
+    >>> remove_list(mlist_2.fqdn_listname, mlist_2, True)
+    >>> flush()
+    >>> Utils.list_exists('test_2@example.com')
+    False
+
+We should now be able to completely recreate the mailing list.
+
+    >>> mlist_2a = create_list('test_2@example.com', owners)
+    >>> flush()
+    >>> sorted(addr.address for addr in mlist_2a.owners.addresses)
+    ['aperson@example.com', 'bperson@example.com',
+     'cperson@example.com', 'dperson@example.com']

@@ -27,7 +27,7 @@ from Mailman import Message
 from Mailman import Utils
 from Mailman import Version
 from Mailman import i18n
-from Mailman.app.create import create_list
+from Mailman.app.lifecycle import create_list
 from Mailman.configuration import config
 from Mailman.initialize import initialize
 

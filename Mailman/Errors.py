@@ -162,11 +162,30 @@ class RejectMessage(HandlerError):
 
 
 
-# Additional exceptions
-class HostileSubscriptionError(MailmanError):
-    """A cross-subscription attempt was made."""
-    # This exception gets raised when an invitee attempts to use the
-    # invitation to cross-subscribe to some other mailing list.
+# Subscription exceptions
+class SubscriptionError(MailmanError):
+    """Subscription errors base class."""
+
+
+class HostileSubscriptionError(SubscriptionError):
+    """A cross-subscription attempt was made.
+    
+    This exception gets raised when an invitee attempts to use the
+    invitation to cross-subscribe to some other mailing list.
+    """
+
+
+class AlreadySubscribedError(SubscriptionError):
+    """The member is already subscribed to the mailing list with this role."""
+
+    def __init__(self, fqdn_listname, address, role):
+        self._fqdn_listname = fqdn_listname
+        self._address = address
+        self._role = role
+
+    def __str__(self):
+        return '%s is already a %s of mailing list %s' % (
+            self._address, self._role, self._fqdn_listname)
 
 
 

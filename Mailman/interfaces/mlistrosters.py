@@ -61,3 +61,8 @@ class IMailingListRosters(Interface):
         postings to this mailing list, regardless of whether they have their
         deliver disabled or not, or of the type of digest they are to
         receive.""")
+
+    subscribers = Attribute(
+        """An iterator over all IMembers subscribed to this list, with any
+        role.
+        """)

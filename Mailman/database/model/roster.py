@@ -184,3 +184,15 @@ class DigestMemberRoster(AbstractRoster):
                                        role=MemberRole.member):
             if member.delivery_mode in _digest_modes:
                 yield member
+
+
+
+class Subscribers(AbstractRoster):
+    """Return all subscribed members regardless of their role."""
+
+    name = 'subscribers'
+
+    @property
+    def members(self):
+        for member in Member.select_by(mailing_list=self._mlist.fqdn_listname):
+            yield member

@@ -185,6 +185,7 @@ class MailingList(Entity):
         self.members = roster.MemberRoster(self)
         self.regular_members = roster.RegularMemberRoster(self)
         self.digest_members = roster.DigestMemberRoster(self)
+        self.subscribers = roster.Subscribers(self)
 
     @property
     def fqdn_listname(self):

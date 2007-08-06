@@ -24,66 +24,13 @@ from Mailman import Errors
 from Mailman import Utils
 from Mailman import Version
 from Mailman.MailList import MailList
+from Mailman.app.lifecycle import remove_list
 from Mailman.configuration import config
 from Mailman.i18n import _
 from Mailman.initialize import initialize
 
+
 __i18n_templates__ = True
-
-
-
-def remove_it(listname, filename, msg, quiet=False):
-    if os.path.islink(filename):
-        if not quiet:
-            print _('Removing $msg')
-        os.unlink(filename)
-    elif os.path.isdir(filename):
-        if not quiet:
-            print _('Removing $msg')
-        shutil.rmtree(filename)
-    elif os.path.isfile(filename):
-        os.unlink(filename)
-    else:
-        if not quiet:
-            print _('$listname $msg not found as $filename')
-
-
-
-def delete_list(listname, mlist=None, archives=True, quiet=False):
-    removeables = []
-    if mlist:
-        # Remove the list from the database
-        config.db.list_manager.delete(mlist)
-        # Do the MTA-specific list deletion tasks
-        if config.MTA:
-            modname = 'Mailman.MTA.' + config.MTA
-            __import__(modname)
-            sys.modules[modname].remove(mlist)
-        # Remove the list directory
-        removeables.append((os.path.join('lists', listname), _('list info')))
-
-    # Remove any stale locks associated with the list
-    for filename in os.listdir(config.LOCK_DIR):
-        fn_listname = filename.split('.')[0]
-        if fn_listname == listname:
-            removeables.append((os.path.join(config.LOCK_DIR, filename),
-                                _('stale lock file')))
-
-    if archives:
-        removeables.extend([
-            (os.path.join('archives', 'private', listname),
-             _('private archives')),
-            (os.path.join('archives', 'private', listname + '.mbox'),
-             _('private archives')),
-            (os.path.join('archives', 'public', listname),
-             _('public archives')),
-            (os.path.join('archives', 'public', listname + '.mbox'),
-             _('public archives')),
-            ])
-
-    for dirtmpl, msg in removeables:
-        path = os.path.join(config.VAR_DIR, dirtmpl)
-        remove_it(listname, path, msg, quiet)
 
 
 
@@ -130,7 +77,7 @@ No such list: ${fqdn_listname}.  Removing its residual archives.""")
     if not opts.archives:
         print _('Not removing archives.  Reinvoke with -a to remove them.')
 
-    delete_list(fqdn_listname, mlist, opts.archives)
+    remove_list(fqdn_listname, mlist, opts.archives)
     config.db.flush()
 
 

@@ -19,7 +19,9 @@ from elixir import *
 from email.utils import formataddr
 from zope.interface import implements
 
+from Mailman import Errors
 from Mailman.interfaces import IAddress
+
 
 MEMBER_KIND     = 'Mailman.database.model.member.Member'
 PREFERENCE_KIND = 'Mailman.database.model.preferences.Preferences'
@@ -62,12 +64,18 @@ class Address(Entity):
             return '<Address: %s [%s] key: %s at %#x>' % (
                 address_str, verified, self.address, id(self))
 
-    def subscribe(self, mlist, role):
+    def subscribe(self, mailing_list, role):
         from Mailman.database.model import Member
         from Mailman.database.model import Preferences
         # This member has no preferences by default.
+        member = Member.get_by(role=role,
+                               mailing_list=mailing_list.fqdn_listname,
+                               address=self)
+        if member:
+            raise Errors.AlreadySubscribedError(
+                mailing_list.fqdn_listname, self.address, role)
         member = Member(role=role,
-                        mailing_list=mlist.fqdn_listname,
+                        mailing_list=mailing_list.fqdn_listname,
                         address=self)
         member.preferences = Preferences()
         return member
