@@ -48,6 +48,7 @@ from Mailman.database.model.member import Member
 from Mailman.database.model.message import Message
 from Mailman.database.model.pending import Pendings
 from Mailman.database.model.preferences import Preferences
+from Mailman.database.model.requests import Requests
 from Mailman.database.model.user import User
 from Mailman.database.model.version import Version
 

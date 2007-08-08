@@ -33,8 +33,10 @@ from Mailman.database.listmanager import ListManager
 from Mailman.database.usermanager import UserManager
 from Mailman.database.messagestore import MessageStore
 from Mailman.database.model import Pendings
+from Mailman.database.model import Requests
 
-# Test suite convenience.
+# Test suite convenience.  Application code should use config.db.flush()
+# instead.
 flush = None
 
 
@@ -51,6 +53,7 @@ class StockDatabase:
         self.user_manager = None
         self.message_store = None
         self.pendings = None
+        self.requests = None
 
     def initialize(self):
         from Mailman.LockFile import LockFile
@@ -65,6 +68,7 @@ class StockDatabase:
         self.user_manager = UserManager()
         self.message_store = MessageStore()
         self.pendings = Pendings()
+        self.requests = Requests()
         self.flush()
 
     def flush(self):

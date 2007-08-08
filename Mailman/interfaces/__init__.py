@@ -18,6 +18,7 @@
 import os
 import sys
 
+from munepy import Enum
 from zope.interface import implementedBy
 from zope.interface.interfaces import IInterface
 
@@ -38,7 +39,11 @@ def _populate():
         module = sys.modules[modname]
         for name in dir(module):
             obj = getattr(module, name)
-            if IInterface.providedBy(obj):
+            try:
+                is_enum = issubclass(obj, Enum)
+            except TypeError:
+                is_enum = False
+            if IInterface.providedBy(obj) or is_enum:
                 setattr(iface_mod, name, obj)
                 __all__.append(name)
 

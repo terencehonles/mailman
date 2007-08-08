@@ -15,9 +15,13 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-"""Interfaces for the pending database."""
+"""Interfaces for the pending database.
 
-from munepy import Enum
+The pending database contains events that must be confirmed by the user.  It
+maps these events to a unique hash that can be used as a token for end user
+confirmation.
+"""
+
 from zope.interface import Interface, Attribute
 
 

@@ -1,0 +1,149 @@
+Held requests
+=============
+
+Various actions will be held for moderator approval, such as subscriptions to
+closed lists, or postings by non-members.  The requests database is the low
+level interface to these actions requiring approval.
+
+    >>> from Mailman.configuration import config
+    >>> from Mailman.database import flush
+
+Here is a helper function for printing out held requests.
+
+    >>> def show_holds(requests):
+    ...     for request in requests.held_requests:
+    ...         print request[0], str(request[1])
+
+
+Mailing list centric
+--------------------
+
+A set of requests are always centric to a particular mailing list, so given a
+mailing list you need to get its requests object.
+
+    >>> from Mailman.interfaces import IListRequests, IRequests
+    >>> from zope.interface.verify import verifyObject
+    >>> verifyObject(IRequests, config.db.requests)
+    True
+    >>> mlist = config.db.list_manager.create('test@example.com')
+    >>> flush()
+    >>> requests = config.db.requests.get_list_requests(mlist)
+    >>> verifyObject(IListRequests, requests)
+    True
+    >>> requests.mailing_list
+    <mailing list "test@example.com" (unlocked) at ...>
+
+
+Holding requests
+----------------
+
+The list's requests database starts out empty.
+
+    >>> requests.count
+    0
+    >>> list(requests.held_requests)
+    []
+
+At the lowest level, the requests database is very simple.  Holding a request
+requires a request type (as an enum value), a key, and an optional dictionary
+of associated data.  The request database assigns no semantics to the held
+data, except for the request type.  Here we hold some simple bits of data.
+
+    >>> from Mailman.interfaces import RequestType
+    >>> id_1 = requests.hold_request(RequestType.held_message,   'hold_1')
+    >>> id_2 = requests.hold_request(RequestType.subscription,   'hold_2')
+    >>> id_3 = requests.hold_request(RequestType.unsubscription, 'hold_3')
+    >>> id_4 = requests.hold_request(RequestType.held_message,   'hold_4')
+    >>> id_1, id_2, id_3, id_4
+    (1, 2, 3, 4)
+    >>> flush()
+
+And of course, now we can see that there are four requests being held.
+
+    >>> requests.count
+    4
+    >>> show_holds(requests)
+    1 RequestType.held_message
+    2 RequestType.subscription
+    3 RequestType.unsubscription
+    4 RequestType.held_message
+
+If we try to hold a request with a bogus type, we get an exception.
+
+    >>> requests.hold_request(5, 'foo')
+    Traceback (most recent call last):
+    ...
+    TypeError: 5
+
+We can hold requests with additional data.
+
+    >>> data = dict(foo='yes', bar='no')
+    >>> id_5 = requests.hold_request(RequestType.held_message, 'hold_5', data)
+    >>> flush()
+    >>> id_5
+    5
+    >>> requests.count
+    5
+    >>> show_holds(requests)
+    1 RequestType.held_message
+    2 RequestType.subscription
+    3 RequestType.unsubscription
+    4 RequestType.held_message
+    5 RequestType.held_message
+
+
+Getting requests
+----------------
+
+We can ask the requests database for a specific request, by providing the id
+of the request data we want.  This returns a 2-tuple of the key and data we
+originally held.
+
+    >>> key, data = requests.get_request(2)
+    >>> key
+    'hold_2'
+
+Because we did not store additional data with request 2, it comes back as None
+now.
+
+    >>> print data
+    None
+
+However, if we ask for a request that had data, we'd get it back now.
+
+    >>> key, data = requests.get_request(5)
+    >>> key
+    'hold_5'
+    >>> sorted(data.items())
+    [('bar', 'no'), ('foo', 'yes')]
+
+If we ask for a request that is not in the database, we get None back.
+
+    >>> print requests.get_request(801)
+    None
+
+
+Deleting requests
+-----------------
+
+Once a specific request has been handled, it will be deleted from the requests
+database.
+
+    >>> requests.delete_request(2)
+    >>> flush()
+    >>> requests.count
+    4
+    >>> show_holds(requests)
+    1 RequestType.held_message
+    3 RequestType.unsubscription
+    4 RequestType.held_message
+    5 RequestType.held_message
+    >>> print requests.get_request(2)
+    None
+
+We get an exception if we ask to delete a request that isn't in the database.
+
+    >>> requests.delete_request(801)
+    Traceback (most recent call last):
+    ...
+    KeyError: 801
