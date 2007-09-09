@@ -42,10 +42,17 @@ class IListRequests(Interface):
     count = Attribute(
         """The total number of requests held for the mailing list.""")
 
+    def count_of(request_type):
+        """The total number of requests held of the given request type.
+
+        :param request_type: A `RequestType` enum value.
+        :return: An integer.
+        """
+
     def hold_request(request_type, key, data=None):
         """Hold some data for moderator approval.
 
-        :param request_type: A `Request` enum value.
+        :param request_type: A `RequestType` enum value.
         :param key: The key piece of request data being held.
         :param data: Additional optional data in the form of a dictionary that
             is associated with the held request.
@@ -53,11 +60,22 @@ class IListRequests(Interface):
         """
 
     held_requests = Attribute(
-        """An iterator over the held requests, yielding a 2-tuple.
+        """An iterator over the held requests.
 
-        The tuple has the form: (id, type) where `id` is the held request's
-        unique id and the `type` is a `Request` enum value.
+        Returned items have two attributes:
+         * `id` is the held request's unique id;
+         * `type` is a `RequestType` enum value.
         """)
+
+    def of_type(request_type):
+        """An iterator over the held requests of the given type.
+
+        Returned items have two  attributes:
+         * `id` is the held request's unique id;
+         * `type` is a `RequestType` enum value.
+
+         Only items with a matching `type' are returned.
+         """
 
     def get_request(request_id):
         """Get the data associated with the request id, or None.

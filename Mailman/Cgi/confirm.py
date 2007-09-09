@@ -623,7 +623,10 @@ def heldmsg_confirm(mlist, doc, cookie):
             # Do this in two steps so we can get the preferred language for
             # the user who posted the message.
             op, id = mlist.pend_confirm(cookie)
-            ign, sender, msgsubject, ign, ign, ign = mlist.GetRecord(id)
+            requestsdb = config.db.get_list_requests(mlist)
+            key, data = requestsdb.get_record(id)
+            sender = data['sender']
+            msgsubject = data['msgsubject']
             subject = Utils.websafe(msgsubject)
             lang = mlist.getMemberLanguage(sender)
             i18n.set_language(lang)
@@ -670,9 +673,10 @@ def heldmsg_prompt(mlist, doc, cookie, id):
     # Get the record, but watch for KeyErrors which mean the admin has already
     # disposed of this message.
     mlist.Lock()
+    requestdb = config.db.get_list_requests(mlist)
     try:
         try:
-            data = mlist.GetRecord(id)
+            key, data = requestdb.get_record(id)
         except KeyError:
             data = None
     finally:

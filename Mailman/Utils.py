@@ -475,6 +475,7 @@ def findtext(templatefile, dict=None, raw=False, lang=None, mlist=None):
     if mlist is not None:
         languages.add(mlist.preferred_language)
     languages.add(config.DEFAULT_SERVER_LANGUAGE)
+    assert None not in languages, 'None in languages'
     # Calculate the locations to scan
     searchdirs = []
     if mlist is not None:

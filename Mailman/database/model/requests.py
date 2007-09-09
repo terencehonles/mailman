@@ -52,11 +52,22 @@ class ListRequests:
         results = _Request.select_by(mailing_list=self.mailing_list._data)
         return len(results)
 
+    def count_of(self, request_type):
+        results = _Request.select_by(mailing_list=self.mailing_list._data,
+                                     type=request_type)
+        return len(results)
+
     @property
     def held_requests(self):
         results = _Request.select_by(mailing_list=self.mailing_list._data)
         for request in results:
-            yield request.id, request.type
+            yield request
+
+    def of_type(self, request_type):
+        results = _Request.select_by(mailing_list=self.mailing_list._data,
+                                     type=request_type)
+        for request in results:
+            yield request
 
     def hold_request(self, request_type, key, data=None):
         if request_type not in RequestType:
@@ -72,6 +83,15 @@ class ListRequests:
             pendable.update(data)
             token = config.db.pendings.add(pendable, timedelta(days=5000))
             data_hash = token
+        # XXX This would be a good other way to do it, but it causes the
+        # select_by()'s in .count and .held_requests() to fail, even with
+        # flush()'s.
+##         result = _Request.table.insert().execute(
+##             key=key, type=request_type,
+##             mailing_list=self.mailing_list._data,
+##             data_hash=data_hash)
+##         row_id = result.last_inserted_ids()[0]
+##         return row_id
         result = _Request(key=key, type=request_type,
                           mailing_list=self.mailing_list._data,
                           data_hash=data_hash)

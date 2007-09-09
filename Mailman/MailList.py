@@ -59,7 +59,6 @@ from Mailman.Bouncer import Bouncer
 from Mailman.Deliverer import Deliverer
 from Mailman.Digester import Digester
 from Mailman.HTMLFormatter import HTMLFormatter
-from Mailman.ListAdmin import ListAdmin
 from Mailman.SecurityManager import SecurityManager
 
 # GUI components package
@@ -84,7 +83,7 @@ slog    = logging.getLogger('mailman.subscribe')
 
 
 # Use mixins here just to avoid having any one chunk be too large.
-class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
+class MailList(object, HTMLFormatter, Deliverer,
                Archiver, Digester, SecurityManager, Bouncer):
 
     implements(
@@ -365,7 +364,6 @@ class MailList(object, HTMLFormatter, Deliverer, ListAdmin,
         self._lock.refresh()
         # The member adaptor may have its own save operation
         self._memberadaptor.save()
-        self.SaveRequestsDb()
         self.CheckHTMLArchiveDir()
 
     def Load(self):

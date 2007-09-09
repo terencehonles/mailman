@@ -26,6 +26,7 @@ from Mailman import Message
 from Mailman import Utils
 from Mailman import Version
 from Mailman import i18n
+from Mailman.app.requests import handle_request
 from Mailman.configuration import config
 
 _ = i18n._
@@ -62,23 +63,35 @@ def pending_requests(mlist):
     lcset = Utils.GetCharSet(mlist.preferred_language)
     pending = []
     first = True
-    for id in mlist.GetSubscriptionIds():
+    requestsdb = config.db.get_list_requests(mlist)
+    for request in requestsdb.of_type(RequestType.subscription):
         if first:
             pending.append(_('Pending subscriptions:'))
             first = False
-        when, addr, fullname, passwd, digest, lang = mlist.GetRecord(id)
+        key, data = requestsdb.get_request(request.id)
+        when = data['when']
+        addr = data['addr']
+        fullname = data['fullname']
+        passwd = data['passwd']
+        digest = data['digest']
+        lang = data['lang']
         if fullname:
             if isinstance(fullname, unicode):
                 fullname = fullname.encode(lcset, 'replace')
             fullname = ' (%s)' % fullname
         pending.append('    %s%s %s' % (addr, fullname, time.ctime(when)))
     first = True
-    for id in mlist.GetHeldMessageIds():
+    for request in requestsdb.of_type(RequestType.held_message):
         if first:
             pending.append(_('\nPending posts:'))
             first = False
-        info = mlist.GetRecord(id)
-        when, sender, subject, reason, text, msgdata = mlist.GetRecord(id)
+        key, data = requestsdb.get_request(request.id)
+        when = data['when']
+        sender = data['sender']
+        subject = data['subject']
+        reason = data['reason']
+        text = data['text']
+        msgdata = data['msgdata']
         subject = Utils.oneline(subject, lcset)
         date = time.ctime(when)
         reason = _(reason)
@@ -115,11 +128,13 @@ def auto_discard(mlist):
     # Discard old held messages
     discard_count = 0
     expire = config.days(mlist.max_days_to_hold)
-    heldmsgs = mlist.GetHeldMessageIds()
+    requestsdb = config.db.get_list_requests(mlist)
+    heldmsgs = list(requestsdb.of_type(RequestType.held_message))
     if expire and heldmsgs:
-        for id in heldmsgs:
-            if now - mlist.GetRecord(id)[0] > expire:
-                mlist.HandleRequest(id, config.DISCARD)
+        for request in heldmsgs:
+            key, data = requestsdb.get_request(request.id)
+            if now - data['date'] > expire:
+                handle_request(mlist, request.id, config.DISCARD)
                 discard_count += 1
         mlist.Save()
     return discard_count
@@ -136,7 +151,7 @@ def main():
         # The list must be locked in order to open the requests database
         mlist = MailList.MailList(name)
         try:
-            count = mlist.NumRequestsPending()
+            count = config.db.requests.get_list_requests(mlist).count
             # While we're at it, let's evict yesterday's autoresponse data
             midnight_today = Utils.midnight()
             evictions = []

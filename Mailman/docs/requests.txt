@@ -1,5 +1,5 @@
-Held requests
-=============
+Moderator requests
+==================
 
 Various actions will be held for moderator approval, such as subscriptions to
 closed lists, or postings by non-members.  The requests database is the low
@@ -12,13 +12,30 @@ Here is a helper function for printing out held requests.
 
     >>> def show_holds(requests):
     ...     for request in requests.held_requests:
-    ...         print request[0], str(request[1])
+    ...         key, data = requests.get_request(request.id)
+    ...         if data is not None:
+    ...             data = sorted(data.items())
+    ...         print request.id, str(request.type), key, data
+
+And another helper for displaying messages in the virgin queue.
+
+    >>> from Mailman.Queue.sbcache import get_switchboard
+    >>> virginq = get_switchboard(config.VIRGINQUEUE_DIR)
+    >>> def dequeue(whichq=None):
+    ...     if whichq is None:
+    ...         whichq = virginq
+    ...     assert len(whichq.files) == 1, (
+    ...         'Unexpected file count: %d' % len(whichq.files))
+    ...     filebase = whichq.files[0]
+    ...     qmsg, qdata = whichq.dequeue(filebase)
+    ...     whichq.finish(filebase)
+    ...     return qmsg, qdata
 
 
 Mailing list centric
 --------------------
 
-A set of requests are always centric to a particular mailing list, so given a
+A set of requests are always related to a particular mailing list, so given a
 mailing list you need to get its requests object.
 
     >>> from Mailman.interfaces import IListRequests, IRequests
@@ -62,11 +79,17 @@ And of course, now we can see that there are four requests being held.
 
     >>> requests.count
     4
+    >>> requests.count_of(RequestType.held_message)
+    2
+    >>> requests.count_of(RequestType.subscription)
+    1
+    >>> requests.count_of(RequestType.unsubscription)
+    1
     >>> show_holds(requests)
-    1 RequestType.held_message
-    2 RequestType.subscription
-    3 RequestType.unsubscription
-    4 RequestType.held_message
+    1 RequestType.held_message hold_1 None
+    2 RequestType.subscription hold_2 None
+    3 RequestType.unsubscription hold_3 None
+    4 RequestType.held_message hold_4 None
 
 If we try to hold a request with a bogus type, we get an exception.
 
@@ -85,11 +108,11 @@ We can hold requests with additional data.
     >>> requests.count
     5
     >>> show_holds(requests)
-    1 RequestType.held_message
-    2 RequestType.subscription
-    3 RequestType.unsubscription
-    4 RequestType.held_message
-    5 RequestType.held_message
+    1 RequestType.held_message hold_1 None
+    2 RequestType.subscription hold_2 None
+    3 RequestType.unsubscription hold_3 None
+    4 RequestType.held_message hold_4 None
+    5 RequestType.held_message hold_5 [('bar', 'no'), ('foo', 'yes')]
 
 
 Getting requests
@@ -123,6 +146,25 @@ If we ask for a request that is not in the database, we get None back.
     None
 
 
+Iterating over requests
+-----------------------
+
+To make it easier to find specific requests, the list requests can be iterated
+over by type.
+
+    >>> requests.count_of(RequestType.held_message)
+    3
+    >>> for request in requests.of_type(RequestType.held_message):
+    ...     assert request.type is RequestType.held_message
+    ...     key, data = requests.get_request(request.id)
+    ...     if data is not None:
+    ...         data = sorted(data.items())
+    ...     print request.id, key, data
+    1 hold_1 None
+    4 hold_4 None
+    5 hold_5 [('bar', 'no'), ('foo', 'yes')]
+
+
 Deleting requests
 -----------------
 
@@ -134,10 +176,10 @@ database.
     >>> requests.count
     4
     >>> show_holds(requests)
-    1 RequestType.held_message
-    3 RequestType.unsubscription
-    4 RequestType.held_message
-    5 RequestType.held_message
+    1 RequestType.held_message hold_1 None
+    3 RequestType.unsubscription hold_3 None
+    4 RequestType.held_message hold_4 None
+    5 RequestType.held_message hold_5 [('bar', 'no'), ('foo', 'yes')]
     >>> print requests.get_request(2)
     None
 
@@ -147,3 +189,294 @@ We get an exception if we ask to delete a request that isn't in the database.
     Traceback (most recent call last):
     ...
     KeyError: 801
+
+For the next section, we first clean up all the current requests.
+
+    >>> for request in requests.held_requests:
+    ...     requests.delete_request(request.id)
+    >>> flush()
+    >>> requests.count
+    0
+
+
+Application support
+-------------------
+
+There are several higher level interfaces available in the Mailman.app package
+which can be used to hold messages, subscription, and unsubscriptions.  There
+are also interfaces for disposing of these requests in an application specific
+and consistent way.
+
+    >>> from Mailman.app import moderator
+
+
+Holding messages
+----------------
+
+For this section, we need a mailing list and at least one message.
+
+    >>> mlist = config.db.list_manager.create('alist@example.com')
+    >>> mlist.preferred_language = 'en'
+    >>> mlist.real_name = 'A Test List'
+    >>> flush()
+    >>> from email import message_from_string
+    >>> from Mailman.Message import Message
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.org
+    ... To: alist@example.com
+    ... Subject: Something important
+    ...
+    ... Here's something important about our mailing list.
+    ... """, Message)
+
+Holding a message means keeping a copy of it that a moderator must approve
+before the message is posted to the mailing list.  To hold the message, you
+must supply the message, message metadata, and a text reason for the hold.  In
+this case, we won't include any additional metadata.
+
+    >>> id_1 = moderator.hold_message(mlist, msg, {}, 'Needs approval')
+    >>> flush()
+    >>> requests.get_request(id_1) is not None
+    True
+
+We can also hold a message with some additional metadata.
+
+    >>> msgdata = dict(sender='aperson@example.com',
+    ...                approved=True,
+    ...                received_time=123.45)
+    >>> id_2 = moderator.hold_message(mlist, msg, msgdata, 'Feeling ornery')
+    >>> flush()
+    >>> requests.get_request(id_2) is not None
+    True
+
+Once held, the moderator can select one of several dispositions.  The most
+trivial is to simply defer a decision for now.
+
+    >>> from Mailman.constants import Action
+    >>> moderator.handle_message(mlist, id_1, Action.defer)
+    >>> flush()
+    >>> requests.get_request(id_1) is not None
+    True
+
+The moderator can also discard the message.  This is often done with spam.
+Bye bye message!
+
+    >>> moderator.handle_message(mlist, id_1, Action.discard)
+    >>> flush()
+    >>> print requests.get_request(id_1)
+    None
+    >>> virginq.files
+    []
+
+The message can be rejected, meaning it is bounced back to the sender.
+
+    >>> moderator.handle_message(mlist, id_2, Action.reject, 'Off topic')
+    >>> flush()
+    >>> print requests.get_request(id_2)
+    None
+    >>> qmsg, qdata = dequeue()
+    >>> print qmsg.as_string()
+    MIME-Version: 1.0
+    Content-Type: text/plain; charset="us-ascii"
+    Content-Transfer-Encoding: 7bit
+    Subject: Request to mailing list "A Test List" rejected
+    From: alist-bounces@example.com
+    To: aperson@example.org
+    Message-ID: ...
+    Date: ...
+    Precedence: bulk
+    <BLANKLINE>
+    Your request to the alist@example.com mailing list
+    <BLANKLINE>
+        Posting of your message titled "Something important"
+    <BLANKLINE>
+    has been rejected by the list moderator.  The moderator gave the
+    following reason for rejecting your request:
+    <BLANKLINE>
+    "Off topic"
+    <BLANKLINE>
+    Any questions or comments should be directed to the list administrator
+    at:
+    <BLANKLINE>
+        alist-owner@example.com
+    <BLANKLINE>
+    >>> sorted(qdata.items())
+    [('_parsemsg', False),
+     ('listname', 'alist@example.com'),
+     ('nodecorate', True),
+     ('received_time', ...),
+     ('recips', ['aperson@example.org']),
+     ('reduced_list_headers', True),
+     ('version', 3)]
+
+Or the message can be approved.  This actually places the message back into
+the incoming queue for further processing, however the message metadata
+indicates that the message has been approved.
+
+    >>> id_3 = moderator.hold_message(mlist, msg, msgdata, 'Needs approval')
+    >>> flush()
+    >>> moderator.handle_message(mlist, id_3, Action.accept)
+    >>> flush()
+    >>> inq = get_switchboard(config.INQUEUE_DIR)
+    >>> qmsg, qdata = dequeue(inq)
+    >>> print qmsg.as_string()
+    From: aperson@example.org
+    To: alist@example.com
+    Subject: Something important
+    Message-ID: ...
+    X-List-ID-Hash: ...
+    X-List-Sequence-Number: ...
+    X-Mailman-Approved-At: ...
+    <BLANKLINE>
+    Here's something important about our mailing list.
+    <BLANKLINE>
+    >>> sorted(qdata.items())
+    [('_parsemsg', False),
+     ('adminapproved', True), ('approved', True),
+     ('received_time', ...), ('sender', 'aperson@example.com'),
+     ('version', 3)]
+
+In addition to any of the above dispositions, the message can also be
+preserved for further study.  Ordinarily the message is removed from the
+global message store after its disposition (though approved messages may be
+re-added to the message store).  When handling a message, we can tell the
+moderator interface to also preserve a copy, essentially telling it not to
+delete the message from the storage.  First, without the switch, the message
+is deleted.
+
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.org
+    ... To: alist@example.com
+    ... Subject: Something important
+    ... Message-ID: <12345>
+    ...
+    ... Here's something important about our mailing list.
+    ... """, Message)
+    >>> id_4 = moderator.hold_message(mlist, msg, {}, 'Needs approval')
+    >>> flush()
+    >>> moderator.handle_message(mlist, id_4, Action.discard)
+    >>> flush()
+    >>> msgs = config.db.message_store.get_messages_by_message_id('<12345>')
+    >>> list(msgs)
+    []
+
+But if we ask to preserve the message when we discard it, it will be held in
+the message store after disposition.
+
+    >>> id_4 = moderator.hold_message(mlist, msg, {}, 'Needs approval')
+    >>> flush()
+    >>> moderator.handle_message(mlist, id_4, Action.discard, preserve=True)
+    >>> flush()
+    >>> msgs = config.db.message_store.get_messages_by_message_id('<12345>')
+    >>> msgs = list(msgs)
+    >>> len(msgs)
+    1
+    >>> print msgs[0].as_string()
+    From: aperson@example.org
+    To: alist@example.com
+    Subject: Something important
+    Message-ID: <12345>
+    X-List-ID-Hash: 4CF7EAU3SIXBPXBB5S6PEUMO62MWGQN6
+    X-List-Sequence-Number: 1
+    <BLANKLINE>
+    Here's something important about our mailing list.
+    <BLANKLINE>
+
+Orthogonal to preservation, the message can also be forwarded to another
+address.  This is helpful for getting the message into the inbox of one of the
+moderators.
+
+    >>> id_4 = moderator.hold_message(mlist, msg, {}, 'Needs approval')
+    >>> flush()
+    >>> moderator.handle_message(mlist, id_4, Action.discard,
+    ...                          forward=['zperson@example.com'])
+    >>> flush()
+    >>> qmsg, qdata = dequeue()
+    >>> print qmsg.as_string()
+    XXX
+    >>> sorted(qdata.items())
+    XXX
+
+
+Holding subscription requests
+-----------------------------
+
+For closed lists, subscription requests will also be held for moderator
+approval.  In this case, several pieces of information related to the
+subscription must be provided, including the subscriber's address and real
+name, their password (possibly hashed), what kind of delivery option they are
+chosing and their preferred language.
+
+    >>> from Mailman.constants import DeliveryMode
+    >>> mlist.admin_immed_notify = False
+    >>> flush()
+    >>> id_3 = moderator.hold_subscription(mlist,
+    ...     'bperson@example.org', 'Ben Person',
+    ...     '{NONE}abcxyz', DeliveryMode.regular, 'en')
+    >>> flush()
+    >>> requests.get_request(id_3) is not None
+    True
+
+In the above case the mailing list was not configured to send the list
+moderators a notice about the hold, so no email message is in the virgin
+queue.
+
+    >>> virginq.files
+    []
+
+But if we set the list up to notify the list moderators immediately when a
+message is held for approval, there will be a message placed in the virgin
+queue when the message is held.
+
+    >>> mlist.admin_immed_notify = True
+    >>> flush()
+    >>> id_4 = moderator.hold_subscription(mlist,
+    ...     'cperson@example.org', 'Claire Person',
+    ...     '{NONE}zyxcba, DeliveryMode.regular, 'en')
+    >>> flush()
+    >>> requests.get_request(id_4) is not None
+    True
+    >>> qmsg, qdata = dequeue()
+    >>> print qmsg.as_string()
+    XXX
+    >>> sorted(qdata.items())
+    XXX
+
+
+Holding unsubscription requests
+-------------------------------
+
+Some lists, though it is rare, require moderator approval for unsubscriptions.
+In this case, only the unsubscribing address is required.  Like subscriptions,
+unsubscription holds can send the list's moderators an immediate notification.
+
+    >>> mlist.admin_immed_notify = False
+    >>> flush()
+    >>> from Mailman.constants import MemberRole
+    >>> user_1 = config.db.user_manager.create_user('dperson@example.com')
+    >>> flush()
+    >>> address_1 = list(user_1.addresses)[0]
+    >>> address_1.subscribe(mlist, MemberRole.member)
+    <Member: <dperson@example.com> on
+             _xtest@example.com as MemberRole.member>
+    >>> user_2 = config.db.user_manager.create_user('eperson@example.com')
+    >>> flush()
+    >>> address_2 = list(user_2.addresses)[0]
+    >>> address_2.subscribe(mlist, MemberRole.member)
+    <Member: <eperson@example.com> on
+             _xtest@example.com as MemberRole.member>
+    >>> flush()
+    >>> id_5 = moderator.hold_unsubscription(mlist, 'dperson@example.com')
+    >>> flush()
+    >>> requests.get_request(id_5) is not None)
+    True
+    >>> virginq.files
+    []
+    >>> mlist.admin_immed_notify = True
+    >>> id_6 = moderator.hold_unsubscription(mlist, 'eperson@example.com')
+    >>> flush()
+    >>> qmsg, qdata = dequeue()
+    >>> print qmsg.as_string()
+    XXX
+    >>> sorted(qdata.items())
+    XXX

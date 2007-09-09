@@ -37,6 +37,7 @@ from Mailman.Handlers.Moderate import ModeratedMemberPost
 from Mailman.ListAdmin import readMessage
 from Mailman.configuration import config
 from Mailman.htmlformat import *
+from Mailman.interfaces import RequestType
 
 EMPTYSTRING = ''
 NL = '\n'
@@ -54,11 +55,14 @@ log = logging.getLogger('mailman.error')
 
 
 def helds_by_sender(mlist):
-    heldmsgs = mlist.GetHeldMessageIds()
     bysender = {}
-    for id in heldmsgs:
-        sender = mlist.GetRecord(id)[1]
-        bysender.setdefault(sender, []).append(id)
+    requests = config.db.get_list_requests(mlist)
+    for request in requests.of_type(RequestType.held_message):
+        key, data = requests.get_request(request.id)
+        sender = data.get('sender')
+            assert sender is not None, (
+                'No sender for held message: %s' % request.id)
+            bysender.setdefault(sender, []).append(request.id)
     return bysender
 
 
@@ -146,7 +150,7 @@ def main():
             process_form(mlist, doc, cgidata)
         # Now print the results and we're done.  Short circuit for when there
         # are no pending requests, but be sure to save the results!
-        if not mlist.NumRequestsPending():
+        if config.db.requests.get_list_requests(mlist).count == 0:
             title = _('%(realname)s Administrative Database')
             doc.SetTitle(title)
             doc.AddItem(Header(2, title))
@@ -172,8 +176,9 @@ def main():
                 + ' <em>%s</em>' % mlist.real_name))
         if details <> 'instructions':
             form.AddItem(Center(SubmitButton('submit', _('Submit All Data'))))
-        nomessages = not mlist.GetHeldMessageIds()
-        if not (details or sender or msgid or nomessages):
+        requestsdb = config.db.get_list_requests(mlist)
+        message_count = requestsdb.count_of(RequestType.held_message)
+        if not (details or sender or msgid or message_count == 0):
             form.AddItem(Center(
                 CheckBox('discardalldefersp', 0).Format() +
                 '&nbsp;' +
@@ -257,8 +262,8 @@ def handle_no_list(msg=''):
 
 def show_pending_subs(mlist, form):
     # Add the subscription request section
-    pendingsubs = mlist.GetSubscriptionIds()
-    if not pendingsubs:
+    requestsdb = config.db.get_list_requests(mlist)
+    if requestsdb.count_of(RequestType.subscription) == 0:
         return 0
     form.AddItem('<hr>')
     form.AddItem(Center(Header(2, _('Subscription Requests'))))
@@ -269,18 +274,24 @@ def show_pending_subs(mlist, form):
                   ])
     # Alphabetical order by email address
     byaddrs = {}
-    for id in pendingsubs:
-        addr = mlist.GetRecord(id)[1]
-        byaddrs.setdefault(addr, []).append(id)
-    addrs = byaddrs.keys()
-    addrs.sort()
+    for request in requestsdb.of_type(RequestType.subscription):
+        key, data = requestsdb.get_request(requst.id)
+        addr = data['addr']
+        byaddrs.setdefault(addr, []).append(request.id)
+    addrs = sorted(byaddrs)
     num = 0
     for addr, ids in byaddrs.items():
         # Eliminate duplicates
         for id in ids[1:]:
             mlist.HandleRequest(id, config.DISCARD)
         id = ids[0]
-        time, addr, fullname, passwd, digest, lang = mlist.GetRecord(id)
+        key, data = requestsdb.get_request(id)
+        time = data['time']
+        addr = data['addr']
+        fullname = data['fullname']
+        passwd = data['passwd']
+        digest = data['digest']
+        lang = data['lang']
         fullname = Utils.uncanonstr(fullname, mlist.preferred_language)
         radio = RadioButtonArray(id, (_('Defer'),
                                       _('Approve'),
@@ -310,8 +321,8 @@ def show_pending_subs(mlist, form):
 def show_pending_unsubs(mlist, form):
     # Add the pending unsubscription request section
     lang = mlist.preferred_language
-    pendingunsubs = mlist.GetUnsubscriptionIds()
-    if not pendingunsubs:
+    requestsdb = config.db.get_list_requests(mlist)
+    if requestsdb.count_of(RequestType.unsubscription) == 0:
         return 0
     table = Table(border=2)
     table.AddRow([Center(Bold(_('User address/name'))),
@@ -320,18 +331,19 @@ def show_pending_unsubs(mlist, form):
                   ])
     # Alphabetical order by email address
     byaddrs = {}
-    for id in pendingunsubs:
-        addr = mlist.GetRecord(id)[1]
-        byaddrs.setdefault(addr, []).append(id)
-    addrs = byaddrs.keys()
-    addrs.sort()
+    for request in requestsdb.of_type(RequestType.unsubscription):
+        key, data = requestsdb.get_request(request.id)
+        addr = data['addr']
+        byaddrs.setdefault(addr, []).append(request.id)
+    addrs = sorted(byaddrs)
     num = 0
     for addr, ids in byaddrs.items():
         # Eliminate duplicates
         for id in ids[1:]:
             mlist.HandleRequest(id, config.DISCARD)
         id = ids[0]
-        addr = mlist.GetRecord(id)
+        key, data = requestsdb.get_record(id)
+        addr = data['addr']
         try:
             fullname = Utils.uncanonstr(mlist.getMemberName(addr), lang)
         except Errors.NotAMemberError:
@@ -458,8 +470,13 @@ def show_helds_overview(mlist, form):
         right.AddRow(['&nbsp;', '&nbsp;'])
         counter = 1
         for id in bysender[sender]:
-            info = mlist.GetRecord(id)
-            ptime, sender, subject, reason, filename, msgdata = info
+            key, data = requestsdb.get_record(id)
+            ptime = data['ptime']
+            sender = data['sender']
+            subject = data['subject']
+            reason = data['reason']
+            filename = data['filename']
+            msgdata = data['msgdata']
             # BAW: This is really the size of the message pickle, which should
             # be close, but won't be exact.  Sigh, good enough.
             try:
@@ -505,18 +522,18 @@ def show_sender_requests(mlist, form, sender):
         # BAW: should we print an error message?
         return
     total = len(sender_ids)
-    count = 1
-    for id in sender_ids:
-        info = mlist.GetRecord(id)
-        show_post_requests(mlist, id, info, total, count, form)
-        count += 1
+    requestsdb = config.db.get_list_requests(mlist)
+    for i, id in enumerate(sender_ids):
+        key, data = requestsdb.get_record(id)
+        show_post_requests(mlist, id, data, total, count + 1, form)
 
 
 
 def show_message_requests(mlist, form, id):
+    requestdb = config.db.get_list_requests(mlist)
     try:
         id = int(id)
-        info = mlist.GetRecord(id)
+        info = requestdb.get_record(id)
     except (ValueError, KeyError):
         # BAW: print an error message?
         return
@@ -525,13 +542,12 @@ def show_message_requests(mlist, form, id):
 
 
 def show_detailed_requests(mlist, form):
-    all = mlist.GetHeldMessageIds()
-    total = len(all)
-    count = 1
-    for id in mlist.GetHeldMessageIds():
-        info = mlist.GetRecord(id)
-        show_post_requests(mlist, id, info, total, count, form)
-        count += 1
+    requestsdb = config.db.get_list_requests(mlist)
+    total = requestsdb.count_of(RequestType.held_message)
+    all = requestsdb.of_type(RequestType.held_message)
+    for i, request in enumerate(all):
+        key, data = requestdb.get_request(request.id)
+        show_post_requests(mlist, request.id, data, total, i + 1, form)
 
 
 
@@ -767,8 +783,10 @@ def process_form(mlist, doc, cgidata):
             forwardaddr = cgidata[forwardaddrkey].value
         # Should we ban this address?  Do this check before handling the
         # request id because that will evict the record.
+        requestsdb = config.db.get_list_requests(mlist)
         if cgidata.getvalue(bankey):
-            sender = mlist.GetRecord(request_id)[1]
+            key, data = requestsdb.get_record(request_id)
+            sender = data['sender']
             if sender not in mlist.ban_list:
                 mlist.ban_list.append(sender)
         # Handle the request id
@@ -782,7 +800,8 @@ def process_form(mlist, doc, cgidata):
         except Errors.MMAlreadyAMember, v:
             erroraddrs.append(v)
         except Errors.MembershipIsBanned, pattern:
-            sender = mlist.GetRecord(request_id)[1]
+            data = requestsdb.get_record(request_id)
+            sender = data['sender']
             banaddrs.append((sender, pattern))
     # save the list and print the results
     doc.AddItem(Header(2, _('Database Updated...')))

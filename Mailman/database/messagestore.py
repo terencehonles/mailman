@@ -48,15 +48,11 @@ class MessageStore:
     def add(self, message):
         # Ensure that the message has the requisite headers.
         message_ids = message.get_all('message-id', [])
-        dates = message.get_all('date', [])
-        if not (len(message_ids) == 1 and len(dates) == 1):
-            raise ValueError(
-                'Exactly one Message-ID and one Date header required')
+        if len(message_ids) <> 1:
+            raise ValueError('Exactly one Message-ID header required')
         # Calculate and insert the X-List-ID-Hash.
         message_id = message_ids[0]
-        date = dates[0]
         shaobj = hashlib.sha1(message_id)
-        shaobj.update(date)
         hash32 = base64.b32encode(shaobj.digest())
         del message['X-List-ID-Hash']
         message['X-List-ID-Hash'] = hash32
