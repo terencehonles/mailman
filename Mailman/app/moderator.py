@@ -147,7 +147,7 @@ def handle_message(mlist, id, action,
         i18n.set_language(language)
         try:
             fmsg = Message.UserNotification(
-                addr, mlist.bounces_address,
+                addresses, mlist.bounces_address,
                 _('Forward of moderated message'),
                 lang=language)
         finally:

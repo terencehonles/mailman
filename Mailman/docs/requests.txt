@@ -393,9 +393,29 @@ moderators.
     >>> flush()
     >>> qmsg, qdata = dequeue()
     >>> print qmsg.as_string()
-    XXX
+    Subject: Forward of moderated message
+    From: alist-bounces@example.com
+    To: zperson@example.com
+    MIME-Version: 1.0
+    Content-Type: message/rfc822
+    Message-ID: ...
+    Date: ...
+    Precedence: bulk
+    <BLANKLINE>
+    From: aperson@example.org
+    To: alist@example.com
+    Subject: Something important
+    Message-ID: <12345>
+    X-List-ID-Hash: 4CF7EAU3SIXBPXBB5S6PEUMO62MWGQN6
+    X-List-Sequence-Number: ...
+    <BLANKLINE>
+    Here's something important about our mailing list.
+    <BLANKLINE>
     >>> sorted(qdata.items())
-    XXX
+    [('_parsemsg', False), ('listname', 'alist@example.com'),
+    ('nodecorate', True), ('received_time', ...),
+    ('recips', ['zperson@example.com']),
+    ('reduced_list_headers', True), ('version', 3)]
 
 
 Holding subscription requests
