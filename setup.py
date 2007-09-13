@@ -91,7 +91,7 @@ Any other spelling is incorrect.""",
     # Third-party requirements.
     install_requires = [
         'Elixir',
-        'SQLAlchemy',
+        'SQLAlchemy>=0.3.10',
         'munepy',
         'wsgiref',
         'zope.interface',

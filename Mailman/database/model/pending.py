@@ -99,8 +99,8 @@ class Pendings(object):
             return None
         pending = pendings[0]
         pendable = UnpendedPendable()
-        # Find all PendingKeyValue entries that are associated with the
-        # pending object's ID.
+        # Find all PendedKeyValue entries that are associated with the pending
+        # object's ID.
         q = PendedKeyValue.filter(
             PendedKeyValue.c.pended_id == Pending.c.id).filter(
             Pending.c.id == pending.id)
@@ -116,8 +116,8 @@ class Pendings(object):
         now = datetime.datetime.now()
         for pending in Pending.select():
             if pending.expiration_date < now:
-                # Find all PendingKeyValue entries that are associated with
-                # the pending object's ID.
+                # Find all PendedKeyValue entries that are associated with the
+                # pending object's ID.
                 q = PendedKeyValue.filter(
                     PendedKeyValue.c.pended_id == Pending.c.id).filter(
                     Pending.c.id == pending.id)
