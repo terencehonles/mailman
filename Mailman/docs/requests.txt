@@ -21,10 +21,10 @@ And another helper for displaying messages in the virgin queue.
 
     >>> from Mailman.Queue.sbcache import get_switchboard
     >>> virginq = get_switchboard(config.VIRGINQUEUE_DIR)
-    >>> def dequeue(whichq=None):
+    >>> def dequeue(whichq=None, expected_count=1):
     ...     if whichq is None:
     ...         whichq = virginq
-    ...     assert len(whichq.files) == 1, (
+    ...     assert len(whichq.files) == expected_count, (
     ...         'Unexpected file count: %d' % len(whichq.files))
     ...     filebase = whichq.files[0]
     ...     qmsg, qdata = whichq.dequeue(filebase)
@@ -449,18 +449,256 @@ message is held for approval, there will be a message placed in the virgin
 queue when the message is held.
 
     >>> mlist.admin_immed_notify = True
+    >>> # XXX This will almost certainly change once we've worked out the web
+    >>> # space layout for mailing lists now.
+    >>> mlist._data.web_page_url = 'http://www.example.com/'
     >>> flush()
     >>> id_4 = moderator.hold_subscription(mlist,
     ...     'cperson@example.org', 'Claire Person',
-    ...     '{NONE}zyxcba, DeliveryMode.regular, 'en')
+    ...     '{NONE}zyxcba', DeliveryMode.regular, 'en')
     >>> flush()
     >>> requests.get_request(id_4) is not None
     True
     >>> qmsg, qdata = dequeue()
     >>> print qmsg.as_string()
-    XXX
+    MIME-Version: 1.0
+    Content-Type: text/plain; charset="us-ascii"
+    Content-Transfer-Encoding: 7bit
+    Subject: New subscription request to list A Test List from
+     cperson@example.org
+    From: alist-owner@example.com
+    To: alist-owner@example.com
+    Message-ID: ...
+    Date: ...
+    Precedence: bulk
+    <BLANKLINE>
+    Your authorization is required for a mailing list subscription request
+    approval:
+    <BLANKLINE>
+        For:  cperson@example.org
+        List: alist@example.com
+    <BLANKLINE>
+    At your convenience, visit:
+    <BLANKLINE>
+        http://www.example.com/admindb/alist@example.com
+    <BLANKLINE>
+    to process the request.
+    <BLANKLINE>
     >>> sorted(qdata.items())
-    XXX
+    [('_parsemsg', False),
+    ('listname', 'alist@example.com'),
+    ('nodecorate', True),
+    ('received_time', ...),
+    ('recips', ['alist-owner@example.com']),
+    ('reduced_list_headers', True), ('tomoderators', True), ('version', 3)]
+
+Once held, the moderator can select one of several dispositions.  The most
+trivial is to simply defer a decision for now.
+
+    >>> moderator.handle_subscription(mlist, id_3, Action.defer)
+    >>> flush()
+    >>> requests.get_request(id_3) is not None
+    True
+
+The held subscription can also be discarded.
+
+    >>> moderator.handle_subscription(mlist, id_3, Action.discard)
+    >>> flush()
+    >>> print requests.get_request(id_3)
+    None
+
+The request can be rejected, in which case a message is sent to the
+subscriber.
+
+    >>> moderator.handle_subscription(mlist, id_4, Action.reject,
+    ...     'This is a closed list')
+    >>> flush()
+    >>> print requests.get_request(id_4)
+    None
+    >>> qmsg, qdata = dequeue()
+    >>> print qmsg.as_string()
+    MIME-Version: 1.0
+    Content-Type: text/plain; charset="us-ascii"
+    Content-Transfer-Encoding: 7bit
+    Subject: Request to mailing list "A Test List" rejected
+    From: alist-bounces@example.com
+    To: cperson@example.org
+    Message-ID: ...
+    Date: ...
+    Precedence: bulk
+    <BLANKLINE>
+    Your request to the alist@example.com mailing list
+    <BLANKLINE>
+        Subscription request
+    <BLANKLINE>
+    has been rejected by the list moderator.  The moderator gave the
+    following reason for rejecting your request:
+    <BLANKLINE>
+    "This is a closed list"
+    <BLANKLINE>
+    Any questions or comments should be directed to the list administrator
+    at:
+    <BLANKLINE>
+        alist-owner@example.com
+    <BLANKLINE>
+    >>> sorted(qdata.items())
+    [('_parsemsg', False), ('listname', 'alist@example.com'),
+    ('nodecorate', True),
+    ('received_time', ...),
+    ('recips', ['cperson@example.org']),
+    ('reduced_list_headers', True), ('version', 3)]
+
+Or the subscription can be approved/accepted.  This subscribes the member to
+the mailing list.
+
+    >>> mlist.send_welcome_msg = True
+    >>> id_4 = moderator.hold_subscription(mlist,
+    ...     'fperson@example.org', 'Frank Person',
+    ...     '{NONE}abcxyz', DeliveryMode.regular, 'en')
+    >>> flush()
+
+A message will be sent to the moderators telling them about the held
+subscription and the fact that they may need to approve it.
+
+    >>> qmsg, qdata = dequeue()
+    >>> print qmsg.as_string()
+    MIME-Version: 1.0
+    Content-Type: text/plain; charset="us-ascii"
+    Content-Transfer-Encoding: 7bit
+    Subject: New subscription request to list A Test List from
+     fperson@example.org
+    From: alist-owner@example.com
+    To: alist-owner@example.com
+    Message-ID: ...
+    Date: ...
+    Precedence: bulk
+    <BLANKLINE>
+    Your authorization is required for a mailing list subscription request
+    approval:
+    <BLANKLINE>
+        For:  fperson@example.org
+        List: alist@example.com
+    <BLANKLINE>
+    At your convenience, visit:
+    <BLANKLINE>
+        http://www.example.com/admindb/alist@example.com
+    <BLANKLINE>
+    to process the request.
+    <BLANKLINE>
+    >>> sorted(qdata.items())
+    [('_parsemsg', False), ('listname', 'alist@example.com'),
+     ('nodecorate', True), ('received_time', ...),
+     ('recips', ['alist-owner@example.com']),
+     ('reduced_list_headers', True), ('tomoderators', True), ('version', 3)]
+
+Accept the subscription request.
+
+    >>> mlist.admin_notify_mchanges = True
+    >>> moderator.handle_subscription(mlist, id_4, Action.accept)
+    >>> flush()
+
+There are now two messages in the virgin queue.  One is a welcome message
+being sent to the user and the other is a subscription notification that is
+sent to the moderators.  The only good way to tell which is which is to look
+at the recipient list.
+
+    >>> qmsg_1, qdata_1 = dequeue(expected_count=2)
+    >>> qmsg_2, qdata_2 = dequeue()
+    >>> if 'fperson@example.org' in qdata_1['recips']:
+    ...     # The first message is the welcome message
+    ...     welcome_qmsg = qmsg_1
+    ...     welcome_qdata = qdata_1
+    ...     admin_qmsg = qmsg_2
+    ...     admin_qdata = qdata_2
+    ... else:
+    ...     welcome_qmsg = qmsg_2
+    ...     welcome_qdata = qdata_2
+    ...     admin_qmsg = qmsg_1
+    ...     admin_qdata = qdata_1
+
+The welcome message is sent to the person who just subscribed.
+
+    >>> print welcome_qmsg.as_string()
+    MIME-Version: 1.0
+    Content-Type: text/plain; charset="us-ascii"
+    Content-Transfer-Encoding: 7bit
+    Subject: Welcome to the "A Test List" mailing list
+    From: alist-request@example.com
+    To: fperson@example.org
+    X-No-Archive: yes
+    Message-ID: ...
+    Date: ...
+    Precedence: bulk
+    <BLANKLINE>
+    Welcome to the "A Test List" mailing list!
+    <BLANKLINE>
+    To post to this list, send your email to:
+    <BLANKLINE>
+      alist@example.com
+    <BLANKLINE>
+    General information about the mailing list is at:
+    <BLANKLINE>
+      http://www.example.com/listinfo/alist@example.com
+    <BLANKLINE>
+    If you ever want to unsubscribe or change your options (eg, switch to
+    or from digest mode, change your password, etc.), visit your
+    subscription page at:
+    <BLANKLINE>
+      http://example.com/fperson@example.org
+    <BLANKLINE>
+    You can also make such adjustments via email by sending a message to:
+    <BLANKLINE>
+      alist-request@example.com
+    <BLANKLINE>
+    with the word 'help' in the subject or body (don't include the
+    quotes), and you will get back a message with instructions.  You will
+    need your password to change your options, but for security purposes,
+    this email is not included here.  There is also a button on your
+    options page that will send your current password to you.
+    <BLANKLINE>
+    >>> sorted(welcome_qdata.items())
+    [('_parsemsg', False), ('listname', 'alist@example.com'),
+     ('nodecorate', True), ('received_time', ...),
+     ('recips', ['fperson@example.org']),
+     ('reduced_list_headers', True), ('verp', False), ('version', 3)]
+
+The admin message is sent to the moderators.
+
+    >>> print admin_qmsg.as_string()
+    MIME-Version: 1.0
+    Content-Type: text/plain; charset="us-ascii"
+    Content-Transfer-Encoding: 7bit
+    Subject: A Test List subscription notification
+    From: changeme@example.com
+    To: alist-owner@example.com
+    Message-ID: ...
+    Date: ...
+    Precedence: bulk
+    <BLANKLINE>
+    Frank Person <fperson@example.org> has been successfully subscribed to
+    A Test List.
+    <BLANKLINE>
+    >>> sorted(admin_qdata.items())
+    [('_parsemsg', False), ('envsender', 'changeme@example.com'),
+     ('listname', 'alist@example.com'),
+     ('nodecorate', True), ('received_time', ...),
+     ('recips', []), ('reduced_list_headers', True), ('version', 3)]
+
+Frank Person is now a member of the mailing list.
+
+    >>> member = mlist.members.get_member('fperson@example.org')
+    >>> member
+    <Member: Frank Person <fperson@example.org>
+             on alist@example.com as MemberRole.member>
+    >>> member.preferred_language
+    'en'
+    >>> print member.delivery_mode
+    DeliveryMode.regular
+    >>> user = config.db.user_manager.get_user(member.address.address)
+    >>> user.real_name
+    'Frank Person'
+    >>> user.password
+    '{NONE}abcxyz'
 
 
 Holding unsubscription requests
@@ -477,14 +715,12 @@ unsubscription holds can send the list's moderators an immediate notification.
     >>> flush()
     >>> address_1 = list(user_1.addresses)[0]
     >>> address_1.subscribe(mlist, MemberRole.member)
-    <Member: <dperson@example.com> on
-             _xtest@example.com as MemberRole.member>
+    <Member: dperson@example.com on alist@example.com as MemberRole.member>
     >>> user_2 = config.db.user_manager.create_user('eperson@example.com')
     >>> flush()
     >>> address_2 = list(user_2.addresses)[0]
     >>> address_2.subscribe(mlist, MemberRole.member)
-    <Member: <eperson@example.com> on
-             _xtest@example.com as MemberRole.member>
+    <Member: eperson@example.com on alist@example.com as MemberRole.member>
     >>> flush()
     >>> id_5 = moderator.hold_unsubscription(mlist, 'dperson@example.com')
     >>> flush()

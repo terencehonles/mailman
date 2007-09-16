@@ -588,85 +588,6 @@ class MailList(object, HTMLFormatter, Deliverer,
             raise Errors.MMNeedApproval, _(
                 'subscriptions to %(realname)s require moderator approval')
 
-    def ApprovedAddMember(self, userdesc, ack=None, admin_notif=None, text='',
-                          whence=''):
-        """Add a member right now.
-
-        The member's subscription must be approved by what ever policy the
-        list enforces.
-
-        userdesc is as above in AddMember().
-
-        ack is a flag that specifies whether the user should get an
-        acknowledgement of their being subscribed.  Default is to use the
-        list's default flag value.
-
-        admin_notif is a flag that specifies whether the list owner should get
-        an acknowledgement of this subscription.  Default is to use the list's
-        default flag value.
-        """
-        assert self.Locked()
-        # Set up default flag values
-        if ack is None:
-            ack = self.send_welcome_msg
-        if admin_notif is None:
-            admin_notif = self.admin_notify_mchanges
-        # Suck values out of userdesc, and apply defaults.
-        email = Utils.LCDomain(userdesc.address)
-        name = getattr(userdesc, 'fullname', '')
-        lang = getattr(userdesc, 'language', self.preferred_language)
-        digest = getattr(userdesc, 'digest', None)
-        password = getattr(userdesc, 'password', Utils.MakeRandomPassword())
-        if digest is None:
-            if self.nondigestable:
-                digest = 0
-            else:
-                digest = 1
-        # Let's be extra cautious
-        Utils.ValidateEmail(email)
-        if self.isMember(email):
-            raise Errors.MMAlreadyAMember, email
-        # Check for banned address here too for admin mass subscribes
-        # and confirmations.
-        pattern = self.GetBannedPattern(email)
-        if pattern:
-            raise Errors.MembershipIsBanned, pattern
-        # Do the actual addition
-        self.addNewMember(email, realname=name, digest=digest,
-                          password=password, language=lang)
-        self.setMemberOption(email, config.DisableMime,
-                             1 - self.mime_is_default_digest)
-        self.setMemberOption(email, config.Moderate,
-                             self.default_member_moderation)
-        # Now send and log results
-        if digest:
-            kind = ' (digest)'
-        else:
-            kind = ''
-        slog.info('%s: new%s %s, %s', self.internal_name(),
-                  kind, formataddr((name, email)), whence)
-        if ack:
-            self.SendSubscribeAck(email, self.getMemberPassword(email),
-                                  digest, text)
-        if admin_notif:
-            lang = self.preferred_language
-            otrans = i18n.get_translation()
-            i18n.set_language(lang)
-            try:
-                realname = self.real_name
-                subject = _('%(realname)s subscription notification')
-            finally:
-                i18n.set_translation(otrans)
-            if isinstance(name, unicode):
-                name = name.encode(Utils.GetCharSet(lang), 'replace')
-            text = Utils.maketext(
-                "adminsubscribeack.txt",
-                {"listname" : realname,
-                 "member"   : formataddr((name, email)),
-                 }, mlist=self)
-            msg = Message.OwnerNotification(self, subject, text)
-            msg.send(self)
-
     def DeleteMember(self, name, whence=None, admin_notif=None, userack=True):
         realname, email = parseaddr(name)
         if self.unsubscribe_policy == 0:
@@ -1173,7 +1094,7 @@ bad regexp in bounce_matching_header line: %s
         """Returns matched entry in ban_list if email matches.
         Otherwise returns None.
         """
-        return self.GetPattern(email, self.ban_list)
+        return self.ban_list and self.GetPattern(email, self.ban_list)
 
     def HasAutoApprovedSender(self, sender):
         """Returns True and logs if sender matches address or pattern

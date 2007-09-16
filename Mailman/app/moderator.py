@@ -26,20 +26,23 @@ __all__ = [
 import logging
 
 from datetime import datetime
-from email.utils import formatdate, getaddresses, make_msgid
+from email.utils import formataddr, formatdate, getaddresses, make_msgid
 
+from Mailman import Errors
 from Mailman import Message
 from Mailman import Utils
 from Mailman import i18n
 from Mailman.Queue.sbcache import get_switchboard
+from Mailman.app.membership import add_member
 from Mailman.configuration import config
-from Mailman.constants import Action
+from Mailman.constants import Action, DeliveryMode
 from Mailman.interfaces import RequestType
 
 _ = i18n._
 __i18n_templates__ = True
 
-log = logging.getLogger('mailman.vette')
+vlog = logging.getLogger('mailman.vette')
+slog = logging.getLogger('mailman.subscribe')
 
 
 
@@ -82,6 +85,8 @@ def handle_message(mlist, id, action,
     # Handle the action.
     rejection = None
     global_id = msgdata['_mod_global_id']
+    sender = msgdata['_mod_sender']
+    subject = msgdata['_mod_subject']
     if action is Action.defer:
         # Nothing to do, but preserve the message for later.
         preserve = True
@@ -89,8 +94,6 @@ def handle_message(mlist, id, action,
         rejection = 'Discarded'
     elif action is Action.reject:
         rejection = 'Refused'
-        sender = msgdata['_mod_sender']
-        subject = msgdata['_mod_subject']
         member = mlist.members.get_member(sender)
         if member:
             language = member.preferred_language
@@ -118,8 +121,8 @@ def handle_message(mlist, id, action,
         # message directly here can lead to a huge delay in web turnaround.
         # Log the moderation and add a header.
         msg['X-Mailman-Approved-At'] = formatdate(localtime=True)
-        log.info('held message approved, message-id: %s',
-                 msg.get('message-id', 'n/a'))
+        vlog.info('held message approved, message-id: %s',
+                  msg.get('message-id', 'n/a'))
         # Stick the message back in the incoming queue for further
         # processing.
         inq = get_switchboard(config.INQUEUE_DIR)
@@ -161,78 +164,87 @@ def handle_message(mlist, id, action,
         requestdb.delete_request(id)
     # Log the rejection
     if rejection:
-        note = """$listname: $rejection posting:
-\tFrom: $sender
-\tSubject: $subject"""
+        note = """%s: %s posting:
+\tFrom: %s
+\tSubject: %s"""
         if comment:
             note += '\n\tReason: ' + comment
-        log.info(note)
+        vlog.info(note, mlist.fqdn_listname, rejection, sender, subject)
 
 
-def HoldSubscription(self, addr, fullname, password, digest, lang):
-    # Assure that the database is open for writing
-    self._opendb()
-    # Get the next unique id
-    id = self._next_id
-    # Save the information to the request database. for held subscription
-    # entries, each record in the database will be one of the following
-    # format:
-    #
-    # the time the subscription request was received
-    # the subscriber's address
-    # the subscriber's selected password (TBD: is this safe???)
-    # the digest flag
-    # the user's preferred language
-    data = time.time(), addr, fullname, password, digest, lang
-    self._db[id] = (SUBSCRIPTION, data)
-    #
-    # TBD: this really shouldn't go here but I'm not sure where else is
-    # appropriate.
-    log.info('%s: held subscription request from %s',
-             self.internal_name(), addr)
+
+def hold_subscription(mlist, address, realname, password, mode, language):
+    data = dict(when=datetime.now().isoformat(),
+                address=address,
+                realname=realname,
+                password=password,
+                delivery_mode=str(mode),
+                language=language)
+    # Now hold this request.  We'll use the address as the key.
+    requestsdb = config.db.requests.get_list_requests(mlist)
+    request_id = requestsdb.hold_request(
+        RequestType.subscription, address, data)
+    vlog.info('%s: held subscription request from %s',
+              mlist.fqdn_listname, address)
     # Possibly notify the administrator in default list language
-    if self.admin_immed_notify:
-        realname = self.real_name
+    if mlist.admin_immed_notify:
+        realname = mlist.real_name
         subject = _(
-            'New subscription request to list %(realname)s from %(addr)s')
+            'New subscription request to list $realname from $address')
         text = Utils.maketext(
             'subauth.txt',
-            {'username'   : addr,
-             'listname'   : self.internal_name(),
-             'hostname'   : self.host_name,
-             'admindb_url': self.GetScriptURL('admindb', absolute=1),
-             }, mlist=self)
+            {'username'   : address,
+             'listname'   : mlist.fqdn_listname,
+             'admindb_url': mlist.script_url('admindb'),
+             }, mlist=mlist)
         # This message should appear to come from the <list>-owner so as
         # to avoid any useless bounce processing.
-        owneraddr = self.GetOwnerEmail()
-        msg = Message.UserNotification(owneraddr, owneraddr, subject, text,
-                                       self.preferred_language)
-        msg.send(self, **{'tomoderators': 1})
+        msg = Message.UserNotification(
+            mlist.owner_address, mlist.owner_address,
+            subject, text, mlist.preferred_language)
+        msg.send(mlist, tomoderators=True)
+    return request_id
 
-def __handlesubscription(self, record, value, comment):
-    stime, addr, fullname, password, digest, lang = record
-    if value == config.DEFER:
-        return DEFER
-    elif value == config.DISCARD:
+
+
+def handle_subscription(mlist, id, action, comment=None):
+    requestdb = config.db.requests.get_list_requests(mlist)
+    if action is Action.defer:
+        # Nothing to do.
+        return
+    elif action is Action.discard:
+        # Nothing to do except delete the request from the database.
         pass
-    elif value == config.REJECT:
-        self._refuse(_('Subscription request'), addr,
-                      comment or _('[No reason given]'),
-                      lang=lang)
-    else:
-        # subscribe
-        assert value == config.SUBSCRIBE
+    elif action is Action.reject:
+        key, data = requestdb.get_request(id)
+        _refuse(mlist, _('Subscription request'),
+                data['address'],
+                comment or _('[No reason given]'),
+                lang=data['language'])
+    elif action is Action.accept:
+        key, data = requestdb.get_request(id)
+        enum_value = data['delivery_mode'].split('.')[-1]
+        delivery_mode = DeliveryMode(enum_value)
+        address = data['address']
+        realname = data['realname']
         try:
-            userdesc = UserDesc(addr, fullname, password, digest, lang)
-            self.ApprovedAddMember(userdesc, whence='via admin approval')
-        except Errors.MMAlreadyAMember:
-            # User has already been subscribed, after sending the request
+            add_member(mlist, address, realname, data['password'],
+                       delivery_mode, data['language'])
+        except Errors.AlreadySubscribedError:
+            # The address got subscribed in some other way after the original
+            # request was made and accepted.
             pass
-        # TBD: disgusting hack: ApprovedAddMember() can end up closing
-        # the request database.
-        self._opendb()
-    return REMOVE
+        slog.info('%s: new %s, %s %s', mlist.fqdn_listname,
+                  delivery_mode, formataddr((realname, address)),
+                  'via admin approval')
+    else:
+        raise AssertionError('Unexpected action: %s' % action)
+    # Delete the request from the database.
+    requestdb.delete_request(id)
+    return
 
+
+
 def HoldUnsubscription(self, addr):
     # Assure the database is open for writing
     self._opendb()
@@ -240,8 +252,8 @@ def HoldUnsubscription(self, addr):
     id = self._next_id
     # All we need to do is save the unsubscribing address
     self._db[id] = (UNSUBSCRIPTION, addr)
-    log.info('%s: held unsubscription request from %s',
-             self.internal_name(), addr)
+    vlog.info('%s: held unsubscription request from %s',
+              self.internal_name(), addr)
     # Possibly notify the administrator of the hold
     if self.admin_immed_notify:
         realname = self.real_name

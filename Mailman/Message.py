@@ -263,15 +263,17 @@ class OwnerNotification(UserNotification):
     """Like user notifications, but this message goes to the list owners."""
 
     def __init__(self, mlist, subject=None, text=None, tomoderators=True):
-        recips = mlist.owner[:]
         if tomoderators:
-            recips.extend(mlist.moderator)
+            roster = mlist.moderators
+        else:
+            roster = mlist.owners
+        recips = [address.address for address in roster.addresses]
         sender = config.SITE_OWNER_ADDRESS
         lang = mlist.preferred_language
         UserNotification.__init__(self, recips, sender, subject, text, lang)
         # Hack the To header to look like it's going to the -owner address
         del self['to']
-        self['To'] = mlist.GetOwnerEmail()
+        self['To'] = mlist.owner_address
         self._sender = sender
 
     def _enqueue(self, mlist, **_kws):
