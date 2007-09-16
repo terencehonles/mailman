@@ -151,3 +151,43 @@ def send_welcome_message(mlist, address, language, delivery_mode, text=''):
         text, language)
     msg['X-No-Archive'] = 'yes'
     msg.send(mlist, verp=config.VERP_PERSONALIZED_DELIVERIES)
+
+
+
+def delete_member(mlist, address, admin_notif=None, userack=None):
+    if userack is None:
+        userack = mlist.send_goodbye_msg
+    if admin_notif is None:
+        admin_notif = mlist.admin_notify_mchanges
+    # Delete a member, for which we know the approval has been made
+    member = mlist.members.get_member(address)
+    language = member.preferred_language
+    member.unsubscribe()
+    # And send an acknowledgement to the user...
+    if userack:
+        send_goodbye_message(mlist, address, language)
+    # ...and to the administrator.
+    if admin_notif:
+        user = config.db.user_manager.get_user(address)
+        realname = user.real_name
+        subject = _('$mlist.real_name unsubscription notification')
+        text = Utils.maketext(
+            'adminunsubscribeack.txt',
+            {'listname': mlist.real_name,
+             'member'  : formataddr((realname, address)),
+             }, mlist=mlist)
+        msg = Message.OwnerNotification(mlist, subject, text)
+        msg.send(mlist)
+
+
+
+def send_goodbye_message(mlist, address, language):
+    if mlist.goodbye_msg:
+        goodbye = Utils.wrap(mlist.goodbye_msg) + '\n'
+    else:
+        goodbye = ''
+    msg = Message.UserNotification(
+        address, mlist.bounces_address,
+        _('You have been unsubscribed from the $mlist.real_name mailing list'),
+        goodbye, language)
+    msg.send(mlist, verp=config.VERP_PERSONALIZED_DELIVERIES)

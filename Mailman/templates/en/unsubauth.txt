@@ -1,8 +1,8 @@
 Your authorization is required for a mailing list unsubscription
 request approval:
 
-    By:   %(username)s
-    From: %(listname)s@%(hostname)s
+    By:   %(address)s
+    From: %(listname)s
 
 At your convenience, visit:
 

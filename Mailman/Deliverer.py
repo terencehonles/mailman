@@ -37,53 +37,6 @@ mlog    = logging.getLogger('mailman.mischief')
 
 
 class Deliverer:
-    def SendSubscribeAck(self, name, password, digest, text=''):
-        pluser = self.getMemberLanguage(name)
-        if self.welcome_msg:
-            welcome = Utils.wrap(self.welcome_msg) + '\n'
-        else:
-            welcome = ''
-        if self.umbrella_list:
-            addr = self.GetMemberAdminEmail(name)
-            umbrella = Utils.wrap(_('''\
-Note: Since this is a list of mailing lists, administrative
-notices like the password reminder will be sent to
-your membership administrative address, %(addr)s.'''))
-        else:
-            umbrella = ''
-        # get the text from the template
-        text += Utils.maketext(
-            'subscribeack.txt',
-            {'real_name'   : self.real_name,
-             'host_name'   : self.host_name,
-             'welcome'     : welcome,
-             'umbrella'    : umbrella,
-             'emailaddr'   : self.GetListEmail(),
-             'listinfo_url': self.GetScriptURL('listinfo', absolute=True),
-             'optionsurl'  : self.GetOptionsURL(name, absolute=True),
-             'password'    : password,
-             'user'        : self.getMemberCPAddress(name),
-             }, lang=pluser, mlist=self)
-        if digest:
-            digmode = _(' (Digest mode)')
-        else:
-            digmode = ''
-        realname = self.real_name
-        msg = Message.UserNotification(
-            self.GetMemberAdminEmail(name), self.GetRequestEmail(),
-            _('Welcome to the "%(realname)s" mailing list%(digmode)s'),
-            text, pluser)
-        msg['X-No-Archive'] = 'yes'
-        msg.send(self, verp=config.VERP_PERSONALIZED_DELIVERIES)
-
-    def SendUnsubscribeAck(self, addr, lang):
-        realname = self.real_name
-        msg = Message.UserNotification(
-            self.GetMemberAdminEmail(addr), self.GetBouncesEmail(),
-            _('You have been unsubscribed from the %(realname)s mailing list'),
-            Utils.wrap(self.goodbye_msg), lang)
-        msg.send(self, verp=config.VERP_PERSONALIZED_DELIVERIES)
-
     def MailUserPassword(self, user):
         listfullname = self.fqdn_listname
         requestaddr = self.GetRequestEmail()

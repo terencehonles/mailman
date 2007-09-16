@@ -597,37 +597,6 @@ class MailList(object, HTMLFormatter, Deliverer,
             raise Errors.MMNeedApproval, _(
                 'unsubscriptions require moderator approval')
 
-    def ApprovedDeleteMember(self, name, whence=None,
-                             admin_notif=None, userack=None):
-        if userack is None:
-            userack = self.send_goodbye_msg
-        if admin_notif is None:
-            admin_notif = self.admin_notify_mchanges
-        # Delete a member, for which we know the approval has been made
-        fullname, emailaddr = parseaddr(name)
-        userlang = self.getMemberLanguage(emailaddr)
-        # Remove the member
-        self.removeMember(emailaddr)
-        # And send an acknowledgement to the user...
-        if userack:
-            self.SendUnsubscribeAck(emailaddr, userlang)
-        # ...and to the administrator
-        if admin_notif:
-            realname = self.real_name
-            subject = _('%(realname)s unsubscribe notification')
-            text = Utils.maketext(
-                'adminunsubscribeack.txt',
-                {'member'  : name,
-                 'listname': self.real_name,
-                 }, mlist=self)
-            msg = Message.OwnerNotification(self, subject, text)
-            msg.send(self)
-        if whence:
-            whence = "; %s" % whence
-        else:
-            whence = ""
-        slog.info('%s: deleted %s%s', self.internal_name(), name, whence)
-
     def ChangeMemberName(self, addr, name, globally):
         self.setMemberName(addr, name)
         if not globally:

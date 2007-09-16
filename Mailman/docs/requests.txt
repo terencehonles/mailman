@@ -548,8 +548,8 @@ subscriber.
     ('recips', ['cperson@example.org']),
     ('reduced_list_headers', True), ('version', 3)]
 
-Or the subscription can be approved/accepted.  This subscribes the member to
-the mailing list.
+The subscription can also be accepted.  This subscribes the address to the
+mailing list.
 
     >>> mlist.send_welcome_msg = True
     >>> id_4 = moderator.hold_subscription(mlist,
@@ -711,28 +711,189 @@ unsubscription holds can send the list's moderators an immediate notification.
     >>> mlist.admin_immed_notify = False
     >>> flush()
     >>> from Mailman.constants import MemberRole
-    >>> user_1 = config.db.user_manager.create_user('dperson@example.com')
+    >>> user_1 = config.db.user_manager.create_user('gperson@example.com')
     >>> flush()
     >>> address_1 = list(user_1.addresses)[0]
     >>> address_1.subscribe(mlist, MemberRole.member)
-    <Member: dperson@example.com on alist@example.com as MemberRole.member>
-    >>> user_2 = config.db.user_manager.create_user('eperson@example.com')
+    <Member: gperson@example.com on alist@example.com as MemberRole.member>
+    >>> user_2 = config.db.user_manager.create_user('hperson@example.com')
     >>> flush()
     >>> address_2 = list(user_2.addresses)[0]
     >>> address_2.subscribe(mlist, MemberRole.member)
-    <Member: eperson@example.com on alist@example.com as MemberRole.member>
+    <Member: hperson@example.com on alist@example.com as MemberRole.member>
     >>> flush()
-    >>> id_5 = moderator.hold_unsubscription(mlist, 'dperson@example.com')
+    >>> id_5 = moderator.hold_unsubscription(mlist, 'gperson@example.com')
     >>> flush()
-    >>> requests.get_request(id_5) is not None)
+    >>> requests.get_request(id_5) is not None
     True
     >>> virginq.files
     []
     >>> mlist.admin_immed_notify = True
-    >>> id_6 = moderator.hold_unsubscription(mlist, 'eperson@example.com')
+    >>> id_6 = moderator.hold_unsubscription(mlist, 'hperson@example.com')
     >>> flush()
     >>> qmsg, qdata = dequeue()
     >>> print qmsg.as_string()
-    XXX
+    MIME-Version: 1.0
+    Content-Type: text/plain; charset="us-ascii"
+    Content-Transfer-Encoding: 7bit
+    Subject: New unsubscription request from A Test List by hperson@example.com
+    From: alist-owner@example.com
+    To: alist-owner@example.com
+    Message-ID: ...
+    Date: ...
+    Precedence: bulk
+    <BLANKLINE>
+    Your authorization is required for a mailing list unsubscription
+    request approval:
+    <BLANKLINE>
+        By:   hperson@example.com
+        From: alist@example.com
+    <BLANKLINE>
+    At your convenience, visit:
+    <BLANKLINE>
+        http://www.example.com/admindb/alist@example.com
+    <BLANKLINE>
+    to process the request.
+    <BLANKLINE>
     >>> sorted(qdata.items())
-    XXX
+    [('_parsemsg', False),
+     ('listname', 'alist@example.com'), ('nodecorate', True),
+     ('received_time', ...),
+     ('recips', ['alist-owner@example.com']),
+     ('reduced_list_headers', True), ('tomoderators', True), ('version', 3)]
+
+There are now two addresses with held unsubscription requests.  As above, one
+of the actions we can take is to defer to the decision.
+
+    >>> moderator.handle_unsubscription(mlist, id_5, Action.defer)
+    >>> flush()
+    >>> requests.get_request(id_5) is not None
+    True
+
+The held unsubscription can also be discarded, and the member will remain
+subscribed.
+
+    >>> moderator.handle_unsubscription(mlist, id_5, Action.discard)
+    >>> flush()
+    >>> print requests.get_request(id_5)
+    None
+    >>> mlist.members.get_member('gperson@example.com')
+    <Member: gperson@example.com on alist@example.com as MemberRole.member>
+
+The request can be rejected, in which case a message is sent to the member,
+and the person remains a member of the mailing list.
+
+    >>> moderator.handle_unsubscription(mlist, id_6, Action.reject,
+    ...     'This list is a prison.')
+    >>> flush()
+    >>> print requests.get_request(id_6)
+    None
+    >>> qmsg, qdata = dequeue()
+    >>> print qmsg.as_string()
+    MIME-Version: 1.0
+    Content-Type: text/plain; charset="us-ascii"
+    Content-Transfer-Encoding: 7bit
+    Subject: Request to mailing list "A Test List" rejected
+    From: alist-bounces@example.com
+    To: hperson@example.com
+    Message-ID: ...
+    Date: ...
+    Precedence: bulk
+    <BLANKLINE>
+    Your request to the alist@example.com mailing list
+    <BLANKLINE>
+        Unsubscription request
+    <BLANKLINE>
+    has been rejected by the list moderator.  The moderator gave the
+    following reason for rejecting your request:
+    <BLANKLINE>
+    "This list is a prison."
+    <BLANKLINE>
+    Any questions or comments should be directed to the list administrator
+    at:
+    <BLANKLINE>
+        alist-owner@example.com
+    <BLANKLINE>
+    >>> sorted(qdata.items())
+    [('_parsemsg', False),
+     ('listname', 'alist@example.com'),
+     ('nodecorate', True), ('received_time', ...),
+     ('recips', ['hperson@example.com']),
+     ('reduced_list_headers', True), ('version', 3)]
+    >>> mlist.members.get_member('hperson@example.com')
+    <Member: hperson@example.com on alist@example.com as MemberRole.member>
+
+The unsubscription request can also be accepted.  This removes the member from
+the mailing list.
+
+    >>> mlist.send_goodbye_msg = True
+    >>> mlist.goodbye_msg = 'So long!'
+    >>> mlist.admin_immed_notify = False
+    >>> flush()
+    >>> id_7 = moderator.hold_unsubscription(mlist, 'gperson@example.com')
+    >>> flush()
+    >>> moderator.handle_unsubscription(mlist, id_7, Action.accept)
+    >>> flush()
+    >>> print mlist.members.get_member('gperson@example.com')
+    None
+
+There are now two messages in the virgin queue, one to the member who was just
+unsubscribed and another to the moderators informing them of this membership
+change.
+
+    >>> qmsg_1, qdata_1 = dequeue(expected_count=2)
+    >>> qmsg_2, qdata_2 = dequeue()
+    >>> if 'gperson@example.com' in qdata_1['recips']:
+    ...     # The first message is the goodbye message
+    ...     goodbye_qmsg = qmsg_1
+    ...     goodbye_qdata = qdata_1
+    ...     admin_qmsg = qmsg_2
+    ...     admin_qdata = qdata_2
+    ... else:
+    ...     goodbye_qmsg = qmsg_2
+    ...     goodbye_qdata = qdata_2
+    ...     admin_qmsg = qmsg_1
+    ...     admin_qdata = qdata_1
+
+The goodbye message...
+
+    >>> print goodbye_qmsg.as_string()
+    MIME-Version: 1.0
+    Content-Type: text/plain; charset="us-ascii"
+    Content-Transfer-Encoding: 7bit
+    Subject: You have been unsubscribed from the A Test List mailing list
+    From: alist-bounces@example.com
+    To: gperson@example.com
+    Message-ID: ...
+    Date: ...
+    Precedence: bulk
+    <BLANKLINE>
+    So long!
+    <BLANKLINE>
+    >>> sorted(goodbye_qdata.items())
+    [('_parsemsg', False),
+     ('listname', 'alist@example.com'),
+     ('nodecorate', True), ('received_time', ...),
+     ('recips', ['gperson@example.com']),
+     ('reduced_list_headers', True), ('verp', False), ('version', 3)]
+
+...and the admin message.
+
+    >>> print admin_qmsg.as_string()
+    MIME-Version: 1.0
+    Content-Type: text/plain; charset="us-ascii"
+    Content-Transfer-Encoding: 7bit
+    Subject: A Test List unsubscription notification
+    From: changeme@example.com
+    To: alist-owner@example.com
+    Message-ID: ...
+    Date: ...
+    Precedence: bulk
+    <BLANKLINE>
+    gperson@example.com has been removed from A Test List.
+    <BLANKLINE>
+    >>> sorted(admin_qdata.items())
+    [('_parsemsg', False), ('envsender', 'changeme@example.com'),
+     ('listname', 'alist@example.com'),
+     ('nodecorate', True), ('received_time', ...),
+     ('recips', []), ('reduced_list_headers', True), ('version', 3)]

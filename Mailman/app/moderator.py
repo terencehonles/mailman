@@ -17,10 +17,13 @@
 
 """Application support for moderators."""
 
-from __future__ import with_statement
-
 __all__ = [
+    'handle_message',
+    'handle_subscription',
+    'handle_unsubscription',
     'hold_message',
+    'hold_subscription',
+    'hold_unsubscription',
     ]
 
 import logging
@@ -33,7 +36,7 @@ from Mailman import Message
 from Mailman import Utils
 from Mailman import i18n
 from Mailman.Queue.sbcache import get_switchboard
-from Mailman.app.membership import add_member
+from Mailman.app.membership import add_member, delete_member
 from Mailman.configuration import config
 from Mailman.constants import Action, DeliveryMode
 from Mailman.interfaces import RequestType
@@ -188,9 +191,8 @@ def hold_subscription(mlist, address, realname, password, mode, language):
               mlist.fqdn_listname, address)
     # Possibly notify the administrator in default list language
     if mlist.admin_immed_notify:
-        realname = mlist.real_name
         subject = _(
-            'New subscription request to list $realname from $address')
+            'New subscription request to list $mlist.real_name from $address')
         text = Utils.maketext(
             'subauth.txt',
             {'username'   : address,
@@ -241,54 +243,62 @@ def handle_subscription(mlist, id, action, comment=None):
         raise AssertionError('Unexpected action: %s' % action)
     # Delete the request from the database.
     requestdb.delete_request(id)
-    return
 
 
 
-def HoldUnsubscription(self, addr):
-    # Assure the database is open for writing
-    self._opendb()
-    # Get the next unique id
-    id = self._next_id
-    # All we need to do is save the unsubscribing address
-    self._db[id] = (UNSUBSCRIPTION, addr)
+def hold_unsubscription(mlist, address):
+    data = dict(address=address)
+    requestsdb = config.db.requests.get_list_requests(mlist)
+    request_id = requestsdb.hold_request(
+        RequestType.unsubscription, address, data)
     vlog.info('%s: held unsubscription request from %s',
-              self.internal_name(), addr)
+              mlist.fqdn_listname, address)
     # Possibly notify the administrator of the hold
-    if self.admin_immed_notify:
-        realname = self.real_name
+    if mlist.admin_immed_notify:
         subject = _(
-            'New unsubscription request from %(realname)s by %(addr)s')
+            'New unsubscription request from $mlist.real_name by $address')
         text = Utils.maketext(
             'unsubauth.txt',
-            {'username'   : addr,
-             'listname'   : self.internal_name(),
-             'hostname'   : self.host_name,
-             'admindb_url': self.GetScriptURL('admindb', absolute=1),
-             }, mlist=self)
+            {'address'   : address,
+             'listname'   : mlist.fqdn_listname,
+             'admindb_url': mlist.script_url('admindb'),
+             }, mlist=mlist)
         # This message should appear to come from the <list>-owner so as
         # to avoid any useless bounce processing.
-        owneraddr = self.GetOwnerEmail()
-        msg = Message.UserNotification(owneraddr, owneraddr, subject, text,
-                                       self.preferred_language)
-        msg.send(self, **{'tomoderators': 1})
+        msg = Message.UserNotification(
+            mlist.owner_address, mlist.owner_address,
+            subject, text, mlist.preferred_language)
+        msg.send(mlist, tomoderators=True)
+    return request_id
 
-def _handleunsubscription(self, record, value, comment):
-    addr = record
-    if value == config.DEFER:
-        return DEFER
-    elif value == config.DISCARD:
+
+
+def handle_unsubscription(mlist, id, action, comment=None):
+    requestdb = config.db.requests.get_list_requests(mlist)
+    key, data = requestdb.get_request(id)
+    address = data['address']
+    if action is Action.defer:
+        # Nothing to do.
+        return
+    elif action is Action.discard:
+        # Nothing to do except delete the request from the database.
         pass
-    elif value == config.REJECT:
-        self._refuse(_('Unsubscription request'), addr, comment)
-    else:
-        assert value == config.UNSUBSCRIBE
+    elif action is Action.reject:
+        key, data = requestdb.get_request(id)
+        _refuse(mlist, _('Unsubscription request'), address,
+                comment or _('[No reason given]'))
+    elif action is Action.accept:
+        key, data = requestdb.get_request(id)
         try:
-            self.ApprovedDeleteMember(addr)
+            delete_member(mlist, address)
         except Errors.NotAMemberError:
-            # User has already been unsubscribed
+            # User has already been unsubscribed.
             pass
-    return REMOVE
+        slog.info('%s: deleted %s', mlist.fqdn_listname, address)
+    else:
+        raise AssertionError('Unexpected action: %s' % action)
+    # Delete the request from the database.
+    requestdb.delete_request(id)
 
 
 
@@ -324,41 +334,3 @@ def _refuse(mlist, request, recip, comment, origmsg=None, lang=None):
     msg = Message.UserNotification(recip, mlist.bounces_address,
                                    subject, text, lang)
     msg.send(mlist)
-
-
-
-def readMessage(path):
-    # For backwards compatibility, we must be able to read either a flat text
-    # file or a pickle.
-    ext = os.path.splitext(path)[1]
-    with open(path) as fp:
-        if ext == '.txt':
-            msg = email.message_from_file(fp, Message.Message)
-        else:
-            assert ext == '.pck'
-            msg = cPickle.load(fp)
-    return msg
-
-
-
-def handle_request(mlist, id, value,
-                   comment=None, preserve=None, forward=None, addr=None):
-    requestsdb = config.db.get_list_requests(mlist)
-    key, data = requestsdb.get_record(id)
-
-    self._opendb()
-    rtype, data = self._db[id]
-    if rtype == HELDMSG:
-        status = self._handlepost(data, value, comment, preserve,
-                                  forward, addr)
-    elif rtype == UNSUBSCRIPTION:
-        status = self._handleunsubscription(data, value, comment)
-    else:
-        assert rtype == SUBSCRIPTION
-        status = self._handlesubscription(data, value, comment)
-    if status <> DEFER:
-        # BAW: Held message ids are linked to Pending cookies, allowing
-        # the user to cancel their post before the moderator has approved
-        # it.  We should probably remove the cookie associated with this
-        # id, but we have no way currently of correlating them. :(
-        del self._db[id]
