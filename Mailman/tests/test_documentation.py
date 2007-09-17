@@ -45,6 +45,9 @@ def cleaning_teardown(testobj):
             member.unsubscribe()
         for admin in mlist.administrators.members:
             admin.unsubscribe()
+        requestdb = config.db.requests.get_list_requests(mlist)
+        for request in requestdb.held_requests:
+            requestdb.delete_request(request.id)
         listmgr.delete(mlist)
     flush()
     assert not list(listmgr.mailing_lists), (
@@ -62,6 +65,16 @@ def cleaning_teardown(testobj):
     for style in style_manager.styles:
         if style.name <> 'default':
             style_manager.unregister(style)
+    # Clear the message store.
+    global_ids = []
+    for msg in config.db.message_store.messages:
+        global_ids.append('%s/%s' % (
+            msg['X-List-ID-Hash'], msg['X-List-Sequence-Number']))
+    for global_id in global_ids:
+        config.db.message_store.delete_message(global_id)
+    flush()
+    assert not list(config.db.message_store.messages), (
+        'There should be no messages left in the message store.')
 
 
 

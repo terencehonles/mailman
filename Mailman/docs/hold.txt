@@ -142,6 +142,10 @@ that Mailman pulled it from the appropriate news group.
     >>> print msg.as_string()
     From: aperson@example.org
     Subject: An implicit message
+    Message-ID: ...
+    X-List-ID-Hash: ...
+    X-List-Sequence-Number: ...
+    <BLANKLINE>
     <BLANKLINE>
     >>> print msgdata
     {'fromusenet': True}
@@ -276,6 +280,9 @@ one to the original author.
     MIME-Version: 1.0
     <BLANKLINE>
     From: aperson@example.com
+    Message-ID: ...
+    X-List-ID-Hash: ...
+    X-List-Sequence-Number: ...
     <BLANKLINE>
     <BLANKLINE>
     --...
@@ -356,15 +363,17 @@ first item is a type code and the second item is a message id.
     >>> data = config.db.pendings.confirm(cookie)
     >>> sorted(data.items())
     [('id', '...'), ('type', 'held message')]
-    >>> filename = 'heldmsg-_xtest@example.com-%s.pck' % data['id']
-    >>> heldmsg = os.path.join(config.DATA_DIR, filename)
 
-Use helper function to read the held message.
+The message itself is held in the message store.
 
-    >>> from Mailman.ListAdmin import readMessage
-    >>> msg = readMessage(heldmsg)
+    >>> rkey, rdata = config.db.requests.get_list_requests(mlist).get_request(
+    ...     data['id'])
+    >>> msg = config.db.message_store.get_message(rdata['_mod_global_id'])
     >>> print msg.as_string()
     From: aperson@example.com
+    Message-ID: ...
+    X-List-ID-Hash: ...
+    X-List-Sequence-Number: ...
     <BLANKLINE>
     <BLANKLINE>
  

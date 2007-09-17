@@ -41,6 +41,7 @@ from Mailman import Errors
 from Mailman import Message
 from Mailman import Utils
 from Mailman import i18n
+from Mailman.app.moderator import hold_message
 from Mailman.configuration import config
 from Mailman.interfaces import IPendable
 
@@ -228,7 +229,7 @@ def hold_for_approval(mlist, msg, msgdata, exc):
     # translator again, because of the games we play above
     reason = Utils.wrap(exc.reason_notice())
     msgdata['rejection_notice'] = Utils.wrap(exc.rejection_notice(mlist))
-    id = mlist.HoldMessage(msg, reason, msgdata)
+    id = hold_message(mlist, msg, msgdata, reason)
     # Now we need to craft and send a message to the list admin so they can
     # deal with the held message.
     d = {'listname'   : listname,
