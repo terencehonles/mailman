@@ -1,0 +1,17 @@
+This list is by no means complete.  I'm just using it to track short term
+things that I need to do.
+
+Fix the XXX in model/requests.py where we need a flush because we can't get to
+    last_inserted_id()
+Get rid of InitTempVars()
+Get rid of PickleTypes
+Get rid of MailList class!
+Add tests for bin/newlist and bin/rmlist
+Add tests for plugins
+Rework MTA plugins and add tests
+Address XXX and FIXME
+Fix the roster creation cruft for mailing lists
+Suss out the IDomain stuff
+Remove Date: header from messagestore requirements (see list thread)
+Make i18n.get_translation() a context manager
+Handle moderation flag (see Mailman.app.membership)
