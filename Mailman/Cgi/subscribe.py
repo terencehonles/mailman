@@ -17,6 +17,8 @@
 
 """Process subscription or roster requests from listinfo form."""
 
+from __future__ import with_statement
+
 import os
 import cgi
 import sys
@@ -199,9 +201,7 @@ moderator's decision when they get to your request.""")
             listaddr = mlist.GetListEmail()
             # Set the language for this email message to the member's language.
             mlang = mlist.getMemberLanguage(email)
-            otrans = i18n.get_translation()
-            i18n.set_language(mlang)
-            try:
+            with i18n.using_language(mlang):
                 msg = Message.UserNotification(
                     mlist.getMemberCPAddress(email),
                     mlist.GetBouncesEmail(),
@@ -220,8 +220,6 @@ an attempt is being made to covertly discover whether you are a member of this
 list, and you are worried about your privacy, then feel free to send a message
 to the list administrator at %(listowner)s.
 """), lang=mlang)
-            finally:
-                i18n.set_translation(otrans)
             msg.send(mlist)
     # These shouldn't happen unless someone's tampering with the form
     except Errors.MMCantDigestError:

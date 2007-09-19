@@ -17,6 +17,8 @@
 
 """Application support for moderators."""
 
+from __future__ import with_statement
+
 __all__ = [
     'handle_message',
     'handle_subscription',
@@ -149,15 +151,11 @@ def handle_message(mlist, id, action,
             member = mlist.members.get_member(addresses[0])
             if member:
                 language = member.preferred_language
-        otrans = i18n.get_translation()
-        i18n.set_language(language)
-        try:
+        with i18n.using_language(language):
             fmsg = Message.UserNotification(
                 addresses, mlist.bounces_address,
                 _('Forward of moderated message'),
                 lang=language)
-        finally:
-            i18n.set_translation(otrans)
         fmsg.set_type('message/rfc822')
         fmsg.attach(msg)
         fmsg.send(mlist)
@@ -318,9 +316,7 @@ def _refuse(mlist, request, recip, comment, origmsg=None, lang=None):
          'reason'   : comment,
          'adminaddr': mlist.owner_address,
         }, lang=lang, mlist=mlist)
-    otrans = i18n.get_translation()
-    i18n.set_language(lang)
-    try:
+    with i18n.using_language(lang):
         # add in original message, but not wrap/filled
         if origmsg:
             text = NL.join(
@@ -329,8 +325,6 @@ def _refuse(mlist, request, recip, comment, origmsg=None, lang=None):
                  str(origmsg)
                  ])
         subject = _('Request to mailing list "$realname" rejected')
-    finally:
-        i18n.set_translation(otrans)
     msg = Message.UserNotification(recip, mlist.bounces_address,
                                    subject, text, lang)
     msg.send(mlist)

@@ -21,6 +21,8 @@
 Mixes in many task-specific classes.
 """
 
+from __future__ import with_statement
+
 import os
 import re
 import sys
@@ -722,19 +724,15 @@ class MailList(object, HTMLFormatter, Deliverer,
         slog.info('%s: changed member address from %s to %s',
                   self.internal_name(), oldaddr, newaddr)
         if self.admin_notify_mchanges:
-            lang = self.preferred_language
-            otrans = i18n.get_translation()
-            i18n.set_language(lang)
-            try:
+            with i18n.using_language(self.preferred_language):
                 realname = self.real_name
                 subject = _('%(realname)s address change notification')
-            finally:
-                i18n.set_translation(otrans)
             name = self.getMemberName(newaddr)
             if name is None:
                 name = ''
             if isinstance(name, unicode):
-                name = name.encode(Utils.GetCharSet(lang), 'replace')
+                name = name.encode(Utils.GetCharSet(self.preferred_language),
+                                   'replace')
             text = Utils.maketext(
                 'adminaddrchgack.txt',
                 {'name'    : name,

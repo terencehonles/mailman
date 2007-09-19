@@ -17,6 +17,8 @@
 
 """Application support for membership management."""
 
+from __future__ import with_statement
+
 from email.utils import formataddr
 
 from Mailman import Message
@@ -102,12 +104,8 @@ def add_member(mlist, address, realname, password, delivery_mode, language,
     if ack:
         send_welcome_message(mlist, address, language, delivery_mode, text)
     if admin_notif:
-        otrans = i18n.get_translation()
-        i18n.set_language(mlist.preferred_language)
-        try:
+        with i18n.using_language(mlist.preferred_language):
             subject = _('$mlist.real_name subscription notification')
-        finally:
-            i18n.set_translation(otrans)
         if isinstance(realname, unicode):
             realname = name.encode(Utils.GetCharSet(language), 'replace')
         text = Utils.maketext(

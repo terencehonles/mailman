@@ -13,5 +13,4 @@ Address XXX and FIXME
 Fix the roster creation cruft for mailing lists
 Suss out the IDomain stuff
 Remove Date: header from messagestore requirements (see list thread)
-Make i18n.get_translation() a context manager
 Handle moderation flag (see Mailman.app.membership)

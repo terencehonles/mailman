@@ -17,6 +17,8 @@
 
 """Generic queue runner class."""
 
+from __future__ import with_statement
+
 import time
 import weakref
 import logging
@@ -162,19 +164,15 @@ class Runner:
         # special care to reset the defaults, otherwise subsequent messages
         # may be translated incorrectly.  BAW: I'm not sure I like this
         # approach, but I can't think of anything better right now.
-        otranslation = i18n.get_translation()
         sender = msg.get_sender()
         member = mlist.members.get_member(sender)
         if member:
             lang = member.preferred_language
         else:
             lang = mlist.preferred_language
-        i18n.set_language(lang)
-        msgdata['lang'] = lang
-        try:
+        with i18n.using_language(lang):
+            msgdata['lang'] = lang
             keepqueued = self._dispose(mlist, msg, msgdata)
-        finally:
-            i18n.set_translation(otranslation)
         # Keep tabs on any child processes that got spawned.
         kids = msgdata.get('_kids')
         if kids:

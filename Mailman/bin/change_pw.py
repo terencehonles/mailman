@@ -15,6 +15,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
+from __future__ import with_statement
+
 import sha
 import sys
 import optparse
@@ -150,9 +152,7 @@ def main():
         # Notification
         print _('New $listname password: $notifypassword')
         if not opts.quiet:
-            otrans = i18n.get_translation()
-            i18n.set_language(mlist.preferred_language)
-            try:
+            with i18n.using_language(mlist.preferred_language):
                 hostname = mlist.host_name
                 adminurl = mlist.GetScriptURL('admin', absolute=True)
                 msg = Message.UserNotification(
@@ -171,8 +171,6 @@ liking.  Visit your list admin page at
     $adminurl
 '''),
                     mlist.preferred_language)
-            finally:
-                i18n.set_translation(otrans)
             msg.send(mlist)
 
 

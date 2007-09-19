@@ -26,6 +26,8 @@
        (probably in the 'update_dirty_archives' method).
 """
 
+from __future__ import with_statement
+
 import os
 import re
 import sys
@@ -114,13 +116,8 @@ def sizeof(filename, lang):
         if e.errno <> errno.ENOENT: raise
         return _('size not available')
     if size < 1000:
-        # Avoid i18n side-effects
-        otrans = i18n.get_translation()
-        try:
-            i18n.set_language(lang)
+        with i18n.using_language(lang):
             out = _(' %(size)i bytes ')
-        finally:
-            i18n.set_translation(otrans)
         return out
     elif size < 1000000:
         return ' %d KB ' % (size / 1000)
@@ -269,17 +266,12 @@ class Article(pipermail.Article):
             # article (for this list) could be different from the site-wide
             # preferred language, so we need to ensure no side-effects will
             # occur.  Think what happens when executing bin/arch.
-            otrans = i18n.get_translation()
-            try:
-                i18n.set_language(lang)
+            with i18n.using_language(lang):
                 if self.author == self.email:
                     self.author = self.email = re.sub('@', _(' at '),
                                                       self.email)
                 else:
                     self.email = re.sub('@', _(' at '), self.email)
-            finally:
-                i18n.set_translation(otrans)
-
         # Snag the content-* headers.  RFC 1521 states that their values are
         # case insensitive.
         ctype = message.get('Content-Type', 'text/plain')
@@ -401,14 +393,10 @@ class Article(pipermail.Article):
                 self.decoded['email'] = email
         if subject:
             if config.ARCHIVER_OBSCURES_EMAILADDRS:
-                otrans = i18n.get_translation()
-                try:
-                    i18n.set_language(self._lang)
+                with i18n.using_language(self._lang):
                     atmark = unicode(_(' at '), Utils.GetCharSet(self._lang))
                     subject = re.sub(r'([-+,.\w]+)@([-+.\w]+)',
                               '\g<1>' + atmark + '\g<2>', subject)
-                finally:
-                    i18n.set_translation(otrans)
             self.decoded['subject'] = subject
         self.decoded['stripped'] = self.strip_subject(subject or self.subject)
 
@@ -443,9 +431,7 @@ class Article(pipermail.Article):
     def as_html(self):
         d = self.__dict__.copy()
         # avoid i18n side-effects
-        otrans = i18n.get_translation()
-        i18n.set_language(self._lang)
-        try:
+        with i18n.using_language(self._lang):
             d["prev"], d["prev_wsubj"] = self._get_prev()
             d["next"], d["next_wsubj"] = self._get_next()
 
@@ -468,9 +454,6 @@ class Article(pipermail.Article):
             d['listurl'] = self._mlist.GetScriptURL('listinfo', absolute=1)
             d['listname'] = self._mlist.real_name
             d['encoding'] = ''
-        finally:
-            i18n.set_translation(otrans)
-
         charset = Utils.GetCharSet(self._lang)
         d["encoding"] = html_charset % charset
 
@@ -562,14 +545,10 @@ class Article(pipermail.Article):
         if not isinstance(body, unicode):
             body = unicode(body, cset, 'replace')
         if config.ARCHIVER_OBSCURES_EMAILADDRS:
-            otrans = i18n.get_translation()
-            try:
+            with i18n.using_language(self._lang):
                 atmark = unicode(_(' at '), cset)
-                i18n.set_language(self._lang)
                 body = re.sub(r'([-+,.\w]+)@([-+.\w]+)',
                               '\g<1>' + atmark + '\g<2>', body)
-            finally:
-                i18n.set_translation(otrans)
         # Return body to character set of article.
         body = body.encode(cset, 'replace')
         return NL.join(headers) % d + '\n\n' + body + '\n'
@@ -668,12 +647,10 @@ class HyperArchive(pipermail.T):
     def html_foot(self):
         # avoid i18n side-effects
         mlist = self.maillist
-        otrans = i18n.get_translation()
-        i18n.set_language(mlist.preferred_language)
         # Convenience
         def quotetime(s):
             return html_quote(i18n.ctime(s), self.lang)
-        try:
+        with i18n.using_language(mlist.preferred_language):
             d = {"lastdate": quotetime(self.lastdate),
                  "archivedate": quotetime(self.archivedate),
                  "listinfo": mlist.GetScriptURL('listinfo', absolute=1),
@@ -684,9 +661,6 @@ class HyperArchive(pipermail.T):
                  "author": _("author"),
                  "date": _("date")
                  }
-        finally:
-            i18n.set_translation(otrans)
-
         for t in i.keys():
             cap = t[0].upper() + t[1:]
             if self.type == cap:
@@ -701,12 +675,10 @@ class HyperArchive(pipermail.T):
     def html_head(self):
         # avoid i18n side-effects
         mlist = self.maillist
-        otrans = i18n.get_translation()
-        i18n.set_language(mlist.preferred_language)
         # Convenience
         def quotetime(s):
             return html_quote(i18n.ctime(s), self.lang)
-        try:
+        with i18n.using_language(mlist.preferred_language):
             d = {"listname": html_quote(mlist.real_name, self.lang),
                  "archtype": self.type,
                  "archive":  self.volNameToDesc(self.archive),
@@ -720,9 +692,6 @@ class HyperArchive(pipermail.T):
                  "author": _("author"),
                  "date": _("date"),
                  }
-        finally:
-            i18n.set_translation(otrans)
-
         for t in i.keys():
             cap = t[0].upper() + t[1:]
             if self.type == cap:
@@ -750,9 +719,7 @@ class HyperArchive(pipermail.T):
              'meta': '',
              }
         # Avoid i18n side-effects
-        otrans = i18n.get_translation()
-        i18n.set_language(mlist.preferred_language)
-        try:
+        with i18n.using_language(mlist.preferred_language):
             if not self.archives:
                 d["noarchive_msg"] = _(
                     '<P>Currently, there are no archives. </P>')
@@ -773,8 +740,6 @@ class HyperArchive(pipermail.T):
                 for a in self.archives:
                     accum.append(self.html_TOC_entry(a))
                 d["archive_listing"] = EMPTYSTRING.join(accum)
-        finally:
-            i18n.set_translation(otrans)
         # The TOC is always in the charset of the list's preferred language
         d['meta'] += html_charset % Utils.GetCharSet(mlist.preferred_language)
         # The site can disable public access to the mbox file.

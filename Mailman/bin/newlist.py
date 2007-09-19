@@ -15,6 +15,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
+from __future__ import with_statement
+
 import sha
 import sys
 import getpass
@@ -131,13 +133,9 @@ def main():
         # Set the I18N language to the list's preferred language so the header
         # will match the template language.  Stashing and restoring the old
         # translation context is just (healthy? :) paranoia.
-        otrans = i18n.get_translation()
-        i18n.set_language(mlist.preferred_language)
-        try:
+        with i18n.using_language(mlist.preferred_language):
             msg = Message.UserNotification(
                 owner_mail, mlist.no_reply_address,
                 _('Your new mailing list: $listname'),
                 text, mlist.preferred_language)
             msg.send(mlist)
-        finally:
-            i18n.set_translation(otrans)

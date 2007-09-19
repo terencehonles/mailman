@@ -15,6 +15,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
+from __future__ import with_statement
+
 import os
 import sys
 import optparse
@@ -177,9 +179,7 @@ def main():
     else:
         admin_notify = opts.admin_notify
 
-    otrans = i18n.get_translation()
-    # Read the regular and digest member files
-    try:
+    with i18n.using_language(mlist.preferred_language):
         if opts.digest:
             dmembers = readfile(opts.digest)
         else:
@@ -194,7 +194,6 @@ def main():
             sys.exit(0)
 
         s = StringIO()
-        i18n.set_language(mlist.preferred_language)
         if nmembers:
             addall(mlist, nmembers, False, send_welcome_msg, s)
 
@@ -211,7 +210,7 @@ def main():
         mlist.Save()
     finally:
         mlist.Unlock()
-        i18n.set_translation(otrans)
+
 
 
 if __name__ == '__main__':

@@ -69,6 +69,21 @@ def set_translation(translation):
     _translation = translation
 
 
+class using_language(object):
+    """Context manager for Python 2.5's `with` statement."""
+    def __init__(self, language):
+        self._language = language
+        self._old_translation = None
+
+    def __enter__(self):
+        self._old_translation = _translation
+        set_language(self._language)
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        global _translation
+        _translation = self._old_translation
+
+
 # Set up the global translation based on environment variables.  Mostly used
 # for command line scripts.
 if _translation is None:

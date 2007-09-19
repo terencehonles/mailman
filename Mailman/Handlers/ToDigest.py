@@ -25,6 +25,8 @@
 # directory and the DigestRunner will craft the MIME, rfc1153, and
 # (eventually) URL-subject linked digests from the mbox.
 
+from __future__ import with_statement
+
 import os
 import re
 import copy
@@ -129,12 +131,8 @@ def send_digests(mlist, mboxfp):
     mlist.digest_last_sent_at = time.time()
     # Wrapper around actually digest crafter to set up the language context
     # properly.  All digests are translated to the list's preferred language.
-    otranslation = i18n.get_translation()
-    i18n.set_language(mlist.preferred_language)
-    try:
+    with i18n.using_language(mlist.preferred_language):
         send_i18n_digests(mlist, mboxfp)
-    finally:
-        i18n.set_translation(otranslation)
 
 
 

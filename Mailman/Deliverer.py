@@ -18,6 +18,8 @@
 
 """Mixin class with message delivery routines."""
 
+from __future__ import with_statement
+
 import logging
 
 from email.MIMEMessage import MIMEMessage
@@ -126,9 +128,7 @@ action by you is required.""")))
         except Errors.MMListError:
             # Oh well
             return
-        otrans = i18n.get_translation()
-        i18n.set_language(mlist.preferred_language)
-        try:
+        with i18n.using_language(mlist.preferred_language):
             msg = Message.OwnerNotification(
                 mlist,
                 _('Hostile subscription attempt detected'),
@@ -137,8 +137,6 @@ deliberate malicious attempt, they tried to confirm the invitation to a
 different list.  We just thought you'd like to know.  No further action by you
 is required.""")))
             msg.send(mlist)
-        finally:
-            i18n.set_translation(otrans)
 
     def sendProbe(self, member, msg):
         listname = self.real_name
@@ -162,12 +160,8 @@ is required.""")))
                                self.host_name)
         # Calculate the Subject header, in the member's preferred language
         ulang = self.getMemberLanguage(member)
-        otrans = i18n.get_translation()
-        i18n.set_language(ulang)
-        try:
+        with i18n.using_language(ulang):
             subject = _('%(listname)s mailing list probe message')
-        finally:
-            i18n.set_translation(otrans)
         outer = Message.UserNotification(member, probeaddr, subject,
                                          lang=ulang)
         outer.set_type('multipart/mixed')

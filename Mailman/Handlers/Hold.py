@@ -28,6 +28,8 @@ Finally an exception is raised to let the pipeline machinery know that further
 message handling should stop.
 """
 
+from __future__ import with_statement
+
 import email
 import logging
 import email.utils
@@ -272,9 +274,7 @@ def hold_for_approval(mlist, msg, msgdata, exc):
     if mlist.admin_immed_notify:
         # Now let's temporarily set the language context to that which the
         # admin is expecting.
-        otranslation = i18n.get_translation()
-        i18n.set_language(mlist.preferred_language)
-        try:
+        with i18n.using_language(mlist.preferred_language):
             lang = mlist.preferred_language
             charset = Utils.GetCharSet(lang)
             # We need to regenerate or re-translate a few values in d
@@ -304,8 +304,6 @@ also appear in the first line of the body of the reply.""")),
             nmsg.attach(MIMEMessage(msg))
             nmsg.attach(MIMEMessage(dmsg))
             nmsg.send(mlist, **{'tomoderators': 1})
-        finally:
-            i18n.set_translation(otranslation)
     # Log the held message
     log.info('%s post from %s held, message-id=%s: %s',
              listname, sender, message_id, reason)
