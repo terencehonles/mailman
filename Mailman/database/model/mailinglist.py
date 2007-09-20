@@ -15,10 +15,12 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
+import os
+
 from elixir import *
 from zope.interface import implements
 
-from Mailman.Utils import fqdn_listname, split_listname
+from Mailman.Utils import fqdn_listname, makedirs, split_listname
 from Mailman.configuration import config
 from Mailman.interfaces import *
 from Mailman.database.types import EnumType, TimeDeltaType
@@ -174,6 +176,8 @@ class MailingList(Entity):
         # 2-tuple of the date of the last autoresponse and the number of
         # autoresponses sent on that date.
         self.hold_and_cmd_autoresponses = {}
+        self.full_path = os.path.join(config.LIST_DATA_DIR, fqdn_listname)
+        makedirs(self.full_path)
 
     # XXX FIXME
     def _restore(self):

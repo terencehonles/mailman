@@ -3,7 +3,6 @@ things that I need to do.
 
 Fix the XXX in model/requests.py where we need a flush because we can't get to
     last_inserted_id()
-Get rid of InitTempVars()
 Get rid of PickleTypes
 Get rid of MailList class!
 Add tests for bin/newlist and bin/rmlist

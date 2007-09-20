@@ -48,7 +48,7 @@ mailing list you need to get its requests object.
     >>> verifyObject(IListRequests, requests)
     True
     >>> requests.mailing_list
-    <mailing list "test@example.com" (unlocked) at ...>
+    <mailing list "test@example.com" at ...>
 
 
 Holding requests

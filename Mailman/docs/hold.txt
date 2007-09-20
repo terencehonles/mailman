@@ -19,12 +19,6 @@ are held when they meet any of a number of criteria.
     >>> mlist._data.web_page_url = 'http://lists.example.com/'
     >>> flush()
 
-XXX The Hold handler requires that the mailing list be locked because it
-touches the pending database.  Eventually the pending database should be moved
-into the real database so that the lock is no longer necessary.
-
-    >>> mlist.Lock()
-
 Here's a helper function used when we don't care about what's in the virgin
 queue or in the pending database.
 
@@ -380,4 +374,3 @@ The message itself is held in the message store.
 Clean up.
 
     >>> clear()
-    >>> mlist.Unlock()

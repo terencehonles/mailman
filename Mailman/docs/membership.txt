@@ -19,7 +19,7 @@ When we create a mailing list, it starts out with no members...
     >>> mlist = config.db.list_manager.create('_xtest@example.com')
     >>> flush()
     >>> mlist
-    <mailing list "_xtest@example.com" (unlocked) at ...>
+    <mailing list "_xtest@example.com" at ...>
     >>> sorted(member.address.address for member in mlist.members.members)
     []
     >>> sorted(user.real_name for user in mlist.members.users)

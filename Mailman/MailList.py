@@ -97,12 +97,16 @@ class MailList(object, HTMLFormatter, Deliverer,
 
     def __init__(self, data):
         self._data = data
-        # Only one level of mixin inheritance allowed
+        # Only one level of mixin inheritance allowed.
         for baseclass in self.__class__.__bases__:
             if hasattr(baseclass, '__init__'):
                 baseclass.__init__(self)
-        # Initialize volatile attributes
-        self.InitTempVars()
+        # Initialize the web u/i components.
+        self._gui = []
+        for component in dir(Gui):
+            if component.startswith('_'):
+                continue
+            self._gui.append(getattr(Gui, component)())
         # Give the extension mechanism a chance to process this list.
         try:
             from Mailman.ext import init_mlist
@@ -114,13 +118,9 @@ class MailList(object, HTMLFormatter, Deliverer,
     def __getattr__(self, name):
         missing = object()
         if name.startswith('_'):
-            return super(MailList, self).__getattr__(name)
+            return getattr(super(MailList, self), name)
         # Delegate to the database model object if it has the attribute.
         obj = getattr(self._data, name, missing)
-        if obj is not missing:
-            return obj
-        # Delegate to the member adapter next.
-        obj = getattr(self._memberadaptor, name, missing)
         if obj is not missing:
             return obj
         # Finally, delegate to one of the gui components.
@@ -132,12 +132,7 @@ class MailList(object, HTMLFormatter, Deliverer,
         raise AttributeError(name)
 
     def __repr__(self):
-        if self.Locked():
-            status = '(locked)'
-        else:
-            status = '(unlocked)'
-        return '<mailing list "%s" %s at %x>' % (
-            self.fqdn_listname, status, id(self))
+        return '<mailing list "%s" at %x>' % (self.fqdn_listname, id(self))
 
 
     #
@@ -167,15 +162,6 @@ class MailList(object, HTMLFormatter, Deliverer,
 
     def Locked(self):
         return self._lock.locked()
-
-
-
-    #
-    # Useful accessors
-    #
-    @property
-    def full_path(self):
-        return self._full_path
 
 
 
@@ -275,42 +261,6 @@ class MailList(object, HTMLFormatter, Deliverer,
         if obscure:
             user = Utils.ObscureEmail(user)
         return '%s/%s' % (url, urllib.quote(user.lower()))
-
-
-    #
-    # Instance and subcomponent initialization
-    #
-    def InitTempVars(self):
-        """Set transient variables of this and inherited classes."""
-        # Because of the semantics of the database layer, it's possible that
-        # this method gets called more than once on an existing object.  For
-        # example, if the MailList object is expunged from the current db
-        # session, then this may get called again when the object's persistent
-        # attributes are re-read from the database.  This can have nasty
-        # consequences, so ensure that we're only called once.
-        if hasattr(self, '_lock'):
-            return
-        # Attach a membership adaptor instance.
-        parts = config.MEMBER_ADAPTOR_CLASS.split(DOT)
-        adaptor_class = parts.pop()
-        adaptor_module = DOT.join(parts)
-        __import__(adaptor_module)
-        mod = sys.modules[adaptor_module]
-        self._memberadaptor = getattr(mod, adaptor_class)(self)
-        self._make_lock(self.fqdn_listname)
-        # Create the list's data directory.
-        self._full_path = os.path.join(config.LIST_DATA_DIR, self.fqdn_listname)
-        Utils.makedirs(self._full_path)
-        # Only one level of mixin inheritance allowed
-        for baseclass in self.__class__.__bases__:
-            if hasattr(baseclass, 'InitTempVars'):
-                baseclass.InitTempVars(self)
-        # Now, initialize our gui components
-        self._gui = []
-        for component in dir(Gui):
-            if component.startswith('_'):
-                continue
-            self._gui.append(getattr(Gui, component)())
 
 
     #
