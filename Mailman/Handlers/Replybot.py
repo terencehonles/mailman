@@ -19,6 +19,7 @@
 
 import time
 import logging
+import datetime
 
 from string import Template
 
@@ -29,6 +30,7 @@ from Mailman.i18n import _
 log = logging.getLogger('mailman.error')
 
 __i18n_templates__ = True
+NODELTA = datetime.timedelta()
 
 
 
@@ -63,7 +65,7 @@ def process(mlist, msg, msgdata):
     sender = msg.get_sender()
     now = time.time()
     graceperiod = mlist.autoresponse_graceperiod
-    if graceperiod > 0 and ack <> 'yes':
+    if graceperiod > NODELTA and ack <> 'yes':
         if toadmin:
             quiet_until = mlist.admin_responses.get(sender, 0)
         elif torequest:
@@ -79,7 +81,7 @@ def process(mlist, msg, msgdata):
         'Auto-response for your message to the "$realname" mailing list')
     # Do string interpolation into the autoresponse text
     d = dict(listname       = realname,
-             listurl        = mlist.GetScriptURL('listinfo'),
+             listurl        = mlist.script_url('listinfo'),
              requestemail   = mlist.request_address,
              owneremail     = mlist.owner_address,
              )
@@ -98,7 +100,7 @@ def process(mlist, msg, msgdata):
     outmsg['X-Ack'] = 'No'
     outmsg.send(mlist)
     # update the grace period database
-    if graceperiod > 0:
+    if graceperiod > NODELTA:
         # graceperiod is in days, we need # of seconds
         quiet_until = now + graceperiod * 24 * 60 * 60
         if toadmin:

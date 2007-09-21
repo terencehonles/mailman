@@ -61,14 +61,6 @@ Use the list manager to delete a mailing list.
     >>> sorted(listmgr.names)
     []
 
-Attempting to access attributes of the deleted mailing list raises an
-exception:
-
-    >>> mlist.fqdn_listname
-    Traceback (most recent call last):
-    ...
-    AttributeError: fqdn_listname
-
 After deleting the list, you can create it again.
 
     >>> mlist = listmgr.create('_xtest@example.com')

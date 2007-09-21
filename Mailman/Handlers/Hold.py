@@ -43,7 +43,10 @@ from Mailman import Errors
 from Mailman import Message
 from Mailman import Utils
 from Mailman import i18n
+from Mailman.app.bounces import (
+    has_explicit_destination, has_matching_bounce_header)
 from Mailman.app.moderator import hold_message
+from Mailman.app.replybot import autorespond_to_sender
 from Mailman.configuration import config
 from Mailman.interfaces import IPendable
 
@@ -88,7 +91,7 @@ class Administrivia(Errors.HoldMessage):
     reason = _('Message may contain administrivia')
 
     def rejection_notice(self, mlist):
-        listurl = mlist.GetScriptURL('listinfo', absolute=1)
+        listurl = mlist.script_url('listinfo')
         request = mlist.request_address
         return _("""Please do *not* post administrative requests to the mailing
 list.  If you wish to subscribe, visit $listurl or send a message with the
@@ -171,7 +174,7 @@ def process(mlist, msg, msgdata):
     # Implicit destination?  Note that message originating from the Usenet
     # side of the world should never be checked for implicit destination.
     if mlist.require_explicit_destination and \
-           not mlist.HasExplicitDest(msg) and \
+           not has_explicit_destination(mlist, msg) and \
            not msgdata.get('fromusenet'):
         # then
         hold_for_approval(mlist, msg, msgdata, ImplicitDestination)
@@ -179,7 +182,7 @@ def process(mlist, msg, msgdata):
     #
     # Suspicious headers?
     if mlist.bounce_matching_headers:
-        triggered = mlist.hasMatchingHeader(msg)
+        triggered = has_matching_bounce_header(mlist, msg)
         if triggered:
             # TBD: Darn - can't include the matching line for the admin
             # message because the info would also go to the sender
@@ -239,7 +242,7 @@ def hold_for_approval(mlist, msg, msgdata, exc):
          'reason'     : _(reason),
          'sender'     : sender,
          'subject'    : usersubject,
-         'admindb_url': mlist.GetScriptURL('admindb', absolute=1),
+         'admindb_url': mlist.script_url('admindb'),
          }
     # We may want to send a notification to the original sender too
     fromusenet = msgdata.get('fromusenet')
@@ -259,10 +262,10 @@ def hold_for_approval(mlist, msg, msgdata, exc):
     member = mlist.members.get_member(sender)
     lang = (member.preferred_language if member else mlist.preferred_language)
     if not fromusenet and ackp(msg) and mlist.respond_to_post_requests and \
-           mlist.autorespondToSender(sender, lang):
+           autorespond_to_sender(mlist, sender, lang):
         # Get a confirmation token
-        d['confirmurl'] = '%s/%s' % (mlist.GetScriptURL('confirm', absolute=1),
-                                     token)
+        d['confirmurl'] = '%s/%s' % (
+            mlist.script_url('confirm'), token)
         lang = msgdata.get('lang', lang)
         subject = _('Your message to $listname awaits moderator approval')
         text = Utils.maketext('postheld.txt', d, lang=lang, mlist=mlist)

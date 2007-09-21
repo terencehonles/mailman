@@ -16,7 +16,7 @@ are held when they meet any of a number of criteria.
     >>> mlist.real_name = '_XTest'
     >>> # XXX This will almost certainly change once we've worked out the web
     >>> # space layout for mailing lists now.
-    >>> mlist._data.web_page_url = 'http://lists.example.com/'
+    >>> mlist.web_page_url = 'http://lists.example.com/'
     >>> flush()
 
 Here's a helper function used when we don't care about what's in the virgin

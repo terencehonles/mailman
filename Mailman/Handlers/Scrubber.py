@@ -38,6 +38,7 @@ from Mailman import LockFile
 from Mailman import Message
 from Mailman import Utils
 from Mailman.Errors import DiscardMessage
+from Mailman.app.archiving import get_base_archive_url
 from Mailman.configuration import config
 from Mailman.i18n import _
 
@@ -388,7 +389,8 @@ def makedirs(dir):
 
 
 def save_attachment(mlist, msg, dir, filter_html=True):
-    fsdir = os.path.join(mlist.archive_dir(), dir)
+    fsdir = os.path.join(config.PRIVATE_ARCHIVE_FILE_DIR,
+                         mlist.fqdn_listname, dir)
     makedirs(fsdir)
     # Figure out the attachment type and get the decoded data
     decodedpayload = msg.get_payload(decode=True)
@@ -496,7 +498,7 @@ def save_attachment(mlist, msg, dir, filter_html=True):
     fp.write(decodedpayload)
     fp.close()
     # Now calculate the url
-    baseurl = mlist.GetBaseArchiveURL()
+    baseurl = get_base_archive_url(mlist)
     # Private archives will likely have a trailing slash.  Normalize.
     if baseurl[-1] <> '/':
         baseurl += '/'

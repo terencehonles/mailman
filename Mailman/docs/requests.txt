@@ -451,7 +451,7 @@ queue when the message is held.
     >>> mlist.admin_immed_notify = True
     >>> # XXX This will almost certainly change once we've worked out the web
     >>> # space layout for mailing lists now.
-    >>> mlist._data.web_page_url = 'http://www.example.com/'
+    >>> mlist.web_page_url = 'http://www.example.com/'
     >>> flush()
     >>> id_4 = moderator.hold_subscription(mlist,
     ...     'cperson@example.org', 'Claire Person',

@@ -179,7 +179,7 @@ def send_i18n_digests(mlist, mboxfp):
         'masthead.txt',
         {'real_name' :        mlist.real_name,
          'got_list_email':    mlist.posting_address,
-         'got_listinfo_url':  mlist.GetScriptURL('listinfo', absolute=1),
+         'got_listinfo_url':  mlist.script_url('listinfo'),
          'got_request_email': mlist.request_address,
          'got_owner_email':   mlist.owner_address,
          }, mlist=mlist)

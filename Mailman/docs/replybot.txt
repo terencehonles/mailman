@@ -13,6 +13,7 @@ message or the amount of time since the last auto-response.
     >>> from Mailman.database import flush
     >>> mlist = config.db.list_manager.create('_xtest@example.com')
     >>> mlist.real_name = 'XTest'
+    >>> mlist.web_page_url = 'http://www.example.com/'
     >>> flush()
 
     >>> # Ensure that the virgin queue is empty, since we'll be checking this
@@ -32,8 +33,9 @@ is sent to one of these addresses.  A mailing list also has an autoresponse
 grace period which describes how much time must pass before a second response
 will be sent, with 0 meaning "there is no grace period".
 
+    >>> import datetime
     >>> mlist.autorespond_admin = True
-    >>> mlist.autoresponse_graceperiod = 0
+    >>> mlist.autoresponse_graceperiod = datetime.timedelta()
     >>> mlist.autoresponse_admin_text = 'admin autoresponse text'
     >>> flush()
     >>> msg = message_from_string("""\

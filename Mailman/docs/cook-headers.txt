@@ -18,7 +18,7 @@ is getting sent through the system.  We'll take things one-by-one.
     >>> mlist.archive = True
     >>> # XXX This will almost certainly change once we've worked out the web
     >>> # space layout for mailing lists now.
-    >>> mlist._data.web_page_url = 'http://lists.example.com/'
+    >>> mlist.web_page_url = 'http://lists.example.com/'
     >>> flush()
 
 

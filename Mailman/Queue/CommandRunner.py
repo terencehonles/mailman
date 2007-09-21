@@ -36,6 +36,7 @@ from Mailman import Message
 from Mailman import Utils
 from Mailman.Handlers import Replybot
 from Mailman.Queue.Runner import Runner
+from Mailman.app.replybot import autorespond_to_sender
 from Mailman.configuration import config
 from Mailman.i18n import _
 
@@ -176,7 +177,7 @@ To obtain instructions, send a message containing just the word "help".
         # BAW: We wait until now to make this decision since our sender may
         # not be self.msg.get_sender(), but I'm not sure this is right.
         recip = self.returnaddr or self.msg.get_sender()
-        if not self.mlist.autorespondToSender(recip, self.msgdata['lang']):
+        if not autorespond_to_sender(self.mlist, recip, self.msgdata['lang']):
             return
         msg = Message.UserNotification(
             recip,

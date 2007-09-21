@@ -49,22 +49,22 @@ class ListRequests:
 
     @property
     def count(self):
-        results = _Request.select_by(mailing_list=self.mailing_list._data)
+        results = _Request.select_by(mailing_list=self.mailing_list)
         return len(results)
 
     def count_of(self, request_type):
-        results = _Request.select_by(mailing_list=self.mailing_list._data,
+        results = _Request.select_by(mailing_list=self.mailing_list,
                                      type=request_type)
         return len(results)
 
     @property
     def held_requests(self):
-        results = _Request.select_by(mailing_list=self.mailing_list._data)
+        results = _Request.select_by(mailing_list=self.mailing_list)
         for request in results:
             yield request
 
     def of_type(self, request_type):
-        results = _Request.select_by(mailing_list=self.mailing_list._data,
+        results = _Request.select_by(mailing_list=self.mailing_list,
                                      type=request_type)
         for request in results:
             yield request
@@ -88,12 +88,12 @@ class ListRequests:
         # flush()'s.
 ##         result = _Request.table.insert().execute(
 ##             key=key, type=request_type,
-##             mailing_list=self.mailing_list._data,
+##             mailing_list=self.mailing_list,
 ##             data_hash=data_hash)
 ##         row_id = result.last_inserted_ids()[0]
 ##         return row_id
         result = _Request(key=key, type=request_type,
-                          mailing_list=self.mailing_list._data,
+                          mailing_list=self.mailing_list,
                           data_hash=data_hash)
         # XXX We need a handle on last_inserted_ids() instead of requiring a
         # flush of the database to get a valid id.

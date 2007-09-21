@@ -26,6 +26,7 @@ from email.Utils import parseaddr, formataddr, getaddresses
 
 from Mailman import Utils
 from Mailman import Version
+from Mailman.app.archiving import get_base_archive_url
 from Mailman.configuration import config
 from Mailman.constants import ReplyToMunging
 from Mailman.i18n import _
@@ -207,7 +208,7 @@ def process(mlist, msg, msgdata):
             headers['List-Post'] = '<mailto:%s>' % mlist.posting_address
         # Add this header if we're archiving
         if mlist.archive:
-            archiveurl = mlist.GetBaseArchiveURL()
+            archiveurl = get_base_archive_url(mlist)
             if archiveurl.endswith('/'):
                 archiveurl = archiveurl[:-1]
             headers['List-Archive'] = '<%s>' % archiveurl

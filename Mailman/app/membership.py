@@ -58,7 +58,7 @@ def add_member(mlist, address, realname, password, delivery_mode, language,
         raise Errors.AlreadySubscribedError(address)
     # Check for banned address here too for admin mass subscribes and
     # confirmations.
-    pattern = mlist.GetBannedPattern(address)
+    pattern = Utils.get_pattern(address, mlist.ban_list)
     if pattern:
         raise Errors.MembershipIsBanned(pattern)
     # Do the actual addition.  First, see if there's already a user linked

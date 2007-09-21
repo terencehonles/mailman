@@ -53,7 +53,7 @@ def create_list(fqdn_listname, owners=None):
         # be necessary.  Until then, setattr on the MailList instance won't
         # set the database column values, so pass the underlying database
         # object to .apply() instead.
-        style.apply(mlist._data)
+        style.apply(mlist)
     # Coordinate with the MTA, which should be defined by plugins.
     # XXX FIXME
 ##     mta_plugin = get_plugin('mailman.mta')

@@ -19,7 +19,8 @@ Helper functions for getting the attachment data.
 
     >>> import os, re
     >>> def read_attachment(filename, remove=True):
-    ...     path = os.path.join(mlist.archive_dir(), filename)
+    ...     path = os.path.join(config.PRIVATE_ARCHIVE_FILE_DIR,
+    ...                         mlist.fqdn_listname, filename)
     ...     fp = open(path)
     ...     try:
     ...         data = fp.read()

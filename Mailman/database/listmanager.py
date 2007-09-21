@@ -17,7 +17,6 @@
 
 """SQLAlchemy/Elixir based provider of IListManager."""
 
-import weakref
 import datetime
 
 from elixir import *
@@ -34,9 +33,6 @@ from Mailman.interfaces import IListManager, IPending
 class ListManager(object):
     implements(IListManager)
 
-    def __init__(self):
-        self._objectmap = weakref.WeakKeyDictionary()
-
     def create(self, fqdn_listname):
         listname, hostname = split_listname(fqdn_listname)
         mlist = MailingList.get_by(list_name=listname,
@@ -45,30 +41,18 @@ class ListManager(object):
             raise Errors.MMListAlreadyExistsError(fqdn_listname)
         mlist = MailingList(fqdn_listname)
         mlist.created_at = datetime.datetime.now()
-        # Wrap the database model object in an application MailList object and
-        # return the latter.  Keep track of the wrapper so we can clean it up
-        # when we're done with it.
-        from Mailman.MailList import MailList
-        wrapper = MailList(mlist)
-        self._objectmap[mlist] = wrapper
-        return wrapper
+        return mlist
 
     def delete(self, mlist):
-        # Delete the wrapped backing data.  XXX It's kind of icky to reach
-        # into the MailList object this way.
-        mlist._data.delete()
-        mlist._data = None
+        mlist.delete()
 
     def get(self, fqdn_listname):
         listname, hostname = split_listname(fqdn_listname)
-        mlist = MailingList.get_by(list_name=listname,
-                                   host_name=hostname)
-        if not mlist:
-            return None
-        mlist._restore()
-        from Mailman.MailList import MailList
-        wrapper = self._objectmap.setdefault(mlist, MailList(mlist))
-        return wrapper
+        mlist = MailingList.get_by(list_name=listname, host_name=hostname)
+        if mlist is not None:
+            # XXX Fixme
+            mlist._restore()
+        return mlist
 
     @property
     def mailing_lists(self):

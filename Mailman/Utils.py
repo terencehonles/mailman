@@ -887,3 +887,31 @@ def strip_verbose_pattern(pattern):
                 newpattern += c
         i += 1
     return newpattern
+
+
+
+def get_pattern(email, pattern_list):
+    """Returns matched entry in pattern_list if email matches.
+    Otherwise returns None.
+    """
+    if not pattern_list:
+        return None
+    matched = None
+    for pattern in pattern_list:
+        if pattern.startswith('^'):
+            # This is a regular expression match
+            try:
+                if re.search(pattern, email, re.IGNORECASE):
+                    matched = pattern
+                    break
+            except re.error:
+                # BAW: we should probably remove this pattern
+                pass
+        else:
+            # Do the comparison case insensitively
+            if pattern.lower() == email.lower():
+                matched = pattern
+                break
+    return matched
+
+

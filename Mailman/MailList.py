@@ -58,9 +58,7 @@ from Mailman.interfaces import *
 # Base classes
 from Mailman.Archiver import Archiver
 from Mailman.Bouncer import Bouncer
-from Mailman.Deliverer import Deliverer
 from Mailman.Digester import Digester
-from Mailman.HTMLFormatter import HTMLFormatter
 from Mailman.SecurityManager import SecurityManager
 
 # GUI components package
@@ -85,8 +83,7 @@ slog    = logging.getLogger('mailman.subscribe')
 
 
 # Use mixins here just to avoid having any one chunk be too large.
-class MailList(object, HTMLFormatter, Deliverer,
-               Archiver, Digester, SecurityManager, Bouncer):
+class MailList(object, Archiver, Digester, SecurityManager, Bouncer):
 
     implements(
         IMailingList,
@@ -165,50 +162,6 @@ class MailList(object, HTMLFormatter, Deliverer,
 
 
 
-    # IMailingListAddresses
-
-    @property
-    def posting_address(self):
-        return self.fqdn_listname
-
-    @property
-    def noreply_address(self):
-        return '%s@%s' % (config.NO_REPLY_ADDRESS, self.host_name)
-
-    @property
-    def owner_address(self):
-        return '%s-owner@%s' % (self.list_name, self.host_name)
-
-    @property
-    def request_address(self):
-        return '%s-request@%s' % (self.list_name, self.host_name)
-
-    @property
-    def bounces_address(self):
-        return '%s-bounces@%s' % (self.list_name, self.host_name)
-
-    @property
-    def join_address(self):
-        return '%s-join@%s' % (self.list_name, self.host_name)
-
-    @property
-    def leave_address(self):
-        return '%s-leave@%s' % (self.list_name, self.host_name)
-
-    @property
-    def subscribe_address(self):
-        return '%s-subscribe@%s' % (self.list_name, self.host_name)
-
-    @property
-    def unsubscribe_address(self):
-        return '%s-unsubscribe@%s' % (self.list_name, self.host_name)
-
-    def confirm_address(self, cookie):
-        local_part = Template(config.VERP_CONFIRM_FORMAT).safe_substitute(
-            address = '%s-confirm' % self.list_name,
-            cookie  = cookie)
-        return '%s@%s' % (local_part, self.host_name)
-
     def GetConfirmJoinSubject(self, listname, cookie):
         if config.VERP_CONFIRMATIONS and cookie:
             cset = i18n.get_translation().charset() or \
@@ -393,9 +346,9 @@ class MailList(object, HTMLFormatter, Deliverer,
         invitee = userdesc.address
         Utils.ValidateEmail(invitee)
         # check for banned address
-        pattern = self.GetBannedPattern(invitee)
+        pattern = Utils.get_pattern(invitee, self.ban_list)
         if pattern:
-            raise Errors.MembershipIsBanned, pattern
+            raise Errors.MembershipIsBanned(pattern)
         # Hack alert!  Squirrel away a flag that only invitations have, so
         # that we can do something slightly different when an invitation
         # subscription is confirmed.  In those cases, we don't need further
@@ -471,7 +424,7 @@ class MailList(object, HTMLFormatter, Deliverer,
             raise Errors.InvalidEmailAddress
         realname = self.real_name
         # Is the subscribing address banned from this list?
-        pattern = self.GetBannedPattern(email)
+        pattern = Utils.get_pattern(email, self.ban_list)
         if pattern:
             vlog.error('%s banned subscription: %s (matched: %s)',
                        realname, email, pattern)
@@ -588,7 +541,7 @@ class MailList(object, HTMLFormatter, Deliverer,
         # Don't allow changing to a banned address. MAS: maybe we should
         # unsubscribe the oldaddr too just for trying, but that's probably
         # too harsh.
-        pattern = self.GetBannedPattern(newaddr)
+        pattern = Utils.get_pattern(newaddr, self.ban_list)
         if pattern:
             vlog.error('%s banned address change: %s -> %s (matched: %s)',
                        realname, oldaddr, newaddr, pattern)
@@ -630,7 +583,7 @@ class MailList(object, HTMLFormatter, Deliverer,
         # confirmation was mailed. MAS: If it's global change should we just
         # skip this list and proceed to the others? For now we'll throw the
         # exception.
-        pattern = self.GetBannedPattern(newaddr)
+        pattern = Utils.get_pattern(newaddr, self.ban_list)
         if pattern:
             raise Errors.MembershipIsBanned, pattern
         # It's possible they were a member of this list, but choose to change
@@ -655,7 +608,7 @@ class MailList(object, HTMLFormatter, Deliverer,
             if not mlist.isMember(oldaddr):
                 continue
             # If new address is banned from this list, just skip it.
-            if mlist.GetBannedPattern(newaddr):
+            if Utils.get_pattern(newaddr, mlist.ban_list):
                 continue
             mlist.Lock()
             try:
@@ -859,193 +812,17 @@ class MailList(object, HTMLFormatter, Deliverer,
     #
     # Miscellaneous stuff
     #
-    def HasExplicitDest(self, msg):
-        """True if list name or any acceptable_alias is included among the
-        addresses in the recipient headers.
-        """
-        # This is the list's full address.
-        recips = []
-        # Check all recipient addresses against the list's explicit addresses,
-        # specifically To: Cc: and Resent-to:
-        to = []
-        for header in ('to', 'cc', 'resent-to', 'resent-cc'):
-            to.extend(getaddresses(msg.get_all(header, [])))
-        for fullname, addr in to:
-            # It's possible that if the header doesn't have a valid RFC 2822
-            # value, we'll get None for the address.  So skip it.
-            if addr is None:
-                continue
-            addr = addr.lower()
-            localpart = addr.split('@')[0]
-            if (# TBD: backwards compatibility: deprecated
-                    localpart == self.list_name or
-                    # exact match against the complete list address
-                    addr == self.fqdn_listname):
-                return True
-            recips.append((addr, localpart))
-        # Helper function used to match a pattern against an address.
-        def domatch(pattern, addr):
-            try:
-                if re.match(pattern, addr, re.IGNORECASE):
-                    return True
-            except re.error:
-                # The pattern is a malformed regexp -- try matching safely,
-                # with all non-alphanumerics backslashed:
-                if re.match(re.escape(pattern), addr, re.IGNORECASE):
-                    return True
-            return False
-        # Here's the current algorithm for matching acceptable_aliases:
-        #
-        # 1. If the pattern does not have an `@' in it, we first try matching
-        #    it against just the localpart.  This was the behavior prior to
-        #    2.0beta3, and is kept for backwards compatibility.  (deprecated).
-        #
-        # 2. If that match fails, or the pattern does have an `@' in it, we
-        #    try matching against the entire recip address.
-        aliases = self.acceptable_aliases.splitlines()
-        for addr, localpart in recips:
-            for alias in aliases:
-                stripped = alias.strip()
-                if not stripped:
-                    # Ignore blank or empty lines
-                    continue
-                if '@' not in stripped and domatch(stripped, localpart):
-                    return True
-                if domatch(stripped, addr):
-                    return True
-        return False
-
-    def parse_matching_header_opt(self):
-        """Return a list of triples [(field name, regex, line), ...]."""
-        # - Blank lines and lines with '#' as first char are skipped.
-        # - Leading whitespace in the matchexp is trimmed - you can defeat
-        #   that by, eg, containing it in gratuitous square brackets.
-        all = []
-        for line in self.bounce_matching_headers.split('\n'):
-            line = line.strip()
-            # Skip blank lines and lines *starting* with a '#'.
-            if not line or line[0] == "#":
-                continue
-            i = line.find(':')
-            if i < 0:
-                # This didn't look like a header line.  BAW: should do a
-                # better job of informing the list admin.
-                clog.error('bad bounce_matching_header line: %s\n%s',
-                           self.real_name, line)
-            else:
-                header = line[:i]
-                value = line[i+1:].lstrip()
-                try:
-                    cre = re.compile(value, re.IGNORECASE)
-                except re.error, e:
-                    # The regexp was malformed.  BAW: should do a better
-                    # job of informing the list admin.
-                    clog.error("""\
-bad regexp in bounce_matching_header line: %s
-\n%s (cause: %s)""", self.real_name, value, e)
-                else:
-                    all.append((header, cre, line))
-        return all
-
-    def hasMatchingHeader(self, msg):
-        """Return true if named header field matches a regexp in the
-        bounce_matching_header list variable.
-
-        Returns constraint line which matches or empty string for no
-        matches.
-        """
-        for header, cre, line in self.parse_matching_header_opt():
-            for value in msg.get_all(header, []):
-                if cre.search(value):
-                    return line
-        return 0
-
-    def autorespondToSender(self, sender, lang=None):
-        """Return true if Mailman should auto-respond to this sender.
-
-        This is only consulted for messages sent to the -request address, or
-        for posting hold notifications, and serves only as a safety value for
-        mail loops with email 'bots.
-        """
-        # language setting
-        if lang == None:
-            lang = self.preferred_language
-        i18n.set_language(lang)
-        # No limit
-        if config.MAX_AUTORESPONSES_PER_DAY == 0:
-            return 1
-        today = time.localtime()[:3]
-        info = self.hold_and_cmd_autoresponses.get(sender)
-        if info is None or info[0] <> today:
-            # First time we've seen a -request/post-hold for this sender
-            self.hold_and_cmd_autoresponses[sender] = (today, 1)
-            # BAW: no check for MAX_AUTORESPONSES_PER_DAY <= 1
-            return 1
-        date, count = info
-        if count < 0:
-            # They've already hit the limit for today.
-            vlog.info('-request/hold autoresponse discarded for: %s', sender)
-            return 0
-        if count >= config.MAX_AUTORESPONSES_PER_DAY:
-            vlog.info('-request/hold autoresponse limit hit for: %s', sender)
-            self.hold_and_cmd_autoresponses[sender] = (today, -1)
-            # Send this notification message instead
-            text = Utils.maketext(
-                'nomoretoday.txt',
-                {'sender' : sender,
-                 'listname': self.fqdn_listname,
-                 'num' : count,
-                 'owneremail': self.GetOwnerEmail(),
-                 },
-                lang=lang)
-            msg = Message.UserNotification(
-                sender, self.GetOwnerEmail(),
-                _('Last autoresponse notification for today'),
-                text, lang=lang)
-            msg.send(self)
-            return 0
-        self.hold_and_cmd_autoresponses[sender] = (today, count+1)
-        return 1
-
-    def GetBannedPattern(self, email):
-        """Returns matched entry in ban_list if email matches.
-        Otherwise returns None.
-        """
-        return self.ban_list and self.GetPattern(email, self.ban_list)
 
     def HasAutoApprovedSender(self, sender):
         """Returns True and logs if sender matches address or pattern
         in subscribe_auto_approval.  Otherwise returns False.
         """
         auto_approve = False
-        if self.GetPattern(sender, self.subscribe_auto_approval):
+        if Utils.get_pattern(sender, self.subscribe_auto_approval):
             auto_approve = True
             vlog.info('%s: auto approved subscribe from %s',
                       self.internal_name(), sender)
         return auto_approve
-
-    def GetPattern(self, email, pattern_list):
-        """Returns matched entry in pattern_list if email matches.
-        Otherwise returns None.
-        """
-        matched = None
-        for pattern in pattern_list:
-            if pattern.startswith('^'):
-                # This is a regular expression match
-                try:
-                    if re.search(pattern, email, re.IGNORECASE):
-                        matched = pattern
-                        break
-                except re.error:
-                    # BAW: we should probably remove this pattern
-                    pass
-            else:
-                # Do the comparison case insensitively
-                if pattern.lower() == email.lower():
-                    matched = pattern
-                    break
-        return matched
-
 
 
     #

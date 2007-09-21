@@ -37,7 +37,8 @@ to the original messageauthor.
 
     >>> from Mailman.Queue.Switchboard import Switchboard
     >>> switchboard = Switchboard(config.VIRGINQUEUE_DIR)
-    >>> mlist.bounce_message(msg)
+    >>> from Mailman.app.bounces import bounce_message
+    >>> bounce_message(mlist, msg)
     >>> len(switchboard.files)
     1
     >>> filebase = switchboard.files[0]
@@ -77,7 +78,7 @@ passed in as an instance of a RejectMessage exception.
 
     >>> from Mailman.Errors import RejectMessage
     >>> error = RejectMessage("This wasn't very important after all.")
-    >>> mlist.bounce_message(msg, error)
+    >>> bounce_message(mlist, msg, error)
     >>> len(switchboard.files)
     1
     >>> filebase = switchboard.files[0]

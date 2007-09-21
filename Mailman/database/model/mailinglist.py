@@ -211,3 +211,51 @@ class MailingList(Entity):
         # XXX Handle the case for when context is not None; those would be
         # relative URLs.
         return self.web_page_url + target + '/' + self.fqdn_listname
+
+    # IMailingListAddresses
+
+    @property
+    def posting_address(self):
+        return self.fqdn_listname
+
+    @property
+    def noreply_address(self):
+        return '%s@%s' % (config.NO_REPLY_ADDRESS, self.host_name)
+
+    @property
+    def owner_address(self):
+        return '%s-owner@%s' % (self.list_name, self.host_name)
+
+    @property
+    def request_address(self):
+        return '%s-request@%s' % (self.list_name, self.host_name)
+
+    @property
+    def bounces_address(self):
+        return '%s-bounces@%s' % (self.list_name, self.host_name)
+
+    @property
+    def join_address(self):
+        return '%s-join@%s' % (self.list_name, self.host_name)
+
+    @property
+    def leave_address(self):
+        return '%s-leave@%s' % (self.list_name, self.host_name)
+
+    @property
+    def subscribe_address(self):
+        return '%s-subscribe@%s' % (self.list_name, self.host_name)
+
+    @property
+    def unsubscribe_address(self):
+        return '%s-unsubscribe@%s' % (self.list_name, self.host_name)
+
+    def confirm_address(self, cookie):
+        template = string.Template(config.VERP_CONFIRM_FORMAT)
+        local_part = template.safe_substitute(
+            address = '%s-confirm' % self.list_name,
+            cookie  = cookie)
+        return '%s@%s' % (local_part, self.host_name)
+
+    def __repr__(self):
+        return '<mailing list "%s" at %#x>' % (self.fqdn_listname, id(self))
