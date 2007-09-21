@@ -22,7 +22,7 @@ import sys
 import optparse
 
 from cStringIO import StringIO
-from email.Utils import parseaddr
+from email.utils import parseaddr
 
 from Mailman import Errors
 from Mailman import MailList
@@ -30,7 +30,10 @@ from Mailman import Message
 from Mailman import Utils
 from Mailman import Version
 from Mailman import i18n
+from Mailman.app.membership import add_member
 from Mailman.configuration import config
+from Mailman.constants import DeliveryMode
+from Mailman.initialize import initialize
 
 _ = i18n._
 __i18n_templates__ = True
@@ -69,13 +72,9 @@ success/failure of these subscriptions, overriding whatever the list's
                       help=_('Alternative configuration file to use'))
     opts, args = parser.parse_args()
     if not args:
-        parser.print_help()
-        print >> sys.stderr, _('Missing listname')
-        sys.exit(1)
+        parser.error(_('Missing listname'))
     if len(args) > 1:
-        parser.print_help()
-        print >> sys.stderr, _('Unexpected arguments')
-        sys.exit(1)
+        parser.error(_('Unexpected arguments'))
     if opts.welcome_msg is not None:
         ch = opts.welcome_msg[0].lower()
         if ch == 'y':
@@ -83,9 +82,7 @@ success/failure of these subscriptions, overriding whatever the list's
         elif ch == 'n':
             opts.welcome_msg = False
         else:
-            parser.print_help()
-            print >> sys.stderr, _('Illegal value for -w: $opts.welcome_msg')
-            sys.exit(1)
+            parser.error(_('Illegal value for -w: $opts.welcome_msg'))
     if opts.admin_notify is not None:
         ch = opts.admin_notify[0].lower()
         if ch == 'y':
@@ -93,17 +90,11 @@ success/failure of these subscriptions, overriding whatever the list's
         elif ch == 'n':
             opts.admin_notify = False
         else:
-            parser.print_help()
-            print >> sys.stderr, _('Illegal value for -a: $opts.admin_notify')
-            sys.exit(1)
+            parser.error(_('Illegal value for -a: $opts.admin_notify'))
     if opts.regular is None and opts.digest is None:
-        parser.print_help()
-        print >> sys.stderr, _('At least one of -r or -d is required')
-        sys.exit(1)
+        parser.error(_('At least one of -r or -d is required'))
     if opts.regular == '-' and opts.digest == '-':
-        parser.print_help()
-        print >> sys.stderr, _("-r and -d cannot both be '-'")
-        sys.exit(1)
+        parser.error(_("-r and -d cannot both be '-'"))
     return parser, opts, args
 
 
@@ -131,45 +122,37 @@ class Tee:
         self._outfp.write(msg)
 
 
-class UserDesc:
-    pass
-
-
 
-def addall(mlist, members, digest, ack, outfp):
+def addall(mlist, subscribers, delivery_mode, ack, admin_notify, outfp):
     tee = Tee(outfp)
-    for member in members:
-        userdesc = UserDesc()
-        userdesc.fullname, userdesc.address = parseaddr(member)
-        userdesc.digest = digest
-
+    for subscriber in subscribers:
         try:
-            mlist.ApprovedAddMember(userdesc, ack, 0)
-        except Errors.MMAlreadyAMember:
-            print >> tee, _('Already a member: $member')
+            fullname, address = parseaddr(subscriber)
+            password = Utils.MakeRandomPassword()
+            add_member(mlist, address, fullname, password, delivery_mode,
+                       config.DEFAULT_SERVER_LANGUAGE, ack, admin_notify)
+        except AlreadySubscribedError:
+            print >> tee, _('Already a member: $subscriber')
         except Errors.InvalidEmailAddress:
             if userdesc.address == '':
                 print >> tee, _('Bad/Invalid email address: blank line')
             else:
                 print >> tee, _('Bad/Invalid email address: $member')
         else:
-            print >> tee, _('Subscribed: $member')
+            print >> tee, _('Subscribing: $subscriber')
 
 
 
 def main():
     parser, opts, args = parseargs()
-    config.load(opts.config)
+    initialize(opts.config)
 
     listname = args[0].lower().strip()
-    try:
-        mlist = MailList.MailList(listname)
-    except Errors.MMUnknownListError:
-        parser.print_help()
-        print >> sys.stderr, _('No such list: $listname')
-        sys.exit(1)
+    mlist = config.db.list_manager.get(listname)
+    if mlist is None:
+        parser.error(_('No such list: $listname'))
 
-    # Set up defaults
+    # Set up defaults.
     if opts.welcome_msg is None:
         send_welcome_msg = mlist.send_welcome_msg
     else:
@@ -195,10 +178,14 @@ def main():
 
         s = StringIO()
         if nmembers:
-            addall(mlist, nmembers, False, send_welcome_msg, s)
+            addall(mlist, nmembers, DeliveryMode.regular,
+                   send_welcome_msg, admin_notify, s)
 
         if dmembers:
-            addall(mlist, dmembers, True, send_welcome_msg, s)
+            addall(mlist, dmembers, DeliveryMode.mime_digests,
+                   send_welcome_msg, admin_notify, s)
+
+        config.db.flush()
 
         if admin_notify:
             subject = _('$mlist.real_name subscription notification')
@@ -206,10 +193,6 @@ def main():
                 mlist.owner, mlist.no_reply_address, subject, s.getvalue(),
                 mlist.preferred_language)
             msg.send(mlist)
-
-        mlist.Save()
-    finally:
-        mlist.Unlock()
 
 
 

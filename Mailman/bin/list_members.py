@@ -22,11 +22,12 @@ from email.Utils import formataddr
 
 from Mailman import Errors
 from Mailman import MailList
-from Mailman import MemberAdaptor
 from Mailman import Utils
 from Mailman import Version
 from Mailman.configuration import config
+from Mailman.constants import DeliveryStatus
 from Mailman.i18n import _
+from Mailman.initialize import initialize
 
 __i18n_templates__ = True
 
@@ -34,11 +35,10 @@ ENC = sys.getdefaultencoding()
 COMMASPACE = ', '
 
 WHYCHOICES = {
-    'enabled' : MemberAdaptor.ENABLED,
-    'unknown' : MemberAdaptor.UNKNOWN,
-    'byuser'  : MemberAdaptor.BYUSER,
-    'byadmin' : MemberAdaptor.BYADMIN,
-    'bybounce': MemberAdaptor.BYBOUNCE,
+    'enabled' : DeliveryStatus.enabled,
+    'byuser'  : DeliveryStatus.by_user,
+    'byadmin' : DeliveryStatus.by_moderator,
+    'bybounce': DeliveryStatus.by_bounces,
     }
 
 KINDCHOICES = set(('mime', 'plain', 'any'))
@@ -78,10 +78,6 @@ the users who are disabled for that particular reason.  WHY can also be
     parser.add_option('-f', '--fullnames',
                       default=False, action='store_true',
                       help=_('Include the full names in the output'))
-    parser.add_option('-p', '--preserve',
-                      default=False, action='store_true', help=_("""\
-Output member addresses case preserved the way they were added to the list.
-Otherwise, addresses are printed in all lowercase."""))
     parser.add_option('-i', '--invalid',
                       default=False, action='store_true', help=_("""\
 Print only the addresses in the membership list that are invalid.  Ignores -r,
@@ -94,27 +90,19 @@ objects.  Ignores -r, -d, -n."""))
                       help=_('Alternative configuration file to use'))
     opts, args = parser.parse_args()
     if not args:
-        parser.print_help()
-        print >> sys.stderr, _('Missing listname')
-        sys.exit(1)
+        parser.error(_('Missing listname'))
     if len(args) > 1:
-        parser.print_help()
-        print >> sys.stderr, _('Unexpected arguments')
-        sys.exit(1)
+        parser.print_error(_('Unexpected arguments'))
     if opts.digest is not None:
         opts.kind = opts.digest.lower()
         if opts.kind not in KINDCHOICES:
-            parser.print_help()
-            print >> sys.stderr, _('Invalid value for -d: $opts.digest')
-            sys.exit(1)
+            parser.error(_('Invalid value for -d: $opts.digest'))
     if opts.nomail is not None:
         why = opts.nomail.lower()
         if why == 'any':
             opts.why = 'any'
         elif why not in WHYCHOICES:
-            parser.print_help()
-            print >> sys.stderr, _('Invalid value for -n: $opts.nomail')
-            sys.exit(1)
+            parser.error(_('Invalid value for -n: $opts.nomail'))
         opts.why = why
     if opts.regular is None and opts.digest is None:
         opts.regular = opts.digest = True
@@ -123,14 +111,10 @@ objects.  Ignores -r, -d, -n."""))
 
 
 
-def isunicode(s):
-    return isinstance(s, unicode)
-
-
 def safe(s):
     if not s:
         return ''
-    if isunicode(s):
+    if isinstance(s, unicode):
         return s.encode(ENC, 'replace')
     return unicode(s, ENC, 'replace').encode(ENC, 'replace')
 
@@ -150,14 +134,14 @@ def whymatches(mlist, addr, why):
     # (i.e. not enabled).
     status = mlist.getDeliveryStatus(addr)
     if why in (None, 'any'):
-        return status <> MemberAdaptor.ENABLED
+        return status <> DeliveryStatus.enabled
     return status == WHYCHOICES[why]
 
 
 
 def main():
     parser, opts, args = parseargs()
-    config.load(opts.config)
+    initialize(opts.config)
 
     listname = args[0].lower().strip()
     if opts.output:
@@ -170,59 +154,53 @@ def main():
     else:
         fp = sys.stdout
 
-    try:
-        mlist = MailList.MailList(listname, lock=False)
-    except Errors.MMListError:
+    mlist = config.db.list_manager.get(listname)
+    if mlist is None:
         print >> sys.stderr, _('No such list: $listname')
         sys.exit(1)
 
-    # Get the lowercased member addresses
-    rmembers = mlist.getRegularMemberKeys()
-    dmembers = mlist.getDigestMemberKeys()
-
-    if opts.preserve:
-        # Convert to the case preserved addresses
-        rmembers = mlist.getMemberCPAddresses(rmembers)
-        dmembers = mlist.getMemberCPAddresses(dmembers)
+    # The regular delivery and digest members.
+    rmembers = set(mlist.regular_members.members)
+    dmembers = set(mlist.digest_members.members)
 
     if opts.invalid or opts.unicode:
-        all = rmembers + dmembers
-        all.sort()
-        for addr in all:
-            name = opts.fullnames and mlist.getMemberName(addr) or ''
+        all = sorted(member.address.address for member in rmembers + dmembers)
+        for address in all:
+            user = config.db.user_manager.get_user(address)
+            name = (user.real_name if opts.fullnames and user else '')
             showit = False
-            if opts.invalid and isinvalid(addr):
+            if opts.invalid and isinvalid(address):
                 showit = True
-            if opts.unicode and isunicode(addr):
+            if opts.unicode and isinstance(address, unicode):
                 showit = True
             if showit:
-                print >> fp, formataddr((safe(name), addr))
+                print >> fp, formataddr((safe(name), address))
         return
     if opts.regular:
-        rmembers.sort()
-        for addr in rmembers:
-            name = opts.fullnames and mlist.getMemberName(addr) or ''
+        for address in sorted(member.address.address for member in rmembers):
+            user = config.db.user_manager.get_user(address)
+            name = (user.real_name if opts.fullnames and user else '')
             # Filter out nomails
-            if opts.nomail and not whymatches(mlist, addr, opts.why):
+            if opts.nomail and not whymatches(mlist, address, opts.why):
                 continue
-            print >> fp, formataddr((safe(name), addr))
+            print >> fp, formataddr((safe(name), address))
     if opts.digest:
-        dmembers.sort()
-        for addr in dmembers:
-            name = opts.fullnames and mlist.getMemberName(addr) or ''
+        for address in sorted(member.address.address for member in dmembers):
+            user = config.db.user_manager.get_user(address)
+            name = (user.real_name if opts.fullnames and user else '')
             # Filter out nomails
-            if opts.nomail and not whymatches(mlist, addr, opts.why):
+            if opts.nomail and not whymatches(mlist, address, opts.why):
                 continue
             # Filter out digest kinds
-            if mlist.getMemberOption(addr, config.DisableMime):
-                # They're getting plain text digests
-                if opts.kind == 'mime':
-                    continue
-            else:
-                # They're getting MIME digests
-                if opts.kind == 'plain':
-                    continue
-            print >> fp, formataddr((safe(name), addr))
+##             if mlist.getMemberOption(addr, config.DisableMime):
+##                 # They're getting plain text digests
+##                 if opts.kind == 'mime':
+##                     continue
+##             else:
+##                 # They're getting MIME digests
+##                 if opts.kind == 'plain':
+##                     continue
+            print >> fp, formataddr((safe(name), address))
 
 
 

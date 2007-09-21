@@ -20,6 +20,7 @@ import optparse
 from Mailman import Defaults
 from Mailman import MailList
 from Mailman import Version
+from Mailman.configuration import config
 from Mailman.i18n import _
 from Mailman.initialize import initialize
 
@@ -68,8 +69,9 @@ def main():
     mlists = []
     longest = 0
 
-    for n in sorted(config.list_manager.names):
-        mlist = MailList.MailList(n, lock=False)
+    listmgr = config.db.list_manager
+    for fqdn_name in sorted(listmgr.names):
+        mlist = listmgr.get(fqdn_name)
         if opts.advertised and not mlist.advertised:
             continue
         if opts.domains:

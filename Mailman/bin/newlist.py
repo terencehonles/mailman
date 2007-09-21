@@ -123,10 +123,10 @@ def main():
         sys.stdin.readline()
     if not opts.quiet:
         d = dict(
-            listname        = listname,
-            admin_url       = mlist.GetScriptURL('admin', absolute=True),
-            listinfo_url    = mlist.GetScriptURL('listinfo', absolute=True),
-            requestaddr     = mlist.GetRequestEmail(),
+            listname        = mlist.fqdn_listname,
+            admin_url       = mlist.script_url('admin'),
+            listinfo_url    = mlist.script_url('listinfo'),
+            requestaddr     = mlist.request_address,
             siteowner       = mlist.no_reply_address,
             )
         text = Utils.maketext('newlist.txt', d, mlist=mlist)

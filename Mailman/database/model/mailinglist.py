@@ -16,6 +16,7 @@
 # USA.
 
 import os
+import string
 
 from elixir import *
 from zope.interface import implements
@@ -24,6 +25,9 @@ from Mailman.Utils import fqdn_listname, makedirs, split_listname
 from Mailman.configuration import config
 from Mailman.interfaces import *
 from Mailman.database.types import EnumType, TimeDeltaType
+
+SPACE = ' '
+UNDERSCORE = '_'
 
 
 
@@ -177,6 +181,7 @@ class MailingList(Entity):
         # autoresponses sent on that date.
         self.hold_and_cmd_autoresponses = {}
         self.full_path = os.path.join(config.LIST_DATA_DIR, fqdn_listname)
+        self.real_name = string.capwords(SPACE.join(listname.split(UNDERSCORE)))
         makedirs(self.full_path)
 
     # XXX FIXME
