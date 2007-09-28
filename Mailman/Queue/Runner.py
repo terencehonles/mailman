@@ -28,7 +28,6 @@ import email.Errors
 from cStringIO import StringIO
 
 from Mailman import Errors
-from Mailman import MailList
 from Mailman import Utils
 from Mailman import i18n
 from Mailman.Queue.Switchboard import Switchboard
@@ -204,7 +203,7 @@ class Runner:
         the primary overridable method for processing each message.
         Subclasses, must provide implementation for this method.
 
-        mlist is the MailList instance this message is destined for.
+        mlist is the IMailingList instance this message is destined for.
 
         msg is the Message object representing the message.
 

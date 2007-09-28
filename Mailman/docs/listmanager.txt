@@ -25,12 +25,6 @@ Creating the list returns the newly created IMailList object.
     >>> IMailingList.providedBy(mlist)
     True
 
-This object has an identity.
-
-    >>> from Mailman.interfaces import IMailingListIdentity
-    >>> IMailingListIdentity.providedBy(mlist)
-    True
-
 All lists with identities have a short name, a host name, and a fully
 qualified listname.  This latter is what uniquely distinguishes the mailing
 list to the system.

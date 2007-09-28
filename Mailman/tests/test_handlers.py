@@ -23,7 +23,6 @@ import unittest
 from Mailman import Errors
 from Mailman import Message
 from Mailman import passwords
-from Mailman.MailList import MailList
 from Mailman.configuration import config
 
 from Mailman.Handlers import Approve
@@ -114,5 +113,4 @@ X-BeenThere: %s
 
 def test_suite():
     suite = unittest.TestSuite()
-##     suite.addTest(unittest.makeSuite(TestApprove))
     return suite

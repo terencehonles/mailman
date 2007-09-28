@@ -21,8 +21,6 @@ import os
 import time
 import unittest
 
-from Mailman import MailList
-from Mailman import MemberAdaptor
 from Mailman import Utils
 from Mailman import passwords
 from Mailman.Errors import NotAMemberError

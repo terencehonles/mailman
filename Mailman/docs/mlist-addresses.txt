@@ -5,12 +5,9 @@ Every mailing list has a number of addresses which are publicly available.
 These are defined in the IMailingListAddresses interface.
 
     >>> from Mailman.configuration import config
-    >>> from Mailman.interfaces import IMailingListAddresses
     >>> from Mailman.database import flush
     >>> mlist = config.db.list_manager.create('_xtest@example.com')
     >>> flush()
-    >>> IMailingListAddresses.providedBy(mlist)
-    True
 
 The posting address is where people send messages to be posted to the mailing
 list.  This is exactly the same as the fully qualified list name.
