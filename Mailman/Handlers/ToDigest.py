@@ -51,7 +51,6 @@ from Mailman.Handlers.Decorate import decorate
 from Mailman.Handlers.Scrubber import process as scrubber
 from Mailman.Mailbox import Mailbox
 from Mailman.Mailbox import Mailbox
-from Mailman.MemberAdaptor import ENABLED
 from Mailman.Queue.sbcache import get_switchboard
 from Mailman.configuration import config
 from Mailman.constants import DeliveryMode, DeliveryStatus

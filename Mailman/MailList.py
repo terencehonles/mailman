@@ -279,26 +279,6 @@ class MailList(object, Archiver, Digester, SecurityManager, Bouncer):
     #
     # Sanity checks
     #
-    def CheckVersion(self, stored_state):
-        """Auto-update schema if necessary."""
-        if self.data_version >= Version.DATA_FILE_VERSION:
-            return
-        # Then reload the database (but don't recurse).  Force a reload even
-        # if we have the most up-to-date state.
-        self.Load(self.fqdn_listname, check_version=False)
-        # We must hold the list lock in order to update the schema
-        waslocked = self.Locked()
-        if not waslocked:
-            self.Lock()
-        try:
-            from versions import Update
-            Update(self, stored_state)
-            self.data_version = Version.DATA_FILE_VERSION
-            self.Save()
-        finally:
-            if not waslocked:
-                self.Unlock()
-
     def CheckValues(self):
         """Normalize selected values to known formats."""
         if '' in urlparse(self.web_page_url)[:2]:

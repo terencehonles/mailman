@@ -24,7 +24,6 @@ import datetime
 import optparse
 
 from Mailman import Errors
-from Mailman import MailList
 from Mailman import Message
 from Mailman import Utils
 from Mailman import Version

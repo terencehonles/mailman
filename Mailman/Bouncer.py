@@ -25,11 +25,11 @@ from email.MIMEMessage import MIMEMessage
 from email.MIMEText import MIMEText
 
 from Mailman import Defaults
-from Mailman import MemberAdaptor
 from Mailman import Message
 from Mailman import Utils
 from Mailman import i18n
 from Mailman.configuration import config
+from Mailman.constants import DeliveryStatus
 
 EMPTYSTRING = ''
 
@@ -40,11 +40,12 @@ ZEROHOUR_PLUSONEDAY = time.localtime(60 * 60 * 24)[:3]
 
 def _(s): return s
 
-REASONS = {MemberAdaptor.BYBOUNCE: _('due to excessive bounces'),
-           MemberAdaptor.BYUSER: _('by yourself'),
-           MemberAdaptor.BYADMIN: _('by the list administrator'),
-           MemberAdaptor.UNKNOWN: _('for unknown reasons'),
-           }
+REASONS = {
+    DeliveryStatus.by_bounces   : _('due to excessive bounces'),
+    DeliveryStatus.by_user      : _('by yourself'),
+    DeliveryStatus.by_moderator : _('by the list administrator'),
+    DeliveryStatus.unknown      : _('for unknown reasons'),
+    }
 
 _ = i18n._
 
@@ -94,7 +95,7 @@ class Bouncer:
             log.info('%s: %s bounce score: %s', self.internal_name(),
                      member, info.score)
             # Continue to the check phase below
-        elif self.getDeliveryStatus(member) <> MemberAdaptor.ENABLED:
+        elif self.getDeliveryStatus(member) <> DeliveryStatus.enabled:
             # The user is already disabled, so we can just ignore subsequent
             # bounces.  These are likely due to residual messages that were
             # sent before disabling the member, but took a while to bounce.
@@ -150,7 +151,7 @@ class Bouncer:
             log.info('%s: %s disabling due to bounce score %s >= %s',
                      self.internal_name(), member,
                      info.score, self.bounce_score_threshold)
-        self.setDeliveryStatus(member, MemberAdaptor.BYBOUNCE)
+        self.setDeliveryStatus(member, DeliveryStatus.by_bounces)
         self.sendNextNotification(member)
         if self.bounce_notify_owner_on_disable:
             self.__sendAdminBounceNotice(member, msg)
@@ -201,15 +202,15 @@ class Bouncer:
             # Expunge the pending cookie for the user.  We throw away the
             # returned data.
             self.pend_confirm(info.cookie)
-            if reason == MemberAdaptor.BYBOUNCE:
+            if reason == DeliveryStatus.by_bounces:
                 log.info('%s: %s deleted after exhausting notices',
                          self.internal_name(), member)
             slog.info('%s: %s auto-unsubscribed [reason: %s]',
                       self.internal_name(), member,
-                      {MemberAdaptor.BYBOUNCE: 'BYBOUNCE',
-                       MemberAdaptor.BYUSER: 'BYUSER',
-                       MemberAdaptor.BYADMIN: 'BYADMIN',
-                       MemberAdaptor.UNKNOWN: 'UNKNOWN'}.get(
+                      {DeliveryStatus.by_bounces: 'BYBOUNCE',
+                       DeliveryStatus.by_user: 'BYUSER',
+                       DeliveryStatus.by_moderator: 'BYADMIN',
+                       DeliveryStatus.unknown: 'UNKNOWN'}.get(
                 reason, 'invalid value'))
             return
         # Send the next notification
@@ -224,7 +225,7 @@ class Bouncer:
         else:
             txtreason = _(txtreason)
         # Give a little bit more detail on bounce disables
-        if reason == MemberAdaptor.BYBOUNCE:
+        if reason == DeliveryStatus.by_bounces:
             date = time.strftime('%d-%b-%Y',
                                  time.localtime(Utils.midnight(info.date)))
             extra = _(' The last bounce received from you was dated %(date)s')

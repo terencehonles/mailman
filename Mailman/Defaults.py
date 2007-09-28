@@ -123,9 +123,6 @@ SQLALCHEMY_ENGINE_URL = 'sqlite:///$DATA_DIR/mailman.db'
 # For debugging purposes
 SQLALCHEMY_ECHO = False
 
-# XXX REMOVE ME
-MEMBER_ADAPTOR_CLASS = 'Mailman.OldStyleMemberships.OldStyleMemberships'
-
 
 
 #####

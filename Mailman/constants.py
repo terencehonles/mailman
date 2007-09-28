@@ -54,6 +54,8 @@ class DeliveryStatus(Enum):
     by_bounces = 3
     # Delivery was disabled by an administrator or moderator
     by_moderator = 4
+    # Disabled for unknown reasons.
+    unknown = 5
 
 
 

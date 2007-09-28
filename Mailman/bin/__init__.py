@@ -50,6 +50,7 @@ __all__ = [
     'request',
     'rmlist',
     'senddigests',
+    'set_members',
     'show_config',
     'show_qfiles',
     'testall',

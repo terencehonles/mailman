@@ -21,7 +21,6 @@ import optparse
 from email.Utils import formataddr
 
 from Mailman import Errors
-from Mailman import MailList
 from Mailman import Utils
 from Mailman import Version
 from Mailman.configuration import config

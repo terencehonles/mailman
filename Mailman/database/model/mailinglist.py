@@ -23,7 +23,7 @@ from zope.interface import implements
 
 from Mailman.Utils import fqdn_listname, makedirs, split_listname
 from Mailman.configuration import config
-from Mailman.interfaces import *
+from Mailman.interfaces import IMailingList
 from Mailman.database.types import EnumType, TimeDeltaType
 
 SPACE = ' '
@@ -32,13 +32,7 @@ UNDERSCORE = '_'
 
 
 class MailingList(Entity):
-    implements(
-        IMailingList,
-        IMailingListAddresses,
-        IMailingListIdentity,
-        IMailingListRosters,
-        IMailingListWeb,
-        )
+    implements(IMailingList)
 
     # List identity
     has_field('list_name',                                  Unicode),

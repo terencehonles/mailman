@@ -18,7 +18,6 @@
 import optparse
 
 from Mailman import Defaults
-from Mailman import MailList
 from Mailman import Version
 from Mailman.configuration import config
 from Mailman.i18n import _
