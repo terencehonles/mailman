@@ -98,13 +98,13 @@ class Message(email.message.Message):
         header value found is returned.  However the search order is
         determined by the following:
 
-        - If mm_cfg.USE_ENVELOPE_SENDER is true, then the search order is
+        - If config.USE_ENVELOPE_SENDER is true, then the search order is
           Sender:, From:, unixfrom
 
         - Otherwise, the search order is From:, Sender:, unixfrom
 
         The optional argument use_envelope, if given overrides the
-        mm_cfg.USE_ENVELOPE_SENDER setting.  It should be set to either 0 or 1
+        config.USE_ENVELOPE_SENDER setting.  It should be set to either 0 or 1
         (don't use None since that indicates no-override).
 
         unixfrom should never be empty.  The return address is always

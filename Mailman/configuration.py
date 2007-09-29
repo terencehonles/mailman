@@ -107,9 +107,9 @@ class Configuration(object):
             sys.exit(-1)
         # Based on values possibly set in mailman.cfg, add additional qrunners.
         if ns['USE_MAILDIR']:
-            self.add_qrunner('maildir')
+            self.add_qrunner('.maildir.MaildirRunner')
         if ns['USE_LMTP']:
-            self.add_qrunner('lmtp')
+            self.add_qrunner('.lmtp.LMTPRunner')
         # Pull out the defaults.
         VAR_DIR = os.path.abspath(ns['VAR_DIR'])
         # Now that we've loaded all the configuration files we're going to

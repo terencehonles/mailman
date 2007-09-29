@@ -89,14 +89,6 @@ NO_REPLY_ADDRESS = 'noreply'
 # a human.
 SITE_OWNER_ADDRESS = 'changeme@example.com'
 
-# DEFAULT_HOST_NAME has been replaced with DEFAULT_EMAIL_HOST, however some
-# sites may have the former in their mm_cfg.py files.  If so, we'll believe
-# that, otherwise we'll believe DEFAULT_EMAIL_HOST.  Same for DEFAULT_URL.
-DEFAULT_HOST_NAME = None
-DEFAULT_URL = None
-
-HOME_PAGE = 'index.html'
-
 # Normally when a site administrator authenticates to a web page with the site
 # password, they get a cookie which authorizes them as the list admin.  It
 # makes me nervous to hand out site auth cookies because if this cookie is
@@ -1342,12 +1334,13 @@ from Version import *
 # element being the description, as described in the catalogs, and second
 # element is the language charset.  I have chosen code from /usr/share/locale
 # in my GNU/Linux. :-)
-# TK: Now the site admin can select languages for the installation from
-# those in the distribution tarball.  We don't touch add_language() function
-# for backward compatibility in mm_cfg.py syntax.  You may have to add your
-# own language in mm_cfg.py if it is not included in the distribution even
-# if you had put language files in source directory and configured by
-# `--with-languages' option.
+#
+# TK: Now the site admin can select languages for the installation from those
+# in the distribution tarball.  We don't touch add_language() function for
+# backward compatibility.  You may have to add your own language in your
+# mailman.cfg file, if it is not included in the distribution even if you had
+# put language files in source directory and configured by `--with-languages'
+# option.
 def _(s):
     return s
 
