@@ -38,4 +38,4 @@ class RetryRunner(Runner):
 
     def _snooze(self, filecnt):
         # We always want to snooze
-        time.sleep(self.SLEEPTIME)
+        time.sleep(float(self.SLEEPTIME))

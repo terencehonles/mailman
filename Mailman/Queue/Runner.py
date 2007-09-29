@@ -229,9 +229,9 @@ class Runner:
         based on this value.  By default, we only snooze if there was nothing
         to do last time around.
         """
-        if filecnt or self.SLEEPTIME <= 0:
+        if filecnt or float(self.SLEEPTIME) <= 0:
             return
-        time.sleep(self.SLEEPTIME)
+        time.sleep(float(self.SLEEPTIME))
 
     def _shortcircuit(self):
         """Return a true value if the individual file processing loop should

@@ -19,9 +19,9 @@
 
 import os
 import re
-import time
 import cPickle
 import logging
+import datetime
 
 from email.MIMEMessage import MIMEMessage
 from email.MIMEText import MIMEText
@@ -81,10 +81,11 @@ class BounceMixin:
             config.DATA_DIR, 'bounce-events-%05d.pck' % os.getpid())
         self._bounce_events_fp = None
         self._bouncecnt = 0
-        self._nextaction = time.time() + config.REGISTER_BOUNCES_EVERY
+        self._nextaction = (datetime.datetime.now() +
+                            config.REGISTER_BOUNCES_EVERY)
 
     def _queue_bounces(self, listname, addrs, msg):
-        today = time.localtime()[:3]
+        today = datetime.date.today()
         if self._bounce_events_fp is None:
             self._bounce_events_fp = open(self._bounce_events_file, 'a+b')
         for addr in addrs:
@@ -129,7 +130,7 @@ class BounceMixin:
             self._register_bounces()
 
     def _doperiodic(self):
-        now = time.time()
+        now = datetime.datetime.now()
         if self._nextaction > now or self._bouncecnt == 0:
             return
         # Let's go ahead and register the bounces we've got stored up

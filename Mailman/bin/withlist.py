@@ -21,7 +21,6 @@ import atexit
 import optparse
 
 from Mailman import Errors
-from Mailman import MailList
 from Mailman import Version
 from Mailman import interact
 from Mailman.configuration import config
@@ -83,14 +82,14 @@ def parseargs():
 General framework for interacting with a mailing list object.
 
 There are two ways to use this script: interactively or programmatically.
-Using it interactively allows you to play with, examine and modify a MailList
-object from Python's interactive interpreter.  When running interactively, a
-MailList object called 'm' will be available in the global namespace.  It also
-loads the class MailList into the global namespace.
+Using it interactively allows you to play with, examine and modify a
+IMailinglist object from Python's interactive interpreter.  When running
+interactively, a IMailingList object called 'm' will be available in the
+global namespace.
 
-Programmatically, you can write a function to operate on a MailList object,
-and this script will take care of the housekeeping (see below for examples).
-In that case, the general usage syntax is:
+Programmatically, you can write a function to operate on a IMailingList
+object, and this script will take care of the housekeeping (see below for
+examples).  In that case, the general usage syntax is:
 
     % bin/withlist [options] listname [args ...]
 
@@ -145,20 +144,20 @@ read-only operations).  You can always lock the file after the fact by typing
 
 Note that if you use this option, you should explicitly call m.Save() before
 exiting, since the interpreter's clean up procedure will not automatically
-save changes to the MailList object (but it will unlock the list)."""))
+save changes to the IMailingList object (but it will unlock the list)."""))
     parser.add_option('-i', '--interactive',
                       default=None, action='store_true', help=_("""\
 Leaves you at an interactive prompt after all other processing is complete.
 This is the default unless the -r option is given."""))
     parser.add_option('-r', '--run',
                       type='string', help=_("""\
-This can be used to run a script with the opened MailList object.  This works
-by attempting to import 'module' (which must be in the directory containing
-withlist, or already be accessible on your sys.path), and then calling
-'callable' from the module.  callable can be a class or function; it is called
-with the MailList object as the first argument.  If additional args are given
-on the command line, they are passed as subsequent positional args to the
-callable.
+This can be used to run a script with the opened IMailingList object.  This
+works by attempting to import'module' (which must be in the directory
+containing withlist, or already be accessible on your sys.path), and then
+calling 'callable' from the module.  callable can be a class or function; it
+is called with the IMailingList object as the first argument.  If additional
+args are given on the command line, they are passed as subsequent positional
+args to the callable.
 
 Note that 'module.' is optional; if it is omitted then a module with the name
 'callable' will be imported.
@@ -238,7 +237,8 @@ def main():
     # Now go to interactive mode, perhaps
     if opts.interactive:
         if dolist:
-            banner = _("The variable 'm' is the $listname MailList instance")
+            banner = _(
+                "The variable 'm' is the $listname mailing list")
         else:
             banner = interact.DEFAULT_BANNER
         overrides = dict(m=LAST_MLIST, r=r)

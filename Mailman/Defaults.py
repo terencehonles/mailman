@@ -24,17 +24,27 @@ from Mailman.constants import *
 
 
 
+class CompatibleTimeDelta(timedelta):
+    def __float__(self):
+        # Convert to float seconds.
+        return (self.days * 24 * 60 * 60 +
+                self.seconds + self.microseconds / 1.0e6)
+
+    def __int__(self):
+        return int(float(self))
+
+
 def seconds(s):
-    return timedelta(seconds=s)
+    return CompatibleTimeDelta(seconds=s)
 
 def minutes(m):
-    return timedelta(minutes=m)
+    return CompatibleTimeDelta(minutes=m)
 
 def hours(h):
-    return timedelta(hours=h)
+    return CompatibleTimeDelta(hours=h)
 
 def days(d):
-    return timedelta(days=d)
+    return CompatibleTimeDelta(days=d)
 
 
 # Some convenient constants
@@ -714,7 +724,7 @@ MAX_AUTORESPONSES_PER_DAY = 10
 # Qrunner defaults
 #####
 
-# Which queues should the qrunner master watchdog spawn?  add_qrunners() takes
+# Which queues should the qrunner master watchdog spawn?  add_qrunner() takes
 # one required argument, which is the name of the qrunner to start
 # (capitalized and without the 'Runner' suffix).  Optional second argument
 # specifies the number of parallel processes to fork for each qrunner.  If

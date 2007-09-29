@@ -31,7 +31,6 @@ from Mailman import LockFile
 from Mailman import Utils
 from Mailman import Version
 from Mailman import loginit
-from Mailman.MailList import MailList
 from Mailman.configuration import config
 from Mailman.i18n import _
 from Mailman.initialize import initialize
@@ -399,7 +398,7 @@ def main():
             lock.refresh()
             signal.alarm(Defaults.days(1))
         signal.signal(signal.SIGALRM, sigalrm_handler)
-        signal.alarm(Defaults.days(1))
+        signal.alarm(int(Defaults.days(1)))
         # Set up a SIGHUP handler so that if we get one, we'll pass it along
         # to all the qrunner children.  This will tell them to close and
         # reopen their log files

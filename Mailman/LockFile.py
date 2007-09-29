@@ -64,8 +64,8 @@ import traceback
 
 # Units are floating-point seconds.
 DEFAULT_LOCK_LIFETIME  = datetime.timedelta(seconds=15)
-# Allowable a bit of clock skew
-CLOCK_SLOP = datetime.timedelta(seconds=10)
+# Allowable a bit of clock skew, in seconds.
+CLOCK_SLOP = 10
 # This is appropriate for Mailman, but you may want to change this if you're
 # using this code outside Mailman.
 log = logging.getLogger('mailman.locks')

@@ -165,7 +165,9 @@ def main():
             print >> sys.stderr, 'Ignoring unknown language codes:', \
                   SPACE.join(unknown_language)
         languages = available_languages & enable_languages
-    instantiate(opts.var_dir, opts.user, opts.group, languages, opts.force)
+    # We need an absolute path for var_dir.
+    var_dir = os.path.abspath(opts.var_dir)
+    instantiate(var_dir, opts.user, opts.group, languages, opts.force)
 
 
 
