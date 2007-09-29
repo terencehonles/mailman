@@ -32,9 +32,9 @@ from Mailman import Message
 from Mailman import Utils
 from Mailman import Version
 from Mailman import loginit
-from Mailman.Queue.sbcache import get_switchboard
 from Mailman.configuration import config
 from Mailman.i18n import _
+from Mailman.queue import Switchboard
 
 # Work around known problems with some RedHat cron daemons
 import signal
@@ -148,7 +148,7 @@ def poll_newsgroup(mlist, conn, first, last, glock):
                     del msg['To']
                 msg['To'] = mlist.GetListEmail()
                 # Post the message to the locked list
-                inq = get_switchboard(config.INQUEUE_DIR)
+                inq = Switchboard(config.INQUEUE_DIR)
                 inq.enqueue(msg,
                             listname=mlist.internal_name(),
                             fromusenet=True)

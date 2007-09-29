@@ -19,8 +19,8 @@ Here is a helper function for printing out held requests.
 
 And another helper for displaying messages in the virgin queue.
 
-    >>> from Mailman.Queue.sbcache import get_switchboard
-    >>> virginq = get_switchboard(config.VIRGINQUEUE_DIR)
+    >>> from Mailman.queue import Switchboard
+    >>> virginq = Switchboard(config.VIRGINQUEUE_DIR)
     >>> def dequeue(whichq=None, expected_count=1):
     ...     if whichq is None:
     ...         whichq = virginq
@@ -317,7 +317,7 @@ indicates that the message has been approved.
     >>> flush()
     >>> moderator.handle_message(mlist, id_3, Action.accept)
     >>> flush()
-    >>> inq = get_switchboard(config.INQUEUE_DIR)
+    >>> inq = Switchboard(config.INQUEUE_DIR)
     >>> qmsg, qdata = dequeue(inq)
     >>> print qmsg.as_string()
     From: aperson@example.org

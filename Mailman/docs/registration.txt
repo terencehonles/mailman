@@ -133,7 +133,7 @@ Verification by email
 There is also a verification email sitting in the virgin queue now.  This
 message is sent to the user in order to verify the registered address.
 
-    >>> from Mailman.Queue.Switchboard import Switchboard
+    >>> from Mailman.queue import Switchboard
     >>> switchboard = Switchboard(config.VIRGINQUEUE_DIR)
     >>> len(switchboard.files)
     1

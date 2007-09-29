@@ -28,9 +28,9 @@ import logging
 
 from Mailman import Utils
 from Mailman import loginit
-from Mailman.Queue.sbcache import get_switchboard
 from Mailman.configuration import config
 from Mailman.i18n import _
+from Mailman.queue import Switchboard
 
 __i18n_templates__ = True
 
@@ -54,7 +54,7 @@ def main():
     # some MTAs have a hard limit to the time a filter prog can run.  Postfix
     # is a good example; if the limit is hit, the proc is SIGKILL'd giving us
     # no chance to save the message.
-    bounceq = get_switchboard(config.BOUNCEQUEUE_DIR)
+    bounceq = Switchboard(config.BOUNCEQUEUE_DIR)
     bounceq.enqueue(sys.stdin.read(), listname=listname, _plaintext=True)
 
 

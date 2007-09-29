@@ -11,7 +11,7 @@ headers for unambigous bounce processing.
 
     >>> from Mailman.Handlers.ToOutgoing import process
     >>> from Mailman.Message import Message
-    >>> from Mailman.Queue.Switchboard import Switchboard
+    >>> from Mailman.queue import Switchboard
     >>> from Mailman.configuration import config
     >>> from Mailman.database import flush
     >>> from email import message_from_string

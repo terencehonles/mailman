@@ -17,8 +17,8 @@
 
 """Add the message to the archives."""
 
-from Mailman.Queue.sbcache import get_switchboard
 from Mailman.configuration import config
+from Mailman.queue import Switchboard
 
 
 
@@ -32,6 +32,6 @@ def process(mlist, msg, msgdata):
     if 'x-no-archive' in msg or msg.get('x-archive', '').lower() == 'no':
         return
     # Send the message to the archiver queue
-    archq = get_switchboard(config.ARCHQUEUE_DIR)
+    archq = Switchboard(config.ARCHQUEUE_DIR)
     # Send the message to the queue
     archq.enqueue(msg, msgdata)

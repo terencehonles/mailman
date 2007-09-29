@@ -28,14 +28,14 @@ from Mailman.languages import LanguageManager
 _missing = object()
 
 DEFAULT_QRUNNERS = (
-    'Arch',
-    'Bounce',
-    'Command',
-    'Incoming',
-    'News',
-    'Outgoing',
-    'Retry',
-    'Virgin',
+    '.archive.ArchiveRunner',
+    '.bounce.BounceRunner',
+    '.command.CommandRunner',
+    '.incoming.IncomingRunner',
+    '.news.NewsRunner',
+    '.outgoing.OutgoingRunner',
+    '.retry.RetryRunner',
+    '.virgin.VirginRunner',
     )
 
 
@@ -107,9 +107,9 @@ class Configuration(object):
             sys.exit(-1)
         # Based on values possibly set in mailman.cfg, add additional qrunners.
         if ns['USE_MAILDIR']:
-            self.add_qrunner('Maildir')
+            self.add_qrunner('maildir')
         if ns['USE_LMTP']:
-            self.add_qrunner('LMTP')
+            self.add_qrunner('lmtp')
         # Pull out the defaults.
         VAR_DIR = os.path.abspath(ns['VAR_DIR'])
         # Now that we've loaded all the configuration files we're going to
@@ -207,7 +207,8 @@ class Configuration(object):
         E.g. 'HTTP' or 'LMTP'.  count is the number of qrunner slices to
         create, by default, 1.
         """
-        name += 'Runner'
+        if name.startswith('.'):
+            name = 'Mailman.queue' + name
         self.qrunners[name] = count
 
     def del_qrunner(self, name):
@@ -215,7 +216,8 @@ class Configuration(object):
 
         name is the qrunner name and it must not include the 'Runner' suffix.
         """
-        name += 'Runner'
+        if name.startswith('.'):
+            name = 'Mailman.queue' + name
         self.qrunners.pop(name)
 
     @property

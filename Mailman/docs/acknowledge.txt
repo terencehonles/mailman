@@ -20,8 +20,8 @@ acknowledgment.
 
     >>> # Ensure that the virgin queue is empty, since we'll be checking this
     >>> # for new auto-response messages.
-    >>> from Mailman.Queue.sbcache import get_switchboard
-    >>> virginq = get_switchboard(config.VIRGINQUEUE_DIR)
+    >>> from Mailman.queue import Switchboard
+    >>> virginq = Switchboard(config.VIRGINQUEUE_DIR)
     >>> virginq.files
     []
 

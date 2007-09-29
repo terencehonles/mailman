@@ -8,7 +8,7 @@ digests, although only two are currently supported: MIME digests and RFC 1153
 
     >>> from Mailman.Handlers.ToDigest import process
     >>> from Mailman.Message import Message
-    >>> from Mailman.Queue.Switchboard import Switchboard
+    >>> from Mailman.queue import Switchboard
     >>> from Mailman.configuration import config
     >>> from Mailman.database import flush
     >>> from email import message_from_string

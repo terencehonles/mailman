@@ -103,8 +103,8 @@ from cStringIO import StringIO
 
 from Mailman import Errors
 from Mailman import LockFile
-from Mailman.Queue.Runner import Runner
 from Mailman.configuration import config
+from Mailman.queue import Runner
 
 log     = logging.getLogger('mailman.error')
 vlog    = logging.getLogger('mailman.vette')

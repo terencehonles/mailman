@@ -29,8 +29,8 @@ from email.utils import getaddresses, make_msgid
 COMMASPACE = ', '
 
 from Mailman import Utils
-from Mailman.Queue.Runner import Runner
 from Mailman.configuration import config
+from Mailman.queue import Runner
 
 log = logging.getLogger('mailman.error')
 

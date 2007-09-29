@@ -51,9 +51,9 @@ from Mailman.Handlers.Decorate import decorate
 from Mailman.Handlers.Scrubber import process as scrubber
 from Mailman.Mailbox import Mailbox
 from Mailman.Mailbox import Mailbox
-from Mailman.Queue.sbcache import get_switchboard
 from Mailman.configuration import config
 from Mailman.constants import DeliveryMode, DeliveryStatus
+from Mailman.queue import Switchboard
 
 _ = i18n._
 __i18n_templates__ = True
@@ -373,7 +373,7 @@ def send_i18n_digests(mlist, mboxfp):
     # Do our final bit of housekeeping, and then send each message to the
     # outgoing queue for delivery.
     mlist.next_digest_number += 1
-    virginq = get_switchboard(config.VIRGINQUEUE_DIR)
+    virginq = Switchboard(config.VIRGINQUEUE_DIR)
     # Calculate the recipients lists
     plainrecips = set()
     mimerecips = set()

@@ -49,9 +49,8 @@ import asyncore
 from email.utils import parseaddr
 
 from Mailman.Message import Message
-from Mailman.Queue.Runner import Runner
-from Mailman.Queue.sbcache import get_switchboard
 from Mailman.configuration import config
+from Mailman.runner import Runner, Switchboard
 
 elog = logging.getLogger('mailman.error')
 qlog = logging.getLogger('mailman.qrunner')
@@ -147,29 +146,29 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
                 # sub-queue, and if so, enqueue it.
                 msgdata = dict(listname=listname)
                 if subq in ('bounces', 'admin'):
-                    queue = get_switchboard(config.BOUNCEQUEUE_DIR)
+                    queue = Switchboard(config.BOUNCEQUEUE_DIR)
                 elif subq == 'confirm':
                     msgdata['toconfirm'] = True
-                    queue = get_switchboard(config.CMDQUEUE_DIR)
+                    queue = Switchboard(config.CMDQUEUE_DIR)
                 elif subq in ('join', 'subscribe'):
                     msgdata['tojoin'] = True
-                    queue = get_switchboard(config.CMDQUEUE_DIR)
+                    queue = Switchboard(config.CMDQUEUE_DIR)
                 elif subq in ('leave', 'unsubscribe'):
                     msgdata['toleave'] = True
-                    queue = get_switchboard(config.CMDQUEUE_DIR)
+                    queue = Switchboard(config.CMDQUEUE_DIR)
                 elif subq == 'owner':
                     msgdata.update({
                         'toowner'   : True,
                         'envsender' : config.SITE_OWNER_ADDRESS,
                         'pipeline'  : config.OWNER_PIPELINE,
                         })
-                    queue = get_switchboard(config.INQUEUE_DIR)
+                    queue = Switchboard(config.INQUEUE_DIR)
                 elif subq is None:
                     msgdata['tolist'] = True
-                    queue = get_switchboard(config.INQUEUE_DIR)
+                    queue = Switchboard(config.INQUEUE_DIR)
                 elif subq == 'request':
                      msgdata['torequest'] = True
-                     queue = get_switchboard(config.CMDQUEUE_DIR)
+                     queue = Switchboard(config.CMDQUEUE_DIR)
                 else:
                     elog.error('Unknown sub-queue: %s', subq)
                     status.append(ERR_550)

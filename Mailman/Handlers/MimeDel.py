@@ -34,11 +34,11 @@ from os.path import splitext
 
 from Mailman import Errors
 from Mailman.Message import UserNotification
-from Mailman.Queue.sbcache import get_switchboard
 from Mailman.Utils import oneline
 from Mailman.Version import VERSION
 from Mailman.configuration import config
 from Mailman.i18n import _
+from Mailman.queue import Switchboard
 
 log = logging.getLogger('mailman.error')
 
@@ -240,7 +240,7 @@ are receiving the only remaining copy of the discarded message.
             subject=_('Content filtered message notification'))
     if mlist.filter_action == 3 and \
            config.OWNERS_CAN_PRESERVE_FILTERED_MESSAGES:
-        badq = get_switchboard(config.BADQUEUE_DIR)
+        badq = Switchboard(config.BADQUEUE_DIR)
         badq.enqueue(msg, msgdata)
     # Most cases also discard the message
     raise Errors.DiscardMessage

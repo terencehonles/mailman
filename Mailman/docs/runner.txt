@@ -17,8 +17,7 @@ continuously in a loop until the .stop() method is called.
     >>> import os
     >>> from email import message_from_string
     >>> from Mailman.Message import Message
-    >>> from Mailman.Queue.Runner import Runner
-    >>> from Mailman.Queue.Switchboard import Switchboard
+    >>> from Mailman.queue import Runner, Switchboard
     >>> from Mailman.configuration import config
     >>> from Mailman.database import flush
     >>> mlist = config.db.list_manager.create('_xtest@example.com')

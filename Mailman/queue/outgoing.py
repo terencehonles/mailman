@@ -28,10 +28,9 @@ import logging
 from Mailman import Errors
 from Mailman import LockFile
 from Mailman import Message
-from Mailman.Queue.BounceRunner import BounceMixin
-from Mailman.Queue.Runner import Runner
-from Mailman.Queue.Switchboard import Switchboard
 from Mailman.configuration import config
+from Mailman.queue import Runner, Switchboard
+from Mailman.queue.bounce import BounceMixin
 
 # This controls how often _doperiodic() will try to deal with deferred
 # permanent failures.  It is a count of calls to _doperiodic()

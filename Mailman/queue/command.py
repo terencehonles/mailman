@@ -35,10 +35,10 @@ from Mailman import LockFile
 from Mailman import Message
 from Mailman import Utils
 from Mailman.Handlers import Replybot
-from Mailman.Queue.Runner import Runner
 from Mailman.app.replybot import autorespond_to_sender
 from Mailman.configuration import config
 from Mailman.i18n import _
+from Mailman.queue import Runner
 
 NL = '\n'
 

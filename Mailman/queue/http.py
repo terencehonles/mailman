@@ -25,8 +25,8 @@ from cStringIO import StringIO
 from wsgiref.simple_server import make_server, WSGIRequestHandler
 
 from Mailman.Cgi.wsgi_app import mailman_app
-from Mailman.Queue.Runner import Runner
 from Mailman.configuration import config
+from Mailman.queue import Runner
 
 hlog = logging.getLogger('mailman.http')
 qlog = logging.getLogger('mailman.qrunner')

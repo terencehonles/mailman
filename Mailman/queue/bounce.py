@@ -31,10 +31,9 @@ from Mailman import LockFile
 from Mailman import Utils
 from Mailman.Bouncers import BouncerAPI
 from Mailman.Message import UserNotification
-from Mailman.Queue.Runner import Runner
-from Mailman.Queue.sbcache import get_switchboard
 from Mailman.configuration import config
 from Mailman.i18n import _
+from Mailman.queue import Runner, Switchboard
 
 COMMASPACE = ', '
 
@@ -164,7 +163,7 @@ class BounceRunner(Runner, BounceMixin):
     def _dispose(self, mlist, msg, msgdata):
         # Make sure we have the most up-to-date state
         mlist.Load()
-        outq = get_switchboard(config.OUTQUEUE_DIR)
+        outq = Switchboard(config.OUTQUEUE_DIR)
         # There are a few possibilities here:
         #
         # - the message could have been VERP'd in which case, we know exactly

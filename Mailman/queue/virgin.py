@@ -23,9 +23,9 @@ to go through some minimal processing before they can be sent out to the
 recipient.
 """
 
-from Mailman.Queue.IncomingRunner import IncomingRunner
-from Mailman.Queue.Runner import Runner
 from Mailman.configuration import config
+from Mailman.queue import Runner
+from Mailman.queue.incoming import IncomingRunner
 
 
 

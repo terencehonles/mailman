@@ -31,9 +31,9 @@ import logging
 
 from Mailman import Utils
 from Mailman import loginit
-from Mailman.Queue.sbcache import get_switchboard
 from Mailman.configuration import config
 from Mailman.i18n import _
+from Mailman.queue import Switchboard
 
 __i18n_templates__ = True
 
@@ -57,7 +57,7 @@ def main():
     # incoming queue because we need some processing done on the message.  The
     # processing is minimal though, so craft our own pipeline, expressly for
     # the purpose of delivering to the list owners.
-    inq = get_switchboard(config.INQUEUE_DIR)
+    inq = Switchboard(config.INQUEUE_DIR)
     inq.enqueue(sys.stdin.read(),
                 listname=listname,
                 _plaintext=True,

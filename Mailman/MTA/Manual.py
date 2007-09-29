@@ -25,9 +25,9 @@ from cStringIO import StringIO
 from Mailman import Message
 from Mailman import Utils
 from Mailman.MTA.Utils import makealiases
-from Mailman.Queue.sbcache import get_switchboard
 from Mailman.configuration import config
 from Mailman.i18n import _
+from Mailman.queue import Switchboard
 
 __i18n_templates__ = True
 
@@ -137,5 +137,5 @@ equivalent) file by removing the following lines, and possibly running the
         _('Mailing list removal request for list $listname'),
         sfp.getvalue(), config.DEFAULT_SERVER_LANGUAGE)
     msg['Date'] = email.Utils.formatdate(localtime=True)
-    outq = get_switchboard(config.OUTQUEUE_DIR)
+    outq = Switchboard(config.OUTQUEUE_DIR)
     outq.enqueue(msg, recips=[siteowner], nodecorate=True)

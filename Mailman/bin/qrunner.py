@@ -29,6 +29,7 @@ from Mailman.initialize import initialize
 __i18n_templates__ = True
 
 COMMASPACE = ', '
+QRUNNER_SHORTCUTS = {}
 log = None
 
 
@@ -52,11 +53,6 @@ def r_callback(option, opt, value, parser):
         parser.print_help()
         print >> sys.stderr, _('Bad runner specification: $value')
         sys.exit(1)
-    if runner == 'All':
-        for runnername, slices in config.qrunners.items():
-            dest.append((runnername, rslice, rrange))
-    elif not runner.endswith('Runner'):
-        runner += 'Runner'
     dest.append((runner, rslice, rrange))
 
 
@@ -116,19 +112,25 @@ work better with that framework."""))
                       help=_('Alternative configuration file to use'))
     opts, args = parser.parse_args()
     if args:
-        parser.print_help()
-        print >> sys.stderr, _('Unexpected arguments')
-        sys.exit(1)
+        parser.error(_('Unexpected arguments'))
     if not opts.runners and not opts.list:
-        parser.print_help()
-        print >> sys.stderr, _('No runner name given.')
-        sys.exit(1)
+        parser.error(_('No runner name given.'))
     return parser, opts, args
 
 
 
 def make_qrunner(name, slice, range, once=False):
-    modulename = 'Mailman.Queue.' + name
+    # Several conventions for specifying the runner name are supported.  It
+    # could be one of the shortcut names.  Or the name is a full module path,
+    # use it explicitly.  If the name starts with a dot, it's a class name
+    # relative to the Mailman.queue package.
+    if name in QRUNNER_SHORTCUTS:
+        classpath = QRUNNER_SHORTCUTS[name]
+    elif name.startswith('.'):
+        classpath = 'Mailman.queue' + name
+    else:
+        classpath = name
+    modulename, classname = classpath.rsplit('.', 1)
     try:
         __import__(modulename)
     except ImportError, e:
@@ -140,7 +142,7 @@ def make_qrunner(name, slice, range, once=False):
         else:
             print >> sys.stderr, e
             sys.exit(1)
-    qrclass = getattr(sys.modules[modulename], name)
+    qrclass = getattr(sys.modules[modulename], classname)
     if once:
         # Subclass to hack in the setting of the stop flag in _doperiodic()
         class Once(qrclass):
@@ -189,14 +191,21 @@ def main():
     initialize(opts.config, propagate_logs=not opts.subproc)
     log = logging.getLogger('mailman.qrunner')
 
+    # Calculate the qrunner shortcut names.
+    for qrunnerpath, slices in config.qrunners.items():
+        classname = qrunnerpath.rsplit('.', 1)[1]
+        if classname.endswith('Runner'):
+            shortname = classname[:-6].lower()
+        else:
+            shortname = classname
+        QRUNNER_SHORTCUTS[shortname] = qrunnerpath
+
     if opts.list:
-        for runnername, slices in config.qrunners.items():
-            if runnername.endswith('Runner'):
-                name = runnername[:-len('Runner')]
-            else:
-                name = runnername
-            print _('$name runs the $runnername qrunner')
-        print _('All runs all the above qrunners')
+        prefixlen = max(len(shortname) for shortname in QRUNNER_SHORTCUTS)
+        for shortname in sorted(QRUNNER_SHORTCUTS):
+            runnername = QRUNNER_SHORTCUTS[shortname]
+            shortname = (' ' * (prefixlen - len(shortname))) + shortname
+            print _('$shortname runs the $runnername qrunner')
         sys.exit(0)
 
     # Fast track for one infinite runner

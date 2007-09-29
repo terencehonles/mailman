@@ -19,9 +19,9 @@ import sys
 import optparse
 
 from Mailman import Version
-from Mailman.Queue.sbcache import get_switchboard
 from Mailman.configuration import config
 from Mailman.i18n import _
+from Mailman.queue import Switchboard
 
 __i18n_templates__ = True
 
@@ -54,13 +54,13 @@ def main():
     else:
         qdir = config.SHUNTQUEUE_DIR
 
-    sb = get_switchboard(qdir)
+    sb = Switchboard(qdir)
     sb.recover_backup_files()
     for filebase in sb.files():
         try:
             msg, msgdata = sb.dequeue(filebase)
             whichq = msgdata.get('whichq', config.INQUEUE_DIR)
-            tosb = get_switchboard(whichq)
+            tosb = Switchboard(whichq)
             tosb.enqueue(msg, msgdata)
         except Exception, e:
             # If there are any unshunting errors, log them and continue trying

@@ -7,7 +7,7 @@ NNTP is to Usenet as IP is to the web, it's more general than that.
 
     >>> from Mailman.Handlers.ToUsenet import process
     >>> from Mailman.Message import Message
-    >>> from Mailman.Queue.Switchboard import Switchboard
+    >>> from Mailman.queue import Switchboard
     >>> from Mailman.configuration import config
     >>> from Mailman.database import flush
     >>> from email import message_from_string

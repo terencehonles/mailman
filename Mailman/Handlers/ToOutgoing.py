@@ -22,8 +22,8 @@ posted to the list membership.  Anything else that needs to go out to some
 recipient should just be placed in the out queue directly.
 """
 
-from Mailman.Queue.sbcache import get_switchboard
 from Mailman.configuration import config
+from Mailman.queue import Switchboard
 
 
 
@@ -52,5 +52,5 @@ def process(mlist, msg, msgdata):
         # VERP every `interval' number of times
         msgdata['verp'] = not (int(mlist.post_id) % interval)
     # And now drop the message in qfiles/out
-    outq = get_switchboard(config.OUTQUEUE_DIR)
+    outq = Switchboard(config.OUTQUEUE_DIR)
     outq.enqueue(msg, msgdata, listname=mlist.fqdn_listname)

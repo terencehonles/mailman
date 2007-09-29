@@ -37,11 +37,11 @@ from Mailman import Errors
 from Mailman import Message
 from Mailman import Utils
 from Mailman import i18n
-from Mailman.Queue.sbcache import get_switchboard
 from Mailman.app.membership import add_member, delete_member
 from Mailman.configuration import config
 from Mailman.constants import Action, DeliveryMode
 from Mailman.interfaces import RequestType
+from Mailman.queue import Switchboard
 
 _ = i18n._
 __i18n_templates__ = True
@@ -130,7 +130,7 @@ def handle_message(mlist, id, action,
                   msg.get('message-id', 'n/a'))
         # Stick the message back in the incoming queue for further
         # processing.
-        inq = get_switchboard(config.INQUEUE_DIR)
+        inq = Switchboard(config.INQUEUE_DIR)
         inq.enqueue(msg, _metadata=msgdata)
     else:
         raise AssertionError('Unexpected action: %s' % action)

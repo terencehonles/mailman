@@ -57,9 +57,8 @@ from email.Parser import Parser
 from email.Utils import parseaddr
 
 from Mailman.Message import Message
-from Mailman.Queue.Runner import Runner
-from Mailman.Queue.sbcache import get_switchboard
 from Mailman.configuration import config
+from Mailman.queue import Runner
 
 log = logging.getLogger('mailman.error')
 
@@ -153,29 +152,29 @@ class MaildirRunner(Runner):
                 msgdata = {'listname': listname}
                 # -admin is deprecated
                 if subq in ('bounces', 'admin'):
-                    queue = get_switchboard(config.BOUNCEQUEUE_DIR)
+                    queue = Switchboard(config.BOUNCEQUEUE_DIR)
                 elif subq == 'confirm':
                     msgdata['toconfirm'] = 1
-                    queue = get_switchboard(config.CMDQUEUE_DIR)
+                    queue = Switchboard(config.CMDQUEUE_DIR)
                 elif subq in ('join', 'subscribe'):
                     msgdata['tojoin'] = 1
-                    queue = get_switchboard(config.CMDQUEUE_DIR)
+                    queue = Switchboard(config.CMDQUEUE_DIR)
                 elif subq in ('leave', 'unsubscribe'):
                     msgdata['toleave'] = 1
-                    queue = get_switchboard(config.CMDQUEUE_DIR)
+                    queue = Switchboard(config.CMDQUEUE_DIR)
                 elif subq == 'owner':
                     msgdata.update({
                         'toowner': True,
                         'envsender': config.SITE_OWNER_ADDRESS,
                         'pipeline': config.OWNER_PIPELINE,
                         })
-                    queue = get_switchboard(config.INQUEUE_DIR)
+                    queue = Switchboard(config.INQUEUE_DIR)
                 elif subq is None:
                     msgdata['tolist'] = 1
-                    queue = get_switchboard(config.INQUEUE_DIR)
+                    queue = Switchboard(config.INQUEUE_DIR)
                 elif subq == 'request':
                     msgdata['torequest'] = 1
-                    queue = get_switchboard(config.CMDQUEUE_DIR)
+                    queue = Switchboard(config.CMDQUEUE_DIR)
                 else:
                     log.error('Unknown sub-queue: %s', subq)
                     os.rename(dstname, xdstname)

@@ -19,15 +19,15 @@
 
 import sys
 
-from Mailman.Queue.sbcache import get_switchboard
 from Mailman.configuration import config
+from Mailman.queue import Switchboard
 
 
 
 def inject(listname, msg, recips=None, qdir=None):
     if qdir is None:
         qdir = config.INQUEUE_DIR
-    queue = get_switchboard(qdir)
+    queue = Switchboard(qdir)
     kws = {'listname'  : listname,
            'tolist'    : 1,
            '_plaintext': 1,

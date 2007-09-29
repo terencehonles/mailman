@@ -10,7 +10,7 @@ was originally written to gate to Usenet, which has its own rules).
     >>> from Mailman.Message import Message
     >>> from Mailman.configuration import config
     >>> from Mailman.database import flush
-    >>> from Mailman.Queue.NewsRunner import prepare_message
+    >>> from Mailman.queue.news import prepare_message
     >>> mlist = config.db.list_manager.create('_xtest@example.com')
     >>> mlist.linked_newsgroup = 'comp.lang.python'
     >>> flush()

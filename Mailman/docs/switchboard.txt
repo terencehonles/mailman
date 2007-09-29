@@ -6,7 +6,7 @@ instance of a switchboard is responsible for one queue directory.
 
     >>> from email import message_from_string
     >>> from Mailman.Message import Message
-    >>> from Mailman.Queue.Switchboard import Switchboard
+    >>> from Mailman.queue import Switchboard
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... To: _xtest@example.com

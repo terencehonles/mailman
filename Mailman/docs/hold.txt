@@ -8,7 +8,7 @@ are held when they meet any of a number of criteria.
     >>> import os
     >>> import errno
     >>> from Mailman.Handlers.Hold import process
-    >>> from Mailman.Queue.Switchboard import Switchboard
+    >>> from Mailman.queue import Switchboard
     >>> from Mailman.configuration import config
     >>> from Mailman.database import flush
     >>> mlist = config.db.list_manager.create('_xtest@example.com')

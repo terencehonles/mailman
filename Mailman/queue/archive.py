@@ -21,12 +21,12 @@ import time
 from email.Utils import parsedate_tz, mktime_tz, formatdate
 
 from Mailman import LockFile
-from Mailman.Queue.Runner import Runner
 from Mailman.configuration import config
+from Mailman.queue import Runner
 
 
 
-class ArchRunner(Runner):
+class ArchiveRunner(Runner):
     QDIR = config.ARCHQUEUE_DIR
 
     def _dispose(self, mlist, msg, msgdata):

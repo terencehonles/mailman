@@ -20,7 +20,7 @@
 import logging
 
 from Mailman.configuration import config
-from Mailman.Queue.sbcache import get_switchboard
+from Mailman.queue import Switchboard
 
 COMMASPACE = ', '
 
@@ -45,5 +45,5 @@ def process(mlist, msg, msgdata):
                   COMMASPACE.join(error))
         return
     # Put the message in the news runner's queue
-    newsq = get_switchboard(config.NEWSQUEUE_DIR)
+    newsq = Switchboard(config.NEWSQUEUE_DIR)
     newsq.enqueue(msg, msgdata, listname=mlist.fqdn_listname)
