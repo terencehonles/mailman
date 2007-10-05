@@ -23,7 +23,6 @@ import optparse
 from Mailman import Errors
 from Mailman import Utils
 from Mailman import Version
-from Mailman.MailList import MailList
 from Mailman.app.lifecycle import remove_list
 from Mailman.configuration import config
 from Mailman.i18n import _
@@ -63,7 +62,7 @@ def main():
     parser, opts, args = parseargs()
     initialize(opts.config)
 
-    fqdn_listname = args[0]
+    fqdn_listname = args[0].lower()
     mlist = config.db.list_manager.get(fqdn_listname)
     if mlist is None:
         if not opts.archives:
