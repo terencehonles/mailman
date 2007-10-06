@@ -1,0 +1,418 @@
+Pre-approved postings
+=====================
+
+Messages can contain a pre-approval, which is used to bypass the message
+approval queue.  This has several use cases:
+
+- A list administrator can send an emergency message to the mailing list from
+  an unregistered address, say if they are away from their normal email.
+
+- An automated script can be programmed to send a message to an otherwise
+  moderated list.
+  
+In order to support this, a mailing list can be given a 'moderator password'
+which is shared among all the administrators.
+
+    >>> from Mailman.Handlers.Approve import process
+    >>> from Mailman.database import flush
+    >>> from Mailman.configuration import config
+    >>> mlist = config.db.list_manager.create('_xtest@example.com')
+
+
+Short circuiting
+----------------
+
+The message may have been approved by some other means, as evident in the
+message metadata.  In this case, the handler returns immediately.
+
+    >>> from email import message_from_string
+    >>> from Mailman.Message import Message
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.com
+    ...
+    ... An important message.
+    ... """, Message)
+    >>> msgdata = {'approved': True}
+    >>> process(mlist, msg, msgdata)
+    >>> print msg.as_string()
+    From: aperson@example.com
+    <BLANKLINE>
+    An important message.
+    <BLANKLINE>
+    >>> msgdata
+    {'approved': True}
+
+
+The Approved header
+-------------------
+
+If the moderator password is given in an Approved header, then the message
+gets sent through with no further posting moderation.  The Approved header is
+not stripped in this handler module, but instead in the Cleanse module.  This
+ensures that no moderator approval password in the headers will leak out.
+
+    >>> mlist.moderator_password = 'abcxyz'
+    >>> flush()
+    >>> msg['Approved'] = 'abcxyz'
+    >>> msgdata = {}
+    >>> process(mlist, msg, msgdata)
+    >>> print msg.as_string()
+    From: aperson@example.com
+    Approved: abcxyz
+    <BLANKLINE>
+    An important message.
+    <BLANKLINE>
+    >>> sorted(msgdata.items())
+    [('adminapproved', True), ('approved', True)]
+
+But if the wrong password is given, then the message is not marked as being
+approved.  The header is still removed though.
+
+    >>> del msg['Approved']
+    >>> msg['Approved'] = '123456'
+    >>> msgdata = {}
+    >>> process(mlist, msg, msgdata)
+    >>> print msg.as_string()
+    From: aperson@example.com
+    Approved: 123456
+    <BLANKLINE>
+    An important message.
+    <BLANKLINE>
+    >>> msgdata
+    {}
+
+In the spirit of being liberal in what you accept, using an Approve header is
+completely synonymous.
+
+    >>> del msg['Approved']
+    >>> msg['Approve'] = 'abcxyz'
+    >>> msgdata = {}
+    >>> process(mlist, msg, msgdata)
+    >>> print msg.as_string()
+    From: aperson@example.com
+    Approve: abcxyz
+    <BLANKLINE>
+    An important message.
+    <BLANKLINE>
+    >>> sorted(msgdata.items())
+    [('adminapproved', True), ('approved', True)]
+
+    >>> del msg['Approve']
+    >>> msg['Approve'] = '123456'
+    >>> msgdata = {}
+    >>> process(mlist, msg, msgdata)
+    >>> print msg.as_string()
+    From: aperson@example.com
+    Approve: 123456
+    <BLANKLINE>
+    An important message.
+    <BLANKLINE>
+    >>> msgdata
+    {}
+
+
+Using a pseudo-header
+---------------------
+
+Different mail user agents have varying degrees to which they support custom
+headers like Approve and Approved.  For this reason, Mailman also supports
+using a 'pseudo-header', which is really just the first non-whitespace line in
+the payload of the message of the message.  If this pseudo-header looks like a
+matching Approve or Approved header, the message is similarly allowed to pass.
+
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.com
+    ...
+    ... Approved: abcxyz
+    ... An important message.
+    ... """, Message)
+    >>> msgdata = {}
+    >>> process(mlist, msg, msgdata)
+    >>> print msg.as_string()
+    From: aperson@example.com
+    Content-Transfer-Encoding: 7bit
+    MIME-Version: 1.0
+    Content-Type: text/plain; charset="us-ascii"
+    <BLANKLINE>
+    An important message.
+    <BLANKLINE>
+    >>> sorted(msgdata.items())
+    [('adminapproved', True), ('approved', True)]
+
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.com
+    ...
+    ... Approve: abcxyz
+    ... An important message.
+    ... """, Message)
+    >>> msgdata = {}
+    >>> process(mlist, msg, msgdata)
+    >>> print msg.as_string()
+    From: aperson@example.com
+    Content-Transfer-Encoding: 7bit
+    MIME-Version: 1.0
+    Content-Type: text/plain; charset="us-ascii"
+    <BLANKLINE>
+    An important message.
+    <BLANKLINE>
+    >>> sorted(msgdata.items())
+    [('adminapproved', True), ('approved', True)]
+
+As before, a mismatch in the pseudo-header does not approve the message, but
+the pseudo-header line is still removed.
+
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.com
+    ...
+    ... Approved: 123456
+    ... An important message.
+    ... """, Message)
+    >>> msgdata = {}
+    >>> process(mlist, msg, msgdata)
+    >>> print msg.as_string()
+    From: aperson@example.com
+    Content-Transfer-Encoding: 7bit
+    MIME-Version: 1.0
+    Content-Type: text/plain; charset="us-ascii"
+    <BLANKLINE>
+    An important message.
+    <BLANKLINE>
+    >>> msgdata
+    {}
+
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.com
+    ...
+    ... Approve: 123456
+    ... An important message.
+    ... """, Message)
+    >>> msgdata = {}
+    >>> process(mlist, msg, msgdata)
+    >>> print msg.as_string()
+    From: aperson@example.com
+    Content-Transfer-Encoding: 7bit
+    MIME-Version: 1.0
+    Content-Type: text/plain; charset="us-ascii"
+    <BLANKLINE>
+    An important message.
+    <BLANKLINE>
+    >>> msgdata
+    {}
+
+
+MIME multipart support
+----------------------
+
+Mailman searches for the pseudo-header as the first non-whitespace line in the
+first text/plain message part of the message.  This allows the feature to be
+used with MIME documents.
+
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.com
+    ... MIME-Version: 1.0
+    ... Content-Type: multipart/mixed; boundary="AAA"
+    ...
+    ... --AAA
+    ... Content-Type: application/x-ignore
+    ...
+    ... Approved: 123456
+    ... The above line will be ignored.
+    ...
+    ... --AAA
+    ... Content-Type: text/plain
+    ...
+    ... Approved: abcxyz
+    ... An important message.
+    ... --AAA--
+    ... """, Message)
+    >>> msgdata = {}
+    >>> process(mlist, msg, msgdata)
+    >>> print msg.as_string()
+    From: aperson@example.com
+    MIME-Version: 1.0
+    Content-Type: multipart/mixed; boundary="AAA"
+    <BLANKLINE>
+    --AAA
+    Content-Type: application/x-ignore
+    <BLANKLINE>
+    Approved: 123456
+    The above line will be ignored.
+    <BLANKLINE>
+    --AAA
+    Content-Transfer-Encoding: 7bit
+    MIME-Version: 1.0
+    Content-Type: text/plain; charset="us-ascii"
+    <BLANKLINE>
+    An important message.
+    --AAA--
+    <BLANKLINE>
+    >>> sorted(msgdata.items())
+    [('adminapproved', True), ('approved', True)]
+
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.com
+    ... MIME-Version: 1.0
+    ... Content-Type: multipart/mixed; boundary="AAA"
+    ...
+    ... --AAA
+    ... Content-Type: application/x-ignore
+    ...
+    ... Approve: 123456
+    ... The above line will be ignored.
+    ...
+    ... --AAA
+    ... Content-Type: text/plain
+    ...
+    ... Approve: abcxyz
+    ... An important message.
+    ... --AAA--
+    ... """, Message)
+    >>> msgdata = {}
+    >>> process(mlist, msg, msgdata)
+    >>> print msg.as_string()
+    From: aperson@example.com
+    MIME-Version: 1.0
+    Content-Type: multipart/mixed; boundary="AAA"
+    <BLANKLINE>
+    --AAA
+    Content-Type: application/x-ignore
+    <BLANKLINE>
+    Approve: 123456
+    The above line will be ignored.
+    <BLANKLINE>
+    --AAA
+    Content-Transfer-Encoding: 7bit
+    MIME-Version: 1.0
+    Content-Type: text/plain; charset="us-ascii"
+    <BLANKLINE>
+    An important message.
+    --AAA--
+    <BLANKLINE>
+    >>> sorted(msgdata.items())
+    [('adminapproved', True), ('approved', True)]
+
+Here, the correct password is in the non-text/plain part, so it is ignored.
+
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.com
+    ... MIME-Version: 1.0
+    ... Content-Type: multipart/mixed; boundary="AAA"
+    ...
+    ... --AAA
+    ... Content-Type: application/x-ignore
+    ...
+    ... Approve: abcxyz
+    ... The above line will be ignored.
+    ...
+    ... --AAA
+    ... Content-Type: text/plain
+    ...
+    ... Approve: 123456
+    ... An important message.
+    ... --AAA--
+    ... """, Message)
+    >>> msgdata = {}
+    >>> process(mlist, msg, msgdata)
+    >>> print msg.as_string()
+    From: aperson@example.com
+    MIME-Version: 1.0
+    Content-Type: multipart/mixed; boundary="AAA"
+    <BLANKLINE>
+    --AAA
+    Content-Type: application/x-ignore
+    <BLANKLINE>
+    Approve: abcxyz
+    The above line will be ignored.
+    <BLANKLINE>
+    --AAA
+    Content-Transfer-Encoding: 7bit
+    MIME-Version: 1.0
+    Content-Type: text/plain; charset="us-ascii"
+    <BLANKLINE>
+    An important message.
+    --AAA--
+    >>> msgdata
+    {}
+
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.com
+    ... MIME-Version: 1.0
+    ... Content-Type: multipart/mixed; boundary="AAA"
+    ...
+    ... --AAA
+    ... Content-Type: application/x-ignore
+    ...
+    ... Approve: abcxyz
+    ... The above line will be ignored.
+    ...
+    ... --AAA
+    ... Content-Type: text/plain
+    ...
+    ... Approve: 123456
+    ... An important message.
+    ... --AAA--
+    ... """, Message)
+    >>> msgdata = {}
+    >>> process(mlist, msg, msgdata)
+    >>> print msg.as_string()
+    From: aperson@example.com
+    MIME-Version: 1.0
+    Content-Type: multipart/mixed; boundary="AAA"
+    <BLANKLINE>
+    --AAA
+    Content-Type: application/x-ignore
+    <BLANKLINE>
+    Approve: abcxyz
+    The above line will be ignored.
+    <BLANKLINE>
+    --AAA
+    Content-Transfer-Encoding: 7bit
+    MIME-Version: 1.0
+    Content-Type: text/plain; charset="us-ascii"
+    <BLANKLINE>
+    An important message.
+    --AAA--
+    >>> msgdata
+    {}
+
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.com
+    ... MIME-Version: 1.0
+    ... Content-Type: multipart/mixed; boundary="AAA"
+    ...
+    ... --AAA
+    ... Content-Type: application/x-ignore
+    ...
+    ... Approved: abcxyz
+    ... The above line will be ignored.
+    ...
+    ... --AAA
+    ... Content-Type: text/plain
+    ...
+    ... Approved: 123456
+    ... An important message.
+    ... --AAA--
+    ... """, Message)
+    >>> msgdata = {}
+    >>> process(mlist, msg, msgdata)
+    >>> print msg.as_string()
+    From: aperson@example.com
+    MIME-Version: 1.0
+    Content-Type: multipart/mixed; boundary="AAA"
+    <BLANKLINE>
+    --AAA
+    Content-Type: application/x-ignore
+    <BLANKLINE>
+    Approved: abcxyz
+    The above line will be ignored.
+    <BLANKLINE>
+    --AAA
+    Content-Transfer-Encoding: 7bit
+    MIME-Version: 1.0
+    Content-Type: text/plain; charset="us-ascii"
+    <BLANKLINE>
+    An important message.
+    --AAA--
+    <BLANKLINE>
+    >>> msgdata
+    {}
