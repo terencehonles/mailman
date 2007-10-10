@@ -116,4 +116,50 @@ the message.
     <BLANKLINE>
 
 
+Newsgroup moderation
+--------------------
+
+When the newsgroup is moderated, an Approved: header with the list's posting
+address is added for the benefit of the Usenet system.
+
+    >>> from Mailman.interfaces import NewsModeration
+    >>> mlist.news_moderation = NewsModeration.open_moderated
+    >>> flush()
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.com
+    ... To: _xtest@example.com
+    ... Approved: this gets deleted
+    ...
+    ... """)
+    >>> prepare_message(mlist, msg, {})
+    >>> msg['approved']
+    '_xtest@example.com'
+
+    >>> mlist.news_moderation = NewsModeration.moderated
+    >>> flush()
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.com
+    ... To: _xtest@example.com
+    ... Approved: this gets deleted
+    ...
+    ... """)
+    >>> prepare_message(mlist, msg, {})
+    >>> msg['approved']
+    '_xtest@example.com'
+
+But if the newsgroup is not moderated, the Approved: header is not chnaged.
+
+    >>> mlist.news_moderation = NewsModeration.none
+    >>> flush()
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.com
+    ... To: _xtest@example.com
+    ... Approved: this doesn't get deleted
+    ...
+    ... """)
+    >>> prepare_message(mlist, msg, {})
+    >>> msg['approved']
+    "this doesn't get deleted"
+
+
 XXX More of the NewsRunner should be tested.

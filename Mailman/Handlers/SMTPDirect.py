@@ -42,6 +42,7 @@ from Mailman import Utils
 from Mailman.Handlers import Decorate
 from Mailman.SafeDict import MsgSafeDict
 from Mailman.configuration import config
+from Mailman.interfaces import Personalization
 
 DOT = '.'
 
@@ -114,7 +115,7 @@ def process(mlist, msg, msgdata):
     # recipients they'll swallow in a single transaction.
     deliveryfunc = None
     if (not msgdata.has_key('personalize') or msgdata['personalize']) and (
-           msgdata.get('verp') or mlist.personalize):
+           msgdata.get('verp') or mlist.personalize <> Personalization.none):
         chunks = [[recip] for recip in recips]
         msgdata['personalize'] = 1
         deliveryfunc = verpdeliver
@@ -301,7 +302,7 @@ def verpdeliver(mlist, msg, msgdata, envsender, failures, conn):
                  'host'   : DOT.join(rdomain),
                  }
             envsender = '%s@%s' % ((config.VERP_FORMAT % d), DOT.join(bdomain))
-        if mlist.personalize == 2:
+        if mlist.personalize == Personalization.full:
             # When fully personalizing, we want the To address to point to the
             # recipient, not to the mailing list
             del msgcopy['to']

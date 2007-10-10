@@ -22,7 +22,10 @@ from munepy import Enum
 from zope.interface import implementedBy
 from zope.interface.interfaces import IInterface
 
-__all__ = []
+__all__ = [
+    'Action',
+    'NewsModeration',
+    ]
 
 
 
@@ -49,3 +52,22 @@ def _populate():
 
 
 _populate()
+
+
+
+class Action(Enum):
+    hold    = 0
+    reject  = 1
+    discard = 2
+    accept  = 3
+    defer   = 4
+
+
+
+class NewsModeration(Enum):
+    # The newsgroup is not moderated
+    none = 0
+    # The newsgroup is moderated, but allows for an open posting policy.
+    open_moderated = 1
+    # The newsgroup is moderated
+    moderated = 2

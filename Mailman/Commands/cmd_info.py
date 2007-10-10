@@ -37,10 +37,10 @@ def process(res, args):
         return STOP
     listname = mlist.real_name
     description = mlist.description or _('n/a')
-    postaddr = mlist.GetListEmail()
-    requestaddr = mlist.GetRequestEmail()
-    owneraddr = mlist.GetOwnerEmail()
-    listurl = mlist.GetScriptURL('listinfo', absolute=1)
+    postaddr = mlist.posting_address
+    requestaddr = mlist.request_address
+    owneraddr = mlist.owner_address
+    listurl = mlist.script_url('listinfo')
     res.results.append(_('List name:    %(listname)s'))
     res.results.append(_('Description:  %(description)s'))
     res.results.append(_('Postings to:  %(postaddr)s'))

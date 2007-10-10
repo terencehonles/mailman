@@ -117,7 +117,7 @@ def poll_newsgroup(mlist, conn, first, last, glock):
                     found_to = True
                 if value <> 'x-beenthere':
                     continue
-                if header[i:] == ': %s' % mlist.GetListEmail():
+                if header[i:] == ': %s' % mlist.posting_address:
                     beenthere = True
                     break
             if not beenthere:
@@ -146,7 +146,7 @@ def poll_newsgroup(mlist, conn, first, last, glock):
                     del msg['X-Originally-To']
                     msg['X-Originally-To'] = msg['To']
                     del msg['To']
-                msg['To'] = mlist.GetListEmail()
+                msg['To'] = mlist.posting_address
                 # Post the message to the locked list
                 inq = Switchboard(config.INQUEUE_DIR)
                 inq.enqueue(msg,

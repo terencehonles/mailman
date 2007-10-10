@@ -17,6 +17,12 @@
 
 """Application of list styles to new and existing lists."""
 
+__metaclass__ = type
+__all__ = [
+    'DefaultStyle',
+    'style_manager',
+    ]
+
 import datetime
 
 from operator import attrgetter
@@ -27,14 +33,8 @@ from Mailman import Utils
 from Mailman.Errors import DuplicateStyleError
 from Mailman.app.plugins import get_plugins
 from Mailman.configuration import config
-from Mailman.interfaces import Action, IStyle, IStyleManager
-
-
-__metaclass__ = type
-__all__ = [
-    'DefaultStyle',
-    'style_manager',
-    ]
+from Mailman.interfaces import (
+    Action, IStyle, IStyleManager, NewsModeration, Personalization)
 
 
 
@@ -109,7 +109,7 @@ class DefaultStyle:
         mlist.digest_members = {}
         mlist.next_digest_number = 1
         mlist.nondigestable = config.DEFAULT_NONDIGESTABLE
-        mlist.personalize = False
+        mlist.personalize = Personalization.none
         # New sender-centric moderation (privacy) options
         mlist.default_member_moderation = (
             config.DEFAULT_DEFAULT_MEMBER_MODERATION)
@@ -126,7 +126,8 @@ class DefaultStyle:
         mlist.reject_these_nonmembers = []
         mlist.discard_these_nonmembers = []
         mlist.forward_auto_discards = config.DEFAULT_FORWARD_AUTO_DISCARDS
-        mlist.generic_nonmember_action = config.DEFAULT_GENERIC_NONMEMBER_ACTION
+        mlist.generic_nonmember_action = (
+            config.DEFAULT_GENERIC_NONMEMBER_ACTION)
         mlist.nonmember_rejection_notice = ''
         # Ban lists
         mlist.ban_list = []
@@ -192,7 +193,7 @@ class DefaultStyle:
         mlist.news_prefix_subject_too = True
         # In patch #401270, this was called newsgroup_is_moderated, but the
         # semantics weren't quite the same.
-        mlist.news_moderation = False
+        mlist.news_moderation = NewsModeration.none
         # Topics
         #
         # `topics' is a list of 4-tuples of the following form:

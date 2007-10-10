@@ -30,6 +30,7 @@ COMMASPACE = ', '
 
 from Mailman import Utils
 from Mailman.configuration import config
+from Mailman.interfaces import NewsModeration
 from Mailman.queue import Runner
 
 log = logging.getLogger('mailman.error')
@@ -92,9 +93,10 @@ def prepare_message(mlist, msg, msgdata):
     # software to accept the posting, and not forward it on to the n.g.'s
     # moderation address.  The posting would not have gotten here if it hadn't
     # already been approved.  1 == open list, mod n.g., 2 == moderated
-    if mlist.news_moderation in (1, 2):
+    if mlist.news_moderation in (NewsModeration.open_moderated,
+                                 NewsModeration.moderated):
         del msg['approved']
-        msg['Approved'] = mlist.GetListEmail()
+        msg['Approved'] = mlist.posting_address
     # Should we restore the original, non-prefixed subject for gatewayed
     # messages? TK: We use stripped_subject (prefix stripped) which was
     # crafted in CookHeaders.py to ensure prefix was stripped from the subject

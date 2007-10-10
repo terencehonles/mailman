@@ -23,7 +23,7 @@ from zope.interface import implements
 
 from Mailman.Utils import fqdn_listname, makedirs, split_listname
 from Mailman.configuration import config
-from Mailman.interfaces import IMailingList
+from Mailman.interfaces import IMailingList, Personalization
 from Mailman.database.types import EnumType, TimeDeltaType
 
 SPACE = ' '
@@ -124,7 +124,7 @@ class MailingList(Entity):
     has_field('msg_footer',                                 Unicode),
     has_field('msg_header',                                 Unicode),
     has_field('new_member_options',                         Integer),
-    has_field('news_moderation',                            Boolean),
+    has_field('news_moderation',                            EnumType),
     has_field('news_prefix_subject_too',                    Boolean),
     has_field('nntp_host',                                  Unicode),
     has_field('nondigestable',                              Boolean),
@@ -132,7 +132,7 @@ class MailingList(Entity):
     has_field('obscure_addresses',                          Boolean),
     has_field('pass_filename_extensions',                   PickleType),
     has_field('pass_mime_types',                            PickleType),
-    has_field('personalize',                                Integer),
+    has_field('personalize',                                EnumType),
     has_field('post_id',                                    Integer),
     has_field('preferred_language',                         Unicode),
     has_field('private_roster',                             Boolean),
@@ -174,7 +174,9 @@ class MailingList(Entity):
         # autoresponses sent on that date.
         self.hold_and_cmd_autoresponses = {}
         self.full_path = os.path.join(config.LIST_DATA_DIR, fqdn_listname)
-        self.real_name = string.capwords(SPACE.join(listname.split(UNDERSCORE)))
+        self.personalization = Personalization.none
+        self.real_name = string.capwords(
+            SPACE.join(listname.split(UNDERSCORE)))
         makedirs(self.full_path)
 
     # XXX FIXME

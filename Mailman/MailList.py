@@ -184,9 +184,6 @@ class MailList(object, Archiver, Digester, SecurityManager, Bouncer):
         else:
             return 'confirm ' + cookie
 
-    def GetListEmail(self):
-        return self.getListAddress()
-
     def GetMemberAdminEmail(self, member):
         """Usually the member addr, but modified for umbrella lists.
 

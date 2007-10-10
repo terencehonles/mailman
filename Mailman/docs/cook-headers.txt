@@ -292,3 +292,37 @@ List-Archive header either.
     List-Unsubscribe: <http://lists.example.com/listinfo/_xtest@example.com>,
     	<mailto:_xtest-leave@example.com>
     ---end---
+
+
+Personalization
+---------------
+
+The To field normally contains the list posting address.  However when
+messages are fully personalized, that header will get overwritten with the
+address of the recipient.  The list's posting address will be added to one of
+the recipient headers so that users will be able to reply back to the list.
+
+    >>> from Mailman.interfaces import Personalization, ReplyToMunging
+    >>> mlist.personalize = Personalization.full
+    >>> mlist.reply_goes_to_list = ReplyToMunging.no_munging
+    >>> flush()
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.com
+    ...
+    ... """, Message)
+    >>> process(mlist, msg, {})
+    >>> print msg.as_string()
+    From: aperson@example.com
+    X-BeenThere: _xtest@example.com
+    X-Mailman-Version: ...
+    Precedence: list
+    Cc: My test mailing list <_xtest@example.com>
+    List-Id: My test mailing list <_xtest.example.com>
+    List-Unsubscribe: <http://lists.example.com/listinfo/_xtest@example.com>,
+    	<mailto:_xtest-leave@example.com>
+    List-Post: <mailto:_xtest@example.com>
+    List-Help: <mailto:_xtest-request@example.com?subject=help>
+    List-Subscribe: <http://lists.example.com/listinfo/_xtest@example.com>,
+    	<mailto:_xtest-join@example.com>
+    <BLANKLINE>
+    <BLANKLINE>

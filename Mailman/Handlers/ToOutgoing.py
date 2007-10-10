@@ -23,6 +23,7 @@ recipient should just be placed in the out queue directly.
 """
 
 from Mailman.configuration import config
+from Mailman.interfaces import Personalization
 from Mailman.queue import Switchboard
 
 
@@ -39,7 +40,7 @@ def process(mlist, msg, msgdata):
     # VERP_PASSWORD_REMINDERS.  Preserve any existing verp flag.
     if 'verp' in  msgdata:
         pass
-    elif mlist.personalize:
+    elif mlist.personalize <> Personalization.none:
         if config.VERP_PERSONALIZED_DELIVERIES:
             msgdata['verp'] = True
     elif interval == 0:

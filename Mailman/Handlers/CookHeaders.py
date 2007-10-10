@@ -29,7 +29,7 @@ from Mailman import Version
 from Mailman.app.archiving import get_base_archive_url
 from Mailman.configuration import config
 from Mailman.i18n import _
-from Mailman.interfaces import ReplyToMunging
+from Mailman.interfaces import Personalization, ReplyToMunging
 
 CONTINUATION = ',\n\t'
 COMMASPACE = ', '
@@ -148,7 +148,7 @@ def process(mlist, msg, msgdata):
         # above code?
         # Also skip Cc if this is an anonymous list as list posting address
         # is already in From and Reply-To in this case.
-        if (mlist.personalize == 2 and
+        if (mlist.personalize == Personalization.full and
             mlist.reply_goes_to_list <> ReplyToMunging.point_to_list and
             not mlist.anonymous_list):
             # Watch out for existing Cc headers, merge, and remove dups.  Note
@@ -158,7 +158,7 @@ def process(mlist, msg, msgdata):
             for pair in getaddresses(msg.get_all('cc', [])):
                 add(pair)
             i18ndesc = uheader(mlist, mlist.description, 'Cc')
-            add((str(i18ndesc), mlist.GetListEmail()))
+            add((str(i18ndesc), mlist.posting_address))
             del msg['Cc']
             msg['Cc'] = COMMASPACE.join([formataddr(pair) for pair in new])
     # Add list-specific headers as defined in RFC 2369 and RFC 2919, but only

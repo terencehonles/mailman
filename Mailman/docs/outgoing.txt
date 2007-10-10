@@ -70,7 +70,8 @@ If the list is set to personalize deliveries, and the global configuration
 option to VERP personalized deliveries is set, then the message will be
 VERP'd.
 
-    >>> mlist.personalize = True
+    >>> from Mailman.interfaces import Personalization
+    >>> mlist.personalize = Personalization.individual
     >>> flush()
     >>> config.VERP_PERSONALIZED_DELIVERIES = True
     >>> msgdata = dict(foo=1, bar=2)
@@ -96,7 +97,7 @@ the global configuration variable VERP_DELIVERY_INTERVAL.  This variable tells
 Mailman how often to VERP even non-personalized mailing lists.  It can be set
 to zero, which means non-personalized messages will never be VERP'd.
 
-    >>> mlist.personalize = False
+    >>> mlist.personalize = Personalization.none
     >>> flush()
     >>> config.VERP_DELIVERY_INTERVAL = 0
     >>> msgdata = dict(foo=1, bar=2)

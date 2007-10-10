@@ -19,11 +19,23 @@
 
 __all__ = [
     'IMailingList',
+    'Personalization',
     'ReplyToMunging',
     ]
 
 from munepy import Enum
 from zope.interface import Interface, Attribute
+
+
+
+class Personalization(Enum):
+    none = 0
+    # Everyone gets a unique copy of the message, and there are a few more
+    # substitution variables, but no headers are modified.
+    individual = 1
+    # All of the 'individual' personalization plus recipient header
+    # modification.
+    full = 2
 
 
 

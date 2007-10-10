@@ -98,10 +98,10 @@ Mailman installation directory called 'listaddr.py', with the following
 two functions:
 
     def listaddr(mlist):
-        print mlist.GetListEmail()
+        print mlist.posting_address
 
     def requestaddr(mlist):
-        print mlist.GetRequestEmail()
+        print mlist.request_address
 
 Now, from the command line you can print the list's posting address by running
 the following from the command line:
