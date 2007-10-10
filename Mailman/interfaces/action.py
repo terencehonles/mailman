@@ -15,25 +15,17 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-"""Various constants and enumerations."""
-
 __all__ = [
-    'SystemDefaultPreferences',
+    'Action',
     ]
 
-
-from Mailman.interfaces import DeliveryMode, DeliveryStatus, IPreferences
-from zope.interface import implements
+from munepy import Enum
 
 
 
-class SystemDefaultPreferences(object):
-    implements(IPreferences)
-
-    acknowledge_posts = False
-    hide_address = True
-    preferred_language = 'en'
-    receive_list_copy = True
-    receive_own_postings = True
-    delivery_mode = DeliveryMode.regular
-    delivery_status = DeliveryStatus.enabled
+class Action(Enum):
+    hold    = 0
+    reject  = 1
+    discard = 2
+    accept  = 3
+    defer   = 4

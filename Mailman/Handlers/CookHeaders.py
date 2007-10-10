@@ -28,8 +28,8 @@ from Mailman import Utils
 from Mailman import Version
 from Mailman.app.archiving import get_base_archive_url
 from Mailman.configuration import config
-from Mailman.constants import ReplyToMunging
 from Mailman.i18n import _
+from Mailman.interfaces import ReplyToMunging
 
 CONTINUATION = ',\n\t'
 COMMASPACE = ', '

@@ -17,7 +17,23 @@
 
 """Interface for a mailing list."""
 
+__all__ = [
+    'IMailingList',
+    'ReplyToMunging',
+    ]
+
+from munepy import Enum
 from zope.interface import Interface, Attribute
+
+
+
+class ReplyToMunging(Enum):
+    # The Reply-To header is passed through untouched
+    no_munging = 0
+    # The mailing list's posting address is appended to the Reply-To header
+    point_to_list = 1
+    # An explicit Reply-To header is added
+    explicit_header = 2
 
 
 

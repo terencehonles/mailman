@@ -29,7 +29,7 @@ from Mailman import Message
 from Mailman import Utils
 from Mailman import i18n
 from Mailman.configuration import config
-from Mailman.constants import DeliveryStatus
+from Mailman.interfaces import DeliveryStatus
 
 EMPTYSTRING = ''
 

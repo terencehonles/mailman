@@ -52,7 +52,7 @@ from Mailman.Handlers.Scrubber import process as scrubber
 from Mailman.Mailbox import Mailbox
 from Mailman.Mailbox import Mailbox
 from Mailman.configuration import config
-from Mailman.constants import DeliveryMode, DeliveryStatus
+from Mailman.interfaces import DeliveryMode, DeliveryStatus
 from Mailman.queue import Switchboard
 
 _ = i18n._

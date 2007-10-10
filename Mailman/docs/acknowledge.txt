@@ -28,7 +28,7 @@ acknowledgment.
 Subscribe a user to the mailing list.
 
     >>> usermgr = config.db.user_manager
-    >>> from Mailman.constants import MemberRole
+    >>> from Mailman.interfaces import MemberRole
     >>> user_1 = usermgr.create_user('aperson@example.com')
     >>> address_1 = list(user_1.addresses)[0]
     >>> address_1.subscribe(mlist, MemberRole.member)

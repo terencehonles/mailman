@@ -27,8 +27,8 @@ from Mailman import i18n
 from Mailman import passwords
 from Mailman.app.membership import add_member
 from Mailman.configuration import config
-from Mailman.constants import DeliveryMode
 from Mailman.initialize import initialize
+from Mailman.interfaces import DeliveryMode
 
 
 _ = i18n._

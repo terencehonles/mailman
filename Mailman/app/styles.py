@@ -27,8 +27,7 @@ from Mailman import Utils
 from Mailman.Errors import DuplicateStyleError
 from Mailman.app.plugins import get_plugins
 from Mailman.configuration import config
-from Mailman.constants import Action
-from Mailman.interfaces import IStyle, IStyleManager
+from Mailman.interfaces import Action, IStyle, IStyleManager
 
 
 __metaclass__ = type

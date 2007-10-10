@@ -18,7 +18,48 @@
 
 """Interface describing the basics of a member."""
 
+from munepy import Enum
 from zope.interface import Interface, Attribute
+
+__all__ = [
+    'DeliveryMode',
+    'DeliveryStatus',
+    'IMember',
+    'MemberRole',
+    ]
+
+
+
+class DeliveryMode(Enum):
+    # Regular (i.e. non-digest) delivery
+    regular = 1
+    # Plain text digest delivery
+    plaintext_digests = 2
+    # MIME digest delivery
+    mime_digests = 3
+    # Summary digests
+    summary_digests = 4
+
+
+
+class DeliveryStatus(Enum):
+    # Delivery is enabled
+    enabled = 1
+    # Delivery was disabled by the user
+    by_user = 2
+    # Delivery was disabled due to bouncing addresses
+    by_bounces = 3
+    # Delivery was disabled by an administrator or moderator
+    by_moderator = 4
+    # Disabled for unknown reasons.
+    unknown = 5
+
+
+
+class MemberRole(Enum):
+    member = 1
+    owner = 2
+    moderator = 3
 
 
 

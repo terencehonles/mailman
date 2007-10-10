@@ -25,10 +25,9 @@ moderator, and administrator roster filters.
 from sqlalchemy import *
 from zope.interface import implements
 
-from Mailman.constants import DeliveryMode, MemberRole
 from Mailman.constants import SystemDefaultPreferences
 from Mailman.database.model import Address, Member
-from Mailman.interfaces import IRoster
+from Mailman.interfaces import DeliveryMode, IRoster, MemberRole
 
 
 

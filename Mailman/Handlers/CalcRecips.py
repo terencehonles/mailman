@@ -27,8 +27,8 @@ from Mailman import Errors
 from Mailman import Message
 from Mailman import Utils
 from Mailman.configuration import config
-from Mailman.constants import DeliveryStatus
 from Mailman.i18n import _
+from Mailman.interfaces import DeliveryStatus
 
 
 

@@ -20,7 +20,7 @@
 import os
 from datetime import timedelta
 
-from Mailman.constants import *
+from Mailman.interfaces import ReplyToMunging
 
 
 

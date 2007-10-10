@@ -27,7 +27,7 @@ from Mailman.Utils import ValidateEmail
 from Mailman.app.plugins import get_plugin
 from Mailman.app.styles import style_manager
 from Mailman.configuration import config
-from Mailman.constants import MemberRole
+from Mailman.interfaces import MemberRole
 
 __all__ = [
     'create_list',

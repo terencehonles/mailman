@@ -153,9 +153,10 @@ Subscriptions
 Addresses get subscribed to mailing lists, not users.  When the address is
 subscribed, a role is specified.
 
-    >>> address_5 = usermgr.create_address('eperson@example.com', 'Elly Person')
+    >>> address_5 = usermgr.create_address(
+    ...     'eperson@example.com', 'Elly Person')
     >>> mlist = config.db.list_manager.create('_xtext@example.com')
-    >>> from Mailman.constants import MemberRole
+    >>> from Mailman.interfaces import MemberRole
     >>> address_5.subscribe(mlist, MemberRole.owner)
     <Member: Elly Person <eperson@example.com> on
              _xtext@example.com as MemberRole.owner>

@@ -252,7 +252,7 @@ We can also hold a message with some additional metadata.
 Once held, the moderator can select one of several dispositions.  The most
 trivial is to simply defer a decision for now.
 
-    >>> from Mailman.constants import Action
+    >>> from Mailman.interfaces import Action
     >>> moderator.handle_message(mlist, id_1, Action.defer)
     >>> flush()
     >>> requests.get_request(id_1) is not None
@@ -427,7 +427,7 @@ subscription must be provided, including the subscriber's address and real
 name, their password (possibly hashed), what kind of delivery option they are
 chosing and their preferred language.
 
-    >>> from Mailman.constants import DeliveryMode
+    >>> from Mailman.interfaces import DeliveryMode
     >>> mlist.admin_immed_notify = False
     >>> flush()
     >>> id_3 = moderator.hold_subscription(mlist,
@@ -710,7 +710,7 @@ unsubscription holds can send the list's moderators an immediate notification.
 
     >>> mlist.admin_immed_notify = False
     >>> flush()
-    >>> from Mailman.constants import MemberRole
+    >>> from Mailman.interfaces import MemberRole
     >>> user_1 = config.db.user_manager.create_user('gperson@example.com')
     >>> flush()
     >>> address_1 = list(user_1.addresses)[0]

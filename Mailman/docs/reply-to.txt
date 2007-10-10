@@ -41,7 +41,7 @@ A list can be configured to add a Reply-To header pointing back to the mailing
 list's posting address.  If there's no Reply-To header in the original
 message, the list's posting address simply gets inserted.
 
-    >>> from Mailman.constants import ReplyToMunging
+    >>> from Mailman.interfaces import ReplyToMunging
     >>> mlist.reply_goes_to_list = ReplyToMunging.point_to_list
     >>> mlist.preferred_language = 'en'
     >>> mlist.description = ''

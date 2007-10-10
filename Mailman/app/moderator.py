@@ -39,8 +39,7 @@ from Mailman import Utils
 from Mailman import i18n
 from Mailman.app.membership import add_member, delete_member
 from Mailman.configuration import config
-from Mailman.constants import Action, DeliveryMode
-from Mailman.interfaces import RequestType
+from Mailman.interfaces import Action, DeliveryMode, RequestType
 from Mailman.queue import Switchboard
 
 _ = i18n._

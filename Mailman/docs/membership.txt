@@ -76,7 +76,7 @@ no users in the user database yet.
 We can add Anne as an owner of the mailing list, by creating a member role for
 her.
 
-    >>> from Mailman.constants import MemberRole
+    >>> from Mailman.interfaces import MemberRole
     >>> address_1 = list(user_1.addresses)[0]
     >>> address_1.address
     'aperson@example.com'

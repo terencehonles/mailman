@@ -24,9 +24,9 @@ from Mailman import Errors
 from Mailman import Utils
 from Mailman import Version
 from Mailman.configuration import config
-from Mailman.constants import DeliveryStatus
 from Mailman.i18n import _
 from Mailman.initialize import initialize
+from Mailman.interfaces import DeliveryStatus
 
 __i18n_templates__ = True
 

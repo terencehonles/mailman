@@ -16,9 +16,11 @@ recipients from the list of recipients that earlier handler modules
 
 Create some members we're going to use.
 
-    >>> from Mailman.constants import MemberRole
-    >>> address_a = config.db.user_manager.create_address('aperson@example.com')
-    >>> address_b = config.db.user_manager.create_address('bperson@example.com')
+    >>> from Mailman.interfaces import MemberRole
+    >>> address_a = config.db.user_manager.create_address(
+    ...     'aperson@example.com')
+    >>> address_b = config.db.user_manager.create_address(
+    ...     'bperson@example.com')
     >>> member_a = address_a.subscribe(mlist, MemberRole.member)
     >>> member_b = address_b.subscribe(mlist, MemberRole.member)
     >>> flush()
