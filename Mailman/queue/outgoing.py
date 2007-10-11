@@ -26,7 +26,6 @@ import socket
 import logging
 
 from Mailman import Errors
-from Mailman import LockFile
 from Mailman import Message
 from Mailman.configuration import config
 from Mailman.queue import Runner, Switchboard

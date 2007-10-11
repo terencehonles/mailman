@@ -98,7 +98,7 @@ equivalent) file by adding the following lines, and possibly running the
 
 
 def remove(mlist, cgi=False):
-    listname = mlist.internal_name()
+    listname = mlist.fqdn_listname
     fieldsz = len(listname) + len('-unsubscribe')
     if cgi:
         # If a list is being removed via the CGI, the best we can do is send

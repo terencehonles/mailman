@@ -27,7 +27,7 @@ import errno
 # package/project modules
 #
 import pipermail
-from Mailman import LockFile
+from Mailman.lockfile import LockFile
 
 CACHESIZE = pipermail.CACHESIZE
 
@@ -58,7 +58,7 @@ class DumbBTree:
     def __init__(self, path):
         self.current_index = 0
         self.path = path
-        self.lockfile = LockFile.LockFile(self.path + ".lock")
+        self.lockfile = LockFile(self.path + ".lock")
         self.lock()
         self.__dirty = 0
         self.dict = {}

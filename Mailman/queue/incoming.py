@@ -102,7 +102,6 @@ import logging
 from cStringIO import StringIO
 
 from Mailman import Errors
-from Mailman import LockFile
 from Mailman.configuration import config
 from Mailman.queue import Runner
 
@@ -117,12 +116,6 @@ class IncomingRunner(Runner):
     def _dispose(self, mlist, msg, msgdata):
         if msgdata.get('envsender') is None:
             msg['envsender'] = mlist.no_reply_address
-        # Try to get the list lock.
-        try:
-            mlist.Lock(timeout=config.LIST_LOCK_TIMEOUT)
-        except LockFile.TimeOutError:
-            # Oh well, try again later
-            return 1
         # Process the message through a handler pipeline.  The handler
         # pipeline can actually come from one of three places: the message
         # metadata, the mlist, or the global pipeline.
@@ -131,16 +124,13 @@ class IncomingRunner(Runner):
         # will contain the retry pipeline.  Use this above all else.
         # Otherwise, if the mlist has a `pipeline' attribute, it should be
         # used.  Final fallback is the global pipeline.
-        try:
-            pipeline = self._get_pipeline(mlist, msg, msgdata)
-            msgdata['pipeline'] = pipeline
-            more = self._dopipeline(mlist, msg, msgdata, pipeline)
-            if not more:
-                del msgdata['pipeline']
-            mlist.Save()
-            return more
-        finally:
-            mlist.Unlock()
+        pipeline = self._get_pipeline(mlist, msg, msgdata)
+        msgdata['pipeline'] = pipeline
+        more = self._dopipeline(mlist, msg, msgdata, pipeline)
+        if not more:
+            del msgdata['pipeline']
+        config.db.commit()
+        return more
 
     # Overridable
     def _get_pipeline(self, mlist, msg, msgdata):

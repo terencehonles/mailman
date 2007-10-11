@@ -17,11 +17,13 @@
 
 """Archive queue runner."""
 
+from __future__ import with_statement
+
 import time
 from email.Utils import parsedate_tz, mktime_tz, formatdate
 
-from Mailman import LockFile
 from Mailman.configuration import config
+from Mailman.lockfile import LockFile
 from Mailman.queue import Runner
 
 
@@ -64,14 +66,6 @@ class ArchiveRunner(Runner):
                 msg['X-Original-Date'] = originaldate
         # Always put an indication of when we received the message.
         msg['X-List-Received-Date'] = receivedtime
-        # Now try to get the list lock
-        try:
-            mlist.Lock(timeout=config.LIST_LOCK_TIMEOUT)
-        except LockFile.TimeOutError:
-            # oh well, try again later
-            return 1
-        try:
+        # While a list archiving lock is acquired, archive the message.
+        with LockFile(os.path.join(mlist.full_path, 'archive.lck')):
             mlist.ArchiveMail(msg)
-            mlist.Save()
-        finally:
-            mlist.Unlock()

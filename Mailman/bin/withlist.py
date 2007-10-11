@@ -17,7 +17,6 @@
 
 import os
 import sys
-import atexit
 import optparse
 
 from Mailman import Errors
@@ -31,20 +30,6 @@ __i18n_templates__ = True
 
 LAST_MLIST  = None
 VERBOSE     = True
-LOCK        = False
-
-
-
-def exitfunc(mlist):
-    """Unlock a locked list, but do not implicitly Save() it."""
-    if mlist.Locked():
-        if VERBOSE:
-            listname = mlist.fqdn_listname
-            print >> sys.stderr, _(
-                'Unlocking (but not saving) list: $listname')
-        mlist.Unlock()
-    if VERBOSE:
-        print >> sys.stderr, _('Finalizing')
 
 
 
@@ -54,18 +39,12 @@ def do_list(listname, args, func):
     if '@' not in listname:
         listname += '@' + config.DEFAULT_EMAIL_HOST
 
-    if VERBOSE:
-        print >> sys.stderr, _('Loading list $listname'),
-        if LOCK:
-            print >> sys.stderr, _('(locked)')
-        else:
-            print >> sys.stderr, _('(unlocked)')
-
     mlist = config.db.list_manager.get(listname)
     if mlist is None:
         print >> sys.stderr, _('Unknown list: $listname')
     else:
-        atexit.register(exitfunc, mlist)
+        if VERBOSE:
+            print >> sys.stderr, _('Loaded list: $listname')
         LAST_MLIST = mlist
     # Try to import the module and run the callable.
     if func:
@@ -107,7 +86,7 @@ Now, from the command line you can print the list's posting address by running
 the following from the command line:
 
     % bin/withlist -r listaddr mylist
-    Loading list: mylist (unlocked)
+    Loading list: mylist
     Importing listaddr ...
     Running listaddr.listaddr() ...
     mylist@myhost.com
@@ -115,7 +94,7 @@ the following from the command line:
 And you can print the list's request address by running:
 
     % bin/withlist -r listaddr.requestaddr mylist
-    Loading list: mylist (unlocked)
+    Loading list: mylist
     Importing listaddr ...
     Running listaddr.requestaddr() ...
     mylist-request@myhost.com
@@ -136,15 +115,6 @@ called 'changepw.py':
 and run this from the command line:
 
     % bin/withlist -l -r changepw mylist somebody@somewhere.org foobar"""))
-    parser.add_option('-l', '--lock',
-                      default=False, action='store_true', help=_("""\
-Lock the list when opening.  Normally the list is opened unlocked (e.g. for
-read-only operations).  You can always lock the file after the fact by typing
-'m.Lock()'
-
-Note that if you use this option, you should explicitly call m.Save() before
-exiting, since the interpreter's clean up procedure will not automatically
-save changes to the IMailingList object (but it will unlock the list)."""))
     parser.add_option('-i', '--interactive',
                       default=None, action='store_true', help=_("""\
 Leaves you at an interactive prompt after all other processing is complete.
@@ -180,14 +150,12 @@ the results."""))
 
 
 def main():
-    global LAST_MLIST, LOCK, VERBOSE
+    global LAST_MLIST, VERBOSE
 
     parser, opts, args = parseargs()
     initialize(opts.config, not opts.quiet)
 
     VERBOSE = not opts.quiet
-    LOCK = opts.lock
-
     # The default for interact is true unless -r was given
     if opts.interactive is None:
         if not opts.run:
@@ -241,5 +209,5 @@ def main():
                 "The variable 'm' is the $listname mailing list")
         else:
             banner = interact.DEFAULT_BANNER
-        overrides = dict(m=LAST_MLIST, r=r)
+        overrides = dict(m=LAST_MLIST, r=r, flush=config.db.flush)
         interact.interact(upframe=False, banner=banner, overrides=overrides)

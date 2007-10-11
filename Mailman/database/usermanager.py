@@ -25,7 +25,6 @@ from elixir import *
 from zope.interface import implements
 
 from Mailman import Errors
-from Mailman.LockFile import LockFile
 from Mailman.configuration import config
 from Mailman.database.model import *
 from Mailman.interfaces import IUserManager

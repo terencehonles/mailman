@@ -47,7 +47,6 @@ from email.Header import Header
 from email.Utils import getaddresses, formataddr, parseaddr
 
 from Mailman import Errors
-from Mailman import LockFile
 from Mailman import Utils
 from Mailman import Version
 from Mailman import database
@@ -130,36 +129,6 @@ class MailList(object, Archiver, Digester, SecurityManager, Bouncer):
 
     def __repr__(self):
         return '<mailing list "%s" at %x>' % (self.fqdn_listname, id(self))
-
-
-    #
-    # Lock management
-    #
-    def _make_lock(self, name, lock=False):
-        self._lock = LockFile.LockFile(
-            os.path.join(config.LOCK_DIR, name) + '.lock',
-            lifetime=config.LIST_LOCK_LIFETIME)
-        if lock:
-            self._lock.lock()
-
-    def Lock(self, timeout=0):
-        self._lock.lock(timeout)
-        self._memberadaptor.lock()
-        # Must reload our database for consistency.  Watch out for lists that
-        # don't exist.
-        try:
-            self.Load()
-        except Exception:
-            self.Unlock()
-            raise
-
-    def Unlock(self):
-        self._lock.unlock(unconditionally=True)
-        self._memberadaptor.unlock()
-
-    def Locked(self):
-        return self._lock.locked()
-
 
 
     def GetConfirmJoinSubject(self, listname, cookie):
@@ -256,59 +225,6 @@ class MailList(object, Archiver, Digester, SecurityManager, Bouncer):
                 value = gui.GetConfigInfo(self, category, subcat)
                 if value:
                     return value
-
-
-    def Save(self):
-        # Refresh the lock, just to let other processes know we're still
-        # interested in it.  This will raise a NotLockedError if we don't have
-        # the lock (which is a serious problem!).  TBD: do we need to be more
-        # defensive?
-        self._lock.refresh()
-        # The member adaptor may have its own save operation
-        self._memberadaptor.save()
-        self.CheckHTMLArchiveDir()
-
-    def Load(self):
-        self._memberadaptor.load()
-
-
-
-    #
-    # Sanity checks
-    #
-    def CheckValues(self):
-        """Normalize selected values to known formats."""
-        if '' in urlparse(self.web_page_url)[:2]:
-            # Either the "scheme" or the "network location" part of the parsed
-            # URL is empty; substitute faulty value with (hopefully sane)
-            # default.  Note that DEFAULT_URL is obsolete.
-            self.web_page_url = (
-                config.DEFAULT_URL or
-                config.DEFAULT_URL_PATTERN % config.DEFAULT_URL_HOST)
-        if self.web_page_url and self.web_page_url[-1] <> '/':
-            self.web_page_url = self.web_page_url + '/'
-        # Legacy reply_to_address could be an illegal value.  We now verify
-        # upon setting and don't check it at the point of use.
-        try:
-            if self.reply_to_address.strip() and self.reply_goes_to_list:
-                Utils.ValidateEmail(self.reply_to_address)
-        except Errors.EmailAddressError:
-            elog.error('Bad reply_to_address "%s" cleared for list: %s',
-                       self.reply_to_address, self.internal_name())
-            self.reply_to_address = ''
-            self.reply_goes_to_list = 0
-        # Legacy topics may have bad regular expressions in their patterns
-        goodtopics = []
-        for name, pattern, desc, emptyflag in self.topics:
-            try:
-                orpattern = OR.join(pattern.splitlines())
-                re.compile(orpattern)
-            except (re.error, TypeError):
-                elog.error('Bad topic pattern "%s" for list: %s',
-                           orpattern, self.internal_name())
-            else:
-                goodtopics.append((name, pattern, desc, emptyflag))
-        self.topics = goodtopics
 
 
     #
@@ -478,26 +394,6 @@ class MailList(object, Archiver, Digester, SecurityManager, Bouncer):
             self.HoldUnsubscription(email)
             raise Errors.MMNeedApproval, _(
                 'unsubscriptions require moderator approval')
-
-    def ChangeMemberName(self, addr, name, globally):
-        self.setMemberName(addr, name)
-        if not globally:
-            return
-        for listname in config.list_manager.names:
-            # Don't bother with ourselves
-            if listname == self.internal_name():
-                continue
-            mlist = MailList(listname, lock=0)
-            if mlist.host_name <> self.host_name:
-                continue
-            if not mlist.isMember(addr):
-                continue
-            mlist.Lock()
-            try:
-                mlist.setMemberName(addr, name)
-                mlist.Save()
-            finally:
-                mlist.Unlock()
 
     def ChangeMemberAddress(self, oldaddr, newaddr, globally):
         # Changing a member address consists of verifying the new address,

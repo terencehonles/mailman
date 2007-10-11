@@ -15,6 +15,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
+from __future__ import with_statement
+
 import os
 import sys
 import time
@@ -26,11 +28,11 @@ import optparse
 import email.Errors
 from email.Parser import Parser
 
-from Mailman import LockFile
 from Mailman import MailList
 from Mailman import Message
 from Mailman import Utils
 from Mailman import Version
+from Mailman import lockfile
 from Mailman import loginit
 from Mailman.configuration import config
 from Mailman.i18n import _
@@ -210,7 +212,7 @@ def process_lists(glock):
                         # loop over range, and this will not include the last
                         # element in the list.
                         poll_newsgroup(mlist, conn, start, last + 1, glock)
-            except LockFile.TimeOutError:
+            except lockfile.TimeOutError:
                 log.error('Could not acquire list lock: %s', listname)
         finally:
             if mlist.Locked():
@@ -230,19 +232,14 @@ def main():
     loginit.initialize(propagate=True)
     log = logging.getLogger('mailman.fromusenet')
 
-    lock = LockFile.LockFile(GATENEWS_LOCK_FILE,
-                             # It's okay to hijack this
-                             lifetime=LOCK_LIFETIME)
     try:
-        lock.lock(timeout=0.5)
+        with lockfile.LockFile(GATENEWS_LOCK_FILE,
+                               # It's okay to hijack this
+                               lifetime=LOCK_LIFETIME):
+            process_lists(lock)
+        clearcache()
     except LockFile.TimeOutError:
         log.error('Could not acquire gate_news lock')
-        return
-    try:
-        process_lists(lock)
-    finally:
-        clearcache()
-        lock.unlock(unconditionally=True)
 
 
 

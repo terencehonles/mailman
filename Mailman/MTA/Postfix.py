@@ -17,6 +17,8 @@
 
 """Creation/deletion hooks for the Postfix MTA."""
 
+from __future__ import with_statement
+
 import os
 import grp
 import pwd
@@ -26,11 +28,11 @@ import logging
 
 from stat import *
 
-from Mailman import LockFile
 from Mailman import Utils
 from Mailman.MTA.Utils import makealiases
 from Mailman.configuration import config
 from Mailman.i18n import _
+from Mailman.lockfile import LockFile
 
 LOCKFILE = os.path.join(config.LOCK_DIR, 'creator')
 ALIASFILE = os.path.join(config.DATA_DIR, 'aliases')
@@ -66,10 +68,6 @@ def _update_maps():
 
 
 
-def makelock():
-    return LockFile.LockFile(LOCKFILE)
-
-
 def _zapfile(filename):
     # Truncate the file w/o messing with the file permissions, but only if it
     # already exists.
@@ -274,6 +272,7 @@ def create(mlist, cgi=False, nolock=False, quiet=False):
     # Acquire the global list database lock.  quiet flag is ignored.
     lock = None
     if not nolock:
+        # XXX FIXME
         lock = makelock()
         lock.lock()
     # Do the aliases file, which always needs to be done
@@ -339,9 +338,7 @@ def _do_remove(mlist, textfile):
 
 def remove(mlist, cgi=False):
     # Acquire the global list database lock
-    lock = makelock()
-    lock.lock()
-    try:
+    with LockFile(LOCKFILE):
         if config.USE_LMTP:
             _do_remove(mlist, TRPTFILE)
         else:
@@ -350,8 +347,7 @@ def remove(mlist, cgi=False):
                 _do_remove(mlist, VIRTFILE)
         # Regenerate the alias and map files
         _update_maps()
-    finally:
-        lock.unlock(unconditionally=True)
+        config.db.commit()
 
 
 

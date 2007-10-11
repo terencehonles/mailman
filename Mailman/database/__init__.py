@@ -56,13 +56,12 @@ class StockDatabase:
         self.requests = None
 
     def initialize(self):
-        from Mailman.LockFile import LockFile
         from Mailman.configuration import config
         from Mailman.database import model
-        # Serialize this so we don't get multiple processes trying to create the
-        # database at the same time.
-        lockfile = os.path.join(config.LOCK_DIR, '<dbcreatelock>')
-        with LockFile(lockfile):
+        from Mailman.lockfile import LockFile
+        # Serialize this so we don't get multiple processes trying to create
+        # the database at the same time.
+        with LockFile(os.path.join(config.LOCK_DIR, 'dbcreate.lck')):
             model.initialize()
         self.list_manager = ListManager()
         self.user_manager = UserManager()

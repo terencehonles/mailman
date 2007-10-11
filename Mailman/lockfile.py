@@ -47,6 +47,14 @@ data.  In a distributed (NFS) environment, you also need to make sure that
 your clocks are properly synchronized.
 """
 
+__metaclass__ = type
+__all__ = [
+    'LockError',
+    'AlreadyLockedError',
+    'NotLockedError',
+    'LockFile',
+    ]
+
 # This code has undergone several revisions, with contributions from Barry
 # Warsaw, Thomas Wouters, Harald Meland, and John Viega.  It should also work
 # well outside of Mailman so it could be used for other Python projects

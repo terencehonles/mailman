@@ -22,7 +22,7 @@ import shutil
 import tempfile
 import unittest
 
-from Mailman.LockFile import LockFile
+from Mailman.lockfile import LockFile
 
 LOCKFILE_NAME = '.mm-test-lock'
 

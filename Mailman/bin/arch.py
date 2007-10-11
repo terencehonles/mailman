@@ -15,6 +15,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
+from __future__ import with_statement
+
 import os
 import sys
 import errno
@@ -25,9 +27,10 @@ from Mailman import Errors
 from Mailman import Version
 from Mailman import i18n
 from Mailman.Archiver.HyperArch import HyperArchive
-from Mailman.LockFile import LockFile
+from Mailman.Defaults import hours
 from Mailman.MailList import MailList
 from Mailman.configuration import config
+from Mailman.lockfile import LockFile
 
 _ = i18n._
 __i18n_templates__ = True
@@ -119,53 +122,41 @@ def main():
         # really don't know how long it will take.
         #
         # XXX processUnixMailbox() should refresh the lock.
-        #
-        # XXX This may not be necessary because I think we lay claim to the
-        # list lock up above, although that may be too short to be of use (and
-        # maybe we don't really want to lock the list anyway).
-        lockfile = os.path.join(config.LOCK_DIR, mlist._internal_name) + \
-                   '.archiver.lock'
-        # set the lock lifetime to 3 hours.  XXX is this reasonable???
-        lock = LockFile(lockfile, lifetime=3*60*60)
-        lock.lock()
-        # Maybe wipe the old archives
-        if opts.wipe:
-            if mlist.scrub_nondigest:
-                # TK: save the attachments dir because they are not in mbox
-                saved = False
-                atchdir = os.path.join(mlist.archive_dir(), 'attachments')
-                savedir = os.path.join(mlist.archive_dir() + '.mbox',
-                                       'attachments')
-                try:
-                    os.rename(atchdir, savedir)
-                    saved = True
-                except OSError, e:
-                    if e.errno <> errno.ENOENT:
-                        raise
-            shutil.rmtree(mlist.archive_dir())
-            if mlist.scrub_nondigest and saved:
-                os.renames(savedir, atchdir)
-        try:
-            fp = open(mbox)
-        except IOError, e:
-            if e.errno == errno.ENOENT:
-                print >> sys.stderr, _('Cannot open mbox file: $mbox')
-            else:
-                print >> sys.stderr, e
-            sys.exit(1)
+        with LockFile(os.path.join(mlist.full_path, '.archiver.lck'),
+                      lifetime=int(hours(3))):
+            # Maybe wipe the old archives
+            if opts.wipe:
+                if mlist.scrub_nondigest:
+                    # TK: save the attachments dir because they are not in mbox
+                    saved = False
+                    atchdir = os.path.join(mlist.archive_dir(), 'attachments')
+                    savedir = os.path.join(mlist.archive_dir() + '.mbox',
+                                           'attachments')
+                    try:
+                        os.rename(atchdir, savedir)
+                        saved = True
+                    except OSError, e:
+                        if e.errno <> errno.ENOENT:
+                            raise
+                shutil.rmtree(mlist.archive_dir())
+                if mlist.scrub_nondigest and saved:
+                    os.renames(savedir, atchdir)
+            try:
+                fp = open(mbox)
+            except IOError, e:
+                if e.errno == errno.ENOENT:
+                    print >> sys.stderr, _('Cannot open mbox file: $mbox')
+                else:
+                    print >> sys.stderr, e
+                sys.exit(1)
 
-        archiver = HyperArchive(mlist)
-        archiver.VERBOSE = opts.verbose
-        try:
-            archiver.processUnixMailbox(fp, opts.start, opts.end)
-        finally:
-            archiver.close()
-        fp.close()
-    finally:
-        if lock:
-            lock.unlock()
-        if mlist:
-            mlist.Unlock()
+            archiver = HyperArchive(mlist)
+            archiver.VERBOSE = opts.verbose
+            try:
+                archiver.processUnixMailbox(fp, opts.start, opts.end)
+            finally:
+                archiver.close()
+            fp.close()
 
 
 

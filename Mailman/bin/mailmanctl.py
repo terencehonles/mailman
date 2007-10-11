@@ -27,9 +27,9 @@ import optparse
 
 from Mailman import Defaults
 from Mailman import Errors
-from Mailman import LockFile
 from Mailman import Utils
 from Mailman import Version
+from Mailman import lockfile
 from Mailman import loginit
 from Mailman.configuration import config
 from Mailman.i18n import _
@@ -197,11 +197,11 @@ def qrunner_state():
 def acquire_lock_1(force):
     # Be sure we can acquire the master qrunner lock.  If not, it means some
     # other master qrunner daemon is already going.
-    lock = LockFile.LockFile(config.LOCK_FILE, LOCK_LIFETIME)
+    lock = lockfile.LockFile(config.LOCK_FILE, LOCK_LIFETIME)
     try:
         lock.lock(0.1)
         return lock
-    except LockFile.TimeOutError:
+    except lockfile.TimeOutError:
         if not force:
             raise
         # Force removal of lock first
@@ -216,7 +216,7 @@ def acquire_lock(force):
     try:
         lock = acquire_lock_1(force)
         return lock
-    except LockFile.TimeOutError:
+    except lockfile.TimeOutError:
         status = qrunner_state()
         if status == 1:
             # host matches and proc exists

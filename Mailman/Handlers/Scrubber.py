@@ -17,6 +17,8 @@
 
 """Cleanse a message for archiving."""
 
+from __future__ import with_statement
+
 import os
 import re
 import sha
@@ -34,13 +36,13 @@ from email.generator import Generator
 from email.parser import HeaderParser
 from email.utils import make_msgid, parsedate
 
-from Mailman import LockFile
 from Mailman import Message
 from Mailman import Utils
 from Mailman.Errors import DiscardMessage
 from Mailman.app.archiving import get_base_archive_url
 from Mailman.configuration import config
 from Mailman.i18n import _
+from Mailman.lockfile import LockFile
 
 # Path characters for common platforms
 pre = re.compile(r'[/\\:]')
@@ -422,10 +424,7 @@ def save_attachment(mlist, msg, dir, filter_html=True):
             ext = '.bin'
     path = None
     # We need a lock to calculate the next attachment number
-    lockfile = os.path.join(fsdir, 'attachments.lock')
-    lock = LockFile.LockFile(lockfile)
-    lock.lock()
-    try:
+    with LockFile(os.path.join(fsdir, 'attachments.lock')):
         # Now base the filename on what's in the attachment, uniquifying it if
         # necessary.
         if not filename or config.SCRUBBER_DONT_USE_ATTACHMENT_FILENAME:
@@ -461,8 +460,6 @@ def save_attachment(mlist, msg, dir, filter_html=True):
                 extra = '-%04d' % counter
             else:
                 break
-    finally:
-        lock.unlock()
     # `path' now contains the unique filename for the attachment.  There's
     # just one more step we need to do.  If the part is text/html and
     # ARCHIVE_HTML_SANITIZER is a string (which it must be or we wouldn't be

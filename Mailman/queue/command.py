@@ -31,7 +31,6 @@ from email.Iterators import typed_subpart_iterator
 from email.MIMEMessage import MIMEMessage
 from email.MIMEText import MIMEText
 
-from Mailman import LockFile
 from Mailman import Message
 from Mailman import Utils
 from Mailman.Handlers import Replybot
@@ -214,29 +213,18 @@ class CommandRunner(Runner):
             return False
         # Now craft the response
         res = Results(mlist, msg, msgdata)
-        # BAW: Not all the functions of this qrunner require the list to be
-        # locked.  Still, it's more convenient to lock it here and now and
-        # deal with lock failures in one place.
-        try:
-            mlist.Lock(timeout=config.LIST_LOCK_TIMEOUT)
-        except LockFile.TimeOutError:
-            # Oh well, try again later
-            return True
         # This message will have been delivered to one of mylist-request,
         # mylist-join, or mylist-leave, and the message metadata will contain
         # a key to which one was used.
-        try:
-            if msgdata.get('torequest'):
-                res.process()
-            elif msgdata.get('tojoin'):
-                res.do_command('join')
-            elif msgdata.get('toleave'):
-                res.do_command('leave')
-            elif msgdata.get('toconfirm'):
-                mo = re.match(config.VERP_CONFIRM_REGEXP, msg.get('to', ''))
-                if mo:
-                    res.do_command('confirm', (mo.group('cookie'),))
-            res.send_response()
-            mlist.Save()
-        finally:
-            mlist.Unlock()
+        if msgdata.get('torequest'):
+            res.process()
+        elif msgdata.get('tojoin'):
+            res.do_command('join')
+        elif msgdata.get('toleave'):
+            res.do_command('leave')
+        elif msgdata.get('toconfirm'):
+            mo = re.match(config.VERP_CONFIRM_REGEXP, msg.get('to', ''))
+            if mo:
+                res.do_command('confirm', (mo.group('cookie'),))
+        res.send_response()
+        config.db.commit()

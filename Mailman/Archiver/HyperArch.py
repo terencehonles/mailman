@@ -43,10 +43,10 @@ from email.Errors import HeaderParseError
 from email.Header import decode_header, make_header
 
 from Mailman import Errors
-from Mailman import LockFile
 from Mailman import MailList
 from Mailman import Utils
 from Mailman import i18n
+from Mailman import lockfile
 from Mailman.Archiver import HyperDatabase
 from Mailman.Archiver import pipermail
 from Mailman.Mailbox import ArchiverMailbox
@@ -786,12 +786,12 @@ class HyperArchive(pipermail.T):
     def GetArchLock(self):
         if self._lock_file:
             return 1
-        self._lock_file = LockFile.LockFile(
+        self._lock_file = lockfile.LockFile(
             os.path.join(config.LOCK_DIR,
                          self.maillist.fqdn_listname + '-arch.lock'))
         try:
             self._lock_file.lock(timeout=0.5)
-        except LockFile.TimeOutError:
+        except lockfile.TimeOutError:
             return 0
         return 1
 

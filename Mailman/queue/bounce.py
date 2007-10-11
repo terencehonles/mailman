@@ -27,7 +27,6 @@ from email.MIMEMessage import MIMEMessage
 from email.MIMEText import MIMEText
 from email.Utils import parseaddr
 
-from Mailman import LockFile
 from Mailman import Utils
 from Mailman.Bouncers import BouncerAPI
 from Mailman.Message import UserNotification
