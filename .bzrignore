@@ -7,3 +7,5 @@ mailman.egg-info
 misc/mailman
 setuptoolsbzr-*.egg
 staging
+TAGS
+var/
