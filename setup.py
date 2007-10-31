@@ -90,7 +90,7 @@ Any other spelling is incorrect.""",
         },
     # Third-party requirements.
     install_requires = [
-        'Elixir',
+        'Elixir>0.4.0',
         'SQLAlchemy',
         'locknix',
         'munepy',
