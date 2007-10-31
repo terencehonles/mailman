@@ -68,6 +68,8 @@ You can create email addresses that are linked to users by using a different
 interface.
 
     >>> user_1 = usermgr.create_user('cperson@example.com', 'Claire Person')
+    >>> sorted(address.address for address in user_1.addresses)
+    ['cperson@example.com']
     >>> flush()
     >>> sorted(address.address for address in usermgr.addresses)
     ['aperson@example.com', 'bperson@example.com', 'cperson@example.com']
@@ -87,7 +89,7 @@ And now you can find the associated user.
 Deleting addresses
 ------------------
 
-You can remove an unlinked address from the usre manager.
+You can remove an unlinked address from the user manager.
 
     >>> usermgr.delete_address(address_1)
     >>> flush()

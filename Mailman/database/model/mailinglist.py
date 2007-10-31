@@ -35,131 +35,129 @@ class MailingList(Entity):
     implements(IMailingList)
 
     # List identity
-    has_field('list_name',                                  Unicode),
-    has_field('host_name',                                  Unicode),
+    list_name = Field(Unicode)
+    host_name = Field(Unicode)
     # Attributes not directly modifiable via the web u/i
-    has_field('created_at',                                 DateTime),
-    has_field('web_page_url',                               Unicode),
-    has_field('admin_member_chunksize',                     Integer),
-    has_field('hold_and_cmd_autoresponses',                 PickleType),
+    created_at = Field(DateTime)
+    web_page_url = Field(Unicode)
+    admin_member_chunksize = Field(Integer)
+    hold_and_cmd_autoresponses = Field(PickleType)
     # Attributes which are directly modifiable via the web u/i.  The more
     # complicated attributes are currently stored as pickles, though that
     # will change as the schema and implementation is developed.
-    has_field('next_request_id',                            Integer),
-    has_field('next_digest_number',                         Integer),
-    has_field('admin_responses',                            PickleType),
-    has_field('postings_responses',                         PickleType),
-    has_field('request_responses',                          PickleType),
-    has_field('digest_last_sent_at',                        Float),
-    has_field('one_last_digest',                            PickleType),
-    has_field('volume',                                     Integer),
-    has_field('last_post_time',                             DateTime),
+    next_request_id = Field(Integer)
+    next_digest_number = Field(Integer)
+    admin_responses = Field(PickleType)
+    postings_responses = Field(PickleType)
+    request_responses = Field(PickleType)
+    digest_last_sent_at = Field(Float)
+    one_last_digest = Field(PickleType)
+    volume = Field(Integer)
+    last_post_time = Field(DateTime)
     # Attributes which are directly modifiable via the web u/i.  The more
     # complicated attributes are currently stored as pickles, though that
     # will change as the schema and implementation is developed.
-    has_field('accept_these_nonmembers',                    PickleType),
-    has_field('acceptable_aliases',                         PickleType),
-    has_field('admin_immed_notify',                         Boolean),
-    has_field('admin_notify_mchanges',                      Boolean),
-    has_field('administrivia',                              Boolean),
-    has_field('advertised',                                 Boolean),
-    has_field('anonymous_list',                             Boolean),
-    has_field('archive',                                    Boolean),
-    has_field('archive_private',                            Boolean),
-    has_field('archive_volume_frequency',                   Integer),
-    has_field('autorespond_admin',                          Boolean),
-    has_field('autorespond_postings',                       Boolean),
-    has_field('autorespond_requests',                       Integer),
-    has_field('autoresponse_admin_text',                    Unicode),
-    has_field('autoresponse_graceperiod',                   TimeDeltaType),
-    has_field('autoresponse_postings_text',                 Unicode),
-    has_field('autoresponse_request_text',                  Unicode),
-    has_field('ban_list',                                   PickleType),
-    has_field('bounce_info_stale_after',                    TimeDeltaType),
-    has_field('bounce_matching_headers',                    Unicode),
-    has_field('bounce_notify_owner_on_disable',             Boolean),
-    has_field('bounce_notify_owner_on_removal',             Boolean),
-    has_field('bounce_processing',                          Boolean),
-    has_field('bounce_score_threshold',                     Integer),
-    has_field('bounce_unrecognized_goes_to_list_owner',     Boolean),
-    has_field('bounce_you_are_disabled_warnings',           Integer),
-    has_field('bounce_you_are_disabled_warnings_interval',  TimeDeltaType),
-    has_field('collapse_alternatives',                      Boolean),
-    has_field('convert_html_to_plaintext',                  Boolean),
-    has_field('default_member_moderation',                  Boolean),
-    has_field('description',                                Unicode),
-    has_field('digest_footer',                              Unicode),
-    has_field('digest_header',                              Unicode),
-    has_field('digest_is_default',                          Boolean),
-    has_field('digest_send_periodic',                       Boolean),
-    has_field('digest_size_threshold',                      Integer),
-    has_field('digest_volume_frequency',                    Integer),
-    has_field('digestable',                                 Boolean),
-    has_field('discard_these_nonmembers',                   PickleType),
-    has_field('emergency',                                  Boolean),
-    has_field('encode_ascii_prefixes',                      Boolean),
-    has_field('filter_action',                              Integer),
-    has_field('filter_content',                             Boolean),
-    has_field('filter_filename_extensions',                 PickleType),
-    has_field('filter_mime_types',                          PickleType),
-    has_field('first_strip_reply_to',                       Boolean),
-    has_field('forward_auto_discards',                      Boolean),
-    has_field('gateway_to_mail',                            Boolean),
-    has_field('gateway_to_news',                            Boolean),
-    has_field('generic_nonmember_action',                   Integer),
-    has_field('goodbye_msg',                                Unicode),
-    has_field('header_filter_rules',                        PickleType),
-    has_field('hold_these_nonmembers',                      PickleType),
-    has_field('include_list_post_header',                   Boolean),
-    has_field('include_rfc2369_headers',                    Boolean),
-    has_field('info',                                       Unicode),
-    has_field('linked_newsgroup',                           Unicode),
-    has_field('max_days_to_hold',                           Integer),
-    has_field('max_message_size',                           Integer),
-    has_field('max_num_recipients',                         Integer),
-    has_field('member_moderation_action',                   Boolean),
-    has_field('member_moderation_notice',                   Unicode),
-    has_field('mime_is_default_digest',                     Boolean),
-    has_field('moderator_password',                         Unicode),
-    has_field('msg_footer',                                 Unicode),
-    has_field('msg_header',                                 Unicode),
-    has_field('new_member_options',                         Integer),
-    has_field('news_moderation',                            EnumType),
-    has_field('news_prefix_subject_too',                    Boolean),
-    has_field('nntp_host',                                  Unicode),
-    has_field('nondigestable',                              Boolean),
-    has_field('nonmember_rejection_notice',                 Unicode),
-    has_field('obscure_addresses',                          Boolean),
-    has_field('pass_filename_extensions',                   PickleType),
-    has_field('pass_mime_types',                            PickleType),
-    has_field('personalize',                                EnumType),
-    has_field('post_id',                                    Integer),
-    has_field('preferred_language',                         Unicode),
-    has_field('private_roster',                             Boolean),
-    has_field('real_name',                                  Unicode),
-    has_field('reject_these_nonmembers',                    PickleType),
-    has_field('reply_goes_to_list',                         EnumType),
-    has_field('reply_to_address',                           Unicode),
-    has_field('require_explicit_destination',               Boolean),
-    has_field('respond_to_post_requests',                   Boolean),
-    has_field('scrub_nondigest',                            Boolean),
-    has_field('send_goodbye_msg',                           Boolean),
-    has_field('send_reminders',                             Boolean),
-    has_field('send_welcome_msg',                           Boolean),
-    has_field('subject_prefix',                             Unicode),
-    has_field('subscribe_auto_approval',                    PickleType),
-    has_field('subscribe_policy',                           Integer),
-    has_field('topics',                                     PickleType),
-    has_field('topics_bodylines_limit',                     Integer),
-    has_field('topics_enabled',                             Boolean),
-    has_field('unsubscribe_policy',                         Integer),
-    has_field('welcome_msg',                                Unicode),
+    accept_these_nonmembers = Field(PickleType)
+    acceptable_aliases = Field(PickleType)
+    admin_immed_notify = Field(Boolean)
+    admin_notify_mchanges = Field(Boolean)
+    administrivia = Field(Boolean)
+    advertised = Field(Boolean)
+    anonymous_list = Field(Boolean)
+    archive = Field(Boolean)
+    archive_private = Field(Boolean)
+    archive_volume_frequency = Field(Integer)
+    autorespond_admin = Field(Boolean)
+    autorespond_postings = Field(Boolean)
+    autorespond_requests = Field(Integer)
+    autoresponse_admin_text = Field(Unicode)
+    autoresponse_graceperiod = Field(TimeDeltaType)
+    autoresponse_postings_text = Field(Unicode)
+    autoresponse_request_text = Field(Unicode)
+    ban_list = Field(PickleType)
+    bounce_info_stale_after = Field(TimeDeltaType)
+    bounce_matching_headers = Field(Unicode)
+    bounce_notify_owner_on_disable = Field(Boolean)
+    bounce_notify_owner_on_removal = Field(Boolean)
+    bounce_processing = Field(Boolean)
+    bounce_score_threshold = Field(Integer)
+    bounce_unrecognized_goes_to_list_owner = Field(Boolean)
+    bounce_you_are_disabled_warnings = Field(Integer)
+    bounce_you_are_disabled_warnings_interval = Field(TimeDeltaType)
+    collapse_alternatives = Field(Boolean)
+    convert_html_to_plaintext = Field(Boolean)
+    default_member_moderation = Field(Boolean)
+    description = Field(Unicode)
+    digest_footer = Field(Unicode)
+    digest_header = Field(Unicode)
+    digest_is_default = Field(Boolean)
+    digest_send_periodic = Field(Boolean)
+    digest_size_threshold = Field(Integer)
+    digest_volume_frequency = Field(Integer)
+    digestable = Field(Boolean)
+    discard_these_nonmembers = Field(PickleType)
+    emergency = Field(Boolean)
+    encode_ascii_prefixes = Field(Boolean)
+    filter_action = Field(Integer)
+    filter_content = Field(Boolean)
+    filter_filename_extensions = Field(PickleType)
+    filter_mime_types = Field(PickleType)
+    first_strip_reply_to = Field(Boolean)
+    forward_auto_discards = Field(Boolean)
+    gateway_to_mail = Field(Boolean)
+    gateway_to_news = Field(Boolean)
+    generic_nonmember_action = Field(Integer)
+    goodbye_msg = Field(Unicode)
+    header_filter_rules = Field(PickleType)
+    hold_these_nonmembers = Field(PickleType)
+    include_list_post_header = Field(Boolean)
+    include_rfc2369_headers = Field(Boolean)
+    info = Field(Unicode)
+    linked_newsgroup = Field(Unicode)
+    max_days_to_hold = Field(Integer)
+    max_message_size = Field(Integer)
+    max_num_recipients = Field(Integer)
+    member_moderation_action = Field(Boolean)
+    member_moderation_notice = Field(Unicode)
+    mime_is_default_digest = Field(Boolean)
+    moderator_password = Field(Unicode)
+    msg_footer = Field(Unicode)
+    msg_header = Field(Unicode)
+    new_member_options = Field(Integer)
+    news_moderation = Field(EnumType)
+    news_prefix_subject_too = Field(Boolean)
+    nntp_host = Field(Unicode)
+    nondigestable = Field(Boolean)
+    nonmember_rejection_notice = Field(Unicode)
+    obscure_addresses = Field(Boolean)
+    pass_filename_extensions = Field(PickleType)
+    pass_mime_types = Field(PickleType)
+    personalize = Field(EnumType)
+    post_id = Field(Integer)
+    preferred_language = Field(Unicode)
+    private_roster = Field(Boolean)
+    real_name = Field(Unicode)
+    reject_these_nonmembers = Field(PickleType)
+    reply_goes_to_list = Field(EnumType)
+    reply_to_address = Field(Unicode)
+    require_explicit_destination = Field(Boolean)
+    respond_to_post_requests = Field(Boolean)
+    scrub_nondigest = Field(Boolean)
+    send_goodbye_msg = Field(Boolean)
+    send_reminders = Field(Boolean)
+    send_welcome_msg = Field(Boolean)
+    subject_prefix = Field(Unicode)
+    subscribe_auto_approval = Field(PickleType)
+    subscribe_policy = Field(Integer)
+    topics = Field(PickleType)
+    topics_bodylines_limit = Field(Integer)
+    topics_enabled = Field(Boolean)
+    unsubscribe_policy = Field(Integer)
+    welcome_msg = Field(Unicode)
     # Relationships
 ##     has_and_belongs_to_many(
 ##         'available_languages',
 ##         of_kind='Mailman.database.model.languages.Language')
-    # Options
-    using_options(shortnames=True)
 
     def __init__(self, fqdn_listname):
         super(MailingList, self).__init__()

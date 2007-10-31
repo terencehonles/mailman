@@ -18,13 +18,15 @@
 from elixir import *
 from zope.interface import implements
 
+from Mailman.interfaces import IMessage
+
 
 
 class Message(Entity):
     """A message in the message store."""
 
-    has_field('hash',       Unicode)
-    has_field('path',       Unicode)
-    has_field('message_id', Unicode)
+    implements(IMessage)
 
-    using_options(shortnames=True)
+    hash = Field(Unicode)
+    path = Field(Unicode)
+    message_id = Field(Unicode)

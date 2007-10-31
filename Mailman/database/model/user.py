@@ -32,13 +32,11 @@ PREFERENCE_KIND = 'Mailman.database.model.preferences.Preferences'
 class User(Entity):
     implements(IUser)
 
-    has_field('real_name',  Unicode)
-    has_field('password',   Unicode)
-    # Relationships
-    has_many('addresses',       of_kind=ADDRESS_KIND)
-    belongs_to('preferences',   of_kind=PREFERENCE_KIND)
-    # Options
-    using_options(shortnames=True)
+    real_name = Field(Unicode)
+    password = Field(Unicode)
+
+    addresses = OneToMany(ADDRESS_KIND)
+    preferences = ManyToOne(PREFERENCE_KIND)
 
     def __repr__(self):
         return '<User "%s" at %#x>' % (self.real_name, id(self))
@@ -47,13 +45,11 @@ class User(Entity):
         if address.user is not None:
             raise Errors.AddressAlreadyLinkedError(address)
         address.user = self
-        self.addresses.append(address)
 
     def unlink(self, address):
         if address.user is None:
             raise Errors.AddressNotLinkedError(address)
         address.user = None
-        self.addresses.remove(address)
 
     def controls(self, address):
         found = Address.get_by(address=address)

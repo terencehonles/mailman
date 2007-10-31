@@ -24,15 +24,15 @@ import socket
 import logging
 import nntplib
 import optparse
-
 import email.Errors
+
 from email.Parser import Parser
+from locknix import lockfile
 
 from Mailman import MailList
 from Mailman import Message
 from Mailman import Utils
 from Mailman import Version
-from Mailman import lockfile
 from Mailman import loginit
 from Mailman.configuration import config
 from Mailman.i18n import _
@@ -233,12 +233,12 @@ def main():
     log = logging.getLogger('mailman.fromusenet')
 
     try:
-        with lockfile.LockFile(GATENEWS_LOCK_FILE,
-                               # It's okay to hijack this
-                               lifetime=LOCK_LIFETIME):
+        with lockfile.Lock(GATENEWS_LOCK_FILE,
+                           # It's okay to hijack this
+                           lifetime=LOCK_LIFETIME):
             process_lists(lock)
         clearcache()
-    except LockFile.TimeOutError:
+    except lockfile.TimeOutError:
         log.error('Could not acquire gate_news lock')
 
 

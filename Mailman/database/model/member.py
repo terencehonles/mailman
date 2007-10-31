@@ -32,13 +32,11 @@ PREFERENCE_KIND = 'Mailman.database.model.preferences.Preferences'
 class Member(Entity):
     implements(IMember)
 
-    has_field('role',           EnumType)
-    has_field('mailing_list',   Unicode)
+    role = Field(EnumType)
+    mailing_list = Field(Unicode)
     # Relationships
-    belongs_to('address',       of_kind=ADDRESS_KIND)
-    belongs_to('preferences',   of_kind=PREFERENCE_KIND)
-    # Options
-    using_options(shortnames=True)
+    address = ManyToOne(ADDRESS_KIND)
+    preferences = ManyToOne(PREFERENCE_KIND)
 
     def __repr__(self):
         return '<Member: %s on %s as %s>' % (

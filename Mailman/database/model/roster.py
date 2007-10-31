@@ -49,8 +49,9 @@ class AbstractRoster(object):
 
     @property
     def members(self):
-        for member in Member.select_by(mailing_list=self._mlist.fqdn_listname,
-                                       role=self.role):
+        for member in Member.query.filter_by(
+                mailing_list=self._mlist.fqdn_listname,
+                role=self.role):
             yield member
 
     @property
@@ -72,18 +73,18 @@ class AbstractRoster(object):
             yield member.address
 
     def get_member(self, address):
-        results = Member.select(
+        results = Member.query.filter(
             and_(Member.c.mailing_list == self._mlist.fqdn_listname,
                  Member.c.role == self.role,
                  Address.c.address == address,
                  Member.c.address_id == Address.c.id))
-        if len(results) == 0:
+        if results.count() == 0:
             return None
-        elif len(results) == 1:
+        elif results.count() == 1:
             return results[0]
         else:
-            assert len(results) <= 1, (
-                'Too many matching member results: %s' % results)
+            raise AssertionError('Too many matching member results: %s' %
+                                 results.count())
 
 
 
@@ -120,7 +121,7 @@ class AdministratorRoster(AbstractRoster):
     def members(self):
         # Administrators are defined as the union of the owners and the
         # moderators.
-        members = Member.select(
+        members = Member.query.filter(
             and_(Member.c.mailing_list == self._mlist.fqdn_listname,
                  or_(Member.c.role == MemberRole.owner,
                      Member.c.role == MemberRole.moderator)))
@@ -128,18 +129,18 @@ class AdministratorRoster(AbstractRoster):
             yield member
 
     def get_member(self, address):
-        results = Member.select(
+        results = Member.query.filter(
             and_(Member.c.mailing_list == self._mlist.fqdn_listname,
                  or_(Member.c.role == MemberRole.moderator,
                      Member.c.role == MemberRole.owner),
                  Address.c.address == address,
                  Member.c.address_id == Address.c.id))
-        if len(results) == 0:
+        if results.count() == 0:
             return None
-        elif len(results) == 1:
+        elif results.count() == 1:
             return results[0]
         else:
-            assert len(results) <= 1, (
+            raise AssertionError(
                 'Too many matching member results: %s' % results)
 
 
@@ -154,8 +155,9 @@ class RegularMemberRoster(AbstractRoster):
         # Query for all the Members which have a role of MemberRole.member and
         # are subscribed to this mailing list.  Then return only those members
         # that have a regular delivery mode.
-        for member in Member.select_by(mailing_list=self._mlist.fqdn_listname,
-                                       role=MemberRole.member):
+        for member in Member.query.filter_by(
+                mailing_list=self._mlist.fqdn_listname,
+                role=MemberRole.member):
             if member.delivery_mode == DeliveryMode.regular:
                 yield member
 
@@ -179,8 +181,9 @@ class DigestMemberRoster(AbstractRoster):
         # Query for all the Members which have a role of MemberRole.member and
         # are subscribed to this mailing list.  Then return only those members
         # that have one of the digest delivery modes.
-        for member in Member.select_by(mailing_list=self._mlist.fqdn_listname,
-                                       role=MemberRole.member):
+        for member in Member.query.filter_by(
+                mailing_list=self._mlist.fqdn_listname,
+                role=MemberRole.member):
             if member.delivery_mode in _digest_modes:
                 yield member
 
@@ -193,5 +196,6 @@ class Subscribers(AbstractRoster):
 
     @property
     def members(self):
-        for member in Member.select_by(mailing_list=self._mlist.fqdn_listname):
+        for member in Member.query.filter_by(
+                mailing_list=self._mlist.fqdn_listname):
             yield member

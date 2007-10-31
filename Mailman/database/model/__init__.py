@@ -36,11 +36,15 @@ from urlparse import urlparse
 
 import Mailman.Version
 
-elixir.delay_setup = True
-
 from Mailman import constants
 from Mailman.Errors import SchemaVersionMismatchError
 from Mailman.configuration import config
+
+# This /must/ be set before any Elixir classes are defined (i.e. imported).
+# This tells Elixir to use the short table names (i.e. the class name) instead
+# of a mangled full class path.
+elixir.options_defaults['shortnames'] = True
+
 from Mailman.database.model.address import Address
 from Mailman.database.model.language import Language
 from Mailman.database.model.mailinglist import MailingList
@@ -54,7 +58,7 @@ from Mailman.database.model.version import Version
 
 
 
-def initialize():
+def initialize(debug):
     # Calculate the engine url
     url = Template(config.SQLALCHEMY_ENGINE_URL).safe_substitute(config.paths)
     # XXX By design of SQLite, database file creation does not honor
@@ -72,16 +76,17 @@ def initialize():
     # could have chmod'd the file after the fact, but half dozen and all...
     touch(url)
     engine = create_engine(url)
-    engine.echo = config.SQLALCHEMY_ECHO
-    elixir.metadata.connect(engine)
+    engine.echo = (config.SQLALCHEMY_ECHO if debug is None else debug)
+    elixir.metadata.bind = engine
     elixir.setup_all()
+    elixir.create_all()
     # Validate schema version.
     v = Version.get_by(component='schema')
     if not v:
         # Database has not yet been initialized
         v = Version(component='schema',
                     version=Mailman.Version.DATABASE_SCHEMA_VERSION)
-        elixir.objectstore.flush()
+        elixir.session.flush()
     elif v.version <> Mailman.Version.DATABASE_SCHEMA_VERSION:
         # XXX Update schema
         raise SchemaVersionMismatchError(v.version)
@@ -96,3 +101,9 @@ def touch(url):
     # Ignore errors
     if fd > 0:
         os.close(fd)
+
+
+def _reset():
+    for entity in elixir.entities:
+        for row in entity.query.filter_by().all():
+            row.delete()

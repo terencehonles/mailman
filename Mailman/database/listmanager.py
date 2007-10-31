@@ -26,7 +26,7 @@ from Mailman import Errors
 from Mailman.Utils import split_listname, fqdn_listname
 from Mailman.configuration import config
 from Mailman.database.model import MailingList, Pendings
-from Mailman.interfaces import IListManager, IPending
+from Mailman.interfaces import IListManager
 
 
 
@@ -63,5 +63,5 @@ class ListManager(object):
 
     @property
     def names(self):
-        for mlist in MailingList.select():
+        for mlist in MailingList.query.filter_by().all():
             yield fqdn_listname(mlist.list_name, mlist.host_name)

@@ -124,7 +124,7 @@ originally held.
 
     >>> key, data = requests.get_request(2)
     >>> key
-    'hold_2'
+    u'hold_2'
 
 Because we did not store additional data with request 2, it comes back as None
 now.
@@ -179,7 +179,7 @@ database.
     1 RequestType.held_message hold_1 None
     3 RequestType.unsubscription hold_3 None
     4 RequestType.held_message hold_4 None
-    5 RequestType.held_message hold_5 [('bar', 'no'), ('foo', 'yes')]
+    5 RequestType.held_message hold_5 [(u'bar', u'no'), (u'foo', u'yes')]
     >>> print requests.get_request(2)
     None
 
@@ -818,7 +818,7 @@ and the person remains a member of the mailing list.
     [('_parsemsg', False),
      ('listname', 'alist@example.com'),
      ('nodecorate', True), ('received_time', ...),
-     ('recips', ['hperson@example.com']),
+     ('recips', [u'hperson@example.com']),
      ('reduced_list_headers', True), ('version', 3)]
     >>> mlist.members.get_member('hperson@example.com')
     <Member: hperson@example.com on alist@example.com as MemberRole.member>

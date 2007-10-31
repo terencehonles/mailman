@@ -172,12 +172,15 @@ class Configuration(object):
         code = self.DEFAULT_SERVER_LANGUAGE
         self.languages.enable_language(code)
 
-    def add_domain(self, email_host, url_host):
-        """Add the definition of a virtual domain.
+    def add_domain(self, email_host, url_host=None):
+        """Add a virtual domain.
 
-        email_host is the right-hand side of the posting email address,
-        e.g. 'example.com' in 'mylist@example.com'.  url_host is the host name
-        part of the exposed web pages, e.g. 'www.example.com'."""
+        :param email_host: The host name for the email interface.
+        :param url_host: Optional host name for the web interface.  If not
+            given, the email host will be used.
+        """
+        if url_host is None:
+            url_host = email_host
         if email_host in self.domains:
             raise Errors.BadDomainSpecificationError(
                 'Duplicate email host: %s' % email_host)

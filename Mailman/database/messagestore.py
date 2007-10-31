@@ -97,11 +97,11 @@ class MessageStore:
             return pickle.load(fp)
 
     def get_messages_by_message_id(self, message_id):
-        for msgrow in Message.select_by(message_id=message_id):
+        for msgrow in Message.query.filter_by(message_id=message_id):
             yield self._msgobj(msgrow)
 
     def get_messages_by_hash(self, hash):
-        for msgrow in Message.select_by(hash=hash):
+        for msgrow in Message.query.filter_by(hash=hash):
             yield self._msgobj(msgrow)
 
     def _getmsg(self, global_id):
@@ -110,15 +110,15 @@ class MessageStore:
             seqno = int(seqno)
         except ValueError:
             return None
-        msgrows = Message.select_by(id=seqno)
-        if not msgrows:
+        messages = Message.query.filter_by(id=seqno)
+        if messages.count() == 0:
             return None
-        assert len(msgrows) == 1, 'Multiple id matches'
-        if msgrows[0].hash <> hash:
+        assert messages.count() == 1, 'Multiple id matches'
+        if messages[0].hash <> hash:
             # The client lied about which message they wanted.  They gave a
             # valid sequence number, but the hash did not match.
             return None
-        return msgrows[0]
+        return messages[0]
 
     def get_message(self, global_id):
         msgrow = self._getmsg(global_id)
@@ -126,7 +126,7 @@ class MessageStore:
 
     @property
     def messages(self):
-        for msgrow in Message.select():
+        for msgrow in Message.query.filter_by().all():
             yield self._msgobj(msgrow)
 
     def delete_message(self, global_id):

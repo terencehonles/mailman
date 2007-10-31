@@ -16,9 +16,13 @@
 # USA.
 
 from elixir import *
+from zope.interface import implements
+
+from Mailman.interfaces import ILanguage
 
 
+
 class Language(Entity):
-    has_field('code',   Unicode)
-    # Options
-    using_options(shortnames=True)
+    implements(ILanguage)
+
+    code = Field(Unicode)

@@ -25,10 +25,11 @@ __all__ = [
 
 import os
 
+from locknix.lockfile import Lock
 from elixir import objectstore
 from zope.interface import implements
 
-from Mailman.interfaces import IDatabase, IPending
+from Mailman.interfaces import IDatabase
 from Mailman.database.listmanager import ListManager
 from Mailman.database.usermanager import UserManager
 from Mailman.database.messagestore import MessageStore
@@ -55,14 +56,13 @@ class StockDatabase:
         self.pendings = None
         self.requests = None
 
-    def initialize(self):
+    def initialize(self, debug=None):
         from Mailman.configuration import config
         from Mailman.database import model
-        from Mailman.lockfile import LockFile
         # Serialize this so we don't get multiple processes trying to create
         # the database at the same time.
-        with LockFile(os.path.join(config.LOCK_DIR, 'dbcreate.lck')):
-            model.initialize()
+        with Lock(os.path.join(config.LOCK_DIR, 'dbcreate.lck')):
+            model.initialize(debug)
         self.list_manager = ListManager()
         self.user_manager = UserManager()
         self.message_store = MessageStore()
@@ -72,3 +72,7 @@ class StockDatabase:
 
     def flush(self):
         objectstore.flush()
+
+    def _reset(self):
+        model._reset()
+

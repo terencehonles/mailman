@@ -8,20 +8,21 @@ This is not where messages held for administrator approval are kept.
 
     >>> from Mailman.configuration import config
     >>> from Mailman.database import flush
-    >>> from Mailman.interfaces import IPendable, IPending
     >>> from zope.interface import implements
     >>> from zope.interface.verify import verifyObject
 
 In order to pend an event, you first need a pending database, which is
 available by adapting the list manager.
 
+    >>> from Mailman.interfaces import IPendings
     >>> pendingdb = config.db.pendings
-    >>> verifyObject(IPending, pendingdb)
+    >>> verifyObject(IPendings, pendingdb)
     True
 
 The pending database can add any IPendable to the database, returning a token
 that can be used in urls and such.
 
+    >>> from Mailman.interfaces import IPendable
     >>> class SimplePendable(dict):
     ...     implements(IPendable)
     >>> subscription = SimplePendable(

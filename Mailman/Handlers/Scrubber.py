@@ -29,12 +29,12 @@ import binascii
 import tempfile
 
 from cStringIO import StringIO
-from mimetypes import guess_all_extensions
-
 from email.charset import Charset
 from email.generator import Generator
 from email.parser import HeaderParser
 from email.utils import make_msgid, parsedate
+from locknix.lockfile import Lock
+from mimetypes import guess_all_extensions
 
 from Mailman import Message
 from Mailman import Utils
@@ -42,7 +42,6 @@ from Mailman.Errors import DiscardMessage
 from Mailman.app.archiving import get_base_archive_url
 from Mailman.configuration import config
 from Mailman.i18n import _
-from Mailman.lockfile import LockFile
 
 # Path characters for common platforms
 pre = re.compile(r'[/\\:]')
@@ -424,7 +423,7 @@ def save_attachment(mlist, msg, dir, filter_html=True):
             ext = '.bin'
     path = None
     # We need a lock to calculate the next attachment number
-    with LockFile(os.path.join(fsdir, 'attachments.lock')):
+    with Lock(os.path.join(fsdir, 'attachments.lock')):
         # Now base the filename on what's in the attachment, uniquifying it if
         # necessary.
         if not filename or config.SCRUBBER_DONT_USE_ATTACHMENT_FILENAME:

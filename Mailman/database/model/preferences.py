@@ -31,15 +31,13 @@ USER_KIND       = 'Mailman.database.model.user.User'
 class Preferences(Entity):
     implements(IPreferences)
 
-    has_field('acknowledge_posts',      Boolean)
-    has_field('hide_address',           Boolean)
-    has_field('preferred_language',     Unicode)
-    has_field('receive_list_copy',      Boolean)
-    has_field('receive_own_postings',   Boolean)
-    has_field('delivery_mode',          EnumType)
-    has_field('delivery_status',        EnumType)
-    # Options
-    using_options(shortnames=True)
+    acknowledge_posts = Field(Boolean)
+    hide_address = Field(Boolean)
+    preferred_language = Field(Unicode)
+    receive_list_copy = Field(Boolean)
+    receive_own_postings = Field(Boolean)
+    delivery_mode = Field(EnumType)
+    delivery_status = Field(EnumType)
 
     def __repr__(self):
         return '<Preferences object at %#x>' % id(self)

@@ -30,11 +30,23 @@ from zope.interface import Interface, Attribute
 class IDatabase(Interface):
     """Database layer interface."""
 
-    def initialize():
-        """Initialize the database layer, using whatever means necessary."""
+    def initialize(debug=None):
+        """Initialize the database layer, using whatever means necessary.
+
+        :param debug: When None (the default), the configuration file
+            determines whether the database layer should have increased
+            debugging or not.  When True or False, this overrides the
+            configuration file setting.
+        """
 
     def flush():
         """Flush current database changes."""
+
+    def _reset():
+        """Reset the database to its pristine state.
+
+        This is only used by the test framework.
+        """
 
     # XXX Eventually we probably need to support a transaction manager
     # interface, e.g. begin(), commit(), abort().  We will probably also need

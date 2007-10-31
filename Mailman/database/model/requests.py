@@ -49,23 +49,21 @@ class ListRequests:
 
     @property
     def count(self):
-        results = _Request.select_by(mailing_list=self.mailing_list)
-        return len(results)
+        return _Request.query.filter_by(mailing_list=self.mailing_list).count()
 
     def count_of(self, request_type):
-        results = _Request.select_by(mailing_list=self.mailing_list,
-                                     type=request_type)
-        return len(results)
+        return _Request.query.filter_by(mailing_list=self.mailing_list,
+                                        type=request_type).count()
 
     @property
     def held_requests(self):
-        results = _Request.select_by(mailing_list=self.mailing_list)
+        results = _Request.query.filter_by(mailing_list=self.mailing_list)
         for request in results:
             yield request
 
     def of_type(self, request_type):
-        results = _Request.select_by(mailing_list=self.mailing_list,
-                                     type=request_type)
+        results = _Request.query.filter_by(mailing_list=self.mailing_list,
+                                           type=request_type)
         for request in results:
             yield request
 
@@ -132,10 +130,8 @@ class Requests:
 class _Request(Entity):
     """Table for mailing list hold requests."""
 
-    has_field('key',            Unicode)
-    has_field('type',           EnumType)
-    has_field('data_hash',      Unicode)
+    key = Field(Unicode)
+    type = Field(EnumType)
+    data_hash = Field(Unicode)
     # Relationships
-    belongs_to('mailing_list',  of_kind=MAILINGLIST_KIND)
-    # Options
-    using_options(shortnames=True)
+    mailing_list = ManyToOne(MAILINGLIST_KIND)

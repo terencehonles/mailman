@@ -57,13 +57,13 @@ def initialize_1(config_path, propagate_logs):
     Mailman.loginit.initialize(propagate_logs)
 
 
-def initialize_2():
+def initialize_2(debug=False):
     database_plugin = get_plugin('mailman.database')
     # Instantiate the database plugin, ensure that it's of the right type, and
     # initialize it.  Then stash the object on our configuration object.
     database = database_plugin()
     verifyObject(IDatabase, database)
-    database.initialize()
+    database.initialize(debug)
     Mailman.configuration.config.db = database
 
 

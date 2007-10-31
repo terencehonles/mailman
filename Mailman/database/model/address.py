@@ -32,16 +32,14 @@ USER_KIND       = 'Mailman.database.model.user.User'
 class Address(Entity):
     implements(IAddress)
 
-    has_field('address',        Unicode)
-    has_field('_original',      Unicode)
-    has_field('real_name',      Unicode)
-    has_field('verified_on',   DateTime)
-    has_field('registered_on',  DateTime)
-    # Relationships
-    belongs_to('user',          of_kind=USER_KIND)
-    belongs_to('preferences',   of_kind=PREFERENCE_KIND)
-    # Options
-    using_options(shortnames=True)
+    address = Field(Unicode)
+    _original = Field(Unicode)
+    real_name = Field(Unicode)
+    verified_on = Field(DateTime)
+    registered_on = Field(DateTime)
+
+    user = ManyToOne(USER_KIND)
+    preferences = ManyToOne(PREFERENCE_KIND)
 
     def __init__(self, address, real_name):
         super(Address, self).__init__()

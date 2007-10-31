@@ -27,30 +27,30 @@ from zope.interface import implements
 from zope.interface.verify import verifyObject
 
 from Mailman.configuration import config
-from Mailman.interfaces import IPending, IPendable
+from Mailman.interfaces import (
+    IPendings, IPendable, IPendedKeyValue, IPended)
 
-PEND_KIND = 'Mailman.database.model.pending.Pending'
+PEND_KIND = 'Mailman.database.model.pending.Pended'
 
 
 
 class PendedKeyValue(Entity):
     """A pended key/value pair, tied to a token."""
 
-    has_field('key',        Unicode)
-    has_field('value',      Unicode)
-    # Relationships
-    belongs_to('pended',    of_kind=PEND_KIND)
-    # Options
-    using_options(shortnames=True)
+    implements(IPendedKeyValue)
+
+    key = Field(Unicode)
+    value = Field(Unicode)
+    pended = ManyToOne(PEND_KIND)
 
 
-class Pending(Entity):
+class Pended(Entity):
     """A pended event, tied to a token."""
 
-    has_field('token',              Unicode)
-    has_field('expiration_date',    DateTime)
-    # Options
-    using_options(shortnames=True)
+    implements(IPended)
+
+    token = Field(Unicode)
+    expiration_date = Field(DateTime)
 
 
 
@@ -62,7 +62,7 @@ class UnpendedPendable(dict):
 class Pendings(object):
     """Implementation of the IPending interface."""
 
-    implements(IPending)
+    implements(IPendings)
 
     def add(self, pendable, lifetime=None):
         verifyObject(IPendable, pendable)
@@ -75,17 +75,19 @@ class Pendings(object):
         # clock values basically help obscure the random number generator, as
         # does the hash calculation.  The integral parts of the time values
         # are discarded because they're the most predictable bits.
-        while True:
+        for attempts in range(3):
             now = time.time()
             x = random.random() + now % 1.0 + time.clock() % 1.0
             # Use sha1 because it produces shorter strings.
             token = hashlib.sha1(repr(x)).hexdigest()
             # In practice, we'll never get a duplicate, but we'll be anal
             # about checking anyway.
-            if not Pending.select_by(token=token):
+            if Pended.query.filter_by(token=token).count() == 0:
                 break
+        else:
+            raise AssertionError('Could not find a valid pendings token')
         # Create the record, and then the individual key/value pairs.
-        pending = Pending(
+        pending = Pended(
             token=token,
             expiration_date=datetime.datetime.now() + lifetime)
         for key, value in pendable.items():
@@ -93,17 +95,18 @@ class Pendings(object):
         return token
 
     def confirm(self, token, expunge=True):
-        pendings = Pending.select_by(token=token)
-        assert 0 <= len(pendings) <= 1, 'Unexpected token search results'
-        if len(pendings) == 0:
+        pendings = Pended.query.filter_by(token=token)
+        if pendings.count() == 0:
             return None
+        assert pendings.count() == 1, (
+            'Unexpected token count: %d' % pendings.count())
         pending = pendings[0]
         pendable = UnpendedPendable()
         # Find all PendedKeyValue entries that are associated with the pending
         # object's ID.
-        q = PendedKeyValue.filter(
-            PendedKeyValue.c.pended_id == Pending.c.id).filter(
-            Pending.c.id == pending.id)
+        q = PendedKeyValue.query.filter(
+            PendedKeyValue.c.pended_id == Pended.c.id).filter(
+            Pended.c.id == pending.id)
         for keyvalue in q.all():
             pendable[keyvalue.key] = keyvalue.value
             if expunge:
@@ -114,13 +117,13 @@ class Pendings(object):
 
     def evict(self):
         now = datetime.datetime.now()
-        for pending in Pending.select():
+        for pending in Pended.query.filter_by().all():
             if pending.expiration_date < now:
                 # Find all PendedKeyValue entries that are associated with the
                 # pending object's ID.
-                q = PendedKeyValue.filter(
-                    PendedKeyValue.c.pended_id == Pending.c.id).filter(
-                    Pending.c.id == pending.id)
+                q = PendedKeyValue.query.filter(
+                    PendedKeyValue.c.pended_id == Pended.c.id).filter(
+                    Pended.c.id == pending.id)
                 for keyvalue in q:
                     keyvalue.delete()
                 pending.delete()

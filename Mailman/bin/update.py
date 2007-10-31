@@ -26,12 +26,13 @@ import cPickle
 import marshal
 import optparse
 
+from locknix.lockfile import TimeOutError
+
 from Mailman import MailList
 from Mailman import Message
 from Mailman import Pending
 from Mailman import Utils
 from Mailman import Version
-from Mailman.LockFile import TimeOutError
 from Mailman.MemberAdaptor import BYBOUNCE, ENABLED
 from Mailman.OldStyleMemberships import OldStyleMemberships
 from Mailman.Queue.Switchboard import Switchboard

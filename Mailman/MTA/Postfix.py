@@ -26,13 +26,13 @@ import time
 import errno
 import logging
 
+from locknix.lockfile import Lock
 from stat import *
 
 from Mailman import Utils
 from Mailman.MTA.Utils import makealiases
 from Mailman.configuration import config
 from Mailman.i18n import _
-from Mailman.lockfile import LockFile
 
 LOCKFILE = os.path.join(config.LOCK_DIR, 'creator')
 ALIASFILE = os.path.join(config.DATA_DIR, 'aliases')
@@ -338,7 +338,7 @@ def _do_remove(mlist, textfile):
 
 def remove(mlist, cgi=False):
     # Acquire the global list database lock
-    with LockFile(LOCKFILE):
+    with Lock(LOCKFILE):
         if config.USE_LMTP:
             _do_remove(mlist, TRPTFILE)
         else:

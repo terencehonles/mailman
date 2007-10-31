@@ -25,11 +25,12 @@ import socket
 import logging
 import optparse
 
+from locknix import lockfile
+
 from Mailman import Defaults
 from Mailman import Errors
 from Mailman import Utils
 from Mailman import Version
-from Mailman import lockfile
 from Mailman import loginit
 from Mailman.configuration import config
 from Mailman.i18n import _
@@ -197,7 +198,7 @@ def qrunner_state():
 def acquire_lock_1(force):
     # Be sure we can acquire the master qrunner lock.  If not, it means some
     # other master qrunner daemon is already going.
-    lock = lockfile.LockFile(config.LOCK_FILE, LOCK_LIFETIME)
+    lock = lockfile.Lock(config.LOCK_FILE, LOCK_LIFETIME)
     try:
         lock.lock(0.1)
         return lock

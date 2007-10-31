@@ -18,6 +18,7 @@
 """Harness for testing Mailman's documentation."""
 
 import os
+import pdb
 import doctest
 import unittest
 
@@ -33,48 +34,22 @@ COMMASPACE = ', '
 
 
 def cleaning_teardown(testobj):
-    usermgr = config.db.user_manager
-    listmgr = config.db.list_manager
-    # Remove all users, addresses and members, then delete all mailing lists.
-    for user in usermgr.users:
-        usermgr.delete_user(user)
-    for address in usermgr.addresses:
-        usermgr.delete_address(address)
-    for mlist in listmgr.mailing_lists:
-        for member in mlist.members.members:
-            member.unsubscribe()
-        for admin in mlist.administrators.members:
-            admin.unsubscribe()
-        requestdb = config.db.requests.get_list_requests(mlist)
-        for request in requestdb.held_requests:
-            requestdb.delete_request(request.id)
-        listmgr.delete(mlist)
+    """Clear all persistent data at the end of a doctest."""
+    # Clear the database of all rows.
+    config.db._reset()
     flush()
-    assert not list(listmgr.mailing_lists), (
-        'There should be no mailing lists left: %s' %
-        COMMASPACE.join(sorted(listmgr.names)))
-    assert not list(usermgr.users), (
-        'There should be no users left!')
-    assert not list(usermgr.addresses), (
-        'There should be no addresses left!')
-    # Remove all queue files.
-    for dirpath, dirnames, filenames in os.walk(config.QUEUE_DIR):
-        for filename in filenames:
-            os.remove(os.path.join(dirpath, filename))
     # Remove all but the default style.
     for style in style_manager.styles:
         if style.name <> 'default':
             style_manager.unregister(style)
-    # Clear the message store.
-    global_ids = []
-    for msg in config.db.message_store.messages:
-        global_ids.append('%s/%s' % (
-            msg['X-List-ID-Hash'], msg['X-List-Sequence-Number']))
-    for global_id in global_ids:
-        config.db.message_store.delete_message(global_id)
-    flush()
-    assert not list(config.db.message_store.messages), (
-        'There should be no messages left in the message store.')
+    # Remove all queue files.
+    for dirpath, dirnames, filenames in os.walk(config.QUEUE_DIR):
+        for filename in filenames:
+            os.remove(os.path.join(dirpath, filename))
+    # Clear out messages in the message store directory.
+    for dirpath, dirnames, filenames in os.walk(config.MESSAGES_DIR):
+        for filename in filenames:
+            os.remove(os.path.join(dirpath, filename))
 
 
 

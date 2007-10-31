@@ -71,3 +71,10 @@ class ILanguageManager(Interface):
 
     enabled_names = Attribute(
         """An iterator over all enabled language names.""")
+
+
+
+class ILanguage(Interface):
+    """The representation of a language."""
+
+    code = Attribute("""The 2-character language code.""")

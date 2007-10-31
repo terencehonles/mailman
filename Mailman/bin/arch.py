@@ -23,14 +23,15 @@ import errno
 import shutil
 import optparse
 
+from locknix.lockfile import Lock
+
 from Mailman import Errors
 from Mailman import Version
 from Mailman import i18n
 from Mailman.Archiver.HyperArch import HyperArchive
 from Mailman.Defaults import hours
-from Mailman.MailList import MailList
 from Mailman.configuration import config
-from Mailman.lockfile import LockFile
+from Mailman.initialize import initialize
 
 _ = i18n._
 __i18n_templates__ = True
@@ -103,62 +104,51 @@ def main():
         mbox = args[1]
 
     # Open the mailing list object
-    mlist = None
-    lock = None
-    try:
+    mlist = config.list_manager.get(listname)
+    if mlist is None:
+        parser.error(_('No such list: $listname'))
+    if mbox is None:
+        mbox = mlist.ArchiveFileName()
+
+    i18n.set_language(mlist.preferred_language)
+    # Lay claim to the archive's lock file.  This is so no other post can
+    # mess up the archive while we're processing it.  Try to pick a
+    # suitably long period of time for the lock lifetime even though we
+    # really don't know how long it will take.
+    #
+    # XXX processUnixMailbox() should refresh the lock.
+    lock_path = os.path.join(mlist.full_path, '.archiver.lck')
+    with Lock(lock_path, lifetime=int(hours(3))):
+        # Maybe wipe the old archives
+        if opts.wipe:
+            if mlist.scrub_nondigest:
+                # TK: save the attachments dir because they are not in mbox
+                saved = False
+                atchdir = os.path.join(mlist.archive_dir(), 'attachments')
+                savedir = os.path.join(mlist.archive_dir() + '.mbox',
+                                       'attachments')
+                try:
+                    os.rename(atchdir, savedir)
+                    saved = True
+                except OSError, e:
+                    if e.errno <> errno.ENOENT:
+                        raise
+            shutil.rmtree(mlist.archive_dir())
+            if mlist.scrub_nondigest and saved:
+                os.renames(savedir, atchdir)
         try:
-            mlist = MailList(listname)
-        except Errors.MMListError, e:
-            parser.print_help()
-            print >> sys.stderr, _('No such list: $listname\n$e')
+            fp = open(mbox)
+        except IOError, e:
+            if e.errno == errno.ENOENT:
+                print >> sys.stderr, _('Cannot open mbox file: $mbox')
+            else:
+                print >> sys.stderr, e
             sys.exit(1)
-        if mbox is None:
-            mbox = mlist.ArchiveFileName()
 
-        i18n.set_language(mlist.preferred_language)
-        # Lay claim to the archive's lock file.  This is so no other post can
-        # mess up the archive while we're processing it.  Try to pick a
-        # suitably long period of time for the lock lifetime even though we
-        # really don't know how long it will take.
-        #
-        # XXX processUnixMailbox() should refresh the lock.
-        with LockFile(os.path.join(mlist.full_path, '.archiver.lck'),
-                      lifetime=int(hours(3))):
-            # Maybe wipe the old archives
-            if opts.wipe:
-                if mlist.scrub_nondigest:
-                    # TK: save the attachments dir because they are not in mbox
-                    saved = False
-                    atchdir = os.path.join(mlist.archive_dir(), 'attachments')
-                    savedir = os.path.join(mlist.archive_dir() + '.mbox',
-                                           'attachments')
-                    try:
-                        os.rename(atchdir, savedir)
-                        saved = True
-                    except OSError, e:
-                        if e.errno <> errno.ENOENT:
-                            raise
-                shutil.rmtree(mlist.archive_dir())
-                if mlist.scrub_nondigest and saved:
-                    os.renames(savedir, atchdir)
-            try:
-                fp = open(mbox)
-            except IOError, e:
-                if e.errno == errno.ENOENT:
-                    print >> sys.stderr, _('Cannot open mbox file: $mbox')
-                else:
-                    print >> sys.stderr, e
-                sys.exit(1)
-
-            archiver = HyperArchive(mlist)
-            archiver.VERBOSE = opts.verbose
-            try:
-                archiver.processUnixMailbox(fp, opts.start, opts.end)
-            finally:
-                archiver.close()
-            fp.close()
-
-
-
-if __name__ == '__main__':
-    main()
+        archiver = HyperArchive(mlist)
+        archiver.VERBOSE = opts.verbose
+        try:
+            archiver.processUnixMailbox(fp, opts.start, opts.end)
+        finally:
+            archiver.close()
+        fp.close()

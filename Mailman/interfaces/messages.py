@@ -99,3 +99,14 @@ class IMessageStore(Interface):
 
     messages = Attribute(
         """An iterator over all messages in this message store.""")
+
+
+
+class IMessage(Interface):
+    """The representation of an email message."""
+
+    hash = Attribute("""The unique SHA1 hash of the message.""")
+
+    path = Attribute("""The filesystem path to the message object.""")
+
+    message_id = Attribute("""The message's Message-ID header.""")

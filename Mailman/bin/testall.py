@@ -47,7 +47,7 @@ def v_callback(option, opt, value, parser):
     elif opt in ('-v', '--verbose'):
         delta = 1
     else:
-        delta = 0
+        raise AssertionError('Unexpected option: %s' % opt)
     dest = getattr(parser.values, option.dest)
     setattr(parser.values, option.dest, max(0, dest + delta))
 
@@ -217,7 +217,8 @@ def main():
         with open(cfg_out, 'a') as fp:
             print >> fp, 'SQLALCHEMY_ENGINE_URL = "%s"' % test_engine_url
 
-        initialize_2()
+        # With -vvv, turn on engine debugging.
+        initialize_2(opts.verbosity > 3)
 
         # Run the tests
         basedir = os.path.dirname(Mailman.__file__)

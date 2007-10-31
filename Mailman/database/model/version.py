@@ -19,7 +19,5 @@ from elixir import *
 
 
 class Version(Entity):
-    has_field('component',  Unicode)
-    has_field('version',    Integer)
-    # Options
-    using_options(shortnames=True)
+    component = Field(Unicode)
+    version = Field(Integer)

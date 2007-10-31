@@ -36,7 +36,7 @@ class UserManager(object):
 
     def create_user(self, address=None, real_name=None):
         user = User()
-        user.real_name = (real_name if real_name is not None else '')
+        user.real_name = ('' if real_name is None else real_name)
         if address:
             addrobj = Address(address, user.real_name)
             addrobj.preferences = Preferences()
@@ -49,19 +49,28 @@ class UserManager(object):
 
     @property
     def users(self):
-        for user in User.select():
+        for user in User.query.filter_by().all():
             yield user
 
     def get_user(self, address):
-        found = Address.get_by(address=address.lower())
-        return found and found.user
+        addresses = Address.query.filter_by(address=address.lower())
+        if addresses.count() == 0:
+            return None
+        elif addresses.count() == 1:
+            return addresses[0].user
+        else:
+            raise AssertionError('Unexpected query count')
 
     def create_address(self, address, real_name=None):
-        found = Address.get_by(address=address.lower())
-        if found:
+        addresses = Address.query.filter_by(address=address.lower())
+        if addresses.count() == 1:
+            found = addresses[0]
             raise Errors.ExistingAddressError(found.original_address)
+        assert addresses.count() == 0, 'Unexpected results'
         if real_name is None:
             real_name = ''
+        # It's okay not to lower case the 'address' argument because the
+        # constructor will do the right thing.
         address = Address(address, real_name)
         address.preferences = Preferences()
         return address
@@ -74,9 +83,15 @@ class UserManager(object):
         address.delete()
 
     def get_address(self, address):
-        return Address.get_by(address=address.lower())
+        addresses = Address.query.filter_by(address=address.lower())
+        if addresses.count() == 0:
+            return None
+        elif addresses.count() == 1:
+            return addresses[0]
+        else:
+            raise AssertionError('Unexpected query count')
 
     @property
     def addresses(self):
-        for address in Address.select():
+        for address in Address.query.filter_by().all():
             yield address

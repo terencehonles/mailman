@@ -20,10 +20,11 @@
 from __future__ import with_statement
 
 import time
+
 from email.Utils import parsedate_tz, mktime_tz, formatdate
+from locknix.lockfile import Lock
 
 from Mailman.configuration import config
-from Mailman.lockfile import LockFile
 from Mailman.queue import Runner
 
 
@@ -67,5 +68,5 @@ class ArchiveRunner(Runner):
         # Always put an indication of when we received the message.
         msg['X-List-Received-Date'] = receivedtime
         # While a list archiving lock is acquired, archive the message.
-        with LockFile(os.path.join(mlist.full_path, 'archive.lck')):
+        with Lock(os.path.join(mlist.full_path, 'archive.lck')):
             mlist.ArchiveMail(msg)

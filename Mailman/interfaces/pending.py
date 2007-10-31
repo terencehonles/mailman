@@ -40,10 +40,28 @@ class IPendable(Interface):
 
         Both the keys and values must be strings.
         """
-    
+
 
 
-class IPending(Interface):
+class IPended(Interface):
+    """A pended event, tied to a token."""
+
+    token = Attribute("""The pended token.""")
+
+    expiration_date = Attribute("""The expiration date of the pended event.""")
+
+
+
+class IPendedKeyValue(Interface):
+    """A pended key/value pair."""
+
+    key = Attribute("""The pended key.""")
+
+    value = Attribute("""The pended value.""")
+
+
+
+class IPendings(Interface):
     """Interface to pending database."""
 
     def add(pendable, lifetime=None):

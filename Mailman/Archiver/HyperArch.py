@@ -41,12 +41,12 @@ import binascii
 from email.Charset import Charset
 from email.Errors import HeaderParseError
 from email.Header import decode_header, make_header
+from locknix.lockfile import Lock
 
 from Mailman import Errors
 from Mailman import MailList
 from Mailman import Utils
 from Mailman import i18n
-from Mailman import lockfile
 from Mailman.Archiver import HyperDatabase
 from Mailman.Archiver import pipermail
 from Mailman.Mailbox import ArchiverMailbox
@@ -604,9 +604,6 @@ class HyperArchive(pipermail.T):
 
     def __init__(self, maillist):
         # can't init the database while other processes are writing to it!
-        # XXX TODO- implement native locking
-        # with mailman's LockFile module for HyperDatabase.HyperDatabase
-        #
         dir = maillist.archive_dir()
         db = HyperDatabase.HyperDatabase(dir, maillist)
         self.__super_init(dir, reload=1, database=db)
@@ -786,7 +783,7 @@ class HyperArchive(pipermail.T):
     def GetArchLock(self):
         if self._lock_file:
             return 1
-        self._lock_file = lockfile.LockFile(
+        self._lock_file = Lock(
             os.path.join(config.LOCK_DIR,
                          self.maillist.fqdn_listname + '-arch.lock'))
         try:
