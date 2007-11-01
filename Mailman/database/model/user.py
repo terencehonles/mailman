@@ -67,5 +67,4 @@ class User(Entity):
         if addrobj.user is not None:
             raise Errors.AddressAlreadyLinkedError(addrobj)
         addrobj.user = self
-        self.addresses.append(addrobj)
         return addrobj
