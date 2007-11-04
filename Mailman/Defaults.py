@@ -120,7 +120,7 @@ DEFAULT_VAR_DIRECTORY = '/var/mailman'
 # will store their data in this database, although external rosters may access
 # other databases in their own way.  This string support substitutions using
 # any variable in the Configuration object.
-SQLALCHEMY_ENGINE_URL = 'sqlite:///$DATA_DIR/mailman.db'
+DEFAULT_DATABASE_URL = 'sqlite:///$DATA_DIR/mailman.db'
 
 # For debugging purposes
 SQLALCHEMY_ECHO = False

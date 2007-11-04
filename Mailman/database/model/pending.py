@@ -22,35 +22,36 @@ import random
 import hashlib
 import datetime
 
-from elixir import *
+from storm.locals import *
 from zope.interface import implements
 from zope.interface.verify import verifyObject
 
 from Mailman.configuration import config
+from Mailman.database import Model
 from Mailman.interfaces import (
     IPendings, IPendable, IPendedKeyValue, IPended)
 
-PEND_KIND = 'Mailman.database.model.pending.Pended'
-
 
 
-class PendedKeyValue(Entity):
+class PendedKeyValue(Model):
     """A pended key/value pair, tied to a token."""
 
     implements(IPendedKeyValue)
 
-    key = Field(Unicode)
-    value = Field(Unicode)
-    pended = ManyToOne(PEND_KIND)
+    id = Int(primary=True)
+    key = Unicode()
+    value = Unicode()
 
 
-class Pended(Entity):
+class Pended(Model):
     """A pended event, tied to a token."""
 
     implements(IPended)
 
-    token = Field(Unicode)
-    expiration_date = Field(DateTime)
+    id = Int(primary=True)
+    token = Unicode()
+    expiration_date = DateTime()
+    key_values = Reference(id, PendedKeyValue.id)
 
 
 

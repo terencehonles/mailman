@@ -22,14 +22,28 @@ import pdb
 import doctest
 import unittest
 
+from email import message_from_string
+
 import Mailman
 
+from Mailman.Message import Message
 from Mailman.app.styles import style_manager
 from Mailman.configuration import config
 from Mailman.database import flush
 
 
 COMMASPACE = ', '
+
+
+
+def specialized_message_from_string(string):
+    return message_from_string(string, Message)
+
+
+def setup(testobj):
+    """Set up some things for convenience."""
+    testobj.globs['config'] = config
+    testobj.globs['message_from_string'] = specialized_message_from_string
 
 
 
@@ -69,6 +83,7 @@ def test_suite():
                 'docs/' + filename,
                 package=Mailman,
                 optionflags=flags,
+                setUp=setup,
                 tearDown=cleaning_teardown)
             suite.addTest(test)
     return suite

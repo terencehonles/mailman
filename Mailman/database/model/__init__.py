@@ -15,6 +15,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
+from __future__ import with_statement
+
 __all__ = [
     'Address',
     'Language',
@@ -28,9 +30,9 @@ __all__ = [
 
 import os
 import sys
-import elixir
 
-from sqlalchemy import create_engine
+from storm import database
+from storm.locals import create_database, Store
 from string import Template
 from urlparse import urlparse
 
@@ -39,12 +41,6 @@ import Mailman.Version
 from Mailman import constants
 from Mailman.Errors import SchemaVersionMismatchError
 from Mailman.configuration import config
-
-# This /must/ be set before any Elixir classes are defined (i.e. imported).
-# This tells Elixir to use the short table names (i.e. the class name) instead
-# of a mangled full class path.
-elixir.options_defaults['shortnames'] = True
-
 from Mailman.database.model.address import Address
 from Mailman.database.model.language import Language
 from Mailman.database.model.mailinglist import MailingList
@@ -59,8 +55,8 @@ from Mailman.database.model.version import Version
 
 
 def initialize(debug):
-    # Calculate the engine url
-    url = Template(config.SQLALCHEMY_ENGINE_URL).safe_substitute(config.paths)
+    # Calculate the engine url.
+    url = Template(config.DEFAULT_DATABASE_URL).safe_substitute(config.paths)
     # XXX By design of SQLite, database file creation does not honor
     # umask.  See their ticket #1193:
     # http://www.sqlite.org/cvstrac/tktview?tn=1193,31
@@ -75,21 +71,30 @@ def initialize(debug):
     # permissions.  We only try to do this for SQLite engines, and yes, we
     # could have chmod'd the file after the fact, but half dozen and all...
     touch(url)
-    engine = create_engine(url)
-    engine.echo = (config.SQLALCHEMY_ECHO if debug is None else debug)
-    elixir.metadata.bind = engine
-    elixir.setup_all()
-    elixir.create_all()
+    database = create_database(url)
+    store = Store(database)
+    database.DEBUG = (config.DEFAULT_DATABASE_ECHO if debug is None else debug)
+    # XXX Storm does not currently have schema creation.  This is not an ideal
+    # way to handle creating the database, but it's cheap and easy for now.
+    import Mailman.database.model
+    schema_file = os.path.join(
+        os.path.dirname(Mailman.database.model.__file__),
+        'mailman.sql')
+    with open(schema_file) as fp:
+        sql = fp.read()
+    for statement in sql.split(';'):
+        store.execute(statement + ';')
     # Validate schema version.
-    v = Version.get_by(component='schema')
+    v = store.find(Version, component=u'schema').one()
     if not v:
         # Database has not yet been initialized
-        v = Version(component='schema',
+        v = Version(component=u'schema',
                     version=Mailman.Version.DATABASE_SCHEMA_VERSION)
-        elixir.session.flush()
+        store.add(v)
     elif v.version <> Mailman.Version.DATABASE_SCHEMA_VERSION:
         # XXX Update schema
         raise SchemaVersionMismatchError(v.version)
+    return store
 
 
 def touch(url):
@@ -101,9 +106,3 @@ def touch(url):
     # Ignore errors
     if fd > 0:
         os.close(fd)
-
-
-def _reset():
-    for entity in elixir.entities:
-        for row in entity.query.filter_by().all():
-            row.delete()

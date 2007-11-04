@@ -15,18 +15,21 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-from elixir import *
+from storm.locals import *
 from zope.interface import implements
 
+from Mailman.database import Model
 from Mailman.interfaces import IMessage
 
 
 
-class Message(Entity):
+class Message(Model):
     """A message in the message store."""
 
     implements(IMessage)
 
-    hash = Field(Unicode)
-    path = Field(Unicode)
-    message_id = Field(Unicode)
+    id = Int(primary=True)
+    hash = Unicode()
+    path = Unicode()
+    # This is a Messge-ID field representation, not a database row id.
+    message_id = Unicode()

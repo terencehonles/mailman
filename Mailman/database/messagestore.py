@@ -32,7 +32,6 @@ from zope.interface import implements
 
 from Mailman import Utils
 from Mailman.configuration import config
-from Mailman.database.model import Message
 from Mailman.interfaces import IMessageStore
 
 # It could be very bad if you have already stored files and you change this
@@ -46,6 +45,7 @@ class MessageStore:
     implements(IMessageStore)
 
     def add(self, message):
+        from Mailman.database.model import Message
         # Ensure that the message has the requisite headers.
         message_ids = message.get_all('message-id', [])
         if len(message_ids) <> 1:

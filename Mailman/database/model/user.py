@@ -15,28 +15,28 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-from elixir import *
 from email.utils import formataddr
+from storm.locals import *
 from zope.interface import implements
 
 from Mailman import Errors
+from Mailman.database import Model
 from Mailman.database.model import Address
 from Mailman.database.model import Preferences
 from Mailman.interfaces import IUser
 
-ADDRESS_KIND    = 'Mailman.database.model.address.Address'
-PREFERENCE_KIND = 'Mailman.database.model.preferences.Preferences'
-
 
 
-class User(Entity):
+class User(Model):
     implements(IUser)
 
-    real_name = Field(Unicode)
-    password = Field(Unicode)
+    id = Int(primary=True)
+    real_name = Unicode()
+    password = Unicode()
 
-    addresses = OneToMany(ADDRESS_KIND)
-    preferences = ManyToOne(PREFERENCE_KIND)
+    addresses = ReferenceSet(id, 'Address.user_id')
+    preferences_id = Int()
+    preferences = Reference(preferences_id, 'Preferences')
 
     def __repr__(self):
         return '<User "%s" at %#x>' % (self.real_name, id(self))

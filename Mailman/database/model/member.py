@@ -15,28 +15,28 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-from elixir import *
+from storm.locals import *
 from zope.interface import implements
 
 from Mailman.Utils import split_listname
 from Mailman.constants import SystemDefaultPreferences
-from Mailman.database.types import EnumType
+from Mailman.database import Model
+from Mailman.database.types import Enum
 from Mailman.interfaces import IMember, IPreferences
 
 
-ADDRESS_KIND    = 'Mailman.database.model.address.Address'
-PREFERENCE_KIND = 'Mailman.database.model.preferences.Preferences'
-
-
 
-class Member(Entity):
+class Member(Model):
     implements(IMember)
 
-    role = Field(EnumType)
-    mailing_list = Field(Unicode)
-    # Relationships
-    address = ManyToOne(ADDRESS_KIND)
-    preferences = ManyToOne(PREFERENCE_KIND)
+    id = Int(primary=True)
+    role = Enum()
+    mailing_list = Unicode()
+
+    address_id = Int()
+    address = Reference(address_id, 'Address')
+    preferences_id = Int()
+    preferences = Reference(preferences_id, 'Preferences')
 
     def __repr__(self):
         return '<Member: %s on %s as %s>' % (

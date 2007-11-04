@@ -22,7 +22,6 @@ the ones that fit a particular role.  These are used as the member, owner,
 moderator, and administrator roster filters.
 """
 
-from sqlalchemy import *
 from zope.interface import implements
 
 from Mailman.constants import SystemDefaultPreferences

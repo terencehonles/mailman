@@ -15,18 +15,16 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-"""SQLAlchemy/Elixir based provider of IUserManager."""
+"""A user manager."""
 
 from __future__ import with_statement
 
 import os
 
-from elixir import *
 from zope.interface import implements
 
 from Mailman import Errors
 from Mailman.configuration import config
-from Mailman.database.model import *
 from Mailman.interfaces import IUserManager
 
 

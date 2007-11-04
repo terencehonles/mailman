@@ -15,29 +15,27 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-from elixir import *
 from email.utils import formataddr
+from storm.locals import *
 from zope.interface import implements
 
-from Mailman.database.types import EnumType
+from Mailman.database import Model
+from Mailman.database.types import Enum
 from Mailman.interfaces import IPreferences
-
-ADDRESS_KIND    = 'Mailman.database.model.address.Address'
-MEMBER_KIND     = 'Mailman.database.model.member.Member'
-USER_KIND       = 'Mailman.database.model.user.User'
 
 
 
-class Preferences(Entity):
+class Preferences(Model):
     implements(IPreferences)
 
-    acknowledge_posts = Field(Boolean)
-    hide_address = Field(Boolean)
-    preferred_language = Field(Unicode)
-    receive_list_copy = Field(Boolean)
-    receive_own_postings = Field(Boolean)
-    delivery_mode = Field(EnumType)
-    delivery_status = Field(EnumType)
+    id = Int(primary=True)
+    acknowledge_posts = Bool()
+    hide_address = Bool()
+    preferred_language = Unicode()
+    receive_list_copy = Bool()
+    receive_own_postings = Bool()
+    delivery_mode = Enum()
+    delivery_status = Enum()
 
     def __repr__(self):
         return '<Preferences object at %#x>' % id(self)

@@ -18,15 +18,13 @@
 """Implementations of the IRequests and IListRequests interfaces."""
 
 from datetime import timedelta
-from elixir import *
+from storm.locals import *
 from zope.interface import implements
 
 from Mailman.configuration import config
-from Mailman.database.types import EnumType
+from Mailman.database import Model
+from Mailman.database.types import Enum
 from Mailman.interfaces import IListRequests, IPendable, IRequests, RequestType
-
-
-MAILINGLIST_KIND = 'Mailman.database.model.mailinglist.MailingList'
 
 
 __metaclass__ = type
@@ -127,11 +125,13 @@ class Requests:
 
 
 
-class _Request(Entity):
+class _Request(Model):
     """Table for mailing list hold requests."""
 
-    key = Field(Unicode)
-    type = Field(EnumType)
-    data_hash = Field(Unicode)
-    # Relationships
-    mailing_list = ManyToOne(MAILINGLIST_KIND)
+    id = Int(primary=True)
+    key = Unicode()
+    type = Enum()
+    data_hash = Unicode()
+
+    mailing_list_id = Int()
+    mailing_list = Reference(mailing_list_id, 'MailingList')
