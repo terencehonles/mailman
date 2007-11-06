@@ -24,6 +24,7 @@ moderator, and administrator roster filters.
 
 from zope.interface import implements
 
+from Mailman.configuration import config
 from Mailman.constants import SystemDefaultPreferences
 from Mailman.database.model import Address, Member
 from Mailman.interfaces import DeliveryMode, IRoster, MemberRole
@@ -72,11 +73,12 @@ class AbstractRoster(object):
             yield member.address
 
     def get_member(self, address):
-        results = Member.query.filter(
-            and_(Member.c.mailing_list == self._mlist.fqdn_listname,
-                 Member.c.role == self.role,
-                 Address.c.address == address,
-                 Member.c.address_id == Address.c.id))
+        results = config.db.store.find(
+            Member,
+            Member.mailing_list == self._mlist.fqdn_listname,
+            Member.role == self.role,
+            Address.address == address,
+            Member.address_id == Address.id)
         if results.count() == 0:
             return None
         elif results.count() == 1:

@@ -20,6 +20,7 @@ from storm.locals import *
 from zope.interface import implements
 
 from Mailman import Errors
+from Mailman.configuration import config
 from Mailman.database import Model
 from Mailman.interfaces import IAddress
 
@@ -36,9 +37,9 @@ class Address(Model):
     registered_on = DateTime()
 
     user_id = Int()
-    user = Reference(user_id, 'User')
+    user = Reference(user_id, 'User.id')
     preferences_id = Int()
-    preferences = Reference(preferences_id, 'Preferences')
+    preferences = Reference(preferences_id, 'Preferences.id')
 
     def __init__(self, address, real_name):
         super(Address, self).__init__()
@@ -65,9 +66,11 @@ class Address(Model):
         from Mailman.database.model import Member
         from Mailman.database.model import Preferences
         # This member has no preferences by default.
-        member = Member.get_by(role=role,
-                               mailing_list=mailing_list.fqdn_listname,
-                               address=self)
+        member = config.db.store.find(
+            Member,
+            Member.role == role,
+            Member.mailing_list == mailing_list.fqdn_listname,
+            Member.address == self).one()
         if member:
             raise Errors.AlreadySubscribedError(
                 mailing_list.fqdn_listname, self.address, role)
@@ -75,6 +78,7 @@ class Address(Model):
                         mailing_list=mailing_list.fqdn_listname,
                         address=self)
         member.preferences = Preferences()
+        config.db.store.add(member)
         return member
 
     @property

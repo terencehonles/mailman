@@ -36,8 +36,8 @@ COMMASPACE = ', '
 
 
 
-def specialized_message_from_string(string):
-    return message_from_string(string, Message)
+def specialized_message_from_string(text):
+    return message_from_string(text, Message)
 
 
 def setup(testobj):

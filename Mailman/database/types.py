@@ -33,25 +33,25 @@ class _EnumVariable(Variable):
     def parse_set(self, value, from_db):
         if value is None:
             return None
-        if from_db:
-            path, intvalue = value.rsplit(':', 1)
-            modulename, classname = path.rsplit('.', 1)
-            __import__(modulename)
-            cls = getattr(sys.modules[modulename], classname)
-            return cls[int(intvalue)]
-        return value
+        if not from_db:
+            return value
+        path, intvalue = value.rsplit(':', 1)
+        modulename, classname = path.rsplit('.', 1)
+        __import__(modulename)
+        cls = getattr(sys.modules[modulename], classname)
+        return cls[int(intvalue)]
 
     def parse_get(self, value, to_db):
         if value is None:
             return None
-        if to_db:
-            return '%s.%s:%d' % (value.enumclass.__module__,
-                                 value.enumclass.__name__,
-                                 int(value))
-        return value
+        if not to_db:
+            return value
+        return '%s.%s:%d' % (value.enumclass.__module__,
+                             value.enumclass.__name__,
+                             int(value))
 
 
 class Enum(SimpleProperty):
     """Custom munepy.Enum type for Storm."""
 
-    variable_class = UnicodeVariable
+    variable_class = _EnumVariable

@@ -34,9 +34,14 @@ class Member(Model):
     mailing_list = Unicode()
 
     address_id = Int()
-    address = Reference(address_id, 'Address')
+    address = Reference(address_id, 'Address.id')
     preferences_id = Int()
-    preferences = Reference(preferences_id, 'Preferences')
+    preferences = Reference(preferences_id, 'Preferences.id')
+
+    def __init__(self, role, mailing_list, address):
+        self.role = role
+        self.mailing_list = mailing_list
+        self.address = address
 
     def __repr__(self):
         return '<Member: %s on %s as %s>' % (

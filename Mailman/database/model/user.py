@@ -36,7 +36,7 @@ class User(Model):
 
     addresses = ReferenceSet(id, 'Address.user_id')
     preferences_id = Int()
-    preferences = Reference(preferences_id, 'Preferences')
+    preferences = Reference(preferences_id, 'Preferences.id')
 
     def __repr__(self):
         return '<User "%s" at %#x>' % (self.real_name, id(self))

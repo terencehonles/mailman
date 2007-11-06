@@ -33,13 +33,16 @@ class UserManager(object):
     implements(IUserManager)
 
     def create_user(self, address=None, real_name=None):
+        # Avoid circular imports.
+        from Mailman.database.model import Address, Preferences, User
         user = User()
-        user.real_name = ('' if real_name is None else real_name)
+        user.real_name = (u'' if real_name is None else real_name)
         if address:
             addrobj = Address(address, user.real_name)
             addrobj.preferences = Preferences()
             user.link(addrobj)
         user.preferences = Preferences()
+        config.db.store.add(user)
         return user
 
     def delete_user(self, user):
