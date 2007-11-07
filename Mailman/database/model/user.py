@@ -20,6 +20,7 @@ from storm.locals import *
 from zope.interface import implements
 
 from Mailman import Errors
+from Mailman.configuration import config
 from Mailman.database import Model
 from Mailman.database.model import Address
 from Mailman.database.model import Preferences
@@ -52,8 +53,11 @@ class User(Model):
         address.user = None
 
     def controls(self, address):
-        found = Address.get_by(address=address)
-        return bool(found and found.user is self)
+        found = config.db.store.find(Address, address=address)
+        if found.count() == 0:
+            return False
+        assert found.count() == 1, 'Unexpected count'
+        return found[0].user is self
 
     def register(self, address, real_name=None):
         # First, see if the address already exists

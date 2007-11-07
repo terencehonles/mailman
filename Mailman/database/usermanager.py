@@ -54,7 +54,9 @@ class UserManager(object):
             yield user
 
     def get_user(self, address):
-        addresses = Address.query.filter_by(address=address.lower())
+        # Avoid circular imports.
+        from Mailman.database.model import Address
+        addresses = config.db.store.find(Address, address=address.lower())
         if addresses.count() == 0:
             return None
         elif addresses.count() == 1:
@@ -63,17 +65,20 @@ class UserManager(object):
             raise AssertionError('Unexpected query count')
 
     def create_address(self, address, real_name=None):
-        addresses = Address.query.filter_by(address=address.lower())
+        # Avoid circular imports.
+        from Mailman.database.model import Address, Preferences
+        addresses = config.db.store.find(Address, address=address.lower())
         if addresses.count() == 1:
             found = addresses[0]
             raise Errors.ExistingAddressError(found.original_address)
         assert addresses.count() == 0, 'Unexpected results'
         if real_name is None:
-            real_name = ''
+            real_name = u''
         # It's okay not to lower case the 'address' argument because the
         # constructor will do the right thing.
         address = Address(address, real_name)
         address.preferences = Preferences()
+        config.db.store.add(address)
         return address
 
     def delete_address(self, address):
@@ -81,10 +86,12 @@ class UserManager(object):
         # unlinked before the address can be deleted.
         if address.user:
             address.user.unlink(address)
-        address.delete()
+        config.db.store.remove(address)
 
     def get_address(self, address):
-        addresses = Address.query.filter_by(address=address.lower())
+        # Avoid circular imports.
+        from Mailman.database.model import Address
+        addresses = config.db.store.find(Address, address=address.lower())
         if addresses.count() == 0:
             return None
         elif addresses.count() == 1:
@@ -94,5 +101,7 @@ class UserManager(object):
 
     @property
     def addresses(self):
-        for address in Address.query.filter_by().all():
+        # Avoid circular imports.
+        from Mailman.database.model.address import Address
+        for address in config.db.store.find(Address):
             yield address

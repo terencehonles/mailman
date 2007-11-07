@@ -20,7 +20,6 @@ from __future__ import with_statement
 __metaclass__ = type
 __all__ = [
     'StockDatabase',
-    'flush', # for test convenience
     ]
 
 import os
@@ -34,20 +33,12 @@ from Mailman.database.listmanager import ListManager
 from Mailman.database.usermanager import UserManager
 from Mailman.database.messagestore import MessageStore
 
-# Test suite convenience.  Application code should use config.db.flush()
-# instead.
-flush = None
-
 
 
 class StockDatabase:
     implements(IDatabase)
 
     def __init__(self):
-        # Expose the flush() method for test case convenience using the stock
-        # database.
-        global flush
-        flush = self.flush
         self.list_manager = None
         self.user_manager = None
         self.message_store = None
@@ -70,9 +61,6 @@ class StockDatabase:
         self.message_store = MessageStore()
         self.pendings = Pendings()
         self.requests = Requests()
-
-    def flush(self):
-        pass
 
     def _reset(self):
         for model_class in _class_registry:

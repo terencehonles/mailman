@@ -29,7 +29,6 @@ import Mailman
 from Mailman.Message import Message
 from Mailman.app.styles import style_manager
 from Mailman.configuration import config
-from Mailman.database import flush
 
 
 COMMASPACE = ', '
@@ -51,7 +50,6 @@ def cleaning_teardown(testobj):
     """Clear all persistent data at the end of a doctest."""
     # Clear the database of all rows.
     config.db._reset()
-    flush()
     # Remove all but the default style.
     for style in style_manager.styles:
         if style.name <> 'default':
