@@ -46,7 +46,7 @@ from Mailman.i18n import _
 # Path characters for common platforms
 pre = re.compile(r'[/\\:]')
 # All other characters to strip out of Content-Disposition: filenames
-# (essentially anything that isn't an alphanum, dot, slash, or underscore.
+# (essentially anything that isn't an alphanum, dot, dash, or underscore).
 sre = re.compile(r'[^-\w.]')
 # Regexp to strip out leading dots
 dre = re.compile(r'^\.*')
@@ -265,7 +265,7 @@ URL: %(url)s
         # If the message isn't a multipart, then we'll strip it out as an
         # attachment that would have to be separately downloaded.  Pipermail
         # will transform the url into a hyperlink.
-        elif part and not part.is_multipart():
+        elif part._payload and not part.is_multipart():
             payload = part.get_payload(decode=True)
             ctype = part.get_content_type()
             # XXX Under email 2.5, it is possible that payload will be None.
@@ -313,7 +313,8 @@ URL: %(url)s
         charsets = []
         for part in msg.walk():
             # TK: bug-id 1099138 and multipart
-            if not part or part.is_multipart():
+            # MAS test payload - if part may fail if there are no headers.
+            if not part._payload or part.is_multipart():
                 continue
             # All parts should be scrubbed to text/plain by now.
             partctype = part.get_content_type()
@@ -410,8 +411,6 @@ def save_attachment(mlist, msg, dir, filter_html=True):
         ext = fnext or guess_extension(ctype, fnext)
     else:
         ext = guess_extension(ctype, fnext)
-    # Allow only alphanumerics, dash, underscore, and dot
-    ext = sre.sub('', ext)
     if not ext:
         # We don't know what it is, so assume it's just a shapeless
         # application/octet-stream, unless the Content-Type: is
@@ -421,6 +420,8 @@ def save_attachment(mlist, msg, dir, filter_html=True):
             ext = '.txt'
         else:
             ext = '.bin'
+    # Allow only alphanumerics, dash, underscore, and dot
+    ext = sre.sub('', ext)
     path = None
     # We need a lock to calculate the next attachment number
     with Lock(os.path.join(fsdir, 'attachments.lock')):
