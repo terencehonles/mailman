@@ -10,13 +10,9 @@ Still, Mailman does employ a small number of rather ham-handed anti-spam
 measures.
 
     >>> from Mailman.Handlers.SpamDetect import process
-    >>> from Mailman.Message import Message
     >>> from Mailman.queue import Switchboard
     >>> from Mailman.configuration import config
-    >>> from Mailman.database import flush
-    >>> from email import message_from_string
-    >>> mlist = config.db.list_manager.create('_xtest@example.com')
-    >>> flush()
+    >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
 
 
 Short circuiting
@@ -28,7 +24,7 @@ If a message is pre-approved, this handler does nothing.
     ... From: aperson@example.com
     ...
     ... An important message.
-    ... """, Message)
+    ... """)
     >>> msgdata = {'approved': True}
     >>> process(mlist, msg, msgdata)
     >>> print msg.as_string()
@@ -49,6 +45,7 @@ regular expression.  For example, if we wanted to block all message that come
 from 'aperson' regardless of the domain, we'd do something like the following
 in our mailman.cfg file:
 
+    >>> old_value = config.KNOWN_SPAMMERS[:]
     >>> config.KNOWN_SPAMMERS.append(('from', 'aperson'))
 
 Now if the same message is posted to the mailing list, and that message is not
@@ -67,6 +64,9 @@ spam.
     <BLANKLINE>
     >>> msgdata
     {}
+
+    # Restore global state
+    config.KNOWN_SPAMMERS = old_value
 
 
 Header filter rules
