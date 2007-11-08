@@ -61,10 +61,10 @@ class User(Model):
 
     def register(self, address, real_name=None):
         # First, see if the address already exists
-        addrobj = Address.get_by(address=address)
+        addrobj = config.db.store.find(Address, address=address).one()
         if addrobj is None:
             if real_name is None:
-                real_name = ''
+                real_name = u''
             addrobj = Address(address=address, real_name=real_name)
             addrobj.preferences = Preferences()
         # Link the address to the user if it is not already linked.

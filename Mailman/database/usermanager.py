@@ -46,11 +46,13 @@ class UserManager(object):
         return user
 
     def delete_user(self, user):
-        user.delete()
+        config.db.store.remove(user)
 
     @property
     def users(self):
-        for user in User.query.filter_by().all():
+        # Avoid circular imports.
+        from Mailman.database.model import User
+        for user in config.db.store.find(User):
             yield user
 
     def get_user(self, address):
