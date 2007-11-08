@@ -53,7 +53,8 @@ class Message(email.message.Message):
 
     def get_all(self, name, failobj=None):
         all_values = email.message.Message.get_all(self, name, failobj)
-        return [unicode(value, 'ascii') for value in all_values]
+        return [(unicode(value, 'ascii') if isinstance(value, str) else value)
+                for value in all_values]
 
     # BAW: For debugging w/ bin/dumpdb.  Apparently pprint uses repr.
     def __repr__(self):

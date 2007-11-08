@@ -7,18 +7,18 @@ modules and depends on a host of factors.
 
     >>> from Mailman.Handlers.CalcRecips import process
     >>> from Mailman.configuration import config
-    >>> mlist = config.db.list_manager.create('_xtest@example.com')
+    >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
 
 Recipients are calculate from the list members, so add a bunch of members to
 start out with.  First, create a bunch of addresses...
 
     >>> usermgr = config.db.user_manager
-    >>> address_a = usermgr.create_address('aperson@example.com')
-    >>> address_b = usermgr.create_address('bperson@example.com')
-    >>> address_c = usermgr.create_address('cperson@example.com')
-    >>> address_d = usermgr.create_address('dperson@example.com')
-    >>> address_e = usermgr.create_address('eperson@example.com')
-    >>> address_f = usermgr.create_address('fperson@example.com')
+    >>> address_a = usermgr.create_address(u'aperson@example.com')
+    >>> address_b = usermgr.create_address(u'bperson@example.com')
+    >>> address_c = usermgr.create_address(u'cperson@example.com')
+    >>> address_d = usermgr.create_address(u'dperson@example.com')
+    >>> address_e = usermgr.create_address(u'eperson@example.com')
+    >>> address_f = usermgr.create_address(u'fperson@example.com')
 
 ...then subscribe these addresses to the mailing list as members...
 
@@ -50,11 +50,11 @@ but not all of the recipients.
     ...
     ... Something of great import.
     ... """)
-    >>> recips = set(('qperson@example.com', 'zperson@example.com'))
+    >>> recips = set((u'qperson@example.com', u'zperson@example.com'))
     >>> msgdata = dict(recips=recips)
     >>> process(mlist, msg, msgdata)
     >>> sorted(msgdata['recips'])
-    ['qperson@example.com', 'zperson@example.com']
+    [u'qperson@example.com', u'zperson@example.com']
 
 
 Regular delivery recipients
@@ -66,7 +66,7 @@ soon as they are posted.  In other words, these folks are not digest members.
     >>> msgdata = {}
     >>> process(mlist, msg, msgdata)
     >>> sorted(msgdata['recips'])
-    ['aperson@example.com', 'bperson@example.com', 'cperson@example.com']
+    [u'aperson@example.com', u'bperson@example.com', u'cperson@example.com']
 
 Members can elect not to receive a list copy of their own postings.
 
@@ -79,7 +79,7 @@ Members can elect not to receive a list copy of their own postings.
     >>> msgdata = {}
     >>> process(mlist, msg, msgdata)
     >>> sorted(msgdata['recips'])
-    ['aperson@example.com', 'bperson@example.com']
+    [u'aperson@example.com', u'bperson@example.com']
 
 Members can also elect not to receive a list copy of any message on which they
 are explicitly named as a recipient.  However, see the AvoidDuplicates handler
