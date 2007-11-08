@@ -49,8 +49,12 @@ class ListManager(object):
         mlist.delete()
 
     def get(self, fqdn_listname):
+        # Avoid circular imports.
+        from Mailman.database.model import MailingList
         listname, hostname = split_listname(fqdn_listname)
-        mlist = MailingList.get_by(list_name=listname, host_name=hostname)
+        mlist = config.db.store.find(MailingList,
+                                     list_name=listname,
+                                     host_name=hostname).one()
         if mlist is not None:
             # XXX Fixme
             mlist._restore()

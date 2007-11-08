@@ -120,7 +120,7 @@ class MailingList(Model):
     max_days_to_hold = Int()
     max_message_size = Int()
     max_num_recipients = Int()
-    member_moderation_action = Bool()
+    member_moderation_action = Enum()
     member_moderation_notice = Unicode()
     mime_is_default_digest = Bool()
     moderator_password = Unicode()

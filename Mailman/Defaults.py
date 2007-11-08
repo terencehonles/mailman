@@ -455,7 +455,7 @@ NNTP_USERNAME = None
 NNTP_PASSWORD = None
 
 # Set this if you have an NNTP server you prefer gatewayed lists to use.
-DEFAULT_NNTP_HOST = ''
+DEFAULT_NNTP_HOST = u''
 
 # These variables controls how headers must be cleansed in order to be
 # accepted by your NNTP server.  Some servers like INN reject messages
@@ -809,7 +809,7 @@ MAX_RESTARTS = 10
 # The default language for this server.  Whenever we can't figure out the list
 # context or user context, we'll fall back to using this language.  This code
 # must be in the list of available language codes.
-DEFAULT_SERVER_LANGUAGE = 'en'
+DEFAULT_SERVER_LANGUAGE = u'en'
 
 # When allowing only members to post to a mailing list, how is the sender of
 # the message determined?  If this variable is set to Yes, then first the
@@ -909,10 +909,10 @@ DEFAULT_MAX_MESSAGE_SIZE = 40           # KB
 
 # These format strings will be expanded w.r.t. the dictionary for the
 # mailing list instance.
-DEFAULT_SUBJECT_PREFIX  = "[%(real_name)s] "
+DEFAULT_SUBJECT_PREFIX  = u'[%(real_name)s] '
 # DEFAULT_SUBJECT_PREFIX = "[%(real_name)s %%d]" # for numbering
-DEFAULT_MSG_HEADER = ""
-DEFAULT_MSG_FOOTER = """\
+DEFAULT_MSG_HEADER = u''
+DEFAULT_MSG_FOOTER = u"""\
 _______________________________________________
 $real_name mailing list
 $fqdn_realname
@@ -978,7 +978,7 @@ DEFAULT_SEND_GOODBYE_MSG = Yes
 DEFAULT_ANONYMOUS_LIST = No
 
 # {header-name: regexp} spam filtering - we include some for example sake.
-DEFAULT_BOUNCE_MATCHING_HEADERS = """
+DEFAULT_BOUNCE_MATCHING_HEADERS = u"""
 # Lines that *start* with a '#' are comments.
 to: friend@public.com
 message-id: relay.comanche.denmark.eu
@@ -1098,7 +1098,7 @@ DEFAULT_NONDIGESTABLE = Yes
 
 # Will list be available in digested form?
 DEFAULT_DIGESTABLE = Yes
-DEFAULT_DIGEST_HEADER = ""
+DEFAULT_DIGEST_HEADER = u''
 DEFAULT_DIGEST_FOOTER = DEFAULT_MSG_FOOTER
 
 DEFAULT_DIGEST_IS_DEFAULT = No

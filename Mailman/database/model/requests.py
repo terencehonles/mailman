@@ -47,21 +47,25 @@ class ListRequests:
 
     @property
     def count(self):
-        return _Request.query.filter_by(mailing_list=self.mailing_list).count()
+        return config.db.store.find(
+            _Request, mailing_list=self.mailing_list).count()
 
     def count_of(self, request_type):
-        return _Request.query.filter_by(mailing_list=self.mailing_list,
-                                        type=request_type).count()
+        return config.db.store.find(
+            _Request,
+            mailing_list=self.mailing_list, type=request_type).count()
 
     @property
     def held_requests(self):
-        results = _Request.query.filter_by(mailing_list=self.mailing_list)
+        results = config.db.store.find(
+            _Request, mailing_list=self.mailing_list)
         for request in results:
             yield request
 
     def of_type(self, request_type):
-        results = _Request.query.filter_by(mailing_list=self.mailing_list,
-                                           type=request_type)
+        results = config.db.store.find(
+            _Request,
+            mailing_list=self.mailing_list, type=request_type)
         for request in results:
             yield request
 

@@ -6,15 +6,11 @@ it receives on its posting address, or special robot addresses.  Automatic
 responses are subject to various conditions, such as headers in the original
 message or the amount of time since the last auto-response.
 
-    >>> from email import message_from_string
     >>> from Mailman.Handlers.Replybot import process
-    >>> from Mailman.Message import Message
     >>> from Mailman.configuration import config
-    >>> from Mailman.database import flush
-    >>> mlist = config.db.list_manager.create('_xtest@example.com')
-    >>> mlist.real_name = 'XTest'
-    >>> mlist.web_page_url = 'http://www.example.com/'
-    >>> flush()
+    >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
+    >>> mlist.real_name = u'XTest'
+    >>> mlist.web_page_url = u'http://www.example.com/'
 
     >>> # Ensure that the virgin queue is empty, since we'll be checking this
     >>> # for new auto-response messages.
@@ -36,23 +32,22 @@ will be sent, with 0 meaning "there is no grace period".
     >>> import datetime
     >>> mlist.autorespond_admin = True
     >>> mlist.autoresponse_graceperiod = datetime.timedelta()
-    >>> mlist.autoresponse_admin_text = 'admin autoresponse text'
-    >>> flush()
-    >>> msg = message_from_string("""\
+    >>> mlist.autoresponse_admin_text = u'admin autoresponse text'
+    >>> msg = message_from_string(u"""\
     ... From: aperson@example.com
     ... To: _xtest-owner@example.com
     ...
     ... help
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, dict(toowner=True))
     >>> len(virginq.files)
     1
     >>> qmsg, qdata = virginq.dequeue(virginq.files[0])
     >>> # Print only some of the meta data.  The rest is uninteresting.
     >>> qdata['listname']
-    '_xtest@example.com'
+    u'_xtest@example.com'
     >>> sorted(qdata['recips'])
-    ['aperson@example.com']
+    [u'aperson@example.com']
     >>> # Delete data that is time dependent or random
     >>> del qmsg['message-id']
     >>> del qmsg['date']
@@ -79,12 +74,12 @@ Several headers in the original message determine whether an autoresponse
 should even be sent.  For example, if the message has an "X-Ack: No" header,
 no auto-response is sent.
 
-    >>> msg = message_from_string("""\
+    >>> msg = message_from_string(u"""\
     ... From: aperson@example.com
     ... X-Ack: No
     ...
     ... help me
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, dict(toowner=True))
     >>> virginq.files
     []
@@ -92,11 +87,11 @@ no auto-response is sent.
 Mailman itself can suppress autoresponses for certain types of internally
 crafted messages, by setting the 'noack' metadata key.
 
-    >>> msg = message_from_string("""\
+    >>> msg = message_from_string(u"""\
     ... From: mailman@example.com
     ...
     ... help for you
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, dict(noack=True, toowner=True))
     >>> virginq.files
     []
@@ -104,12 +99,12 @@ crafted messages, by setting the 'noack' metadata key.
 If there is a Precedence: header with any of the values 'bulk', 'junk', or
 'list', then the autoresponse is also suppressed.
 
-    >>> msg = message_from_string("""\
+    >>> msg = message_from_string(u"""\
     ... From: asystem@example.com
     ... Precedence: bulk
     ...
     ... hey!
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, dict(toowner=True))
     >>> virginq.files
     []
@@ -155,14 +150,13 @@ with the text set for owner responses.  Two other types of email will get
 auto-responses: those sent to the -request address...
 
     >>> mlist.autorespond_requests = True
-    >>> mlist.autoresponse_request_text = 'robot autoresponse text'
-    >>> flush()
-    >>> msg = message_from_string("""\
+    >>> mlist.autoresponse_request_text = u'robot autoresponse text'
+    >>> msg = message_from_string(u"""\
     ... From: aperson@example.com
     ... To: _xtest-request@example.com
     ...
     ... help me
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, dict(torequest=True))
     >>> len(virginq.files)
     1
@@ -185,14 +179,13 @@ auto-responses: those sent to the -request address...
 ...and those sent to the posting address.
 
     >>> mlist.autorespond_postings = True
-    >>> mlist.autoresponse_postings_text = 'postings autoresponse text'
-    >>> flush()
-    >>> msg = message_from_string("""\
+    >>> mlist.autoresponse_postings_text = u'postings autoresponse text'
+    >>> msg = message_from_string(u"""\
     ... From: aperson@example.com
     ... To: _xtest@example.com
     ...
     ... help me
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     >>> len(virginq.files)
     1
