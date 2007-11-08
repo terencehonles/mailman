@@ -38,6 +38,10 @@ class PendedKeyValue(Model):
 
     implements(IPendedKeyValue)
 
+    def __init__(self, key, value):
+        self.key = key
+        self.value = value
+
     id = Int(primary=True)
     key = Unicode()
     value = Unicode()
@@ -48,10 +52,14 @@ class Pended(Model):
 
     implements(IPended)
 
+    def __init__(self, token, expiration_date):
+        self.token = token
+        self.expiration_date = expiration_date
+
     id = Int(primary=True)
-    token = Unicode()
+    token = RawStr()
     expiration_date = DateTime()
-    key_values = Reference(id, PendedKeyValue.id)
+    key_values = ReferenceSet(id, PendedKeyValue.id)
 
 
 
@@ -83,7 +91,7 @@ class Pendings(object):
             token = hashlib.sha1(repr(x)).hexdigest()
             # In practice, we'll never get a duplicate, but we'll be anal
             # about checking anyway.
-            if Pended.query.filter_by(token=token).count() == 0:
+            if config.db.store.find(Pended, token=token).count() == 0:
                 break
         else:
             raise AssertionError('Could not find a valid pendings token')
@@ -92,7 +100,13 @@ class Pendings(object):
             token=token,
             expiration_date=datetime.datetime.now() + lifetime)
         for key, value in pendable.items():
-            PendedKeyValue(key=key, value=value, pended=pending)
+            if isinstance(key, str):
+                key = unicode(key, 'utf-8')
+            if isinstance(value, str):
+                value = unicode(value, 'utf-8')
+            keyval = PendedKeyValue(key=key, value=value)
+            pending.key_values.add(keyval)
+        config.db.store.add(pending)
         return token
 
     def confirm(self, token, expunge=True):

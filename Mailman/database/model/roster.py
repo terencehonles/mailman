@@ -133,12 +133,13 @@ class AdministratorRoster(AbstractRoster):
             yield member
 
     def get_member(self, address):
-        results = Member.query.filter(
-            and_(Member.c.mailing_list == self._mlist.fqdn_listname,
-                 or_(Member.c.role == MemberRole.moderator,
-                     Member.c.role == MemberRole.owner),
-                 Address.c.address == address,
-                 Member.c.address_id == Address.c.id))
+        results = config.db.store.find(
+                Member,
+                Member.mailing_list == self._mlist.fqdn_listname,
+                Or(Member.role == MemberRole.moderator,
+                   Member.role == MemberRole.owner),
+                Address.address == address,
+                Member.address_id == Address.id)
         if results.count() == 0:
             return None
         elif results.count() == 1:
@@ -202,6 +203,7 @@ class Subscribers(AbstractRoster):
 
     @property
     def members(self):
-        for member in Member.query.filter_by(
+        for member in config.db.store.find(
+                Member,
                 mailing_list=self._mlist.fqdn_listname):
             yield member

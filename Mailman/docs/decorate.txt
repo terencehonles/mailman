@@ -7,7 +7,7 @@ of the mailing list and the type of message being processed.
 
     >>> from Mailman.Handlers.Decorate import process
     >>> from Mailman.configuration import config
-    >>> mlist = config.db.list_manager.create('_xtest@example.com')
+    >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> msg_text = """\
     ... From: aperson@example.org
     ...
@@ -46,9 +46,9 @@ placeholder variables, the message's payload will be prepended by the verbatim
 header, and appended with the verbatim footer.
 
     >>> msg = message_from_string(msg_text)
-    >>> mlist.msg_header = 'header\n'
-    >>> mlist.msg_footer = 'footer'
-    >>> mlist.preferred_language = 'en'
+    >>> mlist.msg_header = u'header\n'
+    >>> mlist.msg_footer = u'footer'
+    >>> mlist.preferred_language = u'en'
     >>> process(mlist, msg, {})
     >>> print msg.as_string()
     From: aperson@example.org
@@ -64,9 +64,9 @@ data.  An example of such information is the mailing list's "real name" (a
 short descriptive name for the mailing list).
 
     >>> msg = message_from_string(msg_text)
-    >>> mlist.msg_header = '$real_name header\n'
-    >>> mlist.msg_footer = '$real_name footer'
-    >>> mlist.real_name = 'XTest'
+    >>> mlist.msg_header = u'$real_name header\n'
+    >>> mlist.msg_footer = u'$real_name footer'
+    >>> mlist.real_name = u'XTest'
     >>> process(mlist, msg, {})
     >>> print msg.as_string()
     From: aperson@example.org
@@ -79,8 +79,8 @@ You can't just pick any interpolation variable though; if you do, the variable
 will remain in the header or footer unchanged.
 
     >>> msg = message_from_string(msg_text)
-    >>> mlist.msg_header = '$dummy header\n'
-    >>> mlist.msg_footer = '$dummy footer'
+    >>> mlist.msg_header = u'$dummy header\n'
+    >>> mlist.msg_footer = u'$dummy footer'
     >>> process(mlist, msg, {})
     >>> print msg.as_string()
     From: aperson@example.org
@@ -103,9 +103,9 @@ When Mailman sees text/plain messages with such RFC 3676 parameters, it
 preserves these parameters when it concatenates headers and footers to the
 message payload.
 
-    >>> mlist.msg_header = 'header'
-    >>> mlist.msg_footer = 'footer'
-    >>> mlist.preferred_language = 'en'
+    >>> mlist.msg_header = u'header'
+    >>> mlist.msg_footer = u'footer'
+    >>> mlist.preferred_language = u'en'
     >>> msg = message_from_string("""\
     ... From: aperson@example.org
     ... Content-Type: text/plain; format=flowed; delsp=no
@@ -132,9 +132,9 @@ set, Mailman will still try to concatenate the header and footer, but it will
 convert the text to utf-8 and base-64 encode the message payload.
 
     # 'ja' = Japanese; charset = 'euc-jp'
-    >>> mlist.preferred_language = 'ja'
-    >>> mlist.msg_header = '$description header'
-    >>> mlist.msg_footer = '$description footer'
+    >>> mlist.preferred_language = u'ja'
+    >>> mlist.msg_header = u'$description header'
+    >>> mlist.msg_footer = u'$description footer'
     >>> mlist.description = u'\u65e5\u672c\u8a9e'
 
     >>> from email.message import Message
@@ -159,9 +159,9 @@ Sometimes the message even has an unknown character set.  In this case,
 Mailman has no choice but to decorate the original message with MIME
 attachments.
 
-    >>> mlist.preferred_language = 'en'
-    >>> mlist.msg_header = 'header'
-    >>> mlist.msg_footer = 'footer'
+    >>> mlist.preferred_language = u'en'
+    >>> mlist.msg_header = u'header'
+    >>> mlist.msg_footer = u'footer'
     >>> msg = message_from_string("""\
     ... From: aperson@example.org
     ... Content-Type: text/plain; charset=unknown
@@ -210,9 +210,9 @@ When the outerpart is multipart/mixed, the header and footer can have a
 Content-Disposition of 'inline' so that MUAs can display these headers as if
 they were simply concatenated.
 
-    >>> mlist.preferred_language = 'en'
-    >>> mlist.msg_header = 'header'
-    >>> mlist.msg_footer = 'footer'
+    >>> mlist.preferred_language = u'en'
+    >>> mlist.msg_header = u'header'
+    >>> mlist.msg_footer = u'footer'
     >>> part_1 = message_from_string("""\
     ... From: aperson@example.org
     ...

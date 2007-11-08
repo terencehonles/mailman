@@ -46,7 +46,7 @@ class ListManager(object):
         return mlist
 
     def delete(self, mlist):
-        mlist.delete()
+        config.db.store.remove(mlist)
 
     def get(self, fqdn_listname):
         # Avoid circular imports.

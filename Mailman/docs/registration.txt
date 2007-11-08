@@ -104,16 +104,16 @@ is complete.  No IUser or IAddress is created at registration time, but a
 record is added to the pending database, and the token for that record is
 returned.
 
-    >>> token = registrar.register('aperson@example.com', 'Anne Person')
+    >>> token = registrar.register(u'aperson@example.com', u'Anne Person')
     >>> check_token(token)
     ok
 
 There should be no records in the user manager for this address yet.
 
     >>> usermgr = config.db.user_manager
-    >>> print usermgr.get_user('aperson@example.com')
+    >>> print usermgr.get_user(u'aperson@example.com')
     None
-    >>> print usermgr.get_address('aperson@example.com')
+    >>> print usermgr.get_address(u'aperson@example.com')
     None
 
 But this address is waiting for confirmation.

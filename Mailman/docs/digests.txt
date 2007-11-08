@@ -9,11 +9,11 @@ digests, although only two are currently supported: MIME digests and RFC 1153
     >>> from Mailman.Handlers.ToDigest import process
     >>> from Mailman.queue import Switchboard
     >>> from Mailman.configuration import config
-    >>> mlist = config.db.list_manager.create('_xtest@example.com')
-    >>> mlist.preferred_language = 'en'
-    >>> mlist.web_page_url = 'http://www.example.com/'
-    >>> mlist.real_name = 'XTest'
-    >>> mlist.subject_prefix = '[_XTest] '
+    >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
+    >>> mlist.preferred_language = u'en'
+    >>> mlist.web_page_url = u'http://www.example.com/'
+    >>> mlist.real_name = u'XTest'
+    >>> mlist.subject_prefix = u'[_XTest] '
     >>> mlist.one_last_digest = set()
     >>> switchboard = Switchboard(config.VIRGINQUEUE_DIR)
 
@@ -266,7 +266,7 @@ digest and an RFC 1153 plain text digest.  The size threshold is in KB.
     >>> sorted(mimedata.items())
     [('_parsemsg', False),
      ('isdigest', True),
-     ('listname', '_xtest@example.com'),
+     ('listname', u'_xtest@example.com'),
      ('received_time', ...),
      ('recips', set([])), ('version', 3)]
     >>> print rfc1153msg.as_string()
@@ -401,7 +401,7 @@ digest and an RFC 1153 plain text digest.  The size threshold is in KB.
     >>> sorted(rfc1153data.items())
     [('_parsemsg', False),
      ('isdigest', True),
-     ('listname', '_xtest@example.com'),
+     ('listname', u'_xtest@example.com'),
      ('received_time', ...),
      ('recips', set([])), ('version', 3)]
 
@@ -418,7 +418,7 @@ English template will be found and the masthead won't be translated.
 
     >>> config.languages.enable_language('fr')
     >>> config.DEFAULT_SERVER_LANGUAGE = u'fr'
-    >>> mlist.preferred_language = 'fr'
+    >>> mlist.preferred_language = u'fr'
     >>> msg = message_from_string("""\
     ... From: aperson@example.org
     ... To: _xtest@example.com
@@ -512,7 +512,7 @@ Set the digest threshold to zero so that the digests will be sent immediately.
     >>> sorted(mimedata.items())
     [('_parsemsg', False),
      ('isdigest', True),
-     ('listname', '_xtest@example.com'),
+     ('listname', u'_xtest@example.com'),
      ('received_time', ...),
      ('recips', set([])), ('version', 3)]
     >>> print rfc1153msg.as_string()
@@ -531,7 +531,7 @@ Set the digest threshold to zero so that the digests will be sent immediately.
     >>> sorted(rfc1153data.items())
     [('_parsemsg', False),
      ('isdigest', True),
-     ('listname', '_xtest@example.com'),
+     ('listname', u'_xtest@example.com'),
      ('received_time', ...),
      ('recips', set([])), ('version', 3)]
 

@@ -19,6 +19,7 @@ from storm.locals import *
 from zope.interface import implements
 
 from Mailman.Utils import split_listname
+from Mailman.configuration import config
 from Mailman.constants import SystemDefaultPreferences
 from Mailman.database import Model
 from Mailman.database.types import Enum
@@ -90,5 +91,5 @@ class Member(Model):
         return 'http://example.com/' + self.address.address
 
     def unsubscribe(self):
-        self.preferences.delete()
-        self.delete()
+        config.db.store.remove(self.preferences)
+        config.db.store.remove(self)

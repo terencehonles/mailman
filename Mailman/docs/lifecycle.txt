@@ -63,9 +63,9 @@ Start by registering a test style.
 Using the higher level interface for creating a list, applies all matching
 list styles.
 
-    >>> mlist_1 = create_list('test_1@example.com')
+    >>> mlist_1 = create_list(u'test_1@example.com')
     >>> mlist_1.fqdn_listname
-    'test_1@example.com'
+    u'test_1@example.com'
     >>> mlist_1.msg_footer
     u'test footer'
 
@@ -77,16 +77,16 @@ You can also specify a list of owner email addresses.  If these addresses are
 not yet known, they will be registered, and new users will be linked to them.
 However the addresses are not verified.
 
-    >>> owners = ['aperson@example.com', 'bperson@example.com',
-    ...           'cperson@example.com', 'dperson@example.com']
-    >>> mlist_2 = create_list('test_2@example.com', owners)
+    >>> owners = [u'aperson@example.com', u'bperson@example.com',
+    ...           u'cperson@example.com', u'dperson@example.com']
+    >>> mlist_2 = create_list(u'test_2@example.com', owners)
     >>> mlist_2.fqdn_listname
-    'test_2@example.com'
+    u'test_2@example.com'
     >>> mlist_2.msg_footer
     u'test footer'
     >>> sorted(addr.address for addr in mlist_2.owners.addresses)
-    ['aperson@example.com', 'bperson@example.com',
-     'cperson@example.com', 'dperson@example.com']
+    [u'aperson@example.com', u'bperson@example.com',
+     u'cperson@example.com', u'dperson@example.com']
 
 None of the owner addresses are verified.
 
@@ -104,18 +104,18 @@ the system, they won't be created again.
 
     >>> from Mailman.configuration import config
     >>> usermgr = config.db.user_manager
-    >>> user_a = usermgr.get_user('aperson@example.com')
-    >>> user_b = usermgr.get_user('bperson@example.com')
-    >>> user_c = usermgr.get_user('cperson@example.com')
-    >>> user_d = usermgr.get_user('dperson@example.com')
-    >>> user_a.real_name = 'Anne Person'
-    >>> user_b.real_name = 'Bart Person'
-    >>> user_c.real_name = 'Caty Person'
-    >>> user_d.real_name = 'Dirk Person'
+    >>> user_a = usermgr.get_user(u'aperson@example.com')
+    >>> user_b = usermgr.get_user(u'bperson@example.com')
+    >>> user_c = usermgr.get_user(u'cperson@example.com')
+    >>> user_d = usermgr.get_user(u'dperson@example.com')
+    >>> user_a.real_name = u'Anne Person'
+    >>> user_b.real_name = u'Bart Person'
+    >>> user_c.real_name = u'Caty Person'
+    >>> user_d.real_name = u'Dirk Person'
 
-    >>> mlist_3 = create_list('test_3@example.com', owners)
+    >>> mlist_3 = create_list(u'test_3@example.com', owners)
     >>> sorted(user.real_name for user in mlist_3.owners.users)
-    ['Anne Person', 'Bart Person', 'Caty Person', 'Dirk Person']
+    [u'Anne Person', u'Bart Person', u'Caty Person', u'Dirk Person']
 
 
 Removing a list
