@@ -10,13 +10,9 @@ basically describes how to encode the recipient's address in the originator
 headers for unambigous bounce processing.
 
     >>> from Mailman.Handlers.ToOutgoing import process
-    >>> from Mailman.Message import Message
     >>> from Mailman.queue import Switchboard
     >>> from Mailman.configuration import config
-    >>> from Mailman.database import flush
-    >>> from email import message_from_string
     >>> mlist = config.db.list_manager.create('_xtest@example.com')
-    >>> flush()
     >>> switchboard = Switchboard(config.OUTQUEUE_DIR)
 
     >>> def queue_size():
@@ -33,7 +29,7 @@ as if this message had passed through some other handlers.
     ... Subject: Here is a message
     ...
     ... Something of great import.
-    ... """, Message)
+    ... """)
 
 When certain conditions are met, the message will be VERP'd.  For example, if
 the message metadata already has a VERP key, this message will be VERP'd.
@@ -72,7 +68,6 @@ VERP'd.
 
     >>> from Mailman.interfaces import Personalization
     >>> mlist.personalize = Personalization.individual
-    >>> flush()
     >>> config.VERP_PERSONALIZED_DELIVERIES = True
     >>> msgdata = dict(foo=1, bar=2)
     >>> process(mlist, msg, msgdata)
@@ -98,7 +93,6 @@ Mailman how often to VERP even non-personalized mailing lists.  It can be set
 to zero, which means non-personalized messages will never be VERP'd.
 
     >>> mlist.personalize = Personalization.none
-    >>> flush()
     >>> config.VERP_DELIVERY_INTERVAL = 0
     >>> msgdata = dict(foo=1, bar=2)
     >>> process(mlist, msg, msgdata)
@@ -133,7 +127,6 @@ will be VERP'd.
     >>> config.VERP_DELIVERY_INTERVAL = 3
     >>> for i in range(10):
     ...     mlist.post_id = i
-    ...     flush()
     ...     msgdata = dict(foo=1, bar=2)
     ...     process(mlist, msg, msgdata)
     ...     print i, msgdata.get('verp', False)

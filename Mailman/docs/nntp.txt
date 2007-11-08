@@ -6,14 +6,10 @@ be forwarded onto an NNTP newsgroup.  Typically this means Usenet, but since
 NNTP is to Usenet as IP is to the web, it's more general than that.
 
     >>> from Mailman.Handlers.ToUsenet import process
-    >>> from Mailman.Message import Message
     >>> from Mailman.queue import Switchboard
     >>> from Mailman.configuration import config
-    >>> from Mailman.database import flush
-    >>> from email import message_from_string
     >>> mlist = config.db.list_manager.create('_xtest@example.com')
     >>> mlist.preferred_language = 'en'
-    >>> flush()
     >>> switchboard = Switchboard(config.NEWSQUEUE_DIR)
 
 Gatewaying from the mailing list to the newsgroup happens through a separate
@@ -25,12 +21,11 @@ There are several situations which prevent a message from being gatewayed to
 the newsgroup.  The feature could be disabled, as is the default.
 
     >>> mlist.gateway_to_news = False
-    >>> flush()
     >>> msg = message_from_string("""\
     ... Subject: An important message
     ...
     ... Something of great import.
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     >>> switchboard.files
     []
@@ -39,7 +34,6 @@ Even if enabled, messages that came from the newsgroup are never gated back to
 the newsgroup.
 
     >>> mlist.gateway_to_news = True
-    >>> flush()
     >>> process(mlist, msg, {'fromusenet': True})
     >>> switchboard.files
     []
@@ -56,7 +50,6 @@ messages are gated to.
 
     >>> mlist.linked_newsgroup = 'comp.lang.thing'
     >>> mlist.nntp_host = 'news.example.com'
-    >>> flush()
     >>> process(mlist, msg, {})
     >>> len(switchboard.files)
     1

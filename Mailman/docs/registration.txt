@@ -9,7 +9,6 @@ will send them any list traffic.
 
     >>> from Mailman.app.registrar import Registrar
     >>> from Mailman.configuration import config
-    >>> from Mailman.database import flush
     >>> from Mailman.interfaces import IRegistrar
 
 The IUserManager manages users, but it does so at a fairly low level.
@@ -106,7 +105,6 @@ record is added to the pending database, and the token for that record is
 returned.
 
     >>> token = registrar.register('aperson@example.com', 'Anne Person')
-    >>> flush()
     >>> check_token(token)
     ok
 
@@ -204,7 +202,6 @@ extracts the token and uses that to confirm the pending registration.
 
     >>> registrar.confirm(token)
     True
-    >>> flush()
 
 Now, there is an IAddress in the database matching the address, as well as an
 IUser linked to this address.  The IAddress is verified.
@@ -229,7 +226,6 @@ If you try to confirm a registration token twice, of course only the first one
 will work.  The second one is ignored.
 
     >>> token = registrar.register('bperson@example.com')
-    >>> flush()
     >>> check_token(token)
     ok
     >>> filebase = switchboard.files[0]
@@ -240,7 +236,6 @@ will work.  The second one is ignored.
     True
     >>> registrar.confirm(token)
     True
-    >>> flush()
     >>> registrar.confirm(token)
     False
 
@@ -250,9 +245,7 @@ confirmation step is completed.
 
     >>> usermgr.create_address('cperson@example.com')
     <Address: cperson@example.com [not verified] at ...>
-    >>> flush()
     >>> token = registrar.register('cperson@example.com', 'Claire Person')
-    >>> flush()
     >>> print usermgr.get_user('cperson@example.com')
     None
     >>> filebase = switchboard.files[0]
@@ -260,7 +253,6 @@ confirmation step is completed.
     >>> switchboard.finish(filebase)
     >>> registrar.confirm(token)
     True
-    >>> flush()
     >>> usermgr.get_user('cperson@example.com')
     <User "Claire Person" at ...>
     >>> usermgr.get_address('cperson@example.com')
@@ -279,12 +271,10 @@ created now and they are linked, with no confirmation necessary.
 
     >>> address = usermgr.create_address('dperson@example.com', 'Dave Person')
     >>> address.verified_on = datetime.now()
-    >>> flush()
     >>> print usermgr.get_user('dperson@example.com')
     None
     >>> print registrar.register('dperson@example.com')
     None
-    >>> flush()
     >>> len(switchboard.files)
     0
     >>> usermgr.get_user('dperson@example.com')
@@ -300,9 +290,7 @@ mind about registering.  When discarded, no IAddress or IUser is created.
     >>> token = registrar.register('eperson@example.com', 'Elly Person')
     >>> check_token(token)
     ok
-    >>> flush()
     >>> registrar.discard(token)
-    >>> flush()
     >>> print pendingdb.confirm(token)
     None
     >>> print usermgr.get_address('eperson@example.com')
@@ -326,9 +314,7 @@ can be used.
     [<Address: Dave Person <dperson@example.com> [verified] at ...>]
     >>> dperson.register('david.person@example.com', 'David Person')
     <Address: David Person <david.person@example.com> [not verified] at ...>
-    >>> flush()
     >>> token = registrar.register('david.person@example.com')
-    >>> flush()
     >>> filebase = switchboard.files[0]
     >>> qmsg, qdata = switchboard.dequeue(filebase)
     >>> switchboard.finish(filebase)
@@ -362,10 +348,8 @@ pending even matched with that token will still be removed.
     ...     implements(IPendable)
     >>> pendable = SimplePendable(type='foo', bar='baz')
     >>> token = pendingdb.add(pendable)
-    >>> flush()
     >>> registrar.confirm(token)
     False
-    >>> flush()
     >>> print pendingdb.confirm(token)
     None
 
@@ -374,9 +358,7 @@ record, you will also get None back, and the record will be removed.
 
     >>> pendable = SimplePendable(type='registration', foo='bar')
     >>> token = pendingdb.add(pendable)
-    >>> flush()
     >>> registrar.confirm(token)
     False
-    >>> flush()
     >>> print pendingdb.confirm(token)
     None

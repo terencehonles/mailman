@@ -5,13 +5,9 @@ All messages posted to a list get their headers cleansed.  Some headers are
 related to additional permissions that can be granted to the message and other
 headers can be used to fish for membership.
 
-    >>> from email import message_from_string
-    >>> from Mailman.Message import Message
     >>> from Mailman.Handlers.Cleanse import process
     >>> from Mailman.configuration import config
-    >>> from Mailman.database import flush
     >>> mlist = config.db.list_manager.create('_xtest@example.com')
-    >>> flush()
 
 Headers such as Approved, Approve, and Urgent are used to grant special
 pemissions to individual messages.  All may contain a password; the first two
@@ -28,7 +24,7 @@ headers contain passwords, they must be removed from any posted message.
     ... Subject: A message of great import
     ...
     ... Blah blah blah
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     >>> print msg.as_string()
     From: aperson@example.com
@@ -54,7 +50,7 @@ Pegasus mail.  I don't remember what program uses X-Confirm-Reading-To though
     ... Subject: a message to you
     ...
     ... How are you doing?
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     >>> print msg.as_string()
     From: bperson@example.com
@@ -80,7 +76,6 @@ Hotmail apparently sets X-Originating-Email.
     >>> mlist.anonymous_list = True
     >>> mlist.description = u'A Test Mailing List'
     >>> mlist.preferred_language = u'en'
-    >>> flush()
     >>> msg = message_from_string("""\
     ... From: bperson@example.com
     ... Reply-To: bperson@example.org
@@ -89,7 +84,7 @@ Hotmail apparently sets X-Originating-Email.
     ... Subject: a message to you
     ...
     ... How are you doing?
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     >>> print msg.as_string()
     Subject: a message to you

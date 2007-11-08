@@ -5,12 +5,9 @@ Message decoration is the process of adding headers and footers to the
 original message.  A handler module takes care of this based on the settings
 of the mailing list and the type of message being processed.
 
-    >>> from email import message_from_string
     >>> from Mailman.Handlers.Decorate import process
     >>> from Mailman.configuration import config
-    >>> from Mailman.database import flush
     >>> mlist = config.db.list_manager.create('_xtest@example.com')
-    >>> flush()
     >>> msg_text = """\
     ... From: aperson@example.org
     ...
@@ -52,7 +49,6 @@ header, and appended with the verbatim footer.
     >>> mlist.msg_header = 'header\n'
     >>> mlist.msg_footer = 'footer'
     >>> mlist.preferred_language = 'en'
-    >>> flush()
     >>> process(mlist, msg, {})
     >>> print msg.as_string()
     From: aperson@example.org
@@ -71,7 +67,6 @@ short descriptive name for the mailing list).
     >>> mlist.msg_header = '$real_name header\n'
     >>> mlist.msg_footer = '$real_name footer'
     >>> mlist.real_name = 'XTest'
-    >>> flush()
     >>> process(mlist, msg, {})
     >>> print msg.as_string()
     From: aperson@example.org
@@ -86,7 +81,6 @@ will remain in the header or footer unchanged.
     >>> msg = message_from_string(msg_text)
     >>> mlist.msg_header = '$dummy header\n'
     >>> mlist.msg_footer = '$dummy footer'
-    >>> flush()
     >>> process(mlist, msg, {})
     >>> print msg.as_string()
     From: aperson@example.org
@@ -112,7 +106,6 @@ message payload.
     >>> mlist.msg_header = 'header'
     >>> mlist.msg_footer = 'footer'
     >>> mlist.preferred_language = 'en'
-    >>> mlist.flush()
     >>> msg = message_from_string("""\
     ... From: aperson@example.org
     ... Content-Type: text/plain; format=flowed; delsp=no
@@ -143,7 +136,6 @@ convert the text to utf-8 and base-64 encode the message payload.
     >>> mlist.msg_header = '$description header'
     >>> mlist.msg_footer = '$description footer'
     >>> mlist.description = u'\u65e5\u672c\u8a9e'
-    >>> flush()
 
     >>> from email.message import Message
     >>> msg = Message()
@@ -170,7 +162,6 @@ attachments.
     >>> mlist.preferred_language = 'en'
     >>> mlist.msg_header = 'header'
     >>> mlist.msg_footer = 'footer'
-    >>> flush()
     >>> msg = message_from_string("""\
     ... From: aperson@example.org
     ... Content-Type: text/plain; charset=unknown
@@ -222,7 +213,6 @@ they were simply concatenated.
     >>> mlist.preferred_language = 'en'
     >>> mlist.msg_header = 'header'
     >>> mlist.msg_footer = 'footer'
-    >>> flush()
     >>> part_1 = message_from_string("""\
     ... From: aperson@example.org
     ...

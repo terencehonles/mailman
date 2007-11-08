@@ -6,7 +6,6 @@ objects.  The Mailman system instantiates an IListManager for you based on the
 configuration variable MANAGERS_INIT_FUNCTION.  The instance is accessible
 on the global config object.
 
-    >>> from Mailman.database import flush
     >>> from Mailman.configuration import config
     >>> from Mailman.interfaces import IListManager
     >>> listmgr = config.db.list_manager
@@ -21,7 +20,6 @@ Creating the list returns the newly created IMailList object.
 
     >>> from Mailman.interfaces import IMailingList
     >>> mlist = listmgr.create('_xtest@example.com')
-    >>> flush()
     >>> IMailingList.providedBy(mlist)
     True
 
@@ -51,14 +49,12 @@ Deleting a mailing list
 Use the list manager to delete a mailing list.
 
     >>> listmgr.delete(mlist)
-    >>> flush()
     >>> sorted(listmgr.names)
     []
 
 After deleting the list, you can create it again.
 
     >>> mlist = listmgr.create('_xtest@example.com')
-    >>> flush()
     >>> mlist.fqdn_listname
     '_xtest@example.com'
 
@@ -87,16 +83,7 @@ iterate over either the list objects, or the list names.
 
     >>> mlist_3 = listmgr.create('_xtest_3@example.com')
     >>> mlist_4 = listmgr.create('_xtest_4@example.com')
-    >>> flush()
     >>> sorted(listmgr.names)
     ['_xtest@example.com', '_xtest_3@example.com', '_xtest_4@example.com']
     >>> sorted(m.fqdn_listname for m in listmgr.mailing_lists)
     ['_xtest@example.com', '_xtest_3@example.com', '_xtest_4@example.com']
-
-
-Cleaning up
------------
-
-    >>> for mlist in listmgr.mailing_lists:
-    ...     listmgr.delete(mlist)
-    >>> flush()

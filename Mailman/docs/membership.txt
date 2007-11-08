@@ -15,9 +15,7 @@ store mailing list data in a different database than user data.
 When we create a mailing list, it starts out with no members...
 
     >>> from Mailman.configuration import config
-    >>> from Mailman.database import flush
     >>> mlist = config.db.list_manager.create('_xtest@example.com')
-    >>> flush()
     >>> mlist
     <mailing list "_xtest@example.com" at ...>
     >>> sorted(member.address.address for member in mlist.members.members)
@@ -67,7 +65,6 @@ no users in the user database yet.
 
     >>> usermgr = config.db.user_manager
     >>> user_1 = usermgr.create_user('aperson@example.com', 'Anne Person')
-    >>> flush()
     >>> user_1.real_name
     'Anne Person'
     >>> sorted(address.address for address in user_1.addresses)
@@ -83,7 +80,6 @@ her.
     >>> address_1.subscribe(mlist, MemberRole.owner)
     <Member: Anne Person <aperson@example.com> on
              _xtest@example.com as MemberRole.owner>
-    >>> flush()
     >>> sorted(member.address.address for member in mlist.owners.members)
     ['aperson@example.com']
     >>> sorted(user.real_name for user in mlist.owners.users)
@@ -105,7 +101,6 @@ We can add Ben as a moderator of the list, by creating a different member role
 for him.
 
     >>> user_2 = usermgr.create_user('bperson@example.com', 'Ben Person')
-    >>> flush()
     >>> user_2.real_name
     'Ben Person'
     >>> address_2 = list(user_2.addresses)[0]
@@ -114,7 +109,6 @@ for him.
     >>> address_2.subscribe(mlist, MemberRole.moderator)
     <Member: Ben Person <bperson@example.com>
              on _xtest@example.com as MemberRole.moderator>
-    >>> flush()
     >>> sorted(member.address.address for member in mlist.moderators.members)
     ['bperson@example.com']
     >>> sorted(user.real_name for user in mlist.moderators.users)
@@ -144,7 +138,6 @@ preference, then the user's preference, then the list's preference.  Start
 without any member preference to see the system defaults.
 
     >>> user_3 = usermgr.create_user('cperson@example.com', 'Claire Person')
-    >>> flush()
     >>> user_3.real_name
     'Claire Person'
     >>> address_3 = list(user_3.addresses)[0]
@@ -153,7 +146,6 @@ without any member preference to see the system defaults.
     >>> address_3.subscribe(mlist, MemberRole.member)
     <Member: Claire Person <cperson@example.com>
              on _xtest@example.com as MemberRole.member>
-    >>> flush()
 
 Claire will be a regular delivery member but not a digest member.
 
@@ -175,7 +167,6 @@ It's easy to make the list administrators members of the mailing list too.
               _xtest@example.com as MemberRole.member>,
      <Member: Ben Person <bperson@example.com> on
               _xtest@example.com as MemberRole.member>]
-    >>> flush()
     >>> sorted(address.address for address in mlist.members.addresses)
     ['aperson@example.com', 'bperson@example.com', 'cperson@example.com']
     >>> sorted(address.address for address in mlist.regular_members.addresses)

@@ -6,14 +6,10 @@ NNTP newsgroup.  One of the most important things this runner does is prepare
 the message for Usenet (yes, I know that NNTP is not Usenet, but this runner
 was originally written to gate to Usenet, which has its own rules).
 
-    >>> from email import message_from_string
-    >>> from Mailman.Message import Message
     >>> from Mailman.configuration import config
-    >>> from Mailman.database import flush
     >>> from Mailman.queue.news import prepare_message
     >>> mlist = config.db.list_manager.create('_xtest@example.com')
     >>> mlist.linked_newsgroup = 'comp.lang.python'
-    >>> flush()
 
 Some NNTP servers such as INN reject messages containing a set of prohibited
 headers, so one of the things that the news runner does is remove these
@@ -35,7 +31,7 @@ prohibited headers.
     ... Received: blah blah
     ...
     ... A message
-    ... """, Message)
+    ... """)
     >>> msgdata = {}
     >>> prepare_message(mlist, msg, msgdata)
     >>> msgdata['prepped']
@@ -66,7 +62,7 @@ X-Original-* header that the news server doesn't care about.
     ... Content-Transfer-Encoding: maybe
     ...
     ... A message
-    ... """, Message)
+    ... """)
     >>> msgdata = {}
     >>> prepare_message(mlist, msg, msgdata)
     >>> msgdata['prepped']
@@ -98,7 +94,7 @@ the message.
     ... Content-Transfer-Encoding: yes
     ...
     ... A message
-    ... """, Message)
+    ... """)
     >>> msgdata = {}
     >>> prepare_message(mlist, msg, msgdata)
     >>> msgdata['prepped']
@@ -124,7 +120,6 @@ address is added for the benefit of the Usenet system.
 
     >>> from Mailman.interfaces import NewsModeration
     >>> mlist.news_moderation = NewsModeration.open_moderated
-    >>> flush()
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... To: _xtest@example.com
@@ -136,7 +131,6 @@ address is added for the benefit of the Usenet system.
     '_xtest@example.com'
 
     >>> mlist.news_moderation = NewsModeration.moderated
-    >>> flush()
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... To: _xtest@example.com
@@ -150,7 +144,6 @@ address is added for the benefit of the Usenet system.
 But if the newsgroup is not moderated, the Approved: header is not chnaged.
 
     >>> mlist.news_moderation = NewsModeration.none
-    >>> flush()
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... To: _xtest@example.com

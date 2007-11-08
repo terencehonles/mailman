@@ -7,11 +7,8 @@ transformations.  Some headers get added, others get changed.  Some of these
 changes depend on mailing list settings and others depend on how the message
 is getting sent through the system.  We'll take things one-by-one.
 
-    >>> from email import message_from_string
-    >>> from Mailman.Message import Message
     >>> from Mailman.Handlers.CookHeaders import process
     >>> from Mailman.configuration import config
-    >>> from Mailman.database import flush
     >>> mlist = config.db.list_manager.create('_xtest@example.com')
     >>> mlist.subject_prefix = u''
     >>> mlist.include_list_post_header = False
@@ -19,7 +16,6 @@ is getting sent through the system.  We'll take things one-by-one.
     >>> # XXX This will almost certainly change once we've worked out the web
     >>> # space layout for mailing lists now.
     >>> mlist.web_page_url = 'http://lists.example.com/'
-    >>> flush()
 
 
 Saving the original sender
@@ -32,7 +28,7 @@ will place the sender in the message metadata for safe keeping.
     ... From: aperson@example.com
     ...
     ... A message of great import.
-    ... """, Message)
+    ... """)
     >>> msgdata = {}
     >>> process(mlist, msg, msgdata)
     >>> msgdata['original_sender']
@@ -44,7 +40,7 @@ But if there was no original sender, then the empty string will be saved.
     ... Subject: No original sender
     ...
     ... A message of great import.
-    ... """, Message)
+    ... """)
     >>> msgdata = {}
     >>> process(mlist, msg, msgdata)
     >>> msgdata['original_sender']
@@ -62,7 +58,7 @@ mail loops.
     ... From: aperson@example.com
     ...
     ... A message of great import.
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     >>> msg['x-beenthere']
     '_xtest@example.com'
@@ -75,7 +71,7 @@ original message, the posted message will contain two such headers.
     ... X-BeenThere: another@example.com
     ...
     ... A message of great import.
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     >>> sorted(msg.get_all('x-beenthere'))
     ['_xtest@example.com', 'another@example.com']
@@ -90,7 +86,7 @@ Mailman will also insert an X-Mailman-Version header...
     ... From: aperson@example.com
     ...
     ... A message of great import.
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     >>> from Mailman.Version import VERSION
     >>> msg['x-mailman-version'] == VERSION
@@ -103,7 +99,7 @@ Mailman will also insert an X-Mailman-Version header...
     ... X-Mailman-Version: 3000
     ...
     ... A message of great import.
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     >>> from Mailman.Version import VERSION
     >>> msg['x-mailman-version']
@@ -121,7 +117,7 @@ message.
     ... From: aperson@example.com
     ...
     ... A message of great import.
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     >>> from Mailman.Version import VERSION
     >>> msg['precedence']
@@ -135,7 +131,7 @@ have one of them.
     ... Precedence: junk
     ...
     ... A message of great import.
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     >>> from Mailman.Version import VERSION
     >>> msg['precedence']
@@ -167,7 +163,7 @@ specific list (e.g. password reminders in Mailman 2.x).
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, dict(_nolist=True))
     >>> list_headers(msg)
     ---start---
@@ -177,11 +173,10 @@ Some people don't like these headers because their mail readers aren't good
 about hiding them.  A list owner can turn these headers off.
 
     >>> mlist.include_rfc2369_headers = False
-    >>> flush()
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     >>> list_headers(msg)
     ---start---
@@ -192,11 +187,10 @@ But normally, a list will include these headers.
     >>> mlist.include_rfc2369_headers = True
     >>> mlist.include_list_post_header = True
     >>> mlist.preferred_language = 'en'
-    >>> flush()
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     >>> list_headers(msg)
     ---start---
@@ -214,11 +208,10 @@ If the mailing list has a description, then it is included in the List-Id
 header.
 
     >>> mlist.description = 'My test mailing list'
-    >>> flush()
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     >>> list_headers(msg)
     ---start---
@@ -237,7 +230,7 @@ Administrative messages crafted by Mailman will have a reduced set of headers.
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, dict(reduced_list_headers=True))
     >>> list_headers(msg)
     ---start---
@@ -254,11 +247,10 @@ With the normal set of List-* headers, it's still possible to suppress the
 List-Post header, which is reasonable for an announce only mailing list.
 
     >>> mlist.include_list_post_header = False
-    >>> flush()
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     >>> list_headers(msg)
     ---start---
@@ -276,11 +268,10 @@ List-Archive header either.
 
     >>> mlist.include_list_post_header = True
     >>> mlist.archive = False
-    >>> flush()
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     >>> list_headers(msg)
     ---start---
@@ -305,11 +296,10 @@ the recipient headers so that users will be able to reply back to the list.
     >>> from Mailman.interfaces import Personalization, ReplyToMunging
     >>> mlist.personalize = Personalization.full
     >>> mlist.reply_goes_to_list = ReplyToMunging.no_munging
-    >>> flush()
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     >>> print msg.as_string()
     From: aperson@example.com

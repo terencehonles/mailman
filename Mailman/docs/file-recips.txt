@@ -5,13 +5,9 @@ Mailman can calculate the recipients for a message from a Sendmail-style
 include file.  This file must be called members.txt and it must live in the
 list's data directory.
 
-    >>> from email import message_from_string
-    >>> from Mailman.Message import Message
     >>> from Mailman.Handlers.FileRecips import process
     >>> from Mailman.configuration import config
-    >>> from Mailman.database import flush
     >>> mlist = config.db.list_manager.create('_xtest@example.com')
-    >>> flush()
 
 
 Short circuiting
@@ -24,7 +20,7 @@ returns.
     ... From: aperson@example.com
     ...
     ... A message.
-    ... """, Message)
+    ... """)
     >>> msgdata = {'recips': 7}
     >>> process(mlist, msg, msgdata)
     >>> print msg.as_string()
@@ -88,13 +84,12 @@ in the recipients list.
     ...     'cperson@example.com')
     >>> address_1.subscribe(mlist, MemberRole.member)
     <Member: cperson@example.com on _xtest@example.com as MemberRole.member>
-    >>> flush()
 
     >>> msg = message_from_string("""\
     ... From: cperson@example.com
     ...
     ... A message.
-    ... """, Message)
+    ... """)
     >>> msgdata = {}
     >>> process(mlist, msg, msgdata)
     >>> sorted(msgdata['recips'])

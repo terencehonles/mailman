@@ -7,7 +7,6 @@ messages (but only for user confirmation), auto-approvals, and probe bounces.
 This is not where messages held for administrator approval are kept.
 
     >>> from Mailman.configuration import config
-    >>> from Mailman.database import flush
     >>> from zope.interface import implements
     >>> from zope.interface.verify import verifyObject
 
@@ -32,7 +31,6 @@ that can be used in urls and such.
     ...     language='en',
     ...     password='xyz')
     >>> token = pendingdb.add(subscription)
-    >>> flush()
     >>> len(token)
     40
 
@@ -45,7 +43,6 @@ returned.
     >>> print pendable
     None
     >>> pendable = pendingdb.confirm(token)
-    >>> flush()
     >>> sorted(pendable.items())
     [('address', 'aperson@example.com'),
      ('language', 'en'),
@@ -69,17 +66,13 @@ expunge it.
     >>> token_2 = pendingdb.add(event_2)
     >>> event_3 = SimplePendable(type='three')
     >>> token_3 = pendingdb.add(event_3)
-    >>> flush()
     >>> pendable = pendingdb.confirm(token_1, expunge=False)
-    >>> flush()
     >>> pendable.items()
     [('type', 'one')]
     >>> pendable = pendingdb.confirm(token_1, expunge=True)
-    >>> flush()
     >>> pendable.items()
     [('type', 'one')]
     >>> pendable = pendingdb.confirm(token_1)
-    >>> flush()
     >>> print pendable
     None
 
@@ -90,16 +83,13 @@ default lifetime.
     >>> yesterday = timedelta(days=-1)
     >>> event_4 = SimplePendable(type='four')
     >>> token_4 = pendingdb.add(event_4, lifetime=yesterday)
-    >>> flush()
 
 Every once in a while the pending database is cleared of old records.
 
     >>> pendingdb.evict()
-    >>> flush()
     >>> pendable = pendingdb.confirm(token_4)
     >>> print pendable
     None
     >>> pendable = pendingdb.confirm(token_2)
     >>> pendable.items()
     [('type', 'two')]
-    >>> flush()

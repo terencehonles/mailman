@@ -10,9 +10,7 @@ second piece of information is supplied by the message store; it is a sequence
 number that will uniquely identify the message even when the X-List-ID-Hash
 collides.
 
-    >>> from email import message_from_string
     >>> from Mailman.configuration import config
-    >>> from Mailman.database import flush
     >>> store = config.db.message_store
 
 If you try to add a message to the store which is missing the Message-ID
@@ -33,7 +31,6 @@ However, if the message has a Message-ID header, it can be stored.
     >>> msg['Message-ID'] = '<87myycy5eh.fsf@uwakimon.sk.tsukuba.ac.jp>'
     >>> store.add(msg)
     1
-    >>> flush()
     >>> print msg.as_string()
     Subject: An important message
     Message-ID: <87myycy5eh.fsf@uwakimon.sk.tsukuba.ac.jp>
@@ -138,7 +135,6 @@ delete a global ID that isn't in the store, you get an exception.
 But if you delete an existing message, it really gets deleted.
 
     >>> store.delete_message(global_id)
-    >>> flush()
     >>> list(store.messages)
     []
     >>> print store.get_message(global_id)

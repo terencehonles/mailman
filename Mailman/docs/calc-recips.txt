@@ -5,14 +5,9 @@ Every message that makes it through to the list membership gets sent to a set
 of recipient addresses.  These addresses are calculated by one of the handler
 modules and depends on a host of factors.
 
-    >>> from email import message_from_string
-    >>> from Mailman.Message import Message
     >>> from Mailman.Handlers.CalcRecips import process
     >>> from Mailman.configuration import config
-    >>> from Mailman.database import flush
     >>> mlist = config.db.list_manager.create('_xtest@example.com')
-    >>> flush()
-
 
 Recipients are calculate from the list members, so add a bunch of members to
 start out with.  First, create a bunch of addresses...
@@ -41,7 +36,6 @@ start out with.  First, create a bunch of addresses...
     >>> member_d.preferences.delivery_mode = DeliveryMode.plaintext_digests
     >>> member_e.preferences.delivery_mode = DeliveryMode.mime_digests
     >>> member_f.preferences.delivery_mode = DeliveryMode.summary_digests
-    >>> flush()
 
 
 Short-circuiting
@@ -55,7 +49,7 @@ but not all of the recipients.
     ... From: Xavier Person <xperson@example.com>
     ...
     ... Something of great import.
-    ... """, Message)
+    ... """)
     >>> recips = set(('qperson@example.com', 'zperson@example.com'))
     >>> msgdata = dict(recips=recips)
     >>> process(mlist, msg, msgdata)
@@ -77,12 +71,11 @@ soon as they are posted.  In other words, these folks are not digest members.
 Members can elect not to receive a list copy of their own postings.
 
     >>> member_c.preferences.receive_own_postings = False
-    >>> flush()
     >>> msg = message_from_string("""\
     ... From: Claire Person <cperson@example.com>
     ...
     ... Something of great import.
-    ... """, Message)
+    ... """)
     >>> msgdata = {}
     >>> process(mlist, msg, msgdata)
     >>> sorted(msgdata['recips'])
