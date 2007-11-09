@@ -83,7 +83,7 @@ class Results:
         if part is None:
             # E.g the outer Content-Type: was text/html
             return
-        body = part.get_payload()
+        body = part.get_payload(decode=True)
         # text/plain parts better have string payloads
         assert isinstance(body, basestring)
         lines = body.splitlines()
