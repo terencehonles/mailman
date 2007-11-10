@@ -43,6 +43,7 @@ class ListManager(object):
             raise Errors.MMListAlreadyExistsError(fqdn_listname)
         mlist = MailingList(fqdn_listname)
         mlist.created_at = datetime.datetime.now()
+        config.db.store.add(mlist)
         return mlist
 
     def delete(self, mlist):
@@ -69,5 +70,7 @@ class ListManager(object):
 
     @property
     def names(self):
-        for mlist in MailingList.query.filter_by().all():
+        # Avoid circular imports.
+        from Mailman.database.model import MailingList
+        for mlist in config.db.store.find(MailingList):
             yield fqdn_listname(mlist.list_name, mlist.host_name)

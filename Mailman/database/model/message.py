@@ -18,6 +18,7 @@
 from storm.locals import *
 from zope.interface import implements
 
+from Mailman.configuration import config
 from Mailman.database import Model
 from Mailman.interfaces import IMessage
 
@@ -28,8 +29,14 @@ class Message(Model):
 
     implements(IMessage)
 
-    id = Int(primary=True)
-    hash = Unicode()
-    path = Unicode()
-    # This is a Messge-ID field representation, not a database row id.
+    id = Int(primary=True, default=AutoReload)
     message_id = Unicode()
+    hash = RawStr()
+    path = RawStr()
+    # This is a Messge-ID field representation, not a database row id.
+
+    def __init__(self, message_id, hash, path):
+        self.message_id = message_id
+        self.hash = hash
+        self.path = path
+        config.db.store.add(self)

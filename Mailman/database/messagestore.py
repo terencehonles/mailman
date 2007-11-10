@@ -68,10 +68,9 @@ class MessageStore:
         # providing a unique serial number, but to get this information, we
         # have to use a straight insert instead of relying on Elixir to create
         # the object.
-        result = Message.table.insert().execute(
-            hash=hash32, path=relpath, message_id=message_id)
+        row = Message(hash=hash32, path=relpath, message_id=message_id)
         # Add the additional header.
-        seqno = result.last_inserted_ids()[0]
+        seqno = row.id
         del message['X-List-Sequence-Number']
         message['X-List-Sequence-Number'] = str(seqno)
         # Now calculate the full file system path.
@@ -97,11 +96,21 @@ class MessageStore:
             return pickle.load(fp)
 
     def get_messages_by_message_id(self, message_id):
-        for msgrow in Message.query.filter_by(message_id=message_id):
+        # Avoid circular imports.
+        from Mailman.database.model.message import Message
+        for msgrow in config.db.store.find(Message, message_id=message_id):
             yield self._msgobj(msgrow)
 
     def get_messages_by_hash(self, hash):
-        for msgrow in Message.query.filter_by(hash=hash):
+        # Avoid circular imports.
+        from Mailman.database.model.message import Message
+        # It's possible the hash came from a message header, in which case it
+        # will be a Unicode.  However when coming from source code, it will
+        # always be an 8-string.  Coerce to the latter if necessary; it must
+        # be US-ASCII.
+        if isinstance(hash, unicode):
+            hash = hash.encode('ascii')
+        for msgrow in config.db.store.find(Message, hash=hash):
             yield self._msgobj(msgrow)
 
     def _getmsg(self, global_id):
@@ -110,7 +119,9 @@ class MessageStore:
             seqno = int(seqno)
         except ValueError:
             return None
-        messages = Message.query.filter_by(id=seqno)
+        # Avoid circular imports.
+        from Mailman.database.model.message import Message
+        messages = config.db.store.find(Message, id=seqno)
         if messages.count() == 0:
             return None
         assert messages.count() == 1, 'Multiple id matches'
@@ -126,11 +137,13 @@ class MessageStore:
 
     @property
     def messages(self):
-        for msgrow in Message.query.filter_by().all():
+        # Avoid circular imports.
+        from Mailman.database.model.message import Message
+        for msgrow in config.db.store.find(Message):
             yield self._msgobj(msgrow)
 
     def delete_message(self, global_id):
         msgrow = self._getmsg(global_id)
         if msgrow is None:
             raise KeyError(global_id)
-        msgrow.delete()
+        config.db.store.remove(msgrow)

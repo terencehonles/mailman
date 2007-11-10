@@ -53,7 +53,7 @@ class ListRequests:
     def count_of(self, request_type):
         return config.db.store.find(
             _Request,
-            mailing_list=self.mailing_list, type=request_type).count()
+            mailing_list=self.mailing_list, request_type=request_type).count()
 
     @property
     def held_requests(self):
@@ -65,7 +65,7 @@ class ListRequests:
     def of_type(self, request_type):
         results = config.db.store.find(
             _Request,
-            mailing_list=self.mailing_list, type=request_type)
+            mailing_list=self.mailing_list, request_type=request_type)
         for request in results:
             yield request
 
@@ -83,25 +83,12 @@ class ListRequests:
             pendable.update(data)
             token = config.db.pendings.add(pendable, timedelta(days=5000))
             data_hash = token
-        # XXX This would be a good other way to do it, but it causes the
-        # select_by()'s in .count and .held_requests() to fail, even with
-        # flush()'s.
-##         result = _Request.table.insert().execute(
-##             key=key, type=request_type,
-##             mailing_list=self.mailing_list,
-##             data_hash=data_hash)
-##         row_id = result.last_inserted_ids()[0]
-##         return row_id
-        result = _Request(key=key, type=request_type,
-                          mailing_list=self.mailing_list,
-                          data_hash=data_hash)
-        # XXX We need a handle on last_inserted_ids() instead of requiring a
-        # flush of the database to get a valid id.
-        config.db.flush()
-        return result.id
+        request = _Request(key, request_type, self.mailing_list, data_hash)
+        config.db.store.add(request)
+        return request.id
 
     def get_request(self, request_id):
-        result = _Request.get(request_id)
+        result = config.db.store.get(_Request, request_id)
         if result is None:
             return None
         if result.data_hash is None:
@@ -132,10 +119,16 @@ class Requests:
 class _Request(Model):
     """Table for mailing list hold requests."""
 
-    id = Int(primary=True)
+    id = Int(primary=True, default=AutoReload)
     key = Unicode()
-    type = Enum()
-    data_hash = Unicode()
+    request_type = Enum()
+    data_hash = RawStr()
 
     mailing_list_id = Int()
-    mailing_list = Reference(mailing_list_id, 'MailingList')
+    mailing_list = Reference(mailing_list_id, 'MailingList.id')
+
+    def __init__(self, key, request_type, mailing_list, data_hash):
+        self.key = key
+        self.request_type = request_type
+        self.mailing_list = mailing_list
+        self.data_hash = data_hash

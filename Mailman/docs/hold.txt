@@ -10,12 +10,12 @@ are held when they meet any of a number of criteria.
     >>> from Mailman.Handlers.Hold import process
     >>> from Mailman.queue import Switchboard
     >>> from Mailman.configuration import config
-    >>> mlist = config.db.list_manager.create('_xtest@example.com')
-    >>> mlist.preferred_language = 'en'
-    >>> mlist.real_name = '_XTest'
+    >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
+    >>> mlist.preferred_language = u'en'
+    >>> mlist.real_name = u'_XTest'
     >>> # XXX This will almost certainly change once we've worked out the web
     >>> # space layout for mailing lists now.
-    >>> mlist.web_page_url = 'http://lists.example.com/'
+    >>> mlist.web_page_url = u'http://lists.example.com/'
 
 Here's a helper function used when we don't care about what's in the virgin
 queue or in the pending database.
@@ -41,7 +41,6 @@ Short circuiting
 If the message metadata indicates that the message is pre-approved, then the
 handler returns immediately.
 
-    >>> from email import message_from_string
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...
@@ -109,7 +108,7 @@ Mailman will hold messages that have implicit destination, meaning that the
 mailing list's posting address isn't included in the explicit recipients.
 
     >>> mlist.require_explicit_destination = True
-    >>> mlist.acceptable_aliases = ''
+    >>> mlist.acceptable_aliases = u''
     >>> msg = message_from_string("""\
     ... From: aperson@example.org
     ... Subject: An implicit message

@@ -64,8 +64,7 @@ on instance variables.
     >>> sorted(runner.msgdata.items())
     [('_parsemsg', False),
      ('bar', 'no'), ('foo', 'yes'),
-     ('lang', 'en'), ('listname', '_xtest@example.com'),
+     ('lang', u'en'), ('listname', u'_xtest@example.com'),
      ('received_time', ...), ('version', 3)]
-
 
 XXX More of the Runner API should be tested.

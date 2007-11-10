@@ -14,7 +14,7 @@ Here is a helper function for printing out held requests.
     ...         key, data = requests.get_request(request.id)
     ...         if data is not None:
     ...             data = sorted(data.items())
-    ...         print request.id, str(request.type), key, data
+    ...         print request.id, str(request.request_type), key, data
 
 And another helper for displaying messages in the virgin queue.
 
@@ -65,10 +65,10 @@ of associated data.  The request database assigns no semantics to the held
 data, except for the request type.  Here we hold some simple bits of data.
 
     >>> from Mailman.interfaces import RequestType
-    >>> id_1 = requests.hold_request(RequestType.held_message,   'hold_1')
-    >>> id_2 = requests.hold_request(RequestType.subscription,   'hold_2')
-    >>> id_3 = requests.hold_request(RequestType.unsubscription, 'hold_3')
-    >>> id_4 = requests.hold_request(RequestType.held_message,   'hold_4')
+    >>> id_1 = requests.hold_request(RequestType.held_message,   u'hold_1')
+    >>> id_2 = requests.hold_request(RequestType.subscription,   u'hold_2')
+    >>> id_3 = requests.hold_request(RequestType.unsubscription, u'hold_3')
+    >>> id_4 = requests.hold_request(RequestType.held_message,   u'hold_4')
     >>> id_1, id_2, id_3, id_4
     (1, 2, 3, 4)
 
@@ -98,7 +98,7 @@ If we try to hold a request with a bogus type, we get an exception.
 We can hold requests with additional data.
 
     >>> data = dict(foo='yes', bar='no')
-    >>> id_5 = requests.hold_request(RequestType.held_message, 'hold_5', data)
+    >>> id_5 = requests.hold_request(RequestType.held_message, u'hold_5', data)
     >>> id_5
     5
     >>> requests.count
@@ -212,7 +212,6 @@ For this section, we need a mailing list and at least one message.
     >>> mlist = config.db.list_manager.create('alist@example.com')
     >>> mlist.preferred_language = 'en'
     >>> mlist.real_name = 'A Test List'
-    >>> from email import message_from_string
     >>> msg = message_from_string(u"""\
     ... From: aperson@example.org
     ... To: alist@example.com

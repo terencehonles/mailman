@@ -127,12 +127,12 @@ artifacts.
     >>> from Mailman import Utils
     >>> from Mailman.app.lifecycle import remove_list
     >>> remove_list(mlist_2.fqdn_listname, mlist_2, True)
-    >>> Utils.list_exists('test_2@example.com')
+    >>> Utils.list_exists(u'test_2@example.com')
     False
 
 We should now be able to completely recreate the mailing list.
 
-    >>> mlist_2a = create_list('test_2@example.com', owners)
+    >>> mlist_2a = create_list(u'test_2@example.com', owners)
     >>> sorted(addr.address for addr in mlist_2a.owners.addresses)
-    ['aperson@example.com', 'bperson@example.com',
-     'cperson@example.com', 'dperson@example.com']
+    [u'aperson@example.com', u'bperson@example.com',
+     u'cperson@example.com', u'dperson@example.com']

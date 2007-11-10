@@ -1,7 +1,7 @@
 CREATE TABLE _request (
 	id INTEGER NOT NULL, 
 	"key" TEXT, 
-	type TEXT, 
+	request_type TEXT, 
 	data_hash TEXT, 
 	mailing_list_id INTEGER, 
 	PRIMARY KEY (id), 

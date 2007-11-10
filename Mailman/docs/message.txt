@@ -13,7 +13,7 @@ instance, and then calls the .send() method on this object.  This method
 requires a mailing list instance.
 
     >>> from Mailman.configuration import config
-    >>> mlist = config.db.list_manager.create('_xtest@example.com')
+    >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> mlist.preferred_language = u'en'
 
 The UserNotification constructor takes the recipient address, the sender

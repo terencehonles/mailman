@@ -4,21 +4,19 @@ The switchboard
 The switchboard is subsystem that moves messages between queues.  Each
 instance of a switchboard is responsible for one queue directory.
 
-    >>> from email import message_from_string
-    >>> from Mailman.Message import Message
-    >>> from Mailman.queue import Switchboard
-    >>> msg = message_from_string("""\
+    >>> msg = message_from_string(u"""\
     ... From: aperson@example.com
     ... To: _xtest@example.com
     ...
     ... A test message.
-    ... """, Message)
+    ... """)
 
 Create a switchboard by giving its queue directory.
 
     >>> import os
     >>> from Mailman.configuration import config
     >>> queue_directory = os.path.join(config.QUEUE_DIR, 'test')
+    >>> from Mailman.queue import Switchboard
     >>> switchboard = Switchboard(queue_directory)
     >>> switchboard.queue_directory == queue_directory
     True

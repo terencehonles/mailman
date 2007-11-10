@@ -110,7 +110,7 @@ class Pendings(object):
         return token
 
     def confirm(self, token, expunge=True):
-        pendings = Pended.query.filter_by(token=token)
+        pendings = config.db.store.find(Pended, token=token)
         if pendings.count() == 0:
             return None
         assert pendings.count() == 1, (
