@@ -115,6 +115,7 @@ class BounceTest(unittest.TestCase):
                                      'one_bad_address@pacbell.net']),
         ('SMTP32', 'smtp32_05.txt', ['jmrpowersports@jmrpowersports.com']),
         ('SMTP32', 'smtp32_06.txt', ['Absolute_garbage_addr@pacbell.net']),
+        ('SMTP32', 'smtp32_07.txt', ['info@husbyran.com']),
         # Qmail
         ('Qmail', 'qmail_01.txt', ['psadisc@wwwmail.n-h.de']),
         ('Qmail', 'qmail_02.txt', ['rauschlo@frontfin.com']),

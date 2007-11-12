@@ -101,7 +101,10 @@ PATTERNS = [
      _c('^(?P<addr>[^\s@]+@[^\s@:]+):')),
     # thehartford.com
     (_c('Delivery to the following recipients failed'),
-     _c("Bogus - there actually isn't anything"),
+     # this one may or may not have the original message, but there's nothing
+     # unique to stop on, so stop on the first line of at least 3 characters
+     # that doesn't start with 'D' (to not stop immediately) and has no '@'.
+     _c('^[^D][^@]{2,}$'),
      _c('^\s*(?P<addr>[^\s@]+@[^\s@]+)\s*$')),
     # and another thehartfod.com/hartfordlife.com
     (_c('^Your message\s*$'),
@@ -160,7 +163,7 @@ PATTERNS = [
      _c('^-'),
      _c('\s(?P<addr>[^\s@]+@[^\s@]+)[\s,]')),
     # pla.net.py (MDaemon.PRO ?)
-    (_c('no such user here'),
+    (_c('- no such user here'),
      _c('There is no user'),
      _c('^(?P<addr>[^\s@]+@[^\s@]+)\s')),
     # Next one goes here...
