@@ -99,11 +99,12 @@ word `help' in it to the request address, $request, for further
 instructions.""")
 
 class SuspiciousHeaders(Errors.HoldMessage):
-   reason = _('Message has a suspicious header')
-   rejection = _('Your message had a suspicious header.')
+    reason = _('Message has a suspicious header')
+    rejection = _('Your message had a suspicious header.')
 
 class MessageTooBig(Errors.HoldMessage):
     def __init__(self, msgsize, limit):
+        Errors.HoldMessage.__init__(self)
         self.__msgsize = msgsize
         self.__limit = limit
 

@@ -28,8 +28,6 @@ import optparse
 from locknix import lockfile
 
 from Mailman import Defaults
-from Mailman import Errors
-from Mailman import Utils
 from Mailman import Version
 from Mailman import loginit
 from Mailman.configuration import config
@@ -48,6 +46,10 @@ BIN_DIR = os.path.abspath(os.path.dirname(sys.argv[0]))
 # needn't be (much) longer than SNOOZE.  We pad it 6 hours just to be safe.
 LOCK_LIFETIME = Defaults.days(1) + Defaults.hours(6)
 SNOOZE = Defaults.days(1)
+
+elog = None
+qlog = None
+opts = None
 
 
 
@@ -133,7 +135,7 @@ error."""))
         print >> sys.stderr, _('No command given.')
         sys.exit(1)
     if len(args) > 1:
-        parse.print_help()
+        parser.print_help()
         commands = COMMASPACE.join(args)
         print >> sys.stderr, _('Bad command: $commands')
         sys.exit(1)
@@ -157,7 +159,8 @@ def kill_watcher(sig):
     try:
         os.kill(pid, sig)
     except OSError, e:
-        if e.errno <> errno.ESRCH: raise
+        if e.errno <> errno.ESRCH:
+            raise
         print >> sys.stderr, _('No child with pid: $pid')
         print >> sys.stderr, e
         print >> sys.stderr, _('Stale pid file removed.')
@@ -279,7 +282,7 @@ def start_all_runners():
 
 
 
-def check_privs():
+def check_privs(parser):
     # If we're running as root (uid == 0), coerce the uid and gid to that
     # which Mailman was configured for, and refuse to run if we didn't coerce
     # the uid/gid.
@@ -295,8 +298,8 @@ def check_privs():
         os.setuid(uid)
     elif myuid <> uid:
         name = config.MAILMAN_USER
-        usage(1, _(
-            'Run this program as root or as the $name user, or use -u.'))
+        parser.error(
+            _('Run this program as root or as the $name user, or use -u.'))
 
 
 
@@ -310,7 +313,7 @@ def main():
     qlog = logging.getLogger('mailman.qrunner')
 
     if opts.checkprivs:
-        check_privs()
+        check_privs(parser)
     else:
         print _('Warning!  You may encounter permission problems.')
 
@@ -417,7 +420,8 @@ def main():
                 try:
                     os.kill(pid, signal.SIGTERM)
                 except OSError, e:
-                    if e.errno <> errno.ESRCH: raise
+                    if e.errno <> errno.ESRCH:
+                        raise
             qlog.info('Master watcher caught SIGTERM.  Exiting.')
         signal.signal(signal.SIGTERM, sigterm_handler)
         # Finally, we need a SIGINT handler which will cause the sub-qrunners

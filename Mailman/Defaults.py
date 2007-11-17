@@ -17,7 +17,6 @@
 
 """Distributed default settings for significant Mailman config variables."""
 
-import os
 from datetime import timedelta
 
 from Mailman.interfaces import ReplyToMunging
@@ -955,7 +954,7 @@ DEFAULT_GENERIC_NONMEMBER_ACTION = 1
 DEFAULT_REQUIRE_EXPLICIT_DESTINATION = Yes
 
 # Alternate names acceptable as explicit destinations for this list.
-DEFAULT_ACCEPTABLE_ALIASES ="""
+DEFAULT_ACCEPTABLE_ALIASES = """
 """
 # For mailing lists that have only other mailing lists for members:
 DEFAULT_UMBRELLA_LIST = No
@@ -1325,9 +1324,6 @@ AuthSiteAdmin = 5     # Site Administrator (total control over everything)
 
 
 
-# Import a bunch of version numbers
-from Version import *
-
 # Vgg: Language descriptions and charsets dictionary, any new supported
 # language must have a corresponding entry here. Key is the name of the
 # directories that hold the localized texts. Data are tuples with first

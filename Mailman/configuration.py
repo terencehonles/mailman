@@ -25,6 +25,7 @@ from Mailman import Defaults
 from Mailman import Errors
 from Mailman.languages import LanguageManager
 
+SPACE = ' '
 _missing = object()
 
 DEFAULT_QRUNNERS = (
