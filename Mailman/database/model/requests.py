@@ -99,12 +99,12 @@ class ListRequests:
         return result.key, data
 
     def delete_request(self, request_id):
-        result = _Request.get(request_id)
-        if result is None:
+        request = config.db.store.get(_Request, request_id)
+        if request is None:
             raise KeyError(request_id)
         # Throw away the pended data.
-        config.db.pendings.confirm(result.data_hash)
-        result.delete()
+        config.db.pendings.confirm(request.data_hash)
+        config.db.store.remove(request)
 
 
 

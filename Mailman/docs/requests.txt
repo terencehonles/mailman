@@ -108,7 +108,7 @@ We can hold requests with additional data.
     2 RequestType.subscription hold_2 None
     3 RequestType.unsubscription hold_3 None
     4 RequestType.held_message hold_4 None
-    5 RequestType.held_message hold_5 [('bar', 'no'), ('foo', 'yes')]
+    5 RequestType.held_message hold_5 [(u'bar', u'no'), (u'foo', u'yes')]
 
 
 Getting requests
@@ -132,9 +132,9 @@ However, if we ask for a request that had data, we'd get it back now.
 
     >>> key, data = requests.get_request(5)
     >>> key
-    'hold_5'
+    u'hold_5'
     >>> sorted(data.items())
-    [('bar', 'no'), ('foo', 'yes')]
+    [(u'bar', u'no'), (u'foo', u'yes')]
 
 If we ask for a request that is not in the database, we get None back.
 
@@ -151,14 +151,14 @@ over by type.
     >>> requests.count_of(RequestType.held_message)
     3
     >>> for request in requests.of_type(RequestType.held_message):
-    ...     assert request.type is RequestType.held_message
+    ...     assert request.request_type is RequestType.held_message
     ...     key, data = requests.get_request(request.id)
     ...     if data is not None:
     ...         data = sorted(data.items())
     ...     print request.id, key, data
     1 hold_1 None
     4 hold_4 None
-    5 hold_5 [('bar', 'no'), ('foo', 'yes')]
+    5 hold_5 [(u'bar', u'no'), (u'foo', u'yes')]
 
 
 Deleting requests
@@ -209,9 +209,9 @@ Holding messages
 
 For this section, we need a mailing list and at least one message.
 
-    >>> mlist = config.db.list_manager.create('alist@example.com')
-    >>> mlist.preferred_language = 'en'
-    >>> mlist.real_name = 'A Test List'
+    >>> mlist = config.db.list_manager.create(u'alist@example.com')
+    >>> mlist.preferred_language = u'en'
+    >>> mlist.real_name = u'A Test List'
     >>> msg = message_from_string(u"""\
     ... From: aperson@example.org
     ... To: alist@example.com
@@ -234,7 +234,7 @@ We can also hold a message with some additional metadata.
     >>> msgdata = dict(sender='aperson@example.com',
     ...                approved=True,
     ...                received_time=123.45)
-    >>> id_2 = moderator.hold_message(mlist, msg, msgdata, 'Feeling ornery')
+    >>> id_2 = moderator.hold_message(mlist, msg, msgdata, u'Feeling ornery')
     >>> requests.get_request(id_2) is not None
     True
 
@@ -288,10 +288,10 @@ The message can be rejected, meaning it is bounced back to the sender.
     <BLANKLINE>
     >>> sorted(qdata.items())
     [('_parsemsg', False),
-     ('listname', 'alist@example.com'),
+     ('listname', u'alist@example.com'),
      ('nodecorate', True),
      ('received_time', ...),
-     ('recips', ['aperson@example.org']),
+     ('recips', [u'aperson@example.org']),
      ('reduced_list_headers', True),
      ('version', 3)]
 
@@ -316,8 +316,8 @@ indicates that the message has been approved.
     <BLANKLINE>
     >>> sorted(qdata.items())
     [('_parsemsg', False),
-     ('adminapproved', True), ('approved', True),
-     ('received_time', ...), ('sender', 'aperson@example.com'),
+     ('adminapproved', True), (u'approved', True),
+     (u'received_time', 123.45), (u'sender', u'aperson@example.com'),
      ('version', 3)]
 
 In addition to any of the above dispositions, the message can also be
@@ -338,7 +338,7 @@ is deleted.
     ... """)
     >>> id_4 = moderator.hold_message(mlist, msg, {}, 'Needs approval')
     >>> moderator.handle_message(mlist, id_4, Action.discard)
-    >>> msgs = config.db.message_store.get_messages_by_message_id('<12345>')
+    >>> msgs = config.db.message_store.get_messages_by_message_id(u'<12345>')
     >>> list(msgs)
     []
 
@@ -347,7 +347,7 @@ the message store after disposition.
 
     >>> id_4 = moderator.hold_message(mlist, msg, {}, 'Needs approval')
     >>> moderator.handle_message(mlist, id_4, Action.discard, preserve=True)
-    >>> msgs = config.db.message_store.get_messages_by_message_id('<12345>')
+    >>> msgs = config.db.message_store.get_messages_by_message_id(u'<12345>')
     >>> msgs = list(msgs)
     >>> len(msgs)
     1
@@ -368,7 +368,7 @@ moderators.
 
     >>> id_4 = moderator.hold_message(mlist, msg, {}, 'Needs approval')
     >>> moderator.handle_message(mlist, id_4, Action.discard,
-    ...                          forward=['zperson@example.com'])
+    ...                          forward=[u'zperson@example.com'])
     >>> qmsg, qdata = dequeue()
     >>> print qmsg.as_string()
     Subject: Forward of moderated message
@@ -390,9 +390,9 @@ moderators.
     Here's something important about our mailing list.
     <BLANKLINE>
     >>> sorted(qdata.items())
-    [('_parsemsg', False), ('listname', 'alist@example.com'),
+    [('_parsemsg', False), ('listname', u'alist@example.com'),
     ('nodecorate', True), ('received_time', ...),
-    ('recips', ['zperson@example.com']),
+    ('recips', [u'zperson@example.com']),
     ('reduced_list_headers', True), ('version', 3)]
 
 
@@ -408,8 +408,8 @@ chosing and their preferred language.
     >>> from Mailman.interfaces import DeliveryMode
     >>> mlist.admin_immed_notify = False
     >>> id_3 = moderator.hold_subscription(mlist,
-    ...     'bperson@example.org', 'Ben Person',
-    ...     '{NONE}abcxyz', DeliveryMode.regular, 'en')
+    ...     u'bperson@example.org', u'Ben Person',
+    ...     u'{NONE}abcxyz', DeliveryMode.regular, u'en')
     >>> requests.get_request(id_3) is not None
     True
 
@@ -427,10 +427,10 @@ queue when the message is held.
     >>> mlist.admin_immed_notify = True
     >>> # XXX This will almost certainly change once we've worked out the web
     >>> # space layout for mailing lists now.
-    >>> mlist.web_page_url = 'http://www.example.com/'
+    >>> mlist.web_page_url = u'http://www.example.com/'
     >>> id_4 = moderator.hold_subscription(mlist,
-    ...     'cperson@example.org', 'Claire Person',
-    ...     '{NONE}zyxcba', DeliveryMode.regular, 'en')
+    ...     u'cperson@example.org', u'Claire Person',
+    ...     u'{NONE}zyxcba', DeliveryMode.regular, u'en')
     >>> requests.get_request(id_4) is not None
     True
     >>> qmsg, qdata = dequeue()
@@ -460,10 +460,10 @@ queue when the message is held.
     <BLANKLINE>
     >>> sorted(qdata.items())
     [('_parsemsg', False),
-    ('listname', 'alist@example.com'),
+    ('listname', u'alist@example.com'),
     ('nodecorate', True),
     ('received_time', ...),
-    ('recips', ['alist-owner@example.com']),
+    ('recips', [u'alist-owner@example.com']),
     ('reduced_list_headers', True), ('tomoderators', True), ('version', 3)]
 
 Once held, the moderator can select one of several dispositions.  The most
@@ -513,10 +513,10 @@ subscriber.
         alist-owner@example.com
     <BLANKLINE>
     >>> sorted(qdata.items())
-    [('_parsemsg', False), ('listname', 'alist@example.com'),
+    [('_parsemsg', False), ('listname', u'alist@example.com'),
     ('nodecorate', True),
     ('received_time', ...),
-    ('recips', ['cperson@example.org']),
+    ('recips', [u'cperson@example.org']),
     ('reduced_list_headers', True), ('version', 3)]
 
 The subscription can also be accepted.  This subscribes the address to the
@@ -524,8 +524,8 @@ mailing list.
 
     >>> mlist.send_welcome_msg = True
     >>> id_4 = moderator.hold_subscription(mlist,
-    ...     'fperson@example.org', 'Frank Person',
-    ...     '{NONE}abcxyz', DeliveryMode.regular, 'en')
+    ...     u'fperson@example.org', u'Frank Person',
+    ...     u'{NONE}abcxyz', DeliveryMode.regular, u'en')
 
 A message will be sent to the moderators telling them about the held
 subscription and the fact that they may need to approve it.
@@ -556,9 +556,9 @@ subscription and the fact that they may need to approve it.
     to process the request.
     <BLANKLINE>
     >>> sorted(qdata.items())
-    [('_parsemsg', False), ('listname', 'alist@example.com'),
+    [('_parsemsg', False), ('listname', u'alist@example.com'),
      ('nodecorate', True), ('received_time', ...),
-     ('recips', ['alist-owner@example.com']),
+     ('recips', [u'alist-owner@example.com']),
      ('reduced_list_headers', True), ('tomoderators', True), ('version', 3)]
 
 Accept the subscription request.
@@ -626,9 +626,9 @@ The welcome message is sent to the person who just subscribed.
     options page that will send your current password to you.
     <BLANKLINE>
     >>> sorted(welcome_qdata.items())
-    [('_parsemsg', False), ('listname', 'alist@example.com'),
+    [('_parsemsg', False), ('listname', u'alist@example.com'),
      ('nodecorate', True), ('received_time', ...),
-     ('recips', ['fperson@example.org']),
+     ('recips', [u'fperson@example.org']),
      ('reduced_list_headers', True), ('verp', False), ('version', 3)]
 
 The admin message is sent to the moderators.
@@ -649,25 +649,25 @@ The admin message is sent to the moderators.
     <BLANKLINE>
     >>> sorted(admin_qdata.items())
     [('_parsemsg', False), ('envsender', 'changeme@example.com'),
-     ('listname', 'alist@example.com'),
+     ('listname', u'alist@example.com'),
      ('nodecorate', True), ('received_time', ...),
      ('recips', []), ('reduced_list_headers', True), ('version', 3)]
 
 Frank Person is now a member of the mailing list.
 
-    >>> member = mlist.members.get_member('fperson@example.org')
+    >>> member = mlist.members.get_member(u'fperson@example.org')
     >>> member
     <Member: Frank Person <fperson@example.org>
              on alist@example.com as MemberRole.member>
     >>> member.preferred_language
-    'en'
+    u'en'
     >>> print member.delivery_mode
     DeliveryMode.regular
     >>> user = config.db.user_manager.get_user(member.address.address)
     >>> user.real_name
-    'Frank Person'
+    u'Frank Person'
     >>> user.password
-    '{NONE}abcxyz'
+    u'{NONE}abcxyz'
 
 
 Holding unsubscription requests
@@ -679,21 +679,21 @@ unsubscription holds can send the list's moderators an immediate notification.
 
     >>> mlist.admin_immed_notify = False
     >>> from Mailman.interfaces import MemberRole
-    >>> user_1 = config.db.user_manager.create_user('gperson@example.com')
+    >>> user_1 = config.db.user_manager.create_user(u'gperson@example.com')
     >>> address_1 = list(user_1.addresses)[0]
     >>> address_1.subscribe(mlist, MemberRole.member)
     <Member: gperson@example.com on alist@example.com as MemberRole.member>
-    >>> user_2 = config.db.user_manager.create_user('hperson@example.com')
+    >>> user_2 = config.db.user_manager.create_user(u'hperson@example.com')
     >>> address_2 = list(user_2.addresses)[0]
     >>> address_2.subscribe(mlist, MemberRole.member)
     <Member: hperson@example.com on alist@example.com as MemberRole.member>
-    >>> id_5 = moderator.hold_unsubscription(mlist, 'gperson@example.com')
+    >>> id_5 = moderator.hold_unsubscription(mlist, u'gperson@example.com')
     >>> requests.get_request(id_5) is not None
     True
     >>> virginq.files
     []
     >>> mlist.admin_immed_notify = True
-    >>> id_6 = moderator.hold_unsubscription(mlist, 'hperson@example.com')
+    >>> id_6 = moderator.hold_unsubscription(mlist, u'hperson@example.com')
     >>> qmsg, qdata = dequeue()
     >>> print qmsg.as_string()
     MIME-Version: 1.0
@@ -720,9 +720,9 @@ unsubscription holds can send the list's moderators an immediate notification.
     <BLANKLINE>
     >>> sorted(qdata.items())
     [('_parsemsg', False),
-     ('listname', 'alist@example.com'), ('nodecorate', True),
+     ('listname', u'alist@example.com'), ('nodecorate', True),
      ('received_time', ...),
-     ('recips', ['alist-owner@example.com']),
+     ('recips', [u'alist-owner@example.com']),
      ('reduced_list_headers', True), ('tomoderators', True), ('version', 3)]
 
 There are now two addresses with held unsubscription requests.  As above, one
@@ -738,7 +738,7 @@ subscribed.
     >>> moderator.handle_unsubscription(mlist, id_5, Action.discard)
     >>> print requests.get_request(id_5)
     None
-    >>> mlist.members.get_member('gperson@example.com')
+    >>> mlist.members.get_member(u'gperson@example.com')
     <Member: gperson@example.com on alist@example.com as MemberRole.member>
 
 The request can be rejected, in which case a message is sent to the member,
@@ -776,22 +776,22 @@ and the person remains a member of the mailing list.
     <BLANKLINE>
     >>> sorted(qdata.items())
     [('_parsemsg', False),
-     ('listname', 'alist@example.com'),
+     ('listname', u'alist@example.com'),
      ('nodecorate', True), ('received_time', ...),
      ('recips', [u'hperson@example.com']),
      ('reduced_list_headers', True), ('version', 3)]
-    >>> mlist.members.get_member('hperson@example.com')
+    >>> mlist.members.get_member(u'hperson@example.com')
     <Member: hperson@example.com on alist@example.com as MemberRole.member>
 
 The unsubscription request can also be accepted.  This removes the member from
 the mailing list.
 
     >>> mlist.send_goodbye_msg = True
-    >>> mlist.goodbye_msg = 'So long!'
+    >>> mlist.goodbye_msg = u'So long!'
     >>> mlist.admin_immed_notify = False
-    >>> id_7 = moderator.hold_unsubscription(mlist, 'gperson@example.com')
+    >>> id_7 = moderator.hold_unsubscription(mlist, u'gperson@example.com')
     >>> moderator.handle_unsubscription(mlist, id_7, Action.accept)
-    >>> print mlist.members.get_member('gperson@example.com')
+    >>> print mlist.members.get_member(u'gperson@example.com')
     None
 
 There are now two messages in the virgin queue, one to the member who was just
@@ -829,9 +829,9 @@ The goodbye message...
     <BLANKLINE>
     >>> sorted(goodbye_qdata.items())
     [('_parsemsg', False),
-     ('listname', 'alist@example.com'),
+     ('listname', u'alist@example.com'),
      ('nodecorate', True), ('received_time', ...),
-     ('recips', ['gperson@example.com']),
+     ('recips', [u'gperson@example.com']),
      ('reduced_list_headers', True), ('verp', False), ('version', 3)]
 
 ...and the admin message.
@@ -851,6 +851,6 @@ The goodbye message...
     <BLANKLINE>
     >>> sorted(admin_qdata.items())
     [('_parsemsg', False), ('envsender', 'changeme@example.com'),
-     ('listname', 'alist@example.com'),
+     ('listname', u'alist@example.com'),
      ('nodecorate', True), ('received_time', ...),
      ('recips', []), ('reduced_list_headers', True), ('version', 3)]

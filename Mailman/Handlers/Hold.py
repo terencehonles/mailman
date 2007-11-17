@@ -253,8 +253,7 @@ def hold_for_approval(mlist, msg, msgdata, exc):
     #
     # This message should appear to come from <list>-admin so as to handle any
     # bounce processing that might be needed.
-    pendable = HeldMessagePendable(type=HeldMessagePendable.PEND_KEY,
-                                   id=str(id))
+    pendable = HeldMessagePendable(type=HeldMessagePendable.PEND_KEY, id=id)
     token = config.db.pendings.add(pendable)
     # Get the language to send the response in.  If the sender is a member,
     # then send it in the member's language, otherwise send it in the mailing

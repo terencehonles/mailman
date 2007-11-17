@@ -120,9 +120,9 @@ But this address is waiting for confirmation.
 
     >>> pendingdb = config.db.pendings
     >>> sorted(pendingdb.confirm(token, expunge=False).items())
-    [('address', 'aperson@example.com'),
-     ('real_name', 'Anne Person'),
-     ('type', 'registration')]
+    [(u'address', u'aperson@example.com'),
+     (u'real_name', u'Anne Person'),
+     (u'type', u'registration')]
 
 
 Verification by email
@@ -174,7 +174,7 @@ message is sent to the user in order to verify the registered address.
     [('_parsemsg', False),
      ('nodecorate', True),
      ('received_time', ...),
-     ('recips', ['aperson@example.com']),
+     ('recips', [u'aperson@example.com']),
      ('reduced_list_headers', True),
      ('version', 3)]
 
@@ -206,10 +206,10 @@ extracts the token and uses that to confirm the pending registration.
 Now, there is an IAddress in the database matching the address, as well as an
 IUser linked to this address.  The IAddress is verified.
 
-    >>> found_address = usermgr.get_address('aperson@example.com')
+    >>> found_address = usermgr.get_address(u'aperson@example.com')
     >>> found_address
     <Address: Anne Person <aperson@example.com> [verified] at ...>
-    >>> found_user = usermgr.get_user('aperson@example.com')
+    >>> found_user = usermgr.get_user(u'aperson@example.com')
     >>> found_user
     <User "Anne Person" at ...>
     >>> found_user.controls(found_address.address)
@@ -225,7 +225,7 @@ Non-standard registrations
 If you try to confirm a registration token twice, of course only the first one
 will work.  The second one is ignored.
 
-    >>> token = registrar.register('bperson@example.com')
+    >>> token = registrar.register(u'bperson@example.com')
     >>> check_token(token)
     ok
     >>> filebase = switchboard.files[0]
@@ -243,25 +243,25 @@ If an address is in the system, but that address is not linked to a user yet
 and the address is not yet validated, then no user is created until the
 confirmation step is completed.
 
-    >>> usermgr.create_address('cperson@example.com')
+    >>> usermgr.create_address(u'cperson@example.com')
     <Address: cperson@example.com [not verified] at ...>
-    >>> token = registrar.register('cperson@example.com', 'Claire Person')
-    >>> print usermgr.get_user('cperson@example.com')
+    >>> token = registrar.register(u'cperson@example.com', u'Claire Person')
+    >>> print usermgr.get_user(u'cperson@example.com')
     None
     >>> filebase = switchboard.files[0]
     >>> qmsg, qdata = switchboard.dequeue(filebase)
     >>> switchboard.finish(filebase)
     >>> registrar.confirm(token)
     True
-    >>> usermgr.get_user('cperson@example.com')
+    >>> usermgr.get_user(u'cperson@example.com')
     <User "Claire Person" at ...>
-    >>> usermgr.get_address('cperson@example.com')
+    >>> usermgr.get_address(u'cperson@example.com')
     <Address: cperson@example.com [verified] at ...>
 
 If an address being registered has already been verified, linked or not to a
 user, then registration sends no confirmation.
 
-    >>> print registrar.register('cperson@example.com')
+    >>> print registrar.register(u'cperson@example.com')
     None
     >>> len(switchboard.files)
     0
@@ -269,15 +269,15 @@ user, then registration sends no confirmation.
 But if the already verified address is not linked to a user, then a user is
 created now and they are linked, with no confirmation necessary.
 
-    >>> address = usermgr.create_address('dperson@example.com', 'Dave Person')
+    >>> address = usermgr.create_address(u'dperson@example.com', u'Dave Person')
     >>> address.verified_on = datetime.now()
-    >>> print usermgr.get_user('dperson@example.com')
+    >>> print usermgr.get_user(u'dperson@example.com')
     None
-    >>> print registrar.register('dperson@example.com')
+    >>> print registrar.register(u'dperson@example.com')
     None
     >>> len(switchboard.files)
     0
-    >>> usermgr.get_user('dperson@example.com')
+    >>> usermgr.get_user(u'dperson@example.com')
     <User "Dave Person" at ...>
 
 
@@ -287,15 +287,15 @@ Discarding
 A confirmation token can also be discarded, say if the user changes his or her
 mind about registering.  When discarded, no IAddress or IUser is created.
 
-    >>> token = registrar.register('eperson@example.com', 'Elly Person')
+    >>> token = registrar.register(u'eperson@example.com', u'Elly Person')
     >>> check_token(token)
     ok
     >>> registrar.discard(token)
     >>> print pendingdb.confirm(token)
     None
-    >>> print usermgr.get_address('eperson@example.com')
+    >>> print usermgr.get_address(u'eperson@example.com')
     None
-    >>> print usermgr.get_user('eperson@example.com')
+    >>> print usermgr.get_user(u'eperson@example.com')
     None
 
 
@@ -306,21 +306,21 @@ When a new address for an existing user is registered, there isn't too much
 different except that the new address will still need to be verified before it
 can be used.
 
-    >>> dperson = usermgr.get_user('dperson@example.com')
+    >>> dperson = usermgr.get_user(u'dperson@example.com')
     >>> dperson
     <User "Dave Person" at ...>
     >>> from operator import attrgetter
     >>> sorted((addr for addr in dperson.addresses), key=attrgetter('address'))
     [<Address: Dave Person <dperson@example.com> [verified] at ...>]
-    >>> dperson.register('david.person@example.com', 'David Person')
+    >>> dperson.register(u'david.person@example.com', u'David Person')
     <Address: David Person <david.person@example.com> [not verified] at ...>
-    >>> token = registrar.register('david.person@example.com')
+    >>> token = registrar.register(u'david.person@example.com')
     >>> filebase = switchboard.files[0]
     >>> qmsg, qdata = switchboard.dequeue(filebase)
     >>> switchboard.finish(filebase)
     >>> registrar.confirm(token)
     True
-    >>> user = usermgr.get_user('david.person@example.com')
+    >>> user = usermgr.get_user(u'david.person@example.com')
     >>> user is dperson
     True
     >>> user

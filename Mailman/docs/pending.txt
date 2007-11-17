@@ -44,11 +44,11 @@ returned.
     None
     >>> pendable = pendingdb.confirm(token)
     >>> sorted(pendable.items())
-    [('address', 'aperson@example.com'),
-     ('language', 'en'),
-     ('password', 'xyz'),
-     ('realname', 'Anne Person'),
-     ('type', 'subscription')]
+    [(u'address', u'aperson@example.com'),
+     (u'language', u'en'),
+     (u'password', u'xyz'),
+     (u'realname', u'Anne Person'),
+     (u'type', u'subscription')]
 
 After confirmation, the token is no longer in the database.
 
@@ -68,10 +68,10 @@ expunge it.
     >>> token_3 = pendingdb.add(event_3)
     >>> pendable = pendingdb.confirm(token_1, expunge=False)
     >>> pendable.items()
-    [('type', 'one')]
+    [(u'type', u'one')]
     >>> pendable = pendingdb.confirm(token_1, expunge=True)
     >>> pendable.items()
-    [('type', 'one')]
+    [(u'type', u'one')]
     >>> pendable = pendingdb.confirm(token_1)
     >>> print pendable
     None
@@ -92,4 +92,4 @@ Every once in a while the pending database is cleared of old records.
     None
     >>> pendable = pendingdb.confirm(token_2)
     >>> pendable.items()
-    [('type', 'two')]
+    [(u'type', u'two')]

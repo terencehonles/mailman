@@ -145,7 +145,7 @@ Suspicious headers are a way for Mailman to hold messages that match a
 particular regular expression.  This mostly historical feature is fairly
 confusing to users, and the list attribute that controls this is misnamed.
 
-    >>> mlist.bounce_matching_headers = 'From: .*person@(blah.)?example.com'
+    >>> mlist.bounce_matching_headers = u'From: .*person@(blah.)?example.com'
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... To: _xtest@example.com
@@ -288,9 +288,9 @@ one to the original author.
     of the body of the reply.
     --...
     >>> sorted(qdata.items())
-    [('_parsemsg', False), ('listname', '_xtest@example.com'),
+    [('_parsemsg', False), ('listname', u'_xtest@example.com'),
      ('nodecorate', True), ('received_time', ...),
-     ('recips', ['_xtest-owner@example.com']),
+     ('recips', [u'_xtest-owner@example.com']),
      ('reduced_list_headers', True),
      ('tomoderators', 1), ('version', 3)]
     >>> qmsg, qdata = qfiles['aperson@example.com']
@@ -323,9 +323,9 @@ one to the original author.
     <BLANKLINE>
     <BLANKLINE>
     >>> sorted(qdata.items())
-    [('_parsemsg', False), ('listname', '_xtest@example.com'),
+    [('_parsemsg', False), ('listname', u'_xtest@example.com'),
      ('nodecorate', True), ('received_time', ...),
-     ('recips', ['aperson@example.com']),
+     ('recips', [u'aperson@example.com']),
      ('reduced_list_headers', True), ('version', 3)]
 
 In addition, the pending database is holding the original messages, waiting
@@ -344,7 +344,7 @@ first item is a type code and the second item is a message id.
     ...         break
     >>> data = config.db.pendings.confirm(cookie)
     >>> sorted(data.items())
-    [('id', '...'), ('type', 'held message')]
+    [(u'id', ...), (u'type', u'held message')]
 
 The message itself is held in the message store.
 
