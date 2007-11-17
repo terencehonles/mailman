@@ -25,7 +25,6 @@ import optparse
 
 from locknix.lockfile import Lock
 
-from Mailman import Errors
 from Mailman import Version
 from Mailman import i18n
 from Mailman.Archiver.HyperArch import HyperArchive
@@ -93,7 +92,7 @@ numbers."""))
 
 def main():
     parser, opts, args = parseargs()
-    config.load(opts.config)
+    initialize(opts.config)
 
     i18n.set_language(config.DEFAULT_SERVER_LANGUAGE)
 

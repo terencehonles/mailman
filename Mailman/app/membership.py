@@ -21,6 +21,7 @@ from __future__ import with_statement
 
 from email.utils import formataddr
 
+from Mailman import Errors
 from Mailman import Message
 from Mailman import Utils
 from Mailman import i18n
@@ -79,7 +80,7 @@ def add_member(mlist, address, realname, password, delivery_mode, language,
             # Create the user and link it now.
             user = config.db.user_manager.create_user()
             user.real_name = (realname if realname else address_obj.real_name)
-            user,link(address_obj)
+            user.link(address_obj)
         # Since created the user, then the member,  and set preferences on the
         # appropriate object.
         user.password = password
