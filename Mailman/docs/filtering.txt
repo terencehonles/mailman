@@ -7,13 +7,9 @@ message.  It does this with the MimeDel handler module, although other
 handlers can potentially do other kinds of finer level content filtering.
 
     >>> from Mailman.Handlers.MimeDel import process
-    >>> from Mailman.Message import Message
     >>> from Mailman.configuration import config
-    >>> from Mailman.database import flush
-    >>> from email import message_from_string
-    >>> mlist = config.db.list_manager.create('_xtest@example.com')
-    >>> mlist.preferred_language = 'en'
-    >>> flush()
+    >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
+    >>> mlist.preferred_language = u'en'
 
 Several mailing list options control content filtering.  First, the feature
 must be enabled, then there are two options that control which MIME types get
@@ -25,7 +21,6 @@ for these variables, then we'll explain them in more detail below.
     >>> mlist.filter_mime_types = []
     >>> mlist.pass_mime_types = []
     >>> mlist.convert_html_to_plaintext = False
-    >>> flush()
 
 
 Filtering the outer content type
@@ -38,14 +33,13 @@ content type matches the filter, the entire message will be discarded.
     >>> mlist.filter_mime_types = ['image/jpeg']
     >>> # XXX Change this to an enum
     >>> mlist.filter_action = 0 # Discard
-    >>> flush()
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... Content-Type: image/jpeg
     ... MIME-Version: 1.0
     ...
     ... xxxxx
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     Traceback (most recent call last):
     ...
@@ -55,7 +49,6 @@ However, if we turn off content filtering altogether, then the handler
 short-circuits.
 
     >>> mlist.filter_content = False
-    >>> flush()
     >>> msgdata = {}
     >>> process(mlist, msg, msgdata)
     >>> print msg.as_string()
@@ -71,7 +64,6 @@ Similarly, no content filtering is performed on digest messages, which are
 crafted internally by Mailman.
 
     >>> mlist.filter_content = True
-    >>> flush()
     >>> msgdata = {'isdigest': True}
     >>> process(mlist, msg, msgdata)
     >>> print msg.as_string()
@@ -107,7 +99,7 @@ just that subpart will be stripped.
     ... 
     ... yyy
     ... --BOUNDARY--
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     >>> print msg.as_string()
     From: aperson@example.com
@@ -141,7 +133,6 @@ multipart/alternative so that the outer multipart/mixed has just a single gif
 subpart.
 
     >>> mlist.collapse_alternatives = True
-    >>> flush()
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... Content-Type: multipart/mixed; boundary=BOUNDARY
@@ -165,7 +156,7 @@ subpart.
     ... --BOUND2--
     ... 
     ... --BOUNDARY--
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     >>> print msg.as_string()
     From: aperson@example.com
@@ -187,7 +178,6 @@ part's content type.  In other words, the left over inner part is promoted to
 being the outer part.
 
     >>> mlist.filter_mime_types.append('text/html')
-    >>> flush()
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... Content-Type: multipart/alternative; boundary=AAA
@@ -201,7 +191,7 @@ being the outer part.
     ... 
     ... This is plain text
     ... --AAA--
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     >>> print msg.as_string()
     From: aperson@example.com
@@ -213,7 +203,6 @@ being the outer part.
 Clean up.
 
     >>> ignore = mlist.filter_mime_types.pop()
-    >>> flush()
 
 
 Conversion to plain text
@@ -234,7 +223,6 @@ conversion by defining a conversion command.  A list administrator still needs
 to enable such conversion for their list though.
 
     >>> mlist.convert_html_to_plaintext = True
-    >>> flush()
 
 By default, Mailman sends the message through lynx, but since this program is
 not guaranteed to exist, we'll craft a simple, but stupid script to simulate
@@ -261,7 +249,7 @@ name of the file containing the message payload to filter.
     ... 
     ... <html><head></head>
     ... <body></body></html>
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     >>> print msg.as_string()
     From: aperson@example.com
@@ -320,7 +308,7 @@ the entire inner multipart/mixed is discarded.
     ... 
     ... aaa
     ... --AAA--
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     >>> print msg.as_string()
     From: aperson@example.com

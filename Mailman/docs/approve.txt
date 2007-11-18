@@ -9,14 +9,13 @@ approval queue.  This has several use cases:
 
 - An automated script can be programmed to send a message to an otherwise
   moderated list.
-  
+
 In order to support this, a mailing list can be given a 'moderator password'
 which is shared among all the administrators.
 
     >>> from Mailman.Handlers.Approve import process
-    >>> from Mailman.database import flush
     >>> from Mailman.configuration import config
-    >>> mlist = config.db.list_manager.create('_xtest@example.com')
+    >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
 
 
 Short circuiting
@@ -25,13 +24,11 @@ Short circuiting
 The message may have been approved by some other means, as evident in the
 message metadata.  In this case, the handler returns immediately.
 
-    >>> from email import message_from_string
-    >>> from Mailman.Message import Message
-    >>> msg = message_from_string("""\
+    >>> msg = message_from_string(u"""\
     ... From: aperson@example.com
     ...
     ... An important message.
-    ... """, Message)
+    ... """)
     >>> msgdata = {'approved': True}
     >>> process(mlist, msg, msgdata)
     >>> print msg.as_string()
@@ -51,9 +48,8 @@ gets sent through with no further posting moderation.  The Approved header is
 not stripped in this handler module, but instead in the Cleanse module.  This
 ensures that no moderator approval password in the headers will leak out.
 
-    >>> mlist.moderator_password = 'abcxyz'
-    >>> flush()
-    >>> msg['Approved'] = 'abcxyz'
+    >>> mlist.moderator_password = u'abcxyz'
+    >>> msg['Approved'] = u'abcxyz'
     >>> msgdata = {}
     >>> process(mlist, msg, msgdata)
     >>> print msg.as_string()
@@ -69,7 +65,7 @@ But if the wrong password is given, then the message is not marked as being
 approved.  The header is still removed though.
 
     >>> del msg['Approved']
-    >>> msg['Approved'] = '123456'
+    >>> msg['Approved'] = u'123456'
     >>> msgdata = {}
     >>> process(mlist, msg, msgdata)
     >>> print msg.as_string()
@@ -85,7 +81,7 @@ In the spirit of being liberal in what you accept, using an Approve header is
 completely synonymous.
 
     >>> del msg['Approved']
-    >>> msg['Approve'] = 'abcxyz'
+    >>> msg['Approve'] = u'abcxyz'
     >>> msgdata = {}
     >>> process(mlist, msg, msgdata)
     >>> print msg.as_string()
@@ -98,7 +94,7 @@ completely synonymous.
     [('adminapproved', True), ('approved', True)]
 
     >>> del msg['Approve']
-    >>> msg['Approve'] = '123456'
+    >>> msg['Approve'] = u'123456'
     >>> msgdata = {}
     >>> process(mlist, msg, msgdata)
     >>> print msg.as_string()
@@ -120,12 +116,12 @@ using a 'pseudo-header', which is really just the first non-whitespace line in
 the payload of the message of the message.  If this pseudo-header looks like a
 matching Approve or Approved header, the message is similarly allowed to pass.
 
-    >>> msg = message_from_string("""\
+    >>> msg = message_from_string(u"""\
     ... From: aperson@example.com
     ...
     ... Approved: abcxyz
     ... An important message.
-    ... """, Message)
+    ... """)
     >>> msgdata = {}
     >>> process(mlist, msg, msgdata)
     >>> print msg.as_string()
@@ -139,12 +135,12 @@ matching Approve or Approved header, the message is similarly allowed to pass.
     >>> sorted(msgdata.items())
     [('adminapproved', True), ('approved', True)]
 
-    >>> msg = message_from_string("""\
+    >>> msg = message_from_string(u"""\
     ... From: aperson@example.com
     ...
     ... Approve: abcxyz
     ... An important message.
-    ... """, Message)
+    ... """)
     >>> msgdata = {}
     >>> process(mlist, msg, msgdata)
     >>> print msg.as_string()
@@ -161,12 +157,12 @@ matching Approve or Approved header, the message is similarly allowed to pass.
 As before, a mismatch in the pseudo-header does not approve the message, but
 the pseudo-header line is still removed.
 
-    >>> msg = message_from_string("""\
+    >>> msg = message_from_string(u"""\
     ... From: aperson@example.com
     ...
     ... Approved: 123456
     ... An important message.
-    ... """, Message)
+    ... """)
     >>> msgdata = {}
     >>> process(mlist, msg, msgdata)
     >>> print msg.as_string()
@@ -180,12 +176,12 @@ the pseudo-header line is still removed.
     >>> msgdata
     {}
 
-    >>> msg = message_from_string("""\
+    >>> msg = message_from_string(u"""\
     ... From: aperson@example.com
     ...
     ... Approve: 123456
     ... An important message.
-    ... """, Message)
+    ... """)
     >>> msgdata = {}
     >>> process(mlist, msg, msgdata)
     >>> print msg.as_string()
@@ -207,7 +203,7 @@ Mailman searches for the pseudo-header as the first non-whitespace line in the
 first text/plain message part of the message.  This allows the feature to be
 used with MIME documents.
 
-    >>> msg = message_from_string("""\
+    >>> msg = message_from_string(u"""\
     ... From: aperson@example.com
     ... MIME-Version: 1.0
     ... Content-Type: multipart/mixed; boundary="AAA"
@@ -224,7 +220,7 @@ used with MIME documents.
     ... Approved: abcxyz
     ... An important message.
     ... --AAA--
-    ... """, Message)
+    ... """)
     >>> msgdata = {}
     >>> process(mlist, msg, msgdata)
     >>> print msg.as_string()
@@ -249,7 +245,7 @@ used with MIME documents.
     >>> sorted(msgdata.items())
     [('adminapproved', True), ('approved', True)]
 
-    >>> msg = message_from_string("""\
+    >>> msg = message_from_string(u"""\
     ... From: aperson@example.com
     ... MIME-Version: 1.0
     ... Content-Type: multipart/mixed; boundary="AAA"
@@ -266,7 +262,7 @@ used with MIME documents.
     ... Approve: abcxyz
     ... An important message.
     ... --AAA--
-    ... """, Message)
+    ... """)
     >>> msgdata = {}
     >>> process(mlist, msg, msgdata)
     >>> print msg.as_string()
@@ -293,7 +289,7 @@ used with MIME documents.
 
 Here, the correct password is in the non-text/plain part, so it is ignored.
 
-    >>> msg = message_from_string("""\
+    >>> msg = message_from_string(u"""\
     ... From: aperson@example.com
     ... MIME-Version: 1.0
     ... Content-Type: multipart/mixed; boundary="AAA"
@@ -310,7 +306,7 @@ Here, the correct password is in the non-text/plain part, so it is ignored.
     ... Approve: 123456
     ... An important message.
     ... --AAA--
-    ... """, Message)
+    ... """)
     >>> msgdata = {}
     >>> process(mlist, msg, msgdata)
     >>> print msg.as_string()
@@ -334,7 +330,7 @@ Here, the correct password is in the non-text/plain part, so it is ignored.
     >>> msgdata
     {}
 
-    >>> msg = message_from_string("""\
+    >>> msg = message_from_string(u"""\
     ... From: aperson@example.com
     ... MIME-Version: 1.0
     ... Content-Type: multipart/mixed; boundary="AAA"
@@ -351,7 +347,7 @@ Here, the correct password is in the non-text/plain part, so it is ignored.
     ... Approve: 123456
     ... An important message.
     ... --AAA--
-    ... """, Message)
+    ... """)
     >>> msgdata = {}
     >>> process(mlist, msg, msgdata)
     >>> print msg.as_string()
@@ -375,7 +371,7 @@ Here, the correct password is in the non-text/plain part, so it is ignored.
     >>> msgdata
     {}
 
-    >>> msg = message_from_string("""\
+    >>> msg = message_from_string(u"""\
     ... From: aperson@example.com
     ... MIME-Version: 1.0
     ... Content-Type: multipart/mixed; boundary="AAA"
@@ -392,7 +388,7 @@ Here, the correct password is in the non-text/plain part, so it is ignored.
     ... Approved: 123456
     ... An important message.
     ... --AAA--
-    ... """, Message)
+    ... """)
     >>> msgdata = {}
     >>> process(mlist, msg, msgdata)
     >>> print msg.as_string()

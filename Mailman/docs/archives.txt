@@ -8,14 +8,10 @@ archivers to work in a separate process from the main Mailman delivery
 processes.
 
     >>> from Mailman.Handlers.ToArchive import process
-    >>> from Mailman.Message import Message
     >>> from Mailman.queue import Switchboard
     >>> from Mailman.configuration import config
-    >>> from Mailman.database import flush
-    >>> from email import message_from_string
-    >>> mlist = config.db.list_manager.create('_xtest@example.com')
-    >>> mlist.preferred_language = 'en'
-    >>> flush()
+    >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
+    >>> mlist.preferred_language = u'en'
     >>> switchboard = Switchboard(config.ARCHQUEUE_DIR)
 
 A helper function.
@@ -33,12 +29,11 @@ message should /not/ get archived.
 For example, no digests should ever get archived.
 
     >>> mlist.archive = True
-    >>> flush()
-    >>> msg = message_from_string("""\
+    >>> msg = message_from_string(u"""\
     ... Subject: A sample message
     ...
     ... A message of great import.
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, dict(isdigest=True))
     >>> switchboard.files
     []
@@ -47,7 +42,6 @@ If the mailing list is not configured to archive, then even regular deliveries
 won't be archived.
 
     >>> mlist.archive = False
-    >>> flush()
     >>> process(mlist, msg, {})
     >>> switchboard.files
     []
@@ -58,25 +52,24 @@ X-No-Archive: header can be used to indicate that the message should not be
 archived.  Confusingly, this header's value is actually ignored.
 
     >>> mlist.archive = True
-    >>> flush()
     >>> msg = message_from_string("""\
     ... Subject: A sample message
     ... X-No-Archive: YES
     ...
     ... A message of great import.
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, dict(isdigest=True))
     >>> switchboard.files
     []
 
 Even a 'no' value will stop the archiving of the message.
 
-    >>> msg = message_from_string("""\
+    >>> msg = message_from_string(u"""\
     ... Subject: A sample message
     ... X-No-Archive: No
     ...
     ... A message of great import.
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, dict(isdigest=True))
     >>> switchboard.files
     []
@@ -84,24 +77,24 @@ Even a 'no' value will stop the archiving of the message.
 Another header that's been observed is the X-Archive: header.  Here, the
 header's case folded value must be 'no' in order to prevent archiving.
 
-    >>> msg = message_from_string("""\
+    >>> msg = message_from_string(u"""\
     ... Subject: A sample message
     ... X-Archive: No
     ...
     ... A message of great import.
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, dict(isdigest=True))
     >>> switchboard.files
     []
 
 But if the value is 'yes', then the message will be archived.
 
-    >>> msg = message_from_string("""\
+    >>> msg = message_from_string(u"""\
     ... Subject: A sample message
     ... X-Archive: Yes
     ...
     ... A message of great import.
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     >>> len(switchboard.files)
     1
@@ -120,11 +113,11 @@ But if the value is 'yes', then the message will be archived.
 Without either archiving header, and all other things being the same, the
 message will get archived.
 
-    >>> msg = message_from_string("""\
+    >>> msg = message_from_string(u"""\
     ... Subject: A sample message
     ...
     ... A message of great import.
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     >>> len(switchboard.files)
     1

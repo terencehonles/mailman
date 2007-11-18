@@ -25,8 +25,6 @@ by the command line arguments.
 """
 
 import os
-import sys
-import pkg_resources
 
 from zope.interface.verify import verifyObject
 

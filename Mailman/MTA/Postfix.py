@@ -257,7 +257,8 @@ def _do_create(mlist, textfile, func):
     try:
         fp = open(textfile, 'r+')
     except IOError, e:
-        if e.errno <> errno.ENOENT: raise
+        if e.errno <> errno.ENOENT:
+            raise
         fp = open(textfile, 'w+')
     try:
         func(mlist, fp)
@@ -300,7 +301,8 @@ def _do_remove(mlist, textfile):
     try:
         infp = open(textfile)
     except IOError, e:
-        if e.errno <> errno.ENOENT: raise
+        if e.errno <> errno.ENOENT:
+            raise
         # Otherwise, there's no text file to filter so we're done.
         return
     try:

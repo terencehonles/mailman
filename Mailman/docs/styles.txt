@@ -14,8 +14,7 @@ modify the mailing list any way it wants.
 Let's start with a vanilla mailing list and a default style manager.
 
     >>> from Mailman.configuration import config
-    >>> from Mailman.database import flush
-    >>> mlist = config.db.list_manager.create('_xtest@example.com')
+    >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> from Mailman.app.styles import style_manager
 
 
@@ -51,7 +50,6 @@ would pick this up and apply it to the mailing list.
     None
     >>> config.DEFAULT_MSG_FOOTER = u'default footer'
     >>> default_style.apply(mlist)
-    >>> flush()
     >>> mlist.msg_footer
     u'default footer'
 
@@ -87,7 +85,6 @@ styles match the mailing list.
     ['test']
     >>> for style in style_manager.lookup(mlist):
     ...     style.apply(mlist)
-    >>> flush()
     >>> mlist.msg_footer
     u'test footer'
 
@@ -107,13 +104,11 @@ applied last.
     ...         mailing_list.msg_footer = u'another footer'
 
     >>> mlist.msg_footer = u''
-    >>> flush()
     >>> mlist.msg_footer
     u''
     >>> style_manager.register(AnotherTestStyle())
     >>> for style in style_manager.lookup(mlist):
     ...     style.apply(mlist)
-    >>> flush()
     >>> mlist.msg_footer
     u'another footer'
 
@@ -126,7 +121,6 @@ will take effect in the new priority order.
     >>> style_2.priority = 10
     >>> for style in style_manager.lookup(mlist):
     ...     style.apply(mlist)
-    >>> flush()
     >>> mlist.msg_footer
     u'test footer'
 

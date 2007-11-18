@@ -15,9 +15,16 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-from elixir import *
+from storm.locals import *
+from Mailman.database import Model
 
 
-class Version(Entity):
-    component = Field(Unicode)
-    version = Field(Integer)
+
+class Version(Model):
+    id = Int(primary=True)
+    component = Unicode()
+    version = Int()
+
+    def __init__(self, component, version):
+        self.component = component
+        self.version = version

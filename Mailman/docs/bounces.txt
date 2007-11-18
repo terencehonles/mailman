@@ -14,22 +14,18 @@ essentially equivalent to rejecting the message with notification.  Mailing
 lists can bounce a message with an optional error message.
 
     >>> from Mailman.configuration import config
-    >>> from Mailman.database import flush
-    >>> mlist = config.db.list_manager.create('_xtest@example.com')
+    >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> mlist.preferred_language = u'en'
-    >>> flush()
 
 Any message can be bounced.
 
-    >>> from email import message_from_string
-    >>> from Mailman.Message import Message
-    >>> msg = message_from_string("""\
+    >>> msg = message_from_string(u"""\
     ... To: _xtest@example.com
     ... From: aperson@example.com
     ... Subject: Something important
     ...
     ... I sometimes say something important.
-    ... """, Message)
+    ... """)
 
 Bounce a message by passing in the original message, and an optional error
 message.  The bounced message ends up in the virgin queue, awaiting sending

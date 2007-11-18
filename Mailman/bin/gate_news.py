@@ -235,7 +235,7 @@ def main():
     try:
         with lockfile.Lock(GATENEWS_LOCK_FILE,
                            # It's okay to hijack this
-                           lifetime=LOCK_LIFETIME):
+                           lifetime=LOCK_LIFETIME) as lock:
             process_lists(lock)
         clearcache()
     except lockfile.TimeOutError:

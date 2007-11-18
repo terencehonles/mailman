@@ -10,14 +10,12 @@ are held when they meet any of a number of criteria.
     >>> from Mailman.Handlers.Hold import process
     >>> from Mailman.queue import Switchboard
     >>> from Mailman.configuration import config
-    >>> from Mailman.database import flush
-    >>> mlist = config.db.list_manager.create('_xtest@example.com')
-    >>> mlist.preferred_language = 'en'
-    >>> mlist.real_name = '_XTest'
+    >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
+    >>> mlist.preferred_language = u'en'
+    >>> mlist.real_name = u'_XTest'
     >>> # XXX This will almost certainly change once we've worked out the web
     >>> # space layout for mailing lists now.
-    >>> mlist.web_page_url = 'http://lists.example.com/'
-    >>> flush()
+    >>> mlist.web_page_url = u'http://lists.example.com/'
 
 Here's a helper function used when we don't care about what's in the virgin
 queue or in the pending database.
@@ -43,13 +41,11 @@ Short circuiting
 If the message metadata indicates that the message is pre-approved, then the
 handler returns immediately.
 
-    >>> from email import message_from_string
-    >>> from Mailman.Message import Message
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...
     ... An important message.
-    ... """, Message)
+    ... """)
     >>> msgdata = {'approved': True}
     >>> process(mlist, msg, msgdata)
     >>> print msg.as_string()
@@ -70,12 +66,11 @@ like an email command.  This is to prevent people sending 'help' or
 of administrivia for the list.
 
     >>> mlist.administrivia = True
-    >>> flush()
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... Subject: unsubscribe
     ...
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     Traceback (most recent call last):
     ...
@@ -90,7 +85,6 @@ Mailman will hold messages that have more than a specified number of explicit
 recipients.
 
     >>> mlist.max_num_recipients = 5
-    >>> flush()
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... To: _xtest@example.com, bperson@example.com
@@ -99,7 +93,7 @@ recipients.
     ... To: Elly Q. Person <eperson@example.com>
     ...
     ... Hey folks!
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     Traceback (most recent call last):
     ...
@@ -114,13 +108,12 @@ Mailman will hold messages that have implicit destination, meaning that the
 mailing list's posting address isn't included in the explicit recipients.
 
     >>> mlist.require_explicit_destination = True
-    >>> mlist.acceptable_aliases = ''
-    >>> flush()
+    >>> mlist.acceptable_aliases = u''
     >>> msg = message_from_string("""\
     ... From: aperson@example.org
     ... Subject: An implicit message
     ...
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     Traceback (most recent call last):
     ...
@@ -152,14 +145,13 @@ Suspicious headers are a way for Mailman to hold messages that match a
 particular regular expression.  This mostly historical feature is fairly
 confusing to users, and the list attribute that controls this is misnamed.
 
-    >>> mlist.bounce_matching_headers = 'From: .*person@(blah.)?example.com'
-    >>> flush()
+    >>> mlist.bounce_matching_headers = u'From: .*person@(blah.)?example.com'
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... To: _xtest@example.com
     ... Subject: An implicit message
     ... 
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     Traceback (most recent call last):
     ...
@@ -174,7 +166,7 @@ fine.  This one comes from a .org address.
     ... To: _xtest@example.com
     ... Subject: An implicit message
     ... 
-    ... """, Message)
+    ... """)
     >>> msgdata = {}
     >>> process(mlist, msg, msgdata)
     >>> print msgdata
@@ -183,7 +175,6 @@ fine.  This one comes from a .org address.
 Just a bit of clean up.
 
     >>> mlist.bounce_matching_headers = None
-    >>> flush()
 
 
 Message size
@@ -194,14 +185,13 @@ is used to prevent huge attachments from getting posted to the list.  This
 value is calculated in terms of KB (1024 bytes).
 
     >>> mlist.max_message_size = 1
-    >>> flush()
     >>> one_line = 'x' * 79
     >>> big_body = '\n'.join([one_line] * 15)
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... To: _xtest@example.com
     ...
-    ... """ + big_body, Message)
+    ... """ + big_body)
     >>> process(mlist, msg, {})
     Traceback (most recent call last):
     ...
@@ -218,16 +208,14 @@ can show this by first holding a message.
 
     >>> mlist.respond_to_post_requests = True
     >>> mlist.admin_immed_notify = True
-    >>> flush()
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     Traceback (most recent call last):
     ...
     ImplicitDestination
-    >>> flush()
 
 There should be two messages in the virgin queue, one to the list owner and
 one to the original author.
@@ -300,9 +288,9 @@ one to the original author.
     of the body of the reply.
     --...
     >>> sorted(qdata.items())
-    [('_parsemsg', False), ('listname', '_xtest@example.com'),
+    [('_parsemsg', False), ('listname', u'_xtest@example.com'),
      ('nodecorate', True), ('received_time', ...),
-     ('recips', ['_xtest-owner@example.com']),
+     ('recips', [u'_xtest-owner@example.com']),
      ('reduced_list_headers', True),
      ('tomoderators', 1), ('version', 3)]
     >>> qmsg, qdata = qfiles['aperson@example.com']
@@ -335,9 +323,9 @@ one to the original author.
     <BLANKLINE>
     <BLANKLINE>
     >>> sorted(qdata.items())
-    [('_parsemsg', False), ('listname', '_xtest@example.com'),
+    [('_parsemsg', False), ('listname', u'_xtest@example.com'),
      ('nodecorate', True), ('received_time', ...),
-     ('recips', ['aperson@example.com']),
+     ('recips', [u'aperson@example.com']),
      ('reduced_list_headers', True), ('version', 3)]
 
 In addition, the pending database is holding the original messages, waiting
@@ -356,7 +344,7 @@ first item is a type code and the second item is a message id.
     ...         break
     >>> data = config.db.pendings.confirm(cookie)
     >>> sorted(data.items())
-    [('id', '...'), ('type', 'held message')]
+    [(u'id', ...), (u'type', u'held message')]
 
 The message itself is held in the message store.
 

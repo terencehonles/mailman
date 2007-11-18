@@ -23,8 +23,10 @@ import errno
 
 from Mailman import Defaults
 from Mailman import Errors
+from Mailman import Version
 from Mailman.languages import LanguageManager
 
+SPACE = ' '
 _missing = object()
 
 DEFAULT_QRUNNERS = (
@@ -45,6 +47,7 @@ class Configuration(object):
         self.domains = {}       # email host -> web host
         self._reverse = None
         self.qrunners = {}
+        self.QFILE_SCHEMA_VERSION = Version.QFILE_SCHEMA_VERSION
 
     def load(self, filename=None):
         join = os.path.join

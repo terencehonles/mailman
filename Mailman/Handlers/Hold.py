@@ -99,11 +99,12 @@ word `help' in it to the request address, $request, for further
 instructions.""")
 
 class SuspiciousHeaders(Errors.HoldMessage):
-   reason = _('Message has a suspicious header')
-   rejection = _('Your message had a suspicious header.')
+    reason = _('Message has a suspicious header')
+    rejection = _('Your message had a suspicious header.')
 
 class MessageTooBig(Errors.HoldMessage):
     def __init__(self, msgsize, limit):
+        Errors.HoldMessage.__init__(self)
         self.__msgsize = msgsize
         self.__limit = limit
 
@@ -253,8 +254,7 @@ def hold_for_approval(mlist, msg, msgdata, exc):
     #
     # This message should appear to come from <list>-admin so as to handle any
     # bounce processing that might be needed.
-    pendable = HeldMessagePendable(type=HeldMessagePendable.PEND_KEY,
-                                   id=str(id))
+    pendable = HeldMessagePendable(type=HeldMessagePendable.PEND_KEY, id=id)
     token = config.db.pendings.add(pendable)
     # Get the language to send the response in.  If the sender is a member,
     # then send it in the member's language, otherwise send it in the mailing

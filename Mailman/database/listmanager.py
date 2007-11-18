@@ -15,17 +15,15 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-"""SQLAlchemy/Elixir based provider of IListManager."""
+"""A mailing list manager."""
 
 import datetime
 
-from elixir import *
 from zope.interface import implements
 
 from Mailman import Errors
 from Mailman.Utils import split_listname, fqdn_listname
 from Mailman.configuration import config
-from Mailman.database.model import MailingList, Pendings
 from Mailman.interfaces import IListManager
 
 
@@ -34,21 +32,30 @@ class ListManager(object):
     implements(IListManager)
 
     def create(self, fqdn_listname):
+        # Avoid circular imports.
+        from Mailman.database.model import MailingList
         listname, hostname = split_listname(fqdn_listname)
-        mlist = MailingList.get_by(list_name=listname,
-                                   host_name=hostname)
+        mlist = config.db.store.find(
+            MailingList,
+            MailingList.list_name == listname,
+            MailingList.host_name == hostname).one()
         if mlist:
             raise Errors.MMListAlreadyExistsError(fqdn_listname)
         mlist = MailingList(fqdn_listname)
         mlist.created_at = datetime.datetime.now()
+        config.db.store.add(mlist)
         return mlist
 
     def delete(self, mlist):
-        mlist.delete()
+        config.db.store.remove(mlist)
 
     def get(self, fqdn_listname):
+        # Avoid circular imports.
+        from Mailman.database.model import MailingList
         listname, hostname = split_listname(fqdn_listname)
-        mlist = MailingList.get_by(list_name=listname, host_name=hostname)
+        mlist = config.db.store.find(MailingList,
+                                     list_name=listname,
+                                     host_name=hostname).one()
         if mlist is not None:
             # XXX Fixme
             mlist._restore()
@@ -63,5 +70,7 @@ class ListManager(object):
 
     @property
     def names(self):
-        for mlist in MailingList.query.filter_by().all():
+        # Avoid circular imports.
+        from Mailman.database.model import MailingList
+        for mlist in config.db.store.find(MailingList):
             yield fqdn_listname(mlist.list_name, mlist.host_name)

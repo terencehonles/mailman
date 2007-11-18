@@ -15,14 +15,16 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-from elixir import *
+from storm.locals import *
 from zope.interface import implements
 
+from Mailman.database import Model
 from Mailman.interfaces import ILanguage
 
 
 
-class Language(Entity):
+class Language(Model):
     implements(ILanguage)
 
-    code = Field(Unicode)
+    id = Int(primary=True)
+    code = Unicode()

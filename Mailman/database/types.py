@@ -15,51 +15,43 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
+__all__ = [
+    'Enum',
+    ]
+
+
 import sys
 
-from datetime import timedelta
-from sqlalchemy import types
+from storm.properties import SimpleProperty
+from storm.variables import UnicodeVariable, Variable
 
 
 
-# SQLAlchemy custom type for storing munepy Enums in the database.
-class EnumType(types.TypeDecorator):
-    # Enums can be stored as strings of the form:
-    # full.path.to.Enum:intval
-    impl = types.String
+class _EnumVariable(Variable):
+    """Storm variable."""
 
-    def convert_bind_param(self, value, engine):
+    def parse_set(self, value, from_db):
         if value is None:
             return None
-        return '%s.%s:%d' % (value.enumclass.__module__,
-                             value.enumclass.__name__,
-                             int(value))
-
-    def convert_result_value(self, value, engine):
-        if value is None:
-            return None
+        if not from_db:
+            return value
         path, intvalue = value.rsplit(':', 1)
         modulename, classname = path.rsplit('.', 1)
         __import__(modulename)
         cls = getattr(sys.modules[modulename], classname)
         return cls[int(intvalue)]
 
-
-
-class TimeDeltaType(types.TypeDecorator):
-    # timedeltas are stored as the string representation of three integers,
-    # separated by colons.  The values represent the three timedelta
-    # attributes days, seconds, microseconds.
-    impl = types.String
-
-    def convert_bind_param(self, value, engine):
+    def parse_get(self, value, to_db):
         if value is None:
             return None
-        return '%s:%s:%s' % (value.days, value.seconds, value.microseconds)
+        if not to_db:
+            return value
+        return '%s.%s:%d' % (value.enumclass.__module__,
+                             value.enumclass.__name__,
+                             int(value))
 
-    def convert_result_value(self, value, engine):
-        if value is None:
-            return None
-        parts = value.split(':')
-        assert len(parts) == 3, 'Bad timedelta representation: %s' % value
-        return timedelta(*(int(value) for value in parts))
+
+class Enum(SimpleProperty):
+    """Custom munepy.Enum type for Storm."""
+
+    variable_class = _EnumVariable

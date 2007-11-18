@@ -39,9 +39,6 @@ class IDatabase(Interface):
             configuration file setting.
         """
 
-    def flush():
-        """Flush current database changes."""
-
     def _reset():
         """Reset the database to its pristine state.
 

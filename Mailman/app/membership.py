@@ -21,6 +21,7 @@ from __future__ import with_statement
 
 from email.utils import formataddr
 
+from Mailman import Errors
 from Mailman import Message
 from Mailman import Utils
 from Mailman import i18n
@@ -79,7 +80,7 @@ def add_member(mlist, address, realname, password, delivery_mode, language,
             # Create the user and link it now.
             user = config.db.user_manager.create_user()
             user.real_name = (realname if realname else address_obj.real_name)
-            user,link(address_obj)
+            user.link(address_obj)
         # Since created the user, then the member,  and set preferences on the
         # appropriate object.
         user.password = password
@@ -107,7 +108,7 @@ def add_member(mlist, address, realname, password, delivery_mode, language,
         with i18n.using_language(mlist.preferred_language):
             subject = _('$mlist.real_name subscription notification')
         if isinstance(realname, unicode):
-            realname = name.encode(Utils.GetCharSet(language), 'replace')
+            realname = realname.encode(Utils.GetCharSet(language), 'replace')
         text = Utils.maketext(
             'adminsubscribeack.txt',
             {'listname' : mlist.real_name,
@@ -124,9 +125,7 @@ def send_welcome_message(mlist, address, language, delivery_mode, text=''):
     else:
         welcome = ''
     # Find the IMember object which is subscribed to the mailing list, because
-    # from there, we can get the member's options url.  XXX we have to flush
-    # the database here otherwise the get_member() call returns None.
-    from Mailman.database import flush; flush()
+    # from there, we can get the member's options url.
     member = mlist.members.get_member(address)
     options_url = member.options_url
     # Get the text from the template.

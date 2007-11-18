@@ -57,7 +57,7 @@ class DefaultStyle:
         mlist.max_num_recipients = config.DEFAULT_MAX_NUM_RECIPIENTS
         mlist.max_message_size = config.DEFAULT_MAX_MESSAGE_SIZE
         mlist.reply_goes_to_list = config.DEFAULT_REPLY_GOES_TO_LIST
-        mlist.reply_to_address = ''
+        mlist.reply_to_address = u''
         mlist.first_strip_reply_to = config.DEFAULT_FIRST_STRIP_REPLY_TO
         mlist.admin_immed_notify = config.DEFAULT_ADMIN_IMMED_NOTIFY
         mlist.admin_notify_mchanges = (
@@ -72,10 +72,10 @@ class DefaultStyle:
             config.DEFAULT_BOUNCE_MATCHING_HEADERS)
         mlist.header_filter_rules = []
         mlist.anonymous_list = config.DEFAULT_ANONYMOUS_LIST
-        mlist.description = ''
-        mlist.info = ''
-        mlist.welcome_msg = ''
-        mlist.goodbye_msg = ''
+        mlist.description = u''
+        mlist.info = u''
+        mlist.welcome_msg = u''
+        mlist.goodbye_msg = u''
         mlist.subscribe_policy = config.DEFAULT_SUBSCRIBE_POLICY
         mlist.subscribe_auto_approval = config.DEFAULT_SUBSCRIBE_AUTO_APPROVAL
         mlist.unsubscribe_policy = config.DEFAULT_UNSUBSCRIBE_POLICY
@@ -120,7 +120,7 @@ class DefaultStyle:
             config.DEFAULT_ARCHIVE_VOLUME_FREQUENCY)
         mlist.emergency = False
         mlist.member_moderation_action = Action.hold
-        mlist.member_moderation_notice = ''
+        mlist.member_moderation_notice = u''
         mlist.accept_these_nonmembers = []
         mlist.hold_these_nonmembers = []
         mlist.reject_these_nonmembers = []
@@ -128,7 +128,7 @@ class DefaultStyle:
         mlist.forward_auto_discards = config.DEFAULT_FORWARD_AUTO_DISCARDS
         mlist.generic_nonmember_action = (
             config.DEFAULT_GENERIC_NONMEMBER_ACTION)
-        mlist.nonmember_rejection_notice = ''
+        mlist.nonmember_rejection_notice = u''
         # Ban lists
         mlist.ban_list = []
         # Max autoresponses per day.  A mapping between addresses and a
@@ -157,9 +157,9 @@ class DefaultStyle:
         #  1 - autorespond, but discard the original message
         #  2 - autorespond, and forward the message on to be processed
         mlist.autorespond_requests = 0
-        mlist.autoresponse_postings_text = ''
-        mlist.autoresponse_admin_text = ''
-        mlist.autoresponse_request_text = ''
+        mlist.autoresponse_postings_text = u''
+        mlist.autoresponse_admin_text = u''
+        mlist.autoresponse_request_text = u''
         mlist.autoresponse_graceperiod = datetime.timedelta(days=90)
         mlist.postings_responses = {}
         mlist.admin_responses = {}
@@ -187,7 +187,7 @@ class DefaultStyle:
         mlist.delivery_status = {}
         # NNTP gateway
         mlist.nntp_host = config.DEFAULT_NNTP_HOST
-        mlist.linked_newsgroup = ''
+        mlist.linked_newsgroup = u''
         mlist.gateway_to_news = False
         mlist.gateway_to_mail = False
         mlist.news_prefix_subject_too = True

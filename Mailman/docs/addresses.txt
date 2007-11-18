@@ -6,7 +6,6 @@ those addresses, such as their registration date, and whether and when they've
 been validated.  Addresses may be linked to the users that Mailman knows
 about.  Addresses are subscribed to mailing lists though members.
 
-    >>> from Mailman.database import flush
     >>> from Mailman.configuration import config
     >>> usermgr = config.db.user_manager
 
@@ -22,24 +21,23 @@ no addresses.
 
 Creating an unlinked email address is straightforward.
 
-    >>> address_1 = usermgr.create_address('aperson@example.com')
-    >>> flush()
+    >>> address_1 = usermgr.create_address(u'aperson@example.com')
     >>> sorted(address.address for address in usermgr.addresses)
-    ['aperson@example.com']
+    [u'aperson@example.com']
 
 However, such addresses have no real name.
 
     >>> address_1.real_name
-    ''
+    u''
 
 You can also create an email address object with a real name.
 
-    >>> address_2 = usermgr.create_address('bperson@example.com', 'Ben Person')
-    >>> flush()
+    >>> address_2 = usermgr.create_address(
+    ...     u'bperson@example.com', u'Ben Person')
     >>> sorted(address.address for address in usermgr.addresses)
-    ['aperson@example.com', 'bperson@example.com']
+    [u'aperson@example.com', u'bperson@example.com']
     >>> sorted(address.real_name for address in usermgr.addresses)
-    ['', 'Ben Person']
+    [u'', u'Ben Person']
 
 The str() of the address is the RFC 2822 preferred originator format, while
 the repr() carries more information.
@@ -51,38 +49,36 @@ the repr() carries more information.
 
 You can assign real names to existing addresses.
 
-    >>> address_1.real_name = 'Anne Person'
-    >>> flush()
+    >>> address_1.real_name = u'Anne Person'
     >>> sorted(address.real_name for address in usermgr.addresses)
-    ['Anne Person', 'Ben Person']
+    [u'Anne Person', u'Ben Person']
 
 These addresses are not linked to users, and can be seen by searching the user
 manager for an associated user.
 
-    >>> print usermgr.get_user('aperson@example.com')
+    >>> print usermgr.get_user(u'aperson@example.com')
     None
-    >>> print usermgr.get_user('bperson@example.com')
+    >>> print usermgr.get_user(u'bperson@example.com')
     None
 
 You can create email addresses that are linked to users by using a different
 interface.
 
-    >>> user_1 = usermgr.create_user('cperson@example.com', 'Claire Person')
+    >>> user_1 = usermgr.create_user(u'cperson@example.com', u'Claire Person')
     >>> sorted(address.address for address in user_1.addresses)
-    ['cperson@example.com']
-    >>> flush()
+    [u'cperson@example.com']
     >>> sorted(address.address for address in usermgr.addresses)
-    ['aperson@example.com', 'bperson@example.com', 'cperson@example.com']
+    [u'aperson@example.com', u'bperson@example.com', u'cperson@example.com']
     >>> sorted(address.real_name for address in usermgr.addresses)
-    ['Anne Person', 'Ben Person', 'Claire Person']
+    [u'Anne Person', u'Ben Person', u'Claire Person']
 
 And now you can find the associated user.
 
-    >>> print usermgr.get_user('aperson@example.com')
+    >>> print usermgr.get_user(u'aperson@example.com')
     None
-    >>> print usermgr.get_user('bperson@example.com')
+    >>> print usermgr.get_user(u'bperson@example.com')
     None
-    >>> usermgr.get_user('cperson@example.com')
+    >>> usermgr.get_user(u'cperson@example.com')
     <User "Claire Person" at ...>
 
 
@@ -92,28 +88,26 @@ Deleting addresses
 You can remove an unlinked address from the user manager.
 
     >>> usermgr.delete_address(address_1)
-    >>> flush()
     >>> sorted(address.address for address in usermgr.addresses)
-    ['bperson@example.com', 'cperson@example.com']
+    [u'bperson@example.com', u'cperson@example.com']
     >>> sorted(address.real_name for address in usermgr.addresses)
-    ['Ben Person', 'Claire Person']
+    [u'Ben Person', u'Claire Person']
 
 Deleting a linked address does not delete the user, but it does unlink the
 address from the user.
 
     >>> sorted(address.address for address in user_1.addresses)
-    ['cperson@example.com']
-    >>> user_1.controls('cperson@example.com')
+    [u'cperson@example.com']
+    >>> user_1.controls(u'cperson@example.com')
     True
     >>> address_3 = list(user_1.addresses)[0]
     >>> usermgr.delete_address(address_3)
-    >>> flush()
     >>> sorted(address.address for address in user_1.addresses)
     []
-    >>> user_1.controls('cperson@example.com')
+    >>> user_1.controls(u'cperson@example.com')
     False
     >>> sorted(address.address for address in usermgr.addresses)
-    ['bperson@example.com']
+    [u'bperson@example.com']
 
 
 Registration and validation
@@ -122,8 +116,8 @@ Registration and validation
 Addresses have two dates, the date the address was registered on and the date
 the address was validated on.  Neither date is set by default.
 
-    >>> address_4 = usermgr.create_address('dperson@example.com', 'Dan Person')
-    >>> flush()
+    >>> address_4 = usermgr.create_address(
+    ...     u'dperson@example.com', u'Dan Person')
     >>> print address_4.registered_on
     None
     >>> print address_4.verified_on
@@ -133,7 +127,6 @@ The registered date takes a Python datetime object.
 
     >>> from datetime import datetime
     >>> address_4.registered_on = datetime(2007, 5, 8, 22, 54, 1)
-    >>> flush()
     >>> print address_4.registered_on
     2007-05-08 22:54:01
     >>> print address_4.verified_on
@@ -142,7 +135,6 @@ The registered date takes a Python datetime object.
 And of course, you can also set the validation date.
 
     >>> address_4.verified_on = datetime(2007, 5, 13, 22, 54, 1)
-    >>> flush()
     >>> print address_4.registered_on
     2007-05-08 22:54:01
     >>> print address_4.verified_on
@@ -156,8 +148,8 @@ Addresses get subscribed to mailing lists, not users.  When the address is
 subscribed, a role is specified.
 
     >>> address_5 = usermgr.create_address(
-    ...     'eperson@example.com', 'Elly Person')
-    >>> mlist = config.db.list_manager.create('_xtext@example.com')
+    ...     u'eperson@example.com', u'Elly Person')
+    >>> mlist = config.db.list_manager.create(u'_xtext@example.com')
     >>> from Mailman.interfaces import MemberRole
     >>> address_5.subscribe(mlist, MemberRole.owner)
     <Member: Elly Person <eperson@example.com> on
@@ -165,7 +157,6 @@ subscribed, a role is specified.
     >>> address_5.subscribe(mlist, MemberRole.member)
     <Member: Elly Person <eperson@example.com> on
              _xtext@example.com as MemberRole.member>
-    >>> flush()
 
 Now Elly is both an owner and a member of the mailing list.
 
@@ -196,8 +187,7 @@ when sending the user a message, but it treats addresses that are different in
 case equivalently in all other situations.
 
     >>> address_6 = usermgr.create_address(
-    ...     'FPERSON@example.com', 'Frank Person')
-    >>> flush()
+    ...     u'FPERSON@example.com', u'Frank Person')
 
 The str() of such an address prints the RFC 2822 preferred originator format
 with the original case-preserved address.  The repr() contains all the gory
@@ -213,22 +203,22 @@ Both the case-insensitive version of the address and the original
 case-preserved version are available on attributes of the IAddress object.
 
     >>> address_6.address
-    'fperson@example.com'
+    u'fperson@example.com'
     >>> address_6.original_address
-    'FPERSON@example.com'
+    u'FPERSON@example.com'
 
 Because addresses are case-insensitive for all other purposes, you cannot
 create an address that differs only in case.
 
-    >>> usermgr.create_address('fperson@example.com')
+    >>> usermgr.create_address(u'fperson@example.com')
     Traceback (most recent call last):
     ...
     ExistingAddressError: FPERSON@example.com
-    >>> usermgr.create_address('fperson@EXAMPLE.COM')
+    >>> usermgr.create_address(u'fperson@EXAMPLE.COM')
     Traceback (most recent call last):
     ...
     ExistingAddressError: FPERSON@example.com
-    >>> usermgr.create_address('FPERSON@example.com')
+    >>> usermgr.create_address(u'FPERSON@example.com')
     Traceback (most recent call last):
     ...
     ExistingAddressError: FPERSON@example.com
@@ -236,7 +226,7 @@ create an address that differs only in case.
 You can get the address using either the lower cased version or case-preserved
 version.  In fact, searching for an address is case insensitive.
 
-    >>> usermgr.get_address('fperson@example.com').address
-    'fperson@example.com'
-    >>> usermgr.get_address('FPERSON@example.com').address
-    'fperson@example.com'
+    >>> usermgr.get_address(u'fperson@example.com').address
+    u'fperson@example.com'
+    >>> usermgr.get_address(u'FPERSON@example.com').address
+    u'fperson@example.com'

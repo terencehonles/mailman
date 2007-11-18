@@ -15,18 +15,16 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-"""SQLAlchemy/Elixir based provider of IUserManager."""
+"""A user manager."""
 
 from __future__ import with_statement
 
 import os
 
-from elixir import *
 from zope.interface import implements
 
 from Mailman import Errors
 from Mailman.configuration import config
-from Mailman.database.model import *
 from Mailman.interfaces import IUserManager
 
 
@@ -35,25 +33,32 @@ class UserManager(object):
     implements(IUserManager)
 
     def create_user(self, address=None, real_name=None):
+        # Avoid circular imports.
+        from Mailman.database.model import Address, Preferences, User
         user = User()
-        user.real_name = ('' if real_name is None else real_name)
+        user.real_name = (u'' if real_name is None else real_name)
         if address:
             addrobj = Address(address, user.real_name)
             addrobj.preferences = Preferences()
             user.link(addrobj)
         user.preferences = Preferences()
+        config.db.store.add(user)
         return user
 
     def delete_user(self, user):
-        user.delete()
+        config.db.store.remove(user)
 
     @property
     def users(self):
-        for user in User.query.filter_by().all():
+        # Avoid circular imports.
+        from Mailman.database.model import User
+        for user in config.db.store.find(User):
             yield user
 
     def get_user(self, address):
-        addresses = Address.query.filter_by(address=address.lower())
+        # Avoid circular imports.
+        from Mailman.database.model import Address
+        addresses = config.db.store.find(Address, address=address.lower())
         if addresses.count() == 0:
             return None
         elif addresses.count() == 1:
@@ -62,17 +67,20 @@ class UserManager(object):
             raise AssertionError('Unexpected query count')
 
     def create_address(self, address, real_name=None):
-        addresses = Address.query.filter_by(address=address.lower())
+        # Avoid circular imports.
+        from Mailman.database.model import Address, Preferences
+        addresses = config.db.store.find(Address, address=address.lower())
         if addresses.count() == 1:
             found = addresses[0]
             raise Errors.ExistingAddressError(found.original_address)
         assert addresses.count() == 0, 'Unexpected results'
         if real_name is None:
-            real_name = ''
+            real_name = u''
         # It's okay not to lower case the 'address' argument because the
         # constructor will do the right thing.
         address = Address(address, real_name)
         address.preferences = Preferences()
+        config.db.store.add(address)
         return address
 
     def delete_address(self, address):
@@ -80,10 +88,12 @@ class UserManager(object):
         # unlinked before the address can be deleted.
         if address.user:
             address.user.unlink(address)
-        address.delete()
+        config.db.store.remove(address)
 
     def get_address(self, address):
-        addresses = Address.query.filter_by(address=address.lower())
+        # Avoid circular imports.
+        from Mailman.database.model import Address
+        addresses = config.db.store.find(Address, address=address.lower())
         if addresses.count() == 0:
             return None
         elif addresses.count() == 1:
@@ -93,5 +103,7 @@ class UserManager(object):
 
     @property
     def addresses(self):
-        for address in Address.query.filter_by().all():
+        # Avoid circular imports.
+        from Mailman.database.model.address import Address
+        for address in config.db.store.find(Address):
             yield address

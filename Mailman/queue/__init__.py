@@ -37,6 +37,7 @@ import logging
 import marshal
 import traceback
 
+from cStringIO import StringIO
 from zope.interface import implements
 
 from Mailman import i18n
@@ -108,7 +109,7 @@ class Switchboard:
         # Always add the metadata schema version number
         data['version'] = config.QFILE_SCHEMA_VERSION
         # Filter out volatile entries
-        for k in data:
+        for k in data.keys():
             if k.startswith('_'):
                 del data[k]
         # We have to tell the dequeue() method whether to parse the message

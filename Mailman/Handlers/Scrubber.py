@@ -26,17 +26,13 @@ import time
 import errno
 import logging
 import binascii
-import tempfile
 
-from cStringIO import StringIO
 from email.charset import Charset
 from email.generator import Generator
-from email.parser import HeaderParser
 from email.utils import make_msgid, parsedate
 from locknix.lockfile import Lock
 from mimetypes import guess_all_extensions
 
-from Mailman import Message
 from Mailman import Utils
 from Mailman.Errors import DiscardMessage
 from Mailman.app.archiving import get_base_archive_url

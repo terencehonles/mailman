@@ -15,31 +15,31 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-from elixir import *
 from email.utils import formataddr
+from storm.locals import *
 from zope.interface import implements
 
 from Mailman import Errors
+from Mailman.configuration import config
+from Mailman.database import Model
 from Mailman.interfaces import IAddress
 
 
-MEMBER_KIND     = 'Mailman.database.model.member.Member'
-PREFERENCE_KIND = 'Mailman.database.model.preferences.Preferences'
-USER_KIND       = 'Mailman.database.model.user.User'
-
-
 
-class Address(Entity):
+class Address(Model):
     implements(IAddress)
 
-    address = Field(Unicode)
-    _original = Field(Unicode)
-    real_name = Field(Unicode)
-    verified_on = Field(DateTime)
-    registered_on = Field(DateTime)
+    id = Int(primary=True)
+    address = Unicode()
+    _original = Unicode()
+    real_name = Unicode()
+    verified_on = DateTime()
+    registered_on = DateTime()
 
-    user = ManyToOne(USER_KIND)
-    preferences = ManyToOne(PREFERENCE_KIND)
+    user_id = Int()
+    user = Reference(user_id, 'User.id')
+    preferences_id = Int()
+    preferences = Reference(preferences_id, 'Preferences.id')
 
     def __init__(self, address, real_name):
         super(Address, self).__init__()
@@ -66,9 +66,11 @@ class Address(Entity):
         from Mailman.database.model import Member
         from Mailman.database.model import Preferences
         # This member has no preferences by default.
-        member = Member.get_by(role=role,
-                               mailing_list=mailing_list.fqdn_listname,
-                               address=self)
+        member = config.db.store.find(
+            Member,
+            Member.role == role,
+            Member.mailing_list == mailing_list.fqdn_listname,
+            Member.address == self).one()
         if member:
             raise Errors.AlreadySubscribedError(
                 mailing_list.fqdn_listname, self.address, role)
@@ -76,6 +78,7 @@ class Address(Entity):
                         mailing_list=mailing_list.fqdn_listname,
                         address=self)
         member.preferences = Preferences()
+        config.db.store.add(member)
         return member
 
     @property

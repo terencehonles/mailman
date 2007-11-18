@@ -15,14 +15,10 @@ runners inherit from.  This base class implements a .run() method that runs
 continuously in a loop until the .stop() method is called.
 
     >>> import os
-    >>> from email import message_from_string
-    >>> from Mailman.Message import Message
     >>> from Mailman.queue import Runner, Switchboard
     >>> from Mailman.configuration import config
-    >>> from Mailman.database import flush
-    >>> mlist = config.db.list_manager.create('_xtest@example.com')
-    >>> mlist.preferred_language = 'en'
-    >>> flush()
+    >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
+    >>> mlist.preferred_language = u'en'
 
 Here is a very simple derived qrunner class.  The class attribute QDIR tells
 the qrunner which queue directory it is responsible for.  Derived classes
@@ -50,12 +46,12 @@ This is about as simple as a qrunner can be.
 This qrunner doesn't do much except run once, storing the message and metadata
 on instance variables.
 
-    >>> msg = message_from_string("""\
+    >>> msg = message_from_string(u"""\
     ... From: aperson@example.com
     ... To: _xtest@example.com
     ...
     ... A test message.
-    ... """, Message)
+    ... """)
     >>> filebase = switchboard.enqueue(msg, listname=mlist.fqdn_listname,
     ...                                foo='yes', bar='no')
     >>> runner.run()
@@ -68,8 +64,7 @@ on instance variables.
     >>> sorted(runner.msgdata.items())
     [('_parsemsg', False),
      ('bar', 'no'), ('foo', 'yes'),
-     ('lang', 'en'), ('listname', '_xtest@example.com'),
+     ('lang', u'en'), ('listname', u'_xtest@example.com'),
      ('received_time', ...), ('version', 3)]
-
 
 XXX More of the Runner API should be tested.

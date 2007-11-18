@@ -15,28 +15,29 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-from elixir import *
 from email.utils import formataddr
+from storm.locals import *
 from zope.interface import implements
 
 from Mailman import Errors
+from Mailman.configuration import config
+from Mailman.database import Model
 from Mailman.database.model import Address
 from Mailman.database.model import Preferences
 from Mailman.interfaces import IUser
 
-ADDRESS_KIND    = 'Mailman.database.model.address.Address'
-PREFERENCE_KIND = 'Mailman.database.model.preferences.Preferences'
-
 
 
-class User(Entity):
+class User(Model):
     implements(IUser)
 
-    real_name = Field(Unicode)
-    password = Field(Unicode)
+    id = Int(primary=True)
+    real_name = Unicode()
+    password = Unicode()
 
-    addresses = OneToMany(ADDRESS_KIND)
-    preferences = ManyToOne(PREFERENCE_KIND)
+    addresses = ReferenceSet(id, 'Address.user_id')
+    preferences_id = Int()
+    preferences = Reference(preferences_id, 'Preferences.id')
 
     def __repr__(self):
         return '<User "%s" at %#x>' % (self.real_name, id(self))
@@ -52,15 +53,18 @@ class User(Entity):
         address.user = None
 
     def controls(self, address):
-        found = Address.get_by(address=address)
-        return bool(found and found.user is self)
+        found = config.db.store.find(Address, address=address)
+        if found.count() == 0:
+            return False
+        assert found.count() == 1, 'Unexpected count'
+        return found[0].user is self
 
     def register(self, address, real_name=None):
         # First, see if the address already exists
-        addrobj = Address.get_by(address=address)
+        addrobj = config.db.store.find(Address, address=address).one()
         if addrobj is None:
             if real_name is None:
-                real_name = ''
+                real_name = u''
             addrobj = Address(address=address, real_name=real_name)
             addrobj.preferences = Preferences()
         # Link the address to the user if it is not already linked.

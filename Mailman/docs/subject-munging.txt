@@ -7,14 +7,10 @@ transformations.  Some headers get added, others get changed.  Some of these
 changes depend on mailing list settings and others depend on how the message
 is getting sent through the system.  We'll take things one-by-one.
 
-    >>> from email import message_from_string
-    >>> from Mailman.Message import Message
     >>> from Mailman.Handlers.CookHeaders import process
     >>> from Mailman.configuration import config
-    >>> from Mailman.database import flush
-    >>> mlist = config.db.list_manager.create('_xtest@example.com')
+    >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> mlist.subject_prefix = u''
-    >>> flush()
 
 
 Inserting a prefix
@@ -27,12 +23,11 @@ munging, a mailing list must have a preferred language.
 
     >>> mlist.subject_prefix = u'[XTest] '
     >>> mlist.preferred_language = u'en'
-    >>> flush()
-    >>> msg = message_from_string("""\
+    >>> msg = message_from_string(u"""\
     ... From: aperson@example.com
     ...
     ... A message of great import.
-    ... """, Message)
+    ... """)
     >>> msgdata = {}
     >>> process(mlist, msg, msgdata)
 
@@ -48,12 +43,12 @@ email.header.Header instance which has an unhelpful repr.
 If the original message had a Subject header, then the prefix is inserted at
 the beginning of the header's value.
 
-    >>> msg = message_from_string("""\
+    >>> msg = message_from_string(u"""\
     ... From: aperson@example.com
     ... Subject: Something important
     ...
     ... A message of great import.
-    ... """, Message)
+    ... """)
     >>> msgdata = {}
     >>> process(mlist, msg, msgdata)
     >>> msgdata['origsubj']
@@ -63,39 +58,39 @@ the beginning of the header's value.
 
 Subject headers are not munged for digest messages.
     
-    >>> msg = message_from_string("""\
+    >>> msg = message_from_string(u"""\
     ... From: aperson@example.com
     ... Subject: Something important
     ...
     ... A message of great import.
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, dict(isdigest=True))
     >>> msg['subject']
-    'Something important'
+    u'Something important'
 
 Nor are they munged for 'fast tracked' messages, which are generally defined
 as messages that Mailman crafts internally.
 
-    >>> msg = message_from_string("""\
+    >>> msg = message_from_string(u"""\
     ... From: aperson@example.com
     ... Subject: Something important
     ...
     ... A message of great import.
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, dict(_fasttrack=True))
     >>> msg['subject']
-    'Something important'
+    u'Something important'
 
 If a Subject header already has a prefix, usually following a Re: marker,
 another one will not be added but the prefix will be moved to the front of the
 header text.
 
-    >>> msg = message_from_string("""\
+    >>> msg = message_from_string(u"""\
     ... From: aperson@example.com
     ... Subject: Re: [XTest] Something important
     ...
     ... A message of great import.
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     >>> print msg['subject']
     [XTest] Re: Something important
@@ -104,12 +99,12 @@ If the Subjec header has a prefix at the front of the header text, that's
 where it will stay.  This is called 'new style' prefixing and is the only
 option available in Mailman 3.
 
-    >>> msg = message_from_string("""\
+    >>> msg = message_from_string(u"""\
     ... From: aperson@example.com
     ... Subject: [XTest] Re: Something important
     ...
     ... A message of great import.
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     >>> print msg['subject']
     [XTest] Re: Something important
@@ -123,10 +118,10 @@ prefixes.  Part of what makes this interesting is the encoding of i18n headers
 using RFC 2047, and lists whose preferred language is in a different character
 set than the encoded header.
 
-    >>> msg = message_from_string("""\
+    >>> msg = message_from_string(u"""\
     ... Subject: =?iso-2022-jp?b?GyRCJWEhPCVrJV4lcxsoQg==?=
     ...
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     >>> print msg['subject']
     [XTest] =?iso-2022-jp?b?GyRCJWEhPCVrJV4lcxsoQg==?=
@@ -142,13 +137,12 @@ message is posted to the mailing list, a 'post id' gets incremented.  This is
 a purely sequential integer that increases monotonically.  By added a '%d'
 placeholder to the subject prefix, this post id can be included in the prefix.
 
-    >>> mlist.subject_prefix = '[XTest %d] '
+    >>> mlist.subject_prefix = u'[XTest %d] '
     >>> mlist.post_id = 456
-    >>> flush()
-    >>> msg = message_from_string("""\
+    >>> msg = message_from_string(u"""\
     ... Subject: Something important
     ...
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     >>> print msg['subject']
     [XTest 456] Something important
@@ -157,10 +151,10 @@ This works even when the message is a reply, except that in this case, the
 numeric post id in the generated subject prefix is updated with the new post
 id.
 
-    >>> msg = message_from_string("""\
+    >>> msg = message_from_string(u"""\
     ... Subject: [XTest 123] Re: Something important
     ...
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     >>> print msg['subject']
     [XTest 456] Re: Something important
@@ -168,10 +162,10 @@ id.
 If the Subject header had old style prefixing, the prefix is moved to the
 front of the header text.
 
-    >>> msg = message_from_string("""\
+    >>> msg = message_from_string(u"""\
     ... Subject: Re: [XTest 123] Something important
     ...
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     >>> print msg['subject']
     [XTest 456] Re: Something important
@@ -180,10 +174,10 @@ front of the header text.
 And of course, the proper thing is done when posting id numbers are included
 in the subject prefix, and the subject is encoded non-ascii.
 
-    >>> msg = message_from_string("""\
+    >>> msg = message_from_string(u"""\
     ... Subject: =?iso-2022-jp?b?GyRCJWEhPCVrJV4lcxsoQg==?=
     ...
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     >>> print msg['subject']
     [XTest 456] =?iso-2022-jp?b?GyRCJWEhPCVrJV4lcxsoQg==?=
@@ -193,10 +187,10 @@ in the subject prefix, and the subject is encoded non-ascii.
 Even more fun is when the i18n Subject header already has a prefix, possibly
 with a different posting number.
 
-    >>> msg = message_from_string("""\
+    >>> msg = message_from_string(u"""\
     ... Subject: [XTest 123] Re: =?iso-2022-jp?b?GyRCJWEhPCVrJV4lcxsoQg==?=
     ...
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     >>> print msg['subject']
     [XTest 456] Re: =?iso-2022-jp?b?GyRCJWEhPCVrJV4lcxsoQg==?=
@@ -207,10 +201,10 @@ with a different posting number.
 
 As before, old style subject prefixes are re-ordered.
 
-    >>> msg = message_from_string("""\
+    >>> msg = message_from_string(u"""\
     ... Subject: Re: [XTest 123] =?iso-2022-jp?b?GyRCJWEhPCVrJV4lcxsoQg==?=
     ...
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     >>> print msg['subject']
     [XTest 456] Re:
@@ -225,24 +219,23 @@ In this test case, we get an extra space between the prefix and the original
 subject.  It's because the original is 'crooked'.  Note that a Subject
 starting with '\n ' is generated by some version of Eudora Japanese edition.
 
-    >>> mlist.subject_prefix = '[XTest] '
-    >>> flush()
-    >>> msg = message_from_string("""\
+    >>> mlist.subject_prefix = u'[XTest] '
+    >>> msg = message_from_string(u"""\
     ... Subject:
     ...  Important message
     ...
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
     >>> print msg['subject']
     [XTest]  Important message
 
 And again, with an RFC 2047 encoded header.
 
-    >>> msg = message_from_string("""\
+    >>> msg = message_from_string(u"""\
     ... Subject:
     ...  =?iso-2022-jp?b?GyRCJWEhPCVrJV4lcxsoQg==?=
     ...
-    ... """, Message)
+    ... """)
     >>> process(mlist, msg, {})
 
 # XXX This one does not appear to work the same way as

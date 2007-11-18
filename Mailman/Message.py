@@ -45,6 +45,17 @@ class Message(email.message.Message):
         self.__version__ = VERSION
         email.message.Message.__init__(self)
 
+    def __getitem__(self, key):
+        value = email.message.Message.__getitem__(self, key)
+        if isinstance(value, str):
+            return unicode(value, 'ascii')
+        return value
+
+    def get_all(self, name, failobj=None):
+        all_values = email.message.Message.get_all(self, name, failobj)
+        return [(unicode(value, 'ascii') if isinstance(value, str) else value)
+                for value in all_values]
+
     # BAW: For debugging w/ bin/dumpdb.  Apparently pprint uses repr.
     def __repr__(self):
         return self.__str__()

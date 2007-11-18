@@ -22,9 +22,10 @@ the ones that fit a particular role.  These are used as the member, owner,
 moderator, and administrator roster filters.
 """
 
-from sqlalchemy import *
+from storm.locals import *
 from zope.interface import implements
 
+from Mailman.configuration import config
 from Mailman.constants import SystemDefaultPreferences
 from Mailman.database.model import Address, Member
 from Mailman.interfaces import DeliveryMode, IRoster, MemberRole
@@ -49,7 +50,8 @@ class AbstractRoster(object):
 
     @property
     def members(self):
-        for member in Member.query.filter_by(
+        for member in config.db.store.find(
+                Member,
                 mailing_list=self._mlist.fqdn_listname,
                 role=self.role):
             yield member
@@ -73,11 +75,12 @@ class AbstractRoster(object):
             yield member.address
 
     def get_member(self, address):
-        results = Member.query.filter(
-            and_(Member.c.mailing_list == self._mlist.fqdn_listname,
-                 Member.c.role == self.role,
-                 Address.c.address == address,
-                 Member.c.address_id == Address.c.id))
+        results = config.db.store.find(
+            Member,
+            Member.mailing_list == self._mlist.fqdn_listname,
+            Member.role == self.role,
+            Address.address == address,
+            Member.address_id == Address.id)
         if results.count() == 0:
             return None
         elif results.count() == 1:
@@ -121,20 +124,22 @@ class AdministratorRoster(AbstractRoster):
     def members(self):
         # Administrators are defined as the union of the owners and the
         # moderators.
-        members = Member.query.filter(
-            and_(Member.c.mailing_list == self._mlist.fqdn_listname,
-                 or_(Member.c.role == MemberRole.owner,
-                     Member.c.role == MemberRole.moderator)))
+        members = config.db.store.find(
+                Member,
+                Member.mailing_list == self._mlist.fqdn_listname,
+                Or(Member.role == MemberRole.owner,
+                   Member.role == MemberRole.moderator))
         for member in members:
             yield member
 
     def get_member(self, address):
-        results = Member.query.filter(
-            and_(Member.c.mailing_list == self._mlist.fqdn_listname,
-                 or_(Member.c.role == MemberRole.moderator,
-                     Member.c.role == MemberRole.owner),
-                 Address.c.address == address,
-                 Member.c.address_id == Address.c.id))
+        results = config.db.store.find(
+                Member,
+                Member.mailing_list == self._mlist.fqdn_listname,
+                Or(Member.role == MemberRole.moderator,
+                   Member.role == MemberRole.owner),
+                Address.address == address,
+                Member.address_id == Address.id)
         if results.count() == 0:
             return None
         elif results.count() == 1:
@@ -155,7 +160,8 @@ class RegularMemberRoster(AbstractRoster):
         # Query for all the Members which have a role of MemberRole.member and
         # are subscribed to this mailing list.  Then return only those members
         # that have a regular delivery mode.
-        for member in Member.query.filter_by(
+        for member in config.db.store.find(
+                Member,
                 mailing_list=self._mlist.fqdn_listname,
                 role=MemberRole.member):
             if member.delivery_mode == DeliveryMode.regular:
@@ -181,7 +187,8 @@ class DigestMemberRoster(AbstractRoster):
         # Query for all the Members which have a role of MemberRole.member and
         # are subscribed to this mailing list.  Then return only those members
         # that have one of the digest delivery modes.
-        for member in Member.query.filter_by(
+        for member in config.db.store.find(
+                Member,
                 mailing_list=self._mlist.fqdn_listname,
                 role=MemberRole.member):
             if member.delivery_mode in _digest_modes:
@@ -196,6 +203,7 @@ class Subscribers(AbstractRoster):
 
     @property
     def members(self):
-        for member in Member.query.filter_by(
+        for member in config.db.store.find(
+                Member,
                 mailing_list=self._mlist.fqdn_listname):
             yield member

@@ -17,40 +17,51 @@
 
 """Implementations of the IPendable and IPending interfaces."""
 
+import sys
 import time
 import random
 import hashlib
 import datetime
 
-from elixir import *
+from storm.locals import *
 from zope.interface import implements
 from zope.interface.verify import verifyObject
 
 from Mailman.configuration import config
+from Mailman.database import Model
 from Mailman.interfaces import (
-    IPendings, IPendable, IPendedKeyValue, IPended)
-
-PEND_KIND = 'Mailman.database.model.pending.Pended'
+    IPendable, IPended, IPendedKeyValue, IPendings)
 
 
 
-class PendedKeyValue(Entity):
+class PendedKeyValue(Model):
     """A pended key/value pair, tied to a token."""
 
     implements(IPendedKeyValue)
 
-    key = Field(Unicode)
-    value = Field(Unicode)
-    pended = ManyToOne(PEND_KIND)
+    def __init__(self, key, value):
+        self.key = key
+        self.value = value
+
+    id = Int(primary=True)
+    key = Unicode()
+    value = Unicode()
+    pended_id = Int()
 
 
-class Pended(Entity):
+class Pended(Model):
     """A pended event, tied to a token."""
 
     implements(IPended)
 
-    token = Field(Unicode)
-    expiration_date = Field(DateTime)
+    def __init__(self, token, expiration_date):
+        self.token = token
+        self.expiration_date = expiration_date
+
+    id = Int(primary=True)
+    token = RawStr()
+    expiration_date = DateTime()
+    key_values = ReferenceSet(id, PendedKeyValue.pended_id)
 
 
 
@@ -82,7 +93,7 @@ class Pendings(object):
             token = hashlib.sha1(repr(x)).hexdigest()
             # In practice, we'll never get a duplicate, but we'll be anal
             # about checking anyway.
-            if Pended.query.filter_by(token=token).count() == 0:
+            if config.db.store.find(Pended, token=token).count() == 0:
                 break
         else:
             raise AssertionError('Could not find a valid pendings token')
@@ -91,11 +102,24 @@ class Pendings(object):
             token=token,
             expiration_date=datetime.datetime.now() + lifetime)
         for key, value in pendable.items():
-            PendedKeyValue(key=key, value=value, pended=pending)
+            if isinstance(key, str):
+                key = unicode(key, 'utf-8')
+            if isinstance(value, str):
+                value = unicode(value, 'utf-8')
+            elif type(value) is int:
+                value = u'__builtin__.int\1%s' % value
+            elif type(value) is float:
+                value = u'__builtin__.float\1%s' % value
+            elif type(value) is bool:
+                value = u'__builtin__.bool\1%s' % value
+            keyval = PendedKeyValue(key=key, value=value)
+            pending.key_values.add(keyval)
+        config.db.store.add(pending)
         return token
 
     def confirm(self, token, expunge=True):
-        pendings = Pended.query.filter_by(token=token)
+        store = config.db.store
+        pendings = store.find(Pended, token=token)
         if pendings.count() == 0:
             return None
         assert pendings.count() == 1, (
@@ -103,27 +127,32 @@ class Pendings(object):
         pending = pendings[0]
         pendable = UnpendedPendable()
         # Find all PendedKeyValue entries that are associated with the pending
-        # object's ID.
-        q = PendedKeyValue.query.filter(
-            PendedKeyValue.c.pended_id == Pended.c.id).filter(
-            Pended.c.id == pending.id)
-        for keyvalue in q.all():
-            pendable[keyvalue.key] = keyvalue.value
+        # object's ID.  Watch out for type conversions.
+        for keyvalue in store.find(PendedKeyValue,
+                                   PendedKeyValue.pended_id == pending.id):
+            if keyvalue.value is not None and '\1' in keyvalue.value:
+                typename, value = keyvalue.value.split('\1', 1)
+                package, classname = typename.rsplit('.', 1)
+                __import__(package)
+                module = sys.modules[package]
+                pendable[keyvalue.key] = getattr(module, classname)(value)
+            else:
+                pendable[keyvalue.key] = keyvalue.value
             if expunge:
-                keyvalue.delete()
+                store.remove(keyvalue)
         if expunge:
-            pending.delete()
+            store.remove(pending)
         return pendable
 
     def evict(self):
+        store = config.db.store
         now = datetime.datetime.now()
-        for pending in Pended.query.filter_by().all():
+        for pending in store.find(Pended):
             if pending.expiration_date < now:
                 # Find all PendedKeyValue entries that are associated with the
                 # pending object's ID.
-                q = PendedKeyValue.query.filter(
-                    PendedKeyValue.c.pended_id == Pended.c.id).filter(
-                    Pended.c.id == pending.id)
+                q = store.find(PendedKeyValue,
+                               PendedKeyValue.pended_id == pending.id)
                 for keyvalue in q:
-                    keyvalue.delete()
-                pending.delete()
+                    store.remove(keyvalue)
+                store.remove(pending)
