@@ -23,9 +23,11 @@ from zope.interface import implements
 
 from Mailman.Utils import fqdn_listname, makedirs, split_listname
 from Mailman.configuration import config
-from Mailman.database import Model
+from Mailman.database import roster
+from Mailman.database.model import Model
 from Mailman.database.types import Enum
 from Mailman.interfaces import IMailingList, Personalization
+
 
 SPACE = ' '
 UNDERSCORE = '_'
@@ -182,8 +184,6 @@ class MailingList(Model):
 
     # XXX FIXME
     def _restore(self):
-        # Avoid circular imports.
-        from Mailman.database.model import roster
         self.owners = roster.OwnerRoster(self)
         self.moderators = roster.ModeratorRoster(self)
         self.administrators = roster.AdministratorRoster(self)

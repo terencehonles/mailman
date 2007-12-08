@@ -27,7 +27,8 @@ from zope.interface import implements
 
 from Mailman.configuration import config
 from Mailman.constants import SystemDefaultPreferences
-from Mailman.database.model import Address, Member
+from Mailman.database.address import Address
+from Mailman.database.member import Member
 from Mailman.interfaces import DeliveryMode, IRoster, MemberRole
 
 

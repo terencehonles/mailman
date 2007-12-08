@@ -22,7 +22,7 @@ from storm.locals import *
 from zope.interface import implements
 
 from Mailman.configuration import config
-from Mailman.database import Model
+from Mailman.database.model import Model
 from Mailman.database.types import Enum
 from Mailman.interfaces import IListRequests, IPendable, IRequests, RequestType
 

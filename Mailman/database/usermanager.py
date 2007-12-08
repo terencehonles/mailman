@@ -25,6 +25,9 @@ from zope.interface import implements
 
 from Mailman import Errors
 from Mailman.configuration import config
+from Mailman.database.address import Address
+from Mailman.database.preferences import Preferences
+from Mailman.database.user import User
 from Mailman.interfaces import IUserManager
 
 
@@ -33,8 +36,6 @@ class UserManager(object):
     implements(IUserManager)
 
     def create_user(self, address=None, real_name=None):
-        # Avoid circular imports.
-        from Mailman.database.model import Address, Preferences, User
         user = User()
         user.real_name = (u'' if real_name is None else real_name)
         if address:
@@ -50,14 +51,10 @@ class UserManager(object):
 
     @property
     def users(self):
-        # Avoid circular imports.
-        from Mailman.database.model import User
         for user in config.db.store.find(User):
             yield user
 
     def get_user(self, address):
-        # Avoid circular imports.
-        from Mailman.database.model import Address
         addresses = config.db.store.find(Address, address=address.lower())
         if addresses.count() == 0:
             return None
@@ -67,8 +64,6 @@ class UserManager(object):
             raise AssertionError('Unexpected query count')
 
     def create_address(self, address, real_name=None):
-        # Avoid circular imports.
-        from Mailman.database.model import Address, Preferences
         addresses = config.db.store.find(Address, address=address.lower())
         if addresses.count() == 1:
             found = addresses[0]
@@ -91,8 +86,6 @@ class UserManager(object):
         config.db.store.remove(address)
 
     def get_address(self, address):
-        # Avoid circular imports.
-        from Mailman.database.model import Address
         addresses = config.db.store.find(Address, address=address.lower())
         if addresses.count() == 0:
             return None
@@ -103,7 +96,5 @@ class UserManager(object):
 
     @property
     def addresses(self):
-        # Avoid circular imports.
-        from Mailman.database.model.address import Address
         for address in config.db.store.find(Address):
             yield address

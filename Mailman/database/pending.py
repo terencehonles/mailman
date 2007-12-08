@@ -28,7 +28,7 @@ from zope.interface import implements
 from zope.interface.verify import verifyObject
 
 from Mailman.configuration import config
-from Mailman.database import Model
+from Mailman.database.model import Model
 from Mailman.interfaces import (
     IPendable, IPended, IPendedKeyValue, IPendings)
 

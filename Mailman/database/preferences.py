@@ -1,4 +1,4 @@
-# Copyright (C) 2007 by the Free Software Foundation, Inc.
+# Copyright (C) 2006-2007 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -16,15 +16,25 @@
 # USA.
 
 from storm.locals import *
-from Mailman.database import Model
+from zope.interface import implements
+
+from Mailman.database.model import Model
+from Mailman.database.types import Enum
+from Mailman.interfaces import IPreferences
 
 
 
-class Version(Model):
-    id = Int(primary=True)
-    component = Unicode()
-    version = Int()
+class Preferences(Model):
+    implements(IPreferences)
 
-    def __init__(self, component, version):
-        self.component = component
-        self.version = version
+    id = Int(primary=True)
+    acknowledge_posts = Bool()
+    hide_address = Bool()
+    preferred_language = Unicode()
+    receive_list_copy = Bool()
+    receive_own_postings = Bool()
+    delivery_mode = Enum()
+    delivery_status = Enum()
+
+    def __repr__(self):
+        return '<Preferences object at %#x>' % id(self)

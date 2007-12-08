@@ -21,7 +21,7 @@ from zope.interface import implements
 from Mailman.Utils import split_listname
 from Mailman.configuration import config
 from Mailman.constants import SystemDefaultPreferences
-from Mailman.database import Model
+from Mailman.database.model import Model
 from Mailman.database.types import Enum
 from Mailman.interfaces import IMember, IPreferences
 

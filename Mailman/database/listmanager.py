@@ -24,6 +24,7 @@ from zope.interface import implements
 from Mailman import Errors
 from Mailman.Utils import split_listname, fqdn_listname
 from Mailman.configuration import config
+from Mailman.database.mailinglist import MailingList
 from Mailman.interfaces import IListManager
 
 
@@ -32,8 +33,6 @@ class ListManager(object):
     implements(IListManager)
 
     def create(self, fqdn_listname):
-        # Avoid circular imports.
-        from Mailman.database.model import MailingList
         listname, hostname = split_listname(fqdn_listname)
         mlist = config.db.store.find(
             MailingList,
@@ -50,8 +49,6 @@ class ListManager(object):
         config.db.store.remove(mlist)
 
     def get(self, fqdn_listname):
-        # Avoid circular imports.
-        from Mailman.database.model import MailingList
         listname, hostname = split_listname(fqdn_listname)
         mlist = config.db.store.find(MailingList,
                                      list_name=listname,
@@ -70,7 +67,5 @@ class ListManager(object):
 
     @property
     def names(self):
-        # Avoid circular imports.
-        from Mailman.database.model import MailingList
         for mlist in config.db.store.find(MailingList):
             yield fqdn_listname(mlist.list_name, mlist.host_name)

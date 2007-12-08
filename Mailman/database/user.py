@@ -21,9 +21,9 @@ from zope.interface import implements
 
 from Mailman import Errors
 from Mailman.configuration import config
-from Mailman.database import Model
-from Mailman.database.model import Address
-from Mailman.database.model import Preferences
+from Mailman.database.model import Model
+from Mailman.database.address import Address
+from Mailman.database.preferences import Preferences
 from Mailman.interfaces import IUser
 
 

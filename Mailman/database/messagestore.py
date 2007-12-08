@@ -32,6 +32,7 @@ from zope.interface import implements
 
 from Mailman import Utils
 from Mailman.configuration import config
+from Mailman.database.message import Message
 from Mailman.interfaces import IMessageStore
 
 # It could be very bad if you have already stored files and you change this
@@ -45,7 +46,6 @@ class MessageStore:
     implements(IMessageStore)
 
     def add(self, message):
-        from Mailman.database.model import Message
         # Ensure that the message has the requisite headers.
         message_ids = message.get_all('message-id', [])
         if len(message_ids) <> 1:
@@ -96,14 +96,10 @@ class MessageStore:
             return pickle.load(fp)
 
     def get_messages_by_message_id(self, message_id):
-        # Avoid circular imports.
-        from Mailman.database.model.message import Message
         for msgrow in config.db.store.find(Message, message_id=message_id):
             yield self._msgobj(msgrow)
 
     def get_messages_by_hash(self, hash):
-        # Avoid circular imports.
-        from Mailman.database.model.message import Message
         # It's possible the hash came from a message header, in which case it
         # will be a Unicode.  However when coming from source code, it will
         # always be an 8-string.  Coerce to the latter if necessary; it must
@@ -119,8 +115,6 @@ class MessageStore:
             seqno = int(seqno)
         except ValueError:
             return None
-        # Avoid circular imports.
-        from Mailman.database.model.message import Message
         messages = config.db.store.find(Message, id=seqno)
         if messages.count() == 0:
             return None
@@ -137,8 +131,6 @@ class MessageStore:
 
     @property
     def messages(self):
-        # Avoid circular imports.
-        from Mailman.database.model.message import Message
         for msgrow in config.db.store.find(Message):
             yield self._msgobj(msgrow)
 

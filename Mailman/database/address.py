@@ -21,7 +21,9 @@ from zope.interface import implements
 
 from Mailman import Errors
 from Mailman.configuration import config
-from Mailman.database import Model
+from Mailman.database.member import Member
+from Mailman.database.model import Model
+from Mailman.database.preferences import Preferences
 from Mailman.interfaces import IAddress
 
 
@@ -63,8 +65,6 @@ class Address(Model):
                 address_str, verified, self.address, id(self))
 
     def subscribe(self, mailing_list, role):
-        from Mailman.database.model import Member
-        from Mailman.database.model import Preferences
         # This member has no preferences by default.
         member = config.db.store.find(
             Member,
