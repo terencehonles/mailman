@@ -62,22 +62,24 @@ def hold_message(mlist, msg, msgdata=None, reason=None):
         reason = ''
     # Add the message to the message store.  It is required to have a
     # Message-ID header.
-    if 'message-id' not in msg:
-        msg['Message-ID'] = make_msgid()
-    seqno = config.db.message_store.add(msg)
-    global_id = '%s/%s' % (msg['X-List-ID-Hash'], seqno)
+    message_id = msg.get('message-id')
+    if message_id is None:
+        msg['Message-ID'] = message_id = unicode(make_msgid())
+    assert isinstance(message_id, unicode), (
+        'Message-ID is not a unicode: %s' % message_id)
+    config.db.message_store.add(msg)
     # Prepare the message metadata with some extra information needed only by
     # the moderation interface.
-    msgdata['_mod_global_id'] = global_id
+    msgdata['_mod_message_id'] = message_id
     msgdata['_mod_fqdn_listname'] = mlist.fqdn_listname
     msgdata['_mod_sender'] = msg.get_sender()
     msgdata['_mod_subject'] = msg.get('subject', _('(no subject)'))
     msgdata['_mod_reason'] = reason
     msgdata['_mod_hold_date'] = datetime.now().isoformat()
-    # Now hold this request.  We'll use the message's global ID as the key.
+    # Now hold this request.  We'll use the message_id as the key.
     requestsdb = config.db.requests.get_list_requests(mlist)
     request_id = requestsdb.hold_request(
-        RequestType.held_message, global_id, msgdata)
+        RequestType.held_message, message_id, msgdata)
     return request_id
 
 
@@ -88,7 +90,7 @@ def handle_message(mlist, id, action,
     key, msgdata = requestdb.get_request(id)
     # Handle the action.
     rejection = None
-    global_id = msgdata['_mod_global_id']
+    message_id = msgdata['_mod_message_id']
     sender = msgdata['_mod_sender']
     subject = msgdata['_mod_subject']
     if action is Action.defer:
@@ -107,7 +109,7 @@ def handle_message(mlist, id, action,
                 sender, comment or _('[No reason given]'), language)
     elif action is Action.accept:
         # Start by getting the message from the message store.
-        msg = config.db.message_store.get_message(global_id)
+        msg = config.db.message_store.get_message_by_id(message_id)
         # Delete moderation-specific entries from the message metadata.
         for key in msgdata.keys():
             if key.startswith('_mod_'):
@@ -136,7 +138,7 @@ def handle_message(mlist, id, action,
     # Forward the message.
     if forward:
         # Get a copy of the original message from the message store.
-        msg = config.db.message_store.get_message(global_id)
+        msg = config.db.message_store.get_message_by_id(message_id)
         # It's possible the forwarding address list is a comma separated list
         # of realname/address pairs.
         addresses = [addr[1] for addr in getaddresses(forward)]
@@ -160,7 +162,7 @@ def handle_message(mlist, id, action,
         fmsg.send(mlist)
     # Delete the message from the message store if it is not being preserved.
     if not preserve:
-        config.db.message_store.delete_message(global_id)
+        config.db.message_store.delete_message(message_id)
         requestdb.delete_request(id)
     # Log the rejection
     if rejection:

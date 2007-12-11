@@ -31,12 +31,12 @@ class Message(Model):
 
     id = Int(primary=True, default=AutoReload)
     message_id = Unicode()
-    hash = RawStr()
+    message_id_hash = RawStr()
     path = RawStr()
     # This is a Messge-ID field representation, not a database row id.
 
-    def __init__(self, message_id, hash, path):
+    def __init__(self, message_id, message_id_hash, path):
         self.message_id = message_id
-        self.hash = hash
+        self.message_id_hash = message_id_hash
         self.path = path
         config.db.store.add(self)

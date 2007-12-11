@@ -25,76 +25,66 @@ class IMessageStore(Interface):
     """The interface of the global message storage service.
 
     All messages that are stored in the system live in the message storage
-    service.  This store is responsible for providing unique identifiers for
-    every message stored in it.  A message stored in this service must have at
-    least a Message-ID header and a Date header.  These are not guaranteed to
-    be unique, so the service also provides a unique sequence number to every
-    message.
+    service.  A message stored in this service must have a Message-ID header.
+    The store writes an X-Message-ID-Hash header which contains the Base32
+    encoded SHA1 hash of the message's Message-ID header.  Any existing
+    X-Message-ID-Hash header is overwritten.
 
-    Storing a message returns the unique sequence number for the message.
-    This sequence number will be stored on the message's
-    X-List-Sequence-Number header.  Any previous such header value will be
-    overwritten.  An X-List-ID-Hash header will also be added, containing the
-    Base-32 encoded SHA1 hash of the message's Message-ID and Date headers.
+    Either the Message-ID or the X-Message-ID-Hash header can be used to
+    uniquely identify this message in the storage service.  While it is
+    possible to see duplicate Message-IDs, this is never correct and the
+    service is allowed to drop any subsequent colliding messages, or overwrite
+    earlier messages with later ones.
 
-    The combination of the X-List-ID-Hash header and the
-    X-List-Sequence-Number header uniquely identify this message to the
-    storage service.  A globally unique URL that addresses this message may be
-    crafted from these headers and the List-Archive header as follows.  For a
-    message with the following headers:
+    The combination of the List-Archive header and either the Message-ID or
+    X-Message-ID-Hash header can be used to retrieve the message from the
+    internet facing interface for the message store.  This can be considered a
+    globally unique URI to the message.
+
+    For example, a message with the following headers:
 
     Message-ID: <87myycy5eh.fsf@uwakimon.sk.tsukuba.ac.jp>
     Date: Wed, 04 Jul 2007 16:49:58 +0900
     List-Archive: http://archive.example.com/
-    X-List-ID-Hash: RXTJ357KFOTJP3NFJA6KMO65X7VQOHJI
-    X-List-Sequence-Number: 801
+    X-Message-ID-Hash: RXTJ357KFOTJP3NFJA6KMO65X7VQOHJI
 
-    the globally unique URL would be:
+    the globally unique URI would be:
 
-    http://archive.example.com/RXTJ357KFOTJP3NFJA6KMO65X7VQOHJI/801
+    http://archive.example.com/RXTJ357KFOTJP3NFJA6KMO65X7VQOHJI
     """
 
     def add(message):
         """Add the message to the store.
 
         :param message: An email.message.Message instance containing at least
-            a Message-ID header and a Date header.  The message will be given
-            an X-List-ID-Hash header and an X-List-Sequence-Number header.
-        :returns: The message's sequence ID as an integer.
-        :raises ValueError: if the message is missing one of the required
-            headers.
+            a unique Message-ID header.  The message will be given an
+            X-Message-ID-Hash header, overriding any existing such header.
+        :returns: The calculated X-Message-ID-Hash header.
+        :raises ValueError: if the message is missing a Message-ID header.
+            The storage service is also allowed to raise this exception if it
+            find, but disallows collisions.
         """
 
-    def get_messages_by_message_id(message_id):
-        """Return the set of messages with the matching Message-ID.
+    def get_message_by_id(message_id):
+        """Return the message with a matching Message-ID.
 
         :param message_id: The Message-ID header contents to search for.
-        :returns: An iterator over all the matching messages.
+        :returns: The message, or None if no matching message was found.
         """
 
-    def get_messages_by_hash(hash):
-        """Return the set of messages with the matching X-List-ID-Hash.
+    def get_message_by_hash(message_id_hash):
+        """Return the message with the matching X-Message-ID-Hash.
         
-        :param hash: The X-List-ID-Hash header contents to search for.
-        :returns: An iterator over all the matching messages.
+        :param message_id_hash: The X-Message-ID-Hash header contents to
+            search for.
+        :returns: The message, or None if no matching message was found.
         """
 
-    def get_message(global_id):
-        """Return the message with the matching hash and sequence number.
+    def delete_message(message_id):
+        """Remove the given message from the store.
 
-        :param global_id: The global relative ID which uniquely addresses this
-            message, relative to the base address of the message store.  This
-            must be a string of the X-List-ID-Hash followed by a single slash
-            character, followed by the X-List-Sequence-Number.
-        :returns: The matching message, or None if there is no match.
-        """
-
-    def delete_message(global_id):
-        """Remove the addressed message from the store.
-
-        :param global_id: The global relative ID which uniquely addresses the
-            message to delete.
-        :raises KeyError: if there is no such message.
+        :param message: The Message-ID of the mesage to delete from the store.
+        :raises LookupError: if there is no such message.
         """
 
     messages = Attribute(
@@ -105,8 +95,8 @@ class IMessageStore(Interface):
 class IMessage(Interface):
     """The representation of an email message."""
 
-    hash = Attribute("""The unique SHA1 hash of the message.""")
+    message_id = Attribute("""The message's Message-ID header.""")
+
+    message_id_hash = Attribute("""The unique SHA1 hash of the message.""")
 
     path = Attribute("""The filesystem path to the message object.""")
-
-    message_id = Attribute("""The message's Message-ID header.""")

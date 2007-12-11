@@ -58,10 +58,9 @@ def cleaning_teardown(testobj):
     for dirpath, dirnames, filenames in os.walk(config.QUEUE_DIR):
         for filename in filenames:
             os.remove(os.path.join(dirpath, filename))
-    # Clear out messages in the message store directory.
-    for dirpath, dirnames, filenames in os.walk(config.MESSAGES_DIR):
-        for filename in filenames:
-            os.remove(os.path.join(dirpath, filename))
+    # Clear out messages in the message store.
+    for message in config.db.message_store.messages:
+        config.db.message_store.delete_message(message['message-id'])
 
 
 

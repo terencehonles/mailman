@@ -50,31 +50,35 @@ class MessageStore:
         message_ids = message.get_all('message-id', [])
         if len(message_ids) <> 1:
             raise ValueError('Exactly one Message-ID header required')
-        # Calculate and insert the X-List-ID-Hash.
+        # Calculate and insert the X-Message-ID-Hash.
         message_id = message_ids[0]
+        # Complain if the Message-ID already exists in the storage.
+        existing = config.db.store.find(Message,
+                                        Message.message_id == message_id).one()
+        if existing is not None:
+            raise ValueError('Message ID already exists in message store: %s',
+                             message_id)
         shaobj = hashlib.sha1(message_id)
         hash32 = base64.b32encode(shaobj.digest())
-        del message['X-List-ID-Hash']
-        message['X-List-ID-Hash'] = hash32
+        del message['X-Message-ID-Hash']
+        message['X-Message-ID-Hash'] = hash32
         # Calculate the path on disk where we're going to store this message
         # object, in pickled format.
         parts = []
         split = list(hash32)
         while split and len(parts) < MAX_SPLITS:
             parts.append(split.pop(0) + split.pop(0))
-        parts.append(EMPTYSTRING.join(split))
+        parts.append(hash32)
         relpath = os.path.join(*parts)
         # Store the message in the database.  This relies on the database
         # providing a unique serial number, but to get this information, we
         # have to use a straight insert instead of relying on Elixir to create
         # the object.
-        row = Message(hash=hash32, path=relpath, message_id=message_id)
-        # Add the additional header.
-        seqno = row.id
-        del message['X-List-Sequence-Number']
-        message['X-List-Sequence-Number'] = str(seqno)
+        row = Message(message_id=message_id,
+                      message_id_hash=hash32,
+                      path=relpath)
         # Now calculate the full file system path.
-        path = os.path.join(config.MESSAGES_DIR, relpath, str(seqno))
+        path = os.path.join(config.MESSAGES_DIR, relpath)
         # Write the file to the path, but catch the appropriate exception in
         # case the parent directories don't yet exist.  In that case, create
         # them and try again.
@@ -88,54 +92,41 @@ class MessageStore:
                 if e.errno <> errno.ENOENT:
                     raise
             os.makedirs(os.path.dirname(path))
-        return seqno
+        return hash32
 
-    def _msgobj(self, msgrow):
-        path = os.path.join(config.MESSAGES_DIR, msgrow.path, str(msgrow.id))
+    def _get_message(self, row):
+        path = os.path.join(config.MESSAGES_DIR, row.path)
         with open(path) as fp:
             return pickle.load(fp)
 
-    def get_messages_by_message_id(self, message_id):
-        for msgrow in config.db.store.find(Message, message_id=message_id):
-            yield self._msgobj(msgrow)
+    def get_message_by_id(self, message_id):
+        row = config.db.store.find(Message, message_id=message_id).one()
+        if row is None:
+            return None
+        return self._get_message(row)
 
-    def get_messages_by_hash(self, hash):
+    def get_message_by_hash(self, message_id_hash):
         # It's possible the hash came from a message header, in which case it
-        # will be a Unicode.  However when coming from source code, it will
-        # always be an 8-string.  Coerce to the latter if necessary; it must
-        # be US-ASCII.
-        if isinstance(hash, unicode):
-            hash = hash.encode('ascii')
-        for msgrow in config.db.store.find(Message, hash=hash):
-            yield self._msgobj(msgrow)
-
-    def _getmsg(self, global_id):
-        try:
-            hash, seqno = global_id.split('/', 1)
-            seqno = int(seqno)
-        except ValueError:
+        # will be a Unicode.  However when coming from source code, it may be
+        # an 8-string.  Coerce to the latter if necessary; it must be
+        # US-ASCII.
+        if isinstance(message_id_hash, unicode):
+            message_id_hash = message_id_hash.encode('ascii')
+        row = config.db.store.find(Message,
+                                   message_id_hash=message_id_hash).one()
+        if row is None:
             return None
-        messages = config.db.store.find(Message, id=seqno)
-        if messages.count() == 0:
-            return None
-        assert messages.count() == 1, 'Multiple id matches'
-        if messages[0].hash <> hash:
-            # The client lied about which message they wanted.  They gave a
-            # valid sequence number, but the hash did not match.
-            return None
-        return messages[0]
-
-    def get_message(self, global_id):
-        msgrow = self._getmsg(global_id)
-        return (self._msgobj(msgrow) if msgrow is not None else None)
+        return self._get_message(row)
 
     @property
     def messages(self):
-        for msgrow in config.db.store.find(Message):
-            yield self._msgobj(msgrow)
+        for row in config.db.store.find(Message):
+            yield self._get_message(row)
 
-    def delete_message(self, global_id):
-        msgrow = self._getmsg(global_id)
-        if msgrow is None:
-            raise KeyError(global_id)
-        config.db.store.remove(msgrow)
+    def delete_message(self, message_id):
+        row = config.db.store.find(Message, message_id=message_id).one()
+        if row is None:
+            raise LookupError(message_id)
+        path = os.path.join(config.MESSAGES_DIR, row.path)
+        os.remove(path)
+        config.db.store.remove(row)

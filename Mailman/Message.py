@@ -51,6 +51,12 @@ class Message(email.message.Message):
             return unicode(value, 'ascii')
         return value
 
+    def get(self, name, failobj=None):
+        value = email.message.Message.get(self, name, failobj)
+        if isinstance(value, str):
+            return unicode(value, 'ascii')
+        return value
+
     def get_all(self, name, failobj=None):
         all_values = email.message.Message.get_all(self, name, failobj)
         return [(unicode(value, 'ascii') if isinstance(value, str) else value)

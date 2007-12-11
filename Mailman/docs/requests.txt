@@ -231,6 +231,9 @@ this case, we won't include any additional metadata.
 
 We can also hold a message with some additional metadata.
 
+    # Delete the Message-ID from the previous hold so we don't try to store
+    # collisions in the message storage.
+    >>> del msg['message-id']
     >>> msgdata = dict(sender='aperson@example.com',
     ...                approved=True,
     ...                received_time=123.45)
@@ -308,8 +311,7 @@ indicates that the message has been approved.
     To: alist@example.com
     Subject: Something important
     Message-ID: ...
-    X-List-ID-Hash: ...
-    X-List-Sequence-Number: ...
+    X-Message-ID-Hash: ...
     X-Mailman-Approved-At: ...
     <BLANKLINE>
     Here's something important about our mailing list.
@@ -338,26 +340,21 @@ is deleted.
     ... """)
     >>> id_4 = moderator.hold_message(mlist, msg, {}, 'Needs approval')
     >>> moderator.handle_message(mlist, id_4, Action.discard)
-    >>> msgs = config.db.message_store.get_messages_by_message_id(u'<12345>')
-    >>> list(msgs)
-    []
+    >>> print config.db.message_store.get_message_by_id(u'<12345>')
+    None
 
 But if we ask to preserve the message when we discard it, it will be held in
 the message store after disposition.
 
     >>> id_4 = moderator.hold_message(mlist, msg, {}, 'Needs approval')
     >>> moderator.handle_message(mlist, id_4, Action.discard, preserve=True)
-    >>> msgs = config.db.message_store.get_messages_by_message_id(u'<12345>')
-    >>> msgs = list(msgs)
-    >>> len(msgs)
-    1
-    >>> print msgs[0].as_string()
+    >>> stored_msg = config.db.message_store.get_message_by_id(u'<12345>')
+    >>> print stored_msg.as_string()
     From: aperson@example.org
     To: alist@example.com
     Subject: Something important
     Message-ID: <12345>
-    X-List-ID-Hash: 4CF7EAU3SIXBPXBB5S6PEUMO62MWGQN6
-    X-List-Sequence-Number: 1
+    X-Message-ID-Hash: 4CF7EAU3SIXBPXBB5S6PEUMO62MWGQN6
     <BLANKLINE>
     Here's something important about our mailing list.
     <BLANKLINE>
@@ -366,6 +363,10 @@ Orthogonal to preservation, the message can also be forwarded to another
 address.  This is helpful for getting the message into the inbox of one of the
 moderators.
 
+    # Set a new Message-ID from the previous hold so we don't try to store
+    # collisions in the message storage.
+    >>> del msg['message-id']
+    >>> msg['Message-ID'] = u'<abcde>'
     >>> id_4 = moderator.hold_message(mlist, msg, {}, 'Needs approval')
     >>> moderator.handle_message(mlist, id_4, Action.discard,
     ...                          forward=[u'zperson@example.com'])
@@ -383,9 +384,8 @@ moderators.
     From: aperson@example.org
     To: alist@example.com
     Subject: Something important
-    Message-ID: <12345>
-    X-List-ID-Hash: 4CF7EAU3SIXBPXBB5S6PEUMO62MWGQN6
-    X-List-Sequence-Number: ...
+    Message-ID: <abcde>
+    X-Message-ID-Hash: EN2R5UQFMOUTCL44FLNNPLSXBIZW62ER
     <BLANKLINE>
     Here's something important about our mailing list.
     <BLANKLINE>

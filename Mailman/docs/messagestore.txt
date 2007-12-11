@@ -1,14 +1,11 @@
 The message store
 =================
 
-The message store is a collection of messages keyed off of unique global
-identifiers.  A global id for a message is calculated relative to the message
-store's base URL and its components are stored as headers on the message.  One
-piece of information is the X-List-ID-Hash, a base-32 encoding of the SHA1
-hash of the message's Message-ID header, which the message must have.  The
-second piece of information is supplied by the message store; it is a sequence
-number that will uniquely identify the message even when the X-List-ID-Hash
-collides.
+The message store is a collection of messages keyed off of Message-ID and
+X-Message-ID-Hash headers.  Either of these values can be combined with the
+message's List-Archive header to create a globally unique URI to the message
+object in the internet facing interface of the message store.  The
+X-Message-ID-Hash is the Base32 SHA1 hash of the Message-ID.
 
     >>> from Mailman.configuration import config
     >>> store = config.db.message_store
@@ -30,12 +27,11 @@ However, if the message has a Message-ID header, it can be stored.
 
     >>> msg['Message-ID'] = '<87myycy5eh.fsf@uwakimon.sk.tsukuba.ac.jp>'
     >>> store.add(msg)
-    1
+    'AGDWSNXXKCWEILKKNYTBOHRDQGOX3Y35'
     >>> print msg.as_string()
     Subject: An important message
     Message-ID: <87myycy5eh.fsf@uwakimon.sk.tsukuba.ac.jp>
-    X-List-ID-Hash: AGDWSNXXKCWEILKKNYTBOHRDQGOX3Y35
-    X-List-Sequence-Number: 1
+    X-Message-ID-Hash: AGDWSNXXKCWEILKKNYTBOHRDQGOX3Y35
     <BLANKLINE>
     This message is very important.
     <BLANKLINE>
@@ -44,59 +40,33 @@ However, if the message has a Message-ID header, it can be stored.
 Finding messages
 ----------------
 
-There are several ways to find a message given some or all of the information
-created above.  Because Message-IDs are not guaranteed unique, looking up
-messages with that key resturns a collection.  The collection may be empty if
-there are no matches.
+There are several ways to find a message given either the Message-ID or
+X-Message-ID-Hash headers.  In either case, if no matching message is found,
+None is returned.
 
-    >>> list(store.get_messages_by_message_id(u'nothing'))
-    []
+    >>> print store.get_message_by_id(u'nothing')
+    None
+    >>> print store.get_message_by_hash(u'nothing')
+    None
 
-Given an existing Message-ID, all matching messages will be found.
+Given an existing Message-ID, the message can be found.
 
-    >>> msgs = list(store.get_messages_by_message_id(msg['message-id']))
-    >>> len(msgs)
-    1
-    >>> print msgs[0].as_string()
+    >>> message = store.get_message_by_id(msg['message-id'])
+    >>> print message.as_string()
     Subject: An important message
     Message-ID: <87myycy5eh.fsf@uwakimon.sk.tsukuba.ac.jp>
-    X-List-ID-Hash: AGDWSNXXKCWEILKKNYTBOHRDQGOX3Y35
-    X-List-Sequence-Number: 1
+    X-Message-ID-Hash: AGDWSNXXKCWEILKKNYTBOHRDQGOX3Y35
     <BLANKLINE>
     This message is very important.
     <BLANKLINE>
 
-Similarly, we can find messages by the ID hash.
+Similarly, we can find messages by the X-Message-ID-Hash:
 
-    >>> list(store.get_messages_by_hash('nothing'))
-    []
-    >>> msgs = list(store.get_messages_by_hash(msg['x-list-id-hash']))
-    >>> len(msgs)
-    1
-    >>> print msgs[0].as_string()
+    >>> message = store.get_message_by_hash(msg['x-message-id-hash'])
+    >>> print message.as_string()
     Subject: An important message
     Message-ID: <87myycy5eh.fsf@uwakimon.sk.tsukuba.ac.jp>
-    X-List-ID-Hash: AGDWSNXXKCWEILKKNYTBOHRDQGOX3Y35
-    X-List-Sequence-Number: 1
-    <BLANKLINE>
-    This message is very important.
-    <BLANKLINE>
-
-We can also get a single message by using it's relative global ID.  This
-returns None if there is no match.
-
-    >>> print store.get_message('nothing')
-    None
-    >>> print store.get_message('nothing/1')
-    None
-    >>> id_hash = msg['x-list-id-hash']
-    >>> seqno = msg['x-list-sequence-number']
-    >>> global_id = id_hash + '/' + seqno
-    >>> print store.get_message(global_id).as_string()
-    Subject: An important message
-    Message-ID: <87myycy5eh.fsf@uwakimon.sk.tsukuba.ac.jp>
-    X-List-ID-Hash: AGDWSNXXKCWEILKKNYTBOHRDQGOX3Y35
-    X-List-Sequence-Number: 1
+    X-Message-ID-Hash: AGDWSNXXKCWEILKKNYTBOHRDQGOX3Y35
     <BLANKLINE>
     This message is very important.
     <BLANKLINE>
@@ -108,14 +78,13 @@ Iterating over all messages
 The message store provides a means to iterate over all the messages it
 contains.
 
-    >>> msgs = list(store.messages)
-    >>> len(msgs)
+    >>> messages = list(store.messages)
+    >>> len(messages)
     1
-    >>> print msgs[0].as_string()
+    >>> print messages[0].as_string()
     Subject: An important message
     Message-ID: <87myycy5eh.fsf@uwakimon.sk.tsukuba.ac.jp>
-    X-List-ID-Hash: AGDWSNXXKCWEILKKNYTBOHRDQGOX3Y35
-    X-List-Sequence-Number: 1
+    X-Message-ID-Hash: AGDWSNXXKCWEILKKNYTBOHRDQGOX3Y35
     <BLANKLINE>
     This message is very important.
     <BLANKLINE>
@@ -124,20 +93,22 @@ contains.
 Deleting messages from the store
 --------------------------------
 
-The global relative ID is the key into the message store.  If you try to
-delete a global ID that isn't in the store, you get an exception.
+You delete a message from the storage service by providing the Message-ID for
+the message you want to delete.  If you try to delete a Message-ID that isn't
+in the store, you get an exception.
 
-    >>> store.delete_message('nothing')
+    >>> store.delete_message(u'nothing')
     Traceback (most recent call last):
     ...
-    KeyError: 'nothing'
+    LookupError: nothing
 
 But if you delete an existing message, it really gets deleted.
 
-    >>> store.delete_message(global_id)
+    >>> message_id = message['message-id']
+    >>> store.delete_message(message_id)
     >>> list(store.messages)
     []
-    >>> print store.get_message(global_id)
+    >>> print store.get_message_by_id(message_id)
     None
-    >>> list(store.get_messages_by_message_id(msg['message-id']))
-    []
+    >>> print store.get_message_by_hash(message['x-message-id-hash'])
+    None

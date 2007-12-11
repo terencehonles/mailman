@@ -36,7 +36,7 @@ the new Subject header because it gets converted from a string to an
 email.header.Header instance which has an unhelpful repr.
 
     >>> msgdata['origsubj']
-    ''
+    u''
     >>> print msg['subject']
     [XTest] (no subject)
 
@@ -52,7 +52,7 @@ the beginning of the header's value.
     >>> msgdata = {}
     >>> process(mlist, msg, msgdata)
     >>> msgdata['origsubj']
-    'Something important'
+    u'Something important'
     >>> print msg['subject']
     [XTest] Something important
 
