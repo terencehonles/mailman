@@ -15,7 +15,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-"""Built in rule processor."""
+"""The built in rule set."""
 
 __all__ = ['BuiltinRules']
 __metaclass__ = type
@@ -25,14 +25,15 @@ import os
 import sys
 
 from zope.interface import implements
-from Mailman.interfaces import DuplicateRuleError, IRule, IRuleProcessor
+from Mailman.interfaces import DuplicateRuleError, IRule, IRuleSet
 
 
 
 class BuiltinRules:
-    implements(IRuleProcessor)
+    implements(IRuleSet)
 
     def __init__(self):
+        """The set of all built-in rules."""
         self._rules = {}
         rule_set = set()
         # Find all rules found in all modules inside our package.
@@ -53,23 +54,16 @@ class BuiltinRules:
                     self._rules[rule.name] = rule
                     rule_set.add(rule)
 
-    def process(self, mlist, msg, msgdata):
-        """See `IRuleProcessor`."""
-        hits = set()
-        for rule in self._rules.values():
-            if rule.check(mlist, msg, msgdata):
-                hits.add(rule.name)
-        return hits
-
     def __getitem__(self, rule_name):
-        """See `IRuleProcessor`."""
+        """See `IRuleSet`."""
         return self._rules[rule_name]
 
     def get(self, rule_name, default=None):
-        """See `IRuleProcessor`."""
+        """See `IRuleSet`."""
         return self._rules.get(rule_name, default)
 
     @property
     def rules(self):
+        """See `IRuleSet`."""
         for rule in self._rules.values():
             yield rule

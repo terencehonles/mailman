@@ -42,17 +42,8 @@ class IRule(Interface):
 
 
 
-class IRuleProcessor(Interface):
+class IRuleSet(Interface):
     """A rule processor."""
-
-    def process(mlist, msg, msgdata):
-        """Run all rules this processor knows about.
-
-        :param mlist: The mailing list this message was posted to.
-        :param msg: The message object.
-        :param msgdata: The message metadata.
-        :return: A set of rule names that matched.
-        """
 
     rules = Attribute('The set of all rules this processor knows about')
 

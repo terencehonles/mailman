@@ -21,15 +21,26 @@ from Mailman.app.plugins import get_plugins
 
 
 
-def process(mlist, msg, msgdata):
+def process(mlist, msg, msgdata, rule_set=None):
     """Default rule processing plugin.
+
+    Rules are processed in random order so a rule should not permanently alter
+    a message or the message metadata.
 
     :param msg: The message object.
     :param msgdata: The message metadata.
+    :param rule_set: The name of the rules to run.  None (the default) means
+        to run all available rules.
     :return: A set of rule names that matched.
     """
-    rule_hits = set()
-    for processor_class in get_plugins('mailman.rules'):
-        processor = processor_class()
-        rule_hits |= processor.process(mlist, msg, msgdata)
-    return rule_hits
+    # Collect all rules from all rule processors.
+    rules = set()
+    for rule_set_class in get_plugins('mailman.rules'):
+        rules |= set(rule for rule in rule_set_class().rules
+                     if rule_set is None or rule.name in rule_set)
+    # Now process all rules, returning the set of rules that match.
+    rule_matches = set()
+    for rule in rules:
+        if rule.check(mlist, msg, msgdata):
+            rule_matches.add(rule.name)
+    return rule_matches
