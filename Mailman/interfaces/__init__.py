@@ -46,7 +46,12 @@ def _populate():
                 is_enum = issubclass(obj, Enum)
             except TypeError:
                 is_enum = False
-            if IInterface.providedBy(obj) or is_enum:
+            is_interface = IInterface.providedBy(obj)
+            try:
+                is_exception = issubclass(obj, Exception)
+            except TypeError:
+                is_exception = False
+            if is_interface or is_exception or is_enum:
                 setattr(iface_mod, name, obj)
                 __all__.append(name)
 

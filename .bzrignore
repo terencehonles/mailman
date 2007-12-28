@@ -5,7 +5,7 @@ cron/crontab.in
 dist/
 mailman.egg-info
 misc/mailman
-setuptoolsbzr-*.egg
+setuptools_bzr-*.egg
 staging
 TAGS
 var/
