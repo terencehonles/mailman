@@ -17,6 +17,11 @@
 
 """Process all rules defined by entry points."""
 
+__all__ = [
+    'find_rule',
+    'process',
+    ]
+
 from Mailman.app.plugins import get_plugins
 
 
@@ -24,8 +29,7 @@ from Mailman.app.plugins import get_plugins
 def process(mlist, msg, msgdata, rule_set=None):
     """Default rule processing plugin.
 
-    Rules are processed in random order so a rule should not permanently alter
-    a message or the message metadata.
+    Rules are processed in random order.
 
     :param msg: The message object.
     :param msgdata: The message metadata.
@@ -44,3 +48,17 @@ def process(mlist, msg, msgdata, rule_set=None):
         if rule.check(mlist, msg, msgdata):
             rule_matches.add(rule.name)
     return rule_matches
+
+
+
+def find_rule(rule_name):
+    """Find the named rule.
+
+    :param rule_name: The name of the rule to find.
+    :return: The named rule, or None if no such rule exists.
+    """
+    for rule_set_class in get_plugins('mailman.rules'):
+        rule = rule_set_class().get(rule_name)
+        if rule is not None:
+            return rule
+    return None

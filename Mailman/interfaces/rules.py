@@ -35,6 +35,7 @@ class IRule(Interface):
     def check(mlist, msg, msgdata):
         """Run the rule.
 
+        :param mlist: The mailing list object.
         :param msg: The message object.
         :param msgdata: The message metadata.
         :return: A boolean specifying whether the rule was matched or not.
@@ -45,7 +46,7 @@ class IRule(Interface):
 class IRuleSet(Interface):
     """A rule processor."""
 
-    rules = Attribute('The set of all rules this processor knows about')
+    rules = Attribute('The set of all rules this processor knows about.')
 
     def __getitem__(rule_name):
         """Return the named rule.

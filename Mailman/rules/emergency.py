@@ -17,7 +17,7 @@
 
 """The emergency hold rule."""
 
-__all__ = ['Emergency']
+__all__ = ['emergency_rule']
 __metaclass__ = type
 
 
