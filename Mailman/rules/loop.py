@@ -15,9 +15,9 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-"""The emergency hold rule."""
+"""Look for a posting loop."""
 
-__all__ = ['emergency_rule']
+__all__ = ['loop_rule']
 __metaclass__ = type
 
 
@@ -28,18 +28,20 @@ from Mailman.interfaces import IRule
 
 
 
-class Emergency:
-    """The emergency hold rule."""
+class Loop:
+    """Look for a posting loop."""
     implements(IRule)
 
-    name = 'emergency'
-    description = _("""\
-The mailing list is in emergency hold and this message was not pre-approved by
-the list administrator.""")
+    name = 'loop'
+    description = _("""Look for a posting loop, via the X-BeenThere header.""")
 
     def check(self, mlist, msg, msgdata):
         """See `IRule`."""
-        return mlist.emergency and not msgdata.get('adminapproved')
+        # Has this message already been posted to this list?
+        been_theres = [value.strip().lower()
+                       for value in msg.get_all('x-beenthere', [])]
+        return mlist.posting_address in been_theres
 
 
-emergency_rule = Emergency()
+
+loop_rule = Loop()

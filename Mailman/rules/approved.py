@@ -15,7 +15,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-"""Look for a matching Approve header."""
+"""Look for moderator pre-approval."""
 
 __all__ = ['approve_rule']
 __metaclass__ = type
@@ -34,6 +34,7 @@ EMPTYSTRING = u''
 
 
 class Approved:
+    """Look for moderator pre-approval."""
     implements(IRule)
 
     name = 'approved'
