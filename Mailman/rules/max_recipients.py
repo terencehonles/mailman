@@ -34,7 +34,7 @@ class MaximumRecipients:
     implements(IRule)
 
     name = 'max-recipients'
-    description = _('Catch messages with too many explicit recipients')
+    description = _('Catch messages with too many explicit recipients.')
 
     def check(self, mlist, msg, msgdata):
         """See `IRule`."""

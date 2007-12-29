@@ -19,7 +19,6 @@
 
 __all__ = [
     'bounce_message',
-    'has_explicit_destination',
     'has_matching_bounce_header',
     ]
 
@@ -62,56 +61,6 @@ def bounce_message(mlist, msg, e=None):
     bmsg.attach(txt)
     bmsg.attach(MIMEMessage(msg))
     bmsg.send(mlist)
-
-
-
-# Helper function used to match a pattern against an address.
-def _domatch(pattern, addr):
-    try:
-        if re.match(pattern, addr, re.IGNORECASE):
-            return True
-    except re.error:
-        # The pattern is a malformed regexp -- try matching safely,
-        # with all non-alphanumerics backslashed:
-        if re.match(re.escape(pattern), addr, re.IGNORECASE):
-            return True
-    return False
-
-
-def has_explicit_destination(mlist, msg):
-    """Does the list's name or an acceptable alias appear in the recipients?
-
-    :param mlist: The mailing list the message is destined for.
-    :param msg: The email message object.
-    :return: True if the message is explicitly destined for the mailing list,
-        otherwise False.
-    """
-    # Check all recipient addresses against the list's explicit addresses,
-    # specifically To: Cc: and Resent-to:
-    recipients = []
-    to = []
-    for header in ('to', 'cc', 'resent-to', 'resent-cc'):
-        to.extend(getaddresses(msg.get_all(header, [])))
-    for fullname, address in to:
-        # It's possible that if the header doesn't have a valid RFC 2822
-        # value, we'll get None for the address.  So skip it.
-        if address is None or '@' not in address:
-            continue
-        address = address.lower()
-        if address == mlist.posting_address:
-            return True
-        recipients.append(address)
-    # Match the set of recipients against the list's acceptable aliases.
-    aliases = mlist.acceptable_aliases.splitlines()
-    for address in recipients:
-        for alias in aliases:
-            stripped = alias.strip()
-            if not stripped:
-                # Ignore blank or empty lines
-                continue
-            if domatch(stripped, address):
-                return True
-    return False
 
 
 

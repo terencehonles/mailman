@@ -43,8 +43,7 @@ from Mailman import Errors
 from Mailman import Message
 from Mailman import Utils
 from Mailman import i18n
-from Mailman.app.bounces import (
-    has_explicit_destination, has_matching_bounce_header)
+from Mailman.app.bounces import has_matching_bounce_header
 from Mailman.app.moderator import hold_message
 from Mailman.app.replybot import autorespond_to_sender
 from Mailman.configuration import config
@@ -157,15 +156,6 @@ def process(mlist, msg, msgdata):
     # delivering.  This feature does not appear to be configurable.  *Boggle*.
     if not sender or sender[:len(listname)+6] == adminaddr:
         sender = msg.get_sender(use_envelope=0)
-    #
-    # Implicit destination?  Note that message originating from the Usenet
-    # side of the world should never be checked for implicit destination.
-    if mlist.require_explicit_destination and \
-           not has_explicit_destination(mlist, msg) and \
-           not msgdata.get('fromusenet'):
-        # then
-        hold_for_approval(mlist, msg, msgdata, ImplicitDestination)
-        # no return
     #
     # Suspicious headers?
     if mlist.bounce_matching_headers:

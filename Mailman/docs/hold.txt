@@ -57,42 +57,6 @@ handler returns immediately.
     {'approved': True}
 
 
-Implicit destination
---------------------
-
-Mailman will hold messages that have implicit destination, meaning that the
-mailing list's posting address isn't included in the explicit recipients.
-
-    >>> mlist.require_explicit_destination = True
-    >>> mlist.acceptable_aliases = u''
-    >>> msg = message_from_string("""\
-    ... From: aperson@example.org
-    ... Subject: An implicit message
-    ...
-    ... """)
-    >>> process(mlist, msg, {})
-    Traceback (most recent call last):
-    ...
-    ImplicitDestination
-    >>> clear()
-
-A message gated from NNTP will obviously have an implicit destination.  Such
-gated messages will not be held for implicit destination because it's assumed
-that Mailman pulled it from the appropriate news group.
-
-    >>> msgdata = {'fromusenet': True}
-    >>> process(mlist, msg, msgdata)
-    >>> print msg.as_string()
-    From: aperson@example.org
-    Subject: An implicit message
-    Message-ID: ...
-    X-Message-ID-Hash: ...
-    <BLANKLINE>
-    <BLANKLINE>
-    >>> print msgdata
-    {'fromusenet': True}
-
-
 Suspicious headers
 ------------------
 
@@ -154,165 +118,165 @@ value is calculated in terms of KB (1024 bytes).
     >>> clear()
 
 
-Hold Notifications
-------------------
-
-Whenever Mailman holds a message, it sends notifications both to the list
-owner and to the original sender, as long as it is configured to do so.  We
-can show this by first holding a message.
-
-    >>> mlist.respond_to_post_requests = True
-    >>> mlist.admin_immed_notify = True
-    >>> msg = message_from_string("""\
-    ... From: aperson@example.com
-    ...
-    ... """)
-    >>> process(mlist, msg, {})
-    Traceback (most recent call last):
-    ...
-    ImplicitDestination
-
-There should be two messages in the virgin queue, one to the list owner and
-one to the original author.
-
-    >>> len(switchboard.files)
-    2
-    >>> qfiles = {}
-    >>> for filebase in switchboard.files:
-    ...     qmsg, qdata = switchboard.dequeue(filebase)
-    ...     switchboard.finish(filebase)
-    ...     qfiles[qmsg['to']] = qmsg, qdata
-    >>> qmsg, qdata = qfiles['_xtest-owner@example.com']
-    >>> print qmsg.as_string()
-    Subject: _xtest post from aperson@example.com requires approval
-    From: _xtest-owner@example.com
-    To: _xtest-owner@example.com
-    MIME-Version: 1.0
-    Content-Type: multipart/mixed; boundary="..."
-    Message-ID: ...
-    Date: ...
-    Precedence: bulk
-    <BLANKLINE>
-    --...
-    Content-Type: text/plain; charset="us-ascii"
-    MIME-Version: 1.0
-    Content-Transfer-Encoding: 7bit
-    <BLANKLINE>
-    As list administrator, your authorization is requested for the
-    following mailing list posting:
-    <BLANKLINE>
-        List:    _xtest@example.com
-        From:    aperson@example.com
-        Subject: (no subject)
-        Reason:  Message has implicit destination
-    <BLANKLINE>
-    At your convenience, visit:
-    <BLANKLINE>
-        http://lists.example.com/admindb/_xtest@example.com
-    <BLANKLINE>
-    to approve or deny the request.
-    <BLANKLINE>
-    --...
-    Content-Type: message/rfc822
-    MIME-Version: 1.0
-    <BLANKLINE>
-    From: aperson@example.com
-    Message-ID: ...
-    X-Message-ID-Hash: ...
-    <BLANKLINE>
-    <BLANKLINE>
-    --...
-    Content-Type: message/rfc822
-    MIME-Version: 1.0
-    <BLANKLINE>
-    Content-Type: text/plain; charset="us-ascii"
-    MIME-Version: 1.0
-    Content-Transfer-Encoding: 7bit
-    Subject: confirm ...
-    Sender: _xtest-request@example.com
-    From: _xtest-request@example.com
-    Date: ...
-    Message-ID: ...
-    <BLANKLINE>
-    If you reply to this message, keeping the Subject: header intact,
-    Mailman will discard the held message.  Do this if the message is
-    spam.  If you reply to this message and include an Approved: header
-    with the list password in it, the message will be approved for posting
-    to the list.  The Approved: header can also appear in the first line
-    of the body of the reply.
-    --...
-    >>> sorted(qdata.items())
-    [('_parsemsg', False), ('listname', u'_xtest@example.com'),
-     ('nodecorate', True), ('received_time', ...),
-     ('recips', [u'_xtest-owner@example.com']),
-     ('reduced_list_headers', True),
-     ('tomoderators', 1), ('version', 3)]
-    >>> qmsg, qdata = qfiles['aperson@example.com']
-    >>> print qmsg.as_string()
-    MIME-Version: 1.0
-    Content-Type: text/plain; charset="us-ascii"
-    Content-Transfer-Encoding: 7bit
-    Subject: Your message to _xtest awaits moderator approval
-    From: _xtest-bounces@example.com
-    To: aperson@example.com
-    Message-ID: ...
-    Date: ...
-    Precedence: bulk
-    <BLANKLINE>
-    Your mail to '_xtest' with the subject
-    <BLANKLINE>
-        (no subject)
-    <BLANKLINE>
-    Is being held until the list moderator can review it for approval.
-    <BLANKLINE>
-    The reason it is being held:
-    <BLANKLINE>
-        Message has implicit destination
-    <BLANKLINE>
-    Either the message will get posted to the list, or you will receive
-    notification of the moderator's decision.  If you would like to cancel
-    this posting, please visit the following URL:
-    <BLANKLINE>
-        http://lists.example.com/confirm/_xtest@example.com/...
-    <BLANKLINE>
-    <BLANKLINE>
-    >>> sorted(qdata.items())
-    [('_parsemsg', False), ('listname', u'_xtest@example.com'),
-     ('nodecorate', True), ('received_time', ...),
-     ('recips', [u'aperson@example.com']),
-     ('reduced_list_headers', True), ('version', 3)]
-
-In addition, the pending database is holding the original messages, waiting
-for them to be disposed of by the original author or the list moderators.  The
-database is essentially a dictionary, with the keys being the randomly
-selected tokens included in the urls and the values being a 2-tuple where the
-first item is a type code and the second item is a message id.
-
-    >>> import re
-    >>> cookie = None
-    >>> qmsg, qdata = qfiles['aperson@example.com']
-    >>> for line in qmsg.get_payload().splitlines():
-    ...     mo = re.search('confirm/[^/]+/(?P<cookie>.*)$', line)
-    ...     if mo:
-    ...         cookie = mo.group('cookie')
-    ...         break
-    >>> data = config.db.pendings.confirm(cookie)
-    >>> sorted(data.items())
-    [(u'id', ...), (u'type', u'held message')]
-
-The message itself is held in the message store.
-
-    >>> rkey, rdata = config.db.requests.get_list_requests(mlist).get_request(
-    ...     data['id'])
-    >>> msg = config.db.message_store.get_message_by_id(
-    ...     rdata['_mod_message_id'])
-    >>> print msg.as_string()
-    From: aperson@example.com
-    Message-ID: ...
-    X-Message-ID-Hash: ...
-    <BLANKLINE>
-    <BLANKLINE>
- 
-Clean up.
-
-    >>> clear()
+X Hold Notifications
+X ------------------
+X 
+X Whenever Mailman holds a message, it sends notifications both to the list
+X owner and to the original sender, as long as it is configured to do so.  We
+X can show this by first holding a message.
+X 
+X     >>> mlist.respond_to_post_requests = True
+X     >>> mlist.admin_immed_notify = True
+X     >>> msg = message_from_string("""\
+X     ... From: aperson@example.com
+X     ...
+X     ... """)
+X     >>> process(mlist, msg, {})
+X     Traceback (most recent call last):
+X     ...
+X     ImplicitDestination
+X 
+X There should be two messages in the virgin queue, one to the list owner and
+X one to the original author.
+X 
+X     >>> len(switchboard.files)
+X     2
+X     >>> qfiles = {}
+X     >>> for filebase in switchboard.files:
+X     ...     qmsg, qdata = switchboard.dequeue(filebase)
+X     ...     switchboard.finish(filebase)
+X     ...     qfiles[qmsg['to']] = qmsg, qdata
+X     >>> qmsg, qdata = qfiles['_xtest-owner@example.com']
+X     >>> print qmsg.as_string()
+X     Subject: _xtest post from aperson@example.com requires approval
+X     From: _xtest-owner@example.com
+X     To: _xtest-owner@example.com
+X     MIME-Version: 1.0
+X     Content-Type: multipart/mixed; boundary="..."
+X     Message-ID: ...
+X     Date: ...
+X     Precedence: bulk
+X     <BLANKLINE>
+X     --...
+X     Content-Type: text/plain; charset="us-ascii"
+X     MIME-Version: 1.0
+X     Content-Transfer-Encoding: 7bit
+X     <BLANKLINE>
+X     As list administrator, your authorization is requested for the
+X     following mailing list posting:
+X     <BLANKLINE>
+X         List:    _xtest@example.com
+X         From:    aperson@example.com
+X         Subject: (no subject)
+X         Reason:  Message has implicit destination
+X     <BLANKLINE>
+X     At your convenience, visit:
+X     <BLANKLINE>
+X         http://lists.example.com/admindb/_xtest@example.com
+X     <BLANKLINE>
+X     to approve or deny the request.
+X     <BLANKLINE>
+X     --...
+X     Content-Type: message/rfc822
+X     MIME-Version: 1.0
+X     <BLANKLINE>
+X     From: aperson@example.com
+X     Message-ID: ...
+X     X-Message-ID-Hash: ...
+X     <BLANKLINE>
+X     <BLANKLINE>
+X     --...
+X     Content-Type: message/rfc822
+X     MIME-Version: 1.0
+X     <BLANKLINE>
+X     Content-Type: text/plain; charset="us-ascii"
+X     MIME-Version: 1.0
+X     Content-Transfer-Encoding: 7bit
+X     Subject: confirm ...
+X     Sender: _xtest-request@example.com
+X     From: _xtest-request@example.com
+X     Date: ...
+X     Message-ID: ...
+X     <BLANKLINE>
+X     If you reply to this message, keeping the Subject: header intact,
+X     Mailman will discard the held message.  Do this if the message is
+X     spam.  If you reply to this message and include an Approved: header
+X     with the list password in it, the message will be approved for posting
+X     to the list.  The Approved: header can also appear in the first line
+X     of the body of the reply.
+X     --...
+X     >>> sorted(qdata.items())
+X     [('_parsemsg', False), ('listname', u'_xtest@example.com'),
+X      ('nodecorate', True), ('received_time', ...),
+X      ('recips', [u'_xtest-owner@example.com']),
+X      ('reduced_list_headers', True),
+X      ('tomoderators', 1), ('version', 3)]
+X     >>> qmsg, qdata = qfiles['aperson@example.com']
+X     >>> print qmsg.as_string()
+X     MIME-Version: 1.0
+X     Content-Type: text/plain; charset="us-ascii"
+X     Content-Transfer-Encoding: 7bit
+X     Subject: Your message to _xtest awaits moderator approval
+X     From: _xtest-bounces@example.com
+X     To: aperson@example.com
+X     Message-ID: ...
+X     Date: ...
+X     Precedence: bulk
+X     <BLANKLINE>
+X     Your mail to '_xtest' with the subject
+X     <BLANKLINE>
+X         (no subject)
+X     <BLANKLINE>
+X     Is being held until the list moderator can review it for approval.
+X     <BLANKLINE>
+X     The reason it is being held:
+X     <BLANKLINE>
+X         Message has implicit destination
+X     <BLANKLINE>
+X     Either the message will get posted to the list, or you will receive
+X     notification of the moderator's decision.  If you would like to cancel
+X     this posting, please visit the following URL:
+X     <BLANKLINE>
+X         http://lists.example.com/confirm/_xtest@example.com/...
+X     <BLANKLINE>
+X     <BLANKLINE>
+X     >>> sorted(qdata.items())
+X     [('_parsemsg', False), ('listname', u'_xtest@example.com'),
+X      ('nodecorate', True), ('received_time', ...),
+X      ('recips', [u'aperson@example.com']),
+X      ('reduced_list_headers', True), ('version', 3)]
+X 
+X In addition, the pending database is holding the original messages, waiting
+X for them to be disposed of by the original author or the list moderators.  The
+X database is essentially a dictionary, with the keys being the randomly
+X selected tokens included in the urls and the values being a 2-tuple where the
+X first item is a type code and the second item is a message id.
+X 
+X     >>> import re
+X     >>> cookie = None
+X     >>> qmsg, qdata = qfiles['aperson@example.com']
+X     >>> for line in qmsg.get_payload().splitlines():
+X     ...     mo = re.search('confirm/[^/]+/(?P<cookie>.*)$', line)
+X     ...     if mo:
+X     ...         cookie = mo.group('cookie')
+X     ...         break
+X     >>> data = config.db.pendings.confirm(cookie)
+X     >>> sorted(data.items())
+X     [(u'id', ...), (u'type', u'held message')]
+X 
+X The message itself is held in the message store.
+X 
+X     >>> rkey, rdata = config.db.requests.get_list_requests(mlist).get_request(
+X     ...     data['id'])
+X     >>> msg = config.db.message_store.get_message_by_id(
+X     ...     rdata['_mod_message_id'])
+X     >>> print msg.as_string()
+X     From: aperson@example.com
+X     Message-ID: ...
+X     X-Message-ID-Hash: ...
+X     <BLANKLINE>
+X     <BLANKLINE>
+X  
+X Clean up.
+X 
+X     >>> clear()
