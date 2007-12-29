@@ -57,27 +57,6 @@ handler returns immediately.
     {'approved': True}
 
 
-Administrivia
--------------
-
-Mailman scans parts of the message for administrivia, meaning text that looks
-like an email command.  This is to prevent people sending 'help' or
-'subscribe' message, etc. to the list members.  First, we enable the scanning
-of administrivia for the list.
-
-    >>> mlist.administrivia = True
-    >>> msg = message_from_string("""\
-    ... From: aperson@example.com
-    ... Subject: unsubscribe
-    ...
-    ... """)
-    >>> process(mlist, msg, {})
-    Traceback (most recent call last):
-    ...
-    Administrivia
-    >>> clear()
-
-
 Maximum number of recipients
 ----------------------------
 

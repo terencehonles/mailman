@@ -922,7 +922,7 @@ ${web_page_url}listinfo${cgiext}/${list_name}
 DEFAULT_SCRUB_NONDIGEST = False
 
 # Mail command processor will ignore mail command lines after designated max.
-DEFAULT_MAIL_COMMANDS_MAX_LINES = 25
+EMAIL_COMMANDS_MAX_LINES = 10
 
 # Is the list owner notified of admin requests immediately by mail, as well as
 # by daily pending-request reminder?

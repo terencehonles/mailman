@@ -158,11 +158,6 @@ def process(mlist, msg, msgdata):
     if not sender or sender[:len(listname)+6] == adminaddr:
         sender = msg.get_sender(use_envelope=0)
     #
-    # Possible administrivia?
-    if mlist.administrivia and Utils.is_administrivia(msg):
-        hold_for_approval(mlist, msg, msgdata, Administrivia)
-        # no return
-    #
     # Are there too many recipients to the message?
     if mlist.max_num_recipients > 0:
         # figure out how many recipients there are

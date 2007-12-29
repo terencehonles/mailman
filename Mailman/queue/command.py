@@ -88,8 +88,8 @@ class Results:
         assert isinstance(body, basestring)
         lines = body.splitlines()
         # Use no more lines than specified
-        self.commands.extend(lines[:config.DEFAULT_MAIL_COMMANDS_MAX_LINES])
-        self.ignored.extend(lines[config.DEFAULT_MAIL_COMMANDS_MAX_LINES:])
+        self.commands.extend(lines[:config.EMAIL_COMMANDS_MAX_LINES])
+        self.ignored.extend(lines[config.EMAIL_COMMANDS_MAX_LINES:])
 
     def process(self):
         # Now, process each line until we find an error.  The first
