@@ -158,15 +158,6 @@ def process(mlist, msg, msgdata):
     if not sender or sender[:len(listname)+6] == adminaddr:
         sender = msg.get_sender(use_envelope=0)
     #
-    # Are there too many recipients to the message?
-    if mlist.max_num_recipients > 0:
-        # figure out how many recipients there are
-        recips = email.utils.getaddresses(msg.get_all('to', []) +
-                                          msg.get_all('cc', []))
-        if len(recips) >= mlist.max_num_recipients:
-            hold_for_approval(mlist, msg, msgdata, TooManyRecipients)
-            # no return
-    #
     # Implicit destination?  Note that message originating from the Usenet
     # side of the world should never be checked for implicit destination.
     if mlist.require_explicit_destination and \

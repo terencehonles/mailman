@@ -57,29 +57,6 @@ handler returns immediately.
     {'approved': True}
 
 
-Maximum number of recipients
-----------------------------
-
-Mailman will hold messages that have more than a specified number of explicit
-recipients.
-
-    >>> mlist.max_num_recipients = 5
-    >>> msg = message_from_string("""\
-    ... From: aperson@example.com
-    ... To: _xtest@example.com, bperson@example.com
-    ... Cc: cperson@example.com
-    ... Cc: dperson@example.com (Dan Person)
-    ... To: Elly Q. Person <eperson@example.com>
-    ...
-    ... Hey folks!
-    ... """)
-    >>> process(mlist, msg, {})
-    Traceback (most recent call last):
-    ...
-    TooManyRecipients
-    >>> clear()
-
-
 Implicit destination
 --------------------
 
