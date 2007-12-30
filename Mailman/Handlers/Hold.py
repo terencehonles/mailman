@@ -43,7 +43,6 @@ from Mailman import Errors
 from Mailman import Message
 from Mailman import Utils
 from Mailman import i18n
-from Mailman.app.bounces import has_matching_bounce_header
 from Mailman.app.moderator import hold_message
 from Mailman.app.replybot import autorespond_to_sender
 from Mailman.configuration import config
@@ -156,15 +155,6 @@ def process(mlist, msg, msgdata):
     # delivering.  This feature does not appear to be configurable.  *Boggle*.
     if not sender or sender[:len(listname)+6] == adminaddr:
         sender = msg.get_sender(use_envelope=0)
-    #
-    # Suspicious headers?
-    if mlist.bounce_matching_headers:
-        triggered = has_matching_bounce_header(mlist, msg)
-        if triggered:
-            # TBD: Darn - can't include the matching line for the admin
-            # message because the info would also go to the sender
-            hold_for_approval(mlist, msg, msgdata, SuspiciousHeaders)
-            # no return
 
 
 

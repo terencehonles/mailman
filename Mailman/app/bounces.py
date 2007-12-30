@@ -19,7 +19,6 @@
 
 __all__ = [
     'bounce_message',
-    'has_matching_bounce_header',
     ]
 
 import re
@@ -61,52 +60,3 @@ def bounce_message(mlist, msg, e=None):
     bmsg.attach(txt)
     bmsg.attach(MIMEMessage(msg))
     bmsg.send(mlist)
-
-
-
-def _parse_matching_header_opt(mlist):
-    """Return a list of triples [(field name, regex, line), ...]."""
-    # - Blank lines and lines with '#' as first char are skipped.
-    # - Leading whitespace in the matchexp is trimmed - you can defeat
-    #   that by, eg, containing it in gratuitous square brackets.
-    all = []
-    for line in mlist.bounce_matching_headers.splitlines():
-        line = line.strip()
-        # Skip blank lines and lines *starting* with a '#'.
-        if not line or line.startswith('#'):
-            continue
-        i = line.find(':')
-        if i < 0:
-            # This didn't look like a header line.  BAW: should do a
-            # better job of informing the list admin.
-            log.error('bad bounce_matching_header line: %s\n%s',
-                      mlist.real_name, line)
-        else:
-            header = line[:i]
-            value = line[i+1:].lstrip()
-            try:
-                cre = re.compile(value, re.IGNORECASE)
-            except re.error, e:
-                # The regexp was malformed.  BAW: should do a better
-                # job of informing the list admin.
-                log.error("""\
-bad regexp in bounce_matching_header line: %s
-\n%s (cause: %s)""", mlist.real_name, value, e)
-            else:
-                all.append((header, cre, line))
-    return all
-
-
-def has_matching_bounce_header(mlist, msg):
-    """Does the message have a matching bounce header?
-
-    :param mlist: The mailing list the message is destined for.
-    :param msg: The email message object.
-    :return: True if a header field matches a regexp in the
-        bounce_matching_header mailing list variable.
-    """
-    for header, cre, line in _parse_matching_header_opt(mlist):
-        for value in msg.get_all(header, []):
-            if cre.search(value):
-                return True
-    return False
