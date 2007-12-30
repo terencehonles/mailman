@@ -165,10 +165,6 @@ def process(mlist, msg, msgdata):
             # message because the info would also go to the sender
             hold_for_approval(mlist, msg, msgdata, SuspiciousHeaders)
             # no return
-    # Are we gatewaying to a moderated newsgroup and is this list the
-    # moderator's address for the group?
-    if mlist.news_moderation == 2:
-        hold_for_approval(mlist, msg, msgdata, ModeratedNewsgroup)
 
 
 
