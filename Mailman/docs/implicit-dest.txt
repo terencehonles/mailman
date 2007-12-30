@@ -11,7 +11,7 @@ not explicitly mentioned in the set of message recipients.
     >>> rule.name
     'implicit-dest'
 
-Mailman will hold messages that have implicit destination, meaning that the
+This rule matches messages that have implicit destination, meaning that the
 mailing list's posting address isn't included in the explicit recipients.
 
     >>> mlist.require_explicit_destination = True

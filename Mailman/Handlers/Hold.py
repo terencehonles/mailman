@@ -165,22 +165,6 @@ def process(mlist, msg, msgdata):
             # message because the info would also go to the sender
             hold_for_approval(mlist, msg, msgdata, SuspiciousHeaders)
             # no return
-    #
-    # Is the message too big?
-    if mlist.max_message_size > 0:
-        bodylen = 0
-        for line in email.Iterators.body_line_iterator(msg):
-            bodylen += len(line)
-        for part in msg.walk():
-            if part.preamble:
-                bodylen += len(part.preamble)
-            if part.epilogue:
-                bodylen += len(part.epilogue)
-        if bodylen/1024.0 > mlist.max_message_size:
-            hold_for_approval(mlist, msg, msgdata,
-                              MessageTooBig(bodylen, mlist.max_message_size))
-            # no return
-    #
     # Are we gatewaying to a moderated newsgroup and is this list the
     # moderator's address for the group?
     if mlist.news_moderation == 2:

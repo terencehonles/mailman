@@ -96,28 +96,6 @@ Just a bit of clean up.
     >>> mlist.bounce_matching_headers = None
 
 
-Message size
-------------
-
-Mailman can hold messages that are bigger than a given size.  Generally this
-is used to prevent huge attachments from getting posted to the list.  This
-value is calculated in terms of KB (1024 bytes).
-
-    >>> mlist.max_message_size = 1
-    >>> one_line = 'x' * 79
-    >>> big_body = '\n'.join([one_line] * 15)
-    >>> msg = message_from_string("""\
-    ... From: aperson@example.com
-    ... To: _xtest@example.com
-    ...
-    ... """ + big_body)
-    >>> process(mlist, msg, {})
-    Traceback (most recent call last):
-    ...
-    MessageTooBig
-    >>> clear()
-
-
 X Hold Notifications
 X ------------------
 X 

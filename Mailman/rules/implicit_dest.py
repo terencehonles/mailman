@@ -23,7 +23,6 @@ __metaclass__ = type
 
 import re
 from email.utils import getaddresses
-from itertools import chain
 from zope.interface import implements
 
 from Mailman.i18n import _

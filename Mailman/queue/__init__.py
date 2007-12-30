@@ -140,7 +140,13 @@ class Switchboard:
             msg = cPickle.load(fp)
             data = cPickle.load(fp)
         if data.get('_parsemsg'):
+            # Calculate the original size of the text now so that we won't
+            # have to generate the message later when we do size restriction
+            # checking.
+            original_size = len(msg)
             msg = email.message_from_string(msg, Message.Message)
+            msg.original_size = original_size
+            data['original_size'] = original_size
         return msg, data
 
     def finish(self, filebase, preserve=False):
