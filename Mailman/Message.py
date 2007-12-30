@@ -58,7 +58,10 @@ class Message(email.message.Message):
         return value
 
     def get_all(self, name, failobj=None):
-        all_values = email.message.Message.get_all(self, name, failobj)
+        missing = object()
+        all_values = email.message.Message.get_all(self, name, missing)
+        if all_values is missing:
+            return failobj
         return [(unicode(value, 'ascii') if isinstance(value, str) else value)
                 for value in all_values]
 

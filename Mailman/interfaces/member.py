@@ -78,6 +78,9 @@ class IMember(Interface):
     role = Attribute(
         """The role of this membership.""")
 
+    is_moderated = Attribute(
+        """True if the membership is moderated, otherwise False.""")
+
     def unsubscribe():
         """Unsubscribe (and delete) this member from the mailing list."""
 

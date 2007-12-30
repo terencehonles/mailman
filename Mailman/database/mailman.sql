@@ -145,6 +145,7 @@ CREATE TABLE member (
         id INTEGER NOT NULL,
         role TEXT,
         mailing_list TEXT,
+        is_moderated BOOLEAN,
         address_id INTEGER,
         preferences_id INTEGER,
         PRIMARY KEY (id),
