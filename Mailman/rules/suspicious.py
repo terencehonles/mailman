@@ -17,7 +17,7 @@
 
 """The historical 'suspicious header' rule."""
 
-__all__ = ['suspicious_header']
+__all__ = ['SuspiciousHeader']
 __metaclass__ = type
 
 
@@ -90,7 +90,3 @@ def has_matching_bounce_header(mlist, msg):
             if cre.search(value):
                 return True
     return False
-
-
-
-suspicious_header = SuspiciousHeader()

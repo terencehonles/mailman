@@ -17,7 +17,7 @@
 
 """The maximum number of recipients rule."""
 
-__all__ = ['max_recipients_rule']
+__all__ = ['MaximumRecipients']
 __metaclass__ = type
 
 
@@ -45,7 +45,3 @@ class MaximumRecipients:
         recipients = getaddresses(msg.get_all('to', []) +
                                   msg.get_all('cc', []))
         return len(recipients) >= mlist.max_num_recipients
-
-
-
-max_recipients_rule = MaximumRecipients()

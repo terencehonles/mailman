@@ -17,7 +17,7 @@
 
 """The emergency hold rule."""
 
-__all__ = ['emergency_rule']
+__all__ = ['Emergency']
 __metaclass__ = type
 
 
@@ -40,6 +40,3 @@ the list administrator.""")
     def check(self, mlist, msg, msgdata):
         """See `IRule`."""
         return mlist.emergency and not msgdata.get('adminapproved')
-
-
-emergency_rule = Emergency()

@@ -17,7 +17,7 @@
 
 """The news moderation rule."""
 
-__all__ = ['news_moderation']
+__all__ = ['ModeratedNewsgroup']
 __metaclass__ = type
 
 
@@ -40,7 +40,3 @@ newsgroup.""")
     def check(self, mlist, msg, msgdata):
         """See `IRule`."""
         return mlist.news_moderation == NewsModeration.moderated
-
-
-
-news_moderation = ModeratedNewsgroup()

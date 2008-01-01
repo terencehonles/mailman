@@ -17,7 +17,7 @@
 
 """Look for moderator pre-approval."""
 
-__all__ = ['approve_rule']
+__all__ = ['Approved']
 __metaclass__ = type
 
 
@@ -114,7 +114,3 @@ def reset_payload(part, payload):
         part.set_param('Format', format)
     if delsp:
         part.set_param('DelSp', delsp)
-
-
-
-approve_rule = Approved()

@@ -17,7 +17,7 @@
 
 """The maximum message size rule."""
 
-__all__ = ['max_size']
+__all__ = ['MaximumSize']
 __metaclass__ = type
 
 
@@ -43,7 +43,3 @@ class MaximumSize:
             'Message was not sized on initial parsing.')
         # The maximum size is specified in 1024 bytes.
         return msg.original_size / 1024.0 > mlist.max_message_size
-
-
-
-max_size = MaximumSize()

@@ -17,7 +17,7 @@
 
 """Look for a posting loop."""
 
-__all__ = ['loop_rule']
+__all__ = ['Loop']
 __metaclass__ = type
 
 
@@ -41,7 +41,3 @@ class Loop:
         been_theres = [value.strip().lower()
                        for value in msg.get_all('x-beenthere', [])]
         return mlist.posting_address in been_theres
-
-
-
-loop_rule = Loop()

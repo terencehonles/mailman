@@ -17,7 +17,7 @@
 
 """The administrivia rule."""
 
-__all__ = ['administrivia_rule']
+__all__ = ['Administrivia']
 __metaclass__ = type
 
 
@@ -95,8 +95,3 @@ class Administrivia:
             if minargs <= len(words) - 1 <= maxargs:
                 return True
         return False
-
-
-
-administrivia_rule = Administrivia()
-

@@ -17,7 +17,7 @@
 
 """The implicit destination rule."""
 
-__all__ = ['implicit_dest']
+__all__ = ['ImplicitDestination']
 __metaclass__ = type
 
 
@@ -92,7 +92,3 @@ class ImplicitDestination:
                         pass
         # Nothing matched.
         return True
-
-
-
-implicit_dest = ImplicitDestination()

@@ -17,7 +17,7 @@
 
 """The no-Subject header rule."""
 
-__all__ = ['no_subject_rule']
+__all__ = ['NoSubject']
 __metaclass__ = type
 
 
@@ -39,7 +39,3 @@ class NoSubject:
         """See `IRule`."""
         subject = msg.get('subject', '').strip()
         return subject == ''
-
-
-
-no_subject_rule = NoSubject()

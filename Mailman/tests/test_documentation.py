@@ -31,6 +31,7 @@ from Mailman.app.styles import style_manager
 from Mailman.configuration import config
 
 
+DOT = '.'
 COMMASPACE = ', '
 
 
@@ -78,7 +79,12 @@ def cleaning_teardown(testobj):
 
 def test_suite():
     suite = unittest.TestSuite()
-    docsdir = os.path.join(os.path.dirname(Mailman.__file__), 'docs')
+    topdir = os.path.dirname(Mailman.__file__)
+    packages = []
+    for dirpath, dirnames, filenames in os.walk(topdir):
+        if 'docs' in dirnames:
+            docsdir = os.path.join(dirpath, 'docs')[len(topdir)+1:]
+            packages.append(docsdir)
     # Under higher verbosity settings, report all doctest errors, not just the
     # first one.
     flags = (doctest.ELLIPSIS |
@@ -86,13 +92,15 @@ def test_suite():
              doctest.REPORT_NDIFF)
     if config.opts.verbosity <= 2:
         flags |= doctest.REPORT_ONLY_FIRST_FAILURE
-    for filename in os.listdir(docsdir):
-        if os.path.splitext(filename)[1] == '.txt':
-            test = doctest.DocFileSuite(
-                'docs/' + filename,
-                package=Mailman,
-                optionflags=flags,
-                setUp=setup,
-                tearDown=cleaning_teardown)
-            suite.addTest(test)
+    # Add all the doctests in all subpackages.
+    for docsdir in packages:
+        for filename in os.listdir(os.path.join('Mailman', docsdir)):
+            if os.path.splitext(filename)[1] == '.txt':
+                test = doctest.DocFileSuite(
+                    os.path.join(docsdir, filename),
+                    package='Mailman',
+                    optionflags=flags,
+                    setUp=setup,
+                    tearDown=cleaning_teardown)
+                suite.addTest(test)
     return suite

@@ -44,11 +44,11 @@ class BuiltinRules:
             if extension <> '.py':
                 continue
             module_name = mypackage + '.' + basename
-            __import__(module_name)
+            __import__(module_name, fromlist='*')
             module = sys.modules[module_name]
-            for name in dir(module):
+            for name in module.__all__:
                 rule = getattr(module, name)
-                if IRule.providedBy(rule):
+                if IRule.implementedBy(rule):
                     if rule.name in self._rules or rule in rule_set:
                         raise DuplicateRuleError(rule.name)
                     self._rules[rule.name] = rule

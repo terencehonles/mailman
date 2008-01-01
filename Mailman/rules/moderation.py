@@ -18,8 +18,8 @@
 """Membership related rules."""
 
 __all__ = [
-    'moderation_rule',
-    'nonmember_rule',
+    'Moderation',
+    'NonMember',
     ]
 __metaclass__ = type
 
@@ -62,8 +62,3 @@ class NonMember:
                 # The sender is a member of the mailing list.
                 return False
         return True
-
-
-
-moderation_rule = Moderation()
-nonmember_rule = NonMember()
