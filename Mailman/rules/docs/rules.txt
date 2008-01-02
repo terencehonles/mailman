@@ -13,7 +13,7 @@ only the rule processing system.
 
 
 Rule sets
-=========
+---------
 
 IRuleSet is the interface that describes a set of rules.  Mailman can be
 extended by plugging in additional rule sets, but it also comes with a default
@@ -32,7 +32,6 @@ You can iterator over all the rules in a rule set.
     >>> rule = None
     >>> for rule in rule_set.rules:
     ...     if rule.name == 'emergency':
-    ...         rule = rule()
     ...         break
     >>> verifyObject(IRule, rule)
     True
@@ -81,7 +80,7 @@ For example, the emergency rule just checks to see if the emergency flag is
 set on the mailing list, and the message has not been pre-approved by the list
 administrator.
 
-    >>> rule = rule_set['emergency']()
+    >>> rule = rule_set['emergency']
     >>> rule.name
     'emergency'
     >>> mlist.emergency = False

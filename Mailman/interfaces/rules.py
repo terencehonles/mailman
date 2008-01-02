@@ -17,22 +17,7 @@
 
 """Interface describing the basics of rules."""
 
-from munepy import Enum
 from zope.interface import Interface, Attribute
-
-
-
-class ChainJump(Enum):
-    # Allow the next rule in the chain to be run.
-    defer = 0
-    # Jump to the 'accept' chain.
-    accept = 1
-    # Jump to the 'hold' chain.
-    hold = 2
-    # Jump to the 'reject' chain.
-    reject = 3
-    # Jump to the 'discard' chain.
-    discard = 4
 
 
 
@@ -57,7 +42,6 @@ class IRule(Interface):
         :param mlist: The mailing list object.
         :param msg: The message object.
         :param msgdata: The message metadata.
-        :return: A chain to jump to, i.e. an ChainJump enum.
         """
 
 

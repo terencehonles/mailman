@@ -45,7 +45,7 @@ def process(mlist, msg, msgdata, rule_set=None):
     # Now process all rules, returning the set of rules that match.
     rule_matches = set()
     for rule in rules:
-        if rule().check(mlist, msg, msgdata):
+        if rule.check(mlist, msg, msgdata):
             rule_matches.add(rule.name)
     return rule_matches
 
@@ -60,5 +60,5 @@ def find_rule(rule_name):
     for rule_set_class in get_plugins('mailman.rules'):
         rule = rule_set_class().get(rule_name)
         if rule is not None:
-            return rule()
+            return rule
     return None

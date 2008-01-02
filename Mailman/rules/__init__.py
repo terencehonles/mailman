@@ -56,14 +56,18 @@ class BuiltinRules:
 
     def __getitem__(self, rule_name):
         """See `IRuleSet`."""
-        return self._rules[rule_name]
+        return self._rules[rule_name]()
 
     def get(self, rule_name, default=None):
         """See `IRuleSet`."""
-        return self._rules.get(rule_name, default)
+        missing = object()
+        rule = self._rules.get(rule_name, missing)
+        if rule is missing:
+            return default
+        return rule()
 
     @property
     def rules(self):
         """See `IRuleSet`."""
         for rule in self._rules.values():
-            yield rule
+            yield rule()
