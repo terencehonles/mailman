@@ -91,7 +91,6 @@ Any other spelling is incorrect.""",
         },
     # Third-party requirements.
     install_requires = [
-        'SQLAlchemy',
         'locknix',
         'munepy',
         'storm',
