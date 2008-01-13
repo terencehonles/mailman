@@ -1,4 +1,4 @@
-# Copyright (C) 2007 Barry A. Warsaw
+# Copyright (C) 2007-2008 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the Free
@@ -98,6 +98,6 @@ Any other spelling is incorrect.""",
         'zope.interface',
         ],
     setup_requires = [
-        'setuptoolsbzr',
+        'setuptools_bzr',
         ],
     )
