@@ -59,9 +59,9 @@ this is an unfortunate double negative).
     ... 
     ... R0lGODdhAQABAIAAAAAAAAAAACwAAAAAAQABAAACAQUAOw==
     ... """)
-    >>> save_attachment(mlist, msg, '')
-    u'<http://www.example.com/pipermail/_xtest@example.com//xtest.gif>'
-    >>> data = read_attachment('xtest.gif')
+    >>> save_attachment(mlist, msg, 'dir')
+    u'<http://www.example.com/pipermail/_xtest@example.com/dir/xtest.gif>'
+    >>> data = read_attachment('dir/xtest.gif')
     >>> data[:6]
     'GIF87a'
     >>> len(data)
@@ -88,13 +88,13 @@ the Defaults.py.in file.
     ... 
     ... R0lGODdhAQABAIAAAAAAAAAAACwAAAAAAQABAAACAQUAOw==
     ... """)
-    >>> save_attachment(mlist, msg, '')
-    u'<http://www.example.com/pipermail/_xtest@example.com/.../attachment.gif>'
-    >>> data = read_attachment('xtest.gif')
+    >>> save_attachment(mlist, msg, 'dir')
+    u'<http://www.example.com/pipermail/_xtest@example.com/dir/attachment.gif>'
+    >>> data = read_attachment('dir/xtest.gif')
     Traceback (most recent call last):
     IOError: [Errno ...] No such file or directory:
-        u'.../archives/private/_xtest@example.com/xtest.gif'
-    >>> data = read_attachment('attachment.gif')
+        u'.../archives/private/_xtest@example.com/dir/xtest.gif'
+    >>> data = read_attachment('dir/attachment.gif')
     >>> data[:6]
     'GIF87a'
     >>> len(data)
