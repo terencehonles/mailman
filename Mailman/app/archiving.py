@@ -18,7 +18,7 @@
 """Application level archiving support."""
 
 __all__ = [
-    'StockArchiver',
+    'Pipermail',
     'get_archiver',
     ]
 __metaclass__ = type
@@ -34,7 +34,7 @@ from Mailman.interfaces import IArchiver
 
 
 
-class StockArchiver:
+class Pipermail:
     """The stock Pipermail archiver."""
 
     implements(IArchiver)

@@ -84,7 +84,7 @@ Any other spelling is incorrect.""",
         'console_scripts': list(scripts),
         'setuptools.file_finders': 'bzr = setuptools_bzr:find_files_for_bzr',
         # Entry point for plugging in different database backends.
-        'mailman.archiver'  : 'stock = Mailman.app.archiving:StockArchiver',
+        'mailman.archiver'  : 'stock = Mailman.app.archiving:Pipermail',
         'mailman.database'  : 'stock = Mailman.database:StockDatabase',
         'mailman.mta'       : 'stock = Mailman.MTA:Manual',
         'mailman.styles'    : 'default = Mailman.app.styles:DefaultStyle',
