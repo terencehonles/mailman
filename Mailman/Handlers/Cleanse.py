@@ -54,3 +54,5 @@ def process(mlist, msg, msgdata):
     del msg['x-confirm-reading-to']
     # Pegasus mail uses this one... sigh
     del msg['x-pmrqc']
+    # Don't let this header be spoofed.  See RFC 5064.
+    del msg['archived-at']

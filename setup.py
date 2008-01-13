@@ -82,11 +82,12 @@ Any other spelling is incorrect.""",
     include_package_data = True,
     entry_points    = {
         'console_scripts': list(scripts),
-        'setuptools.file_finders': 'bzr = setuptoolsbzr:find_files_for_bzr',
+        'setuptools.file_finders': 'bzr = setuptools_bzr:find_files_for_bzr',
         # Entry point for plugging in different database backends.
+        'mailman.archiver'  : 'stock = Mailman.app.archiving:StockArchiver',
         'mailman.database'  : 'stock = Mailman.database:StockDatabase',
-        'mailman.styles'    : 'default = Mailman.app.styles:DefaultStyle',
         'mailman.mta'       : 'stock = Mailman.MTA:Manual',
+        'mailman.styles'    : 'default = Mailman.app.styles:DefaultStyle',
         },
     # Third-party requirements.
     install_requires = [
