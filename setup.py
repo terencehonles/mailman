@@ -86,7 +86,7 @@ Any other spelling is incorrect.""",
         'mailman.database'  : 'stock = Mailman.database:StockDatabase',
         'mailman.styles'    : 'default = Mailman.app.styles:DefaultStyle',
         'mailman.mta'       : 'stock = Mailman.MTA:Manual',
-        'mailman.rules'     : 'default = Mailman.rules:BuiltinRules',
+        'mailman.rules'     : 'default = Mailman.rules:initialize',
         },
     # Third-party requirements.
     install_requires = [

@@ -31,7 +31,9 @@ from zope.interface.verify import verifyObject
 import Mailman.configuration
 import Mailman.loginit
 
+from Mailman.app.chains import initialize as initialize_chains
 from Mailman.app.plugins import get_plugin
+from Mailman.app.rules import initialize as initialize_rules
 from Mailman.interfaces import IDatabase
 
 
@@ -63,6 +65,9 @@ def initialize_2(debug=False):
     verifyObject(IDatabase, database)
     database.initialize(debug)
     Mailman.configuration.config.db = database
+    # Initialize the rules and chains.
+    initialize_rules()
+    initialize_chains()
 
 
 def initialize(config_path=None, propagate_logs=False):

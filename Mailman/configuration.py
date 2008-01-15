@@ -128,17 +128,18 @@ class Configuration(object):
         self.PRIVATE_ARCHIVE_FILE_DIR = join(VAR_DIR, 'archives', 'private')
         # Directories used by the qrunner subsystem
         self.QUEUE_DIR = qdir   = join(VAR_DIR, 'qfiles')
-        self.INQUEUE_DIR        = join(qdir, 'in')
-        self.OUTQUEUE_DIR       = join(qdir, 'out')
-        self.CMDQUEUE_DIR       = join(qdir, 'commands')
-        self.BOUNCEQUEUE_DIR    = join(qdir, 'bounces')
-        self.NEWSQUEUE_DIR      = join(qdir, 'news')
         self.ARCHQUEUE_DIR      = join(qdir, 'archive')
+        self.BADQUEUE_DIR       = join(qdir, 'bad')
+        self.BOUNCEQUEUE_DIR    = join(qdir, 'bounces')
+        self.CMDQUEUE_DIR       = join(qdir, 'commands')
+        self.INQUEUE_DIR        = join(qdir, 'in')
+        self.MAILDIR_DIR        = join(qdir, 'maildir')
+        self.NEWSQUEUE_DIR      = join(qdir, 'news')
+        self.OUTQUEUE_DIR       = join(qdir, 'out')
+        self.PREPQUEUE_DIR      = join(qdir, 'prepare')
+        self.RETRYQUEUE_DIR     = join(qdir, 'retry')
         self.SHUNTQUEUE_DIR     = join(qdir, 'shunt')
         self.VIRGINQUEUE_DIR    = join(qdir, 'virgin')
-        self.BADQUEUE_DIR       = join(qdir, 'bad')
-        self.RETRYQUEUE_DIR     = join(qdir, 'retry')
-        self.MAILDIR_DIR        = join(qdir, 'maildir')
         self.MESSAGES_DIR       = join(VAR_DIR, 'messages')
         # Other useful files
         self.PIDFILE                = join(datadir, 'master-qrunner.pid')
@@ -174,6 +175,9 @@ class Configuration(object):
         # Always add and enable the default server language.
         code = self.DEFAULT_SERVER_LANGUAGE
         self.languages.enable_language(code)
+        # Create the registry of rules and chains.
+        self.chains = {}
+        self.rules = {}
 
     def add_domain(self, email_host, url_host=None):
         """Add a virtual domain.

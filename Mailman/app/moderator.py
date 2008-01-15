@@ -51,6 +51,18 @@ slog = logging.getLogger('mailman.subscribe')
 
 
 def hold_message(mlist, msg, msgdata=None, reason=None):
+    """Hold a message for moderator approval.
+
+    The message is added to the mailing list's request database.
+
+    :param mlist: The mailing list to hold the message on.
+    :param msg: The message to hold.
+    :param msgdata: Optional message metadata to hold.  If not given, a new
+        metadata dictionary is created and held with the message.
+    :param reason: Optional string reason why the message is being held.  If
+        not given, the empty string is used.
+    :return: An id used to handle the held message later.
+    """
     if msgdata is None:
         msgdata = {}
     else:

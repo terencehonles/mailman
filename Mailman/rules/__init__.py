@@ -17,57 +17,34 @@
 
 """The built in rule set."""
 
-__all__ = ['BuiltinRules']
+__all__ = ['initialize']
 __metaclass__ = type
 
 
 import os
 import sys
 
-from zope.interface import implements
-from Mailman.interfaces import DuplicateRuleError, IRule, IRuleSet
+from Mailman.interfaces import IRule
 
 
 
-class BuiltinRules:
-    implements(IRuleSet)
+def initialize():
+    """Initialize the built-in rules.
 
-    def __init__(self):
-        """The set of all built-in rules."""
-        self._rules = {}
-        rule_set = set()
-        # Find all rules found in all modules inside our package.
-        mypackage = self.__class__.__module__
-        here = os.path.dirname(sys.modules[mypackage].__file__)
-        for filename in os.listdir(here):
-            basename, extension = os.path.splitext(filename)
-            if extension <> '.py':
-                continue
-            module_name = mypackage + '.' + basename
-            __import__(module_name, fromlist='*')
-            module = sys.modules[module_name]
-            for name in module.__all__:
-                rule = getattr(module, name)
-                if IRule.implementedBy(rule):
-                    if rule.name in self._rules or rule in rule_set:
-                        raise DuplicateRuleError(rule.name)
-                    self._rules[rule.name] = rule
-                    rule_set.add(rule)
-
-    def __getitem__(self, rule_name):
-        """See `IRuleSet`."""
-        return self._rules[rule_name]()
-
-    def get(self, rule_name, default=None):
-        """See `IRuleSet`."""
-        missing = object()
-        rule = self._rules.get(rule_name, missing)
-        if rule is missing:
-            return default
-        return rule()
-
-    @property
-    def rules(self):
-        """See `IRuleSet`."""
-        for rule in self._rules.values():
-            yield rule()
+    Rules are auto-discovered by searching for IRule implementations in all
+    importable modules in this subpackage.
+    """
+    # Find all rules found in all modules inside our package.
+    import Mailman.rules
+    here = os.path.dirname(Mailman.rules.__file__)
+    for filename in os.listdir(here):
+        basename, extension = os.path.splitext(filename)
+        if extension <> '.py':
+            continue
+        module_name = 'Mailman.rules.' + basename
+        __import__(module_name, fromlist='*')
+        module = sys.modules[module_name]
+        for name in module.__all__:
+            rule = getattr(module, name)
+            if IRule.implementedBy(rule):
+                yield rule

@@ -15,26 +15,26 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-"""Interface describing the basics of rules."""
+"""Check if any previous rules have matched."""
 
-from zope.interface import Interface, Attribute
+__all__ = ['Any']
+__metaclass__ = type
+
+
+from zope.interface import implements
+
+from Mailman.i18n import _
+from Mailman.interfaces import IRule
 
 
 
-class IRule(Interface):
-    """A basic rule."""
+class Any:
+    """Look for any previous rule match."""
+    implements(IRule)
 
-    name = Attribute('Rule name; must be unique.')
-    description = Attribute('A brief description of the rule.')
+    name = 'any'
+    description = _('Look for any previous rule hit.')
 
-    def check(mlist, msg, msgdata):
-        """Run the rule.
-
-        The effects of running the rule can be as simple as appending the rule
-        name to `msgdata['rules']` when the rule matches.  The rule is allowed
-        to do other things, such as modify the message or metadata.
-
-        :param mlist: The mailing list object.
-        :param msg: The message object.
-        :param msgdata: The message metadata.
-        """
+    def check(self, mlist, msg, msgdata):
+        """See `IRule`."""
+        return len(msgdata.get('rules', [])) > 0

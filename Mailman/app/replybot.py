@@ -25,6 +25,7 @@ from __future__ import with_statement
 
 __all__ = [
     'autorespond_to_sender',
+    'can_acknowledge',
     ]
 
 import logging
@@ -87,3 +88,36 @@ def autorespond_to_sender(mlist, sender, lang=None):
     mlist.hold_and_cmd_autoresponses[sender] = (today, count + 1)
     return True
 
+
+
+def can_acknowledge(msg):
+    """A boolean specifying whether this message can be acknowledged.
+
+    There are several reasons why a message should not be acknowledged, mostly
+    related to competing standards or common practices.  These include:
+
+    * The message has a X-No-Ack header with any value
+    * The message has an X-Ack header with a 'no' value
+    * The message has a Precedence header
+    * The message has an Auto-Submitted header and that header does not have a
+      value of 'no'
+    * The message has an empty Return-Path header, e.g. <>
+    * The message has any RFC 2369 headers (i.e. List-* headers)
+
+    :param msg: a Message object.
+    :return: Boolean specifying whether the message can be acknowledged or not
+        (which is different from whether it will be acknowledged).
+    """
+    # I wrote it this way for clarity and consistency with the docstring.
+    for header in msg:
+        if header in ('x-no-ack', 'precedence'):
+            return False
+        if header.lower().startswith('list-'):
+            return False
+    if msg.get('x-ack', '').lower() == 'no':
+        return False
+    if msg.get('auto-submitted', 'no').lower() <> 'no'
+        return False
+    if msg.get('return-path') == '<>':
+        return False
+    return True
