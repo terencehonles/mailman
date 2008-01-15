@@ -1,4 +1,4 @@
-# Copyright (C) 2007 Barry A. Warsaw
+# Copyright (C) 2007-2008 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the Free
@@ -83,7 +83,10 @@ Any other spelling is incorrect.""",
     entry_points    = {
         'console_scripts': list(scripts),
         'setuptools.file_finders': 'bzr = setuptools_bzr:find_files_for_bzr',
+        # Entry point for plugging in different database backends.
+        'mailman.archiver'  : 'stock = Mailman.app.archiving:Pipermail',
         'mailman.database'  : 'stock = Mailman.database:StockDatabase',
+        'mailman.mta'       : 'stock = Mailman.MTA:Manual',
         'mailman.styles'    : 'default = Mailman.app.styles:DefaultStyle',
         'mailman.mta'       : 'stock = Mailman.MTA:Manual',
         'mailman.rules'     : 'default = Mailman.rules:initialize',

@@ -1,4 +1,4 @@
-# Copyright (C) 2007 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2008 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -17,20 +17,61 @@
 
 """Application level archiving support."""
 
-from string import Template
+__all__ = [
+    'Pipermail',
+    'get_archiver',
+    ]
+__metaclass__ = type
 
+
+from string import Template
+from zope.interface import implements
+from zope.interface.verify import verifyObject
+
+from Mailman.app.plugins import get_plugin
 from Mailman.configuration import config
+from Mailman.interfaces import IArchiver
 
 
 
-def get_base_archive_url(mlist):
-    if mlist.archive_private:
-        url = mlist.script_url('private') + '/index.html'
-    else:
-        web_host = config.domains.get(mlist.host_name, mlist.host_name)
-        url = Template(config.PUBLIC_ARCHIVE_URL).safe_substitute(
-            listname=mlist.fqdn_listname,
-            hostname=web_host,
-            fqdn_listname=mlist.fqdn_listname,
-            )
-    return url
+class Pipermail:
+    """The stock Pipermail archiver."""
+
+    implements(IArchiver)
+
+    def get_list_url(self, mlist):
+        """See `IArchiver`."""
+        if mlist.archive_private:
+            url = mlist.script_url('private') + '/index.html'
+        else:
+            web_host = config.domains.get(mlist.host_name, mlist.host_name)
+            url = Template(config.PUBLIC_ARCHIVE_URL).safe_substitute(
+                listname=mlist.fqdn_listname,
+                hostname=web_host,
+                fqdn_listname=mlist.fqdn_listname,
+                )
+        return url
+
+    def get_message_url(self, mlist, message):
+        """See `IArchiver`."""
+        # Not currently implemented.
+        return None
+
+    def archive_message(self, mlist, message):
+        """See `IArchiver`."""
+        return None
+
+
+
+_archiver = None
+
+def get_archiver():
+    """Return the currently registered global archiver.
+
+    Uses the plugin architecture to find the IArchiver instance.
+    """
+    global _archiver
+    if _archiver is None:
+        _archiver = get_plugin('mailman.archiver')()
+        verifyObject(IArchiver, _archiver)
+    return _archiver

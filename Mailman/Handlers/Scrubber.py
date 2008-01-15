@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2007 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2008 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -35,7 +35,7 @@ from mimetypes import guess_all_extensions
 
 from Mailman import Utils
 from Mailman.Errors import DiscardMessage
-from Mailman.app.archiving import get_base_archive_url
+from Mailman.app.archiving import get_archiver
 from Mailman.configuration import config
 from Mailman.i18n import _
 
@@ -490,10 +490,9 @@ def save_attachment(mlist, msg, dir, filter_html=True):
     fp = open(path, 'w')
     fp.write(decodedpayload)
     fp.close()
-    # Now calculate the url
-    baseurl = get_base_archive_url(mlist)
-    # Private archives will likely have a trailing slash.  Normalize.
-    if baseurl[-1] <> '/':
+    # Now calculate the url to the list's archive.
+    baseurl = get_archiver().get_list_url(mlist)
+    if not baseurl.endswith('/'):
         baseurl += '/'
     # Trailing space will definitely be a problem with format=flowed.
     # Bracket the URL instead.

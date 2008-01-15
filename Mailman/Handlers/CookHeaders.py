@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2007 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2008 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -26,7 +26,7 @@ from email.Utils import parseaddr, formataddr, getaddresses
 
 from Mailman import Utils
 from Mailman import Version
-from Mailman.app.archiving import get_base_archive_url
+from Mailman.app.archiving import get_archiver
 from Mailman.configuration import config
 from Mailman.i18n import _
 from Mailman.interfaces import Personalization, ReplyToMunging
@@ -200,6 +200,7 @@ def process(mlist, msg, msgdata):
         'List-Unsubscribe': subfieldfmt % (listinfo, mlist.leave_address),
         'List-Subscribe'  : subfieldfmt % (listinfo, mlist.join_address),
         })
+    archiver = get_archiver()
     if msgdata.get('reduced_list_headers'):
         headers['X-List-Administrivia'] = 'yes'
     else:
@@ -208,10 +209,17 @@ def process(mlist, msg, msgdata):
             headers['List-Post'] = '<mailto:%s>' % mlist.posting_address
         # Add this header if we're archiving
         if mlist.archive:
-            archiveurl = get_base_archive_url(mlist)
-            if archiveurl.endswith('/'):
-                archiveurl = archiveurl[:-1]
+            archiveurl = archiver.get_list_url(mlist)
             headers['List-Archive'] = '<%s>' % archiveurl
+    # XXX RFC 2369 also defines a List-Owner header which we are not currently
+    # supporting, but should.
+    #
+    # Draft RFC 5064 defines an Archived-At header which contains the pointer
+    # directly to the message in the archive.  If the currently defined
+    # archiver can tell us the URL, go ahead and include this header.
+    archived_at = archiver.get_message_url(mlist, msg)
+    if archived_at is not None:
+        headers['Archived-At'] = archived_at
     # First we delete any pre-existing headers because the RFC permits only
     # one copy of each, and we want to be sure it's ours.
     for h, v in headers.items():

@@ -285,6 +285,19 @@ List-Archive header either.
     ---end---
 
 
+Archived-At
+-----------
+
+RFC 5064 (draft) defines a new Archived-At header which contains the url to
+the individual message in the archives.  The stock Pipermail archiver doesn't
+support this because the url can't be calculated until after the message is
+archived.  Because this is done by the archive runner, this information isn't
+available to us now.
+
+    >>> print msg['archived-at']
+    None
+
+
 Personalization
 ---------------
 

@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2007 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2008 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -54,3 +54,5 @@ def process(mlist, msg, msgdata):
     del msg['x-confirm-reading-to']
     # Pegasus mail uses this one... sigh
     del msg['x-pmrqc']
+    # Don't let this header be spoofed.  See RFC 5064.
+    del msg['archived-at']
