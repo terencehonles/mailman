@@ -6,8 +6,7 @@ not explicitly mentioned in the set of message recipients.
 
     >>> from Mailman.configuration import config
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
-    >>> from Mailman.app.rules import find_rule
-    >>> rule = find_rule('implicit-dest')
+    >>> rule = config.rules['implicit-dest']
     >>> rule.name
     'implicit-dest'
 

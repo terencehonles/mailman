@@ -8,8 +8,7 @@ email the list without having those messages be held for approval.  The
 
     >>> from Mailman.configuration import config
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
-    >>> from Mailman.app.rules import find_rule
-    >>> rule = find_rule('moderation')
+    >>> rule = config.rules['moderation']
     >>> rule.name
     'moderation'
 
@@ -50,7 +49,7 @@ Non-members
 There is another, related rule for matching non-members, which simply matches
 if the sender is /not/ a member of the mailing list.
 
-    >>> rule = find_rule('non-member')
+    >>> rule = config.rules['non-member']
     >>> rule.name
     'non-member'
 

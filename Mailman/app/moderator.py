@@ -127,10 +127,8 @@ def handle_message(mlist, id, action,
             if key.startswith('_mod_'):
                 del msgdata[key]
         # Add some metadata to indicate this message has now been approved.
-        # XXX 'adminapproved' is used for backward compatibility, but it
-        # should really be called 'moderator_approved'.
         msgdata['approved'] = True
-        msgdata['adminapproved'] = True
+        msgdata['moderator_approved'] = True
         # Calculate a new filebase for the approved message, otherwise
         # delivery errors will cause duplicates.
         if 'filebase' in msgdata:

@@ -39,4 +39,4 @@ the list administrator.""")
 
     def check(self, mlist, msg, msgdata):
         """See `IRule`."""
-        return mlist.emergency and not msgdata.get('adminapproved')
+        return mlist.emergency and not msgdata.get('moderator_approved')

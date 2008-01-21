@@ -6,8 +6,7 @@ X-BeenThere header with the value of the list's posting address.
 
     >>> from Mailman.configuration import config
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
-    >>> from Mailman.app.rules import find_rule
-    >>> rule = find_rule('loop')
+    >>> rule = config.rules['loop']
     >>> rule.name
     'loop'
 

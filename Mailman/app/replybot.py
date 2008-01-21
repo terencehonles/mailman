@@ -109,14 +109,14 @@ def can_acknowledge(msg):
         (which is different from whether it will be acknowledged).
     """
     # I wrote it this way for clarity and consistency with the docstring.
-    for header in msg:
+    for header in msg.keys():
         if header in ('x-no-ack', 'precedence'):
             return False
         if header.lower().startswith('list-'):
             return False
     if msg.get('x-ack', '').lower() == 'no':
         return False
-    if msg.get('auto-submitted', 'no').lower() <> 'no'
+    if msg.get('auto-submitted', 'no').lower() <> 'no':
         return False
     if msg.get('return-path') == '<>':
         return False

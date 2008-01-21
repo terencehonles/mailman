@@ -57,6 +57,7 @@ def process(mlist, msg, msgdata):
         except Errors.NotAMemberError:
             pass
     # These strings are descriptive for the log file and shouldn't be i18n'd
+    d.update(msgdata.get('decoration-data', {}))
     header = decorate(mlist, mlist.msg_header, d)
     footer = decorate(mlist, mlist.msg_footer, d)
     # Escape hatch if both the footer and header are empty

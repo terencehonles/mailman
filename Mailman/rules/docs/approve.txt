@@ -20,8 +20,7 @@ which is shared among all the administrators.
 The 'approved' rule determines whether the message contains the proper
 approval or not.
 
-    >>> from Mailman.app.rules import find_rule
-    >>> rule = find_rule('approved')
+    >>> rule = config.rules['approved']
     >>> rule.name
     'approved'
 

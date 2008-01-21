@@ -26,9 +26,15 @@ __all__ = [
     'RejectChain',
     ]
 __metaclass__ = type
+__i18n_templates__ = True
 
 
 import logging
+
+from email.mime.message import MIMEMessage
+from email.mime.text import MIMEText
+from email.utils import formatdate, make_msgid
+from zope.interface import implements
 
 from Mailman import i18n
 from Mailman.Message import UserNotification
@@ -77,8 +83,14 @@ class HoldChain:
     def process(self, mlist, msg, msgdata):
         """See `IChain`."""
         # Start by decorating the message with a header that contains a list
-        # of all the rules that matched.
-        msg['X-Mailman-Rule-Hits'] = SEMISPACE.join(msgdata['rules'])
+        # of all the rules that matched.  These metadata could be None or an
+        # empty list.
+        rule_hits = msgdata.get('rule_hits')
+        if rule_hits:
+            msg['X-Mailman-Rule-Hits'] = SEMISPACE.join(rule_hits)
+        rule_misses = msgdata.get('rule_misses')
+        if rule_misses:
+            msg['X-Mailman-Rule-Misses'] = SEMISPACE.join(rule_misses)
         # Hold the message by adding it to the list's request database.
         # XXX How to calculate the reason?
         request_id = hold_message(mlist, msg, msgdata, None)
@@ -90,6 +102,7 @@ class HoldChain:
         # Get the language to send the response in.  If the sender is a
         # member, then send it in the member's language, otherwise send it in
         # the mailing list's preferred language.
+        sender = msg.get_sender()
         member = mlist.members.get_member(sender)
         language = (member.preferred_language
                     if member else mlist.preferred_language)
@@ -101,12 +114,13 @@ class HoldChain:
         else:
             original_subject = oneline(original_subject, charset)
         substitutions = {
-            'listname'  : mlist.fqdn_listname,
-            'subject'   : original_subject,
-            'reason'    : 'XXX', #reason,
-            'confirmurl': '%s/%s' % (mlist.script_url('confirm'), token),
+            'listname'   : mlist.fqdn_listname,
+            'subject'    : original_subject,
+            'sender'     : sender,
+            'reason'     : 'XXX', #reason,
+            'confirmurl' : '%s/%s' % (mlist.script_url('confirm'), token),
+            'admindb_url': mlist.script_url('admindb'),
             }
-        sender = msg.get_sender()
         # At this point the message is held, but now we have to craft at least
         # two responses.  The first will go to the original author of the
         # message and it will contain the token allowing them to approve or
@@ -129,10 +143,12 @@ class HoldChain:
             # posting was held.
             subject = _(
               'Your message to $mlist.fqdn_listname awaits moderator approval')
-            language = msgdata.get('lang', lang)
+            send_language = msgdata.get('lang', language)
             text = maketext('postheld.txt', substitutions,
-                            lang=language, mlist=mlist)
-            nmsg = UserNotification(sender, adminaddr, subject, text, language)
+                            lang=send_language, mlist=mlist)
+            adminaddr = mlist.bounces_address
+            nmsg = UserNotification(sender, adminaddr, subject, text,
+                                    send_language)
             nmsg.send(mlist)
         # Now the message for the list moderators.  This one should appear to
         # come from <list>-owner since we really don't need to do bounce
@@ -145,8 +161,8 @@ class HoldChain:
                 charset = GetCharSet(language)
                 # We need to regenerate or re-translate a few values in the
                 # substitution dictionary.
-                d['reason'] = _(reason)
-                d['subject'] = original_subject
+                #d['reason'] = _(reason) # XXX reason
+                substitutions['subject'] = original_subject
                 # craft the admin notification message and deliver it
                 subject = _(
                     '$mlist.fqdn_listname post from $sender requires approval')
@@ -155,7 +171,7 @@ class HoldChain:
                                         subject, lang=language)
                 nmsg.set_type('multipart/mixed')
                 text = MIMEText(
-                    maketext('postauth.txt', substitution,
+                    maketext('postauth.txt', substitutions,
                              raw=True, mlist=mlist),
                     _charset=charset)
                 dmsg = MIMEText(wrap(_("""\
@@ -164,19 +180,22 @@ discard the held message.  Do this if the message is spam.  If you reply to
 this message and include an Approved: header with the list password in it, the
 message will be approved for posting to the list.  The Approved: header can
 also appear in the first line of the body of the reply.""")),
-                                _charset=GetCharSet(lang))
+                                _charset=GetCharSet(language))
                 dmsg['Subject'] = 'confirm ' + token
-                dmsg['Sender'] = requestaddr
-                dmsg['From'] = requestaddr
-                dmsg['Date'] = email.utils.formatdate(localtime=True)
-                dmsg['Message-ID'] = email.utils.make_msgid()
+                dmsg['Sender'] = mlist.request_address
+                dmsg['From'] = mlist.request_address
+                dmsg['Date'] = formatdate(localtime=True)
+                dmsg['Message-ID'] = make_msgid()
                 nmsg.attach(text)
                 nmsg.attach(MIMEMessage(msg))
                 nmsg.attach(MIMEMessage(dmsg))
                 nmsg.send(mlist, **{'tomoderators': 1})
         # Log the held message
-        log.info('HELD: %s post from %s held, message-id=%s: %s',
-                 listname, sender, message_id, reason)
+        # XXX reason
+        reason = 'n/a'
+        log.info('HOLD: %s post from %s held, message-id=%s: %s',
+                 mlist.fqdn_listname, sender,
+                 msg.get('message-id', 'n/a'), reason)
 
 
 
@@ -189,6 +208,15 @@ class RejectChain:
 
     def process(self, mlist, msg, msgdata):
         """See `IChain`."""
+        # Start by decorating the message with a header that contains a list
+        # of all the rules that matched.  These metadata could be None or an
+        # empty list.
+        rule_hits = msgdata.get('rule_hits')
+        if rule_hits:
+            msg['X-Mailman-Rule-Hits'] = SEMISPACE.join(rule_hits)
+        rule_misses = msgdata.get('rule_misses')
+        if rule_misses:
+            msg['X-Mailman-Rule-Misses'] = SEMISPACE.join(rule_misses)
         # XXX Exception/reason
         bounce_message(mlist, msg)
         log.info('REJECT: %s', msg.get('message-id', 'n/a'))
@@ -204,6 +232,15 @@ class AcceptChain:
 
     def process(self, mlist, msg, msgdata):
         """See `IChain.`"""
+        # Start by decorating the message with a header that contains a list
+        # of all the rules that matched.  These metadata could be None or an
+        # empty list.
+        rule_hits = msgdata.get('rule_hits')
+        if rule_hits:
+            msg['X-Mailman-Rule-Hits'] = SEMISPACE.join(rule_hits)
+        rule_misses = msgdata.get('rule_misses')
+        if rule_misses:
+            msg['X-Mailman-Rule-Misses'] = SEMISPACE.join(rule_misses)
         accept_queue = Switchboard(config.PREPQUEUE_DIR)
         accept_queue.enqueue(msg, msgdata)
         log.info('ACCEPT: %s', msg.get('message-id', 'n/a'))
@@ -224,9 +261,12 @@ class Chain:
     implements(IMutableChain)
 
     def __init__(self, name, description):
+        assert name not in config.chains, 'Duplicate chain name: %s' % name
         self.name = name
         self.description = description
         self._links = []
+        # Register the chain.
+        config.chains[name] = self
 
     def append_link(self, link):
         """See `IMutableChain`."""
@@ -238,23 +278,26 @@ class Chain:
 
     def process(self, mlist, msg, msgdata):
         """See `IMutableChain`."""
-        msgdata['rules'] = rules = []
+        msgdata['rule_hits'] = hits = []
+        msgdata['rule_misses'] = misses = []
         jump = None
         for link in self._links:
             # The None rule always match.
             if link.rule is None:
                 jump = link.jump
                 break
-            # If the rule hits, just to the given chain.
+            # If the rule hits, jump to the given chain.
             rule = config.rules.get(link.rule)
             if rule is None:
                 elog.error('Rule not found: %s', rule)
             elif rule.check(mlist, msg, msgdata):
-                rules.append(link.rule.name)
+                hits.append(link.rule)
                 # None is a special jump meaning "keep processing this chain".
                 if link.jump is not None:
                     jump = link.jump
                     break
+            else:
+                misses.append(link.rule)
         else:
             # We got through the entire chain without a jumping rule match, so
             # we really don't know what to do.  Rather than raise an
@@ -280,7 +323,7 @@ def initialize():
             'Duplicate chain name: %s' % chain.name)
         config.chains[chain.name] = chain
     # Set up a couple of other default chains.
-    default = Chain('built-in', _('The built-in moderation chain'), 'accept')
+    default = Chain('built-in', _('The built-in moderation chain.'))
     default.append_link(Link('approved', 'accept'))
     default.append_link(Link('emergency', 'hold'))
     default.append_link(Link('loop', 'discard'))

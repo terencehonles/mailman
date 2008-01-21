@@ -112,6 +112,10 @@ class Pendings(object):
                 value = u'__builtin__.float\1%s' % value
             elif type(value) is bool:
                 value = u'__builtin__.bool\1%s' % value
+            elif type(value) is list:
+                # We expect this to be a list of strings.
+                value = u'Mailman.database.pending.unpack_list\1%s' % (
+                    '\2'.join(value))
             keyval = PendedKeyValue(key=key, value=value)
             pending.key_values.add(keyval)
         config.db.store.add(pending)
@@ -156,3 +160,8 @@ class Pendings(object):
                 for keyvalue in q:
                     store.remove(keyvalue)
                 store.remove(pending)
+
+
+
+def unpack_list(value):
+    return value.split('\2')

@@ -21,15 +21,21 @@ __all__ = [
     'initialize',
     ]
 
+
+from zope.interface.verify import verifyObject
+
 from Mailman.app.plugins import get_plugins
 from Mailman.configuration import config
+from Mailman.interfaces import IRule
 
 
 
 def initialize():
     """Find and register all rules in all plugins."""
     for rule_finder in get_plugins('mailman.rules'):
-        for rule in rule_finder():
+        for rule_class in rule_finder():
+            rule = rule_class()
+            verifyObject(IRule, rule)
             assert rule.name not in config.rules, (
                 'Duplicate rule "%s" found in %s' % (rule.name, rule_finder))
             config.rules[rule.name] = rule
