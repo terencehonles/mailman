@@ -25,16 +25,21 @@ class IRule(Interface):
     """A basic rule."""
 
     name = Attribute('Rule name; must be unique.')
+
     description = Attribute('A brief description of the rule.')
+
+    record = Attribute(
+        """Should this rule's success or failure be recorded?
+
+        This is a boolean; if True then this rule's hit or miss will be
+        recorded in a message header.  If False, it won't.
+        """)
 
     def check(mlist, msg, msgdata):
         """Run the rule.
 
-        The effects of running the rule can be as simple as appending the rule
-        name to `msgdata['rules']` when the rule matches.  The rule is allowed
-        to do other things, such as modify the message or metadata.
-
         :param mlist: The mailing list object.
         :param msg: The message object.
         :param msgdata: The message metadata.
+        :returns: a boolean specifying whether the rule matched or not.
         """

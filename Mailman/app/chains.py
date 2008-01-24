@@ -21,9 +21,13 @@ from __future__ import with_statement
 
 __all__ = [
     'AcceptChain',
+    'Chain',
     'DiscardChain',
     'HoldChain',
+    'Link',
     'RejectChain',
+    'initialize',
+    'process',
     ]
 __metaclass__ = type
 __i18n_templates__ = True
@@ -44,7 +48,8 @@ from Mailman.app.moderator import hold_message
 from Mailman.app.replybot import autorespond_to_sender, can_acknowledge
 from Mailman.configuration import config
 from Mailman.i18n import _
-from Mailman.interfaces import IChain, IChainLink, IMutableChain, IPendable
+from Mailman.interfaces import (
+    IChain, IChainLink, IMutableChain, IPendable, LinkAction)
 from Mailman.queue import Switchboard
 
 log = logging.getLogger('mailman.vette')
@@ -59,7 +64,37 @@ class HeldMessagePendable(dict):
 
 
 
-class DiscardChain:
+class Link:
+    """A chain link."""
+    implements(IChainLink)
+
+    def __init__(self, rule, action=None, chain=None, function=None):
+        self.rule = rule
+        self.action = (LinkAction.defer if action is None else action)
+        self.chain = chain
+        self.function = function
+
+
+
+class TerminalChainBase:
+    """A base chain that always matches and executes a method.
+
+    The method is called 'process' and must be provided by the subclass.
+    """
+    implements(IChain)
+
+    def __iter__(self):
+        """See `IChain`."""
+        # First, yield a link that always runs the process method.
+        yield Link('truth', LinkAction.run, function=self.process)
+        # Now yield a rule that stops all processing.
+        yield Link('truth', LinkAction.stop)
+
+    def process(self, mlist, msg, msgdata):
+        raise NotImplementedError
+
+
+class DiscardChain(TerminalChainBase):
     """Discard a message."""
     implements(IChain)
 
@@ -73,7 +108,7 @@ class DiscardChain:
 
 
 
-class HoldChain:
+class HoldChain(TerminalChainBase):
     """Hold a message."""
     implements(IChain)
 
@@ -199,7 +234,7 @@ also appear in the first line of the body of the reply.""")),
 
 
 
-class RejectChain:
+class RejectChain(TerminalChainBase):
     """Reject/bounce a message."""
     implements(IChain)
 
@@ -223,7 +258,7 @@ class RejectChain:
 
 
 
-class AcceptChain:
+class AcceptChain(TerminalChainBase):
     """Accept the message for posting."""
     implements(IChain)
 
@@ -247,15 +282,6 @@ class AcceptChain:
 
 
 
-class Link:
-    """A chain link."""
-    implements(IChainLink)
-
-    def __init__(self, rule, jump):
-        self.rule = rule
-        self.jump = jump
-
-
 class Chain:
     """Default built-in moderation chain."""
     implements(IMutableChain)
@@ -276,42 +302,63 @@ class Chain:
         """See `IMutableChain`."""
         self._links = []
 
-    def process(self, mlist, msg, msgdata):
-        """See `IMutableChain`."""
-        msgdata['rule_hits'] = hits = []
-        msgdata['rule_misses'] = misses = []
-        jump = None
+    def __iter__(self):
+        """See `IChain`."""
         for link in self._links:
-            # The None rule always match.
-            if link.rule is None:
-                jump = link.jump
-                break
-            # If the rule hits, jump to the given chain.
-            rule = config.rules.get(link.rule)
-            if rule is None:
-                elog.error('Rule not found: %s', rule)
-            elif rule.check(mlist, msg, msgdata):
+            yield link
+
+
+
+def process(start_chain, mlist, msg, msgdata):
+    """Process the message through a chain.
+
+    :param start_chain: The name of the chain to start the processing with.
+    :param mlist: the IMailingList for this message.
+    :param msg: The Message object.
+    :param msgdata: The message metadata dictionary.
+    """
+    # Find the starting chain.
+    current_chain = iter(config.chains[start_chain])
+    chain_stack = []
+    msgdata['rule_hits'] = hits = []
+    msgdata['rule_misses'] = misses = []
+    while current_chain:
+        try:
+            link = current_chain.next()
+        except StopIteration:
+            # This chain is exhausted.  Pop the last chain on the stack and
+            # continue.
+            if len(chain_stack) == 0:
+                return
+            current_chain = chain_stack.pop()
+            continue
+        # Process this link.
+        rule = config.rules[link.rule]
+        if rule.check(mlist, msg, msgdata):
+            if rule.record:
                 hits.append(link.rule)
-                # None is a special jump meaning "keep processing this chain".
-                if link.jump is not None:
-                    jump = link.jump
-                    break
+            # The rule matched so run its action.
+            if link.action is LinkAction.jump:
+                current_chain = iter(config.chains[link.chain])
+            elif link.action is LinkAction.detour:
+                # Push the current chain so that we can return to it when the
+                # next chain is finished.
+                chain_stack.append(current_chain)
+                current_chain = iter(config.chains[link.chain])
+            elif link.action is LinkAction.stop:
+                # Stop all processing.
+                return
+            elif link.action is LinkAction.defer:
+                # Just process the next link in the chain.
+                pass
+            elif link.action is LinkAction.run:
+                link.function(mlist, msg, msgdata)
             else:
+                raise AssertionError('Unknown link action: %s' % link.action)
+        else:
+            # The rule did not match; keep going.
+            if rule.record:
                 misses.append(link.rule)
-        else:
-            # We got through the entire chain without a jumping rule match, so
-            # we really don't know what to do.  Rather than raise an
-            # exception, jump to the discard chain.
-            log.info('Jumping to the discard chain by default.')
-            jump = 'discard'
-        # Find the named chain.
-        chain = config.chains.get(jump)
-        if chain is None:
-            elog.error('Chain not found: %s', chain)
-            # Well, what now?  Nothing much left to do but discard the
-            # message, which we can do by simply returning.
-        else:
-            chain.process(mlist, msg, msgdata)
 
 
 
@@ -324,20 +371,20 @@ def initialize():
         config.chains[chain.name] = chain
     # Set up a couple of other default chains.
     default = Chain('built-in', _('The built-in moderation chain.'))
-    default.append_link(Link('approved', 'accept'))
-    default.append_link(Link('emergency', 'hold'))
-    default.append_link(Link('loop', 'discard'))
+    default.append_link(Link('approved', LinkAction.jump, 'accept'))
+    default.append_link(Link('emergency', LinkAction.jump, 'hold'))
+    default.append_link(Link('loop', LinkAction.jump, 'discard'))
     # Do all these before deciding whether to hold the message for moderation.
-    default.append_link(Link('administrivia', None))
-    default.append_link(Link('implicit-dest', None))
-    default.append_link(Link('max-recipients', None))
-    default.append_link(Link('max-size', None))
-    default.append_link(Link('news-moderation', None))
-    default.append_link(Link('no-subject', None))
-    default.append_link(Link('suspicious', None))
+    default.append_link(Link('administrivia', LinkAction.defer))
+    default.append_link(Link('implicit-dest', LinkAction.defer))
+    default.append_link(Link('max-recipients', LinkAction.defer))
+    default.append_link(Link('max-size', LinkAction.defer))
+    default.append_link(Link('news-moderation', LinkAction.defer))
+    default.append_link(Link('no-subject', LinkAction.defer))
+    default.append_link(Link('suspicious-header', LinkAction.defer))
     # Now if any of the above hit, jump to the hold chain.
-    default.append_link(Link('any', 'hold'))
+    default.append_link(Link('any', LinkAction.jump, 'hold'))
     # Finally, the builtin chain defaults to acceptance.
-    default.append_link(Link(None, 'accept'))
+    default.append_link(Link('truth', LinkAction.jump, 'accept'))
     # XXX Read chains from the database and initialize them.
     pass

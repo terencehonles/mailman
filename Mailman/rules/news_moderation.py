@@ -1,4 +1,4 @@
-# Copyright (C) 2007 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2008 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -33,9 +33,11 @@ class ModeratedNewsgroup:
     implements(IRule)
 
     name = 'news-moderation'
-    description = _(u"""\
-Match all messages posted to a mailing list that gateways to a moderated
-newsgroup.""")
+    description = _(
+        u"""Match all messages posted to a mailing list that gateways to a
+        moderated newsgroup.
+        """)
+    record = True
 
     def check(self, mlist, msg, msgdata):
         """See `IRule`."""

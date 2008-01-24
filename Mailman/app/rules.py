@@ -18,10 +18,13 @@
 """Various rule helpers"""
 
 __all__ = [
+    'TruthRule',
     'initialize',
     ]
+__metaclass__ = type
 
 
+from zope.interface import implements
 from zope.interface.verify import verifyObject
 
 from Mailman.app.plugins import get_plugins
@@ -30,8 +33,25 @@ from Mailman.interfaces import IRule
 
 
 
+class TruthRule:
+    """A rule that always matches."""
+    implements(IRule)
+
+    name = 'truth'
+    description = 'A rule which always matches.'
+    record = False
+
+    def check(self, mlist, msg, msgdata):
+        """See `IRule`."""
+        return True
+
+
+
 def initialize():
     """Find and register all rules in all plugins."""
+    # Register built in rules.
+    config.rules[TruthRule.name] = TruthRule()
+    # Find rules in plugins.
     for rule_finder in get_plugins('mailman.rules'):
         for rule_class in rule_finder():
             rule = rule_class()

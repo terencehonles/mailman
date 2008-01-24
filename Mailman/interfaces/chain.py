@@ -22,23 +22,51 @@ from zope.interface import Interface, Attribute
 
 
 
+class LinkAction(Enum):
+    # Jump to another chain.
+    jump = 0
+    # Take a detour to another chain, returning to the original chain when
+    # completed (if no other jump occurs).
+    detour = 1
+    # Stop processing all chains.
+    stop = 2
+    # Continue processing the next link in the chain.
+    defer = 3
+    # Run a function and continue processing.
+    run = 4
+
+
+
+class IChainLink(Interface):
+    """A link in the chain."""
+
+    rule = Attribute('The rule to run for this link.')
+
+    action = Attribute('The LinkAction to take if this rule matches.')
+
+    chain = Attribute('The chain to jump or detour to.')
+
+    function = Attribute(
+        """The function to execute.
+
+        The function takes three arguments and returns nothing.
+        :param mlist: the IMailingList object
+        :param msg: the message being processed
+        :param msgdata: the message metadata dictionary
+        """)
+
+
+
 class IChain(Interface):
     """A chain of rules."""
 
     name = Attribute('Chain name; must be unique.')
     description = Attribute('A brief description of the chain.')
 
-    def process(mlist, msg, msgdata):
-        """Process the message through the chain.
+    def __iter__():
+        """Iterate over all the IChainLinks in this chain.
 
-        Processing a message involves running through each link in the chain,
-        until a jump to another chain occurs or the chain reaches the end.
-        Reaching the end of the chain with no other disposition is equivalent
-        to discarding the message.
-
-        :param mlist: The mailing list object.
-        :param msg: The message object.
-        :param msgdata: The message metadata.
+        :return: an IChainLink.
         """
 
 
@@ -54,15 +82,3 @@ class IMutableChain(IChain):
 
     def flush():
         """Delete all links in this chain."""
-
-
-
-class IChainLink(Interface):
-    """A link in the chain."""
-
-    rule = Attribute('The rule to run for this link.')
-
-    jump = Attribute(
-        """The jump action to perform when the rule matches.  This may be None
-        to simply process the next link in the chain.
-        """)

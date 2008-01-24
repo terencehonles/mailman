@@ -1,4 +1,4 @@
-# Copyright (C) 2007 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2008 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -34,6 +34,7 @@ class Any:
 
     name = 'any'
     description = _('Look for any previous rule hit.')
+    record = False
 
     def check(self, mlist, msg, msgdata):
         """See `IRule`."""

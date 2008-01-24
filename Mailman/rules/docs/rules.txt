@@ -31,6 +31,7 @@ names to rule objects.
     no-subject True
     non-member True
     suspicious-header True
+    truth True
 
 You can get a rule by name.
 
