@@ -41,7 +41,7 @@ message, the list's posting address simply gets inserted.
     >>> mlist.reply_goes_to_list = ReplyToMunging.point_to_list
     >>> mlist.preferred_language = u'en'
     >>> mlist.description = u''
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...
     ... """)
@@ -55,7 +55,7 @@ It's also possible to strip any existing Reply-To header first, before adding
 the list's posting address.
 
     >>> mlist.first_strip_reply_to = True
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... Reply-To: bperson@example.com
     ...
@@ -70,7 +70,7 @@ If you don't first strip the header, then the list's posting address will just
 get appended to whatever the original version was.
 
     >>> mlist.first_strip_reply_to = False
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... Reply-To: bperson@example.com
     ...
@@ -89,7 +89,7 @@ The list can also be configured to have an explicit Reply-To header.
 
     >>> mlist.reply_goes_to_list = ReplyToMunging.explicit_header
     >>> mlist.reply_to_address = u'my-list@example.com'
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...
     ... """)
@@ -102,7 +102,7 @@ The list can also be configured to have an explicit Reply-To header.
 And as before, it's possible to either strip any existing Reply-To header...
 
     >>> mlist.first_strip_reply_to = True
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... Reply-To: bperson@example.com
     ...
@@ -116,7 +116,7 @@ And as before, it's possible to either strip any existing Reply-To header...
 ...or not.
 
     >>> mlist.first_strip_reply_to = False
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... Reply-To: bperson@example.com
     ...

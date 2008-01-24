@@ -12,7 +12,7 @@ X-BeenThere header with the value of the list's posting address.
 
 The header could be missing, in which case the rule does not match.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...
     ... An important message.
@@ -37,7 +37,7 @@ matches.
 Even if there are multiple X-BeenThere headers, as long as one with the
 posting address exists, the rule matches.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... X-BeenThere: not-this-list@example.com
     ... X-BeenThere: _xtest@example.com

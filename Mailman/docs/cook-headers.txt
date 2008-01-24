@@ -24,7 +24,7 @@ Saving the original sender
 Because the original sender headers may get deleted or changed, CookHeaders
 will place the sender in the message metadata for safe keeping.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...
     ... A message of great import.
@@ -36,7 +36,7 @@ will place the sender in the message metadata for safe keeping.
 
 But if there was no original sender, then the empty string will be saved.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... Subject: No original sender
     ...
     ... A message of great import.
@@ -54,7 +54,7 @@ The X-BeenThere header is what Mailman uses to recognize messages that have
 already been processed by this mailing list.  It's one small measure against
 mail loops.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...
     ... A message of great import.
@@ -66,7 +66,7 @@ mail loops.
 Mailman appends X-BeenThere headers, so if there already is one in the
 original message, the posted message will contain two such headers.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... X-BeenThere: another@example.com
     ...
@@ -82,7 +82,7 @@ Mailman version header
 
 Mailman will also insert an X-Mailman-Version header...
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...
     ... A message of great import.
@@ -94,7 +94,7 @@ Mailman will also insert an X-Mailman-Version header...
 
 ...but only if one doesn't already exist.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... X-Mailman-Version: 3000
     ...
@@ -113,7 +113,7 @@ Mailman will insert a Precedence header, which is a de-facto standard for
 telling automatic reply software (e.g. vacation(1)) not to respond to this
 message.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...
     ... A message of great import.
@@ -126,7 +126,7 @@ message.
 But Mailman will only add that header if the original message doesn't already
 have one of them.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... Precedence: junk
     ...
@@ -160,7 +160,7 @@ These RFCs define headers for mailing list actions.  A mailing list should
 generally add these headers, but not for messages that aren't crafted for a
 specific list (e.g. password reminders in Mailman 2.x).
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...
     ... """)
@@ -173,7 +173,7 @@ Some people don't like these headers because their mail readers aren't good
 about hiding them.  A list owner can turn these headers off.
 
     >>> mlist.include_rfc2369_headers = False
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...
     ... """)
@@ -187,7 +187,7 @@ But normally, a list will include these headers.
     >>> mlist.include_rfc2369_headers = True
     >>> mlist.include_list_post_header = True
     >>> mlist.preferred_language = u'en'
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...
     ... """)
@@ -208,7 +208,7 @@ If the mailing list has a description, then it is included in the List-Id
 header.
 
     >>> mlist.description = u'My test mailing list'
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...
     ... """)
@@ -227,7 +227,7 @@ header.
 
 Administrative messages crafted by Mailman will have a reduced set of headers.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...
     ... """)
@@ -247,7 +247,7 @@ With the normal set of List-* headers, it's still possible to suppress the
 List-Post header, which is reasonable for an announce only mailing list.
 
     >>> mlist.include_list_post_header = False
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...
     ... """)
@@ -268,7 +268,7 @@ List-Archive header either.
 
     >>> mlist.include_list_post_header = True
     >>> mlist.archive = False
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...
     ... """)
@@ -309,7 +309,7 @@ the recipient headers so that users will be able to reply back to the list.
     >>> from Mailman.interfaces import Personalization, ReplyToMunging
     >>> mlist.personalize = Personalization.full
     >>> mlist.reply_goes_to_list = ReplyToMunging.no_munging
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...
     ... """)

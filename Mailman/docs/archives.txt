@@ -29,7 +29,7 @@ message should /not/ get archived.
 For example, no digests should ever get archived.
 
     >>> mlist.archive = True
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... Subject: A sample message
     ...
     ... A message of great import.
@@ -64,7 +64,7 @@ archived.  Confusingly, this header's value is actually ignored.
 
 Even a 'no' value will stop the archiving of the message.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... Subject: A sample message
     ... X-No-Archive: No
     ...
@@ -77,7 +77,7 @@ Even a 'no' value will stop the archiving of the message.
 Another header that's been observed is the X-Archive: header.  Here, the
 header's case folded value must be 'no' in order to prevent archiving.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... Subject: A sample message
     ... X-Archive: No
     ...
@@ -89,7 +89,7 @@ header's case folded value must be 'no' in order to prevent archiving.
 
 But if the value is 'yes', then the message will be archived.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... Subject: A sample message
     ... X-Archive: Yes
     ...
@@ -113,7 +113,7 @@ But if the value is 'yes', then the message will be archived.
 Without either archiving header, and all other things being the same, the
 message will get archived.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... Subject: A sample message
     ...
     ... A message of great import.

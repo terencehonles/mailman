@@ -4,7 +4,7 @@ The switchboard
 The switchboard is subsystem that moves messages between queues.  Each
 instance of a switchboard is responsible for one queue directory.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... To: _xtest@example.com
     ...

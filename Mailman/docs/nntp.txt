@@ -21,7 +21,7 @@ There are several situations which prevent a message from being gatewayed to
 the newsgroup.  The feature could be disabled, as is the default.
 
     >>> mlist.gateway_to_news = False
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... Subject: An important message
     ...
     ... Something of great import.

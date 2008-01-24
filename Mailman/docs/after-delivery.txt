@@ -16,7 +16,7 @@ bookkeeping pieces of information are updated.
 Processing a message with this handler updates the last_post_time and post_id
 attributes.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...
     ... Something interesting.

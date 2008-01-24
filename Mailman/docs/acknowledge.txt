@@ -35,7 +35,7 @@ Non-member posts
 
 Non-members can't get acknowledgments of their posts to the mailing list.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: bperson@example.com
     ...
     ... """)

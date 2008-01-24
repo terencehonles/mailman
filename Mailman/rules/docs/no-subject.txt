@@ -12,7 +12,7 @@ the empty string when stripped.
 
 A message with a non-empty subject does not match the rule.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.org
     ... To: _xtest@example.com
     ... Subject: A posted message

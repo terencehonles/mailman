@@ -21,7 +21,7 @@ Set the list configuraiton variable to enable newsgroup moderation.
 
 And now all messages will match the rule.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.org
     ... Subject: An announcment
     ...

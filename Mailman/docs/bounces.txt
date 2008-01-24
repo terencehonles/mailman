@@ -19,7 +19,7 @@ lists can bounce a message with an optional error message.
 
 Any message can be bounced.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... To: _xtest@example.com
     ... From: aperson@example.com
     ... Subject: Something important

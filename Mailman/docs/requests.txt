@@ -212,7 +212,7 @@ For this section, we need a mailing list and at least one message.
     >>> mlist = config.db.list_manager.create(u'alist@example.com')
     >>> mlist.preferred_language = u'en'
     >>> mlist.real_name = u'A Test List'
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.org
     ... To: alist@example.com
     ... Subject: Something important
@@ -330,7 +330,7 @@ moderator interface to also preserve a copy, essentially telling it not to
 delete the message from the storage.  First, without the switch, the message
 is deleted.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.org
     ... To: alist@example.com
     ... Subject: Something important

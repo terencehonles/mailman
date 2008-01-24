@@ -31,7 +31,7 @@ No approval
 If the message has no Approve or Approved header, then the rule does not
 match.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...
     ... An important message.
@@ -89,7 +89,7 @@ using a 'pseudo-header', which is really just the first non-whitespace line in
 the payload of the message.  If this pseudo-header looks like a matching
 Approve or Approved header, the message is similarly allowed to pass.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...
     ... Approve: abcxyz
@@ -111,7 +111,7 @@ The pseudo-header is removed.
 
 Similarly for the Approved header.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...
     ... Approved: abcxyz
@@ -132,7 +132,7 @@ Similarly for the Approved header.
 As before, a mismatch in the pseudo-header does not approve the message, but
 the pseudo-header line is still removed.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...
     ... Approve: 123456
@@ -152,7 +152,7 @@ the pseudo-header line is still removed.
 
 Similarly for the Approved header.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...
     ... Approved: 123456
@@ -178,7 +178,7 @@ Mailman searches for the pseudo-header as the first non-whitespace line in the
 first text/plain message part of the message.  This allows the feature to be
 used with MIME documents.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... MIME-Version: 1.0
     ... Content-Type: multipart/mixed; boundary="AAA"
@@ -223,7 +223,7 @@ Like before, the pseudo-header is removed, but only from the text parts.
 
 The same goes for the Approved message.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... MIME-Version: 1.0
     ... Content-Type: multipart/mixed; boundary="AAA"
@@ -268,7 +268,7 @@ And the header is removed.
 
 Here, the correct password is in the non-text/plain part, so it is ignored.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... MIME-Version: 1.0
     ... Content-Type: multipart/mixed; boundary="AAA"
@@ -312,7 +312,7 @@ And yet the pseudo-header is still stripped.
 
 As before, the same goes for the Approved header.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... MIME-Version: 1.0
     ... Content-Type: multipart/mixed; boundary="AAA"
@@ -362,7 +362,7 @@ Because some mail readers will include both a text/plain part and a text/html
 alternative, the 'approved' rule has to search the alternatives and strip
 anything that looks like an Approve or Approved headers.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... MIME-Version: 1.0
     ... Content-Type: multipart/mixed; boundary="AAA"
@@ -419,7 +419,7 @@ And the header-like text in the text/html part was stripped.
 
 This is true even if the rule does not match.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... MIME-Version: 1.0
     ... Content-Type: multipart/mixed; boundary="AAA"

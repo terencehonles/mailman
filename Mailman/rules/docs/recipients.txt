@@ -13,7 +13,7 @@ number of explicit recipients addressed by the message.
 In this case, we'll create a message with 5 recipients.  These include all
 addresses in the To and CC headers.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... To: _xtest@example.com, bperson@example.com
     ... Cc: cperson@example.com

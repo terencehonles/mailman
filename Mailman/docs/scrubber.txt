@@ -52,7 +52,7 @@ enabled, the filename will be used when this header attribute is present (yes,
 this is an unfortunate double negative).
 
     >>> config.SCRUBBER_DONT_USE_ATTACHMENT_FILENAME = False
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... Content-Type: image/gif; name="xtest.gif"
     ... Content-Transfer-Encoding: base64
     ... Content-Disposition: attachment; filename="xtest.gif"
@@ -81,7 +81,7 @@ Content-Disposition: filename.  This is the default for reasons described in
 the Defaults.py.in file.
 
     >>> config.SCRUBBER_DONT_USE_ATTACHMENT_FILENAME = True
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... Content-Type: image/gif; name="xtest.gif"
     ... Content-Transfer-Encoding: base64
     ... Content-Disposition: attachment; filename="xtest.gif"
@@ -107,7 +107,7 @@ Scrubbing image attachments
 When scrubbing image attachments, the original message is modified to include
 a reference to the attachment file as available through the on-line archive.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... MIME-Version: 1.0
     ... Content-Type: multipart/mixed; boundary="BOUNDARY"
     ...
@@ -182,7 +182,7 @@ Scrubbing text attachments
 Similar to image attachments, text attachments will also be scrubbed, but the
 placeholder will be slightly different.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... MIME-Version: 1.0
     ... Content-Type: multipart/mixed; boundary="BOUNDARY"
     ...

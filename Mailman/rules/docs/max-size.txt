@@ -18,7 +18,7 @@ bigger than that will match the rule.
     >>> mlist.max_message_size = 1 # 1024 bytes
     >>> one_line = u'x' * 79
     >>> big_body = u'\n'.join([one_line] * 15)
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... To: _xtest@example.com
     ...

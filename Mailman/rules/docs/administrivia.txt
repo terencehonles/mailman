@@ -16,7 +16,7 @@ used to catch messages posted to the list which should have been sent to the
 For example, if the Subject header contains the word 'unsubscribe', the rule
 matches.
 
-    >>> msg_1 = message_from_string(u"""\
+    >>> msg_1 = message_from_string("""\
     ... From: aperson@example.com
     ... Subject: unsubscribe
     ...
@@ -27,7 +27,7 @@ matches.
 Similarly, if the body of the message contains the word 'subscribe' in the
 first few lines of text, the rule matches.
 
-    >>> msg_2 = message_from_string(u"""\
+    >>> msg_2 = message_from_string("""\
     ... From: aperson@example.com
     ... Subject: I wish to join your list
     ...
@@ -51,7 +51,7 @@ requires at least one argument.  We don't give that here so the rule will not
 match.
 
     >>> mlist.administrivia = True
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... Subject: confirm
     ...
@@ -61,7 +61,7 @@ match.
 
 But a real 'confirm' message will match.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... Subject: confirm 12345
     ...
@@ -77,7 +77,7 @@ Non-administrivia
 
 Of course, messages that don't contain administrivia, don't match the rule.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... Subject: examine
     ...
@@ -89,7 +89,7 @@ Of course, messages that don't contain administrivia, don't match the rule.
 Also, only text/plain parts are checked for administrivia, so any email
 commands in other content type subparts are ignored.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... Subject: some administrivia
     ... Content-Type: text/x-special

@@ -46,7 +46,7 @@ This is about as simple as a qrunner can be.
 This qrunner doesn't do much except run once, storing the message and metadata
 on instance variables.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... To: _xtest@example.com
     ...

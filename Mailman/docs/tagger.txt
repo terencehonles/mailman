@@ -20,7 +20,7 @@ are defined.
     >>> mlist.topics_enabled = False
     >>> mlist.topics_bodylines_limit = 0
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... Subject: foobar
     ... Keywords: barbaz
     ...
@@ -40,7 +40,7 @@ artifacts of tagging; an X-Topics: header is added with the topic name, and
 the message metadata gets a key with a list of matching topic names.
 
     >>> mlist.topics_enabled = True
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... Subject: foobar
     ... Keywords: barbaz
     ...
@@ -64,7 +64,7 @@ The tagger can also look at a certain number of body lines, but only for
 Subject: and Keyword: header-like lines.  When set to zero, no body lines are
 scanned.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... Subject: nothing
     ... Keywords: at all
@@ -91,7 +91,7 @@ But let the tagger scan a few body lines and the matching headers will be
 found.
 
     >>> mlist.topics_bodylines_limit = 5
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... Subject: nothing
     ... Keywords: at all
@@ -118,7 +118,7 @@ found.
 However, scanning stops at the first body line that doesn't look like a
 header.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... Subject: nothing
     ... Keywords: at all
@@ -144,7 +144,7 @@ When set to a negative number, all body lines will be scanned.
 
     >>> mlist.topics_bodylines_limit = -1
     >>> lots_of_headers = '\n'.join(['X-Ignore: zip'] * 100)
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... Subject: nothing
     ... Keywords: at all
@@ -170,7 +170,7 @@ The tagger will also scan the body lines of text subparts in a multipart
 message, using the same rules as if all those body lines lived in a single
 text payload.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... Subject: Was
     ... Keywords: Raw
     ... Content-Type: multipart/alternative; boundary="BOUNDARY"
@@ -206,7 +206,7 @@ text payload.
 
 But the tagger will not descend into non-text parts.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... Subject: Was
     ... Keywords: Raw
     ... Content-Type: multipart/alternative; boundary=BOUNDARY

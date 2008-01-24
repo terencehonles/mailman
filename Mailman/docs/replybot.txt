@@ -33,7 +33,7 @@ will be sent, with 0 meaning "there is no grace period".
     >>> mlist.autorespond_admin = True
     >>> mlist.autoresponse_graceperiod = datetime.timedelta()
     >>> mlist.autoresponse_admin_text = u'admin autoresponse text'
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... To: _xtest-owner@example.com
     ...
@@ -74,7 +74,7 @@ Several headers in the original message determine whether an autoresponse
 should even be sent.  For example, if the message has an "X-Ack: No" header,
 no auto-response is sent.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... X-Ack: No
     ...
@@ -87,7 +87,7 @@ no auto-response is sent.
 Mailman itself can suppress autoresponses for certain types of internally
 crafted messages, by setting the 'noack' metadata key.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: mailman@example.com
     ...
     ... help for you
@@ -99,7 +99,7 @@ crafted messages, by setting the 'noack' metadata key.
 If there is a Precedence: header with any of the values 'bulk', 'junk', or
 'list', then the autoresponse is also suppressed.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: asystem@example.com
     ... Precedence: bulk
     ...
@@ -151,7 +151,7 @@ auto-responses: those sent to the -request address...
 
     >>> mlist.autorespond_requests = True
     >>> mlist.autoresponse_request_text = u'robot autoresponse text'
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... To: _xtest-request@example.com
     ...
@@ -180,7 +180,7 @@ auto-responses: those sent to the -request address...
 
     >>> mlist.autorespond_postings = True
     >>> mlist.autoresponse_postings_text = u'postings autoresponse text'
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... To: _xtest@example.com
     ...

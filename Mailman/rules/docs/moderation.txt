@@ -15,7 +15,7 @@ email the list without having those messages be held for approval.  The
 In the simplest case, the sender is not a member of the mailing list, so the
 moderation rule can't match.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: aperson@example.org
     ... To: _xtest@example.com
     ... Subject: A posted message
@@ -60,7 +60,7 @@ If the sender is a member of this mailing list, the rule does not match.
 
 But if the sender is not a member of this mailing list, the rule matches.
 
-    >>> msg = message_from_string(u"""\
+    >>> msg = message_from_string("""\
     ... From: bperson@example.org
     ... To: _xtest@example.com
     ... Subject: A posted message
