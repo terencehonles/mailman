@@ -47,11 +47,11 @@ from Mailman import Errors
 from Mailman import Message
 from Mailman import Utils
 from Mailman import i18n
-from Mailman.Handlers.Decorate import decorate
-from Mailman.Handlers.Scrubber import process as scrubber
 from Mailman.Mailbox import Mailbox
 from Mailman.Mailbox import Mailbox
 from Mailman.configuration import config
+from Mailman.handlers.decorate import decorate
+from Mailman.handlers.scrubber import process as scrubber
 from Mailman.interfaces import DeliveryMode, DeliveryStatus
 from Mailman.queue import Switchboard
 

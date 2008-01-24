@@ -21,7 +21,7 @@ import logging
 
 from email.Utils import formataddr
 
-from Mailman.Handlers.CookHeaders import uheader
+from Mailman.handlers.cook_headers import uheader
 
 log = logging.getLogger('mailman.post')
 

@@ -8,7 +8,7 @@ double duty as the 'topic tag'.  Each message that flows the mailing list has
 its Subject: and Keywords: headers compared against these regular
 expressions.  The message then gets tagged with the topic names of each hit.
 
-    >>> from Mailman.Handlers.Tagger import process
+    >>> from Mailman.handlers.tagger import process
     >>> from Mailman.queue import Switchboard
     >>> from Mailman.configuration import config
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')

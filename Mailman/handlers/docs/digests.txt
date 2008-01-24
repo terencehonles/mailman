@@ -6,7 +6,7 @@ as individual messages when immediately posted.  There are several forms of
 digests, although only two are currently supported: MIME digests and RFC 1153
 (a.k.a. plain text) digests.
 
-    >>> from Mailman.Handlers.ToDigest import process
+    >>> from Mailman.handlers.to_digest import process
     >>> from Mailman.queue import Switchboard
     >>> from Mailman.configuration import config
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')

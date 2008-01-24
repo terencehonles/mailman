@@ -6,7 +6,7 @@ messages and in components such as the archiver.  Its primary purpose is to
 scrub attachments from messages so that binary goop doesn't end up in an
 archive message.
 
-    >>> from Mailman.Handlers.Scrubber import process, save_attachment
+    >>> from Mailman.handlers.scrubber import process, save_attachment
     >>> from Mailman.configuration import config
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> mlist.preferred_language = u'en'
