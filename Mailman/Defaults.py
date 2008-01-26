@@ -121,9 +121,6 @@ DEFAULT_VAR_DIRECTORY = '/var/mailman'
 # any variable in the Configuration object.
 DEFAULT_DATABASE_URL = 'sqlite:///$DATA_DIR/mailman.db'
 
-# For debugging purposes
-SQLALCHEMY_ECHO = False
-
 
 
 #####
