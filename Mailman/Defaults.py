@@ -164,16 +164,21 @@ DEFAULT_URL_HOST    = '@URLHOST@'
 # Spam avoidance defaults
 #####
 
-# This variable contains a list of 2-tuple of the format (header, regex) which
-# the Mailman/Handlers/SpamDetect.py module uses to match against the current
-# message.  If the regex matches the given header in the current message, then
-# it is flagged as spam.  header is case-insensitive and should not include
-# the trailing colon.  regex is always matched with re.IGNORECASE.
+# This variable contains a list of tuple of the format:
 #
-# Note that the more searching done, the slower the whole process gets.  Spam
-# detection is run against all messages coming to either the list, or the
-# -owners address, unless the message is explicitly approved.
-KNOWN_SPAMMERS = []
+#   (header, pattern[, chain])
+#
+# which is used to match against the current message's headers.  If the
+# pattern matches the given header in the current message, then the named
+# chain is jumped to.  header is case-insensitive and should not include the
+# trailing colon.  pattern is always matched with re.IGNORECASE.  chain is
+# optional; if not given the 'hold' chain is used, but if given it may be any
+# existing chain, such as 'discard', 'reject', or 'accept'.
+#
+# Note that the more searching done, the slower the whole process gets.
+# Header matching is run against all messages coming to either the list, or
+# the -owners address, unless the message is explicitly approved.
+HEADER_MATCHES = []
 
 
 

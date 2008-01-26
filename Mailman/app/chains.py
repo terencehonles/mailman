@@ -33,6 +33,7 @@ __metaclass__ = type
 __i18n_templates__ = True
 
 
+import re
 import logging
 
 from email.mime.message import MIMEMessage
@@ -49,7 +50,7 @@ from Mailman.app.replybot import autorespond_to_sender, can_acknowledge
 from Mailman.configuration import config
 from Mailman.i18n import _
 from Mailman.interfaces import (
-    IChain, IChainLink, IMutableChain, IPendable, LinkAction)
+    IChain, IChainLink, IMutableChain, IPendable, IRule, LinkAction)
 from Mailman.queue import Switchboard
 
 log = logging.getLogger('mailman.vette')
@@ -91,7 +92,18 @@ class TerminalChainBase:
         yield Link('truth', LinkAction.stop)
 
     def process(self, mlist, msg, msgdata):
+        """Process the message for the given mailing list.
+
+        This must be overridden by subclasses.
+        """
         raise NotImplementedError
+
+    def get_rule(self, name):
+        """See `IChain`.
+
+        This always returns the globally registered named rule.
+        """
+        return config.rules[name]
 
 
 class DiscardChain(TerminalChainBase):
@@ -283,7 +295,7 @@ class AcceptChain(TerminalChainBase):
 
 
 class Chain:
-    """Default built-in moderation chain."""
+    """Generic chain base class."""
     implements(IMutableChain)
 
     def __init__(self, name, description):
@@ -307,9 +319,124 @@ class Chain:
         for link in self._links:
             yield link
 
+    def get_rule(self, name):
+        """See `IChain`.
+
+        This always returns the globally registered named rule.
+        """
+        return config.rules[name]
+
 
 
-def process(start_chain, mlist, msg, msgdata):
+class BuiltInChain(Chain):
+    """Default built-in chain."""
+
+    def __init__(self):
+        super(BuiltInChain, self).__init__(
+            'built-in', _('The built-in moderation chain.'))
+        self.append_link(Link('approved', LinkAction.jump, 'accept'))
+        self.append_link(Link('emergency', LinkAction.jump, 'hold'))
+        self.append_link(Link('loop', LinkAction.jump, 'discard'))
+        # Do all of the following before deciding whether to hold the message
+        # for moderation.
+        self.append_link(Link('administrivia', LinkAction.defer))
+        self.append_link(Link('implicit-dest', LinkAction.defer))
+        self.append_link(Link('max-recipients', LinkAction.defer))
+        self.append_link(Link('max-size', LinkAction.defer))
+        self.append_link(Link('news-moderation', LinkAction.defer))
+        self.append_link(Link('no-subject', LinkAction.defer))
+        self.append_link(Link('suspicious-header', LinkAction.defer))
+        # Now if any of the above hit, jump to the hold chain.
+        self.append_link(Link('any', LinkAction.jump, 'hold'))
+        # Take a detour through the self header matching chain, which we'll
+        # create later.
+        self.append_link(Link('truth', LinkAction.detour, 'header-match'))
+        # Finally, the builtin chain selfs to acceptance.
+        self.append_link(Link('truth', LinkAction.jump, 'accept'))
+
+
+
+class HeaderMatchRule:
+    """Header matching rule used by header-match chain."""
+    implements(IRule)
+
+    # Sequential rule counter.
+    _count = 1
+
+    def __init__(self, header, pattern):
+        self._header = header
+        self._pattern = pattern
+        self.name = 'header-match-%002d' % HeaderMatchRule._count
+        HeaderMatchRule._count += 1
+        self.description = u'%s: %s' % (header, pattern)
+        # XXX I think we should do better here, somehow recording that a
+        # particular header matched a particular pattern, but that gets ugly
+        # with RFC 2822 headers.  It also doesn't match well with the rule
+        # name concept.  For now, we just record the rather useless numeric
+        # rule name.  I suppose we could do the better hit recording in the
+        # check() method, and set self.record = False.
+        self.record = True
+
+    def check(self, mlist, msg, msgdata):
+        """See `IRule`."""
+        for value in msg.get_all(self._header, []):
+            if re.search(self._pattern, value, re.IGNORECASE):
+                return True
+        return False
+
+
+class HeaderMatchChain(Chain):
+    """Default header matching chain.
+
+    This could be extended by header match rules in the database.
+    """
+
+    def __init__(self):
+        super(HeaderMatchChain, self).__init__(
+            'header-match', _('The built-in header matching chain'))
+        # The header match rules are not global, so don't register them.
+        # These are the only rules that the header match chain can execute.
+        self._links = []
+        self._rules = {}
+        # Initialize header check rules with those from the global
+        # HEADER_MATCHES variable.
+        for entry in config.HEADER_MATCHES:
+            if len(entry) == 2:
+                header, pattern = entry
+                chain = 'hold'
+            elif len(entry) == 3:
+                header, pattern, chain = entry
+                # We don't assert that the chain exists here because the jump
+                # chain may not yet have been created.
+            else:
+                raise AssertionError(
+                    'Bad entry for HEADER_MATCHES: %s' % entry)
+            self.extend(header, pattern, chain)
+
+    def extend(self, header, pattern, chain='hold'):
+        """Extend the existing header matches.
+
+        :param header: The case-insensitive header field name.
+        :param pattern: The pattern to match the header's value again.  The
+            match is not anchored and is done case-insensitively.
+        :param chain: Option chain to jump to if the pattern matches any of
+            the named header values.  If not given, the 'hold' chain is used.
+        """
+        rule = HeaderMatchRule(header, pattern)
+        self._rules[rule.name] = rule
+        link = Link(rule.name, LinkAction.jump, chain)
+        self._links.append(link)
+
+    def get_rule(self, name):
+        """See `IChain`.
+
+        Only local rules are findable by this chain.
+        """
+        return self._rules[name]
+
+
+
+def process(mlist, msg, msgdata, start_chain='built-in'):
     """Process the message through a chain.
 
     :param start_chain: The name of the chain to start the processing with.
@@ -317,34 +444,45 @@ def process(start_chain, mlist, msg, msgdata):
     :param msg: The Message object.
     :param msgdata: The message metadata dictionary.
     """
-    # Find the starting chain.
-    current_chain = iter(config.chains[start_chain])
+    # Set up some bookkeeping.
     chain_stack = []
     msgdata['rule_hits'] = hits = []
     msgdata['rule_misses'] = misses = []
-    while current_chain:
+    # Find the starting chain and begin iterating through its links.
+    chain = config.chains[start_chain]
+    chain_iter = iter(chain)
+    # Loop until we've reached the end of all processing chains.
+    while chain:
+        # Iterate over all links in the chain.  Do this outside a for-loop so
+        # we can capture a chain's link iterator in mid-flight.  This supports
+        # the 'detour' link action
         try:
-            link = current_chain.next()
+            link = chain_iter.next()
         except StopIteration:
             # This chain is exhausted.  Pop the last chain on the stack and
-            # continue.
+            # continue iterating through it.  If there's nothing left on the
+            # chain stack then we're completely finished processing.
             if len(chain_stack) == 0:
                 return
-            current_chain = chain_stack.pop()
+            chain, chain_iter = chain_stack.pop()
             continue
         # Process this link.
-        rule = config.rules[link.rule]
+        rule = chain.get_rule(link.rule)
         if rule.check(mlist, msg, msgdata):
             if rule.record:
                 hits.append(link.rule)
             # The rule matched so run its action.
             if link.action is LinkAction.jump:
-                current_chain = iter(config.chains[link.chain])
+                chain = config.chains[link.chain]
+                chain_iter = iter(chain)
+                continue
             elif link.action is LinkAction.detour:
-                # Push the current chain so that we can return to it when the
-                # next chain is finished.
-                chain_stack.append(current_chain)
-                current_chain = iter(config.chains[link.chain])
+                # Push the current chain so that we can return to it when
+                # the next chain is finished.
+                chain_stack.append((chain, chain_iter))
+                chain = config.chains[link.chain]
+                chain_iter = iter(chain)
+                continue
             elif link.action is LinkAction.stop:
                 # Stop all processing.
                 return
@@ -354,7 +492,7 @@ def process(start_chain, mlist, msg, msgdata):
             elif link.action is LinkAction.run:
                 link.function(mlist, msg, msgdata)
             else:
-                raise AssertionError('Unknown link action: %s' % link.action)
+                raise AssertionError('Bad link action: %s' % link.action)
         else:
             # The rule did not match; keep going.
             if rule.record:
@@ -370,21 +508,10 @@ def initialize():
             'Duplicate chain name: %s' % chain.name)
         config.chains[chain.name] = chain
     # Set up a couple of other default chains.
-    default = Chain('built-in', _('The built-in moderation chain.'))
-    default.append_link(Link('approved', LinkAction.jump, 'accept'))
-    default.append_link(Link('emergency', LinkAction.jump, 'hold'))
-    default.append_link(Link('loop', LinkAction.jump, 'discard'))
-    # Do all these before deciding whether to hold the message for moderation.
-    default.append_link(Link('administrivia', LinkAction.defer))
-    default.append_link(Link('implicit-dest', LinkAction.defer))
-    default.append_link(Link('max-recipients', LinkAction.defer))
-    default.append_link(Link('max-size', LinkAction.defer))
-    default.append_link(Link('news-moderation', LinkAction.defer))
-    default.append_link(Link('no-subject', LinkAction.defer))
-    default.append_link(Link('suspicious-header', LinkAction.defer))
-    # Now if any of the above hit, jump to the hold chain.
-    default.append_link(Link('any', LinkAction.jump, 'hold'))
-    # Finally, the builtin chain defaults to acceptance.
-    default.append_link(Link('truth', LinkAction.jump, 'accept'))
+    chain = BuiltInChain()
+    config.chains[chain.name] = chain
+    # Create and initialize the header matching chain.
+    chain = HeaderMatchChain()
+    config.chains[chain.name] = chain
     # XXX Read chains from the database and initialize them.
     pass

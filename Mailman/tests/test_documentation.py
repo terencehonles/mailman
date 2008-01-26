@@ -18,7 +18,6 @@
 """Harness for testing Mailman's documentation."""
 
 import os
-import pdb
 import doctest
 import unittest
 

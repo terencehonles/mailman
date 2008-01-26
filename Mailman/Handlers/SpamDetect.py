@@ -88,14 +88,6 @@ class HeaderGenerator(Generator):
 def process(mlist, msg, msgdata):
     if msgdata.get('approved'):
         return
-    # First do site hard coded header spam checks
-    for header, regex in config.KNOWN_SPAMMERS:
-        cre = re.compile(regex, re.IGNORECASE)
-        for value in msg.get_all(header, []):
-            mo = cre.search(value)
-            if mo:
-                # we've detected spam, so throw the message away
-                raise SpamDetected
     # Now do header_filter_rules
     # TK: Collect headers in sub-parts because attachment filename
     # extension may be a clue to possible virus/spam.

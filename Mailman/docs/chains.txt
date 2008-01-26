@@ -36,12 +36,14 @@ The Discard chain simply throws the message away.
     ... An important message.
     ... """)
 
+    >>> from Mailman.app.chains import process
+
     # XXX This checks the vette log file because there is no other evidence
     # that this chain has done anything.
     >>> import os
     >>> fp = open(os.path.join(config.LOG_DIR, 'vette'))
     >>> file_pos = fp.tell()
-    >>> chain.process(mlist, msg, {})
+    >>> process(mlist, msg, {}, 'discard')
     >>> fp.seek(file_pos)
     >>> print 'LOG:', fp.read()
     LOG: ... DISCARD: <first>
@@ -62,7 +64,7 @@ this action.
     >>> chain.description
     u'Reject/bounce a message and stop processing.'
     >>> file_pos = fp.tell()
-    >>> chain.process(mlist, msg, {})
+    >>> process(mlist, msg, {}, 'reject')
     >>> fp.seek(file_pos)
     >>> print 'LOG:', fp.read()
     LOG: ... REJECT: <first>
@@ -111,7 +113,7 @@ sender and the list moderators.
     u'Hold a message and stop processing.'
 
     >>> file_pos = fp.tell()
-    >>> chain.process(mlist, msg, {})
+    >>> process(mlist, msg, {}, 'hold')
     >>> fp.seek(file_pos)
     >>> print 'LOG:', fp.read()
     LOG: ... HOLD: _xtest@example.com post from aperson@example.com held,
@@ -262,7 +264,7 @@ processed and sent on to the list membership.
     >>> chain.description
     u'Accept a message.'
     >>> file_pos = fp.tell()
-    >>> chain.process(mlist, msg, {})
+    >>> process(mlist, msg, {}, 'accept')
     >>> fp.seek(file_pos)
     >>> print 'LOG:', fp.read()
     LOG: ... ACCEPT: <first>
@@ -311,7 +313,7 @@ all default rules.  This message will end up in the prep queue.
 
     >>> file_pos = fp.tell()
     >>> from Mailman.app.chains import process
-    >>> process('built-in', mlist, msg, {})
+    >>> process(mlist, msg, {})
     >>> fp.seek(file_pos)
     >>> print 'LOG:', fp.read()
     LOG: ... ACCEPT: <first>
