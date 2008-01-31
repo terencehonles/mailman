@@ -49,7 +49,7 @@ def process(mlist, msg, msgdata, start_chain='built-in'):
     msgdata['rule_misses'] = misses = []
     # Find the starting chain and begin iterating through its links.
     chain = config.chains[start_chain]
-    chain_iter = iter(chain)
+    chain_iter = chain.get_links(mlist, msg, msgdata)
     # Loop until we've reached the end of all processing chains.
     while chain:
         # Iterate over all links in the chain.  Do this outside a for-loop so
@@ -73,14 +73,14 @@ def process(mlist, msg, msgdata, start_chain='built-in'):
             # The rule matched so run its action.
             if link.action is LinkAction.jump:
                 chain = config.chains[link.chain]
-                chain_iter = iter(chain)
+                chain_iter = chain.get_links(mlist, msg, msgdata)
                 continue
             elif link.action is LinkAction.detour:
                 # Push the current chain so that we can return to it when
                 # the next chain is finished.
                 chain_stack.append((chain, chain_iter))
                 chain = config.chains[link.chain]
-                chain_iter = iter(chain)
+                chain_iter = chain.get_links(mlist, msg, msgdata)
                 continue
             elif link.action is LinkAction.stop:
                 # Stop all processing.

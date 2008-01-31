@@ -63,12 +63,6 @@ class IChain(Interface):
     name = Attribute('Chain name; must be unique.')
     description = Attribute('A brief description of the chain.')
 
-    def __iter__():
-        """Iterate over all the IChainLinks in this chain.
-
-        :return: an IChainLink.
-        """
-
     def get_rule(name):
         """Lookup and return the named rule.
 
@@ -77,6 +71,26 @@ class IChain(Interface):
             be a rule defined locally to the chain.
         :return: The named `IRule`.
         :raises: KeyError if the named rule cannot be found.
+        """
+
+    def get_links(mlist, msg, msgdata):
+        """Get an `IChainIterator` for processing.
+
+        :param mlist: the IMailingList object
+        :param msg: the message being processed
+        :param msgdata: the message metadata dictionary
+        :return: An `IChainIterator`.
+        """
+
+
+
+class IChainIterator(Interface):
+    """An iterator over chain rules."""
+
+    def __iter__():
+        """Iterate over all the IChainLinks in this chain.
+
+        :return: an IChainLink.
         """
 
 
