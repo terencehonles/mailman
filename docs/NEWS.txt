@@ -1,10 +1,11 @@
 Mailman - The GNU Mailing List Management System
-Copyright (C) 1998-2007 by the Free Software Foundation, Inc.
+Copyright (C) 1998-2008 by the Free Software Foundation, Inc.
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 
 Here is a history of user visible changes to Mailman.
 
-3.0 alpha 1 (XX-XXX-200X)
+3.0 alpha 1 -- "Leave That Thing Alone"
+(XX-XXX-200X)
 
   User visible changes
 

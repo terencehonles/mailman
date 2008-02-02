@@ -16,6 +16,10 @@ above.
     >>> mlist.start_chain
     u'built-in'
 
+
+Accepted messages
+-----------------
+
 We have a message that is going to be sent to the mailing list.  This message
 is so perfectly fine for posting that it will be accepted and forward to the
 prep queue.
@@ -49,6 +53,9 @@ And now the message is in the prep queue.
     >>> prep_queue = Switchboard(config.PREPQUEUE_DIR)
     >>> len(prep_queue.files)
     1
+    >>> incoming_queue = Switchboard(config.INQUEUE_DIR)
+    >>> len(incoming_queue.files)
+    0
     >>> from Mailman.tests.helpers import get_queue_messages
     >>> item = get_queue_messages(prep_queue)[0]
     >>> print item.msg.as_string()
@@ -65,3 +72,127 @@ And now the message is in the prep queue.
     <BLANKLINE>
     >>> sorted(item.msgdata.items())
     [...('envsender', u'noreply@example.com')...('tolist', True)...]
+
+
+Held messages
+-------------
+
+The list moderator sets the emergency flag on the mailing list.  The built-in
+chain will now hold all posted messages, so nothing will show up in the prep
+queue.
+
+    # XXX This checks the vette log file because there is no other evidence
+    # that this chain has done anything.
+    >>> import os
+    >>> fp = open(os.path.join(config.LOG_DIR, 'vette'))
+    >>> fp.seek(0, 2)
+
+    >>> mlist.emergency = True
+    >>> mlist.web_page_url = u'http://archives.example.com/'
+    >>> inject(u'_xtest@example.com', msg)
+    >>> file_pos = fp.tell()
+    >>> incoming.run()
+    >>> len(prep_queue.files)
+    0
+    >>> len(incoming_queue.files)
+    0
+    >>> fp.seek(file_pos)
+    >>> print 'LOG:', fp.read()
+    LOG: ... HOLD: _xtest@example.com post from aperson@example.com held,
+    message-id=<first>: n/a
+    <BLANKLINE>
+
+    >>> mlist.emergency = False
+
+
+Discarded messages
+------------------
+
+Another possibility is that the message would get immediately discarded.  The
+built-in chain does not have such a disposition by default, so let's craft a
+new chain and set it as the mailing list's start chain.
+
+    >>> from Mailman.chains.base import Chain, Link
+    >>> from Mailman.interfaces import LinkAction
+    >>> truth_rule = config.rules['truth']
+    >>> discard_chain = config.chains['discard']
+    >>> test_chain = Chain('always-discard', u'Testing discards')
+    >>> link = Link(truth_rule, LinkAction.jump, discard_chain)
+    >>> test_chain.append_link(link)
+    >>> mlist.start_chain = u'always-discard'
+
+    >>> inject(u'_xtest@example.com', msg)
+    >>> file_pos = fp.tell()
+    >>> incoming.run()
+    >>> len(prep_queue.files)
+    0
+    >>> len(incoming_queue.files)
+    0
+    >>> fp.seek(file_pos)
+    >>> print 'LOG:', fp.read()
+    LOG: ... DISCARD: <first>
+    <BLANKLINE>
+
+    >>> del config.chains['always-discard']
+
+
+Rejected messages
+-----------------
+
+Similar to discarded messages, a message can be rejected, or bounced back to
+the original sender.  Again, the built-in chain doesn't support this so we'll
+just create a new chain that does.
+
+    >>> reject_chain = config.chains['reject']
+    >>> test_chain = Chain('always-reject', u'Testing rejections')
+    >>> link = Link(truth_rule, LinkAction.jump, reject_chain)
+    >>> test_chain.append_link(link)
+    >>> mlist.start_chain = u'always-reject'
+
+The virgin queue needs to be cleared out due to artifacts from the previous
+tests above.
+
+    >>> virgin_queue = Switchboard(config.VIRGINQUEUE_DIR)
+    >>> ignore = get_queue_messages(virgin_queue)
+
+    >>> inject(u'_xtest@example.com', msg)
+    >>> file_pos = fp.tell()
+    >>> incoming.run()
+    >>> len(prep_queue.files)
+    0
+    >>> len(incoming_queue.files)
+    0
+
+    >>> len(virgin_queue.files)
+    1
+    >>> item = get_queue_messages(virgin_queue)[0]
+    >>> print item.msg.as_string()
+    Subject: My first post
+    From: _xtest-owner@example.com
+    To: aperson@example.com
+    ...
+    Content-Type: text/plain; charset="us-ascii"
+    MIME-Version: 1.0
+    Content-Transfer-Encoding: 7bit
+    <BLANKLINE>
+    [No bounce details are available]
+    ...
+    Content-Type: message/rfc822
+    MIME-Version: 1.0
+    <BLANKLINE>
+    From: aperson@example.com
+    To: _xtest@example.com
+    Subject: My first post
+    Message-ID: <first>
+    <BLANKLINE>
+    First post!
+    <BLANKLINE>
+    ...
+    >>> sorted(item.msgdata.items())
+    [...('recips', [u'aperson@example.com'])...]
+    >>> fp.seek(file_pos)
+    >>> print 'LOG:', fp.read()
+    LOG: ... REJECT: <first>
+    <BLANKLINE>
+
+    >>> del config.chains['always-reject']
