@@ -225,6 +225,9 @@ class DefaultStyle:
         # is that they will get all messages, and they will not have an entry
         # in this dictionary.
         mlist.topics_userinterest = {}
+        # The processing chain that messages coming into this list get
+        # processed by.
+        mlist.start_chain = u'built-in'
 
     def match(self, mailing_list, styles):
         # If no other styles have matched, then the default style matches.

@@ -131,6 +131,7 @@ CREATE TABLE mailinglist (
         send_goodbye_msg BOOLEAN,
         send_reminders BOOLEAN,
         send_welcome_msg BOOLEAN,
+        start_chain TEXT,
         subject_prefix TEXT,
         subscribe_auto_approval BLOB,
         subscribe_policy INTEGER,

@@ -1,0 +1,67 @@
+The incoming queue runner
+=========================
+
+This runner's sole purpose in life is to decide the disposition of the
+message.  It can either be accepted for delivery, rejected (i.e. bounced),
+held for moderator approval, or discarded.
+
+The runner operates by processing chains on a message/metadata pair in the
+context of a mailing list.  Each mailing list may have a 'start chain' where
+processing begins, with a global default.  This chain is processed with the
+message eventually ending up in one of the four disposition states described
+above.
+
+    >>> from Mailman.app.lifecycle import create_list
+    >>> mlist = create_list(u'_xtest@example.com')
+    >>> mlist.start_chain
+    u'built-in'
+
+We have a message that is going to be sent to the mailing list.  This message
+is so perfectly fine for posting that it will be accepted and forward to the
+prep queue.
+
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.com
+    ... To: _xtest@example.com
+    ... Subject: My first post
+    ... Message-ID: <first>
+    ...
+    ... First post!
+    ... """)
+
+Normally, the upstream mail server would drop the message in the incoming
+queue, but this is an effective simulation.
+
+    >>> from Mailman.inject import inject
+    >>> inject(u'_xtest@example.com', msg)
+
+The incoming queue runner runs until it is empty.
+
+    >>> from Mailman.queue.incoming import IncomingRunner
+    >>> from Mailman.tests.helpers import make_testable_runner
+    >>> incoming = make_testable_runner(IncomingRunner)
+    >>> incoming.run()
+
+And now the message is in the prep queue.
+
+    >>> from Mailman.configuration import config
+    >>> from Mailman.queue import Switchboard
+    >>> prep_queue = Switchboard(config.PREPQUEUE_DIR)
+    >>> len(prep_queue.files)
+    1
+    >>> from Mailman.tests.helpers import get_queue_messages
+    >>> item = get_queue_messages(prep_queue)[0]
+    >>> print item.msg.as_string()
+    From: aperson@example.com
+    To: _xtest@example.com
+    Subject: My first post
+    Message-ID: <first>
+    X-Mailman-Rule-Misses: approved; emergency; loop; administrivia;
+        implicit-dest;
+        max-recipients; max-size; news-moderation; no-subject;
+        suspicious-header
+    <BLANKLINE>
+    First post!
+    <BLANKLINE>
+    >>> sorted(item.msgdata.items())
+    [...('envsender', u'noreply@example.com')...('tolist', True)...]

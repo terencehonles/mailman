@@ -151,6 +151,7 @@ class MailingList(Model):
     send_goodbye_msg = Bool()
     send_reminders = Bool()
     send_welcome_msg = Bool()
+    start_chain = Unicode()
     subject_prefix = Unicode()
     subscribe_auto_approval = Pickle()
     subscribe_policy = Int()
@@ -215,7 +216,7 @@ class MailingList(Model):
         return self.fqdn_listname
 
     @property
-    def noreply_address(self):
+    def no_reply_address(self):
         return '%s@%s' % (config.NO_REPLY_ADDRESS, self.host_name)
 
     @property

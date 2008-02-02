@@ -82,7 +82,7 @@ class IMailingList(Interface):
         delivery is currently enabled.
         """)
 
-    noreply_address = Attribute(
+    no_reply_address = Attribute(
         """The address to which all messages will be immediately discarded,
         without prejudice or record.  This address is specific to the ddomain,
         even though it's available on the IMailingListAddresses interface.
