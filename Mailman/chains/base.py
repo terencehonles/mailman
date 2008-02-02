@@ -58,23 +58,17 @@ class TerminalChainBase:
         """
         raise NotImplementedError
 
-    def get_rule(self, name):
-        """See `IChain`.
-
-        This always returns the globally registered named rule.
-        """
-        return config.rules[name]
-
     def get_links(self, mlist, msg, msgdata):
         """See `IChain`."""
         return iter(self)
 
     def __iter__(self):
         """See `IChainIterator`."""
+        truth = config.rules['truth']
         # First, yield a link that always runs the process method.
-        yield Link('truth', LinkAction.run, function=self._process)
+        yield Link(truth, LinkAction.run, function=self._process)
         # Now yield a rule that stops all processing.
-        yield Link('truth', LinkAction.stop)
+        yield Link(truth, LinkAction.stop)
 
 
 
@@ -97,13 +91,6 @@ class Chain:
     def flush(self):
         """See `IMutableChain`."""
         self._links = []
-
-    def get_rule(self, name):
-        """See `IChain`.
-
-        This always returns the globally registered named rule.
-        """
-        return config.rules[name]
 
     def get_links(self, mlist, msg, msgdata):
         """See `IChain`."""

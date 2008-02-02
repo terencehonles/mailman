@@ -63,16 +63,6 @@ class IChain(Interface):
     name = Attribute('Chain name; must be unique.')
     description = Attribute('A brief description of the chain.')
 
-    def get_rule(name):
-        """Lookup and return the named rule.
-
-        :param name: The name of the rule to return.  This may be a globally
-            registered rule name, in which case it must be unique, or it may
-            be a rule defined locally to the chain.
-        :return: The named `IRule`.
-        :raises: KeyError if the named rule cannot be found.
-        """
-
     def get_links(mlist, msg, msgdata):
         """Get an `IChainIterator` for processing.
 

@@ -61,6 +61,7 @@ untouched.
 
 But now if the header matches, then the message gets discarded.
 
+    >>> del msg['x-spam-score']
     >>> msg['X-Spam-Score'] = '****'
     >>> del msg['subject']
     >>> msg['Subject'] = 'This is spam, but barely'
@@ -75,6 +76,7 @@ But now if the header matches, then the message gets discarded.
 
 For kicks, let's show a message that's really spammy.
 
+    >>> del msg['x-spam-score']
     >>> msg['X-Spam-Score'] = '**********'
     >>> del msg['subject']
     >>> msg['Subject'] = 'This is really spammy'
@@ -87,3 +89,57 @@ For kicks, let's show a message that's really spammy.
     LOG: ... DISCARD: <four>
     <BLANKLINE>
 
+Flush out the extended header matching rules.
+
+    >>> chain.flush()
+
+
+List-specific header matching
+-----------------------------
+
+Each mailing list can also be configured with a set of header matching regular
+expression rules.  These are used to impose list-specific header filtering
+with the same semantics as the global `HEADER_MATCHES` variable.
+
+The list administrator wants to match not on four stars, but on three plus
+signs, but only for the current mailing list.
+
+    >>> mlist.header_matches = [('x-spam-score', '[+]{3,}', 'discard')]
+
+A message with a spam score of two pluses does not match.
+
+    >>> del msg['x-spam-score']
+    >>> msg['X-Spam-Score'] = '++'
+    >>> del msg['message-id']
+    >>> msg['Message-ID'] = '<five>'
+    >>> file_pos = fp.tell()
+    >>> process(mlist, msg, {}, 'header-match')
+    >>> fp.seek(file_pos)
+    >>> print 'LOG:', fp.read()
+    LOG:
+
+A message with a spam score of three pluses does match.
+
+    >>> del msg['x-spam-score']
+    >>> msg['X-Spam-Score'] = '+++'
+    >>> del msg['message-id']
+    >>> msg['Message-ID'] = '<six>'
+    >>> file_pos = fp.tell()
+    >>> process(mlist, msg, {}, 'header-match')
+    >>> fp.seek(file_pos)
+    >>> print 'LOG:', fp.read()
+    LOG: ... DISCARD: <six>
+    <BLANKLINE>
+
+As does a message with a spam score of four pluses.
+
+    >>> del msg['x-spam-score']
+    >>> msg['X-Spam-Score'] = '+++'
+    >>> del msg['message-id']
+    >>> msg['Message-ID'] = '<seven>'
+    >>> file_pos = fp.tell()
+    >>> process(mlist, msg, {}, 'header-match')
+    >>> fp.seek(file_pos)
+    >>> print 'LOG:', fp.read()
+    LOG: ... DISCARD: <seven>
+    <BLANKLINE>

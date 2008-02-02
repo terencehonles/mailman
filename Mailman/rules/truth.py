@@ -1,4 +1,4 @@
-# Copyright (C) 2007 by the Free Software Foundation, Inc.
+# Copyright (C) 2008 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -15,28 +15,27 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-"""Various rule helpers"""
+"""A rule which always matches."""
 
-__all__ = ['initialize']
+__all__ = ['Truth']
 __metaclass__ = type
 
 
 from zope.interface import implements
-from zope.interface.verify import verifyObject
 
-from Mailman.app.plugins import get_plugins
-from Mailman.configuration import config
+from Mailman.i18n import _
 from Mailman.interfaces import IRule
 
 
 
-def initialize():
-    """Find and register all rules in all plugins."""
-    # Find rules in plugins.
-    for rule_finder in get_plugins('mailman.rules'):
-        for rule_class in rule_finder():
-            rule = rule_class()
-            verifyObject(IRule, rule)
-            assert rule.name not in config.rules, (
-                'Duplicate rule "%s" found in %s' % (rule.name, rule_finder))
-            config.rules[rule.name] = rule
+class Truth:
+    """Look for any previous rule match."""
+    implements(IRule)
+
+    name = 'truth'
+    description = _('A rule which always matches.')
+    record = False
+
+    def check(self, mlist, msg, msgdata):
+        """See `IRule`."""
+        return True

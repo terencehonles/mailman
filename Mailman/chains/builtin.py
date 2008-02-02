@@ -23,37 +23,62 @@ __metaclass__ = type
 
 import logging
 
-from Mailman.interfaces import LinkAction
-from Mailman.chains.base import Chain, Link
+from zope.interface import implements
+
+from Mailman.chains.base import Link
+from Mailman.configuration import config
 from Mailman.i18n import _
+from Mailman.interfaces import IChain, LinkAction
 
 
 log = logging.getLogger('mailman.vette')
 
 
 
-class BuiltInChain(Chain):
+class BuiltInChain:
     """Default built-in chain."""
 
-    def __init__(self):
-        super(BuiltInChain, self).__init__(
-            'built-in', _('The built-in moderation chain.'))
-        self.append_link(Link('approved', LinkAction.jump, 'accept'))
-        self.append_link(Link('emergency', LinkAction.jump, 'hold'))
-        self.append_link(Link('loop', LinkAction.jump, 'discard'))
+    implements(IChain)
+
+    name = 'built-in'
+    description = _('The built-in moderation chain.')
+
+    _link_descriptions = (
+        ('approved', LinkAction.jump, 'accept'),
+        ('emergency', LinkAction.jump, 'hold'),
+        ('loop', LinkAction.jump, 'discard'),
         # Do all of the following before deciding whether to hold the message
         # for moderation.
-        self.append_link(Link('administrivia', LinkAction.defer))
-        self.append_link(Link('implicit-dest', LinkAction.defer))
-        self.append_link(Link('max-recipients', LinkAction.defer))
-        self.append_link(Link('max-size', LinkAction.defer))
-        self.append_link(Link('news-moderation', LinkAction.defer))
-        self.append_link(Link('no-subject', LinkAction.defer))
-        self.append_link(Link('suspicious-header', LinkAction.defer))
+        ('administrivia', LinkAction.defer, None),
+        ('implicit-dest', LinkAction.defer, None),
+        ('max-recipients', LinkAction.defer, None),
+        ('max-size', LinkAction.defer, None),
+        ('news-moderation', LinkAction.defer, None),
+        ('no-subject', LinkAction.defer, None),
+        ('suspicious-header', LinkAction.defer, None),
         # Now if any of the above hit, jump to the hold chain.
-        self.append_link(Link('any', LinkAction.jump, 'hold'))
+        ('any', LinkAction.jump, 'hold'),
         # Take a detour through the self header matching chain, which we'll
         # create later.
-        self.append_link(Link('truth', LinkAction.detour, 'header-match'))
+        ('truth', LinkAction.detour, 'header-match'),
         # Finally, the builtin chain selfs to acceptance.
-        self.append_link(Link('truth', LinkAction.jump, 'accept'))
+        ('truth', LinkAction.jump, 'accept'),
+        )
+
+    def __init__(self):
+        self._cached_links = None
+
+    def get_links(self, mlist, msg, msgdata):
+        """See `IChain`."""
+        if self._cached_links is None:
+            self._cached_links = links = []
+            for rule_name, action, chain_name in self._link_descriptions:
+                # Get the named rule.
+                rule = config.rules[rule_name]
+                # Get the chain, if one is defined.
+                if chain_name is None:
+                    chain = None
+                else:
+                    chain = config.chains[chain_name]
+                links.append(Link(rule, action, chain))
+        return iter(self._cached_links)

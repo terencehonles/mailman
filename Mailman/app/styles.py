@@ -70,7 +70,7 @@ class DefaultStyle:
         mlist.send_goodbye_msg = config.DEFAULT_SEND_GOODBYE_MSG
         mlist.bounce_matching_headers = (
             config.DEFAULT_BOUNCE_MATCHING_HEADERS)
-        mlist.header_filter_rules = []
+        mlist.header_matches = []
         mlist.anonymous_list = config.DEFAULT_ANONYMOUS_LIST
         mlist.description = u''
         mlist.info = u''

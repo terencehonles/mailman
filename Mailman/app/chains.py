@@ -66,20 +66,19 @@ def process(mlist, msg, msgdata, start_chain='built-in'):
             chain, chain_iter = chain_stack.pop()
             continue
         # Process this link.
-        rule = chain.get_rule(link.rule)
-        if rule.check(mlist, msg, msgdata):
-            if rule.record:
-                hits.append(link.rule)
+        if link.rule.check(mlist, msg, msgdata):
+            if link.rule.record:
+                hits.append(link.rule.name)
             # The rule matched so run its action.
             if link.action is LinkAction.jump:
-                chain = config.chains[link.chain]
+                chain = link.chain
                 chain_iter = chain.get_links(mlist, msg, msgdata)
                 continue
             elif link.action is LinkAction.detour:
                 # Push the current chain so that we can return to it when
                 # the next chain is finished.
                 chain_stack.append((chain, chain_iter))
-                chain = config.chains[link.chain]
+                chain = link.chain
                 chain_iter = chain.get_links(mlist, msg, msgdata)
                 continue
             elif link.action is LinkAction.stop:
@@ -94,8 +93,8 @@ def process(mlist, msg, msgdata, start_chain='built-in'):
                 raise AssertionError('Bad link action: %s' % link.action)
         else:
             # The rule did not match; keep going.
-            if rule.record:
-                misses.append(link.rule)
+            if link.rule.record:
+                misses.append(link.rule.name)
 
 
 

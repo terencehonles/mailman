@@ -23,16 +23,40 @@ __metaclass__ = type
 
 import re
 import logging
+import itertools
 
 from zope.interface import implements
 
-from Mailman.interfaces import IRule, LinkAction
+from Mailman.interfaces import IChainIterator, IRule, LinkAction
 from Mailman.chains.base import Chain, Link
 from Mailman.i18n import _
 from Mailman.configuration import config
 
 
 log = logging.getLogger('mailman.vette')
+
+
+
+def make_link(entry):
+    """Create a Link object.
+
+    :param entry: a 2- or 3-tuple describing a link.  If a 2-tuple, it is a
+        header and a pattern, and a default chain of 'hold' will be used.  If
+        a 3-tuple, the third item is the chain name to use.
+    :return: an ILink.
+    """
+    if len(entry) == 2:
+        header, pattern = entry
+        chain_name = 'hold'
+    elif len(entry) == 3:
+        header, pattern, chain_name = entry
+        # We don't assert that the chain exists here because the jump
+        # chain may not yet have been created.
+    else:
+        raise AssertionError('Bad link description: %s' % entry)
+    rule = HeaderMatchRule(header, pattern)
+    chain = config.chains[chain_name]
+    return Link(rule, LinkAction.jump, chain)
 
 
 
@@ -78,23 +102,16 @@ class HeaderMatchChain(Chain):
         # The header match rules are not global, so don't register them.
         # These are the only rules that the header match chain can execute.
         self._links = []
-        self._rules = {}
         # Initialize header check rules with those from the global
         # HEADER_MATCHES variable.
         for entry in config.HEADER_MATCHES:
-            if len(entry) == 2:
-                header, pattern = entry
-                chain = 'hold'
-            elif len(entry) == 3:
-                header, pattern, chain = entry
-                # We don't assert that the chain exists here because the jump
-                # chain may not yet have been created.
-            else:
-                raise AssertionError(
-                    'Bad entry for HEADER_MATCHES: %s' % entry)
-            self.extend(header, pattern, chain)
+            self._links.append(make_link(entry))
+        # Keep track of how many global header matching rules we've seen.
+        # This is so the flush() method will only delete those that were added
+        # via extend() or append_link().
+        self._permanent_link_count = len(self._links)
 
-    def extend(self, header, pattern, chain='hold'):
+    def extend(self, header, pattern, chain_name='hold'):
         """Extend the existing header matches.
 
         :param header: The case-insensitive header field name.
@@ -103,14 +120,32 @@ class HeaderMatchChain(Chain):
         :param chain: Option chain to jump to if the pattern matches any of
             the named header values.  If not given, the 'hold' chain is used.
         """
-        rule = HeaderMatchRule(header, pattern)
-        self._rules[rule.name] = rule
-        link = Link(rule.name, LinkAction.jump, chain)
-        self._links.append(link)
+        self._links.append(make_link((header, pattern, chain_name)))
 
-    def get_rule(self, name):
-        """See `IChain`.
+    def flush(self):
+        """See `IMutableChain`."""
+        del self._links[self._permanent_link_count:]
 
-        Only local rules are findable by this chain.
-        """
-        return self._rules[name]
+    def get_links(self, mlist, msg, msgdata):
+        """See `IChain`."""
+        list_iterator = HeaderMatchIterator(mlist)
+        return itertools.chain(iter(self._links), iter(list_iterator))
+
+    def __iter__(self):
+        for link in self._links:
+            yield link
+
+
+
+class HeaderMatchIterator:
+    """An iterator of both the global and list-specific chain links."""
+
+    implements(IChainIterator)
+
+    def __init__(self, mlist):
+        self._mlist = mlist
+
+    def __iter__(self):
+        """See `IChainIterator`."""
+        for entry in self._mlist.header_matches:
+            yield make_link(entry)

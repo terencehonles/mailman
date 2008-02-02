@@ -113,7 +113,7 @@ class MailingList(Model):
     gateway_to_news = Bool()
     generic_nonmember_action = Int()
     goodbye_msg = Unicode()
-    header_filter_rules = Pickle()
+    header_matches = Pickle()
     hold_these_nonmembers = Pickle()
     include_list_post_header = Bool()
     include_rfc2369_headers = Bool()

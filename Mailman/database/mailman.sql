@@ -93,7 +93,7 @@ CREATE TABLE mailinglist (
         gateway_to_news BOOLEAN,
         generic_nonmember_action INTEGER,
         goodbye_msg TEXT,
-        header_filter_rules BLOB,
+        header_matches BLOB,
         hold_these_nonmembers BLOB,
         include_list_post_header BOOLEAN,
         include_rfc2369_headers BOOLEAN,

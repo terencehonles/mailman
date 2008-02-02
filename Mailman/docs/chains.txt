@@ -300,9 +300,6 @@ the Hold handler from previous versions of Mailman.
     >>> chain = config.chains['built-in']
     >>> verifyObject(IChain, chain)
     True
-    >>> from Mailman.interfaces import IMutableChain
-    >>> verifyObject(IMutableChain, chain)
-    True
     >>> chain.name
     'built-in'
     >>> chain.description
