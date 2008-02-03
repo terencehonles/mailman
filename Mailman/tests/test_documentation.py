@@ -18,7 +18,6 @@
 """Harness for testing Mailman's documentation."""
 
 import os
-import pdb
 import doctest
 import unittest
 
@@ -31,12 +30,25 @@ from Mailman.app.styles import style_manager
 from Mailman.configuration import config
 
 
+DOT = '.'
 COMMASPACE = ', '
 
 
 
 def specialized_message_from_string(text):
-    return message_from_string(text, Message)
+    """Parse text into a message object.
+
+    This is specialized in the sense that an instance of Mailman's own Message
+    object is returned, and this message object has an attribute
+    `original_size` which is the pre-calculated size in bytes of the message's
+    text representation.
+    """
+    # This mimic what Switchboard.dequeue() does when parsing a message from
+    # text into a Message instance.
+    original_size = len(text)
+    message = message_from_string(text, Message)
+    message.original_size = original_size
+    return message
 
 
 def setup(testobj):
@@ -66,7 +78,12 @@ def cleaning_teardown(testobj):
 
 def test_suite():
     suite = unittest.TestSuite()
-    docsdir = os.path.join(os.path.dirname(Mailman.__file__), 'docs')
+    topdir = os.path.dirname(Mailman.__file__)
+    packages = []
+    for dirpath, dirnames, filenames in os.walk(topdir):
+        if 'docs' in dirnames:
+            docsdir = os.path.join(dirpath, 'docs')[len(topdir)+1:]
+            packages.append(docsdir)
     # Under higher verbosity settings, report all doctest errors, not just the
     # first one.
     flags = (doctest.ELLIPSIS |
@@ -74,13 +91,15 @@ def test_suite():
              doctest.REPORT_NDIFF)
     if config.opts.verbosity <= 2:
         flags |= doctest.REPORT_ONLY_FIRST_FAILURE
-    for filename in os.listdir(docsdir):
-        if os.path.splitext(filename)[1] == '.txt':
-            test = doctest.DocFileSuite(
-                'docs/' + filename,
-                package=Mailman,
-                optionflags=flags,
-                setUp=setup,
-                tearDown=cleaning_teardown)
-            suite.addTest(test)
+    # Add all the doctests in all subpackages.
+    for docsdir in packages:
+        for filename in os.listdir(os.path.join('Mailman', docsdir)):
+            if os.path.splitext(filename)[1] == '.txt':
+                test = doctest.DocFileSuite(
+                    os.path.join(docsdir, filename),
+                    package='Mailman',
+                    optionflags=flags,
+                    setUp=setup,
+                    tearDown=cleaning_teardown)
+                suite.addTest(test)
     return suite

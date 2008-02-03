@@ -537,63 +537,6 @@ def maketext(templatefile, dict=None, raw=False, lang=None, mlist=None):
 
 
 
-ADMINDATA = {
-    # admin keyword: (minimum #args, maximum #args)
-    'confirm':     (1, 1),
-    'help':        (0, 0),
-    'info':        (0, 0),
-    'lists':       (0, 0),
-    'options':     (0, 0),
-    'password':    (2, 2),
-    'remove':      (0, 0),
-    'set':         (3, 3),
-    'subscribe':   (0, 3),
-    'unsubscribe': (0, 1),
-    'who':         (0, 2),
-    }
-
-# Given a Message.Message object, test for administrivia (eg subscribe,
-# unsubscribe, etc).  The test must be a good guess -- messages that return
-# true get sent to the list admin instead of the entire list.
-def is_administrivia(msg):
-    linecnt = 0
-    lines = []
-    for line in email.Iterators.body_line_iterator(msg):
-        # Strip out any signatures
-        if line == '-- ':
-            break
-        if line.strip():
-            linecnt += 1
-        if linecnt > config.DEFAULT_MAIL_COMMANDS_MAX_LINES:
-            return False
-        lines.append(line)
-    bodytext = NL.join(lines)
-    # See if the body text has only one word, and that word is administrivia
-    if ADMINDATA.has_key(bodytext.strip().lower()):
-        return True
-    # Look at the first N lines and see if there is any administrivia on the
-    # line.  BAW: N is currently hardcoded to 5.  str-ify the Subject: header
-    # because it may be an email.Header.Header instance rather than a string.
-    bodylines = lines[:5]
-    subject = str(msg.get('subject', ''))
-    bodylines.append(subject)
-    for line in bodylines:
-        if not line.strip():
-            continue
-        words = [word.lower() for word in line.split()]
-        minargs, maxargs = ADMINDATA.get(words[0], (None, None))
-        if minargs is None and maxargs is None:
-            continue
-        if minargs <= len(words[1:]) <= maxargs:
-            # Special case the `set' keyword.  BAW: I don't know why this is
-            # here.
-            if words[0] == 'set' and words[2] not in ('on', 'off'):
-                continue
-            return True
-    return False
-
-
-
 def GetRequestURI(fallback=None, escape=True):
     """Return the full virtual path this CGI script was invoked with.
 

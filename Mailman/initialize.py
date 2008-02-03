@@ -63,6 +63,12 @@ def initialize_2(debug=False):
     verifyObject(IDatabase, database)
     database.initialize(debug)
     Mailman.configuration.config.db = database
+    # Initialize the rules and chains.  Do the imports here so as to avoid
+    # circular imports.
+    from Mailman.app.chains import initialize as initialize_chains
+    from Mailman.app.rules import initialize as initialize_rules
+    initialize_rules()
+    initialize_chains()
 
 
 def initialize(config_path=None, propagate_logs=False):

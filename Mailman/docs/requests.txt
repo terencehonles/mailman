@@ -318,7 +318,7 @@ indicates that the message has been approved.
     <BLANKLINE>
     >>> sorted(qdata.items())
     [('_parsemsg', False),
-     ('adminapproved', True), (u'approved', True),
+     (u'approved', True), ('moderator_approved', True),
      (u'received_time', 123.45), (u'sender', u'aperson@example.com'),
      ('version', 3)]
 

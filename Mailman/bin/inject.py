@@ -19,11 +19,11 @@ import os
 import sys
 import optparse
 
-from Mailman import Post
 from Mailman import Utils
 from Mailman import Version
 from Mailman.configuration import config
 from Mailman.i18n import _
+from Mailman.inject import inject
 
 __i18n_templates__ = True
 
@@ -88,7 +88,7 @@ def main():
     else:
         msgtext = sys.stdin.read()
 
-    Post.inject(opts.listname, msgtext, qdir=qdir)
+    inject(opts.listname, msgtext, qdir=qdir)
 
 
 

@@ -1,10 +1,11 @@
 Mailman - The GNU Mailing List Management System
-Copyright (C) 1998-2007 by the Free Software Foundation, Inc.
+Copyright (C) 1998-2008 by the Free Software Foundation, Inc.
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 
 Here is a history of user visible changes to Mailman.
 
-3.0 alpha 1 (XX-XXX-200X)
+3.0 alpha 1 -- "Leave That Thing Alone"
+(XX-XXX-200X)
 
   User visible changes
 
@@ -40,10 +41,22 @@ Here is a history of user visible changes to Mailman.
       instead.  The substitution variable $fqdn_listname has been added.
       DEFAULT_MSG_FOOTER in Defaults.py.in hsa been updated accordingly.
 
+    - The KNOWN_SPAMMERS global variable is replaced with HEADER_MATCHES.  The
+      mailing list's header_filter_rules variable is replaced with
+      header_matches which has the same semantics as HEADER_MATCHES, but is
+      list-specific.
+
+    - DEFAULT_MAIL_COMMANDS_MAX_LINES -> EMAIL_COMMANDS_MAX_LINES
+
   Architecture
 
-    - SQLAlchemy/Elixir based storage for all list and user data, with default
-      storage in a SQLite database.
+    - Implementation of a chain-of-rules based approach for deciding whether a
+      message should initially be accepted, held for approval,
+      rejected/bounced, or discarded.  This replaces most of the disposition
+      handlers in the pipeline.
+
+    - The Storm ORM is used for data storage, with the SQLite backend as the
+      default relational database.
 
     - Zope interfaces are used to describe the major components.
 
@@ -126,6 +139,9 @@ Here is a history of user visible changes to Mailman.
       been removed.  The domain that the list is being added to must already
       exist.
 
+    - Backport the ability to specify additional footer interpolation
+      variables by the message metadata 'decoration-data' key.
+
   Bug fixes and other patches
 
     - Removal of DomainKey/DKIM signatures is now controlled by Defaults.py
@@ -147,6 +163,9 @@ Here is a history of user visible changes to Mailman.
     - The List-Help, List-Subscribe, and List-Unsubscribe headers were
       incorrectly suppressed in messages that Mailman sends directly to
       users.
+
+    - The 'adminapproved' metadata key is renamed 'moderator_approved'.
+
 
 2.1.9 (12-Sep-2006)
 

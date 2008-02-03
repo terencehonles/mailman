@@ -70,7 +70,7 @@ class DefaultStyle:
         mlist.send_goodbye_msg = config.DEFAULT_SEND_GOODBYE_MSG
         mlist.bounce_matching_headers = (
             config.DEFAULT_BOUNCE_MATCHING_HEADERS)
-        mlist.header_filter_rules = []
+        mlist.header_matches = []
         mlist.anonymous_list = config.DEFAULT_ANONYMOUS_LIST
         mlist.description = u''
         mlist.info = u''
@@ -225,6 +225,9 @@ class DefaultStyle:
         # is that they will get all messages, and they will not have an entry
         # in this dictionary.
         mlist.topics_userinterest = {}
+        # The processing chain that messages coming into this list get
+        # processed by.
+        mlist.start_chain = u'built-in'
 
     def match(self, mailing_list, styles):
         # If no other styles have matched, then the default style matches.

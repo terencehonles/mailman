@@ -18,7 +18,7 @@ list.  This is exactly the same as the fully qualified list name.
 Messages to the mailing list's 'no reply' address always get discarded without
 prejudice.
 
-    >>> mlist.noreply_address
+    >>> mlist.no_reply_address
     u'noreply@example.com'
 
 The mailing list's owner address reaches the human moderators.

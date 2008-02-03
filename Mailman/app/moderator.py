@@ -51,6 +51,18 @@ slog = logging.getLogger('mailman.subscribe')
 
 
 def hold_message(mlist, msg, msgdata=None, reason=None):
+    """Hold a message for moderator approval.
+
+    The message is added to the mailing list's request database.
+
+    :param mlist: The mailing list to hold the message on.
+    :param msg: The message to hold.
+    :param msgdata: Optional message metadata to hold.  If not given, a new
+        metadata dictionary is created and held with the message.
+    :param reason: Optional string reason why the message is being held.  If
+        not given, the empty string is used.
+    :return: An id used to handle the held message later.
+    """
     if msgdata is None:
         msgdata = {}
     else:
@@ -115,10 +127,8 @@ def handle_message(mlist, id, action,
             if key.startswith('_mod_'):
                 del msgdata[key]
         # Add some metadata to indicate this message has now been approved.
-        # XXX 'adminapproved' is used for backward compatibility, but it
-        # should really be called 'moderator_approved'.
         msgdata['approved'] = True
-        msgdata['adminapproved'] = True
+        msgdata['moderator_approved'] = True
         # Calculate a new filebase for the approved message, otherwise
         # delivery errors will cause duplicates.
         if 'filebase' in msgdata:

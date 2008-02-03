@@ -45,8 +45,7 @@ class ModelMeta(PropertyPublisherMeta):
     @staticmethod
     def _reset(store):
         for model_class in ModelMeta._class_registry:
-            for row in store.find(model_class):
-                store.remove(row)
+            store.find(model_class).remove()
 
 
 

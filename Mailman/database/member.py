@@ -33,6 +33,7 @@ class Member(Model):
     id = Int(primary=True)
     role = Enum()
     mailing_list = Unicode()
+    is_moderated = Bool()
 
     address_id = Int()
     address = Reference(address_id, 'Address.id')
@@ -43,6 +44,7 @@ class Member(Model):
         self.role = role
         self.mailing_list = mailing_list
         self.address = address
+        self.is_moderated = False
 
     def __repr__(self):
         return '<Member: %s on %s as %s>' % (
