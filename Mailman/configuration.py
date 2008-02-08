@@ -36,6 +36,7 @@ DEFAULT_QRUNNERS = (
     '.incoming.IncomingRunner',
     '.news.NewsRunner',
     '.outgoing.OutgoingRunner',
+    '.pipeline.PipelineRunner',
     '.retry.RetryRunner',
     '.virgin.VirginRunner',
     )
@@ -136,7 +137,7 @@ class Configuration(object):
         self.MAILDIR_DIR        = join(qdir, 'maildir')
         self.NEWSQUEUE_DIR      = join(qdir, 'news')
         self.OUTQUEUE_DIR       = join(qdir, 'out')
-        self.PREPQUEUE_DIR      = join(qdir, 'prepare')
+        self.PIPELINEQUEUE_DIR  = join(qdir, 'pipeline')
         self.RETRYQUEUE_DIR     = join(qdir, 'retry')
         self.SHUNTQUEUE_DIR     = join(qdir, 'shunt')
         self.VIRGINQUEUE_DIR    = join(qdir, 'virgin')

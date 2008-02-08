@@ -50,6 +50,6 @@ class AcceptChain(TerminalChainBase):
         rule_misses = msgdata.get('rule_misses')
         if rule_misses:
             msg['X-Mailman-Rule-Misses'] = SEMISPACE.join(rule_misses)
-        accept_queue = Switchboard(config.PREPQUEUE_DIR)
+        accept_queue = Switchboard(config.PIPELINEQUEUE_DIR)
         accept_queue.enqueue(msg, msgdata)
         log.info('ACCEPT: %s', msg.get('message-id', 'n/a'))

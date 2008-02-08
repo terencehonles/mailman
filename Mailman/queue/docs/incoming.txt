@@ -22,7 +22,7 @@ Accepted messages
 
 We have a message that is going to be sent to the mailing list.  This message
 is so perfectly fine for posting that it will be accepted and forward to the
-prep queue.
+pipeline queue.
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
@@ -46,18 +46,18 @@ The incoming queue runner runs until it is empty.
     >>> incoming = make_testable_runner(IncomingRunner)
     >>> incoming.run()
 
-And now the message is in the prep queue.
+And now the message is in the pipeline queue.
 
     >>> from Mailman.configuration import config
     >>> from Mailman.queue import Switchboard
-    >>> prep_queue = Switchboard(config.PREPQUEUE_DIR)
-    >>> len(prep_queue.files)
+    >>> pipeline_queue = Switchboard(config.PIPELINEQUEUE_DIR)
+    >>> len(pipeline_queue.files)
     1
     >>> incoming_queue = Switchboard(config.INQUEUE_DIR)
     >>> len(incoming_queue.files)
     0
     >>> from Mailman.tests.helpers import get_queue_messages
-    >>> item = get_queue_messages(prep_queue)[0]
+    >>> item = get_queue_messages(pipeline_queue)[0]
     >>> print item.msg.as_string()
     From: aperson@example.com
     To: _xtest@example.com
@@ -78,8 +78,8 @@ Held messages
 -------------
 
 The list moderator sets the emergency flag on the mailing list.  The built-in
-chain will now hold all posted messages, so nothing will show up in the prep
-queue.
+chain will now hold all posted messages, so nothing will show up in the
+pipeline queue.
 
     # XXX This checks the vette log file because there is no other evidence
     # that this chain has done anything.
@@ -92,7 +92,7 @@ queue.
     >>> inject(u'_xtest@example.com', msg)
     >>> file_pos = fp.tell()
     >>> incoming.run()
-    >>> len(prep_queue.files)
+    >>> len(pipeline_queue.files)
     0
     >>> len(incoming_queue.files)
     0
@@ -124,7 +124,7 @@ new chain and set it as the mailing list's start chain.
     >>> inject(u'_xtest@example.com', msg)
     >>> file_pos = fp.tell()
     >>> incoming.run()
-    >>> len(prep_queue.files)
+    >>> len(pipeline_queue.files)
     0
     >>> len(incoming_queue.files)
     0
@@ -158,7 +158,7 @@ tests above.
     >>> inject(u'_xtest@example.com', msg)
     >>> file_pos = fp.tell()
     >>> incoming.run()
-    >>> len(prep_queue.files)
+    >>> len(pipeline_queue.files)
     0
     >>> len(incoming_queue.files)
     0

@@ -269,10 +269,10 @@ processed and sent on to the list membership.
     >>> print 'LOG:', fp.read()
     LOG: ... ACCEPT: <first>
 
-    >>> prepq = Switchboard(config.PREPQUEUE_DIR)
-    >>> len(prepq.files)
+    >>> pipelineq = Switchboard(config.PIPELINEQUEUE_DIR)
+    >>> len(pipelineq.files)
     1
-    >>> qmsg, qdata = prepq.dequeue(prepq.files[0])
+    >>> qmsg, qdata = pipelineq.dequeue(pipelineq.files[0])
     >>> print qmsg.as_string()
     From: aperson@example.com
     To: _xtest@example.com
@@ -306,7 +306,7 @@ the Hold handler from previous versions of Mailman.
     u'The built-in moderation chain.'
 
 The previously created message is innocuous enough that it should pass through
-all default rules.  This message will end up in the prep queue.
+all default rules.  This message will end up in the pipeline queue.
 
     >>> file_pos = fp.tell()
     >>> from Mailman.app.chains import process
@@ -315,7 +315,7 @@ all default rules.  This message will end up in the prep queue.
     >>> print 'LOG:', fp.read()
     LOG: ... ACCEPT: <first>
 
-    >>> qmsg, qdata = prepq.dequeue(prepq.files[0])
+    >>> qmsg, qdata = pipelineq.dequeue(pipelineq.files[0])
     >>> print qmsg.as_string()
     From: aperson@example.com
     To: _xtest@example.com

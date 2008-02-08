@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2008 by the Free Software Foundation, Inc.
+# Copyright (C) 2008 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -15,30 +15,25 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-"""Incoming queue runner.
+"""The pipeline queue runner.
 
-This runner's sole purpose in life is to decide the disposition of the
-message.  It can either be accepted for delivery, rejected (i.e. bounced),
-held for moderator approval, or discarded.
-
-When accepted, the message is forwarded on to the `prep queue` where it is
-prepared for delivery.  Rejections, discards, and holds are processed
-immediately.
+This runner's purpose is to take messages that have been approved for posting
+through the 'preparation pipeline'.  This pipeline adds, deletes and modifies
+headers, calculates message recipients, and more.
 """
 
-from Mailman.app.chains import process
+from Mailman.app.pipeline import process
 from Mailman.configuration import config
-from Mailman.queue import Runner
+from Mailman.queue import runner
 
 
 
-class IncomingRunner(Runner):
-    QDIR = config.INQUEUE_DIR
+class PipelineRunner(Runner):
+    QDIR = config.PIPELINEQUEUE_DIR
 
     def _dispose(self, mlist, msg, msgdata):
-        if msgdata.get('envsender') is None:
-            msgdata['envsender'] = mlist.no_reply_address
-        # Process the message through the mailing list's start chain.
-        process(mlist, msg, msgdata, mlist.start_chain)
+        # Process the message through the mailing list's pipeline.
+        process(mlist, msg, msgdata, mlist.pipeline)
         # Do not keep this message queued.
         return False
+
