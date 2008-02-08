@@ -50,8 +50,8 @@ from Mailman import i18n
 from Mailman.Mailbox import Mailbox
 from Mailman.Mailbox import Mailbox
 from Mailman.configuration import config
-from Mailman.handlers.decorate import decorate
-from Mailman.handlers.scrubber import process as scrubber
+from Mailman.pipeline.decorate import decorate
+from Mailman.pipeline.scrubber import process as scrubber
 from Mailman.interfaces import DeliveryMode, DeliveryStatus
 from Mailman.queue import Switchboard
 
@@ -313,7 +313,7 @@ def send_i18n_digests(mlist, mboxfp):
         else:
             print >> plainmsg, separator30
             print >> plainmsg
-        # Use Mailman.Handlers.Scrubber.process() to get plain text
+        # Use Mailman.pipeline.scrubber.process() to get plain text
         try:
             msg = scrubber(mlist, msg)
         except Errors.DiscardMessage:

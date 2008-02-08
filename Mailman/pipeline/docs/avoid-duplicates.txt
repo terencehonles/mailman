@@ -6,7 +6,7 @@ reduce the reception of duplicate messages.  It does this by removing certain
 recipients from the list of recipients that earlier handler modules
 (e.g. CalcRecips) calculates.
 
-    >>> from Mailman.handlers.avoid_duplicates import process
+    >>> from Mailman.pipeline.avoid_duplicates import process
     >>> from Mailman.configuration import config
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
 
