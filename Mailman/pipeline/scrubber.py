@@ -19,6 +19,10 @@
 
 from __future__ import with_statement
 
+__metaclass__ = type
+__all__ = ['Scrubber']
+
+
 import os
 import re
 import sha
@@ -32,12 +36,14 @@ from email.generator import Generator
 from email.utils import make_msgid, parsedate
 from locknix.lockfile import Lock
 from mimetypes import guess_all_extensions
+from zope.interface import implements
 
 from Mailman import Utils
 from Mailman.Errors import DiscardMessage
 from Mailman.app.archiving import get_archiver
 from Mailman.configuration import config
 from Mailman.i18n import _
+from Mailman.interfaces import IHandler
 
 # Path characters for common platforms
 pre = re.compile(r'[/\\:]')
@@ -498,3 +504,17 @@ def save_attachment(mlist, msg, dir, filter_html=True):
     # Bracket the URL instead.
     url = '<' + baseurl + '%s/%s%s%s>' % (dir, filebase, extra, ext)
     return url
+
+
+
+class Scrubber:
+    """Cleanse a message for archiving."""
+
+    implements(IHandler)
+
+    name = 'scrubber'
+    description = _('Cleanse a message for archiving.')
+
+    def process(self, mlist, msg, msgdata):
+        """See `IHandler`."""
+        process(mlist, msg, msgdata)

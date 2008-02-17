@@ -90,6 +90,7 @@ Any other spelling is incorrect.""",
         'mailman.styles'    : 'default = Mailman.app.styles:DefaultStyle',
         'mailman.mta'       : 'stock = Mailman.MTA:Manual',
         'mailman.rules'     : 'default = Mailman.rules:initialize',
+        'mailman.handlers'  : 'default = Mailman.pipeline:initialize',
         },
     # Third-party requirements.
     install_requires = [

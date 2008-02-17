@@ -15,7 +15,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-"""Remove any 'DomainKeys' (or similar) header lines.
+"""Remove any 'DomainKeys' (or similar) headers.
 
 The values contained in these header lines are intended to be used by the
 recipient to detect forgery or tampering in transit, and the modifications
@@ -25,12 +25,29 @@ and it will also give the MTA the opportunity to regenerate valid keys
 originating at the Mailman server for the outgoing message.
 """
 
+__metaclass__ = type
+__all__ = ['CleanseDKIM']
+
+
+from zope.interface import implements
+
 from Mailman.configuration import config
+from Mailman.i18n import _
+from Mailman.interfaces import IHandler
 
 
 
-def process(mlist, msg, msgdata):
-    if config.REMOVE_DKIM_HEADERS:
-        del msg['domainkey-signature']
-        del msg['dkim-signature']
-        del msg['authentication-results']
+class CleanseDKIM:
+    """Remove DomainKeys headers."""
+
+    implements(IHandler)
+
+    name = 'cleanse-dkim'
+    description = _('Remove DomainKeys headers.')
+
+    def process(self, mlist, msg, msgdata):
+        """See `IHandler`."""
+        if config.REMOVE_DKIM_HEADERS:
+            del msg['domainkey-signature']
+            del msg['dkim-signature']
+            del msg['authentication-results']

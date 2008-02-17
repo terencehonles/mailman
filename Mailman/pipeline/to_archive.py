@@ -17,21 +17,38 @@
 
 """Add the message to the archives."""
 
+__metaclass__ = type
+__all__ = ['ToArchive']
+
+
+from zope.interface import implements
+
 from Mailman.configuration import config
+from Mailman.i18n import _
+from Mailman.interfaces import IHandler
 from Mailman.queue import Switchboard
 
 
 
-def process(mlist, msg, msgdata):
-    # short circuits
-    if msgdata.get('isdigest') or not mlist.archive:
-        return
-    # Common practice seems to favor "X-No-Archive: yes".  No other value for
-    # this header seems to make sense, so we'll just test for it's presence.
-    # I'm keeping "X-Archive: no" for backwards compatibility.
-    if 'x-no-archive' in msg or msg.get('x-archive', '').lower() == 'no':
-        return
-    # Send the message to the archiver queue
-    archq = Switchboard(config.ARCHQUEUE_DIR)
-    # Send the message to the queue
-    archq.enqueue(msg, msgdata)
+class ToArchive:
+    """Add the message to the archives."""
+
+    implements(IHandler)
+
+    name = 'to-archive'
+    description = _('Add the message to the archives.')
+
+    def process(self, mlist, msg, msgdata):
+        """See `IHandler`."""
+        # Short circuits.
+        if msgdata.get('isdigest') or not mlist.archive:
+            return
+        # Common practice seems to favor "X-No-Archive: yes".  No other value
+        # for this header seems to make sense, so we'll just test for it's
+        # presence.  I'm keeping "X-Archive: no" for backwards compatibility.
+        if 'x-no-archive' in msg or msg.get('x-archive', '').lower() == 'no':
+            return
+        # Send the message to the archiver queue
+        archq = Switchboard(config.ARCHQUEUE_DIR)
+        # Send the message to the queue
+        archq.enqueue(msg, msgdata)

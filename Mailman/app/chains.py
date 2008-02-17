@@ -38,10 +38,10 @@ from Mailman.interfaces import LinkAction
 def process(mlist, msg, msgdata, start_chain='built-in'):
     """Process the message through a chain.
 
-    :param start_chain: The name of the chain to start the processing with.
     :param mlist: the IMailingList for this message.
     :param msg: The Message object.
     :param msgdata: The message metadata dictionary.
+    :param start_chain: The name of the chain to start the processing with.
     """
     # Set up some bookkeeping.
     chain_stack = []

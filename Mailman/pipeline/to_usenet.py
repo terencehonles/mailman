@@ -17,9 +17,17 @@
 
 """Move the message to the mail->news queue."""
 
+__metaclass__ = type
+__all__ = ['ToUsenet']
+
+
 import logging
 
+from zope.interface import implements
+
 from Mailman.configuration import config
+from Mailman.i18n import _
+from Mailman.interfaces import IHandler
 from Mailman.queue import Switchboard
 
 COMMASPACE = ', '
@@ -28,22 +36,31 @@ log = logging.getLogger('mailman.error')
 
 
 
-def process(mlist, msg, msgdata):
-    # short circuits
-    if not mlist.gateway_to_news or \
-           msgdata.get('isdigest') or \
-           msgdata.get('fromusenet'):
-        return
-    # sanity checks
-    error = []
-    if not mlist.linked_newsgroup:
-        error.append('no newsgroup')
-    if not mlist.nntp_host:
-        error.append('no NNTP host')
-    if error:
-        log.error('NNTP gateway improperly configured: %s',
-                  COMMASPACE.join(error))
-        return
-    # Put the message in the news runner's queue
-    newsq = Switchboard(config.NEWSQUEUE_DIR)
-    newsq.enqueue(msg, msgdata, listname=mlist.fqdn_listname)
+class ToUsenet:
+    """Move the message to the outgoing news queue."""
+
+    implements(IHandler)
+
+    name = 'to-usenet'
+    description = _('Move the message to the outgoing news queue.')
+
+    def process(self, mlist, msg, msgdata):
+        """See `IHandler`."""
+        # Short circuits.
+        if not mlist.gateway_to_news or \
+               msgdata.get('isdigest') or \
+               msgdata.get('fromusenet'):
+            return
+        # sanity checks
+        error = []
+        if not mlist.linked_newsgroup:
+            error.append('no newsgroup')
+        if not mlist.nntp_host:
+            error.append('no NNTP host')
+        if error:
+            log.error('NNTP gateway improperly configured: %s',
+                      COMMASPACE.join(error))
+            return
+        # Put the message in the news runner's queue
+        newsq = Switchboard(config.NEWSQUEUE_DIR)
+        newsq.enqueue(msg, msgdata, listname=mlist.fqdn_listname)

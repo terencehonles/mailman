@@ -17,11 +17,21 @@
 
 """Extract topics from the original mail message."""
 
+__metaclass__ = type
+__all__ = ['Tagger']
+
+
 import re
 import email
 import email.Errors
 import email.Iterators
 import email.Parser
+
+from zope.interface import implements
+
+from Mailman.i18n import _
+from Mailman.interfaces import IHandler
+
 
 OR = '|'
 CRNL = '\r\n'
@@ -155,3 +165,17 @@ class _ForgivingParser(email.Parser.HeaderParser):
         # Make sure we retain the last header
         if lastheader:
             container[lastheader] = NLTAB.join(lastvalue)
+
+
+
+class Tagger:
+    """Tag messages with topic matches."""
+
+    implements(IHandler)
+
+    name = 'tagger'
+    description = _('Tag messages with topic matches.')
+
+    def process(self, mlist, msg, msgdata):
+        """See `IHandler`."""
+        process(mlist, msg, msgdata)

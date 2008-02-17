@@ -7,9 +7,9 @@ delivery processes while messages are archived.  This also allows external
 archivers to work in a separate process from the main Mailman delivery
 processes.
 
-    >>> from Mailman.pipeline.to_archive import process
     >>> from Mailman.queue import Switchboard
     >>> from Mailman.configuration import config
+    >>> handler = config.handlers['to-archive']
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> mlist.preferred_language = u'en'
     >>> switchboard = Switchboard(config.ARCHQUEUE_DIR)
@@ -34,7 +34,7 @@ For example, no digests should ever get archived.
     ...
     ... A message of great import.
     ... """)
-    >>> process(mlist, msg, dict(isdigest=True))
+    >>> handler.process(mlist, msg, dict(isdigest=True))
     >>> switchboard.files
     []
 
@@ -42,7 +42,7 @@ If the mailing list is not configured to archive, then even regular deliveries
 won't be archived.
 
     >>> mlist.archive = False
-    >>> process(mlist, msg, {})
+    >>> handler.process(mlist, msg, {})
     >>> switchboard.files
     []
 
@@ -58,7 +58,7 @@ archived.  Confusingly, this header's value is actually ignored.
     ...
     ... A message of great import.
     ... """)
-    >>> process(mlist, msg, dict(isdigest=True))
+    >>> handler.process(mlist, msg, dict(isdigest=True))
     >>> switchboard.files
     []
 
@@ -70,7 +70,7 @@ Even a 'no' value will stop the archiving of the message.
     ...
     ... A message of great import.
     ... """)
-    >>> process(mlist, msg, dict(isdigest=True))
+    >>> handler.process(mlist, msg, dict(isdigest=True))
     >>> switchboard.files
     []
 
@@ -83,7 +83,7 @@ header's case folded value must be 'no' in order to prevent archiving.
     ...
     ... A message of great import.
     ... """)
-    >>> process(mlist, msg, dict(isdigest=True))
+    >>> handler.process(mlist, msg, dict(isdigest=True))
     >>> switchboard.files
     []
 
@@ -95,7 +95,7 @@ But if the value is 'yes', then the message will be archived.
     ...
     ... A message of great import.
     ... """)
-    >>> process(mlist, msg, {})
+    >>> handler.process(mlist, msg, {})
     >>> len(switchboard.files)
     1
     >>> filebase = switchboard.files[0]
@@ -118,7 +118,7 @@ message will get archived.
     ...
     ... A message of great import.
     ... """)
-    >>> process(mlist, msg, {})
+    >>> handler.process(mlist, msg, {})
     >>> len(switchboard.files)
     1
     >>> filebase = switchboard.files[0]

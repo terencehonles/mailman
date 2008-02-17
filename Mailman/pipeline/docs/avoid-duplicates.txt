@@ -6,8 +6,8 @@ reduce the reception of duplicate messages.  It does this by removing certain
 recipients from the list of recipients that earlier handler modules
 (e.g. CalcRecips) calculates.
 
-    >>> from Mailman.pipeline.avoid_duplicates import process
     >>> from Mailman.configuration import config
+    >>> handler = config.handlers['avoid-duplicates']
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
 
 Create some members we're going to use.
@@ -36,7 +36,7 @@ The module short-circuits if there are no recipients.
     ... Something
     ... """)
     >>> msgdata = {}
-    >>> process(mlist, msg, msgdata)
+    >>> handler.process(mlist, msg, msgdata)
     >>> msgdata
     {}
     >>> print msg.as_string()
@@ -63,7 +63,7 @@ will get a list copy.
     ... Something of great import.
     ... """)
     >>> msgdata = recips.copy()
-    >>> process(mlist, msg, msgdata)
+    >>> handler.process(mlist, msg, msgdata)
     >>> sorted(msgdata['recips'])
     [u'aperson@example.com', u'bperson@example.com']
     >>> print msg.as_string()
@@ -81,7 +81,7 @@ If they're mentioned on the CC line, they won't get a list copy.
     ... Something of great import.
     ... """)
     >>> msgdata = recips.copy()
-    >>> process(mlist, msg, msgdata)
+    >>> handler.process(mlist, msg, msgdata)
     >>> sorted(msgdata['recips'])
     [u'bperson@example.com']
     >>> print msg.as_string()
@@ -101,7 +101,7 @@ But if they're mentioned on the CC line and have receive_list_copy set to True
     ... Something of great import.
     ... """)
     >>> msgdata = recips.copy()
-    >>> process(mlist, msg, msgdata)
+    >>> handler.process(mlist, msg, msgdata)
     >>> sorted(msgdata['recips'])
     [u'aperson@example.com', u'bperson@example.com']
     >>> print msg.as_string()
@@ -120,7 +120,7 @@ Other headers checked for recipients include the To...
     ... Something of great import.
     ... """)
     >>> msgdata = recips.copy()
-    >>> process(mlist, msg, msgdata)
+    >>> handler.process(mlist, msg, msgdata)
     >>> sorted(msgdata['recips'])
     [u'bperson@example.com']
     >>> print msg.as_string()
@@ -139,7 +139,7 @@ Other headers checked for recipients include the To...
     ... Something of great import.
     ... """)
     >>> msgdata = recips.copy()
-    >>> process(mlist, msg, msgdata)
+    >>> handler.process(mlist, msg, msgdata)
     >>> sorted(msgdata['recips'])
     [u'bperson@example.com']
     >>> print msg.as_string()
@@ -158,7 +158,7 @@ Other headers checked for recipients include the To...
     ... Something of great import.
     ... """)
     >>> msgdata = recips.copy()
-    >>> process(mlist, msg, msgdata)
+    >>> handler.process(mlist, msg, msgdata)
     >>> sorted(msgdata['recips'])
     [u'bperson@example.com']
     >>> print msg.as_string()

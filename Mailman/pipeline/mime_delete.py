@@ -24,6 +24,10 @@ wrapping only single sections after other processing are replaced by their
 contents.
 """
 
+__metaclass__ = type
+__all__ = ['MIMEDelete']
+
+
 import os
 import errno
 import logging
@@ -31,6 +35,7 @@ import tempfile
 
 from email.Iterators import typed_subpart_iterator
 from os.path import splitext
+from zope.interface import implements
 
 from Mailman import Errors
 from Mailman.Message import UserNotification
@@ -38,6 +43,7 @@ from Mailman.Utils import oneline
 from Mailman.Version import VERSION
 from Mailman.configuration import config
 from Mailman.i18n import _
+from Mailman.interfaces import IHandler
 from Mailman.queue import Switchboard
 
 log = logging.getLogger('mailman.error')
@@ -259,3 +265,16 @@ def get_file_ext(m):
         else:
             fext = ''
     return fext
+
+
+
+class MIMEDelete:
+    """Filter the MIME content of messages."""
+
+    implements(IHandler)
+
+    name = 'mime-delete'
+    description = _('Filter the MIME content of messages.')
+
+    def process(self, mlist, msg, msgdata):
+        process(mlist, msg, msgdata)

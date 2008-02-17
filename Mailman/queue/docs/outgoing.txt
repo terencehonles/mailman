@@ -9,9 +9,9 @@ term somewhat incorrectly, but within the spirit of the standard, which
 basically describes how to encode the recipient's address in the originator
 headers for unambigous bounce processing.
 
-    >>> from Mailman.pipeline.to_outgoing import process
     >>> from Mailman.queue import Switchboard
     >>> from Mailman.configuration import config
+    >>> handler = config.handlers['to-outgoing']
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> switchboard = Switchboard(config.OUTQUEUE_DIR)
 
@@ -35,7 +35,7 @@ When certain conditions are met, the message will be VERP'd.  For example, if
 the message metadata already has a VERP key, this message will be VERP'd.
 
     >>> msgdata = dict(foo=1, bar=2, verp=True)
-    >>> process(mlist, msg, msgdata)
+    >>> handler.process(mlist, msg, msgdata)
     >>> print msg.as_string()
     Subject: Here is a message
     <BLANKLINE>
@@ -72,7 +72,7 @@ VERP'd.
     >>> from Mailman.interfaces import Personalization
     >>> mlist.personalize = Personalization.individual
     >>> msgdata = dict(foo=1, bar=2)
-    >>> process(mlist, msg, msgdata)
+    >>> handler.process(mlist, msg, msgdata)
     >>> msgdata['verp']
     True
     >>> queue_size()
@@ -83,7 +83,7 @@ personalized lists will not VERP.
 
     >>> config.VERP_PERSONALIZED_DELIVERIES = False
     >>> msgdata = dict(foo=1, bar=2)
-    >>> process(mlist, msg, msgdata)
+    >>> handler.process(mlist, msg, msgdata)
     >>> print msgdata.get('verp')
     None
     >>> queue_size()
@@ -99,7 +99,7 @@ to zero, which means non-personalized messages will never be VERP'd.
     >>> config.VERP_DELIVERY_INTERVAL = 0
     >>> mlist.personalize = Personalization.none
     >>> msgdata = dict(foo=1, bar=2)
-    >>> process(mlist, msg, msgdata)
+    >>> handler.process(mlist, msg, msgdata)
     >>> print msgdata.get('verp')
     None
     >>> queue_size()
@@ -110,7 +110,7 @@ If the interval is set to 1, then every message will be VERP'd.
     >>> config.VERP_DELIVERY_INTERVAL = 1
     >>> for i in range(10):
     ...     msgdata = dict(foo=1, bar=2)
-    ...     process(mlist, msg, msgdata)
+    ...     handler.process(mlist, msg, msgdata)
     ...     print i, msgdata['verp']
     0 True
     1 True
@@ -132,7 +132,7 @@ will be VERP'd.
     >>> for i in range(10):
     ...     mlist.post_id = i
     ...     msgdata = dict(foo=1, bar=2)
-    ...     process(mlist, msg, msgdata)
+    ...     handler.process(mlist, msg, msgdata)
     ...     print i, msgdata.get('verp', False)
     0 True
     1 False

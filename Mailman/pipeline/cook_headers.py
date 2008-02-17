@@ -17,19 +17,24 @@
 
 """Cook a message's headers."""
 
+__metaclass__ = type
+__all__ = ['CookHeaders']
+
+
 import re
 
 from email.Charset import Charset
 from email.Errors import HeaderParseError
 from email.Header import Header, decode_header, make_header
 from email.Utils import parseaddr, formataddr, getaddresses
+from zope.interface import implements
 
 from Mailman import Utils
 from Mailman import Version
 from Mailman.app.archiving import get_archiver
 from Mailman.configuration import config
 from Mailman.i18n import _
-from Mailman.interfaces import Personalization, ReplyToMunging
+from Mailman.interfaces import IHandler, Personalization, ReplyToMunging
 
 CONTINUATION = ',\n\t'
 COMMASPACE = ', '
@@ -336,3 +341,17 @@ def ch_oneline(headerstr):
     except (LookupError, UnicodeError, ValueError, HeaderParseError):
         # possibly charset problem. return with undecoded string in one line.
         return ''.join(headerstr.splitlines()), 'us-ascii'
+
+
+
+class CookHeaders:
+    """Modify message headers."""
+
+    implements(IHandler)
+
+    name = 'cook-headers'
+    description = _('Modify message headers.')
+
+    def process(self, mlist, msg, msgdata):
+        """See `IHandler`."""
+        process(mlist, msg, msgdata)

@@ -17,42 +17,55 @@
 
 """Cleanse certain headers from all messages."""
 
+__metaclass__ = type
+__all__ = ['Cleanse']
+
+
 import logging
 
 from email.Utils import formataddr
+from zope.interface import implements
 
+from Mailman.i18n import _
+from Mailman.interfaces import IHandler
 from Mailman.pipeline.cook_headers import uheader
+
 
 log = logging.getLogger('mailman.post')
 
 
 
-def process(mlist, msg, msgdata):
-    # Always remove this header from any outgoing messages.  Be sure to do
-    # this after the information on the header is actually used, but before a
-    # permanent record of the header is saved.
-    del msg['approved']
-    # Remove this one too.
-    del msg['approve']
-    # Also remove this header since it can contain a password
-    del msg['urgent']
-    # We remove other headers from anonymous lists
-    if mlist.anonymous_list:
-        log.info('post to %s from %s anonymized',
-                 mlist.fqdn_listname, msg.get('from'))
-        del msg['from']
-        del msg['reply-to']
-        del msg['sender']
-        # Hotmail sets this one
-        del msg['x-originating-email']
-        i18ndesc = str(uheader(mlist, mlist.description, 'From'))
-        msg['From'] = formataddr((i18ndesc, mlist.posting_address))
-        msg['Reply-To'] = mlist.posting_address
-    # Some headers can be used to fish for membership
-    del msg['return-receipt-to']
-    del msg['disposition-notification-to']
-    del msg['x-confirm-reading-to']
-    # Pegasus mail uses this one... sigh
-    del msg['x-pmrqc']
-    # Don't let this header be spoofed.  See RFC 5064.
-    del msg['archived-at']
+class Cleanse:
+    """Cleanse certain headers from all messages."""
+
+    implements(IHandler)
+
+    name = 'cleanse'
+    description = _('Cleanse certain headers from all messages.')
+
+    def process(self, mlist, msg, msgdata):
+        """See `IHandler`."""
+        # Remove headers that could contain passwords.
+        del msg['approved']
+        del msg['approve']
+        del msg['urgent']
+        # We remove other headers from anonymous lists.
+        if mlist.anonymous_list:
+            log.info('post to %s from %s anonymized',
+                     mlist.fqdn_listname, msg.get('from'))
+            del msg['from']
+            del msg['reply-to']
+            del msg['sender']
+            # Hotmail sets this one
+            del msg['x-originating-email']
+            i18ndesc = str(uheader(mlist, mlist.description, 'From'))
+            msg['From'] = formataddr((i18ndesc, mlist.posting_address))
+            msg['Reply-To'] = mlist.posting_address
+        # Some headers can be used to fish for membership.
+        del msg['return-receipt-to']
+        del msg['disposition-notification-to']
+        del msg['x-confirm-reading-to']
+        # Pegasus mail uses this one... sigh.
+        del msg['x-pmrqc']
+        # Don't let this header be spoofed.  See RFC 5064.
+        del msg['archived-at']

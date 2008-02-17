@@ -19,28 +19,46 @@
 
 from __future__ import with_statement
 
+__metaclass__ = type
+__all__ = ['FileRecipients']
+
+
 import os
 import errno
 
+from zope.interface import implements
+
 from Mailman import Errors
+from Mailman.i18n import _
+from Mailman.interfaces import IHandler
 
 
 
-def process(mlist, msg, msgdata):
-    if 'recips' in msgdata:
-        return
-    filename = os.path.join(mlist.full_path, 'members.txt')
-    try:
-        with open(filename) as fp:
-            addrs = set(line.strip() for line in fp)
-    except IOError, e:
-        if e.errno <> errno.ENOENT:
-            raise
-        msgdata['recips'] = set()
-        return
-    # If the sender is a member of the list, remove them from the file recips.
-    sender = msg.get_sender()
-    member = mlist.members.get_member(sender)
-    if member is not None:
-        addrs.discard(member.address.address)
-    msgdata['recips'] = addrs
+class FileRecipients:
+    """Get the normal delivery recipients from an include file."""
+
+    implements(IHandler)
+
+    name = 'file-recipients'
+    description = _('Get the normal delivery recipients from an include file.')
+
+    def process(self, mlist, msg, msgdata):
+        """See `IHandler`."""
+        if 'recips' in msgdata:
+            return
+        filename = os.path.join(mlist.full_path, 'members.txt')
+        try:
+            with open(filename) as fp:
+                addrs = set(line.strip() for line in fp)
+        except IOError, e:
+            if e.errno <> errno.ENOENT:
+                raise
+            msgdata['recips'] = set()
+            return
+        # If the sender is a member of the list, remove them from the file
+        # recipients.
+        sender = msg.get_sender()
+        member = mlist.members.get_member(sender)
+        if member is not None:
+            addrs.discard(member.address.address)
+        msgdata['recips'] = addrs

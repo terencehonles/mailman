@@ -25,22 +25,21 @@ from email.MIMEText import MIMEText
 from Mailman import Errors
 from Mailman import Message
 from Mailman import Utils
-from Mailman.Handlers import Hold
 from Mailman.configuration import config
 from Mailman.i18n import _
 
 
 
-class ModeratedMemberPost(Hold.ModeratedPost):
-    # BAW: I wanted to use the reason below to differentiate between this
-    # situation and normal ModeratedPost reasons.  Greg Ward and Stonewall
-    # Ballard thought the language was too harsh and mentioned offense taken
-    # by some list members.  I'd still like this class's reason to be
-    # different than the base class's reason, but we'll use this until someone
-    # can come up with something more clever but inoffensive.
-    #
-    # reason = _('Posts by member are currently quarantined for moderation')
-    pass
+## class ModeratedMemberPost(Hold.ModeratedPost):
+##     # BAW: I wanted to use the reason below to differentiate between this
+##     # situation and normal ModeratedPost reasons.  Greg Ward and Stonewall
+##     # Ballard thought the language was too harsh and mentioned offense taken
+##     # by some list members.  I'd still like this class's reason to be
+##     # different than the base class's reason, but we'll use this until someone
+##     # can come up with something more clever but inoffensive.
+##     #
+##     # reason = _('Posts by member are currently quarantined for moderation')
+##     pass
 
 
 

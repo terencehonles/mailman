@@ -17,17 +17,24 @@
 
 """Decorate a message by sticking the header and footer around it."""
 
+__metaclass__ = type
+__all__ = ['Decorate']
+
+
 import re
 import logging
 
 from email.MIMEText import MIMEText
 from string import Template
+from zope.interface import implements
 
 from Mailman import Errors
 from Mailman import Utils
 from Mailman.Message import Message
 from Mailman.configuration import config
 from Mailman.i18n import _
+from Mailman.interfaces import IHandler
+
 
 log = logging.getLogger('mailman.error')
 
@@ -205,3 +212,17 @@ def decorate(mlist, template, extradict=None):
     text = Template(template).safe_substitute(d)
     # Turn any \r\n line endings into just \n
     return re.sub(r' *\r?\n', r'\n', text)
+
+
+
+class Decorate:
+    """Decorate a message with headers and footers."""
+
+    implements(IHandler)
+
+    name = 'decorate'
+    description = _('Decorate a message with headers and footers.')
+
+    def process(self, mlist, msg, msgdata):
+        "See `IHandler`."""
+        process(mlist, msg, msgdata)

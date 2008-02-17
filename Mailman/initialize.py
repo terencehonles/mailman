@@ -67,8 +67,10 @@ def initialize_2(debug=False):
     # circular imports.
     from Mailman.app.chains import initialize as initialize_chains
     from Mailman.app.rules import initialize as initialize_rules
+    from Mailman.app.pipelines import initialize as initialize_pipelines
     initialize_rules()
     initialize_chains()
+    initialize_pipelines()
 
 
 def initialize(config_path=None, propagate_logs=False):

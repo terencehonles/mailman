@@ -26,6 +26,10 @@ Note: This file only handles single threaded delivery.  See SMTPThreaded.py
 for a threaded implementation.
 """
 
+__metaclass__ = type
+__all__ = ['SMTPDirect']
+
+
 import copy
 import time
 import email
@@ -36,13 +40,15 @@ import smtplib
 from email.Charset import Charset
 from email.Header import Header
 from email.Utils import formataddr
+from zope.interface import implements
 
 from Mailman import Errors
 from Mailman import Utils
-from Mailman.Handlers import Decorate
 from Mailman.SafeDict import MsgSafeDict
 from Mailman.configuration import config
-from Mailman.interfaces import Personalization
+from Mailman.i18n import _
+from Mailman.interfaces import IHandler, Personalization
+
 
 DOT = '.'
 
@@ -130,7 +136,8 @@ def process(mlist, msg, msgdata):
     if deliveryfunc is None:
         # Be sure never to decorate the message more than once!
         if not msgdata.get('decorated'):
-            Decorate.process(mlist, msg, msgdata)
+            handler = config.handlers['decorate']
+            handler.process(mlist, msg, msgdata)
             msgdata['decorated'] = True
         deliveryfunc = bulkdeliver
     refused = {}
@@ -273,6 +280,7 @@ def chunkify(recips, chunksize):
 
 
 def verpdeliver(mlist, msg, msgdata, envsender, failures, conn):
+    handler = config.handlers['decorate']
     for recip in msgdata['recips']:
         # We now need to stitch together the message with its header and
         # footer.  If we're VERPIng, we have to calculate the envelope sender
@@ -285,7 +293,7 @@ def verpdeliver(mlist, msg, msgdata, envsender, failures, conn):
         msgdata['recips'] = [recip]
         # Make a copy of the message and decorate + delivery that
         msgcopy = copy.deepcopy(msg)
-        Decorate.process(mlist, msgcopy, msgdata)
+        handler.process(mlist, msgcopy, msgdata)
         # Calculate the envelope sender, which we may be VERPing
         if msgdata.get('verp'):
             bmailbox, bdomain = Utils.ParseEmail(envsender)
@@ -387,3 +395,17 @@ def bulkdeliver(mlist, msg, msgdata, envsender, failures, conn):
         for r in recips:
             refused[r] = (-1, error)
     failures.update(refused)
+
+
+
+class SMTPDirect:
+    """SMTP delivery."""
+
+    implements(IHandler)
+
+    name = 'smtp-direct'
+    description = _('SMTP delivery.')
+
+    def process(self, mlist, msg, msgdata):
+        """See `IHandler`."""
+        process(mlist, msg, msgdata)

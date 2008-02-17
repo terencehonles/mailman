@@ -17,8 +17,8 @@
 
 """The built in rule set."""
 
-__all__ = ['initialize']
 __metaclass__ = type
+__all__ = ['initialize']
 
 
 import os

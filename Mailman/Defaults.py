@@ -488,38 +488,6 @@ NNTP_REWRITE_DUPLICATE_HEADERS = [
 # may wish to remove these headers by setting this to Yes.
 REMOVE_DKIM_HEADERS = No
 
-# All `normal' messages which are delivered to the entire list membership go
-# through this pipeline of handler modules.  Lists themselves can override the
-# global pipeline by defining a `pipeline' attribute.
-GLOBAL_PIPELINE = [
-    # These are the modules that do tasks common to all delivery paths.
-    'SpamDetect',
-    'Approve',
-    'Replybot',
-    'Moderate',
-    'Hold',
-    'MimeDel',
-    'Scrubber',
-    'Emergency',
-    'Tagger',
-    'CalcRecips',
-    'AvoidDuplicates',
-    'Cleanse',
-    'CleanseDKIM',
-    'CookHeaders',
-    # And now we send the message to the digest mbox file, and to the arch and
-    # news queues.  Runners will provide further processing of the message,
-    # specific to those delivery paths.
-    'ToDigest',
-    'ToArchive',
-    'ToUsenet',
-    # Now we'll do a few extra things specific to the member delivery
-    # (outgoing) path, finally leaving the message in the outgoing queue.
-    'AfterDelivery',
-    'Acknowledge',
-    'ToOutgoing',
-    ]
-
 # This is the pipeline which messages sent to the -owner address go through
 OWNER_PIPELINE = [
     'SpamDetect',

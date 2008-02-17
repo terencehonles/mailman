@@ -17,15 +17,21 @@
 
 """Handler for auto-responses."""
 
+__metaclass__ = type
+__all__ = ['Replybot']
+
+
 import time
 import logging
 import datetime
 
 from string import Template
+from zope.interface import implements
 
 from Mailman import Message
 from Mailman import Utils
 from Mailman.i18n import _
+from Mailman.interfaces import IHandler
 
 log = logging.getLogger('mailman.error')
 
@@ -109,3 +115,17 @@ def process(mlist, msg, msgdata):
             mlist.request_responses[sender] = quiet_until
         else:
             mlist.postings_responses[sender] = quiet_until
+
+
+
+class Replybot:
+    """Send automatic responses."""
+
+    implements(IHandler)
+
+    name = 'replybot'
+    description = _('Send automatic responses.')
+
+    def process(self, mlist, msg, msgdata):
+        """See `IHandler`."""
+        process(mlist, msg, msgdata)

@@ -27,6 +27,10 @@
 
 from __future__ import with_statement
 
+__metaclass__ = type
+__all__ = ['ToDigest']
+
+
 import os
 import re
 import copy
@@ -42,6 +46,7 @@ from email.mime.message import MIMEMessage
 from email.mime.text import MIMEText
 from email.parser import Parser
 from email.utils import formatdate, getaddresses, make_msgid
+from zope.interface import implements
 
 from Mailman import Errors
 from Mailman import Message
@@ -52,7 +57,7 @@ from Mailman.Mailbox import Mailbox
 from Mailman.configuration import config
 from Mailman.pipeline.decorate import decorate
 from Mailman.pipeline.scrubber import process as scrubber
-from Mailman.interfaces import DeliveryMode, DeliveryStatus
+from Mailman.interfaces import DeliveryMode, DeliveryStatus, IHandler
 from Mailman.queue import Switchboard
 
 _ = i18n._
@@ -418,3 +423,17 @@ def send_i18n_digests(mlist, mboxfp):
                     recips=plainrecips,
                     listname=mlist.fqdn_listname,
                     isdigest=True)
+
+
+
+class ToDigest:
+    """Add the message to the digest, possibly sending it."""
+
+    implements(IHandler)
+
+    name = 'to-digest'
+    description = _('Add the message to the digest, possibly sending it.')
+
+    def process(self, mlist, msg, msgdata):
+        """See `IHandler`."""
+        process(mlist, msg, msgdata)

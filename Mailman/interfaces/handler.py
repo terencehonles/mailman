@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2008 by the Free Software Foundation, Inc.
+# Copyright (C) 2008 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -15,30 +15,23 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-"""Perform some bookkeeping after a successful post."""
+"""Interface describing a pipeline handler."""
 
-__metaclass__ = type
-__all__ = ['AfterDelivery']
-
-
-import datetime
-
-from zope.interface import implements
-
-from Mailman.i18n import _
-from Mailman.interfaces import IHandler
+from zope.interface import Interface, Attribute
 
 
 
-class AfterDelivery:
-    """Perform some bookkeeping after a successful post."""
+class IHandler(Interface):
+    """A basic pipeline handler."""
 
-    implements(IHandler)
+    name = Attribute('Handler name; must be unique.')
 
-    name = 'after-delivery'
-    description = _('Perform some bookkeeping after a successful post.')
+    description = Attribute('A brief description of the handler.')
 
-    def process(self, mlist, msg, msgdata):
-        """See `IHander`."""
-        mlist.last_post_time = datetime.datetime.now()
-        mlist.post_id += 1
+    def process(mlist, msg, msgdata):
+        """Run the handler.
+
+        :param mlist: The mailing list object.
+        :param msg: The message object.
+        :param msgdata: The message metadata.
+        """

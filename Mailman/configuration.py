@@ -179,6 +179,7 @@ class Configuration(object):
         # Create the registry of rules and chains.
         self.chains = {}
         self.rules = {}
+        self.handlers = {}
 
     def add_domain(self, email_host, url_host=None):
         """Add a virtual domain.
