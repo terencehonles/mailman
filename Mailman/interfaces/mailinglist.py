@@ -61,6 +61,13 @@ class IMailingList(Interface):
         posted to mylist@example.com, then the list_name is 'mylist'.
         """)
 
+    real_name = Attribute(
+        """The short human-readable descriptive name for the mailing list.  By
+        default, this is the capitalized `list_name`, but it can be changed to
+        anything.  This is used in locations such as the message footers and
+        Subject prefix.
+        """)
+
     host_name = Attribute(
         """The read-only domain name 'hosting' this mailing list.  This is
         always the domain name part of the posting email address, and it may

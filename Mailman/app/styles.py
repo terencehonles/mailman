@@ -33,8 +33,11 @@ from Mailman import Utils
 from Mailman.Errors import DuplicateStyleError
 from Mailman.app.plugins import get_plugins
 from Mailman.configuration import config
+from Mailman.i18n import _
 from Mailman.interfaces import (
     Action, IStyle, IStyleManager, NewsModeration, Personalization)
+
+__i18n_templates__ = True
 
 
 
@@ -52,6 +55,7 @@ class DefaultStyle:
         mlist.post_id = 1
         mlist.new_member_options = config.DEFAULT_NEW_MEMBER_OPTIONS
         # This stuff is configurable
+        mlist.real_name = mlist.list_name.capitalize()
         mlist.respond_to_post_requests = True
         mlist.advertised = config.DEFAULT_LIST_ADVERTISED
         mlist.max_num_recipients = config.DEFAULT_MAX_NUM_RECIPIENTS
@@ -135,8 +139,7 @@ class DefaultStyle:
         # 2-tuple of the date of the last autoresponse and the number of
         # autoresponses sent on that date.
         mlist.hold_and_cmd_autoresponses = {}
-        # XXX FIXME
-        #mlist.subject_prefix = config.DEFAULT_SUBJECT_PREFIX % mlist.__dict__
+        mlist.subject_prefix = _(config.DEFAULT_SUBJECT_PREFIX)
         mlist.msg_header = config.DEFAULT_MSG_HEADER
         mlist.msg_footer = config.DEFAULT_MSG_FOOTER
         # Set this to Never if the list's preferred language uses us-ascii,
@@ -228,6 +231,8 @@ class DefaultStyle:
         # The processing chain that messages coming into this list get
         # processed by.
         mlist.start_chain = u'built-in'
+        # The default pipeline to send accepted messages through.
+        mlist.pipeline = u'built-in'
 
     def match(self, mailing_list, styles):
         # If no other styles have matched, then the default style matches.

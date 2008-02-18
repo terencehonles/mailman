@@ -57,26 +57,26 @@ class BuiltInPipeline:
     description = _('The built-in pipeline.')
 
     _default_handlers = (
-        'mimedel',
+        'mime-delete',
         'scrubber',
         'tagger',
         'calculate-recipients',
         'avoid-duplicates',
         'cleanse',
-        'cleanse_dkim',
-        'cook_headers',
-        'to_digest',
-        'to_archive',
-        'to_usenet',
-        'after_delivery',
+        'cleanse-dkim',
+        'cook-headers',
+        'to-digest',
+        'to-archive',
+        'to-usenet',
+        'after-delivery',
         'acknowledge',
-        'to_outgoing',
+        'to-outgoing',
         )
 
     def __init__(self):
         self._handlers = []
         for handler_name in self._default_handlers:
-            self._handler.append(config.handlers[handler_name])
+            self._handlers.append(config.handlers[handler_name])
 
     def __iter__(self):
         """See `IPipeline`."""
@@ -96,3 +96,6 @@ def initialize():
                 'Duplicate handler "%s" found in %s' %
                 (handler.name, handler_finder))
             config.handlers[handler.name] = handler
+    # Set up some pipelines.
+    pipeline = BuiltInPipeline()
+    config.pipelines[pipeline.name] = pipeline

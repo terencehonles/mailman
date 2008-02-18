@@ -36,4 +36,3 @@ class PipelineRunner(Runner):
         process(mlist, msg, msgdata, mlist.pipeline)
         # Do not keep this message queued.
         return False
-

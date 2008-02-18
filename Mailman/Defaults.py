@@ -878,8 +878,8 @@ DEFAULT_MAX_MESSAGE_SIZE = 40           # KB
 
 # These format strings will be expanded w.r.t. the dictionary for the
 # mailing list instance.
-DEFAULT_SUBJECT_PREFIX  = u'[%(real_name)s] '
-# DEFAULT_SUBJECT_PREFIX = "[%(real_name)s %%d]" # for numbering
+DEFAULT_SUBJECT_PREFIX  = u'[$mlist.real_name] '
+# DEFAULT_SUBJECT_PREFIX = "[$mlist.real_name %%d]" # for numbering
 DEFAULT_MSG_HEADER = u''
 DEFAULT_MSG_FOOTER = u"""\
 _______________________________________________

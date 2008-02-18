@@ -180,6 +180,7 @@ class Configuration(object):
         self.chains = {}
         self.rules = {}
         self.handlers = {}
+        self.pipelines = {}
 
     def add_domain(self, email_host, url_host=None):
         """Add a virtual domain.

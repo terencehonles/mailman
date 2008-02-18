@@ -19,9 +19,16 @@
 
 __metaclass__ = type
 __all__ = [
+    'digest_mbox',
     'get_queue_messages',
     'make_testable_runner',
     ]
+
+
+import os
+import mailbox
+
+from Mailman.queue import Switchboard
 
 
 
@@ -52,13 +59,26 @@ class _Bag:
 def get_queue_messages(queue):
     """Return and clear all the messages in the given queue.
 
-    :param queue: An ISwitchboard
+    :param queue: An ISwitchboard or a string naming a queue.
     :return: A list of 2-tuples where each item contains the message and
         message metadata.
     """
+    if isinstance(queue, basestring):
+        queue = Switchboard(queue)
     messages = []
     for filebase in queue.files:
         msg, msgdata = queue.dequeue(filebase)
         messages.append(_Bag(msg=msg, msgdata=msgdata))
         queue.finish(filebase)
     return messages
+
+
+
+def digest_mbox(mlist):
+    """The mailing list's pending digest as a mailbox.
+
+    :param mlist: The mailing list.
+    :return: The mailing list's pending digest as a mailbox.
+    """
+    path = os.path.join(mlist.full_path, 'digest.mbox')
+    return mailbox.mbox(path)
