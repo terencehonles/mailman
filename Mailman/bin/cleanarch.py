@@ -25,7 +25,6 @@ import optparse
 from Mailman import Version
 from Mailman.i18n import _
 
-__i18n_templates = True
 
 cre = re.compile(mailbox.UnixMailbox._fromlinepattern)
 # From RFC 2822, a header field name must contain only characters from 33-126

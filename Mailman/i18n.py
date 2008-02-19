@@ -94,29 +94,24 @@ if _translation is None:
 def _(s):
     if s == '':
         return u''
-    assert s
-    # Do translation of the given string into the current language, and do
-    # Ping-string interpolation into the resulting string.
+    assert s, 'Cannot translate: %s' % s
+    # Do translation of the given string into the current language, and do PEP
+    # 292 style $-string interpolation into the resulting string.
     #
     # This lets you write something like:
     #
     #     now = time.ctime(time.time())
-    #     print _('The current time is: %(now)s')
+    #     print _('The current time is: $now')
     #
     # and have it Just Work.  Note that the lookup order for keys in the
     # original string is 1) locals dictionary, 2) globals dictionary.
     #
-    # We inspect the frame's globals to see if __i18n_templates__ is set.  If
-    # so, we use string.Template style $-variables instead of more traditional
-    # %-strings.
-    #
-    # Get the frame of the caller
+    # Get the frame of the caller.
     frame = sys._getframe(1)
     # A `safe' dictionary is used so we won't get an exception if there's a
     # missing key in the dictionary.
     d = frame.f_globals.copy()
     d.update(frame.f_locals)
-    use_templates = d.get('__i18n_templates__', False)
     # Mailman must be unicode safe internally (i.e. all strings inside Mailman
     # must be unicodes).  The translation service is one boundary to the
     # outside world, so to honor this constraint, make sure that all strings
@@ -127,11 +122,7 @@ def _(s):
     for k, v in d.items():
         if isinstance(v, str):
             d[k] = unicode(v, charset, 'replace')
-    # Are we using $-strings or %-strings?
-    if use_templates:
-        translated_string = Template(tns).safe_substitute(attrdict(d))
-    else:
-        translated_string = SafeDict(d, charset=charset).interpolate(tns)
+    translated_string = Template(tns).safe_substitute(attrdict(d))
     if isinstance(translated_string, str):
         translated_string = unicode(translated_string, charset)
     return translated_string

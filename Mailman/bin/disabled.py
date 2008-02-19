@@ -29,7 +29,6 @@ from Mailman.Bouncer import _BounceInfo
 from Mailman.configuration import config
 from Mailman.i18n import _
 
-__i18n_templates__ = True
 
 # Work around known problems with some RedHat cron daemons
 import signal

@@ -49,8 +49,6 @@ log = None
 class _ContinueLoop(Exception):
     pass
 
-__i18n_templates__ = True
-
 
 
 def parseargs():

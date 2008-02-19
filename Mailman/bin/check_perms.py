@@ -28,8 +28,6 @@ from Mailman import Version
 from Mailman.configuration import config
 from Mailman.i18n import _
 
-__i18n_templates__ = True
-
 
 # XXX Need to check the archives/private/*/database/* files
 

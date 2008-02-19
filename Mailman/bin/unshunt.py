@@ -23,8 +23,6 @@ from Mailman.configuration import config
 from Mailman.i18n import _
 from Mailman.queue import Switchboard
 
-__i18n_templates__ = True
-
 
 
 def parseargs():

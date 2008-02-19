@@ -28,7 +28,6 @@ from Mailman.i18n import _
 from Mailman.initialize import initialize
 from Mailman.interfaces import DeliveryStatus
 
-__i18n_templates__ = True
 
 ENC = sys.getdefaultencoding()
 COMMASPACE = ', '

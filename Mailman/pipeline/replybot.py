@@ -33,9 +33,8 @@ from Mailman import Utils
 from Mailman.i18n import _
 from Mailman.interfaces import IHandler
 
-log = logging.getLogger('mailman.error')
 
-__i18n_templates__ = True
+log = logging.getLogger('mailman.error')
 NODELTA = datetime.timedelta()
 
 

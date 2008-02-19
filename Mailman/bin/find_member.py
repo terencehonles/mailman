@@ -26,8 +26,6 @@ from Mailman.configuration import config
 from Mailman.i18n import _
 
 
-__i18n_templates__ = True
-
 AS_MEMBER   = 0x01
 AS_OWNER    = 0x02
 

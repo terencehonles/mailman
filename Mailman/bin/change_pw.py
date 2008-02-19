@@ -30,8 +30,6 @@ from Mailman import i18n
 from Mailman.configuration import config
 
 _ = i18n._
-__i18n_templates__ = True
-
 SPACE = ' '
 
 

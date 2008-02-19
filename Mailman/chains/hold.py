@@ -21,7 +21,6 @@ from __future__ import with_statement
 
 __all__ = ['HoldChain']
 __metaclass__ = type
-__i18n_templates__ = True
 
 
 import logging

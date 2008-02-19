@@ -38,7 +38,6 @@ from Mailman.i18n import _
 from Mailman.initialize import initialize_1, initialize_2
 
 basedir = None
-__i18n_templates__ = True
 
 
 

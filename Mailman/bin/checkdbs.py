@@ -30,7 +30,6 @@ from Mailman.app.requests import handle_request
 from Mailman.configuration import config
 
 _ = i18n._
-__i18n_templates__ = True
 
 # Work around known problems with some RedHat cron daemons
 import signal

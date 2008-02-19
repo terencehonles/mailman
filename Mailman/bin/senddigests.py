@@ -28,8 +28,6 @@ from Mailman.initialize import initialize
 import signal
 signal.signal(signal.SIGCHLD, signal.SIG_DFL)
 
-__i18n_templates__ = True
-
 
 
 def parseargs():

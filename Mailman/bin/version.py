@@ -20,8 +20,6 @@ import optparse
 from Mailman import Version
 from Mailman.i18n import _
 
-__i18n_templates__ = True
-
 
 
 def parseargs():

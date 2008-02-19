@@ -33,7 +33,7 @@ from Mailman import Defaults
 from Mailman.Version import MAILMAN_VERSION
 from Mailman.i18n import _
 
-__i18n_templates__ = True
+
 SPACE = ' '
 DATA_DIR = os.path.dirname(Mailman.data.__file__)
 

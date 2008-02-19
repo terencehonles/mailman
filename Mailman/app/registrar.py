@@ -34,8 +34,6 @@ from Mailman.configuration import config
 from Mailman.i18n import _
 from Mailman.interfaces import IDomain, IPendable, IRegistrar
 
-__i18n_templates__ = True
-
 
 
 class PendableRegistration(dict):

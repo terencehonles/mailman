@@ -37,8 +37,6 @@ from Mailman.i18n import _
 from Mailman.interfaces import (
     Action, IStyle, IStyleManager, NewsModeration, Personalization)
 
-__i18n_templates__ = True
-
 
 
 class DefaultStyle:

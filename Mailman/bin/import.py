@@ -35,7 +35,6 @@ from Mailman.MailList import MailList
 from Mailman.i18n import _
 from Mailman.initialize import initialize
 
-__i18n_templates__ = True
 
 OPTS = None
 

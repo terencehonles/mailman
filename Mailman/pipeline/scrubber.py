@@ -203,8 +203,8 @@ def process(mlist, msg, msgdata=None):
                 filename = Utils.oneline(filename, lcset)
                 replace_payload_by_text(part, _("""\
 An embedded and charset-unspecified text was scrubbed...
-Name: %(filename)s
-URL: %(url)s
+Name: $filename
+URL: $url
 """), lcset)
         elif ctype == 'text/html' and isinstance(sanitize, int):
             if sanitize == 0:
@@ -225,7 +225,7 @@ URL: %(url)s
                 url = save_attachment(mlist, part, dir, filter_html=False)
                 replace_payload_by_text(part, _("""\
 An HTML attachment was scrubbed...
-URL: %(url)s
+URL: $url
 """), lcset)
             else:
                 # HTML-escape it and store it as an attachment, but make it
@@ -246,7 +246,7 @@ URL: %(url)s
                 url = save_attachment(mlist, part, dir, filter_html=False)
                 replace_payload_by_text(part, _("""\
 An HTML attachment was scrubbed...
-URL: %(url)s
+URL: $url
 """), lcset)
         elif ctype == 'message/rfc822':
             # This part contains a submessage, so it too needs scrubbing
@@ -258,11 +258,11 @@ URL: %(url)s
             size = len(str(submsg))
             replace_payload_by_text(part, _("""\
 An embedded message was scrubbed...
-From: %(who)s
-Subject: %(subject)s
-Date: %(date)s
-Size: %(size)s
-URL: %(url)s
+From: $who
+Subject: $subject
+Date: $date
+Size: $size
+URL: $url
 """), lcset)
         # If the message isn't a multipart, then we'll strip it out as an
         # attachment that would have to be separately downloaded.  Pipermail
@@ -286,11 +286,11 @@ URL: %(url)s
             filename = Utils.oneline(filename, lcset)
             replace_payload_by_text(part, _("""\
 A non-text attachment was scrubbed...
-Name: %(filename)s
-Type: %(ctype)s
-Size: %(size)d bytes
-Desc: %(desc)s
-URL: %(url)s
+Name: $filename
+Type: $ctype
+Size: $size bytes
+Desc: $desc
+URL: $url
 """), lcset)
         outer = False
     # We still have to sanitize multipart messages to flat text because
@@ -321,7 +321,7 @@ URL: %(url)s
             # All parts should be scrubbed to text/plain by now.
             partctype = part.get_content_type()
             if partctype <> 'text/plain':
-                text.append(_('Skipped content of type %(partctype)s\n'))
+                text.append(_('Skipped content of type $partctype\n'))
                 continue
             try:
                 t = part.get_payload(decode=True) or ''

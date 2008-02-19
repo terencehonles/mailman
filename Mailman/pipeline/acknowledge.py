@@ -33,8 +33,6 @@ from Mailman.configuration import config
 from Mailman.i18n import _
 from Mailman.interfaces import IHandler
 
-__i18n_templates__ = True
-
 
 
 class Acknowledge:

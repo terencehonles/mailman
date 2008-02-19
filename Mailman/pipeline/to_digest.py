@@ -60,8 +60,8 @@ from Mailman.pipeline.scrubber import process as scrubber
 from Mailman.interfaces import DeliveryMode, DeliveryStatus, IHandler
 from Mailman.queue import Switchboard
 
+
 _ = i18n._
-__i18n_templates__ = True
 
 UEMPTYSTRING = u''
 EMPTYSTRING = ''

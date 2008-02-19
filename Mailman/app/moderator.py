@@ -43,7 +43,6 @@ from Mailman.interfaces import Action, DeliveryMode, RequestType
 from Mailman.queue import Switchboard
 
 _ = i18n._
-__i18n_templates__ = True
 
 vlog = logging.getLogger('mailman.vette')
 slog = logging.getLogger('mailman.subscribe')

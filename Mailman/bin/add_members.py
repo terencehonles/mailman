@@ -36,7 +36,6 @@ from Mailman.initialize import initialize
 from Mailman.interfaces import DeliveryMode
 
 _ = i18n._
-__i18n_templates__ = True
 
 
 
