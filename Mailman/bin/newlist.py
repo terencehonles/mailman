@@ -31,6 +31,8 @@ from Mailman import i18n
 from Mailman.app.lifecycle import create_list
 from Mailman.configuration import config
 from Mailman.initialize import initialize
+from Mailman.interfaces import ListAlreadyExistsError
+
 
 _ = i18n._
 
@@ -107,7 +109,7 @@ def main():
         mlist.preferred_language = opts.language
     except Errors.InvalidEmailAddress:
         parser.error(_('Illegal list name: $fqdn_listname'))
-    except Errors.MMListAlreadyExistsError:
+    except ListAlreadyExistsError:
         parser.error(_('List already exists: $fqdn_listname'))
     except Errors.BadDomainSpecificationError, domain:
         parser.error(_('Undefined domain: $domain'))

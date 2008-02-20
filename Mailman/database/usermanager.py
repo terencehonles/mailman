@@ -23,12 +23,11 @@ import os
 
 from zope.interface import implements
 
-from Mailman import Errors
 from Mailman.configuration import config
 from Mailman.database.address import Address
 from Mailman.database.preferences import Preferences
 from Mailman.database.user import User
-from Mailman.interfaces import IUserManager
+from Mailman.interfaces import ExistingAddressError, IUserManager
 
 
 
@@ -67,7 +66,7 @@ class UserManager(object):
         addresses = config.db.store.find(Address, address=address.lower())
         if addresses.count() == 1:
             found = addresses[0]
-            raise Errors.ExistingAddressError(found.original_address)
+            raise ExistingAddressError(found.original_address)
         assert addresses.count() == 0, 'Unexpected results'
         if real_name is None:
             real_name = u''

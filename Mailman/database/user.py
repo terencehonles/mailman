@@ -19,16 +19,18 @@ from email.utils import formataddr
 from storm.locals import *
 from zope.interface import implements
 
-from Mailman import Errors
 from Mailman.configuration import config
 from Mailman.database.model import Model
 from Mailman.database.address import Address
 from Mailman.database.preferences import Preferences
-from Mailman.interfaces import IUser
+from Mailman.interfaces import (
+    AddressAlreadyLinkedError, AddressNotLinkedError, IUser)
 
 
 
 class User(Model):
+    """Mailman users."""
+
     implements(IUser)
 
     id = Int(primary=True)
@@ -43,16 +45,19 @@ class User(Model):
         return '<User "%s" at %#x>' % (self.real_name, id(self))
 
     def link(self, address):
+        """See `IUser`."""
         if address.user is not None:
-            raise Errors.AddressAlreadyLinkedError(address)
+            raise AddressAlreadyLinkedError(address)
         address.user = self
 
     def unlink(self, address):
+        """See `IUser`."""
         if address.user is None:
-            raise Errors.AddressNotLinkedError(address)
+            raise AddressNotLinkedError(address)
         address.user = None
 
     def controls(self, address):
+        """See `IUser`."""
         found = config.db.store.find(Address, address=address)
         if found.count() == 0:
             return False
@@ -60,6 +65,7 @@ class User(Model):
         return found[0].user is self
 
     def register(self, address, real_name=None):
+        """See `IUser`."""
         # First, see if the address already exists
         addrobj = config.db.store.find(Address, address=address).one()
         if addrobj is None:
@@ -69,6 +75,6 @@ class User(Model):
             addrobj.preferences = Preferences()
         # Link the address to the user if it is not already linked.
         if addrobj.user is not None:
-            raise Errors.AddressAlreadyLinkedError(addrobj)
+            raise AddressAlreadyLinkedError(addrobj)
         addrobj.user = self
         return addrobj

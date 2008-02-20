@@ -36,9 +36,6 @@ class MMUnknownListError(MMListError):
     def __str__(self):
         return self._listname
 
-class MMCorruptListDatabaseError(MMListError): pass
-class MMListNotReadyError(MMListError): pass
-class MMListAlreadyExistsError(MMListError): pass
 
 # Membership exceptions
 class MMMemberError(MailmanException): pass
@@ -189,22 +186,6 @@ class AlreadySubscribedError(SubscriptionError):
 
 
 
-# Database exceptions
-class DatabaseError(MailmanError):
-    """A problem with the database occurred."""
-
-
-class SchemaVersionMismatchError(DatabaseError):
-    def __init__(self, got):
-        self._got = got
-
-    def __str__(self):
-        from Mailman.Version import DATABASE_SCHEMA_VERSION
-        return 'Incompatible database schema version (got: %d, expected: %d)' \
-               % (self._got, DATABASE_SCHEMA_VERSION)
-
-
-
 class PasswordError(MailmanError):
     """A password related error."""
 
@@ -225,38 +206,3 @@ class BadPasswordSchemeError(PasswordError):
 
     def __str__(self):
         return 'A bad password scheme was given: %s' % self.scheme_name
-
-
-
-class UserError(MailmanError):
-    """A general user-related error occurred."""
-
-
-class RosterError(UserError):
-    """A roster-related error occurred."""
-
-
-class RosterExistsError(RosterError):
-    """The named roster already exists."""
-
-
-
-class AddressError(MailmanError):
-    """A general address-related error occurred."""
-
-
-class ExistingAddressError(AddressError):
-    """The given email address already exists."""
-
-
-class AddressAlreadyLinkedError(AddressError):
-    """The address is already linked to a user."""
-
-
-class AddressNotLinkedError(AddressError):
-    """The address is not linked to the user."""
-
-
-
-class DuplicateStyleError(MailmanError):
-    """A style with the same name is already registered."""

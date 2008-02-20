@@ -38,8 +38,9 @@ class IUserManager(Interface):
 
         When address is given, an IAddress is also created and linked to the
         new IUser object.  If the address already exists, an
-        ExistingAddressError is raised.  If the address exists but is already
-        linked to another user, an AddressAlreadyLinkedError is raised.
+        `ExistingAddressError` is raised.  If the address exists but is
+        already linked to another user, an AddressAlreadyLinkedError is
+        raised.
 
         When real_name is given, the IUser's real_name is set to this string.
         If an IAddress is also created and linked, its real_name is set to the

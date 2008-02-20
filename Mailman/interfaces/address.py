@@ -19,6 +19,26 @@
 
 from zope.interface import Interface, Attribute
 
+from Mailman.interfaces.errors import MailmanError
+
+
+
+class AddressError(MailmanError):
+    """A general address-related error occurred."""
+
+
+class ExistingAddressError(AddressError):
+    """The given email address already exists."""
+
+
+class AddressAlreadyLinkedError(AddressError):
+    """The address is already linked to a user."""
+
+
+class AddressNotLinkedError(AddressError):
+    """The address is not linked to the user."""
+
+
 
 
 class IAddress(Interface):

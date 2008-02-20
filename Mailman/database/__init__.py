@@ -31,7 +31,6 @@ from string import Template
 from urlparse import urlparse
 from zope.interface import implements
 
-from Mailman.Errors import SchemaVersionMismatchError
 from Mailman.configuration import config
 from Mailman.database.listmanager import ListManager
 from Mailman.database.messagestore import MessageStore
@@ -39,7 +38,7 @@ from Mailman.database.pending import Pendings
 from Mailman.database.requests import Requests
 from Mailman.database.usermanager import UserManager
 from Mailman.database.version import Version
-from Mailman.interfaces import IDatabase
+from Mailman.interfaces import IDatabase, SchemaVersionMismatchError
 
 
 

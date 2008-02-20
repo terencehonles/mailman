@@ -17,44 +17,64 @@
 
 """Interface for list storage, deleting, and finding."""
 
+__metaclass__ = type
+__all__ = [
+    'IListManager',
+    'ListAlreadyExistsError',
+    ]
+
+
 from zope.interface import Interface, Attribute
+from Mailman.interfaces.errors import MailmanError
+
+
+
+class ListAlreadyExistsError(MailmanError):
+    """Attempted to create a mailing list that already exists.
+
+    Mailing list objects must be uniquely named by their fully qualified list
+    name.
+    """
 
 
 
 class IListManager(Interface):
     """The interface of the global list manager.
 
-    The list manager manages IMailingList objects.  You can add and remove
-    IMailingList objects from the list manager, and you can retrieve them
-    from the manager via their fully qualified list name
-    (e.g. 'mylist@example.com').
+    The list manager manages `IMailingList` objects.  You can add and remove
+    `IMailingList` objects from the list manager, and you can retrieve them
+    from the manager via their fully qualified list name, e.g.:
+    `mylist@example.com`.
     """
 
     def create(fqdn_listname):
-        """Create an IMailingList with the given fully qualified list name.
+        """Create a mailing list with the given name.
 
-        Raises MMListAlreadyExistsError if the named list already exists.
+        :type fqdn_listname: Unicode
+        :param fqdn_listname: The fully qualified name of the mailing list,
+            e.g. `mylist@example.com`.
+        :return: The newly created `IMailingList`.
+        :raise `ListAlreadyExistsError` if the named list already exists.
         """
 
     def get(fqdn_listname):
-        """Return the IMailingList with the given fully qualified list name.
+        """Return the mailing list with the given name, if it exists.
 
-        Raises MMUnknownListError if the names list does not exist.
+        :type fqdn_listname: Unicode.
+        :param fqdn_listname: The fully qualified name of the mailing list.
+        :return: the matching `IMailingList` or None if the named list does
+            not exist.
         """
 
     def delete(mlist):
-        """Remove the IMailingList from the backend storage."""
+        """Remove the mailing list from the database.
 
-    def get(fqdn_listname):
-        """Find the IMailingList with the matching fully qualified list name.
-
-        :param fqdn_listname: Fully qualified list name to get.
-        :return: The matching IMailingList or None if there was no such
-            matching mailing list.
+        :type mlist: `IMailingList`
+        :param mlist: The mailing list to delete.
         """
 
     mailing_lists = Attribute(
-        """An iterator over all the IMailingList objects managed by this list
+        """An iterator over all the mailing list objects managed by this list
         manager.""")
 
     names = Attribute(

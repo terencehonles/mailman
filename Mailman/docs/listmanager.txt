@@ -40,7 +40,7 @@ you will get an exception.
     >>> mlist_dup = listmgr.create(u'_xtest@example.com')
     Traceback (most recent call last):
     ...
-    MMListAlreadyExistsError: _xtest@example.com
+    ListAlreadyExistsError: _xtest@example.com
 
 
 Deleting a mailing list

@@ -25,30 +25,31 @@ from Mailman import Errors
 from Mailman.Utils import split_listname, fqdn_listname
 from Mailman.configuration import config
 from Mailman.database.mailinglist import MailingList
-from Mailman.interfaces import IListManager
+from Mailman.interfaces import IListManager, ListAlreadyExistsError
 
 
 
 class ListManager(object):
+    """An implementation of the `IListManager` interface."""
+
     implements(IListManager)
 
     def create(self, fqdn_listname):
+        """See `IListManager`."""
         listname, hostname = split_listname(fqdn_listname)
         mlist = config.db.store.find(
             MailingList,
             MailingList.list_name == listname,
             MailingList.host_name == hostname).one()
         if mlist:
-            raise Errors.MMListAlreadyExistsError(fqdn_listname)
+            raise ListAlreadyExistsError(fqdn_listname)
         mlist = MailingList(fqdn_listname)
         mlist.created_at = datetime.datetime.now()
         config.db.store.add(mlist)
         return mlist
 
-    def delete(self, mlist):
-        config.db.store.remove(mlist)
-
     def get(self, fqdn_listname):
+        """See `IListManager`."""
         listname, hostname = split_listname(fqdn_listname)
         mlist = config.db.store.find(MailingList,
                                      list_name=listname,
@@ -58,14 +59,18 @@ class ListManager(object):
             mlist._restore()
         return mlist
 
+    def delete(self, mlist):
+        """See `IListManager`."""
+        config.db.store.remove(mlist)
+
     @property
     def mailing_lists(self):
-        # Don't forget, the MailingList objects that this class manages must
-        # be wrapped in a MailList object as expected by this interface.
+        """See `IListManager`."""
         for fqdn_listname in self.names:
             yield self.get(fqdn_listname)
 
     @property
     def names(self):
+        """See `IListManager`."""
         for mlist in config.db.store.find(MailingList):
             yield fqdn_listname(mlist.list_name, mlist.host_name)

@@ -17,7 +17,21 @@
 
 """Interfaces for list styles."""
 
+__metaclass__ = type
+__all__ = [
+    'DuplicateStyleError',
+    'IStyle',
+    'IStyleManager',
+    ]
+
+
 from zope.interface import Interface, Attribute
+from Mailman.interfaces.errors import MailmanError
+
+
+
+class DuplicateStyleError(MailmanError):
+    """A style with the same name is already registered."""
 
 
 
@@ -33,7 +47,8 @@ class IStyle(Interface):
     def apply(mailing_list):
         """Apply the style to the mailing list.
 
-        :param mailing_list: an IMailingList.
+        :type mailing_list: `IMailingList`.
+        :param mailing_list: the mailing list to apply the style to.
         """
 
     def match(mailing_list, styles):
@@ -43,8 +58,9 @@ class IStyle(Interface):
         the style may append itself to the `styles` list.  This list will be
         ordered when returned from `IStyleManager.lookup()`.
 
-        :param mailing_list: an IMailingList.
-        :param styles: ordered list of IStyles matched so far.
+        :type mailing_list: `IMailingList`.
+        :param mailing_list: the mailing list object.
+        :param styles: ordered list of `IStyles` matched so far.
         """
 
 
@@ -55,20 +71,22 @@ class IStyleManager(Interface):
     def get(name):
         """Return the named style or None.
 
+        :type name: Unicode
         :param name: A style name.
-        :return: an IStyle or None.
+        :return: the named `IStyle` or None if the style doesn't exist.
         """
 
     def lookup(mailing_list):
         """Return a list of styles for the given mailing list.
 
-        Use various registered rules to find an IStyle for the given mailing
+        Use various registered rules to find an `IStyle` for the given mailing
         list.  The returned styles are ordered by their priority.
 
         Style matches can be registered and reordered by plugins.
 
-        :param mailing_list: An IMailingList.
-        :return: ordered list of IStyles.  Zero is the lowest priority.
+        :type mailing_list: `IMailingList`.
+        :param mailing_list: The mailing list object to find a style for.
+        :return: ordered list of `IStyles`.  Zero is the lowest priority.
         """
 
     styles = Attribute(

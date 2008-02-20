@@ -25,6 +25,26 @@ Mailman's back end.
 
 from zope.interface import Interface, Attribute
 
+from Mailman.Version import DATABASE_SCHEMA_VERSION
+from Mailman.interfaces.errors import MailmanError
+
+
+
+class DatabaseError(MailmanError):
+    """A problem with the database occurred."""
+
+
+class SchemaVersionMismatchError(DatabaseError):
+    """The database schema version number did not match what was expected."""
+
+    def __init__(self, got):
+        self._got = got
+
+    def __str__(self):
+        return (
+            'Incompatible database schema version (got: %d, expected: %d)'
+            % (self._got, DATABASE_SCHEMA_VERSION))
+
 
 
 class IDatabase(Interface):

@@ -30,22 +30,25 @@ from zope.interface import implements
 from zope.interface.verify import verifyObject
 
 from Mailman import Utils
-from Mailman.Errors import DuplicateStyleError
 from Mailman.app.plugins import get_plugins
 from Mailman.configuration import config
 from Mailman.i18n import _
 from Mailman.interfaces import (
-    Action, IStyle, IStyleManager, NewsModeration, Personalization)
+    Action, DuplicateStyleError, IStyle, IStyleManager, NewsModeration,
+    Personalization)
 
 
 
 class DefaultStyle:
+    """The defalt (i.e. legacy) style."""
+
     implements(IStyle)
 
     name = 'default'
     priority = 0    # the lowest priority style
 
     def apply(self, mailing_list):
+        """See `IStyle`."""
         # For cut-n-paste convenience.
         mlist = mailing_list
         # Most of these were ripped from the old MailList.InitVars() method.
@@ -233,6 +236,7 @@ class DefaultStyle:
         mlist.pipeline = u'built-in'
 
     def match(self, mailing_list, styles):
+        """See `IStyle`."""
         # If no other styles have matched, then the default style matches.
         if len(styles) == 0:
             styles.append(self)
@@ -240,9 +244,12 @@ class DefaultStyle:
 
 
 class StyleManager:
+    """The built-in style manager."""
+
     implements(IStyleManager)
 
     def __init__(self):
+        """Install all styles from registered plugins, and install them."""
         self._styles = {}
         # Install all the styles provided by plugins.
         for style_factory in get_plugins('mailman.styles'):
@@ -251,9 +258,11 @@ class StyleManager:
             self.register(style)
 
     def get(self, name):
+        """See `IStyleManager`."""
         return self._styles.get(name)
 
     def lookup(self, mailing_list):
+        """See `IStyleManager`."""
         matched_styles = []
         for style in self.styles:
             style.match(mailing_list, matched_styles)
@@ -262,18 +271,21 @@ class StyleManager:
 
     @property
     def styles(self):
+        """See `IStyleManager`."""
         for style in sorted(self._styles.values(),
                             key=attrgetter('priority'),
                             reverse=True):
             yield style
 
     def register(self, style):
+        """See `IStyleManager`."""
         verifyObject(IStyle, style)
         if style.name in self._styles:
             raise DuplicateStyleError(style.name)
         self._styles[style.name] = style
 
     def unregister(self, style):
+        """See `IStyleManager`."""
         # Let KeyErrors percolate up.
         del self._styles[style.name]
 

@@ -92,7 +92,6 @@ Any other spelling is incorrect.""",
         'mailman.rules'     : 'default = Mailman.rules:initialize',
         'mailman.handlers'  : 'default = Mailman.pipeline:initialize',
         },
-    # Third-party requirements.
     install_requires = [
         'locknix',
         'munepy',
