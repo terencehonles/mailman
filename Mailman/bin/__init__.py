@@ -41,6 +41,7 @@ __all__ = [
     'list_owners',
     'mailmanctl',
     'make_instance',
+    'master',
     'mmsitepass',
     'newlist',
     'nightly_gzip',

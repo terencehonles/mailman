@@ -22,9 +22,9 @@ through the 'preparation pipeline'.  This pipeline adds, deletes and modifies
 headers, calculates message recipients, and more.
 """
 
-from Mailman.app.pipeline import process
+from Mailman.app.pipelines import process
 from Mailman.configuration import config
-from Mailman.queue import runner
+from Mailman.queue import Runner
 
 
 

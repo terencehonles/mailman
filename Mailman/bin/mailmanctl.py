@@ -25,6 +25,8 @@ import socket
 import logging
 import optparse
 
+from datetime import timedelta
+from munepy import Enum
 from locknix import lockfile
 
 from Mailman import Defaults
@@ -62,17 +64,18 @@ sure that the various long-running qrunners are still alive and kicking.  It
 does this by forking and exec'ing the qrunners and waiting on their pids.
 When it detects a subprocess has exited, it may restart it.
 
-The qrunners respond to SIGINT, SIGTERM, and SIGHUP.  SIGINT and SIGTERM both
-cause the qrunners to exit cleanly, but the master will only restart qrunners
-that have exited due to a SIGINT.  SIGHUP causes the master and the qrunners
-to close their log files, and reopen then upon the next printed message.
+The qrunners respond to SIGINT, SIGTERM, SIGUSR1 and SIGHUP.  SIGINT, SIGTERM
+and SIGUSR1 all cause the qrunners to exit cleanly, but the master will only
+restart qrunners that have exited due to a SIGUSR1.  SIGHUP causes the master
+and the qrunners to close their log files, and reopen then upon the next
+printed message.
 
-The master also responds to SIGINT, SIGTERM, and SIGHUP, which it simply
-passes on to the qrunners (note that the master will close and reopen its own
-log files on receipt of a SIGHUP).  The master also leaves its own process id
-in the file data/master-qrunner.pid but you normally don't need to use this
-pid directly.  The `start', `stop', `restart', and `reopen' commands handle
-everything for you.
+The master also responds to SIGINT, SIGTERM, SIGUSR1 and SIGHUP, which it
+simply passes on to the qrunners (note that the master will close and reopen
+its own log files on receipt of a SIGHUP).  The master also leaves its own
+process id in the file data/master-qrunner.pid but you normally don't need to
+use this pid directly.  The `start', `stop', `restart', and `reopen' commands
+handle everything for you.
 
 Commands:
 
@@ -90,12 +93,6 @@ Commands:
               next time a message is written to them
 
 Usage: %prog [options] [ start | stop | restart | reopen ]"""))
-    parser.add_option('-n', '--no-restart',
-                      dest='restart', default=True, action='store_false',
-                      help=_("""\
-Don't restart the qrunners when they exit because of an error or a SIGINT.
-They are never restarted if they exit in response to a SIGTERM.  Use this only
-for debugging.  Only useful if the `start' command is given."""))
     parser.add_option('-u', '--run-as-user',
                       dest='checkprivs', default=True, action='store_false',
                       help=_("""\
@@ -202,13 +199,13 @@ def acquire_lock_1(force):
     # other master qrunner daemon is already going.
     lock = lockfile.Lock(config.LOCK_FILE, LOCK_LIFETIME)
     try:
-        lock.lock(0.1)
+        lock.lock(timedelta(seconds=0.1))
         return lock
     except lockfile.TimeOutError:
         if not force:
             raise
         # Force removal of lock first
-        lock._disown()
+        lock.disown()
         hostname, pid, tempfile = get_lock_data()
         os.unlink(config.LOCK_FILE)
         os.unlink(os.path.join(config.LOCK_DIR, tempfile))
@@ -319,19 +316,13 @@ def main():
     # Handle the commands
     command = args[0].lower()
     if command == 'stop':
-        # Sent the master qrunner process a SIGINT, which is equivalent to
-        # giving cron/qrunner a ctrl-c or KeyboardInterrupt.  This will
-        # effectively shut everything down.
         if not opts.quiet:
             print _("Shutting down Mailman's master qrunner")
         kill_watcher(signal.SIGTERM)
     elif command == 'restart':
-        # Sent the master qrunner process a SIGHUP.  This will cause the
-        # master qrunner to kill and restart all the worker qrunners, and to
-        # close and re-open its log files.
         if not opts.quiet:
             print _("Restarting Mailman's master qrunner")
-        kill_watcher(signal.SIGINT)
+        kill_watcher(signal.SIGUSR1)
     elif command == 'reopen':
         if not opts.quiet:
             print _('Re-opening all log files')
@@ -372,10 +363,10 @@ def main():
             # Give up the lock "ownership".  This just means the foreground
             # process won't close/unlock the lock when it finalizes this lock
             # instance.  We'll let the mater watcher subproc own the lock.
-            lock._transfer_to(pid)
+            lock.transfer_to(pid)
             return
         # child
-        lock._take_possession()
+        lock.take_possession()
         # Save our pid in a file for "mailmanctl stop" rendezvous.
         fp = open(config.PIDFILE, 'w')
         try:
@@ -413,8 +404,13 @@ def main():
             qlog.info('Master watcher caught SIGHUP.  Re-opening log files.')
         signal.signal(signal.SIGHUP, sighup_handler)
         # We also need to install a SIGTERM handler because that's what init
-        # will kill this process with when changing run levels.
+        # will kill this process with when changing run levels.  It's also the
+        # signal 'mailmanctl stop' uses.
         def sigterm_handler(signum, frame):
+            # Make sure we never try to restart our children, no matter why
+            # the child exited.
+            opts.restart = False
+            qlog.info('I AM NEVER RESTARTING AGAIN: %d', pid)
             for pid in kids.keys():
                 try:
                     os.kill(pid, signal.SIGTERM)

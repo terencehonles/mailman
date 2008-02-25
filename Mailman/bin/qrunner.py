@@ -95,7 +95,7 @@ each listed by the -l option."""))
     parser.add_option('-o', '--once',
                       default=False, action='store_true', help=_("""\
 Run each named qrunner exactly once through its main loop.  Otherwise, each
-qrunner runs indefinitely, until the process receives a SIGTERM or SIGINT."""))
+qrunner runs indefinitely, until the process receives signal."""))
     parser.add_option('-l', '--list',
                       default=False, action='store_true',
                       help=_('List the available qrunner names and exit.'))
@@ -134,13 +134,13 @@ def make_qrunner(name, slice, range, once=False):
         __import__(modulename)
     except ImportError, e:
         if opts.subproc:
-            # Exit with SIGTERM exit code so mailmanctl won't try to restart us
+            # Exit with SIGTERM exit code so the master watcher won't try to
+            # restart us.
             print >> sys.stderr, _('Cannot import runner module: $modulename')
             print >> sys.stderr, e
             sys.exit(signal.SIGTERM)
         else:
-            print >> sys.stderr, e
-            sys.exit(1)
+            raise
     qrclass = getattr(sys.modules[modulename], classname)
     if once:
         # Subclass to hack in the setting of the stop flag in _doperiodic()
@@ -155,22 +155,34 @@ def make_qrunner(name, slice, range, once=False):
 
 
 def set_signals(loop):
-    # Set up the SIGTERM handler for stopping the loop
+    """Set up the signal handlers.
+
+    Signals caught are: SIGTERM, SIGINT, SIGUSR1 and SIGHUP.  The latter is
+    used to re-open the log files.  SIGTERM and SIGINT are treated exactly the
+    same -- they cause qrunner to exit with no restart from the master.
+    SIGUSR1 also causes qrunner to exit, but the master watcher will restart
+    it in that case.
+
+    :param loop: A loop queue runner instance.
+    """
     def sigterm_handler(signum, frame):
         # Exit the qrunner cleanly
         loop.stop()
         loop.status = signal.SIGTERM
         log.info('%s qrunner caught SIGTERM.  Stopping.', loop.name())
     signal.signal(signal.SIGTERM, sigterm_handler)
-    # Set up the SIGINT handler for stopping the loop.  For us, SIGINT is
-    # the same as SIGTERM, but our parent treats the exit statuses
-    # differently (it restarts a SIGINT but not a SIGTERM).
     def sigint_handler(signum, frame):
         # Exit the qrunner cleanly
         loop.stop()
         loop.status = signal.SIGINT
         log.info('%s qrunner caught SIGINT.  Stopping.', loop.name())
     signal.signal(signal.SIGINT, sigint_handler)
+    def sigusr1_handler(signum, frame):
+        # Exit the qrunner cleanly
+        loop.stop()
+        loop.status = signal.SIGUSR1
+        log.info('%s qrunner caught SIGUSR1.  Stopping.', loop.name())
+    signal.signal(signal.SIGUSR1, sigusr1_handler)
     # SIGHUP just tells us to rotate our log files.
     def sighup_handler(signum, frame):
         loginit.reopen()

@@ -25,9 +25,9 @@ import errno
 import shutil
 import optparse
 import setuptools
-from string import Template
 
-import Mailman.data
+from pkg_resources import resource_string
+from string import Template
 
 from Mailman import Defaults
 from Mailman.Version import MAILMAN_VERSION
@@ -35,7 +35,6 @@ from Mailman.i18n import _
 
 
 SPACE = ' '
-DATA_DIR = os.path.dirname(Mailman.data.__file__)
 
 
 
@@ -131,15 +130,13 @@ def instantiate(var_dir, user, group, languages, force):
     # Create an etc/mailman.cfg file which contains just a few configuration
     # variables about the run-time environment that can't be calculated.
     # Don't overwrite mailman.cfg unless the -f flag was given.
-    in_file_path  = os.path.join(DATA_DIR, 'mailman.cfg.in')
     out_file_path = os.path.join(etc_dir, 'mailman.cfg')
     if os.path.exists(out_file_path) and not force:
         # The logging subsystem isn't up yet, so just print this to stderr.
         print >> sys.stderr, 'File exists:', out_file_path
         print >> sys.stderr, 'Use --force to override.'
     else:
-        with open(in_file_path) as fp:
-            raw = Template(fp.read())
+        raw = Template(resource_string('Mailman.extras', 'mailman.cfg.in'))
         processed = raw.safe_substitute(var_dir=var_dir,
                                         user_id=uid,
                                         user_name=user_name,

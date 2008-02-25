@@ -46,14 +46,13 @@ class OutgoingRunner(Runner, BounceMixin):
         Runner.__init__(self, slice, numslices)
         BounceMixin.__init__(self)
         # We look this function up only at startup time
-        modname = 'Mailman.Handlers.' + config.DELIVERY_MODULE
-        mod = __import__(modname)
-        self._func = getattr(sys.modules[modname], 'process')
+        handler = config.handlers[config.DELIVERY_MODULE]
+        self._func = handler.process
         # This prevents smtp server connection problems from filling up the
         # error log.  It gets reset if the message was successfully sent, and
         # set if there was a socket.error.
-        self.__logged = False
-        self.__retryq = Switchboard(config.RETRYQUEUE_DIR)
+        self._logged = False
+        self._retryq = Switchboard(config.RETRYQUEUE_DIR)
 
     def _dispose(self, mlist, msg, msgdata):
         # See if we should retry delivery of this message again.
@@ -69,7 +68,7 @@ class OutgoingRunner(Runner, BounceMixin):
             if pid <> os.getpid():
                 log.error('child process leaked thru: %s', modname)
                 os._exit(1)
-            self.__logged = False
+            self._logged = False
         except socket.error:
             # There was a problem connecting to the SMTP server.  Log this
             # once, but crank up our sleep time so we don't fill the error
@@ -78,10 +77,10 @@ class OutgoingRunner(Runner, BounceMixin):
             if port == 0:
                 port = 'smtp'
             # Log this just once.
-            if not self.__logged:
+            if not self._logged:
                 log.error('Cannot connect to SMTP server %s on port %s',
                           config.SMTPHOST, port)
-                self.__logged = True
+                self._logged = True
             return True
         except Errors.SomeRecipientsFailed, e:
             # Handle local rejects of probe messages differently.
@@ -120,7 +119,7 @@ class OutgoingRunner(Runner, BounceMixin):
                     msgdata['last_recip_count'] = len(recips)
                     msgdata['deliver_until'] = deliver_until
                     msgdata['recips'] = recips
-                    self.__retryq.enqueue(msg, msgdata)
+                    self._retryq.enqueue(msg, msgdata)
         # We've successfully completed handling of this message
         return False
 

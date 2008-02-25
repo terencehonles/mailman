@@ -23,13 +23,15 @@ __all__ = [
     ]
 
 import os
-import Mailman.Version
 
 from locknix.lockfile import Lock
 from storm.locals import create_database, Store
 from string import Template
 from urlparse import urlparse
 from zope.interface import implements
+
+import Mailman.Version
+import Mailman.database
 
 from Mailman.configuration import config
 from Mailman.database.listmanager import ListManager
@@ -87,17 +89,23 @@ class StockDatabase:
         store = Store(database)
         database.DEBUG = (config.DEFAULT_DATABASE_ECHO
                           if debug is None else debug)
+        # Check the sqlite master database to see if the version file exists.
+        # If so, then we assume the database schema is correctly initialized.
         # Storm does not currently have schema creation.  This is not an ideal
         # way to handle creating the database, but it's cheap and easy for
         # now.
-        import Mailman.database
-        schema_file = os.path.join(
-            os.path.dirname(Mailman.database.__file__),
-            'mailman.sql')
-        with open(schema_file) as fp:
-            sql = fp.read()
-        for statement in sql.split(';'):
-            store.execute(statement + ';')
+        table_names = [item[0] for item in 
+                       store.execute('select tbl_name from sqlite_master;')]
+        if 'version' not in table_names:
+            # Initialize the database.
+            schema_file = os.path.join(
+                os.path.dirname(Mailman.database.__file__),
+                'mailman.sql')
+            with open(schema_file) as fp:
+                sql = fp.read()
+            for statement in sql.split(';'):
+                store.execute(statement + ';')
+            store.commit()
         # Validate schema version.
         v = store.find(Version, component=u'schema').one()
         if not v:

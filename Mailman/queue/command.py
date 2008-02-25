@@ -33,7 +33,6 @@ from email.MIMEText import MIMEText
 
 from Mailman import Message
 from Mailman import Utils
-from Mailman.Handlers import Replybot
 from Mailman.app.replybot import autorespond_to_sender
 from Mailman.configuration import config
 from Mailman.i18n import _
@@ -206,7 +205,8 @@ class CommandRunner(Runner):
             return False
         # Do replybot for commands
         mlist.Load()
-        Replybot.process(mlist, msg, msgdata)
+        replybot = config.handlers['replybot']
+        replybot.process(mlist, msg, msgdata)
         if mlist.autorespond_requests == 1:
             log.info('replied and discard')
             # w/discard

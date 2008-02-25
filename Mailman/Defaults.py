@@ -372,14 +372,8 @@ PUBLIC_MBOX = No
 
 # Final delivery module for outgoing mail.  This handler is used for message
 # delivery to the list via the smtpd, and to an individual user.  This value
-# must be a string naming a module in the Mailman.Handlers package.
-#
-# WARNING: Sendmail has security holes and should be avoided.  In fact, you
-# must read the Mailman/Handlers/Sendmail.py file before it will work for
-# you.
-#
-#DELIVERY_MODULE = 'Sendmail'
-DELIVERY_MODULE = 'SMTPDirect'
+# must be a string naming an IHandler.
+DELIVERY_MODULE = 'smtp-direct'
 
 # MTA should name a module in Mailman/MTA which provides the MTA specific
 # functionality for creating and removing lists.  Some MTAs like Exim can be
