@@ -18,8 +18,6 @@
 from __future__ import with_statement
 
 import os
-import grp
-import pwd
 import sys
 import errno
 import signal
@@ -39,16 +37,8 @@ from Mailman.i18n import _
 from Mailman.initialize import initialize
 
 
-COMMASPACE = ', '
 DOT = '.'
-# Calculate this here and now, because we're going to do a chdir later on, and
-# if the path is relative, the qrunner script won't be found.
-BIN_DIR = os.path.abspath(os.path.dirname(sys.argv[0]))
-
-# Since we wake up once per day and refresh the lock, the LOCK_LIFETIME
-# needn't be (much) longer than SNOOZE.  We pad it 6 hours just to be safe.
 LOCK_LIFETIME = Defaults.days(1) + Defaults.hours(6)
-SNOOZE = Defaults.days(1)
 
 log = None
 parser = None
@@ -84,6 +74,15 @@ Usage: %prog [options]"""))
                       help=_("""\
 Don't restart the qrunners when they exit because of an error or a SIGUSR1.
 Use this only for debugging."""))
+    parser.add_option('-f', '--force',
+                      default=False, action='store_true',
+                      help=_("""\
+If the master watcher finds an existing master lock, it will normally exit
+with an error message.  With this option,the master will perform an extra
+level of checking.  If a process matching the host/pid described in the lock
+file is running, the master will still exit, requiring you to manually clean
+up the lock.  But if no matching process is found, the master will remove the
+apparently stale lock and make another attempt to claim the master lock."""))
     parser.add_option('-C', '--config',
                       help=_('Alternative configuration file to use'))
     options, arguments = parser.parse_args()
@@ -104,8 +103,8 @@ def get_lock_data():
     with open(config.LOCK_FILE) as fp:
         filename = os.path.split(fp.read().strip())[1]
     parts = filename.split('.')
-    hostname = DOT.join(parts[1:-1])
-    pid = int(parts[-1])
+    hostname = DOT.join(parts[1:-2])
+    pid = int(parts[-2])
     return hostname, int(pid), filename
 
 
@@ -164,28 +163,27 @@ def acquire_lock_1(force):
         return acquire_lock_1(force=False)
 
 
-def acquire_lock(force):
+def acquire_lock():
     """Acquire the master queue runner lock.
 
-    :param force: Flag that controls whether to force acquisition of the lock.
     :return: The master queue runner lock or None if the lock couldn't be
         acquired.  In that case, an error messages is also printed to standard
         error.
     """
     try:
-        lock = acquire_lock_1(force)
+        lock = acquire_lock_1(parser.options.force)
         return lock
     except lockfile.TimeOutError:
         status = master_state()
         if status == WatcherState.conflict:
             # Hostname matches and process exists.
-            print >> sys.stderr, _("""\
-The master qrunner lock could not be acquired because it appears as if another
-master qrunner is already running.
+            message = _("""\
+The master qrunner lock could not be acquired because it appears
+as though another master qrunner is already running.
 """)
         elif status == WatcherState.stale_lock:
             # Hostname matches but the process does not exist.
-            print >> sys.stderr, _("""\
+            message = _("""\
 The master qrunner lock could not be acquired.  It appears as though there is
 a stale master qrunner lock.  Try re-running mailmanctl with the -s flag.
 """)
@@ -193,17 +191,17 @@ a stale master qrunner lock.  Try re-running mailmanctl with the -s flag.
             assert status == WatcherState.host_mismatch, (
                 'Invalid enum value: %s' % status)
             # Hostname doesn't even match.
-            print >> sys.stderr, _("""\
+            hostname, pid, tempfile = get_lock_data()
+            message = _("""\
 The master qrunner lock could not be acquired, because it appears as if some
 process on some other host may have acquired it.  We can't test for stale
-locks across host boundaries, so you'll have to do this manually.  Or, if you
-know the lock is stale, re-run mailmanctl with the -s flag.
+locks across host boundaries, so you'll have to clean this up manually.
 
 Lock file: $config.LOCK_FILE
-Lock host: $status
+Lock host: $hostname
 
 Exiting.""")
-        return None
+        parser.error(message)
 
 
 
@@ -226,7 +224,7 @@ def start_runner(qrname, slice, count):
     # Craft the command line arguments for the exec() call.
     rswitch = '--runner=%s:%d:%d' % (qrname, slice, count)
     # Wherever mailmanctl lives, so too must live the qrunner script.
-    exe = os.path.join(BIN_DIR, 'qrunner')
+    exe = os.path.join(config.BIN_DIR, 'qrunner')
     # config.PYTHON, which is the absolute path to the Python interpreter,
     # must be given as argv[0] due to Python's library search algorithm.
     args = [sys.executable, sys.executable, exe, rswitch, '-s']
@@ -375,14 +373,18 @@ def main():
     log = logging.getLogger('mailman.qrunner')
 
     # Acquire the master lock, exiting if we can't acquire it.  We'll let the
-    # caller handle any clean up or lock breaking.
-    with lockfile.Lock(config.LOCK_FILE, LOCK_LIFETIME) as lock:
+    # caller handle any clean up or lock breaking.  No with statement here
+    # because Lock's constructor doesn't support a timeout.
+    lock = acquire_lock()
+    try:
         with open(config.PIDFILE, 'w') as fp:
             print >> fp, os.getpid()
         try:
             control_loop(lock)
         finally:
             os.remove(config.PIDFILE)
+    finally:
+        lock.unlock()
 
 
 

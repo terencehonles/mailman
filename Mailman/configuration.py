@@ -72,16 +72,12 @@ class Configuration(object):
         for name in DEFAULT_QRUNNERS:
             self.add_qrunner(name)
         # Load the configuration from the named file, or if not given, search
-        # in the runtime data directory for an etc/mailman.cfg file.  If there
-        # is an instance.cfg file in the same directory, load that first, then
-        # mailman.cfg.
-        #
-        # Whatever you find, create a namespace and execfile that file in it.
-        # The values in that namespace are exposed as attributes on this
-        # Configuration instance.
+        # around for a mailman.cfg file.  Whatever you find, create a
+        # namespace and execfile that file in it.  The values in that
+        # namespace are exposed as attributes on this Configuration instance.
         self.filename = None
-        bin_dir = os.path.dirname(sys.argv[0])
-        dev_dir = join(os.path.dirname(bin_dir))
+        self.BIN_DIR = os.path.abspath(os.path.dirname(sys.argv[0]))
+        dev_dir = os.path.dirname(self.BIN_DIR)
         paths = [
             # Development directories.
             join(dev_dir, 'var', 'etc', 'mailman.cfg'),
@@ -99,7 +95,7 @@ class Configuration(object):
                 execfile(path, ns, ns)
             except EnvironmentError, e:
                 if e.errno <> errno.ENOENT:
-                    # It's okay if the instance.cfg file does not exist.  This
+                    # It's okay if the mailman.cfg file does not exist.  This
                     # can happen for example in the test suite.
                     raise
             else:
