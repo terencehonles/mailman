@@ -1,0 +1,47 @@
+Mailman queue runner control
+============================
+
+Mailman has a number of queue runners which process messages in its queue file
+directories.  In normal operation, a command line script called 'mailmanctl'
+is used to start, stop and manage the queue runners.  mailmanctl actually is
+just a wrapper around the real queue runner watcher script called master.py.
+
+    >>> from mailman.tests.helpers import TestableMaster
+
+Start the master in a subthread.
+
+    >>> import threading
+    >>> event = threading.Event()
+    >>> event.clear()
+    >>> master = TestableMaster(event)
+    >>> master.start_qrunners()
+    >>> threading.Thread(target=master.loop).start()
+    >>> event.wait(5.0)
+
+Now verify that all the qrunners are running.
+
+    >>> import os
+
+    # This should produce no output.
+    >>> for pid in master.qrunner_pids:
+    ...     os.kill(pid, 0)
+
+Send a SIGTERM to all the child processes, which should exit them.  cleanup()
+waits until all the child processes have exited.
+
+    >>> import signal
+    >>> for pid in master.qrunner_pids:
+    ...     os.kill(pid, signal.SIGTERM)
+    >>> master.cleanup()
+
+    >>> import errno
+    >>> for pid in master.qrunner_pids:
+    ...     try:
+    ...         os.kill(pid, 0)
+    ...         print 'Process did not exit:', pid
+    ...     except OSError, error:
+    ...         if error.errno == errno.ESRCH:
+    ...             # The child process exited.
+    ...             pass
+    ...         else:
+    ...             raise

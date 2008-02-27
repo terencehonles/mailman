@@ -1,0 +1,70 @@
+Member moderation
+=================
+
+Each user has a moderation flag.  When set, and the list is set to moderate
+postings, then only members with a cleared moderation flag will be able to
+email the list without having those messages be held for approval.  The
+'moderation' rule determines whether the message should be moderated or not.
+
+    >>> from mailman.configuration import config
+    >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
+    >>> rule = config.rules['moderation']
+    >>> rule.name
+    'moderation'
+
+In the simplest case, the sender is not a member of the mailing list, so the
+moderation rule can't match.
+
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.org
+    ... To: _xtest@example.com
+    ... Subject: A posted message
+    ...
+    ... """)
+    >>> rule.check(mlist, msg, {})
+    False
+
+Let's add the message author as a non-moderated member.
+
+    >>> user = config.db.user_manager.create_user(
+    ...     u'aperson@example.org', u'Anne Person')
+    >>> address = list(user.addresses)[0]
+    >>> from mailman.interfaces import MemberRole
+    >>> member = address.subscribe(mlist, MemberRole.member)
+    >>> member.is_moderated
+    False
+    >>> rule.check(mlist, msg, {})
+    False
+
+Once the member's moderation flag is set though, the rule matches.
+
+    >>> member.is_moderated = True
+    >>> rule.check(mlist, msg, {})
+    True
+
+
+Non-members
+-----------
+
+There is another, related rule for matching non-members, which simply matches
+if the sender is /not/ a member of the mailing list.
+
+    >>> rule = config.rules['non-member']
+    >>> rule.name
+    'non-member'
+
+If the sender is a member of this mailing list, the rule does not match.
+
+    >>> rule.check(mlist, msg, {})
+    False
+
+But if the sender is not a member of this mailing list, the rule matches.
+
+    >>> msg = message_from_string("""\
+    ... From: bperson@example.org
+    ... To: _xtest@example.com
+    ... Subject: A posted message
+    ...
+    ... """)
+    >>> rule.check(mlist, msg, {})
+    True

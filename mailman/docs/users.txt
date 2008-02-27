@@ -1,0 +1,148 @@
+Users
+=====
+
+Users are entities that represent people.  A user has a real name and a
+password.  Optionally a user may have some preferences and a set of addresses
+they control.
+
+See usermanager.txt for examples of how to create, delete, and find users.
+
+    >>> from mailman.configuration import config
+    >>> usermgr = config.db.user_manager
+
+
+User data
+---------
+
+Users may have a real name and a password.
+
+    >>> user_1 = usermgr.create_user()
+    >>> user_1.password = u'my password'
+    >>> user_1.real_name = u'Zoe Person'
+    >>> sorted(user.real_name for user in usermgr.users)
+    [u'Zoe Person']
+    >>> sorted(user.password for user in usermgr.users)
+    [u'my password']
+
+The password and real name can be changed at any time.
+
+    >>> user_1.real_name = u'Zoe X. Person'
+    >>> user_1.password = u'another password'
+    >>> sorted(user.real_name for user in usermgr.users)
+    [u'Zoe X. Person']
+    >>> sorted(user.password for user in usermgr.users)
+    [u'another password']
+
+
+Users addresses
+---------------
+
+One of the pieces of information that a user links to is a set of email
+addresses they control, in the form of IAddress objects.  A user can control
+many addresses, but addresses may be controlled by only one user.
+
+The easiest way to link a user to an address is to just register the new
+address on a user object.
+
+    >>> user_1.register(u'zperson@example.com', u'Zoe Person')
+    <Address: Zoe Person <zperson@example.com> [not verified] at 0x...>
+    >>> user_1.register(u'zperson@example.org')
+    <Address: zperson@example.org [not verified] at 0x...>
+    >>> sorted(address.address for address in user_1.addresses)
+    [u'zperson@example.com', u'zperson@example.org']
+    >>> sorted(address.real_name for address in user_1.addresses)
+    [u'', u'Zoe Person']
+
+You can also create the address separately and then link it to the user.
+
+    >>> address_1 = usermgr.create_address(u'zperson@example.net')
+    >>> user_1.link(address_1)
+    >>> sorted(address.address for address in user_1.addresses)
+    [u'zperson@example.com', u'zperson@example.net', u'zperson@example.org']
+    >>> sorted(address.real_name for address in user_1.addresses)
+    [u'', u'', u'Zoe Person']
+
+But don't try to link an address to more than one user.
+
+    >>> another_user = usermgr.create_user()
+    >>> another_user.link(address_1)
+    Traceback (most recent call last):
+    ...
+    AddressAlreadyLinkedError: zperson@example.net
+
+You can also ask whether a given user controls a given address.
+
+    >>> user_1.controls(address_1.address)
+    True
+    >>> user_1.controls(u'bperson@example.com')
+    False
+
+Given a text email address, the user manager can find the user that controls
+that address.
+
+    >>> usermgr.get_user(u'zperson@example.com') is user_1
+    True
+    >>> usermgr.get_user(u'zperson@example.net') is user_1
+    True
+    >>> usermgr.get_user(u'zperson@example.org') is user_1
+    True
+    >>> print usermgr.get_user(u'bperson@example.com')
+    None
+
+Addresses can also be unlinked from a user.
+
+    >>> user_1.unlink(address_1)
+    >>> user_1.controls(u'zperson@example.net')
+    False
+    >>> print usermgr.get_user(u'aperson@example.net')
+    None
+
+But don't try to unlink the address from a user it's not linked to.
+
+    >>> user_1.unlink(address_1)
+    Traceback (most recent call last):
+    ...
+    AddressNotLinkedError: zperson@example.net
+    >>> another_user.unlink(address_1)
+    Traceback (most recent call last):
+    ...
+    AddressNotLinkedError: zperson@example.net
+
+
+Users and preferences
+---------------------
+
+This is a helper function for the following section.
+
+    >>> def show_prefs(prefs):
+    ...     print 'acknowledge_posts    :', prefs.acknowledge_posts
+    ...     print 'preferred_language   :', prefs.preferred_language
+    ...     print 'receive_list_copy    :', prefs.receive_list_copy
+    ...     print 'receive_own_postings :', prefs.receive_own_postings
+    ...     print 'delivery_mode        :', prefs.delivery_mode
+
+Users have preferences, but these preferences have no default settings.
+
+    >>> from mailman.interfaces import IPreferences
+    >>> show_prefs(user_1.preferences)
+    acknowledge_posts    : None
+    preferred_language   : None
+    receive_list_copy    : None
+    receive_own_postings : None
+    delivery_mode        : None
+
+Some of these preferences are booleans and they can be set to True or False.
+
+    >>> from mailman.constants import DeliveryMode
+    >>> prefs = user_1.preferences
+    >>> prefs.acknowledge_posts = True
+    >>> prefs.preferred_language = u'it'
+    >>> prefs.receive_list_copy = False
+    >>> prefs.receive_own_postings = False
+    >>> prefs.delivery_mode = DeliveryMode.regular
+    >>> show_prefs(user_1.preferences)
+    acknowledge_posts    : True
+    preferred_language   : it
+    receive_list_copy    : False
+    receive_own_postings : False
+    delivery_mode        : DeliveryMode.regular

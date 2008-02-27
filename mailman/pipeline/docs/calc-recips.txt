@@ -1,0 +1,101 @@
+Calculating recipients
+======================
+
+Every message that makes it through to the list membership gets sent to a set
+of recipient addresses.  These addresses are calculated by one of the handler
+modules and depends on a host of factors.
+
+    >>> from mailman.configuration import config
+    >>> handler = config.handlers['calculate-recipients']
+    >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
+
+Recipients are calculate from the list members, so add a bunch of members to
+start out with.  First, create a bunch of addresses...
+
+    >>> usermgr = config.db.user_manager
+    >>> address_a = usermgr.create_address(u'aperson@example.com')
+    >>> address_b = usermgr.create_address(u'bperson@example.com')
+    >>> address_c = usermgr.create_address(u'cperson@example.com')
+    >>> address_d = usermgr.create_address(u'dperson@example.com')
+    >>> address_e = usermgr.create_address(u'eperson@example.com')
+    >>> address_f = usermgr.create_address(u'fperson@example.com')
+
+...then subscribe these addresses to the mailing list as members...
+
+    >>> from mailman.interfaces import MemberRole
+    >>> member_a = address_a.subscribe(mlist, MemberRole.member)
+    >>> member_b = address_b.subscribe(mlist, MemberRole.member)
+    >>> member_c = address_c.subscribe(mlist, MemberRole.member)
+    >>> member_d = address_d.subscribe(mlist, MemberRole.member)
+    >>> member_e = address_e.subscribe(mlist, MemberRole.member)
+    >>> member_f = address_f.subscribe(mlist, MemberRole.member)
+
+...then make some of the members digest members.
+
+    >>> from mailman.constants import DeliveryMode
+    >>> member_d.preferences.delivery_mode = DeliveryMode.plaintext_digests
+    >>> member_e.preferences.delivery_mode = DeliveryMode.mime_digests
+    >>> member_f.preferences.delivery_mode = DeliveryMode.summary_digests
+
+
+Short-circuiting
+----------------
+
+Sometimes, the list of recipients already exists in the message metadata.
+This can happen for example, when a message was previously delivered to some
+but not all of the recipients.
+
+    >>> msg = message_from_string("""\
+    ... From: Xavier Person <xperson@example.com>
+    ...
+    ... Something of great import.
+    ... """)
+    >>> recips = set((u'qperson@example.com', u'zperson@example.com'))
+    >>> msgdata = dict(recips=recips)
+    >>> handler.process(mlist, msg, msgdata)
+    >>> sorted(msgdata['recips'])
+    [u'qperson@example.com', u'zperson@example.com']
+
+
+Regular delivery recipients
+---------------------------
+
+Regular delivery recipients are those people who get messages from the list as
+soon as they are posted.  In other words, these folks are not digest members.
+
+    >>> msgdata = {}
+    >>> handler.process(mlist, msg, msgdata)
+    >>> sorted(msgdata['recips'])
+    [u'aperson@example.com', u'bperson@example.com', u'cperson@example.com']
+
+Members can elect not to receive a list copy of their own postings.
+
+    >>> member_c.preferences.receive_own_postings = False
+    >>> msg = message_from_string("""\
+    ... From: Claire Person <cperson@example.com>
+    ...
+    ... Something of great import.
+    ... """)
+    >>> msgdata = {}
+    >>> handler.process(mlist, msg, msgdata)
+    >>> sorted(msgdata['recips'])
+    [u'aperson@example.com', u'bperson@example.com']
+
+Members can also elect not to receive a list copy of any message on which they
+are explicitly named as a recipient.  However, see the AvoidDuplicates handler
+for details.
+
+
+Digest recipients
+-----------------
+
+XXX Test various digest deliveries.
+
+
+Urgent messages
+---------------
+
+XXX Test various urgent deliveries:
+    * test_urgent_moderator()
+    * test_urgent_admin()
+    * test_urgent_reject()

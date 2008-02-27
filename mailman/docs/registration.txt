@@ -1,0 +1,364 @@
+Address registration
+====================
+
+When a user wants to join a mailing list -- any mailing list -- in the running
+instance, he or she must first register with Mailman.  The only thing they
+must supply is an email address, although there is additional information they
+may supply.  All registered email addresses must be verified before Mailman
+will send them any list traffic.
+
+    >>> from mailman.app.registrar import Registrar
+    >>> from mailman.configuration import config
+    >>> from mailman.interfaces import IRegistrar
+
+The IUserManager manages users, but it does so at a fairly low level.
+Specifically, it does not handle verifications, email address syntax validity
+checks, etc.  The IRegistrar is the interface to the object handling all this
+stuff.
+
+Create a dummy domain, which will provide the context for the verification
+email message.
+
+    >>> from zope.interface import implements
+    >>> from mailman.interfaces import IDomain
+    >>> class TestDomain(object):
+    ...     implements(IDomain)
+    ...     def __init__(self):
+    ...         self.domain_name = 'example.com'
+    ...         self.description = 'mail.example.com'
+    ...         self.contact_address = 'postmaster@mail.example.com'
+    ...         self.base_url = 'http://mail.example.com'
+    ...     def confirm_address(self, token=''):
+    ...         return 'confirm+%s@example.com' % token
+    ...     def confirm_url(self, token=''):
+    ...         return self.base_url + '/confirm/' + token
+    ...     def __conform__(self, protocol):
+    ...         if protocol is IRegistrar:
+    ...             return Registrar(self)
+    ...         return None
+    >>> domain = TestDomain()
+
+Get a registrar by adapting a context to the interface.
+
+    >>> from zope.interface.verify import verifyObject
+    >>> registrar = IRegistrar(domain)
+    >>> verifyObject(IRegistrar, registrar)
+    True
+
+Here is a helper function to check the token strings.
+
+    >>> def check_token(token):
+    ...     assert isinstance(token, basestring), 'Not a string'
+    ...     assert len(token) == 40, 'Unexpected length: %d' % len(token)
+    ...     assert token.isalnum(), 'Not alphanumeric'
+    ...     print 'ok'
+
+Here is a helper function to extract tokens from confirmation messages.
+
+    >>> import re
+    >>> cre = re.compile('http://mail.example.com/confirm/(.*)')
+    >>> def extract_token(msg):
+    ...     mo = cre.search(qmsg.get_payload())
+    ...     return mo.group(1)
+
+
+Invalid email addresses
+-----------------------
+
+The only piece of information you need to register is the email address.
+Some amount of sanity checks are performed on the email address, although
+honestly, not as much as probably should be done.  Still, some patently bad
+addresses are rejected outright.
+
+    >>> registrar.register('')
+    Traceback (most recent call last):
+    ...
+    InvalidEmailAddress: ''
+    >>> registrar.register('some name@example.com')
+    Traceback (most recent call last):
+    ...
+    InvalidEmailAddress: 'some name@example.com'
+    >>> registrar.register('<script>@example.com')
+    Traceback (most recent call last):
+    ...
+    InvalidEmailAddress: '<script>@example.com'
+    >>> registrar.register('\xa0@example.com')
+    Traceback (most recent call last):
+    ...
+    InvalidEmailAddress: '\xa0@example.com'
+    >>> registrar.register('noatsign')
+    Traceback (most recent call last):
+    ...
+    InvalidEmailAddress: 'noatsign'
+    >>> registrar.register('nodom@ain')
+    Traceback (most recent call last):
+    ...
+    InvalidEmailAddress: 'nodom@ain'
+
+
+Register an email address
+-------------------------
+
+Registration of an unknown address creates nothing until the confirmation step
+is complete.  No IUser or IAddress is created at registration time, but a
+record is added to the pending database, and the token for that record is
+returned.
+
+    >>> token = registrar.register(u'aperson@example.com', u'Anne Person')
+    >>> check_token(token)
+    ok
+
+There should be no records in the user manager for this address yet.
+
+    >>> usermgr = config.db.user_manager
+    >>> print usermgr.get_user(u'aperson@example.com')
+    None
+    >>> print usermgr.get_address(u'aperson@example.com')
+    None
+
+But this address is waiting for confirmation.
+
+    >>> pendingdb = config.db.pendings
+    >>> sorted(pendingdb.confirm(token, expunge=False).items())
+    [(u'address', u'aperson@example.com'),
+     (u'real_name', u'Anne Person'),
+     (u'type', u'registration')]
+
+
+Verification by email
+---------------------
+
+There is also a verification email sitting in the virgin queue now.  This
+message is sent to the user in order to verify the registered address.
+
+    >>> from mailman.queue import Switchboard
+    >>> switchboard = Switchboard(config.VIRGINQUEUE_DIR)
+    >>> len(switchboard.files)
+    1
+    >>> filebase = switchboard.files[0]
+    >>> qmsg, qdata = switchboard.dequeue(filebase)
+    >>> switchboard.finish(filebase)
+    >>> print qmsg.as_string()
+    MIME-Version: 1.0
+    Content-Type: text/plain; charset="us-ascii"
+    Content-Transfer-Encoding: 7bit
+    Subject: confirm ...
+    From: confirm+...@example.com
+    To: aperson@example.com
+    Message-ID: <...>
+    Date: ...
+    Precedence: bulk
+    <BLANKLINE>
+    Email Address Registration Confirmation
+    <BLANKLINE>
+    Hello, this is the GNU Mailman server at example.com.
+    <BLANKLINE>
+    We have received a registration request for the email address
+    <BLANKLINE>
+        aperson@example.com
+    <BLANKLINE>
+    Before you can start using GNU Mailman at this site, you must first
+    confirm that this is your email address.  You can do this by replying to
+    this message, keeping the Subject header intact.  Or you can visit this
+    web page
+    <BLANKLINE>
+        http://mail.example.com/confirm/...
+    <BLANKLINE>
+    If you do not wish to register this email address simply disregard this
+    message.  If you think you are being maliciously subscribed to the list, or
+    have any other questions, you may contact
+    <BLANKLINE>
+        postmaster@mail.example.com
+    <BLANKLINE>
+    >>> sorted(qdata.items())
+    [('_parsemsg', False),
+     ('nodecorate', True),
+     ('received_time', ...),
+     ('recips', [u'aperson@example.com']),
+     ('reduced_list_headers', True),
+     ('version', 3)]
+
+The confirmation token shows up in several places, each of which provides an
+easy way for the user to complete the confirmation.  The token will always
+appear in a URL in the body of the message.
+
+    >>> sent_token = extract_token(qmsg)
+    >>> sent_token == token
+    True
+
+The same token will appear in the From header.
+
+    >>> qmsg['from'] == 'confirm+' + token + '@example.com'
+    True
+
+It will also appear in the Subject header.
+
+    >>> qmsg['subject'] == 'confirm ' + token
+    True
+
+The user would then validate their just registered address by clicking on a
+url or responding to the message.  Either way, the confirmation process
+extracts the token and uses that to confirm the pending registration.
+
+    >>> registrar.confirm(token)
+    True
+
+Now, there is an IAddress in the database matching the address, as well as an
+IUser linked to this address.  The IAddress is verified.
+
+    >>> found_address = usermgr.get_address(u'aperson@example.com')
+    >>> found_address
+    <Address: Anne Person <aperson@example.com> [verified] at ...>
+    >>> found_user = usermgr.get_user(u'aperson@example.com')
+    >>> found_user
+    <User "Anne Person" at ...>
+    >>> found_user.controls(found_address.address)
+    True
+    >>> from datetime import datetime
+    >>> isinstance(found_address.verified_on, datetime)
+    True
+
+
+Non-standard registrations
+--------------------------
+
+If you try to confirm a registration token twice, of course only the first one
+will work.  The second one is ignored.
+
+    >>> token = registrar.register(u'bperson@example.com')
+    >>> check_token(token)
+    ok
+    >>> filebase = switchboard.files[0]
+    >>> qmsg, qdata = switchboard.dequeue(filebase)
+    >>> switchboard.finish(filebase)
+    >>> sent_token = extract_token(qmsg)
+    >>> token == sent_token
+    True
+    >>> registrar.confirm(token)
+    True
+    >>> registrar.confirm(token)
+    False
+
+If an address is in the system, but that address is not linked to a user yet
+and the address is not yet validated, then no user is created until the
+confirmation step is completed.
+
+    >>> usermgr.create_address(u'cperson@example.com')
+    <Address: cperson@example.com [not verified] at ...>
+    >>> token = registrar.register(u'cperson@example.com', u'Claire Person')
+    >>> print usermgr.get_user(u'cperson@example.com')
+    None
+    >>> filebase = switchboard.files[0]
+    >>> qmsg, qdata = switchboard.dequeue(filebase)
+    >>> switchboard.finish(filebase)
+    >>> registrar.confirm(token)
+    True
+    >>> usermgr.get_user(u'cperson@example.com')
+    <User "Claire Person" at ...>
+    >>> usermgr.get_address(u'cperson@example.com')
+    <Address: cperson@example.com [verified] at ...>
+
+If an address being registered has already been verified, linked or not to a
+user, then registration sends no confirmation.
+
+    >>> print registrar.register(u'cperson@example.com')
+    None
+    >>> len(switchboard.files)
+    0
+
+But if the already verified address is not linked to a user, then a user is
+created now and they are linked, with no confirmation necessary.
+
+    >>> address = usermgr.create_address(u'dperson@example.com', u'Dave Person')
+    >>> address.verified_on = datetime.now()
+    >>> print usermgr.get_user(u'dperson@example.com')
+    None
+    >>> print registrar.register(u'dperson@example.com')
+    None
+    >>> len(switchboard.files)
+    0
+    >>> usermgr.get_user(u'dperson@example.com')
+    <User "Dave Person" at ...>
+
+
+Discarding
+----------
+
+A confirmation token can also be discarded, say if the user changes his or her
+mind about registering.  When discarded, no IAddress or IUser is created.
+
+    >>> token = registrar.register(u'eperson@example.com', u'Elly Person')
+    >>> check_token(token)
+    ok
+    >>> registrar.discard(token)
+    >>> print pendingdb.confirm(token)
+    None
+    >>> print usermgr.get_address(u'eperson@example.com')
+    None
+    >>> print usermgr.get_user(u'eperson@example.com')
+    None
+
+
+Registering a new address for an existing user
+----------------------------------------------
+
+When a new address for an existing user is registered, there isn't too much
+different except that the new address will still need to be verified before it
+can be used.
+
+    >>> dperson = usermgr.get_user(u'dperson@example.com')
+    >>> dperson
+    <User "Dave Person" at ...>
+    >>> from operator import attrgetter
+    >>> sorted((addr for addr in dperson.addresses), key=attrgetter('address'))
+    [<Address: Dave Person <dperson@example.com> [verified] at ...>]
+    >>> dperson.register(u'david.person@example.com', u'David Person')
+    <Address: David Person <david.person@example.com> [not verified] at ...>
+    >>> token = registrar.register(u'david.person@example.com')
+    >>> filebase = switchboard.files[0]
+    >>> qmsg, qdata = switchboard.dequeue(filebase)
+    >>> switchboard.finish(filebase)
+    >>> registrar.confirm(token)
+    True
+    >>> user = usermgr.get_user(u'david.person@example.com')
+    >>> user is dperson
+    True
+    >>> user
+    <User "Dave Person" at ...>
+    >>> sorted((addr for addr in user.addresses), key=attrgetter('address'))
+    [<Address: David Person <david.person@example.com> [verified] at ...>,
+     <Address: Dave Person <dperson@example.com> [verified] at ...>]
+
+
+Corner cases
+------------
+
+If you try to confirm a token that doesn't exist in the pending database, the
+confirm method will just return None.
+
+    >>> registrar.confirm('no token')
+    False
+
+Likewise, if you try to confirm, through the IUserRegistrar interface, a token
+that doesn't match a registration even, you will get None.  However, the
+pending even matched with that token will still be removed.
+
+    >>> from mailman.interfaces import IPendable
+    >>> class SimplePendable(dict):
+    ...     implements(IPendable)
+    >>> pendable = SimplePendable(type='foo', bar='baz')
+    >>> token = pendingdb.add(pendable)
+    >>> registrar.confirm(token)
+    False
+    >>> print pendingdb.confirm(token)
+    None
+
+If somehow the pending registration event doesn't have an address in its
+record, you will also get None back, and the record will be removed.
+
+    >>> pendable = SimplePendable(type='registration', foo='bar')
+    >>> token = pendingdb.add(pendable)
+    >>> registrar.confirm(token)
+    False
+    >>> print pendingdb.confirm(token)
+    None

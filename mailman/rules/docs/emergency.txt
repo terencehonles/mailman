@@ -1,0 +1,75 @@
+Emergency
+=========
+
+When the mailing list has its emergency flag set, all messages posted to the
+list are held for moderator approval.
+
+    >>> from mailman.app.lifecycle import create_list
+    >>> mlist = create_list(u'_xtest@example.com')
+    >>> mlist.web_page_url = u'http://www.example.com/'
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.com
+    ... To: _xtest@example.com
+    ... Subject: My first post
+    ... Message-ID: <first>
+    ...
+    ... An important message.
+    ... """)
+
+The emergency rule is matched as part of the built-in chain.  The emergency
+rule matches if the flag is set on the mailing list.
+
+    >>> from mailman.app.chains import process
+    >>> mlist.emergency = True
+    >>> process(mlist, msg, {}, 'built-in')
+
+There are two messages in the virgin queue.  The one addressed to the original
+sender will contain a token we can use to grab the held message out of the
+pending requests.
+
+    >>> from mailman.configuration import config
+    >>> from mailman.queue import Switchboard
+    >>> virginq = Switchboard(config.VIRGINQUEUE_DIR)
+
+    >>> def get_held_message():
+    ...     import re
+    ...     qfiles = []
+    ...     for filebase in virginq.files:
+    ...         qmsg, qdata = virginq.dequeue(filebase)
+    ...         virginq.finish(filebase)
+    ...         qfiles.append(qmsg)
+    ...     from operator import itemgetter
+    ...     qfiles.sort(key=itemgetter('to'))
+    ...     cookie = None
+    ...     for line in qfiles[1].get_payload().splitlines():
+    ...         mo = re.search('confirm/[^/]+/(?P<cookie>.*)$', line)
+    ...         if mo:
+    ...             cookie = mo.group('cookie')
+    ...             break
+    ...     assert cookie is not None, 'No confirmation token found'
+    ...     data = config.db.pendings.confirm(cookie)
+    ...     requestdb = config.db.requests.get_list_requests(mlist)
+    ...     rkey, rdata = requestdb.get_request(data['id'])
+    ...     return config.db.message_store.get_message_by_id(
+    ...         rdata['_mod_message_id'])
+
+    >>> msg = get_held_message()
+    >>> print msg.as_string()
+    From: aperson@example.com
+    To: _xtest@example.com
+    Subject: My first post
+    Message-ID: <first>
+    X-Mailman-Rule-Hits: emergency
+    X-Mailman-Rule-Misses: approved
+    X-Message-ID-Hash: RXJU4JL6N2OUN3OYMXXPPSCR7P7JE2BW
+    <BLANKLINE>
+    An important message.
+    <BLANKLINE>
+
+However, if the message metadata has a 'moderator_approved' key set, then even
+if the mailing list has its emergency flag set, the message still goes through
+to the membership.
+
+    >>> process(mlist, msg, dict(moderator_approved=True), 'built-in')
+    >>> len(virginq.files)
+    0

@@ -20,8 +20,8 @@ ez_setup.use_setuptools()
 import sys
 from string import Template
 
-import Mailman.bin
-from Mailman.Version import VERSION as __version__
+import mailman.bin
+from mailman.Version import VERSION as __version__
 from setuptools import setup, find_packages
 
 
@@ -37,9 +37,9 @@ if sys.hexversion < 0x20500f0:
 # properly split out.
 
 import os
-import Mailman.messages
+import mailman.messages
 
-start_dir = os.path.dirname(Mailman.messages.__file__)
+start_dir = os.path.dirname(mailman.messages.__file__)
 for dirpath, dirnames, filenames in os.walk(start_dir):
     for filename in filenames:
         po_file = os.path.join(dirpath, filename)
@@ -55,10 +55,10 @@ for dirpath, dirnames, filenames in os.walk(start_dir):
 
 
 # XXX The 'bin/' prefix here should be configurable.
-template = Template('bin/$script = Mailman.bin.$script:main')
+template = Template('bin/$script = mailman.bin.$script:main')
 scripts = set(
     template.substitute(script=os.path.splitext(script)[0])
-    for script in Mailman.bin.__all__
+    for script in mailman.bin.__all__
     if not script.startswith('_')
     )
 
@@ -83,13 +83,13 @@ Any other spelling is incorrect.""",
     entry_points    = {
         'console_scripts': list(scripts),
         # Entry point for plugging in different database backends.
-        'mailman.archiver'  : 'stock = Mailman.app.archiving:Pipermail',
-        'mailman.database'  : 'stock = Mailman.database:StockDatabase',
-        'mailman.mta'       : 'stock = Mailman.MTA:Manual',
-        'mailman.styles'    : 'default = Mailman.app.styles:DefaultStyle',
-        'mailman.mta'       : 'stock = Mailman.MTA:Manual',
-        'mailman.rules'     : 'default = Mailman.rules:initialize',
-        'mailman.handlers'  : 'default = Mailman.pipeline:initialize',
+        'mailman.archiver'  : 'stock = mailman.app.archiving:Pipermail',
+        'mailman.database'  : 'stock = mailman.database:StockDatabase',
+        'mailman.mta'       : 'stock = mailman.MTA:Manual',
+        'mailman.styles'    : 'default = mailman.app.styles:DefaultStyle',
+        'mailman.mta'       : 'stock = mailman.MTA:Manual',
+        'mailman.rules'     : 'default = mailman.rules:initialize',
+        'mailman.handlers'  : 'default = mailman.pipeline:initialize',
         },
     install_requires = [
         'locknix',
