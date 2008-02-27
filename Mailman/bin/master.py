@@ -350,9 +350,10 @@ qrunner %s reached maximum restart limit of %d, not restarting.""",
                     # The child has already exited.
                     log.info('ESRCH on pid: %d', pid)
         # Wait for all the children to go away.
-        while True:
+        while kids:
             try:
                 pid, status = os.wait()
+                del kids[pid]
             except OSError, e:
                 if e.errno == errno.ECHILD:
                     break

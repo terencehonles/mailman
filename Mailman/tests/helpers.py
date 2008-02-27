@@ -17,8 +17,11 @@
 
 """Various test helpers."""
 
+from __future__ import with_statement
+
 __metaclass__ = type
 __all__ = [
+    'Watcher',
     'digest_mbox',
     'get_queue_messages',
     'make_testable_runner',
@@ -26,8 +29,14 @@ __all__ = [
 
 
 import os
+import time
+import errno
 import mailbox
+import subprocess
 
+from datetime import datetime, timedelta
+
+from Mailman.configuration import config
 from Mailman.queue import Switchboard
 
 
@@ -82,3 +91,75 @@ def digest_mbox(mlist):
     """
     path = os.path.join(mlist.full_path, 'digest.mbox')
     return mailbox.mbox(path)
+
+
+
+class Watcher:
+    """A doctest stand-in for the queue file watcher."""
+
+    def __init__(self):
+        self.exe = os.path.join(config.BIN_DIR, 'mailmanctl')
+        self.returncode = None
+        self.stdout = None
+        self.stderr = None
+        self.pid = None
+
+    def start(self):
+        """Start the watcher and wait until it actually starts."""
+        process = subprocess.Popen(
+            (self.exe, '-C', config.filename, '-q', 'start'))
+        stdout, stderr = process.communicate()
+        # Wait until the pid file exists.
+        until = datetime.now() + timedelta(seconds=2)
+        while datetime.now() < until:
+            try:
+                with open(config.PIDFILE) as f:
+                    pid = int(f.read().strip())
+                    break
+            except IOError, error:
+                if error.errno == errno.ENOENT:
+                    time.sleep(0.1)
+                else:
+                    raise
+        else:
+            # This will usually cause the doctest to fail.
+            return 'Time out'
+        # Now wait until the process actually exists.
+        until = datetime.now() + timedelta(seconds=2)
+        while datetime.now() < until:
+            try:
+                os.kill(pid, 0)
+                break
+            except OSError, error:
+                if error.errno == errno.ESRCH:
+                    time.sleep(0.1)
+                else:
+                    raise
+        else:
+            return 'Time out'
+        self.returncode = process.returncode
+        self.stdout = stdout
+        self.stderr = stderr
+        self.pid = pid
+
+    def stop(self):
+        """Stop the watcher and wait until it actually stops."""
+        process = subprocess.Popen(
+            (self.exe, '-C', config.filename, '-q', 'stop'))
+        stdout, stderr = process.communicate()
+        # Now wait until the process stops.
+        until = datetime.now() + timedelta(seconds=2)
+        while datetime.now() < until:
+            try:
+                os.kill(self.pid, 0)
+                time.sleep(0.1)
+            except OSError, error:
+                if error.errno == errno.ESRCH:
+                    break
+                else:
+                    raise
+        else:
+            return 'Time out'
+        self.returncode = process.returncode
+        self.stdout = stdout
+        self.stderr = stderr
