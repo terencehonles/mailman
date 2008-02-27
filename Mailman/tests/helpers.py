@@ -40,6 +40,9 @@ from Mailman.configuration import config
 from Mailman.queue import Switchboard
 
 
+WAIT_INTERVAL = timedelta(seconds=3)
+
+
 
 def make_testable_runner(runner_class):
     """Create a queue runner that runs until its queue is empty.
@@ -110,7 +113,7 @@ class Watcher:
             (self.exe, '-C', config.filename, '-q', 'start'))
         stdout, stderr = process.communicate()
         # Wait until the pid file exists.
-        until = datetime.now() + timedelta(seconds=2)
+        until = datetime.now() + WAIT_INTERVAL
         while datetime.now() < until:
             try:
                 with open(config.PIDFILE) as f:
@@ -125,7 +128,7 @@ class Watcher:
             # This will usually cause the doctest to fail.
             return 'Time out'
         # Now wait until the process actually exists.
-        until = datetime.now() + timedelta(seconds=2)
+        until = datetime.now() + WAIT_INTERVAL
         while datetime.now() < until:
             try:
                 os.kill(pid, 0)
@@ -148,7 +151,7 @@ class Watcher:
             (self.exe, '-C', config.filename, '-q', 'stop'))
         stdout, stderr = process.communicate()
         # Now wait until the process stops.
-        until = datetime.now() + timedelta(seconds=2)
+        until = datetime.now() + WAIT_INTERVAL
         while datetime.now() < until:
             try:
                 os.kill(self.pid, 0)

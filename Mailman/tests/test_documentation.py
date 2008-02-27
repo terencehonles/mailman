@@ -52,8 +52,7 @@ def specialized_message_from_string(text):
 
 
 def setup(testobj):
-    """Set up some things for convenience."""
-    testobj.globs['config'] = config
+    """Test setup."""
     testobj.globs['message_from_string'] = specialized_message_from_string
 
 

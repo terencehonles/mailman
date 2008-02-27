@@ -7,6 +7,7 @@ transformations.  Some headers get added, others get changed.  Some of these
 changes depend on mailing list settings and others depend on how the message
 is getting sent through the system.  We'll take things one-by-one.
 
+    >>> from Mailman.configuration import config
     >>> from Mailman.pipeline.cook_headers import process
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> mlist.subject_prefix = u''
