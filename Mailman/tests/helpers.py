@@ -21,7 +21,7 @@ from __future__ import with_statement
 
 __metaclass__ = type
 __all__ = [
-    'Watcher',
+    'TestableMaster',
     'digest_mbox',
     'get_queue_messages',
     'make_testable_runner',
@@ -36,6 +36,7 @@ import subprocess
 
 from datetime import datetime, timedelta
 
+from Mailman.bin.master import Loop as Master
 from Mailman.configuration import config
 from Mailman.queue import Switchboard
 
@@ -97,72 +98,37 @@ def digest_mbox(mlist):
 
 
 
-class Watcher:
-    """A doctest stand-in for the queue file watcher."""
+class TestableMaster(Master):
+    """A testable master loop watcher."""
 
-    def __init__(self):
-        self.exe = os.path.join(config.BIN_DIR, 'mailmanctl')
-        self.returncode = None
-        self.stdout = None
-        self.stderr = None
-        self.pid = None
+    def __init__(self, event):
+        super(TestableMaster, self).__init__(
+            restartable=False, config_file=config.filename)
+        self._event = event
+        self._started_kids = None
 
-    def start(self):
-        """Start the watcher and wait until it actually starts."""
-        process = subprocess.Popen(
-            (self.exe, '-C', config.filename, '-q', 'start'))
-        stdout, stderr = process.communicate()
-        # Wait until the pid file exists.
-        until = datetime.now() + WAIT_INTERVAL
-        while datetime.now() < until:
-            try:
-                with open(config.PIDFILE) as f:
-                    pid = int(f.read().strip())
-                    break
-            except IOError, error:
-                if error.errno == errno.ENOENT:
-                    time.sleep(0.1)
-                else:
+    def loop(self):
+        """Wait until all the qrunners are actually running before looping."""
+        starting_kids = set(self._kids)
+        while starting_kids:
+            for pid in self._kids:
+                try:
+                    os.kill(pid, 0)
+                    starting_kids.remove(pid)
+                except OSError, error:
+                    if error.errno == errno.ESRCH:
+                        # The child has not yet started.
+                        pass
                     raise
-        else:
-            # This will usually cause the doctest to fail.
-            return 'Time out'
-        # Now wait until the process actually exists.
-        until = datetime.now() + WAIT_INTERVAL
-        while datetime.now() < until:
-            try:
-                os.kill(pid, 0)
-                break
-            except OSError, error:
-                if error.errno == errno.ESRCH:
-                    time.sleep(0.1)
-                else:
-                    raise
-        else:
-            return 'Time out'
-        self.returncode = process.returncode
-        self.stdout = stdout
-        self.stderr = stderr
-        self.pid = pid
+        # Keeping a copy of all the started child processes for use by the
+        # testing environment, even after all have exited.
+        self._started_kids = set(self._kids)
+        # Let the blocking thread know everything's running.
+        self._event.set()
+        super(TestableMaster, self).loop()
 
-    def stop(self):
-        """Stop the watcher and wait until it actually stops."""
-        process = subprocess.Popen(
-            (self.exe, '-C', config.filename, '-q', 'stop'))
-        stdout, stderr = process.communicate()
-        # Now wait until the process stops.
-        until = datetime.now() + WAIT_INTERVAL
-        while datetime.now() < until:
-            try:
-                os.kill(self.pid, 0)
-                time.sleep(0.1)
-            except OSError, error:
-                if error.errno == errno.ESRCH:
-                    break
-                else:
-                    raise
-        else:
-            return 'Time out'
-        self.returncode = process.returncode
-        self.stdout = stdout
-        self.stderr = stderr
+    @property
+    def qrunner_pids(self):
+        """The pids of all the child qrunner processes."""
+        for pid in self._started_kids:
+            yield pid
