@@ -32,16 +32,17 @@ import os
 import time
 import errno
 import mailbox
-import subprocess
+import smtplib
+import tempfile
+import threading
 
+from Queue import Empty, Queue
 from datetime import datetime, timedelta
 
 from mailman.bin.master import Loop as Master
 from mailman.configuration import config
 from mailman.queue import Switchboard
-
-
-WAIT_INTERVAL = timedelta(seconds=3)
+from mailman.tests.smtplistener import Server
 
 
 
@@ -132,3 +133,49 @@ class TestableMaster(Master):
         """The pids of all the child qrunner processes."""
         for pid in self._started_kids:
             yield pid
+
+
+
+class SMTPServer:
+    """An smtp server for testing."""
+
+    host = 'localhost'
+    port = 9025
+
+    def __init__(self):
+        self._messages = []
+        self._queue = Queue()
+        self._server = Server((self.host, self.port), self._queue)
+        self._thread = threading.Thread(target=self._server.start)
+
+    def start(self):
+        """Start the smtp server in a thread."""
+        self._thread.start()
+
+    def stop(self):
+        """Stop the smtp server."""
+        smtpd = smtplib.SMTP()
+        smtpd.connect(self.host, self.port)
+        smtpd.docmd('EXIT')
+        self.clear()
+        # Wait for the thread to exit.
+        self._thread.join()
+
+    @property
+    def messages(self):
+        """Return all the messages received by the smtp server."""
+        for message in self._messages:
+            # See if there's anything waiting in the queue.
+            try:
+                message = self._queue.get_nowait()
+            except Empty:
+                pass
+            else:
+                self._messages.append(message)
+            yield message
+            
+    def clear(self):
+        """Clear all messages from the queue."""
+        # Just throw these away.
+        list(self._messages)
+        self._messages = []

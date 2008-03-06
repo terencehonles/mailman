@@ -181,7 +181,7 @@ _digest_modes = (
 class DigestMemberRoster(AbstractRoster):
     """Return all the regular delivery members of a list."""
 
-    name = 'regular_members'
+    name = 'digest_members'
 
     @property
     def members(self):

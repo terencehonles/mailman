@@ -38,8 +38,6 @@ See the variable USE_LMTP in Defaults.py.in for enabling this delivery
 mechanism.
 """
 
-# NOTE: LMTP delivery is experimental in Mailman 2.2.
-
 import os
 import email
 import smtpd
