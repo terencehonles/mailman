@@ -28,9 +28,7 @@ import shutil
 import optparse
 import tempfile
 import unittest
-
-import mailman
-import mailman.tests
+import pkg_resources
 
 from mailman import Version
 from mailman.configuration import config
@@ -76,8 +74,12 @@ Reduce verbosity by 1 (but not below 0)."""))
     parser.add_option('-c', '--coverage',
                       default=False, action='store_true',
                       help=_('Enable code coverage.'))
-    opts, args = parser.parse_args()
-    return parser, opts, args
+    options, arguments = parser.parse_args()
+    if len(arguments) == 0:
+        arguments = ['.']
+    parser.options = options
+    parser.arguments = arguments
+    return parser
 
 
 
@@ -147,39 +149,57 @@ def suite(patterns=None):
 def main():
     global basedir
 
-    parser, opts, args = parseargs()
-    if not args:
-        args = ['.']
+    parser = parseargs()
 
-    # Store the options some place that other code can get to it.
-    config.opts = opts
+    # Set verbosity level for test_documentation.py.  XXX There should be a
+    # better way to do this.
+    config.verbosity = parser.options.verbosity
 
     # Turn on code coverage if selected.
-    if opts.coverage:
+    if parser.options.coverage:
         try:
             import coverage
         except ImportError:
-            opts.coverage = False
+            parser.options.coverage = False
         else:
             coverage.start()
 
     # Set up the testing configuration file both for this process, and for all
     # sub-processes testing will spawn (e.g. the qrunners).
     #
+    # Also create a logging.cfg file with values reflecting verbosity and
+    # stderr propagation.  Enable it only if necessary.
+    fd, logging_cfg = tempfile.mkstemp(suffix='.cfg')
+    os.close(fd)
+    enable_logging_cfg = False
+    with open(logging_cfg, 'w') as fp:
+        print >> fp, '[*]'
+        if parser.options.stderr:
+            print >> fp, 'propagate = True'
+            enable_logging_cfg = True
+        if parser.options.verbosity > 2:
+            print >> fp, 'level = DEBUG'
+            enable_logging_cfg = True
+
+    cfg_in = pkg_resources.resource_string(
+        'mailman.tests', 'testing.cfg.in')
+    fd, cfg_out = tempfile.mkstemp(suffix='.cfg')
+    os.close(fd)
+    with open(cfg_out, 'w') as fp:
+        fp.write(cfg_in)
+        if enable_logging_cfg:
+            print >> fp, 'LOG_CONFIG_FILE = "%s"' % logging_cfg
+
     # Calculate a temporary VAR_DIR directory so that run-time artifacts of
     # the tests won't tread on the installation's data.  This also makes it
     # easier to clean up after the tests are done, and insures isolation of
     # test suite runs.
-    cfg_in = os.path.join(os.path.dirname(mailman.tests.__file__),
-                           'testing.cfg.in')
-    fd, cfg_out = tempfile.mkstemp(suffix='.cfg')
-    os.close(fd)
-    shutil.copyfile(cfg_in, cfg_out)
-
     var_dir = tempfile.mkdtemp()
-    if opts.verbosity > 2:
+    if parser.options.verbosity > 2:
         print 'VAR_DIR :', var_dir
         print 'config file:', cfg_out
+        if enable_logging_cfg:
+            print 'logging config file:', logging_cfg
 
     user_id = os.getuid()
     user_name = pwd.getpwuid(user_id).pw_name
@@ -195,7 +215,7 @@ def main():
             print >> fp, 'MAILMAN_GID = %d' % group_id
             print >> fp, "LANGUAGES = 'en'"
 
-        initialize_1(cfg_out, propagate_logs=opts.stderr)
+        initialize_1(cfg_out, propagate_logs=parser.options.stderr)
         mailman_uid = pwd.getpwnam(config.MAILMAN_USER).pw_uid
         mailman_gid = grp.getgrnam(config.MAILMAN_GROUP).gr_gid
         os.chmod(cfg_out, 0660)
@@ -208,28 +228,31 @@ def main():
         os.chmod(config.dbfile, 0660)
         os.chown(config.dbfile, mailman_uid, mailman_gid)
 
-        # Patch ups
+        # Patch ups.
         test_engine_url = 'sqlite:///' + config.dbfile
-        config.SQLALCHEMY_ENGINE_URL = test_engine_url
+        config.DEFAULT_DATABASE_URL = test_engine_url
 
         # Write this to the config file so subprocesses share the same testing
         # database file.
         with open(cfg_out, 'a') as fp:
-            print >> fp, 'SQLALCHEMY_ENGINE_URL = "%s"' % test_engine_url
+            print >> fp, 'DEFAULT_DATABASE_URL = "%s"' % test_engine_url
 
         # With -vvv, turn on engine debugging.
-        initialize_2(opts.verbosity > 3)
+        initialize_2(parser.options.verbosity > 3)
 
-        # Run the tests
+        # Run the tests.  XXX I'm not sure if basedir can be converted to
+        # pkg_resources.
+        import mailman
         basedir = os.path.dirname(mailman.__file__)
-        runner = unittest.TextTestRunner(verbosity=opts.verbosity)
-        results = runner.run(suite(args))
+        runner = unittest.TextTestRunner(verbosity=parser.options.verbosity)
+        results = runner.run(suite(parser.arguments))
     finally:
         os.remove(cfg_out)
+        os.remove(logging_cfg)
         shutil.rmtree(var_dir)
 
     # Turn off coverage and print a report
-    if opts.coverage:
+    if parser.options.coverage:
         coverage.stop()
         modules = [module for name, module in sys.modules.items()
                    if module

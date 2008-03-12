@@ -1,0 +1,49 @@
+LTMP server
+===========
+
+Mailman can accept messages via LMTP (RFC 2033).  Most modern mail servers
+support LMTP local delivery, so this is a very portable way to connect Mailman
+with your mail server.
+
+Our LMTP server is fairly simple though; all it does is make sure that the
+message is destined for a valid endpoint, e.g. mylist-join@example.com.
+
+Let's start a testable LMTP queue runner.
+
+    >>> from mailman.tests import helpers
+    >>> master = helpers.TestableMaster()
+    >>> master.start('lmtp')
+
+It also helps to have a nice LMTP client.
+
+    >>> lmtp = helpers.get_lmtp_client()
+    (220, '... Python LMTP queue runner 1.0')
+    >>> lmtp.lhlo('remote.example.org')
+    (250, ...)
+
+
+Invalid mailing list
+--------------------
+
+If the mail server tries to send a message to a non-existant mailing list, it
+will get a 550 error.
+
+    >>> lmtp.sendmail(
+    ...     'anne.person@example.com',
+    ...     ['mylist@example.com'], """\
+    ... From: anne.person@example.com
+    ... To: mylist@example.com
+    ... Subject: An interesting message
+    ... Message-ID: <aardvark>
+    ...
+    ... This is an interesting message.
+    ... """)
+    Traceback (most recent call last):
+    ...
+    SMTPDataError: (550, 'Requested action not taken: mailbox unavailable')
+
+
+Clean up
+--------
+
+    >>> master.stop()

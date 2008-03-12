@@ -56,18 +56,45 @@ _handlers = []
 
 
 class ReallySafeConfigParser(ConfigParser.SafeConfigParser):
+    """Like `SafeConfigParser` but catches `NoOptionError`."""
+
     def getstring(self, section, option, default=None):
         try:
             return ConfigParser.SafeConfigParser.get(self, section, option)
         except (ConfigParser.NoSectionError, ConfigParser.NoOptionError):
-            return default
+            # Try again with the '*' section.
+            try:
+                return ConfigParser.SafeConfigParser.get(self, '*', option)
+            except (ConfigParser.NoSectionError, ConfigParser.NoOptionError):
+                return default
 
     def getboolean(self, section, option, default=None):
         try:
             return ConfigParser.SafeConfigParser.getboolean(
                 self, section, option)
         except (ConfigParser.NoSectionError, ConfigParser.NoOptionError):
-            return default
+            # Try again with the '*' section.
+            try:
+                return ConfigParser.SafeConfigParser.getboolean(
+                    self, '*', option)
+            except (ConfigParser.NoSectionError, ConfigParser.NoOptionError):
+                return default
+
+    def getlevel(self, section, option, default=None):
+        try:
+            level_str = ConfigParser.SafeConfigParser.get(
+                self, section, option)
+        except (ConfigParser.NoSectionError, ConfigParser.NoOptionError):
+            # Try again with the '*' section.
+            try:
+                level_str = ConfigParser.SafeConfigParser.get(
+                    self, '*', option)
+            except (ConfigParser.NoSectionError, ConfigParser.NoOptionError):
+                level_str = default
+        # Convert the level string into an integer.
+        level_str = level_str.upper()
+        level_def = (logging.DEBUG if section == 'debug' else logging.INFO)
+        return getattr(logging, level_str, level_def)
 
 
 
@@ -136,9 +163,7 @@ def initialize(propagate=False):
         # does not set an override, the default level will be INFO except for
         # the 'debug' logger.  It doesn't make much sense for the debug logger
         # to ignore debug level messages!
-        level_str = cp.getstring(logger, 'level', 'INFO').upper()
-        level_def = (logging.DEBUG if logger == 'debug' else logging.INFO)
-        level_int = getattr(logging, level_str, level_def)
+        level_int = cp.getlevel(logger, 'level', 'INFO')
         log.setLevel(level_int)
         # Create a formatter for this logger, then a handler, and link the
         # formatter to the handler.

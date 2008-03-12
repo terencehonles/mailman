@@ -88,7 +88,7 @@ def test_suite():
     flags = (doctest.ELLIPSIS |
              doctest.NORMALIZE_WHITESPACE |
              doctest.REPORT_NDIFF)
-    if config.opts.verbosity <= 2:
+    if config.verbosity <= 2:
         flags |= doctest.REPORT_ONLY_FIRST_FAILURE
     # Add all the doctests in all subpackages.
     for docsdir in packages:

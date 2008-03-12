@@ -48,6 +48,7 @@ class Configuration(object):
         self.domains = {}       # email host -> web host
         self._reverse = None
         self.qrunners = {}
+        self.qrunner_shortcuts = {}
         self.QFILE_SCHEMA_VERSION = Version.QFILE_SCHEMA_VERSION
 
     def load(self, filename=None):
@@ -212,22 +213,34 @@ class Configuration(object):
     def add_qrunner(self, name, count=1):
         """Convenient interface for adding additional qrunners.
 
-        name is the qrunner name and it must not include the 'Runner' suffix.
-        E.g. 'HTTP' or 'LMTP'.  count is the number of qrunner slices to
-        create, by default, 1.
+        :param name: the qrunner name, which must not include the 'Runner'
+            suffix.  E.g. 'HTTP' or 'LMTP'.
+        :param count: is the number of qrunner slices to create, default: 1.
         """
         if name.startswith('.'):
             name = 'mailman.queue' + name
         self.qrunners[name] = count
+        # Calculate the queue runner shortcut name.
+        classname = name.rsplit('.', 1)[1]
+        if classname.endswith('Runner'):
+            shortname = classname[:-6].lower()
+        else:
+            shortname = classname
+        self.qrunner_shortcuts[shortname] = name
 
     def del_qrunner(self, name):
         """Remove the named qrunner so that it does not start.
 
-        name is the qrunner name and it must not include the 'Runner' suffix.
+        :param name: the qrunner name, which must not include the 'Runner'
+            suffix.
         """
         if name.startswith('.'):
             name = 'mailman.queue' + name
         self.qrunners.pop(name)
+        for shortname, classname in self.qrunner_shortcuts:
+            if name == classname:
+                del self.qrunner_shortcuts[shortname]
+                break
 
     @property
     def paths(self):

@@ -89,6 +89,12 @@ level of checking.  If a process matching the host/pid described in the lock
 file is running, the master will still exit, requiring you to manually clean
 up the lock.  But if no matching process is found, the master will remove the
 apparently stale lock and make another attempt to claim the master lock."""))
+    parser.add_option('-r', '--runner',
+                      dest='runners', action='append', default=[],
+                      help=_("""\
+Override the default set of queue runners that the master watch will invoke
+instead of the default set.  Multiple -r options may be given.  The values for
+-r are passed straight through to bin/qrunner."""))
     parser.add_option('-C', '--config',
                       help=_('Alternative configuration file to use'))
     options, arguments = parser.parse_args()
@@ -258,14 +264,13 @@ class Loop:
             log.info('Master watcher caught SIGINT.  Restarting.')
         signal.signal(signal.SIGINT, sigint_handler)
 
-    def _start_runner(self, qrname, slice, count):
+    def _start_runner(self, spec):
         """Start a queue runner.
 
         All arguments are passed to the qrunner process.
 
-        :param qrname: The name of the queue runner.
-        :param slice: The slice number.
-        :param count: The total number of slices.
+        :param spec: A queue runner spec, in a format acceptable to
+            bin/qrunner's --runner argument, e.g. name:slice:count
         :return: The process id of the child queue runner.
         """
         pid = os.fork()
@@ -275,7 +280,7 @@ class Loop:
         # Child.
         #
         # Craft the command line arguments for the exec() call.
-        rswitch = '--runner=%s:%d:%d' % (qrname, slice, count)
+        rswitch = '--runner=' + spec
         # Wherever mailmanctl lives, so too must live the qrunner script.
         exe = os.path.join(config.BIN_DIR, 'qrunner')
         # config.PYTHON, which is the absolute path to the Python interpreter,
@@ -289,13 +294,29 @@ class Loop:
         # We should never get here.
         raise RuntimeError('os.execl() failed')
 
-    def start_qrunners(self):
-        """Start all the configured qrunners."""
-        for qrname, count in config.qrunners.items():
+    def start_qrunners(self, qrunners=None):
+        """Start all the configured qrunners.
+
+        :param qrunners: If given, a sequence of queue runner names to start.
+            If not given, this sequence is taken from the configuration file.
+        """
+        if not qrunners:
+            spec_parts = config.qrunners.items()
+        else:
+            spec_parts = []
+            for qrname in qrunners:
+                if '.' in qrname:
+                    spec_parts.append((qrname, 1))
+                else:
+                    spec_parts.append((config.qrunner_shortcuts[qrname], 1))
+        for qrname, count in spec_parts:
             for slice_number in range(count):
                 # qrunner name, slice #, # of slices, restart count
                 info = (qrname, slice_number, count, 0)
-                pid = self._start_runner(qrname, slice_number, count)
+                spec = '%s:%d:%d' % (qrname, slice_number, count)
+                pid = self._start_runner(spec)
+                log = logging.getLogger('mailman.qrunner')
+                log.debug('[%d] %s', pid, spec)
                 self._kids[pid] = info
 
     def loop(self):
@@ -397,7 +418,7 @@ def main():
         loop = Loop(lock, parser.options.restartable, parser.options.config)
         loop.install_signal_handlers()
         try:
-            loop.start_qrunners()
+            loop.start_qrunners(parser.options.runners)
             loop.loop()
         finally:
             loop.cleanup()

@@ -120,6 +120,7 @@ class StockDatabase:
 
     def _reset(self):
         from mailman.database.model import ModelMeta
+        self.store.rollback()
         ModelMeta._reset(self.store)
 
 

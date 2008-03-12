@@ -23,6 +23,7 @@ __metaclass__ = type
 __all__ = [
     'TestableMaster',
     'digest_mbox',
+    'get_lmtp_client',
     'get_queue_messages',
     'make_testable_runner',
     ]
@@ -31,6 +32,8 @@ __all__ = [
 import os
 import time
 import errno
+import signal
+import socket
 import mailbox
 import smtplib
 import tempfile
@@ -102,11 +105,26 @@ def digest_mbox(mlist):
 class TestableMaster(Master):
     """A testable master loop watcher."""
 
-    def __init__(self, event):
+    def __init__(self):
         super(TestableMaster, self).__init__(
             restartable=False, config_file=config.filename)
-        self._event = event
+        self.event = threading.Event()
+        self.thread = threading.Thread(target=self.loop)
         self._started_kids = None
+
+    def start(self, *qrunners):
+        """Start the master."""
+        self.start_qrunners(qrunners)
+        self.thread.start()
+        # Wait until all the children are definitely started, or timeout.
+        self.event.wait(2.0)
+
+    def stop(self):
+        """Stop the master by killing all the children."""
+        for pid in self.qrunner_pids:
+            os.kill(pid, signal.SIGTERM)
+        self.cleanup()
+        self.thread.join()
 
     def loop(self):
         """Wait until all the qrunners are actually running before looping."""
@@ -125,7 +143,7 @@ class TestableMaster(Master):
         # testing environment, even after all have exited.
         self._started_kids = set(self._kids)
         # Let the blocking thread know everything's running.
-        self._event.set()
+        self.event.set()
         super(TestableMaster, self).loop()
 
     @property
@@ -173,9 +191,38 @@ class SMTPServer:
             else:
                 self._messages.append(message)
             yield message
-            
+
     def clear(self):
         """Clear all messages from the queue."""
         # Just throw these away.
         list(self._messages)
         self._messages = []
+
+
+
+class LMTP(smtplib.SMTP):
+    """Like a normal SMTP client, but for LMTP."""
+    def lhlo(self, name=''):
+        self.putcmd('lhlo', name or self.local_hostname)
+        code, msg = self.getreply()
+        self.helo_resp = msg
+        return code, msg
+
+
+def get_lmtp_client():
+    """Return a connected LMTP client."""
+    # It's possible the process has started but is not yet accepting
+    # connections.  Wait a little while.
+    lmtp = LMTP()
+    for attempts in range(3):
+        try:
+            response = lmtp.connect(config.LMTP_HOST, config.LMTP_PORT)
+            print response
+            return lmtp
+        except socket.error, error:
+            if error[0] == errno.ECONNREFUSED:
+                time.sleep(1)
+            else:
+                raise
+    else:
+        raise RuntimeError('Connection refused')

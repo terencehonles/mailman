@@ -19,17 +19,13 @@
 
 Most mail servers can be configured to deliver local messages via 'LMTP'[1].
 This module is actually an LMTP server rather than a standard queue runner.
-Once it enters its main asyncore loop, it does not respond to mailmanctl
-signals the same way as other runners do.  All signals will kill this process,
-but the normal mailmanctl watchdog will restart it upon exit.
 
 The LMTP runner opens a local TCP port and waits for the mail server to
 connect to it.  The messages it receives over LMTP are very minimally parsed
 for sanity and if they look okay, they are accepted and injected into
-Mailman's incoming queue for processing through the normal pipeline.  If they
-don't look good, or are destined for a bogus sub-queue address, they are
-rejected right away, hopefully so that the peer mail server can provide better
-diagnostics.
+Mailman's incoming queue for normal processing.  If they don't look good, or
+are destined for a bogus sub-queue address, they are rejected right away,
+hopefully so that the peer mail server can provide better diagnostics.
 
 [1] RFC 2033 Local Mail Transport Protocol
     http://www.faqs.org/rfcs/rfc2033.html
@@ -48,14 +44,15 @@ from email.utils import parseaddr
 
 from mailman.Message import Message
 from mailman.configuration import config
-from mailman.runner import Runner, Switchboard
+from mailman.queue import Runner, Switchboard
 
 elog = logging.getLogger('mailman.error')
 qlog = logging.getLogger('mailman.qrunner')
 
-# We only care about the listname and the subq as in listname@ or
+
+# We only care about the listname and the subqueue as in listname@ or
 # listname-request@
-subqnames = (
+SUBQUEUE_NAMES = (
     'bounces',  'confirm',  'join', '       leave',
     'owner',    'request',  'subscribe',    'unsubscribe',
     )
@@ -63,6 +60,7 @@ subqnames = (
 DASH    = '-'
 CRLF    = '\r\n'
 ERR_451 = '451 Requested action aborted: error in processing'
+ERR_501 = '501 Message has defects'
 ERR_502 = '502 Error: command HELO not implemented'
 ERR_550 = config.LMTP_ERR_550
 
@@ -71,12 +69,12 @@ smtpd.__version__ = 'Python LMTP queue runner 1.0'
 
 
 
-def getlistq(address):
+def split_recipient(address):
     localpart, domain = address.split('@', 1)
     localpart = localpart.split(config.VERP_DELIMITER, 1)[0]
-    l = localpart.split(DASH)
-    if l[-1] in subqnames:
-        listname = DASH.join(l[:-1])
+    parts = localpart.split(DASH)
+    if parts[-1] in SUBQUEUE_NAMES:
+        listname = DASH.join(parts[:-1])
         subq = l[-1]
     else:
         listname = localpart
@@ -85,16 +83,20 @@ def getlistq(address):
 
 
 
-class SMTPChannel(smtpd.SMTPChannel):
-    # Override smtpd.SMTPChannel don't can't change the class name so that we
-    # don't have to reverse engineer Python's name mangling scheme.
-    #
-    # LMTP greeting is LHLO and no HELO/EHLO
+class Channel(smtpd.SMTPChannel):
+    """An LMTP channel."""
+
+    def __init__(self, server, conn, addr):
+        smtpd.SMTPChannel.__init__(self, server, conn, addr)
+        # Stash this here since the subclass uses private attributes. :(
+        self._server = server
 
     def smtp_LHLO(self, arg):
+        """The LMTP greeting, used instead of HELO/EHLO."""
         smtpd.SMTPChannel.smtp_HELO(self, arg)
 
     def smtp_HELO(self, arg):
+        """HELO is not a valid LMTP command."""
         self.push(ERR_502)
 
 
@@ -110,7 +112,7 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
 
     def handle_accept(self):
         conn, addr = self.accept()
-        channel = SMTPChannel(self, conn, addr)
+        channel = Channel(self, conn, addr)
 
     def process_message(self, peer, mailfrom, rcpttos, data):
         try:
@@ -118,10 +120,12 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
             # since the set of mailing lists could have changed.  However, on
             # a big site this could be fairly expensive, so we may need to
             # cache this in some way.
-            listnames = set(config.list_manager.names)
-            # Parse the message data.  XXX Should we reject the message
-            # immediately if it has defects?  Usually only spam has defects.
+            listnames = set(config.db.list_manager.names)
+            # Parse the message data.  If there are any defects in the
+            # message, reject it right away; it's probably spam. 
             msg = email.message_from_string(data, Message)
+            if msg.defects:
+                return ERR_501
             msg['X-MailFrom'] = mailfrom
         except Exception, e:
             elog.error('%s', e)
@@ -135,7 +139,7 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
         for to in rcpttos:
             try:
                 to = parseaddr(to)[1].lower()
-                listname, subq, domain = getlistq(to)
+                listname, subq, domain = split_recipient(to)
                 listname += '@' + domain
                 if listname not in listnames:
                     status.append(ERR_550)
@@ -180,12 +184,12 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
         # response to the LMTP client.
         return CRLF.join(status)
 
-    def _cleanup(self):
-        pass
+    def run(self):
+        """See `IRunner`."""
+        asyncore.loop()
 
-
-server = LMTPRunner()
-qlog.info('LMTPRunner qrunner started.')
-asyncore.loop()
-# We'll never get here, but just in case...
-qlog.info('LMTPRunner qrunner exiting.')
+    def stop(self):
+        """See `IRunner`."""
+        asyncore.socket_map.clear()
+        asyncore.close_all()
+        self.close()

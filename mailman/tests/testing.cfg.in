@@ -7,6 +7,7 @@
 SMTPPORT                = 10825
 MAX_RESTARTS            = 1
 MTA                     = None
+USE_LMTP                = Yes
 
 add_domain('example.com', 'www.example.com')
 

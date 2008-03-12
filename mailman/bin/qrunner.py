@@ -28,7 +28,6 @@ from mailman.initialize import initialize
 
 
 COMMASPACE = ', '
-QRUNNER_SHORTCUTS = {}
 log = None
 
 
@@ -123,8 +122,8 @@ def make_qrunner(name, slice, range, once=False):
     # could be one of the shortcut names.  Or the name is a full module path,
     # use it explicitly.  If the name starts with a dot, it's a class name
     # relative to the Mailman.queue package.
-    if name in QRUNNER_SHORTCUTS:
-        classpath = QRUNNER_SHORTCUTS[name]
+    if name in config.qrunner_shortcuts:
+        classpath = config.qrunner_shortcuts[name]
     elif name.startswith('.'):
         classpath = 'mailman.queue' + name
     else:
@@ -200,23 +199,14 @@ def main():
     # value of True to propagate, which allows the 'mailman' root logger to
     # see the log messages.
     initialize(opts.config, propagate_logs=not opts.subproc)
-    log = logging.getLogger('mailman.qrunner')
-
-    # Calculate the qrunner shortcut names.
-    for qrunnerpath, slices in config.qrunners.items():
-        classname = qrunnerpath.rsplit('.', 1)[1]
-        if classname.endswith('Runner'):
-            shortname = classname[:-6].lower()
-        else:
-            shortname = classname
-        QRUNNER_SHORTCUTS[shortname] = qrunnerpath
 
     if opts.list:
-        prefixlen = max(len(shortname) for shortname in QRUNNER_SHORTCUTS)
-        for shortname in sorted(QRUNNER_SHORTCUTS):
-            runnername = QRUNNER_SHORTCUTS[shortname]
+        prefixlen = max(len(shortname)
+                        for shortname in config.qrunner_shortcuts)
+        for shortname in sorted(config.qrunner_shortcuts):
+            runnername = config.qrunner_shortcuts[shortname]
             shortname = (' ' * (prefixlen - len(shortname))) + shortname
-            print _('$shortname runs the $runnername qrunner')
+            print _('$shortname runs $runnername')
         sys.exit(0)
 
     # Fast track for one infinite runner
@@ -233,6 +223,7 @@ def main():
         loop = Loop(qrunner)
         set_signals(loop)
         # Now start up the main loop
+        log = logging.getLogger('mailman.qrunner')
         log.info('%s qrunner started.', loop.name())
         qrunner.run()
         log.info('%s qrunner exiting.', loop.name())
