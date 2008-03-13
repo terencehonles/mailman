@@ -22,8 +22,8 @@ It also helps to have a nice LMTP client.
     (250, ...)
 
 
-Invalid mailing list
---------------------
+Posting address
+---------------
 
 If the mail server tries to send a message to a non-existant mailing list, it
 will get a 550 error.
@@ -41,6 +41,60 @@ will get a 550 error.
     Traceback (most recent call last):
     ...
     SMTPDataError: (550, 'Requested action not taken: mailbox unavailable')
+
+Once the mailing list is created, the posting address is valid.
+
+    >>> from mailman.app.lifecycle import create_list
+    >>> create_list(u'mylist@example.com')
+    <mailing list "mylist@example.com" at ...>
+    >>> commit()
+    >>> lmtp.sendmail(
+    ...     'anne.person@example.com',
+    ...     ['mylist@example.com'], """\
+    ... From: anne.person@example.com
+    ... To: mylist@example.com
+    ... Subject: An interesting message
+    ... Message-ID: <badger>
+    ...
+    ... This is an interesting message.
+    ... """)
+    {}
+
+
+Sub-addresses
+-------------
+
+The LMTP server understands each of the list's sub-addreses, such as -join,
+-leave, -request and so on.  If the message is posted to an invalid
+sub-address though, it is rejected.
+
+    >>> lmtp.sendmail(
+    ...     'anne.person@example.com',
+    ...     ['mylist-bogus@example.com'], """\
+    ... From: anne.person@example.com
+    ... To: mylist-bogus@example.com
+    ... Subject: Help
+    ... Message-ID: <cow>
+    ...
+    ... Please help me.
+    ... """)
+    Traceback (most recent call last):
+    ...
+    SMTPDataError: (550, 'Requested action not taken: mailbox unavailable')
+
+But the message is accepted if posted to a valid sub-address.
+
+    >>> lmtp.sendmail(
+    ...     'anne.person@example.com',
+    ...     ['mylist-request@example.com'], """\
+    ... From: anne.person@example.com
+    ... To: mylist-request@example.com
+    ... Subject: Help
+    ... Message-ID: <dog>
+    ...
+    ... Please help me.
+    ... """)
+    {}
 
 
 Clean up
