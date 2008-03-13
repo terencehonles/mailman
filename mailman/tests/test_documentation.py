@@ -18,6 +18,7 @@
 """Harness for testing Mailman's documentation."""
 
 import os
+import random
 import doctest
 import unittest
 
@@ -77,6 +78,7 @@ def cleaning_teardown(testobj):
     # Clear out messages in the message store.
     for message in config.db.message_store.messages:
         config.db.message_store.delete_message(message['message-id'])
+    config.db.commit()
 
 
 
@@ -93,17 +95,27 @@ def test_suite():
     flags = (doctest.ELLIPSIS |
              doctest.NORMALIZE_WHITESPACE |
              doctest.REPORT_NDIFF)
-    if config.verbosity <= 2:
+    if config.tests.verbosity <= 2:
         flags |= doctest.REPORT_ONLY_FIRST_FAILURE
     # Add all the doctests in all subpackages.
+    doctest_files = {}
     for docsdir in packages:
         for filename in os.listdir(os.path.join('mailman', docsdir)):
             if os.path.splitext(filename)[1] == '.txt':
-                test = doctest.DocFileSuite(
-                    os.path.join(docsdir, filename),
-                    package='mailman',
-                    optionflags=flags,
-                    setUp=setup,
-                    tearDown=cleaning_teardown)
-                suite.addTest(test)
+                doctest_files[filename] = os.path.join(docsdir, filename)
+    # Sort or randomize the tests.
+    if config.tests.randomize:
+        files = doctest_files.keys()
+        random.shuffle(files)
+    else:
+        files = sorted(doctest_files)
+    for filename in files:
+        path = doctest_files[filename]
+        test = doctest.DocFileSuite(
+            path,
+            package='mailman',
+            optionflags=flags,
+            setUp=setup,
+            tearDown=cleaning_teardown)
+        suite.addTest(test)
     return suite

@@ -24,6 +24,7 @@ import re
 import grp
 import pwd
 import sys
+import random
 import shutil
 import optparse
 import tempfile
@@ -74,6 +75,12 @@ Reduce verbosity by 1 (but not below 0)."""))
     parser.add_option('-c', '--coverage',
                       default=False, action='store_true',
                       help=_('Enable code coverage.'))
+    parser.add_option('-r', '--randomize',
+                      default=False, action='store_true',
+                      help=_("""\
+Randomize the tests; good for finding subtle dependency errors.  Note that
+this isn't completely random though because the doctests are not mixed with
+the Python tests.  Each type of test is randomized within its group."""))
     options, arguments = parser.parse_args()
     if len(arguments) == 0:
         arguments = ['.']
@@ -135,14 +142,19 @@ def filter_tests(suite, patterns):
     return new
 
 
-def suite(patterns=None):
+def suite(patterns, randomize):
     if patterns is None:
         patterns = '.'
     loader = unittest.TestLoader()
     # Search for all tests that match the given patterns
     testnames = search()
     suite = loader.loadTestsFromNames(testnames)
-    return filter_tests(suite, patterns)
+    tests = filter_tests(suite, patterns)
+    if randomize:
+        random.shuffle(tests._tests)
+    else:
+        tests._tests.sort()
+    return tests
 
 
 
@@ -153,7 +165,10 @@ def main():
 
     # Set verbosity level for test_documentation.py.  XXX There should be a
     # better way to do this.
-    config.verbosity = parser.options.verbosity
+    class Bag: pass
+    config.tests = Bag()
+    config.tests.verbosity = parser.options.verbosity
+    config.tests.randomize = parser.options.randomize
 
     # Turn on code coverage if selected.
     if parser.options.coverage:
@@ -245,7 +260,7 @@ def main():
         import mailman
         basedir = os.path.dirname(mailman.__file__)
         runner = unittest.TextTestRunner(verbosity=parser.options.verbosity)
-        results = runner.run(suite(parser.arguments))
+        results = runner.run(suite(parser.arguments, parser.options.randomize))
     finally:
         os.remove(cfg_out)
         os.remove(logging_cfg)

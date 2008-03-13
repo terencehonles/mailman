@@ -121,7 +121,6 @@ class StockDatabase:
                 sql = fp.read()
             for statement in sql.split(';'):
                 store.execute(statement + ';')
-            store.commit()
         # Validate schema version.
         v = store.find(Version, component=u'schema').one()
         if not v:
@@ -133,6 +132,7 @@ class StockDatabase:
             # XXX Update schema
             raise SchemaVersionMismatchError(v.version)
         self.store = store
+        store.commit()
 
     def _reset(self):
         """See `IDatabase`."""
