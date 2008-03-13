@@ -45,6 +45,8 @@ from mailman.interfaces import IDatabase, SchemaVersionMismatchError
 
 
 class StockDatabase:
+    """The standard database, using Storm on top of SQLite."""
+
     implements(IDatabase)
 
     def __init__(self):
@@ -56,6 +58,7 @@ class StockDatabase:
         self._store = None
 
     def initialize(self, debug=None):
+        """See `IDatabase`."""
         # Serialize this so we don't get multiple processes trying to create
         # the database at the same time.
         with Lock(os.path.join(config.LOCK_DIR, 'dbcreate.lck')):
@@ -65,6 +68,19 @@ class StockDatabase:
         self.message_store = MessageStore()
         self.pendings = Pendings()
         self.requests = Requests()
+
+    def begin(self):
+        """See `IDatabase`."""
+        # Storm takes care of this for us.
+        pass
+
+    def commit(self):
+        """See `IDatabase`."""
+        self.store.commit()
+
+    def abort(self):
+        """See `IDatabase`."""
+        self.store.rollback()
 
     def _create(self, debug):
         # Calculate the engine url.
@@ -119,6 +135,7 @@ class StockDatabase:
         self.store = store
 
     def _reset(self):
+        """See `IDatabase`."""
         from mailman.database.model import ModelMeta
         self.store.rollback()
         ModelMeta._reset(self.store)
