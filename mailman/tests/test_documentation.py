@@ -77,6 +77,7 @@ def cleaning_teardown(testobj):
     # Clear out messages in the message store.
     for message in config.db.message_store.messages:
         config.db.message_store.delete_message(message['message-id'])
+    config.db.commit()
 
 
 

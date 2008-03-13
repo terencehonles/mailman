@@ -274,6 +274,7 @@ class Runner:
                 log.error('Skipping and preserving unparseable message: %s',
                           filebase)
                 self._switchboard.finish(filebase, preserve=True)
+                config.db.abort()
                 continue
             try:
                 self._onefile(msg, msgdata)
@@ -303,11 +304,13 @@ class Runner:
                     log.error('SHUNTING FAILED, preserving original entry: %s',
                               filebase)
                     self._switchboard.finish(filebase, preserve=True)
-            # Other work we want to do each time through the loop
+                    config.db.abort()
+            # Other work we want to do each time through the loop.
             Utils.reap(self._kids, once=True)
             self._doperiodic()
             if self._shortcircuit():
                 break
+            config.db.commit()
         return len(files)
 
     def _onefile(self, msg, msgdata):
