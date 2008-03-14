@@ -24,8 +24,8 @@ The LMTP runner opens a local TCP port and waits for the mail server to
 connect to it.  The messages it receives over LMTP are very minimally parsed
 for sanity and if they look okay, they are accepted and injected into
 Mailman's incoming queue for normal processing.  If they don't look good, or
-are destined for a bogus sub-queue address, they are rejected right away,
-hopefully so that the peer mail server can provide better diagnostics.
+are destined for a bogus sub-address, they are rejected right away, hopefully
+so that the peer mail server can provide better diagnostics.
 
 [1] RFC 2033 Local Mail Transport Protocol
     http://www.faqs.org/rfcs/rfc2033.html
@@ -44,15 +44,16 @@ from email.utils import parseaddr
 
 from mailman.Message import Message
 from mailman.configuration import config
+from mailman.database.transaction import txn
 from mailman.queue import Runner, Switchboard
 
 elog = logging.getLogger('mailman.error')
 qlog = logging.getLogger('mailman.qrunner')
 
 
-# We only care about the listname and the subqueue as in listname@ or
+# We only care about the listname and the sub-addresses as in listname@ or
 # listname-request@
-SUBQUEUE_NAMES = (
+SUBADDRESS_NAMES = (
     'bounces',  'confirm',  'join', '       leave',
     'owner',    'request',  'subscribe',    'unsubscribe',
     )
@@ -70,16 +71,30 @@ smtpd.__version__ = 'Python LMTP queue runner 1.0'
 
 
 def split_recipient(address):
+    """Split an address into listname, subaddress and domain parts.
+
+    For example:
+
+    >>> split_recipient('mylist@example.com')
+    ('mylist', None, 'example.com')
+
+    >>> split_recipient('mylist-request@example.com')
+    ('mylist', 'request', 'example.com')
+
+    :param address: The destination address.
+    :return: A 3-tuple of the form (list-shortname, subaddress, domain).
+        subaddress may be None if this is the list's posting address.
+    """
     localpart, domain = address.split('@', 1)
     localpart = localpart.split(config.VERP_DELIMITER, 1)[0]
     parts = localpart.split(DASH)
-    if parts[-1] in SUBQUEUE_NAMES:
+    if parts[-1] in SUBADDRESS_NAMES:
         listname = DASH.join(parts[:-1])
-        subq = l[-1]
+        subaddress = parts[-1]
     else:
         listname = localpart
-        subq = None
-    return listname, subq, domain
+        subaddress = None
+    return listname, subaddress, domain
 
 
 
@@ -103,7 +118,7 @@ class Channel(smtpd.SMTPChannel):
 
 class LMTPRunner(Runner, smtpd.SMTPServer):
     # Only __init__ is called on startup. Asyncore is responsible for later
-    # connections from MTA.   slice and numslices are ignored and are
+    # connections from the MTA.  slice and numslices are ignored and are
     # necessary only to satisfy the API.
     def __init__(self, slice=None, numslices=1):
         localaddr = config.LMTP_HOST, config.LMTP_PORT
@@ -114,12 +129,11 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
         conn, addr = self.accept()
         channel = Channel(self, conn, addr)
 
+    @txn
     def process_message(self, peer, mailfrom, rcpttos, data):
         try:
             # Refresh the list of list names every time we process a message
-            # since the set of mailing lists could have changed.  However, on
-            # a big site this could be fairly expensive, so we may need to
-            # cache this in some way.
+            # since the set of mailing lists could have changed.
             listnames = set(config.db.list_manager.names)
             # Parse the message data.  If there are any defects in the
             # message, reject it right away; it's probably spam. 
@@ -128,7 +142,8 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
                 return ERR_501
             msg['X-MailFrom'] = mailfrom
         except Exception, e:
-            elog.error('%s', e)
+            elog.exception('LMTP message parsing')
+            config.db.abort()
             return CRLF.join([ERR_451 for to in rcpttos])
         # RFC 2033 requires us to return a status code for every recipient.
         status = []
@@ -139,46 +154,53 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
         for to in rcpttos:
             try:
                 to = parseaddr(to)[1].lower()
-                listname, subq, domain = split_recipient(to)
+                listname, subaddress, domain = split_recipient(to)
+                qlog.debug('to: %s, list: %s, sub: %s, dom: %s',
+                           to, listname, subaddress, domain)
                 listname += '@' + domain
                 if listname not in listnames:
                     status.append(ERR_550)
                     continue
                 # The recipient is a valid mailing list; see if it's a valid
-                # sub-queue, and if so, enqueue it.
+                # sub-address, and if so, enqueue it.
+                queue = None
                 msgdata = dict(listname=listname)
-                if subq in ('bounces', 'admin'):
+                if subaddress in ('bounces', 'admin'):
                     queue = Switchboard(config.BOUNCEQUEUE_DIR)
-                elif subq == 'confirm':
+                elif subaddress == 'confirm':
                     msgdata['toconfirm'] = True
                     queue = Switchboard(config.CMDQUEUE_DIR)
-                elif subq in ('join', 'subscribe'):
+                elif subaddress in ('join', 'subscribe'):
                     msgdata['tojoin'] = True
                     queue = Switchboard(config.CMDQUEUE_DIR)
-                elif subq in ('leave', 'unsubscribe'):
+                elif subaddress in ('leave', 'unsubscribe'):
                     msgdata['toleave'] = True
                     queue = Switchboard(config.CMDQUEUE_DIR)
-                elif subq == 'owner':
-                    msgdata.update({
-                        'toowner'   : True,
-                        'envsender' : config.SITE_OWNER_ADDRESS,
-                        'pipeline'  : config.OWNER_PIPELINE,
-                        })
+                elif subaddress == 'owner':
+                    msgdata.update(dict(
+                        toowner=True,
+                        envsender=config.SITE_OWNER_ADDRESS,
+                        pipeline=config.OWNER_PIPELINE,
+                        ))
                     queue = Switchboard(config.INQUEUE_DIR)
-                elif subq is None:
+                elif subaddress is None:
                     msgdata['tolist'] = True
                     queue = Switchboard(config.INQUEUE_DIR)
-                elif subq == 'request':
+                elif subaddress == 'request':
                      msgdata['torequest'] = True
                      queue = Switchboard(config.CMDQUEUE_DIR)
                 else:
-                    elog.error('Unknown sub-queue: %s', subq)
+                    elog.error('Unknown sub-address: %s', subaddress)
                     status.append(ERR_550)
                     continue
-                queue.enqueue(msg, msgdata)
-                status.append('250 Ok')
+                # If we found a valid subaddress, enqueue the message and add
+                # a success status for this recipient.
+                if queue is not None:
+                    queue.enqueue(msg, msgdata)
+                    status.append('250 Ok')
             except Exception, e:
-                elog.error('%s', e)
+                elog.exception('Queue detection: %s', msg['message-id'])
+                config.db.abort()
                 status.append(ERR_550)
         # All done; returning this big status string should give the expected
         # response to the LMTP client.
