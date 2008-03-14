@@ -65,10 +65,14 @@ class IDatabase(Interface):
         This is only used by the test framework.
         """
 
-    # XXX Eventually we probably need to support a transaction manager
-    # interface, e.g. begin(), commit(), abort().  We will probably also need
-    # to support a shutdown() method for cleanly disconnecting from the
-    # database.sy
+    def begin():
+        """Begin the current transaction."""
+
+    def commit():
+        """Commit the current transaction."""
+
+    def abort():
+        """Abort the current transaction."""
 
     list_manager = Attribute(
         """The IListManager instance provided by the database layer.""")
