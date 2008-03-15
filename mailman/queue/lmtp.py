@@ -124,10 +124,13 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
         localaddr = config.LMTP_HOST, config.LMTP_PORT
         # Do not call Runner's constructor because there's no QDIR to create
         smtpd.SMTPServer.__init__(self, localaddr, remoteaddr=None)
+        qlog.debug('LMTP server listening on %s:%s',
+                   config.LMTP_HOST, config.LMTP_PORT)
 
     def handle_accept(self):
         conn, addr = self.accept()
         channel = Channel(self, conn, addr)
+        qlog.debug('LMTP accept from %s', addr)
 
     @txn
     def process_message(self, peer, mailfrom, rcpttos, data):
