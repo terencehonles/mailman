@@ -15,6 +15,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
+"""Master sub-process watcher."""
+
 from __future__ import with_statement
 
 __metaclass__ = type
@@ -30,7 +32,6 @@ import errno
 import signal
 import socket
 import logging
-import optparse
 
 from datetime import timedelta
 from locknix import lockfile
@@ -42,19 +43,19 @@ from mailman import loginit
 from mailman.configuration import config
 from mailman.i18n import _
 from mailman.initialize import initialize
+from mailman.options import Options
 
 
 DOT = '.'
 LOCK_LIFETIME = Defaults.days(1) + Defaults.hours(6)
 
-parser = None
-
 
 
-def parseargs():
-    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
-                                   usage=_("""\
-Master queue runner watcher.
+class MasterOptions(Options):
+    """Options for the master watcher."""
+
+    usage = _("""\
+Master sub-process watcher.
 
 Start and watch the configured queue runners and ensure that they stay alive
 and kicking.  Each are fork and exec'd in turn, with the master waiting on
@@ -74,35 +75,36 @@ its own log files on receipt of a SIGHUP.  The master also leaves its own
 process id in the file `data/master-qrunner.pid` but you normally don't need
 to use this pid directly.
 
-Usage: %prog [options]"""))
-    parser.add_option('-n', '--no-restart',
-                      dest='restartable', default=True, action='store_false',
-                      help=_("""\
+Usage: %prog [options]""")
+
+    def add_options(self):
+        self.parser.add_option(
+            '-n', '--no-restart',
+            dest='restartable', default=True, action='store_false',
+            help=_("""\
 Don't restart the qrunners when they exit because of an error or a SIGUSR1.
 Use this only for debugging."""))
-    parser.add_option('-f', '--force',
-                      default=False, action='store_true',
-                      help=_("""\
+        self.parser.add_option(
+            '-f', '--force',
+            default=False, action='store_true',
+            help=_("""\
 If the master watcher finds an existing master lock, it will normally exit
 with an error message.  With this option,the master will perform an extra
 level of checking.  If a process matching the host/pid described in the lock
 file is running, the master will still exit, requiring you to manually clean
 up the lock.  But if no matching process is found, the master will remove the
 apparently stale lock and make another attempt to claim the master lock."""))
-    parser.add_option('-r', '--runner',
-                      dest='runners', action='append', default=[],
-                      help=_("""\
+        self.parser.add_option(
+            '-r', '--runner',
+            dest='runners', action='append', default=[],
+            help=_("""\
 Override the default set of queue runners that the master watch will invoke
 instead of the default set.  Multiple -r options may be given.  The values for
 -r are passed straight through to bin/qrunner."""))
-    parser.add_option('-C', '--config',
-                      help=_('Alternative configuration file to use'))
-    options, arguments = parser.parse_args()
-    if len(arguments) > 0:
-        parser.error(_('Too many arguments'))
-    parser.options = options
-    parser.arguments = arguments
-    return parser
+
+    def sanity_check(self):
+        if len(self.arguments) > 0:
+            self.parser.error(_('Too many arguments'))
 
 
 
@@ -175,7 +177,7 @@ def acquire_lock_1(force):
         return acquire_lock_1(force=False)
 
 
-def acquire_lock():
+def acquire_lock(force):
     """Acquire the master queue runner lock.
 
     :return: The master queue runner lock or None if the lock couldn't be
@@ -183,7 +185,7 @@ def acquire_lock():
         error.
     """
     try:
-        lock = acquire_lock_1(parser.options.force)
+        lock = acquire_lock_1(force)
         return lock
     except lockfile.TimeOutError:
         status = master_state()
@@ -403,22 +405,20 @@ qrunner %s reached maximum restart limit of %d, not restarting.""",
 
 def main():
     """Main process."""
-    global log, parser
-
-    parser = parseargs()
-    initialize(parser.options.config)
+    options = MasterOptions()
+    initialize(options.options.config)
 
     # Acquire the master lock, exiting if we can't acquire it.  We'll let the
     # caller handle any clean up or lock breaking.  No with statement here
     # because Lock's constructor doesn't support a timeout.
-    lock = acquire_lock()
+    lock = acquire_lock(options.options.force)
     try:
         with open(config.PIDFILE, 'w') as fp:
             print >> fp, os.getpid()
-        loop = Loop(lock, parser.options.restartable, parser.options.config)
+        loop = Loop(lock, options.options.restartable, options.options.config)
         loop.install_signal_handlers()
         try:
-            loop.start_qrunners(parser.options.runners)
+            loop.start_qrunners(options.options.runners)
             loop.loop()
         finally:
             loop.cleanup()
