@@ -18,13 +18,13 @@
 import sys
 import signal
 import logging
-import optparse
 
 from mailman import Version
 from mailman import loginit
 from mailman.configuration import config
 from mailman.i18n import _
 from mailman.initialize import initialize
+from mailman.options import Options
 
 
 COMMASPACE = ', '
@@ -55,9 +55,9 @@ def r_callback(option, opt, value, parser):
 
 
 
-def parseargs():
-    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
-                                   usage=_("""\
+class RunnerOptions(Options):
+
+    usage=_("""\
 Run one or more qrunners, once or repeatedly.
 
 Each named runner class is run in round-robin fashion.  In other words, the
@@ -73,12 +73,15 @@ names displayed by the -l switch.
 
 Normally, this script should be started from mailmanctl.  Running it
 separately or with -o is generally useful only for debugging.
-"""))
-    parser.add_option('-r', '--runner',
-                      metavar='runner[:slice:range]', dest='runners',
-                      type='string', default=[],
-                      action='callback', callback=r_callback,
-                      help=_("""\
+""")
+
+    def add_options(self):
+        self.parser.add_option(
+            '-r', '--runner',
+            metavar='runner[:slice:range]', dest='runners',
+            type='string', default=[],
+            action='callback', callback=r_callback,
+            help=_("""\
 Run the named qrunner, which must be one of the strings returned by the -l
 option.  Optional slice:range if given, is used to assign multiple qrunner
 processes to a queue.  range is the total number of qrunners for this queue
@@ -91,29 +94,31 @@ is used.
 Multiple -r options may be given, in which case each qrunner will run once in
 round-robin fashion.  The special runner `All' is shorthand for a qrunner for
 each listed by the -l option."""))
-    parser.add_option('-o', '--once',
-                      default=False, action='store_true', help=_("""\
+        self.parser.add_option(
+            '-o', '--once',
+            default=False, action='store_true', help=_("""\
 Run each named qrunner exactly once through its main loop.  Otherwise, each
 qrunner runs indefinitely, until the process receives signal."""))
-    parser.add_option('-l', '--list',
-                      default=False, action='store_true',
-                      help=_('List the available qrunner names and exit.'))
-    parser.add_option('-v', '--verbose',
-                      default=0, action='count', help=_("""\
+        self.parser.add_option(
+            '-l', '--list',
+            default=False, action='store_true',
+            help=_('List the available qrunner names and exit.'))
+        self.parser.add_option(
+            '-v', '--verbose',
+            default=0, action='count', help=_("""\
 Display more debugging information to the logs/qrunner log file."""))
-    parser.add_option('-s', '--subproc',
-                      default=False, action='store_true', help=_("""\
+        self.parser.add_option(
+            '-s', '--subproc',
+            default=False, action='store_true', help=_("""\
 This should only be used when running qrunner as a subprocess of the
 mailmanctl startup script.  It changes some of the exit-on-error behavior to
 work better with that framework."""))
-    parser.add_option('-C', '--config',
-                      help=_('Alternative configuration file to use'))
-    opts, args = parser.parse_args()
-    if args:
-        parser.error(_('Unexpected arguments'))
-    if not opts.runners and not opts.list:
-        parser.error(_('No runner name given.'))
-    return parser, opts, args
+
+    def sanity_check(self):
+        if self.arguments:
+            self.parser.error(_('Unexpected arguments'))
+        if not self.options.runners and not self.options.list:
+            self.parser.error(_('No runner name given.'))
 
 
 
@@ -132,7 +137,7 @@ def make_qrunner(name, slice, range, once=False):
     try:
         __import__(modulename)
     except ImportError, e:
-        if opts.subproc:
+        if config.options.options.subproc:
             # Exit with SIGTERM exit code so the master watcher won't try to
             # restart us.
             print >> sys.stderr, _('Cannot import runner module: $modulename')
@@ -191,16 +196,17 @@ def set_signals(loop):
 
 
 def main():
-    global log, opts
+    global log
 
-    parser, opts, args = parseargs()
+    options = RunnerOptions()
     # If we're not running as a subprocess of mailmanctl, then we'll log to
     # stderr in addition to logging to the log files.  We do this by passing a
     # value of True to propagate, which allows the 'mailman' root logger to
     # see the log messages.
-    initialize(opts.config, propagate_logs=not opts.subproc)
+    initialize(options.options.config,
+               propagate_logs=not options.options.subproc)
 
-    if opts.list:
+    if options.options.list:
         prefixlen = max(len(shortname)
                         for shortname in config.qrunner_shortcuts)
         for shortname in sorted(config.qrunner_shortcuts):
@@ -210,8 +216,8 @@ def main():
         sys.exit(0)
 
     # Fast track for one infinite runner
-    if len(opts.runners) == 1 and not opts.once:
-        qrunner = make_qrunner(*opts.runners[0])
+    if len(options.options.runners) == 1 and not options.options.once:
+        qrunner = make_qrunner(*options.options.runners[0])
         class Loop:
             status = 0
             def __init__(self, qrunner):
@@ -230,7 +236,7 @@ def main():
     else:
         # Anything else we have to handle a bit more specially
         qrunners = []
-        for runner, rslice, rrange in opts.runners:
+        for runner, rslice, rrange in options.options.runners:
             qrunner = make_qrunner(runner, rslice, rrange, once=True)
             qrunners.append(qrunner)
         # This class is used to manage the main loop
@@ -252,11 +258,11 @@ def main():
                 # In case the SIGTERM came in the middle of this iteration
                 if loop.isdone():
                     break
-                if opts.verbose:
+                if options.options.verbose:
                     log.info('Now doing a %s qrunner iteration',
                              qrunner.__class__.__bases__[0].__name__)
                 qrunner.run()
-            if opts.once:
+            if options.options.once:
                 break
         log.info('Main qrunner loop exiting.')
     # All done
