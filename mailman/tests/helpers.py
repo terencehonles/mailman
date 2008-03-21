@@ -116,8 +116,8 @@ class TestableMaster(Master):
         """Start the master."""
         self.start_qrunners(qrunners)
         self.thread.start()
-        # Wait until all the children are definitely started, or timeout.
-        self.event.wait(2.0)
+        # Wait until all the children are definitely started.
+        self.event.wait()
 
     def stop(self):
         """Stop the master by killing all the children."""
