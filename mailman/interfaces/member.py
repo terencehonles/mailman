@@ -15,18 +15,23 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-
 """Interface describing the basics of a member."""
 
-from munepy import Enum
-from zope.interface import Interface, Attribute
 
+__metaclass__ = type
 __all__ = [
+    'AlreadySubscribedError',
     'DeliveryMode',
     'DeliveryStatus',
     'IMember',
     'MemberRole',
     ]
+
+
+from munepy import Enum
+from zope.interface import Interface, Attribute
+
+from mailman.Errors import SubscriptionError
 
 
 
@@ -60,6 +65,20 @@ class MemberRole(Enum):
     member = 1
     owner = 2
     moderator = 3
+
+
+
+class AlreadySubscribedError(SubscriptionError):
+    """The member is already subscribed to the mailing list with this role."""
+
+    def __init__(self, fqdn_listname, address, role):
+        self._fqdn_listname = fqdn_listname
+        self._address = address
+        self._role = role
+
+    def __str__(self):
+        return '%s is already a %s of mailing list %s' % (
+            self._address, self._role, self._fqdn_listname)
 
 
 

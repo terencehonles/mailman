@@ -319,8 +319,10 @@ def MakeRandomPassword(length=None):
     if length is None:
         length = config.MEMBER_PASSWORD_LENGTH
     if config.USER_FRIENDLY_PASSWORDS:
-        return UserFriendly_MakeRandomPassword(length)
-    return Secure_MakeRandomPassword(length)
+        password = UserFriendly_MakeRandomPassword(length)
+    else:
+        password = Secure_MakeRandomPassword(length)
+    return password.decode('ascii')
 
 
 def GetRandomSeed():

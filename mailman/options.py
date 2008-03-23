@@ -43,14 +43,22 @@ def check_unicode(option, opt, value):
         return value.decode(sys.getdefaultencoding())
     except UnicodeDecodeError:
         raise OptionValueError(
-            "option %s: Cannot decode: %r" % (opt, value))
+            'option %s: Cannot decode: %r' % (opt, value))
+
+
+def check_yesno(option, opt, value):
+    value = value.lower()
+    if value not in ('yes', 'no', 'y', 'n'):
+        raise OptionValueError('option s: invalid: %r' % (opt, value))
+    return value[0] == 'y'
 
 
 class MailmanOption(Option):
     """Extension types for unicode options."""
-    TYPES = Option.TYPES + ('unicode',)
+    TYPES = Option.TYPES + ('unicode', 'yesno')
     TYPE_CHECKER = copy(Option.TYPE_CHECKER)
     TYPE_CHECKER['unicode'] = check_unicode
+    TYPE_CHECKER['yesno'] = check_yesno
 
 
 

@@ -19,6 +19,15 @@
 
 from __future__ import with_statement
 
+__metaclass__ = type
+__all__ = [
+    'add_member',
+    'delete_member',
+    'send_goodbye_message',
+    'send_welcome_message',
+    ]
+    
+
 from email.utils import formataddr
 
 from mailman import Errors
@@ -26,7 +35,7 @@ from mailman import Message
 from mailman import Utils
 from mailman import i18n
 from mailman.configuration import config
-from mailman.interfaces import DeliveryMode, MemberRole
+from mailman.interfaces import AlreadySubscribedError, DeliveryMode, MemberRole
 
 _ = i18n._
 
@@ -55,7 +64,8 @@ def add_member(mlist, address, realname, password, delivery_mode, language,
     # Let's be extra cautious.
     Utils.ValidateEmail(address)
     if mlist.members.get_member(address) is not None:
-        raise Errors.AlreadySubscribedError(address)
+        raise AlreadySubscribedError(mlist.fqdn_listname, address,
+                                     MemberRole.member)
     # Check for banned address here too for admin mass subscribes and
     # confirmations.
     pattern = Utils.get_pattern(address, mlist.ban_list)

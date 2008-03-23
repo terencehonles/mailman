@@ -172,19 +172,6 @@ class HostileSubscriptionError(SubscriptionError):
     """
 
 
-class AlreadySubscribedError(SubscriptionError):
-    """The member is already subscribed to the mailing list with this role."""
-
-    def __init__(self, fqdn_listname, address, role):
-        self._fqdn_listname = fqdn_listname
-        self._address = address
-        self._role = role
-
-    def __str__(self):
-        return '%s is already a %s of mailing list %s' % (
-            self._address, self._role, self._fqdn_listname)
-
-
 
 class PasswordError(MailmanError):
     """A password related error."""

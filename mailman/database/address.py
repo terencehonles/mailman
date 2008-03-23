@@ -15,16 +15,21 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
+__metaclass__ = type
+__all__ = [
+    'Address',
+    ]
+
+
 from email.utils import formataddr
 from storm.locals import *
 from zope.interface import implements
 
-from mailman import Errors
 from mailman.configuration import config
 from mailman.database.member import Member
 from mailman.database.model import Model
 from mailman.database.preferences import Preferences
-from mailman.interfaces import IAddress
+from mailman.interfaces import AlreadySubscribedError, IAddress
 
 
 
@@ -72,7 +77,7 @@ class Address(Model):
             Member.mailing_list == mailing_list.fqdn_listname,
             Member.address == self).one()
         if member:
-            raise Errors.AlreadySubscribedError(
+            raise AlreadySubscribedError(
                 mailing_list.fqdn_listname, self.address, role)
         member = Member(role=role,
                         mailing_list=mailing_list.fqdn_listname,
