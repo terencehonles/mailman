@@ -111,3 +111,15 @@ class SingleMailingListOptions(Options):
             '-l', '--listname',
             type='unicode', help=_('The mailing list name'))
         super(SingleMailingListOptions, self).add_options()
+
+
+class MultipleMailingListOptions(Options):
+    """A helper for specifying multiple mailing lists on the command line."""
+
+    def add_options(self):
+        self.parser.add_option(
+            '-l', '--listname',
+            default=[], action='append', dest='listnames', type='unicode',
+            help=("""\
+A mailing list name.  It is okay to have multiple --listname options."""))
+

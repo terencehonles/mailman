@@ -114,4 +114,4 @@ def remove_list(fqdn_listname, mailing_list=None, archives=True):
         elif os.path.isfile(target):
             os.unlink(target)
         else:
-            log.error('Could not delete list artifact: $target')
+            log.error('Could not delete list artifact: %s', target)

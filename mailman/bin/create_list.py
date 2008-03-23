@@ -35,7 +35,7 @@ _ = i18n._
 
 class ScriptOptions(SingleMailingListOptions):
     usage=_("""\
-%prog [options] fqdn_listname
+%prog [options]
 
 Create a new mailing list.
 
