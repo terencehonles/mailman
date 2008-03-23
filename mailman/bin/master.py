@@ -38,11 +38,9 @@ from locknix import lockfile
 from munepy import Enum
 
 from mailman import Defaults
-from mailman import Version
 from mailman import loginit
 from mailman.configuration import config
 from mailman.i18n import _
-from mailman.initialize import initialize
 from mailman.options import Options
 
 
@@ -51,7 +49,7 @@ LOCK_LIFETIME = Defaults.days(1) + Defaults.hours(6)
 
 
 
-class MasterOptions(Options):
+class ScriptOptions(Options):
     """Options for the master watcher."""
 
     usage = _("""\
@@ -405,8 +403,9 @@ qrunner %s reached maximum restart limit of %d, not restarting.""",
 
 def main():
     """Main process."""
-    options = MasterOptions()
-    initialize(options.options.config)
+
+    options = ScriptOptions()
+    options.initialize()
 
     # Acquire the master lock, exiting if we can't acquire it.  We'll let the
     # caller handle any clean up or lock breaking.  No with statement here

@@ -19,11 +19,9 @@ import sys
 import signal
 import logging
 
-from mailman import Version
 from mailman import loginit
 from mailman.configuration import config
 from mailman.i18n import _
-from mailman.initialize import initialize
 from mailman.options import Options
 
 
@@ -55,7 +53,7 @@ def r_callback(option, opt, value, parser):
 
 
 
-class RunnerOptions(Options):
+class ScriptOptions(Options):
 
     usage=_("""\
 Run one or more qrunners, once or repeatedly.
@@ -113,6 +111,10 @@ Display more debugging information to the logs/qrunner log file."""))
 This should only be used when running qrunner as a subprocess of the
 mailmanctl startup script.  It changes some of the exit-on-error behavior to
 work better with that framework."""))
+
+    def initialize(self):
+        """Override initialization to propagate logs correctly."""
+        super(ScriptOptions, self).initialize(not self.options.subproc)
 
     def sanity_check(self):
         if self.arguments:
@@ -198,13 +200,8 @@ def set_signals(loop):
 def main():
     global log
 
-    options = RunnerOptions()
-    # If we're not running as a subprocess of mailmanctl, then we'll log to
-    # stderr in addition to logging to the log files.  We do this by passing a
-    # value of True to propagate, which allows the 'mailman' root logger to
-    # see the log messages.
-    initialize(options.options.config,
-               propagate_logs=not options.options.subproc)
+    options = ScriptOptions()
+    options.initialize()
 
     if options.options.list:
         prefixlen = max(len(shortname)

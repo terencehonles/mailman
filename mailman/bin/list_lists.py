@@ -15,53 +15,55 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-import optparse
-
 from mailman import Defaults
 from mailman import Version
 from mailman.configuration import config
 from mailman.i18n import _
 from mailman.initialize import initialize
+from mailman.options import Options
 
 
 
-def parseargs():
-    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
-                                   usage=_("""\
+class ScriptOptions(Options):
+    usage=_("""\
 %prog [options]
 
-List all mailing lists."""))
-    parser.add_option('-a', '--advertised',
-                      default=False, action='store_true',
-                      help=_("""\
+List all mailing lists.""")
+
+    def add_options(self):
+        super(ScriptOptions, self).add_options()
+        self.parser.add_option(
+            '-a', '--advertised',
+            default=False, action='store_true',
+            help=_("""\
 List only those mailing lists that are publicly advertised"""))
-    parser.add_option('-b', '--bare',
-                      default=False, action='store_true',
-                      help=_("""\
+        self.parser.add_option(
+            '-b', '--bare',
+            default=False, action='store_true',
+            help=_("""\
 Displays only the list name, with no description."""))
-    parser.add_option('-d', '--domain',
-                      default=[], type='string', action='append',
-                      dest='domains', help=_("""\
+        self.parser.add_option(
+            '-d', '--domain',
+            default=[], type='string', action='append',
+            dest='domains', help=_("""\
 List only those mailing lists that match the given virtual domain, which may
 be either the email host or the url host name.  Multiple -d options may be
 given."""))
-    parser.add_option('-f', '--full',
-                      default=False, action='store_true',
-                      help=_("""\
+        self.parser.add_option(
+            '-f', '--full',
+            default=False, action='store_true',
+            help=_("""\
 Print the full list name, including the posting address."""))
-    parser.add_option('-C', '--config',
-                      help=_('Alternative configuration file to use'))
-    opts, args = parser.parse_args()
-    if args:
-        parser.print_help()
-        parser.error(_('Unexpected arguments'))
-    return parser, opts, args
+
+    def sanity_check(self):
+        if len(self.arguments) > 0:
+            self.parser.error(_('Unexpected arguments'))
 
 
 
 def main():
-    parser, opts, args = parseargs()
-    initialize(opts.config)
+    options = ScriptOptions()
+    options.initialize()
 
     mlists = []
     longest = 0
@@ -69,36 +71,36 @@ def main():
     listmgr = config.db.list_manager
     for fqdn_name in sorted(listmgr.names):
         mlist = listmgr.get(fqdn_name)
-        if opts.advertised and not mlist.advertised:
+        if options.options.advertised and not mlist.advertised:
             continue
-        if opts.domains:
-            for domain in opts.domains:
+        if options.options.domains:
+            for domain in options.options.domains:
                 if domain in mlist.web_page_url or domain == mlist.host_name:
                     mlists.append(mlist)
                     break
         else:
             mlists.append(mlist)
-        if opts.full:
+        if options.options.full:
             name = mlist.fqdn_listname
         else:
             name = mlist.real_name
         longest = max(len(name), longest)
 
-    if not mlists and not opts.bare:
+    if not mlists and not options.options.bare:
         print _('No matching mailing lists found')
         return
 
-    if not opts.bare:
+    if not options.options.bare:
         num_mlists = len(mlists)
         print _('$num_mlists matching mailing lists found:')
 
     format = '%%%ds - %%.%ds' % (longest, 77 - longest)
     for mlist in mlists:
-        if opts.full:
+        if options.options.full:
             name = mlist.fqdn_listname
         else:
             name = mlist.real_name
-        if opts.bare:
+        if options.options.bare:
             print name
         else:
             description = mlist.description or _('[no description available]')

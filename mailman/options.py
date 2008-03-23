@@ -18,14 +18,39 @@
 """Common argument parsing."""
 
 __metaclass__ = type
-__all__ = ['Options']
+__all__ = [
+    'Options',
+    'SingleMailingListOptions',
+    ]
 
 
-from optparse import OptionParser
+import sys
+
+from copy import copy
+from optparse import Option, OptionParser, OptionValueError
 
 from mailman.Version import MAILMAN_VERSION
 from mailman.configuration import config
 from mailman.i18n import _
+from mailman.initialize import initialize
+
+
+
+def check_unicode(option, opt, value):
+    if isinstance(value, unicode):
+        return value
+    try:
+        return value.decode(sys.getdefaultencoding())
+    except UnicodeDecodeError:
+        raise OptionValueError(
+            "option %s: Cannot decode: %r" % (opt, value))
+
+
+class MailmanOption(Option):
+    """Extension types for unicode options."""
+    TYPES = Option.TYPES + ('unicode',)
+    TYPE_CHECKER = copy(Option.TYPE_CHECKER)
+    TYPE_CHECKER['unicode'] = check_unicode
 
 
 
@@ -36,7 +61,9 @@ class Options:
     usage = None
 
     def __init__(self):
-        self.parser = OptionParser(version=MAILMAN_VERSION, usage=self.usage)
+        self.parser = OptionParser(version=MAILMAN_VERSION,
+                                   option_class=MailmanOption,
+                                   usage=self.usage)
         self.add_common_options()
         self.add_options()
         options, arguments = self.parser.parse_args()
@@ -45,7 +72,6 @@ class Options:
         # Also, for convenience, place the options in the configuration file
         # because occasional global uses are necessary.
         config.options = self
-        self.sanity_check()
 
     def add_options(self):
         """Allow the subclass to add its own specific arguments."""
@@ -60,3 +86,28 @@ class Options:
         self.parser.add_option(
             '-C', '--config',
             help=_('Alternative configuration file to use'))
+
+    def initialize(self, propagate_logs=False):
+        """Initialize the configuration system.
+
+        After initialization of the configuration system, perform sanity
+        checks.  We do it in this order because some sanity checks require the
+        configuration to be initialized.
+
+        :param propagate_logs: Flag specifying whether log messages in
+            sub-loggers should be propagated to the master logger (and hence
+            to the root logger).
+        """
+        initialize(self.options.config, propagate_logs=propagate_logs)
+        self.sanity_check()
+
+
+
+class SingleMailingListOptions(Options):
+    """A helper for specifying the mailing list on the command line."""
+
+    def add_options(self):
+        self.parser.add_option(
+            '-l', '--listname',
+            type='unicode', help=_('The mailing list name'))
+        super(SingleMailingListOptions, self).add_options()
