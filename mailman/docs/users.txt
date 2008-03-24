@@ -3,7 +3,7 @@ Users
 
 Users are entities that represent people.  A user has a real name and a
 password.  Optionally a user may have some preferences and a set of addresses
-they control.
+they control.  A user also knows which mailing lists they are subscribed to.
 
 See usermanager.txt for examples of how to create, delete, and find users.
 
@@ -146,3 +146,32 @@ Some of these preferences are booleans and they can be set to True or False.
     receive_list_copy    : False
     receive_own_postings : False
     delivery_mode        : DeliveryMode.regular
+
+
+Subscriptions
+-------------
+
+Users know which mailing lists they are subscribed to, regardless of
+membership role.
+
+    >>> from mailman.app.lifecycle import create_list
+    >>> mlist_1 = create_list(u'xtest_1@example.com')
+    >>> mlist_2 = create_list(u'xtest_2@example.com')
+    >>> mlist_3 = create_list(u'xtest_3@example.com')
+    >>> from mailman.interfaces import MemberRole
+    >>> address_1.subscribe(mlist_1, MemberRole.member)
+    <Member: zperson@example.net on xtest_1@example.com as MemberRole.member>
+    >>> address_1.subscribe(mlist_2, MemberRole.member)
+    <Member: zperson@example.net on xtest_2@example.com as MemberRole.member>
+    >>> address_1.subscribe(mlist_2, MemberRole.owner)
+    <Member: zperson@example.net on xtest_2@example.com as MemberRole.owner>
+    >>> address_1.subscribe(mlist_3, MemberRole.moderator)
+    <Member: zperson@example.net on xtest_3@example.com as MemberRole.moderator>
+
+    >>> memberships = user_1.memberships
+    >>> from mailman.interfaces import IRoster
+    >>> from zope.interface.verify import verifyObject
+    >>> verifyObject(IRoster, memberships)
+    True
+    >>> sorted(memberships.members)
+    XXX

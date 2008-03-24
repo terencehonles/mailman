@@ -22,6 +22,19 @@ the ones that fit a particular role.  These are used as the member, owner,
 moderator, and administrator roster filters.
 """
 
+__metaclass__ = type
+__all__ = [
+    'AdministratorRoster',
+    'DigestMemberRoster',
+    'MemberRoster',
+    'Memberships',
+    'ModeratorRoster',
+    'OwnerRoster',
+    'RegularMemberRoster',
+    'Subscribers',
+    ]
+
+
 from storm.locals import *
 from zope.interface import implements
 
@@ -33,7 +46,7 @@ from mailman.interfaces import DeliveryMode, IRoster, MemberRole
 
 
 
-class AbstractRoster(object):
+class AbstractRoster:
     """An abstract IRoster class.
 
     This class takes the simple approach of implemented the 'users' and
@@ -208,3 +221,47 @@ class Subscribers(AbstractRoster):
                 Member,
                 mailing_list=self._mlist.fqdn_listname):
             yield member
+
+
+
+class Memberships:
+    """A roster of a single user's memberships."""
+
+    implements(IRoster)
+
+    name = 'memberships'
+
+    def __init__(self, user):
+        self._user = user
+
+    @property
+    def members(self):
+        results = config.db.store.find(
+            Member,
+            Member.address_id.is_in(
+                Select(Address,
+                       Address.user_id == self._user.id)))
+        for member in results:
+            yield member
+
+    @property
+    def users(self):
+        yield self._user
+
+    @property
+    def addresses(self):
+        for address in self._user.addresses:
+            yield address
+
+    def get_member(self, address):
+        results = config.db.store.find(
+            Member,
+            Member.address_id == Address.id,
+            Address.user_id == self._user.id)
+        if results.count() == 0:
+            return None
+        elif results.count() == 1:
+            return results[0]
+        else:
+            raise AssertionError('Too many matching member results: %s' %
+                                 results.count())

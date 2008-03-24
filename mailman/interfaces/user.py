@@ -33,6 +33,9 @@ class IUser(Interface):
     addresses = Attribute(
         """An iterator over all the IAddresses controlled by this user.""")
 
+    memberships = Attribute(
+        """A roster of this user's membership.""")
+
     def register(address, real_name=None):
         """Register the given email address and link it to this user.
 
