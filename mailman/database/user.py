@@ -23,6 +23,7 @@ from mailman.configuration import config
 from mailman.database.model import Model
 from mailman.database.address import Address
 from mailman.database.preferences import Preferences
+from mailman.database.roster import Memberships
 from mailman.interfaces import (
     AddressAlreadyLinkedError, AddressNotLinkedError, IUser)
 
@@ -78,3 +79,7 @@ class User(Model):
             raise AddressAlreadyLinkedError(addrobj)
         addrobj.user = self
         return addrobj
+
+    @property
+    def memberships(self):
+        return Memberships(self)
