@@ -154,24 +154,41 @@ Subscriptions
 Users know which mailing lists they are subscribed to, regardless of
 membership role.
 
+    >>> user_1.link(address_1)
+    >>> sorted(address.address for address in user_1.addresses)
+    [u'zperson@example.com', u'zperson@example.net', u'zperson@example.org']
+    >>> com = usermgr.get_address(u'zperson@example.com')
+    >>> org = usermgr.get_address(u'zperson@example.org')
+    >>> net = usermgr.get_address(u'zperson@example.net')
+
     >>> from mailman.app.lifecycle import create_list
     >>> mlist_1 = create_list(u'xtest_1@example.com')
     >>> mlist_2 = create_list(u'xtest_2@example.com')
     >>> mlist_3 = create_list(u'xtest_3@example.com')
     >>> from mailman.interfaces import MemberRole
-    >>> address_1.subscribe(mlist_1, MemberRole.member)
-    <Member: zperson@example.net on xtest_1@example.com as MemberRole.member>
-    >>> address_1.subscribe(mlist_2, MemberRole.member)
-    <Member: zperson@example.net on xtest_2@example.com as MemberRole.member>
-    >>> address_1.subscribe(mlist_2, MemberRole.owner)
-    <Member: zperson@example.net on xtest_2@example.com as MemberRole.owner>
-    >>> address_1.subscribe(mlist_3, MemberRole.moderator)
-    <Member: zperson@example.net on xtest_3@example.com as MemberRole.moderator>
+
+    >>> com.subscribe(mlist_1, MemberRole.member)
+    <Member: Zoe Person <zperson@example.com> on xtest_1@example.com as
+        MemberRole.member>
+    >>> org.subscribe(mlist_2, MemberRole.member)
+    <Member: zperson@example.org on xtest_2@example.com as MemberRole.member>
+    >>> org.subscribe(mlist_2, MemberRole.owner)
+    <Member: zperson@example.org on xtest_2@example.com as MemberRole.owner>
+    >>> net.subscribe(mlist_3, MemberRole.moderator)
+    <Member: zperson@example.net on xtest_3@example.com as
+        MemberRole.moderator>
 
     >>> memberships = user_1.memberships
     >>> from mailman.interfaces import IRoster
     >>> from zope.interface.verify import verifyObject
     >>> verifyObject(IRoster, memberships)
     True
-    >>> sorted(memberships.members)
-    XXX
+    >>> members = sorted(memberships.members)
+    >>> len(members)
+    4
+    >>> for member in sorted(members, key=lambda m: m.address.address):
+    ...     print member.address.address, member.mailing_list, member.role
+    zperson@example.com xtest_1@example.com MemberRole.member
+    zperson@example.net xtest_3@example.com MemberRole.moderator
+    zperson@example.org xtest_2@example.com MemberRole.member
+    zperson@example.org xtest_2@example.com MemberRole.owner

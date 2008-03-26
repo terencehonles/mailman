@@ -238,9 +238,8 @@ class Memberships:
     def members(self):
         results = config.db.store.find(
             Member,
-            Member.address_id.is_in(
-                Select(Address,
-                       Address.user_id == self._user.id)))
+            Address.user_id == self._user.id,
+            Member.address_id == Address.id)
         for member in results:
             yield member
 
