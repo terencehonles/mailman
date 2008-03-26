@@ -350,7 +350,7 @@ class Loop:
             # because of a failure (i.e. no exit signal), and the no-restart
             # command line switch was not given.  This lets us better handle
             # runaway restarts (e.g.  if the subprocess had a syntax error!)
-            qrname, slice, count, restarts = self._kids.pop(pid)
+            qrname, slice_number, count, restarts = self._kids.pop(pid)
             restart = False
             if why == signal.SIGUSR1 and self._restartable:
                 restart = True
@@ -362,7 +362,7 @@ class Loop:
             log.debug("""\
 Master detected subprocess exit
 (pid: %d, why: %s, class: %s, slice: %d/%d) %s""",
-                     pid, why, qrname, slice+1, count,
+                     pid, why, qrname, slice_number + 1, count,
                      ('[restarting]' if restart else ''))
             # See if we've reached the maximum number of allowable restarts
             if restarts > config.MAX_RESTARTS:
@@ -372,8 +372,9 @@ qrunner %s reached maximum restart limit of %d, not restarting.""",
             # Now perhaps restart the process unless it exited with a
             # SIGTERM or we aren't restarting.
             if restart:
-                newpid = start_runner(qrname, slice, count)
-                self._kids[newpid] = (qrname, slice, count, restarts)
+                spec = '%s:%d:%d' % (qrname, slice_number, count)
+                newpid = self._start_runner(spec)
+                self._kids[newpid] = (qrname, slice_number, count, restarts)
 
     def cleanup(self):
         """Ensure that all children have exited."""

@@ -15,78 +15,73 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
+from __future__ import with_statement
+
 import os
 import sys
-import optparse
 
 from mailman import Utils
 from mailman import Version
 from mailman.configuration import config
 from mailman.i18n import _
 from mailman.inject import inject
+from mailman.options import SingleMailingListOptions
 
 
 
-def parseargs():
-    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
-                                   usage=_("""\
+class ScriptOptions(SingleMailingListOptions):
+    usage=_("""\
 %prog [options] [filename]
 
 Inject a message from a file into Mailman's incoming queue.  'filename' is the
-name of the plaintext message file to inject.  If omitted, standard input is
-used.
-"""))
-    parser.add_option('-l', '--listname',
-                      type='string', help=_("""\
-The name of the list to inject this message to.  Required."""))
-    parser.add_option('-q', '--queue',
-                      type='string', help=_("""\
+name of the plaintext message file to inject.  If omitted, or the string '-',
+standard input is used.
+""")
+
+    def add_options(self):
+        super(ScriptOptions, self).add_options()
+        self.parser.add_option(
+            '-q', '--queue',
+            type='string', help=_("""\
 The name of the queue to inject the message to.  The queuename must be one of
 the directories inside the qfiles directory.  If omitted, the incoming queue
 is used."""))
-    parser.add_option('-C', '--config',
-                      help=_('Alternative configuration file to use'))
-    opts, args = parser.parse_args()
-    if len(args) > 1:
-        parser.print_help()
-        print >> sys.stderr, _('Unexpected arguments')
-        sys.exit(1)
-    if opts.listname is None:
-        parser.print_help()
-        print >> sys.stderr, _('-l is required')
-        sys.exit(1)
-    return parser, opts, args
+
+    def sanity_check(self):
+        if not self.options.listname:
+            self.parser.error(_('Missing listname'))
+        if len(self.arguments) == 0:
+            self.filename = '-'
+        elif len(self.arguments) > 1:
+            self.parser.print_error(_('Unexpected arguments'))
+        else:
+            self.filename = self.arguments[0]
 
 
 
 def main():
-    parser, opts, args = parseargs()
-    config.load(opts.config)
+    options = ScriptOptions()
+    options.initialize()
 
-    if opts.queue:
-        qdir = os.path.join(config.QUEUE_DIR, opts.queue)
-        if not os.path.isdir(qdir):
-            parser.print_help()
-            print >> sys.stderr, _('Bad queue directory: $qdir')
-            sys.exit(1)
-    else:
+    if options.options.queue is None:
         qdir = config.INQUEUE_DIR
-
-    if not Utils.list_exists(opts.listname):
-        parser.print_help()
-        print >> sys.stderr, _('No such list: $opts.listname')
-        sys.exit(1)
-
-    if args:
-        fp = open(args[0])
-        try:
-            msgtext = fp.read()
-        finally:
-            fp.close()
     else:
-        msgtext = sys.stdin.read()
+        qdir = os.path.join(config.QUEUE_DIR, options.options.queue)
+        if not os.path.isdir(qdir):
+            options.parser.error(_('Bad queue directory: $qdir'))
 
-    inject(opts.listname, msgtext, qdir=qdir)
+    fqdn_listname = options.options.listname
+    mlist = config.db.list_manager.get(fqdn_listname)
+    if mlist is None:
+        options.parser.error(_('No such list: $fqdn_listname'))
+
+    if options.filename == '-':
+        message_text = sys.stdin.read()
+    else:
+        with open(options.filename) as fp:
+            message_text = fp.read()
+
+    inject(fqdn_listname, message_text, qdir=qdir)
 
 
 

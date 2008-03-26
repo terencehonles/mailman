@@ -210,7 +210,7 @@ class Runner:
     implements(IRunner)
 
     QDIR = None
-    SLEEPTIME = config.QRUNNER_SLEEP_TIME
+    SLEEPTIME = None
 
     def __init__(self, slice=None, numslices=1):
         self._kids = {}
@@ -220,6 +220,8 @@ class Runner:
         # Create the shunt switchboard
         self._shunt = Switchboard(config.SHUNTQUEUE_DIR)
         self._stop = False
+        if self.SLEEPTIME is None:
+            self.SLEEPTIME = config.QRUNNER_SLEEP_TIME
 
     def __repr__(self):
         return '<%s at %s>' % (self.__class__.__name__, id(self))

@@ -85,10 +85,10 @@ def remove_list(fqdn_listname, mailing_list=None, archives=True):
         # Delete the mailing list from the database.
         config.db.list_manager.delete(mailing_list)
         # Do the MTA-specific list deletion tasks
-        if config.MTA:
-            modname = 'mailman.MTA.' + config.MTA
-            __import__(modname)
-            sys.modules[modname].remove(mailing_list)
+##         if config.MTA:
+##             modname = 'mailman.MTA.' + config.MTA
+##             __import__(modname)
+##             sys.modules[modname].remove(mailing_list)
         # Remove the list directory.
         removeables.append(os.path.join(config.LIST_DATA_DIR, fqdn_listname))
     # Remove any stale locks associated with the list.

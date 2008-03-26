@@ -253,3 +253,10 @@ class IMailingList(Interface):
         object, and the returned url will be relative to that object's
         'location' attribute.
         """
+
+    pipeline = Attribute(
+        """The name of this mailing list's processing pipeline.
+
+        Every mailing list has a processing pipeline that messages flow
+        through once they've been accepted.
+        """)

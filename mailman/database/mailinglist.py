@@ -138,6 +138,7 @@ class MailingList(Model):
     pass_filename_extensions = Pickle()
     pass_mime_types = Pickle()
     personalize = Enum()
+    pipeline = Unicode()
     post_id = Int()
     preferred_language = Unicode()
     private_roster = Bool()

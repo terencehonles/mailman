@@ -37,6 +37,9 @@ def do_list(listname, args, func):
     if '@' not in listname:
         listname += '@' + config.DEFAULT_EMAIL_HOST
 
+    # XXX FIXME Remove this when this script is converted to
+    # MultipleMailingListOptions.
+    listname = listname.decode(sys.getdefaultencoding())
     mlist = config.db.list_manager.get(listname)
     if mlist is None:
         print >> sys.stderr, _('Unknown list: $listname')

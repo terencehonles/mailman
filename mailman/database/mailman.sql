@@ -118,6 +118,7 @@ CREATE TABLE mailinglist (
         pass_filename_extensions BLOB,
         pass_mime_types BLOB,
         personalize TEXT,
+        pipeline TEXT,
         post_id INTEGER,
         preferred_language TEXT,
         private_roster BOOLEAN,
