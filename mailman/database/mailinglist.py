@@ -174,11 +174,10 @@ class MailingList(Model):
         # 2-tuple of the date of the last autoresponse and the number of
         # autoresponses sent on that date.
         self.hold_and_cmd_autoresponses = {}
-        self.full_path = os.path.join(config.LIST_DATA_DIR, fqdn_listname)
         self.personalization = Personalization.none
         self.real_name = string.capwords(
             SPACE.join(listname.split(UNDERSCORE)))
-        makedirs(self.full_path)
+        makedirs(self.data_path)
 
     # XXX FIXME
     def _restore(self):
@@ -192,19 +191,24 @@ class MailingList(Model):
 
     @property
     def fqdn_listname(self):
-        """See IMailingListIdentity."""
+        """See `IMailingList`."""
         return fqdn_listname(self.list_name, self.host_name)
 
     @property
     def web_host(self):
-        """See IMailingListWeb."""
+        """See `IMailingList`."""
         return config.domains[self.host_name]
 
     def script_url(self, target, context=None):
-        """See IMailingListWeb."""
+        """See `IMailingList`."""
         # XXX Handle the case for when context is not None; those would be
         # relative URLs.
         return self.web_page_url + target + '/' + self.fqdn_listname
+
+    @property
+    def data_path(self):
+        """See `IMailingList`."""
+        return os.path.join(config.LIST_DATA_DIR, self.fqdn_listname)
 
     # IMailingListAddresses
 

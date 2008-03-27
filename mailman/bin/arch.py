@@ -115,7 +115,7 @@ def main():
     # really don't know how long it will take.
     #
     # XXX processUnixMailbox() should refresh the lock.
-    lock_path = os.path.join(mlist.full_path, '.archiver.lck')
+    lock_path = os.path.join(mlist.data_path, '.archiver.lck')
     with Lock(lock_path, lifetime=int(hours(3))):
         # Maybe wipe the old archives
         if opts.wipe:

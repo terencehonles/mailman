@@ -60,7 +60,6 @@ class OutgoingRunner(Runner, BounceMixin):
         if time.time() < deliver_after:
             return True
         # Make sure we have the most up-to-date state
-        mlist.Load()
         try:
             pid = os.getpid()
             self._func(mlist, msg, msgdata)

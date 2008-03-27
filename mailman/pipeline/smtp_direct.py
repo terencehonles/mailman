@@ -110,7 +110,7 @@ def process(mlist, msg, msgdata):
     envsender = msgdata.get('envsender')
     if envsender is None:
         if mlist:
-            envsender = mlist.GetBouncesEmail()
+            envsender = mlist.bounces_address
         else:
             envsender = Utils.get_site_noreply()
     # Time to split up the recipient list.  If we're personalizing or VERPing
@@ -183,7 +183,7 @@ def process(mlist, msg, msgdata):
                           'size'    : len(msg.as_string()),
                           '#recips' : len(recips),
                           '#refused': len(refused),
-                          'listname': mlist.internal_name(),
+                          'listname': mlist.fqdn_listname,
                           'sender'  : origsender,
                           })
     # We have to use the copy() method because extended call syntax requires a

@@ -72,7 +72,7 @@ def main():
                     print >> sys.stderr, \
                       'List: %s: problem processing %s:\n%s' % \
                         (listname,
-                         os.path.join(mlist.full_path(), 'digest.mbox'),
+                         os.path.join(mlist.data_path, 'digest.mbox'),
                          errmsg)
             finally:
                 mlist.Unlock()

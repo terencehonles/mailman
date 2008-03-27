@@ -260,3 +260,10 @@ class IMailingList(Interface):
         Every mailing list has a processing pipeline that messages flow
         through once they've been accepted.
         """)
+
+    data_path = Attribute(
+        """The file system path to list-specific data.
+
+        An example of list-specific data is the temporary digest mbox file
+        that gets created to accumlate messages for the digest.
+        """)

@@ -48,21 +48,21 @@ def process(mlist, msg, msgdata):
     if msgdata.get('personalize'):
         # Calculate the extra personalization dictionary.  Note that the
         # length of the recips list better be exactly 1.
-        recips = msgdata.get('recips')
-        assert isinstance(recips, list) and len(recips) == 1, (
+        recips = msgdata.get('recips', [])
+        assert len(recips) == 1, (
             'The number of intended recipients must be exactly 1')
-        member = recips[0].lower()
-        d['user_address'] = member
-        try:
-            d['user_delivered_to'] = mlist.getMemberCPAddress(member)
+        recipient = recips[0].lower()
+        user = config.db.user_manager.get_user(recipient)
+        member = mlist.members.get_member(recipient)
+        d['user_address'] = recipient
+        if user is not None and member is not None:
+            d['user_delivered_to'] = member.address.original_address
             # BAW: Hmm, should we allow this?
-            d['user_password'] = mlist.getMemberPassword(member)
-            d['user_language'] = mlist.getMemberLanguage(member)
-            username = mlist.getMemberName(member) or None
-            d['user_name'] = username or d['user_delivered_to']
-            d['user_optionsurl'] = mlist.GetOptionsURL(member)
-        except Errors.NotAMemberError:
-            pass
+            d['user_password'] = user.password
+            d['user_language'] = member.preferred_language
+            d['user_name'] = (user.real_name if user.real_name
+                              else member.address.original_address)
+            d['user_optionsurl'] = member.options_url
     # These strings are descriptive for the log file and shouldn't be i18n'd
     d.update(msgdata.get('decoration-data', {}))
     header = decorate(mlist, mlist.msg_header, d)

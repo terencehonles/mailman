@@ -40,7 +40,7 @@ members.txt.  If the file doesn't exist, the list of recipients will be
 empty.
 
     >>> import os
-    >>> file_path = os.path.join(mlist.full_path, 'members.txt')
+    >>> file_path = os.path.join(mlist.data_path, 'members.txt')
     >>> open(file_path)
     Traceback (most recent call last):
     ...

@@ -18,11 +18,14 @@
 """A test SMTP listener."""
 
 import smtpd
+import logging
 import asyncore
 
 from email import message_from_string
 
+
 COMMASPACE = ', '
+log = logging.getLogger('mailman.debug')
 
 
 
@@ -60,14 +63,16 @@ class Server(smtpd.SMTPServer):
     def handle_accept(self):
         """Handle connections by creating our own Channel object."""
         conn, addr = self.accept()
+        log.info('accepted: %s', addr)
         Channel(self, conn, addr)
 
     def process_message(self, peer, mailfrom, rcpttos, data):
         """Process a message by adding it to the mailbox."""
         message = message_from_string(data)
-        message['X-Peer'] = peer
+        message['X-Peer'] = '%s:%s' % peer
         message['X-MailFrom'] = mailfrom
         message['X-RcptTo'] = COMMASPACE.join(rcpttos)
+        log.info('processed message: %s', message.get('message-id', 'n/a'))
         self._queue.put(message)
 
     def start(self):

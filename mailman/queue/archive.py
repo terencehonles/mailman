@@ -19,6 +19,7 @@
 
 from __future__ import with_statement
 
+import os
 import time
 
 from email.Utils import parsedate_tz, mktime_tz, formatdate
@@ -68,5 +69,5 @@ class ArchiveRunner(Runner):
         # Always put an indication of when we received the message.
         msg['X-List-Received-Date'] = receivedtime
         # While a list archiving lock is acquired, archive the message.
-        with Lock(os.path.join(mlist.full_path, 'archive.lck')):
+        with Lock(os.path.join(mlist.data_path, 'archive.lck')):
             mlist.ArchiveMail(msg)

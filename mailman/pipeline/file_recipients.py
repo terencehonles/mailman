@@ -46,7 +46,7 @@ class FileRecipients:
         """See `IHandler`."""
         if 'recips' in msgdata:
             return
-        filename = os.path.join(mlist.full_path, 'members.txt')
+        filename = os.path.join(mlist.data_path, 'members.txt')
         try:
             with open(filename) as fp:
                 addrs = set(line.strip() for line in fp)

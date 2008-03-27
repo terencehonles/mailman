@@ -34,6 +34,7 @@ import time
 import errno
 import signal
 import socket
+import logging
 import mailbox
 import smtplib
 import tempfile
@@ -46,6 +47,9 @@ from mailman.bin.master import Loop as Master
 from mailman.configuration import config
 from mailman.queue import Switchboard
 from mailman.tests.smtplistener import Server
+
+
+log = logging.getLogger('mailman.debug')
 
 
 
@@ -97,7 +101,7 @@ def digest_mbox(mlist):
     :param mlist: The mailing list.
     :return: The mailing list's pending digest as a mailbox.
     """
-    path = os.path.join(mlist.full_path, 'digest.mbox')
+    path = os.path.join(mlist.data_path, 'digest.mbox')
     return mailbox.mbox(path)
 
 
@@ -168,6 +172,7 @@ class SMTPServer:
 
     def start(self):
         """Start the smtp server in a thread."""
+        log.info('test SMTP server starting')
         self._thread.start()
 
     def stop(self):
@@ -178,18 +183,22 @@ class SMTPServer:
         self.clear()
         # Wait for the thread to exit.
         self._thread.join()
+        log.info('test SMTP server stopped')
 
     @property
     def messages(self):
         """Return all the messages received by the smtp server."""
-        for message in self._messages:
-            # See if there's anything waiting in the queue.
+        # Look at the thread queue and append any messages from there to our
+        # internal list of messages.
+        while True:
             try:
                 message = self._queue.get_nowait()
             except Empty:
-                pass
+                break
             else:
                 self._messages.append(message)
+        # Now return all the messages we know about.
+        for message in self._messages:
             yield message
 
     def clear(self):

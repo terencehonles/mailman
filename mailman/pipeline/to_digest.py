@@ -74,7 +74,7 @@ def process(mlist, msg, msgdata):
     # Short circuit non-digestable lists.
     if not mlist.digestable or msgdata.get('isdigest'):
         return
-    mboxfile = os.path.join(mlist.full_path, 'digest.mbox')
+    mboxfile = os.path.join(mlist.data_path, 'digest.mbox')
     mboxfp = open(mboxfile, 'a+')
     mbox = Mailbox(mboxfp)
     mbox.AppendMessage(msg)

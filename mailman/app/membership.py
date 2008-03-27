@@ -45,8 +45,8 @@ def add_member(mlist, address, realname, password, delivery_mode, language,
                ack=None, admin_notif=None, text=''):
     """Add a member right now.
 
-    The member's subscription must be approved by what ever policy the
-    list enforces.
+    The member's subscription must be approved by whatever policy the list
+    enforces.
 
     ack is a flag that specifies whether the user should get an
     acknowledgement of their being subscribed.  Default is to use the
