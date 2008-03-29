@@ -186,7 +186,9 @@ membership role.
     >>> members = sorted(memberships.members)
     >>> len(members)
     4
-    >>> for member in sorted(members, key=lambda m: m.address.address):
+    >>> def sortkey(member):
+    ...     return member.address.address, member.mailing_list, int(member.role)
+    >>> for member in sorted(members, key=sortkey):
     ...     print member.address.address, member.mailing_list, member.role
     zperson@example.com xtest_1@example.com MemberRole.member
     zperson@example.net xtest_3@example.com MemberRole.moderator
