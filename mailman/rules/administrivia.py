@@ -64,7 +64,7 @@ class Administrivia:
             return False
         # First check the Subject text.
         lines_to_check = []
-        subject = msg.get('subject', '')
+        subject = str(msg.get('subject', ''))
         if subject <> '':
             lines_to_check.append(subject)
         # Search only the first text/plain subpart of the message.  There's

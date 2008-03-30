@@ -17,20 +17,45 @@
 
 """Application level archiving support."""
 
+__metaclass__ = type
 __all__ = [
     'Pipermail',
-    'get_archiver',
+    'get_primary_archiver',
     ]
-__metaclass__ = type
 
+
+import os
+import pkg_resources
 
 from string import Template
 from zope.interface import implements
 from zope.interface.verify import verifyObject
 
-from mailman.app.plugins import get_plugin
+from mailman.app.plugins import get_plugins
 from mailman.configuration import config
 from mailman.interfaces import IArchiver
+
+from mailman.Archiver.HyperArch import HyperArchive
+from cStringIO import StringIO
+
+
+
+class PipermailMailingListAdapter:
+    """An adapter for MailingList objects to work with Pipermail."""
+
+    def __init__(self, mlist):
+        self._mlist = mlist
+
+    def __getattr__(self, name):
+        return getattr(self._mlist, name)
+
+    def archive_dir(self):
+        """The directory for storing Pipermail artifacts."""
+        if self._mlist.archive_private:
+            basedir = config.PRIVATE_ARCHIVE_FILE_DIR
+        else:
+            basedir = config.PUBLIC_ARCHIVE_FILE_DIR
+        return os.path.join(basedir, self._mlist.fqdn_listname)
 
 
 
@@ -39,39 +64,47 @@ class Pipermail:
 
     implements(IArchiver)
 
-    def get_list_url(self, mlist):
+    def __init__(self, mlist):
+        self._mlist = mlist
+
+    def get_list_url(self):
         """See `IArchiver`."""
-        if mlist.archive_private:
-            url = mlist.script_url('private') + '/index.html'
+        if self._mlist.archive_private:
+            url = self._mlist.script_url('private') + '/index.html'
         else:
-            web_host = config.domains.get(mlist.host_name, mlist.host_name)
+            web_host = config.domains.get(
+                self._mlist.host_name, self._mlist.host_name)
             url = Template(config.PUBLIC_ARCHIVE_URL).safe_substitute(
-                listname=mlist.fqdn_listname,
+                listname=self._mlist.fqdn_listname,
                 hostname=web_host,
-                fqdn_listname=mlist.fqdn_listname,
+                fqdn_listname=self._mlist.fqdn_listname,
                 )
         return url
 
-    def get_message_url(self, mlist, message):
+    def get_message_url(self, message):
         """See `IArchiver`."""
         # Not currently implemented.
         return None
 
-    def archive_message(self, mlist, message):
+    def archive_message(self, message):
         """See `IArchiver`."""
+        text = str(message)
+        fileobj = StringIO(text)
+        h = HyperArchive(PipermailMailingListAdapter(self._mlist))
+        h.processUnixMailbox(fileobj)
+        h.close()
+        fileobj.close()
+        # There's no good way to know the url for the archived message.
         return None
 
 
 
-_archiver = None
-
-def get_archiver():
-    """Return the currently registered global archiver.
-
-    Uses the plugin architecture to find the IArchiver instance.
-    """
-    global _archiver
-    if _archiver is None:
-        _archiver = get_plugin('mailman.archiver')()
-        verifyObject(IArchiver, _archiver)
-    return _archiver
+def get_primary_archiver(mlist):
+    """Return the primary archiver."""
+    entry_points = list(pkg_resources.iter_entry_points('mailman.archiver'))
+    if len(entry_points) == 0:
+        return None
+    for ep in entry_points:
+        if ep.name == 'default':
+            return ep.load()(mlist)
+    return None

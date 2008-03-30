@@ -31,10 +31,11 @@ from zope.interface import implements
 
 from mailman import Utils
 from mailman import Version
-from mailman.app.archiving import get_archiver
 from mailman.configuration import config
 from mailman.i18n import _
 from mailman.interfaces import IHandler, Personalization, ReplyToMunging
+from mailman.app.archiving import get_primary_archiver
+
 
 CONTINUATION = ',\n\t'
 COMMASPACE = ', '
@@ -205,7 +206,7 @@ def process(mlist, msg, msgdata):
         'List-Unsubscribe': subfieldfmt % (listinfo, mlist.leave_address),
         'List-Subscribe'  : subfieldfmt % (listinfo, mlist.join_address),
         })
-    archiver = get_archiver()
+    archiver = get_primary_archiver(mlist)
     if msgdata.get('reduced_list_headers'):
         headers['X-List-Administrivia'] = 'yes'
     else:
@@ -214,7 +215,7 @@ def process(mlist, msg, msgdata):
             headers['List-Post'] = '<mailto:%s>' % mlist.posting_address
         # Add this header if we're archiving
         if mlist.archive:
-            archiveurl = archiver.get_list_url(mlist)
+            archiveurl = archiver.get_list_url()
             headers['List-Archive'] = '<%s>' % archiveurl
     # XXX RFC 2369 also defines a List-Owner header which we are not currently
     # supporting, but should.
@@ -222,7 +223,7 @@ def process(mlist, msg, msgdata):
     # Draft RFC 5064 defines an Archived-At header which contains the pointer
     # directly to the message in the archive.  If the currently defined
     # archiver can tell us the URL, go ahead and include this header.
-    archived_at = archiver.get_message_url(mlist, msg)
+    archived_at = archiver.get_message_url(msg)
     if archived_at is not None:
         headers['Archived-At'] = archived_at
     # First we delete any pre-existing headers because the RFC permits only

@@ -19,12 +19,19 @@
 
 from __future__ import with_statement
 
+__metaclass__ = type
+__all__ = [
+    'ArchiveRunner',
+    ]
+
+
 import os
 import time
 
 from email.Utils import parsedate_tz, mktime_tz, formatdate
 from locknix.lockfile import Lock
 
+from mailman.app.plugins import get_plugins
 from mailman.configuration import config
 from mailman.queue import Runner
 
@@ -70,4 +77,7 @@ class ArchiveRunner(Runner):
         msg['X-List-Received-Date'] = receivedtime
         # While a list archiving lock is acquired, archive the message.
         with Lock(os.path.join(mlist.data_path, 'archive.lck')):
-            mlist.ArchiveMail(msg)
+            for archive_factory in get_plugins('mailman.archiver'):
+                archiver = archive_factory(mlist)
+                archiver.archive_message(msg)
+

@@ -1,0 +1,35 @@
+Archiving
+=========
+
+Mailman can archive to any number of archivers that adhere to the IArchiver
+interface.  By default, there's a Pipermail archiver.
+
+    >>> from mailman.app.lifecycle import create_list
+    >>> mlist = create_list(u'test@example.com')
+    >>> mlist.web_page_url = u'http://www.example.com/'
+
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.com
+    ... To: test@example.com
+    ... Subject: My first post
+    ... Message-ID: <first>
+    ...
+    ... First post!
+    ... """)
+
+    >>> from mailman.configuration import config
+    >>> from mailman.queue import Switchboard
+    >>> archiver_queue = Switchboard(config.ARCHQUEUE_DIR)
+    >>> ignore = archiver_queue.enqueue(msg, {}, listname=mlist.fqdn_listname)
+
+    >>> from mailman.queue.archive import ArchiveRunner
+    >>> from mailman.tests.helpers import make_testable_runner
+    >>> runner = make_testable_runner(ArchiveRunner)
+    >>> runner.run()
+
+    # The best we can do is verify some landmark exists.  Let's use the
+    # Pipermail pickle file exists.
+    >>> import os
+    >>> os.path.exists(os.path.join(config.PUBLIC_ARCHIVE_FILE_DIR,
+    ...                             mlist.fqdn_listname, 'pipermail.pck'))
+    True

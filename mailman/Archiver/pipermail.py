@@ -13,13 +13,13 @@ from cStringIO import StringIO
 from email.Utils import parseaddr, parsedate_tz, mktime_tz, formatdate
 from string import lowercase
 
-__version__ = '0.10 (Mailman edition)'
+__version__ = '0.11 (Mailman edition)'
 VERSION = __version__
 CACHESIZE = 100    # Number of slots in the cache
 
-from Mailman import Errors
-from Mailman.Mailbox import ArchiverMailbox
-from Mailman.i18n import _
+from mailman import Errors
+from mailman.Mailbox import ArchiverMailbox
+from mailman.i18n import _
 
 SPACE = ' '
 

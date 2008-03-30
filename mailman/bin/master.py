@@ -213,7 +213,7 @@ Lock file: $config.LOCK_FILE
 Lock host: $hostname
 
 Exiting.""")
-        parser.error(message)
+        config.options.parser.error(message)
 
 
 

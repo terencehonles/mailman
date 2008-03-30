@@ -31,12 +31,11 @@ import traceback
 from cStringIO import StringIO
 from string import Template
 
-from Mailman import Mailbox
-from Mailman import Utils
-from Mailman.SafeDict import SafeDict
-from Mailman.configuration import config
-from Mailman.configuration import config
-from Mailman.i18n import _
+from mailman import Mailbox
+from mailman import Utils
+from mailman.SafeDict import SafeDict
+from mailman.configuration import config
+from mailman.i18n import _
 
 log = logging.getLogger('mailman.error')
 
@@ -82,10 +81,11 @@ class Archiver:
         # the private directory, pointing directly to the private/listname
         # which has o+rx permissions.  Private archives do not have the
         # symbolic links.
+        archdir = archive_dir(self.fqdn_listname)
         omask = os.umask(0)
         try:
             try:
-                os.mkdir(self.archive_dir()+'.mbox', 02775)
+                os.mkdir(archdir+'.mbox', 02775)
             except OSError, e:
                 if e.errno <> errno.EEXIST: raise
                 # We also create an empty pipermail archive directory into
@@ -93,12 +93,12 @@ class Archiver:
                 # that lists that have not yet received a posting have
                 # /something/ as their index.html, and don't just get a 404.
             try:
-                os.mkdir(self.archive_dir(), 02775)
+                os.mkdir(archdir, 02775)
             except OSError, e:
                 if e.errno <> errno.EEXIST: raise
             # See if there's an index.html file there already and if not,
             # write in the empty archive notice.
-            indexfile = os.path.join(self.archive_dir(), 'index.html')
+            indexfile = os.path.join(archdir, 'index.html')
             fp = None
             try:
                 fp = open(indexfile)
@@ -118,11 +118,6 @@ class Archiver:
                 fp.close()
         finally:
             os.umask(omask)
-
-    def archive_dir(self):
-        # Return the private archive directory
-        return os.path.join(config.PRIVATE_ARCHIVE_FILE_DIR,
-                            self.fqdn_listname)
 
     def ArchiveFileName(self):
         """The mbox name where messages are left for archive construction."""

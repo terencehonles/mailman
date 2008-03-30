@@ -83,7 +83,7 @@ Any other spelling is incorrect.""",
     entry_points    = {
         'console_scripts': list(scripts),
         # Entry point for plugging in different database backends.
-        'mailman.archiver'  : 'stock = mailman.app.archiving:Pipermail',
+        'mailman.archiver'  : 'default = mailman.app.archiving:Pipermail',
         'mailman.database'  : 'stock = mailman.database:StockDatabase',
         'mailman.mta'       : 'stock = mailman.MTA:Manual',
         'mailman.styles'    : 'default = mailman.app.styles:DefaultStyle',

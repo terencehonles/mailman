@@ -43,15 +43,14 @@ from email.Errors import HeaderParseError
 from email.Header import decode_header, make_header
 from locknix.lockfile import Lock
 
-from Mailman import Errors
-from Mailman import MailList
-from Mailman import Utils
-from Mailman import i18n
-from Mailman.Archiver import HyperDatabase
-from Mailman.Archiver import pipermail
-from Mailman.Mailbox import ArchiverMailbox
-from Mailman.SafeDict import SafeDict
-from Mailman.configuration import config
+from mailman import Errors
+from mailman import Utils
+from mailman import i18n
+from mailman.Archiver import HyperDatabase
+from mailman.Archiver import pipermail
+from mailman.Mailbox import ArchiverMailbox
+from mailman.SafeDict import SafeDict
+from mailman.configuration import config
 
 log = logging.getLogger('mailman.error')
 
@@ -303,30 +302,6 @@ class Article(pipermail.Article):
 
         self.decode_headers()
 
-    # Mapping of listnames to MailList instances as a weak value dictionary.
-    # This code is copied from Runner.py but there's one important operational
-    # difference.  In Runner.py, we always .Load() the MailList object for
-    # each _dispose() run, otherwise the object retrieved from the cache won't
-    # be up-to-date.  Since we're creating a new HyperArchive instance for
-    # each message being archived, we don't need to worry about that -- but it
-    # does mean there are additional opportunities for optimization.
-    _listcache = weakref.WeakValueDictionary()
-
-    def _open_list(self, listname):
-        # Cache the open list so that any use of the list within this process
-        # uses the same object.  We use a WeakValueDictionary so that when the
-        # list is no longer necessary, its memory is freed.
-        mlist = self._listcache.get(listname)
-        if not mlist:
-            try:
-                mlist = MailList.MailList(listname, lock=0)
-            except Errors.MMListError, e:
-                log.error('error opening list: %s\n%s', listname, e)
-                return None
-            else:
-                self._listcache[listname] = mlist
-        return mlist
-
     def __getstate__(self):
         d = self.__dict__.copy()
         # We definitely don't want to pickle the MailList instance, so just
@@ -355,7 +330,7 @@ class Article(pipermail.Article):
         listname = d.get('__listname')
         if listname:
             del d['__listname']
-            d['_mlist'] = self._open_list(listname)
+            d['_mlist'] = config.db.list_manager.get(listname)
         if not d.has_key('_lang'):
             if hasattr(self, '_mlist'):
                 self._lang = self._mlist.preferred_language
@@ -394,7 +369,7 @@ class Article(pipermail.Article):
         if subject:
             if config.ARCHIVER_OBSCURES_EMAILADDRS:
                 with i18n.using_language(self._lang):
-                    atmark = unicode(_(' at '), Utils.GetCharSet(self._lang))
+                    atmark = _(' at ')
                     subject = re.sub(r'([-+,.\w]+)@([-+.\w]+)',
                               '\g<1>' + atmark + '\g<2>', subject)
             self.decoded['subject'] = subject
@@ -443,7 +418,7 @@ class Article(pipermail.Article):
             if config.ARCHIVER_OBSCURES_EMAILADDRS:
                 # Point the mailto url back to the list
                 author = re.sub('@', _(' at '), self.author)
-                emailurl = self._mlist.GetListEmail()
+                emailurl = self._mlist.posting_address
             else:
                 author = self.author
                 emailurl = self.email
@@ -451,7 +426,7 @@ class Article(pipermail.Article):
             d["email_url"] = url_quote(emailurl)
             d["datestr_html"] = self.quote(i18n.ctime(int(self.date)))
             d["body"] = self._get_body()
-            d['listurl'] = self._mlist.GetScriptURL('listinfo', absolute=1)
+            d['listurl'] = self._mlist.script_url('listinfo')
             d['listname'] = self._mlist.real_name
             d['encoding'] = ''
         charset = Utils.GetCharSet(self._lang)
@@ -546,7 +521,7 @@ class Article(pipermail.Article):
             body = unicode(body, cset, 'replace')
         if config.ARCHIVER_OBSCURES_EMAILADDRS:
             with i18n.using_language(self._lang):
-                atmark = unicode(_(' at '), cset)
+                atmark = _(' at ')
                 body = re.sub(r'([-+,.\w]+)@([-+.\w]+)',
                               '\g<1>' + atmark + '\g<2>', body)
         # Return body to character set of article.
@@ -650,7 +625,7 @@ class HyperArchive(pipermail.T):
         with i18n.using_language(mlist.preferred_language):
             d = {"lastdate": quotetime(self.lastdate),
                  "archivedate": quotetime(self.archivedate),
-                 "listinfo": mlist.GetScriptURL('listinfo', absolute=1),
+                 "listinfo": mlist.script_url('listinfo'),
                  "version": self.version,
                  }
             i = {"thread": _("thread"),
@@ -679,7 +654,7 @@ class HyperArchive(pipermail.T):
             d = {"listname": html_quote(mlist.real_name, self.lang),
                  "archtype": self.type,
                  "archive":  self.volNameToDesc(self.archive),
-                 "listinfo": mlist.GetScriptURL('listinfo', absolute=1),
+                 "listinfo": mlist.script_url('listinfo'),
                  "firstdate": quotetime(self.firstdate),
                  "lastdate": quotetime(self.lastdate),
                  "size": self.size,
@@ -710,7 +685,7 @@ class HyperArchive(pipermail.T):
         listname = mlist.fqdn_listname
         mbox = os.path.join(mlist.archive_dir()+'.mbox', listname+'.mbox')
         d = {"listname": mlist.real_name,
-             "listinfo": mlist.GetScriptURL('listinfo', absolute=1),
+             "listinfo": mlist.script_url('listinfo'),
              "fullarch": '../%s.mbox/%s.mbox' % (listname, listname),
              "size": sizeof(mbox, mlist.preferred_language),
              'meta': '',

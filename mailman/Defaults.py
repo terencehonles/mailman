@@ -273,7 +273,7 @@ PRIVATE_EXTERNAL_ARCHIVER = No
 # a MailList object and a Message object.  It should raise
 # Errors.DiscardMessage if it wants to throw the message away.  Otherwise it
 # should modify the Message object as necessary.
-ARCHIVE_SCRUBBER = 'mailman.Handlers.Scrubber'
+ARCHIVE_SCRUBBER = 'mailman.pipeline.scrubber'
 
 # Control parameter whether mailman.Handlers.Scrubber should use message
 # attachment's filename as is indicated by the filename parameter or use

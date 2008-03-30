@@ -347,7 +347,7 @@ def send_i18n_digests(mlist, mboxfp):
             print >> plainmsg
     # Now add the footer
     if mlist.digest_footer:
-        footertxt = decorate(mlist, mlist.digest_footer, _('digest footer'))
+        footertxt = decorate(mlist, mlist.digest_footer)
         # MIME
         footer = MIMEText(footertxt.encode(lcset), _charset=lcset)
         footer['Content-Description'] = _('Digest Footer')
