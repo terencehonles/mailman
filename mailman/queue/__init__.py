@@ -38,6 +38,7 @@ import sha
 import time
 import email
 import errno
+import pickle
 import cPickle
 import logging
 import marshal
@@ -95,12 +96,12 @@ class Switchboard:
         listname = data.get('listname', '--nolist--')
         # Get some data for the input to the sha hash.
         now = time.time()
-        if not data.get('_plaintext'):
-            protocol = 1
-            msgsave = cPickle.dumps(_msg, protocol)
-        else:
+        if data.get('_plaintext'):
             protocol = 0
             msgsave = cPickle.dumps(str(_msg), protocol)
+        else:
+            protocol = pickle.HIGHEST_PROTOCOL
+            msgsave = cPickle.dumps(_msg, protocol)
         # listname is unicode but the input to the hash function must be an
         # 8-bit string (eventually, a bytes object).
         hashfood = msgsave + listname.encode('utf-8') + repr(now)

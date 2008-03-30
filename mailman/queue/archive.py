@@ -28,6 +28,7 @@ __all__ = [
 import os
 import time
 
+from datetime import datetime
 from email.Utils import parsedate_tz, mktime_tz, formatdate
 from locknix.lockfile import Lock
 
@@ -44,37 +45,38 @@ class ArchiveRunner(Runner):
         # Support clobber_date, i.e. setting the date in the archive to the
         # received date, not the (potentially bogus) Date: header of the
         # original message.
-        clobber = 0
-        originaldate = msg.get('date')
-        receivedtime = formatdate(msgdata['received_time'])
-        if not originaldate:
-            clobber = 1
+        clobber = False
+        original_date = msg.get('date')
+        received_time = formatdate(msgdata['received_time'])
+        if not original_date:
+            clobber = True
         elif config.ARCHIVER_CLOBBER_DATE_POLICY == 1:
-            clobber = 1
+            clobber = True
         elif config.ARCHIVER_CLOBBER_DATE_POLICY == 2:
-            # what's the timestamp on the original message?
-            tup = parsedate_tz(originaldate)
-            now = time.time()
+            # What's the timestamp on the original message?
+            timetup = parsedate_tz(original_date)
+            now = datetime.now()
             try:
-                if not tup:
-                    clobber = 1
-                elif abs(now - mktime_tz(tup)) > \
-                         config.ARCHIVER_ALLOWABLE_SANE_DATE_SKEW:
-                    clobber = 1
+                if not timetup:
+                    clobber = True
+                else:
+                    utc_timestamp = datetime.fromtimestamp(mktime_tz(timetup))
+                    clobber = (abs(now - utc_timestamp) > 
+                               config.ARCHIVER_ALLOWABLE_SANE_DATE_SKEW)
             except (ValueError, OverflowError):
                 # The likely cause of this is that the year in the Date: field
                 # is horribly incorrect, e.g. (from SF bug # 571634):
                 # Date: Tue, 18 Jun 0102 05:12:09 +0500
                 # Obviously clobber such dates.
-                clobber = 1
+                clobber = True
         if clobber:
             del msg['date']
             del msg['x-original-date']
-            msg['Date'] = receivedtime
+            msg['Date'] = received_time
             if originaldate:
-                msg['X-Original-Date'] = originaldate
+                msg['X-Original-Date'] = original_date
         # Always put an indication of when we received the message.
-        msg['X-List-Received-Date'] = receivedtime
+        msg['X-List-Received-Date'] = received_time
         # While a list archiving lock is acquired, archive the message.
         with Lock(os.path.join(mlist.data_path, 'archive.lck')):
             for archive_factory in get_plugins('mailman.archiver'):

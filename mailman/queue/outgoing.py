@@ -23,7 +23,8 @@ import copy
 import email
 import socket
 import logging
-import datetime
+
+from datetime import datetime
 
 from mailman import Errors
 from mailman import Message
@@ -56,8 +57,8 @@ class OutgoingRunner(Runner, BounceMixin):
 
     def _dispose(self, mlist, msg, msgdata):
         # See if we should retry delivery of this message again.
-        deliver_after = msgdata.get('deliver_after', 0)
-        if datetime.datetime.now() < deliver_after:
+        deliver_after = msgdata.get('deliver_after', datetime.fromtimestamp(0))
+        if datetime.now() < deliver_after:
             return True
         # Make sure we have the most up-to-date state
         try:
@@ -102,7 +103,7 @@ class OutgoingRunner(Runner, BounceMixin):
                 # occasionally move them back here for another shot at
                 # delivery.
                 if e.tempfailures:
-                    now = datetime.datetime.now()
+                    now = datetime.now()
                     recips = e.tempfailures
                     last_recip_count = msgdata.get('last_recip_count', 0)
                     deliver_until = msgdata.get('deliver_until', now)

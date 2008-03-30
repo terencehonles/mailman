@@ -20,11 +20,14 @@ from __future__ import with_statement
 import os
 import sys
 
+from email import message_from_string
+
 from mailman import Utils
 from mailman import Version
+from mailman.Message import Message
 from mailman.configuration import config
 from mailman.i18n import _
-from mailman.inject import inject
+from mailman.inject import inject_text
 from mailman.options import SingleMailingListOptions
 
 
@@ -81,7 +84,7 @@ def main():
         with open(options.filename) as fp:
             message_text = fp.read()
 
-    inject(fqdn_listname, message_text, qdir=qdir)
+    inject_text(mlist, message_text, qdir=qdir)
 
 
 

@@ -25,11 +25,11 @@ __metaclass__ = type
 
 
 from mailman.chains.accept import AcceptChain
+from mailman.chains.builtin import BuiltInChain
 from mailman.chains.discard import DiscardChain
 from mailman.chains.headers import HeaderMatchChain
 from mailman.chains.hold import HoldChain
 from mailman.chains.reject import RejectChain
-from mailman.chains.builtin import BuiltInChain
 from mailman.configuration import config
 from mailman.interfaces import LinkAction
 

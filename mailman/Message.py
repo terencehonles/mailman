@@ -248,11 +248,10 @@ class UserNotification(Message):
         This is used for all internally crafted messages.
         """
         # Since we're crafting the message from whole cloth, let's make sure
-        # this message has a Message-ID.  Yes, the MTA would give us one, but
-        # this is useful for logging to logs/smtp.
+        # this message has a Message-ID.
         if 'message-id' not in self:
             self['Message-ID'] = email.utils.make_msgid()
-        # Ditto for Date: which is required by RFC 2822
+        # Ditto for Date: as required by RFC 2822.
         if 'date' not in self:
             self['Date'] = email.utils.formatdate(localtime=True)
         # UserNotifications are typically for admin messages, and for messages
@@ -271,6 +270,7 @@ class UserNotification(Message):
             recips=self.recips,
             nodecorate=True,
             reduced_list_headers=True,
+            pipeline='virgin',
             )
         if mlist is not None:
             enqueue_kws['listname'] = mlist.fqdn_listname
@@ -307,4 +307,5 @@ class OwnerNotification(UserNotification):
                         nodecorate=True,
                         reduced_list_headers=True,
                         envsender=self._sender,
+                        pipeline='virgin',
                         **_kws)

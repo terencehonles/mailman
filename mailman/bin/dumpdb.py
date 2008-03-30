@@ -1,5 +1,3 @@
-#! @PYTHON@
-#
 # Copyright (C) 1998-2008 by the Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or
@@ -17,110 +15,76 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-import sys
+from __future__ import with_statement
+
 import pprint
 import cPickle
-import marshal
-import optparse
 
-from mailman import Version
 from mailman.configuration import config
 from mailman.i18n import _
+from mailman.interact import interact
+from mailman.options import Options
 
 
 COMMASPACE = ', '
+m = []
 
 
 
-def parseargs():
-    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
-                                   usage=_("""\
-%%prog [options] filename
+class ScriptOptions(Options):
+    usage=_("""\
+%prog [options] filename
 
-Dump the contents of any Mailman `database' file.
+Dump the contents of any Mailman queue file.  The queue file is a data file
+with multiple Python pickles in it.""")
 
-If the filename ends with `.db', then it is assumed that the file contains a
-Python marshal.  If the file ends with `.pck' then it is assumed to contain a
-Python pickle.  In either case, if you want to override the default assumption
--- or if the file ends in neither suffix -- use the -p or -m flags."""))
-    parser.add_option('-m', '--marshal',
-                      default=False, action='store_true',
-                      help=_("""\
-Assume the file contains a Python marshal,
-overridding any automatic guessing."""))
-    parser.add_option('-p', '--pickle',
-                      default=False, action='store_true',
-                      help=_("""\
-Assume the file contains a Python pickle,
-overridding any automatic guessing."""))
-    parser.add_option('-n', '--noprint',
-                      default=False, action='store_true',
-                      help=_("""\
-Don't attempt to pretty print the object.  This is useful if there's
-some problem with the object and you just want to get an unpickled
-representation.  Useful with `python -i bin/dumpdb <file>'.  In that
-case, the root of the tree will be left in a global called "msg"."""))
-    parser.add_option('-C', '--config',
-                      help=_('Alternative configuration file to use'))
-    opts, args = parser.parse_args()
-    # Options.
-    # None == guess, 0 == pickle, 1 == marshal
-    opts.filetype = None
-    if opts.pickle:
-        opts.filetype = 0
-    if opts.marshal:
-        opts.filetype = 1
-    opts.doprint = not opts.noprint
-    if len(args) < 1:
-        parser.error(_('No filename given.'))
-    elif len(args) > 1:
-        pargs = COMMASPACE.join(args)
-        parser.error(_('Bad arguments: $pargs'))
-    else:
-        opts.filename = args[0]
-    if opts.filetype is None:
-        if opts.filename.endswith('.db'):
-            opts.filetype = 1
-        elif opts.filename.endswith('.pck'):
-            opts.filetype = 0
+    def add_options(self):
+        super(ScriptOptions, self).add_options()
+        self.parser.add_option(
+            '-n', '--noprint',
+            dest='doprint', default=True, action='store_false',
+            help=_("""\
+Don't attempt to pretty print the object.  This is useful if there is some
+problem with the object and you just want to get an unpickled representation.
+Useful with 'bin/dumpdb -i <file>'.  In that case, the list of
+unpickled objects will be left in a variable called 'm'."""))
+        self.parser.add_option(
+            '-i', '--interact',
+            default=False, action='store_true',
+            help=_("""\
+Start an interactive Python session, with a variable called 'm' containing the
+list of unpickled objects."""))
+
+    def sanity_check(self):
+        if len(self.arguments) < 1:
+            self.parser.error(_('No filename given.'))
+        elif len(self.arguments) > 1:
+            self.parser.error(_('Unexpected arguments'))
         else:
-            parser.error(_('Please specify either -p or -m.'))
-    return parser, opts, args
+            self.filename = self.arguments[0]
 
 
 
 def main():
-    parser, opts, args = parseargs()
-    config.load(opts.config)
+    options = ScriptOptions()
+    options.initialize()
 
-    # Handle dbs
     pp = pprint.PrettyPrinter(indent=4)
-    if opts.filetype == 1:
-        load = marshal.load
-        typename = 'marshal'
-    else:
-        load = cPickle.load
-        typename = 'pickle'
-    fp = open(opts.filename)
-    m = []
-    try:
-        cnt = 1
-        if opts.doprint:
-            print _('[----- start $typename file -----]')
+    with open(options.filename) as fp:
         while True:
             try:
-                obj = load(fp)
+                m.append(cPickle.load(fp))
             except EOFError:
-                if opts.doprint:
-                    print _('[----- end $typename file -----]')
                 break
-            if opts.doprint:
-                print _('<----- start object $cnt ----->')
-                if isinstance(obj, str):
-                    print obj
-                else:
-                    pp.pprint(obj)
-            cnt += 1
-            m.append(obj)
-    finally:
-        fp.close()
+    if options.options.doprint:
+        print _('[----- start pickle -----]')
+        for i, obj in enumerate(m):
+            count = i + 1
+            print _('<----- start object $count ----->')
+            if isinstance(obj, basestring):
+                print obj
+            else:
+                pp.pprint(obj)
+        print _('[----- end pickle -----]')
+    if options.options.interact:
+        interact()

@@ -48,10 +48,26 @@ def process(mlist, msg, msgdata, pipeline_name='built-in'):
 
 
 
-class BuiltInPipeline:
-    """The built-in pipeline."""
+class BasePipeline:
+    """Base pipeline implementation."""
 
     implements(IPipeline)
+
+    _default_handlers = ()
+
+    def __init__(self):
+        self._handlers = []
+        for handler_name in self._default_handlers:
+            self._handlers.append(config.handlers[handler_name])
+
+    def __iter__(self):
+        """See `IPipeline`."""
+        for handler in self._handlers:
+            yield handler
+
+
+class BuiltInPipeline(BasePipeline):
+    """The built-in pipeline."""
 
     name = 'built-in'
     description = _('The built-in pipeline.')
@@ -73,15 +89,19 @@ class BuiltInPipeline:
         'to-outgoing',
         )
 
-    def __init__(self):
-        self._handlers = []
-        for handler_name in self._default_handlers:
-            self._handlers.append(config.handlers[handler_name])
 
-    def __iter__(self):
-        """See `IPipeline`."""
-        for handler in self._handlers:
-            yield handler
+class VirginPipeline(BasePipeline):
+    """The processing pipeline for virgin messages.
+
+    Virgin messages are those that are crafted internally by Mailman.
+    """
+    name = 'virgin'
+    description = _('The virgin queue pipeline.')
+
+    _default_handlers = (
+        'cook-headers',
+        'to-outgoing',
+        )
 
 
 
@@ -97,5 +117,6 @@ def initialize():
                 (handler.name, handler_finder))
             config.handlers[handler.name] = handler
     # Set up some pipelines.
-    pipeline = BuiltInPipeline()
-    config.pipelines[pipeline.name] = pipeline
+    for pipeline_class in (BuiltInPipeline, VirginPipeline):
+        pipeline = pipeline_class()
+        config.pipelines[pipeline.name] = pipeline

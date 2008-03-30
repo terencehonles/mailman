@@ -23,22 +23,20 @@ to go through some minimal processing before they can be sent out to the
 recipient.
 """
 
+from mailman.app.pipelines import process
 from mailman.configuration import config
 from mailman.queue import Runner
-from mailman.queue.incoming import IncomingRunner
 
 
 
-class VirginRunner(IncomingRunner):
+class VirginRunner(Runner):
     QDIR = config.VIRGINQUEUE_DIR
 
     def _dispose(self, mlist, msg, msgdata):
-        # We need to fasttrack this message through any handlers that touch
-        # it.  E.g. especially CookHeaders.
-        msgdata['_fasttrack'] = 1
-        return IncomingRunner._dispose(self, mlist, msg, msgdata)
-
-    def _get_pipeline(self, mlist, msg, msgdata):
-        # It's okay to hardcode this, since it'll be the same for all
-        # internally crafted messages.
-        return ['CookHeaders', 'ToOutgoing']
+        # We need to fast track this message through any pipeline handlers
+        # that touch it, e.g. especially cook-headers.
+        msgdata['_fasttrack'] = True
+        # Use the 'virgin' pipeline.
+        process(mlist, msg, msgdata, 'virgin')
+        # Do not keep this message queued.
+        return False
