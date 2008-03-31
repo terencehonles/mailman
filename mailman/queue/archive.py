@@ -73,7 +73,7 @@ class ArchiveRunner(Runner):
             del msg['date']
             del msg['x-original-date']
             msg['Date'] = received_time
-            if originaldate:
+            if original_date:
                 msg['X-Original-Date'] = original_date
         # Always put an indication of when we received the message.
         msg['X-List-Received-Date'] = received_time

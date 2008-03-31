@@ -5,8 +5,10 @@ Mailman can archive to any number of archivers that adhere to the IArchiver
 interface.  By default, there's a Pipermail archiver.
 
     >>> from mailman.app.lifecycle import create_list
+    >>> from mailman.configuration import config
     >>> mlist = create_list(u'test@example.com')
     >>> mlist.web_page_url = u'http://www.example.com/'
+    >>> config.db.commit()
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
@@ -17,7 +19,6 @@ interface.  By default, there's a Pipermail archiver.
     ... First post!
     ... """)
 
-    >>> from mailman.configuration import config
     >>> from mailman.queue import Switchboard
     >>> archiver_queue = Switchboard(config.ARCHQUEUE_DIR)
     >>> ignore = archiver_queue.enqueue(msg, {}, listname=mlist.fqdn_listname)
@@ -29,7 +30,8 @@ interface.  By default, there's a Pipermail archiver.
 
     # The best we can do is verify some landmark exists.  Let's use the
     # Pipermail pickle file exists.
+    >>> listname = mlist.fqdn_listname
     >>> import os
-    >>> os.path.exists(os.path.join(config.PUBLIC_ARCHIVE_FILE_DIR,
-    ...                             mlist.fqdn_listname, 'pipermail.pck'))
+    >>> os.path.exists(os.path.join(
+    ...     config.PUBLIC_ARCHIVE_FILE_DIR, listname, 'pipermail.pck'))
     True
