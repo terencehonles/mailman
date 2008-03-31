@@ -38,7 +38,7 @@ Print the Mailman version and exit."""))
 def main():
     parser, opts, args = parseargs()
     # Yes, this is kind of silly
-    print _('Using $Version.MAILMAN_VERSION')
+    print _('Using $Version.MAILMAN_VERSION ($Version.CODENAME)')
 
 
 
