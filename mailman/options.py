@@ -29,7 +29,7 @@ import sys
 from copy import copy
 from optparse import Option, OptionParser, OptionValueError
 
-from mailman.Version import MAILMAN_VERSION
+from mailman.version import MAILMAN_VERSION
 from mailman.configuration import config
 from mailman.i18n import _
 from mailman.initialize import initialize

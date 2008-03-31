@@ -20,11 +20,12 @@ import sys
 import optparse
 
 from mailman import Errors
-from mailman import Version
 from mailman import interact
 from mailman.configuration import config
 from mailman.i18n import _
 from mailman.initialize import initialize
+from mailman.version import MAILMAN_VERSION
+
 
 LAST_MLIST  = None
 VERBOSE     = True
@@ -55,7 +56,7 @@ def do_list(listname, args, func):
 
 
 def parseargs():
-    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=MAILMAN_VERSION,
                                    usage=_("""\
 %prog [options] listname [args ...]
 

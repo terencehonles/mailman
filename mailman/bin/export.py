@@ -31,13 +31,14 @@ from xml.sax.saxutils import escape
 from mailman import Defaults
 from mailman import Errors
 from mailman import MemberAdaptor
-from mailman import Version
 from mailman.MailList import MailList
 from mailman.configuration import config
 from mailman.i18n import _
 from mailman.initialize import initialize
+from mailman.version import MAILMAN_VERSION
 
-SPACE           = ' '
+
+SPACE = ' '
 
 TYPES = {
     Defaults.Toggle         : 'bool',

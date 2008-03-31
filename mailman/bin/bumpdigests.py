@@ -20,9 +20,9 @@ import optparse
 
 from mailman import Errors
 from mailman import MailList
-from mailman import Version
 from mailman.configuration import config
 from mailman.i18n import _
+from mailman.version import MAILMAN_VERSION
 
 # Work around known problems with some RedHat cron daemons
 import signal
@@ -31,7 +31,7 @@ signal.signal(signal.SIGCHLD, signal.SIG_DFL)
 
 
 def parseargs():
-    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=MAILMAN_VERSION,
                                    usage=_("""\
 %prog [options] [listname ...]
 

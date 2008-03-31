@@ -21,7 +21,6 @@ from email.Utils import formataddr
 
 from mailman import Errors
 from mailman import Utils
-from mailman import Version
 from mailman.configuration import config
 from mailman.i18n import _
 from mailman.interfaces import DeliveryStatus

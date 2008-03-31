@@ -29,10 +29,10 @@ import logging
 
 from optparse import OptionParser
 
-from mailman import Version
 from mailman.configuration import config
 from mailman.i18n import _
 from mailman.initialize import initialize
+from mailman.version import MAILMAN_VERSION
 
 
 COMMASPACE = ', '
@@ -43,7 +43,7 @@ parser = None
 
 
 def parseargs():
-    parser = OptionParser(version=Version.MAILMAN_VERSION,
+    parser = OptionParser(version=MAILMAN_VERSION,
                           usage=_("""\
 Primary start-up and shutdown script for Mailman's qrunner daemon.
 

@@ -22,8 +22,8 @@ import sys
 import mailbox
 import optparse
 
-from mailman import Version
 from mailman.i18n import _
+from mailman.version import MAILMAN_VERSION
 
 
 cre = re.compile(mailbox.UnixMailbox._fromlinepattern)
@@ -35,7 +35,7 @@ fre = re.compile(r'[\041-\071\073-\176]+')
 
 
 def parseargs():
-    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=MAILMAN_VERSION,
                                    usage=_("""\
 %prog [options] < inputfile > outputfile
 

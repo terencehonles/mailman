@@ -23,7 +23,7 @@ import errno
 
 from mailman import Defaults
 from mailman import Errors
-from mailman import Version
+from mailman import version
 from mailman.languages import LanguageManager
 
 SPACE = ' '
@@ -49,7 +49,7 @@ class Configuration(object):
         self._reverse = None
         self.qrunners = {}
         self.qrunner_shortcuts = {}
-        self.QFILE_SCHEMA_VERSION = Version.QFILE_SCHEMA_VERSION
+        self.QFILE_SCHEMA_VERSION = version.QFILE_SCHEMA_VERSION
 
     def load(self, filename=None):
         join = os.path.join

@@ -32,7 +32,7 @@ from mailman import MailList
 from mailman import Message
 from mailman import Pending
 from mailman import Utils
-from mailman import Version
+from mailman import version
 from mailman.MemberAdaptor import BYBOUNCE, ENABLED
 from mailman.OldStyleMemberships import OldStyleMemberships
 from mailman.Queue.Switchboard import Switchboard
@@ -47,7 +47,7 @@ NOTFRESH = -1
 
 
 def parseargs():
-    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=version.MAILMAN_VERSION,
                                    usage=_("""\
 Perform all necessary upgrades.
 
@@ -77,7 +77,7 @@ def calcversions():
     #
     # See if we stored the last updated version
     lastversion = None
-    thisversion = Version.HEX_VERSION
+    thisversion = version.HEX_VERSION
     try:
         fp = open(os.path.join(config.DATA_DIR, 'last_mailman_version'))
         data = fp.read()

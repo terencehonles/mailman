@@ -17,13 +17,13 @@
 
 import optparse
 
-from mailman import Version
+from mailman import version
 from mailman.i18n import _
 
 
 
 def parseargs():
-    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=version.MAILMAN_VERSION,
                                    usage=_("""\
 %prog
 
@@ -38,7 +38,7 @@ Print the Mailman version and exit."""))
 def main():
     parser, opts, args = parseargs()
     # Yes, this is kind of silly
-    print _('Using $Version.MAILMAN_VERSION ($Version.CODENAME)')
+    print _('Using $version.MAILMAN_VERSION ($version.CODENAME)')
 
 
 

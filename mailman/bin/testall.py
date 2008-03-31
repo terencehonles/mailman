@@ -31,10 +31,11 @@ import tempfile
 import unittest
 import pkg_resources
 
-from mailman import Version
 from mailman.configuration import config
 from mailman.i18n import _
 from mailman.initialize import initialize_1, initialize_2
+from mailman.version import MAILMAN_VERSION
+
 
 basedir = None
 
@@ -52,7 +53,7 @@ def v_callback(option, opt, value, parser):
 
 
 def parseargs():
-    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=MAILMAN_VERSION,
                                    usage=_("""\
 %prog [options] [tests]
 

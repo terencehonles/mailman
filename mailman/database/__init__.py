@@ -30,7 +30,7 @@ from string import Template
 from urlparse import urlparse
 from zope.interface import implements
 
-import mailman.Version
+import mailman.version
 import mailman.database
 
 from mailman.configuration import config
@@ -126,9 +126,9 @@ class StockDatabase:
         if not v:
             # Database has not yet been initialized
             v = Version(component=u'schema',
-                        version=mailman.Version.DATABASE_SCHEMA_VERSION)
+                        version=mailman.version.DATABASE_SCHEMA_VERSION)
             store.add(v)
-        elif v.version <> mailman.Version.DATABASE_SCHEMA_VERSION:
+        elif v.version <> mailman.version.DATABASE_SCHEMA_VERSION:
             # XXX Update schema
             raise SchemaVersionMismatchError(v.version)
         self.store = store

@@ -23,7 +23,6 @@ import sys
 from email import message_from_string
 
 from mailman import Utils
-from mailman import Version
 from mailman.Message import Message
 from mailman.configuration import config
 from mailman.i18n import _

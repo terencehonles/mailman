@@ -32,11 +32,11 @@ from locknix import lockfile
 from mailman import MailList
 from mailman import Message
 from mailman import Utils
-from mailman import Version
 from mailman import loginit
 from mailman.configuration import config
 from mailman.i18n import _
 from mailman.queue import Switchboard
+from mailman.version import MAILMAN_VERSION
 
 # Work around known problems with some RedHat cron daemons
 import signal
@@ -52,7 +52,7 @@ class _ContinueLoop(Exception):
 
 
 def parseargs():
-    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=MAILMAN_VERSION,
                                    usage=_("""\
 %prog [options]
 

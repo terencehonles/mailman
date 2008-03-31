@@ -30,11 +30,11 @@ from email.Utils import parseaddr, formataddr, getaddresses
 from zope.interface import implements
 
 from mailman import Utils
-from mailman import Version
+from mailman.app.archiving import get_primary_archiver
 from mailman.configuration import config
 from mailman.i18n import _
 from mailman.interfaces import IHandler, Personalization, ReplyToMunging
-from mailman.app.archiving import get_primary_archiver
+from mailman.version import VERSION
 
 
 CONTINUATION = ',\n\t'
@@ -98,7 +98,7 @@ def process(mlist, msg, msgdata):
     # using such an old version, they may be vulnerable.  It's too easy to
     # edit the code to add a configuration variable to handle this.
     if 'x-mailman-version' not in msg:
-        msg['X-Mailman-Version'] = Version.VERSION
+        msg['X-Mailman-Version'] = VERSION
     # We set "Precedence: list" because this is the recommendation from the
     # sendmail docs, the most authoritative source of this header's semantics.
     if 'precedence' not in msg:

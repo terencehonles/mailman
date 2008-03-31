@@ -40,7 +40,7 @@ from zope.interface import implements
 from mailman import Errors
 from mailman.Message import UserNotification
 from mailman.Utils import oneline
-from mailman.Version import VERSION
+from mailman.version import VERSION
 from mailman.configuration import config
 from mailman.i18n import _
 from mailman.interfaces import IHandler

@@ -166,7 +166,7 @@ def print_traceback(log=None):
     except ImportError:
         traceback = None
     try:
-        from Mailman.Version import VERSION
+        from mailman.version import VERSION
     except ImportError:
         VERSION = '&lt;undetermined&gt;'
 

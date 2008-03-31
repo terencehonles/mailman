@@ -24,9 +24,9 @@ import optparse
 
 from stat import *
 
-from mailman import Version
 from mailman.configuration import config
 from mailman.i18n import _
+from mailman.version import MAILMAN_VERSION
 
 
 # XXX Need to check the archives/private/*/database/* files
@@ -348,7 +348,7 @@ def checkdata():
 
 
 def parseargs():
-    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=MAILMAN_VERSION,
                                    usage=_("""\
 %prog [options]
 

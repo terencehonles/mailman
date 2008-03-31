@@ -25,9 +25,9 @@ from mailman import Errors
 from mailman import MailList
 from mailman import Message
 from mailman import Utils
-from mailman import Version
 from mailman import i18n
 from mailman.configuration import config
+from mailman.version import MAILMAN_VERSION
 
 _ = i18n._
 SPACE = ' '
@@ -35,7 +35,7 @@ SPACE = ' '
 
 
 def parseargs():
-    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=MAILMAN_VERSION,
                                    usage=_("""\
 %%prog [options]
 

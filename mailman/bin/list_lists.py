@@ -16,7 +16,6 @@
 # USA.
 
 from mailman import Defaults
-from mailman import Version
 from mailman.configuration import config
 from mailman.i18n import _
 from mailman.options import Options

@@ -23,7 +23,7 @@ for python and, recursively, for nested HTML formatting objects.
 
 from Mailman import Defaults
 from Mailman import Utils
-from Mailman import Version
+from Mailman import version
 from Mailman.configuration import config
 from Mailman.i18n import _
 
@@ -606,7 +606,7 @@ def MailmanLogo():
         def logo(file):
             return config.IMAGE_LOGOS + file
         mmlink = '<img src="%s" alt="Delivered by Mailman" border=0>' \
-                 '<br>version %s' % (logo(DELIVERED_BY), Version.VERSION)
+                 '<br>version %s' % (logo(DELIVERED_BY), version.VERSION)
         pylink = '<img src="%s" alt="Python Powered" border=0>' % \
                  logo(PYTHON_POWERED)
         gnulink = '<img src="%s" alt="GNU\'s Not Unix" border=0>' % \
@@ -614,7 +614,7 @@ def MailmanLogo():
         t.AddRow([mmlink, pylink, gnulink])
     else:
         # use only textual links
-        version = Version.VERSION
+        version = version.VERSION
         mmlink = Link(config.MAILMAN_URL,
                       _('Delivered by Mailman<br>version %(version)s'))
         pylink = Link(PYTHON_URL, _('Python Powered'))

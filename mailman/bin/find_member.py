@@ -21,9 +21,9 @@ import optparse
 
 from mailman import Errors
 from mailman import MailList
-from mailman import Version
 from mailman.configuration import config
 from mailman.i18n import _
+from mailman.version import MAILMAN_VERSION
 
 
 AS_MEMBER   = 0x01
@@ -32,7 +32,7 @@ AS_OWNER    = 0x02
 
 
 def parseargs():
-    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=MAILMAN_VERSION,
                                    usage=_("""\
 %prog [options] regex [regex ...]
 

@@ -22,13 +22,13 @@ import optparse
 
 from mailman import Message
 from mailman import Utils
-from mailman import Version
 from mailman import i18n
 from mailman import passwords
 from mailman.app.membership import add_member
 from mailman.configuration import config
 from mailman.initialize import initialize
 from mailman.interfaces import DeliveryMode
+from mailman.version import MAILMAN_VERSION
 
 
 _ = i18n._
@@ -42,7 +42,7 @@ DELIVERY_MODES = {
 
 
 def parseargs():
-    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=MAILMAN_VERSION,
                                    usage=_("""\
 %prog [options] csv-file
 

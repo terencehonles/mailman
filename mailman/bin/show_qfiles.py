@@ -19,11 +19,9 @@ import sys
 import optparse
 from cPickle import load
 
-from mailman import Version
 from mailman.configuration import config
 from mailman.i18n import _
-
-__i18_templates__ = True
+from mailman.version import MAILMAN_VERSION
 
 
 

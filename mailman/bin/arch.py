@@ -25,19 +25,19 @@ import optparse
 
 from locknix.lockfile import Lock
 
-from mailman import Version
 from mailman import i18n
 from mailman.Archiver.HyperArch import HyperArchive
 from mailman.Defaults import hours
 from mailman.configuration import config
 from mailman.initialize import initialize
+from mailman.version import MAILMAN_VERSION
 
 _ = i18n._
 
 
 
 def parseargs():
-    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=MAILMAN_VERSION,
                                    usage=_("""\
 %%prog [options] listname [mbox]
 

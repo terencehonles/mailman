@@ -29,11 +29,11 @@ from mailman import Defaults
 from mailman import Errors
 from mailman import MemberAdaptor
 from mailman import Utils
-from mailman import Version
 from mailman import passwords
 from mailman.MailList import MailList
 from mailman.i18n import _
 from mailman.initialize import initialize
+from mailman.version import MAILMAN_VERSION
 
 
 OPTS = None
@@ -264,7 +264,7 @@ def create(all_listdata):
 
 
 def parseargs():
-    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=MAILMAN_VERSION,
                                    usage=_("""\
 %prog [options]
 

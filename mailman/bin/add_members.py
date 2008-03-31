@@ -27,7 +27,6 @@ from email.utils import parseaddr
 from mailman import Errors
 from mailman import Message
 from mailman import Utils
-from mailman import Version
 from mailman import i18n
 from mailman.app.membership import add_member
 from mailman.configuration import config

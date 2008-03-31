@@ -20,11 +20,10 @@ import sys
 import pprint
 import optparse
 
-from mailman import Version
 from mailman.configuration import config
 from mailman.i18n import _
+from mailman.version import MAILMAN_VERSION
 
-__i18_templates__ = True
 
 # List of names never to show even if --verbose
 NEVER_SHOW = ['__builtins__', '__doc__']
@@ -32,7 +31,7 @@ NEVER_SHOW = ['__builtins__', '__doc__']
 
 
 def parseargs():
-    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=MAILMAN_VERSION,
                                    usage=_("""\
 %%prog [options] [pattern ...]
 

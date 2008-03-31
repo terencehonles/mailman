@@ -30,7 +30,7 @@ from pkg_resources import resource_string
 from string import Template
 
 from mailman import Defaults
-from mailman.Version import MAILMAN_VERSION
+from mailman.version import MAILMAN_VERSION
 from mailman.i18n import _
 
 

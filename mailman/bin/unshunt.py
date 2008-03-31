@@ -18,15 +18,15 @@
 import sys
 import optparse
 
-from mailman import Version
 from mailman.configuration import config
 from mailman.i18n import _
 from mailman.queue import Switchboard
+from mailman.version import MAILMAN_VERSION
 
 
 
 def parseargs():
-    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=MAILMAN_VERSION,
                                    usage=_("""\
 %%prog [options] [directory]
 

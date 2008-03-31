@@ -25,8 +25,8 @@ Mailman's back end.
 
 from zope.interface import Interface, Attribute
 
-from mailman.Version import DATABASE_SCHEMA_VERSION
 from mailman.interfaces.errors import MailmanError
+from mailman.version import DATABASE_SCHEMA_VERSION
 
 
 
