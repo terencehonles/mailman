@@ -88,7 +88,7 @@ Mailman will also insert an X-Mailman-Version header...
     ... A message of great import.
     ... """)
     >>> process(mlist, msg, {})
-    >>> from mailman.Version import VERSION
+    >>> from mailman.version import VERSION
     >>> msg['x-mailman-version'] == VERSION
     True
 
