@@ -497,7 +497,7 @@ def save_attachment(mlist, msg, dir, filter_html=True):
     fp.write(decodedpayload)
     fp.close()
     # Now calculate the url to the list's archive.
-    baseurl = get_primary_archiver().get_list_url(mlist)
+    baseurl = get_primary_archiver(mlist).get_list_url()
     if not baseurl.endswith('/'):
         baseurl += '/'
     # Trailing space will definitely be a problem with format=flowed.
