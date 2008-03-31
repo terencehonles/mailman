@@ -42,57 +42,7 @@ class TestSafeDict(unittest.TestCase):
 
 
 
-class TestMsgSafeDict(unittest.TestCase):
-    def setUp(self):
-        self._msg = email.message_from_string("""To: foo
-From: bar
-Subject: baz
-Cc: aperson@dom.ain
-Cc: bperson@dom.ain
-
-""")
-
-    def test_normal_key(self):
-        sd = SafeDict.MsgSafeDict(self._msg, {'key': 'value'})
-        si = '%(key)s' % sd
-        self.assertEqual(si, 'value')
-
-    def test_msg_key(self):
-        sd = SafeDict.MsgSafeDict(self._msg, {'to': 'value'})
-        si = '%(msg_to)s' % sd
-        self.assertEqual(si, 'foo')
-
-    def test_allmsg_key(self):
-        sd = SafeDict.MsgSafeDict(self._msg, {'cc': 'value'})
-        si = '%(allmsg_cc)s' % sd
-        self.assertEqual(si, 'aperson@dom.ain, bperson@dom.ain')
-
-    def test_msg_no_key(self):
-        sd = SafeDict.MsgSafeDict(self._msg)
-        si = '%(msg_date)s' % sd
-        self.assertEqual(si, 'n/a')
-
-    def test_allmsg_no_key(self):
-        sd = SafeDict.MsgSafeDict(self._msg)
-        si = '%(allmsg_date)s' % sd
-        self.assertEqual(si, 'n/a')
-
-    def test_copy(self):
-        sd = SafeDict.MsgSafeDict(self._msg, {'foo': 'bar'})
-        copy = sd.copy()
-        items = copy.items()
-        items.sort()
-        self.assertEqual(items, [
-            ('allmsg_cc', 'aperson@dom.ain, bperson@dom.ain'),
-            ('foo', 'bar'),
-            ('msg_from', 'bar'),
-            ('msg_subject', 'baz'),
-            ('msg_to', 'foo'),
-            ])
-
-
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestSafeDict))
-    suite.addTest(unittest.makeSuite(TestMsgSafeDict))
     return suite

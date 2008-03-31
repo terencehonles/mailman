@@ -270,7 +270,6 @@ class UserNotification(Message):
             recips=self.recips,
             nodecorate=True,
             reduced_list_headers=True,
-            pipeline='virgin',
             )
         if mlist is not None:
             enqueue_kws['listname'] = mlist.fqdn_listname
@@ -307,5 +306,4 @@ class OwnerNotification(UserNotification):
                         nodecorate=True,
                         reduced_list_headers=True,
                         envsender=self._sender,
-                        pipeline='virgin',
                         **_kws)

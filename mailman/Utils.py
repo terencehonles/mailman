@@ -858,5 +858,3 @@ def get_pattern(email, pattern_list):
                 matched = pattern
                 break
     return matched
-
-

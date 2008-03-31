@@ -53,34 +53,3 @@ class SafeDict(dict):
             if isinstance(v, str):
                 self.__setitem__(k, unicode(v, self.cset))
         return template % self
-
-
-
-class MsgSafeDict(SafeDict):
-    def __init__(self, msg, d=None):
-        self.__msg = msg
-        if d is None:
-            d = {}
-        super(MsgSafeDict, self).__init__(d)
-
-    def __getitem__(self, key):
-        if key.startswith('msg_'):
-            return self.__msg.get(key[4:], 'n/a')
-        elif key.startswith('allmsg_'):
-            missing = []
-            all = self.__msg.get_all(key[7:], missing)
-            if all is missing:
-                return 'n/a'
-            return COMMASPACE.join(all)
-        else:
-            return super(MsgSafeDict, self).__getitem__(key)
-
-    def copy(self):
-        d = super(MsgSafeDict, self).copy()
-        for k in self.__msg.keys():
-            vals = self.__msg.get_all(k)
-            if len(vals) == 1:
-                d['msg_'+k.lower()] = vals[0]
-            else:
-                d['allmsg_'+k.lower()] = COMMASPACE.join(vals)
-        return d

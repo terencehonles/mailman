@@ -210,5 +210,8 @@ def main():
                 "The variable 'm' is the $listname mailing list")
         else:
             banner = interact.DEFAULT_BANNER
-        overrides = dict(m=LAST_MLIST, r=r)
+        overrides = dict(m=LAST_MLIST, r=r,
+                         commit=config.db.commit,
+                         abort=config.db.abort,
+                         config=config)
         interact.interact(upframe=False, banner=banner, overrides=overrides)

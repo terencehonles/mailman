@@ -60,7 +60,8 @@ shamax = 0xffffffffffffffffffffffffffffffffffffffffL
 # prevents skipping one of two entries with the same time until the next pass.
 DELTA = .0001
 
-log = logging.getLogger('mailman.error')
+elog = logging.getLogger('mailman.error')
+dlog = logging.getLogger('mailman.debug')
 
 
 
@@ -168,7 +169,8 @@ class Switchboard:
             else:
                 os.unlink(bakfile)
         except EnvironmentError, e:
-            log.exception('Failed to unlink/preserve backup file: %s', bakfile)
+            elog.exception(
+                'Failed to unlink/preserve backup file: %s', bakfile)
 
     @property
     def files(self):
@@ -257,12 +259,15 @@ class Runner:
             self._cleanup()
 
     def _oneloop(self):
+        me = self.__class__.__name__
+        dlog.debug('[%s] starting oneloop', me)
         # First, list all the files in our queue directory.
         # Switchboard.files() is guaranteed to hand us the files in FIFO
         # order.  Return an integer count of the number of files that were
         # available for this qrunner to process.
         files = self._switchboard.files
         for filebase in files:
+            dlog.debug('[%s] processing filebase: %s', me, filebase)
             try:
                 # Ask the switchboard for the message and metadata objects
                 # associated with this filebase.
@@ -274,13 +279,15 @@ class Runner:
                 # We don't want the runner to die, so we just log and skip
                 # this entry, but preserve it for analysis.
                 self._log(e)
-                log.error('Skipping and preserving unparseable message: %s',
-                          filebase)
+                elog.error('Skipping and preserving unparseable message: %s',
+                           filebase)
                 self._switchboard.finish(filebase, preserve=True)
                 config.db.abort()
                 continue
             try:
+                dlog.debug('[%s] processing onefile', me)
                 self._onefile(msg, msgdata)
+                dlog.debug('[%s] finishing filebase: %s', me, filebase)
                 self._switchboard.finish(filebase)
             except Exception, e:
                 # All runners that implement _dispose() must guarantee that
@@ -297,23 +304,30 @@ class Runner:
                 # message.  Try to be graceful.
                 try:
                     new_filebase = self._shunt.enqueue(msg, msgdata)
-                    log.error('SHUNTING: %s', new_filebase)
+                    elog.error('SHUNTING: %s', new_filebase)
                     self._switchboard.finish(filebase)
                 except Exception, e:
                     # The message wasn't successfully shunted.  Log the
                     # exception and try to preserve the original queue entry
                     # for possible analysis.
                     self._log(e)
-                    log.error('SHUNTING FAILED, preserving original entry: %s',
-                              filebase)
+                    elog.error(
+                        'SHUNTING FAILED, preserving original entry: %s',
+                        filebase)
                     self._switchboard.finish(filebase, preserve=True)
-                    config.db.abort()
+                config.db.abort()
             # Other work we want to do each time through the loop.
+            dlog.debug('[%s] reaping', me)
             Utils.reap(self._kids, once=True)
+            dlog.debug('[%s] doing periodic', me)
             self._doperiodic()
+            dlog.debug('[%s] checking short circuit', me)
             if self._shortcircuit():
+                dlog.debug('[%s] short circuiting', me)
                 break
+            dlog.debug('[%s] commiting', me)
             config.db.commit()
+        dlog.debug('[%s] ending oneloop: %s', me, len(files))
         return len(files)
 
     def _onefile(self, msg, msgdata):
@@ -327,8 +341,8 @@ class Runner:
         listname = msgdata.get('listname')
         mlist = config.db.list_manager.get(listname)
         if not mlist:
-            log.error('Dequeuing message destined for missing list: %s',
-                      listname)
+            elog.error('Dequeuing message destined for missing list: %s',
+                       listname)
             self._shunt.enqueue(msg, msgdata)
             return
         # Now process this message, keeping track of any subprocesses that may
@@ -357,10 +371,10 @@ class Runner:
             self._switchboard.enqueue(msg, msgdata)
 
     def _log(self, exc):
-        log.error('Uncaught runner exception: %s', exc)
+        elog.error('Uncaught runner exception: %s', exc)
         s = StringIO()
         traceback.print_exc(file=s)
-        log.error('%s', s.getvalue())
+        elog.error('%s', s.getvalue())
 
     #
     # Subclasses can override these methods.

@@ -551,19 +551,21 @@ LOG_CONFIG_FILE = None
 # printing of this log message.
 SMTP_LOG_EVERY_MESSAGE = (
     'smtp',
-    '%(msg_message-id)s smtp to %(listname)s for %(#recips)d recips, completed in %(time).3f seconds')
+    ('${message-id} smtp to $listname for ${#recips} recips, '
+     'completed in $time seconds'))
 
 # This will only be printed if there were no immediate smtp failures.
 # Mutually exclusive with SMTP_LOG_REFUSED.
 SMTP_LOG_SUCCESS = (
     'post',
-    'post to %(listname)s from %(sender)s, size=%(size)d, message-id=%(msg_message-id)s, success')
+    '${message-id} post to $listname from $sender, size=$size, success')
 
 # This will only be printed if there were any addresses which encountered an
 # immediate smtp failure.  Mutually exclusive with SMTP_LOG_SUCCESS.
 SMTP_LOG_REFUSED = (
     'post',
-    'post to %(listname)s from %(sender)s, size=%(size)d, message-id=%(msg_message-id)s, %(#refused)d failures')
+    ('${message-id} post to $listname from $sender, size=$size, '
+     '${#refused} failures'))
 
 # This will be logged for each specific recipient failure.  Additional %()s
 # keys are:
@@ -573,7 +575,8 @@ SMTP_LOG_REFUSED = (
 #     failmsg   -- the actual smtp message, if available
 SMTP_LOG_EACH_FAILURE = (
     'smtp-failure',
-    'delivery to %(recipient)s failed with code %(failcode)d: %(failmsg)s')
+    ('${message-id} delivery to $recipient failed with code $failcode: '
+     '$failmsg'))
 
 # These variables control the format and frequency of VERP-like delivery for
 # better bounce detection.  VERP is Variable Envelope Return Path, defined
@@ -878,8 +881,8 @@ DEFAULT_MSG_HEADER = u''
 DEFAULT_MSG_FOOTER = u"""\
 _______________________________________________
 $real_name mailing list
-$fqdn_realname
-${web_page_url}listinfo${cgiext}/${list_name}
+$fqdn_listname
+${web_page_url}listinfo${cgiext}/${fqdn_listname}
 """
 
 # Scrub regular delivery
