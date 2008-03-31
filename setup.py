@@ -21,7 +21,7 @@ import sys
 from string import Template
 
 import mailman.bin
-from mailman.Version import VERSION as __version__
+from mailman.version import VERSION as __version__
 from setuptools import setup, find_packages
 
 
