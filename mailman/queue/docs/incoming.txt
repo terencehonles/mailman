@@ -36,8 +36,8 @@ pipeline queue.
 Normally, the upstream mail server would drop the message in the incoming
 queue, but this is an effective simulation.
 
-    >>> from mailman.inject import inject
-    >>> inject(u'_xtest@example.com', msg)
+    >>> from mailman.inject import inject_message
+    >>> inject_message(mlist, msg)
 
 The incoming queue runner runs until it is empty.
 
@@ -63,6 +63,7 @@ And now the message is in the pipeline queue.
     To: _xtest@example.com
     Subject: My first post
     Message-ID: <first>
+    Date: ...
     X-Mailman-Rule-Misses: approved; emergency; loop; administrivia;
         implicit-dest;
         max-recipients; max-size; news-moderation; no-subject;
@@ -89,7 +90,7 @@ pipeline queue.
 
     >>> mlist.emergency = True
     >>> mlist.web_page_url = u'http://archives.example.com/'
-    >>> inject(u'_xtest@example.com', msg)
+    >>> inject_message(mlist, msg)
     >>> file_pos = fp.tell()
     >>> incoming.run()
     >>> len(pipeline_queue.files)
@@ -121,7 +122,7 @@ new chain and set it as the mailing list's start chain.
     >>> test_chain.append_link(link)
     >>> mlist.start_chain = u'always-discard'
 
-    >>> inject(u'_xtest@example.com', msg)
+    >>> inject_message(mlist, msg)
     >>> file_pos = fp.tell()
     >>> incoming.run()
     >>> len(pipeline_queue.files)
@@ -155,7 +156,7 @@ tests above.
     >>> virgin_queue = Switchboard(config.VIRGINQUEUE_DIR)
     >>> ignore = get_queue_messages(virgin_queue)
 
-    >>> inject(u'_xtest@example.com', msg)
+    >>> inject_message(mlist, msg)
     >>> file_pos = fp.tell()
     >>> incoming.run()
     >>> len(pipeline_queue.files)
@@ -171,12 +172,14 @@ tests above.
     From: _xtest-owner@example.com
     To: aperson@example.com
     ...
+    <BLANKLINE>
+    --===============...
     Content-Type: text/plain; charset="us-ascii"
     MIME-Version: 1.0
     Content-Transfer-Encoding: 7bit
     <BLANKLINE>
     [No bounce details are available]
-    ...
+    --===============...
     Content-Type: message/rfc822
     MIME-Version: 1.0
     <BLANKLINE>
@@ -184,10 +187,12 @@ tests above.
     To: _xtest@example.com
     Subject: My first post
     Message-ID: <first>
+    Date: ...
     <BLANKLINE>
     First post!
     <BLANKLINE>
-    ...
+    --===============...
+
     >>> sorted(item.msgdata.items())
     [...('recips', [u'aperson@example.com'])...]
     >>> fp.seek(file_pos)
