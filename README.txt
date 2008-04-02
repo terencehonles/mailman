@@ -1,5 +1,5 @@
 Mailman - The GNU Mailing List Management System
-Copyright (C) 1998-2007 by the Free Software Foundation, Inc.
+Copyright (C) 1998-2008 by the Free Software Foundation, Inc.
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 
 INTRODUCTION
@@ -9,9 +9,9 @@ INTRODUCTION
     software is spelled "Mailman" with a leading capital `M' but with a lower
     case second `m'.  Any other spelling is incorrect.
 
-    Mailman is written primarily in Python, a free object-oriented scripting
-    language.  Python is available for all platforms that Mailman is supported
-    on, which includes GNU/Linux and most other Unix-like operating systems
+    Mailman is written in Python, a free object-oriented scripting language.
+    Python is available for all platforms that Mailman is supported on, which
+    includes GNU/Linux and most other Unix-like operating systems
     (e.g. Solaris, *BSD, MacOSX, etc.).  It does not run on Windows, although
     web and mail clients on any platform should be able to interact with
     Mailman just fine.
@@ -43,11 +43,15 @@ INTRODUCTION
 
         http://www.python.org
 
-    It is recommended that you use at least Python 2.5.1, the latest release
-    as of this writing (08-May-2007).
+    It is recommended that you use at least Python 2.5.2, the latest release
+    as of this writing (31-Mar-2008).
 
 
 FEATURES
+
+    **Mailman 3.0 is alpha software and some of this information may be out of
+      date or not currently working.  This will improve as the alpha releases
+      are developed.**
 
     Mailman has most of the standard features you'd expect in a mailing list
     manager, and more:
@@ -102,6 +106,8 @@ REQUIREMENTS
 
 
 FOR MORE INFORMATION
+
+    For information on this alpha release, see docs/ALPHA.txt
 
     More documentation is available in the docs directory, and on-line (see
     below).  Installation instructions are contained in the

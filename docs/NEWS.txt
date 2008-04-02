@@ -19,27 +19,28 @@ Here is a history of user visible changes to Mailman.
 
   Configuration
 
+    - There is no more separate configure; make; make install step. Mailman
+      3.0 is a setuptools package.
+
     - Mailman can now be configured via a 'mailman.cfg' file which lives in
-      $VAR_PREFIX/etc.  This can be used to separate the configuration from
-      the source directory.  Alternative configuration files can be specified
-      via -C/--config for most command line scripts.  The format of
-      mailman.cfg is identical to that for mm_cfg.py; IOW, they are both
-      Python files.  mm_cfg.py is still supported for backward compatibility,
-      but settings in etc/mailman.cfg take precedence.  You do not need to
-      import Defaults.py in etc/mailman.cfg.  You should still consult
-      Defaults.py for the list of site configuration variables available to
-      you.
+      $VAR_PREFIX/etc.  This is used to separate the configuration from the
+      source directory.  Alternative configuration files can be specified via
+      -C/--config for most command line scripts.  mailman.cfg contains Python
+      code.  mm_cfg.py is no more.  You do not need to import Defaults.py in
+      etc/mailman.cfg.  You should still consult Defaults.py for the list of
+      site configuration variables available to you.
 
       See the etc/mailman.cfg.sample file.
 
-    - PUBLIC_ARCHIVE_URL now takes $-string substitutions instead of %-string
-      substitutions.  See documentation in Defaults.py.in for details.
+    - PUBLIC_ARCHIVE_URL and DEFAULT_SUBJECT_PREFIX now takes $-string
+      substitutions instead of %-string substitutions.  See documentation in
+      Defaults.py.in for details.
 
     - Message headers and footers now only accept $-string substitutions;
       %-strings are no longer supported.  The substitution variable
       '_internal_name' has been removed; use $list_name or $real_name
       instead.  The substitution variable $fqdn_listname has been added.
-      DEFAULT_MSG_FOOTER in Defaults.py.in hsa been updated accordingly.
+      DEFAULT_MSG_FOOTER in Defaults.py.in has been updated accordingly.
 
     - The KNOWN_SPAMMERS global variable is replaced with HEADER_MATCHES.  The
       mailing list's header_filter_rules variable is replaced with
@@ -48,12 +49,26 @@ Here is a history of user visible changes to Mailman.
 
     - DEFAULT_MAIL_COMMANDS_MAX_LINES -> EMAIL_COMMANDS_MAX_LINES
 
+    - All SMTP_LOG_* templates use $-strings and all consistently write the
+      Message-ID as the first item in the log entry.
+
+    - DELIVERY_MODULE now names a handler, not a module (yes, this is a
+      misnomer, but it will likely change again before the final release).
+
   Architecture
+
+    - Internally, all strings are Unicodes.
 
     - Implementation of a chain-of-rules based approach for deciding whether a
       message should initially be accepted, held for approval,
       rejected/bounced, or discarded.  This replaces most of the disposition
-      handlers in the pipeline.
+      handlers in the pipeline.  The IncomingRunner now only processes message
+      through the rule chains, and once accepted, places the message in a new
+      queue processed by the PipelineRunner.
+
+    - Substantially reworked the entire queue runner process management,
+      including mailmanctl, a new master script, and the qrunners.  This
+      should be much more robust and reliable now.
 
     - The Storm ORM is used for data storage, with the SQLite backend as the
       default relational database.
@@ -92,9 +107,7 @@ Here is a history of user visible changes to Mailman.
       VIRTUAL_HOST_OVERVIEW has been removed, effectively Mailman now operates
       as if it were always enabled.  If your site has more than one domain,
       you must configure all domains by using add_domain() in your
-      etc/mailman.cfg flie (see below -- add_virtual() has been removed).  If
-      you have only one domain, and Mailman's configure script correctly
-      guesses that domain, you do not need to do anything.
+      etc/mailman.cfg flie (see below -- add_virtual() has been removed).
 
     - If you had customizations based on Site.py, you will need to
       re-implement them.  Site.py has been removed.
@@ -107,12 +120,12 @@ Here is a history of user visible changes to Mailman.
       the Mailman installation.  The MAILMAN_SITE_LIST variable has been
       removed.
 
+    - qrunners no longer restart on SIGINT; SIGUSR1 is used for that now.
+
   Internationalization Big Changes
 
-    - Now the languages should be selected during the 'configure' run.
-
     - Translators should work only on messages/<lang>/LC_MESSAGES/mailman.po.
-      Templates files are generated from mailman.po during the make process.
+      Templates files are generated from mailman.po during the build process.
 
   New Features
 
@@ -133,11 +146,12 @@ Here is a history of user visible changes to Mailman.
     - the -V/--virtual-host-overview switch in list_lists has been removed,
       while -d/--domain and -f/--full have been added.
 
-    - newlist and rmlist take fully-qualified list names now (i.e. the list's
-      posting address), but also accept short names, in which case the default
-      domain is used.  newlist's -u/--urlhost and -e/--emailhost switches have
-      been removed.  The domain that the list is being added to must already
-      exist.
+    - bin/newlist is renamed bin/create_list and bin/rmlist is renamed
+      bin/remove_list.  Both take fully-qualified list names now (i.e. the
+      list's posting address), but also accept short names, in which case the
+      default domain is used.  newlist's -u/--urlhost and -e/--emailhost
+      switches have been removed.  The domain that the list is being added to
+      must already exist.
 
     - Backport the ability to specify additional footer interpolation
       variables by the message metadata 'decoration-data' key.

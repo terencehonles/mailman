@@ -1,0 +1,59 @@
+Mailman - The GNU Mailing List Management System
+Copyright (C) 2008 by the Free Software Foundation, Inc.
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
+
+ALPHA RELEASE
+
+    The Mailman 3 alpha releases are being provided to give developers and
+    other interested people early looks at the next major version.  As such,
+    many things may not work yet.  Your feedback and contributions are
+    welcome.  At this time, please do not submit bug reports, but please
+    provide your comments on the mailman-developers mailing list.
+
+
+USING THE ALPHA
+
+    Start by using setuptools to build the code.  Here's what I do, season to
+    taste.  Python 2.5 is required.
+
+    % mkdir staging
+    % export PYTHONPATH=`pwd`/staging
+    % python2.5 setup.py develop -d staging
+
+    Now you can run the test suite.
+
+    % staging/bin/testall
+
+    You should see no failures.
+
+    At this point you can read the doctests by looking in all the 'doc'
+    directories under the 'mailman' package.  Doctests are documentation
+    first, so they should give you a pretty good idea how various components
+    of Mailman 3 works.
+
+    What, you actually want to /run/ Mailman 3?  Oh well, okay.  First you
+    have to create a Mailman instance (as with all commands you can use --help
+    to get a list of options).
+
+    % staging/bin/make_instance -d var
+
+    Look at mailman/Defaults.py and and mailman/configuration.py, and edit
+    var/etc/mailman.cfg as necessary.  You will almost definitely want to add
+    at least one add_domain() call.  You may also want to set LOG_CONFIG_FILE
+    if you want to get more detailed logging, and USE_LMTP to turn on the LMTP
+    server.
+
+    You can use the create_list, remove_list, list_lists, add_members, and
+    list_members to set up and populate some mailing lists.  You of coruse
+    also need to use mailmanctl to start the queue runners, and then you can
+    use the inject command to put some messages into the queue.   For the most
+    part, they ought to get delivered <wink>
+
+    Please note that the web u/i does /not/ work yet.
+
+
+
+Local Variables:
+mode: indented-text
+indent-tabs-mode: nil
+End:
