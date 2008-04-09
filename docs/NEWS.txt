@@ -4,8 +4,12 @@ Copyright (C) 1998-2008 by the Free Software Foundation, Inc.
 
 Here is a history of user visible changes to Mailman.
 
+3.0 alpha 2 -- "Grand Designs"
+(XX-XXX-200X)
+
+
 3.0 alpha 1 -- "Leave That Thing Alone"
-(02-Apr-2008)
+(08-Apr-2008)
 
   User visible changes
 
