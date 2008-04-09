@@ -95,7 +95,6 @@ Any other spelling is incorrect.""",
         'locknix',
         'munepy',
         'storm',
-        'wsgiref',
         'zope.interface',
         ],
     setup_requires = [
