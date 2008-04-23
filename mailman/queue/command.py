@@ -16,6 +16,12 @@
 
 """-request robot command queue runner."""
 
+__metaclass__ = type
+__all__ = [
+    'CommandRunner',
+    'Results',
+    ]
+
 # See the delivery diagram in IncomingRunner.py.  This module handles all
 # email destined for mylist-request, -join, and -leave.  It no longer handles
 # bounce messages (i.e. -admin or -bounces), nor does it handle mail to
@@ -25,17 +31,20 @@ import re
 import sys
 import logging
 
+from StringIO import StringIO
 from email.Errors import HeaderParseError
 from email.Header import decode_header, make_header, Header
 from email.Iterators import typed_subpart_iterator
 from email.MIMEMessage import MIMEMessage
 from email.MIMEText import MIMEText
+from zope.interface import implements
 
 from mailman import Message
 from mailman import Utils
 from mailman.app.replybot import autorespond_to_sender
 from mailman.configuration import config
 from mailman.i18n import _
+from mailman.interfaces import IEmailResults
 from mailman.queue import Runner
 
 NL = '\n'
@@ -44,103 +53,124 @@ log = logging.getLogger('mailman.vette')
 
 
 
-class Results:
-    def __init__(self, mlist, msg, msgdata):
-        self.mlist = mlist
-        self.msg = msg
-        self.msgdata = msgdata
-        # Only set returnaddr if the response is to go to someone other than
-        # the address specified in the From: header (e.g. for the password
-        # command).
-        self.returnaddr = None
-        self.commands = []
-        self.results = []
-        self.ignored = []
-        self.lineno = 0
-        self.subjcmdretried = 0
-        self.respond = True
-        # Extract the subject header and do RFC 2047 decoding.  Note that
-        # Python 2.1's unicode() builtin doesn't call obj.__unicode__().
-        subj = msg.get('subject', '')
+class CommandFinder:
+    """Generate commands from the content of a message."""
+
+    def __init__(self, msg, results):
+        self.command_lines = []
+        self.ignored_lines = []
+        self.processed_lines = []
+        # Depending on where the message was destined to, add some implicit
+        # commands.  For example, if this was sent to the -join or -leave
+        # addresses, it's the same as if 'join' or 'leave' commands were sent
+        # to the -request address.
+        if msgdata.get('tojoin'):
+            self.command_lines.append('join')
+        elif msgdata.get('toleave'):
+            self.command_lines.append('leave')
+        elif msgdata.get('toconfirm'):
+            mo = re.match(config.VERP_CONFIRM_REGEXP, msg.get('to', ''))
+            if mo:
+                self.command_lines.append('confirm ' + mo.group('cookie'))
+        # Extract the subject header and do RFC 2047 decoding.
+        subject = msg.get('subject', '')
         try:
-            subj = make_header(decode_header(subj)).__unicode__()
-            # TK: Currently we don't allow 8bit or multibyte in mail command.
-            subj = subj.encode('us-ascii')
-            # Always process the Subject: header first
-            self.commands.append(subj)
+            subject = unicode(make_header(decode_header(raw_subject)))
+            # Mail commands must be ASCII.
+            self.command_lines.append(subject.encode('us-ascii'))
         except (HeaderParseError, UnicodeError, LookupError):
-            # We couldn't parse it so ignore the Subject header
+            # The Subject header was unparseable or not ASCII, so just ignore
+            # it.
             pass
-        # Find the first text/plain part
+        # Find the first text/plain part of the message.
         part = None
         for part in typed_subpart_iterator(msg, 'text', 'plain'):
             break
         if part is None or part is not msg:
             # Either there was no text/plain part or we ignored some
             # non-text/plain parts.
-            self.results.append(_('Ignoring non-text/plain MIME parts'))
+            print >> results, _('Ignoring non-text/plain MIME parts')
         if part is None:
-            # E.g the outer Content-Type: was text/html
+            # There was no text/plain part to be found.
             return
         body = part.get_payload(decode=True)
-        # text/plain parts better have string payloads
-        assert isinstance(body, basestring)
+        # text/plain parts better have string payloads.
+        assert isinstance(body, basestring), 'Non-string decoded payload'
         lines = body.splitlines()
         # Use no more lines than specified
-        self.commands.extend(lines[:config.EMAIL_COMMANDS_MAX_LINES])
-        self.ignored.extend(lines[config.EMAIL_COMMANDS_MAX_LINES:])
+        self.command_lines.extend(lines[:config.EMAIL_COMMANDS_MAX_LINES])
+        self.ignored_lines.extend(lines[config.EMAIL_COMMANDS_MAX_LINES:])
 
-    def process(self):
-        # Now, process each line until we find an error.  The first
-        # non-command line found stops processing.
-        stop = False
-        for line in self.commands:
-            if line and line.strip():
-                args = line.split()
-                cmd = args.pop(0).lower()
-                stop = self.do_command(cmd, args)
-            self.lineno += 1
-            if stop:
-                break
+    def __iter__(self):
+        """Return each command line, split into commands and arguments.
 
-    def do_command(self, cmd, args=None):
-        if args is None:
-            args = ()
-        # Try to import a command handler module for this command
-        modname = 'mailman.Commands.cmd_' + cmd
-        try:
-            __import__(modname)
-            handler = sys.modules[modname]
-        # ValueError can be raised if cmd has dots in it.
-        except (ImportError, ValueError):
-            # If we're on line zero, it was the Subject: header that didn't
-            # contain a command.  It's possible there's a Re: prefix (or
-            # localized version thereof) on the Subject: line that's messing
-            # things up.  Pop the prefix off and try again... once.
-            #
-            # If that still didn't work it isn't enough to stop processing.
-            # BAW: should we include a message that the Subject: was ignored?
-            if not self.subjcmdretried and args:
-                self.subjcmdretried += 1
-                cmd = args.pop(0)
-                return self.do_command(cmd, args)
-            return self.lineno <> 0
-        return handler.process(self, args)
+        :return: 2-tuples where the first element is the command and the
+            second element is a tuple of the arguments.
+        """
+        while self.command_lines:
+            line = self.command_lines.pop(0)
+            self.processed_lines.append(line)
+            parts = line.strip().split()
+            yield parts[0], tuple(parts[1:])
 
-    def send_response(self):
-        # Helper
-        def indent(lines):
-            return ['    ' + line for line in lines]
-        # Quick exit for some commands which don't need a response
-        if not self.respond:
-            return
-        resp = [Utils.wrap(_("""\
+
+
+class Results:
+    """The email command results."""
+
+    implements(IResults)
+
+    def __init__(self):
+        self._output = StringIO()
+        print >> self._output, _("""\
 The results of your email command are provided below.
-Attached is your original message.
-"""))]
-        if self.results:
-            resp.append(_('- Results:'))
-            resp.extend(indent(self.results))
+
+""")
+        print >> self._output, _('- Results:')
+
+    def write(self, text):
+        self._output.write(text)
+
+    def __str__(self):
+        return self._output.getvalue()
+
+
+
+class CommandRunner(Runner):
+    QDIR = config.CMDQUEUE_DIR
+
+    def _dispose(self, mlist, msg, msgdata):
+        message_id = msg.get('message-id', 'n/a')
+        # The policy here is similar to the Replybot policy.  If a message has
+        # "Precedence: bulk|junk|list" and no "X-Ack: yes" header, we discard
+        # the command message.
+        precedence = msg.get('precedence', '').lower()
+        ack = msg.get('x-ack', '').lower()
+        if ack <> 'yes' and precedence in ('bulk', 'junk', 'list'):
+            log.info('%s Precedence: %s message discarded by: %s',
+                     message_id, precedence, mlist.request_address)
+            return False
+        # Do replybot for commands.
+        replybot = config.handlers['replybot']
+        replybot.process(mlist, msg, msgdata)
+        if mlist.autorespond_requests == 1:
+            # Respond and discard.
+            log.info('%s -request message replied and discard', message_id)
+            return False
+        # Now craft the response and process the command lines.
+        results = Results()
+        finder = CommandFinder(msg, results)
+        for command_name, arguments in finder:
+            command = config.commands.get(command_name)
+            if command is None:
+                print >> results, _('No such command: $command_name')
+            else:
+                command.process(msg, msgdata, arguments, results)
+        # All done, send the response.
+        print >> results, _('\n- Unprocessed:')
+        # XXX
+
+
         # Ignore empty lines
         unprocessed = [line for line in self.commands[self.lineno:]
                        if line and line.strip()]
@@ -187,44 +217,3 @@ To obtain instructions, send a message containing just the word "help".
         orig = MIMEMessage(self.msg)
         msg.attach(orig)
         msg.send(self.mlist)
-
-
-
-class CommandRunner(Runner):
-    QDIR = config.CMDQUEUE_DIR
-
-    def _dispose(self, mlist, msg, msgdata):
-        # The policy here is similar to the Replybot policy.  If a message has
-        # "Precedence: bulk|junk|list" and no "X-Ack: yes" header, we discard
-        # it to prevent replybot response storms.
-        precedence = msg.get('precedence', '').lower()
-        ack = msg.get('x-ack', '').lower()
-        if ack <> 'yes' and precedence in ('bulk', 'junk', 'list'):
-            log.info('Precedence: %s message discarded by: %s',
-                     precedence, mlist.GetRequestEmail())
-            return False
-        # Do replybot for commands
-        mlist.Load()
-        replybot = config.handlers['replybot']
-        replybot.process(mlist, msg, msgdata)
-        if mlist.autorespond_requests == 1:
-            log.info('replied and discard')
-            # w/discard
-            return False
-        # Now craft the response
-        res = Results(mlist, msg, msgdata)
-        # This message will have been delivered to one of mylist-request,
-        # mylist-join, or mylist-leave, and the message metadata will contain
-        # a key to which one was used.
-        if msgdata.get('torequest'):
-            res.process()
-        elif msgdata.get('tojoin'):
-            res.do_command('join')
-        elif msgdata.get('toleave'):
-            res.do_command('leave')
-        elif msgdata.get('toconfirm'):
-            mo = re.match(config.VERP_CONFIRM_REGEXP, msg.get('to', ''))
-            if mo:
-                res.do_command('confirm', (mo.group('cookie'),))
-        res.send_response()
-        config.db.commit()
