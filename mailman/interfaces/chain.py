@@ -15,7 +15,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
-"""Interface describing the basics of chains and links."""
+"""Interfaces describing the basics of chains and links."""
 
 from munepy import Enum
 from zope.interface import Interface, Attribute

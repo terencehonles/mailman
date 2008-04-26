@@ -173,11 +173,12 @@ class Configuration(object):
         # Always add and enable the default server language.
         code = self.DEFAULT_SERVER_LANGUAGE
         self.languages.enable_language(code)
-        # Create the registry of rules and chains.
+        # Create various registries.
         self.chains = {}
         self.rules = {}
         self.handlers = {}
         self.pipelines = {}
+        self.commands = {}
 
     def add_domain(self, email_host, url_host=None):
         """Add a virtual domain.

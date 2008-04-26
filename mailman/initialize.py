@@ -68,9 +68,11 @@ def initialize_2(debug=False):
     from mailman.app.chains import initialize as initialize_chains
     from mailman.app.rules import initialize as initialize_rules
     from mailman.app.pipelines import initialize as initialize_pipelines
+    from mailman.app.commands import initialize as initialize_commands
     initialize_rules()
     initialize_chains()
     initialize_pipelines()
+    initialize_commands()
 
 
 def initialize(config_path=None, propagate_logs=False):

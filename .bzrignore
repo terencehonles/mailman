@@ -1,6 +1,7 @@
 *.mo
 .bzrignore
 build/
+bzr-*-linux-i686.egg/
 cron/crontab.in
 dist/
 mailman.egg-info
@@ -9,3 +10,4 @@ setuptools_bzr-*.egg
 staging
 TAGS
 var/
+.shelf

@@ -37,6 +37,7 @@ if sys.hexversion < 0x20500f0:
 # properly split out.
 
 import os
+import mailman.commands
 import mailman.messages
 
 start_dir = os.path.dirname(mailman.messages.__file__)
@@ -57,9 +58,15 @@ for dirpath, dirnames, filenames in os.walk(start_dir):
 # XXX The 'bin/' prefix here should be configurable.
 template = Template('bin/$script = mailman.bin.$script:main')
 scripts = set(
-    template.substitute(script=os.path.splitext(script)[0])
+    template.substitute(script=script)
     for script in mailman.bin.__all__
-    if not script.startswith('_')
+    )
+
+# Default email commands
+template = Template('$command = mailman.commands.$command')
+commands = set(
+    template.substitute(command=command)
+    for command in mailman.commands.__all__
     )
 
 
@@ -84,6 +91,7 @@ Any other spelling is incorrect.""",
         'console_scripts': list(scripts),
         # Entry point for plugging in different database backends.
         'mailman.archiver'  : 'default = mailman.app.archiving:Pipermail',
+        'mailman.commands'  : list(commands),
         'mailman.database'  : 'stock = mailman.database:StockDatabase',
         'mailman.mta'       : 'stock = mailman.MTA:Manual',
         'mailman.styles'    : 'default = mailman.app.styles:DefaultStyle',

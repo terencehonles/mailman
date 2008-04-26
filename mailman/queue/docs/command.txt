@@ -1,0 +1,61 @@
+The command queue runner
+========================
+
+This queue runner's purpose is to process and respond to email commands.
+Commands are extensible using the Mailman plugin system, but Mailman comes
+with a number of email commands out of the box.  These are processed when a
+message is sent to the list's -request address.
+
+    >>> from mailman.app.lifecycle import create_list
+    >>> mlist = create_list(u'test@example.com')
+
+For example, the 'echo' command simply echoes the original command back to the
+sender.  The command can be in the Subject header.
+
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.com
+    ... To: test-request@example.com
+    ... Subject: echo hello
+    ... Message-ID: <aardvark>
+    ...
+    ... """)
+
+    >>> from mailman.configuration import config
+    >>> from mailman.inject import inject_message
+    >>> inject_message(mlist, msg, qdir=config.CMDQUEUE_DIR)
+    >>> from mailman.queue.command import CommandRunner
+    >>> from mailman.tests.helpers import make_testable_runner
+    >>> command = make_testable_runner(CommandRunner)
+    >>> command.run()
+
+And now the response is in the virgin queue.
+
+    >>> from mailman.queue import Switchboard
+    >>> virgin_queue = Switchboard(config.VIRGINQUEUE_DIR)
+    >>> len(virgin_queue.files)
+    1
+    >>> from mailman.tests.helpers import get_queue_messages
+    >>> item = get_queue_messages(virgin_queue)[0]
+    >>> print item.msg.as_string()
+    Subject: The results of your email commands
+    From: test-bounces@example.com
+    To: aperson@example.com
+    ...
+    <BLANKLINE>
+    The results of your email command are provided below.
+    <BLANKLINE>
+    - Original message details:
+        From: aperson@example.com
+        Subject: echo hello
+        Date: ...
+        Message-ID: <aardvark>
+    <BLANKLINE>
+    - Results:
+    echo hello
+    <BLANKLINE>
+    - Done.
+    <BLANKLINE>
+    >>> sorted(item.msgdata.items())
+    [..., ('listname', u'test@example.com'), ...,
+     ('recips', [u'aperson@example.com']),
+     ...]
