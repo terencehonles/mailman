@@ -111,7 +111,10 @@ class CommandFinder:
             line = self.command_lines.pop(0)
             self.processed_lines.append(line)
             parts = line.strip().split()
-            yield parts[0], tuple(parts[1:])
+            if len(parts) == 0:
+                continue
+            command = parts.pop(0)
+            yield command, tuple(parts)
 
 
 

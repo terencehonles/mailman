@@ -9,6 +9,10 @@ message is sent to the list's -request address.
     >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list(u'test@example.com')
 
+
+A command in the Subject
+------------------------
+
 For example, the 'echo' command simply echoes the original command back to the
 sender.  The command can be in the Subject header.
 
@@ -59,3 +63,44 @@ And now the response is in the virgin queue.
     [..., ('listname', u'test@example.com'), ...,
      ('recips', [u'aperson@example.com']),
      ...]
+
+
+A command in the body
+---------------------
+
+The command can also be found in the body of the message, as long as the
+message is plain text.
+
+    >>> msg = message_from_string("""\
+    ... From: bperson@example.com
+    ... To: test-request@example.com
+    ... Message-ID: <bobcat>
+    ...
+    ... echo foo bar
+    ... """)
+
+    >>> inject_message(mlist, msg, qdir=config.CMDQUEUE_DIR)
+    >>> command.run()
+    >>> len(virgin_queue.files)
+    1
+    >>> item = get_queue_messages(virgin_queue)[0]
+    >>> print item.msg.as_string()
+    Subject: The results of your email commands
+    From: test-bounces@example.com
+    To: bperson@example.com
+    ...
+    Precedence: bulk
+    <BLANKLINE>
+    The results of your email command are provided below.
+    <BLANKLINE>
+    - Original message details:
+        From: bperson@example.com
+        Subject: n/a
+        Date: ...
+        Message-ID: <bobcat>
+    <BLANKLINE>
+    - Results:
+    echo foo bar
+    <BLANKLINE>
+    - Done.
+    <BLANKLINE>
