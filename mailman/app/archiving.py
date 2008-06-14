@@ -20,18 +20,14 @@
 __metaclass__ = type
 __all__ = [
     'Pipermail',
-    'get_primary_archiver',
     ]
 
 
 import os
-import pkg_resources
 
 from string import Template
 from zope.interface import implements
-from zope.interface.verify import verifyObject
 
-from mailman.app.plugins import get_plugins
 from mailman.configuration import config
 from mailman.interfaces import IArchiver
 
@@ -64,47 +60,34 @@ class Pipermail:
 
     implements(IArchiver)
 
-    def __init__(self, mlist):
-        self._mlist = mlist
-
-    def get_list_url(self):
+    @staticmethod
+    def list_url(mlist):
         """See `IArchiver`."""
-        if self._mlist.archive_private:
-            url = self._mlist.script_url('private') + '/index.html'
+        if mlist.archive_private:
+            url = mlist.script_url('private') + '/index.html'
         else:
-            web_host = config.domains.get(
-                self._mlist.host_name, self._mlist.host_name)
+            web_host = config.domains.get(mlist.host_name, mlist.host_name)
             url = Template(config.PUBLIC_ARCHIVE_URL).safe_substitute(
-                listname=self._mlist.fqdn_listname,
+                listname=mlist.fqdn_listname,
                 hostname=web_host,
-                fqdn_listname=self._mlist.fqdn_listname,
+                fqdn_listname=mlist.fqdn_listname,
                 )
         return url
 
-    def get_message_url(self, message):
+    @staticmethod
+    def permalink(mlist, message):
         """See `IArchiver`."""
         # Not currently implemented.
         return None
 
-    def archive_message(self, message):
+    @staticmethod
+    def archive_message(mlist, message):
         """See `IArchiver`."""
         text = str(message)
         fileobj = StringIO(text)
-        h = HyperArchive(PipermailMailingListAdapter(self._mlist))
+        h = HyperArchive(PipermailMailingListAdapter(mlist))
         h.processUnixMailbox(fileobj)
         h.close()
         fileobj.close()
         # There's no good way to know the url for the archived message.
         return None
-
-
-
-def get_primary_archiver(mlist):
-    """Return the primary archiver."""
-    entry_points = list(pkg_resources.iter_entry_points('mailman.archiver'))
-    if len(entry_points) == 0:
-        return None
-    for ep in entry_points:
-        if ep.name == 'default':
-            return ep.load()(mlist)
-    return None

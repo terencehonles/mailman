@@ -24,14 +24,14 @@ from zope.interface import Interface, Attribute
 class IArchiver(Interface):
     """An interface to the archiver."""
 
-    def get_list_url(mlist):
+    def list_url(mlist):
         """Return the url to the top of the list's archive.
 
         :param mlist: The IMailingList object.
         :returns: The url string.
         """
 
-    def get_message_url(mlist, message):
+    def permalink(mlist, message):
         """Return the url to the message in the archive.
 
         This url points directly to the message in the archive.  This method
@@ -45,9 +45,6 @@ class IArchiver(Interface):
 
     def archive_message(mlist, message):
         """Send the message to the archiver.
-
-        This uses `get_message_url()` to calculate and return the url to the
-        message in the archives.
 
         :param mlist: The IMailingList object.
         :param message: The message object.
