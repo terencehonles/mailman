@@ -30,7 +30,7 @@ from email.Utils import parseaddr, formataddr, getaddresses
 from zope.interface import implements
 
 from mailman import Utils
-from mailman.app.archiving import get_primary_archiver
+from mailman.app.plugins import get_plugins
 from mailman.configuration import config
 from mailman.i18n import _
 from mailman.interfaces import IHandler, Personalization, ReplyToMunging
@@ -206,29 +206,24 @@ def process(mlist, msg, msgdata):
         'List-Unsubscribe': subfieldfmt % (listinfo, mlist.leave_address),
         'List-Subscribe'  : subfieldfmt % (listinfo, mlist.join_address),
         })
-    archiver = get_primary_archiver(mlist)
     if msgdata.get('reduced_list_headers'):
         headers['X-List-Administrivia'] = 'yes'
     else:
         # List-Post: is controlled by a separate attribute
         if mlist.include_list_post_header:
             headers['List-Post'] = '<mailto:%s>' % mlist.posting_address
-        # Add this header if we're archiving
+        # Add RFC 2369 and 5064 archiving headers, if archiving is enabled.
         if mlist.archive:
-            archiveurl = archiver.get_list_url()
-            headers['List-Archive'] = '<%s>' % archiveurl
+            for archiver in get_plugins('mailman.archiver'):
+                headers['List-Archive'] = '<%s>' % archiver.list_url(mlist)
+                permalink = archiver.permalink(mlist, msg)
+                if permalink is not None:
+                    headers['Archived-At'] = permalink
     # XXX RFC 2369 also defines a List-Owner header which we are not currently
     # supporting, but should.
-    #
-    # Draft RFC 5064 defines an Archived-At header which contains the pointer
-    # directly to the message in the archive.  If the currently defined
-    # archiver can tell us the URL, go ahead and include this header.
-    archived_at = archiver.get_message_url(msg)
-    if archived_at is not None:
-        headers['Archived-At'] = archived_at
-    # First we delete any pre-existing headers because the RFC permits only
-    # one copy of each, and we want to be sure it's ours.
     for h, v in headers.items():
+        # First we delete any pre-existing headers because the RFC permits
+        # only one copy of each, and we want to be sure it's ours.
         del msg[h]
         # Wrap these lines if they are too long.  78 character width probably
         # shouldn't be hardcoded, but is at least text-MUA friendly.  The

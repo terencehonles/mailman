@@ -80,6 +80,5 @@ class ArchiveRunner(Runner):
         # While a list archiving lock is acquired, archive the message.
         with Lock(os.path.join(mlist.data_path, 'archive.lck')):
             for archive_factory in get_plugins('mailman.archiver'):
-                archiver = archive_factory(mlist)
-                archiver.archive_message(msg)
+                archive_factory().archive_message(mlist, msg)
 
