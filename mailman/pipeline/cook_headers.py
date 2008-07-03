@@ -215,6 +215,8 @@ def process(mlist, msg, msgdata):
         # Add RFC 2369 and 5064 archiving headers, if archiving is enabled.
         if mlist.archive:
             for archiver in get_plugins('mailman.archiver'):
+                if not archiver.is_enabled:
+                    continue
                 headers['List-Archive'] = '<%s>' % archiver.list_url(mlist)
                 permalink = archiver.permalink(mlist, msg)
                 if permalink is not None:
