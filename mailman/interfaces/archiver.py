@@ -17,21 +17,32 @@
 
 """Interface for archiving schemes."""
 
+__metaclass__ = type
+__all__ = [
+    'IArchiver',
+    'IPipermailMailingList',
+    ]
+
 from zope.interface import Interface, Attribute
+from mailman.interfaces.mailinglist import IMailingList
 
 
 
 class IArchiver(Interface):
     """An interface to the archiver."""
 
-    def get_list_url(mlist):
+    name = Attribute('The name of this archiver')
+
+    is_enabled = Attribute('True if this archiver is enabled.')
+
+    def list_url(mlist):
         """Return the url to the top of the list's archive.
 
         :param mlist: The IMailingList object.
         :returns: The url string.
         """
 
-    def get_message_url(mlist, message):
+    def permalink(mlist, message):
         """Return the url to the message in the archive.
 
         This url points directly to the message in the archive.  This method
@@ -46,9 +57,6 @@ class IArchiver(Interface):
     def archive_message(mlist, message):
         """Send the message to the archiver.
 
-        This uses `get_message_url()` to calculate and return the url to the
-        message in the archives.
-
         :param mlist: The IMailingList object.
         :param message: The message object.
         :returns: The url string or None if the message's archive url cannot
@@ -56,3 +64,14 @@ class IArchiver(Interface):
         """
 
     # XXX How to handle attachments?
+
+
+
+class IPipermailMailingList(IMailingList):
+    """An interface that adapts IMailingList as needed for Pipermail."""
+
+    def archive_dir():
+        """The directory for storing Pipermail artifacts.
+
+        Pipermail expects this to be a function, not a property.
+        """

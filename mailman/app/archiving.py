@@ -20,28 +20,33 @@
 __metaclass__ = type
 __all__ = [
     'Pipermail',
-    'get_primary_archiver',
+    'Prototype',
     ]
 
 
 import os
-import pkg_resources
+import hashlib
 
+from base64 import b32encode
+from cStringIO import StringIO
+from email.utils import make_msgid
 from string import Template
+from urlparse import urljoin
 from zope.interface import implements
-from zope.interface.verify import verifyObject
+from zope.interface.interface import adapter_hooks
 
-from mailman.app.plugins import get_plugins
 from mailman.configuration import config
-from mailman.interfaces import IArchiver
+from mailman.interfaces.archiver import IArchiver, IPipermailMailingList
+from mailman.interfaces.mailinglist import IMailingList
 
 from mailman.Archiver.HyperArch import HyperArchive
-from cStringIO import StringIO
 
 
 
 class PipermailMailingListAdapter:
     """An adapter for MailingList objects to work with Pipermail."""
+
+    implements(IPipermailMailingList)
 
     def __init__(self, mlist):
         self._mlist = mlist
@@ -50,12 +55,21 @@ class PipermailMailingListAdapter:
         return getattr(self._mlist, name)
 
     def archive_dir(self):
-        """The directory for storing Pipermail artifacts."""
+        """See `IPipermailMailingList`."""
         if self._mlist.archive_private:
             basedir = config.PRIVATE_ARCHIVE_FILE_DIR
         else:
             basedir = config.PUBLIC_ARCHIVE_FILE_DIR
         return os.path.join(basedir, self._mlist.fqdn_listname)
+
+
+def adapt_mailing_list_for_pipermail(iface, obj):
+    """Adapt IMailingLists to IPipermailMailingList."""
+    if IMailingList.providedBy(obj) and iface is IPipermailMailingList:
+        return PipermailMailingListAdapter(obj)
+    return None
+
+adapter_hooks.append(adapt_mailing_list_for_pipermail)
 
 
 
@@ -64,33 +78,35 @@ class Pipermail:
 
     implements(IArchiver)
 
-    def __init__(self, mlist):
-        self._mlist = mlist
+    name = 'pipermail'
+    is_enabled = True
 
-    def get_list_url(self):
+    @staticmethod
+    def list_url(mlist):
         """See `IArchiver`."""
-        if self._mlist.archive_private:
-            url = self._mlist.script_url('private') + '/index.html'
+        if mlist.archive_private:
+            url = mlist.script_url('private') + '/index.html'
         else:
-            web_host = config.domains.get(
-                self._mlist.host_name, self._mlist.host_name)
+            web_host = config.domains.get(mlist.host_name, mlist.host_name)
             url = Template(config.PUBLIC_ARCHIVE_URL).safe_substitute(
-                listname=self._mlist.fqdn_listname,
+                listname=mlist.fqdn_listname,
                 hostname=web_host,
-                fqdn_listname=self._mlist.fqdn_listname,
+                fqdn_listname=mlist.fqdn_listname,
                 )
         return url
 
-    def get_message_url(self, message):
+    @staticmethod
+    def permalink(mlist, message):
         """See `IArchiver`."""
         # Not currently implemented.
         return None
 
-    def archive_message(self, message):
+    @staticmethod
+    def archive_message(mlist, message):
         """See `IArchiver`."""
         text = str(message)
         fileobj = StringIO(text)
-        h = HyperArchive(PipermailMailingListAdapter(self._mlist))
+        h = HyperArchive(IPipermailMailingList(mlist))
         h.processUnixMailbox(fileobj)
         h.close()
         fileobj.close()
@@ -99,12 +115,40 @@ class Pipermail:
 
 
 
-def get_primary_archiver(mlist):
-    """Return the primary archiver."""
-    entry_points = list(pkg_resources.iter_entry_points('mailman.archiver'))
-    if len(entry_points) == 0:
-        return None
-    for ep in entry_points:
-        if ep.name == 'default':
-            return ep.load()(mlist)
-    return None
+class Prototype:
+    """A prototype of a third party archiver.
+
+    Mailman proposes a draft specification for interoperability between list
+    servers and archivers: <http://wiki.list.org/display/DEV/Stable+URLs>.
+    """
+
+    implements(IArchiver)
+
+    name = 'prototype'
+    is_enabled = False
+
+    @staticmethod
+    def list_url(mlist):
+        """See `IArchiver`."""
+        web_host = config.domains.get(mlist.host_name, mlist.host_name)
+        return 'http://' + web_host
+
+    @staticmethod
+    def permalink(mlist, msg):
+        """See `IArchiver`."""
+        message_id = msg.get('message-id')
+        # It is not the archiver's job to ensure the message has a Message-ID.
+        assert message_id is not None, 'No Message-ID found'
+        # The angle brackets are not part of the Message-ID.  See RFC 2822.
+        if message_id.startswith('<') and message_id.endswith('>'):
+            message_id = message_id[1:-1]
+        digest = hashlib.sha1(message_id).digest()
+        message_id_hash = b32encode(digest)
+        del msg['x-message-id-hash']
+        msg['X-Message-ID-Hash'] = message_id_hash
+        return urljoin(Prototype.list_url(mlist), message_id_hash)
+
+    @staticmethod
+    def archive_message(mlist, message):
+        """See `IArchiver`."""
+        raise NotImplementedError

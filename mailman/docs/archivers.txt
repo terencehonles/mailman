@@ -1,0 +1,63 @@
+= Archivers =
+
+Mailman supports pluggable archivers, and it comes with several default
+archivers.
+
+    >>> from mailman.app.lifecycle import create_list
+    >>> mlist = create_list(u'test@example.com')
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.org
+    ... To: test@example.com
+    ... Subject: An archived message
+    ... Message-ID: <12345>
+    ...
+    ... Here is an archived message.
+    ... """)
+
+Archivers support an interface which provides the RFC 2369 List-Archive
+header, and one that provides a 'permalink' to the specific message object in
+the archive.  This latter is appropriate for the message footer or for the RFC
+5064 Archived-At header.
+
+Pipermail does not support a permalink, so that interface returns None.
+Mailman defines a draft spec for how list servers and archivers can
+interoperate.
+
+    >>> from operator import attrgetter
+    >>> name = attrgetter('name')
+    >>> from mailman.app.plugins import get_plugins
+    >>> archivers = {}
+    >>> for archiver in sorted(get_plugins('mailman.archiver'), key=name):
+    ...     print archiver.name
+    ...     print '   ', archiver.list_url(mlist)
+    ...     print '   ', archiver.permalink(mlist, msg)
+    ...     archivers[archiver.name] = archiver
+    pipermail
+        http://www.example.com/pipermail/test@example.com
+        None
+    prototype
+        http://www.example.com
+        http://www.example.com/RSZCG7IGPHFIRW3EMTVMMDNJMNCVCOLE
+
+
+== Sending the message to the archiver ==
+
+The archiver is also able to archive the message.
+
+    >>> mlist.web_page_url = u'http://lists.example.com/'
+    >>> archivers['pipermail'].archive_message(mlist, msg)
+
+    >>> import os
+    >>> from mailman.interfaces.archiver import IPipermailMailingList
+    >>> pckpath = os.path.join(
+    ...     IPipermailMailingList(mlist).archive_dir(),
+    ...     'pipermail.pck')
+    >>> os.path.exists(pckpath)
+    True
+
+Note however that the prototype archiver can't archive messages.
+
+    >>> archivers['prototype'].archive_message(mlist, msg)
+    Traceback (most recent call last):
+    ...
+    NotImplementedError
