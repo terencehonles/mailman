@@ -10,7 +10,7 @@ message is destined for a valid endpoint, e.g. mylist-join@example.com.
 
 Let's start a testable LMTP queue runner.
 
-    >>> from mailman.tests import helpers
+    >>> from mailman.testing import helpers
     >>> master = helpers.TestableMaster()
     >>> master.start('lmtp')
 

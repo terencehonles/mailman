@@ -24,7 +24,7 @@ interface.  By default, there's a Pipermail archiver.
     >>> ignore = archiver_queue.enqueue(msg, {}, listname=mlist.fqdn_listname)
 
     >>> from mailman.queue.archive import ArchiveRunner
-    >>> from mailman.tests.helpers import make_testable_runner
+    >>> from mailman.testing.helpers import make_testable_runner
     >>> runner = make_testable_runner(ArchiveRunner)
     >>> runner.run()
 

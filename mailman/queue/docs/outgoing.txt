@@ -26,7 +26,7 @@ move messages to the 'retry queue' for handling delivery failures.
     ...            u'password', DeliveryMode.regular, u'en',
     ...            ack=False, admin_notif=False)
 
-    >>> from mailman.tests.helpers import SMTPServer
+    >>> from mailman.testing.helpers import SMTPServer
     >>> smtpd = SMTPServer()
     >>> smtpd.start()
     >>> from mailman.configuration import config
@@ -70,7 +70,7 @@ Running the outgoing queue runner processes the message, delivering it to the
 upstream SMTP, which happens to be our test server.
 
     >>> from mailman.queue.outgoing import OutgoingRunner
-    >>> from mailman.tests.helpers import make_testable_runner
+    >>> from mailman.testing.helpers import make_testable_runner
     >>> outgoing = make_testable_runner(OutgoingRunner)
     >>> outgoing.run()
 

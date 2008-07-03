@@ -198,7 +198,7 @@ def main():
             enable_logging_cfg = True
 
     cfg_in = pkg_resources.resource_string(
-        'mailman.tests', 'testing.cfg.in')
+        'mailman.testing', 'testing.cfg.in')
     fd, cfg_out = tempfile.mkstemp(suffix='.cfg')
     os.close(fd)
     with open(cfg_out, 'w') as fp:

@@ -7,7 +7,7 @@ is used to start, stop and manage the queue runners.  mailmanctl actually is
 just a wrapper around the real queue runner watcher script called master.py.
 
     >>> from mailman.configuration import config
-    >>> from mailman.tests.helpers import TestableMaster
+    >>> from mailman.testing.helpers import TestableMaster
 
 Start the master in a subthread.
 
