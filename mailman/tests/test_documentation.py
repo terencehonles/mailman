@@ -79,6 +79,9 @@ def cleaning_teardown(testobj):
     for message in config.db.message_store.messages:
         config.db.message_store.delete_message(message['message-id'])
     config.db.commit()
+    # Reset all archivers by disabling them.
+    for archiver in config.archivers.values():
+        archiver.is_enabled = False
 
 
 

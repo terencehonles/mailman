@@ -24,15 +24,11 @@ Pipermail does not support a permalink, so that interface returns None.
 Mailman defines a draft spec for how list servers and archivers can
 interoperate.
 
-    >>> from operator import attrgetter
-    >>> name = attrgetter('name')
-    >>> from mailman.app.plugins import get_plugins
-    >>> archivers = {}
-    >>> for archiver in sorted(get_plugins('mailman.archiver'), key=name):
+    >>> from mailman.configuration import config
+    >>> for archiver_name, archiver in sorted(config.archivers.items()):
     ...     print archiver.name
     ...     print '   ', archiver.list_url(mlist)
     ...     print '   ', archiver.permalink(mlist, msg)
-    ...     archivers[archiver.name] = archiver
     mail-archive
         http://go.mail-archive.dev/test%40example.com
         http://go.mail-archive.dev/7ekn-OQjGKjbAsD3StwtnhZ3Azk=
@@ -50,7 +46,7 @@ Sending the message to the archiver
 The archiver is also able to archive the message.
 
     >>> mlist.web_page_url = u'http://lists.example.com/'
-    >>> archivers['pipermail'].archive_message(mlist, msg)
+    >>> config.archivers['pipermail'].archive_message(mlist, msg)
 
     >>> import os
     >>> from mailman.interfaces.archiver import IPipermailMailingList
@@ -62,7 +58,7 @@ The archiver is also able to archive the message.
 
 Note however that the prototype archiver can't archive messages.
 
-    >>> archivers['prototype'].archive_message(mlist, msg)
+    >>> config.archivers['prototype'].archive_message(mlist, msg)
     Traceback (most recent call last):
     ...
     NotImplementedError
@@ -76,7 +72,7 @@ be used to archive message for free.  Mailman comes with a plugin for this
 archiver; by enabling it messages to public lists will get sent there
 automatically.
 
-    >>> archiver = archivers['mail-archive']
+    >>> archiver = config.archivers['mail-archive']
     >>> archiver.list_url(mlist)
     'http://go.mail-archive.dev/test%40example.com'
 
