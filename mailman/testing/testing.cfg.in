@@ -4,10 +4,13 @@
 # both the process running the tests and all sub-processes (e.g. qrunners)
 # must share the same configuration file.
 
-SMTPPORT                = 10825
 MAX_RESTARTS            = 1
 MTA                     = None
 USE_LMTP                = Yes
+
+# Make sure these goes to fake domains.
+MAIL_ARCHIVE_BASEURL = 'http://go.mail-archive.dev/'
+MAIL_ARCHIVE_RECIPIENT = 'archive@mail-archive.dev'
 
 add_domain('example.com', 'www.example.com')
 

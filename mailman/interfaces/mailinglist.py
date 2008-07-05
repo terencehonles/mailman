@@ -147,7 +147,7 @@ class IMailingList(Interface):
     last_post_date = Attribute(
         """The date and time a message was last posted to the mailing list.""")
 
-    post_number = Attribute(
+    post_id = Attribute(
         """A monotonically increasing integer sequentially assigned to each
         list posting.""")
 

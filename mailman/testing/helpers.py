@@ -162,7 +162,7 @@ class SMTPServer:
     """An smtp server for testing."""
 
     host = 'localhost'
-    port = 9025
+    port = 10825
 
     def __init__(self):
         self._messages = []
@@ -174,6 +174,10 @@ class SMTPServer:
         """Start the smtp server in a thread."""
         log.info('test SMTP server starting')
         self._thread.start()
+        smtpd = smtplib.SMTP()
+        smtpd.connect(self.host, self.port)
+        smtpd.helo('test.localhost')
+        smtpd.quit()
 
     def stop(self):
         """Stop the smtp server."""

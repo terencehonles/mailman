@@ -1,4 +1,5 @@
-= Archivers =
+Archivers
+=========
 
 Mailman supports pluggable archivers, and it comes with several default
 archivers.
@@ -32,6 +33,9 @@ interoperate.
     ...     print '   ', archiver.list_url(mlist)
     ...     print '   ', archiver.permalink(mlist, msg)
     ...     archivers[archiver.name] = archiver
+    mail-archive
+        http://go.mail-archive.dev/test%40example.com
+        http://go.mail-archive.dev/7ekn-OQjGKjbAsD3StwtnhZ3Azk=
     pipermail
         http://www.example.com/pipermail/test@example.com
         None
@@ -40,7 +44,8 @@ interoperate.
         http://www.example.com/RSZCG7IGPHFIRW3EMTVMMDNJMNCVCOLE
 
 
-== Sending the message to the archiver ==
+Sending the message to the archiver
+-----------------------------------
 
 The archiver is also able to archive the message.
 
@@ -61,3 +66,98 @@ Note however that the prototype archiver can't archive messages.
     Traceback (most recent call last):
     ...
     NotImplementedError
+
+
+The Mail-Archive.com
+--------------------
+
+The Mail-Archive <http://www.mail-archive.com> is a public archiver that can
+be used to archive message for free.  Mailman comes with a plugin for this
+archiver; by enabling it messages to public lists will get sent there
+automatically.
+
+    >>> archiver = archivers['mail-archive']
+    >>> archiver.list_url(mlist)
+    'http://go.mail-archive.dev/test%40example.com'
+
+    >>> mlist.post_id = 77
+    >>> archiver.permalink(mlist, msg)
+    'http://go.mail-archive.dev/8FhWFYqR61sszkBLk4rEc0YNWks='
+
+To archive the message, the archiver actually mails the message to a special
+address at the Mail-Archive.
+
+    >>> archiver.archive_message(mlist, msg)
+
+    >>> from mailman.testing.helpers import SMTPServer
+    >>> smtpd = SMTPServer()
+    >>> smtpd.start()
+
+    >>> from mailman.queue.outgoing import OutgoingRunner
+    >>> from mailman.testing.helpers import make_testable_runner
+    >>> outgoing = make_testable_runner(OutgoingRunner)
+    >>> outgoing.run()
+
+    >>> from operator import itemgetter
+    >>> messages = list(smtpd.messages)
+    >>> len(messages)
+    1
+
+    >>> print messages[0].as_string()
+    From: aperson@example.org
+    To: test@example.com
+    Subject: An archived message
+    Message-ID: <12345>
+    X-Message-ID-Hash: 8FhWFYqR61sszkBLk4rEc0YNWks=
+    MIME-Version: 1.0
+    Content-Type: text/plain; charset="us-ascii"
+    Content-Transfer-Encoding: 7bit
+    Sender: test-bounces@example.com
+    Errors-To: test-bounces@example.com
+    X-Peer: 127.0.0.1:...
+    X-MailFrom: test-bounces@example.com
+    X-RcptTo: archive@mail-archive.dev
+    <BLANKLINE>
+    Here is an archived message.
+    _______________________________________________
+    Test mailing list
+    test@example.com
+    http://lists.example.com/listinfo/test@example.com
+
+    >>> smtpd.clear()
+
+However, if the mailing list is not public, the message will never be archived
+at this service.
+
+    >>> mlist.archive_private = True
+    >>> print archiver.list_url(mlist)
+    None
+    >>> print archiver.permalink(mlist, msg)
+    None
+    >>> archiver.archive_message(mlist, msg)
+    >>> list(smtpd.messages)
+    []
+
+Additionally, this archiver can handle malformed Message-IDs.
+
+    >>> mlist.archive_private = False
+    >>> del msg['message-id']
+    >>> msg['Message-ID'] = '12345>'
+    >>> archiver.permalink(mlist, msg)
+    'http://go.mail-archive.dev/8FhWFYqR61sszkBLk4rEc0YNWks='
+
+    >>> del msg['message-id']
+    >>> msg['Message-ID'] = '<12345'
+    >>> archiver.permalink(mlist, msg)
+    'http://go.mail-archive.dev/8FhWFYqR61sszkBLk4rEc0YNWks='
+
+    >>> del msg['message-id']
+    >>> msg['Message-ID'] = '12345'
+    >>> archiver.permalink(mlist, msg)
+    'http://go.mail-archive.dev/8FhWFYqR61sszkBLk4rEc0YNWks='
+
+
+Clean up
+--------
+
+    >>> smtpd.stop()

@@ -220,6 +220,11 @@ CGIEXT = ''
 # - $fqdn_listname  -- the long name of the list being accessed
 PUBLIC_ARCHIVE_URL = 'http://$hostname/pipermail/$fqdn_listname'
 
+# The public Mail-Archive.com service's base url.
+MAIL_ARCHIVE_BASEURL = 'http://go.mail-archive.com/'
+# The posting address for the Mail-Archive.com service
+MAIL_ARCHIVE_RECIPIENT = 'archive@mail-archive.com'
+
 # Are archives on or off by default?
 DEFAULT_ARCHIVE = On
 

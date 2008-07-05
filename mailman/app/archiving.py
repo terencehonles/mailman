@@ -27,10 +27,11 @@ __all__ = [
 import os
 import hashlib
 
-from base64 import b32encode
+from base64 import b32encode, urlsafe_b64encode
 from cStringIO import StringIO
 from email.utils import make_msgid
 from string import Template
+from urllib import quote
 from urlparse import urljoin
 from zope.interface import implements
 from zope.interface.interface import adapter_hooks
@@ -38,6 +39,7 @@ from zope.interface.interface import adapter_hooks
 from mailman.configuration import config
 from mailman.interfaces.archiver import IArchiver, IPipermailMailingList
 from mailman.interfaces.mailinglist import IMailingList
+from mailman.queue import Switchboard
 
 from mailman.Archiver.HyperArch import HyperArchive
 
@@ -79,7 +81,7 @@ class Pipermail:
     implements(IArchiver)
 
     name = 'pipermail'
-    is_enabled = True
+    is_enabled = False
 
     @staticmethod
     def list_url(mlist):
@@ -152,3 +154,54 @@ class Prototype:
     def archive_message(mlist, message):
         """See `IArchiver`."""
         raise NotImplementedError
+
+
+
+class MailArchive:
+    """Public archiver at the Mail-Archive.com.
+
+    Messages get archived at http://go.mail-archive.com.
+    """
+
+    implements(IArchiver)
+
+    name = 'mail-archive'
+    is_enabled = False
+
+    @staticmethod
+    def list_url(mlist):
+        """See `IArchiver`."""
+        if mlist.archive_private:
+            return None
+        return urljoin(config.MAIL_ARCHIVE_BASEURL,
+                       quote(mlist.posting_address))
+
+    @staticmethod
+    def permalink(mlist, msg):
+        """See `IArchiver`."""
+        if mlist.archive_private:
+            return None
+        message_id = msg.get('message-id')
+        # It is not the archiver's job to ensure the message has a Message-ID.
+        assert message_id is not None, 'No Message-ID found'
+        # The angle brackets are not part of the Message-ID.  See RFC 2822.
+        start = (1 if message_id.startswith('<') else 0)
+        end = (-1 if message_id.endswith('>') else None)
+        message_id = message_id[start:end]
+        sha = hashlib.sha1(message_id)
+        sha.update(str(mlist.post_id))
+        message_id_hash = urlsafe_b64encode(sha.digest())
+        del msg['x-message-id-hash']
+        msg['X-Message-ID-Hash'] = message_id_hash
+        return urljoin(config.MAIL_ARCHIVE_BASEURL, message_id_hash)
+
+    @staticmethod
+    def archive_message(mlist, msg):
+        """See `IArchiver`."""
+        if mlist.archive_private:
+            return
+        outq = Switchboard(config.OUTQUEUE_DIR)
+        outq.enqueue(
+            msg,
+            listname=mlist.fqdn_listname,
+            recips=[config.MAIL_ARCHIVE_RECIPIENT])

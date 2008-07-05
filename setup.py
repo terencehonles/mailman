@@ -93,6 +93,7 @@ Any other spelling is incorrect.""",
         'mailman.archiver'  : [
             'pipermail = mailman.app.archiving:Pipermail',
             'prototype = mailman.app.archiving:Prototype',
+            'mail-archive = mailman.app.archiving:MailArchive',
             ],
         'mailman.scrubber'  : 'stock = mailman.app.archiving:Pipermail',
         'mailman.commands'  : list(commands),
