@@ -31,7 +31,7 @@ interoperate.
     ...     print '   ', archiver.permalink(mlist, msg)
     mail-archive
         http://go.mail-archive.dev/test%40example.com
-        http://go.mail-archive.dev/7ekn-OQjGKjbAsD3StwtnhZ3Azk=
+        http://go.mail-archive.dev/ZaXPPxRMM9_hFZL4vTRlQlBx8pc=
     pipermail
         http://www.example.com/pipermail/test@example.com
         None
@@ -75,19 +75,13 @@ automatically.
     >>> archiver = config.archivers['mail-archive']
     >>> archiver.list_url(mlist)
     'http://go.mail-archive.dev/test%40example.com'
-
-    >>> mlist.post_id = 77
     >>> archiver.permalink(mlist, msg)
-    'http://go.mail-archive.dev/8FhWFYqR61sszkBLk4rEc0YNWks='
+    'http://go.mail-archive.dev/ZaXPPxRMM9_hFZL4vTRlQlBx8pc='
 
 To archive the message, the archiver actually mails the message to a special
 address at the Mail-Archive.
 
     >>> archiver.archive_message(mlist, msg)
-
-    >>> from mailman.testing.helpers import SMTPServer
-    >>> smtpd = SMTPServer()
-    >>> smtpd.start()
 
     >>> from mailman.queue.outgoing import OutgoingRunner
     >>> from mailman.testing.helpers import make_testable_runner
@@ -104,7 +98,7 @@ address at the Mail-Archive.
     To: test@example.com
     Subject: An archived message
     Message-ID: <12345>
-    X-Message-ID-Hash: 8FhWFYqR61sszkBLk4rEc0YNWks=
+    X-Message-ID-Hash: ZaXPPxRMM9_hFZL4vTRlQlBx8pc=
     MIME-Version: 1.0
     Content-Type: text/plain; charset="us-ascii"
     Content-Transfer-Encoding: 7bit
@@ -140,20 +134,14 @@ Additionally, this archiver can handle malformed Message-IDs.
     >>> del msg['message-id']
     >>> msg['Message-ID'] = '12345>'
     >>> archiver.permalink(mlist, msg)
-    'http://go.mail-archive.dev/8FhWFYqR61sszkBLk4rEc0YNWks='
+    'http://go.mail-archive.dev/ZaXPPxRMM9_hFZL4vTRlQlBx8pc='
 
     >>> del msg['message-id']
     >>> msg['Message-ID'] = '<12345'
     >>> archiver.permalink(mlist, msg)
-    'http://go.mail-archive.dev/8FhWFYqR61sszkBLk4rEc0YNWks='
+    'http://go.mail-archive.dev/ZaXPPxRMM9_hFZL4vTRlQlBx8pc='
 
     >>> del msg['message-id']
     >>> msg['Message-ID'] = '12345'
     >>> archiver.permalink(mlist, msg)
-    'http://go.mail-archive.dev/8FhWFYqR61sszkBLk4rEc0YNWks='
-
-
-Clean up
---------
-
-    >>> smtpd.stop()
+    'http://go.mail-archive.dev/ZaXPPxRMM9_hFZL4vTRlQlBx8pc='

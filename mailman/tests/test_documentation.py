@@ -29,6 +29,7 @@ import mailman
 from mailman.Message import Message
 from mailman.app.styles import style_manager
 from mailman.configuration import config
+from mailman.testing.helpers import SMTPServer
 
 
 DOT = '.'
@@ -54,12 +55,15 @@ def specialized_message_from_string(text):
 
 def setup(testobj):
     """Test setup."""
+    smtpd = SMTPServer()
+    smtpd.start()
     # In general, I don't like adding convenience functions, since I think
     # doctests should do the imports themselves.  It makes for better
     # documentation that way.  However, a few are really useful, or help to
     # hide some icky test implementation details.
     testobj.globs['message_from_string'] = specialized_message_from_string
     testobj.globs['commit'] = config.db.commit
+    testobj.globs['smtpd'] = smtpd
 
 
 
@@ -82,6 +86,10 @@ def cleaning_teardown(testobj):
     # Reset all archivers by disabling them.
     for archiver in config.archivers.values():
         archiver.is_enabled = False
+    # Shutdown the smtp server.
+    smtpd = testobj.globs['smtpd']
+    smtpd.clear()
+    smtpd.stop()
 
 
 

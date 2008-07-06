@@ -68,7 +68,7 @@ class MailArchive:
         end = (-1 if message_id.endswith('>') else None)
         message_id = message_id[start:end]
         sha = hashlib.sha1(message_id)
-        sha.update(str(mlist.post_id))
+        sha.update(str(mlist.posting_address))
         message_id_hash = urlsafe_b64encode(sha.digest())
         del msg['x-message-id-hash']
         msg['X-Message-ID-Hash'] = message_id_hash
