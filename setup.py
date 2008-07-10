@@ -91,9 +91,10 @@ Any other spelling is incorrect.""",
         'console_scripts': list(scripts),
         # Entry point for plugging in different database backends.
         'mailman.archiver'  : [
+            'mail-archive = mailman.archiving.mailarchive:MailArchive',
+            'mhonarc = mailman.archiving.mhonarc:MHonArc',
             'pipermail = mailman.archiving.pipermail:Pipermail',
             'prototype = mailman.archiving.prototype:Prototype',
-            'mail-archive = mailman.archiving.mailarchive:MailArchive',
             ],
         'mailman.scrubber'  : 'stock = mailman.archiving.pipermail:Pipermail',
         'mailman.commands'  : list(commands),

@@ -31,6 +31,7 @@ import tempfile
 import unittest
 import pkg_resources
 
+from mailman import Defaults
 from mailman.configuration import config
 from mailman.i18n import _
 from mailman.initialize import initialize_1, initialize_2
@@ -232,6 +233,9 @@ def main():
             print >> fp, 'MAILMAN_GID =', group_id
             print >> fp, "LANGUAGES = 'en'"
             print >> fp, 'SMTPPORT =', SMTPServer.port
+            # A fake MHonArc command, for testing.
+            print >> fp, 'MHONARC_COMMAND = """/bin/echo', \
+                  Defaults.MHONARC_COMMAND, '"""'
 
         initialize_1(cfg_out, propagate_logs=parser.options.stderr)
         mailman_uid = pwd.getpwnam(config.MAILMAN_USER).pw_uid

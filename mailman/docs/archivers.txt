@@ -32,6 +32,9 @@ interoperate.
     mail-archive
         http://go.mail-archive.dev/test%40example.com
         http://go.mail-archive.dev/ZaXPPxRMM9_hFZL4vTRlQlBx8pc=
+    mhonarc
+        http://www.example.com/.../test@example.com
+        http://www.example.com/.../RSZCG7IGPHFIRW3EMTVMMDNJMNCVCOLE
     pipermail
         http://www.example.com/pipermail/test@example.com
         None
@@ -134,14 +137,47 @@ Additionally, this archiver can handle malformed Message-IDs.
     >>> del msg['message-id']
     >>> msg['Message-ID'] = '12345>'
     >>> archiver.permalink(mlist, msg)
-    'http://go.mail-archive.dev/ZaXPPxRMM9_hFZL4vTRlQlBx8pc='
+    'http://go.mail-archive.dev/bXvG32YzcDEIVDaDLaUSVQekfo8='
 
     >>> del msg['message-id']
     >>> msg['Message-ID'] = '<12345'
     >>> archiver.permalink(mlist, msg)
-    'http://go.mail-archive.dev/ZaXPPxRMM9_hFZL4vTRlQlBx8pc='
+    'http://go.mail-archive.dev/9rockPrT1Mm-jOsLWS6_hseR_OY='
 
     >>> del msg['message-id']
     >>> msg['Message-ID'] = '12345'
     >>> archiver.permalink(mlist, msg)
     'http://go.mail-archive.dev/ZaXPPxRMM9_hFZL4vTRlQlBx8pc='
+
+    >>> del msg['message-id']
+    >>> msg['Message-ID'] = '    12345    '
+    >>> archiver.permalink(mlist, msg)
+    'http://go.mail-archive.dev/ZaXPPxRMM9_hFZL4vTRlQlBx8pc='
+
+
+MHonArc
+-------
+
+The MHonArc archiver <http://www.mhonarc.org> is also available.
+
+    >>> archiver = config.archivers['mhonarc']
+    >>> archiver.name
+    'mhonarc'
+
+Messages sent to a local MHonArc instance are added to its archive via a
+subprocess call.
+
+    >>> archiver.archive_message(mlist, msg)
+    >>> archive_log = open(os.path.join(config.LOG_DIR, 'archiver'))
+    >>> try:
+    ...     contents = archive_log.read()
+    ... finally:
+    ...     archive_log.close()
+    >>> print 'LOG:', contents
+    LOG: ... /usr/bin/mhonarc -add
+        -dbfile /.../private/test@example.com.mbox/mhonarc.db
+        -outdir /.../mhonarc/test@example.com
+        -stderr /.../logs/mhonarc
+        -stdout /.../logs/mhonarc
+        -spammode -umask 022
+        ...

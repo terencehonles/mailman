@@ -64,9 +64,10 @@ class MailArchive:
         # It is not the archiver's job to ensure the message has a Message-ID.
         assert message_id is not None, 'No Message-ID found'
         # The angle brackets are not part of the Message-ID.  See RFC 2822.
-        start = (1 if message_id.startswith('<') else 0)
-        end = (-1 if message_id.endswith('>') else None)
-        message_id = message_id[start:end]
+        if message_id.startswith('<') and message_id.endswith('>'):
+            message_id = message_id[1:-1]
+        else:
+            message_id = message_id.strip()
         sha = hashlib.sha1(message_id)
         sha.update(str(mlist.posting_address))
         message_id_hash = urlsafe_b64encode(sha.digest())
