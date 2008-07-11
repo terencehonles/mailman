@@ -31,9 +31,11 @@ import tempfile
 import unittest
 import pkg_resources
 
+from mailman import Defaults
 from mailman.configuration import config
 from mailman.i18n import _
 from mailman.initialize import initialize_1, initialize_2
+from mailman.testing.helpers import SMTPServer
 from mailman.version import MAILMAN_VERSION
 
 
@@ -226,10 +228,14 @@ def main():
         with open(cfg_out, 'a') as fp:
             print >> fp, 'VAR_DIR = "%s"' % var_dir
             print >> fp, 'MAILMAN_USER = "%s"' % user_name
-            print >> fp, 'MAILMAN_UID = %d' % user_id
+            print >> fp, 'MAILMAN_UID =', user_id
             print >> fp, 'MAILMAN_GROUP = "%s"' % group_name
-            print >> fp, 'MAILMAN_GID = %d' % group_id
+            print >> fp, 'MAILMAN_GID =', group_id
             print >> fp, "LANGUAGES = 'en'"
+            print >> fp, 'SMTPPORT =', SMTPServer.port
+            # A fake MHonArc command, for testing.
+            print >> fp, 'MHONARC_COMMAND = """/bin/echo', \
+                  Defaults.MHONARC_COMMAND, '"""'
 
         initialize_1(cfg_out, propagate_logs=parser.options.stderr)
         mailman_uid = pwd.getpwnam(config.MAILMAN_USER).pw_uid

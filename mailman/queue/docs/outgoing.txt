@@ -26,21 +26,12 @@ move messages to the 'retry queue' for handling delivery failures.
     ...            u'password', DeliveryMode.regular, u'en',
     ...            ack=False, admin_notif=False)
 
-    >>> from mailman.testing.helpers import SMTPServer
-    >>> smtpd = SMTPServer()
-    >>> smtpd.start()
-    >>> from mailman.configuration import config
-    >>> old_host = config.SMTPHOST
-    >>> old_port = config.SMTPPORT
-    >>> config.SMTPHOST = smtpd.host
-    >>> config.SMTPPORT = smtpd.port
-
 By setting the mailing list to personalize messages, each recipient will get a
 unique copy of the message, with certain headers tailored for that recipient.
 
     >>> from mailman.interfaces import Personalization
     >>> mlist.personalize = Personalization.individual
-    >>> config.db.commit()
+    >>> commit()
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
@@ -55,6 +46,7 @@ Normally, messages would show up in the outgoing queue after the message has
 been processed by the rule set and pipeline.  But we can simulate that here by
 injecting a message directly into the outgoing queue.
 
+    >>> from mailman.configuration import config
     >>> msgdata = {}
     >>> handler = config.handlers['calculate-recipients']
     >>> handler.process(mlist, msg, msgdata)
@@ -86,11 +78,3 @@ Three messages have been delivered to our SMTP server, one for each recipient.
     test-bounces+aperson=example.com@example.com
     test-bounces+bperson=example.com@example.com
     test-bounces+cperson=example.com@example.com
-
-
-Clean up
---------
-
-    >>> smtpd.stop()
-    >>> config.SMTPHOST = old_host
-    >>> config.SMTPPORT = old_port

@@ -58,12 +58,13 @@ class Server(smtpd.SMTPServer):
 
     def __init__(self, localaddr, queue):
         smtpd.SMTPServer.__init__(self, localaddr, None)
+        log.info('[SMTPServer] listening: %s', localaddr)
         self._queue = queue
 
     def handle_accept(self):
         """Handle connections by creating our own Channel object."""
         conn, addr = self.accept()
-        log.info('accepted: %s', addr)
+        log.info('[SMTPServer] accepted: %s', addr)
         Channel(self, conn, addr)
 
     def process_message(self, peer, mailfrom, rcpttos, data):
@@ -72,7 +73,8 @@ class Server(smtpd.SMTPServer):
         message['X-Peer'] = '%s:%s' % peer
         message['X-MailFrom'] = mailfrom
         message['X-RcptTo'] = COMMASPACE.join(rcpttos)
-        log.info('processed message: %s', message.get('message-id', 'n/a'))
+        log.info('[SMTPServer] processed message: %s',
+                 message.get('message-id', 'n/a'))
         self._queue.put(message)
 
     def start(self):

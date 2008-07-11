@@ -65,10 +65,12 @@ def initialize_2(debug=False):
     mailman.configuration.config.db = database
     # Initialize the rules and chains.  Do the imports here so as to avoid
     # circular imports.
+    from mailman.archiving import initialize as initialize_archivers
     from mailman.app.chains import initialize as initialize_chains
     from mailman.app.rules import initialize as initialize_rules
     from mailman.app.pipelines import initialize as initialize_pipelines
     from mailman.app.commands import initialize as initialize_commands
+    initialize_archivers()
     initialize_rules()
     initialize_chains()
     initialize_pipelines()

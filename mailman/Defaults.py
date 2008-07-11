@@ -220,6 +220,22 @@ CGIEXT = ''
 # - $fqdn_listname  -- the long name of the list being accessed
 PUBLIC_ARCHIVE_URL = 'http://$hostname/pipermail/$fqdn_listname'
 
+# The public Mail-Archive.com service's base url.
+MAIL_ARCHIVE_BASEURL = 'http://go.mail-archive.com/'
+# The posting address for the Mail-Archive.com service
+MAIL_ARCHIVE_RECIPIENT = 'archive@mail-archive.com'
+
+# The command for archiving to a local MHonArc instance.
+MHONARC_COMMAND = """\
+/usr/bin/mhonarc \
+-add \
+-dbfile $PRIVATE_ARCHIVE_FILE_DIR/${listname}.mbox/mhonarc.db \
+-outdir $VAR_DIR/mhonarc/${listname} \
+-stderr $LOG_DIR/mhonarc \
+-stdout $LOG_DIR/mhonarc \
+-spammode \
+-umask 022"""
+
 # Are archives on or off by default?
 DEFAULT_ARCHIVE = On
 

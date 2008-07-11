@@ -35,6 +35,7 @@ FMT     = '%(asctime)s (%(process)d) %(message)s'
 DATEFMT = '%b %d %H:%M:%S %Y'
 
 LOGGERS = (
+    'archiver',     # All archiver output
     'bounce',       # All bounce processing logs go here
     'config',       # Configuration issues
     'debug',        # Only used for development

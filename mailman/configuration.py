@@ -174,6 +174,7 @@ class Configuration(object):
         code = self.DEFAULT_SERVER_LANGUAGE
         self.languages.enable_language(code)
         # Create various registries.
+        self.archivers = {}
         self.chains = {}
         self.rules = {}
         self.handlers = {}

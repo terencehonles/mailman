@@ -184,6 +184,7 @@ But normally, a list will include these headers.
     >>> mlist.include_rfc2369_headers = True
     >>> mlist.include_list_post_header = True
     >>> mlist.preferred_language = u'en'
+    >>> config.archivers['pipermail'].is_enabled = True
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... Message-ID: <12345>
