@@ -90,6 +90,7 @@ in answering questions on mailman-users.
     Maximillian Dornseif
     Fred Drake
     Maxim Dzumanenko
+    Piarres Beobide Egaña
     Rob Ellis
     Kerem Erkan
     Fil
@@ -124,6 +125,7 @@ in answering questions on mailman-users.
     Matthias Juchem
     Tamito KAJIYAMA
     Nino Katic
+    SHIGENO Kazutaka
     Ashley M. Kirchner
     Matthias Klose
     Harald Koch
@@ -145,28 +147,28 @@ in answering questions on mailman-users.
     Gergely Madarasz
     Luca Maranzano
     John A. Martin
+    Andrew Martynov
+    Jason R. Mastaler
     Michael Mclay
     Michael Meltzer
     Marc MERLIN
     Nigel Metheringham
     Dan Mick
     Garey Mills
+    Martin Mokrejs
     Michael Fischer v. Mollard
     David Martínez Moreno
+    Dirk Mueller
     Jonas Muerer
     Erik Myllymaki
     Balazs Nagy
+    Moritz Naumann
     Dale Newfield
     Hrvoje Niksic
     Les Niles
     Mike Noyes
     David B. O'Donnell
     Timothy O'Malley
-    Andrew Martynov
-    Jason R. Mastaler
-    Michael Meltzer
-    Martin Mokrejs
-    Dirk Mueller
     "office"
     Dan Ohnesorg
     Gerald Oskoboiny
@@ -176,7 +178,6 @@ in answering questions on mailman-users.
     Chris Pepper
     Tim Peters
     Joe Peterson
-    Piarres Beobide Egaña
     PieterB
     Rodolfo Pilas
     Skye Poier
@@ -201,7 +202,6 @@ in answering questions on mailman-users.
     Bartosz Sawicki
     Kai Schaetzl
     Karoly Segesdi
-    SHIGENO Kazutaka
     Gleydson Mazioli da Silva
     Pasi Sjöholm
     Chris Snell
