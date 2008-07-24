@@ -126,14 +126,18 @@ FOR MORE INFORMATION
 
         http://www.python.org/cgi-bin/faqw-mm.py
 
-    There is also a wiki for more community-driven information:
+    There is a wiki for more community-driven information:
 
         http://wiki.list.org
 
-    Chris Kolar has made a list owner-oriented manual available from
-    the following URL
+    The wiki includes the online FAQ maintained by the Mailman community, 
+    which contains a vast amount of information:
 
-        http://www.imsa.edu/~ckolar/mailman/
+        http://wiki.list.org/display/DOC/Frequently+Asked+Questions
+
+    As well as links to further documentation:
+
+        http://wiki.list.org/display/DOC/
 
     There are also several mailing lists that can be used as resources
     to help you get going with Mailman.
@@ -144,14 +148,6 @@ FOR MORE INFORMATION
         technical discussions off this list.
 
         http://mail.python.org/mailman/listinfo/mailman-users
-
-    Listowners
-        This mailing list with a non-technical focus, specifically for
-        discussions from the perspective of listowners and moderators who do
-        not have "shell access" to the mailing list server where the Mailman
-        software runs.
-
-        http://listowner.org
 
     Mailman-Announce
         A read-only list for release announcements an other important news.
