@@ -44,7 +44,7 @@ from mailman import Utils
 from mailman.app.replybot import autorespond_to_sender
 from mailman.configuration import config
 from mailman.i18n import _
-from mailman.interfaces import IEmailResults
+from mailman.interfaces import ContinueProcessing, IEmailResults
 from mailman.queue import Runner
 
 NL = '\n'
@@ -179,7 +179,12 @@ class CommandRunner(Runner):
             if command is None:
                 print >> results, _('No such command: $command_name')
             else:
-                command.process(mlist, msg, msgdata, arguments, results)
+                status = command.process(
+                    mlist, msg, msgdata, arguments, results)
+                assert status in ContinueProcessing, (
+                    'Invalid status: %s' % status)
+                if status == ContinueProcessing.no:
+                    break
         # All done, send the response.
         if len(finder.command_lines) > 0:
             print >> results, _('\n- Unprocessed:')

@@ -1,0 +1,38 @@
+The 'end' command
+=================
+
+The mail command processor recognized an 'end' command which tells it to stop
+processing email messages.
+
+    >>> from mailman.configuration import config
+    >>> command = config.commands['end']
+    >>> command.name
+    'end'
+    >>> command.description
+    u'Stop processing commands.'
+
+The 'end' command takes no arguments.
+
+    >>> command.argument_description
+    ''
+
+The command itself is fairly simple; it just stops command processing, and the
+message isn't even looked at.
+
+    >>> from mailman.app.lifecycle import create_list
+    >>> mlist = create_list(u'test@example.com')
+    >>> from mailman.Message import Message
+    >>> print command.process(mlist, Message(), {}, (), None)
+    ContinueProcessing.no
+
+The 'stop' command is a synonym for 'end'.
+
+    >>> command = config.commands['stop']
+    >>> command.name
+    'stop'
+    >>> command.description
+    u'Stop processing commands.'
+    >>> command.argument_description
+    ''
+    >>> print command.process(mlist, Message(), {}, (), None)
+    ContinueProcessing.no

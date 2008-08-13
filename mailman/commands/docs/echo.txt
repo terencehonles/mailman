@@ -1,0 +1,31 @@
+The 'echo' command
+==================
+
+The mail command 'echo' simply replies with the original command and arguments
+to the sender.
+
+    >>> from mailman.configuration import config
+    >>> command = config.commands['echo']
+    >>> command.name
+    'echo'
+    >>> command.argument_description
+    '[args]'
+    >>> command.description
+    u'Echo an acknowledgement.  Arguments are return unchanged.'
+
+The original message is ignored, but the results receive the echoed command.
+
+    >>> from mailman.app.lifecycle import create_list
+    >>> mlist = create_list(u'test@example.com')
+
+    >>> from mailman.queue.command import Results
+    >>> results = Results()
+
+    >>> from mailman.Message import Message
+    >>> print command.process(mlist, Message(), {}, ('foo', 'bar'), results)
+    ContinueProcessing.yes
+    >>> print unicode(results)
+    The results of your email command are provided below.
+    <BLANKLINE>
+    echo foo bar
+    <BLANKLINE>

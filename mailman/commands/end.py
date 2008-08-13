@@ -14,7 +14,37 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-"""The `join' command is synonymous with `subscribe'.
-"""
+"""The email commands 'end' and 'stop'."""
 
-from mailman.Commands.cmd_subscribe import process
+__metaclass__ = type
+__all__ = [
+    'End',
+    'Stop',
+    ]
+
+
+from zope.interface import implements
+
+from mailman.i18n import _
+from mailman.interfaces import ContinueProcessing, IEmailCommand
+
+
+
+class End:
+    """The email 'end' command."""
+    implements(IEmailCommand)
+
+    name = 'end'
+    argument_description = ''
+    description = _('Stop processing commands.')
+
+    def process(self, mlist, msg, msgdata, arguments, results):
+        """See `IEmailCommand`."""
+        # Ignore all arguments.
+        return ContinueProcessing.no
+
+
+class Stop(End):
+    """The email 'stop' command (an alias for 'end')."""
+
+    name = 'stop'

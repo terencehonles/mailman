@@ -64,8 +64,8 @@ def add_member(mlist, address, realname, password, delivery_mode, language,
     # Let's be extra cautious.
     Utils.ValidateEmail(address)
     if mlist.members.get_member(address) is not None:
-        raise AlreadySubscribedError(mlist.fqdn_listname, address,
-                                     MemberRole.member)
+        raise AlreadySubscribedError(
+            mlist.fqdn_listname, address, MemberRole.member)
     # Check for banned address here too for admin mass subscribes and
     # confirmations.
     pattern = Utils.get_pattern(address, mlist.ban_list)
