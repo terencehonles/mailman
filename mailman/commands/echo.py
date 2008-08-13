@@ -25,7 +25,7 @@ __all__ = [
 from zope.interface import implements
 
 from mailman.i18n import _
-from mailman.interfaces import IEmailCommand
+from mailman.interfaces import ContinueProcessing, IEmailCommand
 
 
 SPACE = ' '
@@ -44,4 +44,4 @@ class Echo:
     def process(self, mlist, msg, msgdata, arguments, results):
         """See `IEmailCommand`."""
         print >> results, 'echo', SPACE.join(arguments)
-        return True
+        return ContinueProcessing.yes

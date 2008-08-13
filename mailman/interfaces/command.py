@@ -17,7 +17,15 @@
 
 """Interfaces defining email commands."""
 
+from munepy import Enum
 from zope.interface import Interface, Attribute
+
+
+
+class ContinueProcessing(Enum):
+    """Should `IEmailCommand.process()` continue or not."""
+    no = 0
+    yes = 1
 
 
 
@@ -45,6 +53,6 @@ class IEmailCommand(Interface):
         :param msgdata: The message metadata.
         :param arguments: The command arguments tuple.
         :param results: An IEmailResults object for these commands.
-        :return: True if further processing should be taken of the email
-            commands in this message.
+        :return: A `ContinueProcessing` enum specifying whether to continue
+            processing or not.
         """

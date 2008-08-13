@@ -38,8 +38,11 @@ from mailman import Message
 from mailman import Utils
 from mailman import i18n
 from mailman.app.membership import add_member, delete_member
+from mailman.app.notifications import (
+    send_admin_subscription_notice, send_welcome_message)
 from mailman.configuration import config
 from mailman.interfaces import Action, DeliveryMode, RequestType
+from mailman.interfaces.member import AlreadySubscribedError
 from mailman.queue import Switchboard
 
 _ = i18n._
@@ -237,13 +240,21 @@ def handle_subscription(mlist, id, action, comment=None):
         delivery_mode = DeliveryMode(enum_value)
         address = data['address']
         realname = data['realname']
+        language = data['language']
+        password = data['password']
         try:
-            add_member(mlist, address, realname, data['password'],
-                       delivery_mode, data['language'])
-        except Errors.AlreadySubscribedError:
+            add_member(mlist, address, realname, password,
+                       delivery_mode, language)
+        except AlreadySubscribedError:
             # The address got subscribed in some other way after the original
             # request was made and accepted.
             pass
+        else:
+            if mlist.send_welcome_msg:
+                send_welcome_message(mlist, address, language, delivery_mode)
+            if mlist.admin_notify_mchanges:
+                send_admin_subscription_notice(
+                    mlist, address, realname, language)
         slog.info('%s: new %s, %s %s', mlist.fqdn_listname,
                   delivery_mode, formataddr((realname, address)),
                   'via admin approval')

@@ -104,3 +104,68 @@ message is plain text.
     <BLANKLINE>
     - Done.
     <BLANKLINE>
+
+
+Stopping command processing
+---------------------------
+
+The 'end' command stops email processing, so that nothing following is looked
+at by the command queue.
+
+    >>> msg = message_from_string("""\
+    ... From: cperson@example.com
+    ... To: test-request@example.com
+    ... Message-ID: <caribou>
+    ...
+    ... echo foo bar
+    ... end ignored
+    ... echo baz qux
+    ... """)
+
+    >>> inject_message(mlist, msg, qdir=config.CMDQUEUE_DIR)
+    >>> command.run()
+    >>> len(virgin_queue.files)
+    1
+    >>> item = get_queue_messages(virgin_queue)[0]
+    >>> print item.msg.as_string()
+    Subject: The results of your email commands
+    ...
+    <BLANKLINE>
+    - Results:
+    echo foo bar
+    <BLANKLINE>
+    - Unprocessed:
+    echo baz qux
+    <BLANKLINE>
+    - Done.
+    <BLANKLINE>
+
+The 'stop' command is an alias for 'end'.
+
+    >>> msg = message_from_string("""\
+    ... From: cperson@example.com
+    ... To: test-request@example.com
+    ... Message-ID: <caribou>
+    ...
+    ... echo foo bar
+    ... stop ignored
+    ... echo baz qux
+    ... """)
+
+    >>> inject_message(mlist, msg, qdir=config.CMDQUEUE_DIR)
+    >>> command.run()
+    >>> len(virgin_queue.files)
+    1
+    >>> item = get_queue_messages(virgin_queue)[0]
+    >>> print item.msg.as_string()
+    Subject: The results of your email commands
+    ...
+    <BLANKLINE>
+    - Results:
+    echo foo bar
+    <BLANKLINE>
+    - Unprocessed:
+    echo baz qux
+    <BLANKLINE>
+    - Done.
+    <BLANKLINE>

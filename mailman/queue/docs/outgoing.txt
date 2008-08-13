@@ -17,14 +17,11 @@ move messages to the 'retry queue' for handling delivery failures.
     >>> from mailman.app.membership import add_member
     >>> from mailman.interfaces import DeliveryMode
     >>> add_member(mlist, u'aperson@example.com', u'Anne Person',
-    ...            u'password', DeliveryMode.regular, u'en',
-    ...            ack=False, admin_notif=False)
+    ...            u'password', DeliveryMode.regular, u'en')
     >>> add_member(mlist, u'bperson@example.com', u'Bart Person',
-    ...            u'password', DeliveryMode.regular, u'en',
-    ...            ack=False, admin_notif=False)
+    ...            u'password', DeliveryMode.regular, u'en')
     >>> add_member(mlist, u'cperson@example.com', u'Cris Person',
-    ...            u'password', DeliveryMode.regular, u'en',
-    ...            ack=False, admin_notif=False)
+    ...            u'password', DeliveryMode.regular, u'en')
 
 By setting the mailing list to personalize messages, each recipient will get a
 unique copy of the message, with certain headers tailored for that recipient.

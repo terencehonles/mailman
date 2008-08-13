@@ -1,0 +1,60 @@
+The 'join' command
+==================
+
+The mail command 'join' subscribes an email address to the mailing list.
+'subscribe' is an alias for 'join'.
+
+    >>> from mailman.configuration import config
+    >>> command = config.commands['join']
+    >>> print command.name
+    join
+    >>> print command.description
+    Join this mailing list.  You will be asked to confirm your subscription
+    request and you may be issued a provisional password.
+    <BLANKLINE>
+    By using the 'digest' option, you can specify whether you want digest
+    delivery or not.  If not specified, the mailing list's default will be
+    used.  You can also subscribe an alternative address by using the
+    'address' option.  For example:
+    <BLANKLINE>
+        join address=myotheraddress@example.com
+    <BLANKLINE>
+    >>> print command.argument_description
+    [digest=<yes|no>] [address=<address>]
+
+
+No address to join
+------------------
+
+    >>> from mailman.Message import Message
+    >>> from mailman.app.lifecycle import create_list
+    >>> from mailman.queue.command import Results
+    >>> mlist = create_list(u'test@example.com')
+
+When no address argument is given, the message's From address will be used.
+If that's missing though, then an error is returned.
+
+    >>> results = Results()
+    >>> print command.process(mlist, Message(), {}, (), results)
+    ContinueProcessing.no
+    >>> print unicode(results)
+    The results of your email command are provided below.
+    <BLANKLINE>
+    join: No valid address found to subscribe
+    <BLANKLINE>
+
+The 'subscribe' command is an alias.
+
+    >>> subscribe = config.commands['subscribe']
+    >>> print subscribe.name
+    subscribe
+    >>> results = Results()
+    >>> print subscribe.process(mlist, Message(), {}, (), results)
+    ContinueProcessing.no
+    >>> print unicode(results)
+    The results of your email command are provided below.
+    <BLANKLINE>
+    subscribe: No valid address found to subscribe
+    <BLANKLINE>
+
+

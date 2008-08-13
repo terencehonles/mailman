@@ -23,10 +23,8 @@ __metaclass__ = type
 __all__ = [
     'add_member',
     'delete_member',
-    'send_goodbye_message',
-    'send_welcome_message',
     ]
-    
+
 
 from email.utils import formataddr
 
@@ -34,6 +32,7 @@ from mailman import Errors
 from mailman import Message
 from mailman import Utils
 from mailman import i18n
+from mailman.app.notifications import send_goodbye_message
 from mailman.configuration import config
 from mailman.interfaces import AlreadySubscribedError, DeliveryMode, MemberRole
 
@@ -41,31 +40,30 @@ _ = i18n._
 
 
 
-def add_member(mlist, address, realname, password, delivery_mode, language,
-               ack=None, admin_notif=None, text=''):
+def add_member(mlist, address, realname, password, delivery_mode, language):
     """Add a member right now.
 
     The member's subscription must be approved by whatever policy the list
     enforces.
 
-    ack is a flag that specifies whether the user should get an
-    acknowledgement of their being subscribed.  Default is to use the
-    list's default flag value.
-
-    admin_notif is a flag that specifies whether the list owner should get
-    an acknowledgement of this subscription.  Default is to use the list's
-    default flag value.
+    :param mlist: the mailing list to add the member to
+    :type mlist: IMailingList
+    :param address: the address to subscribe
+    :type address: string
+    :param realname: the subscriber's full name
+    :type realname: string
+    :param password: the subscriber's password
+    :type password: string
+    :param delivery_mode: the delivery mode the subscriber has chosen
+    :type delivery_mode: DeliveryMode
+    :param language: the language that the subscriber is going to use
+    :type language: string
     """
-    # Set up default flag values
-    if ack is None:
-        ack = mlist.send_welcome_msg
-    if admin_notif is None:
-        admin_notif = mlist.admin_notify_mchanges
     # Let's be extra cautious.
     Utils.ValidateEmail(address)
     if mlist.members.get_member(address) is not None:
-        raise AlreadySubscribedError(mlist.fqdn_listname, address,
-                                     MemberRole.member)
+        raise AlreadySubscribedError(
+            mlist.fqdn_listname, address, MemberRole.member)
     # Check for banned address here too for admin mass subscribes and
     # confirmations.
     pattern = Utils.get_pattern(address, mlist.ban_list)
@@ -110,53 +108,6 @@ def add_member(mlist, address, realname, password, delivery_mode, language,
         member.preferences.delivery_mode = delivery_mode
 ##     mlist.setMemberOption(email, config.Moderate,
 ##                          mlist.default_member_moderation)
-    # Send notifications.
-    if ack:
-        send_welcome_message(mlist, address, language, delivery_mode, text)
-    if admin_notif:
-        with i18n.using_language(mlist.preferred_language):
-            subject = _('$mlist.real_name subscription notification')
-        if isinstance(realname, unicode):
-            realname = realname.encode(Utils.GetCharSet(language), 'replace')
-        text = Utils.maketext(
-            'adminsubscribeack.txt',
-            {'listname' : mlist.real_name,
-             'member'   : formataddr((realname, address)),
-             }, mlist=mlist)
-        msg = Message.OwnerNotification(mlist, subject, text)
-        msg.send(mlist)
-
-
-
-def send_welcome_message(mlist, address, language, delivery_mode, text=''):
-    if mlist.welcome_msg:
-        welcome = Utils.wrap(mlist.welcome_msg) + '\n'
-    else:
-        welcome = ''
-    # Find the IMember object which is subscribed to the mailing list, because
-    # from there, we can get the member's options url.
-    member = mlist.members.get_member(address)
-    options_url = member.options_url
-    # Get the text from the template.
-    text += Utils.maketext(
-        'subscribeack.txt', {
-            'real_name'         : mlist.real_name,
-            'posting_address'   : mlist.fqdn_listname,
-            'listinfo_url'      : mlist.script_url('listinfo'),
-            'optionsurl'        : options_url,
-            'request_address'   : mlist.request_address,
-            'welcome'           : welcome,
-            }, lang=language, mlist=mlist)
-    if delivery_mode is not DeliveryMode.regular:
-        digmode = _(' (Digest mode)')
-    else:
-        digmode = ''
-    msg = Message.UserNotification(
-        address, mlist.request_address,
-        _('Welcome to the "$mlist.real_name" mailing list${digmode}'),
-        text, language)
-    msg['X-No-Archive'] = 'yes'
-    msg.send(mlist, verp=config.VERP_PERSONALIZED_DELIVERIES)
 
 
 
@@ -184,16 +135,3 @@ def delete_member(mlist, address, admin_notif=None, userack=None):
              }, mlist=mlist)
         msg = Message.OwnerNotification(mlist, subject, text)
         msg.send(mlist)
-
-
-
-def send_goodbye_message(mlist, address, language):
-    if mlist.goodbye_msg:
-        goodbye = Utils.wrap(mlist.goodbye_msg) + '\n'
-    else:
-        goodbye = ''
-    msg = Message.UserNotification(
-        address, mlist.bounces_address,
-        _('You have been unsubscribed from the $mlist.real_name mailing list'),
-        goodbye, language)
-    msg.send(mlist, verp=config.VERP_PERSONALIZED_DELIVERIES)
