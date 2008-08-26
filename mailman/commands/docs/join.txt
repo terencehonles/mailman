@@ -58,3 +58,23 @@ The 'subscribe' command is an alias.
     <BLANKLINE>
 
 
+Joining the sender
+------------------
+
+When the message has a From field, that address will be subscribed.
+
+    >>> msg = message_from_string("""\
+    ... From: Anne Person <anne@example.com>
+    ...
+    ... """)
+    >>> results = Results()
+    >>> print command.process(mlist, msg, {}, (), results)
+    ContinueProcessing.yes
+    >>> print unicode(results)
+    XXX
+
+Anne is not yet a member because she must confirm her subscription request
+first.  Mailman has sent her the confirmation message.
+
+    >>> for message in smtpd.messages:
+    ...     print message.as_string()

@@ -68,8 +68,9 @@ example:
             return ContinueProcessing.no
         password = MakeRandomPassword()
         try:
-            confirm_add_member(mlist, address, realname, password,
-                               delivery_mode, mlist.preferred_language)
+            validate_subscription(mlist, address)
+            confirm_subscription(mlist, address, realname, password,
+                                 delivery_mode, mlist_preferred_language)
         except XXX:
             pass
         print >> results, self.name, address, \
