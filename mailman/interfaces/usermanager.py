@@ -75,10 +75,13 @@ class IUserManager(Interface):
         """
 
     def get_address(address):
-        """Find and return an IAddress.
+        """Find and return the `IAddress` matching a text address.
 
-        'address' is a text email address.  None is returned if there is no
-        registered IAddress for the given text address.
+        :param address: the text email address
+        :type address: string
+        :return: The matching `IAddress` object, or None if no registered
+            `IAddress` matches the text address
+        :rtype: `IAddress` or None
         """
 
     addresses = Attribute(
