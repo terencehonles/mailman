@@ -25,13 +25,13 @@ __all__ = [
 import os
 
 from locknix.lockfile import Lock
+from pkg_resources import resource_string
 from storm.locals import create_database, Store
 from string import Template
 from urlparse import urlparse
 from zope.interface import implements
 
 import mailman.version
-import mailman.database
 
 from mailman.configuration import config
 from mailman.database.listmanager import ListManager
@@ -114,11 +114,7 @@ class StockDatabase:
                        store.execute('select tbl_name from sqlite_master;')]
         if 'version' not in table_names:
             # Initialize the database.
-            schema_file = os.path.join(
-                os.path.dirname(mailman.database.__file__),
-                'mailman.sql')
-            with open(schema_file) as fp:
-                sql = fp.read()
+            sql = resource_string('mailman.database', 'mailman.sql')
             for statement in sql.split(';'):
                 store.execute(statement + ';')
         # Validate schema version.
