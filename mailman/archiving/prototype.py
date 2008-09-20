@@ -49,8 +49,7 @@ class Prototype:
     @staticmethod
     def list_url(mlist):
         """See `IArchiver`."""
-        web_host = config.domains.get(mlist.host_name, mlist.host_name)
-        return 'http://' + web_host
+        return config.domains[mlist.host_name].base_url
 
     @staticmethod
     def permalink(mlist, msg):

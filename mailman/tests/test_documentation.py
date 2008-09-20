@@ -53,6 +53,14 @@ def specialized_message_from_string(text):
     return message
 
 
+def stop():
+    """Call into pdb.set_trace()"""
+    # Do the import here so that you get the wacky special hacked pdb instead
+    # of Python's normal pdb.
+    import pdb
+    pdb.set_trace()
+
+
 def setup(testobj):
     """Test setup."""
     smtpd = SMTPServer()
@@ -64,6 +72,10 @@ def setup(testobj):
     testobj.globs['message_from_string'] = specialized_message_from_string
     testobj.globs['commit'] = config.db.commit
     testobj.globs['smtpd'] = smtpd
+    testobj.globs['stop'] = stop
+    # Stash the current state of the global domains away for restoration in
+    # the teardown.
+    testobj._domains = config.domains.copy()
 
 
 
@@ -71,6 +83,8 @@ def cleaning_teardown(testobj):
     """Clear all persistent data at the end of a doctest."""
     # Clear the database of all rows.
     config.db._reset()
+    # Reset the global domains.
+    config.domains = testobj._domains
     # Remove all but the default style.
     for style in style_manager.styles:
         if style.name <> 'default':

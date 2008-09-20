@@ -52,7 +52,7 @@ class MHonArc:
     def list_url(mlist):
         """See `IArchiver`."""
         # XXX What about private MHonArc archives?
-        web_host = config.domains.get(mlist.host_name, mlist.host_name)
+        web_host = config.domains[mlist.host_name].url_host
         return Template(config.PUBLIC_ARCHIVE_URL).safe_substitute(
             listname=mlist.fqdn_listname,
             hostname=web_host,

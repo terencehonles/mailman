@@ -59,7 +59,15 @@ class PipermailMailingListAdapter:
 
 
 def adapt_mailing_list_for_pipermail(iface, obj):
-    """Adapt IMailingLists to IPipermailMailingList."""
+    """Adapt `IMailingLists` to `IPipermailMailingList`.
+
+    :param iface: The interface to adapt to.
+    :type iface: `zope.interface.Interface`
+    :param obj: The object being adapted.
+    :type obj: any object
+    :return: An `IPipermailMailingList` instance if adaptation succeeded or
+        None if it didn't.
+    """
     if IMailingList.providedBy(obj) and iface is IPipermailMailingList:
         return PipermailMailingListAdapter(obj)
     return None
@@ -82,7 +90,7 @@ class Pipermail:
         if mlist.archive_private:
             url = mlist.script_url('private') + '/index.html'
         else:
-            web_host = config.domains.get(mlist.host_name, mlist.host_name)
+            web_host = config.domains[mlist.host_name].url_host
             url = Template(config.PUBLIC_ARCHIVE_URL).safe_substitute(
                 listname=mlist.fqdn_listname,
                 hostname=web_host,
