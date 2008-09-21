@@ -151,8 +151,12 @@ def process_request(doc, cgidata):
     # Make sure the url host name matches one of our virtual domains.  Then
     # calculate the list's posting address.
     url_host = Utils.get_request_domain()
-    email_host = config.get_email_host(url_host)
-    if not email_host:
+    # Find the IDomain matching this url_host if there is one.
+    for email_host, domain in config.domains:
+        if domain.url_host == url_host:
+            email_host = domain.email_host
+            break
+    else:
         safehostname = Utils.websafe(url_host)
         request_creation(doc, cgidata,
                          _('Unknown virtual host: $safehostname'))

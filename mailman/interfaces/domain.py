@@ -24,30 +24,54 @@ from zope.interface import Interface, Attribute
 class IDomain(Interface):
     """Interface representing domains."""
 
-    domain_name = Attribute(
-        """The domain's name, e.g. python.org.""")
+    email_host = Attribute(
+        """The host name for email for this domain.
+
+        :type: string
+        """)
+
+    url_host = Attribute(
+        """The host name for the web interface for this domain.
+
+        :type: string
+        """)
+
+    base_url = Attribute(
+        """The base url for the Mailman server at this domain.
+
+        The base url includes the scheme and host name.
+
+        :type: string
+        """)
 
     description = Attribute(
         """The human readable description of the domain name.
 
-        E.g. Python Dot Org or mail.python.org.
+        :type: string
         """)
 
     contact_address = Attribute(
         """The contact address for the human at this domain.
 
         E.g. postmaster@python.org.
-        """)
 
-    base_url = Attribute(
-        """The base url for the Mailman server at this domain.
-
-        E.g. https://mail.python.org
+        :type: string
         """)
 
     def confirm_address(token=''):
-        """The address used for various forms of email confirmation."""
+        """The address used for various forms of email confirmation.
+
+        :param token: The confirmation token to use in the email address.
+        :type token: string
+        :return: The email confirmation address.
+        :rtype: string
+        """
 
     def confirm_url(token=''):
-        """The url used for various forms of confirmation."""
+        """The url used for various forms of confirmation.
 
+        :param token: The confirmation token to use in the url.
+        :type token: string
+        :return: The confirmation url.
+        :rtype: string
+        """
