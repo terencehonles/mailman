@@ -24,6 +24,7 @@ import errno
 from mailman import Defaults
 from mailman import Errors
 from mailman import version
+from mailman.domain import Domain
 from mailman.languages import LanguageManager
 
 SPACE = ' '
@@ -45,8 +46,7 @@ DEFAULT_QRUNNERS = (
 
 class Configuration(object):
     def __init__(self):
-        self.domains = {}       # email host -> web host
-        self._reverse = None
+        self.domains = {}       # email host -> IDomain
         self.qrunners = {}
         self.qrunner_shortcuts = {}
         self.QFILE_SCHEMA_VERSION = version.QFILE_SCHEMA_VERSION
@@ -150,10 +150,6 @@ class Configuration(object):
         del ns['add_qrunner']
         del ns['del_qrunner']
         self.__dict__.update(ns)
-        # Add the default domain if there are no virtual domains currently
-        # defined.
-        if not self.domains:
-            self.add_domain(self.DEFAULT_EMAIL_HOST, self.DEFAULT_URL_HOST)
         # Enable all specified languages, and promote the language manager to
         # a public attribute.
         self.languages = self._languages
@@ -181,36 +177,25 @@ class Configuration(object):
         self.pipelines = {}
         self.commands = {}
 
-    def add_domain(self, email_host, url_host=None):
+    def add_domain(self, *args, **kws):
         """Add a virtual domain.
 
-        :param email_host: The host name for the email interface.
-        :param url_host: Optional host name for the web interface.  If not
-            given, the email host will be used.
+        See `Domain`.
         """
-        if url_host is None:
-            url_host = email_host
-        if email_host in self.domains:
+        domain = Domain(*args, **kws)
+        if domain.email_host in self.domains:
             raise Errors.BadDomainSpecificationError(
-                'Duplicate email host: %s' % email_host)
+                'Duplicate email host: %s' % domain.email_host)
         # Make sure there's only one mapping for the url_host
-        if url_host in self.domains.values():
+        if domain.url_host in self.domains.values():
             raise Errors.BadDomainSpecificationError(
-                'Duplicate url host: %s' % url_host)
+                'Duplicate url host: %s' % domain.url_host)
         # We'll do the reverse mappings on-demand.  There shouldn't be too
         # many virtual hosts that it will really matter that much.
-        self.domains[email_host] = url_host
-        # Invalidate the reverse mapping cache
-        self._reverse = None
+        self.domains[domain.email_host] = domain
 
-    # Given an email host name, the url host name can be looked up directly.
-    # This does the reverse mapping.
-    def get_email_host(self, url_host, default=None):
-        if self._reverse is None:
-            # XXX Can't use a generator comprehension until Python 2.4 is
-            # minimum requirement.
-            self._reverse = dict([(v, k) for k, v in self.domains.items()])
-        return self._reverse.get(url_host, default)
+    # Proxy the docstring for the above method.
+    add_domain.__doc__ = Domain.__init__.__doc__
 
     def add_qrunner(self, name, count=1):
         """Convenient interface for adding additional qrunners.

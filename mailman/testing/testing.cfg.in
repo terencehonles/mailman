@@ -12,6 +12,6 @@ USE_LMTP                = Yes
 MAIL_ARCHIVE_BASEURL = 'http://go.mail-archive.dev/'
 MAIL_ARCHIVE_RECIPIENT = 'archive@mail-archive.dev'
 
-add_domain('example.com', 'www.example.com')
+add_domain('example.com', 'http://www.example.com')
 
 # bin/testall will add additional runtime configuration variables here.

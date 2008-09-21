@@ -124,40 +124,6 @@ DEFAULT_DATABASE_URL = 'sqlite:///$DATA_DIR/mailman.db'
 
 
 #####
-# Virtual domains
-#####
-
-# Mailman needs to know about at least one domain, called the 'site default
-# domain'.  If you run only one domain with Mailman, this will generally be
-# calculated automatically when you configured Mailman.  You can always change
-# this in your mailman.cfg file.  You can also add additional virtual domains
-# in your mailman.cfg file to enable multiple virtual domains.  Every mailing
-# list will be situated in exactly one virtual domain.
-#
-# For Mailman's purposes, a virtual domain associates an email host name with
-# a web host name.  These may be the same, but often they are different, and
-# the list is always referred to by its fully-qualified posting address.  For
-# example, if you created 'mylist' in the example.com domain, people can post
-# to your list via 'mylist@example.com'.  They may refer to the web pages via
-# 'www.example.com'.  So your email host name is 'example.com' and your web
-# host name is 'www.example.com'.
-#
-# To add a virtual domain, put a call to add_domain(email_host, url_host) in
-# your mailman.cfg file.  If no add_domain() calls are found, Mailman will
-# automatically add a virtual domain for the following defaults.  However if
-# you explicit add domains, you will need to add these defaults as well.
-#
-# These defaults will be filled in by configure.
-DEFAULT_EMAIL_HOST  = '@MAILHOST@'
-DEFAULT_URL_HOST    = '@URLHOST@'
-
-# Note that you will want to run bin/fix_url.py to change the domain of an
-# existing list.  bin/fix_url.py must be run within the bin/withlist script,
-# like so: bin/withlist -l -r bin/fix_url.py <listname>
-
-
-
-#####
 # Spam avoidance defaults
 #####
 
