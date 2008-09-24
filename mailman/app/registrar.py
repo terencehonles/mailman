@@ -27,6 +27,7 @@ import datetime
 import pkg_resources
 
 from zope.interface import implements
+from zope.interface.interface import adapter_hooks
 
 from mailman.Message import UserNotification
 from mailman.Utils import ValidateEmail
@@ -74,7 +75,7 @@ class Registrar:
         token = config.db.pendings.add(pendable)
         # Set up some local variables for translation interpolation.
         domain = IDomain(self._context)
-        domain_name = _(domain.domain_name)
+        domain_name = _(domain.email_host)
         contact_address = domain.contact_address
         confirm_url = domain.confirm_url(token)
         confirm_address = domain.confirm_address(token)
@@ -142,3 +143,21 @@ class Registrar:
     def discard(self, token):
         # Throw the record away.
         config.db.pendings.confirm(token)
+
+
+
+def adapt_domain_to_registrar(iface, obj):
+    """Adapt `IDomain` to `IRegistrar`.
+
+    :param iface: The interface to adapt to.
+    :type iface: `zope.interface.Interface`
+    :param obj: The object being adapted.
+    :type obj: `IDomain`
+    :return: An `IRegistrar` instance if adaptation succeeded or None if it
+        didn't.
+    """
+    return (Registrar(obj)
+            if IDomain.providedBy(obj) and iface is IRegistrar
+            else None)
+
+adapter_hooks.append(adapt_domain_to_registrar)

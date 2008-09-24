@@ -16,27 +16,11 @@ Specifically, it does not handle verifications, email address syntax validity
 checks, etc.  The IRegistrar is the interface to the object handling all this
 stuff.
 
-Create a dummy domain, which will provide the context for the verification
-email message.
+Add a domain, which will provide the context for the verification email
+message.
 
-    >>> from zope.interface import implements
-    >>> from mailman.interfaces import IDomain
-    >>> class TestDomain(object):
-    ...     implements(IDomain)
-    ...     def __init__(self):
-    ...         self.domain_name = 'example.com'
-    ...         self.description = 'mail.example.com'
-    ...         self.contact_address = 'postmaster@mail.example.com'
-    ...         self.base_url = 'http://mail.example.com'
-    ...     def confirm_address(self, token=''):
-    ...         return 'confirm+%s@example.com' % token
-    ...     def confirm_url(self, token=''):
-    ...         return self.base_url + '/confirm/' + token
-    ...     def __conform__(self, protocol):
-    ...         if protocol is IRegistrar:
-    ...             return Registrar(self)
-    ...         return None
-    >>> domain = TestDomain()
+    >>> config.add_domain('mail.example.com', 'http://mail.example.com')
+    >>> domain = config.domains['mail.example.com']
 
 Get a registrar by adapting a context to the interface.
 
@@ -143,7 +127,7 @@ message is sent to the user in order to verify the registered address.
     Content-Type: text/plain; charset="us-ascii"
     Content-Transfer-Encoding: 7bit
     Subject: confirm ...
-    From: confirm+...@example.com
+    From: confirm-...@mail.example.com
     To: aperson@example.com
     Message-ID: <...>
     Date: ...
@@ -151,7 +135,7 @@ message is sent to the user in order to verify the registered address.
     <BLANKLINE>
     Email Address Registration Confirmation
     <BLANKLINE>
-    Hello, this is the GNU Mailman server at example.com.
+    Hello, this is the GNU Mailman server at mail.example.com.
     <BLANKLINE>
     We have received a registration request for the email address
     <BLANKLINE>
@@ -165,8 +149,8 @@ message is sent to the user in order to verify the registered address.
         http://mail.example.com/confirm/...
     <BLANKLINE>
     If you do not wish to register this email address simply disregard this
-    message.  If you think you are being maliciously subscribed to the list, or
-    have any other questions, you may contact
+    message.  If you think you are being maliciously subscribed to the list,
+    or have any other questions, you may contact
     <BLANKLINE>
         postmaster@mail.example.com
     <BLANKLINE>
@@ -188,7 +172,7 @@ appear in a URL in the body of the message.
 
 The same token will appear in the From header.
 
-    >>> qmsg['from'] == 'confirm+' + token + '@example.com'
+    >>> qmsg['from'] == 'confirm-' + token + '@mail.example.com'
     True
 
 It will also appear in the Subject header.
@@ -344,6 +328,8 @@ that doesn't match a registration even, you will get None.  However, the
 pending even matched with that token will still be removed.
 
     >>> from mailman.interfaces import IPendable
+    >>> from zope.interface import implements
+
     >>> class SimplePendable(dict):
     ...     implements(IPendable)
     >>> pendable = SimplePendable(type='foo', bar='baz')

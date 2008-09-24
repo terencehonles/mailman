@@ -12,7 +12,12 @@ At a minimum, the email host name must be specified.
 
 The domain object can be looked up by email host name.
 
+    >>> from zope.interface.verify import verifyObject
+    >>> from mailman.interfaces.domain import IDomain
     >>> domain = config.domains['example.net']
+    >>> verifyObject(IDomain, domain)
+    True
+
     >>> print domain.email_host
     example.net
 

@@ -68,9 +68,9 @@ def adapt_mailing_list_for_pipermail(iface, obj):
     :return: An `IPipermailMailingList` instance if adaptation succeeded or
         None if it didn't.
     """
-    if IMailingList.providedBy(obj) and iface is IPipermailMailingList:
-        return PipermailMailingListAdapter(obj)
-    return None
+    return (PipermailMailingListAdapter(obj)
+            if IMailingList.providedBy(obj) and iface is IPipermailMailingList
+            else None)
 
 adapter_hooks.append(adapt_mailing_list_for_pipermail)
 
