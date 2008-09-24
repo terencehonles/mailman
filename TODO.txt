@@ -8,7 +8,6 @@ Add tests for plugins
 Rework MTA plugins and add tests
 Address XXX and FIXME
 Fix the roster creation cruft for mailing lists
-Suss out the IDomain stuff
 Remove Date: header from messagestore requirements (see list thread)
 Handle moderation flag (see Mailman.app.membership)
 Eradicate MailList.Lock() and friends.
