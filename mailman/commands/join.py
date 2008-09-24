@@ -24,7 +24,7 @@ __all__ = [
 
 
 from email.header import decode_header, make_header
-from email.utils import parseaddr
+from email.utils import formataddr, parseaddr
 from zope.interface import implements
 
 from mailman.Utils import MakeRandomPassword
@@ -32,6 +32,7 @@ from mailman.configuration import config
 from mailman.i18n import _
 from mailman.interfaces import (
     ContinueProcessing, DeliveryMode, IEmailCommand)
+from mailman.interfaces.registrar import IRegistrar
 
 
 
@@ -56,9 +57,9 @@ example:
     def process(self, mlist, msg, msgdata, arguments, results):
         """See `IEmailCommand`."""
         # Parse the arguments.
-        address, delivery_mmode = self._parse_arguments(arguments)
+        address, delivery_mode = self._parse_arguments(arguments)
         if address is None:
-            realname, address = parseaddr(msg['from'])
+            real_name, address = parseaddr(msg['from'])
         # Address could be None or the empty string.
         if not address:
             address = msg.get_sender()
@@ -66,15 +67,11 @@ example:
             print >> results, _(
                 '$self.name: No valid address found to subscribe')
             return ContinueProcessing.no
-        password = MakeRandomPassword()
-        try:
-            validate_subscription(mlist, address)
-            confirm_subscription(mlist, address, realname, password,
-                                 delivery_mode, mlist_preferred_language)
-        except XXX:
-            pass
-        print >> results, self.name, address, \
-              (_('digest delivery') if digest else _('regular delivery'))
+        domain = config.domains[mlist.host_name]
+        registrar = IRegistrar(domain)
+        registrar.register(address, real_name)
+        person = formataddr((real_name, address))
+        print >> results, _('Confirmation email sent to $person')
         return ContinueProcessing.yes
 
     def _parse_arguments(self, arguments):
@@ -121,6 +118,7 @@ example:
                     return ContinueProcessing.no
                 address = parts[1]
         return address, delivery_mode
+
 
 def ignore():
     # Fill in empty defaults

@@ -34,7 +34,7 @@ import pkg_resources
 from mailman import Defaults
 from mailman.configuration import config
 from mailman.i18n import _
-from mailman.initialize import initialize_1, initialize_2
+from mailman.initialize import initialize_1, initialize_2, initialize_3
 from mailman.testing.helpers import SMTPServer
 from mailman.version import MAILMAN_VERSION
 
@@ -261,6 +261,7 @@ def main():
 
         # With -vvv, turn on engine debugging.
         initialize_2(parser.options.verbosity > 3)
+        initialize_3()
 
         # Run the tests.  XXX I'm not sure if basedir can be converted to
         # pkg_resources.

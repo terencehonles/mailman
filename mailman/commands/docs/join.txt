@@ -71,10 +71,63 @@ When the message has a From field, that address will be subscribed.
     >>> print command.process(mlist, msg, {}, (), results)
     ContinueProcessing.yes
     >>> print unicode(results)
-    XXX
+    The results of your email command are provided below.
+    <BLANKLINE>
+    Confirmation email sent to Anne Person <anne@example.com>
+    <BLANKLINE>
 
 Anne is not yet a member because she must confirm her subscription request
-first.  Mailman has sent her the confirmation message.
+first.
 
-    >>> for message in smtpd.messages:
-    ...     print message.as_string()
+    >>> print config.db.user_manager.get_user(u'anne@example.com')
+    None
+
+Mailman has sent her the confirmation message.
+
+    >>> from mailman.queue import Switchboard
+    >>> virginq = Switchboard(config.VIRGINQUEUE_DIR)
+    >>> qmsg, qdata = virginq.dequeue(virginq.files[0])
+    >>> print qmsg.as_string()
+    MIME-Version: 1.0
+    ...
+    Subject: confirm ...
+    From: confirm-...@example.com
+    To: anne@example.com
+    ...
+    <BLANKLINE>
+    Email Address Registration Confirmation
+    <BLANKLINE>
+    Hello, this is the GNU Mailman server at example.com.
+    <BLANKLINE>
+    We have received a registration request for the email address
+    <BLANKLINE>
+        anne@example.com
+    <BLANKLINE>
+    Before you can start using GNU Mailman at this site, you must first
+    confirm that this is your email address.  You can do this by replying to
+    this message, keeping the Subject header intact.  Or you can visit this
+    web page
+    <BLANKLINE>
+        http://www.example.com/confirm/...
+    <BLANKLINE>
+    If you do not wish to register this email address simply disregard this
+    message.  If you think you are being maliciously subscribed to the list, or
+    have any other questions, you may contact
+    <BLANKLINE>
+        postmaster@example.com
+    <BLANKLINE>
+
+Once Anne confirms her registration, she will be made a member of the mailing
+list.
+
+    >>> token = str(qmsg['subject']).split()[1].strip()
+    >>> from mailman.interfaces.registrar import IRegistrar
+    >>> registrar = IRegistrar(config.domains['example.com'])
+    >>> registrar.confirm(token)
+    True
+
+    >>> user = config.db.user_manager.get_user(u'anne@example.com')
+    >>> print user.real_name
+    Anne Person
+    >>> list(user.addresses)
+    [<Address: Anne Person <anne@example.com> [verified] at ...>]

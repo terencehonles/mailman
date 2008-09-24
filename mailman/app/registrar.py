@@ -20,6 +20,7 @@
 __metaclass__ = type
 __all__ = [
     'Registrar',
+    'adapt_domain_to_registrar',
     ]
 
 
@@ -27,7 +28,6 @@ import datetime
 import pkg_resources
 
 from zope.interface import implements
-from zope.interface.interface import adapter_hooks
 
 from mailman.Message import UserNotification
 from mailman.Utils import ValidateEmail
@@ -159,5 +159,3 @@ def adapt_domain_to_registrar(iface, obj):
     return (Registrar(obj)
             if IDomain.providedBy(obj) and iface is IRegistrar
             else None)
-
-adapter_hooks.append(adapt_domain_to_registrar)
