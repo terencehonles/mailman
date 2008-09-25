@@ -20,6 +20,7 @@
 __metaclass__ = type
 __all__ = [
     'Registrar',
+    'adapt_domain_to_registrar',
     ]
 
 
@@ -27,13 +28,13 @@ import datetime
 import pkg_resources
 
 from zope.interface import implements
-from zope.interface.interface import adapter_hooks
 
 from mailman.Message import UserNotification
 from mailman.Utils import ValidateEmail
 from mailman.configuration import config
 from mailman.i18n import _
 from mailman.interfaces import IDomain, IPendable, IRegistrar
+from mailman.interfaces.member import MemberRole
 
 
 
@@ -49,29 +50,18 @@ class Registrar:
     def __init__(self, context):
         self._context = context
 
-    def register(self, address, real_name=None):
+    def register(self, address, real_name=None, mlist=None):
         """See `IUserRegistrar`."""
         # First, do validation on the email address.  If the address is
         # invalid, it will raise an exception, otherwise it just returns.
         ValidateEmail(address)
-        # Check to see if there is already a verified IAddress in the database
-        # matching this address.  If so, there's nothing to do.
-        usermgr = config.db.user_manager
-        addr = usermgr.get_address(address)
-        if addr and addr.verified_on:
-            # Before returning, see if this address is linked to a user.  If
-            # not, create one and link it now since no future verification
-            # will be done.
-            user = usermgr.get_user(address)
-            if user is None:
-                user = usermgr.create_user()
-                user.real_name = (real_name if real_name else addr.real_name)
-                user.link(addr)
-            return None
-        # Calculate the token for this confirmation record.
-        pendable = PendableRegistration(type=PendableRegistration.PEND_KEY,
-                                        address=address,
-                                        real_name=real_name)
+        # Create a pendable for the registration.
+        pendable = PendableRegistration(
+            type=PendableRegistration.PEND_KEY,
+            address=address,
+            real_name=real_name)
+        if mlist is not None:
+            pendable['list_name'] = mlist.fqdn_listname
         token = config.db.pendings.add(pendable)
         # Set up some local variables for translation interpolation.
         domain = IDomain(self._context)
@@ -100,8 +90,8 @@ class Registrar:
         missing = object()
         address = pendable.get('address', missing)
         real_name = pendable.get('real_name', missing)
-        if (pendable.get('type') <> PendableRegistration.PEND_KEY or
-            address is missing or real_name is missing):
+        list_name = pendable.get('list_name', missing)
+        if pendable.get('type') != PendableRegistration.PEND_KEY:
             # It seems like it would be very difficult to accurately guess
             # tokens, or brute force an attack on the SHA1 hash, so we'll just
             # throw the pendable away in that case.  It's possible we'll need
@@ -112,8 +102,10 @@ class Registrar:
         # and an IUser linked to this IAddress.  See if any of these objects
         # currently exist in our database.
         usermgr = config.db.user_manager
-        addr = usermgr.get_address(address)
-        user = usermgr.get_user(address)
+        addr = (usermgr.get_address(address)
+                if address is not missing else None)
+        user = (usermgr.get_user(address)
+                if address is not missing else None)
         # If there is neither an address nor a user matching the confirmed
         # record, then create the user, which will in turn create the address
         # and link the two together
@@ -138,6 +130,13 @@ class Registrar:
             # do is verify the address.
             pass
         addr.verified_on = datetime.datetime.now()
+        # If this registration is tied to a mailing list, subscribe the person
+        # to the list right now.
+        list_name = pendable.get('list_name')
+        if list_name is not None:
+            mlist = config.db.list_manager.get(list_name)
+            if mlist:
+                addr.subscribe(mlist, MemberRole.member)
         return True
 
     def discard(self, token):
@@ -159,5 +158,3 @@ def adapt_domain_to_registrar(iface, obj):
     return (Registrar(obj)
             if IDomain.providedBy(obj) and iface is IRegistrar
             else None)
-
-adapter_hooks.append(adapt_domain_to_registrar)

@@ -242,27 +242,12 @@ confirmation step is completed.
     >>> usermgr.get_address(u'cperson@example.com')
     <Address: cperson@example.com [verified] at ...>
 
-If an address being registered has already been verified, linked or not to a
-user, then registration sends no confirmation.
+Even if the address being registered has already been verified, the
+registration sends a confirmation.
 
-    >>> print registrar.register(u'cperson@example.com')
-    None
-    >>> len(switchboard.files)
-    0
-
-But if the already verified address is not linked to a user, then a user is
-created now and they are linked, with no confirmation necessary.
-
-    >>> address = usermgr.create_address(u'dperson@example.com', u'Dave Person')
-    >>> address.verified_on = datetime.now()
-    >>> print usermgr.get_user(u'dperson@example.com')
-    None
-    >>> print registrar.register(u'dperson@example.com')
-    None
-    >>> len(switchboard.files)
-    0
-    >>> usermgr.get_user(u'dperson@example.com')
-    <User "Dave Person" at ...>
+    >>> token = registrar.register(u'cperson@example.com')
+    >>> token is not None
+    True
 
 
 Discarding
@@ -290,9 +275,12 @@ When a new address for an existing user is registered, there isn't too much
 different except that the new address will still need to be verified before it
 can be used.
 
-    >>> dperson = usermgr.get_user(u'dperson@example.com')
+    >>> dperson = usermgr.create_user(u'dperson@example.com', u'Dave Person')
     >>> dperson
     <User "Dave Person" at ...>
+    >>> address = usermgr.get_address(u'dperson@example.com')
+    >>> address.verified_on = datetime.now()
+
     >>> from operator import attrgetter
     >>> sorted((addr for addr in dperson.addresses), key=attrgetter('address'))
     [<Address: Dave Person <dperson@example.com> [verified] at ...>]
@@ -339,12 +327,27 @@ pending even matched with that token will still be removed.
     >>> print pendingdb.confirm(token)
     None
 
-If somehow the pending registration event doesn't have an address in its
-record, you will also get None back, and the record will be removed.
 
-    >>> pendable = SimplePendable(type='registration', foo='bar')
-    >>> token = pendingdb.add(pendable)
-    >>> registrar.confirm(token)
-    False
-    >>> print pendingdb.confirm(token)
+Registration and subscription
+-----------------------------
+
+Fred registers with Mailman at the same time that he subscribes to a mailing
+list.
+
+    >>> from mailman.app.lifecycle import create_list
+    >>> mlist = create_list(u'alpha@example.com')
+    >>> token = registrar.register(
+    ...     u'fred.person@example.com', 'Fred Person', mlist)
+
+Before confirmation, Fred is not a member of the mailing list.
+
+    >>> print mlist.members.get_member(u'fred.person@example.com')
     None
+
+But after confirmation, he is.
+
+    >>> registrar.confirm(token)
+    True
+    >>> print mlist.members.get_member(u'fred.person@example.com')
+    <Member: Fred Person <fred.person@example.com>
+             on alpha@example.com as MemberRole.member>

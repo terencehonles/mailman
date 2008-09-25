@@ -34,7 +34,7 @@ class IRegistrar(Interface):
     syntax checking, or confirmation, while this interface does.
     """
 
-    def register(address, real_name=None):
+    def register(address, real_name=None, mlist=None):
         """Register the email address, requesting verification.
 
         No IAddress or IUser is created during this step, but after successful

@@ -26,6 +26,7 @@ by the command line arguments.
 
 import os
 
+from zope.interface.interface import adapter_hooks
 from zope.interface.verify import verifyObject
 
 import mailman.configuration
@@ -42,6 +43,17 @@ from mailman.interfaces import IDatabase
 # code will just call initialize().
 
 def initialize_1(config_path, propagate_logs):
+    """First initialization step.
+
+    * The configuration system
+    * Run-time directories
+    * The logging subsystem
+
+    :param config_path: The path to the configuration file.
+    :type config_path: string
+    :param propagate_logs: Should the log output propagate to stderr?
+    :type propagate_logs: boolean
+    """
     # By default, set the umask so that only owner and group can read and
     # write our files.  Specifically we must have g+rw and we probably want
     # o-rwx although I think in most cases it doesn't hurt if other can read
@@ -56,6 +68,17 @@ def initialize_1(config_path, propagate_logs):
 
 
 def initialize_2(debug=False):
+    """Second initialization step.
+
+    * Archivers
+    * Rules
+    * Chains
+    * Pipelines
+    * Commands
+
+    :param debug: Should the database layer be put in debug mode?
+    :type debug: boolean
+    """
     database_plugin = get_plugin('mailman.database')
     # Instantiate the database plugin, ensure that it's of the right type, and
     # initialize it.  Then stash the object on our configuration object.
@@ -77,6 +100,17 @@ def initialize_2(debug=False):
     initialize_commands()
 
 
+def initialize_3():
+    """Third initialization step.
+
+    * Adapters
+    """
+    from mailman.app.registrar import adapt_domain_to_registrar
+    adapter_hooks.append(adapt_domain_to_registrar)
+
+
+
 def initialize(config_path=None, propagate_logs=False):
     initialize_1(config_path, propagate_logs)
     initialize_2()
+    initialize_3()

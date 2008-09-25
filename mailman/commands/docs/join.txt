@@ -1,0 +1,172 @@
+The 'join' command
+==================
+
+The mail command 'join' subscribes an email address to the mailing list.
+'subscribe' is an alias for 'join'.
+
+    >>> from mailman.configuration import config
+    >>> command = config.commands['join']
+    >>> print command.name
+    join
+    >>> print command.description
+    Join this mailing list.  You will be asked to confirm your subscription
+    request and you may be issued a provisional password.
+    <BLANKLINE>
+    By using the 'digest' option, you can specify whether you want digest
+    delivery or not.  If not specified, the mailing list's default will be
+    used.  You can also subscribe an alternative address by using the
+    'address' option.  For example:
+    <BLANKLINE>
+        join address=myotheraddress@example.com
+    <BLANKLINE>
+    >>> print command.argument_description
+    [digest=<yes|no>] [address=<address>]
+
+
+No address to join
+------------------
+
+    >>> from mailman.Message import Message
+    >>> from mailman.app.lifecycle import create_list
+    >>> from mailman.queue.command import Results
+    >>> mlist = create_list(u'alpha@example.com')
+
+When no address argument is given, the message's From address will be used.
+If that's missing though, then an error is returned.
+
+    >>> results = Results()
+    >>> print command.process(mlist, Message(), {}, (), results)
+    ContinueProcessing.no
+    >>> print unicode(results)
+    The results of your email command are provided below.
+    <BLANKLINE>
+    join: No valid address found to subscribe
+    <BLANKLINE>
+
+The 'subscribe' command is an alias.
+
+    >>> subscribe = config.commands['subscribe']
+    >>> print subscribe.name
+    subscribe
+    >>> results = Results()
+    >>> print subscribe.process(mlist, Message(), {}, (), results)
+    ContinueProcessing.no
+    >>> print unicode(results)
+    The results of your email command are provided below.
+    <BLANKLINE>
+    subscribe: No valid address found to subscribe
+    <BLANKLINE>
+
+
+Joining the sender
+------------------
+
+When the message has a From field, that address will be subscribed.
+
+    >>> msg = message_from_string("""\
+    ... From: Anne Person <anne@example.com>
+    ...
+    ... """)
+    >>> results = Results()
+    >>> print command.process(mlist, msg, {}, (), results)
+    ContinueProcessing.yes
+    >>> print unicode(results)
+    The results of your email command are provided below.
+    <BLANKLINE>
+    Confirmation email sent to Anne Person <anne@example.com>
+    <BLANKLINE>
+
+Anne is not yet a member because she must confirm her subscription request
+first.
+
+    >>> print config.db.user_manager.get_user(u'anne@example.com')
+    None
+
+Mailman has sent her the confirmation message.
+
+    >>> from mailman.queue import Switchboard
+    >>> virginq = Switchboard(config.VIRGINQUEUE_DIR)
+    >>> qmsg, qdata = virginq.dequeue(virginq.files[0])
+    >>> print qmsg.as_string()
+    MIME-Version: 1.0
+    ...
+    Subject: confirm ...
+    From: confirm-...@example.com
+    To: anne@example.com
+    ...
+    <BLANKLINE>
+    Email Address Registration Confirmation
+    <BLANKLINE>
+    Hello, this is the GNU Mailman server at example.com.
+    <BLANKLINE>
+    We have received a registration request for the email address
+    <BLANKLINE>
+        anne@example.com
+    <BLANKLINE>
+    Before you can start using GNU Mailman at this site, you must first
+    confirm that this is your email address.  You can do this by replying to
+    this message, keeping the Subject header intact.  Or you can visit this
+    web page
+    <BLANKLINE>
+        http://www.example.com/confirm/...
+    <BLANKLINE>
+    If you do not wish to register this email address simply disregard this
+    message.  If you think you are being maliciously subscribed to the list, or
+    have any other questions, you may contact
+    <BLANKLINE>
+        postmaster@example.com
+    <BLANKLINE>
+
+Once Anne confirms her registration, she will be made a member of the mailing
+list.
+
+    >>> token = str(qmsg['subject']).split()[1].strip()
+    >>> from mailman.interfaces.registrar import IRegistrar
+    >>> registrar = IRegistrar(config.domains['example.com'])
+    >>> registrar.confirm(token)
+    True
+
+    >>> user = config.db.user_manager.get_user(u'anne@example.com')
+    >>> print user.real_name
+    Anne Person
+    >>> list(user.addresses)
+    [<Address: Anne Person <anne@example.com> [verified] at ...>]
+
+Anne is also now a member of the mailing list.
+
+    >>> mlist.members.get_member(u'anne@example.com')
+    <Member: Anne Person <anne@example.com>
+             on alpha@example.com as MemberRole.member>
+
+
+Joining a second list
+---------------------
+
+    >>> mlist_2 = create_list(u'baker@example.com')
+    >>> msg = message_from_string("""\
+    ... From: Anne Person <anne@example.com>
+    ...
+    ... """)
+    >>> print command.process(mlist_2, msg, {}, (), Results())
+    ContinueProcessing.yes
+
+Anne of course, is still registered.
+
+    >>> print config.db.user_manager.get_user(u'anne@example.com')
+    <User "Anne Person" at ...>
+
+But she is not a member of the mailing list.
+
+    >>> print mlist_2.members.get_member(u'anne@example.com')
+    None
+
+One Anne confirms this subscription, she becomes a member of the mailing list.
+
+    >>> qmsg, qdata = virginq.dequeue(virginq.files[0])
+    >>> token = str(qmsg['subject']).split()[1].strip()
+    >>> registrar.confirm(token)
+    True
+
+    >>> print mlist_2.members.get_member(u'anne@example.com')
+    <Member: Anne Person <anne@example.com>
+             on baker@example.com as MemberRole.member>

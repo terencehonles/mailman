@@ -25,6 +25,8 @@ from mailman import Utils
 from mailman import i18n
 from mailman import passwords
 from mailman.app.membership import add_member
+from mailman.app.notifications import (
+    send_admin_subscription_notice, send_welcome_message)
 from mailman.configuration import config
 from mailman.initialize import initialize
 from mailman.interfaces import DeliveryMode
@@ -176,6 +178,10 @@ def main():
             add_member(mlist, address, real_name, password, delivery_mode,
                        mlist.preferred_language, send_welcome_msg,
                        admin_notify)
+            if send_welcome_msg:
+                send_welcome_message(mlist, address, language, delivery_mode)
+            if admin_notify:
+                send_admin_subscription_notice(mlist, address, real_name)
 
     config.db.flush()
 
