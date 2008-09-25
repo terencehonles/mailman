@@ -69,7 +69,7 @@ example:
             return ContinueProcessing.no
         domain = config.domains[mlist.host_name]
         registrar = IRegistrar(domain)
-        registrar.register(address, real_name)
+        registrar.register(address, real_name, mlist)
         person = formataddr((real_name, address))
         print >> results, _('Confirmation email sent to $person')
         return ContinueProcessing.yes
@@ -118,70 +118,6 @@ example:
                     return ContinueProcessing.no
                 address = parts[1]
         return address, delivery_mode
-
-
-def ignore():
-    # Fill in empty defaults
-    if digest is None:
-        digest = mlist.digest_is_default
-    if password is None:
-        password = Utils.MakeRandomPassword()
-    if address is None:
-        realname, address = parseaddr(res.msg['from'])
-        if not address:
-            # Fall back to the sender address
-            address = res.msg.get_sender()
-        if not address:
-            res.results.append(_('No valid address found to subscribe'))
-            return STOP
-        # Watch for encoded names
-        try:
-            h = make_header(decode_header(realname))
-            # BAW: in Python 2.2, use just unicode(h)
-            realname = h.__unicode__()
-        except UnicodeError:
-            realname = u''
-        # Coerce to byte string if uh contains only ascii
-        try:
-            realname = realname.encode('us-ascii')
-        except UnicodeError:
-            pass
-    # Create the UserDesc record and do a non-approved subscription
-    listowner = mlist.GetOwnerEmail()
-    userdesc = UserDesc(address, realname, password, digest)
-    remote = res.msg.get_sender()
-    try:
-        mlist.AddMember(userdesc, remote)
-    except Errors.MembershipIsBanned:
-        res.results.append(_("""\
-The email address you supplied is banned from this mailing list.
-If you think this restriction is erroneous, please contact the list
-owners at %(listowner)s."""))
-        return STOP
-    except Errors.InvalidEmailAddress:
-        res.results.append(_("""\
-Mailman won't accept the given email address as a valid address."""))
-        return STOP
-    except Errors.MMAlreadyAMember:
-        res.results.append(_('You are already subscribed!'))
-        return STOP
-    except Errors.MMCantDigestError:
-        res.results.append(
-            _('No one can subscribe to the digest of this list!'))
-        return STOP
-    except Errors.MMMustDigestError:
-        res.results.append(_('This list only supports digest subscriptions!'))
-        return STOP
-    except Errors.MMSubscribeNeedsConfirmation:
-        # We don't need to respond /and/ send a confirmation message.
-        res.respond = 0
-    except Errors.MMNeedApproval:
-        res.results.append(_("""\
-Your subscription request has been forwarded to the list administrator
-at %(listowner)s for review."""))
-    else:
-        # Everything is a-ok
-        res.results.append(_('Subscription request succeeded.'))
 
 
 

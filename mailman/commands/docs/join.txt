@@ -29,7 +29,7 @@ No address to join
     >>> from mailman.Message import Message
     >>> from mailman.app.lifecycle import create_list
     >>> from mailman.queue.command import Results
-    >>> mlist = create_list(u'test@example.com')
+    >>> mlist = create_list(u'alpha@example.com')
 
 When no address argument is given, the message's From address will be used.
 If that's missing though, then an error is returned.
@@ -131,3 +131,42 @@ list.
     Anne Person
     >>> list(user.addresses)
     [<Address: Anne Person <anne@example.com> [verified] at ...>]
+
+Anne is also now a member of the mailing list.
+
+    >>> mlist.members.get_member(u'anne@example.com')
+    <Member: Anne Person <anne@example.com>
+             on alpha@example.com as MemberRole.member>
+
+
+Joining a second list
+---------------------
+
+    >>> mlist_2 = create_list(u'baker@example.com')
+    >>> msg = message_from_string("""\
+    ... From: Anne Person <anne@example.com>
+    ...
+    ... """)
+    >>> print command.process(mlist_2, msg, {}, (), Results())
+    ContinueProcessing.yes
+
+Anne of course, is still registered.
+
+    >>> print config.db.user_manager.get_user(u'anne@example.com')
+    <User "Anne Person" at ...>
+
+But she is not a member of the mailing list.
+
+    >>> print mlist_2.members.get_member(u'anne@example.com')
+    None
+
+One Anne confirms this subscription, she becomes a member of the mailing list.
+
+    >>> qmsg, qdata = virginq.dequeue(virginq.files[0])
+    >>> token = str(qmsg['subject']).split()[1].strip()
+    >>> registrar.confirm(token)
+    True
+
+    >>> print mlist_2.members.get_member(u'anne@example.com')
+    <Member: Anne Person <anne@example.com>
+             on baker@example.com as MemberRole.member>
