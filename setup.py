@@ -1,18 +1,19 @@
 # Copyright (C) 2007-2008 by the Free Software Foundation, Inc.
 #
-# This program is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License as published by the Free
-# Software Foundation; either version 2 of the License, or (at your option)
+# This file is part of GNU Mailman.
+#
+# GNU Mailman is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free
+# Software Foundation, either version 3 of the License, or (at your option)
 # any later version.
 #
-# This program is distributed in the hope that it will be useful, but WITHOUT
+# GNU Mailman is distributed in the hope that it will be useful, but WITHOUT
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
 # more details.
 #
 # You should have received a copy of the GNU General Public License along with
-# this program; if not, write to the Free Software Foundation, Inc., 59 Temple
-# Place - Suite 330, Boston, MA 02111-1307, USA.
+# GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
 import ez_setup
 ez_setup.use_setuptools()
@@ -77,12 +78,12 @@ setup(
     description     = 'Mailman -- the GNU mailing list manager',
     long_description= """\
 This is GNU Mailman, a mailing list management system distributed under the
-terms of the GNU General Public License (GPL).  The name of this software is
-spelled 'Mailman' with a leading capital 'M' but with a lower case second `m'.
-Any other spelling is incorrect.""",
+terms of the GNU General Public License (GPL) version 3 or later.  The name of
+this software is spelled 'Mailman' with a leading capital 'M' but with a lower
+case second `m'.  Any other spelling is incorrect.""",
     author          = 'The Mailman Developers',
     author_email    = 'mailman-developers@python.org',
-    license         = 'GPL',
+    license         = 'GPLv3',
     url             = 'http://www.list.org',
     keywords        = 'email',
     packages        = find_packages(),

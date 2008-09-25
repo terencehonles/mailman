@@ -1,13 +1,12 @@
 Mailman - The GNU Mailing List Management System
 Copyright (C) 1998-2008 by the Free Software Foundation, Inc.
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 
 INTRODUCTION
 
     This is GNU Mailman, a mailing list management system distributed under
-    the terms of the GNU General Public License (GPL).  The name of this
-    software is spelled "Mailman" with a leading capital `M' but with a lower
-    case second `m'.  Any other spelling is incorrect.
+    the terms of the GNU General Public License (GPL) version 3 or later.  The
+    name of this software is spelled "Mailman" with a leading capital `M' but
+    with a lower case second `m'.  Any other spelling is incorrect.
 
     Mailman is written in Python, a free object-oriented scripting language.
     Python is available for all platforms that Mailman is supported on, which
