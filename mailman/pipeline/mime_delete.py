@@ -37,14 +37,14 @@ from email.Iterators import typed_subpart_iterator
 from os.path import splitext
 from zope.interface import implements
 
-from mailman import Errors
 from mailman.Message import UserNotification
 from mailman.Utils import oneline
-from mailman.version import VERSION
 from mailman.configuration import config
+from mailman.core import errors
 from mailman.i18n import _
 from mailman.interfaces import IHandler
 from mailman.queue import Switchboard
+from mailman.version import VERSION
 
 log = logging.getLogger('mailman.error')
 
@@ -231,7 +231,7 @@ def dispose(mlist, msg, msgdata, why):
     # filter_action == 0 just discards, see below
     if mlist.filter_action == 1:
         # Bounce the message to the original author
-        raise Errors.RejectMessage, why
+        raise errors.RejectMessage, why
     if mlist.filter_action == 2:
         # Forward it on to the list owner
         listname = mlist.internal_name()
@@ -249,7 +249,7 @@ are receiving the only remaining copy of the discarded message.
         badq = Switchboard(config.BADQUEUE_DIR)
         badq.enqueue(msg, msgdata)
     # Most cases also discard the message
-    raise Errors.DiscardMessage
+    raise errors.DiscardMessage
 
 def get_file_ext(m):
     """

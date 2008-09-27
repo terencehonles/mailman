@@ -48,16 +48,16 @@ from email.parser import Parser
 from email.utils import formatdate, getaddresses, make_msgid
 from zope.interface import implements
 
-from mailman import Errors
 from mailman import Message
 from mailman import Utils
 from mailman import i18n
 from mailman.Mailbox import Mailbox
 from mailman.Mailbox import Mailbox
 from mailman.configuration import config
+from mailman.core import errors
+from mailman.interfaces import DeliveryMode, DeliveryStatus, IHandler
 from mailman.pipeline.decorate import decorate
 from mailman.pipeline.scrubber import process as scrubber
-from mailman.interfaces import DeliveryMode, DeliveryStatus, IHandler
 from mailman.queue import Switchboard
 
 
@@ -321,7 +321,7 @@ def send_i18n_digests(mlist, mboxfp):
         # Use Mailman.pipeline.scrubber.process() to get plain text
         try:
             msg = scrubber(mlist, msg)
-        except Errors.DiscardMessage:
+        except errors.DiscardMessage:
             print >> plainmsg, _('[Message discarded by content filter]')
             continue
         # Honor the default setting

@@ -30,7 +30,7 @@ from base64 import urlsafe_b64decode as decode
 from base64 import urlsafe_b64encode as encode
 from munepy import Enum
 
-from mailman import Errors
+from mailman.core import errors
 
 SALT_LENGTH = 20 # bytes
 ITERATIONS  = 2000
@@ -221,7 +221,7 @@ def make_secret(password, scheme=None):
         password = password.encode('utf-8')
     scheme_class = _SCHEMES_BY_ENUM.get(scheme)
     if not scheme_class:
-        raise Errors.BadPasswordSchemeError(scheme)
+        raise errors.BadPasswordSchemeError(scheme)
     secret = scheme_class.make_secret(password)
     return '{%s}%s' % (scheme_class.TAG, secret)
 

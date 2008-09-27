@@ -31,7 +31,7 @@ __all__ = [
 from munepy import Enum
 from zope.interface import Interface, Attribute
 
-from mailman.Errors import SubscriptionError
+from mailman.core.errors import SubscriptionError
 
 
 

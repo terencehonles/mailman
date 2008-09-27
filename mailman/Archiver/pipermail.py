@@ -17,8 +17,8 @@ __version__ = '0.11 (Mailman edition)'
 VERSION = __version__
 CACHESIZE = 100    # Number of slots in the cache
 
-from mailman import Errors
 from mailman.Mailbox import ArchiverMailbox
+from mailman.core import errors
 from mailman.i18n import _
 
 SPACE = ' '
@@ -548,7 +548,7 @@ class T:
         while counter < start:
             try:
                 m = mbox.next()
-            except Errors.DiscardMessage:
+            except errors.DiscardMessage:
                 continue
             if m is None:
                 return
@@ -557,7 +557,7 @@ class T:
             try:
                 pos = input.tell()
                 m = mbox.next()
-            except Errors.DiscardMessage:
+            except errors.DiscardMessage:
                 continue
             except Exception:
                 log.error('uncaught archiver exception at filepos: %s', pos)

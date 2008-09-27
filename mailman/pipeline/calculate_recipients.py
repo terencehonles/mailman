@@ -28,10 +28,10 @@ __all__ = ['CalculateRecipients']
 
 from zope.interface import implements
 
-from mailman import Errors
 from mailman import Message
 from mailman import Utils
 from mailman.configuration import config
+from mailman.core import errors
 from mailman.i18n import _
 from mailman.interfaces import DeliveryStatus, IHandler
 
@@ -83,7 +83,7 @@ class CalculateRecipients:
 Your urgent message to the %(realname)s mailing list was not authorized for
 delivery.  The original message as received by Mailman is attached.
 """)
-                raise Errors.RejectMessage, Utils.wrap(text)
+                raise errors.RejectMessage, Utils.wrap(text)
         # Calculate the regular recipients of the message
         recips = set(member.address.address
                      for member in mlist.regular_members.members

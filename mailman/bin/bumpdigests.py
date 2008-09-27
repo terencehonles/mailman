@@ -18,7 +18,7 @@
 import sys
 import optparse
 
-from mailman import Errors
+from mailman import errors
 from mailman import MailList
 from mailman.configuration import config
 from mailman.i18n import _
@@ -58,7 +58,7 @@ def main():
         try:
             # Be sure the list is locked
             mlist = MailList.MailList(listname)
-        except Errors.MMListError, e:
+        except errors.MMListError, e:
             parser.print_help()
             print >> sys.stderr, _('No such list: $listname')
             sys.exit(1)

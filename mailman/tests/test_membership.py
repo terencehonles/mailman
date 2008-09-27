@@ -23,9 +23,9 @@ import unittest
 
 from mailman import Utils
 from mailman import passwords
-from mailman.Errors import NotAMemberError
 from mailman.UserDesc import UserDesc
 from mailman.configuration import config
+from mailman.core.errors import NotAMemberError
 
 
 

@@ -43,7 +43,6 @@ from email.Errors import HeaderParseError
 from email.Header import decode_header, make_header
 from locknix.lockfile import Lock
 
-from mailman import Errors
 from mailman import Utils
 from mailman import i18n
 from mailman.Archiver import HyperDatabase

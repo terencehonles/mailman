@@ -19,8 +19,8 @@
 
 import unittest
 
-from mailman import Errors
 from mailman import passwords
+from mailman.core import errors
 
 
 
@@ -73,19 +73,19 @@ class TestBogusPasswords(TestPasswordsBase):
     scheme = -1
 
     def test_passwords(self):
-        self.assertRaises(Errors.BadPasswordSchemeError,
+        self.assertRaises(errors.BadPasswordSchemeError,
                           passwords.make_secret, self.pw8a, self.scheme)
 
     def test_unicode_passwords(self):
-        self.assertRaises(Errors.BadPasswordSchemeError,
+        self.assertRaises(errors.BadPasswordSchemeError,
                           passwords.make_secret, self.pwua, self.scheme)
 
     def test_passwords_with_funky_chars(self):
-        self.assertRaises(Errors.BadPasswordSchemeError,
+        self.assertRaises(errors.BadPasswordSchemeError,
                           passwords.make_secret, self.pw8b, self.scheme)
 
     def test_unicode_passwords_with_funky_chars(self):
-        self.assertRaises(Errors.BadPasswordSchemeError,
+        self.assertRaises(errors.BadPasswordSchemeError,
                           passwords.make_secret, self.pwub, self.scheme)
 
 

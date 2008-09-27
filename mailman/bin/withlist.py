@@ -19,7 +19,6 @@ import os
 import sys
 import optparse
 
-from mailman import Errors
 from mailman import interact
 from mailman.configuration import config
 from mailman.i18n import _
@@ -105,7 +104,7 @@ As another example, say you wanted to change the password for a particular
 user on a particular list.  You could put the following function in a file
 called 'changepw.py':
 
-    from mailman.Errors import NotAMemberError
+    from mailman.errors import NotAMemberError
 
     def changepw(mlist, addr, newpasswd):
         try:

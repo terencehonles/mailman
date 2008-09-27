@@ -19,7 +19,7 @@ import sys
 
 from email.Utils import formataddr
 
-from mailman import Errors
+from mailman import errors
 from mailman import Utils
 from mailman.configuration import config
 from mailman.i18n import _
@@ -120,7 +120,7 @@ def isinvalid(addr):
     try:
         Utils.ValidateEmail(addr)
         return False
-    except Errors.EmailAddressError:
+    except errors.EmailAddressError:
         return True
 
 

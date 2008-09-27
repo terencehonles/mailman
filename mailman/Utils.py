@@ -40,10 +40,11 @@ from email.Errors import HeaderParseError
 from string import ascii_letters, digits, whitespace
 
 import mailman.templates
-from mailman import Errors
+
 from mailman import passwords
 from mailman.SafeDict import SafeDict
 from mailman.configuration import config
+from mailman.core import errors
 
 AT = '@'
 CR = '\r'
@@ -199,15 +200,15 @@ def ValidateEmail(s):
     """Verify that the an email address isn't grossly evil."""
     # Pretty minimal, cheesy check.  We could do better...
     if not s or ' ' in s:
-        raise Errors.InvalidEmailAddress(repr(s))
+        raise errors.InvalidEmailAddress(repr(s))
     if _badchars.search(s) or s[0] == '-':
-        raise Errors.InvalidEmailAddress(repr(s))
+        raise errors.InvalidEmailAddress(repr(s))
     user, domain_parts = ParseEmail(s)
     # Local, unqualified addresses are not allowed.
     if not domain_parts:
-        raise Errors.InvalidEmailAddress(repr(s))
+        raise errors.InvalidEmailAddress(repr(s))
     if len(domain_parts) < 2:
-        raise Errors.InvalidEmailAddress(repr(s))
+        raise errors.InvalidEmailAddress(repr(s))
 
 
 
