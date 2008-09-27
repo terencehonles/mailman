@@ -28,12 +28,12 @@ __all__ = [
 
 from email.utils import formataddr
 
-from mailman import Errors
 from mailman import Message
 from mailman import Utils
 from mailman import i18n
 from mailman.app.notifications import send_goodbye_message
 from mailman.configuration import config
+from mailman.core import errors
 from mailman.interfaces import AlreadySubscribedError, DeliveryMode, MemberRole
 
 _ = i18n._
@@ -68,7 +68,7 @@ def add_member(mlist, address, realname, password, delivery_mode, language):
     # confirmations.
     pattern = Utils.get_pattern(address, mlist.ban_list)
     if pattern:
-        raise Errors.MembershipIsBanned(pattern)
+        raise errors.MembershipIsBanned(pattern)
     # Do the actual addition.  First, see if there's already a user linked
     # with the given address.
     user = config.db.user_manager.get_user(address)

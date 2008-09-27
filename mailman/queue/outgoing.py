@@ -26,9 +26,9 @@ import logging
 
 from datetime import datetime
 
-from mailman import Errors
 from mailman import Message
 from mailman.configuration import config
+from mailman.core import errors
 from mailman.queue import Runner, Switchboard
 from mailman.queue.bounce import BounceMixin
 
@@ -82,7 +82,7 @@ class OutgoingRunner(Runner, BounceMixin):
                           config.SMTPHOST, port)
                 self._logged = True
             return True
-        except Errors.SomeRecipientsFailed, e:
+        except errors.SomeRecipientsFailed, e:
             # Handle local rejects of probe messages differently.
             if msgdata.get('probe_token') and e.permfailures:
                 self._probe_bounce(mlist, msgdata['probe_token'])

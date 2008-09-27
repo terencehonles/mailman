@@ -21,7 +21,6 @@ import datetime
 
 from zope.interface import implements
 
-from mailman import Errors
 from mailman.Utils import split_listname, fqdn_listname
 from mailman.configuration import config
 from mailman.database.mailinglist import MailingList

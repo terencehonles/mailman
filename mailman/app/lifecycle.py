@@ -17,23 +17,26 @@
 
 """Application level list creation."""
 
+__metaclass__ = type
+__all__ = [
+    'create_list',
+    'remove_list',
+    ]
+
+
 import os
 import sys
 import shutil
 import logging
 
-from mailman import Errors
 from mailman import Utils
 from mailman.Utils import ValidateEmail
 from mailman.app.plugins import get_plugin
 from mailman.app.styles import style_manager
 from mailman.configuration import config
+from mailman.core import errors
 from mailman.interfaces import MemberRole
 
-__all__ = [
-    'create_list',
-    'remove_list',
-    ]
 
 
 log = logging.getLogger('mailman.error')
@@ -47,7 +50,7 @@ def create_list(fqdn_listname, owners=None):
     ValidateEmail(fqdn_listname)
     listname, domain = Utils.split_listname(fqdn_listname)
     if domain not in config.domains:
-        raise Errors.BadDomainSpecificationError(domain)
+        raise errors.BadDomainSpecificationError(domain)
     mlist = config.db.list_manager.create(fqdn_listname)
     for style in style_manager.lookup(mlist):
         # XXX FIXME.  When we get rid of the wrapper object, this hack won't

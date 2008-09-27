@@ -20,7 +20,7 @@ import sys
 import time
 import optparse
 
-from mailman import Errors
+from mailman import errors
 from mailman import MailList
 from mailman import Utils
 from mailman import i18n
@@ -97,7 +97,7 @@ def do_output(listname, outfile, parser):
         # Open the specified list unlocked, since we're only reading it.
         try:
             mlist = MailList.MailList(listname, lock=False)
-        except Errors.MMListError:
+        except errors.MMListError:
             parser.error(_('No such list: $listname'))
         # Preamble for the config info. PEP 263 charset and capture time.
         language = mlist.preferred_language
@@ -246,7 +246,7 @@ def do_input(listname, infile, checkonly, verbose, parser):
     # Open the specified list locked, unless checkonly is set
     try:
         mlist = MailList.MailList(listname, lock=not checkonly)
-    except Errors.MMListError, e:
+    except errors.MMListError, e:
         parser.error(_('No such list "$listname"\n$e'))
     savelist = False
     guibyprop = getPropertyMap(mlist)
@@ -278,7 +278,7 @@ def do_input(listname, infile, checkonly, verbose, parser):
                     validval = gui._getValidValue(mlist, k, wtype, v)
                 except ValueError:
                     print >> sys.stderr, _('Invalid value for property: $k')
-                except Errors.EmailAddressError:
+                except errors.EmailAddressError:
                     print >> sys.stderr, _(
                         'Bad email address for option $k: $v')
                 else:

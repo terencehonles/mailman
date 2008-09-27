@@ -28,7 +28,6 @@ import errno
 
 from zope.interface import implements
 
-from mailman import Errors
 from mailman.i18n import _
 from mailman.interfaces import IHandler
 

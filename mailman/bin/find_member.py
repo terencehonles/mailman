@@ -19,7 +19,7 @@ import re
 import sys
 import optparse
 
-from mailman import Errors
+from mailman import errors
 from mailman import MailList
 from mailman.configuration import config
 from mailman.i18n import _
@@ -93,7 +93,7 @@ def main():
     for listname in listnames:
         try:
             mlist = MailList.MailList(listname, lock=False)
-        except Errors.MMListError:
+        except errors.MMListError:
             print _('No such list: $listname')
             continue
         if opts.owners:

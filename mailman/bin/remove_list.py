@@ -19,7 +19,6 @@ import os
 import sys
 import shutil
 
-from mailman import Errors
 from mailman import Utils
 from mailman.app.lifecycle import remove_list
 from mailman.configuration import config

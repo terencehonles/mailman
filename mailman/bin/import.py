@@ -26,7 +26,7 @@ from xml.dom import minidom
 from xml.parsers.expat import ExpatError
 
 from mailman import Defaults
-from mailman import Errors
+from mailman import errors
 from mailman import MemberAdaptor
 from mailman import Utils
 from mailman import passwords
@@ -202,7 +202,7 @@ def create(all_listdata):
                 print _('Creating mailing list: $fqdn_listname')
             mlist.Create(fqdn_listname, list_config['owner'][0],
                          list_config['password'])
-        except Errors.BadDomainSpecificationError:
+        except errors.BadDomainSpecificationError:
             print _('List is not in a supported domain: $fqdn_listname')
             continue
         # Save the list creation, then unlock and relock the list.  This is so

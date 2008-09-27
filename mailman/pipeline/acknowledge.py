@@ -26,7 +26,6 @@ __all__ = ['Acknowledge']
 
 from zope.interface import implements
 
-from mailman import Errors
 from mailman import Message
 from mailman import Utils
 from mailman.configuration import config
