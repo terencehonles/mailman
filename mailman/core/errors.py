@@ -26,22 +26,6 @@ class MailmanException(Exception):
 
 
 
-# Exceptions for problems related to opening a list
-class MMListError(MailmanException): pass
-
-class MMUnknownListError(MMListError):
-    def __init__(self, listname=None):
-        self._listname = listname
-
-    def __str__(self):
-        return self._listname
-
-
-# Membership exceptions
-class MMMemberError(MailmanException): pass
-class MMBadUserError(MMMemberError): pass
-class MMAlreadyAMember(MMMemberError): pass
-
 # "New" style membership exceptions (new w/ MM2.1)
 class MemberError(MailmanException): pass
 class NotAMemberError(MemberError): pass
@@ -50,27 +34,6 @@ class AlreadyReceivingRegularDeliveries(MemberError): pass
 class CantDigestError(MemberError): pass
 class MustDigestError(MemberError): pass
 class MembershipIsBanned(MemberError): pass
-
-# Exception hierarchy for various authentication failures, can be
-# raised from functions in SecurityManager.py
-class MMAuthenticationError(MailmanException): pass
-class MMCookieError(MMAuthenticationError): pass
-class MMExpiredCookieError(MMCookieError): pass
-class MMInvalidCookieError(MMCookieError): pass
-
-# BAW: these still need to be converted to classes.
-MMMustDigestError    = "MMMustDigestError"
-MMCantDigestError    = "MMCantDigestError"
-MMNeedApproval       = "MMNeedApproval"
-MMSubscribeNeedsConfirmation = "MMSubscribeNeedsConfirmation"
-MMBadConfirmation    = "MMBadConfirmation"
-MMAlreadyDigested    = "MMAlreadyDigested"
-MMAlreadyUndigested  = "MMAlreadyUndigested"
-
-MODERATED_LIST_MSG    = "Moderated list"
-IMPLICIT_DEST_MSG     = "Implicit destination"
-SUSPICIOUS_HEADER_MSG = "Suspicious header"
-FORBIDDEN_SENDER_MSG  = "Forbidden sender"
 
 
 
@@ -83,10 +46,6 @@ class MailmanError(MailmanException):
 
 class BadDomainSpecificationError(MailmanError):
     """The specification of a virtual domain is invalid or duplicated."""
-
-class MMLoopingPost(MailmanError):
-    """Post already went through this list!"""
-    pass
 
 
 
@@ -140,10 +99,6 @@ class SomeRecipientsFailed(HandlerError):
         self.tempfailures = tempfailures
         self.permfailures = permfailures
 
-# multiple inheritance for backwards compatibility
-class LoopError(DiscardMessage, MMLoopingPost):
-    """We've seen this message before"""
-
 class RejectMessage(HandlerError):
     """The message will be bounced back to the sender"""
     def __init__(self, notice=None):
@@ -166,7 +121,7 @@ class SubscriptionError(MailmanError):
 
 class HostileSubscriptionError(SubscriptionError):
     """A cross-subscription attempt was made.
-    
+
     This exception gets raised when an invitee attempts to use the
     invitation to cross-subscribe to some other mailing list.
     """
@@ -175,14 +130,6 @@ class HostileSubscriptionError(SubscriptionError):
 
 class PasswordError(MailmanError):
     """A password related error."""
-
-
-class MMBadPasswordError(PasswordError, MMAuthenticationError):
-    """A bad password was given."""
-
-
-class MMPasswordsMustMatch(PasswordError, MMAuthenticationError):
-    """The given passwords don't match."""
 
 
 class BadPasswordSchemeError(PasswordError):
