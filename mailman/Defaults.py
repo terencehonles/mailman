@@ -236,8 +236,8 @@ DEFAULT_DIGEST_VOLUME_FREQUENCY = 1
 # be a shell command string which will get passed to os.popen().  This string
 # can contain the following substitution strings:
 #
-#     %(listname)s -- gets the internal name of the list
-#     %(hostname)s -- gets the email hostname for the list
+#     $listname -- gets the internal name of the list
+#     $hostname -- gets the email hostname for the list
 #
 # being archived will be substituted for this.  Please note that os.popen() is
 # used.

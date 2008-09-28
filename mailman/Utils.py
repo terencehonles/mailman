@@ -37,12 +37,11 @@ import email.Header
 import email.Iterators
 
 from email.Errors import HeaderParseError
-from string import ascii_letters, digits, whitespace
+from string import ascii_letters, digits, whitespace, Template
 
 import mailman.templates
 
 from mailman import passwords
-from mailman.SafeDict import SafeDict
 from mailman.configuration import config
 from mailman.core import errors
 
@@ -525,8 +524,7 @@ def findtext(templatefile, dict=None, raw=False, lang=None, mlist=None):
     text = template
     if dict is not None:
         try:
-            sdict = SafeDict(dict, lang=lang)
-            text = sdict.interpolate(template)
+            text = Template(template).safe_substitute(**dict)
         except (TypeError, ValueError):
             # The template is really screwed up
             log.exception('broken template: %s', filename)

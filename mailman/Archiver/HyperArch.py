@@ -42,13 +42,13 @@ from email.Charset import Charset
 from email.Errors import HeaderParseError
 from email.Header import decode_header, make_header
 from locknix.lockfile import Lock
+from string import Template
 
 from mailman import Utils
 from mailman import i18n
 from mailman.Archiver import HyperDatabase
 from mailman.Archiver import pipermail
 from mailman.Mailbox import ArchiverMailbox
-from mailman.SafeDict import SafeDict
 from mailman.configuration import config
 
 log = logging.getLogger('mailman.error')
@@ -199,15 +199,14 @@ def quick_maketext(templatefile, dict=None, lang=None, mlist=None):
     text = template
     if dict is not None:
         try:
-            sdict = SafeDict(dict)
             try:
-                text = sdict.interpolate(template)
+                text = Template(template).safe_substitute(**dict)
             except UnicodeError:
                 # Try again after coercing the template to unicode
                 utemplate = unicode(template,
                                     Utils.GetCharSet(lang),
                                     'replace')
-                text = sdict.interpolate(utemplate)
+                text = Template(utemplate).safe_substitute(**dict)
         except (TypeError, ValueError):
             # The template is really screwed up
             pass
