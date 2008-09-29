@@ -21,8 +21,8 @@ __all__ = [
     ]
 
 
-from mailman.app.plugins import get_plugins
 from mailman.configuration import config
+from mailman.core.plugins import get_plugins
 
 
 def initialize():

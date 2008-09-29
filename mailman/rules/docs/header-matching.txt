@@ -28,7 +28,7 @@ the chain untouched (i.e. no disposition).
     ... This is a message.
     ... """)
 
-    >>> from mailman.app.chains import process
+    >>> from mailman.core.chains import process
 
 Pass through is seen as nothing being in the log file after processing.
 

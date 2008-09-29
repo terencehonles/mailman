@@ -31,12 +31,11 @@ import logging
 
 from mailman import Utils
 from mailman.Utils import ValidateEmail
-from mailman.app.plugins import get_plugin
-from mailman.app.styles import style_manager
 from mailman.configuration import config
 from mailman.core import errors
+from mailman.core.plugins import get_plugin
+from mailman.core.styles import style_manager
 from mailman.interfaces import MemberRole
-
 
 
 log = logging.getLogger('mailman.error')

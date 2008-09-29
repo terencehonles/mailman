@@ -17,15 +17,17 @@
 
 """Various rule helpers"""
 
-__all__ = ['initialize']
 __metaclass__ = type
+__all__ = [
+    'initialize',
+    ]
 
 
 from zope.interface import implements
 from zope.interface.verify import verifyObject
 
-from mailman.app.plugins import get_plugins
 from mailman.configuration import config
+from mailman.core.plugins import get_plugins
 from mailman.interfaces import IRule
 
 

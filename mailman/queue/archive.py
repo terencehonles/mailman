@@ -32,8 +32,8 @@ from datetime import datetime
 from email.Utils import parsedate_tz, mktime_tz, formatdate
 from locknix.lockfile import Lock
 
-from mailman.app.plugins import get_plugins
 from mailman.configuration import config
+from mailman.core.plugins import get_plugins
 from mailman.queue import Runner
 
 

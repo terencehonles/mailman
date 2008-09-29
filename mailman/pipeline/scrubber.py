@@ -39,11 +39,12 @@ from mimetypes import guess_all_extensions
 from zope.interface import implements
 
 from mailman import Utils
-from mailman.app.plugins import get_plugin
 from mailman.configuration import config
 from mailman.core.errors import DiscardMessage
+from mailman.core.plugins import get_plugin
 from mailman.i18n import _
 from mailman.interfaces import IHandler
+
 
 # Path characters for common platforms
 pre = re.compile(r'[/\\:]')

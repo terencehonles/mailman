@@ -13,7 +13,7 @@ message once it's started.
     >>> mlist.web_page_url = u'http://lists.example.com/archives/'
     >>> mlist.pipeline
     u'built-in'
-    >>> from mailman.app.pipelines import process
+    >>> from mailman.core.pipelines import process
 
 
 Processing a message
