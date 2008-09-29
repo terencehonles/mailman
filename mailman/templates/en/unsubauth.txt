@@ -1,11 +1,11 @@
 Your authorization is required for a mailing list unsubscription
 request approval:
 
-    By:   %(address)s
-    From: %(listname)s
+    By:   $address
+    From: $listname
 
 At your convenience, visit:
 
-    %(admindb_url)s
+    $admindb_url
 
 to process the request.

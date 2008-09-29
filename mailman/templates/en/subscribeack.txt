@@ -1,22 +1,22 @@
-Welcome to the "%(real_name)s" mailing list!
-%(welcome)s
+Welcome to the "$real_name" mailing list!
+$welcome
 To post to this list, send your email to:
 
-  %(posting_address)s
+  $posting_address
 
 General information about the mailing list is at:
 
-  %(listinfo_url)s
+  $listinfo_url
 
 If you ever want to unsubscribe or change your options (eg, switch to or
 from digest mode, change your password, etc.), visit your subscription
 page at:
 
-  %(optionsurl)s
+  $optionsurl
 
 You can also make such adjustments via email by sending a message to:
 
-  %(request_address)s
+  $request_address
 
 with the word 'help' in the subject or body (don't include the quotes), and
 you will get back a message with instructions.  You will need your password to
