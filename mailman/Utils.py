@@ -563,30 +563,6 @@ def GetRequestURI(fallback=None, escape=True):
 
 
 
-# Wait on a dictionary of child pids
-def reap(kids, func=None, once=False):
-    while kids:
-        if func:
-            func()
-        try:
-            pid, status = os.waitpid(-1, os.WNOHANG)
-        except OSError, e:
-            # If the child procs had a bug we might have no children
-            if e.errno <> errno.ECHILD:
-                raise
-            kids.clear()
-            break
-        if pid <> 0:
-            try:
-                del kids[pid]
-            except KeyError:
-                # Huh?  How can this happen?
-                pass
-        if once:
-            break
-
-
-
 def makedirs(path, mode=02775):
     try:
         omask = os.umask(0)

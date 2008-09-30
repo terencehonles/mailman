@@ -98,7 +98,7 @@ class MaildirRunner(Runner):
         self._cur = os.path.join(config.MAILDIR_DIR, 'cur')
         self._parser = Parser(Message)
 
-    def _oneloop(self):
+    def _one_iteration(self):
         # Refresh this each time through the list.
         listnames = list(config.list_manager.names)
         # Cruise through all the files currently in the new/ directory
@@ -185,5 +185,5 @@ class MaildirRunner(Runner):
                 os.rename(dstname, xdstname)
                 log.error('%s', e)
 
-    def _cleanup(self):
+    def _clean_up(self):
         pass

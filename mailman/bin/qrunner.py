@@ -149,9 +149,9 @@ def make_qrunner(name, slice, range, once=False):
             raise
     qrclass = getattr(sys.modules[modulename], classname)
     if once:
-        # Subclass to hack in the setting of the stop flag in _doperiodic()
+        # Subclass to hack in the setting of the stop flag in _do_periodic()
         class Once(qrclass):
-            def _doperiodic(self):
+            def _do_periodic(self):
                 self.stop()
         qrunner = Once(slice, range)
     else:

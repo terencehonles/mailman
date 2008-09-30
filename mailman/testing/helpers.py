@@ -63,7 +63,7 @@ def make_testable_runner(runner_class):
     class EmptyingRunner(runner_class):
         """Stop processing when the queue is empty."""
 
-        def _doperiodic(self):
+        def _do_periodic(self):
             """Stop when the queue is empty."""
             self._stop = (len(self._switchboard.files) == 0)
 

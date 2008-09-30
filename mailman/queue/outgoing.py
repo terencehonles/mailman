@@ -32,8 +32,8 @@ from mailman.core import errors
 from mailman.queue import Runner, Switchboard
 from mailman.queue.bounce import BounceMixin
 
-# This controls how often _doperiodic() will try to deal with deferred
-# permanent failures.  It is a count of calls to _doperiodic()
+# This controls how often _do_periodic() will try to deal with deferred
+# permanent failures.  It is a count of calls to _do_periodic()
 DEAL_WITH_PERMFAILURES_EVERY = 10
 
 log = logging.getLogger('mailman.error')
@@ -123,8 +123,8 @@ class OutgoingRunner(Runner, BounceMixin):
         # We've successfully completed handling of this message
         return False
 
-    _doperiodic = BounceMixin._doperiodic
+    _do_periodic = BounceMixin._do_periodic
 
-    def _cleanup(self):
-        BounceMixin._cleanup(self)
-        Runner._cleanup(self)
+    def _clean_up(self):
+        BounceMixin._clean_up(self)
+        Runner._clean_up(self)
