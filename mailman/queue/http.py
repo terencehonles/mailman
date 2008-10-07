@@ -37,7 +37,7 @@ class HTTPRunner(Runner):
     def __init__(self, slice=None, numslices=1):
         pass
 
-    def _cleanup(self):
+    def _clean_up(self):
         pass
 
 

@@ -20,7 +20,6 @@ __all__ = [
     'arch',
     'bounces',
     'bumpdigests',
-    'change_pw',
     'check_perms',
     'checkdbs',
     'cleanarch',

@@ -34,7 +34,7 @@ This is about as simple as a qrunner can be.
     ...         self.msgdata = msgdata
     ...         return False
     ...
-    ...     def _doperiodic(self):
+    ...     def _do_periodic(self):
     ...         self.stop()
     ...
     ...     def _snooze(self, filecnt):

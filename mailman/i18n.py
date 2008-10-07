@@ -22,7 +22,6 @@ import string
 import gettext
 
 import mailman.messages
-from mailman.SafeDict import SafeDict
 from mailman.configuration import config
 
 _translation = None

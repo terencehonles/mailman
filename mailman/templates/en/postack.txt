@@ -1,8 +1,8 @@
 Your message entitled
 
-    %(subject)s
+    $subject
 
-was successfully received by the %(listname)s mailing list.
+was successfully received by the $listname mailing list.
 
-List info page: %(listinfo_url)s
-Your preferences: %(optionsurl)s
+List info page: $listinfo_url
+Your preferences: $optionsurl

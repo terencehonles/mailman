@@ -37,13 +37,13 @@ import email.Header
 import email.Iterators
 
 from email.Errors import HeaderParseError
-from string import ascii_letters, digits, whitespace
+from string import ascii_letters, digits, whitespace, Template
 
 import mailman.templates
-from mailman import Errors
+
 from mailman import passwords
-from mailman.SafeDict import SafeDict
 from mailman.configuration import config
+from mailman.core import errors
 
 AT = '@'
 CR = '\r'
@@ -199,15 +199,15 @@ def ValidateEmail(s):
     """Verify that the an email address isn't grossly evil."""
     # Pretty minimal, cheesy check.  We could do better...
     if not s or ' ' in s:
-        raise Errors.InvalidEmailAddress(repr(s))
+        raise errors.InvalidEmailAddress(repr(s))
     if _badchars.search(s) or s[0] == '-':
-        raise Errors.InvalidEmailAddress(repr(s))
+        raise errors.InvalidEmailAddress(repr(s))
     user, domain_parts = ParseEmail(s)
     # Local, unqualified addresses are not allowed.
     if not domain_parts:
-        raise Errors.InvalidEmailAddress(repr(s))
+        raise errors.InvalidEmailAddress(repr(s))
     if len(domain_parts) < 2:
-        raise Errors.InvalidEmailAddress(repr(s))
+        raise errors.InvalidEmailAddress(repr(s))
 
 
 
@@ -524,8 +524,7 @@ def findtext(templatefile, dict=None, raw=False, lang=None, mlist=None):
     text = template
     if dict is not None:
         try:
-            sdict = SafeDict(dict, lang=lang)
-            text = sdict.interpolate(template)
+            text = Template(template).safe_substitute(**dict)
         except (TypeError, ValueError):
             # The template is really screwed up
             log.exception('broken template: %s', filename)
@@ -561,30 +560,6 @@ def GetRequestURI(fallback=None, escape=True):
     if escape:
         return websafe(url)
     return url
-
-
-
-# Wait on a dictionary of child pids
-def reap(kids, func=None, once=False):
-    while kids:
-        if func:
-            func()
-        try:
-            pid, status = os.waitpid(-1, os.WNOHANG)
-        except OSError, e:
-            # If the child procs had a bug we might have no children
-            if e.errno <> errno.ECHILD:
-                raise
-            kids.clear()
-            break
-        if pid <> 0:
-            try:
-                del kids[pid]
-            except KeyError:
-                # Huh?  How can this happen?
-                pass
-        if once:
-            break
 
 
 

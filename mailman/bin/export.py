@@ -29,7 +29,7 @@ import optparse
 from xml.sax.saxutils import escape
 
 from mailman import Defaults
-from mailman import Errors
+from mailman import errors
 from mailman import MemberAdaptor
 from mailman.MailList import MailList
 from mailman.configuration import config
@@ -247,7 +247,7 @@ class XMLDumper(object):
         for listname in sorted(listnames):
             try:
                 mlist = MailList(listname, lock=False)
-            except Errors.MMUnknownListError:
+            except errors.MMUnknownListError:
                 print >> sys.stderr, _('No such list: $listname')
                 continue
             self._dump_list(mlist)

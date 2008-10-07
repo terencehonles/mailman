@@ -33,7 +33,6 @@ import logging
 from datetime import datetime
 from email.utils import formataddr, formatdate, getaddresses, make_msgid
 
-from mailman import Errors
 from mailman import Message
 from mailman import Utils
 from mailman import i18n
@@ -41,6 +40,7 @@ from mailman.app.membership import add_member, delete_member
 from mailman.app.notifications import (
     send_admin_subscription_notice, send_welcome_message)
 from mailman.configuration import config
+from mailman.core import errors
 from mailman.interfaces import Action, DeliveryMode, RequestType
 from mailman.interfaces.member import AlreadySubscribedError
 from mailman.queue import Switchboard
@@ -310,7 +310,7 @@ def handle_unsubscription(mlist, id, action, comment=None):
         key, data = requestdb.get_request(id)
         try:
             delete_member(mlist, address)
-        except Errors.NotAMemberError:
+        except errors.NotAMemberError:
             # User has already been unsubscribed.
             pass
         slog.info('%s: deleted %s', mlist.fqdn_listname, address)

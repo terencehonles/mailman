@@ -26,8 +26,8 @@ prepared for delivery.  Rejections, discards, and holds are processed
 immediately.
 """
 
-from mailman.app.chains import process
 from mailman.configuration import config
+from mailman.core.chains import process
 from mailman.queue import Runner
 
 

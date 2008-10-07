@@ -34,7 +34,6 @@ from string import Template
 
 from mailman import Mailbox
 from mailman import Utils
-from mailman.SafeDict import SafeDict
 from mailman.configuration import config
 from mailman.i18n import _
 
@@ -161,9 +160,9 @@ class Archiver:
             raise
 
     def ExternalArchive(self, ar, txt):
-        d = SafeDict({'listname': self.fqdn_listname,
-                      'hostname': self.host_name,
-                      })
+        cmd = Template(ar).safe_substitute(
+            listname=self.fqdn_listname,
+            hostname=self.host_name)
         cmd = ar % d
         extarch = os.popen(cmd, 'w')
         extarch.write(txt)

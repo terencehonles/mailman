@@ -30,8 +30,8 @@ from zope.interface import implements
 from zope.interface.verify import verifyObject
 
 from mailman import Utils
-from mailman.app.plugins import get_plugins
 from mailman.configuration import config
+from mailman.core.plugins import get_plugins
 from mailman.i18n import _
 from mailman.interfaces import (
     Action, DuplicateStyleError, IStyle, IStyleManager, NewsModeration,

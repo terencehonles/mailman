@@ -1,50 +1,50 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
 <HTML>
  <HEAD>
-   <TITLE> %(title)s
+   <TITLE> $title
    </TITLE>
    <LINK REL="Index" HREF="index.html" >
-   <LINK REL="made" HREF="mailto:%(email_url)s?Subject=%(subject_url)s&In-Reply-To=%(in_reply_to_url)s">
+   <LINK REL="made" HREF="mailto:${email_url}?Subject=${subject_url}&In-Reply-To=$in_reply_to_url">
    <META NAME="robots" CONTENT="index,nofollow">
-   %(encoding)s
-   %(prev)s
-   %(next)s
+   $encoding
+   $prev
+   $next
  </HEAD>
  <BODY BGCOLOR="#ffffff">
-   <H1>%(subject_html)s</H1>
-    <B>%(author_html)s</B> 
-    <A HREF="mailto:%(email_url)s?Subject=%(subject_url)s&In-Reply-To=%(in_reply_to_url)s"
-       TITLE="%(subject_html)s">%(email_html)s
+   <H1>$subject_html</H1>
+    <B>$author_html</B> 
+    <A HREF="mailto:${email_url}?Subject=${subject_url}&In-Reply-To=${in_reply_to_url}"
+       TITLE="$subject_html">$email_html
        </A><BR>
-    <I>%(datestr_html)s</I>
+    <I>$datestr_html</I>
     <P><UL>
-        %(prev_wsubj)s
-        %(next_wsubj)s
+        $prev_wsubj
+        $next_wsubj
          <LI> <B>Messages sorted by:</B> 
-              <a href="date.html#%(sequence)s">[ date ]</a>
-              <a href="thread.html#%(sequence)s">[ thread ]</a>
-              <a href="subject.html#%(sequence)s">[ subject ]</a>
-              <a href="author.html#%(sequence)s">[ author ]</a>
+              <a href="date.html#$sequence">[ date ]</a>
+              <a href="thread.html#$sequence">[ thread ]</a>
+              <a href="subject.html#$sequence">[ subject ]</a>
+              <a href="author.html#$sequence">[ author ]</a>
          </LI>
        </UL>
     <HR>  
 <!--beginarticle-->
-%(body)s
+$body
 <!--endarticle-->
     <HR>
     <P><UL>
         <!--threads-->
-	%(prev_wsubj)s
-	%(next_wsubj)s
+	$prev_wsubj
+	$next_wsubj
          <LI> <B>Messages sorted by:</B> 
-              <a href="date.html#%(sequence)s">[ date ]</a>
-              <a href="thread.html#%(sequence)s">[ thread ]</a>
-              <a href="subject.html#%(sequence)s">[ subject ]</a>
-              <a href="author.html#%(sequence)s">[ author ]</a>
+              <a href="date.html#$sequence">[ date ]</a>
+              <a href="thread.html#$sequence">[ thread ]</a>
+              <a href="subject.html#$sequence">[ subject ]</a>
+              <a href="author.html#$sequence">[ author ]</a>
          </LI>
        </UL>
 
 <hr>
-<a href="%(listurl)s">More information about the %(listname)s
+<a href="$listurl">More information about the $listname
 mailing list</a><br>
 </body></html>

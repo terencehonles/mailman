@@ -26,14 +26,14 @@ import logging
 
 from datetime import datetime
 
-from mailman import Errors
 from mailman import Message
 from mailman.configuration import config
+from mailman.core import errors
 from mailman.queue import Runner, Switchboard
 from mailman.queue.bounce import BounceMixin
 
-# This controls how often _doperiodic() will try to deal with deferred
-# permanent failures.  It is a count of calls to _doperiodic()
+# This controls how often _do_periodic() will try to deal with deferred
+# permanent failures.  It is a count of calls to _do_periodic()
 DEAL_WITH_PERMFAILURES_EVERY = 10
 
 log = logging.getLogger('mailman.error')
@@ -82,7 +82,7 @@ class OutgoingRunner(Runner, BounceMixin):
                           config.SMTPHOST, port)
                 self._logged = True
             return True
-        except Errors.SomeRecipientsFailed, e:
+        except errors.SomeRecipientsFailed, e:
             # Handle local rejects of probe messages differently.
             if msgdata.get('probe_token') and e.permfailures:
                 self._probe_bounce(mlist, msgdata['probe_token'])
@@ -123,8 +123,8 @@ class OutgoingRunner(Runner, BounceMixin):
         # We've successfully completed handling of this message
         return False
 
-    _doperiodic = BounceMixin._doperiodic
+    _do_periodic = BounceMixin._do_periodic
 
-    def _cleanup(self):
-        BounceMixin._cleanup(self)
-        Runner._cleanup(self)
+    def _clean_up(self):
+        BounceMixin._clean_up(self)
+        Runner._clean_up(self)

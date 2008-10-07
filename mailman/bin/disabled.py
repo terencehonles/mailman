@@ -19,7 +19,7 @@ import time
 import logging
 import optparse
 
-from mailman import Errors
+from mailman import errors
 from mailman import MailList
 from mailman import MemberAdaptor
 from mailman import Pending
@@ -183,7 +183,7 @@ def main():
                           member, mlist.internal_name())
                 try:
                     mlist.sendNextNotification(member)
-                except Errors.NotAMemberError:
+                except errors.NotAMemberError:
                     # There must have been some problem with the data we have
                     # on this member.  Most likely it's that they don't have a
                     # password assigned.  Log this and delete the member.

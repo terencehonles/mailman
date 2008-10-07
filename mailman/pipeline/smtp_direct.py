@@ -43,9 +43,9 @@ from email.Header import Header
 from email.Utils import formataddr
 from zope.interface import implements
 
-from mailman import Errors
 from mailman import Utils
 from mailman.configuration import config
+from mailman.core import errors
 from mailman.i18n import _
 from mailman.interfaces import IHandler, Personalization
 
@@ -254,7 +254,7 @@ def process(mlist, msg, msgdata):
             failure_log.info('%s', template.safe_substitute(substitutions))
     # Return the results
     if tempfailures or permfailures:
-        raise Errors.SomeRecipientsFailed(tempfailures, permfailures)
+        raise errors.SomeRecipientsFailed(tempfailures, permfailures)
 
 
 

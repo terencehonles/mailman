@@ -1,1 +1,1 @@
-%(member)s has been removed from %(listname)s.
+$member has been removed from $listname.

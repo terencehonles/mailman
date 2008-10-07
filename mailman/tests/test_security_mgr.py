@@ -27,7 +27,6 @@ import unittest
 # Don't use cStringIO because we're going to inherit
 from StringIO import StringIO
 
-from mailman import Errors
 from mailman import Utils
 from mailman import passwords
 from mailman.configuration import config

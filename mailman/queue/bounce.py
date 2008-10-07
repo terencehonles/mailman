@@ -51,7 +51,7 @@ class BounceMixin:
         #
         # today is itself a 3-tuple of (year, month, day)
         #
-        # Every once in a while (see _doperiodic()), the bounce runner cracks
+        # Every once in a while (see _do_periodic()), the bounce runner cracks
         # open the file, reads all the records and registers all the bounces.
         # Then it truncates the file and continues on.  We don't need to lock
         # the bounce event file because bounce qrunners are single threaded
@@ -123,11 +123,11 @@ class BounceMixin:
         os.unlink(self._bounce_events_file)
         self._bouncecnt = 0
 
-    def _cleanup(self):
+    def _clean_up(self):
         if self._bouncecnt > 0:
             self._register_bounces()
 
-    def _doperiodic(self):
+    def _do_periodic(self):
         now = datetime.datetime.now()
         if self._nextaction > now or self._bouncecnt == 0:
             return
@@ -218,11 +218,11 @@ class BounceRunner(Runner, BounceMixin):
         addrs = filter(None, addrs)
         self._queue_bounces(mlist.fqdn_listname, addrs, msg)
 
-    _doperiodic = BounceMixin._doperiodic
+    _do_periodic = BounceMixin._do_periodic
 
-    def _cleanup(self):
-        BounceMixin._cleanup(self)
-        Runner._cleanup(self)
+    def _clean_up(self):
+        BounceMixin._clean_up(self)
+        Runner._clean_up(self)
 
 
 

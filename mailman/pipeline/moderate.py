@@ -22,10 +22,10 @@ import re
 from email.MIMEMessage import MIMEMessage
 from email.MIMEText import MIMEText
 
-from mailman import Errors
 from mailman import Message
 from mailman import Utils
 from mailman.configuration import config
+from mailman.core import errors
 from mailman.i18n import _
 
 
@@ -72,11 +72,11 @@ def process(mlist, msg, msgdata):
                 else:
                     # Use the default RejectMessage notice string
                     text = None
-                raise Errors.RejectMessage, text
+                raise errors.RejectMessage, text
             elif mlist.member_moderation_action == 2:
                 # Discard.  BAW: Again, it would be nice if we could send a
                 # discard notice to the sender
-                raise Errors.DiscardMessage
+                raise errors.DiscardMessage
             else:
                 assert 0, 'bad member_moderation_action'
         # Should we do anything explict to mark this message as getting past
@@ -135,10 +135,10 @@ def matches_p(sender, nonmembers):
 def do_reject(mlist):
     listowner = mlist.GetOwnerEmail()
     if mlist.nonmember_rejection_notice:
-        raise Errors.RejectMessage, \
+        raise errors.RejectMessage, \
               Utils.wrap(_(mlist.nonmember_rejection_notice))
     else:
-        raise Errors.RejectMessage, Utils.wrap(_("""\
+        raise errors.RejectMessage, Utils.wrap(_("""\
 You are not allowed to post to this mailing list, and your message has been
 automatically rejected.  If you think that your messages are being rejected in
 error, contact the mailing list owner at %(listowner)s."""))
@@ -164,4 +164,4 @@ def do_discard(mlist, msg):
         nmsg.attach(MIMEMessage(msg))
         nmsg.send(mlist)
     # Discard this sucker
-    raise Errors.DiscardMessage
+    raise errors.DiscardMessage

@@ -19,7 +19,7 @@ from __future__ import with_statement
 
 import sys
 
-from mailman import Errors
+from mailman import errors
 from mailman import Message
 from mailman import Utils
 from mailman import i18n
@@ -100,11 +100,11 @@ def main():
     try:
         mlist = create_list(fqdn_listname, options.options.owners)
         mlist.preferred_language = options.options.language
-    except Errors.InvalidEmailAddress:
+    except errors.InvalidEmailAddress:
         options.parser.error(_('Illegal list name: $fqdn_listname'))
     except ListAlreadyExistsError:
         options.parser.error(_('List already exists: $fqdn_listname'))
-    except Errors.BadDomainSpecificationError, domain:
+    except errors.BadDomainSpecificationError, domain:
         options.parser.error(_('Undefined domain: $domain'))
 
     config.db.commit()

@@ -22,8 +22,8 @@ import sys
 import errno
 
 from mailman import Defaults
-from mailman import Errors
 from mailman import version
+from mailman.core import errors
 from mailman.domain import Domain
 from mailman.languages import LanguageManager
 
@@ -184,11 +184,11 @@ class Configuration(object):
         """
         domain = Domain(*args, **kws)
         if domain.email_host in self.domains:
-            raise Errors.BadDomainSpecificationError(
+            raise errors.BadDomainSpecificationError(
                 'Duplicate email host: %s' % domain.email_host)
         # Make sure there's only one mapping for the url_host
         if domain.url_host in self.domains.values():
-            raise Errors.BadDomainSpecificationError(
+            raise errors.BadDomainSpecificationError(
                 'Duplicate url host: %s' % domain.url_host)
         # We'll do the reverse mappings on-demand.  There shouldn't be too
         # many virtual hosts that it will really matter that much.

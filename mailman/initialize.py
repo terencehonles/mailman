@@ -32,7 +32,7 @@ from zope.interface.verify import verifyObject
 import mailman.configuration
 import mailman.loginit
 
-from mailman.app.plugins import get_plugin
+from mailman.core.plugins import get_plugin
 from mailman.interfaces import IDatabase
 
 
@@ -88,11 +88,11 @@ def initialize_2(debug=False):
     mailman.configuration.config.db = database
     # Initialize the rules and chains.  Do the imports here so as to avoid
     # circular imports.
-    from mailman.archiving import initialize as initialize_archivers
-    from mailman.app.chains import initialize as initialize_chains
-    from mailman.app.rules import initialize as initialize_rules
-    from mailman.app.pipelines import initialize as initialize_pipelines
     from mailman.app.commands import initialize as initialize_commands
+    from mailman.archiving import initialize as initialize_archivers
+    from mailman.core.chains import initialize as initialize_chains
+    from mailman.core.pipelines import initialize as initialize_pipelines
+    from mailman.core.rules import initialize as initialize_rules
     initialize_archivers()
     initialize_rules()
     initialize_chains()

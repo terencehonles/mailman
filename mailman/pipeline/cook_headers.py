@@ -18,20 +18,22 @@
 """Cook a message's headers."""
 
 __metaclass__ = type
-__all__ = ['CookHeaders']
+__all__ = [
+    'CookHeaders',
+    ]
 
 
 import re
 
-from email.Charset import Charset
-from email.Errors import HeaderParseError
-from email.Header import Header, decode_header, make_header
-from email.Utils import parseaddr, formataddr, getaddresses
+from email.charset import Charset
+from email.errors import HeaderParseError
+from email.header import Header, decode_header, make_header
+from email.utils import parseaddr, formataddr, getaddresses
 from zope.interface import implements
 
 from mailman import Utils
-from mailman.app.plugins import get_plugins
 from mailman.configuration import config
+from mailman.core.plugins import get_plugins
 from mailman.i18n import _
 from mailman.interfaces import IHandler, Personalization, ReplyToMunging
 from mailman.version import VERSION

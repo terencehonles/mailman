@@ -36,7 +36,7 @@ The Discard chain simply throws the message away.
     ... An important message.
     ... """)
 
-    >>> from mailman.app.chains import process
+    >>> from mailman.core.chains import process
 
     # XXX This checks the vette log file because there is no other evidence
     # that this chain has done anything.
@@ -309,7 +309,6 @@ The previously created message is innocuous enough that it should pass through
 all default rules.  This message will end up in the pipeline queue.
 
     >>> file_pos = fp.tell()
-    >>> from mailman.app.chains import process
     >>> process(mlist, msg, {})
     >>> fp.seek(file_pos)
     >>> print 'LOG:', fp.read()

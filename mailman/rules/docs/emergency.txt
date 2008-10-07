@@ -19,7 +19,7 @@ list are held for moderator approval.
 The emergency rule is matched as part of the built-in chain.  The emergency
 rule matches if the flag is set on the mailing list.
 
-    >>> from mailman.app.chains import process
+    >>> from mailman.core.chains import process
     >>> mlist.emergency = True
     >>> process(mlist, msg, {}, 'built-in')
 
