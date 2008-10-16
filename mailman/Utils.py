@@ -25,7 +25,6 @@ the mailing lists, and whatever else doesn't belong elsewhere.
 import os
 import re
 import cgi
-import sha
 import time
 import errno
 import base64

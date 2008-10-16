@@ -18,8 +18,6 @@
 """Unit tests for the SecurityManager module."""
 
 import os
-import md5
-import sha
 import errno
 import Cookie
 import unittest

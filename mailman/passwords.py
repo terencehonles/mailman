@@ -22,8 +22,8 @@ Represents passwords using RFC 2307 syntax (as best we can tell).
 
 import os
 import re
-import sha
 import hmac
+import hashlib
 
 from array import array
 from base64 import urlsafe_b64decode as decode
@@ -93,12 +93,12 @@ class SHAPasswordScheme(PasswordScheme):
 
     @staticmethod
     def make_secret(password):
-        h = sha.new(password)
+        h = hashlib.sha1(password)
         return encode(h.digest())
 
     @staticmethod
     def check_response(challenge, response):
-        h = sha.new(response)
+        h = hashlib.sha1(response)
         return challenge == encode(h.digest())
 
 
@@ -109,7 +109,7 @@ class SSHAPasswordScheme(PasswordScheme):
     @staticmethod
     def make_secret(password):
         salt = os.urandom(SALT_LENGTH)
-        h = sha.new(password)
+        h = hashlib.sha1(password)
         h.update(salt)
         return encode(h.digest() + salt)
 
@@ -119,7 +119,7 @@ class SSHAPasswordScheme(PasswordScheme):
         challenge_bytes = decode(challenge)
         digest = challenge_bytes[:20]
         salt = challenge_bytes[20:]
-        h = sha.new(response)
+        h = hashlib.sha1(response)
         h.update(salt)
         return digest == h.digest()
 
@@ -139,7 +139,7 @@ class PBKDF2PasswordScheme(PasswordScheme):
         and a constant block counter appended to the salt in the initial hmac
         update.
         """
-        h = hmac.new(password, None, sha)
+        h = hmac.new(password, None, hashlib.sha1)
         prf = h.copy()
         prf.update(salt + '\x00\x00\x00\x01')
         T = U = array('l', prf.digest())

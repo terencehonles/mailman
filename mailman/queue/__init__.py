@@ -34,12 +34,12 @@ __all__ = [
 
 
 import os
-import sha
 import time
 import email
 import errno
 import pickle
 import cPickle
+import hashlib
 import logging
 import marshal
 import traceback
@@ -53,7 +53,7 @@ from mailman import Utils
 from mailman.configuration import config
 from mailman.interfaces import IRunner, ISwitchboard
 
-# 20 bytes of all bits set, maximum sha.digest() value
+# 20 bytes of all bits set, maximum hashlib.sha.digest() value
 shamax = 0xffffffffffffffffffffffffffffffffffffffffL
 
 # Small increment to add to time in case two entries have the same time.  This
@@ -126,7 +126,7 @@ class Switchboard:
         # time for this message (i.e. when it first showed up on this system)
         # and the sha hex digest.
         rcvtime = data.setdefault('received_time', now)
-        filebase = repr(rcvtime) + '+' + sha.new(hashfood).hexdigest()
+        filebase = repr(rcvtime) + '+' + hashlib.sha1(hashfood).hexdigest()
         filename = os.path.join(self._whichq, filebase + '.pck')
         tmpfile = filename + '.tmp'
         # Always add the metadata schema version number

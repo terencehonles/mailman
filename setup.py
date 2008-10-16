@@ -27,8 +27,8 @@ from setuptools import setup, find_packages
 
 
 
-if sys.hexversion < 0x20500f0:
-    print 'Mailman requires at least Python 2.5'
+if sys.hexversion < 0x20600f0:
+    print 'Mailman requires at least Python 2.6'
     sys.exit(1)
 
 

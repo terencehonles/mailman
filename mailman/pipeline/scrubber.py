@@ -25,9 +25,9 @@ __all__ = ['Scrubber']
 
 import os
 import re
-import sha
 import time
 import errno
+import hashlib
 import logging
 import binascii
 
@@ -140,7 +140,7 @@ def calculate_attachments_dir(mlist, msg, msgdata):
     if msgid is None:
         msgid = msg['Message-ID'] = make_msgid()
     # We assume that the message id actually /is/ unique!
-    digest = sha.new(msgid).hexdigest()
+    digest = hashlib.sha1(msgid).hexdigest()
     return os.path.join('attachments', datedir, digest[:4] + digest[-4:])
 
 
