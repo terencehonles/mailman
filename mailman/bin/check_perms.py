@@ -322,6 +322,7 @@ def checkdata():
     checkfiles = ('config.pck', 'config.pck.last',
                   'config.db', 'config.db.last',
                   'next-digest', 'next-digest-topics',
+                  'digest.mbox', 'pending.pck',
                   'request.db', 'request.db.tmp')
     if STATE.VERBOSE:
         print _('checking permissions on list data')
