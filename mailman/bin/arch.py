@@ -115,6 +115,15 @@ def main():
     # XXX processUnixMailbox() should refresh the lock.
     lock_path = os.path.join(mlist.data_path, '.archiver.lck')
     with Lock(lock_path, lifetime=int(hours(3))):
+        # Try to open mbox before wiping old archive.
+        try:
+            fp = open(mbox)
+        except IOError, e:
+            if e.errno == errno.ENOENT:
+                print >> sys.stderr, _('Cannot open mbox file: $mbox')
+            else:
+                print >> sys.stderr, e
+            sys.exit(1)
         # Maybe wipe the old archives
         if opts.wipe:
             if mlist.scrub_nondigest:
@@ -132,14 +141,6 @@ def main():
             shutil.rmtree(mlist.archive_dir())
             if mlist.scrub_nondigest and saved:
                 os.renames(savedir, atchdir)
-        try:
-            fp = open(mbox)
-        except IOError, e:
-            if e.errno == errno.ENOENT:
-                print >> sys.stderr, _('Cannot open mbox file: $mbox')
-            else:
-                print >> sys.stderr, e
-            sys.exit(1)
 
         archiver = HyperArchive(mlist)
         archiver.VERBOSE = opts.verbose
