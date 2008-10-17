@@ -17,10 +17,10 @@
 
 """The terminal 'hold' chain."""
 
-from __future__ import with_statement
-
-__all__ = ['HoldChain']
 __metaclass__ = type
+__all__ = [
+    'HoldChain',
+    ]
 
 
 import logging

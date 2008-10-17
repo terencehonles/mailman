@@ -17,8 +17,6 @@
 
 """Application support for membership management."""
 
-from __future__ import with_statement
-
 __metaclass__ = type
 __all__ = [
     'add_member',

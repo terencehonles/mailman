@@ -17,10 +17,10 @@
 
 """Cleanse a message for archiving."""
 
-from __future__ import with_statement
-
 __metaclass__ = type
-__all__ = ['Scrubber']
+__all__ = [
+    'Scrubber',
+    ]
 
 
 import os

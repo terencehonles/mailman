@@ -17,8 +17,6 @@
 
 """A user manager."""
 
-from __future__ import with_statement
-
 import os
 
 from zope.interface import implements

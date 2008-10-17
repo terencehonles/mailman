@@ -17,8 +17,6 @@
 
 """Application support for moderators."""
 
-from __future__ import with_statement
-
 __all__ = [
     'handle_message',
     'handle_subscription',

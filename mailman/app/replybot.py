@@ -21,8 +21,6 @@
 # mailing list.  The reply governor should really apply site-wide per
 # recipient (I think).
 
-from __future__ import with_statement
-
 __all__ = [
     'autorespond_to_sender',
     'can_acknowledge',

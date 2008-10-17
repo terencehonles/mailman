@@ -17,10 +17,10 @@
 
 """Get the normal delivery recipients from a Sendmail style :include: file."""
 
-from __future__ import with_statement
-
 __metaclass__ = type
-__all__ = ['FileRecipients']
+__all__ = [
+    'FileRecipients',
+    ]
 
 
 import os

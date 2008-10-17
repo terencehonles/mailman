@@ -1,7 +1,7 @@
 *.mo
 .bzrignore
 build/
-bzr-*-linux-i686.egg/
+bzr-*.egg/
 cron/crontab.in
 dist/
 mailman.egg-info

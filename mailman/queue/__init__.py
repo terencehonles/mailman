@@ -24,8 +24,6 @@ written.  First, the message is written to the pickle, then the metadata
 dictionary is written.
 """
 
-from __future__ import with_statement
-
 __metaclass__ = type
 __all__ = [
     'Runner',

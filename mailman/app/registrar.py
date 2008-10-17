@@ -25,8 +25,8 @@ __all__ = [
 
 
 import datetime
-import pkg_resources
 
+from pkg_resources import resource_string
 from zope.interface import implements
 
 from mailman.Message import UserNotification
@@ -75,8 +75,7 @@ class Registrar:
         # VERP_CONFIRMATIONS as well.
         subject = 'confirm ' + token
         # Send a verification email to the address.
-        text = _(pkg_resources.resource_string(
-            'mailman.templates.en', 'verify.txt'))
+        text = _(resource_string('mailman.templates.en', 'verify.txt'))
         msg = UserNotification(address, confirm_address, subject, text)
         msg.send(mlist=None)
         return token

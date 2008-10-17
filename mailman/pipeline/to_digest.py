@@ -25,10 +25,10 @@
 # directory and the DigestRunner will craft the MIME, rfc1153, and
 # (eventually) URL-subject linked digests from the mbox.
 
-from __future__ import with_statement
-
 __metaclass__ = type
-__all__ = ['ToDigest']
+__all__ = [
+    'ToDigest',
+    ]
 
 
 import os

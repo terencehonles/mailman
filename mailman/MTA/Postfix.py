@@ -17,8 +17,6 @@
 
 """Creation/deletion hooks for the Postfix MTA."""
 
-from __future__ import with_statement
-
 import os
 import grp
 import pwd

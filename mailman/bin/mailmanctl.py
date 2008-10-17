@@ -17,8 +17,6 @@
 
 """Mailman start/stop script."""
 
-from __future__ import with_statement
-
 import os
 import grp
 import pwd

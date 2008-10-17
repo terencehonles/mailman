@@ -17,8 +17,6 @@
 
 """Master sub-process watcher."""
 
-from __future__ import with_statement
-
 __metaclass__ = type
 __all__ = [
     'Loop',
