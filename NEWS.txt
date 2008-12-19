@@ -1,0 +1,15 @@
+================
+GNU Mailman News
+================
+
+
+Mailman 3.0.0 alpha 2
+=====================
+XX-XXX-200X - Working Man
+
+
+Mailman 3.0.0 alpha 1
+=====================
+10-Apr-2008 - Grand Designs
+
+

@@ -57,7 +57,7 @@ for dirpath, dirnames, filenames in os.walk(start_dir):
 
 
 # XXX The 'bin/' prefix here should be configurable.
-template = Template('bin/$script = mailman.bin.$script:main')
+template = Template('$script = mailman.bin.$script:main')
 scripts = set(
     template.substitute(script=script)
     for script in mailman.bin.__all__
