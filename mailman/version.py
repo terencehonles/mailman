@@ -16,8 +16,8 @@
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
 # Mailman version
-VERSION = "3.0.0a1+"
-CODENAME = 'Grand Designs'
+VERSION = "3.0.0a2"
+CODENAME = 'Working Man'
 
 # And as a hex number in the manner of PY_VERSION_HEX
 ALPHA = 0xa
