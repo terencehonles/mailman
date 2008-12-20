@@ -53,7 +53,7 @@ from mailman import Utils
 from mailman import i18n
 from mailman.Mailbox import Mailbox
 from mailman.Mailbox import Mailbox
-from mailman.configuration import config
+from mailman.config import config
 from mailman.core import errors
 from mailman.interfaces import DeliveryMode, DeliveryStatus, IHandler
 from mailman.pipeline.decorate import decorate

@@ -27,7 +27,9 @@ for a threaded implementation.
 """
 
 __metaclass__ = type
-__all__ = ['SMTPDirect']
+__all__ = [
+    'SMTPDirect',
+    ]
 
 
 import copy
@@ -44,20 +46,15 @@ from email.Utils import formataddr
 from zope.interface import implements
 
 from mailman import Utils
-from mailman.configuration import config
+from mailman.config import config
 from mailman.core import errors
 from mailman.i18n import _
 from mailman.interfaces import IHandler, Personalization
 
 
 DOT = '.'
-
-log         = logging.getLogger('mailman.smtp')
-flog        = logging.getLogger('mailman.smtp-failure')
-every_log   = logging.getLogger('mailman.' + config.SMTP_LOG_EVERY_MESSAGE[0])
-success_log = logging.getLogger('mailman.' + config.SMTP_LOG_SUCCESS[0])
-refused_log = logging.getLogger('mailman.' + config.SMTP_LOG_REFUSED[0])
-failure_log = logging.getLogger('mailman.' + config.SMTP_LOG_EACH_FAILURE[0])
+COMMA = ','
+log = logging.getLogger('mailman.smtp')
 
 
 
@@ -98,20 +95,6 @@ class Connection:
         except smtplib.SMTPException:
             pass
         self.__conn = None
-
-
-
-class MessageDict(dict):
-    def __init__(self, message, extras):
-        super(MessageDict, self).__init__()
-        for key, value in message.items():
-            self[key.lower()] = value
-        self.update(extras)
-
-
-class Template(string.Template):
-    # Allow dashes and # signs, in addition to the standard pattern.
-    idpattern = '[_a-z#-][_a-z0-9#-]*'
 
 
 
@@ -192,38 +175,39 @@ def process(mlist, msg, msgdata):
         msgdata['recips'] = origrecips
     # Log the successful post
     t1 = time.time()
-    substitutions = MessageDict(msg, {
-        'time'      : t1-t0,
-        'size'      : msg.original_size,
-        '#recips'   : len(recips),
-        '#refused'  : len(refused),
-        'listname'  : mlist.fqdn_listname,
-         'sender'   : origsender,
-         })
-    if 'message-id' not in substitutions:
-        substitutions['message-id'] = 'n/a'
-    # We have to use the copy() method because extended call syntax requires a
-    # concrete dictionary object; it does not allow a generic mapping (XXX is
-    # this still true in Python 2.3?).
-    if config.SMTP_LOG_EVERY_MESSAGE:
-        template = Template(config.SMTP_LOG_EVERY_MESSAGE[1])
-        every_log.info('%s', template.safe_substitute(substitutions))
-
+    substitutions = dict(
+        msgid       = msg.get('message-id', 'n/a'),
+        listname    = mlist.fqdn_listname,
+        sender      = origsender,
+        recip       = len(recips),
+        size        = msg.original_size,
+        seconds     = t1 - t0,
+        refused     = len(refused),
+        smtpcode    = 'n/a',
+        smtpmsg     = 'n/a',
+        )
+    # Log this message.
+    template = config.logging.smtp.every
+    if template != 'no':
+        template = Template(template)
+        log.info('%s', template.safe_substitute(substitutions))
     if refused:
-        if config.SMTP_LOG_REFUSED:
-            template = Template(config.SMTP_LOG_REFUSED[1])
-            refused_log.info('%s', template.safe_substitute(substitutions))
-
-    elif msgdata.get('tolist'):
-        # Log the successful post, but only if it really was a post to the
-        # mailing list.  Don't log sends to the -owner, or -admin addrs.
-        # -request addrs should never get here.  BAW: it may be useful to log
-        # the other messages, but in that case, we should probably have a
-        # separate configuration variable to control that.
-        if config.SMTP_LOG_SUCCESS:
-            template = Template(config.SMTP_LOG_SUCCESS[1])
-            success_log.info('%s', template.safe_substitute(substitutions))
-
+        template = config.logging.smtp.refused
+        if template != 'no':
+            template = Template(template)
+            log.info('%s', template.safe_substitute(substitutions))
+    else:
+        # Log the successful post, but if it was not destined to the mailing
+        # list (e.g. to the owner or admin), print the actual recipients
+        # instead of just the number.
+        if not msgdata.get('tolist'):
+            recips = msg.get_all('to', [])
+            recips.extend(msg.get_all('cc', []))
+            substitutions['recips'] = COMMA.join(recips)
+        template = config.logging.smtp.success
+        if template != 'no':
+            template = Template(template)
+            log.info('%s', template.safe_substitute(substitutions))
     # Process any failed deliveries.
     tempfailures = []
     permfailures = []
@@ -244,14 +228,15 @@ def process(mlist, msg, msgdata):
             # Deal with persistent transient failures by queuing them up for
             # future delivery.  TBD: this could generate lots of log entries!
             tempfailures.append(recip)
-        if config.SMTP_LOG_EACH_FAILURE:
-            substitutions.update({
-                'recipient' : recip,
-                'failcode'  : code,
-                'failmsg'   : smtpmsg,
-                })
-            template = Template(config.SMTP_LOG_EACH_FAILURE[1])
-            failure_log.info('%s', template.safe_substitute(substitutions))
+        template = config.logging.smtp.failure
+        if template != 'no':
+            substitutions.update(
+                recip       = recip,
+                smtpcode    = code,
+                smtpmsg     = smtpmsg,
+                )
+            template = Template(template)
+            log.info('%s', template.safe_substitute(substitutions))
     # Return the results
     if tempfailures or permfailures:
         raise errors.SomeRecipientsFailed(tempfailures, permfailures)

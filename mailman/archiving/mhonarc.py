@@ -32,7 +32,7 @@ from string import Template
 from urlparse import urljoin
 from zope.interface import implements
 
-from mailman.configuration import config
+from mailman.config import config
 from mailman.interfaces.archiver import IArchiver
 
 

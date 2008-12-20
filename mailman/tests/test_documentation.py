@@ -27,7 +27,7 @@ from email import message_from_string
 import mailman
 
 from mailman.Message import Message
-from mailman.configuration import config
+from mailman.config import config
 from mailman.core.styles import style_manager
 from mailman.testing.helpers import SMTPServer
 

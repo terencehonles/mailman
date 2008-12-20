@@ -31,7 +31,7 @@ __all__ = ['CleanseDKIM']
 
 from zope.interface import implements
 
-from mailman.configuration import config
+from mailman.config import config
 from mailman.i18n import _
 from mailman.interfaces import IHandler
 

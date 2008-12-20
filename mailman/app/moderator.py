@@ -37,7 +37,7 @@ from mailman import i18n
 from mailman.app.membership import add_member, delete_member
 from mailman.app.notifications import (
     send_admin_subscription_notice, send_welcome_message)
-from mailman.configuration import config
+from mailman.config import config
 from mailman.core import errors
 from mailman.interfaces import Action, DeliveryMode, RequestType
 from mailman.interfaces.member import AlreadySubscribedError

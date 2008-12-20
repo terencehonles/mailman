@@ -42,7 +42,7 @@ from Queue import Empty, Queue
 from datetime import datetime, timedelta
 
 from mailman.bin.master import Loop as Master
-from mailman.configuration import config
+from mailman.config import config
 from mailman.queue import Switchboard
 from mailman.testing.smtplistener import Server
 

@@ -41,7 +41,7 @@ from string import ascii_letters, digits, whitespace, Template
 import mailman.templates
 
 from mailman import passwords
-from mailman.configuration import config
+from mailman.config import config
 from mailman.core import errors
 
 AT = '@'

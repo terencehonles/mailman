@@ -27,7 +27,7 @@ __all__ = [
 
 from zope.interface import implements
 
-from mailman.configuration import config
+from mailman.config import config
 from mailman.interfaces import (
     IChain, IChainIterator, IChainLink, IMutableChain, LinkAction)
 

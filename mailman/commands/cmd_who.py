@@ -18,7 +18,7 @@
 from email.Utils import parseaddr
 
 from mailman import i18n
-from mailman.configuration import config
+from mailman.config import config
 
 STOP = 1
 

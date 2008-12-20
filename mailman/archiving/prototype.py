@@ -29,7 +29,7 @@ from base64 import b32encode
 from urlparse import urljoin
 from zope.interface import implements
 
-from mailman.configuration import config
+from mailman.config import config
 from mailman.interfaces.archiver import IArchiver
 
 

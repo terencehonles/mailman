@@ -34,7 +34,7 @@ from string import Template
 
 from mailman import Mailbox
 from mailman import Utils
-from mailman.configuration import config
+from mailman.config import config
 from mailman.i18n import _
 
 log = logging.getLogger('mailman.error')

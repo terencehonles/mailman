@@ -29,8 +29,8 @@ import os
 from zope.interface.interface import adapter_hooks
 from zope.interface.verify import verifyObject
 
-import mailman.configuration
-import mailman.loginit
+import mailman.config.config
+import mailman.core.logging
 
 from mailman.core.plugins import get_plugin
 from mailman.interfaces import IDatabase
@@ -61,10 +61,10 @@ def initialize_1(config_path, propagate_logs):
     # restrictive permissions in order to handle private archives, but it
     # handles that correctly.
     os.umask(007)
-    mailman.configuration.config.load(config_path)
+    mailman.config.config.load(config_path)
     # Create the queue and log directories if they don't already exist.
-    mailman.configuration.config.ensure_directories_exist()
-    mailman.loginit.initialize(propagate_logs)
+    mailman.config.config.ensure_directories_exist()
+    mailman.core.logging.initialize(propagate_logs)
 
 
 def initialize_2(debug=False):
@@ -85,7 +85,7 @@ def initialize_2(debug=False):
     database = database_plugin()
     verifyObject(IDatabase, database)
     database.initialize(debug)
-    mailman.configuration.config.db = database
+    mailman.config.config.db = database
     # Initialize the rules and chains.  Do the imports here so as to avoid
     # circular imports.
     from mailman.app.commands import initialize as initialize_commands

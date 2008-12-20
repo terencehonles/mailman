@@ -18,7 +18,7 @@
 from storm.locals import *
 from zope.interface import implements
 
-from mailman.configuration import config
+from mailman.config import config
 from mailman.database.model import Model
 from mailman.interfaces import IMessage
 

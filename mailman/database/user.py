@@ -19,7 +19,7 @@ from email.utils import formataddr
 from storm.locals import *
 from zope.interface import implements
 
-from mailman.configuration import config
+from mailman.config import config
 from mailman.database.model import Model
 from mailman.database.address import Address
 from mailman.database.preferences import Preferences

@@ -23,7 +23,7 @@
 
 from mailman import Errors
 from mailman import Pending
-from mailman.configuration import config
+from mailman.config import config
 from mailman.i18n import _
 
 STOP = 1

@@ -29,6 +29,7 @@
 import os
 import re
 import sys
+import gzip
 import time
 import errno
 import urllib
@@ -47,19 +48,12 @@ from mailman import i18n
 from mailman.Archiver import HyperDatabase
 from mailman.Archiver import pipermail
 from mailman.Mailbox import ArchiverMailbox
-from mailman.configuration import config
+from mailman.config import config
 
 log = logging.getLogger('mailman.error')
 
 # Set up i18n.  Assume the current language has already been set in the caller.
 _ = i18n._
-
-gzip = None
-if config.GZIP_ARCHIVE_TXT_FILES:
-    try:
-        import gzip
-    except ImportError:
-        pass
 
 EMPTYSTRING = ''
 NL = '\n'
@@ -239,7 +233,7 @@ class Article(pipermail.Article):
     _last_article_time = time.time()
 
     def __init__(self, message=None, sequence=0, keepHeaders=[],
-                       lang=config.DEFAULT_SERVER_LANGUAGE, mlist=None):
+                       lang=config.mailman.default_language, mlist=None):
         self.__super_init(message, sequence, keepHeaders)
         self.prev = None
         self.next = None

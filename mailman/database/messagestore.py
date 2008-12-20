@@ -29,7 +29,7 @@ import cPickle as pickle
 from zope.interface import implements
 
 from mailman import Utils
-from mailman.configuration import config
+from mailman.config import config
 from mailman.database.message import Message
 from mailman.interfaces import IMessageStore
 

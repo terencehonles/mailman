@@ -22,7 +22,7 @@ import string
 import gettext
 
 import mailman.messages
-from mailman.configuration import config
+from mailman.config import config
 
 _translation = None
 _missing = object()

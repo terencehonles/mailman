@@ -21,7 +21,7 @@ import os
 
 from zope.interface import implements
 
-from mailman.configuration import config
+from mailman.config import config
 from mailman.database.address import Address
 from mailman.database.preferences import Preferences
 from mailman.database.user import User

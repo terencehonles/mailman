@@ -30,7 +30,7 @@ from email.charset import Charset
 from email.header import Header
 
 from mailman import Utils
-from mailman.configuration import config
+from mailman.config import config
 
 COMMASPACE = ', '
 

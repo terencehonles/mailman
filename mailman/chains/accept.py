@@ -23,7 +23,7 @@ __metaclass__ = type
 import logging
 
 from mailman.chains.base import TerminalChainBase
-from mailman.configuration import config
+from mailman.config import config
 from mailman.i18n import _
 from mailman.queue import Switchboard
 

@@ -19,7 +19,7 @@ from storm.locals import *
 from zope.interface import implements
 
 from mailman.Utils import split_listname
-from mailman.configuration import config
+from mailman.config import config
 from mailman.constants import SystemDefaultPreferences
 from mailman.database.model import Model
 from mailman.database.types import Enum

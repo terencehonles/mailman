@@ -48,7 +48,7 @@ from zope.interface import implements
 from mailman import i18n
 from mailman import Message
 from mailman import Utils
-from mailman.configuration import config
+from mailman.config import config
 from mailman.interfaces import IRunner, ISwitchboard
 
 # 20 bytes of all bits set, maximum hashlib.sha.digest() value

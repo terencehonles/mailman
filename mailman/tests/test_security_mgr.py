@@ -27,7 +27,7 @@ from StringIO import StringIO
 
 from mailman import Utils
 from mailman import passwords
-from mailman.configuration import config
+from mailman.config import config
 
 
 

@@ -36,8 +36,8 @@ from locknix import lockfile
 from munepy import Enum
 
 from mailman import Defaults
-from mailman import loginit
-from mailman.configuration import config
+from mailman.config import config
+from mailman.core.logging import reopen
 from mailman.i18n import _
 from mailman.options import Options
 
@@ -237,7 +237,7 @@ class Loop:
         signal.alarm(int(Defaults.days(1)))
         # SIGHUP tells the qrunners to close and reopen their log files.
         def sighup_handler(signum, frame):
-            loginit.reopen()
+            reopen()
             for pid in self._kids:
                 os.kill(pid, signal.SIGHUP)
             log.info('Master watcher caught SIGHUP.  Re-opening log files.')

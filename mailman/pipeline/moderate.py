@@ -24,7 +24,7 @@ from email.MIMEText import MIMEText
 
 from mailman import Message
 from mailman import Utils
-from mailman.configuration import config
+from mailman.config import config
 from mailman.core import errors
 from mailman.i18n import _
 

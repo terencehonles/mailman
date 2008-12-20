@@ -24,7 +24,7 @@ import os
 import sys
 
 from mailman import Utils
-from mailman.configuration import config
+from mailman.config import config
 from mailman.i18n import _
 
 EMPTYSTRING = ''

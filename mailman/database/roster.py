@@ -38,7 +38,7 @@ __all__ = [
 from storm.locals import *
 from zope.interface import implements
 
-from mailman.configuration import config
+from mailman.config import config
 from mailman.constants import SystemDefaultPreferences
 from mailman.database.address import Address
 from mailman.database.member import Member

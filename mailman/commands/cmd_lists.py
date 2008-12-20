@@ -21,7 +21,7 @@
 """
 
 from mailman.MailList import MailList
-from mailman.configuration import config
+from mailman.config import config
 from mailman.i18n import _
 
 

@@ -22,7 +22,7 @@ import datetime
 from zope.interface import implements
 
 from mailman.Utils import split_listname, fqdn_listname
-from mailman.configuration import config
+from mailman.config import config
 from mailman.database.mailinglist import MailingList
 from mailman.interfaces import IListManager, ListAlreadyExistsError
 

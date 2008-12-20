@@ -30,7 +30,7 @@ from mailman import Message
 from mailman import Utils
 from mailman import i18n
 from mailman.app.notifications import send_goodbye_message
-from mailman.configuration import config
+from mailman.config import config
 from mailman.core import errors
 from mailman.interfaces import AlreadySubscribedError, DeliveryMode, MemberRole
 

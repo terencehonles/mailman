@@ -31,7 +31,7 @@ import datetime
 
 from mailman import Utils
 from mailman import i18n
-from mailman.configuration import config
+from mailman.config import config
 
 
 log = logging.getLogger('mailman.vette')

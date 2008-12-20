@@ -27,7 +27,7 @@ from email.Generator import Generator
 from email.Parser import Parser
 
 from mailman.Message import Message
-from mailman.configuration import config
+from mailman.config import config
 
 
 

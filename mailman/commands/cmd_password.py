@@ -29,7 +29,7 @@
 
 from email.Utils import parseaddr
 
-from mailman.configuration import config
+from mailman.config import config
 from mailman.i18n import _
 
 STOP = 1

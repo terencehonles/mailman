@@ -27,7 +27,7 @@ from storm.locals import *
 from zope.interface import implements
 from zope.interface.verify import verifyObject
 
-from mailman.configuration import config
+from mailman.config import config
 from mailman.database.model import Model
 from mailman.interfaces import (
     IPendable, IPended, IPendedKeyValue, IPendings)

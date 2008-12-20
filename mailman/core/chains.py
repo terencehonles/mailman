@@ -17,11 +17,11 @@
 
 """Application support for chain processing."""
 
+__metaclass__ = type
 __all__ = [
     'initialize',
     'process',
     ]
-__metaclass__ = type
 
 
 from mailman.chains.accept import AcceptChain
@@ -30,7 +30,7 @@ from mailman.chains.discard import DiscardChain
 from mailman.chains.headers import HeaderMatchChain
 from mailman.chains.hold import HoldChain
 from mailman.chains.reject import RejectChain
-from mailman.configuration import config
+from mailman.config import config
 from mailman.interfaces import LinkAction
 
 

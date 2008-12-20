@@ -107,6 +107,7 @@ case second `m'.  Any other spelling is incorrect.""",
         'mailman.handlers'  : 'default = mailman.pipeline:initialize',
         },
     install_requires = [
+        'lazr.config',
         'locknix',
         'munepy',
         'storm',

@@ -22,7 +22,7 @@ from storm.locals import *
 from zope.interface import implements
 
 from mailman.Utils import fqdn_listname, makedirs, split_listname
-from mailman.configuration import config
+from mailman.config import config
 from mailman.database import roster
 from mailman.database.model import Model
 from mailman.database.types import Enum

@@ -31,7 +31,7 @@ import logging
 
 from mailman import Utils
 from mailman.Utils import ValidateEmail
-from mailman.configuration import config
+from mailman.config import config
 from mailman.core import errors
 from mailman.core.plugins import get_plugin
 from mailman.core.styles import style_manager

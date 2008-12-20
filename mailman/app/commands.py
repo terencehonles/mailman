@@ -23,7 +23,7 @@ __all__ = [
     ]
 
 
-from mailman.configuration import config
+from mailman.config import config
 from mailman.core.plugins import get_plugins
 from mailman.interfaces import IEmailCommand
 
