@@ -6,7 +6,6 @@ objects.  The Mailman system instantiates an IListManager for you based on the
 configuration variable MANAGERS_INIT_FUNCTION.  The instance is accessible
 on the global config object.
 
-    >>> from mailman.configuration import config
     >>> from mailman.interfaces import IListManager
     >>> listmgr = config.db.list_manager
     >>> IListManager.providedBy(listmgr)

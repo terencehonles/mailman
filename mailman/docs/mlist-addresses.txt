@@ -4,7 +4,6 @@ Mailing list addresses
 Every mailing list has a number of addresses which are publicly available.
 These are defined in the IMailingListAddresses interface.
 
-    >>> from mailman.configuration import config
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
 
 The posting address is where people send messages to be posted to the mailing

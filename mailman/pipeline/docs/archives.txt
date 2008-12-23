@@ -8,7 +8,6 @@ archivers to work in a separate process from the main Mailman delivery
 processes.
 
     >>> from mailman.app.lifecycle import create_list
-    >>> from mailman.configuration import config
     >>> from mailman.queue import Switchboard
     >>> handler = config.handlers['to-archive']
     >>> mlist = create_list(u'_xtest@example.com')

@@ -8,7 +8,6 @@ digests, although only two are currently supported: MIME digests and RFC 1153
 
     >>> from mailman.pipeline.to_digest import process
     >>> from mailman.queue import Switchboard
-    >>> from mailman.configuration import config
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> mlist.preferred_language = u'en'
     >>> mlist.web_page_url = u'http://www.example.com/'

@@ -14,7 +14,6 @@ instance of a switchboard is responsible for one queue directory.
 Create a switchboard by giving its queue directory.
 
     >>> import os
-    >>> from mailman.configuration import config
     >>> queue_directory = os.path.join(config.QUEUE_DIR, 'test')
     >>> from mailman.queue import Switchboard
     >>> switchboard = Switchboard(queue_directory)

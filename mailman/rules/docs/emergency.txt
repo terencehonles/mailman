@@ -27,7 +27,6 @@ There are two messages in the virgin queue.  The one addressed to the original
 sender will contain a token we can use to grab the held message out of the
 pending requests.
 
-    >>> from mailman.configuration import config
     >>> from mailman.queue import Switchboard
     >>> virginq = Switchboard(config.VIRGINQUEUE_DIR)
 

@@ -6,7 +6,6 @@ NNTP newsgroup.  One of the most important things this runner does is prepare
 the message for Usenet (yes, I know that NNTP is not Usenet, but this runner
 was originally written to gate to Usenet, which has its own rules).
 
-    >>> from mailman.configuration import config
     >>> from mailman.queue.news import prepare_message
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> mlist.linked_newsgroup = u'comp.lang.python'

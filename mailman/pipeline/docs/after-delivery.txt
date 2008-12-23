@@ -6,7 +6,6 @@ by the rest of the handlers in the incoming queue pipeline, a couple of
 bookkeeping pieces of information are updated.
 
     >>> import datetime
-    >>> from mailman.configuration import config
     >>> handler = config.handlers['after-delivery']
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> post_time = datetime.datetime.now() - datetime.timedelta(minutes=10)

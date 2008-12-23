@@ -7,7 +7,6 @@ they control.  A user also knows which mailing lists they are subscribed to.
 
 See usermanager.txt for examples of how to create, delete, and find users.
 
-    >>> from mailman.configuration import config
     >>> usermgr = config.db.user_manager
 
 

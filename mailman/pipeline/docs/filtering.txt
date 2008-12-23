@@ -7,7 +7,6 @@ message.  It does this with the MimeDel handler module, although other
 handlers can potentially do other kinds of finer level content filtering.
 
     >>> from mailman.pipeline.mime_delete import process
-    >>> from mailman.configuration import config
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> mlist.preferred_language = u'en'
 

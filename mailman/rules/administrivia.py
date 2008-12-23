@@ -82,7 +82,7 @@ class Administrivia:
                 if line == '':
                     continue
                 lineno += 1
-                if lineno > config.EMAIL_COMMANDS_MAX_LINES:
+                if lineno > config.mailman.email_commands_max_lines:
                     break
                 lines_to_check.append(line)
             # Only look at the first text/plain part.

@@ -5,8 +5,6 @@ Various actions will be held for moderator approval, such as subscriptions to
 closed lists, or postings by non-members.  The requests database is the low
 level interface to these actions requiring approval.
 
-    >>> from mailman.configuration import config
-
 Here is a helper function for printing out held requests.
 
     >>> def show_holds(requests):

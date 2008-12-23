@@ -102,7 +102,6 @@ However, all addresses are linked to users.
 If you create a mailing list with owner addresses that are already known to
 the system, they won't be created again.
 
-    >>> from mailman.configuration import config
     >>> usermgr = config.db.user_manager
     >>> user_a = usermgr.get_user(u'aperson@example.com')
     >>> user_b = usermgr.get_user(u'bperson@example.com')

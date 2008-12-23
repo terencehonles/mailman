@@ -118,14 +118,15 @@ class Message(email.message.Message):
         header value found is returned.  However the search order is
         determined by the following:
 
-        - If config.USE_ENVELOPE_SENDER is true, then the search order is
-          Sender:, From:, unixfrom
+        - If config.mailman.use_envelope_sender is true, then the search order
+          is Sender:, From:, unixfrom
 
         - Otherwise, the search order is From:, Sender:, unixfrom
 
         The optional argument use_envelope, if given overrides the
-        config.USE_ENVELOPE_SENDER setting.  It should be set to either 0 or 1
-        (don't use None since that indicates no-override).
+        config.mailman.use_envelope_sender setting.  It should be set to
+        either True or False (don't use None since that indicates
+        no-override).
 
         unixfrom should never be empty.  The return address is always
         lowercased, unless preserve_case is true.
@@ -133,7 +134,7 @@ class Message(email.message.Message):
         This method differs from get_senders() in that it returns one and only
         one address, and uses a different search order.
         """
-        senderfirst = config.USE_ENVELOPE_SENDER
+        senderfirst = config.mailman.use_envelope_sender
         if use_envelope is not None:
             senderfirst = use_envelope
         if senderfirst:

@@ -52,8 +52,23 @@ class Configuration(object):
         self.domains = {}       # email host -> IDomain
         self.qrunners = {}
         self.qrunner_shortcuts = {}
+        self.languages = LanguageManager()
         self.QFILE_SCHEMA_VERSION = version.QFILE_SCHEMA_VERSION
         self._config = None
+        # Create various registries.
+        self.archivers = {}
+        self.chains = {}
+        self.rules = {}
+        self.handlers = {}
+        self.pipelines = {}
+        self.commands = {}
+
+    def _clear(self):
+        """Clear the cached configuration variables."""
+        self.domains.clear()
+        self.qrunners.clear()
+        self.qrunner_shortcuts.clear()
+        self.languages = LanguageManager()
 
     def __getattr__(self, name):
         """Delegate to the configuration object."""
@@ -68,9 +83,21 @@ class Configuration(object):
             self._config = schema.loadFile(StringIO(''), '<default>')
         else:
             self._config = schema.load(filename)
-        self.post_process()
+        self._post_process()
 
-    def post_process(self):
+    def push(self, config_name, config_string):
+        """Push a new configuration onto the stack."""
+        self._clear()
+        self._config.push(config_name, config_string)
+        self._post_process()
+
+    def pop(self, config_name):
+        """Pop a configuration from the stack."""
+        self._clear()
+        self._config.pop(config_name)
+        self._post_process()
+
+    def _post_process(self):
         """Perform post-processing after loading the configuration files."""
         # Set up the domains.
         try:
@@ -144,7 +171,6 @@ class Configuration(object):
         self.CONFIG_FILE            = join(etcdir, 'mailman.cfg')
         self.LOCK_FILE              = join(lockdir, 'master-qrunner')
         # Set up all the languages.
-        self.languages = LanguageManager()
         try:
             languages = self._config.getByCategory('language')
         except NoCategoryError:
@@ -155,13 +181,6 @@ class Configuration(object):
                                         section.charset, section.enable)
         # Always enable the server default language, which must be defined.
         self.languages.enable_language(self._config.mailman.default_language)
-        # Create various registries.
-        self.archivers = {}
-        self.chains = {}
-        self.rules = {}
-        self.handlers = {}
-        self.pipelines = {}
-        self.commands = {}
 
     @property
     def logger_configs(self):

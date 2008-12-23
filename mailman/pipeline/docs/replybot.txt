@@ -7,7 +7,6 @@ responses are subject to various conditions, such as headers in the original
 message or the amount of time since the last auto-response.
 
     >>> from mailman.pipeline.replybot import process
-    >>> from mailman.configuration import config
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> mlist.real_name = u'XTest'
     >>> mlist.web_page_url = u'http://www.example.com/'

@@ -6,7 +6,6 @@ be forwarded onto an NNTP newsgroup.  Typically this means Usenet, but since
 NNTP is to Usenet as IP is to the web, it's more general than that.
 
     >>> from mailman.queue import Switchboard
-    >>> from mailman.configuration import config
     >>> handler = config.handlers['to-usenet']
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> mlist.preferred_language = u'en'

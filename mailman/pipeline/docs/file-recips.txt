@@ -5,7 +5,6 @@ Mailman can calculate the recipients for a message from a Sendmail-style
 include file.  This file must be called members.txt and it must live in the
 list's data directory.
 
-    >>> from mailman.configuration import config
     >>> handler = config.handlers['file-recipients']
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
 

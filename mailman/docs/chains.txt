@@ -15,7 +15,6 @@ The Discard chain
 The Discard chain simply throws the message away.
 
     >>> from zope.interface.verify import verifyObject
-    >>> from mailman.configuration import config
     >>> from mailman.interfaces import IChain
     >>> chain = config.chains['discard']
     >>> verifyObject(IChain, chain)

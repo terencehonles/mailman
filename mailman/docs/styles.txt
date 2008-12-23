@@ -13,7 +13,6 @@ modify the mailing list any way it wants.
 
 Let's start with a vanilla mailing list and a default style manager.
 
-    >>> from mailman.configuration import config
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> from mailman.core.styles import style_manager
 

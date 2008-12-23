@@ -48,7 +48,6 @@ The incoming queue runner runs until it is empty.
 
 And now the message is in the pipeline queue.
 
-    >>> from mailman.configuration import config
     >>> from mailman.queue import Switchboard
     >>> pipeline_queue = Switchboard(config.PIPELINEQUEUE_DIR)
     >>> len(pipeline_queue.files)

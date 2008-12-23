@@ -24,7 +24,6 @@ Pipermail does not support a permalink, so that interface returns None.
 Mailman defines a draft spec for how list servers and archivers can
 interoperate.
 
-    >>> from mailman.configuration import config
     >>> for archiver_name, archiver in sorted(config.archivers.items()):
     ...     print archiver.name
     ...     print '   ', archiver.list_url(mlist)

@@ -8,7 +8,6 @@ may supply.  All registered email addresses must be verified before Mailman
 will send them any list traffic.
 
     >>> from mailman.app.registrar import Registrar
-    >>> from mailman.configuration import config
     >>> from mailman.interfaces import IRegistrar
 
 The IUserManager manages users, but it does so at a fairly low level.

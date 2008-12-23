@@ -5,7 +5,6 @@ When a user posts a message to a mailing list, and that user has chosen to
 receive acknowledgments of their postings, Mailman will sent them such an
 acknowledgment.
 
-    >>> from mailman.configuration import config
     >>> handler = config.handlers['acknowledge']
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> mlist.real_name = u'XTest'

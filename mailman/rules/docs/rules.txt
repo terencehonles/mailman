@@ -13,7 +13,6 @@ Rules are maintained in the configuration object as a dictionary mapping rule
 names to rule objects.
 
     >>> from zope.interface.verify import verifyObject
-    >>> from mailman.configuration import config
     >>> from mailman.interfaces import IRule
     >>> for rule_name in sorted(config.rules):
     ...     rule = config.rules[rule_name]

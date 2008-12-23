@@ -6,7 +6,6 @@ those addresses, such as their registration date, and whether and when they've
 been validated.  Addresses may be linked to the users that Mailman knows
 about.  Addresses are subscribed to mailing lists though members.
 
-    >>> from mailman.configuration import config
     >>> usermgr = config.db.user_manager
 
 

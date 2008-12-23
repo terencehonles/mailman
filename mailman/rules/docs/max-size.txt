@@ -6,7 +6,6 @@ specified maximum.  Generally this is used to prevent huge attachments from
 getting posted to the list.  This value is calculated in terms of KB (1024
 bytes).
 
-    >>> from mailman.configuration import config
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> rule = config.rules['max-size']
     >>> rule.name

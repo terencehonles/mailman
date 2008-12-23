@@ -10,7 +10,6 @@ expressions.  The message then gets tagged with the topic names of each hit.
 
     >>> from mailman.pipeline.tagger import process
     >>> from mailman.queue import Switchboard
-    >>> from mailman.configuration import config
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
 
 Topics must be enabled for Mailman to do any topic matching, even if topics

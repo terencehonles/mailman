@@ -7,7 +7,6 @@ calling the add_domain() method.
 
 At a minimum, the email host name must be specified.
 
-    >>> from mailman.configuration import config
     >>> config.add_domain('example.net')
 
 The domain object can be looked up by email host name.

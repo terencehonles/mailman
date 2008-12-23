@@ -21,7 +21,6 @@ Processing a message
 
 Messages hit the pipeline after they've been accepted for posting.
 
-    >>> from mailman.configuration import config
     >>> config.archivers['pipermail'].is_enabled = True
     >>> msg = message_from_string("""\
     ... From: aperson@example.com

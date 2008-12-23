@@ -26,6 +26,8 @@ __all__ = [
 
 import logging
 
+# XXX BAW 20-Dec-2008 Donate these back to the lazr.config project.
+
 
 
 def as_boolean(value):

@@ -24,7 +24,6 @@ sender.  The command can be in the Subject header.
     ...
     ... """)
 
-    >>> from mailman.configuration import config
     >>> from mailman.inject import inject_message
     >>> inject_message(mlist, msg, qdir=config.CMDQUEUE_DIR)
     >>> from mailman.queue.command import CommandRunner

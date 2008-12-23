@@ -7,7 +7,6 @@ scrub attachments from messages so that binary goop doesn't end up in an
 archive message.
 
     >>> from mailman.pipeline.scrubber import process, save_attachment
-    >>> from mailman.configuration import config
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> mlist.preferred_language = u'en'
 

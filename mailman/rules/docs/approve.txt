@@ -13,7 +13,6 @@ approval queue.  This has several use cases:
 In order to support this, a mailing list can be given a 'moderator password'
 which is shared among all the administrators.
 
-    >>> from mailman.configuration import config
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> mlist.moderator_password = u'abcxyz'
 

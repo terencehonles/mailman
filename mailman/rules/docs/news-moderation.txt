@@ -8,7 +8,6 @@ posted to the newsgroup, and from there, gated to the mailing list.  It's a
 circuitous route, but it works nonetheless by holding all messages posted
 directly to the mailing list.
 
-    >>> from mailman.configuration import config
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> rule = config.rules['news-moderation']
     >>> rule.name
