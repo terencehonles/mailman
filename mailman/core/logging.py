@@ -25,8 +25,9 @@ import codecs
 import logging
 import ConfigParser
 
+from lazr.config import as_boolean, as_log_level
+
 from mailman.config import config
-from mailman.config.helpers import as_boolean, as_log_level
 
 
 _handlers = []

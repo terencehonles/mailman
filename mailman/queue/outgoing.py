@@ -27,7 +27,7 @@ import logging
 from datetime import datetime
 
 from mailman import Message
-from mailman.configuration import config
+from mailman.config import config
 from mailman.core import errors
 from mailman.queue import Runner, Switchboard
 from mailman.queue.bounce import BounceMixin

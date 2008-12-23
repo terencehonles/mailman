@@ -58,14 +58,19 @@ def make_testable_runner(runner_class):
     :return: A runner instance.
     """
 
+    assert runner_class.__name__.endswith('Runner'), (
+        'Unparseable runner class name: %s' % runner_class.__name__)
+
+    name = runner_class.__name__[:-6].lower()
+
     class EmptyingRunner(runner_class):
         """Stop processing when the queue is empty."""
 
         def _do_periodic(self):
             """Stop when the queue is empty."""
-            self._stop = (len(self._switchboard.files) == 0)
+            self._stop = (len(self.switchboard.files) == 0)
 
-    return EmptyingRunner()
+    return EmptyingRunner(name)
 
 
 

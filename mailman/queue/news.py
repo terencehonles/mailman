@@ -29,7 +29,7 @@ from email.utils import getaddresses, make_msgid
 COMMASPACE = ', '
 
 from mailman import Utils
-from mailman.configuration import config
+from mailman.config import config
 from mailman.interfaces import NewsModeration
 from mailman.queue import Runner
 

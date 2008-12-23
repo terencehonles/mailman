@@ -93,6 +93,7 @@ def initialize_2(debug=False):
     from mailman.core.chains import initialize as initialize_chains
     from mailman.core.pipelines import initialize as initialize_pipelines
     from mailman.core.rules import initialize as initialize_rules
+    # Order here is somewhat important.
     initialize_archivers()
     initialize_rules()
     initialize_chains()

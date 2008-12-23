@@ -30,14 +30,14 @@ from datetime import datetime
 from email.Utils import parsedate_tz, mktime_tz, formatdate
 from locknix.lockfile import Lock
 
-from mailman.configuration import config
+from mailman import Defaults
 from mailman.core.plugins import get_plugins
 from mailman.queue import Runner
 
 
 
 class ArchiveRunner(Runner):
-    QDIR = config.ARCHQUEUE_DIR
+    """The archive runner."""
 
     def _dispose(self, mlist, msg, msgdata):
         # Support clobber_date, i.e. setting the date in the archive to the
@@ -48,9 +48,9 @@ class ArchiveRunner(Runner):
         received_time = formatdate(msgdata['received_time'])
         if not original_date:
             clobber = True
-        elif config.ARCHIVER_CLOBBER_DATE_POLICY == 1:
+        elif Defaults.ARCHIVER_CLOBBER_DATE_POLICY == 1:
             clobber = True
-        elif config.ARCHIVER_CLOBBER_DATE_POLICY == 2:
+        elif Defaults.ARCHIVER_CLOBBER_DATE_POLICY == 2:
             # What's the timestamp on the original message?
             timetup = parsedate_tz(original_date)
             now = datetime.now()
@@ -60,7 +60,7 @@ class ArchiveRunner(Runner):
                 else:
                     utc_timestamp = datetime.fromtimestamp(mktime_tz(timetup))
                     clobber = (abs(now - utc_timestamp) > 
-                               config.ARCHIVER_ALLOWABLE_SANE_DATE_SKEW)
+                               Defaults.ARCHIVER_ALLOWABLE_SANE_DATE_SKEW)
             except (ValueError, OverflowError):
                 # The likely cause of this is that the year in the Date: field
                 # is horribly incorrect, e.g. (from SF bug # 571634):

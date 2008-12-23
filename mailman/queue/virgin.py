@@ -24,7 +24,7 @@ recipient.
 """
 
 from mailman.app.pipelines import process
-from mailman.configuration import config
+from mailman.config import config
 from mailman.queue import Runner
 
 

@@ -43,7 +43,7 @@ from zope.interface import implements
 from mailman import Message
 from mailman import Utils
 from mailman.app.replybot import autorespond_to_sender
-from mailman.configuration import config
+from mailman.config import config
 from mailman.i18n import _
 from mailman.interfaces import ContinueProcessing, IEmailResults
 from mailman.queue import Runner

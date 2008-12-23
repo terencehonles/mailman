@@ -57,7 +57,7 @@ from email.Parser import Parser
 from email.Utils import parseaddr
 
 from mailman.Message import Message
-from mailman.configuration import config
+from mailman.config import config
 from mailman.queue import Runner
 
 log = logging.getLogger('mailman.error')

@@ -43,7 +43,7 @@ import asyncore
 from email.utils import parseaddr
 
 from mailman.Message import Message
-from mailman.configuration import config
+from mailman.config import config
 from mailman.database.transaction import txn
 from mailman.queue import Runner, Switchboard
 

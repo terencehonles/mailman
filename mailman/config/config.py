@@ -29,13 +29,11 @@ import errno
 import logging
 
 from StringIO import StringIO
-from lazr.config import ConfigSchema
-from lazr.config.interfaces import NoCategoryError
-from pkg_resources import resource_filename
+from lazr.config import ConfigSchema, as_boolean
+from pkg_resources import resource_string
 
 from mailman import Defaults
 from mailman import version
-from mailman.config.helpers import as_boolean
 from mailman.core import errors
 from mailman.domain import Domain
 from mailman.languages import LanguageManager
@@ -52,6 +50,7 @@ class Configuration(object):
         self.domains = {}       # email host -> IDomain
         self.qrunners = {}
         self.qrunner_shortcuts = {}
+        self.switchboards = {}
         self.languages = LanguageManager()
         self.QFILE_SCHEMA_VERSION = version.QFILE_SCHEMA_VERSION
         self._config = None
@@ -65,7 +64,11 @@ class Configuration(object):
 
     def _clear(self):
         """Clear the cached configuration variables."""
+        # First, stop all registered qrunners.
+        for runner in self.qrunners.values():
+            runner.stop()
         self.domains.clear()
+        self.switchboards.clear()
         self.qrunners.clear()
         self.qrunner_shortcuts.clear()
         self.languages = LanguageManager()
@@ -76,13 +79,16 @@ class Configuration(object):
 
     def load(self, filename=None):
         """Load the configuration from the schema and config files."""
-        schema_file = resource_filename('mailman.config', 'schema.cfg')
-        schema = ConfigSchema(schema_file)
-        # If a configuration file was given, load it now too.
-        if filename is None:
-            self._config = schema.loadFile(StringIO(''), '<default>')
-        else:
-            self._config = schema.load(filename)
+        schema_string = resource_string('mailman.config', 'schema.cfg')
+        schema = ConfigSchema('schema.cfg', StringIO(schema_string))
+        # If a configuration file was given, load it now too.  First, load the
+        # absolute minimum default configuration, then if a configuration
+        # filename was given by the user, push it.
+        config_string = resource_string('mailman.config', 'mailman.cfg')
+        self._config = schema.loadFile(StringIO(config_string), 'mailman.cfg')
+        if filename is not None:
+            with open(filename) as user_config:
+                self._config.push(user_config.read())
         self._post_process()
 
     def push(self, config_name, config_string):
@@ -100,10 +106,7 @@ class Configuration(object):
     def _post_process(self):
         """Perform post-processing after loading the configuration files."""
         # Set up the domains.
-        try:
-            domains = self._config.getByCategory('domain')
-        except NoCategoryError:
-            domains = []
+        domains = self._config.getByCategory('domain', [])
         for section in domains:
             domain = Domain(section.email_host, section.base_url,
                             section.description, section.contact_address)
@@ -117,79 +120,45 @@ class Configuration(object):
             # We'll do the reverse mappings on-demand.  There shouldn't be too
             # many virtual hosts that it will really matter that much.
             self.domains[domain.email_host] = domain
-        # Set up the queue runners.
-        try:
-            qrunners = self._config.getByCategory('qrunner')
-        except NoCategoryError:
-            qrunners = []
-        for section in qrunners:
-            if not as_boolean(section.start):
-                continue
-            name = section['class']
-            self.qrunners[name] = section.count
-            # Calculate the queue runner shortcut name.
-            classname = name.rsplit('.', 1)[1]
-            if classname.endswith('Runner'):
-                shortname = classname[:-6].lower()
-            else:
-                shortname = classname
-            self.qrunner_shortcuts[shortname] = section['class']
         # Set up directories.
         self.BIN_DIR = os.path.abspath(os.path.dirname(sys.argv[0]))
-        VAR_DIR = self._config.mailman.var_dir
+        self.VAR_DIR = var_dir = self._config.mailman.var_dir
         # Now that we've loaded all the configuration files we're going to
         # load, set up some useful directories.
         join = os.path.join
-        self.LIST_DATA_DIR      = join(VAR_DIR, 'lists')
-        self.LOG_DIR            = join(VAR_DIR, 'logs')
-        self.LOCK_DIR = lockdir = join(VAR_DIR, 'locks')
-        self.DATA_DIR = datadir = join(VAR_DIR, 'data')
-        self.ETC_DIR = etcdir   = join(VAR_DIR, 'etc')
-        self.SPAM_DIR           = join(VAR_DIR, 'spam')
-        self.EXT_DIR            = join(VAR_DIR, 'ext')
-        self.PUBLIC_ARCHIVE_FILE_DIR  = join(VAR_DIR, 'archives', 'public')
-        self.PRIVATE_ARCHIVE_FILE_DIR = join(VAR_DIR, 'archives', 'private')
-        # Directories used by the qrunner subsystem
-        self.QUEUE_DIR = qdir   = join(VAR_DIR, 'qfiles')
-        self.ARCHQUEUE_DIR      = join(qdir, 'archive')
-        self.BADQUEUE_DIR       = join(qdir, 'bad')
-        self.BOUNCEQUEUE_DIR    = join(qdir, 'bounces')
-        self.CMDQUEUE_DIR       = join(qdir, 'commands')
-        self.INQUEUE_DIR        = join(qdir, 'in')
-        self.MAILDIR_DIR        = join(qdir, 'maildir')
-        self.NEWSQUEUE_DIR      = join(qdir, 'news')
-        self.OUTQUEUE_DIR       = join(qdir, 'out')
-        self.PIPELINEQUEUE_DIR  = join(qdir, 'pipeline')
-        self.RETRYQUEUE_DIR     = join(qdir, 'retry')
-        self.SHUNTQUEUE_DIR     = join(qdir, 'shunt')
-        self.VIRGINQUEUE_DIR    = join(qdir, 'virgin')
-        self.MESSAGES_DIR       = join(VAR_DIR, 'messages')
+        self.LIST_DATA_DIR      = join(var_dir, 'lists')
+        self.LOG_DIR            = join(var_dir, 'logs')
+        self.LOCK_DIR = lockdir = join(var_dir, 'locks')
+        self.DATA_DIR = datadir = join(var_dir, 'data')
+        self.ETC_DIR = etcdir   = join(var_dir, 'etc')
+        self.SPAM_DIR           = join(var_dir, 'spam')
+        self.EXT_DIR            = join(var_dir, 'ext')
+        self.QUEUE_DIR          = join(var_dir, 'qfiles')
+        self.MESSAGES_DIR       = join(var_dir, 'messages')
+        self.PUBLIC_ARCHIVE_FILE_DIR  = join(var_dir, 'archives', 'public')
+        self.PRIVATE_ARCHIVE_FILE_DIR = join(var_dir, 'archives', 'private')
         # Other useful files
         self.PIDFILE                = join(datadir, 'master-qrunner.pid')
         self.SITE_PW_FILE           = join(datadir, 'adm.pw')
         self.LISTCREATOR_PW_FILE    = join(datadir, 'creator.pw')
         self.CONFIG_FILE            = join(etcdir, 'mailman.cfg')
         self.LOCK_FILE              = join(lockdir, 'master-qrunner')
+        # Set up the switchboards.
+        from mailman.queue import Switchboard
+        Switchboard.initialize()
         # Set up all the languages.
-        try:
-            languages = self._config.getByCategory('language')
-        except NoCategoryError:
-            languages = []
-        for section in languages:
-            code = section.name.split('.')[1]
-            self.languages.add_language(code, section.description,
-                                        section.charset, section.enable)
+        languages = self._config.getByCategory('language', [])
+        for language in languages:
+            code = language.name.split('.')[1]
+            self.languages.add_language(code, language.description,
+                                        language.charset, language.enabled)
         # Always enable the server default language, which must be defined.
         self.languages.enable_language(self._config.mailman.default_language)
 
     @property
     def logger_configs(self):
         """Return all log config sections."""
-        try:
-            loggers = self._config.getByCategory('logging')
-        except NoCategoryError:
-            loggers = []
-        return loggers
+        return self._config.getByCategory('logging', [])
 
     @property
     def paths(self):
@@ -208,14 +177,16 @@ class Configuration(object):
                     raise
 
     @property
+    def qrunner_configs(self):
+        for section in self._config.getByCategory('qrunner', []):
+            yield section
+
+    @property
     def header_matches(self):
         """Iterate over all spam matching headers.
 
         Values are 3-tuples of (header, pattern, chain)
         """
-        try:
-            matches = self._config.getByCategory('spam.headers')
-        except NoCategoryError:
-            matches = []
+        matches = self._config.getByCategory('spam.headers', [])
         for match in matches:
             yield (matches.header, matches.pattern, matches.chain)

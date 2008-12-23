@@ -18,8 +18,7 @@ interface.  By default, there's a Pipermail archiver.
     ... First post!
     ... """)
 
-    >>> from mailman.queue import Switchboard
-    >>> archiver_queue = Switchboard(config.ARCHQUEUE_DIR)
+    >>> archiver_queue = config.switchboards['archive']
     >>> ignore = archiver_queue.enqueue(msg, {}, listname=mlist.fqdn_listname)
 
     >>> from mailman.queue.archive import ArchiveRunner

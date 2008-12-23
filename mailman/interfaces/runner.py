@@ -30,9 +30,10 @@ class IRunner(Interface):
     def stop():
         """Stop the queue runner on the next iteration through the loop."""
 
-    QDIR = Attribute('The queue directory.  Overridden in subclasses.')
+    queue_directory = Attribute(
+        'The queue directory.  Overridden in subclasses.')
 
-    SLEEPTIME = Attribute("""\
+    sleep_time = Attribute("""\
         The number of seconds this queue runner will sleep between iterations
         through the main loop.  If given, overrides
         `config.QRUNNER_SLEEP_TIME`

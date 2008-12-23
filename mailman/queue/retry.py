@@ -17,7 +17,7 @@
 
 import time
 
-from mailman.configuration import config
+from mailman.config import config
 from mailman.queue import Runner, Switchboard
 
 

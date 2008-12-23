@@ -23,6 +23,7 @@ __all__ = [
 import os
 
 from locknix.lockfile import Lock
+from lazr.config import as_boolean
 from pkg_resources import resource_string
 from storm.locals import create_database, Store
 from string import Template
@@ -32,7 +33,6 @@ from zope.interface import implements
 import mailman.version
 
 from mailman.config import config
-from mailman.config.helpers import as_boolean
 from mailman.database.listmanager import ListManager
 from mailman.database.messagestore import MessageStore
 from mailman.database.pending import Pendings

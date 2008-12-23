@@ -30,7 +30,7 @@ from email.Utils import parseaddr
 from mailman import Utils
 from mailman.Bouncers import BouncerAPI
 from mailman.Message import UserNotification
-from mailman.configuration import config
+from mailman.config import config
 from mailman.i18n import _
 from mailman.queue import Runner, Switchboard
 
