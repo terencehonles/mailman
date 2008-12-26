@@ -51,17 +51,21 @@ log = logging.getLogger('mailman.debug')
 
 
 
-def make_testable_runner(runner_class):
+def make_testable_runner(runner_class, name=None):
     """Create a queue runner that runs until its queue is empty.
 
-    :param runner_class: An IRunner
+    :param runner_class: The queue runner's class.
+    :type runner_class: class
+    :param name: Optional queue name; if not given, it is calculated from the
+        class name.
+    :type name: string or None
     :return: A runner instance.
     """
 
-    assert runner_class.__name__.endswith('Runner'), (
-        'Unparseable runner class name: %s' % runner_class.__name__)
-
-    name = runner_class.__name__[:-6].lower()
+    if name is None:
+        assert runner_class.__name__.endswith('Runner'), (
+            'Unparseable runner class name: %s' % runner_class.__name__)
+        name = runner_class.__name__[:-6].lower()
 
     class EmptyingRunner(runner_class):
         """Stop processing when the queue is empty."""
@@ -163,12 +167,11 @@ class TestableMaster(Master):
 class SMTPServer:
     """An smtp server for testing."""
 
-    host = 'localhost'
-    port = 10825
-
     def __init__(self):
         self._messages = []
         self._queue = Queue()
+        self.host = config.mta.smtp_host
+        self.port = int(config.mta.smtp_port)
         self._server = Server((self.host, self.port), self._queue)
         self._thread = threading.Thread(target=self._server.start)
 
@@ -177,9 +180,11 @@ class SMTPServer:
         log.info('test SMTP server starting')
         self._thread.start()
         smtpd = smtplib.SMTP()
+        log.info('connecting to %s:%s', self.host, self.port)
         smtpd.connect(self.host, self.port)
-        smtpd.helo('test.localhost')
+        response = smtpd.helo('test.localhost')
         smtpd.quit()
+        log.info('SMTP server is running: %s', response)
 
     def stop(self):
         """Stop the smtp server."""

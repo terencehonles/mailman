@@ -36,15 +36,16 @@ import copy
 import time
 import email
 import socket
-import string
 import logging
 import smtplib
 
 from email.Charset import Charset
 from email.Header import Header
 from email.Utils import formataddr
+from string import Template
 from zope.interface import implements
 
+from mailman import Defaults
 from mailman import Utils
 from mailman.config import config
 from mailman.core import errors
@@ -65,8 +66,11 @@ class Connection:
 
     def __connect(self):
         self.__conn = smtplib.SMTP()
-        self.__conn.connect(config.SMTPHOST, config.SMTPPORT)
-        self.__numsessions = config.SMTP_MAX_SESSIONS_PER_CONNECTION
+        host = config.mta.smtp_host
+        port = int(config.mta.smtp_port)
+        log.debug('Connecting to %s:%s', host, port)
+        self.__conn.connect(host, port)
+        self.__numsessions = Defaults.SMTP_MAX_SESSIONS_PER_CONNECTION
 
     def sendmail(self, envsender, recips, msgtext):
         if self.__conn is None:
@@ -122,10 +126,10 @@ def process(mlist, msg, msgdata):
         chunks = [[recip] for recip in recips]
         msgdata['personalize'] = 1
         deliveryfunc = verpdeliver
-    elif config.SMTP_MAX_RCPTS <= 0:
+    elif Defaults.SMTP_MAX_RCPTS <= 0:
         chunks = [recips]
     else:
-        chunks = chunkify(recips, config.SMTP_MAX_RCPTS)
+        chunks = chunkify(recips, Defaults.SMTP_MAX_RCPTS)
     # See if this is an unshunted message for which some were undelivered
     if msgdata.has_key('undelivered'):
         chunks = msgdata['undelivered']
@@ -316,7 +320,8 @@ def verpdeliver(mlist, msg, msgdata, envsender, failures, conn):
                  'mailbox': rmailbox,
                  'host'   : DOT.join(rdomain),
                  }
-            envsender = '%s@%s' % ((config.VERP_FORMAT % d), DOT.join(bdomain))
+            envsender = '%s@%s' % ((Defaults.VERP_FORMAT % d),
+                                   DOT.join(bdomain))
         if mlist.personalize == Personalization.full:
             # When fully personalizing, we want the To address to point to the
             # recipient, not to the mailing list
@@ -378,10 +383,10 @@ def bulkdeliver(mlist, msg, msgdata, envsender, failures, conn):
         # Send the message
         refused = conn.sendmail(envsender, recips, msgtext)
     except smtplib.SMTPRecipientsRefused, e:
-        flog.error('%s recipients refused: %s', msgid, e)
+        log.error('%s recipients refused: %s', msgid, e)
         refused = e.recipients
     except smtplib.SMTPResponseException, e:
-        flog.error('%s SMTP session failure: %s, %s',
+        log.error('%s SMTP session failure: %s, %s',
                    msgid, e.smtp_code, e.smtp_error)
         # If this was a permanent failure, don't add the recipients to the
         # refused, because we don't want them to be added to failures.
@@ -397,7 +402,7 @@ def bulkdeliver(mlist, msg, msgdata, envsender, failures, conn):
         # MTA not responding, or other socket problems, or any other kind of
         # SMTPException.  In that case, nothing got delivered, so treat this
         # as a temporary failure.
-        flog.error('%s low level smtp error: %s', msgid, e)
+        log.error('%s low level smtp error: %s', msgid, e)
         error = str(e)
         for r in recips:
             refused[r] = (-1, error)

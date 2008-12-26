@@ -65,8 +65,9 @@ option to VERP personalized deliveries is set, then the message will be
 VERP'd.
 
     # Save the original value for clean up.
-    >>> verp_personalized_delivieries = config.VERP_PERSONALIZED_DELIVERIES
-    >>> config.VERP_PERSONALIZED_DELIVERIES = True
+    >>> from mailman import Defaults
+    >>> verp_personalized_delivieries = Defaults.VERP_PERSONALIZED_DELIVERIES
+    >>> Defaults.VERP_PERSONALIZED_DELIVERIES = True
     >>> from mailman.interfaces import Personalization
     >>> mlist.personalize = Personalization.individual
     >>> msgdata = dict(foo=1, bar=2)
@@ -79,7 +80,7 @@ VERP'd.
 However, if the global configuration variable prohibits VERP'ing, even
 personalized lists will not VERP.
 
-    >>> config.VERP_PERSONALIZED_DELIVERIES = False
+    >>> Defaults.VERP_PERSONALIZED_DELIVERIES = False
     >>> msgdata = dict(foo=1, bar=2)
     >>> handler.process(mlist, msg, msgdata)
     >>> print msgdata.get('verp')
@@ -93,8 +94,8 @@ Mailman how often to VERP even non-personalized mailing lists.  It can be set
 to zero, which means non-personalized messages will never be VERP'd.
 
     # Save the original value for clean up.
-    >>> verp_delivery_interval = config.VERP_DELIVERY_INTERVAL
-    >>> config.VERP_DELIVERY_INTERVAL = 0
+    >>> verp_delivery_interval = Defaults.VERP_DELIVERY_INTERVAL
+    >>> Defaults.VERP_DELIVERY_INTERVAL = 0
     >>> mlist.personalize = Personalization.none
     >>> msgdata = dict(foo=1, bar=2)
     >>> handler.process(mlist, msg, msgdata)
@@ -105,7 +106,7 @@ to zero, which means non-personalized messages will never be VERP'd.
 
 If the interval is set to 1, then every message will be VERP'd.
 
-    >>> config.VERP_DELIVERY_INTERVAL = 1
+    >>> Defaults.VERP_DELIVERY_INTERVAL = 1
     >>> for i in range(10):
     ...     msgdata = dict(foo=1, bar=2)
     ...     handler.process(mlist, msg, msgdata)
@@ -126,7 +127,7 @@ If the interval is set to 1, then every message will be VERP'd.
 If the interval is set to some other number, then one out of that many posts
 will be VERP'd.
 
-    >>> config.VERP_DELIVERY_INTERVAL = 3
+    >>> Defaults.VERP_DELIVERY_INTERVAL = 3
     >>> for i in range(10):
     ...     mlist.post_id = i
     ...     msgdata = dict(foo=1, bar=2)
@@ -149,5 +150,5 @@ will be VERP'd.
 Clean up
 ========
 
-    >>> config.VERP_PERSONALIZED_DELIVERIES = verp_personalized_delivieries
-    >>> config.VERP_DELIVERY_INTERVAL = verp_delivery_interval
+    >>> Defaults.VERP_PERSONALIZED_DELIVERIES = verp_personalized_delivieries
+    >>> Defaults.VERP_DELIVERY_INTERVAL = verp_delivery_interval

@@ -47,8 +47,7 @@ injecting a message directly into the outgoing queue.
     >>> handler = config.handlers['calculate-recipients']
     >>> handler.process(mlist, msg, msgdata)
 
-    >>> from mailman.queue import Switchboard
-    >>> outgoing_queue = Switchboard(config.OUTQUEUE_DIR)
+    >>> outgoing_queue = config.switchboards['out']
     >>> ignore = outgoing_queue.enqueue(
     ...     msg, msgdata,
     ...     verp=True, listname=mlist.fqdn_listname, tolist=True,
@@ -59,7 +58,7 @@ upstream SMTP, which happens to be our test server.
 
     >>> from mailman.queue.outgoing import OutgoingRunner
     >>> from mailman.testing.helpers import make_testable_runner
-    >>> outgoing = make_testable_runner(OutgoingRunner)
+    >>> outgoing = make_testable_runner(OutgoingRunner, 'out')
     >>> outgoing.run()
 
 Three messages have been delivered to our SMTP server, one for each recipient.
