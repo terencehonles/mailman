@@ -30,8 +30,7 @@ Bounce a message by passing in the original message, and an optional error
 message.  The bounced message ends up in the virgin queue, awaiting sending
 to the original messageauthor.
 
-    >>> from mailman.queue import Switchboard
-    >>> switchboard = Switchboard(config.VIRGINQUEUE_DIR)
+    >>> switchboard = config.switchboards['virgin']
     >>> from mailman.app.bounces import bounce_message
     >>> bounce_message(mlist, msg)
     >>> len(switchboard.files)

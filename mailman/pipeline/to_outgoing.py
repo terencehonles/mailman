@@ -28,10 +28,10 @@ __all__ = ['ToOutgoing']
 
 from zope.interface import implements
 
+from mailman import Defaults
 from mailman.config import config
 from mailman.i18n import _
 from mailman.interfaces import IHandler, Personalization
-from mailman.queue import Switchboard
 
 
 
@@ -45,7 +45,7 @@ class ToOutgoing:
 
     def process(self, mlist, msg, msgdata):
         """See `IHandler`."""
-        interval = config.VERP_DELIVERY_INTERVAL
+        interval = Defaults.VERP_DELIVERY_INTERVAL
         # Should we VERP this message?  If personalization is enabled for this
         # list and VERP_PERSONALIZED_DELIVERIES is true, then yes we VERP it.
         # Also, if personalization is /not/ enabled, but
@@ -57,7 +57,7 @@ class ToOutgoing:
         if 'verp' in  msgdata:
             pass
         elif mlist.personalize <> Personalization.none:
-            if config.VERP_PERSONALIZED_DELIVERIES:
+            if Defaults.VERP_PERSONALIZED_DELIVERIES:
                 msgdata['verp'] = True
         elif interval == 0:
             # Never VERP
@@ -69,5 +69,5 @@ class ToOutgoing:
             # VERP every `interval' number of times
             msgdata['verp'] = not (int(mlist.post_id) % interval)
         # And now drop the message in qfiles/out
-        outq = Switchboard(config.OUTQUEUE_DIR)
-        outq.enqueue(msg, msgdata, listname=mlist.fqdn_listname)
+        config.switchboards['out'].enqueue(
+            msg, msgdata, listname=mlist.fqdn_listname)

@@ -13,8 +13,7 @@ message or the amount of time since the last auto-response.
 
     >>> # Ensure that the virgin queue is empty, since we'll be checking this
     >>> # for new auto-response messages.
-    >>> from mailman.queue import Switchboard
-    >>> virginq = Switchboard(config.VIRGINQUEUE_DIR)
+    >>> virginq = config.switchboards['virgin']
     >>> virginq.files
     []
 

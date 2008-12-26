@@ -31,7 +31,7 @@ __all__ = ['CleanseDKIM']
 
 from zope.interface import implements
 
-from mailman.config import config
+from mailman import Defaults
 from mailman.i18n import _
 from mailman.interfaces import IHandler
 
@@ -47,7 +47,7 @@ class CleanseDKIM:
 
     def process(self, mlist, msg, msgdata):
         """See `IHandler`."""
-        if config.REMOVE_DKIM_HEADERS:
+        if Defaults.REMOVE_DKIM_HEADERS:
             del msg['domainkey-signature']
             del msg['dkim-signature']
             del msg['authentication-results']

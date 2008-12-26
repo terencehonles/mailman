@@ -85,7 +85,8 @@ class DefaultStyle:
         mlist.welcome_msg = u''
         mlist.goodbye_msg = u''
         mlist.subscribe_policy = Defaults.DEFAULT_SUBSCRIBE_POLICY
-        mlist.subscribe_auto_approval = Defaults.DEFAULT_SUBSCRIBE_AUTO_APPROVAL
+        mlist.subscribe_auto_approval = (
+            Defaults.DEFAULT_SUBSCRIBE_AUTO_APPROVAL)
         mlist.unsubscribe_policy = Defaults.DEFAULT_UNSUBSCRIBE_POLICY
         mlist.private_roster = Defaults.DEFAULT_PRIVATE_ROSTER
         mlist.obscure_addresses = Defaults.DEFAULT_OBSCURE_ADDRESSES
@@ -98,7 +99,8 @@ class DefaultStyle:
         mlist.pass_mime_types = Defaults.DEFAULT_PASS_MIME_TYPES
         mlist.filter_filename_extensions = (
             Defaults.DEFAULT_FILTER_FILENAME_EXTENSIONS)
-        mlist.pass_filename_extensions = Defaults.DEFAULT_PASS_FILENAME_EXTENSIONS
+        mlist.pass_filename_extensions = (
+            Defaults.DEFAULT_PASS_FILENAME_EXTENSIONS)
         mlist.filter_content = Defaults.DEFAULT_FILTER_CONTENT
         mlist.collapse_alternatives = Defaults.DEFAULT_COLLAPSE_ALTERNATIVES
         mlist.convert_html_to_plaintext = (
@@ -108,13 +110,13 @@ class DefaultStyle:
         mlist.digestable = Defaults.DEFAULT_DIGESTABLE
         mlist.digest_is_default = Defaults.DEFAULT_DIGEST_IS_DEFAULT
         mlist.mime_is_default_digest = Defaults.DEFAULT_MIME_IS_DEFAULT_DIGEST
-        mlist.digest_size_threshhold = Defaults.DEFAULT_DIGEST_SIZE_THRESHHOLD
+        mlist.digest_size_threshold = Defaults.DEFAULT_DIGEST_SIZE_THRESHOLD
         mlist.digest_send_periodic = Defaults.DEFAULT_DIGEST_SEND_PERIODIC
         mlist.digest_header = Defaults.DEFAULT_DIGEST_HEADER
         mlist.digest_footer = Defaults.DEFAULT_DIGEST_FOOTER
-        mlist.digest_volume_frequency = Defaults.DEFAULT_DIGEST_VOLUME_FREQUENCY
+        mlist.digest_volume_frequency = (
+            Defaults.DEFAULT_DIGEST_VOLUME_FREQUENCY)
         mlist.one_last_digest = {}
-        mlist.digest_members = {}
         mlist.next_digest_number = 1
         mlist.nondigestable = Defaults.DEFAULT_NONDIGESTABLE
         mlist.personalize = Personalization.none
@@ -174,7 +176,8 @@ class DefaultStyle:
         # Bounces
         mlist.bounce_processing = Defaults.DEFAULT_BOUNCE_PROCESSING
         mlist.bounce_score_threshold = Defaults.DEFAULT_BOUNCE_SCORE_THRESHOLD
-        mlist.bounce_info_stale_after = Defaults.DEFAULT_BOUNCE_INFO_STALE_AFTER
+        mlist.bounce_info_stale_after = (
+            Defaults.DEFAULT_BOUNCE_INFO_STALE_AFTER)
         mlist.bounce_you_are_disabled_warnings = (
             Defaults.DEFAULT_BOUNCE_YOU_ARE_DISABLED_WARNINGS)
         mlist.bounce_you_are_disabled_warnings_interval = (

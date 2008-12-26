@@ -264,8 +264,7 @@ class UserNotification(Message):
 
     def _enqueue(self, mlist, **_kws):
         # Not imported at module scope to avoid import loop
-        from mailman.queue import Switchboard
-        virginq = Switchboard(config.VIRGINQUEUE_DIR)
+        virginq = config.switchboards['virgin']
         # The message metadata better have a 'recip' attribute.
         enqueue_kws = dict(
             recips=self.recips,
@@ -298,8 +297,7 @@ class OwnerNotification(UserNotification):
 
     def _enqueue(self, mlist, **_kws):
         # Not imported at module scope to avoid import loop
-        from mailman.queue import Switchboard
-        virginq = Switchboard(config.VIRGINQUEUE_DIR)
+        virginq = config.switchboards['virgin']
         # The message metadata better have a `recip' attribute
         virginq.enqueue(self,
                         listname=mlist.fqdn_listname,

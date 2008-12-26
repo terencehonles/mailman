@@ -25,6 +25,7 @@ __all__ = [
 
 import os
 import time
+import logging
 
 from datetime import datetime
 from email.Utils import parsedate_tz, mktime_tz, formatdate
@@ -33,6 +34,8 @@ from locknix.lockfile import Lock
 from mailman import Defaults
 from mailman.core.plugins import get_plugins
 from mailman.queue import Runner
+
+log = logging.getLogger('mailman.error')
 
 
 
@@ -78,5 +81,10 @@ class ArchiveRunner(Runner):
         # While a list archiving lock is acquired, archive the message.
         with Lock(os.path.join(mlist.data_path, 'archive.lck')):
             for archive_factory in get_plugins('mailman.archiver'):
-                archive_factory().archive_message(mlist, msg)
-
+                # A problem in one archiver should not prevent any other
+                # archiver from running.
+                try:
+                    archive = archive_factory()
+                    archive.archive_message(mlist, msg)
+                except Exception:
+                    log.exception('Broken archiver: %s' % archive.name)

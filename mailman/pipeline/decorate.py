@@ -28,6 +28,7 @@ from email.MIMEText import MIMEText
 from string import Template
 from zope.interface import implements
 
+from mailman import Defaults
 from mailman import Utils
 from mailman.Message import Message
 from mailman.config import config
@@ -204,7 +205,7 @@ def decorate(mlist, template, extradict=None):
              web_page_url   = mlist.web_page_url,
              description    = mlist.description,
              info           = mlist.info,
-             cgiext         = config.CGIEXT,
+             cgiext         = Defaults.CGIEXT,
              )
     if extradict is not None:
         d.update(extradict)

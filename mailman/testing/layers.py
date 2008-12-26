@@ -25,7 +25,9 @@ __all__ = [
 
 
 import os
+import sys
 import shutil
+import logging
 import tempfile
 
 from pkg_resources import resource_string
@@ -33,6 +35,7 @@ from textwrap import dedent
 
 from mailman.config import config
 from mailman.core.initialize import initialize
+from mailman.i18n import _
 from mailman.testing.helpers import SMTPServer
 
 
@@ -59,9 +62,27 @@ class ConfigLayer:
         [mailman]
         var_dir: %s
         """ % cls.var_dir)
-        # Read the testing config, but don't push it yet.
+        # Read the testing config and push it.
         test_config += resource_string('mailman.testing', 'testing.cfg')
         config.push('test config', test_config)
+        # Enable log message propagation.
+        for logger_config in config.logger_configs:
+            sub_name = logger_config.name.split('.')[-1]
+            if sub_name == 'root':
+                continue
+            logger_name = 'mailman.' + sub_name
+            log = logging.getLogger(logger_name)
+            log.propagate = True
+            log.setLevel(logging.DEBUG)
+        # zope.testing sets up logging before we get to our own initialization
+        # function.  This messes with the root logger, so explicitly set it to
+        # go to stderr.
+        if cls.stderr:
+            console = logging.StreamHandler(sys.stderr)
+            formatter = logging.Formatter(config.logging.root.format,
+                                          config.logging.root.datefmt)
+            console.setFormatter(formatter)
+            logging.getLogger().addHandler(console)
 
     @classmethod
     def tearDown(cls):
@@ -86,6 +107,27 @@ class ConfigLayer:
         for message in config.db.message_store.messages:
             config.db.message_store.delete_message(message['message-id'])
         config.db.commit()
+
+    # Flag to indicate that loggers should propagate to the console.
+    stderr = False
+
+    @classmethod
+    def handle_stderr(cls, *ignore):
+        cls.stderr = True
+
+    @classmethod
+    def hack_options_parser(cls):
+        """Hack our way into the zc.testing framework.
+
+        Add our custom command line option parsing into zc.testing's.  We do
+        the imports here so that if zc.testing isn't invoked, this stuff never
+        gets in the way.  This is pretty fragile, depend on changes in the
+        zc.testing package.  There should be a better way!
+        """
+        from zope.testing.testrunner.options import parser
+        parser.add_option('-e', '--stderr',
+                          action='callback', callback=cls.handle_stderr,
+                          help=_('Propagate log errors to stderr.'))
 
 
 

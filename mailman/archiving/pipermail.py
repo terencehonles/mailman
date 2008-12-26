@@ -30,6 +30,8 @@ from string import Template
 from zope.interface import implements
 from zope.interface.interface import adapter_hooks
 
+from mailman import Defaults
+from mailman.Utils import makedirs
 from mailman.config import config
 from mailman.interfaces.archiver import IArchiver, IPipermailMailingList
 from mailman.interfaces.mailinglist import IMailingList
@@ -55,7 +57,10 @@ class PipermailMailingListAdapter:
             basedir = config.PRIVATE_ARCHIVE_FILE_DIR
         else:
             basedir = config.PUBLIC_ARCHIVE_FILE_DIR
-        return os.path.join(basedir, self._mlist.fqdn_listname)
+        # Make sure the archive directory exists.
+        archive_dir = os.path.join(basedir, self._mlist.fqdn_listname)
+        makedirs(archive_dir)
+        return archive_dir
 
 
 def adapt_mailing_list_for_pipermail(iface, obj):
@@ -91,7 +96,7 @@ class Pipermail:
             url = mlist.script_url('private') + '/index.html'
         else:
             web_host = config.domains[mlist.host_name].url_host
-            url = Template(config.PUBLIC_ARCHIVE_URL).safe_substitute(
+            url = Template(config.archiver.pipermail.base_url).safe_substitute(
                 listname=mlist.fqdn_listname,
                 hostname=web_host,
                 fqdn_listname=mlist.fqdn_listname,

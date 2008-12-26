@@ -90,7 +90,6 @@ case second `m'.  Any other spelling is incorrect.""",
     include_package_data = True,
     entry_points    = {
         'console_scripts': list(scripts),
-        # Entry point for plugging in different database backends.
         'mailman.archiver'  : [
             'mail-archive = mailman.archiving.mailarchive:MailArchive',
             'mhonarc = mailman.archiving.mhonarc:MHonArc',

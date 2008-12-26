@@ -26,7 +26,6 @@ from zope.interface import implements
 from mailman.config import config
 from mailman.i18n import _
 from mailman.interfaces import IHandler
-from mailman.queue import Switchboard
 
 
 
@@ -48,7 +47,5 @@ class ToArchive:
         # presence.  I'm keeping "X-Archive: no" for backwards compatibility.
         if 'x-no-archive' in msg or msg.get('x-archive', '').lower() == 'no':
             return
-        # Send the message to the archiver queue
-        archq = Switchboard(config.ARCHQUEUE_DIR)
-        # Send the message to the queue
-        archq.enqueue(msg, msgdata)
+        # Send the message to the archiver queue.
+        config.switchboards['archive'].enqueue(msg, msgdata)

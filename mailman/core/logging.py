@@ -19,6 +19,13 @@
 
 from __future__ import absolute_import
 
+__metaclass__ = type
+__all__ = [
+    'initialize',
+    'reopen',
+    ]
+
+
 import os
 import sys
 import codecs
@@ -75,22 +82,35 @@ class ReopenableFileHandler(logging.Handler):
 
 
 
-def initialize(propagate=False):
+def initialize(propagate=None):
+    """Initialize all logs.
+
+    :param propagate: Flag specifying whether logs should propagate their
+        messages to the root logger.  If omitted, propagation is determined
+        from the configuration files.
+    :type propagate: bool or None
+    """
     # First, find the root logger and configure the logging subsystem.
-    # Initialize the root logger, then create a formatter for all the sublogs.
+    # Initialize the root logger, then create a formatter for all the
+    # sublogs.  The root logger should log to stderr.
     logging.basicConfig(format=config.logging.root.format,
                         datefmt=config.logging.root.datefmt,
-                        level=as_log_level(config.logging.root.level))
-    # Create the subloggers
+                        level=as_log_level(config.logging.root.level),
+                        stream=sys.stderr)
+    # Create the subloggers.
     for logger_config in config.logger_configs:
-        logger_name = 'mailman.' + logger_config.name.split('.')[-1]
+        sub_name = logger_config.name.split('.')[-1]
+        if sub_name == 'root':
+            continue
+        logger_name = 'mailman.' + sub_name
         log = logging.getLogger(logger_name)
         # Get settings from log configuration file (or defaults).
         log_format      = logger_config.format
         log_datefmt     = logger_config.datefmt
         # Propagation to the root logger is how we handle logging to stderr
         # when the qrunners are not run as a subprocess of mailmanctl.
-        log.propagate   = as_boolean(logger_config.propagate)
+        log.propagate   = (as_boolean(logger_config.propagate)
+                           if propagate is None else propagate)
         # Set the logger's level.
         log.setLevel(as_log_level(logger_config.level))
         # Create a formatter for this logger, then a handler, and link the
@@ -106,5 +126,6 @@ def initialize(propagate=False):
 
 
 def reopen():
+    """Re-open all log files."""
     for handler in _handlers:
         handler.reopen()

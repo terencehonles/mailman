@@ -9,10 +9,9 @@ term somewhat incorrectly, but within the spirit of the standard, which
 basically describes how to encode the recipient's address in the originator
 headers for unambigous bounce processing.
 
-    >>> from mailman.queue import Switchboard
     >>> handler = config.handlers['to-outgoing']
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
-    >>> switchboard = Switchboard(config.OUTQUEUE_DIR)
+    >>> switchboard = config.switchboards['out']
 
     >>> def queue_size():
     ...     size = len(switchboard.files)

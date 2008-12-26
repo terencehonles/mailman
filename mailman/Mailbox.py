@@ -26,8 +26,8 @@ from email.Errors import MessageParseError
 from email.Generator import Generator
 from email.Parser import Parser
 
+from mailman import Defaults
 from mailman.Message import Message
-from mailman.config import config
 
 
 
@@ -91,9 +91,10 @@ class ArchiverMailbox(Mailbox):
     # scrub() method, giving the scrubber module a chance to do its thing
     # before the message is archived.
     def __init__(self, fp, mlist):
-        if config.ARCHIVE_SCRUBBER:
-            __import__(config.ARCHIVE_SCRUBBER)
-            self._scrubber = sys.modules[config.ARCHIVE_SCRUBBER].process
+        scrubber_module = Defaults.ARCHIVE_SCRUBBER
+        if scrubber_module:
+            __import__(scrubber_module)
+            self._scrubber = sys.modules[scrubber_module].process
         else:
             self._scrubber = None
         self._mlist = mlist

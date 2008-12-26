@@ -7,14 +7,13 @@ digests, although only two are currently supported: MIME digests and RFC 1153
 (a.k.a. plain text) digests.
 
     >>> from mailman.pipeline.to_digest import process
-    >>> from mailman.queue import Switchboard
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> mlist.preferred_language = u'en'
     >>> mlist.web_page_url = u'http://www.example.com/'
     >>> mlist.real_name = u'XTest'
     >>> mlist.subject_prefix = u'[_XTest] '
     >>> mlist.one_last_digest = set()
-    >>> switchboard = Switchboard(config.VIRGINQUEUE_DIR)
+    >>> switchboard = config.switchboards['virgin']
 
 This is a helper function used to iterate through all the accumulated digest
 messages, in the order in which they were posted.  This makes it easier to
@@ -406,11 +405,16 @@ When messages come in with a content-type character set different than that of
 the list's preferred language, recipients wil get an internationalized
 digest.  French is not enabled by default site-wide, so enable that now.
 
-XXX We also have to set the default server language to French, otherwise the
-English template will be found and the masthead won't be translated.
-
     >>> config.languages.enable_language('fr')
-    >>> config.DEFAULT_SERVER_LANGUAGE = u'fr'
+
+    # Simulate the site administrator setting the default server language to
+    # French in the configuration file.  Without this, the English template
+    # will be found and the masthead won't be translated.
+    >>> config.push('french', """
+    ... [mailman]
+    ... default_language: fr
+    ... """)
+
     >>> mlist.preferred_language = u'fr'
     >>> msg = message_from_string("""\
     ... From: aperson@example.org

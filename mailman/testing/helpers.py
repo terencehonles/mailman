@@ -80,15 +80,14 @@ class _Bag:
             setattr(self, key, value)
 
 
-def get_queue_messages(queue):
+def get_queue_messages(queue_name):
     """Return and clear all the messages in the given queue.
 
-    :param queue: An ISwitchboard or a string naming a queue.
+    :param queue_name: A string naming a queue.
     :return: A list of 2-tuples where each item contains the message and
         message metadata.
     """
-    if isinstance(queue, basestring):
-        queue = Switchboard(queue)
+    queue = config.switchboards[queue_name]
     messages = []
     for filebase in queue.files:
         msg, msgdata = queue.dequeue(filebase)
