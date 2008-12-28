@@ -26,23 +26,26 @@ from email import message_from_string
 from email.utils import formatdate, make_msgid
 
 from mailman.Message import Message
-from mailman.configuration import config
-from mailman.queue import Switchboard
+from mailman.config import config
 
 
 
-def inject_message(mlist, msg, recips=None, qdir=None):
+def inject_message(mlist, msg, recips=None, switchboard=None):
     """Inject a message into a queue.
 
     :param mlist: The mailing list this message is destined for.
+    :type mlist: IMailingList
     :param msg: The Message object to inject.
+    :type msg: a Message object
     :param recips: Optional set of recipients to put into the message's
         metadata.
-    :param qdir: Optional queue directory to inject this message into.  If not
-        given, the incoming queue is used.
+    :type recips: sequence of strings
+    :param switchboard: Optional name of switchboard to inject this message
+        into.  If not given, the 'in' switchboard is used.
+    :type switchboard: string
     """
-    if qdir is None:
-        qdir = config.INQUEUE_DIR
+    if switchboard is None:
+        switchboard = 'in'
     # Since we're crafting the message from whole cloth, let's make sure this
     # message has a Message-ID.
     if 'message-id' not in msg:
@@ -50,7 +53,6 @@ def inject_message(mlist, msg, recips=None, qdir=None):
     # Ditto for Date: as required by RFC 2822.
     if 'date' not in msg:
         msg['Date'] = formatdate(localtime=True)
-    queue = Switchboard(qdir)
     kws = dict(
         listname=mlist.fqdn_listname,
         tolist=True,
@@ -58,21 +60,25 @@ def inject_message(mlist, msg, recips=None, qdir=None):
         )
     if recips is not None:
         kws['recips'] = recips
-    queue.enqueue(msg, **kws)
+    config.switchboards[switchboard].enqueue(msg, **kws)
 
 
 
-def inject_text(mlist, text, recips=None, qdir=None):
+def inject_text(mlist, text, recips=None, switchboard=None):
     """Inject a message into a queue.
 
     :param mlist: The mailing list this message is destined for.
+    :type mlist: IMailingList
     :param text: The text of the message to inject.  This will be parsed into
         a Message object.
+    :type text: string
     :param recips: Optional set of recipients to put into the message's
         metadata.
-    :param qdir: Optional queue directory to inject this message into.  If not
-        given, the incoming queue is used.
+    :type recips: sequence of strings
+    :param switchboard: Optional name of switchboard to inject this message
+        into.  If not given, the 'in' switchboard is used.
+    :type switchboard: string
     """
     message = message_from_string(text, Message)
     message.original_size = len(text)
-    inject_message(mlist, message, recips, qdir)
+    inject_message(mlist, message, recips, switchboard)

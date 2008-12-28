@@ -83,7 +83,7 @@ class MHonArc:
         """See `IArchiver`."""
         substitutions = config.__dict__.copy()
         substitutions['listname'] = mlist.fqdn_listname
-        command = Template(Defaults.MHONARC_COMMAND).safe_substitute(
+        command = Template(config.archiver.mhonarc.command).safe_substitute(
             substitutions)
         proc = subprocess.Popen(
             command, stdout=subprocess.PIPE, stderr=subprocess.PIPE,

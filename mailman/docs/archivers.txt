@@ -87,7 +87,7 @@ address at the Mail-Archive.
 
     >>> from mailman.queue.outgoing import OutgoingRunner
     >>> from mailman.testing.helpers import make_testable_runner
-    >>> outgoing = make_testable_runner(OutgoingRunner)
+    >>> outgoing = make_testable_runner(OutgoingRunner, 'out')
     >>> outgoing.run()
 
     >>> from operator import itemgetter
@@ -167,7 +167,7 @@ Messages sent to a local MHonArc instance are added to its archive via a
 subprocess call.
 
     >>> archiver.archive_message(mlist, msg)
-    >>> archive_log = open(os.path.join(config.LOG_DIR, 'archiver'))
+    >>> archive_log = open(os.path.join(config.LOG_DIR, 'mailman'))
     >>> try:
     ...     contents = archive_log.read()
     ... finally:

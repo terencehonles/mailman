@@ -51,7 +51,7 @@ class MailArchive:
         """See `IArchiver`."""
         if mlist.archive_private:
             return None
-        return urljoin(config.MAIL_ARCHIVE_BASEURL,
+        return urljoin(config.archiver.mail_archive.base_url,
                        quote(mlist.posting_address))
 
     @staticmethod

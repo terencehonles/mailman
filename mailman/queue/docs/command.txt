@@ -25,7 +25,7 @@ sender.  The command can be in the Subject header.
     ... """)
 
     >>> from mailman.inject import inject_message
-    >>> inject_message(mlist, msg, qdir=config.CMDQUEUE_DIR)
+    >>> inject_message(mlist, msg, switchboard='command')
     >>> from mailman.queue.command import CommandRunner
     >>> from mailman.testing.helpers import make_testable_runner
     >>> command = make_testable_runner(CommandRunner)
@@ -34,11 +34,11 @@ sender.  The command can be in the Subject header.
 And now the response is in the virgin queue.
 
     >>> from mailman.queue import Switchboard
-    >>> virgin_queue = Switchboard(config.VIRGINQUEUE_DIR)
+    >>> virgin_queue = config.switchboards['virgin']
     >>> len(virgin_queue.files)
     1
     >>> from mailman.testing.helpers import get_queue_messages
-    >>> item = get_queue_messages(virgin_queue)[0]
+    >>> item = get_queue_messages('virgin')[0]
     >>> print item.msg.as_string()
     Subject: The results of your email commands
     From: test-bounces@example.com
@@ -78,11 +78,11 @@ message is plain text.
     ... echo foo bar
     ... """)
 
-    >>> inject_message(mlist, msg, qdir=config.CMDQUEUE_DIR)
+    >>> inject_message(mlist, msg, switchboard='command')
     >>> command.run()
     >>> len(virgin_queue.files)
     1
-    >>> item = get_queue_messages(virgin_queue)[0]
+    >>> item = get_queue_messages('virgin')[0]
     >>> print item.msg.as_string()
     Subject: The results of your email commands
     From: test-bounces@example.com
@@ -121,11 +121,11 @@ at by the command queue.
     ... echo baz qux
     ... """)
 
-    >>> inject_message(mlist, msg, qdir=config.CMDQUEUE_DIR)
+    >>> inject_message(mlist, msg, switchboard='command')
     >>> command.run()
     >>> len(virgin_queue.files)
     1
-    >>> item = get_queue_messages(virgin_queue)[0]
+    >>> item = get_queue_messages('virgin')[0]
     >>> print item.msg.as_string()
     Subject: The results of your email commands
     ...
@@ -151,11 +151,11 @@ The 'stop' command is an alias for 'end'.
     ... echo baz qux
     ... """)
 
-    >>> inject_message(mlist, msg, qdir=config.CMDQUEUE_DIR)
+    >>> inject_message(mlist, msg, switchboard='command')
     >>> command.run()
     >>> len(virgin_queue.files)
     1
-    >>> item = get_queue_messages(virgin_queue)[0]
+    >>> item = get_queue_messages('virgin')[0]
     >>> print item.msg.as_string()
     Subject: The results of your email commands
     ...

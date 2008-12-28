@@ -47,7 +47,8 @@ would pick this up and apply it to the mailing list.
 
     >>> print mlist.msg_footer
     None
-    >>> config.DEFAULT_MSG_FOOTER = u'default footer'
+    >>> from mailman import Defaults
+    >>> Defaults.DEFAULT_MSG_FOOTER = u'default footer'
     >>> default_style.apply(mlist)
     >>> mlist.msg_footer
     u'default footer'
