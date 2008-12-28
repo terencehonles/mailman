@@ -4,7 +4,6 @@ The 'echo' command
 The mail command 'echo' simply replies with the original command and arguments
 to the sender.
 
-    >>> from mailman.configuration import config
     >>> command = config.commands['echo']
     >>> command.name
     'echo'

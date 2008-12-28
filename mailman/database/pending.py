@@ -27,6 +27,7 @@ from storm.locals import *
 from zope.interface import implements
 from zope.interface.verify import verifyObject
 
+from mailman import Defaults
 from mailman.config import config
 from mailman.database.model import Model
 from mailman.interfaces import (
@@ -79,7 +80,7 @@ class Pendings(object):
         verifyObject(IPendable, pendable)
         # Calculate the token and the lifetime.
         if lifetime is None:
-            lifetime = config.PENDING_REQUEST_LIFE
+            lifetime = Defaults.PENDING_REQUEST_LIFE
         # Calculate a unique token.  Algorithm vetted by the Timbot.  time()
         # has high resolution on Linux, clock() on Windows.  random gives us
         # about 45 bits in Python 2.2, 53 bits on Python 2.3.  The time and

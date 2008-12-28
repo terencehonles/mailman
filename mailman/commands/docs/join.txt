@@ -4,7 +4,6 @@ The 'join' command
 The mail command 'join' subscribes an email address to the mailing list.
 'subscribe' is an alias for 'join'.
 
-    >>> from mailman.configuration import config
     >>> command = config.commands['join']
     >>> print command.name
     join
@@ -84,8 +83,7 @@ first.
 
 Mailman has sent her the confirmation message.
 
-    >>> from mailman.queue import Switchboard
-    >>> virginq = Switchboard(config.VIRGINQUEUE_DIR)
+    >>> virginq = config.switchboards['virgin']
     >>> qmsg, qdata = virginq.dequeue(virginq.files[0])
     >>> print qmsg.as_string()
     MIME-Version: 1.0
