@@ -28,8 +28,8 @@ from email.utils import getaddresses, make_msgid
 
 COMMASPACE = ', '
 
+from mailman import Defaults
 from mailman import Utils
-from mailman.config import config
 from mailman.interfaces import NewsModeration
 from mailman.queue import Runner
 
@@ -51,8 +51,6 @@ mcre = re.compile(r"""
 
 
 class NewsRunner(Runner):
-    QDIR = config.NEWSQUEUE_DIR
-
     def _dispose(self, mlist, msg, msgdata):
         # Make sure we have the most up-to-date state
         mlist.Load()
@@ -67,8 +65,8 @@ class NewsRunner(Runner):
                     nntp_host, nntp_port = Utils.nntpsplit(mlist.nntp_host)
                     conn = nntplib.NNTP(nntp_host, nntp_port,
                                         readermode=True,
-                                        user=config.NNTP_USERNAME,
-                                        password=config.NNTP_PASSWORD)
+                                        user=Defaults.NNTP_USERNAME,
+                                        password=Defaults.NNTP_PASSWORD)
                     conn.post(fp)
                 except nntplib.error_temp, e:
                     log.error('(NNTPDirect) NNTP error for list "%s": %s',
@@ -150,9 +148,9 @@ def prepare_message(mlist, msg, msgdata):
     # woon't completely sanitize the message, but it will eliminate the bulk
     # of the rejections based on message headers.  The NNTP server may still
     # reject the message because of other problems.
-    for header in config.NNTP_REMOVE_HEADERS:
+    for header in Defaults.NNTP_REMOVE_HEADERS:
         del msg[header]
-    for header, rewrite in config.NNTP_REWRITE_DUPLICATE_HEADERS:
+    for header, rewrite in Defaults.NNTP_REWRITE_DUPLICATE_HEADERS:
         values = msg.get_all(header, [])
         if len(values) < 2:
             # We only care about duplicates

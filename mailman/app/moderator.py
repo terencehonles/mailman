@@ -41,7 +41,6 @@ from mailman.config import config
 from mailman.core import errors
 from mailman.interfaces import Action, DeliveryMode, RequestType
 from mailman.interfaces.member import AlreadySubscribedError
-from mailman.queue import Switchboard
 
 _ = i18n._
 
@@ -141,8 +140,7 @@ def handle_message(mlist, id, action,
                   msg.get('message-id', 'n/a'))
         # Stick the message back in the incoming queue for further
         # processing.
-        inq = Switchboard(config.INQUEUE_DIR)
-        inq.enqueue(msg, _metadata=msgdata)
+        config.switchboards['in'].enqueue(msg, _metadata=msgdata)
     else:
         raise AssertionError('Unexpected action: %s' % action)
     # Forward the message.

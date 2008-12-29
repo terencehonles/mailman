@@ -287,7 +287,7 @@ class OwnerNotification(UserNotification):
         else:
             roster = mlist.owners
         recips = [address.address for address in roster.addresses]
-        sender = config.SITE_OWNER_ADDRESS
+        sender = config.mailman.site_owner
         lang = mlist.preferred_language
         UserNotification.__init__(self, recips, sender, subject, text, lang)
         # Hack the To header to look like it's going to the -owner address
