@@ -37,12 +37,15 @@ from lazr.config import as_boolean, as_log_level
 from mailman.config import config
 
 
-_handlers = []
+_handlers = {}
 
 
 
 class ReopenableFileHandler(logging.Handler):
-    def __init__(self, filename):
+    """A file handler that supports reopening."""
+
+    def __init__(self, name, filename):
+        self.name = name
         self._filename = filename
         self._stream = self._open()
         logging.Handler.__init__(self)
@@ -76,7 +79,15 @@ class ReopenableFileHandler(logging.Handler):
         self._stream = None
         logging.Handler.close(self)
 
-    def reopen(self):
+    def reopen(self, filename=None):
+        """Reopen the output stream.
+
+        :param filename: If given, this reopens the output stream to a new
+            file.  This is used in the test suite.
+        :type filename: string
+        """
+        if filename is not None:
+            self._filename = filename
         self._stream.close()
         self._stream = self._open()
 
@@ -118,8 +129,8 @@ def initialize(propagate=None):
         formatter = logging.Formatter(fmt=log_format, datefmt=log_datefmt)
         path_str  = logger_config.path
         path_abs  = os.path.normpath(os.path.join(config.LOG_DIR, path_str))
-        handler   = ReopenableFileHandler(path_abs)
-        _handlers.append(handler)
+        handler   = ReopenableFileHandler(sub_name, path_abs)
+        _handlers[sub_name] = handler
         handler.setFormatter(formatter)
         log.addHandler(handler)
 
@@ -127,5 +138,17 @@ def initialize(propagate=None):
 
 def reopen():
     """Re-open all log files."""
-    for handler in _handlers:
+    for handler in _handlers.values():
         handler.reopen()
+
+
+
+def get_handler(sub_name):
+    """Return the handler associated with a named logger.
+
+    :param sub_name: The logger name, sans the 'mailman.' prefix.
+    :type sub_name: string
+    :return: The file handler associated with the named logger.
+    :rtype: `ReopenableFileHandler`
+    """
+    return _handlers[sub_name]

@@ -29,6 +29,7 @@ import email.utils
 from email.charset import Charset
 from email.header import Header
 
+from mailman import Defaults
 from mailman import Utils
 from mailman.config import config
 
@@ -186,7 +187,7 @@ class Message(email.message.Message):
         names without the trailing colon.
         """
         if headers is None:
-            headers = config.SENDER_HEADERS
+            headers = Defaults.SENDER_HEADERS
         pairs = []
         for h in headers:
             if h is None:

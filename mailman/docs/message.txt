@@ -28,8 +28,7 @@ address, an optional subject, optional body text, and optional language.
 
 The message will end up in the virgin queue.
 
-    >>> from mailman.queue import Switchboard
-    >>> switchboard = Switchboard(config.VIRGINQUEUE_DIR)
+    >>> switchboard = config.switchboards['virgin']
     >>> len(switchboard.files)
     1
     >>> filebase = switchboard.files[0]

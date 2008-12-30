@@ -43,20 +43,19 @@ The incoming queue runner runs until it is empty.
 
     >>> from mailman.queue.incoming import IncomingRunner
     >>> from mailman.testing.helpers import make_testable_runner
-    >>> incoming = make_testable_runner(IncomingRunner)
+    >>> incoming = make_testable_runner(IncomingRunner, 'in')
     >>> incoming.run()
 
 And now the message is in the pipeline queue.
 
-    >>> from mailman.queue import Switchboard
-    >>> pipeline_queue = Switchboard(config.PIPELINEQUEUE_DIR)
+    >>> pipeline_queue = config.switchboards['pipeline']
     >>> len(pipeline_queue.files)
     1
-    >>> incoming_queue = Switchboard(config.INQUEUE_DIR)
+    >>> incoming_queue = config.switchboards['in']
     >>> len(incoming_queue.files)
     0
     >>> from mailman.testing.helpers import get_queue_messages
-    >>> item = get_queue_messages(pipeline_queue)[0]
+    >>> item = get_queue_messages('pipeline')[0]
     >>> print item.msg.as_string()
     From: aperson@example.com
     To: _xtest@example.com
@@ -152,8 +151,8 @@ just create a new chain that does.
 The virgin queue needs to be cleared out due to artifacts from the previous
 tests above.
 
-    >>> virgin_queue = Switchboard(config.VIRGINQUEUE_DIR)
-    >>> ignore = get_queue_messages(virgin_queue)
+    >>> virgin_queue = config.switchboards['virgin']
+    >>> ignore = get_queue_messages('virgin')
 
     >>> inject_message(mlist, msg)
     >>> file_pos = fp.tell()
@@ -165,7 +164,7 @@ tests above.
 
     >>> len(virgin_queue.files)
     1
-    >>> item = get_queue_messages(virgin_queue)[0]
+    >>> item = get_queue_messages('virgin')[0]
     >>> print item.msg.as_string()
     Subject: My first post
     From: _xtest-owner@example.com

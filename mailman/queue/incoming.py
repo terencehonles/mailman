@@ -33,7 +33,7 @@ from mailman.queue import Runner
 
 
 class IncomingRunner(Runner):
-    QDIR = config.INQUEUE_DIR
+    """The incoming queue runner."""
 
     def _dispose(self, mlist, msg, msgdata):
         if msgdata.get('envsender') is None:

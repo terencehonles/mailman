@@ -28,7 +28,6 @@ from zope.interface import implements
 from mailman.config import config
 from mailman.i18n import _
 from mailman.interfaces import IHandler
-from mailman.queue import Switchboard
 
 COMMASPACE = ', '
 
@@ -62,5 +61,5 @@ class ToUsenet:
                       COMMASPACE.join(error))
             return
         # Put the message in the news runner's queue
-        newsq = Switchboard(config.NEWSQUEUE_DIR)
-        newsq.enqueue(msg, msgdata, listname=mlist.fqdn_listname)
+        config.switchboards['news'].enqueue(
+            msg, msgdata, listname=mlist.fqdn_listname)

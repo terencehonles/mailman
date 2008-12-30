@@ -67,8 +67,9 @@ dependent on the VERP_CONFIRM_FORMAT configuration variable.
     >>> mlist.confirm_address('wookie')
     u'_xtest-confirm+wookie@example.com'
 
-    >>> old_format = config.VERP_CONFIRM_FORMAT
-    >>> config.VERP_CONFIRM_FORMAT = '$address---$cookie'
+    >>> from mailman import Defaults
+    >>> old_format = Defaults.VERP_CONFIRM_FORMAT
+    >>> Defaults.VERP_CONFIRM_FORMAT = '$address---$cookie'
     >>> mlist.confirm_address('cookie')
     u'_xtest-confirm---cookie@example.com'
     >>> config.VERP_CONFIRM_FORMAT = old_format

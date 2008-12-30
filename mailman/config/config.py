@@ -48,8 +48,6 @@ class Configuration(object):
 
     def __init__(self):
         self.domains = {}       # email host -> IDomain
-        self.qrunners = {}
-        self.qrunner_shortcuts = {}
         self.switchboards = {}
         self.languages = LanguageManager()
         self.QFILE_SCHEMA_VERSION = version.QFILE_SCHEMA_VERSION
@@ -64,13 +62,8 @@ class Configuration(object):
 
     def _clear(self):
         """Clear the cached configuration variables."""
-        # First, stop all registered qrunners.
-        for runner in self.qrunners.values():
-            runner.stop()
         self.domains.clear()
         self.switchboards.clear()
-        self.qrunners.clear()
-        self.qrunner_shortcuts.clear()
         self.languages = LanguageManager()
 
     def __getattr__(self, name):

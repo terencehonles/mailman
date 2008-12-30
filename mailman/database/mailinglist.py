@@ -21,6 +21,7 @@ import string
 from storm.locals import *
 from zope.interface import implements
 
+from mailman import Defaults
 from mailman.Utils import fqdn_listname, makedirs, split_listname
 from mailman.config import config
 from mailman.database import roster
@@ -218,7 +219,7 @@ class MailingList(Model):
 
     @property
     def no_reply_address(self):
-        return '%s@%s' % (config.NO_REPLY_ADDRESS, self.host_name)
+        return '%s@%s' % (config.mailman.noreply_address, self.host_name)
 
     @property
     def owner_address(self):
@@ -249,7 +250,7 @@ class MailingList(Model):
         return '%s-unsubscribe@%s' % (self.list_name, self.host_name)
 
     def confirm_address(self, cookie):
-        template = string.Template(config.VERP_CONFIRM_FORMAT)
+        template = string.Template(Defaults.VERP_CONFIRM_FORMAT)
         local_part = template.safe_substitute(
             address = '%s-confirm' % self.list_name,
             cookie  = cookie)

@@ -36,6 +36,7 @@ from textwrap import dedent
 from mailman.config import config
 from mailman.core.initialize import initialize
 from mailman.i18n import _
+from mailman.core.logging import get_handler
 from mailman.testing.helpers import SMTPServer
 
 
@@ -65,7 +66,10 @@ class ConfigLayer:
         # Read the testing config and push it.
         test_config += resource_string('mailman.testing', 'testing.cfg')
         config.push('test config', test_config)
-        # Enable log message propagation.
+        # Enable log message propagation and reset the log paths so that the
+        # doctests can check the output.  XXX Switch to using the log support
+        # in zope.testing.
+        os.makedirs(config.LOG_DIR)
         for logger_config in config.logger_configs:
             sub_name = logger_config.name.split('.')[-1]
             if sub_name == 'root':
@@ -73,6 +77,12 @@ class ConfigLayer:
             logger_name = 'mailman.' + sub_name
             log = logging.getLogger(logger_name)
             log.propagate = True
+            # Reopen the file to a new path that tests can get at.  Instead of
+            # using the configuration file path though, use a path that's
+            # specific to the logger so that tests can find expected output
+            # more easily.
+            path = os.path.join(config.LOG_DIR, sub_name)
+            get_handler(sub_name).reopen(path)
             log.setLevel(logging.DEBUG)
         # zope.testing sets up logging before we get to our own initialization
         # function.  This messes with the root logger, so explicitly set it to

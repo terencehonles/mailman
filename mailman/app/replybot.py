@@ -29,9 +29,9 @@ __all__ = [
 import logging
 import datetime
 
+from mailman import Defaults
 from mailman import Utils
 from mailman import i18n
-from mailman.config import config
 
 
 log = logging.getLogger('mailman.vette')
@@ -48,7 +48,7 @@ def autorespond_to_sender(mlist, sender, lang=None):
     """
     if lang is None:
         lang = mlist.preferred_language
-    if config.MAX_AUTORESPONSES_PER_DAY == 0:
+    if Defaults.MAX_AUTORESPONSES_PER_DAY == 0:
         # Unlimited.
         return True
     today = datetime.date.today()
@@ -64,7 +64,7 @@ def autorespond_to_sender(mlist, sender, lang=None):
         # them of this fact, so there's nothing more to do.
         log.info('-request/hold autoresponse discarded for: %s', sender)
         return False
-    if count >= config.MAX_AUTORESPONSES_PER_DAY:
+    if count >= Defaults.MAX_AUTORESPONSES_PER_DAY:
         log.info('-request/hold autoresponse limit hit for: %s', sender)
         mlist.hold_and_cmd_autoresponses[sender] = (today, -1)
         # Send this notification message instead.
