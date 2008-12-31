@@ -42,7 +42,7 @@ from mailman.interfaces import IDatabase
 # initialization, but before database initialization.  Generally all other
 # code will just call initialize().
 
-def initialize_1(config_path, propagate_logs):
+def initialize_1(config_path=None, propagate_logs=None):
     """First initialization step.
 
     * The configuration system
@@ -52,7 +52,7 @@ def initialize_1(config_path, propagate_logs):
     :param config_path: The path to the configuration file.
     :type config_path: string
     :param propagate_logs: Should the log output propagate to stderr?
-    :type propagate_logs: boolean
+    :type propagate_logs: boolean or None
     """
     # By default, set the umask so that only owner and group can read and
     # write our files.  Specifically we must have g+rw and we probably want
@@ -111,7 +111,7 @@ def initialize_3():
 
 
 
-def initialize(config_path=None, propagate_logs=False):
+def initialize(config_path=None, propagate_logs=None):
     initialize_1(config_path, propagate_logs)
     initialize_2()
     initialize_3()

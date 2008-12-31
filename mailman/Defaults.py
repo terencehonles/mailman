@@ -693,11 +693,6 @@ USE_MAILDIR = No
 #     alias_maps = hash:/etc/aliases, hash:<prefix>/data/aliases
 USE_LMTP = No
 
-# Change LMTP_HOST and LMTP_PORT for your convenience.  You should be careful
-# enough to use a firewall if you open your port on global address interface.
-LMTP_HOST = 'localhost'
-LMTP_PORT = 8025
-
 # Name of the domains which operate on LMTP Mailman only.  Currently valid
 # only for Postfix alias generation.
 LMTP_ONLY_DOMAINS = []

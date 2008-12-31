@@ -318,11 +318,10 @@ class Loop:
             qrunner_config = getattr(config, section_name)
             if not qrunner_config.start:
                 continue
-            class_path = qrunner_config['class'].split(DOT)
-            package = DOT.join(class_path[:-1])
+            package, class_name = qrunner_config['class'].rsplit(DOT, 1)
             __import__(package)
             # Let AttributeError propagate.
-            class_ = getattr(sys.modules[package], class_path[-1])
+            class_ = getattr(sys.modules[package], class_name)
             # Find out how many qrunners to instantiate.  This must be a power
             # of 2.
             count = int(qrunner_config.instances)
@@ -331,7 +330,7 @@ class Loop:
             for slice_number in range(count):
                 # qrunner name, slice #, # of slices, restart count
                 info = (name, slice_number, count, 0)
-                spec = '%s:%d:%d' % (qrname, slice_number, count)
+                spec = '%s:%d:%d' % (name, slice_number, count)
                 pid = self._start_runner(spec)
                 log = logging.getLogger('mailman.qrunner')
                 log.debug('[%d] %s', pid, spec)
@@ -369,12 +368,14 @@ class Loop:
             # command line switch was not given.  This lets us better handle
             # runaway restarts (e.g.  if the subprocess had a syntax error!)
             qrname, slice_number, count, restarts = self._kids.pop(pid)
+            config_name = 'qrunner.' + qrname
             restart = False
             if why == signal.SIGUSR1 and self._restartable:
                 restart = True
             # Have we hit the maximum number of restarts?
             restarts += 1
-            if restarts > config.MAX_RESTARTS:
+            max_restarts = int(getattr(config, config_name).max_restarts)
+            if restarts > max_restarts:
                 restart = False
             # Are we permanently non-restartable?
             log.debug("""\
@@ -383,10 +384,10 @@ Master detected subprocess exit
                      pid, why, qrname, slice_number + 1, count,
                      ('[restarting]' if restart else ''))
             # See if we've reached the maximum number of allowable restarts
-            if restarts > config.MAX_RESTARTS:
+            if restarts > max_restarts:
                 log.info("""\
 qrunner %s reached maximum restart limit of %d, not restarting.""",
-                         qrname, config.MAX_RESTARTS)
+                         qrname, max_restarts)
             # Now perhaps restart the process unless it exited with a
             # SIGTERM or we aren't restarting.
             if restart:

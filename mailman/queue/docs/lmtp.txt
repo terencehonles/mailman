@@ -25,7 +25,7 @@ It also helps to have a nice LMTP client.
 Posting address
 ---------------
 
-If the mail server tries to send a message to a non-existant mailing list, it
+If the mail server tries to send a message to a nonexistent mailing list, it
 will get a 550 error.
 
     >>> lmtp.sendmail(

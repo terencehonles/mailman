@@ -21,6 +21,7 @@ __all__ = [
     ]
 
 import os
+import logging
 
 from locknix.lockfile import Lock
 from lazr.config import as_boolean
@@ -40,6 +41,8 @@ from mailman.database.requests import Requests
 from mailman.database.usermanager import UserManager
 from mailman.database.version import Version
 from mailman.interfaces.database import IDatabase, SchemaVersionMismatchError
+
+log = logging.getLogger('mailman.config')
 
 
 
@@ -84,6 +87,7 @@ class StockDatabase:
     def _create(self, debug):
         # Calculate the engine url.
         url = Template(config.database.url).safe_substitute(config.paths)
+        log.debug('Database url: %s', url)
         # XXX By design of SQLite, database file creation does not honor
         # umask.  See their ticket #1193:
         # http://www.sqlite.org/cvstrac/tktview?tn=1193,31

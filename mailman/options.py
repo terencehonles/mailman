@@ -95,16 +95,18 @@ class Options:
             '-C', '--config',
             help=_('Alternative configuration file to use'))
 
-    def initialize(self, propagate_logs=False):
+    def initialize(self, propagate_logs=None):
         """Initialize the configuration system.
 
         After initialization of the configuration system, perform sanity
         checks.  We do it in this order because some sanity checks require the
         configuration to be initialized.
 
-        :param propagate_logs: Flag specifying whether log messages in
-            sub-loggers should be propagated to the master logger (and hence
-            to the root logger).
+        :param propagate_logs: Optional flag specifying whether log messages
+            in sub-loggers should be propagated to the master logger (and
+            hence to the root logger).  If not given, propagation is taken
+            from the configuration files.
+        :type propagate_logs: bool or None.
         """
         initialize(self.options.config, propagate_logs=propagate_logs)
         self.sanity_check()

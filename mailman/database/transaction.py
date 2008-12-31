@@ -23,7 +23,7 @@ __all__ = [
     ]
 
 
-from mailman.configuration import config
+from mailman.config import config
 
 
 

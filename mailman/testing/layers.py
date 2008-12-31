@@ -31,10 +31,11 @@ import logging
 import tempfile
 
 from pkg_resources import resource_string
+from string import Template
 from textwrap import dedent
 
 from mailman.config import config
-from mailman.core.initialize import initialize
+from mailman.core import initialize
 from mailman.i18n import _
 from mailman.core.logging import get_handler
 from mailman.testing.helpers import SMTPServer
@@ -51,14 +52,21 @@ class ConfigLayer:
 
     @classmethod
     def setUp(cls):
-        initialize()
+        # Set up the basic configuration stuff.
+        initialize.initialize_1()
         assert cls.var_dir is None, 'Layer already set up'
         # Calculate a temporary VAR_DIR directory so that run-time artifacts
         # of the tests won't tread on the installation's data.  This also
         # makes it easier to clean up after the tests are done, and insures
         # isolation of test suite runs.
         cls.var_dir = tempfile.mkdtemp()
-        # Create a section with the var directory.
+        # We need a test configuration both for the foreground process and any
+        # child processes that get spawned.  lazr.config would allow us to do
+        # it all in a string that gets pushed, and we'll do that for the
+        # foreground, but because we may be spawning processes (such as queue
+        # runners) we'll need a file that we can specify to the with the -C
+        # option.  Craft the full test configuration string here, push it, and
+        # also write it out to a temp file for -C.
         test_config = dedent("""
         [mailman]
         var_dir: %s
@@ -66,10 +74,20 @@ class ConfigLayer:
         # Read the testing config and push it.
         test_config += resource_string('mailman.testing', 'testing.cfg')
         config.push('test config', test_config)
+        # Initialize everything else.
+        initialize.initialize_2()
+        initialize.initialize_3()
+        # When stderr debugging is enabled, subprocess root loggers should
+        # also be more verbose.
+        if cls.stderr:
+            test_config += dedent("""
+            [logging.root]
+            propagate: yes
+            level: debug
+            """)
         # Enable log message propagation and reset the log paths so that the
         # doctests can check the output.  XXX Switch to using the log support
         # in zope.testing.
-        os.makedirs(config.LOG_DIR)
         for logger_config in config.logger_configs:
             sub_name = logger_config.name.split('.')[-1]
             if sub_name == 'root':
@@ -84,6 +102,14 @@ class ConfigLayer:
             path = os.path.join(config.LOG_DIR, sub_name)
             get_handler(sub_name).reopen(path)
             log.setLevel(logging.DEBUG)
+            # If stderr debugging is enabled, make sure subprocesses are also
+            # more verbose.
+            if cls.stderr:
+                test_config += Template(dedent("""
+                [logging.$name]
+                propagate: yes
+                level: debug
+                """)).substitute(name=sub_name, path=path)
         # zope.testing sets up logging before we get to our own initialization
         # function.  This messes with the root logger, so explicitly set it to
         # go to stderr.
@@ -93,6 +119,13 @@ class ConfigLayer:
                                           config.logging.root.datefmt)
             console.setFormatter(formatter)
             logging.getLogger().addHandler(console)
+        # Write the configuration file for subprocesses and set up the config
+        # object to pass that properly on the -C option.
+        config_file = os.path.join(cls.var_dir, 'test.cfg')
+        with open(config_file, 'w') as fp:
+            fp.write(test_config)
+            print >> fp
+        config.filename = config_file
 
     @classmethod
     def tearDown(cls):

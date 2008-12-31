@@ -52,6 +52,7 @@ class Configuration(object):
         self.languages = LanguageManager()
         self.QFILE_SCHEMA_VERSION = version.QFILE_SCHEMA_VERSION
         self._config = None
+        self.filename = None
         # Create various registries.
         self.archivers = {}
         self.chains = {}
@@ -80,8 +81,9 @@ class Configuration(object):
         config_string = resource_string('mailman.config', 'mailman.cfg')
         self._config = schema.loadFile(StringIO(config_string), 'mailman.cfg')
         if filename is not None:
+            self.filename = filename
             with open(filename) as user_config:
-                self._config.push(user_config.read())
+                self._config.push(filename, user_config.read())
         self._post_process()
 
     def push(self, config_name, config_string):
@@ -147,6 +149,7 @@ class Configuration(object):
                                         language.charset, language.enabled)
         # Always enable the server default language, which must be defined.
         self.languages.enable_language(self._config.mailman.default_language)
+        self.ensure_directories_exist()
 
     @property
     def logger_configs(self):

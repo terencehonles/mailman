@@ -236,7 +236,8 @@ def get_lmtp_client():
     lmtp = LMTP()
     for attempts in range(3):
         try:
-            response = lmtp.connect(config.LMTP_HOST, config.LMTP_PORT)
+            response = lmtp.connect(
+                config.mta.lmtp_host, int(config.mta.lmtp_port))
             print response
             return lmtp
         except socket.error, error:

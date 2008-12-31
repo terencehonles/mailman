@@ -42,10 +42,11 @@ import asyncore
 
 from email.utils import parseaddr
 
+from mailman import Defaults
 from mailman.Message import Message
 from mailman.config import config
 from mailman.database.transaction import txn
-from mailman.queue import Runner, Switchboard
+from mailman.queue import Runner
 
 elog = logging.getLogger('mailman.error')
 qlog = logging.getLogger('mailman.qrunner')
@@ -63,7 +64,7 @@ CRLF    = '\r\n'
 ERR_451 = '451 Requested action aborted: error in processing'
 ERR_501 = '501 Message has defects'
 ERR_502 = '502 Error: command HELO not implemented'
-ERR_550 = config.LMTP_ERR_550
+ERR_550 = Defaults.LMTP_ERR_550
 
 # XXX Blech
 smtpd.__version__ = 'Python LMTP queue runner 1.0'
@@ -86,7 +87,7 @@ def split_recipient(address):
         subaddress may be None if this is the list's posting address.
     """
     localpart, domain = address.split('@', 1)
-    localpart = localpart.split(config.VERP_DELIMITER, 1)[0]
+    localpart = localpart.split(Defaults.VERP_DELIMITER, 1)[0]
     parts = localpart.split(DASH)
     if parts[-1] in SUBADDRESS_NAMES:
         listname = DASH.join(parts[:-1])
@@ -121,11 +122,11 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
     # connections from the MTA.  slice and numslices are ignored and are
     # necessary only to satisfy the API.
     def __init__(self, slice=None, numslices=1):
-        localaddr = config.LMTP_HOST, config.LMTP_PORT
+        localaddr = config.mta.lmtp_host, int(config.mta.lmtp_port)
         # Do not call Runner's constructor because there's no QDIR to create
         smtpd.SMTPServer.__init__(self, localaddr, remoteaddr=None)
         qlog.debug('LMTP server listening on %s:%s',
-                   config.LMTP_HOST, config.LMTP_PORT)
+                   localaddr[0], localaddr[1])
 
     def handle_accept(self):
         conn, addr = self.accept()
@@ -138,6 +139,7 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
             # Refresh the list of list names every time we process a message
             # since the set of mailing lists could have changed.
             listnames = set(config.db.list_manager.names)
+            qlog.debug('listnames: %s', listnames)
             # Parse the message data.  If there are any defects in the
             # message, reject it right away; it's probably spam. 
             msg = email.message_from_string(data, Message)
@@ -169,29 +171,29 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
                 queue = None
                 msgdata = dict(listname=listname)
                 if subaddress in ('bounces', 'admin'):
-                    queue = Switchboard(config.BOUNCEQUEUE_DIR)
+                    queue = 'bounce'
                 elif subaddress == 'confirm':
                     msgdata['toconfirm'] = True
-                    queue = Switchboard(config.CMDQUEUE_DIR)
+                    queue = 'command'
                 elif subaddress in ('join', 'subscribe'):
                     msgdata['tojoin'] = True
-                    queue = Switchboard(config.CMDQUEUE_DIR)
+                    queue = 'command'
                 elif subaddress in ('leave', 'unsubscribe'):
                     msgdata['toleave'] = True
-                    queue = Switchboard(config.CMDQUEUE_DIR)
+                    queue = 'command'
                 elif subaddress == 'owner':
                     msgdata.update(dict(
                         toowner=True,
-                        envsender=config.SITE_OWNER_ADDRESS,
-                        pipeline=config.OWNER_PIPELINE,
+                        envsender=config.mailman.site_owner,
+                        pipeline=Defaults.OWNER_PIPELINE,
                         ))
-                    queue = Switchboard(config.INQUEUE_DIR)
+                    queue = 'in'
                 elif subaddress is None:
                     msgdata['tolist'] = True
-                    queue = Switchboard(config.INQUEUE_DIR)
+                    queue = 'in'
                 elif subaddress == 'request':
                      msgdata['torequest'] = True
-                     queue = Switchboard(config.CMDQUEUE_DIR)
+                     queue = 'command'
                 else:
                     elog.error('Unknown sub-address: %s', subaddress)
                     status.append(ERR_550)
@@ -199,7 +201,7 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
                 # If we found a valid subaddress, enqueue the message and add
                 # a success status for this recipient.
                 if queue is not None:
-                    queue.enqueue(msg, msgdata)
+                    config.switchboards[queue].enqueue(msg, msgdata)
                     status.append('250 Ok')
             except Exception, e:
                 elog.exception('Queue detection: %s', msg['message-id'])
