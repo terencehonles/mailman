@@ -15,7 +15,6 @@ The Discard chain
 The Discard chain simply throws the message away.
 
     >>> from zope.interface.verify import verifyObject
-    >>> from mailman.configuration import config
     >>> from mailman.interfaces import IChain
     >>> chain = config.chains['discard']
     >>> verifyObject(IChain, chain)
@@ -71,8 +70,7 @@ this action.
 
 The bounce message is now sitting in the Virgin queue.
 
-    >>> from mailman.queue import Switchboard
-    >>> virginq = Switchboard(config.VIRGINQUEUE_DIR)
+    >>> virginq = config.switchboards['virgin']
     >>> len(virginq.files)
     1
     >>> qmsg, qdata = virginq.dequeue(virginq.files[0])
@@ -269,7 +267,7 @@ processed and sent on to the list membership.
     >>> print 'LOG:', fp.read()
     LOG: ... ACCEPT: <first>
 
-    >>> pipelineq = Switchboard(config.PIPELINEQUEUE_DIR)
+    >>> pipelineq = config.switchboards['pipeline']
     >>> len(pipelineq.files)
     1
     >>> qmsg, qdata = pipelineq.dequeue(pipelineq.files[0])

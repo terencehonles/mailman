@@ -1,4 +1,4 @@
-# Copyright (C) 2000-2008 by the Free Software Foundation, Inc.
+# Copyright (C) 2000-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -22,7 +22,7 @@ import string
 import gettext
 
 import mailman.messages
-from mailman.configuration import config
+from mailman.config import config
 
 _translation = None
 _missing = object()

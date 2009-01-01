@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2008 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -48,17 +48,17 @@ from email.parser import Parser
 from email.utils import formatdate, getaddresses, make_msgid
 from zope.interface import implements
 
+from mailman import Defaults
 from mailman import Message
 from mailman import Utils
 from mailman import i18n
 from mailman.Mailbox import Mailbox
 from mailman.Mailbox import Mailbox
-from mailman.configuration import config
+from mailman.config import config
 from mailman.core import errors
 from mailman.interfaces import DeliveryMode, DeliveryStatus, IHandler
 from mailman.pipeline.decorate import decorate
 from mailman.pipeline.scrubber import process as scrubber
-from mailman.queue import Switchboard
 
 
 _ = i18n._
@@ -268,8 +268,8 @@ def send_i18n_digests(mlist, mboxfp):
         # for the specific MIME or plain digests.
         keeper = {}
         all_keepers = {}
-        for header in (config.MIME_DIGEST_KEEP_HEADERS +
-                       config.PLAIN_DIGEST_KEEP_HEADERS):
+        for header in (Defaults.MIME_DIGEST_KEEP_HEADERS +
+                       Defaults.PLAIN_DIGEST_KEEP_HEADERS):
             all_keepers[header] = True
         all_keepers = all_keepers.keys()
         for keep in all_keepers:
@@ -325,7 +325,7 @@ def send_i18n_digests(mlist, mboxfp):
             print >> plainmsg, _('[Message discarded by content filter]')
             continue
         # Honor the default setting
-        for h in config.PLAIN_DIGEST_KEEP_HEADERS:
+        for h in Defaults.PLAIN_DIGEST_KEEP_HEADERS:
             if msg[h]:
                 uh = Utils.wrap('%s: %s' % (h, Utils.oneline(msg[h],
                                                              in_unicode=True)))
@@ -378,7 +378,7 @@ def send_i18n_digests(mlist, mboxfp):
     # Do our final bit of housekeeping, and then send each message to the
     # outgoing queue for delivery.
     mlist.next_digest_number += 1
-    virginq = Switchboard(config.VIRGINQUEUE_DIR)
+    virginq = config.switchboards['virgin']
     # Calculate the recipients lists
     plainrecips = set()
     mimerecips = set()

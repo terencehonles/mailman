@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2008 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -24,7 +24,7 @@ from email.MIMEText import MIMEText
 
 from mailman import Message
 from mailman import Utils
-from mailman.configuration import config
+from mailman.config import config
 from mailman.core import errors
 from mailman.i18n import _
 

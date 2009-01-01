@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2008 by the Free Software Foundation, Inc.
+# Copyright (C) 2006-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -25,7 +25,7 @@ from cStringIO import StringIO
 from wsgiref.simple_server import make_server, WSGIRequestHandler
 
 from mailman.Cgi.wsgi_app import mailman_app
-from mailman.configuration import config
+from mailman.config import config
 from mailman.queue import Runner
 
 hlog = logging.getLogger('mailman.http')

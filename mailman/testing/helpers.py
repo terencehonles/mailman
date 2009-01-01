@@ -1,4 +1,4 @@
-# Copyright (C) 2008 by the Free Software Foundation, Inc.
+# Copyright (C) 2008-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -42,7 +42,7 @@ from Queue import Empty, Queue
 from datetime import datetime, timedelta
 
 from mailman.bin.master import Loop as Master
-from mailman.configuration import config
+from mailman.config import config
 from mailman.queue import Switchboard
 from mailman.testing.smtplistener import Server
 
@@ -51,21 +51,30 @@ log = logging.getLogger('mailman.debug')
 
 
 
-def make_testable_runner(runner_class):
+def make_testable_runner(runner_class, name=None):
     """Create a queue runner that runs until its queue is empty.
 
-    :param runner_class: An IRunner
+    :param runner_class: The queue runner's class.
+    :type runner_class: class
+    :param name: Optional queue name; if not given, it is calculated from the
+        class name.
+    :type name: string or None
     :return: A runner instance.
     """
+
+    if name is None:
+        assert runner_class.__name__.endswith('Runner'), (
+            'Unparseable runner class name: %s' % runner_class.__name__)
+        name = runner_class.__name__[:-6].lower()
 
     class EmptyingRunner(runner_class):
         """Stop processing when the queue is empty."""
 
         def _do_periodic(self):
             """Stop when the queue is empty."""
-            self._stop = (len(self._switchboard.files) == 0)
+            self._stop = (len(self.switchboard.files) == 0)
 
-    return EmptyingRunner()
+    return EmptyingRunner(name)
 
 
 
@@ -75,15 +84,14 @@ class _Bag:
             setattr(self, key, value)
 
 
-def get_queue_messages(queue):
+def get_queue_messages(queue_name):
     """Return and clear all the messages in the given queue.
 
-    :param queue: An ISwitchboard or a string naming a queue.
+    :param queue_name: A string naming a queue.
     :return: A list of 2-tuples where each item contains the message and
         message metadata.
     """
-    if isinstance(queue, basestring):
-        queue = Switchboard(queue)
+    queue = config.switchboards[queue_name]
     messages = []
     for filebase in queue.files:
         msg, msgdata = queue.dequeue(filebase)
@@ -159,12 +167,11 @@ class TestableMaster(Master):
 class SMTPServer:
     """An smtp server for testing."""
 
-    host = 'localhost'
-    port = 10825
-
     def __init__(self):
         self._messages = []
         self._queue = Queue()
+        self.host = config.mta.smtp_host
+        self.port = int(config.mta.smtp_port)
         self._server = Server((self.host, self.port), self._queue)
         self._thread = threading.Thread(target=self._server.start)
 
@@ -173,9 +180,11 @@ class SMTPServer:
         log.info('test SMTP server starting')
         self._thread.start()
         smtpd = smtplib.SMTP()
+        log.info('connecting to %s:%s', self.host, self.port)
         smtpd.connect(self.host, self.port)
-        smtpd.helo('test.localhost')
+        response = smtpd.helo('test.localhost')
         smtpd.quit()
+        log.info('SMTP server is running: %s', response)
 
     def stop(self):
         """Stop the smtp server."""
@@ -227,7 +236,8 @@ def get_lmtp_client():
     lmtp = LMTP()
     for attempts in range(3):
         try:
-            response = lmtp.connect(config.LMTP_HOST, config.LMTP_PORT)
+            response = lmtp.connect(
+                config.mta.lmtp_host, int(config.mta.lmtp_port))
             print response
             return lmtp
         except socket.error, error:

@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2008 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -27,10 +27,10 @@ __all__ = [
 
 from email.utils import formataddr
 
+from mailman import Defaults
 from mailman import Message
 from mailman import Utils
 from mailman import i18n
-from mailman.configuration import config
 from mailman.interfaces.member import DeliveryMode
 
 _ = i18n._
@@ -79,7 +79,7 @@ def send_welcome_message(mlist, address, language, delivery_mode, text=''):
         _('Welcome to the "$mlist.real_name" mailing list${digmode}'),
         text, language)
     msg['X-No-Archive'] = 'yes'
-    msg.send(mlist, verp=config.VERP_PERSONALIZED_DELIVERIES)
+    msg.send(mlist, verp=Defaults.VERP_PERSONALIZED_DELIVERIES)
 
 
 
@@ -104,7 +104,7 @@ def send_goodbye_message(mlist, address, language):
         address, mlist.bounces_address,
         _('You have been unsubscribed from the $mlist.real_name mailing list'),
         goodbye, language)
-    msg.send(mlist, verp=config.VERP_PERSONALIZED_DELIVERIES)
+    msg.send(mlist, verp=Defaults.VERP_PERSONALIZED_DELIVERIES)
 
 
 

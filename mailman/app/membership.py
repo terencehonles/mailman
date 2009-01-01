@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2008 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -30,7 +30,7 @@ from mailman import Message
 from mailman import Utils
 from mailman import i18n
 from mailman.app.notifications import send_goodbye_message
-from mailman.configuration import config
+from mailman.config import config
 from mailman.core import errors
 from mailman.interfaces import AlreadySubscribedError, DeliveryMode, MemberRole
 

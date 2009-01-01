@@ -1,4 +1,4 @@
-# Copyright (C) 2002-2008 by the Free Software Foundation, Inc.
+# Copyright (C) 2002-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -18,7 +18,7 @@
 from email.Utils import parseaddr
 
 from mailman import i18n
-from mailman.configuration import config
+from mailman.config import config
 
 STOP = 1
 

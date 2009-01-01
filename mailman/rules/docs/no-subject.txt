@@ -4,7 +4,6 @@ No Subject header
 This rule matches if the message has no Subject header, or if the header is
 the empty string when stripped.
 
-    >>> from mailman.configuration import config
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> rule = config.rules['no-subject']
     >>> rule.name

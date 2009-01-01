@@ -57,6 +57,7 @@ Start by registering a test style.
     ...         # Applies to any test list
     ...         if 'test' in mailing_list.fqdn_listname:
     ...             styles.append(self)
+
     >>> from mailman.core.styles import style_manager
     >>> style_manager.register(TestStyle())
 
@@ -102,7 +103,6 @@ However, all addresses are linked to users.
 If you create a mailing list with owner addresses that are already known to
 the system, they won't be created again.
 
-    >>> from mailman.configuration import config
     >>> usermgr = config.db.user_manager
     >>> user_a = usermgr.get_user(u'aperson@example.com')
     >>> user_b = usermgr.get_user(u'bperson@example.com')

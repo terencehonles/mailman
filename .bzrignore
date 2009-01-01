@@ -7,7 +7,11 @@ dist/
 mailman.egg-info
 misc/mailman
 setuptools*
-staging
 TAGS
 var/
 .shelf
+bin
+.installed.cfg
+develop-eggs
+parts
+./bin

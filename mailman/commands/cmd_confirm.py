@@ -1,4 +1,4 @@
-# Copyright (C) 2002-2008 by the Free Software Foundation, Inc.
+# Copyright (C) 2002-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -23,7 +23,7 @@
 
 from mailman import Errors
 from mailman import Pending
-from mailman.configuration import config
+from mailman.config import config
 from mailman.i18n import _
 
 STOP = 1

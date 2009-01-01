@@ -1,4 +1,4 @@
-# Copyright (C) 2008 by the Free Software Foundation, Inc.
+# Copyright (C) 2008-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -30,9 +30,8 @@ from urllib import quote
 from urlparse import urljoin
 from zope.interface import implements
 
-from mailman.configuration import config
+from mailman.config import config
 from mailman.interfaces.archiver import IArchiver
-from mailman.queue import Switchboard
 
 
 
@@ -52,7 +51,7 @@ class MailArchive:
         """See `IArchiver`."""
         if mlist.archive_private:
             return None
-        return urljoin(config.MAIL_ARCHIVE_BASEURL,
+        return urljoin(config.archiver.mail_archive.base_url,
                        quote(mlist.posting_address))
 
     @staticmethod
@@ -73,15 +72,13 @@ class MailArchive:
         message_id_hash = urlsafe_b64encode(sha.digest())
         del msg['x-message-id-hash']
         msg['X-Message-ID-Hash'] = message_id_hash
-        return urljoin(config.MAIL_ARCHIVE_BASEURL, message_id_hash)
+        return urljoin(config.archiver.mail_archive.base_url, message_id_hash)
 
     @staticmethod
     def archive_message(mlist, msg):
         """See `IArchiver`."""
-        if mlist.archive_private:
-            return
-        outq = Switchboard(config.OUTQUEUE_DIR)
-        outq.enqueue(
-            msg,
-            listname=mlist.fqdn_listname,
-            recips=[config.MAIL_ARCHIVE_RECIPIENT])
+        if not mlist.archive_private:
+            config.switchboards['out'].enqueue(
+                msg,
+                listname=mlist.fqdn_listname,
+                recips=[config.archiver.mail_archive.recipient])

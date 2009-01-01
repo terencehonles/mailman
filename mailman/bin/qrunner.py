@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2008 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -19,8 +19,8 @@ import sys
 import signal
 import logging
 
-from mailman import loginit
-from mailman.configuration import config
+from mailman.config import config
+from mailman.core.logging import reopen
 from mailman.i18n import _
 from mailman.options import Options
 
@@ -112,10 +112,6 @@ This should only be used when running qrunner as a subprocess of the
 mailmanctl startup script.  It changes some of the exit-on-error behavior to
 work better with that framework."""))
 
-    def initialize(self):
-        """Override initialization to propagate logs correctly."""
-        super(ScriptOptions, self).initialize(not self.options.subproc)
-
     def sanity_check(self):
         if self.arguments:
             self.parser.error(_('Unexpected arguments'))
@@ -126,28 +122,30 @@ work better with that framework."""))
 
 def make_qrunner(name, slice, range, once=False):
     # Several conventions for specifying the runner name are supported.  It
-    # could be one of the shortcut names.  Or the name is a full module path,
+    # could be one of the shortcut names.  If the name is a full module path,
     # use it explicitly.  If the name starts with a dot, it's a class name
     # relative to the Mailman.queue package.
-    if name in config.qrunner_shortcuts:
-        classpath = config.qrunner_shortcuts[name]
+    qrunner_config = getattr(config, 'qrunner.' + name, None)
+    if qrunner_config is not None:
+        # It was a shortcut name.
+        class_path = qrunner_config['class']
     elif name.startswith('.'):
-        classpath = 'mailman.queue' + name
+        class_path = 'mailman.queue' + name
     else:
-        classpath = name
-    modulename, classname = classpath.rsplit('.', 1)
+        class_path = name
+    module_name, class_name = class_path.rsplit('.', 1)
     try:
-        __import__(modulename)
+        __import__(module_name)
     except ImportError, e:
         if config.options.options.subproc:
             # Exit with SIGTERM exit code so the master watcher won't try to
             # restart us.
-            print >> sys.stderr, _('Cannot import runner module: $modulename')
+            print >> sys.stderr, _('Cannot import runner module: $module_name')
             print >> sys.stderr, e
             sys.exit(signal.SIGTERM)
         else:
             raise
-    qrclass = getattr(sys.modules[modulename], classname)
+    qrclass = getattr(sys.modules[module_name], class_name)
     if once:
         # Subclass to hack in the setting of the stop flag in _do_periodic()
         class Once(qrclass):
@@ -191,7 +189,7 @@ def set_signals(loop):
     signal.signal(signal.SIGUSR1, sigusr1_handler)
     # SIGHUP just tells us to rotate our log files.
     def sighup_handler(signum, frame):
-        loginit.reopen()
+        reopen()
         log.info('%s qrunner caught SIGHUP.  Reopening logs.', loop.name())
     signal.signal(signal.SIGHUP, sighup_handler)
 

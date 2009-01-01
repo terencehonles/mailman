@@ -1,4 +1,4 @@
-# Copyright (C) 2008 by the Free Software Foundation, Inc.
+# Copyright (C) 2008-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -29,10 +29,10 @@ import sys
 from copy import copy
 from optparse import Option, OptionParser, OptionValueError
 
-from mailman.version import MAILMAN_VERSION
-from mailman.configuration import config
+from mailman.config import config
+from mailman.core.initialize import initialize
 from mailman.i18n import _
-from mailman.initialize import initialize
+from mailman.version import MAILMAN_VERSION
 
 
 
@@ -95,16 +95,18 @@ class Options:
             '-C', '--config',
             help=_('Alternative configuration file to use'))
 
-    def initialize(self, propagate_logs=False):
+    def initialize(self, propagate_logs=None):
         """Initialize the configuration system.
 
         After initialization of the configuration system, perform sanity
         checks.  We do it in this order because some sanity checks require the
         configuration to be initialized.
 
-        :param propagate_logs: Flag specifying whether log messages in
-            sub-loggers should be propagated to the master logger (and hence
-            to the root logger).
+        :param propagate_logs: Optional flag specifying whether log messages
+            in sub-loggers should be propagated to the master logger (and
+            hence to the root logger).  If not given, propagation is taken
+            from the configuration files.
+        :type propagate_logs: bool or None.
         """
         initialize(self.options.config, propagate_logs=propagate_logs)
         self.sanity_check()

@@ -1,4 +1,4 @@
-# Copyright (C) 2008 by the Free Software Foundation, Inc.
+# Copyright (C) 2008-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -32,7 +32,8 @@ from string import Template
 from urlparse import urljoin
 from zope.interface import implements
 
-from mailman.configuration import config
+from mailman import Defaults
+from mailman.config import config
 from mailman.interfaces.archiver import IArchiver
 
 
@@ -53,7 +54,7 @@ class MHonArc:
         """See `IArchiver`."""
         # XXX What about private MHonArc archives?
         web_host = config.domains[mlist.host_name].url_host
-        return Template(config.PUBLIC_ARCHIVE_URL).safe_substitute(
+        return Template(Defaults.PUBLIC_ARCHIVE_URL).safe_substitute(
             listname=mlist.fqdn_listname,
             hostname=web_host,
             fqdn_listname=mlist.fqdn_listname,
@@ -82,7 +83,7 @@ class MHonArc:
         """See `IArchiver`."""
         substitutions = config.__dict__.copy()
         substitutions['listname'] = mlist.fqdn_listname
-        command = Template(config.MHONARC_COMMAND).safe_substitute(
+        command = Template(config.archiver.mhonarc.command).safe_substitute(
             substitutions)
         proc = subprocess.Popen(
             command, stdout=subprocess.PIPE, stderr=subprocess.PIPE,

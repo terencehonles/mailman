@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2008 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -40,10 +40,11 @@ from email.MIMEMessage import MIMEMessage
 from email.MIMEText import MIMEText
 from zope.interface import implements
 
+from mailman import Defaults
 from mailman import Message
 from mailman import Utils
 from mailman.app.replybot import autorespond_to_sender
-from mailman.configuration import config
+from mailman.config import config
 from mailman.i18n import _
 from mailman.interfaces import ContinueProcessing, IEmailResults
 from mailman.queue import Runner
@@ -70,7 +71,7 @@ class CommandFinder:
         elif msgdata.get('toleave'):
             self.command_lines.append('leave')
         elif msgdata.get('toconfirm'):
-            mo = re.match(config.VERP_CONFIRM_REGEXP, msg.get('to', ''))
+            mo = re.match(Defaults.VERP_CONFIRM_REGEXP, msg.get('to', ''))
             if mo:
                 self.command_lines.append('confirm ' + mo.group('cookie'))
         # Extract the subject header and do RFC 2047 decoding.
@@ -99,8 +100,8 @@ class CommandFinder:
         assert isinstance(body, basestring), 'Non-string decoded payload'
         lines = body.splitlines()
         # Use no more lines than specified
-        self.command_lines.extend(lines[:config.EMAIL_COMMANDS_MAX_LINES])
-        self.ignored_lines.extend(lines[config.EMAIL_COMMANDS_MAX_LINES:])
+        self.command_lines.extend(lines[:Defaults.EMAIL_COMMANDS_MAX_LINES])
+        self.ignored_lines.extend(lines[Defaults.EMAIL_COMMANDS_MAX_LINES:])
 
     def __iter__(self):
         """Return each command line, split into commands and arguments.
@@ -141,7 +142,7 @@ The results of your email command are provided below.
 
 
 class CommandRunner(Runner):
-    QDIR = config.CMDQUEUE_DIR
+    """The email command runner."""
 
     def _dispose(self, mlist, msg, msgdata):
         message_id = msg.get('message-id', 'n/a')

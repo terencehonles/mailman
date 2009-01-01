@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2008 by the Free Software Foundation, Inc.
+# Copyright (C) 2006-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -25,7 +25,7 @@ from email.utils import formataddr
 from storm.locals import *
 from zope.interface import implements
 
-from mailman.configuration import config
+from mailman.config import config
 from mailman.database.member import Member
 from mailman.database.model import Model
 from mailman.database.preferences import Preferences

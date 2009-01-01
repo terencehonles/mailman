@@ -1,4 +1,4 @@
-# Copyright (C) 2002-2008 by the Free Software Foundation, Inc.
+# Copyright (C) 2002-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -29,7 +29,7 @@ from email.utils import formataddr, parseaddr
 from zope.interface import implements
 
 from mailman.Utils import MakeRandomPassword
-from mailman.configuration import config
+from mailman.config import config
 from mailman.i18n import _
 from mailman.interfaces import (
     ContinueProcessing, DeliveryMode, IEmailCommand)

@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2008 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -29,8 +29,9 @@ import email.utils
 from email.charset import Charset
 from email.header import Header
 
+from mailman import Defaults
 from mailman import Utils
-from mailman.configuration import config
+from mailman.config import config
 
 COMMASPACE = ', '
 
@@ -118,14 +119,15 @@ class Message(email.message.Message):
         header value found is returned.  However the search order is
         determined by the following:
 
-        - If config.USE_ENVELOPE_SENDER is true, then the search order is
-          Sender:, From:, unixfrom
+        - If config.mailman.use_envelope_sender is true, then the search order
+          is Sender:, From:, unixfrom
 
         - Otherwise, the search order is From:, Sender:, unixfrom
 
         The optional argument use_envelope, if given overrides the
-        config.USE_ENVELOPE_SENDER setting.  It should be set to either 0 or 1
-        (don't use None since that indicates no-override).
+        config.mailman.use_envelope_sender setting.  It should be set to
+        either True or False (don't use None since that indicates
+        no-override).
 
         unixfrom should never be empty.  The return address is always
         lowercased, unless preserve_case is true.
@@ -133,7 +135,7 @@ class Message(email.message.Message):
         This method differs from get_senders() in that it returns one and only
         one address, and uses a different search order.
         """
-        senderfirst = config.USE_ENVELOPE_SENDER
+        senderfirst = config.mailman.use_envelope_sender
         if use_envelope is not None:
             senderfirst = use_envelope
         if senderfirst:
@@ -185,7 +187,7 @@ class Message(email.message.Message):
         names without the trailing colon.
         """
         if headers is None:
-            headers = config.SENDER_HEADERS
+            headers = Defaults.SENDER_HEADERS
         pairs = []
         for h in headers:
             if h is None:
@@ -263,8 +265,7 @@ class UserNotification(Message):
 
     def _enqueue(self, mlist, **_kws):
         # Not imported at module scope to avoid import loop
-        from mailman.queue import Switchboard
-        virginq = Switchboard(config.VIRGINQUEUE_DIR)
+        virginq = config.switchboards['virgin']
         # The message metadata better have a 'recip' attribute.
         enqueue_kws = dict(
             recips=self.recips,
@@ -287,7 +288,7 @@ class OwnerNotification(UserNotification):
         else:
             roster = mlist.owners
         recips = [address.address for address in roster.addresses]
-        sender = config.SITE_OWNER_ADDRESS
+        sender = config.mailman.site_owner
         lang = mlist.preferred_language
         UserNotification.__init__(self, recips, sender, subject, text, lang)
         # Hack the To header to look like it's going to the -owner address
@@ -297,8 +298,7 @@ class OwnerNotification(UserNotification):
 
     def _enqueue(self, mlist, **_kws):
         # Not imported at module scope to avoid import loop
-        from mailman.queue import Switchboard
-        virginq = Switchboard(config.VIRGINQUEUE_DIR)
+        virginq = config.switchboards['virgin']
         # The message metadata better have a `recip' attribute
         virginq.enqueue(self,
                         listname=mlist.fqdn_listname,

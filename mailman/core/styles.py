@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2008 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -23,14 +23,17 @@ __all__ = [
     'style_manager',
     ]
 
+# XXX Styles need to be reconciled with lazr.config.
+
 import datetime
 
 from operator import attrgetter
 from zope.interface import implements
 from zope.interface.verify import verifyObject
 
+from mailman import Defaults
 from mailman import Utils
-from mailman.configuration import config
+from mailman.config import config
 from mailman.core.plugins import get_plugins
 from mailman.i18n import _
 from mailman.interfaces import (
@@ -54,75 +57,77 @@ class DefaultStyle:
         # Most of these were ripped from the old MailList.InitVars() method.
         mlist.volume = 1
         mlist.post_id = 1
-        mlist.new_member_options = config.DEFAULT_NEW_MEMBER_OPTIONS
+        mlist.new_member_options = Defaults.DEFAULT_NEW_MEMBER_OPTIONS
         # This stuff is configurable
         mlist.real_name = mlist.list_name.capitalize()
         mlist.respond_to_post_requests = True
-        mlist.advertised = config.DEFAULT_LIST_ADVERTISED
-        mlist.max_num_recipients = config.DEFAULT_MAX_NUM_RECIPIENTS
-        mlist.max_message_size = config.DEFAULT_MAX_MESSAGE_SIZE
-        mlist.reply_goes_to_list = config.DEFAULT_REPLY_GOES_TO_LIST
+        mlist.advertised = Defaults.DEFAULT_LIST_ADVERTISED
+        mlist.max_num_recipients = Defaults.DEFAULT_MAX_NUM_RECIPIENTS
+        mlist.max_message_size = Defaults.DEFAULT_MAX_MESSAGE_SIZE
+        mlist.reply_goes_to_list = Defaults.DEFAULT_REPLY_GOES_TO_LIST
         mlist.reply_to_address = u''
-        mlist.first_strip_reply_to = config.DEFAULT_FIRST_STRIP_REPLY_TO
-        mlist.admin_immed_notify = config.DEFAULT_ADMIN_IMMED_NOTIFY
+        mlist.first_strip_reply_to = Defaults.DEFAULT_FIRST_STRIP_REPLY_TO
+        mlist.admin_immed_notify = Defaults.DEFAULT_ADMIN_IMMED_NOTIFY
         mlist.admin_notify_mchanges = (
-            config.DEFAULT_ADMIN_NOTIFY_MCHANGES)
+            Defaults.DEFAULT_ADMIN_NOTIFY_MCHANGES)
         mlist.require_explicit_destination = (
-            config.DEFAULT_REQUIRE_EXPLICIT_DESTINATION)
-        mlist.acceptable_aliases = config.DEFAULT_ACCEPTABLE_ALIASES
-        mlist.send_reminders = config.DEFAULT_SEND_REMINDERS
-        mlist.send_welcome_msg = config.DEFAULT_SEND_WELCOME_MSG
-        mlist.send_goodbye_msg = config.DEFAULT_SEND_GOODBYE_MSG
+            Defaults.DEFAULT_REQUIRE_EXPLICIT_DESTINATION)
+        mlist.acceptable_aliases = Defaults.DEFAULT_ACCEPTABLE_ALIASES
+        mlist.send_reminders = Defaults.DEFAULT_SEND_REMINDERS
+        mlist.send_welcome_msg = Defaults.DEFAULT_SEND_WELCOME_MSG
+        mlist.send_goodbye_msg = Defaults.DEFAULT_SEND_GOODBYE_MSG
         mlist.bounce_matching_headers = (
-            config.DEFAULT_BOUNCE_MATCHING_HEADERS)
+            Defaults.DEFAULT_BOUNCE_MATCHING_HEADERS)
         mlist.header_matches = []
-        mlist.anonymous_list = config.DEFAULT_ANONYMOUS_LIST
+        mlist.anonymous_list = Defaults.DEFAULT_ANONYMOUS_LIST
         mlist.description = u''
         mlist.info = u''
         mlist.welcome_msg = u''
         mlist.goodbye_msg = u''
-        mlist.subscribe_policy = config.DEFAULT_SUBSCRIBE_POLICY
-        mlist.subscribe_auto_approval = config.DEFAULT_SUBSCRIBE_AUTO_APPROVAL
-        mlist.unsubscribe_policy = config.DEFAULT_UNSUBSCRIBE_POLICY
-        mlist.private_roster = config.DEFAULT_PRIVATE_ROSTER
-        mlist.obscure_addresses = config.DEFAULT_OBSCURE_ADDRESSES
-        mlist.admin_member_chunksize = config.DEFAULT_ADMIN_MEMBER_CHUNKSIZE
-        mlist.administrivia = config.DEFAULT_ADMINISTRIVIA
-        mlist.preferred_language = config.DEFAULT_SERVER_LANGUAGE
+        mlist.subscribe_policy = Defaults.DEFAULT_SUBSCRIBE_POLICY
+        mlist.subscribe_auto_approval = (
+            Defaults.DEFAULT_SUBSCRIBE_AUTO_APPROVAL)
+        mlist.unsubscribe_policy = Defaults.DEFAULT_UNSUBSCRIBE_POLICY
+        mlist.private_roster = Defaults.DEFAULT_PRIVATE_ROSTER
+        mlist.obscure_addresses = Defaults.DEFAULT_OBSCURE_ADDRESSES
+        mlist.admin_member_chunksize = Defaults.DEFAULT_ADMIN_MEMBER_CHUNKSIZE
+        mlist.administrivia = Defaults.DEFAULT_ADMINISTRIVIA
+        mlist.preferred_language = Defaults.DEFAULT_SERVER_LANGUAGE
         mlist.include_rfc2369_headers = True
         mlist.include_list_post_header = True
-        mlist.filter_mime_types = config.DEFAULT_FILTER_MIME_TYPES
-        mlist.pass_mime_types = config.DEFAULT_PASS_MIME_TYPES
+        mlist.filter_mime_types = Defaults.DEFAULT_FILTER_MIME_TYPES
+        mlist.pass_mime_types = Defaults.DEFAULT_PASS_MIME_TYPES
         mlist.filter_filename_extensions = (
-            config.DEFAULT_FILTER_FILENAME_EXTENSIONS)
-        mlist.pass_filename_extensions = config.DEFAULT_PASS_FILENAME_EXTENSIONS
-        mlist.filter_content = config.DEFAULT_FILTER_CONTENT
-        mlist.collapse_alternatives = config.DEFAULT_COLLAPSE_ALTERNATIVES
+            Defaults.DEFAULT_FILTER_FILENAME_EXTENSIONS)
+        mlist.pass_filename_extensions = (
+            Defaults.DEFAULT_PASS_FILENAME_EXTENSIONS)
+        mlist.filter_content = Defaults.DEFAULT_FILTER_CONTENT
+        mlist.collapse_alternatives = Defaults.DEFAULT_COLLAPSE_ALTERNATIVES
         mlist.convert_html_to_plaintext = (
-            config.DEFAULT_CONVERT_HTML_TO_PLAINTEXT)
-        mlist.filter_action = config.DEFAULT_FILTER_ACTION
+            Defaults.DEFAULT_CONVERT_HTML_TO_PLAINTEXT)
+        mlist.filter_action = Defaults.DEFAULT_FILTER_ACTION
         # Digest related variables
-        mlist.digestable = config.DEFAULT_DIGESTABLE
-        mlist.digest_is_default = config.DEFAULT_DIGEST_IS_DEFAULT
-        mlist.mime_is_default_digest = config.DEFAULT_MIME_IS_DEFAULT_DIGEST
-        mlist.digest_size_threshhold = config.DEFAULT_DIGEST_SIZE_THRESHHOLD
-        mlist.digest_send_periodic = config.DEFAULT_DIGEST_SEND_PERIODIC
-        mlist.digest_header = config.DEFAULT_DIGEST_HEADER
-        mlist.digest_footer = config.DEFAULT_DIGEST_FOOTER
-        mlist.digest_volume_frequency = config.DEFAULT_DIGEST_VOLUME_FREQUENCY
+        mlist.digestable = Defaults.DEFAULT_DIGESTABLE
+        mlist.digest_is_default = Defaults.DEFAULT_DIGEST_IS_DEFAULT
+        mlist.mime_is_default_digest = Defaults.DEFAULT_MIME_IS_DEFAULT_DIGEST
+        mlist.digest_size_threshold = Defaults.DEFAULT_DIGEST_SIZE_THRESHOLD
+        mlist.digest_send_periodic = Defaults.DEFAULT_DIGEST_SEND_PERIODIC
+        mlist.digest_header = Defaults.DEFAULT_DIGEST_HEADER
+        mlist.digest_footer = Defaults.DEFAULT_DIGEST_FOOTER
+        mlist.digest_volume_frequency = (
+            Defaults.DEFAULT_DIGEST_VOLUME_FREQUENCY)
         mlist.one_last_digest = {}
-        mlist.digest_members = {}
         mlist.next_digest_number = 1
-        mlist.nondigestable = config.DEFAULT_NONDIGESTABLE
+        mlist.nondigestable = Defaults.DEFAULT_NONDIGESTABLE
         mlist.personalize = Personalization.none
         # New sender-centric moderation (privacy) options
         mlist.default_member_moderation = (
-            config.DEFAULT_DEFAULT_MEMBER_MODERATION)
+            Defaults.DEFAULT_DEFAULT_MEMBER_MODERATION)
         # Archiver
-        mlist.archive = config.DEFAULT_ARCHIVE
-        mlist.archive_private = config.DEFAULT_ARCHIVE_PRIVATE
+        mlist.archive = Defaults.DEFAULT_ARCHIVE
+        mlist.archive_private = Defaults.DEFAULT_ARCHIVE_PRIVATE
         mlist.archive_volume_frequency = (
-            config.DEFAULT_ARCHIVE_VOLUME_FREQUENCY)
+            Defaults.DEFAULT_ARCHIVE_VOLUME_FREQUENCY)
         mlist.emergency = False
         mlist.member_moderation_action = Action.hold
         mlist.member_moderation_notice = u''
@@ -130,9 +135,9 @@ class DefaultStyle:
         mlist.hold_these_nonmembers = []
         mlist.reject_these_nonmembers = []
         mlist.discard_these_nonmembers = []
-        mlist.forward_auto_discards = config.DEFAULT_FORWARD_AUTO_DISCARDS
+        mlist.forward_auto_discards = Defaults.DEFAULT_FORWARD_AUTO_DISCARDS
         mlist.generic_nonmember_action = (
-            config.DEFAULT_GENERIC_NONMEMBER_ACTION)
+            Defaults.DEFAULT_GENERIC_NONMEMBER_ACTION)
         mlist.nonmember_rejection_notice = u''
         # Ban lists
         mlist.ban_list = []
@@ -140,9 +145,9 @@ class DefaultStyle:
         # 2-tuple of the date of the last autoresponse and the number of
         # autoresponses sent on that date.
         mlist.hold_and_cmd_autoresponses = {}
-        mlist.subject_prefix = _(config.DEFAULT_SUBJECT_PREFIX)
-        mlist.msg_header = config.DEFAULT_MSG_HEADER
-        mlist.msg_footer = config.DEFAULT_MSG_FOOTER
+        mlist.subject_prefix = _(Defaults.DEFAULT_SUBJECT_PREFIX)
+        mlist.msg_header = Defaults.DEFAULT_MSG_HEADER
+        mlist.msg_footer = Defaults.DEFAULT_MSG_FOOTER
         # Set this to Never if the list's preferred language uses us-ascii,
         # otherwise set it to As Needed
         if Utils.GetCharSet(mlist.preferred_language) == 'us-ascii':
@@ -150,9 +155,9 @@ class DefaultStyle:
         else:
             mlist.encode_ascii_prefixes = 2
         # scrub regular delivery
-        mlist.scrub_nondigest = config.DEFAULT_SCRUB_NONDIGEST
+        mlist.scrub_nondigest = Defaults.DEFAULT_SCRUB_NONDIGEST
         # automatic discarding
-        mlist.max_days_to_hold = config.DEFAULT_MAX_DAYS_TO_HOLD
+        mlist.max_days_to_hold = Defaults.DEFAULT_MAX_DAYS_TO_HOLD
         # Autoresponder
         mlist.autorespond_postings = False
         mlist.autorespond_admin = False
@@ -169,19 +174,20 @@ class DefaultStyle:
         mlist.admin_responses = {}
         mlist.request_responses = {}
         # Bounces
-        mlist.bounce_processing = config.DEFAULT_BOUNCE_PROCESSING
-        mlist.bounce_score_threshold = config.DEFAULT_BOUNCE_SCORE_THRESHOLD
-        mlist.bounce_info_stale_after = config.DEFAULT_BOUNCE_INFO_STALE_AFTER
+        mlist.bounce_processing = Defaults.DEFAULT_BOUNCE_PROCESSING
+        mlist.bounce_score_threshold = Defaults.DEFAULT_BOUNCE_SCORE_THRESHOLD
+        mlist.bounce_info_stale_after = (
+            Defaults.DEFAULT_BOUNCE_INFO_STALE_AFTER)
         mlist.bounce_you_are_disabled_warnings = (
-            config.DEFAULT_BOUNCE_YOU_ARE_DISABLED_WARNINGS)
+            Defaults.DEFAULT_BOUNCE_YOU_ARE_DISABLED_WARNINGS)
         mlist.bounce_you_are_disabled_warnings_interval = (
-            config.DEFAULT_BOUNCE_YOU_ARE_DISABLED_WARNINGS_INTERVAL)
+            Defaults.DEFAULT_BOUNCE_YOU_ARE_DISABLED_WARNINGS_INTERVAL)
         mlist.bounce_unrecognized_goes_to_list_owner = (
-            config.DEFAULT_BOUNCE_UNRECOGNIZED_GOES_TO_LIST_OWNER)
+            Defaults.DEFAULT_BOUNCE_UNRECOGNIZED_GOES_TO_LIST_OWNER)
         mlist.bounce_notify_owner_on_disable = (
-            config.DEFAULT_BOUNCE_NOTIFY_OWNER_ON_DISABLE)
+            Defaults.DEFAULT_BOUNCE_NOTIFY_OWNER_ON_DISABLE)
         mlist.bounce_notify_owner_on_removal = (
-            config.DEFAULT_BOUNCE_NOTIFY_OWNER_ON_REMOVAL)
+            Defaults.DEFAULT_BOUNCE_NOTIFY_OWNER_ON_REMOVAL)
         # This holds legacy member related information.  It's keyed by the
         # member address, and the value is an object containing the bounce
         # score, the date of the last received bounce, and a count of the
@@ -190,7 +196,7 @@ class DefaultStyle:
         # New style delivery status
         mlist.delivery_status = {}
         # NNTP gateway
-        mlist.nntp_host = config.DEFAULT_NNTP_HOST
+        mlist.nntp_host = Defaults.DEFAULT_NNTP_HOST
         mlist.linked_newsgroup = u''
         mlist.gateway_to_news = False
         mlist.gateway_to_mail = False

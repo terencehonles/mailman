@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2008 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -38,8 +38,9 @@ from locknix.lockfile import Lock
 from mimetypes import guess_all_extensions
 from zope.interface import implements
 
+from mailman import Defaults
 from mailman import Utils
-from mailman.configuration import config
+from mailman.config import config
 from mailman.core.errors import DiscardMessage
 from mailman.core.plugins import get_plugin
 from mailman.i18n import _
@@ -158,7 +159,7 @@ def replace_payload_by_text(msg, text, charset):
 
 
 def process(mlist, msg, msgdata=None):
-    sanitize = config.ARCHIVE_HTML_SANITIZER
+    sanitize = Defaults.ARCHIVE_HTML_SANITIZER
     outer = True
     if msgdata is None:
         msgdata = {}
@@ -409,7 +410,7 @@ def save_attachment(mlist, msg, dir, filter_html=True):
     filename, fnext = os.path.splitext(filename)
     # For safety, we should confirm this is valid ext for content-type
     # but we can use fnext if we introduce fnext filtering
-    if config.SCRUBBER_USE_ATTACHMENT_FILENAME_EXTENSION:
+    if Defaults.SCRUBBER_USE_ATTACHMENT_FILENAME_EXTENSION:
         # HTML message doesn't have filename :-(
         ext = fnext or guess_extension(ctype, fnext)
     else:
@@ -430,7 +431,7 @@ def save_attachment(mlist, msg, dir, filter_html=True):
     with Lock(os.path.join(fsdir, 'attachments.lock')):
         # Now base the filename on what's in the attachment, uniquifying it if
         # necessary.
-        if not filename or config.SCRUBBER_DONT_USE_ATTACHMENT_FILENAME:
+        if not filename or Defaults.SCRUBBER_DONT_USE_ATTACHMENT_FILENAME:
             filebase = 'attachment'
         else:
             # Sanitize the filename given in the message headers
@@ -475,7 +476,7 @@ def save_attachment(mlist, msg, dir, filter_html=True):
         try:
             fp.write(decodedpayload)
             fp.close()
-            cmd = config.ARCHIVE_HTML_SANITIZER % {'filename' : tmppath}
+            cmd = Defaults.ARCHIVE_HTML_SANITIZER % {'filename' : tmppath}
             progfp = os.popen(cmd, 'r')
             decodedpayload = progfp.read()
             status = progfp.close()

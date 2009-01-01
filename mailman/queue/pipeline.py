@@ -1,4 +1,4 @@
-# Copyright (C) 2008 by the Free Software Foundation, Inc.
+# Copyright (C) 2008-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -22,15 +22,13 @@ through the 'preparation pipeline'.  This pipeline adds, deletes and modifies
 headers, calculates message recipients, and more.
 """
 
-from mailman.app.pipelines import process
-from mailman.configuration import config
+from mailman.core.pipelines import process
+from mailman.config import config
 from mailman.queue import Runner
 
 
 
 class PipelineRunner(Runner):
-    QDIR = config.PIPELINEQUEUE_DIR
-
     def _dispose(self, mlist, msg, msgdata):
         # Process the message through the mailing list's pipeline.
         process(mlist, msg, msgdata, mlist.pipeline)

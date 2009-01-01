@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2008 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -41,7 +41,7 @@ from string import ascii_letters, digits, whitespace, Template
 import mailman.templates
 
 from mailman import passwords
-from mailman.configuration import config
+from mailman.config import config
 from mailman.core import errors
 
 AT = '@'
@@ -475,7 +475,7 @@ def findtext(templatefile, dict=None, raw=False, lang=None, mlist=None):
         languages.add(lang)
     if mlist is not None:
         languages.add(mlist.preferred_language)
-    languages.add(config.DEFAULT_SERVER_LANGUAGE)
+    languages.add(config.mailman.default_language)
     assert None not in languages, 'None in languages'
     # Calculate the locations to scan
     searchdirs = []

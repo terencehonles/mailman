@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2008 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -29,6 +29,7 @@
 import os
 import re
 import sys
+import gzip
 import time
 import errno
 import urllib
@@ -42,24 +43,19 @@ from email.Header import decode_header, make_header
 from locknix.lockfile import Lock
 from string import Template
 
+from mailman import Defaults
 from mailman import Utils
 from mailman import i18n
 from mailman.Archiver import HyperDatabase
 from mailman.Archiver import pipermail
 from mailman.Mailbox import ArchiverMailbox
-from mailman.configuration import config
+from mailman.config import config
+
 
 log = logging.getLogger('mailman.error')
 
 # Set up i18n.  Assume the current language has already been set in the caller.
 _ = i18n._
-
-gzip = None
-if config.GZIP_ARCHIVE_TXT_FILES:
-    try:
-        import gzip
-    except ImportError:
-        pass
 
 EMPTYSTRING = ''
 NL = '\n'
@@ -180,7 +176,7 @@ def quick_maketext(templatefile, dict=None, lang=None, mlist=None):
         listname = mlist.fqdn_listname
     if lang is None:
         if mlist is None:
-            lang = config.DEFAULT_SERVER_LANGUAGE
+            lang = Defaults.DEFAULT_SERVER_LANGUAGE
         else:
             lang = mlist.preferred_language
     cachekey = (templatefile, lang, listname)
@@ -239,7 +235,7 @@ class Article(pipermail.Article):
     _last_article_time = time.time()
 
     def __init__(self, message=None, sequence=0, keepHeaders=[],
-                       lang=config.DEFAULT_SERVER_LANGUAGE, mlist=None):
+                       lang=config.mailman.default_language, mlist=None):
         self.__super_init(message, sequence, keepHeaders)
         self.prev = None
         self.next = None
@@ -256,7 +252,7 @@ class Article(pipermail.Article):
         self._lang = lang
         self._mlist = mlist
 
-        if config.ARCHIVER_OBSCURES_EMAILADDRS:
+        if Defaults.ARCHIVER_OBSCURES_EMAILADDRS:
             # Avoid i18n side-effects.  Note that the language for this
             # article (for this list) could be different from the site-wide
             # preferred language, so we need to ensure no side-effects will
@@ -331,7 +327,7 @@ class Article(pipermail.Article):
             if hasattr(self, '_mlist'):
                 self._lang = self._mlist.preferred_language
             else:
-                self._lang = config.DEFAULT_SERVER_LANGUAGE
+                self._lang = Defaults.DEFAULT_SERVER_LANGUAGE
         if not d.has_key('cenc'):
             self.cenc = None
         if not d.has_key('decoded'):
@@ -363,7 +359,7 @@ class Article(pipermail.Article):
             if email:
                 self.decoded['email'] = email
         if subject:
-            if config.ARCHIVER_OBSCURES_EMAILADDRS:
+            if Defaults.ARCHIVER_OBSCURES_EMAILADDRS:
                 with i18n.using_language(self._lang):
                     atmark = _(' at ')
                     subject = re.sub(r'([-+,.\w]+)@([-+.\w]+)',
@@ -411,7 +407,7 @@ class Article(pipermail.Article):
             d["subject_html"] = self.quote(self.subject)
             d["subject_url"] = url_quote(self.subject)
             d["in_reply_to_url"] = url_quote(self.in_reply_to)
-            if config.ARCHIVER_OBSCURES_EMAILADDRS:
+            if Defaults.ARCHIVER_OBSCURES_EMAILADDRS:
                 # Point the mailto url back to the list
                 author = re.sub('@', _(' at '), self.author)
                 emailurl = self._mlist.posting_address
@@ -515,7 +511,7 @@ class Article(pipermail.Article):
         # Coerce the body to Unicode and replace any invalid characters.
         if not isinstance(body, unicode):
             body = unicode(body, cset, 'replace')
-        if config.ARCHIVER_OBSCURES_EMAILADDRS:
+        if Defaults.ARCHIVER_OBSCURES_EMAILADDRS:
             with i18n.using_language(self._lang):
                 atmark = _(' at ')
                 body = re.sub(r'([-+,.\w]+)@([-+.\w]+)',
@@ -711,7 +707,7 @@ class HyperArchive(pipermail.T):
         # The TOC is always in the charset of the list's preferred language
         d['meta'] += html_charset % Utils.GetCharSet(mlist.preferred_language)
         # The site can disable public access to the mbox file.
-        if config.PUBLIC_MBOX:
+        if Defaults.PUBLIC_MBOX:
             template = 'archtoc.html'
         else:
             template = 'archtocnombox.html'
@@ -968,7 +964,7 @@ class HyperArchive(pipermail.T):
     def write_index_entry(self, article):
         subject = self.get_header("subject", article)
         author = self.get_header("author", article)
-        if config.ARCHIVER_OBSCURES_EMAILADDRS:
+        if Defaults.ARCHIVER_OBSCURES_EMAILADDRS:
             try:
                 author = re.sub('@', _(' at '), author)
             except UnicodeError:
@@ -1044,7 +1040,7 @@ class HyperArchive(pipermail.T):
     def update_archive(self, archive):
         self.__super_update_archive(archive)
         # only do this if the gzip module was imported globally, and
-        # gzip'ing was enabled via config.GZIP_ARCHIVE_TXT_FILES.  See
+        # gzip'ing was enabled via Defaults.GZIP_ARCHIVE_TXT_FILES.  See
         # above.
         if gzip:
             archz = None
@@ -1141,7 +1137,7 @@ class HyperArchive(pipermail.T):
                 if j != -1 and (j < k or k == -1):
                     text = jr.group(1)
                     length = len(text)
-                    if config.ARCHIVER_OBSCURES_EMAILADDRS:
+                    if Defaults.ARCHIVER_OBSCURES_EMAILADDRS:
                         text = re.sub('@', atmark, text)
                         URL = self.maillist.GetScriptURL(
                             'listinfo', absolute=1)

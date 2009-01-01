@@ -7,7 +7,6 @@ scrub attachments from messages so that binary goop doesn't end up in an
 archive message.
 
     >>> from mailman.pipeline.scrubber import process, save_attachment
-    >>> from mailman.configuration import config
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> mlist.preferred_language = u'en'
 
@@ -51,7 +50,8 @@ filename suggested in the message's Content-Disposition: header or not.  If
 enabled, the filename will be used when this header attribute is present (yes,
 this is an unfortunate double negative).
 
-    >>> config.SCRUBBER_DONT_USE_ATTACHMENT_FILENAME = False
+    >>> from mailman import Defaults
+    >>> Defaults.SCRUBBER_DONT_USE_ATTACHMENT_FILENAME = False
     >>> msg = message_from_string("""\
     ... Content-Type: image/gif; name="xtest.gif"
     ... Content-Transfer-Encoding: base64
@@ -80,7 +80,7 @@ The site administrator can also configure Mailman to ignore the
 Content-Disposition: filename.  This is the default for reasons described in
 the Defaults.py.in file.
 
-    >>> config.SCRUBBER_DONT_USE_ATTACHMENT_FILENAME = True
+    >>> Defaults.SCRUBBER_DONT_USE_ATTACHMENT_FILENAME = True
     >>> msg = message_from_string("""\
     ... Content-Type: image/gif; name="xtest.gif"
     ... Content-Transfer-Encoding: base64

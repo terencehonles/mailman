@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2008 by the Free Software Foundation, Inc.
+# Copyright (C) 2006-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -21,8 +21,10 @@ __all__ = [
     ]
 
 import os
+import logging
 
 from locknix.lockfile import Lock
+from lazr.config import as_boolean
 from pkg_resources import resource_string
 from storm.locals import create_database, Store
 from string import Template
@@ -31,14 +33,16 @@ from zope.interface import implements
 
 import mailman.version
 
-from mailman.configuration import config
+from mailman.config import config
 from mailman.database.listmanager import ListManager
 from mailman.database.messagestore import MessageStore
 from mailman.database.pending import Pendings
 from mailman.database.requests import Requests
 from mailman.database.usermanager import UserManager
 from mailman.database.version import Version
-from mailman.interfaces import IDatabase, SchemaVersionMismatchError
+from mailman.interfaces.database import IDatabase, SchemaVersionMismatchError
+
+log = logging.getLogger('mailman.config')
 
 
 
@@ -82,8 +86,8 @@ class StockDatabase:
 
     def _create(self, debug):
         # Calculate the engine url.
-        url = Template(config.DEFAULT_DATABASE_URL).safe_substitute(
-            config.paths)
+        url = Template(config.database.url).safe_substitute(config.paths)
+        log.debug('Database url: %s', url)
         # XXX By design of SQLite, database file creation does not honor
         # umask.  See their ticket #1193:
         # http://www.sqlite.org/cvstrac/tktview?tn=1193,31
@@ -101,7 +105,7 @@ class StockDatabase:
         touch(url)
         database = create_database(url)
         store = Store(database)
-        database.DEBUG = (config.DEFAULT_DATABASE_ECHO
+        database.DEBUG = (as_boolean(config.database.debug)
                           if debug is None else debug)
         # Check the sqlite master database to see if the version file exists.
         # If so, then we assume the database schema is correctly initialized.

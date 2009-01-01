@@ -1,4 +1,4 @@
-# Copyright (C) 2003-2008 by the Free Software Foundation, Inc.
+# Copyright (C) 2003-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -17,24 +17,21 @@
 
 import time
 
-from mailman.configuration import config
-from mailman.queue import Runner, Switchboard
+from mailman.config import config
+from mailman.queue import Runner
 
 
 
 class RetryRunner(Runner):
-    QDIR = config.RETRYQUEUE_DIR
-    SLEEPTIME = config.minutes(15)
-
     def __init__(self, slice=None, numslices=1):
         Runner.__init__(self, slice, numslices)
-        self.__outq = Switchboard(config.OUTQUEUE_DIR)
+        self._outq = config.switchboards['out']
 
     def _dispose(self, mlist, msg, msgdata):
         # Move it to the out queue for another retry
-        self.__outq.enqueue(msg, msgdata)
+        self._outq.enqueue(msg, msgdata)
         return False
 
     def _snooze(self, filecnt):
         # We always want to snooze
-        time.sleep(float(self.SLEEPTIME))
+        time.sleep(self.sleep_float)

@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2008 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -693,11 +693,6 @@ USE_MAILDIR = No
 #     alias_maps = hash:/etc/aliases, hash:<prefix>/data/aliases
 USE_LMTP = No
 
-# Change LMTP_HOST and LMTP_PORT for your convenience.  You should be careful
-# enough to use a firewall if you open your port on global address interface.
-LMTP_HOST = 'localhost'
-LMTP_PORT = 8025
-
 # Name of the domains which operate on LMTP Mailman only.  Currently valid
 # only for Postfix alias generation.
 LMTP_ONLY_DOMAINS = []
@@ -1051,7 +1046,7 @@ DEFAULT_DIGEST_FOOTER = DEFAULT_MSG_FOOTER
 
 DEFAULT_DIGEST_IS_DEFAULT = No
 DEFAULT_MIME_IS_DEFAULT_DIGEST = No
-DEFAULT_DIGEST_SIZE_THRESHHOLD = 30     # KB
+DEFAULT_DIGEST_SIZE_THRESHOLD = 30     # KB
 DEFAULT_DIGEST_SEND_PERIODIC = Yes
 
 # Headers which should be kept in both RFC 1153 (plain) and MIME digests.  RFC

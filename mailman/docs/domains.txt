@@ -2,55 +2,16 @@ Domains
 =======
 
 Domains are how Mailman interacts with email host names and web host names.
-Generally, new domains are registered in the mailman.cfg configuration file by
-calling the add_domain() method.
+Generally, new domains are registered in the mailman.cfg configuration file.
+We simulate that here by pushing new configurations.
 
-At a minimum, the email host name must be specified.
-
-    >>> from mailman.configuration import config
-    >>> config.add_domain('example.net')
-
-The domain object can be looked up by email host name.
-
-    >>> from zope.interface.verify import verifyObject
-    >>> from mailman.interfaces.domain import IDomain
-    >>> domain = config.domains['example.net']
-    >>> verifyObject(IDomain, domain)
-    True
-
-    >>> print domain.email_host
-    example.net
-
-The base url is calculated by default if not given.
-
-    >>> print domain.base_url
-    http://example.net
-
-There is no description by default.
-
-    >>> print domain.description
-    None
-
-By default, the contact address is the domain's postmaster.
-
-    >>> print domain.contact_address
-    postmaster@example.net
-
-And the url_host is by default the same as the email host.
-
-    >>> print domain.url_host
-    example.net
-
-
-Full specification
-------------------
-
-The domain can also be much more fully defined.
-
-    >>> config.add_domain(
-    ...     'example.org', 'https://mail.example.org',
-    ...     'The example domain',
-    ...     'postmaster@mail.example.org')
+    >>> config.push('example.org', """
+    ... [domain.example_dot_org]
+    ... email_host: example.org
+    ... base_url: https://mail.example.org
+    ... description: The example domain
+    ... contact_address: postmaster@mail.example.org
+    ... """)
 
     >>> domain = config.domains['example.org']
     >>> print domain.email_host
@@ -77,3 +38,9 @@ Confirmation tokens can be added to either the email confirmation address...
 
     >>> print domain.confirm_url('abc')
     https://mail.example.org/confirm/abc
+
+
+Clean up
+--------
+
+    >>> config.pop('example.org')

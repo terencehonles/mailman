@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2008 by the Free Software Foundation, Inc.
+# Copyright (C) 2006-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -29,8 +29,8 @@ import os
 from zope.interface.interface import adapter_hooks
 from zope.interface.verify import verifyObject
 
-import mailman.configuration
-import mailman.loginit
+import mailman.config.config
+import mailman.core.logging
 
 from mailman.core.plugins import get_plugin
 from mailman.interfaces import IDatabase
@@ -42,7 +42,7 @@ from mailman.interfaces import IDatabase
 # initialization, but before database initialization.  Generally all other
 # code will just call initialize().
 
-def initialize_1(config_path, propagate_logs):
+def initialize_1(config_path=None, propagate_logs=None):
     """First initialization step.
 
     * The configuration system
@@ -52,7 +52,7 @@ def initialize_1(config_path, propagate_logs):
     :param config_path: The path to the configuration file.
     :type config_path: string
     :param propagate_logs: Should the log output propagate to stderr?
-    :type propagate_logs: boolean
+    :type propagate_logs: boolean or None
     """
     # By default, set the umask so that only owner and group can read and
     # write our files.  Specifically we must have g+rw and we probably want
@@ -61,10 +61,10 @@ def initialize_1(config_path, propagate_logs):
     # restrictive permissions in order to handle private archives, but it
     # handles that correctly.
     os.umask(007)
-    mailman.configuration.config.load(config_path)
+    mailman.config.config.load(config_path)
     # Create the queue and log directories if they don't already exist.
-    mailman.configuration.config.ensure_directories_exist()
-    mailman.loginit.initialize(propagate_logs)
+    mailman.config.config.ensure_directories_exist()
+    mailman.core.logging.initialize(propagate_logs)
 
 
 def initialize_2(debug=False):
@@ -85,7 +85,7 @@ def initialize_2(debug=False):
     database = database_plugin()
     verifyObject(IDatabase, database)
     database.initialize(debug)
-    mailman.configuration.config.db = database
+    mailman.config.config.db = database
     # Initialize the rules and chains.  Do the imports here so as to avoid
     # circular imports.
     from mailman.app.commands import initialize as initialize_commands
@@ -93,6 +93,7 @@ def initialize_2(debug=False):
     from mailman.core.chains import initialize as initialize_chains
     from mailman.core.pipelines import initialize as initialize_pipelines
     from mailman.core.rules import initialize as initialize_rules
+    # Order here is somewhat important.
     initialize_archivers()
     initialize_rules()
     initialize_chains()
@@ -110,7 +111,7 @@ def initialize_3():
 
 
 
-def initialize(config_path=None, propagate_logs=False):
+def initialize(config_path=None, propagate_logs=None):
     initialize_1(config_path, propagate_logs)
     initialize_2()
     initialize_3()

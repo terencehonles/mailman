@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2008 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -25,10 +25,9 @@ import logging
 
 from zope.interface import implements
 
-from mailman.configuration import config
+from mailman.config import config
 from mailman.i18n import _
 from mailman.interfaces import IHandler
-from mailman.queue import Switchboard
 
 COMMASPACE = ', '
 
@@ -62,5 +61,5 @@ class ToUsenet:
                       COMMASPACE.join(error))
             return
         # Put the message in the news runner's queue
-        newsq = Switchboard(config.NEWSQUEUE_DIR)
-        newsq.enqueue(msg, msgdata, listname=mlist.fqdn_listname)
+        config.switchboards['news'].enqueue(
+            msg, msgdata, listname=mlist.fqdn_listname)

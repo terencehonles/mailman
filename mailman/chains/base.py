@@ -1,4 +1,4 @@
-# Copyright (C) 2008 by the Free Software Foundation, Inc.
+# Copyright (C) 2008-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -27,7 +27,7 @@ __all__ = [
 
 from zope.interface import implements
 
-from mailman.configuration import config
+from mailman.config import config
 from mailman.interfaces import (
     IChain, IChainIterator, IChainLink, IMutableChain, LinkAction)
 

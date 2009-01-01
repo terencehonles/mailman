@@ -1,5 +1,5 @@
 Mailman - The GNU Mailing List Management System
-Copyright (C) 1998-2008 by the Free Software Foundation, Inc.
+Copyright (C) 1998-2009 by the Free Software Foundation, Inc.
 
 INTRODUCTION
 
@@ -38,12 +38,9 @@ INTRODUCTION
 
         http://wiki.list.org
 
-    Mailman 3.0 requires Python 2.5 or greater, which can be downloaded from:
+    Mailman 3.0 requires Python 2.6 or greater, which can be downloaded from:
 
         http://www.python.org
-
-    It is recommended that you use at least Python 2.5.2, the latest release
-    as of this writing (31-Mar-2008).
 
 
 FEATURES

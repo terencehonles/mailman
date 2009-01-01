@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2008 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -17,14 +17,16 @@
 
 """The administrivia rule."""
 
-__all__ = ['Administrivia']
 __metaclass__ = type
+__all__ = [
+    'Administrivia',
+    ]
 
 
 from email.iterators import typed_subpart_iterator
 from zope.interface import implements
 
-from mailman.configuration import config
+from mailman.config import config
 from mailman.i18n import _
 from mailman.interfaces import IRule
 
@@ -80,7 +82,7 @@ class Administrivia:
                 if line == '':
                     continue
                 lineno += 1
-                if lineno > config.EMAIL_COMMANDS_MAX_LINES:
+                if lineno > config.mailman.email_commands_max_lines:
                     break
                 lines_to_check.append(line)
             # Only look at the first text/plain part.

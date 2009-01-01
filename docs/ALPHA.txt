@@ -1,5 +1,5 @@
 Mailman - The GNU Mailing List Management System
-Copyright (C) 2008 by the Free Software Foundation, Inc.
+Copyright (C) 2008-2009 by the Free Software Foundation, Inc.
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 
 ALPHA RELEASE
@@ -7,22 +7,44 @@ ALPHA RELEASE
     The Mailman 3 alpha releases are being provided to give developers and
     other interested people early looks at the next major version.  As such,
     many things may not work yet.  Your feedback and contributions are
-    welcome.  At this time, please do not submit bug reports, but please
-    provide your comments on the mailman-developers mailing list.
+    welcome.  Bug reports are welcome on the Mailman bug tracker at
+
+    https://bugs.launchpad.net/mailman
+
+    or on the mailman-developers mailing list.
 
 
 USING THE ALPHA
 
-    Start by using setuptools to build the code.  Here's what I do, season to
-    taste.  Python 2.5 is required.
+    Python 2.6 is required.  It can either be the default 'python' on your
+    $PATH or it can be accessible via the 'python2.6' binary.  See
+    http://www.python.org for details on getting Python 2.6.
 
-    % mkdir staging
-    % export PYTHONPATH=`pwd`/staging
-    % python2.5 setup.py develop -d staging
+    Mailman 3 is now based on the zc.buildout infrastructure, which greatly
+    simplifies building and testing Mailman.
 
-    Now you can run the test suite.
+    This version of Mailman depends on an unofficial branch of the lazr.config
+    package.  This branch adds a number of useful features and fixes some
+    bugs, but it is still under review and not yet part of the official
+    package.  Start by checking out this unofficial branch:
 
-    % staging/bin/testall
+    % cd wherever
+    % bzr branch lp:~barry/lazr.config/megamerge
+
+    Now you need to edit Mailman's buildout.cfg file.  Look for the 'develop'
+    line under the [buildout] section.  Change the path to the megamerge
+    package to point to the location of your checked out branch above.
+
+    You do not need anything other than Python 2.6 and an internet connection
+    to get all the other Mailman 3 dependencies.  Here are the commands to
+    build everything:
+
+    % python2.6 bootstrap.py
+    % bin/buildout
+
+    Now you can run the test suite via:
+
+    % bin/test
 
     You should see no failures.
 
@@ -31,23 +53,29 @@ USING THE ALPHA
     first, so they should give you a pretty good idea how various components
     of Mailman 3 works.
 
-    What, you actually want to /run/ Mailman 3?  Oh well, okay.  First you
-    have to create a Mailman instance (as with all commands you can use --help
-    to get a list of options).
+    What, you actually want to /run/ Mailman 3?  Oh well, if you insist.  You
+    will need to set up a configuration file to override the defaults and set
+    things up for your environment.  Currently Mailman 3 is configured with a
+    bastard mix of the old configuration system and lazr.config, which is an
+    ini-style configuration system.  Eventually all configuration will be
+    converted to lazr.config.
 
-    % staging/bin/make_instance -d var
+    For now though, start by looking through mailman/config/schema.cfg.
+    Create a file for your overrides; it can be called anything and can live
+    anywhere, but I like to call it 'mailman.cfg'.  For any value in
+    schema.cfg you want to override, just add a section header (the
+    square-bracketed names) and then the 'key: value' pair you want to
+    override.
 
-    Look at mailman/Defaults.py and and mailman/configuration.py, and edit
-    var/etc/mailman.cfg as necessary.  You will almost definitely want to add
-    at least one add_domain() call.  You may also want to set LOG_CONFIG_FILE
-    if you want to get more detailed logging, and USE_LMTP to turn on the LMTP
-    server.
+    You will need to pass the -C flag to any bin command you want to invoke,
+    pointing it at your mailman.cfg file.  The next release will make this
+    simpler by searching some default locations.
 
     You can use the create_list, remove_list, list_lists, add_members, and
-    list_members to set up and populate some mailing lists.  You of coruse
+    list_members to set up and populate some mailing lists.  You of course
     also need to use mailmanctl to start the queue runners, and then you can
     use the inject command to put some messages into the queue.   For the most
-    part, they ought to get delivered <wink>
+    part, they ought to get delivered <wink>.
 
     Please note that the web u/i does /not/ work yet.
 

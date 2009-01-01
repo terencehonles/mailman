@@ -12,7 +12,6 @@ When Mailman needs to send a message to a user, it creates a UserNotification
 instance, and then calls the .send() method on this object.  This method
 requires a mailing list instance.
 
-    >>> from mailman.configuration import config
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> mlist.preferred_language = u'en'
 
@@ -29,8 +28,7 @@ address, an optional subject, optional body text, and optional language.
 
 The message will end up in the virgin queue.
 
-    >>> from mailman.queue import Switchboard
-    >>> switchboard = Switchboard(config.VIRGINQUEUE_DIR)
+    >>> switchboard = config.switchboards['virgin']
     >>> len(switchboard.files)
     1
     >>> filebase = switchboard.files[0]

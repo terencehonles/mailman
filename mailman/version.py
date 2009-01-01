@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2008 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -16,7 +16,7 @@
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
 # Mailman version
-VERSION = "3.0.0a1+"
+VERSION = "3.0.0a2"
 CODENAME = 'Grand Designs'
 
 # And as a hex number in the manner of PY_VERSION_HEX

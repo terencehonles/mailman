@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2008 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -28,9 +28,10 @@ from email.MIMEText import MIMEText
 from string import Template
 from zope.interface import implements
 
+from mailman import Defaults
 from mailman import Utils
 from mailman.Message import Message
-from mailman.configuration import config
+from mailman.config import config
 from mailman.i18n import _
 from mailman.interfaces import IHandler
 
@@ -204,7 +205,7 @@ def decorate(mlist, template, extradict=None):
              web_page_url   = mlist.web_page_url,
              description    = mlist.description,
              info           = mlist.info,
-             cgiext         = config.CGIEXT,
+             cgiext         = Defaults.CGIEXT,
              )
     if extradict is not None:
         d.update(extradict)

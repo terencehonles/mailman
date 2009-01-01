@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2008 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -34,7 +34,7 @@ from string import Template
 
 from mailman import Mailbox
 from mailman import Utils
-from mailman.configuration import config
+from mailman.config import config
 from mailman.i18n import _
 
 log = logging.getLogger('mailman.error')

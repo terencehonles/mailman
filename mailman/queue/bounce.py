@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2008 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -27,10 +27,11 @@ from email.MIMEMessage import MIMEMessage
 from email.MIMEText import MIMEText
 from email.Utils import parseaddr
 
+from mailman import Defaults
 from mailman import Utils
 from mailman.Bouncers import BouncerAPI
 from mailman.Message import UserNotification
-from mailman.configuration import config
+from mailman.config import config
 from mailman.i18n import _
 from mailman.queue import Runner, Switchboard
 
@@ -80,7 +81,7 @@ class BounceMixin:
         self._bounce_events_fp = None
         self._bouncecnt = 0
         self._nextaction = (datetime.datetime.now() +
-                            config.REGISTER_BOUNCES_EVERY)
+                            Defaults.REGISTER_BOUNCES_EVERY)
 
     def _queue_bounces(self, listname, addrs, msg):
         today = datetime.date.today()
@@ -132,7 +133,7 @@ class BounceMixin:
         if self._nextaction > now or self._bouncecnt == 0:
             return
         # Let's go ahead and register the bounces we've got stored up
-        self._nextaction = now + config.REGISTER_BOUNCES_EVERY
+        self._nextaction = now + Defaults.REGISTER_BOUNCES_EVERY
         self._register_bounces()
 
     def _probe_bounce(self, mlist, token):
@@ -153,7 +154,7 @@ class BounceMixin:
 
 
 class BounceRunner(Runner, BounceMixin):
-    QDIR = config.BOUNCEQUEUE_DIR
+    """The bounce runner."""
 
     def __init__(self, slice=None, numslices=1):
         Runner.__init__(self, slice, numslices)
@@ -162,7 +163,6 @@ class BounceRunner(Runner, BounceMixin):
     def _dispose(self, mlist, msg, msgdata):
         # Make sure we have the most up-to-date state
         mlist.Load()
-        outq = Switchboard(config.OUTQUEUE_DIR)
         # There are a few possibilities here:
         #
         # - the message could have been VERP'd in which case, we know exactly
@@ -176,14 +176,15 @@ class BounceRunner(Runner, BounceMixin):
         # owner address.  That way, if a list owner address bounces, at least
         # some human has a chance to deal with it.  Is this a bounce for a
         # message to a list owner, coming to the site owner?
-        if msg.get('to', '') == config.SITE_OWNER_ADDRESS:
+        if msg.get('to', '') == config.mailman.site_owner:
             # Send it on to the site owners, but craft the envelope sender to
             # be the noreply address, so if the site owner bounce, we won't
             # get stuck in a bounce loop.
-            outq.enqueue(msg, msgdata,
-                         recips=[config.SITE_OWNER_ADDRESS],
-                         envsender=config.NO_REPLY_ADDRESS,
-                         )
+            config.switchboards['out'].enqueue(
+                msg, msgdata,
+                recips=[config.mailman.site_owner],
+                envsender=config.mailman.noreply_address,
+                )
         # List isn't doing bounce processing?
         if not mlist.bounce_processing:
             return
@@ -241,7 +242,7 @@ def verp_bounce(mlist, msg):
         to = parseaddr(field)[1]
         if not to:
             continue                          # empty header
-        mo = re.search(config.VERP_REGEXP, to)
+        mo = re.search(Defaults.VERP_REGEXP, to)
         if not mo:
             continue                          # no match of regexp
         try:
@@ -251,7 +252,7 @@ def verp_bounce(mlist, msg):
             addr = '%s@%s' % mo.group('mailbox', 'host')
         except IndexError:
             elog.error("VERP_REGEXP doesn't yield the right match groups: %s",
-                       config.VERP_REGEXP)
+                       Defaults.VERP_REGEXP)
             return []
         return [addr]
 
@@ -272,7 +273,7 @@ def verp_probe(mlist, msg):
         to = parseaddr(field)[1]
         if not to:
             continue                          # empty header
-        mo = re.search(config.VERP_PROBE_REGEXP, to)
+        mo = re.search(Defaults.VERP_PROBE_REGEXP, to)
         if not mo:
             continue                          # no match of regexp
         try:
@@ -286,7 +287,7 @@ def verp_probe(mlist, msg):
         except IndexError:
             elog.error(
                 "VERP_PROBE_REGEXP doesn't yield the right match groups: %s",
-                config.VERP_PROBE_REGEXP)
+                Defaults.VERP_PROBE_REGEXP)
     return None
 
 

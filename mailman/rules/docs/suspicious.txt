@@ -5,7 +5,6 @@ Suspicious headers are a way for Mailman to hold messages that match a
 particular regular expression.  This mostly historical feature is fairly
 confusing to users, and the list attribute that controls this is misnamed.
 
-    >>> from mailman.configuration import config
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> rule = config.rules['suspicious-header']
     >>> rule.name

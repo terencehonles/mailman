@@ -6,7 +6,6 @@ original message.  A handler module takes care of this based on the settings
 of the mailing list and the type of message being processed.
 
     >>> from mailman.pipeline.decorate import process
-    >>> from mailman.configuration import config
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> msg_text = """\
     ... From: aperson@example.org

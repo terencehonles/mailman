@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2008 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -37,11 +37,10 @@ from mailman import i18n
 from mailman.app.membership import add_member, delete_member
 from mailman.app.notifications import (
     send_admin_subscription_notice, send_welcome_message)
-from mailman.configuration import config
+from mailman.config import config
 from mailman.core import errors
 from mailman.interfaces import Action, DeliveryMode, RequestType
 from mailman.interfaces.member import AlreadySubscribedError
-from mailman.queue import Switchboard
 
 _ = i18n._
 
@@ -141,8 +140,7 @@ def handle_message(mlist, id, action,
                   msg.get('message-id', 'n/a'))
         # Stick the message back in the incoming queue for further
         # processing.
-        inq = Switchboard(config.INQUEUE_DIR)
-        inq.enqueue(msg, _metadata=msgdata)
+        config.switchboards['in'].enqueue(msg, _metadata=msgdata)
     else:
         raise AssertionError('Unexpected action: %s' % action)
     # Forward the message.

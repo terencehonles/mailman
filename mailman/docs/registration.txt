@@ -8,7 +8,6 @@ may supply.  All registered email addresses must be verified before Mailman
 will send them any list traffic.
 
     >>> from mailman.app.registrar import Registrar
-    >>> from mailman.configuration import config
     >>> from mailman.interfaces import IRegistrar
 
 The IUserManager manages users, but it does so at a fairly low level.
@@ -19,7 +18,13 @@ stuff.
 Add a domain, which will provide the context for the verification email
 message.
 
-    >>> config.add_domain('mail.example.com', 'http://mail.example.com')
+    >>> config.push('mail', """
+    ... [domain.mail_example_dot_com]
+    ... email_host: mail.example.com
+    ... base_url: http://mail.example.com
+    ... contact_address: postmaster@mail.example.com
+    ... """)
+
     >>> domain = config.domains['mail.example.com']
 
 Get a registrar by adapting a context to the interface.
@@ -115,8 +120,7 @@ Verification by email
 There is also a verification email sitting in the virgin queue now.  This
 message is sent to the user in order to verify the registered address.
 
-    >>> from mailman.queue import Switchboard
-    >>> switchboard = Switchboard(config.VIRGINQUEUE_DIR)
+    >>> switchboard = config.switchboards['virgin']
     >>> len(switchboard.files)
     1
     >>> filebase = switchboard.files[0]
@@ -351,3 +355,9 @@ But after confirmation, he is.
     >>> print mlist.members.get_member(u'fred.person@example.com')
     <Member: Fred Person <fred.person@example.com>
              on alpha@example.com as MemberRole.member>
+
+
+Clean up
+--------
+
+    >>> config.pop('mail')

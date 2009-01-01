@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2008 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -15,7 +15,17 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Harness for testing Mailman's documentation."""
+"""Harness for testing Mailman's documentation.
+
+Note that doctest extraction does not currently work for zip file
+distributions.  doctest discovery currently requires file system traversal.
+"""
+
+__metaclass__ = type
+__all__ = [
+    'test_suite',
+    ]
+
 
 import os
 import random
@@ -27,13 +37,29 @@ from email import message_from_string
 import mailman
 
 from mailman.Message import Message
-from mailman.configuration import config
-from mailman.core.styles import style_manager
-from mailman.testing.helpers import SMTPServer
+from mailman.config import config
+from mailman.testing.layers import SMTPLayer
 
 
 DOT = '.'
 COMMASPACE = ', '
+
+
+
+class chdir:
+    """A context manager for temporary directory changing."""
+    def __init__(self, directory):
+        self._curdir = None
+        self._directory = directory
+
+    def __enter__(self):
+        self._curdir = os.getcwd()
+        os.chdir(self._directory)
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        os.chdir(self._curdir)
+        # Don't suppress exceptions.
+        return False
 
 
 
@@ -63,47 +89,15 @@ def stop():
 
 def setup(testobj):
     """Test setup."""
-    smtpd = SMTPServer()
-    smtpd.start()
     # In general, I don't like adding convenience functions, since I think
     # doctests should do the imports themselves.  It makes for better
     # documentation that way.  However, a few are really useful, or help to
     # hide some icky test implementation details.
-    testobj.globs['message_from_string'] = specialized_message_from_string
     testobj.globs['commit'] = config.db.commit
-    testobj.globs['smtpd'] = smtpd
+    testobj.globs['config'] = config
+    testobj.globs['message_from_string'] = specialized_message_from_string
+    testobj.globs['smtpd'] = SMTPLayer.smtpd
     testobj.globs['stop'] = stop
-    # Stash the current state of the global domains away for restoration in
-    # the teardown.
-    testobj._domains = config.domains.copy()
-
-
-
-def cleaning_teardown(testobj):
-    """Clear all persistent data at the end of a doctest."""
-    # Clear the database of all rows.
-    config.db._reset()
-    # Reset the global domains.
-    config.domains = testobj._domains
-    # Remove all but the default style.
-    for style in style_manager.styles:
-        if style.name <> 'default':
-            style_manager.unregister(style)
-    # Remove all queue files.
-    for dirpath, dirnames, filenames in os.walk(config.QUEUE_DIR):
-        for filename in filenames:
-            os.remove(os.path.join(dirpath, filename))
-    # Clear out messages in the message store.
-    for message in config.db.message_store.messages:
-        config.db.message_store.delete_message(message['message-id'])
-    config.db.commit()
-    # Reset all archivers by disabling them.
-    for archiver in config.archivers.values():
-        archiver.is_enabled = False
-    # Shutdown the smtp server.
-    smtpd = testobj.globs['smtpd']
-    smtpd.clear()
-    smtpd.stop()
 
 
 
@@ -120,27 +114,29 @@ def test_suite():
     flags = (doctest.ELLIPSIS |
              doctest.NORMALIZE_WHITESPACE |
              doctest.REPORT_NDIFF)
-    if config.tests.verbosity <= 2:
-        flags |= doctest.REPORT_ONLY_FIRST_FAILURE
+##     if config.tests.verbosity <= 2:
+##         flags |= doctest.REPORT_ONLY_FIRST_FAILURE
     # Add all the doctests in all subpackages.
     doctest_files = {}
-    for docsdir in packages:
-        for filename in os.listdir(os.path.join('mailman', docsdir)):
-            if os.path.splitext(filename)[1] == '.txt':
-                doctest_files[filename] = os.path.join(docsdir, filename)
+    with chdir(topdir):
+        for docsdir in packages:
+            for filename in os.listdir(docsdir):
+                if os.path.splitext(filename)[1] == '.txt':
+                    doctest_files[filename] = os.path.join(docsdir, filename)
     # Sort or randomize the tests.
-    if config.tests.randomize:
-        files = doctest_files.keys()
-        random.shuffle(files)
-    else:
-        files = sorted(doctest_files)
+##     if config.tests.randomize:
+##         files = doctest_files.keys()
+##         random.shuffle(files)
+##     else:
+##         files = sorted(doctest_files)
+    files = sorted(doctest_files)
     for filename in files:
         path = doctest_files[filename]
         test = doctest.DocFileSuite(
             path,
             package='mailman',
             optionflags=flags,
-            setUp=setup,
-            tearDown=cleaning_teardown)
+            setUp=setup)
+        test.layer = SMTPLayer
         suite.addTest(test)
     return suite

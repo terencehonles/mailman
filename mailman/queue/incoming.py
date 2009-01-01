@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2008 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -26,14 +26,14 @@ prepared for delivery.  Rejections, discards, and holds are processed
 immediately.
 """
 
-from mailman.configuration import config
+from mailman.config import config
 from mailman.core.chains import process
 from mailman.queue import Runner
 
 
 
 class IncomingRunner(Runner):
-    QDIR = config.INQUEUE_DIR
+    """The incoming queue runner."""
 
     def _dispose(self, mlist, msg, msgdata):
         if msgdata.get('envsender') is None:

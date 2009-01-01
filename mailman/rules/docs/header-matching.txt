@@ -12,7 +12,6 @@ Because the default HEADER_MATCHES variable is empty when the configuration
 file is read, we'll just extend the current header matching chain with a
 pattern that matches 4 or more stars, discarding the message if it hits.
 
-    >>> from mailman.configuration import config
     >>> chain = config.chains['header-match']
     >>> chain.extend('x-spam-score', '[*]{4,}', 'discard')
 

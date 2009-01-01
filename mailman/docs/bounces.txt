@@ -13,7 +13,6 @@ Mailman can also bounce messages back to the original sender.  This is
 essentially equivalent to rejecting the message with notification.  Mailing
 lists can bounce a message with an optional error message.
 
-    >>> from mailman.configuration import config
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> mlist.preferred_language = u'en'
 
@@ -31,8 +30,7 @@ Bounce a message by passing in the original message, and an optional error
 message.  The bounced message ends up in the virgin queue, awaiting sending
 to the original messageauthor.
 
-    >>> from mailman.queue import Switchboard
-    >>> switchboard = Switchboard(config.VIRGINQUEUE_DIR)
+    >>> switchboard = config.switchboards['virgin']
     >>> from mailman.app.bounces import bounce_message
     >>> bounce_message(mlist, msg)
     >>> len(switchboard.files)

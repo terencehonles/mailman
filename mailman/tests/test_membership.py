@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2008 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -23,7 +23,7 @@ import unittest
 
 from mailman import Utils
 from mailman import passwords
-from mailman.configuration import config
+from mailman.config import config
 from mailman.core.errors import NotAMemberError
 
 

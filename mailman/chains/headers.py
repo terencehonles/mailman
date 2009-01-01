@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2008 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -30,7 +30,7 @@ from zope.interface import implements
 from mailman.interfaces import IChainIterator, IRule, LinkAction
 from mailman.chains.base import Chain, Link
 from mailman.i18n import _
-from mailman.configuration import config
+from mailman.config import config
 
 
 log = logging.getLogger('mailman.vette')
@@ -104,7 +104,7 @@ class HeaderMatchChain(Chain):
         self._links = []
         # Initialize header check rules with those from the global
         # HEADER_MATCHES variable.
-        for entry in config.HEADER_MATCHES:
+        for entry in config.header_matches:
             self._links.append(make_link(entry))
         # Keep track of how many global header matching rules we've seen.
         # This is so the flush() method will only delete those that were added

@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2008 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -29,7 +29,7 @@ import cPickle as pickle
 from zope.interface import implements
 
 from mailman import Utils
-from mailman.configuration import config
+from mailman.config import config
 from mailman.database.message import Message
 from mailman.interfaces import IMessageStore
 

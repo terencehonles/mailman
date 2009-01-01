@@ -4,7 +4,6 @@ The 'end' command
 The mail command processor recognized an 'end' command which tells it to stop
 processing email messages.
 
-    >>> from mailman.configuration import config
     >>> command = config.commands['end']
     >>> command.name
     'end'

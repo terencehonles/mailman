@@ -1,4 +1,4 @@
-# Copyright (C) 2000-2008 by the Free Software Foundation, Inc.
+# Copyright (C) 2000-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -26,8 +26,9 @@ import logging
 
 from datetime import datetime
 
+from mailman import Defaults
 from mailman import Message
-from mailman.configuration import config
+from mailman.config import config
 from mailman.core import errors
 from mailman.queue import Runner, Switchboard
 from mailman.queue.bounce import BounceMixin
@@ -41,19 +42,19 @@ log = logging.getLogger('mailman.error')
 
 
 class OutgoingRunner(Runner, BounceMixin):
-    QDIR = config.OUTQUEUE_DIR
+    """The outgoing queue runner."""
 
     def __init__(self, slice=None, numslices=1):
         Runner.__init__(self, slice, numslices)
         BounceMixin.__init__(self)
         # We look this function up only at startup time
-        handler = config.handlers[config.DELIVERY_MODULE]
+        handler = config.handlers[Defaults.DELIVERY_MODULE]
         self._func = handler.process
         # This prevents smtp server connection problems from filling up the
         # error log.  It gets reset if the message was successfully sent, and
         # set if there was a socket.error.
         self._logged = False
-        self._retryq = Switchboard(config.RETRYQUEUE_DIR)
+        self._retryq = config.switchboards['retry']
 
     def _dispose(self, mlist, msg, msgdata):
         # See if we should retry delivery of this message again.
@@ -73,13 +74,13 @@ class OutgoingRunner(Runner, BounceMixin):
             # There was a problem connecting to the SMTP server.  Log this
             # once, but crank up our sleep time so we don't fill the error
             # log.
-            port = config.SMTPPORT
+            port = int(config.mta.port)
             if port == 0:
                 port = 'smtp'
             # Log this just once.
             if not self._logged:
                 log.error('Cannot connect to SMTP server %s on port %s',
-                          config.SMTPHOST, port)
+                          config.mta.host, port)
                 self._logged = True
             return True
         except errors.SomeRecipientsFailed, e:
@@ -115,7 +116,7 @@ class OutgoingRunner(Runner, BounceMixin):
                             return False
                     else:
                         # Keep trying to delivery this message for a while
-                        deliver_until = now + config.DELIVERY_RETRY_PERIOD
+                        deliver_until = now + Defaults.DELIVERY_RETRY_PERIOD
                     msgdata['last_recip_count'] = len(recips)
                     msgdata['deliver_until'] = deliver_until
                     msgdata['recips'] = recips

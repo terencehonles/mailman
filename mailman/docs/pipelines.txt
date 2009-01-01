@@ -21,7 +21,6 @@ Processing a message
 
 Messages hit the pipeline after they've been accepted for posting.
 
-    >>> from mailman.configuration import config
     >>> config.archivers['pipermail'].is_enabled = True
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
@@ -71,7 +70,7 @@ However there are currently no recipients for this message.
 And the message is now sitting in various other processing queues.
 
     >>> from mailman.testing.helpers import get_queue_messages
-    >>> messages = get_queue_messages(config.ARCHQUEUE_DIR)
+    >>> messages = get_queue_messages('archive')
     >>> len(messages)
     1
     >>> print messages[0].msg.as_string()
@@ -105,13 +104,13 @@ And the message is now sitting in various other processing queues.
 This mailing list is not linked to an NNTP newsgroup, so there's nothing in
 the outgoing nntp queue.
 
-    >>> messages = get_queue_messages(config.NEWSQUEUE_DIR)
+    >>> messages = get_queue_messages('news')
     >>> len(messages)
     0
 
 This is the message that will actually get delivered to end recipients.
 
-    >>> messages = get_queue_messages(config.OUTQUEUE_DIR)
+    >>> messages = get_queue_messages('out')
     >>> len(messages)
     1
     >>> print messages[0].msg.as_string()
