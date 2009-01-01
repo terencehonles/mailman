@@ -343,7 +343,8 @@ class Runner:
                 # permissions problem or a MemoryError due to a really large
                 # message.  Try to be graceful.
                 try:
-                    new_filebase = self._shunt.enqueue(msg, msgdata)
+                    shunt = config.switchboards['shunt']
+                    new_filebase = shunt.enqueue(msg, msgdata)
                     elog.error('SHUNTING: %s', new_filebase)
                     self.switchboard.finish(filebase)
                 except Exception, e:
@@ -382,7 +383,7 @@ class Runner:
         if mlist is None:
             elog.error('Dequeuing message destined for missing list: %s',
                        listname)
-            self._shunt.enqueue(msg, msgdata)
+            config.switchboards['shunt'].enqueue(msg, msgdata)
             return
         # Now process this message.  We also want to set up the language
         # context for this message.  The context will be the preferred

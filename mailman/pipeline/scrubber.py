@@ -40,6 +40,7 @@ from zope.interface import implements
 
 from mailman import Defaults
 from mailman import Utils
+from mailman.config import config
 from mailman.core.errors import DiscardMessage
 from mailman.core.plugins import get_plugin
 from mailman.i18n import _
@@ -394,7 +395,7 @@ def makedirs(dir):
 
 
 def save_attachment(mlist, msg, dir, filter_html=True):
-    fsdir = os.path.join(Defaults.PRIVATE_ARCHIVE_FILE_DIR,
+    fsdir = os.path.join(config.PRIVATE_ARCHIVE_FILE_DIR,
                          mlist.fqdn_listname, dir)
     makedirs(fsdir)
     # Figure out the attachment type and get the decoded data

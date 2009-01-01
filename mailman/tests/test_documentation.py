@@ -38,7 +38,6 @@ import mailman
 
 from mailman.Message import Message
 from mailman.config import config
-from mailman.core.styles import style_manager
 from mailman.testing.layers import SMTPLayer
 
 

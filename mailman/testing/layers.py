@@ -36,8 +36,9 @@ from textwrap import dedent
 
 from mailman.config import config
 from mailman.core import initialize
-from mailman.i18n import _
 from mailman.core.logging import get_handler
+from mailman.core.styles import style_manager
+from mailman.i18n import _
 from mailman.testing.helpers import SMTPServer
 
 
@@ -135,11 +136,13 @@ class ConfigLayer:
         cls.var_dir = None
 
     @classmethod
-    def testSetUp(self):
-        pass
+    def testSetUp(cls):
+        # Record the current (default) set of styles so that we can reset them
+        # easily in the tear down.
+        cls.styles = set(style_manager.styles)
 
     @classmethod
-    def testTearDown(self):
+    def testTearDown(cls):
         # Reset the database between tests.
         config.db._reset()
         # Remove all residual queue files.
@@ -150,6 +153,11 @@ class ConfigLayer:
         for message in config.db.message_store.messages:
             config.db.message_store.delete_message(message['message-id'])
         config.db.commit()
+        # Reset the global style manager.
+        new_styles = set(style_manager.styles) - cls.styles
+        for style in new_styles:
+            style_manager.unregister(style)
+        cls.styles = None
 
     # Flag to indicate that loggers should propagate to the console.
     stderr = False
