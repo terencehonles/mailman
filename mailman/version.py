@@ -17,7 +17,7 @@
 
 # Mailman version
 VERSION = "3.0.0a2"
-CODENAME = 'Working Man'
+CODENAME = 'Grand Designs'
 
 # And as a hex number in the manner of PY_VERSION_HEX
 ALPHA = 0xa
