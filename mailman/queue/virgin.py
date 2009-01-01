@@ -23,15 +23,13 @@ to go through some minimal processing before they can be sent out to the
 recipient.
 """
 
-from mailman.app.pipelines import process
+from mailman.core.pipelines import process
 from mailman.config import config
 from mailman.queue import Runner
 
 
 
 class VirginRunner(Runner):
-    QDIR = config.VIRGINQUEUE_DIR
-
     def _dispose(self, mlist, msg, msgdata):
         # We need to fast track this message through any pipeline handlers
         # that touch it, e.g. especially cook-headers.

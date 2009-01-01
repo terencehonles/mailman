@@ -167,7 +167,7 @@ Messages sent to a local MHonArc instance are added to its archive via a
 subprocess call.
 
     >>> archiver.archive_message(mlist, msg)
-    >>> archive_log = open(os.path.join(config.LOG_DIR, 'mailman'))
+    >>> archive_log = open(os.path.join(config.LOG_DIR, 'archiver'))
     >>> try:
     ...     contents = archive_log.read()
     ... finally:

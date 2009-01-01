@@ -32,6 +32,7 @@ import socket
 import logging
 
 from datetime import timedelta
+from lazr.config import as_boolean
 from locknix import lockfile
 from munepy import Enum
 
@@ -316,7 +317,7 @@ class Loop:
             section_name = 'qrunner.' + name
             # Let AttributeError propagate.
             qrunner_config = getattr(config, section_name)
-            if not qrunner_config.start:
+            if not as_boolean(qrunner_config.start):
                 continue
             package, class_name = qrunner_config['class'].rsplit(DOT, 1)
             __import__(package)

@@ -12,7 +12,13 @@ Start the master in a subthread.
 
     >>> master = TestableMaster()
     >>> master.start()
-    >>> len(list(master.qrunner_pids)) == len(config.qrunners)
+
+There should be a process id for every qrunner that claims to be startable.
+
+    >>> from lazr.config import as_boolean
+    >>> startable_qrunners = [qconf for qconf in config.qrunner_configs
+    ...                       if as_boolean(qconf.start)]
+    >>> len(list(master.qrunner_pids)) == len(startable_qrunners)
     True
 
 Now verify that all the qrunners are running.
