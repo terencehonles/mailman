@@ -402,7 +402,7 @@ Internationalized digests
 -------------------------
 
 When messages come in with a content-type character set different than that of
-the list's preferred language, recipients wil get an internationalized
+the list's preferred language, recipients will get an internationalized
 digest.  French is not enabled by default site-wide, so enable that now.
 
     >>> config.languages.enable_language('fr')

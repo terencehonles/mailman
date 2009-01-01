@@ -7,6 +7,49 @@ Here is a history of user visible changes to Mailman.
 3.0 alpha 2 -- "Grand Designs"
 (XX-XXX-200X)
 
+  Licensing
+
+    - Mailman 3 is now licensed under the GPLv3.
+
+  Bug fixes
+
+    - Changed bin/arch to attempt to open the mbox before wiping the old
+      archive. Launchpad bug #280418.
+
+    - Added digest.mbox and pending.pck to the 'list' files checked by
+      check_perms. Launchpad bug #284802.
+
+  Architecture
+
+    - Converted to using zope.testing as the test infrastructure.  Use bin/test
+      now to run the full test suite.
+      <http://pypi.python.org/pypi/zope.testing/3.7.1>
+
+    - Partially converted to using lazr.config as the new configuration
+      regime.  Not everything has been converted yet, so some manual editing
+      of mailman/Defaults.py is required.  This will be rectified in future
+      versions.  <http://launchpad.net/lazr.config>
+
+    - All web-related stuff is moved to its own directory, effectively moving
+      it out of the way for now.
+
+    - The email command infrastructure has been reworked to play more nicely
+      with the plug-in architecture.  Not all commands have yet been
+      converted.
+
+    - Support added for a local MHonArc archiver, as well as archiving
+      automatically in the remote Mail-Archive.com service.
+
+    - The permalink proposal for supporting RFC 5064 has been adopted.
+
+  Installation
+
+    - Python 2.6 is the minimal requirement.
+
+    - Converted to using zc.buildout as the build infrastructure.  See
+      docs/ALPHA.txt for details.
+      <http://pypi.python.org/pypi/zc.buildout/1.1.1>
+
 
 3.0 alpha 1 -- "Leave That Thing Alone"
 (08-Apr-2008)

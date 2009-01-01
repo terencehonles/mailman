@@ -5,9 +5,10 @@ Copyright (C) 2008-2009 by the Free Software Foundation, Inc.
 ALPHA RELEASE
 
     The Mailman 3 alpha releases are being provided to give developers and
-    other interested people early looks at the next major version.  As such,
-    many things may not work yet.  Your feedback and contributions are
-    welcome.  Bug reports are welcome on the Mailman bug tracker at
+    other interested people an early look at the next major version.  As such,
+    many things may not work yet.  Your participation is encouraged.  Your
+    feedback and contributions are welcome.  Please submit bug reports on the
+    Mailman bug tracker at
 
     https://bugs.launchpad.net/mailman
 
@@ -34,6 +35,10 @@ USING THE ALPHA
     Now you need to edit Mailman's buildout.cfg file.  Look for the 'develop'
     line under the [buildout] section.  Change the path to the megamerge
     package to point to the location of your checked out branch above.
+
+    You will need the gettext package (specifically, the msgfmt(1) command) in
+    order to build the I18N message catalogs.  If you're missing this command,
+    it is known that the digests.txt test will fail.
 
     You do not need anything other than Python 2.6 and an internet connection
     to get all the other Mailman 3 dependencies.  Here are the commands to
