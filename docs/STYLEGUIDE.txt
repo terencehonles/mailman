@@ -1,6 +1,5 @@
 Python coding style guide for Mailman
-Copyright (C) 2002-2007 Barry A. Warsaw
-$Revision: 8145 $
+Copyright (C) 2002-2009 Barry A. Warsaw
 
 NOTE: The canonical version of this style guide can be found at:
 
@@ -18,39 +17,35 @@ Guido's style should rule, however when coding for Mailman, I'd like to see my
 preferences used instead.
 
 Remember rule #1, A Foolish Consistency is the Hobgoblin of Little Minds.
-That said, here's a quick outline of where my preferences depart from Guido's:
+That said, here's a quick outline of where my preferences depart from PEP 8.
 
-- Imports usually should be on separate lines.  While it's sometimes
-  okay to say
-
-    from types import StringType, ListType
-
-  it's never okay to say
-
-    import os, sys
-
-  Put these on separate lines.
+- After file comments (e.g. license block), add a __metaclass__ definition so
+  that (in Python 2.x) all classes will be new-style.  Following that, add an
+  __all__ section that names, one-per-line, all the public names exported by
+  this module.
 
 - Imports are always put at the top of the file, just after any module
-  comments and docstrings, and before module globals and constants.
+  comments and docstrings, and before module globals and constants, but after
+  any __future__ imports, or __metaclass__ and __all__ definitions.
+
   Imports should be grouped, with the order being:
 
   1. standard library imports
-  2. related major package imports (i.e. all email package imports next)
+  2. related major package imports (e.g. all email package imports next)
   3. application specific imports
 
   From-imports should follow non-from imports.  Dotted imports should follow
   non-dotted imports.  Non-dotted imports should be grouped by increasing
-  length, while dotted imports should be grouped roughly alphabetically.
+  length, while dotted imports should be grouped alphabetically.
 
 - In general, there should be at most one class per module, if the module
   contains class definitions.  If it's a module of functions, that's fine,
   group them as common sense dictates.  A class-containing module can also
-  contain some helper functions, but it's best to keep these non-public
-  (i.e. use a single leading underscore).
+  contain some helper functions, but it's best to keep these non-public by not
+  including them in the __all__ section.
 
-  Always give the class and the module the same name, differing only by case
-  as PEP 8 recommends.  E.g.
+  Give the class and the module the same name, differing only by case as PEP 8
+  recommends.  E.g.
 
   from mailman.parser import Parser
 
@@ -67,15 +62,20 @@ That said, here's a quick outline of where my preferences depart from Guido's:
 
   and use "myclass.MyClass"
 
+  You can also use 'import...as' to rename a clashing symbol.
+
 - Right hanging comments are discouraged, in favor of preceding comments.
-  E.g.
+  E.g. bad:
 
     foo = blarzigop(bar)  # if you don't blarzigop it, it'll shlorp
 
-  should be written as
+  Good:
 
-    # if you don't blarzigop it, it'll shlorp
+    # If you don't blarzigop it, it'll shlorp.
     foo = blarzigop(bar)
+
+  Comments should always be complete sentences, with proper capitalization and
+  full stops at the end.
 
 - Major sections of code in a module should be separated by line feed
   characters (e.g. ^L -- that's a single character control-L not two
@@ -85,10 +85,10 @@ That said, here's a quick outline of where my preferences depart from Guido's:
   before big blocks of constants which follow imports, and any place else that
   would be convenient to jump to.  Always put two blank lines before a ^L.
 
-- Put to blank lines between any module level function.  Put only one blank
-  line between methods in a class.  No blank lines between the class
-  definition and the first method in the class (although class docstrings
-  often go in this space).
+- Put two blank lines between any top level construct or block of code
+  (e.g. after import blocks).  Put only one blank line between methods in a
+  class.  No blank lines between the class definition and the first method in
+  the class.  No blank lines between a class/method and its docstrings.
 
 - Try to minimize the vertical whitespace in a class.  If you're inclined to
   separate stanzas of code for readability, consider putting a comment in
@@ -107,10 +107,9 @@ That said, here's a quick outline of where my preferences depart from Guido's:
              - an almost fanatical devotion to the pope
              """
 
-- Write docstrings for all public modules, functions, classes, and methods.
-  Docstrings are not necessary and usually discouraged for non-public methods,
-  but you should have a comment that describes what the method does.  This
-  comment should appear after the "def" line.
+- Write docstrings for modules, functions, classes, and methods.  Docstrings
+  can be omitted for special methods (e.g. __init__() or __str__()) where the
+  meaning is obvious.
 
 - PEP 257 describes good docstrings conventions.  Note that most importantly,
   the """ that ends a multiline docstring should be on a line by itself, e.g.:
@@ -120,32 +119,22 @@ That said, here's a quick outline of where my preferences depart from Guido's:
   Optional plotz says to frobnicate the bizbaz first.
   """
 
-- For one liner docstrings, keep the closing """ on the same line --
-  except for module docstrings!
+- For one liner docstrings, keep the closing """ on the same line.
 
-- <> is strongly preferred over !=
+- <> is strongly preferred over != (Sadly, Python is making this harder to
+  follow and it cannot be followed for Python 3).
 
 - fill-column for docstrings should be 78.
 
-- Always use string methods instead of string module functions.
-
-- For sequences, (strings, lists, tuples), use the fact that empty sequences
-  are false, so "if not seq" or "if seq" is preferable to "if len(seq)" or "if
-  not len(seq)".  Always use True and False instead of 1 and 0 for boolean
-  values.
+- When testing the emptiness of sequences, use "if len(seq) == 0" instead of
+  relying on the falseness of empty sequences.  However, if a variable can be
+  one of several false values, it's okay to just use "if seq", though a
+  preceding comment is usually in order.
 
 - Always decide whether a class's methods and instance variables should be
-  public or non-public.  In general, never make data variables public unless
-  you're implementing essentially a record.  It's almost always preferable to
-  give a functional interface to your class instead (Python 2.2's descriptors
-  and properties make this much nicer).
+  public or non-public.
 
-  Also decide whether your attributes should be private or not.  The
-  difference between private and non-public is that the former will never be
-  useful for a derived class, while the latter might be.  Yes, you should
-  design your classes with inheritance in mind!
-
-- Single leading underscores are generally preferred for non-public
+  Single leading underscores are generally preferred for non-public
   attributes.  Use double leading underscores only in classes designed for
   inheritance to ensure that truly private attributes will never name clash.
 

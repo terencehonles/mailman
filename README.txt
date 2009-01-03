@@ -157,11 +157,6 @@ FOR MORE INFORMATION
 
         http://mail.python.org/mailman/listinfo/mailman-developers
 
-    Mailman3-Dev
-        Get involved now in the development of Mailman 3!
-
-        http://mail.python.org/mailman/listinfo/mailman3-dev
-
     Mailman-I18N
         A list for the discussion of the Mailman internationalization
         effort.  Mailman 2.1 is fully multi-lingual.
