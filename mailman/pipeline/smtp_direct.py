@@ -185,7 +185,7 @@ def process(mlist, msg, msgdata):
         sender      = origsender,
         recip       = len(recips),
         size        = msg.original_size,
-        seconds     = t1 - t0,
+        time        = t1 - t0,
         refused     = len(refused),
         smtpcode    = 'n/a',
         smtpmsg     = 'n/a',

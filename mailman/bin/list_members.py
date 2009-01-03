@@ -19,9 +19,9 @@ import sys
 
 from email.Utils import formataddr
 
-from mailman import errors
 from mailman import Utils
-from mailman.configuration import config
+from mailman.config import config
+from mailman.core import errors
 from mailman.i18n import _
 from mailman.interfaces import DeliveryStatus
 from mailman.options import SingleMailingListOptions

@@ -22,12 +22,12 @@ import codecs
 from cStringIO import StringIO
 from email.utils import parseaddr
 
-from mailman import errors
 from mailman import Message
 from mailman import Utils
 from mailman import i18n
 from mailman.app.membership import add_member
-from mailman.configuration import config
+from mailman.config import config
+from mailman.core import errors
 from mailman.interfaces import AlreadySubscribedError, DeliveryMode
 from mailman.options import SingleMailingListOptions
 
@@ -117,7 +117,8 @@ def addall(mlist, subscribers, delivery_mode, ack, admin_notify, outfp):
                 fullname = u''
             password = Utils.MakeRandomPassword()
             add_member(mlist, address, fullname, password, delivery_mode,
-                       config.DEFAULT_SERVER_LANGUAGE, ack, admin_notify)
+                       unicode(config.mailman.default_language))
+            # XXX Support ack and admin_notify
         except AlreadySubscribedError:
             print >> tee, _('Already a member: $subscriber')
         except errors.InvalidEmailAddress:

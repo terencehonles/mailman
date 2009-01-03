@@ -40,9 +40,11 @@ from string import ascii_letters, digits, whitespace, Template
 
 import mailman.templates
 
+from mailman import Defaults
 from mailman import passwords
 from mailman.config import config
 from mailman.core import errors
+
 
 AT = '@'
 CR = '\r'
@@ -301,7 +303,8 @@ def Secure_MakeRandomPassword(length):
                         # We have no available source of cryptographically
                         # secure random characters.  Log an error and fallback
                         # to the user friendly passwords.
-                        log.error('urandom not available, passwords not secure')
+                        log.errorf(
+                            'urandom not available, passwords not secure')
                         return UserFriendly_MakeRandomPassword(length)
                 newbytes = os.read(fd, length - bytesread)
             bytes.append(newbytes)
@@ -316,8 +319,8 @@ def Secure_MakeRandomPassword(length):
 
 def MakeRandomPassword(length=None):
     if length is None:
-        length = config.MEMBER_PASSWORD_LENGTH
-    if config.USER_FRIENDLY_PASSWORDS:
+        length = Defaults.MEMBER_PASSWORD_LENGTH
+    if Defaults.USER_FRIENDLY_PASSWORDS:
         password = UserFriendly_MakeRandomPassword(length)
     else:
         password = Secure_MakeRandomPassword(length)

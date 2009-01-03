@@ -1139,8 +1139,7 @@ class HyperArchive(pipermail.T):
                     length = len(text)
                     if Defaults.ARCHIVER_OBSCURES_EMAILADDRS:
                         text = re.sub('@', atmark, text)
-                        URL = self.maillist.GetScriptURL(
-                            'listinfo', absolute=1)
+                        URL = self.maillist.script_url('listinfo')
                     else:
                         URL = 'mailto:' + text
                     pos = j
