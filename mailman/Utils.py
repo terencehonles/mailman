@@ -303,7 +303,7 @@ def Secure_MakeRandomPassword(length):
                         # We have no available source of cryptographically
                         # secure random characters.  Log an error and fallback
                         # to the user friendly passwords.
-                        log.errorf(
+                        log.error(
                             'urandom not available, passwords not secure')
                         return UserFriendly_MakeRandomPassword(length)
                 newbytes = os.read(fd, length - bytesread)
