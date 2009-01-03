@@ -37,10 +37,30 @@ Here is a history of user visible changes to Mailman.
       with the plug-in architecture.  Not all commands have yet been
       converted.
 
+  Other changes
+
+    - The LMTP server now properly calculates the message's original size.
+
+    - For command line scripts, -C names the configuration file to use.  For
+      convenient testing, if -C is not given, then the environment variable
+      MAILMAN_CONFIG_FILE is consulted.
+
     - Support added for a local MHonArc archiver, as well as archiving
       automatically in the remote Mail-Archive.com service.
 
     - The permalink proposal for supporting RFC 5064 has been adopted.
+
+    - Mailing lists no longer have a .web_page_url attribute; this is taken
+      from the mailing list's domain's base_url attribute.
+
+    - Incoming MTA selection is now taken from the config file instead of
+      plugins.  An MTA for Postfix+LMTP is added.  bin/genaliases works again.
+
+    - If a message has no Message-ID, the stock archivers will return None for
+      the permalink now instead of raising an assertion.
+
+    - IArchiver no longer has an is_enabled property; this is taken from the
+      configuration file now.
 
   Installation
 
