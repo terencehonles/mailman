@@ -9,7 +9,6 @@ digests, although only two are currently supported: MIME digests and RFC 1153
     >>> from mailman.pipeline.to_digest import process
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> mlist.preferred_language = u'en'
-    >>> mlist.web_page_url = u'http://www.example.com/'
     >>> mlist.real_name = u'XTest'
     >>> mlist.subject_prefix = u'[_XTest] '
     >>> mlist.one_last_digest = set()
@@ -126,7 +125,7 @@ digest and an RFC 1153 plain text digest.  The size threshold is in KB.
         _xtest@example.com
     <BLANKLINE>
     To subscribe or unsubscribe via the World Wide Web, visit
-        http://www.example.com/listinfo/_xtest@example.com
+        http://lists.example.com/listinfo/_xtest@example.com
     or, via email, send a message with subject or body 'help' to
         _xtest-request@example.com
     <BLANKLINE>
@@ -276,7 +275,7 @@ digest and an RFC 1153 plain text digest.  The size threshold is in KB.
         _xtest@example.com
     <BLANKLINE>
     To subscribe or unsubscribe via the World Wide Web, visit
-        http://www.example.com/listinfo/_xtest@example.com
+        http://lists.example.com/listinfo/_xtest@example.com
     or, via email, send a message with subject or body 'help' to
         _xtest-request@example.com
     <BLANKLINE>
@@ -464,7 +463,7 @@ Set the digest threshold to zero so that the digests will be sent immediately.
         _xtest@example.com
     <BLANKLINE>
     Pour vous (d=E9s)abonner par le web, consultez
-        http://www.example.com/listinfo/_xtest@example.com
+        http://lists.example.com/listinfo/_xtest@example.com
     <BLANKLINE>
     ou, par courriel, envoyez un message avec =AB=A0help=A0=BB dans le corps ou
     dans le sujet =E0

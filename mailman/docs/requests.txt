@@ -424,7 +424,6 @@ queue when the message is held.
     >>> mlist.admin_immed_notify = True
     >>> # XXX This will almost certainly change once we've worked out the web
     >>> # space layout for mailing lists now.
-    >>> mlist.web_page_url = u'http://www.example.com/'
     >>> id_4 = moderator.hold_subscription(mlist,
     ...     u'cperson@example.org', u'Claire Person',
     ...     u'{NONE}zyxcba', DeliveryMode.regular, u'en')
@@ -451,7 +450,7 @@ queue when the message is held.
     <BLANKLINE>
     At your convenience, visit:
     <BLANKLINE>
-        http://www.example.com/admindb/alist@example.com
+        http://lists.example.com/admindb/alist@example.com
     <BLANKLINE>
     to process the request.
     <BLANKLINE>
@@ -548,7 +547,7 @@ subscription and the fact that they may need to approve it.
     <BLANKLINE>
     At your convenience, visit:
     <BLANKLINE>
-        http://www.example.com/admindb/alist@example.com
+        http://lists.example.com/admindb/alist@example.com
     <BLANKLINE>
     to process the request.
     <BLANKLINE>
@@ -604,7 +603,7 @@ The welcome message is sent to the person who just subscribed.
     <BLANKLINE>
     General information about the mailing list is at:
     <BLANKLINE>
-      http://www.example.com/listinfo/alist@example.com
+      http://lists.example.com/listinfo/alist@example.com
     <BLANKLINE>
     If you ever want to unsubscribe or change your options (eg, switch to
     or from digest mode, change your password, etc.), visit your
@@ -711,7 +710,7 @@ unsubscription holds can send the list's moderators an immediate notification.
     <BLANKLINE>
     At your convenience, visit:
     <BLANKLINE>
-        http://www.example.com/admindb/alist@example.com
+        http://lists.example.com/admindb/alist@example.com
     <BLANKLINE>
     to process the request.
     <BLANKLINE>

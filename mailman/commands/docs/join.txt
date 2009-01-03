@@ -106,7 +106,7 @@ Mailman has sent her the confirmation message.
     this message, keeping the Subject header intact.  Or you can visit this
     web page
     <BLANKLINE>
-        http://www.example.com/confirm/...
+        http://lists.example.com/confirm/...
     <BLANKLINE>
     If you do not wish to register this email address simply disregard this
     message.  If you think you are being maliciously subscribed to the list, or

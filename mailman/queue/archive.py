@@ -24,15 +24,17 @@ __all__ = [
 
 
 import os
+import sys
 import time
 import logging
 
 from datetime import datetime
 from email.Utils import parsedate_tz, mktime_tz, formatdate
+from lazr.config import as_boolean
 from locknix.lockfile import Lock
 
 from mailman import Defaults
-from mailman.core.plugins import get_plugins
+from mailman.config import config
 from mailman.queue import Runner
 
 log = logging.getLogger('mailman.error')
@@ -80,11 +82,10 @@ class ArchiveRunner(Runner):
         msg['X-List-Received-Date'] = received_time
         # While a list archiving lock is acquired, archive the message.
         with Lock(os.path.join(mlist.data_path, 'archive.lck')):
-            for archive_factory in get_plugins('mailman.archiver'):
-                # A problem in one archiver should not prevent any other
-                # archiver from running.
+            for archiver in config.archivers:
+                # A problem in one archiver should not prevent other archivers
+                # from running.
                 try:
-                    archive = archive_factory()
-                    archive.archive_message(mlist, msg)
+                    archiver.archive_message(mlist, msg)
                 except Exception:
-                    log.exception('Broken archiver: %s' % archive.name)
+                    log.exception('Broken archiver: %s' % archiver.name)

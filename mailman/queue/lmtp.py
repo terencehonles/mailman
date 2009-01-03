@@ -143,13 +143,14 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
             # Parse the message data.  If there are any defects in the
             # message, reject it right away; it's probably spam. 
             msg = email.message_from_string(data, Message)
+            msg.original_size = len(data)
             if msg.defects:
                 return ERR_501
             msg['X-MailFrom'] = mailfrom
         except Exception, e:
             elog.exception('LMTP message parsing')
             config.db.abort()
-            return CRLF.join([ERR_451 for to in rcpttos])
+            return CRLF.join(ERR_451 for to in rcpttos)
         # RFC 2033 requires us to return a status code for every recipient.
         status = []
         # Now for each address in the recipients, parse the address to first
@@ -169,7 +170,8 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
                 # The recipient is a valid mailing list; see if it's a valid
                 # sub-address, and if so, enqueue it.
                 queue = None
-                msgdata = dict(listname=listname)
+                msgdata = dict(listname=listname,
+                               original_size=msg.original_size)
                 if subaddress in ('bounces', 'admin'):
                     queue = 'bounce'
                 elif subaddress == 'confirm':

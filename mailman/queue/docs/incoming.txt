@@ -87,7 +87,6 @@ pipeline queue.
     >>> fp.seek(0, 2)
 
     >>> mlist.emergency = True
-    >>> mlist.web_page_url = u'http://archives.example.com/'
     >>> inject_message(mlist, msg)
     >>> file_pos = fp.tell()
     >>> incoming.run()

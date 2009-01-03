@@ -27,9 +27,9 @@ import logging
 
 from optparse import OptionParser
 
-from mailman.configuration import config
+from mailman.config import config
+from mailman.core.initialize import initialize
 from mailman.i18n import _
-from mailman.initialize import initialize
 from mailman.version import MAILMAN_VERSION
 
 

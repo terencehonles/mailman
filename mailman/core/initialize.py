@@ -70,7 +70,6 @@ def initialize_1(config_path=None, propagate_logs=None):
 def initialize_2(debug=False):
     """Second initialization step.
 
-    * Archivers
     * Rules
     * Chains
     * Pipelines
@@ -89,12 +88,10 @@ def initialize_2(debug=False):
     # Initialize the rules and chains.  Do the imports here so as to avoid
     # circular imports.
     from mailman.app.commands import initialize as initialize_commands
-    from mailman.archiving import initialize as initialize_archivers
     from mailman.core.chains import initialize as initialize_chains
     from mailman.core.pipelines import initialize as initialize_pipelines
     from mailman.core.rules import initialize as initialize_rules
     # Order here is somewhat important.
-    initialize_archivers()
     initialize_rules()
     initialize_chains()
     initialize_pipelines()

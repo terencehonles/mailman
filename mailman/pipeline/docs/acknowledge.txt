@@ -11,7 +11,6 @@ acknowledgment.
     >>> mlist.preferred_language = u'en'
     >>> # XXX This will almost certainly change once we've worked out the web
     >>> # space layout for mailing lists now.
-    >>> mlist.web_page_url = u'http://lists.example.com/'
 
     >>> # Ensure that the virgin queue is empty, since we'll be checking this
     >>> # for new auto-response messages.

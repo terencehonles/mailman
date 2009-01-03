@@ -1,5 +1,3 @@
-#! @PYTHON@
-#
 # Copyright (C) 2001-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
@@ -17,67 +15,49 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys
-import optparse
+__metaclass__ = type
+__all__ = [
+    'main',
+    ]
 
-from mailman import MailList
-from mailman.configuration import config
+
+import sys
+
+from mailman.config import config
+from mailman.core.plugins import get_plugin
 from mailman.i18n import _
-from mailman.initialize import initialize
+from mailman.options import Options
 from mailman.version import MAILMAN_VERSION
 
 
 
-def parseargs():
-    parser = optparse.OptionParser(version=MAILMAN_VERSION,
-                                   usage=_("""\
+class ScriptOptions(Options):
+    """Options for the genaliases script."""
+
+    usage = _("""\
 %prog [options]
 
 Regenerate the Mailman specific MTA aliases from scratch.  The actual output
-depends on the value of the 'MTA' variable in your etc/mailman.cfg file."""))
-    parser.add_option('-q', '--quiet',
-                      default=False, action='store_true', help=_("""\
+depends on the value of the 'MTA' variable in your etc/mailman.cfg file.""")
+
+    def add_options(self):
+        super(ScriptOptions, self).add_options()
+        self.parser.add_option(
+            '-q', '--quiet',
+            default=False, action='store_true', help=_("""\
 Some MTA output can include more verbose help text.  Use this to tone down the
 verbosity."""))
-    parser.add_option('-C', '--config',
-                      help=_('Alternative configuration file to use'))
-    opts, args = parser.parse_args()
-    if args:
-        parser.print_error(_('Unexpected arguments'))
-    return parser, opts, args
+
 
 
 
 def main():
-    parser, opts, args = parseargs()
-    initialize(opts.config)
+    options = ScriptOptions()
+    options.initialize()
 
-    # Import the MTA specific module
-    modulename = 'mailman.MTA.' + config.MTA
-    __import__(modulename)
-    MTA = sys.modules[modulename]
-
-    # We need to acquire a lock so nobody tries to update the files while
-    # we're doing it.
-    lock = MTA.makelock()
-    lock.lock()
-    # Group lists by virtual hostname
-    mlists = {}
-    for listname in config.list_manager.names:
-        mlist = MailList.MailList(listname, lock=False)
-        mlists.setdefault(mlist.host_name, []).append(mlist)
-    try:
-        MTA.clear()
-        if not mlists:
-            MTA.create(None, nolock=True, quiet=opts.quiet)
-        else:
-            for hostname, vlists in mlists.items():
-                for mlist in vlists:
-                    MTA.create(mlist, nolock=True, quiet=opts.quiet)
-                    # Be verbose for only the first printed list
-                    quiet = True
-    finally:
-        lock.unlock(unconditionally=True)
+    # Get the MTA-specific module.
+    mta = get_plugin('mailman.mta')
+    mta().regenerate()
 
 
 

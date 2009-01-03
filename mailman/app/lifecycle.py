@@ -33,7 +33,6 @@ from mailman import Utils
 from mailman.Utils import ValidateEmail
 from mailman.config import config
 from mailman.core import errors
-from mailman.core.plugins import get_plugin
 from mailman.core.styles import style_manager
 from mailman.interfaces import MemberRole
 
@@ -52,15 +51,12 @@ def create_list(fqdn_listname, owners=None):
         raise errors.BadDomainSpecificationError(domain)
     mlist = config.db.list_manager.create(fqdn_listname)
     for style in style_manager.lookup(mlist):
-        # XXX FIXME.  When we get rid of the wrapper object, this hack won't
-        # be necessary.  Until then, setattr on the MailList instance won't
-        # set the database column values, so pass the underlying database
-        # object to .apply() instead.
         style.apply(mlist)
-    # Coordinate with the MTA, which should be defined by plugins.
-    # XXX FIXME
-##     mta_plugin = get_plugin('mailman.mta')
-##     mta_plugin().create(mlist)
+    # Coordinate with the MTA, as defined in the configuration file.
+    module_name, class_name = config.mta.incoming.rsplit('.', 1)
+    __import__(module_name)
+    mta = getattr(sys.modules[module_name], class_name)
+    mta().create(mlist)
     # Create any owners that don't yet exist, and subscribe all addresses as
     # owners of the mailing list.
     usermgr = config.db.user_manager

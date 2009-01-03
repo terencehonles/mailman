@@ -16,7 +16,7 @@
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
 from mailman import Defaults
-from mailman.configuration import config
+from mailman.config import config
 from mailman.i18n import _
 from mailman.options import Options
 

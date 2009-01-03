@@ -33,8 +33,6 @@ class IArchiver(Interface):
 
     name = Attribute('The name of this archiver')
 
-    is_enabled = Attribute('True if this archiver is enabled.')
-
     def list_url(mlist):
         """Return the url to the top of the list's archive.
 

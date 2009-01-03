@@ -17,12 +17,12 @@
 
 import sys
 
-from mailman import errors
 from mailman import Message
 from mailman import Utils
 from mailman import i18n
 from mailman.app.lifecycle import create_list
-from mailman.configuration import config
+from mailman.config import config
+from mailman.core import errors
 from mailman.interfaces import ListAlreadyExistsError
 from mailman.options import SingleMailingListOptions
 
@@ -79,7 +79,7 @@ owner is specified with the -o option.."""))
     def sanity_check(self):
         """Set up some defaults we couldn't set up earlier."""
         if self.options.language is None:
-            self.options.language = config.DEFAULT_SERVER_LANGUAGE
+            self.options.language = unicode(config.mailman.default_language)
         # Is the language known?
         if self.options.language not in config.languages.enabled_codes:
             self.parser.error(_('Unknown language: $opts.language'))
@@ -95,6 +95,8 @@ def main():
 
     # Create the mailing list, applying styles as appropriate.
     fqdn_listname = options.options.listname
+    if fqdn_listname is None:
+        options.parser.error(_('--listname is required'))
     try:
         mlist = create_list(fqdn_listname, options.options.owners)
         mlist.preferred_language = options.options.language
@@ -107,11 +109,6 @@ def main():
 
     config.db.commit()
 
-    # Send notices to the list owners.  XXX This should also be moved to the
-    # Mailman.app.create module.
-    if not options.options.quiet and not options.options.automate:
-        print _('Hit enter to notify $fqdn_listname owners...'),
-        sys.stdin.readline()
     if not options.options.quiet:
         d = dict(
             listname        = mlist.fqdn_listname,

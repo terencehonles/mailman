@@ -378,7 +378,7 @@ class Runner:
         # them out of our sight.
         #
         # Find out which mailing list this message is destined for.
-        listname = msgdata.get('listname')
+        listname = unicode(msgdata.get('listname'))
         mlist = config.db.list_manager.get(listname)
         if mlist is None:
             elog.error('Dequeuing message destined for missing list: %s',

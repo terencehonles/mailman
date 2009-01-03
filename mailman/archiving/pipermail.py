@@ -87,7 +87,6 @@ class Pipermail:
     implements(IArchiver)
 
     name = 'pipermail'
-    is_enabled = False
 
     @staticmethod
     def list_url(mlist):

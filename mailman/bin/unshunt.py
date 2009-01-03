@@ -15,51 +15,33 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
+__metaclass__ = type
+__all__ = [
+    'main',
+    ]
+
+
 import sys
-import optparse
 
-from mailman.configuration import config
+from mailman.config import config
 from mailman.i18n import _
-from mailman.queue import Switchboard
 from mailman.version import MAILMAN_VERSION
-
-
-
-def parseargs():
-    parser = optparse.OptionParser(version=MAILMAN_VERSION,
-                                   usage=_("""\
-%%prog [options] [directory]
-
-Move a message from the shunt queue to the original queue.  Optional
-`directory' specifies a directory to dequeue from other than qfiles/shunt.
-"""))
-    parser.add_option('-C', '--config',
-                      help=_('Alternative configuration file to use'))
-    opts, args = parser.parse_args()
-    if len(args) > 1:
-        parser.print_help()
-        print >> sys.stderr, _('Unexpected arguments')
-        sys.exit(1)
-    return parser, opts, args
+from mailman.options import Options
 
 
 
 def main():
-    parser, opts, args = parseargs()
-    config.load(opts.config)
-    if args:
-        qdir = args[0]
-    else:
-        qdir = config.SHUNTQUEUE_DIR
+    options = Options()
+    options.initialize()
 
-    sb = Switchboard(qdir)
-    sb.recover_backup_files()
-    for filebase in sb.files():
+    switchboard = config.switchboards['shunt']
+    switchboard.recover_backup_files()
+
+    for filebase in switchboard.files:
         try:
-            msg, msgdata = sb.dequeue(filebase)
-            whichq = msgdata.get('whichq', config.INQUEUE_DIR)
-            tosb = Switchboard(whichq)
-            tosb.enqueue(msg, msgdata)
+            msg, msgdata = switchboard.dequeue(filebase)
+            whichq = msgdata.get('whichq', 'in')
+            config.switchboards[whichq].enqueue(msg, msgdata)
         except Exception, e:
             # If there are any unshunting errors, log them and continue trying
             # other shunted messages.
@@ -67,9 +49,4 @@ def main():
                 'Cannot unshunt message $filebase, skipping:\n$e')
         else:
             # Unlink the .bak file left by dequeue()
-            sb.finish(filebase)
-
-
-
-if __name__ == '__main__':
-    main()
+            switchboard.finish(filebase)

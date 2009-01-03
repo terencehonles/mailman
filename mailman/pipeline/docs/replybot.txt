@@ -9,7 +9,6 @@ message or the amount of time since the last auto-response.
     >>> from mailman.pipeline.replybot import process
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> mlist.real_name = u'XTest'
-    >>> mlist.web_page_url = u'http://www.example.com/'
 
     >>> # Ensure that the virgin queue is empty, since we'll be checking this
     >>> # for new auto-response messages.

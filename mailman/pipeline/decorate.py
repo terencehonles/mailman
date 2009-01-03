@@ -202,10 +202,9 @@ def decorate(mlist, template, extradict=None):
              list_name      = mlist.list_name,
              fqdn_listname  = mlist.fqdn_listname,
              host_name      = mlist.host_name,
-             web_page_url   = mlist.web_page_url,
+             listinfo_page  = mlist.script_url('listinfo'),
              description    = mlist.description,
              info           = mlist.info,
-             cgiext         = Defaults.CGIEXT,
              )
     if extradict is not None:
         d.update(extradict)

@@ -10,7 +10,6 @@ message once it's started.
 
     >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list(u'xtest@example.com')
-    >>> mlist.web_page_url = u'http://lists.example.com/archives/'
     >>> mlist.pipeline
     u'built-in'
     >>> from mailman.core.pipelines import process
@@ -21,7 +20,6 @@ Processing a message
 
 Messages hit the pipeline after they've been accepted for posting.
 
-    >>> config.archivers['pipermail'].is_enabled = True
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... To: xtest@example.com
@@ -45,15 +43,18 @@ etc.
     X-Mailman-Version: ...
     Precedence: list
     List-Id: <xtest.example.com>
-    List-Unsubscribe:
-        <http://lists.example.com/archives/listinfo/xtest@example.com>,
-        <mailto:xtest-leave@example.com>
-    List-Archive: <http://www.example.com/pipermail/xtest@example.com>
+    X-Message-ID-Hash: 4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
     List-Post: <mailto:xtest@example.com>
-    List-Help: <mailto:xtest-request@example.com?subject=help>
     List-Subscribe:
-        <http://lists.example.com/archives/listinfo/xtest@example.com>,
-        <mailto:xtest-join@example.com>
+        <http://lists.example.com/listinfo/xtest@example.com>,
+    	<mailto:xtest-join@example.com>
+    Archived-At:
+        http://lists.example.com/pipermail/4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
+    List-Unsubscribe:
+        <http://lists.example.com/listinfo/xtest@example.com>,
+    	<mailto:xtest-leave@example.com>
+    List-Archive: <http://lists.example.com/pipermail/xtest@example.com>
+    List-Help: <mailto:xtest-request@example.com?subject=help>
     <BLANKLINE>
     First post!
     <BLANKLINE>
@@ -82,15 +83,18 @@ And the message is now sitting in various other processing queues.
     X-Mailman-Version: ...
     Precedence: list
     List-Id: <xtest.example.com>
-    List-Unsubscribe:
-        <http://lists.example.com/archives/listinfo/xtest@example.com>,
-        <mailto:xtest-leave@example.com>
-    List-Archive: <http://www.example.com/pipermail/xtest@example.com>
+    X-Message-ID-Hash: 4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
     List-Post: <mailto:xtest@example.com>
-    List-Help: <mailto:xtest-request@example.com?subject=help>
     List-Subscribe:
-        <http://lists.example.com/archives/listinfo/xtest@example.com>,
+        <http://lists.example.com/listinfo/xtest@example.com>,
         <mailto:xtest-join@example.com>
+    Archived-At:
+        http://lists.example.com/pipermail/4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
+    List-Unsubscribe:
+        <http://lists.example.com/listinfo/xtest@example.com>,
+        <mailto:xtest-leave@example.com>
+    List-Archive: <http://lists.example.com/pipermail/xtest@example.com>
+    List-Help: <mailto:xtest-request@example.com?subject=help>
     <BLANKLINE>
     First post!
     <BLANKLINE>
@@ -122,15 +126,18 @@ This is the message that will actually get delivered to end recipients.
     X-Mailman-Version: ...
     Precedence: list
     List-Id: <xtest.example.com>
-    List-Unsubscribe:
-        <http://lists.example.com/archives/listinfo/xtest@example.com>,
-        <mailto:xtest-leave@example.com>
-    List-Archive: <http://www.example.com/pipermail/xtest@example.com>
+    X-Message-ID-Hash: 4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
     List-Post: <mailto:xtest@example.com>
-    List-Help: <mailto:xtest-request@example.com?subject=help>
     List-Subscribe:
-        <http://lists.example.com/archives/listinfo/xtest@example.com>,
+        <http://lists.example.com/listinfo/xtest@example.com>,
         <mailto:xtest-join@example.com>
+    Archived-At:
+        http://lists.example.com/pipermail/4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
+    List-Unsubscribe:
+        <http://lists.example.com/listinfo/xtest@example.com>,
+        <mailto:xtest-leave@example.com>
+    List-Archive: <http://lists.example.com/pipermail/xtest@example.com>
+    List-Help: <mailto:xtest-request@example.com?subject=help>
     <BLANKLINE>
     First post!
     <BLANKLINE>
@@ -157,15 +164,18 @@ There's now one message in the digest mailbox, getting ready to be sent.
     X-Mailman-Version: ...
     Precedence: list
     List-Id: <xtest.example.com>
-    List-Unsubscribe:
-        <http://lists.example.com/archives/listinfo/xtest@example.com>,
-        <mailto:xtest-leave@example.com>
-    List-Archive: <http://www.example.com/pipermail/xtest@example.com>
+    X-Message-ID-Hash: 4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
     List-Post: <mailto:xtest@example.com>
-    List-Help: <mailto:xtest-request@example.com?subject=help>
     List-Subscribe:
-        <http://lists.example.com/archives/listinfo/xtest@example.com>,
+        <http://lists.example.com/listinfo/xtest@example.com>,
         <mailto:xtest-join@example.com>
+    Archived-At:
+        http://lists.example.com/pipermail/4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
+    List-Unsubscribe:
+        <http://lists.example.com/listinfo/xtest@example.com>,
+        <mailto:xtest-leave@example.com>
+    List-Archive: <http://lists.example.com/pipermail/xtest@example.com>
+    List-Help: <mailto:xtest-request@example.com?subject=help>
     <BLANKLINE>
     First post!
     <BLANKLINE>

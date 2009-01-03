@@ -30,7 +30,6 @@ CREATE TABLE mailinglist (
         list_name TEXT,
         host_name TEXT,
         created_at TIMESTAMP,
-        web_page_url TEXT,
         admin_member_chunksize INTEGER,
         hold_and_cmd_autoresponses BLOB,
         next_request_id INTEGER,

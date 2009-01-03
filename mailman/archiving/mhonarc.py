@@ -47,7 +47,6 @@ class MHonArc:
     implements(IArchiver)
 
     name = 'mhonarc'
-    is_enabled = False
 
     @staticmethod
     def list_url(mlist):
@@ -66,7 +65,9 @@ class MHonArc:
         # XXX What about private MHonArc archives?
         message_id = msg.get('message-id')
         # It is not the archiver's job to ensure the message has a Message-ID.
-        assert message_id is not None, 'No Message-ID found'
+        # If no Message-ID is available, there is no permalink.
+        if message_id is None:
+            return None
         # The angle brackets are not part of the Message-ID.  See RFC 2822.
         if message_id.startswith('<') and message_id.endswith('>'):
             message_id = message_id[1:-1]

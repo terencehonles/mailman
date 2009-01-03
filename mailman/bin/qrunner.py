@@ -151,9 +151,9 @@ def make_qrunner(name, slice, range, once=False):
         class Once(qrclass):
             def _do_periodic(self):
                 self.stop()
-        qrunner = Once(slice, range)
+        qrunner = Once(name, slice)
     else:
-        qrunner = qrclass(slice, range)
+        qrunner = qrclass(name, slice)
     return qrunner
 
 

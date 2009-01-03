@@ -43,7 +43,7 @@ from mailman.interfaces import (
 
 
 class DefaultStyle:
-    """The defalt (i.e. legacy) style."""
+    """The default (i.e. legacy) style."""
 
     implements(IStyle)
 

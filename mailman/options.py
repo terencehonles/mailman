@@ -24,6 +24,7 @@ __all__ = [
     ]
 
 
+import os
 import sys
 
 from copy import copy
@@ -108,7 +109,11 @@ class Options:
             from the configuration files.
         :type propagate_logs: bool or None.
         """
-        initialize(self.options.config, propagate_logs=propagate_logs)
+        # Fall back to using the environment variable if -C is not given.
+        config_file = (os.getenv('MAILMAN_CONFIG_FILE')
+                       if self.options.config is None
+                       else self.options.config)
+        initialize(config_file, propagate_logs=propagate_logs)
         self.sanity_check()
 
 

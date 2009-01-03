@@ -12,9 +12,6 @@ is getting sent through the system.  We'll take things one-by-one.
     >>> mlist.subject_prefix = u''
     >>> mlist.include_list_post_header = False
     >>> mlist.archive = True
-    >>> # XXX This will almost certainly change once we've worked out the web
-    >>> # space layout for mailing lists now.
-    >>> mlist.web_page_url = u'http://lists.example.com/'
 
 
 Saving the original sender
@@ -183,7 +180,6 @@ But normally, a list will include these headers.
     >>> mlist.include_rfc2369_headers = True
     >>> mlist.include_list_post_header = True
     >>> mlist.preferred_language = u'en'
-    >>> config.archivers['pipermail'].is_enabled = True
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... Message-ID: <12345>
@@ -192,7 +188,7 @@ But normally, a list will include these headers.
     >>> process(mlist, msg, {})
     >>> list_headers(msg)
     ---start---
-    List-Archive: <http://www.example.com/pipermail/_xtest@example.com>
+    List-Archive: <http://lists.example.com/pipermail/_xtest@example.com>
     List-Help: <mailto:_xtest-request@example.com?subject=help>
     List-Id: <_xtest.example.com>
     List-Post: <mailto:_xtest@example.com>
@@ -213,7 +209,7 @@ header.
     >>> process(mlist, msg, {})
     >>> list_headers(msg)
     ---start---
-    List-Archive: <http://www.example.com/pipermail/_xtest@example.com>
+    List-Archive: <http://lists.example.com/pipermail/_xtest@example.com>
     List-Help: <mailto:_xtest-request@example.com?subject=help>
     List-Id: My test mailing list <_xtest.example.com>
     List-Post: <mailto:_xtest@example.com>
@@ -252,7 +248,7 @@ List-Post header, which is reasonable for an announce only mailing list.
     >>> process(mlist, msg, {})
     >>> list_headers(msg)
     ---start---
-    List-Archive: <http://www.example.com/pipermail/_xtest@example.com>
+    List-Archive: <http://lists.example.com/pipermail/_xtest@example.com>
     List-Help: <mailto:_xtest-request@example.com?subject=help>
     List-Id: My test mailing list <_xtest.example.com>
     List-Subscribe: <http://lists.example.com/listinfo/_xtest@example.com>,

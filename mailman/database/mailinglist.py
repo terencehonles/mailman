@@ -19,6 +19,7 @@ import os
 import string
 
 from storm.locals import *
+from urlparse import urljoin
 from zope.interface import implements
 
 from mailman import Defaults
@@ -45,7 +46,6 @@ class MailingList(Model):
     host_name = Unicode()
     # Attributes not directly modifiable via the web u/i
     created_at = DateTime()
-    web_page_url = Unicode()
     admin_member_chunksize = Int()
     hold_and_cmd_autoresponses = Pickle()
     # Attributes which are directly modifiable via the web u/i.  The more
@@ -202,9 +202,12 @@ class MailingList(Model):
 
     def script_url(self, target, context=None):
         """See `IMailingList`."""
+        # Find the domain for this mailing list.
+        domain = config.domains[self.host_name]
         # XXX Handle the case for when context is not None; those would be
         # relative URLs.
-        return self.web_page_url + target + '/' + self.fqdn_listname
+        return urljoin(domain.base_url,
+                       target + Defaults.CGIEXT + '/' + self.fqdn_listname)
 
     @property
     def data_path(self):

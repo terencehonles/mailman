@@ -54,7 +54,6 @@ class Configuration(object):
         self._config = None
         self.filename = None
         # Create various registries.
-        self.archivers = {}
         self.chains = {}
         self.rules = {}
         self.handlers = {}
@@ -174,8 +173,20 @@ class Configuration(object):
 
     @property
     def qrunner_configs(self):
+        """Iterate over all the qrunner configuration sections."""
         for section in self._config.getByCategory('qrunner', []):
             yield section
+
+    @property
+    def archivers(self):
+        """Iterate over all the enabled archivers."""
+        for section in self._config.getByCategory('archiver', []):
+            if not as_boolean(section.enable):
+                continue
+            class_path = section['class']
+            module_name, class_name = class_path.rsplit('.', 1)
+            __import__(module_name)
+            yield getattr(sys.modules[module_name], class_name)()
 
     @property
     def header_matches(self):

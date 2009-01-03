@@ -101,7 +101,6 @@ The Hold chain places the message into the admin request database and
 depending on the list's settings, sends a notification to both the original
 sender and the list moderators.
 
-    >>> mlist.web_page_url = u'http://www.example.com/'
     >>> chain = config.chains['hold']
     >>> verifyObject(IChain, chain)
     True
@@ -149,7 +148,7 @@ This message is addressed to the mailing list moderators.
     <BLANKLINE>
     At your convenience, visit:
     <BLANKLINE>
-        http://www.example.com/admindb/_xtest@example.com
+        http://lists.example.com/admindb/_xtest@example.com
     <BLANKLINE>
     to approve or deny the request.
     <BLANKLINE>
@@ -209,7 +208,7 @@ This message is addressed to the sender of the message.
     notification of the moderator's decision.  If you would like to cancel
     this posting, please visit the following URL:
     <BLANKLINE>
-        http://www.example.com/confirm/_xtest@example.com/...
+        http://lists.example.com/confirm/_xtest@example.com/...
     <BLANKLINE>
     <BLANKLINE>
 

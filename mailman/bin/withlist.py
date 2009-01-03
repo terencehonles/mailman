@@ -154,7 +154,10 @@ def main():
     global LAST_MLIST, VERBOSE
 
     parser, opts, args = parseargs()
-    initialize(opts.config, not opts.quiet)
+    config_file = (os.getenv('MAILMAN_CONFIG_FILE')
+                   if opts.config is None
+                   else opts.config)
+    initialize(config_file, not opts.quiet)
 
     VERBOSE = not opts.quiet
     # The default for interact is true unless -r was given

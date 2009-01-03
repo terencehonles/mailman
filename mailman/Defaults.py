@@ -859,7 +859,7 @@ DEFAULT_MSG_FOOTER = u"""\
 _______________________________________________
 $real_name mailing list
 $fqdn_listname
-${web_page_url}listinfo${cgiext}/${fqdn_listname}
+${listinfo_page}
 """
 
 # Scrub regular delivery

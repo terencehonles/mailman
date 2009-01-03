@@ -21,7 +21,7 @@ import shutil
 
 from mailman import Utils
 from mailman.app.lifecycle import remove_list
-from mailman.configuration import config
+from mailman.config import config
 from mailman.i18n import _
 from mailman.options import MultipleMailingListOptions
 
