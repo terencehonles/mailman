@@ -7,6 +7,11 @@ Here is a history of user visible changes to Mailman.
 3.0 alpha 3 -- "Working Man"
 (XX-XXX-200X)
 
+  Architecture
+
+    - Back port of Mailman 2.1's limit on .bak file restoration.  After 3
+      restores, the file is moved to the bad queue, with a .psv extension.
+
 
 3.0 alpha 2 -- "Grand Designs"
 (03-Jan-2009)
