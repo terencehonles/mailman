@@ -22,9 +22,11 @@ Create a switchboard by giving its queue directory.
 
 Here's a helper function for ensuring things work correctly.
 
-    >>> def check_qfiles():
+    >>> def check_qfiles(directory=None):
+    ...     if directory is None:
+    ...         directory = queue_directory
     ...     files = {}
-    ...     for qfile in os.listdir(queue_directory):
+    ...     for qfile in os.listdir(directory):
     ...         root, ext = os.path.splitext(qfile)
     ...         files[ext] = files.get(ext, 0) + 1
     ...     return sorted(files.items())
@@ -133,12 +135,39 @@ place.  These can be recovered when the switchboard is instantiated.
     >>> check_qfiles()
     [('.pck', 3)]
 
-Clean up
+The files can be recovered explicitly.
 
     >>> for filebase in switchboard.files:
     ...     msg, msgdata = switchboard.dequeue(filebase)
-    ...     switchboard.finish(filebase)
+    ...     # Don't call .finish()
     >>> check_qfiles()
+    [('.bak', 3)]
+    >>> switchboard.recover_backup_files()
+    >>> check_qfiles()
+    [('.pck', 3)]
+
+But the files will only be recovered at most three times before they are
+considered defective.  In order to prevent mail bombs and loops, once this
+maximum is reached, the files will be preserved in the 'bad' queue.
+
+    >>> for filebase in switchboard.files:
+    ...     msg, msgdata = switchboard.dequeue(filebase)
+    ...     # Don't call .finish()
+    >>> check_qfiles()
+    [('.bak', 3)]
+    >>> switchboard.recover_backup_files()
+    >>> check_qfiles()
+    []
+
+    >>> bad = config.switchboards['bad']
+    >>> check_qfiles(bad.queue_directory)
+    [('.psv', 3)]
+
+Clean up
+
+    >>> for file in os.listdir(bad.queue_directory):
+    ...     os.remove(os.path.join(bad.queue_directory, file))
+    >>> check_qfiles(bad.queue_directory)
     []
 
 
