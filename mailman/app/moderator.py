@@ -17,6 +17,7 @@
 
 """Application support for moderators."""
 
+__metaclass__ = type
 __all__ = [
     'handle_message',
     'handle_subscription',
@@ -39,8 +40,9 @@ from mailman.app.notifications import (
     send_admin_subscription_notice, send_welcome_message)
 from mailman.config import config
 from mailman.core import errors
-from mailman.interfaces import Action, DeliveryMode, RequestType
-from mailman.interfaces.member import AlreadySubscribedError
+from mailman.interfaces import Action
+from mailman.interfaces.member import AlreadySubscribedError, DeliveryMode
+from mailman.interfaces.requests import RequestType
 
 _ = i18n._
 

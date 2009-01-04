@@ -56,7 +56,8 @@ from mailman.Mailbox import Mailbox
 from mailman.Mailbox import Mailbox
 from mailman.config import config
 from mailman.core import errors
-from mailman.interfaces import DeliveryMode, DeliveryStatus, IHandler
+from mailman.interfaces.handler import IHandler
+from mailman.interfaces.member import DeliveryMode, DeliveryStatus
 from mailman.pipeline.decorate import decorate
 from mailman.pipeline.scrubber import process as scrubber
 

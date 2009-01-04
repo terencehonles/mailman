@@ -6,7 +6,7 @@ system instantiates an IUserManager for you based on the configuration
 variable MANAGERS_INIT_FUNCTION.  The instance is accessible on the global
 config object.
 
-    >>> from mailman.interfaces import IUserManager
+    >>> from mailman.interfaces.usermanager import IUserManager
     >>> from zope.interface.verify import verifyObject
     >>> usermgr = config.db.user_manager
     >>> verifyObject(IUserManager, usermgr)
@@ -21,7 +21,7 @@ create a 'blank' user by not providing an address or real name at creation
 time.  This user will have an empty string as their real name, but will not
 have a password.
 
-    >>> from mailman.interfaces import IUser
+    >>> from mailman.interfaces.user import IUser
     >>> user = usermgr.create_user()
     >>> verifyObject(IUser, user)
     True

@@ -19,7 +19,7 @@
 
 from datetime import timedelta
 
-from mailman.interfaces import ReplyToMunging
+from mailman.interfaces.mailinglist import ReplyToMunging
 
 
 

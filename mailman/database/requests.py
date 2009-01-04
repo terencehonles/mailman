@@ -17,6 +17,12 @@
 
 """Implementations of the IRequests and IListRequests interfaces."""
 
+__metaclass__ = type
+__all__ = [
+    'Requests',
+    ]
+
+
 from datetime import timedelta
 from storm.locals import *
 from zope.interface import implements
@@ -24,13 +30,8 @@ from zope.interface import implements
 from mailman.config import config
 from mailman.database.model import Model
 from mailman.database.types import Enum
-from mailman.interfaces import IListRequests, IPendable, IRequests, RequestType
-
-
-__metaclass__ = type
-__all__ = [
-    'Requests',
-    ]
+from mailman.interfaces.pending import IPendable
+from mailman.interfaces.requests import IListRequests, IRequests, RequestType
 
 
 

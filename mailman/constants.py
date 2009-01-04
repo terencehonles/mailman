@@ -22,8 +22,10 @@ __all__ = [
     ]
 
 
-from mailman.interfaces import DeliveryMode, DeliveryStatus, IPreferences
 from zope.interface import implements
+
+from mailman.interfaces.member import DeliveryMode, DeliveryStatus
+from mailman.interfaces.preferences import IPreferences
 
 
 

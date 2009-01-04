@@ -44,7 +44,7 @@ from mailman.config import config
 from mailman.core.errors import DiscardMessage
 from mailman.core.plugins import get_plugin
 from mailman.i18n import _
-from mailman.interfaces import IHandler
+from mailman.interfaces.handler import IHandler
 
 
 # Path characters for common platforms

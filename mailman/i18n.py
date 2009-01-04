@@ -15,6 +15,18 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
+"""Internationalization support."""
+
+__metaclass__ = type
+__all__ = [
+    '_',
+    'get_translation',
+    'set_language',
+    'set_translation',
+    'using_language',
+    ]
+
+
 import os
 import sys
 import time

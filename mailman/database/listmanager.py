@@ -24,7 +24,7 @@ from zope.interface import implements
 from mailman.Utils import split_listname, fqdn_listname
 from mailman.config import config
 from mailman.database.mailinglist import MailingList
-from mailman.interfaces import IListManager, ListAlreadyExistsError
+from mailman.interfaces.listmanager import IListManager, ListAlreadyExistsError
 
 
 

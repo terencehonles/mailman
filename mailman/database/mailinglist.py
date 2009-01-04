@@ -28,7 +28,7 @@ from mailman.config import config
 from mailman.database import roster
 from mailman.database.model import Model
 from mailman.database.types import Enum
-from mailman.interfaces import IMailingList, Personalization
+from mailman.interfaces.mailinglist import IMailingList, Personalization
 
 
 SPACE = ' '

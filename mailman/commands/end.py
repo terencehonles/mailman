@@ -27,7 +27,7 @@ __all__ = [
 from zope.interface import implements
 
 from mailman.i18n import _
-from mailman.interfaces import ContinueProcessing, IEmailCommand
+from mailman.interfaces.command import ContinueProcessing, IEmailCommand
 
 
 

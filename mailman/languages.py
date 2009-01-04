@@ -18,7 +18,7 @@
 """Language manager."""
 
 from zope.interface import implements
-from mailman.interfaces import ILanguageManager
+from mailman.interfaces.languages import ILanguageManager
 
 
 

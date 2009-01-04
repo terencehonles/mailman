@@ -27,7 +27,7 @@ from email.Utils import formataddr
 from zope.interface import implements
 
 from mailman.i18n import _
-from mailman.interfaces import IHandler
+from mailman.interfaces.handler import IHandler
 from mailman.pipeline.cook_headers import uheader
 
 

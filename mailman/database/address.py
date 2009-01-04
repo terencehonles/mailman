@@ -29,7 +29,8 @@ from mailman.config import config
 from mailman.database.member import Member
 from mailman.database.model import Model
 from mailman.database.preferences import Preferences
-from mailman.interfaces import AlreadySubscribedError, IAddress
+from mailman.interfaces.member import AlreadySubscribedError
+from mailman.interfaces.address import IAddress
 
 
 

@@ -25,7 +25,7 @@ from email.utils import getaddresses
 from zope.interface import implements
 
 from mailman.i18n import _
-from mailman.interfaces import IRule
+from mailman.interfaces.rules import IRule
 
 
 

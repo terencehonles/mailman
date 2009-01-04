@@ -18,13 +18,15 @@
 """The built in rule set."""
 
 __metaclass__ = type
-__all__ = ['initialize']
+__all__ = [
+    'initialize',
+    ]
 
 
 import os
 import sys
 
-from mailman.interfaces import IRule
+from mailman.interfaces.rules import IRule
 
 
 

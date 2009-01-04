@@ -31,8 +31,8 @@ from zope.interface import implements
 from mailman.Utils import MakeRandomPassword
 from mailman.config import config
 from mailman.i18n import _
-from mailman.interfaces import (
-    ContinueProcessing, DeliveryMode, IEmailCommand)
+from mailman.interfaces.command import ContinueProcessing, IEmailCommand
+from mailman.interfaces.member import DeliveryMode
 from mailman.interfaces.registrar import IRegistrar
 
 

@@ -42,7 +42,7 @@ from mailman.Utils import oneline
 from mailman.config import config
 from mailman.core import errors
 from mailman.i18n import _
-from mailman.interfaces import IHandler
+from mailman.interfaces.handler import IHandler
 from mailman.queue import Switchboard
 from mailman.version import VERSION
 

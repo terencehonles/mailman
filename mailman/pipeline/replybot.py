@@ -31,7 +31,7 @@ from zope.interface import implements
 from mailman import Message
 from mailman import Utils
 from mailman.i18n import _
-from mailman.interfaces import IHandler
+from mailman.interfaces.handler import IHandler
 
 
 log = logging.getLogger('mailman.error')

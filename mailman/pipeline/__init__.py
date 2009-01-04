@@ -18,13 +18,15 @@
 """The built in set of pipeline handlers."""
 
 __metaclass__ = type
-__all__ = ['initialize']
+__all__ = [
+    'initialize',
+    ]
 
 
 import os
 import sys
 
-from mailman.interfaces import IHandler
+from mailman.interfaces.handler import IHandler
 
 
 

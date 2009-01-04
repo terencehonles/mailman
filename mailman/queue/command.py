@@ -46,7 +46,7 @@ from mailman import Utils
 from mailman.app.replybot import autorespond_to_sender
 from mailman.config import config
 from mailman.i18n import _
-from mailman.interfaces import ContinueProcessing, IEmailResults
+from mailman.interfaces.command import ContinueProcessing, IEmailResults
 from mailman.queue import Runner
 
 NL = '\n'

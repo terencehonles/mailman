@@ -18,7 +18,9 @@
 """Perform some bookkeeping after a successful post."""
 
 __metaclass__ = type
-__all__ = ['AfterDelivery']
+__all__ = [
+    'AfterDelivery',
+    ]
 
 
 import datetime
@@ -26,7 +28,7 @@ import datetime
 from zope.interface import implements
 
 from mailman.i18n import _
-from mailman.interfaces import IHandler
+from mailman.interfaces.handler import IHandler
 
 
 

@@ -6,7 +6,7 @@ objects.  The Mailman system instantiates an IListManager for you based on the
 configuration variable MANAGERS_INIT_FUNCTION.  The instance is accessible
 on the global config object.
 
-    >>> from mailman.interfaces import IListManager
+    >>> from mailman.interfaces.listmanager import IListManager
     >>> listmgr = config.db.list_manager
     >>> IListManager.providedBy(listmgr)
     True
@@ -17,7 +17,7 @@ Creating a mailing list
 
 Creating the list returns the newly created IMailList object.
 
-    >>> from mailman.interfaces import IMailingList
+    >>> from mailman.interfaces.mailinglist import IMailingList
     >>> mlist = listmgr.create(u'_xtest@example.com')
     >>> IMailingList.providedBy(mlist)
     True

@@ -24,8 +24,9 @@ from mailman.database.model import Model
 from mailman.database.address import Address
 from mailman.database.preferences import Preferences
 from mailman.database.roster import Memberships
-from mailman.interfaces import (
-    AddressAlreadyLinkedError, AddressNotLinkedError, IUser)
+from mailman.interfaces.address import (
+    AddressAlreadyLinkedError, AddressNotLinkedError)
+from mailman.interfaces.user import IUser
 
 
 

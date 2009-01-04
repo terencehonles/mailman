@@ -34,7 +34,7 @@ from mailman.Utils import ValidateEmail
 from mailman.config import config
 from mailman.core import errors
 from mailman.core.styles import style_manager
-from mailman.interfaces import MemberRole
+from mailman.interfaces.member import MemberRole
 
 
 log = logging.getLogger('mailman.error')

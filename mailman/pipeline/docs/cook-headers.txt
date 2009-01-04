@@ -300,7 +300,8 @@ messages are fully personalized, that header will get overwritten with the
 address of the recipient.  The list's posting address will be added to one of
 the recipient headers so that users will be able to reply back to the list.
 
-    >>> from mailman.interfaces import Personalization, ReplyToMunging
+    >>> from mailman.interfaces.mailinglist import (
+    ...     Personalization, ReplyToMunging)
     >>> mlist.personalize = Personalization.full
     >>> mlist.reply_goes_to_list = ReplyToMunging.no_munging
     >>> msg = message_from_string("""\

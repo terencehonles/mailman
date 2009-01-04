@@ -30,7 +30,7 @@ from zope.interface.verify import verifyObject
 from mailman import Defaults
 from mailman.config import config
 from mailman.database.model import Model
-from mailman.interfaces import (
+from mailman.interfaces.pending import (
     IPendable, IPended, IPendedKeyValue, IPendings)
 
 

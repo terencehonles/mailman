@@ -31,7 +31,7 @@ from zope.interface import implements
 from mailman import Utils
 from mailman.config import config
 from mailman.database.message import Message
-from mailman.interfaces import IMessageStore
+from mailman.interfaces.messages import IMessageStore
 
 # It could be very bad if you have already stored files and you change this
 # value.  We'd need a script to reshuffle and resplit.

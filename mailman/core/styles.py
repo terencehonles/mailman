@@ -36,9 +36,10 @@ from mailman import Utils
 from mailman.config import config
 from mailman.core.plugins import get_plugins
 from mailman.i18n import _
-from mailman.interfaces import (
-    Action, DuplicateStyleError, IStyle, IStyleManager, NewsModeration,
-    Personalization)
+from mailman.interfaces import Action, NewsModeration
+from mailman.interfaces.mailinglist import Personalization
+from mailman.interfaces.styles import (
+    DuplicateStyleError, IStyle, IStyleManager)
 
 
 

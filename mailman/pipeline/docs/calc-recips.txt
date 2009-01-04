@@ -21,7 +21,7 @@ start out with.  First, create a bunch of addresses...
 
 ...then subscribe these addresses to the mailing list as members...
 
-    >>> from mailman.interfaces import MemberRole
+    >>> from mailman.interfaces.member import MemberRole
     >>> member_a = address_a.subscribe(mlist, MemberRole.member)
     >>> member_b = address_b.subscribe(mlist, MemberRole.member)
     >>> member_c = address_c.subscribe(mlist, MemberRole.member)

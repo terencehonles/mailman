@@ -37,7 +37,7 @@ from mailman.app.moderator import hold_message
 from mailman.app.replybot import autorespond_to_sender, can_acknowledge
 from mailman.chains.base import TerminalChainBase
 from mailman.config import config
-from mailman.interfaces import IPendable
+from mailman.interfaces.pending import IPendable
 
 
 log = logging.getLogger('mailman.vette')

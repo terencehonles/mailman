@@ -8,7 +8,7 @@ may supply.  All registered email addresses must be verified before Mailman
 will send them any list traffic.
 
     >>> from mailman.app.registrar import Registrar
-    >>> from mailman.interfaces import IRegistrar
+    >>> from mailman.interfaces.registrar import IRegistrar
 
 The IUserManager manages users, but it does so at a fairly low level.
 Specifically, it does not handle verifications, email address syntax validity
@@ -319,7 +319,7 @@ Likewise, if you try to confirm, through the IUserRegistrar interface, a token
 that doesn't match a registration even, you will get None.  However, the
 pending even matched with that token will still be removed.
 
-    >>> from mailman.interfaces import IPendable
+    >>> from mailman.interfaces.pending import IPendable
     >>> from zope.interface import implements
 
     >>> class SimplePendable(dict):

@@ -15,48 +15,14 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-import os
-import sys
-
-from munepy import Enum
-from zope.interface import implementedBy
-from zope.interface.interfaces import IInterface
-
+__metaclass__ = type
 __all__ = [
     'Action',
     'NewsModeration',
     ]
 
 
-
-def _populate():
-    import mailman.interfaces
-    iface_mod = sys.modules['mailman.interfaces']
-    # Expose interfaces defined in sub-modules into the top-level package
-    for filename in os.listdir(os.path.dirname(iface_mod.__file__)):
-        base, ext = os.path.splitext(filename)
-        if ext <> '.py':
-            continue
-        modname = 'mailman.interfaces.' + base
-        __import__(modname)
-        module = sys.modules[modname]
-        for name in dir(module):
-            obj = getattr(module, name)
-            try:
-                is_enum = issubclass(obj, Enum)
-            except TypeError:
-                is_enum = False
-            is_interface = IInterface.providedBy(obj)
-            try:
-                is_exception = issubclass(obj, Exception)
-            except TypeError:
-                is_exception = False
-            if is_interface or is_exception or is_enum:
-                setattr(iface_mod, name, obj)
-                __all__.append(name)
-
-
-_populate()
+from munepy import Enum
 
 
 

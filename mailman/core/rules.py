@@ -28,7 +28,7 @@ from zope.interface.verify import verifyObject
 
 from mailman.config import config
 from mailman.core.plugins import get_plugins
-from mailman.interfaces import IRule
+from mailman.interfaces.rules import IRule
 
 
 

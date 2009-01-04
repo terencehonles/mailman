@@ -6,7 +6,7 @@ languages at run time, as well as enabling those languages for use in a
 running Mailman instance.
 
     >>> from zope.interface.verify import verifyObject
-    >>> from mailman.interfaces import ILanguageManager
+    >>> from mailman.interfaces.languages import ILanguageManager
     >>> from mailman.languages import LanguageManager
     >>> mgr = LanguageManager()
     >>> verifyObject(ILanguageManager, mgr)

@@ -78,7 +78,7 @@ However, if the sender of the original message is a member of the list and
 their address is in the include file, the sender's address is /not/ included
 in the recipients list.
 
-    >>> from mailman.interfaces import MemberRole
+    >>> from mailman.interfaces.member import MemberRole
     >>> address_1 = config.db.user_manager.create_address(
     ...     u'cperson@example.com')
     >>> address_1.subscribe(mlist, MemberRole.member)

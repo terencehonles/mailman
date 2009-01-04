@@ -23,7 +23,8 @@ from mailman.config import config
 from mailman.constants import SystemDefaultPreferences
 from mailman.database.model import Model
 from mailman.database.types import Enum
-from mailman.interfaces import IMember, IPreferences
+from mailman.interfaces.member import IMember
+from mailman.interfaces.preferences import IPreferences
 
 
 

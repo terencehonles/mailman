@@ -17,8 +17,10 @@
 
 """The header-matching chain."""
 
-__all__ = ['HeaderMatchChain']
 __metaclass__ = type
+__all__ = [
+    'HeaderMatchChain',
+    ]
 
 
 import re
@@ -27,10 +29,11 @@ import itertools
 
 from zope.interface import implements
 
-from mailman.interfaces import IChainIterator, IRule, LinkAction
 from mailman.chains.base import Chain, Link
-from mailman.i18n import _
 from mailman.config import config
+from mailman.i18n import _
+from mailman.interfaces.chain import IChainIterator, LinkAction
+from mailman.interfaces.rules import IRule
 
 
 log = logging.getLogger('mailman.vette')

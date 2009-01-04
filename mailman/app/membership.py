@@ -32,7 +32,8 @@ from mailman import i18n
 from mailman.app.notifications import send_goodbye_message
 from mailman.config import config
 from mailman.core import errors
-from mailman.interfaces import AlreadySubscribedError, DeliveryMode, MemberRole
+from mailman.interfaces.member import (
+    AlreadySubscribedError, DeliveryMode, MemberRole)
 
 _ = i18n._
 

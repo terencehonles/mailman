@@ -111,7 +111,7 @@ built-in chain does not have such a disposition by default, so let's craft a
 new chain and set it as the mailing list's start chain.
 
     >>> from mailman.chains.base import Chain, Link
-    >>> from mailman.interfaces import LinkAction
+    >>> from mailman.interfaces.chain import LinkAction
     >>> truth_rule = config.rules['truth']
     >>> discard_chain = config.chains['discard']
     >>> test_chain = Chain('always-discard', u'Testing discards')

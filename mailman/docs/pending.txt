@@ -12,7 +12,7 @@ This is not where messages held for administrator approval are kept.
 In order to pend an event, you first need a pending database, which is
 available by adapting the list manager.
 
-    >>> from mailman.interfaces import IPendings
+    >>> from mailman.interfaces.pending import IPendings
     >>> pendingdb = config.db.pendings
     >>> verifyObject(IPendings, pendingdb)
     True
@@ -20,7 +20,7 @@ available by adapting the list manager.
 The pending database can add any IPendable to the database, returning a token
 that can be used in urls and such.
 
-    >>> from mailman.interfaces import IPendable
+    >>> from mailman.interfaces.pending import IPendable
     >>> class SimplePendable(dict):
     ...     implements(IPendable)
     >>> subscription = SimplePendable(

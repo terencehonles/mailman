@@ -28,7 +28,7 @@ from zope.interface import implements
 
 from mailman.config import config
 from mailman.i18n import _
-from mailman.interfaces import IRule
+from mailman.interfaces.rules import IRule
 
 
 # The list of email commands we search for in the Subject header and payload.

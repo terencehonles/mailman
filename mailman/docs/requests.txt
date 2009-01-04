@@ -34,7 +34,7 @@ Mailing list centric
 A set of requests are always related to a particular mailing list, so given a
 mailing list you need to get its requests object.
 
-    >>> from mailman.interfaces import IListRequests, IRequests
+    >>> from mailman.interfaces.requests import IListRequests, IRequests
     >>> from zope.interface.verify import verifyObject
     >>> verifyObject(IRequests, config.db.requests)
     True
@@ -61,7 +61,7 @@ requires a request type (as an enum value), a key, and an optional dictionary
 of associated data.  The request database assigns no semantics to the held
 data, except for the request type.  Here we hold some simple bits of data.
 
-    >>> from mailman.interfaces import RequestType
+    >>> from mailman.interfaces.requests import RequestType
     >>> id_1 = requests.hold_request(RequestType.held_message,   u'hold_1')
     >>> id_2 = requests.hold_request(RequestType.subscription,   u'hold_2')
     >>> id_3 = requests.hold_request(RequestType.unsubscription, u'hold_3')
@@ -402,7 +402,7 @@ subscription must be provided, including the subscriber's address and real
 name, their password (possibly hashed), what kind of delivery option they are
 chosing and their preferred language.
 
-    >>> from mailman.interfaces import DeliveryMode
+    >>> from mailman.interfaces.member import DeliveryMode
     >>> mlist.admin_immed_notify = False
     >>> id_3 = moderator.hold_subscription(mlist,
     ...     u'bperson@example.org', u'Ben Person',
@@ -674,7 +674,7 @@ In this case, only the unsubscribing address is required.  Like subscriptions,
 unsubscription holds can send the list's moderators an immediate notification.
 
     >>> mlist.admin_immed_notify = False
-    >>> from mailman.interfaces import MemberRole
+    >>> from mailman.interfaces.member import MemberRole
     >>> user_1 = config.db.user_manager.create_user(u'gperson@example.com')
     >>> address_1 = list(user_1.addresses)[0]
     >>> address_1.subscribe(mlist, MemberRole.member)

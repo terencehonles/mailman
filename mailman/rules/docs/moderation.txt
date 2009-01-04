@@ -28,7 +28,7 @@ Let's add the message author as a non-moderated member.
     >>> user = config.db.user_manager.create_user(
     ...     u'aperson@example.org', u'Anne Person')
     >>> address = list(user.addresses)[0]
-    >>> from mailman.interfaces import MemberRole
+    >>> from mailman.interfaces.member import MemberRole
     >>> member = address.subscribe(mlist, MemberRole.member)
     >>> member.is_moderated
     False

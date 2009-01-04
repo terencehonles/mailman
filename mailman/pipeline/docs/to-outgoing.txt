@@ -68,7 +68,7 @@ VERP'd.
     >>> from mailman import Defaults
     >>> verp_personalized_delivieries = Defaults.VERP_PERSONALIZED_DELIVERIES
     >>> Defaults.VERP_PERSONALIZED_DELIVERIES = True
-    >>> from mailman.interfaces import Personalization
+    >>> from mailman.interfaces.mailinglist import Personalization
     >>> mlist.personalize = Personalization.individual
     >>> msgdata = dict(foo=1, bar=2)
     >>> handler.process(mlist, msg, msgdata)

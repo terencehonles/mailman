@@ -25,7 +25,8 @@ from mailman.config import config
 from mailman.database.address import Address
 from mailman.database.preferences import Preferences
 from mailman.database.user import User
-from mailman.interfaces import ExistingAddressError, IUserManager
+from mailman.interfaces.address import ExistingAddressError
+from mailman.interfaces.usermanager import IUserManager
 
 
 

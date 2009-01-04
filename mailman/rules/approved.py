@@ -17,8 +17,10 @@
 
 """Look for moderator pre-approval."""
 
-__all__ = ['Approved']
 __metaclass__ = type
+__all__ = [
+    'Approved',
+    ]
 
 
 import re
@@ -26,7 +28,7 @@ from email.iterators import typed_subpart_iterator
 from zope.interface import implements
 
 from mailman.i18n import _
-from mailman.interfaces import IRule
+from mailman.interfaces.rules import IRule
 
 
 EMPTYSTRING = u''

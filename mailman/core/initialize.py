@@ -33,7 +33,7 @@ import mailman.config.config
 import mailman.core.logging
 
 from mailman.core.plugins import get_plugin
-from mailman.interfaces import IDatabase
+from mailman.interfaces.database import IDatabase
 
 
 

@@ -20,7 +20,7 @@ from zope.interface import implements
 
 from mailman.database.model import Model
 from mailman.database.types import Enum
-from mailman.interfaces import IPreferences
+from mailman.interfaces.preferences import IPreferences
 
 
 

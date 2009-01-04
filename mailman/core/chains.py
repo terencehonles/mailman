@@ -31,7 +31,7 @@ from mailman.chains.headers import HeaderMatchChain
 from mailman.chains.hold import HoldChain
 from mailman.chains.reject import RejectChain
 from mailman.config import config
-from mailman.interfaces import LinkAction
+from mailman.interfaces.chain import LinkAction
 
 
 

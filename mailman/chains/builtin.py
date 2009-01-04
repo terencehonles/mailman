@@ -17,8 +17,10 @@
 
 """The default built-in starting chain."""
 
-__all__ = ['BuiltInChain']
 __metaclass__ = type
+__all__ = [
+    'BuiltInChain',
+    ]
 
 
 import logging
@@ -28,7 +30,7 @@ from zope.interface import implements
 from mailman.chains.base import Link
 from mailman.config import config
 from mailman.i18n import _
-from mailman.interfaces import IChain, LinkAction
+from mailman.interfaces.chain import IChain, LinkAction
 
 
 log = logging.getLogger('mailman.vette')

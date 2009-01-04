@@ -33,8 +33,10 @@ from mailman.Message import UserNotification
 from mailman.Utils import ValidateEmail
 from mailman.config import config
 from mailman.i18n import _
-from mailman.interfaces import IDomain, IPendable, IRegistrar
+from mailman.interfaces.domain import IDomain
 from mailman.interfaces.member import MemberRole
+from mailman.interfaces.pending import IPendable
+from mailman.interfaces.registrar import IRegistrar
 
 
 

@@ -20,7 +20,7 @@ from zope.interface import implements
 
 from mailman.config import config
 from mailman.database.model import Model
-from mailman.interfaces import IMessage
+from mailman.interfaces.messages import IMessage
 
 
 

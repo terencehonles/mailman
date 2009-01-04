@@ -122,7 +122,7 @@ This is a helper function for the following section.
 
 Users have preferences, but these preferences have no default settings.
 
-    >>> from mailman.interfaces import IPreferences
+    >>> from mailman.interfaces.preferences import IPreferences
     >>> show_prefs(user_1.preferences)
     acknowledge_posts    : None
     preferred_language   : None
@@ -164,7 +164,7 @@ membership role.
     >>> mlist_1 = create_list(u'xtest_1@example.com')
     >>> mlist_2 = create_list(u'xtest_2@example.com')
     >>> mlist_3 = create_list(u'xtest_3@example.com')
-    >>> from mailman.interfaces import MemberRole
+    >>> from mailman.interfaces.member import MemberRole
 
     >>> com.subscribe(mlist_1, MemberRole.member)
     <Member: Zoe Person <zperson@example.com> on xtest_1@example.com as
@@ -178,7 +178,7 @@ membership role.
         MemberRole.moderator>
 
     >>> memberships = user_1.memberships
-    >>> from mailman.interfaces import IRoster
+    >>> from mailman.interfaces.roster import IRoster
     >>> from zope.interface.verify import verifyObject
     >>> verifyObject(IRoster, memberships)
     True
