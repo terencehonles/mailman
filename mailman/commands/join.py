@@ -24,11 +24,9 @@ __all__ = [
     ]
 
 
-from email.header import decode_header, make_header
 from email.utils import formataddr, parseaddr
 from zope.interface import implements
 
-from mailman.Utils import MakeRandomPassword
 from mailman.config import config
 from mailman.i18n import _
 from mailman.interfaces.command import ContinueProcessing, IEmailCommand

@@ -17,7 +17,13 @@
 
 """Interface for mail transport agent integration."""
 
-from zope.interface import Interface, Attribute
+__metaclass__ = type
+__all__ = [
+    'IMailTransportAgent',
+    ]
+
+
+from zope.interface import Interface
 
 
 

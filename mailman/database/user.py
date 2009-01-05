@@ -15,7 +15,11 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-from email.utils import formataddr
+__metaclass__ = type
+__all__ = [
+    'User',
+    ]
+
 from storm.locals import *
 from zope.interface import implements
 

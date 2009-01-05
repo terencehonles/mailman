@@ -41,7 +41,7 @@ KINDCHOICES = set(('mime', 'plain', 'any'))
 
 
 class ScriptOptions(SingleMailingListOptions):
-    usage=_("""\
+    usage = _("""\
 %prog [options]
 
 List all the members of a mailing list.  Note that with the options below, if
@@ -143,7 +143,7 @@ def main():
     fqdn_listname = options.options.listname
     if options.options.output:
         try:
-            fp = open(opts.output, 'w')
+            fp = open(options.output, 'w')
         except IOError:
             options.parser.error(
                 _('Could not open file for writing: $options.options.output'))

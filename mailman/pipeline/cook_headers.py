@@ -25,7 +25,6 @@ __all__ = [
 
 import re
 
-from email.charset import Charset
 from email.errors import HeaderParseError
 from email.header import Header, decode_header, make_header
 from email.utils import parseaddr, formataddr, getaddresses
@@ -33,7 +32,6 @@ from zope.interface import implements
 
 from mailman import Utils
 from mailman.config import config
-from mailman.core.plugins import get_plugins
 from mailman.i18n import _
 from mailman.interfaces.handler import IHandler
 from mailman.interfaces.mailinglist import Personalization, ReplyToMunging
@@ -319,12 +317,12 @@ def ch_oneline(headerstr):
         # At this point, we should rstrip() every string because some
         # MUA deliberately add trailing spaces when composing return
         # message.
-        d = [(s.rstrip(),c) for (s,c) in d]
+        d = [(s.rstrip(), c) for (s, c) in d]
         # Find all charsets in the original header.  We use 'utf-8' rather
         # than using the first charset (in mailman 2.1.x) if multiple
         # charsets are used.
         csets = []
-        for (s,c) in d:
+        for (s, c) in d:
             if c and c not in csets:
                 csets.append(c)
         if len(csets) == 0:

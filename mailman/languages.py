@@ -35,8 +35,8 @@ class LanguageManager:
             self._enabled.add(code)
 
     def enable_language(self, code):
-        # As per the interface, let KeyError percolate up.
-        self._language_data[code]
+        if code not in self._language_data:
+            raise KeyError(code)
         self._enabled.add(code)
 
     def get_description(self, code):

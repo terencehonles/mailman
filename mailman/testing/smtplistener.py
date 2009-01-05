@@ -18,6 +18,7 @@
 """A test SMTP listener."""
 
 import smtpd
+import socket
 import logging
 import asyncore
 

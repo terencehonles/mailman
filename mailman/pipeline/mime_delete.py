@@ -37,7 +37,6 @@ from email.Iterators import typed_subpart_iterator
 from os.path import splitext
 from zope.interface import implements
 
-from mailman.Message import UserNotification
 from mailman.Utils import oneline
 from mailman.config import config
 from mailman.core import errors
@@ -217,7 +216,8 @@ def to_plaintext(msg):
             try:
                 os.unlink(filename)
             except OSError, e:
-                if e.errno <> errno.ENOENT: raise
+                if e.errno <> errno.ENOENT:
+                    raise
         # Now replace the payload of the subpart and twiddle the Content-Type:
         del subpart['content-transfer-encoding']
         subpart.set_payload(plaintext)

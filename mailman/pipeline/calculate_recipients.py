@@ -28,7 +28,6 @@ __all__ = ['CalculateRecipients']
 
 from zope.interface import implements
 
-from mailman import Message
 from mailman import Utils
 from mailman.config import config
 from mailman.core import errors

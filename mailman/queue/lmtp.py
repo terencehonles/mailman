@@ -34,7 +34,6 @@ See the variable USE_LMTP in Defaults.py.in for enabling this delivery
 mechanism.
 """
 
-import os
 import email
 import smtpd
 import logging
@@ -194,8 +193,8 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
                     msgdata['tolist'] = True
                     queue = 'in'
                 elif subaddress == 'request':
-                     msgdata['torequest'] = True
-                     queue = 'command'
+                    msgdata['torequest'] = True
+                    queue = 'command'
                 else:
                     elog.error('Unknown sub-address: %s', subaddress)
                     status.append(ERR_550)

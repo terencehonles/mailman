@@ -34,7 +34,6 @@ __all__ = [
 
 import copy
 import time
-import email
 import socket
 import logging
 import smtplib

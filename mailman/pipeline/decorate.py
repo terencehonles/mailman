@@ -28,7 +28,6 @@ from email.MIMEText import MIMEText
 from string import Template
 from zope.interface import implements
 
-from mailman import Defaults
 from mailman import Utils
 from mailman.Message import Message
 from mailman.config import config

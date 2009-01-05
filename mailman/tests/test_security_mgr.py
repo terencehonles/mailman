@@ -19,7 +19,6 @@
 
 import os
 import errno
-import Cookie
 import unittest
 
 # Don't use cStringIO because we're going to inherit
@@ -88,11 +87,13 @@ class TestAuthenticate(unittest.TestCase):
         try:
             os.unlink(config.SITE_PW_FILE)
         except OSError, e:
-            if e.errno <> errno.ENOENT: raise
+            if e.errno <> errno.ENOENT:
+                raise
         try:
             os.unlink(config.LISTCREATOR_PW_FILE)
         except OSError, e:
-            if e.errno <> errno.ENOENT: raise
+            if e.errno <> errno.ENOENT:
+                raise
 
     def test_auth_creator(self):
         self.assertEqual(self._mlist.Authenticate(
@@ -187,11 +188,13 @@ class TestWebAuthenticate(unittest.TestCase):
         try:
             os.unlink(config.SITE_PW_FILE)
         except OSError, e:
-            if e.errno <> errno.ENOENT: raise
+            if e.errno <> errno.ENOENT:
+                raise
         try:
             os.unlink(config.LISTCREATOR_PW_FILE)
         except OSError, e:
-            if e.errno <> errno.ENOENT: raise
+            if e.errno <> errno.ENOENT:
+                raise
         del os.environ['HTTP_COOKIE']
 
     def test_auth_site_admin(self):

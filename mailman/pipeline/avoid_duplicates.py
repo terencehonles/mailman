@@ -30,7 +30,6 @@ __all__ = ['AvoidDuplicates']
 from email.Utils import getaddresses, formataddr
 from zope.interface import implements
 
-from mailman.config import config
 from mailman.i18n import _
 from mailman.interfaces.handler import IHandler
 

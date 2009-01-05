@@ -15,16 +15,19 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
+__metaclass__ = type
+__all__ = [
+    'Member',
+    ]
+
 from storm.locals import *
 from zope.interface import implements
 
-from mailman.Utils import split_listname
 from mailman.config import config
 from mailman.constants import SystemDefaultPreferences
 from mailman.database.model import Model
 from mailman.database.types import Enum
 from mailman.interfaces.member import IMember
-from mailman.interfaces.preferences import IPreferences
 
 
 

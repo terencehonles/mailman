@@ -17,7 +17,10 @@
 
 """A user manager."""
 
-import os
+__metaclass__ = type
+__all__ = [
+    'UserManager',
+    ]
 
 from zope.interface import implements
 

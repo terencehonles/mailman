@@ -23,7 +23,6 @@ __all__ = [
     ]
 
 
-from zope.interface import implements
 from zope.interface.verify import verifyObject
 
 from mailman.config import config

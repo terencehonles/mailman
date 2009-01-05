@@ -34,7 +34,6 @@ import string
 import gettext
 
 import mailman.messages
-from mailman.config import config
 
 _translation = None
 _missing = object()
@@ -157,7 +156,7 @@ def ctime(date):
     if isinstance(date, str):
         try:
             year, mon, day, hh, mm, ss, wday, ydat, dst = time.strptime(date)
-            if dst in (0,1):
+            if dst in (0, 1):
                 tzname = time.tzname[dst]
             else:
                 # MAS: No exception but dst = -1 so try

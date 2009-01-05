@@ -17,11 +17,9 @@
 
 """Unit tests for OldStyleMemberships."""
 
-import os
 import time
 import unittest
 
-from mailman import Utils
 from mailman import passwords
 from mailman.config import config
 from mailman.core.errors import NotAMemberError
@@ -136,7 +134,8 @@ class TestMembers(unittest.TestCase):
         eq = self.assertEqual
         raises = self.assertRaises
         # We don't really care what the bounce info is
-        class Info: pass
+        class Info:
+            pass
         info = Info()
         mlist = self._mlist
         mlist.setBounceInfo('person@dom.ain', info)

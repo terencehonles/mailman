@@ -23,17 +23,14 @@ import cPickle
 import logging
 import datetime
 
-from email.MIMEMessage import MIMEMessage
-from email.MIMEText import MIMEText
 from email.Utils import parseaddr
 
 from mailman import Defaults
 from mailman import Utils
 from mailman.Bouncers import BouncerAPI
-from mailman.Message import UserNotification
 from mailman.config import config
 from mailman.i18n import _
-from mailman.queue import Runner, Switchboard
+from mailman.queue import Runner
 
 COMMASPACE = ', '
 

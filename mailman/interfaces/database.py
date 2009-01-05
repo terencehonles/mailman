@@ -23,6 +23,13 @@ setup.py file as an entry point in the 'mailman.database' group with the name
 Mailman's back end.
 """
 
+__metaclass__ = type
+__all__ = [
+    'DatabaseError',
+    'IDatabase',
+    'SchemaVersionMismatchError',
+    ]
+
 from zope.interface import Interface, Attribute
 
 from mailman.interfaces.errors import MailmanError
@@ -38,6 +45,7 @@ class SchemaVersionMismatchError(DatabaseError):
     """The database schema version number did not match what was expected."""
 
     def __init__(self, got):
+        super(SchemaVersionMismatchError, self).__init__()
         self._got = got
 
     def __str__(self):

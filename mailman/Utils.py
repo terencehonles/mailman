@@ -30,7 +30,6 @@ import errno
 import base64
 import random
 import logging
-import urlparse
 import htmlentitydefs
 import email.Header
 import email.Iterators
@@ -497,7 +496,8 @@ def findtext(templatefile, dict=None, raw=False, lang=None, mlist=None):
                     fp = open(filename)
                     raise OuterExit
                 except IOError, e:
-                    if e.errno <> errno.ENOENT: raise
+                    if e.errno <> errno.ENOENT:
+                        raise
                     # Okay, it doesn't exist, keep looping
                     fp = None
     except OuterExit:

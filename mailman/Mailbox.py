@@ -24,7 +24,6 @@ import mailbox
 
 from email.Errors import MessageParseError
 from email.Generator import Generator
-from email.Parser import Parser
 
 from mailman import Defaults
 from mailman.Message import Message

@@ -15,11 +15,8 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-import os
 import sys
-import shutil
 
-from mailman import Utils
 from mailman.app.lifecycle import remove_list
 from mailman.config import config
 from mailman.i18n import _
@@ -28,7 +25,7 @@ from mailman.options import MultipleMailingListOptions
 
 
 class ScriptOptions(MultipleMailingListOptions):
-    usage=_("""\
+    usage = _("""\
 %prog [options]
 
 Remove the components of a mailing list with impunity - beware!

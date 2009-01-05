@@ -30,7 +30,6 @@ from string import Template
 from zope.interface import implements
 from zope.interface.interface import adapter_hooks
 
-from mailman import Defaults
 from mailman.Utils import makedirs
 from mailman.config import config
 from mailman.interfaces.archiver import IArchiver, IPipermailMailingList

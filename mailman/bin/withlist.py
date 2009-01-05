@@ -151,7 +151,7 @@ the results."""))
 
 
 def main():
-    global LAST_MLIST, VERBOSE
+    global VERBOSE
 
     parser, opts, args = parseargs()
     config_file = (os.getenv('MAILMAN_CONFIG_FILE')

@@ -24,7 +24,6 @@ import logging
 import nntplib
 
 from cStringIO import StringIO
-from email.utils import getaddresses, make_msgid
 
 COMMASPACE = ', '
 

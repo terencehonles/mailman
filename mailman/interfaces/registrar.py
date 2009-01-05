@@ -22,7 +22,13 @@ etc. than the IUserManager.  The latter does no validation, syntax checking,
 or confirmation, while this interface does.
 """
 
-from zope.interface import Interface, Attribute
+__metaclass__ = type
+__all__ = [
+    'IRegistrar',
+    ]
+
+
+from zope.interface import Interface
 
 
 

@@ -30,7 +30,6 @@ import os
 import sys
 import codecs
 import logging
-import ConfigParser
 
 from lazr.config import as_boolean, as_log_level
 

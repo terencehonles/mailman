@@ -17,11 +17,7 @@
 
 """Export an XML representation of a mailing list."""
 
-import os
-import re
-import sha
 import sys
-import base64
 import codecs
 import datetime
 import optparse
@@ -260,7 +256,7 @@ class XMLDumper(object):
 
 
 def parseargs():
-    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=MAILMAN_VERSION,
                                    usage=_("""\
 %prog [options]
 

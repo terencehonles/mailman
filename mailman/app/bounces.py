@@ -21,12 +21,10 @@ __all__ = [
     'bounce_message',
     ]
 
-import re
 import logging
 
 from email.mime.message import MIMEMessage
 from email.mime.text import MIMEText
-from email.utils import getaddresses
 
 from mailman import Message
 from mailman import Utils

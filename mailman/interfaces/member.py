@@ -72,6 +72,7 @@ class AlreadySubscribedError(SubscriptionError):
     """The member is already subscribed to the mailing list with this role."""
 
     def __init__(self, fqdn_listname, address, role):
+        super(AlreadySubscribedError, self).__init__()
         self._fqdn_listname = fqdn_listname
         self._address = address
         self._role = role

@@ -24,10 +24,8 @@ archival.
 """
 
 import os
-import re
 import errno
 import logging
-import traceback
 
 from cStringIO import StringIO
 from string import Template
@@ -35,7 +33,6 @@ from string import Template
 from mailman import Mailbox
 from mailman import Utils
 from mailman.config import config
-from mailman.i18n import _
 
 log = logging.getLogger('mailman.error')
 
@@ -81,13 +78,14 @@ class Archiver:
         # the private directory, pointing directly to the private/listname
         # which has o+rx permissions.  Private archives do not have the
         # symbolic links.
-        archdir = archive_dir(self.fqdn_listname)
+        archdir = self.archive_dir(self.fqdn_listname)
         omask = os.umask(0)
         try:
             try:
                 os.mkdir(archdir+'.mbox', 02775)
             except OSError, e:
-                if e.errno <> errno.EEXIST: raise
+                if e.errno <> errno.EEXIST:
+                    raise
                 # We also create an empty pipermail archive directory into
                 # which we'll drop an empty index.html file into.  This is so
                 # that lists that have not yet received a posting have
@@ -95,7 +93,8 @@ class Archiver:
             try:
                 os.mkdir(archdir, 02775)
             except OSError, e:
-                if e.errno <> errno.EEXIST: raise
+                if e.errno <> errno.EEXIST:
+                    raise
             # See if there's an index.html file there already and if not,
             # write in the empty archive notice.
             indexfile = os.path.join(archdir, 'index.html')
@@ -103,7 +102,8 @@ class Archiver:
             try:
                 fp = open(indexfile)
             except IOError, e:
-                if e.errno <> errno.ENOENT: raise
+                if e.errno <> errno.ENOENT:
+                    raise
                 omask = os.umask(002)
                 try:
                     fp = open(indexfile, 'w')
@@ -163,7 +163,6 @@ class Archiver:
         cmd = Template(ar).safe_substitute(
             listname=self.fqdn_listname,
             hostname=self.host_name)
-        cmd = ar % d
         extarch = os.popen(cmd, 'w')
         extarch.write(txt)
         status = extarch.close()

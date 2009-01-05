@@ -49,6 +49,6 @@ class ModelMeta(PropertyPublisherMeta):
 
 
 
-class Model(object):
+class Model:
     """Like Storm's `Storm` subclass, but with a bit extra."""
     __metaclass__ = ModelMeta

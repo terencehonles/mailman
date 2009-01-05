@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-from mailman import Defaults
 from mailman.config import config
 from mailman.i18n import _
 from mailman.options import Options
@@ -23,7 +22,7 @@ from mailman.options import Options
 
 
 class ScriptOptions(Options):
-    usage=_("""\
+    usage = _("""\
 %prog [options]
 
 List all mailing lists.""")

@@ -64,14 +64,14 @@ log = logging.getLogger('mailman.error')
 
 # We only care about the listname and the subq as in listname@ or
 # listname-request@
-subqnames = ('admin','bounces','confirm','join','leave',
-             'owner','request','subscribe','unsubscribe')
+subqnames = ('admin', 'bounces', 'confirm', 'join', 'leave',
+             'owner', 'request', 'subscribe', 'unsubscribe')
 
 def getlistq(address):
     localpart, domain = address.split('@', 1)
     # TK: FIXME I only know configs of Postfix.
     if config.POSTFIX_STYLE_VIRTUAL_DOMAINS:
-        p = localpart.split(config.POSTFIX_VIRTUAL_SEPARATOR,1)
+        p = localpart.split(config.POSTFIX_VIRTUAL_SEPARATOR, 1)
         if len(p) == 2:
             localpart, domain = p
     l = localpart.split('-')
@@ -105,7 +105,8 @@ class MaildirRunner(Runner):
         try:
             files = os.listdir(self._dir)
         except OSError, e:
-            if e.errno <> errno.ENOENT: raise
+            if e.errno <> errno.ENOENT:
+                raise
             # Nothing's been delivered yet
             return 0
         for file in files:

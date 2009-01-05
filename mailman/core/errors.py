@@ -102,6 +102,7 @@ class SomeRecipientsFailed(HandlerError):
 class RejectMessage(HandlerError):
     """The message will be bounced back to the sender"""
     def __init__(self, notice=None):
+        super(RejectMessage, self).__init__()
         if notice is None:
             notice = _('Your message was rejected')
         if notice.endswith('\n\n'):
@@ -136,6 +137,7 @@ class BadPasswordSchemeError(PasswordError):
     """A bad password scheme was given."""
 
     def __init__(self, scheme_name='unknown'):
+        super(BadPasswordSchemeError, self).__init__()
         self.scheme_name = scheme_name
 
     def __str__(self):

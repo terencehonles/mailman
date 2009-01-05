@@ -55,7 +55,7 @@ def r_callback(option, opt, value, parser):
 
 class ScriptOptions(Options):
 
-    usage=_("""\
+    usage = _("""\
 Run one or more qrunners, once or repeatedly.
 
 Each named runner class is run in round-robin fashion.  In other words, the

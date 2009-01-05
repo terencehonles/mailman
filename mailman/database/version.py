@@ -15,6 +15,11 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
+__metaclass__ = type
+__all__ = [
+    'Version',
+    ]
+
 from storm.locals import *
 from mailman.database.model import Model
 
@@ -26,5 +31,6 @@ class Version(Model):
     version = Int()
 
     def __init__(self, component, version):
+        super(Version, self).__init__()
         self.component = component
         self.version = version

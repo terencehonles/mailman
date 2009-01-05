@@ -26,7 +26,7 @@ from mailman.version import MAILMAN_VERSION
 
 
 def parseargs():
-    parser = optparse.OptionParser(version=Version.MAILMAN_VERSION,
+    parser = optparse.OptionParser(version=MAILMAN_VERSION,
                                    usage=_("""\
 %%prog [options] qfiles ...
 

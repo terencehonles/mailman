@@ -25,7 +25,6 @@ import sys
 
 from mailman.config import config
 from mailman.i18n import _
-from mailman.version import MAILMAN_VERSION
 from mailman.options import Options
 
 

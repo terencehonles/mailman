@@ -35,15 +35,12 @@ import socket
 import logging
 import mailbox
 import smtplib
-import tempfile
 import threading
 
 from Queue import Empty, Queue
-from datetime import datetime, timedelta
 
 from mailman.bin.master import Loop as Master
 from mailman.config import config
-from mailman.queue import Switchboard
 from mailman.testing.smtplistener import Server
 
 

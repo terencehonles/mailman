@@ -18,16 +18,20 @@
 """The historical 'suspicious header' rule."""
 
 __metaclass__ = type
-__all__ = ['SuspiciousHeader']
+__all__ = [
+    'SuspiciousHeader',
+    ]
 
 
 import re
+import logging
 
-from email.utils import getaddresses
 from zope.interface import implements
 
 from mailman.i18n import _
 from mailman.interfaces.rules import IRule
+
+log = logging.getLogger('mailman.error')
 
 
 

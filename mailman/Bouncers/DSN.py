@@ -21,7 +21,6 @@ RFC 3464 obsoletes 1894 which was the old DSN standard.  This module has not
 been audited for differences between the two.
 """
 
-from cStringIO import StringIO
 from email.Iterators import typed_subpart_iterator
 from email.Utils import parseaddr
 

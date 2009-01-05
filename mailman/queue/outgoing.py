@@ -18,19 +18,15 @@
 """Outgoing queue runner."""
 
 import os
-import sys
-import copy
-import email
 import socket
 import logging
 
 from datetime import datetime
 
 from mailman import Defaults
-from mailman import Message
 from mailman.config import config
 from mailman.core import errors
-from mailman.queue import Runner, Switchboard
+from mailman.queue import Runner
 from mailman.queue.bounce import BounceMixin
 
 # This controls how often _do_periodic() will try to deal with deferred
@@ -67,7 +63,7 @@ class OutgoingRunner(Runner, BounceMixin):
             self._func(mlist, msg, msgdata)
             # Failsafe -- a child may have leaked through.
             if pid <> os.getpid():
-                log.error('child process leaked thru: %s', modname)
+                log.error('child process leaked thru: %s', pid)
                 os._exit(1)
             self._logged = False
         except socket.error:

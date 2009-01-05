@@ -15,6 +15,11 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
+__metaclass__ = type
+__all__ = [
+    'Message',
+    ]
+
 from storm.locals import *
 from zope.interface import implements
 
@@ -36,6 +41,7 @@ class Message(Model):
     # This is a Messge-ID field representation, not a database row id.
 
     def __init__(self, message_id, message_id_hash, path):
+        super(Message, self).__init__()
         self.message_id = message_id
         self.message_id_hash = message_id_hash
         self.path = path

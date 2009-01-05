@@ -17,6 +17,12 @@
 
 """Implementations of the IPendable and IPending interfaces."""
 
+__metaclass__ = type
+__all__ = [
+    'Pended',
+    'Pendings',
+    ]
+
 import sys
 import time
 import random
@@ -56,6 +62,7 @@ class Pended(Model):
     implements(IPended)
 
     def __init__(self, token, expiration_date):
+        super(Pended, self).__init__()
         self.token = token
         self.expiration_date = expiration_date
 
@@ -71,7 +78,7 @@ class UnpendedPendable(dict):
 
 
 
-class Pendings(object):
+class Pendings:
     """Implementation of the IPending interface."""
 
     implements(IPendings)

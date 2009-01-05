@@ -29,21 +29,16 @@ __all__ = [
 # -owner.
 
 import re
-import sys
 import logging
 
 from StringIO import StringIO
 from email.Errors import HeaderParseError
-from email.Header import decode_header, make_header, Header
+from email.Header import decode_header, make_header
 from email.Iterators import typed_subpart_iterator
-from email.MIMEMessage import MIMEMessage
-from email.MIMEText import MIMEText
 from zope.interface import implements
 
 from mailman import Defaults
 from mailman import Message
-from mailman import Utils
-from mailman.app.replybot import autorespond_to_sender
 from mailman.config import config
 from mailman.i18n import _
 from mailman.interfaces.command import ContinueProcessing, IEmailResults

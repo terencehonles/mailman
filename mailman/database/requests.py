@@ -129,6 +129,7 @@ class _Request(Model):
     mailing_list = Reference(mailing_list_id, 'MailingList.id')
 
     def __init__(self, key, request_type, mailing_list, data_hash):
+        super(_Request, self).__init__()
         self.key = key
         self.request_type = request_type
         self.mailing_list = mailing_list

@@ -21,13 +21,9 @@ __all__ = [
     ]
 
 
-import sys
-
-from mailman.config import config
 from mailman.core.plugins import get_plugin
 from mailman.i18n import _
 from mailman.options import Options
-from mailman.version import MAILMAN_VERSION
 
 
 
