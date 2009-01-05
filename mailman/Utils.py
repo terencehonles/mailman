@@ -35,11 +35,11 @@ import email.Header
 import email.Iterators
 
 from email.Errors import HeaderParseError
+from lazr.config import as_boolean
 from string import ascii_letters, digits, whitespace, Template
 
 import mailman.templates
 
-from mailman import Defaults
 from mailman import passwords
 from mailman.config import config
 from mailman.core import errors
@@ -318,8 +318,8 @@ def Secure_MakeRandomPassword(length):
 
 def MakeRandomPassword(length=None):
     if length is None:
-        length = Defaults.MEMBER_PASSWORD_LENGTH
-    if Defaults.USER_FRIENDLY_PASSWORDS:
+        length = int(config.member_password_length)
+    if as_boolean(config.user_friendly_passwords):
         password = UserFriendly_MakeRandomPassword(length)
     else:
         password = Secure_MakeRandomPassword(length)

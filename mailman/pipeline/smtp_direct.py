@@ -44,7 +44,6 @@ from email.Utils import formataddr
 from string import Template
 from zope.interface import implements
 
-from mailman import Defaults
 from mailman import Utils
 from mailman.config import config
 from mailman.core import errors
@@ -70,7 +69,7 @@ class Connection:
         port = int(config.mta.smtp_port)
         log.debug('Connecting to %s:%s', host, port)
         self.__conn.connect(host, port)
-        self.__numsessions = Defaults.SMTP_MAX_SESSIONS_PER_CONNECTION
+        self.__numsessions = int(config.mta.max_sessions_per_connection)
 
     def sendmail(self, envsender, recips, msgtext):
         if self.__conn is None:
@@ -126,10 +125,10 @@ def process(mlist, msg, msgdata):
         chunks = [[recip] for recip in recips]
         msgdata['personalize'] = 1
         deliveryfunc = verpdeliver
-    elif Defaults.SMTP_MAX_RCPTS <= 0:
+    elif int(config.mta.max_recipients) <= 0:
         chunks = [recips]
     else:
-        chunks = chunkify(recips, Defaults.SMTP_MAX_RCPTS)
+        chunks = chunkify(recips, int(config.mta.max_recipients))
     # See if this is an unshunted message for which some were undelivered
     if msgdata.has_key('undelivered'):
         chunks = msgdata['undelivered']
@@ -316,12 +315,9 @@ def verpdeliver(mlist, msg, msgdata, envsender, failures, conn):
                 # this recipient.
                 log.info('Skipping VERP delivery to unqual recip: %s', recip)
                 continue
-            d = {'bounces': bmailbox,
-                 'mailbox': rmailbox,
-                 'host'   : DOT.join(rdomain),
-                 }
-            envsender = '%s@%s' % ((Defaults.VERP_FORMAT % d),
-                                   DOT.join(bdomain))
+            envsender = Template(config.mta.verp_format).safe_substitute(
+                bounces=bmailbox, mailbox=rmailbox,
+                host=DOT.join(rdomain)) + '@' + DOT.join(bdomain)
         if mlist.personalize == Personalization.full:
             # When fully personalizing, we want the To address to point to the
             # recipient, not to the mailing list

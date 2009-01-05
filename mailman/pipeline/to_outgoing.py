@@ -23,12 +23,14 @@ recipient should just be placed in the out queue directly.
 """
 
 __metaclass__ = type
-__all__ = ['ToOutgoing']
+__all__ = [
+    'ToOutgoing',
+    ]
 
 
+from lazr.config import as_boolean
 from zope.interface import implements
 
-from mailman import Defaults
 from mailman.config import config
 from mailman.i18n import _
 from mailman.interfaces.handler import IHandler
@@ -46,7 +48,7 @@ class ToOutgoing:
 
     def process(self, mlist, msg, msgdata):
         """See `IHandler`."""
-        interval = Defaults.VERP_DELIVERY_INTERVAL
+        interval = int(config.mta.verp_delivery_interval)
         # Should we VERP this message?  If personalization is enabled for this
         # list and VERP_PERSONALIZED_DELIVERIES is true, then yes we VERP it.
         # Also, if personalization is /not/ enabled, but
@@ -58,7 +60,7 @@ class ToOutgoing:
         if 'verp' in  msgdata:
             pass
         elif mlist.personalize <> Personalization.none:
-            if Defaults.VERP_PERSONALIZED_DELIVERIES:
+            if as_boolean(config.mta.verp_personalized_deliveries):
                 msgdata['verp'] = True
         elif interval == 0:
             # Never VERP

@@ -32,11 +32,11 @@ from StringIO import StringIO
 from lazr.config import ConfigSchema, as_boolean
 from pkg_resources import resource_string
 
-from mailman import Defaults
 from mailman import version
 from mailman.core import errors
 from mailman.domain import Domain
 from mailman.languages import LanguageManager
+from mailman.styles.manager import StyleManager
 
 
 SPACE = ' '
@@ -149,6 +149,7 @@ class Configuration(object):
         # Always enable the server default language, which must be defined.
         self.languages.enable_language(self._config.mailman.default_language)
         self.ensure_directories_exist()
+        self.style_manager = StyleManager()
 
     @property
     def logger_configs(self):
@@ -187,6 +188,12 @@ class Configuration(object):
             module_name, class_name = class_path.rsplit('.', 1)
             __import__(module_name)
             yield getattr(sys.modules[module_name], class_name)()
+
+    @property
+    def style_configs(self):
+        """Iterate over all the style configuration sections."""
+        for section in self._config.getByCategory('style', []):
+            yield section
 
     @property
     def header_matches(self):

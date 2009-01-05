@@ -20,25 +20,19 @@
 __metaclass__ = type
 __all__ = [
     'DefaultStyle',
-    'style_manager',
     ]
 
 # XXX Styles need to be reconciled with lazr.config.
 
 import datetime
 
-from operator import attrgetter
 from zope.interface import implements
-from zope.interface.verify import verifyObject
 
-from mailman import Defaults
 from mailman import Utils
-from mailman.core.plugins import get_plugins
 from mailman.i18n import _
 from mailman.interfaces import Action, NewsModeration
-from mailman.interfaces.mailinglist import Personalization
-from mailman.interfaces.styles import (
-    DuplicateStyleError, IStyle, IStyleManager)
+from mailman.interfaces.mailinglist import Personalization, ReplyToMunging
+from mailman.interfaces.styles import IStyle
 
 
 
@@ -57,77 +51,84 @@ class DefaultStyle:
         # Most of these were ripped from the old MailList.InitVars() method.
         mlist.volume = 1
         mlist.post_id = 1
-        mlist.new_member_options = Defaults.DEFAULT_NEW_MEMBER_OPTIONS
+        mlist.new_member_options = 256
         # This stuff is configurable
         mlist.real_name = mlist.list_name.capitalize()
         mlist.respond_to_post_requests = True
-        mlist.advertised = Defaults.DEFAULT_LIST_ADVERTISED
-        mlist.max_num_recipients = Defaults.DEFAULT_MAX_NUM_RECIPIENTS
-        mlist.max_message_size = Defaults.DEFAULT_MAX_MESSAGE_SIZE
-        mlist.reply_goes_to_list = Defaults.DEFAULT_REPLY_GOES_TO_LIST
+        mlist.advertised = True
+        mlist.max_num_recipients = 10
+        mlist.max_message_size = 40 # KB
+        mlist.reply_goes_to_list = ReplyToMunging.no_munging
         mlist.reply_to_address = u''
-        mlist.first_strip_reply_to = Defaults.DEFAULT_FIRST_STRIP_REPLY_TO
-        mlist.admin_immed_notify = Defaults.DEFAULT_ADMIN_IMMED_NOTIFY
-        mlist.admin_notify_mchanges = (
-            Defaults.DEFAULT_ADMIN_NOTIFY_MCHANGES)
-        mlist.require_explicit_destination = (
-            Defaults.DEFAULT_REQUIRE_EXPLICIT_DESTINATION)
-        mlist.acceptable_aliases = Defaults.DEFAULT_ACCEPTABLE_ALIASES
-        mlist.send_reminders = Defaults.DEFAULT_SEND_REMINDERS
-        mlist.send_welcome_msg = Defaults.DEFAULT_SEND_WELCOME_MSG
-        mlist.send_goodbye_msg = Defaults.DEFAULT_SEND_GOODBYE_MSG
-        mlist.bounce_matching_headers = (
-            Defaults.DEFAULT_BOUNCE_MATCHING_HEADERS)
+        mlist.first_strip_reply_to = False
+        mlist.admin_immed_notify = True
+        mlist.admin_notify_mchanges = False
+        mlist.require_explicit_destination = True
+        mlist.acceptable_aliases = u''
+        mlist.send_reminders = True
+        mlist.send_welcome_msg = True
+        mlist.send_goodbye_msg = True
+        mlist.bounce_matching_headers = u"""
+# Lines that *start* with a '#' are comments.
+to: friend@public.com
+message-id: relay.comanche.denmark.eu
+from: list@listme.com
+from: .*@uplinkpro.com
+"""
         mlist.header_matches = []
-        mlist.anonymous_list = Defaults.DEFAULT_ANONYMOUS_LIST
+        mlist.anonymous_list = False
         mlist.description = u''
         mlist.info = u''
         mlist.welcome_msg = u''
         mlist.goodbye_msg = u''
-        mlist.subscribe_policy = Defaults.DEFAULT_SUBSCRIBE_POLICY
-        mlist.subscribe_auto_approval = (
-            Defaults.DEFAULT_SUBSCRIBE_AUTO_APPROVAL)
-        mlist.unsubscribe_policy = Defaults.DEFAULT_UNSUBSCRIBE_POLICY
-        mlist.private_roster = Defaults.DEFAULT_PRIVATE_ROSTER
-        mlist.obscure_addresses = Defaults.DEFAULT_OBSCURE_ADDRESSES
-        mlist.admin_member_chunksize = Defaults.DEFAULT_ADMIN_MEMBER_CHUNKSIZE
-        mlist.administrivia = Defaults.DEFAULT_ADMINISTRIVIA
-        mlist.preferred_language = Defaults.DEFAULT_SERVER_LANGUAGE
+        mlist.subscribe_policy = 1
+        mlist.subscribe_auto_approval = []
+        mlist.unsubscribe_policy = 0
+        mlist.private_roster = 1
+        mlist.obscure_addresses = True
+        mlist.admin_member_chunksize = 30
+        mlist.administrivia = True
+        mlist.preferred_language = u'en'
         mlist.include_rfc2369_headers = True
         mlist.include_list_post_header = True
-        mlist.filter_mime_types = Defaults.DEFAULT_FILTER_MIME_TYPES
-        mlist.pass_mime_types = Defaults.DEFAULT_PASS_MIME_TYPES
-        mlist.filter_filename_extensions = (
-            Defaults.DEFAULT_FILTER_FILENAME_EXTENSIONS)
-        mlist.pass_filename_extensions = (
-            Defaults.DEFAULT_PASS_FILENAME_EXTENSIONS)
-        mlist.filter_content = Defaults.DEFAULT_FILTER_CONTENT
-        mlist.collapse_alternatives = Defaults.DEFAULT_COLLAPSE_ALTERNATIVES
-        mlist.convert_html_to_plaintext = (
-            Defaults.DEFAULT_CONVERT_HTML_TO_PLAINTEXT)
-        mlist.filter_action = Defaults.DEFAULT_FILTER_ACTION
+        mlist.filter_mime_types = []
+        mlist.pass_mime_types = [
+            'multipart/mixed',
+            'multipart/alternative',
+            'text/plain',
+            ]
+        mlist.filter_filename_extensions = [
+            'exe', 'bat', 'cmd', 'com', 'pif', 'scr', 'vbs', 'cpl',
+            ]
+        mlist.pass_filename_extensions = []
+        mlist.filter_content = False
+        mlist.collapse_alternatives = True
+        mlist.convert_html_to_plaintext = True
+        mlist.filter_action = 0
         # Digest related variables
-        mlist.digestable = Defaults.DEFAULT_DIGESTABLE
-        mlist.digest_is_default = Defaults.DEFAULT_DIGEST_IS_DEFAULT
-        mlist.mime_is_default_digest = Defaults.DEFAULT_MIME_IS_DEFAULT_DIGEST
-        mlist.digest_size_threshold = Defaults.DEFAULT_DIGEST_SIZE_THRESHOLD
-        mlist.digest_send_periodic = Defaults.DEFAULT_DIGEST_SEND_PERIODIC
-        mlist.digest_header = Defaults.DEFAULT_DIGEST_HEADER
-        mlist.digest_footer = Defaults.DEFAULT_DIGEST_FOOTER
-        mlist.digest_volume_frequency = (
-            Defaults.DEFAULT_DIGEST_VOLUME_FREQUENCY)
+        mlist.digestable = True
+        mlist.digest_is_default = False
+        mlist.mime_is_default_digest = False
+        mlist.digest_size_threshold = 30 # KB
+        mlist.digest_send_periodic = True
+        mlist.digest_header = u''
+        mlist.digest_footer = u"""\
+_______________________________________________
+$real_name mailing list
+$fqdn_listname
+${listinfo_page}
+"""
+        mlist.digest_volume_frequency = 1
         mlist.one_last_digest = {}
         mlist.next_digest_number = 1
-        mlist.nondigestable = Defaults.DEFAULT_NONDIGESTABLE
+        mlist.nondigestable = True
         mlist.personalize = Personalization.none
         # New sender-centric moderation (privacy) options
-        mlist.default_member_moderation = (
-            Defaults.DEFAULT_DEFAULT_MEMBER_MODERATION)
+        mlist.default_member_moderation = False
         # Archiver
-        mlist.archive = Defaults.DEFAULT_ARCHIVE
-        mlist.archive_private = Defaults.DEFAULT_ARCHIVE_PRIVATE
-        mlist.archive_volume_frequency = (
-            Defaults.DEFAULT_ARCHIVE_VOLUME_FREQUENCY)
+        mlist.archive = True
+        mlist.archive_private = 0
+        mlist.archive_volume_frequency = 1
         mlist.emergency = False
         mlist.member_moderation_action = Action.hold
         mlist.member_moderation_notice = u''
@@ -135,9 +136,8 @@ class DefaultStyle:
         mlist.hold_these_nonmembers = []
         mlist.reject_these_nonmembers = []
         mlist.discard_these_nonmembers = []
-        mlist.forward_auto_discards = Defaults.DEFAULT_FORWARD_AUTO_DISCARDS
-        mlist.generic_nonmember_action = (
-            Defaults.DEFAULT_GENERIC_NONMEMBER_ACTION)
+        mlist.forward_auto_discards = True
+        mlist.generic_nonmember_action = 1
         mlist.nonmember_rejection_notice = u''
         # Ban lists
         mlist.ban_list = []
@@ -145,9 +145,14 @@ class DefaultStyle:
         # 2-tuple of the date of the last autoresponse and the number of
         # autoresponses sent on that date.
         mlist.hold_and_cmd_autoresponses = {}
-        mlist.subject_prefix = _(Defaults.DEFAULT_SUBJECT_PREFIX)
-        mlist.msg_header = Defaults.DEFAULT_MSG_HEADER
-        mlist.msg_footer = Defaults.DEFAULT_MSG_FOOTER
+        mlist.subject_prefix = _(u'[$mlist.real_name] ')
+        mlist.msg_header = u''
+        mlist.msg_footer = u"""\
+_______________________________________________
+$real_name mailing list
+$fqdn_listname
+${listinfo_page}
+"""
         # Set this to Never if the list's preferred language uses us-ascii,
         # otherwise set it to As Needed
         if Utils.GetCharSet(mlist.preferred_language) == 'us-ascii':
@@ -155,9 +160,9 @@ class DefaultStyle:
         else:
             mlist.encode_ascii_prefixes = 2
         # scrub regular delivery
-        mlist.scrub_nondigest = Defaults.DEFAULT_SCRUB_NONDIGEST
+        mlist.scrub_nondigest = False
         # automatic discarding
-        mlist.max_days_to_hold = Defaults.DEFAULT_MAX_DAYS_TO_HOLD
+        mlist.max_days_to_hold = 0
         # Autoresponder
         mlist.autorespond_postings = False
         mlist.autorespond_admin = False
@@ -174,20 +179,15 @@ class DefaultStyle:
         mlist.admin_responses = {}
         mlist.request_responses = {}
         # Bounces
-        mlist.bounce_processing = Defaults.DEFAULT_BOUNCE_PROCESSING
-        mlist.bounce_score_threshold = Defaults.DEFAULT_BOUNCE_SCORE_THRESHOLD
-        mlist.bounce_info_stale_after = (
-            Defaults.DEFAULT_BOUNCE_INFO_STALE_AFTER)
-        mlist.bounce_you_are_disabled_warnings = (
-            Defaults.DEFAULT_BOUNCE_YOU_ARE_DISABLED_WARNINGS)
+        mlist.bounce_processing = True
+        mlist.bounce_score_threshold = 5.0
+        mlist.bounce_info_stale_after = datetime.timedelta(days=7)
+        mlist.bounce_you_are_disabled_warnings = 3
         mlist.bounce_you_are_disabled_warnings_interval = (
-            Defaults.DEFAULT_BOUNCE_YOU_ARE_DISABLED_WARNINGS_INTERVAL)
-        mlist.bounce_unrecognized_goes_to_list_owner = (
-            Defaults.DEFAULT_BOUNCE_UNRECOGNIZED_GOES_TO_LIST_OWNER)
-        mlist.bounce_notify_owner_on_disable = (
-            Defaults.DEFAULT_BOUNCE_NOTIFY_OWNER_ON_DISABLE)
-        mlist.bounce_notify_owner_on_removal = (
-            Defaults.DEFAULT_BOUNCE_NOTIFY_OWNER_ON_REMOVAL)
+            datetime.timedelta(days=7))
+        mlist.bounce_unrecognized_goes_to_list_owner = True
+        mlist.bounce_notify_owner_on_disable = True
+        mlist.bounce_notify_owner_on_removal = True
         # This holds legacy member related information.  It's keyed by the
         # member address, and the value is an object containing the bounce
         # score, the date of the last received bounce, and a count of the
@@ -196,7 +196,7 @@ class DefaultStyle:
         # New style delivery status
         mlist.delivery_status = {}
         # NNTP gateway
-        mlist.nntp_host = Defaults.DEFAULT_NNTP_HOST
+        mlist.nntp_host = u''
         mlist.linked_newsgroup = u''
         mlist.gateway_to_news = False
         mlist.gateway_to_mail = False
@@ -246,55 +246,3 @@ class DefaultStyle:
         # If no other styles have matched, then the default style matches.
         if len(styles) == 0:
             styles.append(self)
-
-
-
-class StyleManager:
-    """The built-in style manager."""
-
-    implements(IStyleManager)
-
-    def __init__(self):
-        """Install all styles from registered plugins, and install them."""
-        self._styles = {}
-        # Install all the styles provided by plugins.
-        for style_factory in get_plugins('mailman.styles'):
-            style = style_factory()
-            # Let DuplicateStyleErrors percolate up.
-            self.register(style)
-
-    def get(self, name):
-        """See `IStyleManager`."""
-        return self._styles.get(name)
-
-    def lookup(self, mailing_list):
-        """See `IStyleManager`."""
-        matched_styles = []
-        for style in self.styles:
-            style.match(mailing_list, matched_styles)
-        for style in matched_styles:
-            yield style
-
-    @property
-    def styles(self):
-        """See `IStyleManager`."""
-        for style in sorted(self._styles.values(),
-                            key=attrgetter('priority'),
-                            reverse=True):
-            yield style
-
-    def register(self, style):
-        """See `IStyleManager`."""
-        verifyObject(IStyle, style)
-        if style.name in self._styles:
-            raise DuplicateStyleError(style.name)
-        self._styles[style.name] = style
-
-    def unregister(self, style):
-        """See `IStyleManager`."""
-        # Let KeyErrors percolate up.
-        del self._styles[style.name]
-
-
-
-style_manager = StyleManager()

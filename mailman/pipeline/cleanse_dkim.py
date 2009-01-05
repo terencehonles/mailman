@@ -26,12 +26,14 @@ originating at the Mailman server for the outgoing message.
 """
 
 __metaclass__ = type
-__all__ = ['CleanseDKIM']
+__all__ = [
+    'CleanseDKIM',
+    ]
 
 
+from lazr.config import as_boolean
 from zope.interface import implements
 
-from mailman import Defaults
 from mailman.i18n import _
 from mailman.interfaces.handler import IHandler
 
@@ -47,7 +49,7 @@ class CleanseDKIM:
 
     def process(self, mlist, msg, msgdata):
         """See `IHandler`."""
-        if Defaults.REMOVE_DKIM_HEADERS:
+        if as_boolean(config.mta.remove_dkim_headers):
             del msg['domainkey-signature']
             del msg['dkim-signature']
             del msg['authentication-results']

@@ -26,8 +26,8 @@ __all__ = [
 
 
 from email.utils import formataddr
+from lazr.config import as_boolean
 
-from mailman import Defaults
 from mailman import Message
 from mailman import Utils
 from mailman import i18n
@@ -79,7 +79,7 @@ def send_welcome_message(mlist, address, language, delivery_mode, text=''):
         _('Welcome to the "$mlist.real_name" mailing list${digmode}'),
         text, language)
     msg['X-No-Archive'] = 'yes'
-    msg.send(mlist, verp=Defaults.VERP_PERSONALIZED_DELIVERIES)
+    msg.send(mlist, verp=as_boolean(config.mta.verp_personalized_deliveries))
 
 
 
@@ -104,7 +104,7 @@ def send_goodbye_message(mlist, address, language):
         address, mlist.bounces_address,
         _('You have been unsubscribed from the $mlist.real_name mailing list'),
         goodbye, language)
-    msg.send(mlist, verp=Defaults.VERP_PERSONALIZED_DELIVERIES)
+    msg.send(mlist, verp=as_boolean(config.mta.verp_personalized_deliveries))
 
 
 

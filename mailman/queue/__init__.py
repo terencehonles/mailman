@@ -298,7 +298,7 @@ class Runner:
         # sleep_time is a timedelta; turn it into a float for time.sleep().
         self.sleep_float = (86400 * self.sleep_time.days +
                             self.sleep_time.seconds +
-                            self.sleep_time.microseconds / 1000000.0)
+                            self.sleep_time.microseconds / 1.0e6)
         self.max_restarts = int(section.max_restarts)
         self.start = as_boolean(section.start)
         self._stop = False

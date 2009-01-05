@@ -48,7 +48,6 @@ from email.parser import Parser
 from email.utils import formatdate, getaddresses, make_msgid
 from zope.interface import implements
 
-from mailman import Defaults
 from mailman import Message
 from mailman import Utils
 from mailman import i18n
@@ -268,11 +267,10 @@ def send_i18n_digests(mlist, mboxfp):
         # headers according to RFC 1153.  Later, we'll strip out headers for
         # for the specific MIME or plain digests.
         keeper = {}
-        all_keepers = {}
-        for header in (Defaults.MIME_DIGEST_KEEP_HEADERS +
-                       Defaults.PLAIN_DIGEST_KEEP_HEADERS):
-            all_keepers[header] = True
-        all_keepers = all_keepers.keys()
+        all_keepers = set(
+            header for header in
+            config.digests.mime_digest_keep_headers.split() +
+            config.digests.plain_digest_keep_headers.split())
         for keep in all_keepers:
             keeper[keep] = msg.get_all(keep, [])
         # Now remove all unkempt headers :)
@@ -283,7 +281,7 @@ def send_i18n_digests(mlist, mboxfp):
             for field in keeper[keep]:
                 msg[keep] = field
         # And a bit of extra stuff
-        msg['Message'] = `msgcount`
+        msg['Message'] = repr(msgcount)
         # Get the next message in the digest mailbox
         msg = mbox.next()
     # Now we're finished with all the messages in the digest.  First do some
@@ -326,7 +324,7 @@ def send_i18n_digests(mlist, mboxfp):
             print >> plainmsg, _('[Message discarded by content filter]')
             continue
         # Honor the default setting
-        for h in Defaults.PLAIN_DIGEST_KEEP_HEADERS:
+        for h in config.digests.plain_digest_keep_headers.split():
             if msg[h]:
                 uh = Utils.wrap('%s: %s' % (h, Utils.oneline(msg[h],
                                                              in_unicode=True)))

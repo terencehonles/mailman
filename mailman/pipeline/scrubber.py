@@ -34,11 +34,12 @@ import binascii
 from email.charset import Charset
 from email.generator import Generator
 from email.utils import make_msgid, parsedate
+from lazr.config import as_boolean
 from locknix.lockfile import Lock
 from mimetypes import guess_all_extensions
+from string import Template
 from zope.interface import implements
 
-from mailman import Defaults
 from mailman import Utils
 from mailman.config import config
 from mailman.core.errors import DiscardMessage
@@ -159,7 +160,7 @@ def replace_payload_by_text(msg, text, charset):
 
 
 def process(mlist, msg, msgdata=None):
-    sanitize = Defaults.ARCHIVE_HTML_SANITIZER
+    sanitize = int(config.scrubber.archive_html_sanitizer)
     outer = True
     if msgdata is None:
         msgdata = {}
@@ -410,7 +411,7 @@ def save_attachment(mlist, msg, dir, filter_html=True):
     filename, fnext = os.path.splitext(filename)
     # For safety, we should confirm this is valid ext for content-type
     # but we can use fnext if we introduce fnext filtering
-    if Defaults.SCRUBBER_USE_ATTACHMENT_FILENAME_EXTENSION:
+    if as_boolean(config.scrubber.use_attachment_filename_extension):
         # HTML message doesn't have filename :-(
         ext = fnext or guess_extension(ctype, fnext)
     else:
@@ -431,7 +432,8 @@ def save_attachment(mlist, msg, dir, filter_html=True):
     with Lock(os.path.join(fsdir, 'attachments.lock')):
         # Now base the filename on what's in the attachment, uniquifying it if
         # necessary.
-        if not filename or Defaults.SCRUBBER_DONT_USE_ATTACHMENT_FILENAME:
+        if (not filename or
+            not as_boolean(config.scrubber.use_attachment_filename)):
             filebase = 'attachment'
         else:
             # Sanitize the filename given in the message headers
@@ -476,7 +478,8 @@ def save_attachment(mlist, msg, dir, filter_html=True):
         try:
             fp.write(decodedpayload)
             fp.close()
-            cmd = Defaults.ARCHIVE_HTML_SANITIZER % {'filename' : tmppath}
+            cmd = Template(config.mta.archive_html_sanitizer).safe_substitue(
+                filename=tmppath)
             progfp = os.popen(cmd, 'r')
             decodedpayload = progfp.read()
             status = progfp.close()

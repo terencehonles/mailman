@@ -33,7 +33,6 @@ from mailman import Utils
 from mailman.Utils import ValidateEmail
 from mailman.config import config
 from mailman.core import errors
-from mailman.core.styles import style_manager
 from mailman.interfaces.member import MemberRole
 
 
@@ -50,7 +49,7 @@ def create_list(fqdn_listname, owners=None):
     if domain not in config.domains:
         raise errors.BadDomainSpecificationError(domain)
     mlist = config.db.list_manager.create(fqdn_listname)
-    for style in style_manager.lookup(mlist):
+    for style in config.style_manager.lookup(mlist):
         style.apply(mlist)
     # Coordinate with the MTA, as defined in the configuration file.
     module_name, class_name = config.mta.incoming.rsplit('.', 1)

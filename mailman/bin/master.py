@@ -36,7 +36,6 @@ from lazr.config import as_boolean
 from locknix import lockfile
 from munepy import Enum
 
-from mailman import Defaults
 from mailman.config import config
 from mailman.core.logging import reopen
 from mailman.i18n import _
@@ -44,7 +43,8 @@ from mailman.options import Options
 
 
 DOT = '.'
-LOCK_LIFETIME = Defaults.days(1) + Defaults.hours(6)
+LOCK_LIFETIME = timedelta(days=1, hours=6)
+SECONDS_IN_A_DAY = 86400
 
 
 
@@ -233,9 +233,9 @@ class Loop:
         # so this should be plenty.
         def sigalrm_handler(signum, frame):
             self._lock.refresh()
-            signal.alarm(int(Defaults.days(1)))
+            signal.alarm(SECONDS_IN_A_DAY)
         signal.signal(signal.SIGALRM, sigalrm_handler)
-        signal.alarm(int(Defaults.days(1)))
+        signal.alarm(SECONDS_IN_A_DAY)
         # SIGHUP tells the qrunners to close and reopen their log files.
         def sighup_handler(signum, frame):
             reopen()

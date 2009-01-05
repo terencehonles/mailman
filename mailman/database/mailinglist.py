@@ -22,7 +22,6 @@ from storm.locals import *
 from urlparse import urljoin
 from zope.interface import implements
 
-from mailman import Defaults
 from mailman.Utils import fqdn_listname, makedirs, split_listname
 from mailman.config import config
 from mailman.database import roster
@@ -206,8 +205,7 @@ class MailingList(Model):
         domain = config.domains[self.host_name]
         # XXX Handle the case for when context is not None; those would be
         # relative URLs.
-        return urljoin(domain.base_url,
-                       target + Defaults.CGIEXT + '/' + self.fqdn_listname)
+        return urljoin(domain.base_url, target + '/' + self.fqdn_listname)
 
     @property
     def data_path(self):
@@ -253,7 +251,7 @@ class MailingList(Model):
         return '%s-unsubscribe@%s' % (self.list_name, self.host_name)
 
     def confirm_address(self, cookie):
-        template = string.Template(Defaults.VERP_CONFIRM_FORMAT)
+        template = string.Template(config.mta.verp_confirm_format)
         local_part = template.safe_substitute(
             address = '%s-confirm' % self.list_name,
             cookie  = cookie)
