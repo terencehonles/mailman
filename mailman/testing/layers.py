@@ -87,8 +87,7 @@ class ConfigLayer:
             level: debug
             """)
         # Enable log message propagation and reset the log paths so that the
-        # doctests can check the output.  XXX Switch to using the log support
-        # in zope.testing.
+        # doctests can check the output.
         for logger_config in config.logger_configs:
             sub_name = logger_config.name.split('.')[-1]
             if sub_name == 'root':

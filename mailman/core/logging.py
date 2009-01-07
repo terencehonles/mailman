@@ -40,6 +40,17 @@ _handlers = {}
 
 
 
+# XXX I would love to simplify things and use Python 2.6's WatchedFileHandler,
+# but there are two problems.  First, it's more difficult to handle the test
+# suite's need to reopen the file handler to a different path.  Does
+# zope.testing's logger support fix this?
+#
+# The other problem is that WatchedFileHandler doesn't really easily support
+# HUPing the process to reopen the log file.  Now, maybe that's not a big deal
+# because the standard logging module would already handle things correctly if
+# the file is moved, but still that's not an interface I'm ready to give up on
+# yet.  For now, keep our hack.
+
 class ReopenableFileHandler(logging.Handler):
     """A file handler that supports reopening."""
 
