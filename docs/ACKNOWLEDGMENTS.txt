@@ -129,6 +129,7 @@ in answering questions on mailman-users.
     Ashley M. Kirchner
     Matthias Klose
     Harald Koch
+    Patrick Koetter
     Eddie Kohler
     Chris Kolar
     Uros Kositer
