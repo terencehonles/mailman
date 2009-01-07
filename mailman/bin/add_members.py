@@ -28,7 +28,7 @@ from mailman import i18n
 from mailman.app.membership import add_member
 from mailman.config import config
 from mailman.core import errors
-from mailman.interfaces import AlreadySubscribedError, DeliveryMode
+from mailman.interfaces.member import AlreadySubscribedError, DeliveryMode
 from mailman.options import SingleMailingListOptions
 
 _ = i18n._

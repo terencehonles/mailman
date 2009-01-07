@@ -318,8 +318,8 @@ def Secure_MakeRandomPassword(length):
 
 def MakeRandomPassword(length=None):
     if length is None:
-        length = int(config.member_password_length)
-    if as_boolean(config.user_friendly_passwords):
+        length = int(config.passwords.member_password_length)
+    if as_boolean(config.passwords.user_friendly_passwords):
         password = UserFriendly_MakeRandomPassword(length)
     else:
         password = Secure_MakeRandomPassword(length)

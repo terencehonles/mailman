@@ -21,7 +21,9 @@ __all__ = [
     ]
 
 
-from mailman.core.plugins import get_plugin
+import sys
+
+from mailman.config import config
 from mailman.i18n import _
 from mailman.options import Options
 
@@ -52,8 +54,9 @@ def main():
     options.initialize()
 
     # Get the MTA-specific module.
-    mta = get_plugin('mailman.mta')
-    mta().regenerate()
+    module_path, class_path = config.mta.incoming.rsplit('.', 1)
+    __import__(module_path)
+    getattr(sys.modules[module_path], class_path)().regenerate()
 
 
 

@@ -23,7 +23,7 @@ from mailman import i18n
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.core import errors
-from mailman.interfaces import ListAlreadyExistsError
+from mailman.interfaces.listmanager import ListAlreadyExistsError
 from mailman.options import SingleMailingListOptions
 
 
@@ -32,7 +32,7 @@ _ = i18n._
 
 
 class ScriptOptions(SingleMailingListOptions):
-    usage=_("""\
+    usage = _("""\
 %prog [options]
 
 Create a new mailing list.

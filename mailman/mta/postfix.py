@@ -98,13 +98,13 @@ class LMTP:
                     # len('-subscribe') + '@'.
                     longest = len(list_name + domain) + 10
                     print >> fp, """\
-{0}@{1:{3}}lmtp:{2.mta.lmtp_host}:{2.mta.lmtp_port}""".format(
+{0}@{1:{3}}lmtp:inet:{2.mta.lmtp_host}:{2.mta.lmtp_port}""".format(
                         list_name, domain, config,
                         # Add 1 because the bare list name has no dash.
                         longest + 1)
                     for destination in SUBDESTINATIONS:
                         print >> fp, """\
-{0}-{1}@{2:{4}}lmtp:{3.mta.lmtp_host}:{3.mta.lmtp_port}""".format(
+{0}-{1}@{2:{4}}lmtp:inet:{3.mta.lmtp_host}:{3.mta.lmtp_port}""".format(
                         list_name, destination, domain, config,
                         longest - len(destination))
                 print >> fp
