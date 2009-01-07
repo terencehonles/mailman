@@ -49,6 +49,7 @@ class ConfigLayer:
     """Layer for pushing and popping test configurations."""
 
     var_dir = None
+    styles = None
 
     @classmethod
     def setUp(cls):
@@ -136,9 +137,7 @@ class ConfigLayer:
 
     @classmethod
     def testSetUp(cls):
-        # Record the current (default) set of styles so that we can reset them
-        # easily in the tear down.
-        cls.styles = set(config.style_manager.styles)
+        pass
 
     @classmethod
     def testTearDown(cls):
@@ -153,10 +152,7 @@ class ConfigLayer:
             config.db.message_store.delete_message(message['message-id'])
         config.db.commit()
         # Reset the global style manager.
-        new_styles = set(config.style_manager.styles) - cls.styles
-        for style in new_styles:
-            config.style_manager.unregister(style)
-        cls.styles = None
+        config.style_manager.populate()
 
     # Flag to indicate that loggers should propagate to the console.
     stderr = False

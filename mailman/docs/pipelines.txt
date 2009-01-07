@@ -10,8 +10,8 @@ message once it's started.
 
     >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list(u'xtest@example.com')
-    >>> mlist.pipeline
-    u'built-in'
+    >>> print mlist.pipeline
+    built-in
     >>> from mailman.core.pipelines import process
 
 
@@ -49,11 +49,11 @@ etc.
         <http://lists.example.com/listinfo/xtest@example.com>,
     	<mailto:xtest-join@example.com>
     Archived-At:
-        http://lists.example.com/pipermail/4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
+        http://lists.example.com/archives/4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
     List-Unsubscribe:
         <http://lists.example.com/listinfo/xtest@example.com>,
     	<mailto:xtest-leave@example.com>
-    List-Archive: <http://lists.example.com/pipermail/xtest@example.com>
+    List-Archive: <http://lists.example.com/archives/xtest@example.com>
     List-Help: <mailto:xtest-request@example.com?subject=help>
     <BLANKLINE>
     First post!
@@ -89,11 +89,11 @@ And the message is now sitting in various other processing queues.
         <http://lists.example.com/listinfo/xtest@example.com>,
         <mailto:xtest-join@example.com>
     Archived-At:
-        http://lists.example.com/pipermail/4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
+        http://lists.example.com/archives/4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
     List-Unsubscribe:
         <http://lists.example.com/listinfo/xtest@example.com>,
         <mailto:xtest-leave@example.com>
-    List-Archive: <http://lists.example.com/pipermail/xtest@example.com>
+    List-Archive: <http://lists.example.com/archives/xtest@example.com>
     List-Help: <mailto:xtest-request@example.com?subject=help>
     <BLANKLINE>
     First post!
@@ -132,11 +132,11 @@ This is the message that will actually get delivered to end recipients.
         <http://lists.example.com/listinfo/xtest@example.com>,
         <mailto:xtest-join@example.com>
     Archived-At:
-        http://lists.example.com/pipermail/4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
+        http://lists.example.com/archives/4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
     List-Unsubscribe:
         <http://lists.example.com/listinfo/xtest@example.com>,
         <mailto:xtest-leave@example.com>
-    List-Archive: <http://lists.example.com/pipermail/xtest@example.com>
+    List-Archive: <http://lists.example.com/archives/xtest@example.com>
     List-Help: <mailto:xtest-request@example.com?subject=help>
     <BLANKLINE>
     First post!
@@ -170,11 +170,11 @@ There's now one message in the digest mailbox, getting ready to be sent.
         <http://lists.example.com/listinfo/xtest@example.com>,
         <mailto:xtest-join@example.com>
     Archived-At:
-        http://lists.example.com/pipermail/4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
+        http://lists.example.com/archives/4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
     List-Unsubscribe:
         <http://lists.example.com/listinfo/xtest@example.com>,
         <mailto:xtest-leave@example.com>
-    List-Archive: <http://lists.example.com/pipermail/xtest@example.com>
+    List-Archive: <http://lists.example.com/archives/xtest@example.com>
     List-Help: <mailto:xtest-request@example.com?subject=help>
     <BLANKLINE>
     First post!

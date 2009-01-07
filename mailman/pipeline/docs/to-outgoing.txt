@@ -64,10 +64,11 @@ If the list is set to personalize deliveries, and the global configuration
 option to VERP personalized deliveries is set, then the message will be
 VERP'd.
 
-    # Save the original value for clean up.
-    >>> from mailman import Defaults
-    >>> verp_personalized_delivieries = Defaults.VERP_PERSONALIZED_DELIVERIES
-    >>> Defaults.VERP_PERSONALIZED_DELIVERIES = True
+    >>> config.push('test config', """
+    ... [mta]
+    ... verp_personalized_deliveries: yes
+    ... """)
+
     >>> from mailman.interfaces.mailinglist import Personalization
     >>> mlist.personalize = Personalization.individual
     >>> msgdata = dict(foo=1, bar=2)
@@ -80,7 +81,12 @@ VERP'd.
 However, if the global configuration variable prohibits VERP'ing, even
 personalized lists will not VERP.
 
-    >>> Defaults.VERP_PERSONALIZED_DELIVERIES = False
+    >>> config.pop('test config')
+    >>> config.push('test config', """
+    ... [mta]
+    ... verp_personalized_deliveries: no
+    ... """)
+
     >>> msgdata = dict(foo=1, bar=2)
     >>> handler.process(mlist, msg, msgdata)
     >>> print msgdata.get('verp')
@@ -93,9 +99,12 @@ the global configuration variable VERP_DELIVERY_INTERVAL.  This variable tells
 Mailman how often to VERP even non-personalized mailing lists.  It can be set
 to zero, which means non-personalized messages will never be VERP'd.
 
-    # Save the original value for clean up.
-    >>> verp_delivery_interval = Defaults.VERP_DELIVERY_INTERVAL
-    >>> Defaults.VERP_DELIVERY_INTERVAL = 0
+    >>> config.pop('test config')
+    >>> config.push('test config', """
+    ... [mta]
+    ... verp_delivery_interval: 0
+    ... """)
+
     >>> mlist.personalize = Personalization.none
     >>> msgdata = dict(foo=1, bar=2)
     >>> handler.process(mlist, msg, msgdata)
@@ -106,7 +115,12 @@ to zero, which means non-personalized messages will never be VERP'd.
 
 If the interval is set to 1, then every message will be VERP'd.
 
-    >>> Defaults.VERP_DELIVERY_INTERVAL = 1
+    >>> config.pop('test config')
+    >>> config.push('test config', """
+    ... [mta]
+    ... verp_delivery_interval: 1
+    ... """)
+
     >>> for i in range(10):
     ...     msgdata = dict(foo=1, bar=2)
     ...     handler.process(mlist, msg, msgdata)
@@ -127,7 +141,12 @@ If the interval is set to 1, then every message will be VERP'd.
 If the interval is set to some other number, then one out of that many posts
 will be VERP'd.
 
-    >>> Defaults.VERP_DELIVERY_INTERVAL = 3
+    >>> config.pop('test config')
+    >>> config.push('test config', """
+    ... [mta]
+    ... verp_delivery_interval: 3
+    ... """)
+
     >>> for i in range(10):
     ...     mlist.post_id = i
     ...     msgdata = dict(foo=1, bar=2)
@@ -150,5 +169,4 @@ will be VERP'd.
 Clean up
 ========
 
-    >>> Defaults.VERP_PERSONALIZED_DELIVERIES = verp_personalized_delivieries
-    >>> Defaults.VERP_DELIVERY_INTERVAL = verp_delivery_interval
+    >>> config.pop('test config')

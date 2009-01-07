@@ -87,7 +87,7 @@ class Pendings:
         verifyObject(IPendable, pendable)
         # Calculate the token and the lifetime.
         if lifetime is None:
-            lifetime = as_timedelta(config.pending_request_life)
+            lifetime = as_timedelta(config.mailman.pending_request_life)
         # Calculate a unique token.  Algorithm vetted by the Timbot.  time()
         # has high resolution on Linux, clock() on Windows.  random gives us
         # about 45 bits in Python 2.2, 53 bits on Python 2.3.  The time and

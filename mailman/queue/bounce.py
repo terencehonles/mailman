@@ -24,8 +24,8 @@ import logging
 import datetime
 
 from email.Utils import parseaddr
+from lazr.config import as_timedelta
 
-from mailman import Defaults
 from mailman import Utils
 from mailman.Bouncers import BouncerAPI
 from mailman.config import config
@@ -77,8 +77,9 @@ class BounceMixin:
             config.DATA_DIR, 'bounce-events-%05d.pck' % os.getpid())
         self._bounce_events_fp = None
         self._bouncecnt = 0
-        self._nextaction = (datetime.datetime.now() +
-                            Defaults.REGISTER_BOUNCES_EVERY)
+        self._nextaction = (
+            datetime.datetime.now() +
+            as_timedelta(config.bounces.register_bounces_every))
 
     def _queue_bounces(self, listname, addrs, msg):
         today = datetime.date.today()
@@ -130,7 +131,8 @@ class BounceMixin:
         if self._nextaction > now or self._bouncecnt == 0:
             return
         # Let's go ahead and register the bounces we've got stored up
-        self._nextaction = now + Defaults.REGISTER_BOUNCES_EVERY
+        self._nextaction = now + as_timedelta(
+            config.bounces.register_bounces_every)
         self._register_bounces()
 
     def _probe_bounce(self, mlist, token):
@@ -239,7 +241,7 @@ def verp_bounce(mlist, msg):
         to = parseaddr(field)[1]
         if not to:
             continue                          # empty header
-        mo = re.search(Defaults.VERP_REGEXP, to)
+        mo = re.search(config.mta.verp_regexp, to)
         if not mo:
             continue                          # no match of regexp
         try:
@@ -248,8 +250,8 @@ def verp_bounce(mlist, msg):
             # All is good
             addr = '%s@%s' % mo.group('mailbox', 'host')
         except IndexError:
-            elog.error("VERP_REGEXP doesn't yield the right match groups: %s",
-                       Defaults.VERP_REGEXP)
+            elog.error("verp_regexp doesn't yield the right match groups: %s",
+                       config.mta.verp_regexp)
             return []
         return [addr]
 
@@ -270,7 +272,7 @@ def verp_probe(mlist, msg):
         to = parseaddr(field)[1]
         if not to:
             continue                          # empty header
-        mo = re.search(Defaults.VERP_PROBE_REGEXP, to)
+        mo = re.search(config.mta.verp_probe_regexp, to)
         if not mo:
             continue                          # no match of regexp
         try:
@@ -283,8 +285,8 @@ def verp_probe(mlist, msg):
                 return token
         except IndexError:
             elog.error(
-                "VERP_PROBE_REGEXP doesn't yield the right match groups: %s",
-                Defaults.VERP_PROBE_REGEXP)
+                "verp_probe_regexp doesn't yield the right match groups: %s",
+                config.mta.verp_probe_regexp)
     return None
 
 

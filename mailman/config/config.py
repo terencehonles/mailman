@@ -50,6 +50,7 @@ class Configuration(object):
         self.domains = {}       # email host -> IDomain
         self.switchboards = {}
         self.languages = LanguageManager()
+        self.style_manager = StyleManager()
         self.QFILE_SCHEMA_VERSION = version.QFILE_SCHEMA_VERSION
         self._config = None
         self.filename = None
@@ -149,7 +150,7 @@ class Configuration(object):
         # Always enable the server default language, which must be defined.
         self.languages.enable_language(self._config.mailman.default_language)
         self.ensure_directories_exist()
-        self.style_manager = StyleManager()
+        self.style_manager.populate()
 
     @property
     def logger_configs(self):

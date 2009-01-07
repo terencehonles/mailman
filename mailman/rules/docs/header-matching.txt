@@ -2,15 +2,15 @@ Header matching
 ===============
 
 Mailman can do pattern based header matching during its normal rule
-processing.  There is a set of site-wide default header matchines specified in
-the configuaration file under the HEADER_MATCHES variable.
+processing.  There is a set of site-wide default header matches specified in
+the configuration file under the [spam.headers] section.
 
     >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list(u'_xtest@example.com')
 
-Because the default HEADER_MATCHES variable is empty when the configuration
-file is read, we'll just extend the current header matching chain with a
-pattern that matches 4 or more stars, discarding the message if it hits.
+Because the default [spam.headers] section is empty, we'll just extend the
+current header matching chain with a pattern that matches 4 or more stars,
+discarding the message if it hits.
 
     >>> chain = config.chains['header-match']
     >>> chain.extend('x-spam-score', '[*]{4,}', 'discard')
@@ -98,7 +98,7 @@ List-specific header matching
 
 Each mailing list can also be configured with a set of header matching regular
 expression rules.  These are used to impose list-specific header filtering
-with the same semantics as the global `HEADER_MATCHES` variable.
+with the same semantics as the global [spam.headers] section.
 
 The list administrator wants to match not on four stars, but on three plus
 signs, but only for the current mailing list.

@@ -31,7 +31,9 @@ from lazr.config import as_boolean
 from mailman import Message
 from mailman import Utils
 from mailman import i18n
+from mailman.config import config
 from mailman.interfaces.member import DeliveryMode
+
 
 _ = i18n._
 

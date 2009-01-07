@@ -29,9 +29,6 @@ so that the peer mail server can provide better diagnostics.
 
 [1] RFC 2033 Local Mail Transport Protocol
     http://www.faqs.org/rfcs/rfc2033.html
-
-See the variable USE_LMTP in Defaults.py.in for enabling this delivery
-mechanism.
 """
 
 import email
@@ -41,7 +38,6 @@ import asyncore
 
 from email.utils import parseaddr
 
-from mailman import Defaults
 from mailman.Message import Message
 from mailman.config import config
 from mailman.database.transaction import txn
@@ -63,7 +59,7 @@ CRLF    = '\r\n'
 ERR_451 = '451 Requested action aborted: error in processing'
 ERR_501 = '501 Message has defects'
 ERR_502 = '502 Error: command HELO not implemented'
-ERR_550 = Defaults.LMTP_ERR_550
+ERR_550 = '550 Requested action not taken: mailbox unavailable'
 
 # XXX Blech
 smtpd.__version__ = 'Python LMTP queue runner 1.0'
@@ -86,7 +82,7 @@ def split_recipient(address):
         subaddress may be None if this is the list's posting address.
     """
     localpart, domain = address.split('@', 1)
-    localpart = localpart.split(Defaults.VERP_DELIMITER, 1)[0]
+    localpart = localpart.split(config.mta.verp_delimiter, 1)[0]
     parts = localpart.split(DASH)
     if parts[-1] in SUBADDRESS_NAMES:
         listname = DASH.join(parts[:-1])
@@ -186,7 +182,6 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
                     msgdata.update(dict(
                         toowner=True,
                         envsender=config.mailman.site_owner,
-                        pipeline=Defaults.OWNER_PIPELINE,
                         ))
                     queue = 'in'
                 elif subaddress is None:

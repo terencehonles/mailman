@@ -30,10 +30,9 @@ import logging
 
 from datetime import datetime
 from email.Utils import parsedate_tz, mktime_tz, formatdate
-from lazr.config import as_boolean
+from lazr.config import as_boolean, as_timedelta
 from locknix.lockfile import Lock
 
-from mailman import Defaults
 from mailman.config import config
 from mailman.queue import Runner
 
@@ -53,9 +52,9 @@ class ArchiveRunner(Runner):
         received_time = formatdate(msgdata['received_time'])
         if not original_date:
             clobber = True
-        elif Defaults.ARCHIVER_CLOBBER_DATE_POLICY == 1:
+        elif int(config.archiver.pipermail.clobber_date_policy) == 1:
             clobber = True
-        elif Defaults.ARCHIVER_CLOBBER_DATE_POLICY == 2:
+        elif int(config.archiver.pipermail.clobber_date_policy) == 2:
             # What's the timestamp on the original message?
             timetup = parsedate_tz(original_date)
             now = datetime.now()
@@ -64,8 +63,9 @@ class ArchiveRunner(Runner):
                     clobber = True
                 else:
                     utc_timestamp = datetime.fromtimestamp(mktime_tz(timetup))
-                    clobber = (abs(now - utc_timestamp) > 
-                               Defaults.ARCHIVER_ALLOWABLE_SANE_DATE_SKEW)
+                    date_skew = as_timedelta(
+                        config.archiver.pipermail.allowable_sane_date_skew)
+                    clobber = (abs(now - utc_timestamp) > date_skew)
             except (ValueError, OverflowError):
                 # The likely cause of this is that the year in the Date: field
                 # is horribly incorrect, e.g. (from SF bug # 571634):

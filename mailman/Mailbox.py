@@ -22,10 +22,11 @@ import sys
 import email
 import mailbox
 
-from email.Errors import MessageParseError
-from email.Generator import Generator
+from email.errors import MessageParseError
+from email.generator import Generator
 
 from mailman.Message import Message
+from mailman.config import config
 
 
 

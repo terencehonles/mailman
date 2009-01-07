@@ -109,3 +109,10 @@ class IStyleManager(Interface):
         :param style: an IStyle.
         :raises KeyError: If the style's name is not currently registered.
         """
+
+    def populate():
+        """Populate the styles from the configuration files.
+
+        This clears the current set of styles and resets them from those
+        defined in the configuration files.
+        """

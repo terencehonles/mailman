@@ -34,6 +34,7 @@ __all__ = [
 from lazr.config import as_boolean
 from zope.interface import implements
 
+from mailman.config import config
 from mailman.i18n import _
 from mailman.interfaces.handler import IHandler
 

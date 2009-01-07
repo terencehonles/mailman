@@ -18,12 +18,13 @@
 """Outgoing queue runner."""
 
 import os
+import sys
 import socket
 import logging
 
 from datetime import datetime
+from lazr.config import as_timedelta
 
-from mailman import Defaults
 from mailman.config import config
 from mailman.core import errors
 from mailman.queue import Runner
@@ -43,9 +44,10 @@ class OutgoingRunner(Runner, BounceMixin):
     def __init__(self, slice=None, numslices=1):
         Runner.__init__(self, slice, numslices)
         BounceMixin.__init__(self)
-        # We look this function up only at startup time
-        handler = config.handlers[Defaults.DELIVERY_MODULE]
-        self._func = handler.process
+        # We look this function up only at startup time.
+        module_name, callable_name = config.mta.outgoing.rsplit('.', 1)
+        __import__(module_name)
+        self._func = getattr(sys.modules[module_name], callable_name)
         # This prevents smtp server connection problems from filling up the
         # error log.  It gets reset if the message was successfully sent, and
         # set if there was a socket.error.
@@ -112,7 +114,8 @@ class OutgoingRunner(Runner, BounceMixin):
                             return False
                     else:
                         # Keep trying to delivery this message for a while
-                        deliver_until = now + Defaults.DELIVERY_RETRY_PERIOD
+                        deliver_until = now + as_timedelta(
+                            config.mta.delivery_retry_period)
                     msgdata['last_recip_count'] = len(recips)
                     msgdata['deliver_until'] = deliver_until
                     msgdata['recips'] = recips

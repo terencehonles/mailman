@@ -188,7 +188,7 @@ But normally, a list will include these headers.
     >>> process(mlist, msg, {})
     >>> list_headers(msg)
     ---start---
-    List-Archive: <http://lists.example.com/pipermail/_xtest@example.com>
+    List-Archive: <http://lists.example.com/archives/_xtest@example.com>
     List-Help: <mailto:_xtest-request@example.com?subject=help>
     List-Id: <_xtest.example.com>
     List-Post: <mailto:_xtest@example.com>
@@ -209,7 +209,7 @@ header.
     >>> process(mlist, msg, {})
     >>> list_headers(msg)
     ---start---
-    List-Archive: <http://lists.example.com/pipermail/_xtest@example.com>
+    List-Archive: <http://lists.example.com/archives/_xtest@example.com>
     List-Help: <mailto:_xtest-request@example.com?subject=help>
     List-Id: My test mailing list <_xtest.example.com>
     List-Post: <mailto:_xtest@example.com>
@@ -248,7 +248,7 @@ List-Post header, which is reasonable for an announce only mailing list.
     >>> process(mlist, msg, {})
     >>> list_headers(msg)
     ---start---
-    List-Archive: <http://lists.example.com/pipermail/_xtest@example.com>
+    List-Archive: <http://lists.example.com/archives/_xtest@example.com>
     List-Help: <mailto:_xtest-request@example.com?subject=help>
     List-Id: My test mailing list <_xtest.example.com>
     List-Subscribe: <http://lists.example.com/listinfo/_xtest@example.com>,

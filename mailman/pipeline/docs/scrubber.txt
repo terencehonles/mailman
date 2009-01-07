@@ -50,8 +50,10 @@ filename suggested in the message's Content-Disposition: header or not.  If
 enabled, the filename will be used when this header attribute is present (yes,
 this is an unfortunate double negative).
 
-    >>> from mailman import Defaults
-    >>> Defaults.SCRUBBER_DONT_USE_ATTACHMENT_FILENAME = False
+    >>> config.push('test config', """
+    ... [scrubber]
+    ... use_attachment_filename: yes
+    ... """)
     >>> msg = message_from_string("""\
     ... Content-Type: image/gif; name="xtest.gif"
     ... Content-Transfer-Encoding: base64
@@ -77,10 +79,13 @@ Saving the attachment does not alter the original message.
     R0lGODdhAQABAIAAAAAAAAAAACwAAAAAAQABAAACAQUAOw==
 
 The site administrator can also configure Mailman to ignore the
-Content-Disposition: filename.  This is the default for reasons described in
-the Defaults.py.in file.
+Content-Disposition: filename.  This is the default.
 
-    >>> Defaults.SCRUBBER_DONT_USE_ATTACHMENT_FILENAME = True
+    >>> config.pop('test config')
+    >>> config.push('test config', """
+    ... [scrubber]
+    ... use_attachment_filename: no
+    ... """)
     >>> msg = message_from_string("""\
     ... Content-Type: image/gif; name="xtest.gif"
     ... Content-Transfer-Encoding: base64
@@ -212,3 +217,9 @@ placeholder will be slightly different.
     <BLANKLINE>
     >>> read_url_from_message(msg)
     'This is a text attachment.'
+
+
+Clean up
+--------
+
+    >>> config.pop('test config')

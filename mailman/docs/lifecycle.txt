@@ -58,8 +58,7 @@ Start by registering a test style.
     ...         if 'test' in mailing_list.fqdn_listname:
     ...             styles.append(self)
 
-    >>> from mailman.core.styles import style_manager
-    >>> style_manager.register(TestStyle())
+    >>> config.style_manager.register(TestStyle())
 
 Using the higher level interface for creating a list, applies all matching
 list styles.

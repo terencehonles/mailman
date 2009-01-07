@@ -34,7 +34,6 @@ import datetime
 from locknix.lockfile import Lock
 from zope.interface import implements
 
-from mailman import Defaults
 from mailman import Utils
 from mailman.config import config
 from mailman.interfaces.mta import IMailTransportAgent
@@ -113,7 +112,7 @@ class LMTP:
         os.rename(path + '.new', path)
         # Now that the new aliases file has been written, we must tell Postfix
         # to generate a new .db file.
-        command = Defaults.POSTFIX_MAP_CMD + ' ' + path
+        command = config.mta.postfix_map_cmd + ' ' + path
         status = (os.system(command) >> 8) & 0xff
         if status:
             msg = 'command failure: %s, %s, %s'

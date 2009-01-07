@@ -37,7 +37,6 @@ from email.Header import decode_header, make_header
 from email.Iterators import typed_subpart_iterator
 from zope.interface import implements
 
-from mailman import Defaults
 from mailman import Message
 from mailman.config import config
 from mailman.i18n import _
@@ -66,7 +65,7 @@ class CommandFinder:
         elif msgdata.get('toleave'):
             self.command_lines.append('leave')
         elif msgdata.get('toconfirm'):
-            mo = re.match(Defaults.VERP_CONFIRM_REGEXP, msg.get('to', ''))
+            mo = re.match(config.mta.verp_confirm_regexp, msg.get('to', ''))
             if mo:
                 self.command_lines.append('confirm ' + mo.group('cookie'))
         # Extract the subject header and do RFC 2047 decoding.
@@ -95,8 +94,9 @@ class CommandFinder:
         assert isinstance(body, basestring), 'Non-string decoded payload'
         lines = body.splitlines()
         # Use no more lines than specified
-        self.command_lines.extend(lines[:Defaults.EMAIL_COMMANDS_MAX_LINES])
-        self.ignored_lines.extend(lines[Defaults.EMAIL_COMMANDS_MAX_LINES:])
+        max_lines = int(config.mailman.email_commands_max_lines)
+        self.command_lines.extend(lines[:max_lines])
+        self.ignored_lines.extend(lines[max_lines:])
 
     def __iter__(self):
         """Return each command line, split into commands and arguments.

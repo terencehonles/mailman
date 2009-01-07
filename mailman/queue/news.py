@@ -25,14 +25,14 @@ import nntplib
 
 from cStringIO import StringIO
 
-COMMASPACE = ', '
-
-from mailman import Defaults
 from mailman import Utils
+from mailman.config import config
 from mailman.interfaces import NewsModeration
 from mailman.queue import Runner
 
+COMMASPACE = ', '
 log = logging.getLogger('mailman.error')
+
 
 # Matches our Mailman crafted Message-IDs.  See Utils.unique_message_id()
 # XXX The move to email.utils.make_msgid() breaks this.
@@ -64,8 +64,8 @@ class NewsRunner(Runner):
                     nntp_host, nntp_port = Utils.nntpsplit(mlist.nntp_host)
                     conn = nntplib.NNTP(nntp_host, nntp_port,
                                         readermode=True,
-                                        user=Defaults.NNTP_USERNAME,
-                                        password=Defaults.NNTP_PASSWORD)
+                                        user=config.nntp.username,
+                                        password=config.nntp.password)
                     conn.post(fp)
                 except nntplib.error_temp, e:
                     log.error('(NNTPDirect) NNTP error for list "%s": %s',
@@ -147,9 +147,12 @@ def prepare_message(mlist, msg, msgdata):
     # woon't completely sanitize the message, but it will eliminate the bulk
     # of the rejections based on message headers.  The NNTP server may still
     # reject the message because of other problems.
-    for header in Defaults.NNTP_REMOVE_HEADERS:
+    for header in config.nntp.remove_headers.split():
         del msg[header]
-    for header, rewrite in Defaults.NNTP_REWRITE_DUPLICATE_HEADERS:
+    for rewrite_pairs in config.nntp.rewrite_duplicate_headers.splitlines():
+        if len(rewrite_pairs.strip()) == 0:
+            continue
+        header, rewrite = rewrite_pairs.split()
         values = msg.get_all(header, [])
         if len(values) < 2:
             # We only care about duplicates
