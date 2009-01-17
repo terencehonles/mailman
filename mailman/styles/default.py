@@ -90,7 +90,7 @@ from: .*@uplinkpro.com
         mlist.obscure_addresses = True
         mlist.admin_member_chunksize = 30
         mlist.administrivia = True
-        mlist.preferred_language = u'en'
+        mlist.preferred_language = 'en'
         mlist.include_rfc2369_headers = True
         mlist.include_list_post_header = True
         mlist.filter_mime_types = []
@@ -147,7 +147,7 @@ ${listinfo_page}
         # 2-tuple of the date of the last autoresponse and the number of
         # autoresponses sent on that date.
         mlist.hold_and_cmd_autoresponses = {}
-        mlist.subject_prefix = _(u'[$mlist.real_name] ')
+        mlist.subject_prefix = _('[$mlist.real_name] ')
         mlist.msg_header = ''
         mlist.msg_footer = """\
 _______________________________________________
@@ -239,9 +239,9 @@ ${listinfo_page}
         mlist.topics_userinterest = {}
         # The processing chain that messages coming into this list get
         # processed by.
-        mlist.start_chain = u'built-in'
+        mlist.start_chain = 'built-in'
         # The default pipeline to send accepted messages through.
-        mlist.pipeline = u'built-in'
+        mlist.pipeline = 'built-in'
 
     def match(self, mailing_list, styles):
         """See `IStyle`."""

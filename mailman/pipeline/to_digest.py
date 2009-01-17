@@ -65,7 +65,7 @@ from mailman.pipeline.scrubber import process as scrubber
 
 _ = i18n._
 
-UEMPTYSTRING = u''
+UEMPTYSTRING = ''
 EMPTYSTRING = ''
 
 log = logging.getLogger('mailman.error')

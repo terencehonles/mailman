@@ -106,11 +106,11 @@ def process(mlist, msg, msgdata):
         try:
             oldpayload = unicode(msg.get_payload(decode=True), mcset)
             del msg['content-transfer-encoding']
-            frontsep = endsep = u''
+            frontsep = endsep = ''
             if header and not header.endswith('\n'):
-                frontsep = u'\n'
+                frontsep = '\n'
             if footer and not oldpayload.endswith('\n'):
-                endsep = u'\n'
+                endsep = '\n'
             payload = header + frontsep + oldpayload + endsep + footer
             # When setting the payload for the message, try various charset
             # encodings until one does not produce a UnicodeError.  We'll try

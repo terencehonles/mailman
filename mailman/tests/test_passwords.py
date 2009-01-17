@@ -38,14 +38,12 @@ class TestPasswordsBase(unittest.TestCase):
     def setUp(self):
         # passwords; 8-bit or unicode strings; ascii or binary
         self.pw8a       = 'abc'
-        self.pwua       = u'abc'
         self.pw8b       = 'abc\xc3\xbf'     # 'abc\xff'
-        self.pwub       = u'abc\xff'
+        self.pwub       = 'abc\xff'
         # bad password; 8-bit or unicode; ascii or binary
         self.bad8a      = 'xyz'
-        self.badua      = u'xyz'
         self.bad8b      = 'xyz\xc3\xbf'     # 'xyz\xff'
-        self.badub      = u'xyz\xff'
+        self.badub      = 'xyz\xff'
 
     def test_passwords(self):
         unless = self.failUnless
@@ -53,13 +51,6 @@ class TestPasswordsBase(unittest.TestCase):
         secret = passwords.make_secret(self.pw8a, self.scheme)
         unless(passwords.check_response(secret, self.pw8a))
         failif(passwords.check_response(secret, self.bad8a))
-
-    def test_unicode_passwords(self):
-        unless = self.failUnless
-        failif = self.failIf
-        secret = passwords.make_secret(self.pwua, self.scheme)
-        unless(passwords.check_response(secret, self.pwua))
-        failif(passwords.check_response(secret, self.badua))
 
     def test_passwords_with_funky_chars(self):
         unless = self.failUnless
@@ -84,10 +75,6 @@ class TestBogusPasswords(TestPasswordsBase):
         self.assertRaises(errors.BadPasswordSchemeError,
                           passwords.make_secret, self.pw8a, self.scheme)
 
-    def test_unicode_passwords(self):
-        self.assertRaises(errors.BadPasswordSchemeError,
-                          passwords.make_secret, self.pwua, self.scheme)
-
     def test_passwords_with_funky_chars(self):
         self.assertRaises(errors.BadPasswordSchemeError,
                           passwords.make_secret, self.pw8b, self.scheme)
@@ -106,12 +93,6 @@ class TestNonePasswords(TestPasswordsBase):
         secret = passwords.make_secret(self.pw8a, self.scheme)
         failif(passwords.check_response(secret, self.pw8a))
         failif(passwords.check_response(secret, self.bad8a))
-
-    def test_unicode_passwords(self):
-        failif = self.failIf
-        secret = passwords.make_secret(self.pwua, self.scheme)
-        failif(passwords.check_response(secret, self.pwua))
-        failif(passwords.check_response(secret, self.badua))
 
     def test_passwords_with_funky_chars(self):
         failif = self.failIf
