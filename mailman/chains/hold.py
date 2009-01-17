@@ -17,6 +17,8 @@
 
 """The terminal 'hold' chain."""
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'HoldChain',
@@ -91,14 +93,14 @@ class HoldChain(TerminalChainBase):
             original_subject = _('(no subject)')
         else:
             original_subject = oneline(original_subject, charset)
-        substitutions = {
-            'listname'   : mlist.fqdn_listname,
-            'subject'    : original_subject,
-            'sender'     : sender,
-            'reason'     : 'XXX', #reason,
-            'confirmurl' : '%s/%s' % (mlist.script_url('confirm'), token),
-            'admindb_url': mlist.script_url('admindb'),
-            }
+        substitutions = dict(
+            listname    = mlist.fqdn_listname,
+            subject     = original_subject,
+            sender      = sender,
+            reason      = 'XXX', #reason,
+            confirmurl  = '{0}/{1}'.format(mlist.script_url('confirm'), token),
+            admindb_url = mlist.script_url('admindb'),
+            )
         # At this point the message is held, but now we have to craft at least
         # two responses.  The first will go to the original author of the
         # message and it will contain the token allowing them to approve or
@@ -167,7 +169,7 @@ also appear in the first line of the body of the reply.""")),
                 nmsg.attach(text)
                 nmsg.attach(MIMEMessage(msg))
                 nmsg.attach(MIMEMessage(dmsg))
-                nmsg.send(mlist, **{'tomoderators': 1})
+                nmsg.send(mlist, **dict(tomoderators=True))
         # Log the held message
         # XXX reason
         reason = 'n/a'

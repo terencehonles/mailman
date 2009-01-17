@@ -17,8 +17,12 @@
 
 """The emergency hold rule."""
 
-__all__ = ['Emergency']
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
+__all__ = [
+    'Emergency',
+    ]
 
 
 from zope.interface import implements
@@ -33,10 +37,12 @@ class Emergency:
     implements(IRule)
 
     name = 'emergency'
+
     description = _(
         """The mailing list is in emergency hold and this message was not
         pre-approved by the list administrator.
         """)
+
     record = True
 
     def check(self, mlist, msg, msgdata):

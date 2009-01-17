@@ -8,8 +8,8 @@ email the list without having those messages be held for approval.  The
 
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> rule = config.rules['moderation']
-    >>> rule.name
-    'moderation'
+    >>> print rule.name
+    moderation
 
 In the simplest case, the sender is not a member of the mailing list, so the
 moderation rule can't match.
@@ -49,8 +49,8 @@ There is another, related rule for matching non-members, which simply matches
 if the sender is /not/ a member of the mailing list.
 
     >>> rule = config.rules['non-member']
-    >>> rule.name
-    'non-member'
+    >>> print rule.name
+    non-member
 
 If the sender is a member of this mailing list, the rule does not match.
 

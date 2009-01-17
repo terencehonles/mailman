@@ -17,6 +17,8 @@
 
 """Application level list creation."""
 
+from __future__ import unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'create_list',
@@ -83,7 +85,7 @@ def remove_list(fqdn_listname, mailing_list=None, archives=True):
         # Do the MTA-specific list deletion tasks
         module_name, class_name = config.mta.incoming.rsplit('.', 1)
         __import__(module_name)
-        getattr(sys.modules[module_name], class_name)().create(mlist)
+        getattr(sys.modules[module_name], class_name)().create(mailing_list)
         # Remove the list directory.
         removeables.append(os.path.join(config.LIST_DATA_DIR, fqdn_listname))
     # Remove any stale locks associated with the list.

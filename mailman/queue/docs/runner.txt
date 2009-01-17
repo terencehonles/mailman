@@ -61,10 +61,12 @@ on instance variables.
     <BLANKLINE>
     A test message.
     <BLANKLINE>
-    >>> sorted(runner.msgdata.items())
-    [('_parsemsg', False),
-     ('bar', 'no'), ('foo', 'yes'),
-     ('lang', u'en'), ('listname', u'_xtest@example.com'),
-     ('received_time', ...), ('version', 3)]
+    >>> dump_msgdata(runner.msgdata)
+    _parsemsg: False
+    bar      : no
+    foo      : yes
+    lang     : en
+    listname : _xtest@example.com
+    version  : 3
 
 XXX More of the Runner API should be tested.

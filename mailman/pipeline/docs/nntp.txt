@@ -59,8 +59,7 @@ messages are gated to.
     <BLANKLINE>
     Something of great import.
     <BLANKLINE>
-    >>> sorted(msgdata.items())
-    [('_parsemsg', False),
-     ('listname', u'_xtest@example.com'),
-     ('received_time', ...),
-     ('version', 3)]
+    >>> dump_msgdata(msgdata)
+    _parsemsg: False
+    listname : _xtest@example.com
+    version  : 3

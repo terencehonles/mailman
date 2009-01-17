@@ -24,8 +24,12 @@ wrapping only single sections after other processing are replaced by their
 contents.
 """
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
-__all__ = ['MIMEDelete']
+__all__ = [
+    'MIMEDelete',
+    ]
 
 
 import os
@@ -118,7 +122,7 @@ def process(mlist, msg, msgdata):
             reset_payload(msg, useful)
             changedp = 1
     if changedp:
-        msg['X-Content-Filtered-By'] = 'Mailman/MimeDel %s' % VERSION
+        msg['X-Content-Filtered-By'] = 'Mailman/MimeDel {0}'.format(VERSION)
 
 
 
@@ -146,7 +150,7 @@ def reset_payload(msg, subpart):
 def filter_parts(msg, filtertypes, passtypes, filterexts, passexts):
     # Look at all the message's subparts, and recursively filter
     if not msg.is_multipart():
-        return 1
+        return True
     payload = msg.get_payload()
     prelen = len(payload)
     newpayload = []
@@ -176,8 +180,8 @@ def filter_parts(msg, filtertypes, passtypes, filterexts, passexts):
     msg.set_payload(newpayload)
     if postlen == 0 and prelen > 0:
         # We threw away everything
-        return 0
-    return 1
+        return False
+    return True
 
 
 
@@ -199,12 +203,12 @@ def collapse_multipart_alternatives(msg):
 
 
 def to_plaintext(msg):
-    changedp = 0
+    changedp = False
     for subpart in typed_subpart_iterator(msg, 'text', 'html'):
         filename = tempfile.mktemp('.html')
         fp = open(filename, 'w')
         try:
-            fp.write(subpart.get_payload(decode=1))
+            fp.write(subpart.get_payload(decode=True))
             fp.close()
             cmd = os.popen(config.HTML_TO_PLAIN_TEXT_COMMAND %
                            {'filename': filename})
@@ -222,7 +226,7 @@ def to_plaintext(msg):
         del subpart['content-transfer-encoding']
         subpart.set_payload(plaintext)
         subpart.set_type('text/plain')
-        changedp = 1
+        changedp = True
     return changedp
 
 
@@ -250,6 +254,7 @@ are receiving the only remaining copy of the discarded message.
         badq.enqueue(msg, msgdata)
     # Most cases also discard the message
     raise errors.DiscardMessage
+
 
 def get_file_ext(m):
     """

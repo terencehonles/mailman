@@ -7,8 +7,8 @@ confusing to users, and the list attribute that controls this is misnamed.
 
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> rule = config.rules['suspicious-header']
-    >>> rule.name
-    'suspicious-header'
+    >>> print rule.name
+    suspicious-header
 
 Set the so-called suspicious header configuration variable.
 

@@ -15,6 +15,16 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
+"""Model for preferences."""
+
+from __future__ import absolute_import, unicode_literals
+
+__metaclass__ = type
+__all__ = [
+    'Preferences',
+    ]
+
+
 from storm.locals import *
 from zope.interface import implements
 
@@ -37,4 +47,4 @@ class Preferences(Model):
     delivery_status = Enum()
 
     def __repr__(self):
-        return '<Preferences object at %#x>' % id(self)
+        return '<Preferences object at {0:#x}>'.format(id(self))

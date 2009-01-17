@@ -17,6 +17,8 @@
 
 """Pipeline processor."""
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'initialize',
@@ -114,8 +116,8 @@ def initialize():
             handler = handler_class()
             verifyObject(IHandler, handler)
             assert handler.name not in config.handlers, (
-                'Duplicate handler "%s" found in %s' %
-                (handler.name, handler_finder))
+                'Duplicate handler "{0}" found in {1}'.format(
+                    handler.name, handler_finder))
             config.handlers[handler.name] = handler
     # Set up some pipelines.
     for pipeline_class in (BuiltInPipeline, VirginPipeline):

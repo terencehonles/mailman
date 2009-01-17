@@ -24,6 +24,17 @@ line argument parsing, since some of the initialization behavior is controlled
 by the command line arguments.
 """
 
+from __future__ import absolute_import, unicode_literals
+
+__metaclass__ = type
+__all__ = [
+    'initialize',
+    'initialize_1',
+    'initialize_2',
+    'initialize_3',
+    ]
+
+
 import os
 
 from zope.interface.interface import adapter_hooks

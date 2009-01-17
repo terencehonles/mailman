@@ -20,6 +20,16 @@
 Represents passwords using RFC 2307 syntax (as best we can tell).
 """
 
+from __future__ import unicode_literals
+
+__metaclass__ = type
+__all__ = [
+    'Schemes',
+    'make_secret',
+    'check_response',
+    ]
+
+
 import os
 import re
 import hmac
@@ -35,16 +45,10 @@ from mailman.core import errors
 SALT_LENGTH = 20 # bytes
 ITERATIONS  = 2000
 
-__all__ = [
-    'Schemes',
-    'make_secret',
-    'check_response',
-    ]
-
 
 
-class PasswordScheme(object):
-    TAG = ''
+class PasswordScheme:
+    TAG = b''
 
     @staticmethod
     def make_secret(password):
@@ -63,11 +67,11 @@ class PasswordScheme(object):
 
 
 class NoPasswordScheme(PasswordScheme):
-    TAG = 'NONE'
+    TAG = b'NONE'
 
     @staticmethod
     def make_secret(password):
-        return ''
+        return b''
 
     @staticmethod
     def check_response(challenge, response):
@@ -76,7 +80,7 @@ class NoPasswordScheme(PasswordScheme):
 
 
 class ClearTextPasswordScheme(PasswordScheme):
-    TAG = 'CLEARTEXT'
+    TAG = b'CLEARTEXT'
 
     @staticmethod
     def make_secret(password):
@@ -89,7 +93,7 @@ class ClearTextPasswordScheme(PasswordScheme):
 
 
 class SHAPasswordScheme(PasswordScheme):
-    TAG = 'SHA'
+    TAG = b'SHA'
 
     @staticmethod
     def make_secret(password):
@@ -104,7 +108,7 @@ class SHAPasswordScheme(PasswordScheme):
 
 
 class SSHAPasswordScheme(PasswordScheme):
-    TAG = 'SSHA'
+    TAG = b'SSHA'
 
     @staticmethod
     def make_secret(password):
@@ -130,7 +134,7 @@ class PBKDF2PasswordScheme(PasswordScheme):
     # This is a bit nasty if we wanted a different prf or iterations.  OTOH,
     # we really have no clue what the standard LDAP-ish specification for
     # those options is.
-    TAG = 'PBKDF2 SHA %d' % ITERATIONS
+    TAG = b'PBKDF2 SHA {0}'.format(ITERATIONS)
 
     @staticmethod
     def _pbkdf2(password, salt, iterations):
@@ -141,13 +145,13 @@ class PBKDF2PasswordScheme(PasswordScheme):
         """
         h = hmac.new(password, None, hashlib.sha1)
         prf = h.copy()
-        prf.update(salt + '\x00\x00\x00\x01')
-        T = U = array('l', prf.digest())
+        prf.update(salt + b'\x00\x00\x00\x01')
+        T = U = array(b'l', prf.digest())
         while iterations:
             prf = h.copy()
             prf.update(U.tostring())
-            U = array('l', prf.digest())
-            T = array('l', (t ^ u for t, u in zip(T, U)))
+            U = array(b'l', prf.digest())
+            T = array(b'l', (t ^ u for t, u in zip(T, U)))
             iterations -= 1
         return T.tostring()
 
@@ -167,7 +171,7 @@ class PBKDF2PasswordScheme(PasswordScheme):
     def check_response(challenge, response, prf, iterations):
         # Decode the challenge to get the number of iterations and salt
         # XXX we don't support anything but sha prf
-        if prf.lower() <> 'sha':
+        if prf.lower() <> b'sha':
             return False
         try:
             iterations = int(iterations)
@@ -223,7 +227,7 @@ def make_secret(password, scheme=None):
     if not scheme_class:
         raise errors.BadPasswordSchemeError(scheme)
     secret = scheme_class.make_secret(password)
-    return '{%s}%s' % (scheme_class.TAG, secret)
+    return b'{{{0}}}{1}'.format(scheme_class.TAG, secret)
 
 
 def check_response(challenge, response):

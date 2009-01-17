@@ -17,6 +17,8 @@
 
 """A user manager."""
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'UserManager',
@@ -38,7 +40,7 @@ class UserManager(object):
 
     def create_user(self, address=None, real_name=None):
         user = User()
-        user.real_name = (u'' if real_name is None else real_name)
+        user.real_name = ('' if real_name is None else real_name)
         if address:
             addrobj = Address(address, user.real_name)
             addrobj.preferences = Preferences()
@@ -71,7 +73,7 @@ class UserManager(object):
             raise ExistingAddressError(found.original_address)
         assert addresses.count() == 0, 'Unexpected results'
         if real_name is None:
-            real_name = u''
+            real_name = ''
         # It's okay not to lower case the 'address' argument because the
         # constructor will do the right thing.
         address = Address(address, real_name)

@@ -17,6 +17,7 @@
 
 """Interface describing the basics of a member."""
 
+from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -78,7 +79,7 @@ class AlreadySubscribedError(SubscriptionError):
         self._role = role
 
     def __str__(self):
-        return '%s is already a %s of mailing list %s' % (
+        return '{0} is already a {1} of mailing list {2}'.format(
             self._address, self._role, self._fqdn_listname)
 
 

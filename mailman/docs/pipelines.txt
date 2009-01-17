@@ -62,11 +62,11 @@ etc.
 And the message metadata has information about recipients and other stuff.
 However there are currently no recipients for this message.
 
-    >>> sorted(msgdata.items())
-    [('original_sender', u'aperson@example.com'),
-     ('origsubj', u'My first post'),
-     ('recips', set([])),
-     ('stripped_subject', <email.header.Header instance at ...>)]
+    >>> dump_msgdata(msgdata)
+    original_sender : aperson@example.com
+    origsubj        : My first post
+    recips          : set([])
+    stripped_subject: My first post
 
 And the message is now sitting in various other processing queues.
 
@@ -98,12 +98,13 @@ And the message is now sitting in various other processing queues.
     <BLANKLINE>
     First post!
     <BLANKLINE>
-    >>> print sorted(messages[0].msgdata.items())
-    [('_parsemsg', False), ('original_sender', u'aperson@example.com'),
-     ('origsubj', u'My first post'),
-     ('received_time', ...), ('recips', set([])),
-     ('stripped_subject', <email.header.Header instance at ...>),
-     ('version', 3)]
+    >>> dump_msgdata(messages[0].msgdata)
+    _parsemsg       : False
+    original_sender : aperson@example.com
+    origsubj        : My first post
+    recips          : set([])
+    stripped_subject: My first post
+    version         : 3
 
 This mailing list is not linked to an NNTP newsgroup, so there's nothing in
 the outgoing nntp queue.
@@ -141,13 +142,14 @@ This is the message that will actually get delivered to end recipients.
     <BLANKLINE>
     First post!
     <BLANKLINE>
-    >>> print sorted(messages[0].msgdata.items())
-    [('_parsemsg', False), ('listname', u'xtest@example.com'),
-     ('original_sender', u'aperson@example.com'),
-     ('origsubj', u'My first post'), ('received_time', ...),
-     ('recips', set([])),
-     ('stripped_subject', <email.header.Header instance at ...>),
-     ('version', 3)]
+    >>> dump_msgdata(messages[0].msgdata)
+    _parsemsg       : False
+    listname        : xtest@example.com
+    original_sender : aperson@example.com
+    origsubj        : My first post
+    recips          : set([])
+    stripped_subject: My first post
+    version         : 3
 
 There's now one message in the digest mailbox, getting ready to be sent.
 

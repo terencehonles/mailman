@@ -6,8 +6,8 @@ not explicitly mentioned in the set of message recipients.
 
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> rule = config.rules['implicit-dest']
-    >>> rule.name
-    'implicit-dest'
+    >>> print rule.name
+    implicit-dest
 
 This rule matches messages that have implicit destination, meaning that the
 mailing list's posting address isn't included in the explicit recipients.

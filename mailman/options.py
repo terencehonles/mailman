@@ -17,10 +17,13 @@
 
 """Common argument parsing."""
 
+from __future__ import unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'Options',
     'SingleMailingListOptions',
+    'MultipleMailingListOptions',
     ]
 
 
@@ -44,13 +47,13 @@ def check_unicode(option, opt, value):
         return value.decode(sys.getdefaultencoding())
     except UnicodeDecodeError:
         raise OptionValueError(
-            'option %s: Cannot decode: %r' % (opt, value))
+            'option {0}: Cannot decode: {1}'.format(opt, value))
 
 
 def check_yesno(option, opt, value):
     value = value.lower()
     if value not in ('yes', 'no', 'y', 'n'):
-        raise OptionValueError('option s: invalid: %r' % (opt, value))
+        raise OptionValueError('option {0}: invalid: {1}'.format(opt, value))
     return value[0] == 'y'
 
 
@@ -92,8 +95,9 @@ class Options:
 
     def add_common_options(self):
         """Add options common to all scripts."""
+        # Python requires str types here.
         self.parser.add_option(
-            '-C', '--config',
+            str('-C'), str('--config'),
             help=_('Alternative configuration file to use'))
 
     def initialize(self, propagate_logs=None):
@@ -135,6 +139,5 @@ class MultipleMailingListOptions(Options):
         self.parser.add_option(
             '-l', '--listname',
             default=[], action='append', dest='listnames', type='unicode',
-            help=("""\
+            help=_("""\
 A mailing list name.  It is okay to have multiple --listname options."""))
-

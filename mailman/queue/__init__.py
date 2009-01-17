@@ -24,6 +24,8 @@ written.  First, the message is written to the pickle, then the metadata
 dictionary is written.
 """
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'Runner',
@@ -45,7 +47,6 @@ import traceback
 
 from cStringIO import StringIO
 from lazr.config import as_boolean, as_timedelta
-from string import Template
 from zope.interface import implements
 
 from mailman import Message
@@ -54,6 +55,7 @@ from mailman import i18n
 from mailman.config import config
 from mailman.interfaces.runner import IRunner
 from mailman.interfaces.switchboard import ISwitchboard
+from mailman.utilities.string import expand
 
 # 20 bytes of all bits set, maximum hashlib.sha.digest() value
 shamax = 0xffffffffffffffffffffffffffffffffffffffffL
@@ -81,10 +83,10 @@ class Switchboard:
         for conf in config.qrunner_configs:
             name = conf.name.split('.')[-1]
             assert name not in config.switchboards, (
-                'Duplicate qrunner name: %s' % name)
+                'Duplicate qrunner name: {0}'.format(name))
             substitutions = config.paths
             substitutions['name'] = name
-            path = Template(conf.path).safe_substitute(substitutions)
+            path = expand(conf.path, substitutions)
             config.switchboards[name] = Switchboard(path)
 
     def __init__(self, queue_directory,
@@ -103,7 +105,7 @@ class Switchboard:
         :type recover: bool
         """
         assert (numslices & (numslices - 1)) == 0, (
-            'Not a power of 2: %s' % numslices)
+            'Not a power of 2: {0}'.format(numslices))
         self.queue_directory = queue_directory
         # Create the directory if it doesn't yet exist.
         Utils.makedirs(self.queue_directory, 0770)
@@ -148,7 +150,8 @@ class Switchboard:
         tmpfile = filename + '.tmp'
         # Always add the metadata schema version number
         data['version'] = config.QFILE_SCHEMA_VERSION
-        # Filter out volatile entries
+        # Filter out volatile entries.  Use .keys() so that we can mutate the
+        # dictionary during the iteration.
         for k in data.keys():
             if k.startswith('_'):
                 del data[k]
@@ -197,7 +200,7 @@ class Switchboard:
                 os.rename(bakfile, psvfile)
             else:
                 os.unlink(bakfile)
-        except EnvironmentError, e:
+        except EnvironmentError:
             elog.exception(
                 'Failed to unlink/preserve backup file: %s', bakfile)
 
@@ -246,11 +249,11 @@ class Switchboard:
                     msg = cPickle.load(fp)
                     data_pos = fp.tell()
                     data = cPickle.load(fp)
-                except Exception, s:
+                except Exception as error:
                     # If unpickling throws any exception, just log and
                     # preserve this entry
                     elog.error('Unpickling .bak exception: %s\n'
-                               'Preserving file: %s', s, filebase)
+                               'Preserving file: %s', error, filebase)
                     self.finish(filebase, preserve=True)
                 else:
                     data['_bak_count'] = data.get('_bak_count', 0) + 1
@@ -289,8 +292,7 @@ class Runner:
         section = getattr(config, 'qrunner.' + name)
         substitutions = config.paths
         substitutions['name'] = name
-        self.queue_directory = Template(section.path).safe_substitute(
-            substitutions)
+        self.queue_directory = expand(section.path, substitutions)
         numslices = int(section.instances)
         self.switchboard = Switchboard(
             self.queue_directory, slice, numslices, True)
@@ -304,7 +306,7 @@ class Runner:
         self._stop = False
 
     def __repr__(self):
-        return '<%s at %s>' % (self.__class__.__name__, id(self))
+        return '<{0} at {1:#x}>'.format(self.__class__.__name__, id(self))
 
     def stop(self):
         """See `IRunner`."""
@@ -345,13 +347,13 @@ class Runner:
                 # Ask the switchboard for the message and metadata objects
                 # associated with this queue file.
                 msg, msgdata = self.switchboard.dequeue(filebase)
-            except Exception, e:
+            except Exception as error:
                 # This used to just catch email.Errors.MessageParseError, but
                 # other problems can occur in message parsing, e.g.
                 # ValueError, and exceptions can occur in unpickling too.  We
                 # don't want the runner to die, so we just log and skip this
                 # entry, but preserve it for analysis.
-                self._log(e)
+                self._log(error)
                 elog.error('Skipping and preserving unparseable message: %s',
                            filebase)
                 self.switchboard.finish(filebase, preserve=True)
@@ -362,14 +364,14 @@ class Runner:
                 self._process_one_file(msg, msgdata)
                 dlog.debug('[%s] finishing filebase: %s', me, filebase)
                 self.switchboard.finish(filebase)
-            except Exception, e:
+            except Exception as error:
                 # All runners that implement _dispose() must guarantee that
                 # exceptions are caught and dealt with properly.  Still, there
                 # may be a bug in the infrastructure, and we do not want those
                 # to cause messages to be lost.  Any uncaught exceptions will
                 # cause the message to be stored in the shunt queue for human
                 # intervention.
-                self._log(e)
+                self._log(error)
                 # Put a marker in the metadata for unshunting.
                 msgdata['whichq'] = self.switchboard.queue_directory
                 # It is possible that shunting can throw an exception, e.g. a
@@ -380,11 +382,11 @@ class Runner:
                     new_filebase = shunt.enqueue(msg, msgdata)
                     elog.error('SHUNTING: %s', new_filebase)
                     self.switchboard.finish(filebase)
-                except Exception, e:
+                except Exception as error:
                     # The message wasn't successfully shunted.  Log the
                     # exception and try to preserve the original queue entry
                     # for possible analysis.
-                    self._log(e)
+                    self._log(error)
                     elog.error(
                         'SHUNTING FAILED, preserving original entry: %s',
                         filebase)

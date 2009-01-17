@@ -17,6 +17,8 @@
 
 """Application of list styles to new and existing lists."""
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'DefaultStyle',
@@ -59,16 +61,16 @@ class DefaultStyle:
         mlist.max_num_recipients = 10
         mlist.max_message_size = 40 # KB
         mlist.reply_goes_to_list = ReplyToMunging.no_munging
-        mlist.reply_to_address = u''
+        mlist.reply_to_address = ''
         mlist.first_strip_reply_to = False
         mlist.admin_immed_notify = True
         mlist.admin_notify_mchanges = False
         mlist.require_explicit_destination = True
-        mlist.acceptable_aliases = u''
+        mlist.acceptable_aliases = ''
         mlist.send_reminders = True
         mlist.send_welcome_msg = True
         mlist.send_goodbye_msg = True
-        mlist.bounce_matching_headers = u"""
+        mlist.bounce_matching_headers = """
 # Lines that *start* with a '#' are comments.
 to: friend@public.com
 message-id: relay.comanche.denmark.eu
@@ -77,10 +79,10 @@ from: .*@uplinkpro.com
 """
         mlist.header_matches = []
         mlist.anonymous_list = False
-        mlist.description = u''
-        mlist.info = u''
-        mlist.welcome_msg = u''
-        mlist.goodbye_msg = u''
+        mlist.description = ''
+        mlist.info = ''
+        mlist.welcome_msg = ''
+        mlist.goodbye_msg = ''
         mlist.subscribe_policy = 1
         mlist.subscribe_auto_approval = []
         mlist.unsubscribe_policy = 0
@@ -111,8 +113,8 @@ from: .*@uplinkpro.com
         mlist.mime_is_default_digest = False
         mlist.digest_size_threshold = 30 # KB
         mlist.digest_send_periodic = True
-        mlist.digest_header = u''
-        mlist.digest_footer = u"""\
+        mlist.digest_header = ''
+        mlist.digest_footer = """\
 _______________________________________________
 $real_name mailing list
 $fqdn_listname
@@ -131,14 +133,14 @@ ${listinfo_page}
         mlist.archive_volume_frequency = 1
         mlist.emergency = False
         mlist.member_moderation_action = Action.hold
-        mlist.member_moderation_notice = u''
+        mlist.member_moderation_notice = ''
         mlist.accept_these_nonmembers = []
         mlist.hold_these_nonmembers = []
         mlist.reject_these_nonmembers = []
         mlist.discard_these_nonmembers = []
         mlist.forward_auto_discards = True
         mlist.generic_nonmember_action = 1
-        mlist.nonmember_rejection_notice = u''
+        mlist.nonmember_rejection_notice = ''
         # Ban lists
         mlist.ban_list = []
         # Max autoresponses per day.  A mapping between addresses and a
@@ -146,8 +148,8 @@ ${listinfo_page}
         # autoresponses sent on that date.
         mlist.hold_and_cmd_autoresponses = {}
         mlist.subject_prefix = _(u'[$mlist.real_name] ')
-        mlist.msg_header = u''
-        mlist.msg_footer = u"""\
+        mlist.msg_header = ''
+        mlist.msg_footer = """\
 _______________________________________________
 $real_name mailing list
 $fqdn_listname
@@ -171,9 +173,9 @@ ${listinfo_page}
         #  1 - autorespond, but discard the original message
         #  2 - autorespond, and forward the message on to be processed
         mlist.autorespond_requests = 0
-        mlist.autoresponse_postings_text = u''
-        mlist.autoresponse_admin_text = u''
-        mlist.autoresponse_request_text = u''
+        mlist.autoresponse_postings_text = ''
+        mlist.autoresponse_admin_text = ''
+        mlist.autoresponse_request_text = ''
         mlist.autoresponse_graceperiod = datetime.timedelta(days=90)
         mlist.postings_responses = {}
         mlist.admin_responses = {}
@@ -196,8 +198,8 @@ ${listinfo_page}
         # New style delivery status
         mlist.delivery_status = {}
         # NNTP gateway
-        mlist.nntp_host = u''
-        mlist.linked_newsgroup = u''
+        mlist.nntp_host = ''
+        mlist.linked_newsgroup = ''
         mlist.gateway_to_news = False
         mlist.gateway_to_mail = False
         mlist.news_prefix_subject_too = True

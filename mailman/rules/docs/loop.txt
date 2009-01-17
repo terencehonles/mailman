@@ -6,8 +6,8 @@ X-BeenThere header with the value of the list's posting address.
 
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> rule = config.rules['loop']
-    >>> rule.name
-    'loop'
+    >>> print rule.name
+    loop
 
 The header could be missing, in which case the rule does not match.
 

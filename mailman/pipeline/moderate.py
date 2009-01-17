@@ -17,6 +17,14 @@
 
 """Posting moderation filter."""
 
+from __future__ import absolute_import, unicode_literals
+
+__metaclass__ = type
+__all__ = [
+    'process',
+    ]
+
+
 import re
 
 from email.MIMEMessage import MIMEMessage

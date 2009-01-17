@@ -17,6 +17,8 @@
 
 """Application support for moderators."""
 
+from __future__ import unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'handle_message',
@@ -144,7 +146,7 @@ def handle_message(mlist, id, action,
         # processing.
         config.switchboards['in'].enqueue(msg, _metadata=msgdata)
     else:
-        raise AssertionError('Unexpected action: %s' % action)
+        raise AssertionError('Unexpected action: {0}'.format(action))
     # Forward the message.
     if forward:
         # Get a copy of the original message from the message store.
@@ -257,7 +259,7 @@ def handle_subscription(mlist, id, action, comment=None):
                   delivery_mode, formataddr((realname, address)),
                   'via admin approval')
     else:
-        raise AssertionError('Unexpected action: %s' % action)
+        raise AssertionError('Unexpected action: {0}'.format(action))
     # Delete the request from the database.
     requestdb.delete_request(id)
 
@@ -313,7 +315,7 @@ def handle_unsubscription(mlist, id, action, comment=None):
             pass
         slog.info('%s: deleted %s', mlist.fqdn_listname, address)
     else:
-        raise AssertionError('Unexpected action: %s' % action)
+        raise AssertionError('Unexpected action: {0}'.format(action))
     # Delete the request from the database.
     requestdb.delete_request(id)
 

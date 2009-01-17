@@ -17,6 +17,8 @@
 
 """The historical 'suspicious header' rule."""
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'SuspiciousHeader',
@@ -72,12 +74,12 @@ def _parse_matching_header_opt(mlist):
             value = line[i+1:].lstrip()
             try:
                 cre = re.compile(value, re.IGNORECASE)
-            except re.error, e:
+            except re.error as error:
                 # The regexp was malformed.  BAW: should do a better
                 # job of informing the list admin.
                 log.error("""\
 bad regexp in bounce_matching_header line: %s
-\n%s (cause: %s)""", mlist.real_name, value, e)
+\n%s (cause: %s)""", mlist.real_name, value, error)
             else:
                 all.append((header, cre, line))
     return all

@@ -17,11 +17,15 @@
 
 """Interface for a mailing list."""
 
+from __future__ import absolute_import, unicode_literals
+
+__metaclass__ = type
 __all__ = [
     'IMailingList',
     'Personalization',
     'ReplyToMunging',
     ]
+
 
 from munepy import Enum
 from zope.interface import Interface, Attribute

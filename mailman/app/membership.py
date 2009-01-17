@@ -17,6 +17,8 @@
 
 """Application support for membership management."""
 
+from __future__ import unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'add_member',
@@ -99,7 +101,7 @@ def add_member(mlist, address, realname, password, delivery_mode, language):
                 break
         else:
             raise AssertionError(
-                'User should have had linked address: %s', address)
+                'User should have had linked address: {0}'.format(address))
         # Create the member and set the appropriate preferences.
         member = address_obj.subscribe(mlist, MemberRole.member)
         member.preferences.preferred_language = language

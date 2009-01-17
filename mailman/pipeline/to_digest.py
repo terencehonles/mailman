@@ -25,6 +25,8 @@
 # directory and the DigestRunner will craft the MIME, rfc1153, and
 # (eventually) URL-subject linked digests from the mbox.
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'ToDigest',
@@ -243,9 +245,9 @@ def send_i18n_digests(mlist, mboxfp):
             if not username:
                 username = addresses[0][1]
         if username:
-            username = ' (%s)' % username
+            username = ' ({0})'.format(username)
         # Put count and Wrap the toc subject line
-        wrapped = Utils.wrap('%2d. %s' % (msgcount, subject), 65)
+        wrapped = Utils.wrap('{0:2}. {1}'.format(msgcount, subject), 65)
         slines = wrapped.split('\n')
         # See if the user's name can fit on the last line
         if len(slines[-1]) + len(username) > 70:
@@ -326,8 +328,8 @@ def send_i18n_digests(mlist, mboxfp):
         # Honor the default setting
         for h in config.digests.plain_digest_keep_headers.split():
             if msg[h]:
-                uh = Utils.wrap('%s: %s' % (h, Utils.oneline(msg[h],
-                                                             in_unicode=True)))
+                uh = Utils.wrap('{0}: {1}'.format(
+                    h, Utils.oneline(msg[h], in_unicode=True)))
                 uh = '\n\t'.join(uh.split('\n'))
                 print >> plainmsg, uh
         print >> plainmsg
@@ -402,8 +404,8 @@ def send_i18n_digests(mlist, mboxfp):
             mimerecips.add(email_address)
         else:
             raise AssertionError(
-                'Digest member "%s" unexpected delivery mode: %s' %
-                (email_address, member.delivery_mode))
+                'Digest member "{0}" unexpected delivery mode: {1}'.format(
+                    email_address, member.delivery_mode))
     # Zap this since we're now delivering the last digest to these folks.
     mlist.one_last_digest.clear()
     # MIME

@@ -17,6 +17,14 @@
 
 """Interface for a roster of members."""
 
+from __future__ import absolute_import, unicode_literals
+
+__metaclass__ = type
+__all__ = [
+    'IRoster',
+    ]
+
+
 from zope.interface import Interface, Attribute
 
 

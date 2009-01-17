@@ -22,6 +22,13 @@ components.  More specific exceptions will be located in the relevant
 interfaces.
 """
 
+from __future__ import absolute_import, unicode_literals
+
+__metaclass__ = type
+__all__ = [
+    'MailmanError',
+    ]
+
 
 
 class MailmanError(Exception):

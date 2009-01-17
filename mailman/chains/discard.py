@@ -17,8 +17,12 @@
 
 """The terminal 'discard' chain."""
 
-__all__ = ['DiscardChain']
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
+__all__ = [
+    'DiscardChain',
+    ]
 
 
 import logging

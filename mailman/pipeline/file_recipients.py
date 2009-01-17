@@ -17,6 +17,8 @@
 
 """Get the normal delivery recipients from a Sendmail style :include: file."""
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'FileRecipients',

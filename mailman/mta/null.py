@@ -20,17 +20,19 @@
 Exim one example of an MTA that Just Works.
 """
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
 __all__ = [
-    'LMTP',
+    'NullMTA',
     ]
 
 
 from zope.interface import implements
-
 from mailman.interfaces.mta import IMailTransportAgent
 
 
+
 class NullMTA:
     """Null MTA that just satisfies the interface."""
 

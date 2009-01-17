@@ -17,6 +17,13 @@
 
 """Get a requested plugin."""
 
+from __future__ import absolute_import, unicode_literals
+
+__metaclass__ = type
+__all__ = [
+    ]
+
+
 import pkg_resources
 
 
@@ -36,7 +43,8 @@ def get_plugin(group):
     """
     entry_points = list(pkg_resources.iter_entry_points(group))
     if len(entry_points) == 0:
-        raise RuntimeError('No entry points found for group: %s' % group)
+        raise RuntimeError(
+            'No entry points found for group: {0}'.format(group))
     elif len(entry_points) == 1:
         # Okay, this is the one to use.
         return entry_points[0].load()
@@ -44,14 +52,15 @@ def get_plugin(group):
         # Find the one /not/ named 'stock'.
         entry_points = [ep for ep in entry_points if ep.name <> 'stock']
         if len(entry_points) == 0:
-            raise RuntimeError('No stock plugin found for group: %s' % group)
+            raise RuntimeError(
+                'No stock plugin found for group: {0}'.format(group))
         elif len(entry_points) == 2:
             raise RuntimeError('Too many stock plugins defined')
         else:
             raise AssertionError('Insanity')
         return entry_points[0].load()
     else:
-        raise RuntimeError('Too many plugins for group: %s' % group)
+        raise RuntimeError('Too many plugins for group: {0}'.format(group))
 
 
 

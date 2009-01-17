@@ -17,6 +17,8 @@
 
 """Mailman test layers."""
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'ConfigLayer',
@@ -31,7 +33,6 @@ import logging
 import tempfile
 
 from pkg_resources import resource_string
-from string import Template
 from textwrap import dedent
 
 from mailman.config import config
@@ -39,6 +40,7 @@ from mailman.core import initialize
 from mailman.core.logging import get_handler
 from mailman.i18n import _
 from mailman.testing.helpers import SMTPServer
+from mailman.utilities.string import expand
 
 
 NL = '\n'
@@ -105,11 +107,11 @@ class ConfigLayer:
             # If stderr debugging is enabled, make sure subprocesses are also
             # more verbose.
             if cls.stderr:
-                test_config += Template(dedent("""
+                test_config += expand(dedent("""
                 [logging.$name]
                 propagate: yes
                 level: debug
-                """)).substitute(name=sub_name, path=path)
+                """), dict(name=sub_name, path=path))
         # zope.testing sets up logging before we get to our own initialization
         # function.  This messes with the root logger, so explicitly set it to
         # go to stderr.
@@ -170,7 +172,7 @@ class ConfigLayer:
         zc.testing package.  There should be a better way!
         """
         from zope.testing.testrunner.options import parser
-        parser.add_option('-e', '--stderr',
+        parser.add_option(str('-e'), str('--stderr'),
                           action='callback', callback=cls.handle_stderr,
                           help=_('Propagate log errors to stderr.'))
 

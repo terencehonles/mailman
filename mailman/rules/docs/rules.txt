@@ -57,8 +57,8 @@ For example, the emergency rule just checks to see if the emergency flag is
 set on the mailing list, and the message has not been pre-approved by the list
 administrator.
 
-    >>> rule.name
-    'emergency'
+    >>> print rule.name
+    emergency
     >>> mlist.emergency = False
     >>> rule.check(mlist, msg, {})
     False

@@ -10,9 +10,10 @@ Here is a helper function for printing out held requests.
     >>> def show_holds(requests):
     ...     for request in requests.held_requests:
     ...         key, data = requests.get_request(request.id)
+    ...         print request.id, str(request.request_type), key
     ...         if data is not None:
-    ...             data = sorted(data.items())
-    ...         print request.id, str(request.request_type), key, data
+    ...             for key in sorted(data):
+    ...                 print '    {0}: {1}'.format(key, data[key])
 
 And another helper for displaying messages in the virgin queue.
 
@@ -80,10 +81,10 @@ And of course, now we can see that there are four requests being held.
     >>> requests.count_of(RequestType.unsubscription)
     1
     >>> show_holds(requests)
-    1 RequestType.held_message hold_1 None
-    2 RequestType.subscription hold_2 None
-    3 RequestType.unsubscription hold_3 None
-    4 RequestType.held_message hold_4 None
+    1 RequestType.held_message hold_1
+    2 RequestType.subscription hold_2
+    3 RequestType.unsubscription hold_3
+    4 RequestType.held_message hold_4
 
 If we try to hold a request with a bogus type, we get an exception.
 
@@ -101,11 +102,13 @@ We can hold requests with additional data.
     >>> requests.count
     5
     >>> show_holds(requests)
-    1 RequestType.held_message hold_1 None
-    2 RequestType.subscription hold_2 None
-    3 RequestType.unsubscription hold_3 None
-    4 RequestType.held_message hold_4 None
-    5 RequestType.held_message hold_5 [(u'bar', u'no'), (u'foo', u'yes')]
+    1 RequestType.held_message hold_1
+    2 RequestType.subscription hold_2
+    3 RequestType.unsubscription hold_3
+    4 RequestType.held_message hold_4
+    5 RequestType.held_message hold_5
+        bar: no
+        foo: yes
 
 
 Getting requests
@@ -116,8 +119,8 @@ of the request data we want.  This returns a 2-tuple of the key and data we
 originally held.
 
     >>> key, data = requests.get_request(2)
-    >>> key
-    u'hold_2'
+    >>> print key
+    hold_2
 
 Because we did not store additional data with request 2, it comes back as None
 now.
@@ -128,10 +131,11 @@ now.
 However, if we ask for a request that had data, we'd get it back now.
 
     >>> key, data = requests.get_request(5)
-    >>> key
-    u'hold_5'
-    >>> sorted(data.items())
-    [(u'bar', u'no'), (u'foo', u'yes')]
+    >>> print key
+    hold_5
+    >>> dump_msgdata(data)
+    bar: no
+    foo: yes
 
 If we ask for a request that is not in the database, we get None back.
 
@@ -150,12 +154,15 @@ over by type.
     >>> for request in requests.of_type(RequestType.held_message):
     ...     assert request.request_type is RequestType.held_message
     ...     key, data = requests.get_request(request.id)
+    ...     print request.id, key
     ...     if data is not None:
-    ...         data = sorted(data.items())
-    ...     print request.id, key, data
-    1 hold_1 None
-    4 hold_4 None
-    5 hold_5 [(u'bar', u'no'), (u'foo', u'yes')]
+    ...         for key in sorted(data):
+    ...             print '    {0}: {1}'.format(key, data[key])
+    1 hold_1
+    4 hold_4
+    5 hold_5
+    bar: no
+    foo: yes
 
 
 Deleting requests
@@ -168,10 +175,12 @@ database.
     >>> requests.count
     4
     >>> show_holds(requests)
-    1 RequestType.held_message hold_1 None
-    3 RequestType.unsubscription hold_3 None
-    4 RequestType.held_message hold_4 None
-    5 RequestType.held_message hold_5 [(u'bar', u'no'), (u'foo', u'yes')]
+    1 RequestType.held_message hold_1
+    3 RequestType.unsubscription hold_3
+    4 RequestType.held_message hold_4
+    5 RequestType.held_message hold_5
+        bar: no
+        foo: yes
     >>> print requests.get_request(2)
     None
 
@@ -286,14 +295,13 @@ The message can be rejected, meaning it is bounced back to the sender.
     <BLANKLINE>
         alist-owner@example.com
     <BLANKLINE>
-    >>> sorted(qdata.items())
-    [('_parsemsg', False),
-     ('listname', u'alist@example.com'),
-     ('nodecorate', True),
-     ('received_time', ...),
-     ('recips', [u'aperson@example.org']),
-     ('reduced_list_headers', True),
-     ('version', 3)]
+    >>> dump_msgdata(qdata)
+    _parsemsg           : False
+    listname            : alist@example.com
+    nodecorate          : True
+    recips              : [u'aperson@example.org']
+    reduced_list_headers: True
+    version             : 3
 
 Or the message can be approved.  This actually places the message back into
 the incoming queue for further processing, however the message metadata
@@ -313,11 +321,12 @@ indicates that the message has been approved.
     <BLANKLINE>
     Here's something important about our mailing list.
     <BLANKLINE>
-    >>> sorted(qdata.items())
-    [('_parsemsg', False),
-     (u'approved', True), ('moderator_approved', True),
-     (u'received_time', 123.45), (u'sender', u'aperson@example.com'),
-     ('version', 3)]
+    >>> dump_msgdata(qdata)
+    _parsemsg         : False
+    approved          : True
+    moderator_approved: True
+    sender            : aperson@example.com
+    version           : 3
 
 In addition to any of the above dispositions, the message can also be
 preserved for further study.  Ordinarily the message is removed from the
@@ -386,11 +395,13 @@ moderators.
     <BLANKLINE>
     Here's something important about our mailing list.
     <BLANKLINE>
-    >>> sorted(qdata.items())
-    [('_parsemsg', False), ('listname', u'alist@example.com'),
-    ('nodecorate', True), ('received_time', ...),
-    ('recips', [u'zperson@example.com']),
-    ('reduced_list_headers', True), ('version', 3)]
+    >>> dump_msgdata(qdata)
+    _parsemsg           : False
+    listname            : alist@example.com
+    nodecorate          : True
+    recips              : [u'zperson@example.com']
+    reduced_list_headers: True
+    version             : 3
 
 
 Holding subscription requests
@@ -454,13 +465,14 @@ queue when the message is held.
     <BLANKLINE>
     to process the request.
     <BLANKLINE>
-    >>> sorted(qdata.items())
-    [('_parsemsg', False),
-    ('listname', u'alist@example.com'),
-    ('nodecorate', True),
-    ('received_time', ...),
-    ('recips', [u'alist-owner@example.com']),
-    ('reduced_list_headers', True), ('tomoderators', True), ('version', 3)]
+    >>> dump_msgdata(qdata)
+    _parsemsg           : False
+    listname            : alist@example.com
+    nodecorate          : True
+    recips              : [u'alist-owner@example.com']
+    reduced_list_headers: True
+    tomoderators        : True
+    version             : 3
 
 Once held, the moderator can select one of several dispositions.  The most
 trivial is to simply defer a decision for now.
@@ -508,12 +520,13 @@ subscriber.
     <BLANKLINE>
         alist-owner@example.com
     <BLANKLINE>
-    >>> sorted(qdata.items())
-    [('_parsemsg', False), ('listname', u'alist@example.com'),
-    ('nodecorate', True),
-    ('received_time', ...),
-    ('recips', [u'cperson@example.org']),
-    ('reduced_list_headers', True), ('version', 3)]
+    >>> dump_msgdata(qdata)
+    _parsemsg           : False
+    listname            : alist@example.com
+    nodecorate          : True
+    recips              : [u'cperson@example.org']
+    reduced_list_headers: True
+    version             : 3
 
 The subscription can also be accepted.  This subscribes the address to the
 mailing list.
@@ -551,11 +564,14 @@ subscription and the fact that they may need to approve it.
     <BLANKLINE>
     to process the request.
     <BLANKLINE>
-    >>> sorted(qdata.items())
-    [('_parsemsg', False), ('listname', u'alist@example.com'),
-     ('nodecorate', True), ('received_time', ...),
-     ('recips', [u'alist-owner@example.com']),
-     ('reduced_list_headers', True), ('tomoderators', True), ('version', 3)]
+    >>> dump_msgdata(qdata)
+    _parsemsg           : False
+    listname            : alist@example.com
+    nodecorate          : True
+    recips              : [u'alist-owner@example.com']
+    reduced_list_headers: True
+    tomoderators        : True
+    version             : 3
 
 Accept the subscription request.
 
@@ -621,11 +637,14 @@ The welcome message is sent to the person who just subscribed.
     this email is not included here.  There is also a button on your
     options page that will send your current password to you.
     <BLANKLINE>
-    >>> sorted(welcome_qdata.items())
-    [('_parsemsg', False), ('listname', u'alist@example.com'),
-     ('nodecorate', True), ('received_time', ...),
-     ('recips', [u'fperson@example.org']),
-     ('reduced_list_headers', True), ('verp', False), ('version', 3)]
+    >>> dump_msgdata(welcome_qdata)
+    _parsemsg           : False
+    listname            : alist@example.com
+    nodecorate          : True
+    recips              : [u'fperson@example.org']
+    reduced_list_headers: True
+    verp                : False
+    version             : 3
 
 The admin message is sent to the moderators.
 
@@ -643,11 +662,14 @@ The admin message is sent to the moderators.
     Frank Person <fperson@example.org> has been successfully subscribed to
     A Test List.
     <BLANKLINE>
-    >>> sorted(admin_qdata.items())
-    [('_parsemsg', False), ('envsender', 'changeme@example.com'),
-     ('listname', u'alist@example.com'),
-     ('nodecorate', True), ('received_time', ...),
-     ('recips', []), ('reduced_list_headers', True), ('version', 3)]
+    >>> dump_msgdata(admin_qdata)
+    _parsemsg           : False
+    envsender           : changeme@example.com
+    listname            : alist@example.com
+    nodecorate          : True
+    recips              : []
+    reduced_list_headers: True
+    version             : 3
 
 Frank Person is now a member of the mailing list.
 
@@ -714,12 +736,14 @@ unsubscription holds can send the list's moderators an immediate notification.
     <BLANKLINE>
     to process the request.
     <BLANKLINE>
-    >>> sorted(qdata.items())
-    [('_parsemsg', False),
-     ('listname', u'alist@example.com'), ('nodecorate', True),
-     ('received_time', ...),
-     ('recips', [u'alist-owner@example.com']),
-     ('reduced_list_headers', True), ('tomoderators', True), ('version', 3)]
+    >>> dump_msgdata(qdata)
+    _parsemsg           : False
+    listname            : alist@example.com
+    nodecorate          : True
+    recips              : [u'alist-owner@example.com']
+    reduced_list_headers: True
+    tomoderators        : True
+    version             : 3
 
 There are now two addresses with held unsubscription requests.  As above, one
 of the actions we can take is to defer to the decision.
@@ -770,12 +794,14 @@ and the person remains a member of the mailing list.
     <BLANKLINE>
         alist-owner@example.com
     <BLANKLINE>
-    >>> sorted(qdata.items())
-    [('_parsemsg', False),
-     ('listname', u'alist@example.com'),
-     ('nodecorate', True), ('received_time', ...),
-     ('recips', [u'hperson@example.com']),
-     ('reduced_list_headers', True), ('version', 3)]
+    >>> dump_msgdata(qdata)
+    _parsemsg           : False
+    listname            : alist@example.com
+    nodecorate          : True
+    recips              : [u'hperson@example.com']
+    reduced_list_headers: True
+    version             : 3
+
     >>> mlist.members.get_member(u'hperson@example.com')
     <Member: hperson@example.com on alist@example.com as MemberRole.member>
 
@@ -823,12 +849,14 @@ The goodbye message...
     <BLANKLINE>
     So long!
     <BLANKLINE>
-    >>> sorted(goodbye_qdata.items())
-    [('_parsemsg', False),
-     ('listname', u'alist@example.com'),
-     ('nodecorate', True), ('received_time', ...),
-     ('recips', [u'gperson@example.com']),
-     ('reduced_list_headers', True), ('verp', False), ('version', 3)]
+    >>> dump_msgdata(goodbye_qdata)
+    _parsemsg           : False
+    listname            : alist@example.com
+    nodecorate          : True
+    recips              : [u'gperson@example.com']
+    reduced_list_headers: True
+    verp                : False
+    version             : 3
 
 ...and the admin message.
 
@@ -845,8 +873,11 @@ The goodbye message...
     <BLANKLINE>
     gperson@example.com has been removed from A Test List.
     <BLANKLINE>
-    >>> sorted(admin_qdata.items())
-    [('_parsemsg', False), ('envsender', 'changeme@example.com'),
-     ('listname', u'alist@example.com'),
-     ('nodecorate', True), ('received_time', ...),
-     ('recips', []), ('reduced_list_headers', True), ('version', 3)]
+    >>> dump_msgdata(admin_qdata)
+    _parsemsg           : False
+    envsender           : changeme@example.com
+    listname            : alist@example.com
+    nodecorate          : True
+    recips              : []
+    reduced_list_headers: True
+    version             : 3

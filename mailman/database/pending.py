@@ -17,6 +17,8 @@
 
 """Implementations of the IPendable and IPending interfaces."""
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'Pended',
@@ -122,8 +124,8 @@ class Pendings:
                 value = u'__builtin__.bool\1%s' % value
             elif type(value) is list:
                 # We expect this to be a list of strings.
-                value = u'mailman.database.pending.unpack_list\1%s' % (
-                    '\2'.join(value))
+                value = ('mailman.database.pending.unpack_list\1' +
+                         '\2'.join(value))
             keyval = PendedKeyValue(key=key, value=value)
             pending.key_values.add(keyval)
         config.db.store.add(pending)
@@ -135,7 +137,7 @@ class Pendings:
         if pendings.count() == 0:
             return None
         assert pendings.count() == 1, (
-            'Unexpected token count: %d' % pendings.count())
+            'Unexpected token count: {0}'.format(pendings.count()))
         pending = pendings[0]
         pendable = UnpendedPendable()
         # Find all PendedKeyValue entries that are associated with the pending

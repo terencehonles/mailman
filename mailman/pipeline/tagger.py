@@ -17,8 +17,12 @@
 
 """Extract topics from the original mail message."""
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
-__all__ = ['Tagger']
+__all__ = [
+    'Tagger',
+    ]
 
 
 import re
@@ -35,7 +39,7 @@ from mailman.interfaces.handler import IHandler
 
 OR = '|'
 CRNL = '\r\n'
-EMPTYSTRING = ''
+EMPTYBYTES = b''
 NLTAB = '\n\t'
 
 
@@ -69,8 +73,10 @@ def process(mlist, msg, msgdata):
                 hits[name] = 1
                 break
     if hits:
-        msgdata['topichits'] = hits.keys()
-        msg['X-Topics'] = NLTAB.join(hits.keys())
+        # Sort the keys and make them available both in the message metadata
+        # and in a message header.
+        msgdata['topichits'] = sorted(hits)
+        msg['X-Topics'] = NLTAB.join(sorted(hits))
 
 
 
@@ -97,7 +103,7 @@ def scanbody(msg, numlines=None):
     reader = list(email.Iterators.body_line_iterator(msg))
     while numlines is None or lineno < numlines:
         try:
-            line = reader.pop(0)
+            line = bytes(reader.pop(0))
         except IndexError:
             break
         # Blank lines don't count
@@ -108,7 +114,7 @@ def scanbody(msg, numlines=None):
     # Concatenate those body text lines with newlines, and then create a new
     # message object from those lines.
     p = _ForgivingParser()
-    msg = p.parsestr(EMPTYSTRING.join(lines))
+    msg = p.parsestr(EMPTYBYTES.join(lines))
     return msg.get_all('subject', []) + msg.get_all('keywords', [])
 
 

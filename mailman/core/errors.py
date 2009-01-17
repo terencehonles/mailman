@@ -17,6 +17,34 @@
 
 """Mailman errors."""
 
+from __future__ import absolute_import, unicode_literals
+
+__metaclass__ = type
+__all__ = [
+    'AlreadyReceivingDigests',
+    'AlreadyReceivingRegularDeliveries',
+    'BadDomainSpecificationError',
+    'BadPasswordSchemeError',
+    'CantDigestError',
+    'DiscardMessage',
+    'EmailAddressError',
+    'HandlerError',
+    'HoldMessage',
+    'HostileSubscriptionError',
+    'InvalidEmailAddress',
+    'LostHeldMessage',
+    'MailmanError',
+    'MailmanException',
+    'MemberError',
+    'MembershipIsBanned',
+    'MustDigestError',
+    'NotAMemberError',
+    'PasswordError',
+    'RejectMessage',
+    'SomeRecipientsFailed',
+    'SubscriptionError',
+    ]
+
 
 
 # Base class for all exceptions raised in Mailman (XXX except legacy string

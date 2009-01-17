@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'inject_message',

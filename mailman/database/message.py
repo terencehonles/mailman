@@ -15,6 +15,11 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
+"""Model for messages."""
+
+
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'Message',

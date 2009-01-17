@@ -17,6 +17,15 @@
 
 """The message storage service."""
 
+from __future__ import absolute_import, unicode_literals
+
+__metaclass__ = type
+__all__ = [
+    'IMessage',
+    'IMessageStore',
+    ]
+
+
 from zope.interface import Interface, Attribute
 
 

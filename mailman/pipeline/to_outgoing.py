@@ -22,6 +22,8 @@ posted to the list membership.  Anything else that needs to go out to some
 recipient should just be placed in the out queue directly.
 """
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'ToOutgoing',

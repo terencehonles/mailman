@@ -17,6 +17,8 @@
 
 """MHonArc archiver."""
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'MHonArc',
@@ -28,12 +30,12 @@ import logging
 import subprocess
 
 from base64 import b32encode
-from string import Template
 from urlparse import urljoin
 from zope.interface import implements
 
 from mailman.config import config
 from mailman.interfaces.archiver import IArchiver
+from mailman.utilities.string import expand
 
 
 log = logging.getLogger('mailman.archiver')
@@ -52,11 +54,11 @@ class MHonArc:
         """See `IArchiver`."""
         # XXX What about private MHonArc archives?
         web_host = config.domains[mlist.host_name].url_host
-        return Template(config.archiver.mhonarc.base_url).safe_substitute(
-            listname=mlist.fqdn_listname,
-            hostname=web_host,
-            fqdn_listname=mlist.fqdn_listname,
-            )
+        return expand(config.archiver.mhonarc.base_url,
+                      dict(listname=mlist.fqdn_listname,
+                           hostname=web_host,
+                           fqdn_listname=mlist.fqdn_listname,
+                           ))
 
     @staticmethod
     def permalink(mlist, msg):
@@ -83,8 +85,7 @@ class MHonArc:
         """See `IArchiver`."""
         substitutions = config.__dict__.copy()
         substitutions['listname'] = mlist.fqdn_listname
-        command = Template(config.archiver.mhonarc.command).safe_substitute(
-            substitutions)
+        command = expand(config.archiver.mhonarc.command, substitutions)
         proc = subprocess.Popen(
             command, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
             shell=True)

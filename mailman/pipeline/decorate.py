@@ -17,15 +17,18 @@
 
 """Decorate a message by sticking the header and footer around it."""
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
-__all__ = ['Decorate']
+__all__ = [
+    'Decorate',
+    ]
 
 
 import re
 import logging
 
 from email.MIMEText import MIMEText
-from string import Template
 from zope.interface import implements
 
 from mailman import Utils
@@ -33,6 +36,7 @@ from mailman.Message import Message
 from mailman.config import config
 from mailman.i18n import _
 from mailman.interfaces.handler import IHandler
+from mailman.utilities.string import expand
 
 
 log = logging.getLogger('mailman.error')
@@ -197,17 +201,18 @@ def decorate(mlist, template, extradict=None):
     # Create a dictionary which includes the default set of interpolation
     # variables allowed in headers and footers.  These will be augmented by
     # any key/value pairs in the extradict.
-    d = dict(real_name      = mlist.real_name,
-             list_name      = mlist.list_name,
-             fqdn_listname  = mlist.fqdn_listname,
-             host_name      = mlist.host_name,
-             listinfo_page  = mlist.script_url('listinfo'),
-             description    = mlist.description,
-             info           = mlist.info,
-             )
+    substitutions = dict(
+        real_name       = mlist.real_name,
+        list_name       = mlist.list_name,
+        fqdn_listname   = mlist.fqdn_listname,
+        host_name       = mlist.host_name,
+        listinfo_page   = mlist.script_url('listinfo'),
+        description     = mlist.description,
+        info            = mlist.info,
+        )
     if extradict is not None:
-        d.update(extradict)
-    text = Template(template).safe_substitute(d)
+        substitutions.update(extradict)
+    text = expand(template, substitutions)
     # Turn any \r\n line endings into just \n
     return re.sub(r' *\r?\n', r'\n', text)
 

@@ -17,6 +17,8 @@
 
 """Base class for terminal chains."""
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'Chain',
@@ -78,7 +80,8 @@ class Chain:
     implements(IMutableChain)
 
     def __init__(self, name, description):
-        assert name not in config.chains, 'Duplicate chain name: %s' % name
+        assert name not in config.chains, (
+            'Duplicate chain name: {0}'.format(name))
         self.name = name
         self.description = description
         self._links = []

@@ -15,6 +15,10 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
+"""Model for users."""
+
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'User',
@@ -48,7 +52,7 @@ class User(Model):
     preferences = Reference(preferences_id, 'Preferences.id')
 
     def __repr__(self):
-        return '<User "%s" at %#x>' % (self.real_name, id(self))
+        return '<User "{0}" at {1:#x}>'.format(self.real_name, id(self))
 
     def link(self, address):
         """See `IUser`."""
@@ -76,7 +80,7 @@ class User(Model):
         addrobj = config.db.store.find(Address, address=address).one()
         if addrobj is None:
             if real_name is None:
-                real_name = u''
+                real_name = ''
             addrobj = Address(address=address, real_name=real_name)
             addrobj.preferences = Preferences()
         # Link the address to the user if it is not already linked.

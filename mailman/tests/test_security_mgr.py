@@ -17,6 +17,14 @@
 
 """Unit tests for the SecurityManager module."""
 
+from __future__ import absolute_import, unicode_literals
+
+__metaclass__ = type
+__all__ = [
+    'test_suite',
+    ]
+
+
 import os
 import errno
 import unittest

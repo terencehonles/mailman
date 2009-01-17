@@ -17,8 +17,12 @@
 
 """The no-Subject header rule."""
 
-__all__ = ['NoSubject']
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
+__all__ = [
+    'NoSubject',
+    ]
 
 
 from zope.interface import implements

@@ -17,6 +17,14 @@
 
 """Test the bounce detection modules."""
 
+from __future__ import absolute_import, unicode_literals
+
+__metaclass__ = type
+__all__ = [
+    'test_suite',
+    ]
+
+
 import os
 import sys
 import email

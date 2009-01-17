@@ -21,6 +21,8 @@ Note that doctest extraction does not currently work for zip file
 distributions.  doctest discovery currently requires file system traversal.
 """
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'test_suite',
@@ -87,6 +89,19 @@ def stop():
     pdb.set_trace()
 
 
+def dump_msgdata(msgdata, *additional_skips):
+    """Dump in a more readable way a message metadata dictionary."""
+    skips = set(additional_skips)
+    # Some stuff we always want to skip, because their values will always be
+    # variable data.
+    skips.add('received_time')
+    longest = max(len(key) for key in msgdata if key not in skips)
+    for key in sorted(msgdata):
+        if key in skips:
+            continue
+        print '{0:{2}}: {1}'.format(key, msgdata[key], longest)
+
+
 def setup(testobj):
     """Test setup."""
     # In general, I don't like adding convenience functions, since I think
@@ -95,6 +110,7 @@ def setup(testobj):
     # hide some icky test implementation details.
     testobj.globs['commit'] = config.db.commit
     testobj.globs['config'] = config
+    testobj.globs['dump_msgdata'] = dump_msgdata
     testobj.globs['message_from_string'] = specialized_message_from_string
     testobj.globs['smtpd'] = SMTPLayer.smtpd
     testobj.globs['stop'] = stop
@@ -114,8 +130,6 @@ def test_suite():
     flags = (doctest.ELLIPSIS |
              doctest.NORMALIZE_WHITESPACE |
              doctest.REPORT_NDIFF)
-##     if config.tests.verbosity <= 2:
-##         flags |= doctest.REPORT_ONLY_FIRST_FAILURE
     # Add all the doctests in all subpackages.
     doctest_files = {}
     with chdir(topdir):
@@ -123,12 +137,6 @@ def test_suite():
             for filename in os.listdir(docsdir):
                 if os.path.splitext(filename)[1] == '.txt':
                     doctest_files[filename] = os.path.join(docsdir, filename)
-    # Sort or randomize the tests.
-##     if config.tests.randomize:
-##         files = doctest_files.keys()
-##         random.shuffle(files)
-##     else:
-##         files = sorted(doctest_files)
     files = sorted(doctest_files)
     for filename in files:
         path = doctest_files[filename]

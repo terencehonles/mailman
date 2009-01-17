@@ -17,6 +17,14 @@
 
 """Interface for preferences."""
 
+from __future__ import absolute_import, unicode_literals
+
+__metaclass__ = type
+__all__ = [
+    'IPreferences',
+    ]
+
+
 from zope.interface import Interface, Attribute
 
 

@@ -17,6 +17,8 @@
 
 """Internationalization support."""
 
+from __future__ import unicode_literals
+
 __metaclass__ = type
 __all__ = [
     '_',
@@ -34,6 +36,7 @@ import string
 import gettext
 
 import mailman.messages
+from mailman.utilities.string import expand
 
 _translation = None
 _missing = object()
@@ -103,8 +106,8 @@ if _translation is None:
 
 def _(s):
     if s == '':
-        return u''
-    assert s, 'Cannot translate: %s' % s
+        return ''
+    assert s, 'Cannot translate: {0}'.format(s)
     # Do translation of the given string into the current language, and do PEP
     # 292 style $-string interpolation into the resulting string.
     #
@@ -120,8 +123,8 @@ def _(s):
     frame = sys._getframe(1)
     # A `safe' dictionary is used so we won't get an exception if there's a
     # missing key in the dictionary.
-    d = frame.f_globals.copy()
-    d.update(frame.f_locals)
+    raw_dict = frame.f_globals.copy()
+    raw_dict.update(frame.f_locals)
     # Mailman must be unicode safe internally (i.e. all strings inside Mailman
     # must be unicodes).  The translation service is one boundary to the
     # outside world, so to honor this constraint, make sure that all strings
@@ -129,10 +132,9 @@ def _(s):
     # dictionary values are 8-bit strings.
     tns = _translation.ugettext(s)
     charset = _translation.charset() or 'us-ascii'
-    for k, v in d.items():
-        if isinstance(v, str):
-            d[k] = unicode(v, charset, 'replace')
-    translated_string = Template(tns).safe_substitute(attrdict(d))
+    # Python requires ** dictionaries to have str, not unicode keys.  For our
+    # purposes, keys should always be ascii.  Values though should be unicode.
+    translated_string = expand(tns, attrdict(raw_dict), Template)
     if isinstance(translated_string, str):
         translated_string = unicode(translated_string, charset)
     return translated_string
@@ -191,5 +193,4 @@ def ctime(date):
 
     wday = daysofweek[wday]
     mon = months[mon]
-    return _('%(wday)s %(mon)s %(day)2i %(hh)02i:%(mm)02i:%(ss)02i '
-             '%(tzname)s %(year)04i')
+    return _('$wday $mon $day $hh:$mm:$ss $tzname $year')

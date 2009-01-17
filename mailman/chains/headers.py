@@ -17,6 +17,8 @@
 
 """The header-matching chain."""
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'HeaderMatchChain',
@@ -56,7 +58,7 @@ def make_link(entry):
         # We don't assert that the chain exists here because the jump
         # chain may not yet have been created.
     else:
-        raise AssertionError('Bad link description: %s' % entry)
+        raise AssertionError('Bad link description: {0}'.format(entry))
     rule = HeaderMatchRule(header, pattern)
     chain = config.chains[chain_name]
     return Link(rule, LinkAction.jump, chain)
@@ -73,9 +75,9 @@ class HeaderMatchRule:
     def __init__(self, header, pattern):
         self._header = header
         self._pattern = pattern
-        self.name = 'header-match-%002d' % HeaderMatchRule._count
+        self.name = 'header-match-{0:02}'.format(HeaderMatchRule._count)
         HeaderMatchRule._count += 1
-        self.description = u'%s: %s' % (header, pattern)
+        self.description = '{0}: {1}'.format(header, pattern)
         # XXX I think we should do better here, somehow recording that a
         # particular header matched a particular pattern, but that gets ugly
         # with RFC 2822 headers.  It also doesn't match well with the rule

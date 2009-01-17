@@ -77,10 +77,10 @@ archiver; by enabling it messages to public lists will get sent there
 automatically.
 
     >>> archiver = archivers['mail-archive']
-    >>> archiver.list_url(mlist)
-    'http://go.mail-archive.dev/test%40example.com'
-    >>> archiver.permalink(mlist, msg)
-    'http://go.mail-archive.dev/ZaXPPxRMM9_hFZL4vTRlQlBx8pc='
+    >>> print archiver.list_url(mlist)
+    http://go.mail-archive.dev/test%40example.com
+    >>> print archiver.permalink(mlist, msg)
+    http://go.mail-archive.dev/ZaXPPxRMM9_hFZL4vTRlQlBx8pc=
 
 To archive the message, the archiver actually mails the message to a special
 address at the Mail-Archive.
@@ -137,23 +137,23 @@ Additionally, this archiver can handle malformed Message-IDs.
     >>> mlist.archive_private = False
     >>> del msg['message-id']
     >>> msg['Message-ID'] = '12345>'
-    >>> archiver.permalink(mlist, msg)
-    'http://go.mail-archive.dev/bXvG32YzcDEIVDaDLaUSVQekfo8='
+    >>> print archiver.permalink(mlist, msg)
+    http://go.mail-archive.dev/bXvG32YzcDEIVDaDLaUSVQekfo8=
 
     >>> del msg['message-id']
     >>> msg['Message-ID'] = '<12345'
-    >>> archiver.permalink(mlist, msg)
-    'http://go.mail-archive.dev/9rockPrT1Mm-jOsLWS6_hseR_OY='
+    >>> print archiver.permalink(mlist, msg)
+    http://go.mail-archive.dev/9rockPrT1Mm-jOsLWS6_hseR_OY=
 
     >>> del msg['message-id']
     >>> msg['Message-ID'] = '12345'
-    >>> archiver.permalink(mlist, msg)
-    'http://go.mail-archive.dev/ZaXPPxRMM9_hFZL4vTRlQlBx8pc='
+    >>> print archiver.permalink(mlist, msg)
+    http://go.mail-archive.dev/ZaXPPxRMM9_hFZL4vTRlQlBx8pc=
 
     >>> del msg['message-id']
     >>> msg['Message-ID'] = '    12345    '
-    >>> archiver.permalink(mlist, msg)
-    'http://go.mail-archive.dev/ZaXPPxRMM9_hFZL4vTRlQlBx8pc='
+    >>> print archiver.permalink(mlist, msg)
+    http://go.mail-archive.dev/ZaXPPxRMM9_hFZL4vTRlQlBx8pc=
 
 
 MHonArc
@@ -162,8 +162,8 @@ MHonArc
 The MHonArc archiver <http://www.mhonarc.org> is also available.
 
     >>> archiver = archivers['mhonarc']
-    >>> archiver.name
-    'mhonarc'
+    >>> print archiver.name
+    mhonarc
 
 Messages sent to a local MHonArc instance are added to its archive via a
 subprocess call.

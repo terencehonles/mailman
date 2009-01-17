@@ -17,6 +17,9 @@
 
 """Various constants and enumerations."""
 
+from __future__ import unicode_literals
+
+__metaclass__ = type
 __all__ = [
     'SystemDefaultPreferences',
     ]
@@ -29,7 +32,7 @@ from mailman.interfaces.preferences import IPreferences
 
 
 
-class SystemDefaultPreferences(object):
+class SystemDefaultPreferences:
     implements(IPreferences)
 
     acknowledge_posts = False

@@ -17,7 +17,7 @@
 
 """Logging initialization, using Python's standard logging package."""
 
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -74,11 +74,10 @@ class ReopenableFileHandler(logging.Handler):
         stream = (self._stream if self._stream else sys.stderr)
         try:
             msg = self.format(record)
-            fs = '%s\n'
             try:
-                stream.write(fs % msg)
+                stream.write('{0}'.format(msg))
             except UnicodeError:
-                stream.write(fs % msg.encode('string-escape'))
+                stream.write('{0}'.format(msg.encode('string-escape')))
             self.flush()
         except:
             self.handleError(record)

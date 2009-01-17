@@ -17,8 +17,12 @@
 
 """The maximum number of recipients rule."""
 
-__all__ = ['MaximumRecipients']
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
+__all__ = [
+    'MaximumRecipients',
+    ]
 
 
 from email.utils import getaddresses

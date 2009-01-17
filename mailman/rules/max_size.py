@@ -17,8 +17,12 @@
 
 """The maximum message size rule."""
 
-__all__ = ['MaximumSize']
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
+__all__ = [
+    'MaximumSize',
+    ]
 
 
 from zope.interface import implements

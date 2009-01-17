@@ -17,11 +17,18 @@
 
 """Calculate the list owner recipients (includes moderators)."""
 
+from __future__ import absolute_import, unicode_literals
+
+__metaclass__ = type
+__all__ = [
+    'process',
+    ]
+
 
 
 def process(mlist, msg, msgdata):
     # The recipients are the owner and the moderator
     msgdata['recips'] = mlist.owner + mlist.moderator
     # Don't decorate these messages with the header/footers
-    msgdata['nodecorate'] = 1
-    msgdata['personalize'] = 0
+    msgdata['nodecorate'] = True
+    msgdata['personalize'] = False

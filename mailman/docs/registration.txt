@@ -158,13 +158,12 @@ message is sent to the user in order to verify the registered address.
     <BLANKLINE>
         postmaster@mail.example.com
     <BLANKLINE>
-    >>> sorted(qdata.items())
-    [('_parsemsg', False),
-     ('nodecorate', True),
-     ('received_time', ...),
-     ('recips', [u'aperson@example.com']),
-     ('reduced_list_headers', True),
-     ('version', 3)]
+    >>> dump_msgdata(qdata)
+    _parsemsg           : False
+    nodecorate          : True
+    recips              : [u'aperson@example.com']
+    reduced_list_headers: True
+    version             : 3
 
 The confirmation token shows up in several places, each of which provides an
 easy way for the user to complete the confirmation.  The token will always

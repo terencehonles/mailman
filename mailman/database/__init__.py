@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'StockDatabase',
@@ -27,7 +29,6 @@ from locknix.lockfile import Lock
 from lazr.config import as_boolean
 from pkg_resources import resource_string
 from storm.locals import create_database, Store
-from string import Template
 from urlparse import urlparse
 from zope.interface import implements
 
@@ -41,6 +42,7 @@ from mailman.database.requests import Requests
 from mailman.database.usermanager import UserManager
 from mailman.database.version import Version
 from mailman.interfaces.database import IDatabase, SchemaVersionMismatchError
+from mailman.utilities.string import expand
 
 log = logging.getLogger('mailman.config')
 
@@ -86,7 +88,7 @@ class StockDatabase:
 
     def _create(self, debug):
         # Calculate the engine url.
-        url = Template(config.database.url).safe_substitute(config.paths)
+        url = expand(config.database.url, config.paths)
         log.debug('Database url: %s', url)
         # XXX By design of SQLite, database file creation does not honor
         # umask.  See their ticket #1193:
@@ -123,7 +125,7 @@ class StockDatabase:
         v = store.find(Version, component=u'schema').one()
         if not v:
             # Database has not yet been initialized
-            v = Version(component=u'schema',
+            v = Version(component='schema',
                         version=mailman.version.DATABASE_SCHEMA_VERSION)
             store.add(v)
         elif v.version <> mailman.version.DATABASE_SCHEMA_VERSION:

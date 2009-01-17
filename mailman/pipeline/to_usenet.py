@@ -17,8 +17,12 @@
 
 """Move the message to the mail->news queue."""
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
-__all__ = ['ToUsenet']
+__all__ = [
+    'ToUsenet',
+    ]
 
 
 import logging

@@ -17,6 +17,14 @@
 
 """A test SMTP listener."""
 
+from __future__ import absolute_import, unicode_literals
+
+__metaclass__ = type
+__all__ = [
+    'Server',
+    ]
+
+
 import smtpd
 import socket
 import logging
@@ -71,7 +79,7 @@ class Server(smtpd.SMTPServer):
     def process_message(self, peer, mailfrom, rcpttos, data):
         """Process a message by adding it to the mailbox."""
         message = message_from_string(data)
-        message['X-Peer'] = '%s:%s' % peer
+        message['X-Peer'] = '{0}:{1}'.format(*peer)
         message['X-MailFrom'] = mailfrom
         message['X-RcptTo'] = COMMASPACE.join(rcpttos)
         log.info('[SMTPServer] processed message: %s',

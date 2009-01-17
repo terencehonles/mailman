@@ -36,13 +36,14 @@ import email.Iterators
 
 from email.Errors import HeaderParseError
 from lazr.config import as_boolean
-from string import ascii_letters, digits, whitespace, Template
+from string import ascii_letters, digits, whitespace
 
 import mailman.templates
 
 from mailman import passwords
 from mailman.config import config
 from mailman.core import errors
+from mailman.utilities.string import expand
 
 
 AT = '@'
@@ -418,7 +419,7 @@ def UnobscureEmail(addr):
 class OuterExit(Exception):
     pass
 
-def findtext(templatefile, dict=None, raw=False, lang=None, mlist=None):
+def findtext(templatefile, raw_dict=None, raw=False, lang=None, mlist=None):
     # Make some text from a template file.  The order of searches depends on
     # whether mlist and lang are provided.  Once the templatefile is found,
     # string substitution is performed by interpolation in `dict'.  If `raw'
@@ -524,12 +525,8 @@ def findtext(templatefile, dict=None, raw=False, lang=None, mlist=None):
         fp.close()
         template = unicode(template, GetCharSet(lang), 'replace')
     text = template
-    if dict is not None:
-        try:
-            text = Template(template).safe_substitute(**dict)
-        except (TypeError, ValueError):
-            # The template is really screwed up
-            log.exception('broken template: %s', filename)
+    if raw_dict is not None:
+        text = expand(template, raw_dict)
     if raw:
         return text, filename
     return wrap(text), filename

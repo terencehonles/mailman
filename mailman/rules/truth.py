@@ -17,8 +17,12 @@
 
 """A rule which always matches."""
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
-__all__ = ['Truth']
+__all__ = [
+    'Truth',
+    ]
 
 
 from zope.interface import implements

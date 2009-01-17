@@ -17,6 +17,8 @@
 
 """Initialize the email commands."""
 
+from __future__ import unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'initialize',
@@ -37,6 +39,6 @@ def initialize():
             if not IEmailCommand.implementedBy(command_class):
                 continue
             assert command_class.name not in config.commands, (
-                'Duplicate email command "%s" found in %s' %
-                (command_class.name, module))
+                'Duplicate email command "{0}" found in {1}'.format(
+                    command_class.name, module))
             config.commands[command_class.name] = command_class()

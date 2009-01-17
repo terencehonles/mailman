@@ -6,8 +6,8 @@ number of explicit recipients addressed by the message.
 
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> rule = config.rules['max-recipients']
-    >>> rule.name
-    'max-recipients'
+    >>> print rule.name
+    max-recipients
 
 In this case, we'll create a message with 5 recipients.  These include all
 addresses in the To and CC headers.

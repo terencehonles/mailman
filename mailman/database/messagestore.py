@@ -15,6 +15,11 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
+"""Model for message stores."""
+
+
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'MessageStore',
@@ -54,8 +59,9 @@ class MessageStore:
         existing = config.db.store.find(Message,
                                         Message.message_id == message_id).one()
         if existing is not None:
-            raise ValueError('Message ID already exists in message store: %s',
-                             message_id)
+            raise ValueError(
+                'Message ID already exists in message store: {0}'.format(
+                    message_id))
         shaobj = hashlib.sha1(message_id)
         hash32 = base64.b32encode(shaobj.digest())
         del message['X-Message-ID-Hash']
@@ -86,8 +92,8 @@ class MessageStore:
                     # -1 says to use the highest protocol available.
                     pickle.dump(message, fp, -1)
                     break
-            except IOError, e:
-                if e.errno <> errno.ENOENT:
+            except IOError as error:
+                if error.errno <> errno.ENOENT:
                     raise
             os.makedirs(os.path.dirname(path))
         return hash32

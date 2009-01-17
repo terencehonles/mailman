@@ -23,6 +23,8 @@ setup.py file as an entry point in the 'mailman.database' group with the name
 Mailman's back end.
 """
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'DatabaseError',
@@ -49,9 +51,9 @@ class SchemaVersionMismatchError(DatabaseError):
         self._got = got
 
     def __str__(self):
-        return (
-            'Incompatible database schema version (got: %d, expected: %d)'
-            % (self._got, DATABASE_SCHEMA_VERSION))
+        return ('Incompatible database schema version '
+                '(got: {0}, expected: {1})'.format(
+                    self._got, DATABASE_SCHEMA_VERSION))
 
 
 

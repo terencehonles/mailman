@@ -17,6 +17,8 @@
 
 """The built in set of pipeline handlers."""
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'initialize',

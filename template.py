@@ -1,4 +1,4 @@
-# Copyright (C) 2008-2009 by the Free Software Foundation, Inc.
+# Copyright (C) 2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -15,26 +15,10 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Interface for describing pipelines."""
+"""Module stuff."""
 
 from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'IPipeline',
     ]
-
-
-from zope.interface import Interface, Attribute
-
-
-
-class IPipeline(Interface):
-    """A pipeline of handlers."""
-
-    name = Attribute('Pipeline name; must be unique.')
-    description = Attribute('A brief description of this pipeline.')
-
-    def __iter__():
-        """Iterate over all the handlers in this pipeline."""
-

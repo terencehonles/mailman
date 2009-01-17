@@ -17,6 +17,16 @@
 
 """Interfaces defining email commands."""
 
+from __future__ import absolute_import, unicode_literals
+
+__metaclass__ = type
+__all__ = [
+    'ContinueProcessing',
+    'IEmailCommand',
+    'IEmailResults',
+    ]
+
+
 from munepy import Enum
 from zope.interface import Interface, Attribute
 

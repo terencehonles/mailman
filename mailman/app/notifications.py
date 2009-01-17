@@ -17,6 +17,8 @@
 
 """Sending notifications."""
 
+from __future__ import unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'send_admin_subscription_notice',

@@ -15,6 +15,10 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
+"""Model for members."""
+
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'Member',
@@ -51,7 +55,7 @@ class Member(Model):
         self.is_moderated = False
 
     def __repr__(self):
-        return '<Member: %s on %s as %s>' % (
+        return '<Member: {0} on {1} as {2}>'.format(
             self.address, self.mailing_list, self.role)
 
     def _lookup(self, preference):

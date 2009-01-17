@@ -17,8 +17,19 @@
 
 """Interface for email address related information."""
 
-from zope.interface import Interface, Attribute
+from __future__ import absolute_import, unicode_literals
 
+__metaclass__ = type
+__all__ = [
+    'AddressAlreadyLinkedError',
+    'AddressError',
+    'AddressNotLinkedError',
+    'ExistingAddressError',
+    'IAddress',
+    ]
+
+
+from zope.interface import Interface, Attribute
 from mailman.interfaces.errors import MailmanError
 
 

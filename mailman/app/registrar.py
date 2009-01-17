@@ -17,6 +17,8 @@
 
 """Implementation of the IUserRegistrar interface."""
 
+from __future__ import unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'Registrar',

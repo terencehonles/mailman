@@ -20,8 +20,8 @@ The 'approved' rule determines whether the message contains the proper
 approval or not.
 
     >>> rule = config.rules['approved']
-    >>> rule.name
-    'approved'
+    >>> print rule.name
+    approved
 
 
 No approval

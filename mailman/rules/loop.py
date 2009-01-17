@@ -17,8 +17,12 @@
 
 """Look for a posting loop."""
 
-__all__ = ['Loop']
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
+__all__ = [
+    'Loop',
+    ]
 
 
 from zope.interface import implements
@@ -33,7 +37,7 @@ class Loop:
     implements(IRule)
 
     name = 'loop'
-    description = _("""Look for a posting loop, via the X-BeenThere header.""")
+    description = _('Look for a posting loop, via the X-BeenThere header.')
     record = True
 
     def check(self, mlist, msg, msgdata):

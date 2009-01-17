@@ -17,6 +17,8 @@
 
 """Cook a message's headers."""
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'CookHeaders',
@@ -178,7 +180,7 @@ def process(mlist, msg, msgdata):
     if msgdata.get('_nolist') or not mlist.include_rfc2369_headers:
         return
     # This will act like an email address for purposes of formataddr()
-    listid = '%s.%s' % (mlist.list_name, mlist.host_name)
+    listid = '{0}.{1}'.format(mlist.list_name, mlist.host_name)
     cset = Utils.GetCharSet(mlist.preferred_language)
     if mlist.description:
         # Don't wrap the header since here we just want to get it properly RFC
@@ -187,7 +189,7 @@ def process(mlist, msg, msgdata):
         listid_h = formataddr((str(i18ndesc), listid))
     else:
         # without desc we need to ensure the MUST brackets
-        listid_h = '<%s>' % listid
+        listid_h = '<{0}>'.format(listid)
     # We always add a List-ID: header.
     del msg['list-id']
     msg['List-Id'] = listid_h
@@ -195,7 +197,7 @@ def process(mlist, msg, msgdata):
     # "X-List-Administrivia: yes" header.  For all others (i.e. those coming
     # from list posts), we add a bunch of other RFC 2369 headers.
     requestaddr = mlist.request_address
-    subfieldfmt = '<%s>, <mailto:%s>'
+    subfieldfmt = '<{0}>, <mailto:{1}>'
     listinfo = mlist.script_url('listinfo')
     headers = {}
     # XXX reduced_list_headers used to suppress List-Help, List-Subject, and
@@ -203,20 +205,21 @@ def process(mlist, msg, msgdata):
     # any more, so always add those three headers (others will still be
     # suppressed).
     headers.update({
-        'List-Help'       : '<mailto:%s?subject=help>' % requestaddr,
-        'List-Unsubscribe': subfieldfmt % (listinfo, mlist.leave_address),
-        'List-Subscribe'  : subfieldfmt % (listinfo, mlist.join_address),
+        'List-Help'       : '<mailto:{0}?subject=help>'.format(requestaddr),
+        'List-Unsubscribe': subfieldfmt.format(listinfo, mlist.leave_address),
+        'List-Subscribe'  : subfieldfmt.format(listinfo, mlist.join_address),
         })
     if msgdata.get('reduced_list_headers'):
         headers['X-List-Administrivia'] = 'yes'
     else:
         # List-Post: is controlled by a separate attribute
         if mlist.include_list_post_header:
-            headers['List-Post'] = '<mailto:%s>' % mlist.posting_address
+            headers['List-Post'] = '<mailto:{0}>'.format(mlist.posting_address)
         # Add RFC 2369 and 5064 archiving headers, if archiving is enabled.
         if mlist.archive:
             for archiver in config.archivers:
-                headers['List-Archive'] = '<%s>' % archiver.list_url(mlist)
+                headers['List-Archive'] = '<{0}>'.format(
+                    archiver.list_url(mlist))
                 permalink = archiver.permalink(mlist, msg)
                 if permalink is not None:
                     headers['Archived-At'] = permalink
@@ -333,7 +336,7 @@ def ch_oneline(headerstr):
             cset = 'utf-8'
         h = make_header(d)
         ustr = unicode(h)
-        oneline = u''.join(ustr.splitlines())
+        oneline = ''.join(ustr.splitlines())
         return oneline.encode(cset, 'replace'), cset
     except (LookupError, UnicodeError, ValueError, HeaderParseError):
         # possibly charset problem. return with undecoded string in one line.

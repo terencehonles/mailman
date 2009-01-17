@@ -105,8 +105,9 @@ But if the value is 'yes', then the message will be archived.
     <BLANKLINE>
     A message of great import.
     <BLANKLINE>
-    >>> sorted(qdata.items())
-    [('_parsemsg', False), ('received_time', ...), ('version', 3)]
+    >>> dump_msgdata(qdata)
+    _parsemsg: False
+    version  : 3
 
 Without either archiving header, and all other things being the same, the
 message will get archived.
@@ -127,5 +128,6 @@ message will get archived.
     <BLANKLINE>
     A message of great import.
     <BLANKLINE>
-    >>> sorted(qdata.items())
-    [('_parsemsg', False), ('received_time', ...), ('version', 3)]
+    >>> dump_msgdata(qdata)
+    _parsemsg: False
+    version  : 3

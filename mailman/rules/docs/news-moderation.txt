@@ -10,8 +10,8 @@ directly to the mailing list.
 
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> rule = config.rules['news-moderation']
-    >>> rule.name
-    'news-moderation'
+    >>> print rule.name
+    news-moderation
 
 Set the list configuraiton variable to enable newsgroup moderation.
 

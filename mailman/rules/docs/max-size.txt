@@ -8,8 +8,8 @@ bytes).
 
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> rule = config.rules['max-size']
-    >>> rule.name
-    'max-size'
+    >>> print rule.name
+    max-size
 
 For example, setting the maximum message size to 1 means that any message
 bigger than that will match the rule.

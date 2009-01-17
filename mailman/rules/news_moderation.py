@@ -17,8 +17,12 @@
 
 """The news moderation rule."""
 
-__all__ = ['ModeratedNewsgroup']
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
+__all__ = [
+    'ModeratedNewsgroup',
+    ]
 
 
 from zope.interface import implements
@@ -35,7 +39,7 @@ class ModeratedNewsgroup:
 
     name = 'news-moderation'
     description = _(
-        u"""Match all messages posted to a mailing list that gateways to a
+        """Match all messages posted to a mailing list that gateways to a
         moderated newsgroup.
         """)
     record = True

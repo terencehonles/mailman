@@ -17,6 +17,8 @@
 
 """Look for moderator pre-approval."""
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'Approved',
@@ -31,7 +33,7 @@ from mailman.i18n import _
 from mailman.interfaces.rules import IRule
 
 
-EMPTYSTRING = u''
+EMPTYSTRING = ''
 
 
 

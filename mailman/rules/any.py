@@ -17,8 +17,12 @@
 
 """Check if any previous rules have matched."""
 
-__all__ = ['Any']
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
+__all__ = [
+    'Any',
+    ]
 
 
 from zope.interface import implements

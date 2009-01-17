@@ -17,6 +17,8 @@
 
 """Pipermail archiver."""
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'Pipermail',
@@ -26,7 +28,6 @@ __all__ = [
 import os
 
 from cStringIO import StringIO
-from string import Template
 from zope.interface import implements
 from zope.interface.interface import adapter_hooks
 
@@ -34,6 +35,7 @@ from mailman.Utils import makedirs
 from mailman.config import config
 from mailman.interfaces.archiver import IArchiver, IPipermailMailingList
 from mailman.interfaces.mailinglist import IMailingList
+from mailman.utilities.string import expand
 
 from mailman.Archiver.HyperArch import HyperArchive
 
@@ -94,12 +96,11 @@ class Pipermail:
             url = mlist.script_url('private') + '/index.html'
         else:
             web_host = config.domains[mlist.host_name].url_host
-            url = Template(config.archiver.pipermail.base_url).safe_substitute(
-                listname=mlist.fqdn_listname,
-                hostname=web_host,
-                fqdn_listname=mlist.fqdn_listname,
-                )
-        return url
+            return expand(config.archiver.pipermail.base_url,
+                          dict(listname=mlist.fqdn_listname,
+                               hostname=web_host,
+                               fqdn_listname=mlist.fqdn_listname,
+                               ))
 
     @staticmethod
     def permalink(mlist, message):

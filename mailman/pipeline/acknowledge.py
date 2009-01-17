@@ -20,8 +20,12 @@
 This only happens if the sender has set their AcknowledgePosts attribute.
 """
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
-__all__ = ['Acknowledge']
+__all__ = [
+    'Acknowledge',
+    ]
 
 
 from zope.interface import implements

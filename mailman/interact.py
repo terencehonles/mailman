@@ -17,6 +17,13 @@
 
 """Provide an interactive prompt, mimicking the Python interpreter."""
 
+from __future__ import unicode_literals
+
+__metaclass__ = type
+__all__ = [
+    'interact',
+    ]
+
 import os
 import sys
 import code

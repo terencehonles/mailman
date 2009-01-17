@@ -17,6 +17,9 @@
 
 """Application level bounce handling."""
 
+from __future__ import unicode_literals
+
+__metaclass__ = type
 __all__ = [
     'bounce_message',
     ]

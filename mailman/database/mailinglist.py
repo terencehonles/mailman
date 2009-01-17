@@ -15,6 +15,16 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
+"""Model for mailing lists."""
+
+from __future__ import absolute_import, unicode_literals
+
+__metaclass__ = type
+__all__ = [
+    'MailingList',
+    ]
+
+
 import os
 import string
 
@@ -28,6 +38,7 @@ from mailman.database import roster
 from mailman.database.model import Model
 from mailman.database.types import Enum
 from mailman.interfaces.mailinglist import IMailingList, Personalization
+from mailman.utilities.string import expand
 
 
 SPACE = ' '
@@ -220,42 +231,42 @@ class MailingList(Model):
 
     @property
     def no_reply_address(self):
-        return '%s@%s' % (config.mailman.noreply_address, self.host_name)
+        return '{0}@{1}'.format(config.mailman.noreply_address, self.host_name)
 
     @property
     def owner_address(self):
-        return '%s-owner@%s' % (self.list_name, self.host_name)
+        return '{0}-owner@{1}'.format(self.list_name, self.host_name)
 
     @property
     def request_address(self):
-        return '%s-request@%s' % (self.list_name, self.host_name)
+        return '{0}-request@{1}'.format(self.list_name, self.host_name)
 
     @property
     def bounces_address(self):
-        return '%s-bounces@%s' % (self.list_name, self.host_name)
+        return '{0}-bounces@{1}'.format(self.list_name, self.host_name)
 
     @property
     def join_address(self):
-        return '%s-join@%s' % (self.list_name, self.host_name)
+        return '{0}-join@{1}'.format(self.list_name, self.host_name)
 
     @property
     def leave_address(self):
-        return '%s-leave@%s' % (self.list_name, self.host_name)
+        return '{0}-leave@{1}'.format(self.list_name, self.host_name)
 
     @property
     def subscribe_address(self):
-        return '%s-subscribe@%s' % (self.list_name, self.host_name)
+        return '{0}-subscribe@{1}'.format(self.list_name, self.host_name)
 
     @property
     def unsubscribe_address(self):
-        return '%s-unsubscribe@%s' % (self.list_name, self.host_name)
+        return '{0}-unsubscribe@{1}'.format(self.list_name, self.host_name)
 
     def confirm_address(self, cookie):
-        template = string.Template(config.mta.verp_confirm_format)
-        local_part = template.safe_substitute(
-            address = '%s-confirm' % self.list_name,
-            cookie  = cookie)
-        return '%s@%s' % (local_part, self.host_name)
+        local_part = expand(config.mta.verp_confirm_format, dict(
+            address = '{0}-confirm'.format(self.list_name),
+            cookie  = cookie))
+        return '{0}@{1}'.format(local_part, self.host_name)
 
     def __repr__(self):
-        return '<mailing list "%s" at %#x>' % (self.fqdn_listname, id(self))
+        return '<mailing list "{0}" at {1:#x}>'.format(
+            self.fqdn_listname, id(self))

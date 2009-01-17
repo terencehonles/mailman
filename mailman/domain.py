@@ -17,6 +17,8 @@
 
 """Domains."""
 
+from __future__ import unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'Domain',
@@ -50,8 +52,9 @@ class Domain:
             domain.  If not given, postmaster@`email_host` will be used.
         """
         self.email_host = email_host
-        self.base_url = (base_url if base_url is not None else
-                         'http://' + email_host)
+        self.base_url = (base_url
+                         if base_url is not None
+                         else 'http://' + email_host)
         self.description = description
         self.contact_address = (contact_address
                                 if contact_address is not None
@@ -60,7 +63,7 @@ class Domain:
 
     def confirm_address(self, token=''):
         """See `IDomain`."""
-        return 'confirm-%s@%s' % (token, self.email_host)
+        return 'confirm-{0}@{1}'.format(token, self.email_host)
 
     def confirm_url(self, token=''):
         """See `IDomain`."""

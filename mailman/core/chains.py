@@ -17,6 +17,8 @@
 
 """Application support for chain processing."""
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'initialize',
@@ -56,7 +58,7 @@ def process(mlist, msg, msgdata, start_chain='built-in'):
         # we can capture a chain's link iterator in mid-flight.  This supports
         # the 'detour' link action
         try:
-            link = chain_iter.next()
+            link = next(chain_iter)
         except StopIteration:
             # This chain is exhausted.  Pop the last chain on the stack and
             # continue iterating through it.  If there's nothing left on the
@@ -90,7 +92,8 @@ def process(mlist, msg, msgdata, start_chain='built-in'):
             elif link.action is LinkAction.run:
                 link.function(mlist, msg, msgdata)
             else:
-                raise AssertionError('Bad link action: %s' % link.action)
+                raise AssertionError(
+                    'Bad link action: {0}'.format(link.action))
         else:
             # The rule did not match; keep going.
             if link.rule.record:
@@ -103,7 +106,7 @@ def initialize():
     for chain_class in (DiscardChain, HoldChain, RejectChain, AcceptChain):
         chain = chain_class()
         assert chain.name not in config.chains, (
-            'Duplicate chain name: %s' % chain.name)
+            'Duplicate chain name: {0}'.format(chain.name))
         config.chains[chain.name] = chain
     # Set up a couple of other default chains.
     chain = BuiltInChain()

@@ -9,8 +9,8 @@ used to catch messages posted to the list which should have been sent to the
     >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
     >>> mlist.administrivia = True
     >>> rule = config.rules['administrivia']
-    >>> rule.name
-    'administrivia'
+    >>> print rule.name
+    administrivia
 
 For example, if the Subject header contains the word 'unsubscribe', the rule
 matches.

@@ -15,6 +15,10 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
+"""Model for addresses."""
+
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'Address',
@@ -64,10 +68,10 @@ class Address(Model):
         verified = ('verified' if self.verified_on else 'not verified')
         address_str = str(self)
         if self._original is None:
-            return '<Address: %s [%s] at %#x>' % (
+            return '<Address: {0} [{1}] at {2:#x}>'.format(
                 address_str, verified, id(self))
         else:
-            return '<Address: %s [%s] key: %s at %#x>' % (
+            return '<Address: {0} [{1}] key: {2} at {3:#x}>'.format(
                 address_str, verified, self.address, id(self))
 
     def subscribe(self, mailing_list, role):

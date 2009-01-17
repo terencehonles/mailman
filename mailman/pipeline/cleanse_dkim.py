@@ -25,6 +25,8 @@ and it will also give the MTA the opportunity to regenerate valid keys
 originating at the Mailman server for the outgoing message.
 """
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'CleanseDKIM',

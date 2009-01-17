@@ -17,21 +17,25 @@
 
 """Handler for auto-responses."""
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
-__all__ = ['Replybot']
+__all__ = [
+    'Replybot',
+    ]
 
 
 import time
 import logging
 import datetime
 
-from string import Template
 from zope.interface import implements
 
 from mailman import Message
 from mailman import Utils
 from mailman.i18n import _
 from mailman.interfaces.handler import IHandler
+from mailman.utilities.string import expand
 
 
 log = logging.getLogger('mailman.error')
@@ -97,7 +101,7 @@ def process(mlist, msg, msgdata):
     else:
         rtext = mlist.autoresponse_postings_text
     # Interpolation and Wrap the response text.
-    text = Utils.wrap(Template(rtext).safe_substitute(d))
+    text = Utils.wrap(expand(rtext, d))
     outmsg = Message.UserNotification(sender, mlist.bounces_address,
                                       subject, text, mlist.preferred_language)
     outmsg['X-Mailer'] = _('The Mailman Replybot')

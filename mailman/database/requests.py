@@ -17,6 +17,8 @@
 
 """Implementations of the IRequests and IListRequests interfaces."""
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'Requests',

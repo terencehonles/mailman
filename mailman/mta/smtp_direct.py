@@ -26,6 +26,8 @@ Note: This file only handles single threaded delivery.  See SMTPThreaded.py
 for a threaded implementation.
 """
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'SMTPDirect',
@@ -41,7 +43,6 @@ import smtplib
 from email.Charset import Charset
 from email.Header import Header
 from email.Utils import formataddr
-from string import Template
 from zope.interface import implements
 
 from mailman import Utils
@@ -50,6 +51,7 @@ from mailman.core import errors
 from mailman.i18n import _
 from mailman.interfaces.handler import IHandler
 from mailman.interfaces.mailinglist import Personalization
+from mailman.utilities.string import expand
 
 
 DOT = '.'
@@ -61,43 +63,43 @@ log = logging.getLogger('mailman.smtp')
 # Manage a connection to the SMTP server
 class Connection:
     def __init__(self):
-        self.__conn = None
+        self._conn = None
 
-    def __connect(self):
-        self.__conn = smtplib.SMTP()
+    def _connect(self):
+        self._conn = smtplib.SMTP()
         host = config.mta.smtp_host
         port = int(config.mta.smtp_port)
         log.debug('Connecting to %s:%s', host, port)
-        self.__conn.connect(host, port)
-        self.__numsessions = int(config.mta.max_sessions_per_connection)
+        self._conn.connect(host, port)
+        self._numsessions = int(config.mta.max_sessions_per_connection)
 
     def sendmail(self, envsender, recips, msgtext):
-        if self.__conn is None:
-            self.__connect()
+        if self._conn is None:
+            self._connect()
         try:
-            results = self.__conn.sendmail(envsender, recips, msgtext)
+            results = self._conn.sendmail(envsender, recips, msgtext)
         except smtplib.SMTPException:
             # For safety, close this connection.  The next send attempt will
             # automatically re-open it.  Pass the exception on up.
             self.quit()
             raise
         # This session has been successfully completed.
-        self.__numsessions -= 1
+        self._numsessions -= 1
         # By testing exactly for equality to 0, we automatically handle the
         # case for SMTP_MAX_SESSIONS_PER_CONNECTION <= 0 meaning never close
         # the connection.  We won't worry about wraparound <wink>.
-        if self.__numsessions == 0:
+        if self._numsessions == 0:
             self.quit()
         return results
 
     def quit(self):
-        if self.__conn is None:
+        if self._conn is None:
             return
         try:
-            self.__conn.quit()
+            self._conn.quit()
         except smtplib.SMTPException:
             pass
-        self.__conn = None
+        self._conn = None
 
 
 
@@ -123,7 +125,7 @@ def process(mlist, msg, msgdata):
     if (not msgdata.has_key('personalize') or msgdata['personalize']) and (
            msgdata.get('verp') or mlist.personalize <> Personalization.none):
         chunks = [[recip] for recip in recips]
-        msgdata['personalize'] = 1
+        msgdata['personalize'] = True
         deliveryfunc = verpdeliver
     elif int(config.mta.max_recipients) <= 0:
         chunks = [recips]
@@ -192,13 +194,11 @@ def process(mlist, msg, msgdata):
     # Log this message.
     template = config.logging.smtp.every
     if template != 'no':
-        template = Template(template)
-        log.info('%s', template.safe_substitute(substitutions))
+        log.info('%s', expand(template, substitutions))
     if refused:
         template = config.logging.smtp.refused
         if template != 'no':
-            template = Template(template)
-            log.info('%s', template.safe_substitute(substitutions))
+            log.info('%s', expand(template, substitutions))
     else:
         # Log the successful post, but if it was not destined to the mailing
         # list (e.g. to the owner or admin), print the actual recipients
@@ -209,8 +209,7 @@ def process(mlist, msg, msgdata):
             substitutions['recips'] = COMMA.join(recips)
         template = config.logging.smtp.success
         if template != 'no':
-            template = Template(template)
-            log.info('%s', template.safe_substitute(substitutions))
+            log.info('%s', expand(template, substitutions))
     # Process any failed deliveries.
     tempfailures = []
     permfailures = []
@@ -238,8 +237,7 @@ def process(mlist, msg, msgdata):
                 smtpcode    = code,
                 smtpmsg     = smtpmsg,
                 )
-            template = Template(template)
-            log.info('%s', template.safe_substitute(substitutions))
+            log.info('%s', expand(template, substitutions))
     # Return the results
     if tempfailures or permfailures:
         raise errors.SomeRecipientsFailed(tempfailures, permfailures)
@@ -315,9 +313,9 @@ def verpdeliver(mlist, msg, msgdata, envsender, failures, conn):
                 # this recipient.
                 log.info('Skipping VERP delivery to unqual recip: %s', recip)
                 continue
-            envsender = Template(config.mta.verp_format).safe_substitute(
+            envsender = expand(config.mta.verp_format, dict(
                 bounces=bmailbox, mailbox=rmailbox,
-                host=DOT.join(rdomain)) + '@' + DOT.join(bdomain)
+                host=DOT.join(rdomain))) + '@' + DOT.join(bdomain)
         if mlist.personalize == Personalization.full:
             # When fully personalizing, we want the To address to point to the
             # recipient, not to the mailing list
@@ -378,28 +376,28 @@ def bulkdeliver(mlist, msg, msgdata, envsender, failures, conn):
     try:
         # Send the message
         refused = conn.sendmail(envsender, recips, msgtext)
-    except smtplib.SMTPRecipientsRefused, e:
-        log.error('%s recipients refused: %s', msgid, e)
-        refused = e.recipients
-    except smtplib.SMTPResponseException, e:
+    except smtplib.SMTPRecipientsRefused as error:
+        log.error('%s recipients refused: %s', msgid, error)
+        refused = error.recipients
+    except smtplib.SMTPResponseException as error:
         log.error('%s SMTP session failure: %s, %s',
-                   msgid, e.smtp_code, e.smtp_error)
+                   msgid, error.smtp_code, error.smtp_error)
         # If this was a permanent failure, don't add the recipients to the
         # refused, because we don't want them to be added to failures.
         # Otherwise, if the MTA rejects the message because of the message
         # content (e.g. it's spam, virii, or has syntactic problems), then
         # this will end up registering a bounce score for every recipient.
         # Definitely /not/ what we want.
-        if e.smtp_code < 500 or e.smtp_code == 552:
+        if error.smtp_code < 500 or error.smtp_code == 552:
             # It's a temporary failure
             for r in recips:
-                refused[r] = (e.smtp_code, e.smtp_error)
-    except (socket.error, IOError, smtplib.SMTPException), e:
+                refused[r] = (error.smtp_code, error.smtp_error)
+    except (socket.error, IOError, smtplib.SMTPException) as error:
         # MTA not responding, or other socket problems, or any other kind of
         # SMTPException.  In that case, nothing got delivered, so treat this
         # as a temporary failure.
-        log.error('%s low level smtp error: %s', msgid, e)
-        error = str(e)
+        log.error('%s low level smtp error: %s', msgid, error)
+        error = str(error)
         for r in recips:
             refused[r] = (-1, error)
     failures.update(refused)

@@ -23,8 +23,12 @@ on the `recips' attribute of the message.  This attribute is used by the
 SendmailDeliver and BulkDeliver modules.
 """
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
-__all__ = ['CalculateRecipients']
+__all__ = [
+    'CalculateRecipients',
+    ]
 
 from zope.interface import implements
 
@@ -83,7 +87,7 @@ class CalculateRecipients:
 Your urgent message to the %(realname)s mailing list was not authorized for
 delivery.  The original message as received by Mailman is attached.
 """)
-                raise errors.RejectMessage, Utils.wrap(text)
+                raise errors.RejectMessage(Utils.wrap(text))
         # Calculate the regular recipients of the message
         recips = set(member.address.address
                      for member in mlist.regular_members.members
@@ -133,8 +137,8 @@ def do_topic_filters(mlist, msg, msgdata, recips):
                 # The user did not select any topics of interest, so he gets
                 # this message by default.
                 continue
-            if not mlist.getMemberOption(user,
-                                         config.ReceiveNonmatchingTopics):
+            if not mlist.getMemberOption(
+                user, config.ReceiveNonmatchingTopics):
                 # The user has interest in some topics, but elects not to
                 # receive message that match no topics, so zap him.
                 zaprecips.append(user)

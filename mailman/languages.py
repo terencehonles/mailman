@@ -17,6 +17,13 @@
 
 """Language manager."""
 
+from __future__ import unicode_literals
+
+__metaclass__ = type
+__all__ = [
+    'LanguageManager',
+    ]
+
 from zope.interface import implements
 from mailman.interfaces.languages import ILanguageManager
 

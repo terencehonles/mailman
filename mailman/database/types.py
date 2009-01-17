@@ -15,6 +15,12 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
+"""Storm type conversions."""
+
+
+from __future__ import absolute_import, unicode_literals
+
+__metaclass__ = type
 __all__ = [
     'Enum',
     ]
@@ -46,9 +52,10 @@ class _EnumVariable(Variable):
             return None
         if not to_db:
             return value
-        return '%s.%s:%d' % (value.enumclass.__module__,
-                             value.enumclass.__name__,
-                             int(value))
+        return '{0}.{1}:{2}'.format(
+            value.enumclass.__module__,
+            value.enumclass.__name__,
+            int(value))
 
 
 class Enum(SimpleProperty):

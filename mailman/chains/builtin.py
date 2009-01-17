@@ -17,6 +17,8 @@
 
 """The default built-in starting chain."""
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'BuiltInChain',
@@ -78,9 +80,7 @@ class BuiltInChain:
                 # Get the named rule.
                 rule = config.rules[rule_name]
                 # Get the chain, if one is defined.
-                if chain_name is None:
-                    chain = None
-                else:
-                    chain = config.chains[chain_name]
+                chain = (None if chain_name is None
+                         else config.chains[chain_name])
                 links.append(Link(rule, action, chain))
         return iter(self._cached_links)

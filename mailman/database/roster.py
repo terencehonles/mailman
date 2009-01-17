@@ -22,6 +22,8 @@ the ones that fit a particular role.  These are used as the member, owner,
 moderator, and administrator roster filters.
 """
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'AdministratorRoster',
@@ -100,8 +102,9 @@ class AbstractRoster:
         elif results.count() == 1:
             return results[0]
         else:
-            raise AssertionError('Too many matching member results: %s' %
-                                 results.count())
+            raise AssertionError(
+                'Too many matching member results: {0}'.format(
+                    results.count()))
 
 
 
@@ -160,7 +163,7 @@ class AdministratorRoster(AbstractRoster):
             return results[0]
         else:
             raise AssertionError(
-                'Too many matching member results: %s' % results)
+                'Too many matching member results: {0}'.format(results))
 
 
 
@@ -262,5 +265,6 @@ class Memberships:
         elif results.count() == 1:
             return results[0]
         else:
-            raise AssertionError('Too many matching member results: %s' %
-                                 results.count())
+            raise AssertionError(
+                'Too many matching member results: {0}'.format(
+                    results.count()))

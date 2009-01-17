@@ -17,6 +17,8 @@
 
 """Various rule helpers"""
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'initialize',
@@ -39,5 +41,6 @@ def initialize():
             rule = rule_class()
             verifyObject(IRule, rule)
             assert rule.name not in config.rules, (
-                'Duplicate rule "%s" found in %s' % (rule.name, rule_finder))
+                'Duplicate rule "{0}" found in {1}'.format(
+                    rule.name, rule_finder))
             config.rules[rule.name] = rule

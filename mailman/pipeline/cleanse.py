@@ -17,8 +17,12 @@
 
 """Cleanse certain headers from all messages."""
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
-__all__ = ['Cleanse']
+__all__ = [
+    'Cleanse',
+    ]
 
 
 import logging

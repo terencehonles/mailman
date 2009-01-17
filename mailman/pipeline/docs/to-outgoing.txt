@@ -51,12 +51,13 @@ additional key set: the mailing list name.
     Subject: Here is a message
     <BLANKLINE>
     Something of great import.
-    >>> sorted(qmsgdata.items())    
-    [('_parsemsg', False),
-     ('bar', 2), ('foo', 1),
-     ('listname', u'_xtest@example.com'),
-     ('received_time', ...),
-     ('verp', True), ('version', 3)]
+    >>> dump_msgdata(qmsgdata)
+    _parsemsg: False
+    bar      : 2
+    foo      : 1
+    listname : _xtest@example.com
+    verp     : True
+    version  : 3
     >>> queue_size()
     0
 

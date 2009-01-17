@@ -23,8 +23,12 @@ has already received a copy, we either drop the message, add a duplicate
 warning header, or pass it through, depending on the user's preferences.
 """
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
-__all__ = ['AvoidDuplicates']
+__all__ = [
+    'AvoidDuplicates',
+    ]
 
 
 from email.Utils import getaddresses, formataddr
