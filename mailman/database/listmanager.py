@@ -29,7 +29,6 @@ import datetime
 
 from zope.interface import implements
 
-from mailman.Utils import split_listname, fqdn_listname
 from mailman.config import config
 from mailman.database.mailinglist import MailingList
 from mailman.interfaces.listmanager import IListManager, ListAlreadyExistsError
@@ -43,7 +42,7 @@ class ListManager(object):
 
     def create(self, fqdn_listname):
         """See `IListManager`."""
-        listname, hostname = split_listname(fqdn_listname)
+        listname, hostname = fqdn_listname.split('@', 1)
         mlist = config.db.store.find(
             MailingList,
             MailingList.list_name == listname,
@@ -57,7 +56,7 @@ class ListManager(object):
 
     def get(self, fqdn_listname):
         """See `IListManager`."""
-        listname, hostname = split_listname(fqdn_listname)
+        listname, hostname = fqdn_listname.split('@', 1)
         mlist = config.db.store.find(MailingList,
                                      list_name=listname,
                                      host_name=hostname).one()
@@ -80,4 +79,4 @@ class ListManager(object):
     def names(self):
         """See `IListManager`."""
         for mlist in config.db.store.find(MailingList):
-            yield fqdn_listname(mlist.list_name, mlist.host_name)
+            yield '{0}@{1}'.format(mlist.list_name, mlist.host_name)

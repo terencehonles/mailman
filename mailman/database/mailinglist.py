@@ -32,12 +32,12 @@ from storm.locals import *
 from urlparse import urljoin
 from zope.interface import implements
 
-from mailman.Utils import fqdn_listname, makedirs, split_listname
 from mailman.config import config
 from mailman.database import roster
 from mailman.database.model import Model
 from mailman.database.types import Enum
 from mailman.interfaces.mailinglist import IMailingList, Personalization
+from mailman.utilities.filesystem import makedirs
 from mailman.utilities.string import expand
 
 
@@ -175,7 +175,7 @@ class MailingList(Model):
 
     def __init__(self, fqdn_listname):
         super(MailingList, self).__init__()
-        listname, hostname = split_listname(fqdn_listname)
+        listname, hostname = fqdn_listname.split('@', 1)
         self.list_name = listname
         self.host_name = hostname
         # For the pending database
@@ -203,7 +203,7 @@ class MailingList(Model):
     @property
     def fqdn_listname(self):
         """See `IMailingList`."""
-        return fqdn_listname(self.list_name, self.host_name)
+        return '{0}@{1}'.format(self.list_name, self.host_name)
 
     @property
     def web_host(self):

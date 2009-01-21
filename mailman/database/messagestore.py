@@ -33,10 +33,11 @@ import cPickle as pickle
 
 from zope.interface import implements
 
-from mailman import Utils
 from mailman.config import config
 from mailman.database.message import Message
 from mailman.interfaces.messages import IMessageStore
+from mailman.utilities.filesystem import makedirs
+
 
 # It could be very bad if you have already stored files and you change this
 # value.  We'd need a script to reshuffle and resplit.
@@ -95,7 +96,7 @@ class MessageStore:
             except IOError as error:
                 if error.errno <> errno.ENOENT:
                     raise
-            os.makedirs(os.path.dirname(path))
+            makedirs(os.path.dirname(path))
         return hash32
 
     def _get_message(self, row):

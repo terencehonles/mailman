@@ -47,7 +47,7 @@ def create_list(fqdn_listname, owners=None):
     if owners is None:
         owners = []
     ValidateEmail(fqdn_listname)
-    listname, domain = Utils.split_listname(fqdn_listname)
+    listname, domain = fqdn_listname.split('@', 1)
     if domain not in config.domains:
         raise errors.BadDomainSpecificationError(domain)
     mlist = config.db.list_manager.create(fqdn_listname)

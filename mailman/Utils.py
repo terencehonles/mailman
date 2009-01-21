@@ -65,30 +65,6 @@ log = logging.getLogger('mailman.error')
 
 
 
-def list_exists(fqdn_listname):
-    """Return true iff list `fqdn_listname' exists."""
-    return config.db.list_manager.get(fqdn_listname) is not None
-
-
-def list_names():
-    """Return the fqdn names of all lists in default list directory."""
-    return ['%s@%s' % (listname, hostname)
-            for listname, hostname in config.db.list_manager.get_list_names()]
-
-
-def split_listname(listname):
-    if AT in listname:
-        return listname.split(AT, 1)
-    return listname, config.DEFAULT_EMAIL_HOST
-
-
-def fqdn_listname(listname, hostname=None):
-    if hostname is None:
-        return AT.join(split_listname(listname))
-    return AT.join((listname, hostname))
-
-
-
 # a much more naive implementation than say, Emacs's fill-paragraph!
 def wrap(text, column=70, honor_leading_ws=True):
     """Wrap and fill the text to the specified column.
@@ -562,20 +538,6 @@ def GetRequestURI(fallback=None, escape=True):
 
 
 
-def makedirs(path, mode=02775):
-    try:
-        omask = os.umask(0)
-        try:
-            os.makedirs(path, mode)
-        finally:
-            os.umask(omask)
-    except OSError, e:
-        # Ignore the exceptions if the directory already exists
-        if e.errno <> errno.EEXIST:
-            raise
-
-
-
 # XXX Replace this with direct calls.  For now, existing uses of GetCharSet()
 # are too numerous to change.
 def GetCharSet(lang):
@@ -607,100 +569,6 @@ def midnight(date=None):
 
 
 
-# Utilities to convert from simplified $identifier substitutions to/from
-# standard Python $(identifier)s substititions.  The "Guido rules" for the
-# former are:
-#    $$ -> $
-#    $identifier -> $(identifier)s
-#    ${identifier} -> $(identifier)s
-
-def to_dollar(s):
-    """Convert from %-strings to $-strings."""
-    s = s.replace('$', '$$').replace('%%', '%')
-    parts = cre.split(s)
-    for i in range(1, len(parts), 2):
-        if parts[i+1] and parts[i+1][0] in IDENTCHARS:
-            parts[i] = '${' + parts[i] + '}'
-        else:
-            parts[i] = '$' + parts[i]
-    return EMPTYSTRING.join(parts)
-
-
-def to_percent(s):
-    """Convert from $-strings to %-strings."""
-    s = s.replace('%', '%%').replace('$$', '$')
-    parts = dre.split(s)
-    for i in range(1, len(parts), 4):
-        if parts[i] is not None:
-            parts[i] = '$'
-        elif parts[i+1] is not None:
-            parts[i+1] = '%(' + parts[i+1] + ')s'
-        else:
-            parts[i+2] = '%(' + parts[i+2] + ')s'
-    return EMPTYSTRING.join(filter(None, parts))
-
-
-def dollar_identifiers(s):
-    """Return the set (dictionary) of identifiers found in a $-string."""
-    d = {}
-    for name in filter(None, [b or c or None for a, b, c in dre.findall(s)]):
-        d[name] = True
-    return d
-
-
-def percent_identifiers(s):
-    """Return the set (dictionary) of identifiers found in a %-string."""
-    d = {}
-    for name in cre.findall(s):
-        d[name] = True
-    return d
-
-
-
-# Utilities to canonicalize a string, which means un-HTML-ifying the string to
-# produce a Unicode string or an 8-bit string if all the characters are ASCII.
-def canonstr(s, lang=None):
-    newparts = []
-    parts = re.split(r'&(?P<ref>[^;]+);', s)
-    def appchr(i):
-        if i < 256:
-            newparts.append(chr(i))
-        else:
-            newparts.append(unichr(i))
-    while True:
-        newparts.append(parts.pop(0))
-        if not parts:
-            break
-        ref = parts.pop(0)
-        if ref.startswith('#'):
-            try:
-                appchr(int(ref[1:]))
-            except ValueError:
-                # Non-convertable, stick with what we got
-                newparts.append('&'+ref+';')
-        else:
-            c = htmlentitydefs.entitydefs.get(ref, '?')
-            if c.startswith('#') and c.endswith(';'):
-                appchr(int(ref[1:-1]))
-            else:
-                newparts.append(c)
-    newstr = EMPTYSTRING.join(newparts)
-    if isinstance(newstr, unicode):
-        return newstr
-    # We want the default fallback to be iso-8859-1 even if the language is
-    # English (us-ascii).  This seems like a practical compromise so that
-    # non-ASCII characters in names can be used in English lists w/o having to
-    # change the global charset for English from us-ascii (which I
-    # superstitiously think may have unintended consequences).
-    if lang is None:
-        charset = 'iso-8859-1'
-    else:
-        charset = GetCharSet(lang)
-        if charset == 'us-ascii':
-            charset = 'iso-8859-1'
-    return unicode(newstr, charset, 'replace')
-
-
 # The opposite of canonstr() -- sorta.  I.e. it attempts to encode s in the
 # charset of the given language, which is the character set that the page will
 # be rendered in, and failing that, replaces non-ASCII characters with their

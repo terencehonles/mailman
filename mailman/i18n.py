@@ -92,9 +92,11 @@ class using_language(object):
         self._old_translation = _translation
         set_language(self._language)
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, *exc_info):
         global _translation
         _translation = self._old_translation
+        # Do not suppress exceptions.
+        return False
 
 
 # Set up the global translation based on environment variables.  Mostly used

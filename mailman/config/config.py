@@ -39,6 +39,7 @@ from mailman.core import errors
 from mailman.domain import Domain
 from mailman.languages import LanguageManager
 from mailman.styles.manager import StyleManager
+from mailman.utilities.filesystem import makedirs
 
 
 SPACE = ' '
@@ -169,11 +170,7 @@ class Configuration(object):
     def ensure_directories_exist(self):
         """Create all path directories if they do not exist."""
         for variable, directory in self.paths.items():
-            try:
-                os.makedirs(directory, 02775)
-            except OSError, e:
-                if e.errno <> errno.EEXIST:
-                    raise
+            makedirs(directory)
 
     @property
     def qrunner_configs(self):

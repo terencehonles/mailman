@@ -50,12 +50,13 @@ from lazr.config import as_boolean, as_timedelta
 from zope.interface import implements
 
 from mailman import Message
-from mailman import Utils
 from mailman import i18n
 from mailman.config import config
 from mailman.interfaces.runner import IRunner
 from mailman.interfaces.switchboard import ISwitchboard
+from mailman.utilities.filesystem import makedirs
 from mailman.utilities.string import expand
+
 
 # 20 bytes of all bits set, maximum hashlib.sha.digest() value
 shamax = 0xffffffffffffffffffffffffffffffffffffffffL
@@ -108,7 +109,7 @@ class Switchboard:
             'Not a power of 2: {0}'.format(numslices))
         self.queue_directory = queue_directory
         # Create the directory if it doesn't yet exist.
-        Utils.makedirs(self.queue_directory, 0770)
+        makedirs(self.queue_directory, 0770)
         # Fast track for no slices
         self._lower = None
         self._upper = None

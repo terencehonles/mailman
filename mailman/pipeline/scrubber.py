@@ -48,6 +48,7 @@ from mailman.core.errors import DiscardMessage
 from mailman.core.plugins import get_plugin
 from mailman.i18n import _
 from mailman.interfaces.handler import IHandler
+from mailman.utilities.filesystem import makedirs
 
 
 # Path characters for common platforms
@@ -375,25 +376,6 @@ URL: $url
         if delsp:
             msg.set_param('delsp', delsp)
     return msg
-
-
-
-def makedirs(dir):
-    # Create all the directories to store this attachment in and try to make
-    # sure that the permissions of the directories are set correctly.
-    try:
-        os.makedirs(dir, 02775)
-    except OSError, e:
-        if e.errno == errno.EEXIST:
-            return
-    # Some systems such as FreeBSD ignore mkdir's mode, so walk the just
-    # created directories and try to set the mode, ignoring any OSErrors that
-    # occur here.
-    for dirpath, dirnames, filenames in os.walk(dir):
-        try:
-            os.chmod(dirpath, 02775)
-        except OSError:
-            pass
 
 
 
