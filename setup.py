@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2008 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -20,6 +20,8 @@ ez_setup.use_setuptools()
 
 import sys
 from string import Template
+
+sys.path.insert(0, 'src')
 
 import mailman.bin
 from mailman.version import VERSION as __version__
@@ -86,7 +88,8 @@ case second `m'.  Any other spelling is incorrect.""",
     license         = 'GPLv3',
     url             = 'http://www.list.org',
     keywords        = 'email',
-    packages        = find_packages(),
+    packages        = find_packages('src'),
+    package_dir     = {'': 'src'},
     include_package_data = True,
     entry_points    = {
         'console_scripts': list(scripts),
