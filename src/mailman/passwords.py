@@ -146,12 +146,12 @@ class PBKDF2PasswordScheme(PasswordScheme):
         h = hmac.new(password, None, hashlib.sha1)
         prf = h.copy()
         prf.update(salt + b'\x00\x00\x00\x01')
-        T = U = array(b'l', prf.digest())
+        T = U = array(b'i', prf.digest())
         while iterations:
             prf = h.copy()
             prf.update(U.tostring())
-            U = array(b'l', prf.digest())
-            T = array(b'l', (t ^ u for t, u in zip(T, U)))
+            U = array(b'i', prf.digest())
+            T = array(b'i', (t ^ u for t, u in zip(T, U)))
             iterations -= 1
         return T.tostring()
 
