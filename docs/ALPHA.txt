@@ -65,7 +65,7 @@ USING THE ALPHA
     ini-style configuration system.  Eventually all configuration will be
     converted to lazr.config.
 
-    For now though, start by looking through mailman/config/schema.cfg.
+    For now though, start by looking through src/mailman/config/schema.cfg.
     Create a file for your overrides; it can be called anything and can live
     anywhere, but I like to call it 'mailman.cfg'.  For any value in
     schema.cfg you want to override, just add a section header (the
