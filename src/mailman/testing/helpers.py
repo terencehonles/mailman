@@ -35,7 +35,6 @@ import errno
 import signal
 import socket
 import logging
-import mailbox
 import smtplib
 import threading
 
@@ -44,6 +43,7 @@ from Queue import Empty, Queue
 from mailman.bin.master import Loop as Master
 from mailman.config import config
 from mailman.testing.smtplistener import Server
+from mailman.utilities.mailbox import Mailbox
 
 
 log = logging.getLogger('mailman.debug')
@@ -68,6 +68,12 @@ def make_testable_runner(runner_class, name=None):
 
     class EmptyingRunner(runner_class):
         """Stop processing when the queue is empty."""
+
+        def __init__(self, *args, **kws):
+            super(EmptyingRunner, self).__init__(*args, **kws)
+            # We know it's an EmptyingRunner, so really we want to see the
+            # super class in the log files.
+            self.__class__.__name__ = runner_class.__name__
 
         def _do_periodic(self):
             """Stop when the queue is empty."""
@@ -106,8 +112,8 @@ def digest_mbox(mlist):
     :param mlist: The mailing list.
     :return: The mailing list's pending digest as a mailbox.
     """
-    path = os.path.join(mlist.data_path, 'digest.mbox')
-    return mailbox.mbox(path)
+    path = os.path.join(mlist.data_path, 'digest.mmdf')
+    return Mailbox(path)
 
 
 

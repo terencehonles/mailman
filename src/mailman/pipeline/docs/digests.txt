@@ -6,13 +6,7 @@ as individual messages when immediately posted.  There are several forms of
 digests, although only two are currently supported: MIME digests and RFC 1153
 (a.k.a. plain text) digests.
 
-    >>> from mailman.pipeline.to_digest import process
-    >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
-    >>> mlist.preferred_language = u'en'
-    >>> mlist.real_name = u'XTest'
-    >>> mlist.subject_prefix = u'[_XTest] '
-    >>> mlist.one_last_digest = set()
-    >>> switchboard = config.switchboards['virgin']
+    >>> mlist = create_list('xtest@example.com')
 
 This is a helper function used to iterate through all the accumulated digest
 messages, in the order in which they were posted.  This makes it easier to
@@ -21,515 +15,97 @@ update the tests when we switch to a different mailbox format.
     >>> from mailman.testing.helpers import digest_mbox
     >>> from itertools import count
     >>> from string import Template
-    >>> def makemsg():
+
+    >>> def message_factory():
     ...     for i in count(1):
     ...         text = Template("""\
     ... From: aperson@example.com
-    ... To: _xtest@example.com
+    ... To: xtest@example.com
     ... Subject: Test message $i
     ...
     ... Here is message $i
     ... """).substitute(i=i)
     ...         yield message_from_string(text)
+    >>> message_factory = message_factory()
 
 
 Short circuiting
 ----------------
 
 When a message is posted to the mailing list, it is generally added to a
-running collection of messages.  For now, this is a Unix mailbox file,
-although in the future this may end up being converted to a maildir style
-mailbox.  In any event, there are several factors that would bypass the
-storing of posted messages to the mailbox.  For example, the mailing list may
-not allow digests...
+mailbox, unless the mailing list does not allow digests.
 
     >>> mlist.digestable = False
-    >>> msg = makemsg().next()
+    >>> msg = next(message_factory)
+    >>> process = config.handlers['to-digest'].process
     >>> process(mlist, msg, {})
-    >>> sum(1 for mboxmsg in digest_mbox(mlist))
+    >>> sum(1 for msg in digest_mbox(mlist))
     0
-    >>> switchboard.files
+    >>> digest_queue = config.switchboards['digest']
+    >>> digest_queue.files
     []
 
 ...or they may allow digests but the message is already a digest.
 
     >>> mlist.digestable = True
     >>> process(mlist, msg, dict(isdigest=True))
-    >>> sum(1 for mboxmsg in digest_mbox(mlist))
+    >>> sum(1 for msg in digest_mbox(mlist))
     0
-    >>> switchboard.files
+    >>> digest_queue.files
     []
 
 
 Sending a digest
 ----------------
 
-For messages which are not digests, but which are posted to a digestable
+For messages which are not digests, but which are posted to a digesting
 mailing list, the messages will be stored until they reach a criteria
 triggering the sending of the digest.  If none of those criteria are met, then
 the message will just sit in the mailbox for a while.
 
     >>> mlist.digest_size_threshold = 10000
     >>> process(mlist, msg, {})
-    >>> switchboard.files
+    >>> digest_queue.files
     []
     >>> digest = digest_mbox(mlist)
-    >>> sum(1 for mboxmsg in digest)
+    >>> sum(1 for msg in digest)
     1
     >>> import os
     >>> os.remove(digest._path)
 
-When the size of the digest mbox reaches the maximum size threshold, a digest
-is crafted and sent out.  This puts two messages in the virgin queue, an HTML
-digest and an RFC 1153 plain text digest.  The size threshold is in KB.
+When the size of the digest mailbox reaches the maximum size threshold, a
+marker message is placed into the digest runner's queue.  The digest is not
+actually crafted by the handler.
 
     >>> mlist.digest_size_threshold = 1
     >>> mlist.volume = 2
     >>> mlist.next_digest_number = 10
     >>> size = 0
-    >>> for msg in makemsg():
+    >>> for msg in message_factory:
     ...     process(mlist, msg, {})
     ...     size += len(str(msg))
-    ...     if size > mlist.digest_size_threshold * 1024:
+    ...     if size >= mlist.digest_size_threshold * 1024:
     ...         break
-    >>> sum(1 for mboxmsg in digest_mbox(mlist))
+
+    >>> sum(1 for msg in digest_mbox(mlist))
     0
-    >>> len(switchboard.files)
-    2
-    >>> for filebase in switchboard.files:
-    ...     qmsg, qdata = switchboard.dequeue(filebase)
-    ...     switchboard.finish(filebase)
-    ...     if qmsg.is_multipart():
-    ...         mimemsg = qmsg
-    ...         mimedata = qdata
-    ...     else:
-    ...         rfc1153msg = qmsg
-    ...         rfc1153data = qdata
-    >>> print mimemsg.as_string()
-    Content-Type: multipart/mixed; boundary="..."
-    MIME-Version: 1.0
-    From: _xtest-request@example.com
-    Subject: XTest Digest, Vol 2, Issue 10
-    To: _xtest@example.com
-    Reply-To: _xtest@example.com
-    Date: ...
-    Message-ID: ...
-    <BLANKLINE>
-    --...
-    Content-Type: text/plain; charset="us-ascii"
-    MIME-Version: 1.0
-    Content-Transfer-Encoding: 7bit
-    Content-Description: XTest Digest, Vol 2, Issue 10
-    <BLANKLINE>
-    Send XTest mailing list submissions to
-        _xtest@example.com
-    <BLANKLINE>
-    To subscribe or unsubscribe via the World Wide Web, visit
-        http://lists.example.com/listinfo/_xtest@example.com
-    or, via email, send a message with subject or body 'help' to
-        _xtest-request@example.com
-    <BLANKLINE>
-    You can reach the person managing the list at
-        _xtest-owner@example.com
-    <BLANKLINE>
-    When replying, please edit your Subject line so it is more specific
-    than "Re: Contents of XTest digest..."
-    <BLANKLINE>
-    --...
-    Content-Type: text/plain; charset="us-ascii"
-    MIME-Version: 1.0
-    Content-Transfer-Encoding: 7bit
-    Content-Description: Today's Topics (8 messages)
-    <BLANKLINE>
-    Today's Topics:
-    <BLANKLINE>
-       1. Test message 1 (aperson@example.com)
-       2. Test message 2 (aperson@example.com)
-       3. Test message 3 (aperson@example.com)
-       4. Test message 4 (aperson@example.com)
-       5. Test message 5 (aperson@example.com)
-       6. Test message 6 (aperson@example.com)
-       7. Test message 7 (aperson@example.com)
-       8. Test message 8 (aperson@example.com)
-    <BLANKLINE>
-    --...
-    Content-Type: multipart/digest; boundary="..."
-    MIME-Version: 1.0
-    <BLANKLINE>
-    --...
-    Content-Type: message/rfc822
-    MIME-Version: 1.0
-    <BLANKLINE>
-    From: aperson@example.com
-    To: _xtest@example.com
-    Subject: Test message 1
-    Message: 1
-    <BLANKLINE>
-    Here is message 1
-    <BLANKLINE>
-    <BLANKLINE>
-    --...
-    Content-Type: message/rfc822
-    MIME-Version: 1.0
-    <BLANKLINE>
-    From: aperson@example.com
-    To: _xtest@example.com
-    Subject: Test message 2
-    Message: 2
-    <BLANKLINE>
-    Here is message 2
-    <BLANKLINE>
-    <BLANKLINE>
-    --...
-    Content-Type: message/rfc822
-    MIME-Version: 1.0
-    <BLANKLINE>
-    From: aperson@example.com
-    To: _xtest@example.com
-    Subject: Test message 3
-    Message: 3
-    <BLANKLINE>
-    Here is message 3
-    <BLANKLINE>
-    <BLANKLINE>
-    --...
-    Content-Type: message/rfc822
-    MIME-Version: 1.0
-    <BLANKLINE>
-    From: aperson@example.com
-    To: _xtest@example.com
-    Subject: Test message 4
-    Message: 4
-    <BLANKLINE>
-    Here is message 4
-    <BLANKLINE>
-    <BLANKLINE>
-    --...
-    Content-Type: message/rfc822
-    MIME-Version: 1.0
-    <BLANKLINE>
-    From: aperson@example.com
-    To: _xtest@example.com
-    Subject: Test message 5
-    Message: 5
-    <BLANKLINE>
-    Here is message 5
-    <BLANKLINE>
-    <BLANKLINE>
-    --...
-    Content-Type: message/rfc822
-    MIME-Version: 1.0
-    <BLANKLINE>
-    From: aperson@example.com
-    To: _xtest@example.com
-    Subject: Test message 6
-    Message: 6
-    <BLANKLINE>
-    Here is message 6
-    <BLANKLINE>
-    <BLANKLINE>
-    --...
-    Content-Type: message/rfc822
-    MIME-Version: 1.0
-    <BLANKLINE>
-    From: aperson@example.com
-    To: _xtest@example.com
-    Subject: Test message 7
-    Message: 7
-    <BLANKLINE>
-    Here is message 7
-    <BLANKLINE>
-    <BLANKLINE>
-    --...
-    Content-Type: message/rfc822
-    MIME-Version: 1.0
-    <BLANKLINE>
-    From: aperson@example.com
-    To: _xtest@example.com
-    Subject: Test message 8
-    Message: 8
-    <BLANKLINE>
-    Here is message 8
-    <BLANKLINE>
-    <BLANKLINE>
-    --...
-    --...
-    >>> dump_msgdata(mimedata)
-    _parsemsg: False
-    isdigest : True
-    listname : _xtest@example.com
-    recips   : set([])
-    version  : 3
+    >>> len(digest_queue.files)
+    1
 
+The digest has been moved to a unique file.
 
-    >>> print rfc1153msg.as_string()
-    From: _xtest-request@example.com
-    Subject: XTest Digest, Vol 2, Issue 10
-    To: _xtest@example.com
-    Reply-To: _xtest@example.com
-    Date: ...
-    Message-ID: ...
-    MIME-Version: 1.0
-    Content-Type: text/plain; charset="us-ascii"
-    Content-Transfer-Encoding: 7bit
-    <BLANKLINE>
-    Send XTest mailing list submissions to
-        _xtest@example.com
-    <BLANKLINE>
-    To subscribe or unsubscribe via the World Wide Web, visit
-        http://lists.example.com/listinfo/_xtest@example.com
-    or, via email, send a message with subject or body 'help' to
-        _xtest-request@example.com
-    <BLANKLINE>
-    You can reach the person managing the list at
-        _xtest-owner@example.com
-    <BLANKLINE>
-    When replying, please edit your Subject line so it is more specific
-    than "Re: Contents of XTest digest..."
-    <BLANKLINE>
-    <BLANKLINE>
-    Today's Topics:
-    <BLANKLINE>
-       1. Test message 1 (aperson@example.com)
-       2. Test message 2 (aperson@example.com)
-       3. Test message 3 (aperson@example.com)
-       4. Test message 4 (aperson@example.com)
-       5. Test message 5 (aperson@example.com)
-       6. Test message 6 (aperson@example.com)
-       7. Test message 7 (aperson@example.com)
-       8. Test message 8 (aperson@example.com)
-    <BLANKLINE>
-    <BLANKLINE>
-    ----------------------------------------------------------------------
-    <BLANKLINE>
-    Message: 1
-    From: aperson@example.com
-    Subject: Test message 1
-    To: _xtest@example.com
-    Message-ID: ...
-    <BLANKLINE>
-    Here is message 1
-    <BLANKLINE>
-    <BLANKLINE>
-    ------------------------------
-    <BLANKLINE>
-    Message: 2
-    From: aperson@example.com
-    Subject: Test message 2
-    To: _xtest@example.com
-    Message-ID: ...
-    <BLANKLINE>
-    Here is message 2
-    <BLANKLINE>
-    <BLANKLINE>
-    ------------------------------
-    <BLANKLINE>
-    Message: 3
-    From: aperson@example.com
-    Subject: Test message 3
-    To: _xtest@example.com
-    Message-ID: ...
-    <BLANKLINE>
-    Here is message 3
-    <BLANKLINE>
-    <BLANKLINE>
-    ------------------------------
-    <BLANKLINE>
-    Message: 4
-    From: aperson@example.com
-    Subject: Test message 4
-    To: _xtest@example.com
-    Message-ID: ...
-    <BLANKLINE>
-    Here is message 4
-    <BLANKLINE>
-    <BLANKLINE>
-    ------------------------------
-    <BLANKLINE>
-    Message: 5
-    From: aperson@example.com
-    Subject: Test message 5
-    To: _xtest@example.com
-    Message-ID: ...
-    <BLANKLINE>
-    Here is message 5
-    <BLANKLINE>
-    <BLANKLINE>
-    ------------------------------
-    <BLANKLINE>
-    Message: 6
-    From: aperson@example.com
-    Subject: Test message 6
-    To: _xtest@example.com
-    Message-ID: ...
-    <BLANKLINE>
-    Here is message 6
-    <BLANKLINE>
-    <BLANKLINE>
-    ------------------------------
-    <BLANKLINE>
-    Message: 7
-    From: aperson@example.com
-    Subject: Test message 7
-    To: _xtest@example.com
-    Message-ID: ...
-    <BLANKLINE>
-    Here is message 7
-    <BLANKLINE>
-    <BLANKLINE>
-    ------------------------------
-    <BLANKLINE>
-    Message: 8
-    From: aperson@example.com
-    Subject: Test message 8
-    To: _xtest@example.com
-    Message-ID: ...
-    <BLANKLINE>
-    Here is message 8
-    <BLANKLINE>
-    <BLANKLINE>
-    End of XTest Digest, Vol 2, Issue 10
-    ************************************
-    <BLANKLINE>
-    >>> dump_msgdata(rfc1153data)
-    _parsemsg: False
-    isdigest : True
-    listname : _xtest@example.com
-    recips   : set([])
-    version  : 3
+    >>> from mailman.utilities.mailbox import Mailbox
+    >>> from mailman.testing.helpers import get_queue_messages
+    >>> item = get_queue_messages('digest')[0]
+    >>> for msg in Mailbox(item.msgdata['digest_path']):
+    ...     print msg['subject']
+    Test message 2
+    Test message 3
+    Test message 4
+    Test message 5
+    Test message 6
+    Test message 7
+    Test message 8
+    Test message 9
 
-
-Internationalized digests
--------------------------
-
-When messages come in with a content-type character set different than that of
-the list's preferred language, recipients will get an internationalized
-digest.  French is not enabled by default site-wide, so enable that now.
-
-    >>> config.languages.enable_language('fr')
-
-    # Simulate the site administrator setting the default server language to
-    # French in the configuration file.  Without this, the English template
-    # will be found and the masthead won't be translated.
-    >>> config.push('french', """
-    ... [mailman]
-    ... default_language: fr
-    ... """)
-
-    >>> mlist.preferred_language = u'fr'
-    >>> msg = message_from_string("""\
-    ... From: aperson@example.org
-    ... To: _xtest@example.com
-    ... Subject: =?iso-2022-jp?b?GyRCMGxIVhsoQg==?=
-    ... MIME-Version: 1.0
-    ... Content-Type: text/plain; charset=iso-2022-jp
-    ... Content-Transfer-Encoding: 7bit
-    ...
-    ... \x1b$B0lHV\x1b(B
-    ... """)
-
-Set the digest threshold to zero so that the digests will be sent immediately.
-
-    >>> mlist.digest_size_threshold = 0
-    >>> process(mlist, msg, {})
-    >>> sum(1 for mboxmsg in digest_mbox(mlist))
-    0
-    >>> len(switchboard.files)
-    2
-    >>> for filebase in switchboard.files:
-    ...     qmsg, qdata = switchboard.dequeue(filebase)
-    ...     switchboard.finish(filebase)
-    ...     if qmsg.is_multipart():
-    ...         mimemsg = qmsg
-    ...         mimedata = qdata
-    ...     else:
-    ...         rfc1153msg = qmsg
-    ...         rfc1153data = qdata
-    >>> print mimemsg.as_string()
-    Content-Type: multipart/mixed; boundary="..."
-    MIME-Version: 1.0
-    From: _xtest-request@example.com
-    Subject: Groupe XTest, Vol. 2, Parution 11
-    To: _xtest@example.com
-    Reply-To: _xtest@example.com
-    Date: ...
-    Message-ID: ...
-    <BLANKLINE>
-    --...
-    Content-Type: text/plain; charset="iso-8859-1"
-    MIME-Version: 1.0
-    Content-Transfer-Encoding: quoted-printable
-    Content-Description: Groupe XTest, Vol. 2, Parution 11
-    <BLANKLINE>
-    Envoyez vos messages pour la liste XTest =E0
-        _xtest@example.com
-    <BLANKLINE>
-    Pour vous (d=E9s)abonner par le web, consultez
-        http://lists.example.com/listinfo/_xtest@example.com
-    <BLANKLINE>
-    ou, par courriel, envoyez un message avec =AB=A0help=A0=BB dans le corps ou
-    dans le sujet =E0
-        _xtest-request@example.com
-    <BLANKLINE>
-    Vous pouvez contacter l'administrateur de la liste =E0 l'adresse
-        _xtest-owner@example.com
-    <BLANKLINE>
-    Si vous r=E9pondez, n'oubliez pas de changer l'objet du message afin
-    qu'il soit plus sp=E9cifique que =AB=A0Re: Contenu du groupe de XTest...=A0=
-    =BB
-    <BLANKLINE>
-    --...
-    Content-Type: text/plain; charset="utf-8"
-    MIME-Version: 1.0
-    Content-Transfer-Encoding: base64
-    Content-Description: Today's Topics (1 messages)
-    <BLANKLINE>
-    VGjDqG1lcyBkdSBqb3VyIDoKCiAgIDEuIOS4gOeVqiAoYXBlcnNvbkBleGFtcGxlLm9yZykK
-    <BLANKLINE>
-    --...
-    Content-Type: multipart/digest; boundary="..."
-    MIME-Version: 1.0
-    <BLANKLINE>
-    --...
-    Content-Type: message/rfc822
-    MIME-Version: 1.0
-    <BLANKLINE>
-    Content-Transfer-Encoding: 7bit
-    From: aperson@example.org
-    MIME-Version: 1.0
-    To: _xtest@example.com
-    Content-Type: text/plain; charset=iso-2022-jp
-    Subject: =?iso-2022-jp?b?GyRCMGxIVhsoQg==?=
-    Message: 1
-    <BLANKLINE>
-    一番
-    <BLANKLINE>
-    <BLANKLINE>
-    --...
-    --...
-    >>> dump_msgdata(mimedata)
-    _parsemsg: False
-    isdigest : True
-    listname : _xtest@example.com
-    recips   : set([])
-    version  : 3
-
-    >>> print rfc1153msg.as_string()
-    From: _xtest-request@example.com
-    Subject: Groupe XTest, Vol. 2, Parution 11
-    To: _xtest@example.com
-    Reply-To: _xtest@example.com
-    Date: ...
-    Message-ID: ...
-    MIME-Version: 1.0
-    Content-Type: text/plain; charset="utf-8"
-    Content-Transfer-Encoding: base64
-    <BLANKLINE>
-    ...
-    <BLANKLINE>
-    >>> dump_msgdata(rfc1153data)
-    _parsemsg: False
-    isdigest : True
-    listname : _xtest@example.com
-    recips   : set([])
-    version  : 3
+Digests are actually crafted and sent by a separate digest queue runner.

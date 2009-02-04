@@ -428,10 +428,13 @@ class Runner:
         # special care to reset the defaults, otherwise subsequent messages
         # may be translated incorrectly.
         sender = msg.get_sender()
-        member = mlist.members.get_member(sender)
-        language = (member.preferred_language
-                    if member is not None
-                    else mlist.preferred_language)
+        if sender:
+            member = mlist.members.get_member(sender)
+            language = (member.preferred_language
+                        if member is not None
+                        else mlist.preferred_language)
+        else:
+            language = mlist.preferred_language
         with i18n.using_language(language):
             msgdata['lang'] = language
             keepqueued = self._dispose(mlist, msg, msgdata)

@@ -39,6 +39,7 @@ from email import message_from_string
 import mailman
 
 from mailman.Message import Message
+from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.testing.layers import SMTPLayer
 
@@ -102,6 +103,7 @@ def dump_msgdata(msgdata, *additional_skips):
         print '{0:{2}}: {1}'.format(key, msgdata[key], longest)
 
 
+
 def setup(testobj):
     """Test setup."""
     # In general, I don't like adding convenience functions, since I think
@@ -110,6 +112,7 @@ def setup(testobj):
     # hide some icky test implementation details.
     testobj.globs['commit'] = config.db.commit
     testobj.globs['config'] = config
+    testobj.globs['create_list'] = create_list
     testobj.globs['dump_msgdata'] = dump_msgdata
     testobj.globs['message_from_string'] = specialized_message_from_string
     testobj.globs['smtpd'] = SMTPLayer.smtpd

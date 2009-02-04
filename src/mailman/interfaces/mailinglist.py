@@ -21,6 +21,7 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
+    'DigestFrequency',
     'IMailingList',
     'Personalization',
     'ReplyToMunging',
@@ -42,7 +43,6 @@ class Personalization(Enum):
     full = 2
 
 
-
 class ReplyToMunging(Enum):
     # The Reply-To header is passed through untouched
     no_munging = 0
@@ -50,6 +50,14 @@ class ReplyToMunging(Enum):
     point_to_list = 1
     # An explicit Reply-To header is added
     explicit_header = 2
+
+
+class DigestFrequency(Enum):
+    yearly = 0
+    monthly = 1
+    quarterly = 2
+    weekly = 3
+    daily = 4
 
 
 
@@ -155,7 +163,7 @@ class IMailingList(Interface):
         """A monotonically increasing integer sequentially assigned to each
         list posting.""")
 
-    last_digest_date = Attribute(
+    digest_last_sent_at = Attribute(
         """The date and time a digest of this mailing list was last sent.""")
 
     owners = Attribute(
@@ -197,27 +205,23 @@ class IMailingList(Interface):
         role.
         """)
 
-    volume_number = Attribute(
+    volume = Attribute(
         """A monotonically increasing integer sequentially assigned to each
         new digest volume.  The volume number may be bumped either
         automatically (i.e. on a defined schedule) or manually.  When the
         volume number is bumped, the digest number is always reset to 1.""")
 
-    digest_number = Attribute(
+    next_digest_number = Attribute(
         """A sequence number for a specific digest in a given volume.  When
         the digest volume number is bumped, the digest number is reset to
         1.""")
 
-    def bump():
-        """Bump the digest's volume number to the next integer in the
-        sequence, and reset the digest number to 1.
-        """
     message_count = Attribute(
         """The number of messages in the digest currently being collected.""")
 
-    digest_size = Attribute(
-        """The approximate size in kilobytes of the digest currently being
-        collected.""")
+    digest_size_threshold = Attribute(
+        """The maximum (approximate) size in kilobytes of the digest currently
+        being collected.""")
 
     messages = Attribute(
         """An iterator over all the messages in the digest currently being

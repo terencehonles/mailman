@@ -26,6 +26,14 @@ prepared for delivery.  Rejections, discards, and holds are processed
 immediately.
 """
 
+from __future__ import absolute_import, unicode_literals
+
+__metaclass__ = type
+__all__ = [
+    'IncomingRunner',
+    ]
+
+
 from mailman.core.chains import process
 from mailman.queue import Runner
 
@@ -35,6 +43,7 @@ class IncomingRunner(Runner):
     """The incoming queue runner."""
 
     def _dispose(self, mlist, msg, msgdata):
+        """See `IRunner`."""
         if msgdata.get('envsender') is None:
             msgdata['envsender'] = mlist.no_reply_address
         # Process the message through the mailing list's start chain.

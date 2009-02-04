@@ -1,4 +1,4 @@
-# Copyright (C) 2003-2009 by the Free Software Foundation, Inc.
+# Copyright (C) 2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -15,31 +15,35 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Retry delivery."""
+"""Module stuff."""
 
 from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'RetryRunner',
+    'Mailbox',
     ]
 
 
-import time
-
-from mailman.config import config
-from mailman.queue import Runner
+# Use a single file format for the digest mailbox because this makes it easier
+# to calculate the current size of the mailbox.  This way, we don't have to
+# carry around or store the size of the mailbox, we can just stat the file to
+# get its size.  MMDF is slightly more sane than mbox; it's primary advantage
+# for us is that it does no 'From' mangling.
+# mangling.
+from mailbox import MMDF
 
 
 
-class RetryRunner(Runner):
-    """Retry delivery."""
+class Mailbox(MMDF):
+    """A mailbox that interoperates with the 'with' statement."""
 
-    def _dispose(self, mlist, msg, msgdata):
-        # Move the message to the out queue for another try.
-        config.switchboards['outgoing'].enqueue(msg, msgdata)
+    def __enter__(self):
+        self.lock()
+        return self
+
+    def __exit__(self, *exc):
+        self.flush()
+        self.unlock()
+        # Don't suppress the exception.
         return False
-
-    def _snooze(self, filecnt):
-        # We always want to snooze.
-        time.sleep(self.sleep_float)

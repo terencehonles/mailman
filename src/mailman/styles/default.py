@@ -33,7 +33,8 @@ from zope.interface import implements
 from mailman import Utils
 from mailman.i18n import _
 from mailman.interfaces import Action, NewsModeration
-from mailman.interfaces.mailinglist import Personalization, ReplyToMunging
+from mailman.interfaces.mailinglist import (
+    DigestFrequency, Personalization, ReplyToMunging)
 from mailman.interfaces.styles import IStyle
 
 
@@ -120,7 +121,7 @@ $real_name mailing list
 $fqdn_listname
 ${listinfo_page}
 """
-        mlist.digest_volume_frequency = 1
+        mlist.digest_volume_frequency = DigestFrequency.monthly
         mlist.one_last_digest = {}
         mlist.next_digest_number = 1
         mlist.nondigestable = True
