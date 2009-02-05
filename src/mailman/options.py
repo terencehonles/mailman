@@ -65,6 +65,29 @@ class MailmanOption(Option):
     TYPE_CHECKER['yesno'] = check_yesno
 
 
+class SafeOptionParser(OptionParser):
+    """A unicode-compatible `OptionParser`.
+
+    Python's standard option parser does not accept unicode options.  Rather
+    than try to fix that, this class wraps the add_option() method and saves
+    having to wrap the options in str() calls.
+    """
+    def add_option(self, *args, **kwargs):
+        # Check to see if the first or first two options are unicodes and turn
+        # them into 8-bit strings before calling the superclass's method.
+        if len(args) == 0:
+            return OptionParser.add_option(self, *args, **kwargs)
+        old_args = list(args)
+        new_args = []
+        arg0 = old_args.pop(0)
+        new_args.append(str(arg0))
+        if len(old_args) > 0:
+            arg1 = old_args.pop(0)
+            new_args.append(str(arg1))
+        new_args.extend(old_args)
+        return OptionParser.add_option(self, *new_args, **kwargs)
+
+
 
 class Options:
     """Common argument parser."""
@@ -73,9 +96,10 @@ class Options:
     usage = None
 
     def __init__(self):
-        self.parser = OptionParser(version=MAILMAN_VERSION,
-                                   option_class=MailmanOption,
-                                   usage=self.usage)
+        self.parser = SafeOptionParser(
+            version=MAILMAN_VERSION,
+            option_class=MailmanOption,
+            usage=self.usage)
         self.add_common_options()
         self.add_options()
         options, arguments = self.parser.parse_args()
@@ -97,7 +121,7 @@ class Options:
         """Add options common to all scripts."""
         # Python requires str types here.
         self.parser.add_option(
-            str('-C'), str('--config'),
+            '-C', '--config',
             help=_('Alternative configuration file to use'))
 
     def initialize(self, propagate_logs=None):
