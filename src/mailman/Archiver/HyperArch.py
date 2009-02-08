@@ -48,7 +48,6 @@ from mailman import Utils
 from mailman import i18n
 from mailman.Archiver import HyperDatabase
 from mailman.Archiver import pipermail
-from mailman.Mailbox import ArchiverMailbox
 from mailman.config import config
 
 

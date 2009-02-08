@@ -26,11 +26,11 @@ archival.
 import os
 import errno
 import logging
+import mailbox
 
 from cStringIO import StringIO
 from string import Template
 
-from mailman import Mailbox
 from mailman import Utils
 from mailman.config import config
 
@@ -140,7 +140,7 @@ class Archiver:
         """Open (creating, if necessary) the named archive file."""
         omask = os.umask(002)
         try:
-            return Mailbox.Mailbox(open(afn, 'a+'))
+            return mailbox.mbox(afn, 'a+')
         finally:
             os.umask(omask)
 
@@ -153,7 +153,7 @@ class Archiver:
         try:
             afn = self.ArchiveFileName()
             mbox = self.__archive_file(afn)
-            mbox.AppendMessage(post)
+            mbox.add(post)
             mbox.fp.close()
         except IOError, msg:
             log.error('Archive file access failure:\n\t%s %s', afn, msg)
