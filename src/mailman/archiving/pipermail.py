@@ -26,6 +26,8 @@ __all__ = [
 
 
 import os
+import mailbox
+import tempfile
 
 from cStringIO import StringIO
 from zope.interface import implements
@@ -111,11 +113,18 @@ class Pipermail:
     @staticmethod
     def archive_message(mlist, message):
         """See `IArchiver`."""
-        text = str(message)
-        fileobj = StringIO(text)
+        fd, path = tempfile.mkstemp('.mbox')
+        os.close(fd)
+        try:
+            mbox = mailbox.mbox(path, create=True)
+            mbox.add(message)
+        finally:
+            mbox.close()
         h = HyperArchive(IPipermailMailingList(mlist))
-        h.processUnixMailbox(fileobj)
-        h.close()
-        fileobj.close()
+        try:
+            h.processUnixMailbox(path)
+        finally:
+            h.close()
+            os.remove(path)
         # There's no good way to know the url for the archived message.
         return None

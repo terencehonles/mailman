@@ -69,8 +69,12 @@ And now the message is in the pipeline queue.
     <BLANKLINE>
     First post!
     <BLANKLINE>
-    >>> sorted(item.msgdata.items())
-    [...('envsender', u'noreply@example.com')...('tolist', True)...]
+    >>> dump_msgdata(item.msgdata)
+    _parsemsg    : False
+    envsender    : noreply@example.com
+    ...
+    tolist       : True
+    ...
 
 
 Held messages
@@ -190,8 +194,12 @@ tests above.
     <BLANKLINE>
     --===============...
 
-    >>> sorted(item.msgdata.items())
-    [...('recips', [u'aperson@example.com'])...]
+    >>> dump_msgdata(item.msgdata)
+    _parsemsg           : False
+    ...
+    recips              : [u'aperson@example.com']
+    ...
+
     >>> fp.seek(file_pos)
     >>> print 'LOG:', fp.read()
     LOG: ... REJECT: <first>
