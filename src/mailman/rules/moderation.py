@@ -43,7 +43,7 @@ class Moderation:
 
     def check(self, mlist, msg, msgdata):
         """See `IRule`."""
-        for sender in msg.get_senders():
+        for sender in msg.senders:
             member = mlist.members.get_member(sender)
             if member is not None and member.is_moderated:
                 return True
@@ -61,7 +61,7 @@ class NonMember:
 
     def check(self, mlist, msg, msgdata):
         """See `IRule`."""
-        for sender in msg.get_senders():
+        for sender in msg.senders:
             if mlist.members.get_member(sender) is not None:
                 # The sender is a member of the mailing list.
                 return False

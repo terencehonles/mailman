@@ -58,8 +58,7 @@ class FileRecipients:
             return
         # If the sender is a member of the list, remove them from the file
         # recipients.
-        sender = msg.get_sender()
-        member = mlist.members.get_member(sender)
+        member = mlist.members.get_member(msg.sender)
         if member is not None:
             addrs.discard(member.address.address)
         msgdata['recips'] = addrs

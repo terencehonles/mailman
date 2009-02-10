@@ -28,12 +28,12 @@ __all__ = [
 
 from email.utils import formataddr
 
-from mailman import Message
 from mailman import Utils
 from mailman import i18n
 from mailman.app.notifications import send_goodbye_message
 from mailman.config import config
 from mailman.core import errors
+from mailman.email.message import Message, OwnerNotification
 from mailman.interfaces.member import AlreadySubscribedError, MemberRole
 
 _ = i18n._
@@ -133,5 +133,5 @@ def delete_member(mlist, address, admin_notif=None, userack=None):
             {'listname': mlist.real_name,
              'member'  : formataddr((realname, address)),
              }, mlist=mlist)
-        msg = Message.OwnerNotification(mlist, subject, text)
+        msg = OwnerNotification(mlist, subject, text)
         msg.send(mlist)

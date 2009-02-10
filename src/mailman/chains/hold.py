@@ -33,12 +33,12 @@ from email.utils import formatdate, make_msgid
 from zope.interface import implements
 
 from mailman import i18n
-from mailman.Message import UserNotification
 from mailman.Utils import maketext, oneline, wrap, GetCharSet
 from mailman.app.moderator import hold_message
 from mailman.app.replybot import autorespond_to_sender, can_acknowledge
 from mailman.chains.base import TerminalChainBase
 from mailman.config import config
+from mailman.email.message import UserNotification
 from mailman.interfaces.pending import IPendable
 
 
@@ -82,8 +82,7 @@ class HoldChain(TerminalChainBase):
         # Get the language to send the response in.  If the sender is a
         # member, then send it in the member's language, otherwise send it in
         # the mailing list's preferred language.
-        sender = msg.get_sender()
-        member = mlist.members.get_member(sender)
+        member = mlist.members.get_member(msg.sender)
         language = (member.preferred_language
                     if member else mlist.preferred_language)
         # A substitution dictionary for the email templates.
@@ -96,7 +95,7 @@ class HoldChain(TerminalChainBase):
         substitutions = dict(
             listname    = mlist.fqdn_listname,
             subject     = original_subject,
-            sender      = sender,
+            sender      = msg.sender,
             reason      = 'XXX', #reason,
             confirmurl  = '{0}/{1}'.format(mlist.script_url('confirm'), token),
             admindb_url = mlist.script_url('admindb'),
@@ -118,7 +117,7 @@ class HoldChain(TerminalChainBase):
         if (not msgdata.get('fromusenet') and
             can_acknowledge(msg) and
             mlist.respond_to_post_requests and
-            autorespond_to_sender(mlist, sender, language)):
+            autorespond_to_sender(mlist, msg.sender, language)):
             # We can respond to the sender with a message indicating their
             # posting was held.
             subject = _(
@@ -127,7 +126,7 @@ class HoldChain(TerminalChainBase):
             text = maketext('postheld.txt', substitutions,
                             lang=send_language, mlist=mlist)
             adminaddr = mlist.bounces_address
-            nmsg = UserNotification(sender, adminaddr, subject, text,
+            nmsg = UserNotification(msg.sender, adminaddr, subject, text,
                                     send_language)
             nmsg.send(mlist)
         # Now the message for the list moderators.  This one should appear to
@@ -145,7 +144,8 @@ class HoldChain(TerminalChainBase):
                 substitutions['subject'] = original_subject
                 # craft the admin notification message and deliver it
                 subject = _(
-                    '$mlist.fqdn_listname post from $sender requires approval')
+                    '$mlist.fqdn_listname post from $msg.sender requires '
+                    'approval')
                 nmsg = UserNotification(mlist.owner_address,
                                         mlist.owner_address,
                                         subject, lang=language)
@@ -174,5 +174,5 @@ also appear in the first line of the body of the reply.""")),
         # XXX reason
         reason = 'n/a'
         log.info('HOLD: %s post from %s held, message-id=%s: %s',
-                 mlist.fqdn_listname, sender,
+                 mlist.fqdn_listname, msg.sender,
                  msg.get('message-id', 'n/a'), reason)

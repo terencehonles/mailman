@@ -31,9 +31,9 @@ import datetime
 from pkg_resources import resource_string
 from zope.interface import implements
 
-from mailman.Message import UserNotification
 from mailman.Utils import ValidateEmail
 from mailman.config import config
+from mailman.email.message import UserNotification
 from mailman.i18n import _
 from mailman.interfaces.domain import IDomain
 from mailman.interfaces.member import MemberRole

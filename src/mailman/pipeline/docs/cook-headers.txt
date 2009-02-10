@@ -39,8 +39,8 @@ But if there was no original sender, then the empty string will be saved.
     ... """)
     >>> msgdata = {}
     >>> process(mlist, msg, msgdata)
-    >>> msgdata['original_sender']
-    ''
+    >>> print msgdata['original_sender']
+    <BLANKLINE>
 
 
 X-BeenThere header

@@ -49,9 +49,9 @@ from cStringIO import StringIO
 from lazr.config import as_boolean, as_timedelta
 from zope.interface import implements
 
-from mailman import Message
 from mailman import i18n
 from mailman.config import config
+from mailman.email.message import Message
 from mailman.interfaces.runner import IRunner
 from mailman.interfaces.switchboard import ISwitchboard
 from mailman.utilities.filesystem import makedirs
@@ -186,7 +186,7 @@ class Switchboard:
             # have to generate the message later when we do size restriction
             # checking.
             original_size = len(msg)
-            msg = email.message_from_string(msg, Message.Message)
+            msg = email.message_from_string(msg, Message)
             msg.original_size = original_size
             data['original_size'] = original_size
         return msg, data
@@ -427,9 +427,8 @@ class Runner:
         # will be the list's preferred language.  However, we must take
         # special care to reset the defaults, otherwise subsequent messages
         # may be translated incorrectly.
-        sender = msg.get_sender()
-        if sender:
-            member = mlist.members.get_member(sender)
+        if msg.sender:
+            member = mlist.members.get_member(msg.sender)
             language = (member.preferred_language
                         if member is not None
                         else mlist.preferred_language)

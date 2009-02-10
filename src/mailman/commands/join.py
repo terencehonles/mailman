@@ -61,7 +61,7 @@ example:
             real_name, address = parseaddr(msg['from'])
         # Address could be None or the empty string.
         if not address:
-            address = msg.get_sender()
+            address = msg.sender
         if not address:
             print >> results, _(
                 '$self.name: No valid address found to subscribe')

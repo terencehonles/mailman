@@ -31,8 +31,8 @@ import datetime
 
 from zope.interface import implements
 
-from mailman import Message
 from mailman import Utils
+from mailman.email.message import Message, UserNotification
 from mailman.i18n import _
 from mailman.interfaces.handler import IHandler
 from mailman.utilities.string import expand
@@ -71,16 +71,15 @@ def process(mlist, msg, msgdata):
     # Now see if we're in the grace period for this sender.  graceperiod <= 0
     # means always autorespond, as does an "X-Ack: yes" header (useful for
     # debugging).
-    sender = msg.get_sender()
     now = time.time()
     graceperiod = mlist.autoresponse_graceperiod
     if graceperiod > NODELTA and ack <> 'yes':
         if toadmin:
-            quiet_until = mlist.admin_responses.get(sender, 0)
+            quiet_until = mlist.admin_responses.get(msg.sender, 0)
         elif torequest:
-            quiet_until = mlist.request_responses.get(sender, 0)
+            quiet_until = mlist.request_responses.get(msg.sender, 0)
         else:
-            quiet_until = mlist.postings_responses.get(sender, 0)
+            quiet_until = mlist.postings_responses.get(msg.sender, 0)
         if quiet_until > now:
             return
     # Okay, we know we're going to auto-respond to this sender, craft the
@@ -102,8 +101,8 @@ def process(mlist, msg, msgdata):
         rtext = mlist.autoresponse_postings_text
     # Interpolation and Wrap the response text.
     text = Utils.wrap(expand(rtext, d))
-    outmsg = Message.UserNotification(sender, mlist.bounces_address,
-                                      subject, text, mlist.preferred_language)
+    outmsg = UserNotification(msg.sender, mlist.bounces_address,
+                              subject, text, mlist.preferred_language)
     outmsg['X-Mailer'] = _('The Mailman Replybot')
     # prevent recursions and mail loops!
     outmsg['X-Ack'] = 'No'
@@ -113,11 +112,11 @@ def process(mlist, msg, msgdata):
         # graceperiod is in days, we need # of seconds
         quiet_until = now + graceperiod * 24 * 60 * 60
         if toadmin:
-            mlist.admin_responses[sender] = quiet_until
+            mlist.admin_responses[msg.sender] = quiet_until
         elif torequest:
-            mlist.request_responses[sender] = quiet_until
+            mlist.request_responses[msg.sender] = quiet_until
         else:
-            mlist.postings_responses[sender] = quiet_until
+            mlist.postings_responses[msg.sender] = quiet_until
 
 
 

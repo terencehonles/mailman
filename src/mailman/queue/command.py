@@ -37,14 +37,14 @@ from email.Header import decode_header, make_header
 from email.Iterators import typed_subpart_iterator
 from zope.interface import implements
 
-from mailman import Message
 from mailman.config import config
+from mailman.email.message import Message, UserNotification
 from mailman.i18n import _
 from mailman.interfaces.command import ContinueProcessing, IEmailResults
 from mailman.queue import Runner
 
-NL = '\n'
 
+NL = '\n'
 log = logging.getLogger('mailman.vette')
 
 
@@ -195,10 +195,9 @@ class CommandRunner(Runner):
         # Send a reply, but do not attach the original message.  This is a
         # compromise because the original message is often helpful in tracking
         # down problems, but it's also a vector for backscatter spam.
-        reply = Message.UserNotification(
-            msg.get_sender(), mlist.bounces_address,
-            _('The results of your email commands'),
-            lang=msgdata['lang'])
+        reply = UserNotification(msg.sender, mlist.bounces_address,
+                                 _('The results of your email commands'),
+                                 lang=msgdata['lang'])
         # Find a charset for the response body.  Try ascii first, then
         # latin-1 and finally falling back to utf-8.
         reply_body = unicode(results)

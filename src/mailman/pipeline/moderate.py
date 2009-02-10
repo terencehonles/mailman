@@ -30,10 +30,10 @@ import re
 from email.MIMEMessage import MIMEMessage
 from email.MIMEText import MIMEText
 
-from mailman import Message
 from mailman import Utils
 from mailman.config import config
 from mailman.core import errors
+from mailman.email.message import Message
 from mailman.i18n import _
 
 
@@ -55,7 +55,7 @@ def process(mlist, msg, msgdata):
     if msgdata.get('approved') or msgdata.get('fromusenet'):
         return
     # First of all, is the poster a member or not?
-    for sender in msg.get_senders():
+    for sender in msg.senders:
         if mlist.isMember(sender):
             break
     else:
@@ -92,7 +92,7 @@ def process(mlist, msg, msgdata):
         # their own thing.
         return
     else:
-        sender = msg.get_sender()
+        sender = msg.sender
     # From here on out, we're dealing with non-members.
     if matches_p(sender, mlist.accept_these_nonmembers):
         return
@@ -154,7 +154,6 @@ error, contact the mailing list owner at %(listowner)s."""))
 
 
 def do_discard(mlist, msg):
-    sender = msg.get_sender()
     # Do we forward auto-discards to the list owners?
     if mlist.forward_auto_discards:
         lang = mlist.preferred_language

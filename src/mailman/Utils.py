@@ -22,6 +22,13 @@ message and address munging, a handy-dandy routine to map a function on all
 the mailing lists, and whatever else doesn't belong elsewhere.
 """
 
+from __future__ import absolute_import, unicode_literals
+
+__metaclass__ = type
+__all__ = [
+    ]
+
+
 import os
 import re
 import cgi
@@ -31,10 +38,9 @@ import base64
 import random
 import logging
 import htmlentitydefs
-import email.Header
-import email.Iterators
 
-from email.Errors import HeaderParseError
+from email.errors import HeaderParseError
+from email.header import decode_header, make_header
 from lazr.config import as_boolean
 from string import ascii_letters, digits, whitespace
 
@@ -609,7 +615,7 @@ def uquote(s):
 def oneline(s, cset='us-ascii', in_unicode=False):
     # Decode header string in one line and convert into specified charset
     try:
-        h = email.Header.make_header(email.Header.decode_header(s))
+        h = make_header(decode_header(s))
         ustr = h.__unicode__()
         line = UEMPTYSTRING.join(ustr.splitlines())
         if in_unicode:

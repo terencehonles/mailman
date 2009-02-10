@@ -17,7 +17,7 @@
 
 """Application support for moderators."""
 
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -34,7 +34,6 @@ import logging
 from datetime import datetime
 from email.utils import formataddr, formatdate, getaddresses, make_msgid
 
-from mailman import Message
 from mailman import Utils
 from mailman import i18n
 from mailman.app.membership import add_member, delete_member
@@ -42,9 +41,11 @@ from mailman.app.notifications import (
     send_admin_subscription_notice, send_welcome_message)
 from mailman.config import config
 from mailman.core import errors
+from mailman.email.message import Message, UserNotification
 from mailman.interfaces import Action
 from mailman.interfaces.member import AlreadySubscribedError, DeliveryMode
 from mailman.interfaces.requests import RequestType
+
 
 _ = i18n._
 
@@ -87,7 +88,7 @@ def hold_message(mlist, msg, msgdata=None, reason=None):
     # the moderation interface.
     msgdata['_mod_message_id'] = message_id
     msgdata['_mod_fqdn_listname'] = mlist.fqdn_listname
-    msgdata['_mod_sender'] = msg.get_sender()
+    msgdata['_mod_sender'] = msg.sender
     msgdata['_mod_subject'] = msg.get('subject', _('(no subject)'))
     msgdata['_mod_reason'] = reason
     msgdata['_mod_hold_date'] = datetime.now().isoformat()
@@ -165,7 +166,7 @@ def handle_message(mlist, id, action,
             if member:
                 language = member.preferred_language
         with i18n.using_language(language):
-            fmsg = Message.UserNotification(
+            fmsg = UserNotification(
                 addresses, mlist.bounces_address,
                 _('Forward of moderated message'),
                 lang=language)
@@ -212,7 +213,7 @@ def hold_subscription(mlist, address, realname, password, mode, language):
              }, mlist=mlist)
         # This message should appear to come from the <list>-owner so as
         # to avoid any useless bounce processing.
-        msg = Message.UserNotification(
+        msg = UserNotification(
             mlist.owner_address, mlist.owner_address,
             subject, text, mlist.preferred_language)
         msg.send(mlist, tomoderators=True)
@@ -284,7 +285,7 @@ def hold_unsubscription(mlist, address):
              }, mlist=mlist)
         # This message should appear to come from the <list>-owner so as
         # to avoid any useless bounce processing.
-        msg = Message.UserNotification(
+        msg = UserNotification(
             mlist.owner_address, mlist.owner_address,
             subject, text, mlist.preferred_language)
         msg.send(mlist, tomoderators=True)
@@ -346,6 +347,5 @@ def _refuse(mlist, request, recip, comment, origmsg=None, lang=None):
                  str(origmsg)
                  ])
         subject = _('Request to mailing list "$realname" rejected')
-    msg = Message.UserNotification(recip, mlist.bounces_address,
-                                   subject, text, lang)
+    msg = UserNotification(recip, mlist.bounces_address, subject, text, lang)
     msg.send(mlist)

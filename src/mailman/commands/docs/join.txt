@@ -25,7 +25,7 @@ The mail command 'join' subscribes an email address to the mailing list.
 No address to join
 ------------------
 
-    >>> from mailman.Message import Message
+    >>> from mailman.email.message import Message
     >>> from mailman.app.lifecycle import create_list
     >>> from mailman.queue.command import Results
     >>> mlist = create_list(u'alpha@example.com')

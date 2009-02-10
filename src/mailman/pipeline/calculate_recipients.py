@@ -56,8 +56,7 @@ class CalculateRecipients:
             return
         # Should the original sender should be included in the recipients list?
         include_sender = True
-        sender = msg.get_sender()
-        member = mlist.members.get_member(sender)
+        member = mlist.members.get_member(msg.sender)
         if member and not member.receive_own_postings:
             include_sender = False
         # Support for urgent messages, which bypasses digests and disabled

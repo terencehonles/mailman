@@ -38,9 +38,9 @@ from email import message_from_string
 
 import mailman
 
-from mailman.Message import Message
 from mailman.app.lifecycle import create_list
 from mailman.config import config
+from mailman.email.message import Message
 from mailman.testing.layers import SMTPLayer
 
 

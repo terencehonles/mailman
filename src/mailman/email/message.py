@@ -18,8 +18,18 @@
 """Standard Mailman message object.
 
 This is a subclass of email.message.Message but provides a slightly extended
-interface which is more convenient for use inside Mailman.
+interface which is more convenient for use inside Mailman.  It also supports
+safe pickle deserialization, even if the email package adds additional Message
+attributes.
 """
+
+from __future__ import absolute_import, unicode_literals
+
+__metaclass__ = type
+__all__ = [
+    'Message',
+    ]
+
 
 import re
 import email
@@ -30,35 +40,37 @@ from email.charset import Charset
 from email.header import Header
 from lazr.config import as_boolean
 
-from mailman import Utils
+from mailman.Utils import GetCharSet
 from mailman.config import config
 
-COMMASPACE = ', '
 
-mo = re.match(r'([\d.]+)', email.__version__)
-VERSION = tuple(int(s) for s in mo.group().split('.'))
+COMMASPACE = ', '
+VERSION = tuple(int(v) for v in email.__version__.split('.'))
 
 
 
 class Message(email.message.Message):
     def __init__(self):
-        # We need a version number so that we can optimize __setstate__()
+        # We need a version number so that we can optimize __setstate__().
         self.__version__ = VERSION
         email.message.Message.__init__(self)
 
     def __getitem__(self, key):
+        # Ensure that header values are unicodes.
         value = email.message.Message.__getitem__(self, key)
         if isinstance(value, str):
             return unicode(value, 'ascii')
         return value
 
     def get(self, name, failobj=None):
+        # Ensure that header values are unicodes.
         value = email.message.Message.get(self, name, failobj)
         if isinstance(value, str):
             return unicode(value, 'ascii')
         return value
 
     def get_all(self, name, failobj=None):
+        # Ensure all header values are unicodes.
         missing = object()
         all_values = email.message.Message.get_all(self, name, missing)
         if all_values is missing:
@@ -70,133 +82,71 @@ class Message(email.message.Message):
     def __repr__(self):
         return self.__str__()
 
-    def __setstate__(self, d):
-        # The base class attributes have changed over time.  Which could
-        # affect Mailman if messages are sitting in the queue at the time of
-        # upgrading the email package.  We shouldn't burden email with this,
-        # so we handle schema updates here.
-        self.__dict__ = d
-        # We know that email 2.4.3 is up-to-date
-        version = d.get('__version__', (0, 0, 0))
-        d['__version__'] = VERSION
-        if version >= VERSION:
-            return
-        # Messages grew a _charset attribute between email version 0.97 and 1.1
-        if not d.has_key('_charset'):
-            self._charset = None
-        # Messages grew a _default_type attribute between v2.1 and v2.2
-        if not d.has_key('_default_type'):
-            # We really have no idea whether this message object is contained
-            # inside a multipart/digest or not, so I think this is the best we
-            # can do.
-            self._default_type = 'text/plain'
-        # Header instances used to allow both strings and Charsets in their
-        # _chunks, but by email 2.4.3 now it's just Charsets.
-        headers = []
-        hchanged = 0
-        for k, v in self._headers:
-            if isinstance(v, Header):
-                chunks = []
-                cchanged = 0
-                for s, charset in v._chunks:
-                    if isinstance(charset, str):
-                        charset = Charset(charset)
-                        cchanged = 1
-                    chunks.append((s, charset))
-                if cchanged:
-                    v._chunks = chunks
-                    hchanged = 1
-            headers.append((k, v))
-        if hchanged:
-            self._headers = headers
+    def __setstate__(self, values):
+        # The base class has grown and changed attributes over time.  This can
+        # break messages sitting in Mailman's queues at the time of upgrading
+        # the email package.  We can't (yet) change the email package to be
+        # safer for pickling, so we handle such changes here.  Note that we're
+        # using Python 2.6's email package version 4.0.1 as a base line here.
+        self.__dict__ = values
+        # The pickled instance should have an __version__ string, but it may
+        # not if it's an email package message.
+        version = values.get('__version__', (0, 0, 0))
+        values['__version__'] = VERSION
+        # There's really nothing to check; there's nothing newer than email
+        # 4.0.1 at the moment.
 
-    # I think this method ought to eventually be deprecated
-    def get_sender(self):
-        """Return the address considered to be the author of the email.
+    @property
+    def sender(self):
+        """The address considered to be the author of the email.
 
-        This can return either the From: header, the Sender: header or the
-        envelope header (a.k.a. the unixfrom header).  The first non-empty
-        header value found is returned.  However the search order is
-        determined by the following:
+        This is the first non-None value in the list of senders.
 
-        - If config.mailman.use_envelope_sender is true, then the search order
-          is Sender:, From:, unixfrom
-
-        - Otherwise, the search order is From:, Sender:, unixfrom
-
-        unixfrom should never be empty.  The return address is always
-        lower cased.
-
-        This method differs from get_senders() in that it returns one and only
-        one address, and uses a different search order.
+        :return: The email address of the first found sender, or the empty
+            string if no sender address was found.
+        :rtype: email address
         """
-        senderfirst = as_boolean(config.mailman.use_envelope_sender)
-        if senderfirst:
-            headers = ('sender', 'from')
-        else:
-            headers = ('from', 'sender')
-        for h in headers:
-            # Use only the first occurrance of Sender: or From:, although it's
-            # not likely there will be more than one.
-            fieldval = self[h]
-            if not fieldval:
-                continue
-            addrs = email.utils.getaddresses([fieldval])
-            try:
-                realname, address = addrs[0]
-            except IndexError:
-                continue
+        for address in self.senders:
+            # This could be None or the empty string.
             if address:
-                break
-        else:
-            # We didn't find a non-empty header, so let's fall back to the
-            # unixfrom address.  This should never be empty, but if it ever
-            # is, it's probably a Really Bad Thing.  Further, we just assume
-            # that if the unixfrom exists, the second field is the address.
-            unixfrom = self.get_unixfrom()
-            if unixfrom:
-                address = unixfrom.split()[1]
-            else:
-                # TBD: now what?!
-                address = ''
-        return address.lower()
+                return address
+        return ''
 
-    def get_senders(self):
+    @property
+    def senders(self):
         """Return a list of addresses representing the author of the email.
 
-        The list will contain the following addresses (in order)
-        depending on availability:
+        The list will contain email addresses in the order determined by the
+        configuration variable `sender_headers` in the `[mailman]` section.
+        By default it uses this list of headers in order:
 
         1. From:
-        2. unixfrom (From_)
+        2. envelope sender (i.e. From_, unixfrom, or RFC 2821 MAIL FROM)
         3. Reply-To:
         4. Sender:
 
-        The return addresses are always lower cased.
+        The return addresses are guaranteed to be lower case or None.  There
+        may be more than four values in the returned list, since some of the
+        originator headers above can appear multiple times in the message, or
+        contain multiple values.
+
+        :return: The list of email addresses that can be considered the sender
+            of the message.
+        :rtype: A list of email addresses or Nones
         """
-        pairs = []
+        envelope_sender = self.get_unixfrom()
+        senders = []
         for header in config.mailman.sender_headers.split():
             header = header.lower()
             if header == 'from_':
-                # get_unixfrom() returns None if there's no envelope
-                unix_from = self.get_unixfrom()
-                fieldval = (unix_from if unix_from is not None else '')
-                try:
-                    pairs.append(('', fieldval.split()[1]))
-                except IndexError:
-                    # Ignore badly formatted unixfroms
-                    pass
+                senders.append(envelope_sender.lower()
+                               if envelope_sender is not None
+                               else '')
             else:
-                fieldvals = self.get_all(header)
-                if fieldvals:
-                    pairs.extend(email.utils.getaddresses(fieldvals))
-        authors = []
-        for pair in pairs:
-            address = pair[1]
-            if address is not None:
-                address = address.lower()
-            authors.append(address)
-        return authors
+                field_values = self.get_all(header, [])
+                senders.extend(address.lower() for (real_name, address)
+                               in email.utils.getaddresses(field_values))
+        return senders
 
     def get_filename(self, failobj=None):
         """Some MUA have bugs in RFC2231 filename encoding and cause
@@ -217,7 +167,7 @@ class UserNotification(Message):
         Message.__init__(self)
         charset = 'us-ascii'
         if lang is not None:
-            charset = Utils.GetCharSet(lang)
+            charset = GetCharSet(lang)
         if text is not None:
             self.set_payload(text.encode(charset), charset)
         if subject is None:
@@ -263,7 +213,11 @@ class UserNotification(Message):
         if mlist is not None:
             enqueue_kws['listname'] = mlist.fqdn_listname
         enqueue_kws.update(_kws)
-        virginq.enqueue(self, **enqueue_kws)
+        # Keywords must be strings in Python 2.6.
+        str_keywords = dict()
+        for key, val in enqueue_kws.items():
+            str_keywords[str(key)] = val
+        virginq.enqueue(self, **str_keywords)
 
 
 

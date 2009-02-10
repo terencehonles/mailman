@@ -21,10 +21,10 @@ import sys
 from email import message_from_string
 
 from mailman import Utils
-from mailman.Message import Message
 from mailman.configuration import config
 from mailman.i18n import _
 from mailman.inject import inject_text
+from mailman.message import Message
 from mailman.options import SingleMailingListOptions
 
 

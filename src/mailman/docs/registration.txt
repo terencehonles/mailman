@@ -59,30 +59,30 @@ Some amount of sanity checks are performed on the email address, although
 honestly, not as much as probably should be done.  Still, some patently bad
 addresses are rejected outright.
 
-    >>> registrar.register('')
+    >>> registrar.register(u'')
     Traceback (most recent call last):
     ...
-    InvalidEmailAddress: ''
-    >>> registrar.register('some name@example.com')
+    InvalidEmailAddress: u''
+    >>> registrar.register(u'some name@example.com')
     Traceback (most recent call last):
     ...
-    InvalidEmailAddress: 'some name@example.com'
-    >>> registrar.register('<script>@example.com')
+    InvalidEmailAddress: u'some name@example.com'
+    >>> registrar.register(u'<script>@example.com')
     Traceback (most recent call last):
     ...
-    InvalidEmailAddress: '<script>@example.com'
-    >>> registrar.register('\xa0@example.com')
+    InvalidEmailAddress: u'<script>@example.com'
+    >>> registrar.register(u'\xa0@example.com')
     Traceback (most recent call last):
     ...
-    InvalidEmailAddress: '\xa0@example.com'
-    >>> registrar.register('noatsign')
+    InvalidEmailAddress: u'\xa0@example.com'
+    >>> registrar.register(u'noatsign')
     Traceback (most recent call last):
     ...
-    InvalidEmailAddress: 'noatsign'
-    >>> registrar.register('nodom@ain')
+    InvalidEmailAddress: u'noatsign'
+    >>> registrar.register(u'nodom@ain')
     Traceback (most recent call last):
     ...
-    InvalidEmailAddress: 'nodom@ain'
+    InvalidEmailAddress: u'nodom@ain'
 
 
 Register an email address

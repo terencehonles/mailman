@@ -30,10 +30,10 @@ __all__ = [
 from email.utils import formataddr
 from lazr.config import as_boolean
 
-from mailman import Message
 from mailman import Utils
 from mailman import i18n
 from mailman.config import config
+from mailman.email.message import Message, OwnerNotification, UserNotification
 from mailman.interfaces.member import DeliveryMode
 
 
@@ -78,7 +78,7 @@ def send_welcome_message(mlist, address, language, delivery_mode, text=''):
         digmode = _(' (Digest mode)')
     else:
         digmode = ''
-    msg = Message.UserNotification(
+    msg = UserNotification(
         address, mlist.request_address,
         _('Welcome to the "$mlist.real_name" mailing list${digmode}'),
         text, language)
@@ -104,7 +104,7 @@ def send_goodbye_message(mlist, address, language):
         goodbye = Utils.wrap(mlist.goodbye_msg) + '\n'
     else:
         goodbye = ''
-    msg = Message.UserNotification(
+    msg = UserNotification(
         address, mlist.bounces_address,
         _('You have been unsubscribed from the $mlist.real_name mailing list'),
         goodbye, language)
@@ -132,5 +132,5 @@ def send_admin_subscription_notice(mlist, address, full_name, language):
         {'listname' : mlist.real_name,
          'member'   : formataddr((full_name, address)),
          }, mlist=mlist)
-    msg = Message.OwnerNotification(mlist, subject, text)
+    msg = OwnerNotification(mlist, subject, text)
     msg.send(mlist)

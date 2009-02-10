@@ -30,8 +30,8 @@ __all__ = [
 
 from zope.interface import implements
 
-from mailman import Message
 from mailman import Utils
+from mailman.email.message import Message, UserNotification
 from mailman.i18n import _
 from mailman.interfaces.handler import IHandler
 
@@ -47,7 +47,7 @@ class Acknowledge:
     def process(self, mlist, msg, msgdata):
         """See `IHandler`."""
         # Extract the sender's address and find them in the user database
-        sender = msgdata.get('original_sender', msg.get_sender())
+        sender = msgdata.get('original_sender', msg.sender)
         member = mlist.members.get_member(sender)
         if member is None or not member.acknowledge_posts:
             # Either the sender is not a member, in which case we can't know
@@ -75,6 +75,6 @@ class Acknowledge:
         # necessary for general delivery.  Then enqueue it to the outgoing
         # queue.
         subject = _('$realname post acknowledgment')
-        usermsg = Message.UserNotification(sender, mlist.bounces_address,
-                                           subject, text, lang)
+        usermsg = UserNotification(sender, mlist.bounces_address,
+                                   subject, text, lang)
         usermsg.send(mlist)

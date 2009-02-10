@@ -42,7 +42,7 @@ def process(res, args):
     # Since this message is personalized, add some useful information if the
     # address requesting help is a member of the list.
     msg = res.msg
-    for sender in  msg.get_senders():
+    for sender in  msg.senders:
         if mlist.isMember(sender):
             memberurl = mlist.GetOptionsURL(sender, absolute=1)
             urlhelp = _(

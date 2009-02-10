@@ -20,7 +20,7 @@ The original message is ignored, but the results receive the echoed command.
     >>> from mailman.queue.command import Results
     >>> results = Results()
 
-    >>> from mailman.Message import Message
+    >>> from mailman.email.message import Message
     >>> print command.process(mlist, Message(), {}, ('foo', 'bar'), results)
     ContinueProcessing.yes
     >>> print unicode(results)

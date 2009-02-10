@@ -20,7 +20,7 @@ message isn't even looked at.
 
     >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list(u'test@example.com')
-    >>> from mailman.Message import Message
+    >>> from mailman.email.message import Message
     >>> print command.process(mlist, Message(), {}, (), None)
     ContinueProcessing.no
 

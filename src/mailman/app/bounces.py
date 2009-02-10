@@ -17,7 +17,7 @@
 
 """Application level bounce handling."""
 
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -29,8 +29,8 @@ import logging
 from email.mime.message import MIMEMessage
 from email.mime.text import MIMEText
 
-from mailman import Message
 from mailman import Utils
+from mailman.email.message import Message, UserNotification
 from mailman.i18n import _
 
 log = logging.getLogger('mailman.config')
@@ -40,7 +40,10 @@ log = logging.getLogger('mailman.config')
 def bounce_message(mlist, msg, e=None):
     # Bounce a message back to the sender, with an error message if provided
     # in the exception argument.
-    sender = msg.get_sender()
+    if msg.sender is None:
+        # We can't bounce the message if we don't know who it's supposed to go
+        # to.
+        return
     subject = msg.get('subject', _('(no subject)'))
     subject = Utils.oneline(subject,
                             Utils.GetCharSet(mlist.preferred_language))
@@ -49,10 +52,8 @@ def bounce_message(mlist, msg, e=None):
     else:
         notice = _(e.notice)
     # Currently we always craft bounces as MIME messages.
-    bmsg = Message.UserNotification(msg.get_sender(),
-                                    mlist.owner_address,
-                                    subject,
-                                    lang=mlist.preferred_language)
+    bmsg = UserNotification(msg.sender, mlist.owner_address, subject,
+                            lang=mlist.preferred_language)
     # BAW: Be sure you set the type before trying to attach, or you'll get
     # a MultipartConversionError.
     bmsg.set_type('multipart/mixed')

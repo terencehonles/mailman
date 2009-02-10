@@ -38,9 +38,9 @@ import asyncore
 
 from email.utils import parseaddr
 
-from mailman.Message import Message
 from mailman.config import config
 from mailman.database.transaction import txn
+from mailman.email.message import Message
 from mailman.queue import Runner
 
 elog = logging.getLogger('mailman.error')
