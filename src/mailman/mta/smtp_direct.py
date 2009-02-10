@@ -114,7 +114,7 @@ def process(mlist, msg, msgdata):
         if mlist:
             envsender = mlist.bounces_address
         else:
-            envsender = Utils.get_site_noreply()
+            envsender = config.mailman.site_owner
     # Time to split up the recipient list.  If we're personalizing or VERPing
     # then each chunk will have exactly one recipient.  We'll then hand craft
     # an envelope sender and stitch a message together in memory for each one

@@ -122,21 +122,21 @@ def process(mlist, msg, msgdata):
 
 
 def matches_p(sender, nonmembers):
-    # First strip out all the regular expressions
-    plainaddrs = [addr for addr in nonmembers if not addr.startswith('^')]
-    addrdict = Utils.List2Dict(plainaddrs, foldcase=1)
-    if addrdict.has_key(sender):
-        return 1
-    # Now do the regular expression matches
-    for are in nonmembers:
-        if are.startswith('^'):
+    # First strip out all the regular expressions.
+    addresses = set(address.lower() for address in nonmembers
+                    if not address.startswith('^'))
+    if sender in addresses:
+        return True
+    # Now do the regular expression matches.
+    for regexp in nonmembers:
+        if regexp.startswith('^'):
             try:
-                cre = re.compile(are, re.IGNORECASE)
+                cre = re.compile(regexp, re.IGNORECASE)
             except re.error:
                 continue
             if cre.search(sender):
-                return 1
-    return 0
+                return True
+    return False
 
 
 

@@ -194,27 +194,6 @@ def ValidateEmail(s):
 
 
 
-# Patterns which may be used to form malicious path to inject a new
-# line in the mailman error log. (TK: advisory by Moritz Naumann)
-CRNLpat = re.compile(r'[^\x21-\x7e]')
-
-def GetPathPieces(envar='PATH_INFO'):
-    path = os.environ.get(envar)
-    if path:
-        if CRNLpat.search(path):
-            path = CRNLpat.split(path)[0]
-            log.error('Warning: Possible malformed path attack.')
-        return [p for p in path.split('/') if p]
-    return []
-
-
-
-def ScriptURL(target):
-    up = '../' * len(GetPathPieces())
-    return '%s%s' % (up, target + config.CGIEXT)
-
-
-
 def GetPossibleMatchingAddrs(name):
     """returns a sorted list of addresses that could possibly match
     a given name.
@@ -232,19 +211,6 @@ def GetPossibleMatchingAddrs(name):
             res.append("%s@%s" % (user, DOT.join(domain)))
             domain = domain[1:]
     return res
-
-
-
-def List2Dict(L, foldcase=False):
-    """Return a dict keyed by the entries in the list passed to it."""
-    d = {}
-    if foldcase:
-        for i in L:
-            d[i.lower()] = True
-    else:
-        for i in L:
-            d[i] = True
-    return d
 
 
 
@@ -519,49 +485,10 @@ def maketext(templatefile, dict=None, raw=False, lang=None, mlist=None):
 
 
 
-def GetRequestURI(fallback=None, escape=True):
-    """Return the full virtual path this CGI script was invoked with.
-
-    Newer web servers seems to supply this info in the REQUEST_URI
-    environment variable -- which isn't part of the CGI/1.1 spec.
-    Thus, if REQUEST_URI isn't available, we concatenate SCRIPT_NAME
-    and PATH_INFO, both of which are part of CGI/1.1.
-
-    Optional argument `fallback' (default `None') is returned if both of
-    the above methods fail.
-
-    The url will be cgi escaped to prevent cross-site scripting attacks,
-    unless `escape' is set to 0.
-    """
-    url = fallback
-    if 'REQUEST_URI' in os.environ:
-        url = os.environ['REQUEST_URI']
-    elif 'SCRIPT_NAME' in os.environ and 'PATH_INFO' in os.environ:
-        url = os.environ['SCRIPT_NAME'] + os.environ['PATH_INFO']
-    if escape:
-        return websafe(url)
-    return url
-
-
-
 # XXX Replace this with direct calls.  For now, existing uses of GetCharSet()
 # are too numerous to change.
 def GetCharSet(lang):
     return config.languages.get_charset(lang)
-
-
-
-def get_request_domain():
-    host = os.environ.get('HTTP_HOST', os.environ.get('SERVER_NAME'))
-    port = os.environ.get('SERVER_PORT')
-    # Strip off the port if there is one
-    if port and host.endswith(':' + port):
-        host = host[:-len(port)-1]
-    return host.lower()
-
-
-def get_site_noreply():
-    return '%s@%s' % (config.NO_REPLY_ADDRESS, config.DEFAULT_EMAIL_HOST)
 
 
 
