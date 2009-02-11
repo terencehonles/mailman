@@ -488,7 +488,7 @@ def maketext(templatefile, dict=None, raw=False, lang=None, mlist=None):
 # XXX Replace this with direct calls.  For now, existing uses of GetCharSet()
 # are too numerous to change.
 def GetCharSet(lang):
-    return config.languages.get_charset(lang)
+    return config.languages[lang].charset
 
 
 

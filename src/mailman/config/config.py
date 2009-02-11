@@ -37,7 +37,7 @@ from pkg_resources import resource_string
 from mailman import version
 from mailman.core import errors
 from mailman.domain import Domain
-from mailman.languages import LanguageManager
+from mailman.languages.manager import LanguageManager
 from mailman.styles.manager import StyleManager
 from mailman.utilities.filesystem import makedirs
 
@@ -147,11 +147,12 @@ class Configuration(object):
         # Set up all the languages.
         languages = self._config.getByCategory('language', [])
         for language in languages:
-            code = language.name.split('.')[1]
-            self.languages.add_language(code, language.description,
-                                        language.charset, language.enabled)
-        # Always enable the server default language, which must be defined.
-        self.languages.enable_language(self._config.mailman.default_language)
+            if language.enabled:
+                code = language.name.split('.')[1]
+                self.languages.add_language(
+                    code, language.charset, language.description)
+        # The default language must always be available.
+        assert self._config.mailman.default_language in self.languages
         self.ensure_directories_exist()
         self.style_manager.populate()
 

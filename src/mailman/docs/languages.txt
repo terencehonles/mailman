@@ -5,33 +5,20 @@ Mailman is multilingual.  A language manager handles the known set of
 languages at run time, as well as enabling those languages for use in a
 running Mailman instance.
 
-    >>> from zope.interface.verify import verifyObject
     >>> from mailman.interfaces.languages import ILanguageManager
-    >>> from mailman.languages import LanguageManager
+    >>> from mailman.languages.manager import LanguageManager
+    >>> from zope.interface.verify import verifyObject
     >>> mgr = LanguageManager()
     >>> verifyObject(ILanguageManager, mgr)
     True
 
-A language manager keeps track of the languages it knows about as well as the
-languages which are enabled.  By default, none are known or enabled.
+A language manager keeps track of the languages it knows about.
 
-    >>> sorted(mgr.known_codes)
+    >>> list(mgr.codes)
     []
-    >>> sorted(mgr.enabled_codes)
+    >>> list(mgr.languages)
     []
     
-The language manager also keeps track of information for each known language,
-but you obviously can't get information for an unknown language.
-
-    >>> mgr.get_description('en')
-    Traceback (most recent call last):
-    ...
-    KeyError: 'en'
-    >>> mgr.get_charset('en')
-    Traceback (most recent call last):
-    ...
-    KeyError: 'en'
-
 
 Adding languages
 ----------------
@@ -40,65 +27,59 @@ Adding a new language requires three pieces of information, the 2-character
 language code, the English description of the language, and the character set
 used by the language.
 
-    >>> mgr.add_language('en', 'English', 'us-ascii')
-    >>> mgr.add_language('it', 'Italian', 'iso-8859-1')
-
-By default, added languages are also enabled.
-
-    >>> sorted(mgr.known_codes)
-    ['en', 'it']
-    >>> sorted(mgr.enabled_codes)
-    ['en', 'it']
+    >>> mgr.add_language('en', 'us-ascii', 'English')
+    >>> mgr.add_language('it', 'iso-8859-1', 'Italian')
 
 And you can get information for all known languages.
 
-    >>> mgr.get_description('en')
-    'English'
-    >>> mgr.get_charset('en')
-    'us-ascii'
-    >>> mgr.get_description('it')
-    'Italian'
-    >>> mgr.get_charset('it')
-    'iso-8859-1'
-
-You can also add a language without enabling it.
-
-    >>> mgr.add_language('pl', 'Polish', 'iso-8859-2', enable=False)
-    >>> sorted(mgr.known_codes)
-    ['en', 'it', 'pl']
-    >>> sorted(mgr.enabled_codes)
-    ['en', 'it']
-
-You can get language data for disabled languages.
-
-    >>> mgr.get_description('pl')
-    'Polish'
-    >>> mgr.get_charset('pl')
-    'iso-8859-2'
-
-And of course you can enable a known language.
-
-    >>> mgr.enable_language('pl')
-    >>> sorted(mgr.enabled_codes)
-    ['en', 'it', 'pl']
-
-But you cannot enable languages that the manager does not know about.
-
-    >>> mgr.enable_language('xx')
-    Traceback (most recent call last):
-    ...
-    KeyError: 'xx'
+    >>> print mgr['en'].description
+    English
+    >>> print mgr['en'].charset
+    us-ascii
+    >>> print mgr['it'].description
+    Italian
+    >>> print mgr['it'].charset
+    iso-8859-1
 
 
 Other iterations
 ----------------
 
-You can iterate over the descriptions (names) of all enabled languages.
+You can iterate over all the known language codes.
 
-    >>> sorted(mgr.enabled_names)
-    ['English', 'Italian', 'Polish']
+    >>> mgr.add_language('pl', 'iso-8859-2', 'Polish')
+    >>> sorted(mgr.codes)
+    ['en', 'it', 'pl']
 
-You can ask whether a particular language code is enabled.
+You can iterate over all the known languages.
 
-    >>> 'it' in mgr.enabled_codes
+    >>> from operator import attrgetter
+    >>> languages = sorted((language for language in mgr.languages),
+    ...                    key=attrgetter('code'))
+    >>> for language in languages:
+    ...     print language.code, language.charset, language.description
+    en us-ascii English
+    it iso-8859-1 Italian
+    pl iso-8859-2 Polish
+
+You can ask whether a particular language code is known.
+
+    >>> 'it' in mgr
     True
+    >>> 'xx' in mgr
+    False
+
+You can get a particular language by its code.
+
+    >>> print mgr['it'].description
+    Italian
+    >>> print mgr['xx'].code
+    Traceback (most recent call last):
+    ...
+    KeyError: 'xx'
+    >>> print mgr.get('it').description
+    Italian
+    >>> print mgr.get('xx')
+    None
+    >>> print mgr.get('xx', 'missing')
+    missing
