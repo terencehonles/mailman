@@ -45,9 +45,9 @@ from email.Header import Header
 from email.Utils import formataddr
 from zope.interface import implements
 
-from mailman.Utils import ParseEmail
 from mailman.config import config
 from mailman.core import errors
+from mailman.email.utils import split_email
 from mailman.i18n import _
 from mailman.interfaces.handler import IHandler
 from mailman.interfaces.mailinglist import Personalization
@@ -304,8 +304,8 @@ def verpdeliver(mlist, msg, msgdata, envsender, failures, conn):
         handler.process(mlist, msgcopy, msgdata)
         # Calculate the envelope sender, which we may be VERPing
         if msgdata.get('verp'):
-            bmailbox, bdomain = ParseEmail(envsender)
-            rmailbox, rdomain = ParseEmail(recip)
+            bmailbox, bdomain = split_email(envsender)
+            rmailbox, rdomain = split_email(recip)
             if rdomain is None:
                 # The recipient address is not fully-qualified.  We can't
                 # deliver it to this person, nor can we craft a valid verp

@@ -153,20 +153,6 @@ def QuotePeriods(text):
     return JOINER.join(text.split(SEP))
 
 
-# This takes an email address, and returns a tuple containing (user,host)
-def ParseEmail(email):
-    user = None
-    domain = None
-    email = email.lower()
-    at_sign = email.find('@')
-    if at_sign < 1:
-        return email, None
-    user = email[:at_sign]
-    rest = email[at_sign+1:]
-    domain = rest.split('.')
-    return user, domain
-
-
 def LCDomain(addr):
     "returns the address with the domain part lowercased"
     atind = addr.find('@')
@@ -185,7 +171,8 @@ def ValidateEmail(s):
         raise errors.InvalidEmailAddress(repr(s))
     if _badchars.search(s) or s[0] == '-':
         raise errors.InvalidEmailAddress(repr(s))
-    user, domain_parts = ParseEmail(s)
+    from mailman.email.utils import split_email
+    user, domain_parts = split_email(s)
     # Local, unqualified addresses are not allowed.
     if not domain_parts:
         raise errors.InvalidEmailAddress(repr(s))
@@ -203,7 +190,8 @@ def GetPossibleMatchingAddrs(name):
                                            'scott@pobox.com']"""
 
     name = name.lower()
-    user, domain = ParseEmail(name)
+    from mailman.email.utils import split_email
+    user, domain = split_email(name)
     res = [name]
     if domain:
         domain = domain[1:]
@@ -483,16 +471,6 @@ def findtext(templatefile, raw_dict=None, raw=False, lang=None, mlist=None):
 
 def maketext(templatefile, dict=None, raw=False, lang=None, mlist=None):
     return findtext(templatefile, dict, raw, lang, mlist)[0]
-
-
-
-# Figure out epoch seconds of midnight at the start of today (or the given
-# 3-tuple date of (year, month, day).
-def midnight(date=None):
-    if date is None:
-        date = time.localtime()[:3]
-    # -1 for dst flag tells the library to figure it out
-    return time.mktime(date + (0,)*5 + (-1,))
 
 
 

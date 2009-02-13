@@ -26,9 +26,9 @@ import datetime
 from email.Utils import parseaddr
 from lazr.config import as_timedelta
 
-from mailman import Utils
 from mailman.Bouncers import BouncerAPI
 from mailman.config import config
+from mailman.email.utils import split_email
 from mailman.i18n import _
 from mailman.queue import Runner
 
@@ -227,7 +227,7 @@ class BounceRunner(Runner, BounceMixin):
 
 
 def verp_bounce(mlist, msg):
-    bmailbox, bdomain = Utils.ParseEmail(mlist.GetBouncesEmail())
+    bmailbox, bdomain = split_email(mlist.GetBouncesEmail())
     # Sadly not every MTA bounces VERP messages correctly, or consistently.
     # Fall back to Delivered-To: (Postfix), Envelope-To: (Exim) and
     # Apparently-To:, and then short-circuit if we still don't have anything
@@ -258,7 +258,7 @@ def verp_bounce(mlist, msg):
 
 
 def verp_probe(mlist, msg):
-    bmailbox, bdomain = Utils.ParseEmail(mlist.GetBouncesEmail())
+    bmailbox, bdomain = split_email(mlist.GetBouncesEmail())
     # Sadly not every MTA bounces VERP messages correctly, or consistently.
     # Fall back to Delivered-To: (Postfix), Envelope-To: (Exim) and
     # Apparently-To:, and then short-circuit if we still don't have anything

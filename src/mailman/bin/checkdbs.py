@@ -140,6 +140,15 @@ def auto_discard(mlist):
 
 
 
+# Figure out epoch seconds of midnight at the start of today (or the given
+# 3-tuple date of (year, month, day).
+def midnight(date=None):
+    if date is None:
+        date = time.localtime()[:3]
+    # -1 for dst flag tells the library to figure it out
+    return time.mktime(date + (0,)*5 + (-1,))
+
+
 def main():
     opts, args, parser = parseargs()
     config.load(opts.config)
@@ -152,11 +161,11 @@ def main():
         try:
             count = config.db.requests.get_list_requests(mlist).count
             # While we're at it, let's evict yesterday's autoresponse data
-            midnight_today = Utils.midnight()
+            midnight_today = midnight()
             evictions = []
             for sender in mlist.hold_and_cmd_autoresponses.keys():
                 date, respcount = mlist.hold_and_cmd_autoresponses[sender]
-                if Utils.midnight(date) < midnight_today:
+                if midnight(date) < midnight_today:
                     evictions.append(sender)
             if evictions:
                 for sender in evictions:
