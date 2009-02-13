@@ -31,9 +31,9 @@ import datetime
 from pkg_resources import resource_string
 from zope.interface import implements
 
-from mailman.Utils import ValidateEmail
 from mailman.config import config
 from mailman.email.message import UserNotification
+from mailman.email.validate import validate
 from mailman.i18n import _
 from mailman.interfaces.domain import IDomain
 from mailman.interfaces.member import MemberRole
@@ -58,7 +58,7 @@ class Registrar:
         """See `IUserRegistrar`."""
         # First, do validation on the email address.  If the address is
         # invalid, it will raise an exception, otherwise it just returns.
-        ValidateEmail(address)
+        validate(address)
         # Create a pendable for the registration.
         pendable = PendableRegistration(
             type=PendableRegistration.PEND_KEY,

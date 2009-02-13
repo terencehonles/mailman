@@ -32,9 +32,9 @@ import shutil
 import logging
 
 from mailman import Utils
-from mailman.Utils import ValidateEmail
 from mailman.config import config
 from mailman.core import errors
+from mailman.email.validate import validate
 from mailman.interfaces.member import MemberRole
 
 
@@ -46,7 +46,7 @@ def create_list(fqdn_listname, owners=None):
     """Create the named list and apply styles."""
     if owners is None:
         owners = []
-    ValidateEmail(fqdn_listname)
+    validate(fqdn_listname)
     listname, domain = fqdn_listname.split('@', 1)
     if domain not in config.domains:
         raise errors.BadDomainSpecificationError(domain)

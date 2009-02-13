@@ -78,7 +78,7 @@ class BadDomainSpecificationError(MailmanError):
 
 
 # Exception hierarchy for bad email address errors that can be raised from
-# Utils.ValidateEmail()
+# mailman.email.validate.validate()
 class EmailAddressError(MailmanError):
     """Base class for email address validation errors."""
 

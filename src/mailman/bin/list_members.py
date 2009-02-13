@@ -19,9 +19,9 @@ import sys
 
 from email.Utils import formataddr
 
-from mailman import Utils
 from mailman.config import config
 from mailman.core import errors
+from mailman.email.validate import is_valid
 from mailman.i18n import _
 from mailman.interfaces import DeliveryStatus
 from mailman.options import SingleMailingListOptions
@@ -116,14 +116,6 @@ def safe(string):
     return string.encode(sys.getdefaultencoding(), 'replace')
 
 
-def isinvalid(addr):
-    try:
-        Utils.ValidateEmail(addr)
-        return False
-    except errors.EmailAddressError:
-        return True
-
-
 
 def whymatches(mlist, addr, why):
     # Return true if the `why' matches the reason the address is enabled, or
@@ -164,7 +156,7 @@ def main():
         for address in all:
             user = config.db.user_manager.get_user(address)
             name = (user.real_name if fullnames and user else u'')
-            if options.options.invalid and isinvalid(address):
+            if options.options.invalid and not is_valid(address):
                 print >> fp, formataddr((safe(name), address))
         return
     if options.options.regular:

@@ -147,40 +147,6 @@ def wrap(text, column=70, honor_leading_ws=True):
 
 
 
-def QuotePeriods(text):
-    JOINER = '\n .\n'
-    SEP = '\n.\n'
-    return JOINER.join(text.split(SEP))
-
-
-def LCDomain(addr):
-    "returns the address with the domain part lowercased"
-    atind = addr.find('@')
-    if atind == -1: # no domain part
-        return addr
-    return addr[:atind] + '@' + addr[atind+1:].lower()
-
-
-# TBD: what other characters should be disallowed?
-_badchars = re.compile(r'[][()<>|;^,\000-\037\177-\377]')
-
-def ValidateEmail(s):
-    """Verify that the an email address isn't grossly evil."""
-    # Pretty minimal, cheesy check.  We could do better...
-    if not s or ' ' in s:
-        raise errors.InvalidEmailAddress(repr(s))
-    if _badchars.search(s) or s[0] == '-':
-        raise errors.InvalidEmailAddress(repr(s))
-    from mailman.email.utils import split_email
-    user, domain_parts = split_email(s)
-    # Local, unqualified addresses are not allowed.
-    if not domain_parts:
-        raise errors.InvalidEmailAddress(repr(s))
-    if len(domain_parts) < 2:
-        raise errors.InvalidEmailAddress(repr(s))
-
-
-
 def GetPossibleMatchingAddrs(name):
     """returns a sorted list of addresses that could possibly match
     a given name.

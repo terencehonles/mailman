@@ -34,6 +34,7 @@ from mailman.app.notifications import send_goodbye_message
 from mailman.config import config
 from mailman.core import errors
 from mailman.email.message import Message, OwnerNotification
+from mailman.email.validate import validate
 from mailman.interfaces.member import AlreadySubscribedError, MemberRole
 
 _ = i18n._
@@ -60,7 +61,7 @@ def add_member(mlist, address, realname, password, delivery_mode, language):
     :type language: string
     """
     # Let's be extra cautious.
-    Utils.ValidateEmail(address)
+    validate(address)
     if mlist.members.get_member(address) is not None:
         raise AlreadySubscribedError(
             mlist.fqdn_listname, address, MemberRole.member)
