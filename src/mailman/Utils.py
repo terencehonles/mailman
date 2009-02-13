@@ -147,27 +147,6 @@ def wrap(text, column=70, honor_leading_ws=True):
 
 
 
-def GetPossibleMatchingAddrs(name):
-    """returns a sorted list of addresses that could possibly match
-    a given name.
-
-    For Example, given scott@pobox.com, return ['scott@pobox.com'],
-    given scott@blackbox.pobox.com return ['scott@blackbox.pobox.com',
-                                           'scott@pobox.com']"""
-
-    name = name.lower()
-    from mailman.email.utils import split_email
-    user, domain = split_email(name)
-    res = [name]
-    if domain:
-        domain = domain[1:]
-        while len(domain) >= 2:
-            res.append("%s@%s" % (user, DOT.join(domain)))
-            domain = domain[1:]
-    return res
-
-
-
 _vowels = ('a', 'e', 'i', 'o', 'u')
 _consonants = ('b', 'c', 'd', 'f', 'g', 'h', 'k', 'm', 'n',
                'p', 'r', 's', 't', 'v', 'w', 'x', 'z')
