@@ -22,12 +22,12 @@ import codecs
 from cStringIO import StringIO
 from email.utils import parseaddr
 
-from mailman import Message
 from mailman import Utils
 from mailman import i18n
 from mailman.app.membership import add_member
 from mailman.config import config
 from mailman.core import errors
+from mailman.email.message import UserNotification
 from mailman.interfaces.member import AlreadySubscribedError, DeliveryMode
 from mailman.options import SingleMailingListOptions
 
@@ -175,7 +175,7 @@ def main():
 
         if admin_notify:
             subject = _('$mlist.real_name subscription notification')
-            msg = Message.UserNotification(
+            msg = UserNotification(
                 mlist.owner, mlist.no_reply_address, subject,
                 outfp.getvalue(), mlist.preferred_language)
             msg.send(mlist)

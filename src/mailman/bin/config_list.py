@@ -20,10 +20,10 @@ import sys
 import time
 import optparse
 
-from mailman import errors
 from mailman import MailList
-from mailman import Utils
+from mailman import errors
 from mailman import i18n
+from mailman.Utils import wrap
 from mailman.configuration import config
 from mailman.version import MAILMAN_VERSION
 
@@ -100,9 +100,8 @@ def do_output(listname, outfile, parser):
         except errors.MMListError:
             parser.error(_('No such list: $listname'))
         # Preamble for the config info. PEP 263 charset and capture time.
-        language = mlist.preferred_language
-        charset = Utils.GetCharSet(language)
-        i18n.set_language(language)
+        charset = mlist.preferred_language.charset
+        i18n.set_language(mlist.preferred_language.code)
         if not charset:
             charset = 'us-ascii'
         when = time.ctime(time.time())
@@ -132,7 +131,7 @@ def do_list_categories(mlist, k, subcat, outfp):
     label, gui = mlist.GetConfigCategories()[k]
     if info is None:
         return
-    charset = Utils.GetCharSet(mlist.preferred_language)
+    charset = mlist.preferred_language.charset
     print >> outfp, '##', k.capitalize(), _('options')
     print >> outfp, '#'
     # First, massage the descripton text, which could have obnoxious

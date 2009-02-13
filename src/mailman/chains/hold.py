@@ -33,7 +33,7 @@ from email.utils import formatdate, make_msgid
 from zope.interface import implements
 
 from mailman import i18n
-from mailman.Utils import maketext, oneline, wrap, GetCharSet
+from mailman.Utils import maketext, oneline, wrap
 from mailman.app.moderator import hold_message
 from mailman.app.replybot import autorespond_to_sender, can_acknowledge
 from mailman.chains.base import TerminalChainBase
@@ -86,7 +86,7 @@ class HoldChain(TerminalChainBase):
         language = (member.preferred_language
                     if member else mlist.preferred_language)
         # A substitution dictionary for the email templates.
-        charset = GetCharSet(mlist.preferred_language)
+        charset = mlist.preferred_language.charset
         original_subject = msg.get('subject')
         if original_subject is None:
             original_subject = _('(no subject)')
@@ -122,12 +122,12 @@ class HoldChain(TerminalChainBase):
             # posting was held.
             subject = _(
               'Your message to $mlist.fqdn_listname awaits moderator approval')
-            send_language = msgdata.get('lang', language)
+            send_language_code = msgdata.get('lang', language.code)
             text = maketext('postheld.txt', substitutions,
-                            lang=send_language, mlist=mlist)
+                            lang=send_language_code, mlist=mlist)
             adminaddr = mlist.bounces_address
             nmsg = UserNotification(msg.sender, adminaddr, subject, text,
-                                    send_language)
+                                    config.languages[send_language_code])
             nmsg.send(mlist)
         # Now the message for the list moderators.  This one should appear to
         # come from <list>-owner since we really don't need to do bounce
@@ -135,9 +135,9 @@ class HoldChain(TerminalChainBase):
         if mlist.admin_immed_notify:
             # Now let's temporarily set the language context to that which the
             # administrators are expecting.
-            with i18n.using_language(mlist.preferred_language):
+            with i18n.using_language(mlist.preferred_language.code):
                 language = mlist.preferred_language
-                charset = GetCharSet(language)
+                charset = language.charset
                 # We need to regenerate or re-translate a few values in the
                 # substitution dictionary.
                 #d['reason'] = _(reason) # XXX reason
@@ -160,7 +160,7 @@ discard the held message.  Do this if the message is spam.  If you reply to
 this message and include an Approved: header with the list password in it, the
 message will be approved for posting to the list.  The Approved: header can
 also appear in the first line of the body of the reply.""")),
-                                _charset=GetCharSet(language))
+                                _charset=language.charset)
                 dmsg['Subject'] = 'confirm ' + token
                 dmsg['Sender'] = mlist.request_address
                 dmsg['From'] = mlist.request_address

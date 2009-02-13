@@ -30,7 +30,7 @@ import datetime
 
 from zope.interface import implements
 
-from mailman import Utils
+from mailman.config import config
 from mailman.i18n import _
 from mailman.interfaces import Action, NewsModeration
 from mailman.interfaces.mailinglist import (
@@ -157,8 +157,8 @@ $fqdn_listname
 ${listinfo_page}
 """
         # Set this to Never if the list's preferred language uses us-ascii,
-        # otherwise set it to As Needed
-        if Utils.GetCharSet(mlist.preferred_language) == 'us-ascii':
+        # otherwise set it to As Needed.
+        if mlist.preferred_language.charset == 'us-ascii':
             mlist.encode_ascii_prefixes = 0
         else:
             mlist.encode_ascii_prefixes = 2

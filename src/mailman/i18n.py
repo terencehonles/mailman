@@ -61,12 +61,12 @@ class attrdict(dict):
 
 
 
-def set_language(language=None):
+def set_language(language_code=None):
     global _translation
-    if language is not None:
-        language = [language]
+    # gettext.translation() API requires None or a sequence.
+    codes = (None if language_code is None else [language_code])
     try:
-        _translation = gettext.translation('mailman', MESSAGES_DIR, language)
+        _translation = gettext.translation('mailman', MESSAGES_DIR, codes)
     except IOError:
         # The selected language was not installed in messages, so fall back to
         # untranslated English.
@@ -82,15 +82,15 @@ def set_translation(translation):
     _translation = translation
 
 
-class using_language(object):
-    """Context manager for Python 2.5's `with` statement."""
-    def __init__(self, language):
-        self._language = language
+class using_language:
+    """Context manager for Python's `with` statement."""
+    def __init__(self, language_code):
+        self._language_code = language_code
         self._old_translation = None
 
     def __enter__(self):
         self._old_translation = _translation
-        set_language(self._language)
+        set_language(self._language_code)
 
     def __exit__(self, *exc_info):
         global _translation

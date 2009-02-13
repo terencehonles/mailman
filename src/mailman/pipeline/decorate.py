@@ -31,7 +31,6 @@ import logging
 from email.MIMEText import MIMEText
 from zope.interface import implements
 
-from mailman import Utils
 from mailman.config import config
 from mailman.email.message import Message
 from mailman.i18n import _
@@ -91,7 +90,7 @@ def process(mlist, msg, msgdata):
     # TK: Message with 'charset=' cause trouble. So, instead of
     #     mgs.get_content_charset('us-ascii') ...
     mcset = msg.get_content_charset() or 'us-ascii'
-    lcset = Utils.GetCharSet(mlist.preferred_language)
+    lcset = mlist.preferred_language.charset
     msgtype = msg.get_content_type()
     # BAW: If the charsets don't match, should we add the header and footer by
     # MIME multipart chroming the message?

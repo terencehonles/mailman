@@ -42,7 +42,6 @@ from email.charset import Charset
 from email.header import Header
 from lazr.config import as_boolean
 
-from mailman.Utils import GetCharSet
 from mailman.config import config
 
 
@@ -167,13 +166,10 @@ class UserNotification(Message):
 
     def __init__(self, recip, sender, subject=None, text=None, lang=None):
         Message.__init__(self)
-        charset = 'us-ascii'
-        if lang is not None:
-            charset = GetCharSet(lang)
+        charset = (lang.charset if lang is not None else 'us-ascii')
+        subject = ('(no subject)' if subject is None else subject)
         if text is not None:
             self.set_payload(text.encode(charset), charset)
-        if subject is None:
-            subject = '(no subject)'
         self['Subject'] = Header(subject.encode(charset), charset,
                                  header_name='Subject', errors='replace')
         self['From'] = sender
@@ -233,8 +229,8 @@ class OwnerNotification(UserNotification):
             roster = mlist.owners
         recips = [address.address for address in roster.addresses]
         sender = config.mailman.site_owner
-        lang = mlist.preferred_language
-        UserNotification.__init__(self, recips, sender, subject, text, lang)
+        UserNotification.__init__(self, recips, sender, subject,
+                                  text, mlist.preferred_language)
         # Hack the To header to look like it's going to the -owner address
         del self['to']
         self['To'] = mlist.owner_address

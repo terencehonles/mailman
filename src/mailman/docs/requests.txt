@@ -39,7 +39,7 @@ mailing list you need to get its requests object.
     >>> from zope.interface.verify import verifyObject
     >>> verifyObject(IRequests, config.db.requests)
     True
-    >>> mlist = config.db.list_manager.create(u'test@example.com')
+    >>> mlist = create_list(u'test@example.com')
     >>> requests = config.db.requests.get_list_requests(mlist)
     >>> verifyObject(IListRequests, requests)
     True
@@ -215,7 +215,7 @@ Holding messages
 
 For this section, we need a mailing list and at least one message.
 
-    >>> mlist = config.db.list_manager.create(u'alist@example.com')
+    >>> mlist = create_list(u'alist@example.com')
     >>> mlist.preferred_language = u'en'
     >>> mlist.real_name = u'A Test List'
     >>> msg = message_from_string("""\
@@ -678,7 +678,7 @@ Frank Person is now a member of the mailing list.
     <Member: Frank Person <fperson@example.org>
              on alist@example.com as MemberRole.member>
     >>> member.preferred_language
-    u'en'
+    <Language [en] English (USA)>
     >>> print member.delivery_mode
     DeliveryMode.regular
     >>> user = config.db.user_manager.get_user(member.address.address)

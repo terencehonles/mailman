@@ -30,10 +30,10 @@ import re
 from email.MIMEMessage import MIMEMessage
 from email.MIMEText import MIMEText
 
-from mailman import Utils
+from mailman.Utils import wrap
 from mailman.config import config
 from mailman.core import errors
-from mailman.email.message import Message
+from mailman.email.message import UserNotification
 from mailman.i18n import _
 
 
@@ -156,17 +156,16 @@ error, contact the mailing list owner at %(listowner)s."""))
 def do_discard(mlist, msg):
     # Do we forward auto-discards to the list owners?
     if mlist.forward_auto_discards:
-        lang = mlist.preferred_language
         varhelp = '%s/?VARHELP=privacy/sender/discard_these_nonmembers' % \
                   mlist.GetScriptURL('admin', absolute=1)
-        nmsg = Message.UserNotification(mlist.GetOwnerEmail(),
-                                        mlist.GetBouncesEmail(),
-                                        _('Auto-discard notification'),
-                                        lang=lang)
+        nmsg = UserNotification(mlist.GetOwnerEmail(),
+                                mlist.GetBouncesEmail(),
+                                _('Auto-discard notification'),
+                                lang=mlist.preferred_language)
         nmsg.set_type('multipart/mixed')
         text = MIMEText(Utils.wrap(_(
             'The attached message has been automatically discarded.')),
-                        _charset=Utils.GetCharSet(lang))
+                        _charset=mlist.preferred_language.charset)
         nmsg.attach(text)
         nmsg.attach(MIMEMessage(msg))
         nmsg.send(mlist)

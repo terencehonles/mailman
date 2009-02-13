@@ -40,7 +40,7 @@ class LanguageManager:
         # Mapping from 2-letter code to Language instance.
         self._languages = {}
 
-    def add_language(self, code, charset, description):
+    def add(self, code, charset, description):
         """See `ILanguageManager`."""
         if code in self._languages:
             raise ValueError('Language code already registered: ' + code)

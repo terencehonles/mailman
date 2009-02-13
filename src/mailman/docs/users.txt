@@ -132,6 +132,8 @@ Users have preferences, but these preferences have no default settings.
 
 Some of these preferences are booleans and they can be set to True or False.
 
+    >>> config.languages.add(u'it', u'iso-8859-1', u'Italian')
+
     >>> from mailman.constants import DeliveryMode
     >>> prefs = user_1.preferences
     >>> prefs.acknowledge_posts = True
@@ -141,7 +143,7 @@ Some of these preferences are booleans and they can be set to True or False.
     >>> prefs.delivery_mode = DeliveryMode.regular
     >>> show_prefs(user_1.preferences)
     acknowledge_posts    : True
-    preferred_language   : it
+    preferred_language   : <Language [it] Italian>
     receive_list_copy    : False
     receive_own_postings : False
     delivery_mode        : DeliveryMode.regular

@@ -47,7 +47,7 @@ class ILanguageManager(Interface):
     Current, disabling languages is not supported.
     """
 
-    def add_language(code, charset, description):
+    def add(code, charset, description):
         """Teach the language manager about a language.
 
         :param code: The short two-character language code for the

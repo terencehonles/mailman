@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2009 by the Free Software Foundation, Inc.
+# Copyright (C) 2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -15,31 +15,33 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Various constants and enumerations."""
+"""The representation of a language."""
+
 
 from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'SystemDefaultPreferences',
+    'Language',
     ]
 
 
 from zope.interface import implements
-
-from mailman.config import config
-from mailman.interfaces.member import DeliveryMode, DeliveryStatus
-from mailman.interfaces.preferences import IPreferences
+from mailman.interfaces.languages import ILanguage
 
 
 
-class SystemDefaultPreferences:
-    implements(IPreferences)
+class Language:
+    """The representation of a language."""
 
-    acknowledge_posts = False
-    hide_address = True
-    preferred_language = config.languages['en']
-    receive_list_copy = True
-    receive_own_postings = True
-    delivery_mode = DeliveryMode.regular
-    delivery_status = DeliveryStatus.enabled
+    implements(ILanguage)
+
+    def __init__(self, code, charset, description):
+        self.code = code
+        self.charset = charset
+        self.description  = description
+
+    def __str__(self):
+        return '<Language [{0.code}] {0.description}>'.format(self)
+
+    __repr__ = __str__

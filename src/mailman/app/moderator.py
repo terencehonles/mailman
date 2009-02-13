@@ -165,7 +165,7 @@ def handle_message(mlist, id, action,
             member = mlist.members.get_member(addresses[0])
             if member:
                 language = member.preferred_language
-        with i18n.using_language(language):
+        with i18n.using_language(language.code):
             fmsg = UserNotification(
                 addresses, mlist.bounces_address,
                 _('Forward of moderated message'),
@@ -234,14 +234,14 @@ def handle_subscription(mlist, id, action, comment=None):
         _refuse(mlist, _('Subscription request'),
                 data['address'],
                 comment or _('[No reason given]'),
-                lang=data['language'])
+                lang=config.languages[data['language']])
     elif action is Action.accept:
         key, data = requestdb.get_request(id)
         enum_value = data['delivery_mode'].split('.')[-1]
         delivery_mode = DeliveryMode(enum_value)
         address = data['address']
         realname = data['realname']
-        language = data['language']
+        language = config.languages[data['language']]
         password = data['password']
         try:
             add_member(mlist, address, realname, password,
@@ -329,16 +329,16 @@ def _refuse(mlist, request, recip, comment, origmsg=None, lang=None):
     realname = mlist.real_name
     if lang is None:
         member = mlist.members.get_member(recip)
-        if member:
-            lang = member.preferred_language
+        lang = (member.preferred_language if member
+                else mlist.preferred_language)
     text = Utils.maketext(
         'refuse.txt',
         {'listname' : mlist.fqdn_listname,
          'request'  : request,
          'reason'   : comment,
          'adminaddr': mlist.owner_address,
-        }, lang=lang, mlist=mlist)
-    with i18n.using_language(lang):
+        }, lang=lang.code, mlist=mlist)
+    with i18n.using_language(lang.code):
         # add in original message, but not wrap/filled
         if origmsg:
             text = NL.join(

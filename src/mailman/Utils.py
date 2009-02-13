@@ -425,7 +425,7 @@ def findtext(templatefile, raw_dict=None, raw=False, lang=None, mlist=None):
     if lang is not None:
         languages.add(lang)
     if mlist is not None:
-        languages.add(mlist.preferred_language)
+        languages.add(mlist.preferred_language.code)
     languages.add(config.mailman.default_language)
     assert None not in languages, 'None in languages'
     # Calculate the locations to scan
@@ -471,7 +471,8 @@ def findtext(templatefile, raw_dict=None, raw=False, lang=None, mlist=None):
     else:
         template = fp.read()
         fp.close()
-        template = unicode(template, GetCharSet(lang), 'replace')
+        charset = config.languages[lang].charset
+        template = unicode(template, charset, 'replace')
     text = template
     if raw_dict is not None:
         text = expand(template, raw_dict)
@@ -482,13 +483,6 @@ def findtext(templatefile, raw_dict=None, raw=False, lang=None, mlist=None):
 
 def maketext(templatefile, dict=None, raw=False, lang=None, mlist=None):
     return findtext(templatefile, dict, raw, lang, mlist)[0]
-
-
-
-# XXX Replace this with direct calls.  For now, existing uses of GetCharSet()
-# are too numerous to change.
-def GetCharSet(lang):
-    return config.languages[lang].charset
 
 
 
@@ -512,7 +506,7 @@ def uncanonstr(s, lang=None):
     if lang is None:
         charset = 'us-ascii'
     else:
-        charset = GetCharSet(lang)
+        charset = config.languages[lang].charset
     # See if the string contains characters only in the desired character
     # set.  If so, return it unchanged, except for coercing it to a byte
     # string.

@@ -80,7 +80,7 @@ def autorespond_to_sender(mlist, sender, lang=None):
              'owneremail': mlist.owner_address,
              },
             lang=lang)
-        with i18n.using_language(lang):
+        with i18n.using_language(lang.code):
             msg = Message.UserNotification(
                 sender, mlist.owner_address,
                 _('Last autoresponse notification for today'),

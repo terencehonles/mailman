@@ -149,7 +149,7 @@ class Configuration(object):
         for language in languages:
             if language.enabled:
                 code = language.name.split('.')[1]
-                self.languages.add_language(
+                self.languages.add(
                     code, language.charset, language.description)
         # The default language must always be available.
         assert self._config.mailman.default_language in self.languages

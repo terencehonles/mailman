@@ -32,7 +32,6 @@ from email.header import Header, decode_header, make_header
 from email.utils import parseaddr, formataddr, getaddresses
 from zope.interface import implements
 
-from mailman import Utils
 from mailman.config import config
 from mailman.i18n import _
 from mailman.interfaces.handler import IHandler
@@ -53,7 +52,7 @@ def uheader(mlist, s, header_name=None, continuation_ws='\t', maxlinelen=None):
     # non-ascii character is in the string. If there is and the charset is
     # us-ascii then we use iso-8859-1 instead. If the string is ascii only
     # we use 'us-ascii' if another charset is specified.
-    charset = Utils.GetCharSet(mlist.preferred_language)
+    charset = mlist.preferred_language.charset
     if nonascii.search(s):
         # use list charset but ...
         if charset == 'us-ascii':
@@ -181,7 +180,7 @@ def process(mlist, msg, msgdata):
         return
     # This will act like an email address for purposes of formataddr()
     listid = '{0}.{1}'.format(mlist.list_name, mlist.host_name)
-    cset = Utils.GetCharSet(mlist.preferred_language)
+    cset = mlist.preferred_language.charset
     if mlist.description:
         # Don't wrap the header since here we just want to get it properly RFC
         # 2047 encoded.
@@ -288,7 +287,7 @@ def prefix_subject(mlist, msg, msgdata):
     # subject: [subject prefix]
     if subject.strip() == '':
         subject = _('(no subject)')
-        cset = Utils.GetCharSet(mlist.preferred_language)
+        cset = mlist.preferred_language.charset
     # and substitute %d in prefix with post_id
     try:
         prefix = prefix % mlist.post_id
@@ -312,9 +311,8 @@ def prefix_subject(mlist, msg, msgdata):
 
 
 def ch_oneline(headerstr):
-    # Decode header string in one line and convert into single charset
-    # copied and modified from ToDigest.py and Utils.py
-    # return (string, cset) tuple as check for failure
+    # Decode header string in one line and convert into single charset.
+    # Return (string, cset) tuple as check for failure.
     try:
         d = decode_header(headerstr)
         # At this point, we should rstrip() every string because some

@@ -195,9 +195,10 @@ class CommandRunner(Runner):
         # Send a reply, but do not attach the original message.  This is a
         # compromise because the original message is often helpful in tracking
         # down problems, but it's also a vector for backscatter spam.
+        language = config.languages[msgdata['lang']]
         reply = UserNotification(msg.sender, mlist.bounces_address,
                                  _('The results of your email commands'),
-                                 lang=msgdata['lang'])
+                                 lang=language)
         # Find a charset for the response body.  Try ascii first, then
         # latin-1 and finally falling back to utf-8.
         reply_body = unicode(results)

@@ -16,3 +16,4 @@ develop-eggs
 parts
 ./bin
 eggs
+diff.txt

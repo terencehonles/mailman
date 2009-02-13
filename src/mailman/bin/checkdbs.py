@@ -22,11 +22,11 @@ import optparse
 from email.Charset import Charset
 
 from mailman import MailList
-from mailman import Message
 from mailman import Utils
 from mailman import i18n
 from mailman.app.requests import handle_request
 from mailman.configuration import config
+from mailman.email.message import UserNotification
 from mailman.version import MAILMAN_VERSION
 
 _ = i18n._
@@ -59,7 +59,7 @@ Check for pending admin requests and mail the list owners if necessary."""))
 
 def pending_requests(mlist):
     # Must return a byte string
-    lcset = Utils.GetCharSet(mlist.preferred_language)
+    lcset = mlist.preferred_language.charset
     pending = []
     first = True
     requestsdb = config.db.get_list_requests(mlist)
@@ -101,7 +101,7 @@ Cause: $reason"""))
         pending.append('')
     # Coerce all items in pending to a Unicode so we can join them
     upending = []
-    charset = Utils.GetCharSet(mlist.preferred_language)
+    charset = mlist.preferred_language.charset
     for s in pending:
         if isinstance(s, unicode):
             upending.append(s)
@@ -112,7 +112,7 @@ Cause: $reason"""))
     # example, the request was pended while the list's language was French,
     # but then it was changed to English before checkdbs ran.
     text = NL.join(upending)
-    charset = Charset(Utils.GetCharSet(mlist.preferred_language))
+    charset = Charset(mlist.preferred_language.charset)
     incodec = charset.input_codec or 'ascii'
     outcodec = charset.output_codec or 'ascii'
     if isinstance(text, unicode):
@@ -185,10 +185,10 @@ def main():
                     subject = _('$count $realname moderator request(s) waiting')
                 else:
                     subject = _('$realname moderator request check result')
-                msg = Message.UserNotification(mlist.GetOwnerEmail(),
-                                               mlist.GetBouncesEmail(),
-                                               subject, text,
-                                               mlist.preferred_language)
+                msg = UserNotification(mlist.GetOwnerEmail(),
+                                       mlist.GetBouncesEmail(),
+                                       subject, text,
+                                       mlist.preferred_language)
                 msg.send(mlist, **{'tomoderators': True})
         finally:
             mlist.Unlock()

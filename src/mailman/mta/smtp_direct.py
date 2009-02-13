@@ -45,7 +45,7 @@ from email.Header import Header
 from email.Utils import formataddr
 from zope.interface import implements
 
-from mailman import Utils
+from mailman.Utils import ParseEmail
 from mailman.config import config
 from mailman.core import errors
 from mailman.i18n import _
@@ -304,8 +304,8 @@ def verpdeliver(mlist, msg, msgdata, envsender, failures, conn):
         handler.process(mlist, msgcopy, msgdata)
         # Calculate the envelope sender, which we may be VERPing
         if msgdata.get('verp'):
-            bmailbox, bdomain = Utils.ParseEmail(envsender)
-            rmailbox, rdomain = Utils.ParseEmail(recip)
+            bmailbox, bdomain = ParseEmail(envsender)
+            rmailbox, rdomain = ParseEmail(recip)
             if rdomain is None:
                 # The recipient address is not fully-qualified.  We can't
                 # deliver it to this person, nor can we craft a valid verp
@@ -330,7 +330,7 @@ def verpdeliver(mlist, msg, msgdata, envsender, failures, conn):
                 # characters for which we can do nothing about.  Once we have
                 # the name as Unicode, we can create a Header instance for it
                 # so that it's properly encoded for email transport.
-                charset = Utils.GetCharSet(mlist.getMemberLanguage(recip))
+                charset = mlist.getMemberLanguage(recip).charset
                 if charset == 'us-ascii':
                     # Since Header already tries both us-ascii and utf-8,
                     # let's add something a bit more useful.

@@ -151,7 +151,7 @@ class MailingList(Model):
     personalize = Enum()
     pipeline = Unicode()
     post_id = Int()
-    preferred_language = Unicode()
+    _preferred_language = Unicode(name='preferred_language')
     private_roster = Bool()
     real_name = Unicode()
     reject_these_nonmembers = Pickle()
@@ -199,6 +199,10 @@ class MailingList(Model):
         self.regular_members = roster.RegularMemberRoster(self)
         self.digest_members = roster.DigestMemberRoster(self)
         self.subscribers = roster.Subscribers(self)
+
+    def __repr__(self):
+        return '<mailing list "{0}" at {1:#x}>'.format(
+            self.fqdn_listname, id(self))
 
     @property
     def fqdn_listname(self):
@@ -267,6 +271,14 @@ class MailingList(Model):
             cookie  = cookie))
         return '{0}@{1}'.format(local_part, self.host_name)
 
-    def __repr__(self):
-        return '<mailing list "{0}" at {1:#x}>'.format(
-            self.fqdn_listname, id(self))
+    @property
+    def preferred_language(self):
+        return config.languages[self._preferred_language]
+
+    @preferred_language.setter
+    def preferred_language(self, language):
+        # Accept both a language code and a `Language` instance.
+        try:
+            self._preferred_language = language.code
+        except AttributeError:
+            self._preferred_language = language

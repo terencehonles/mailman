@@ -39,7 +39,7 @@ from email.mime.text import MIMEText
 from email.utils import formatdate, getaddresses, make_msgid
 
 from mailman import i18n
-from mailman.Utils import GetCharSet, maketext, oneline, wrap
+from mailman.Utils import maketext, oneline, wrap
 from mailman.config import config
 from mailman.core.errors import DiscardMessage
 from mailman.i18n import _
@@ -55,7 +55,7 @@ class Digester:
 
     def __init__(self, mlist, volume, digest_number):
         self._mlist = mlist
-        self._charset = GetCharSet(mlist.preferred_language)
+        self._charset = mlist.preferred_language.charset
         # This will be used in the Subject, so use $-strings.
         realname = mlist.real_name
         issue = digest_number
@@ -298,8 +298,8 @@ class DigestRunner(Runner):
         volume = msgdata['volume']
         digest_number = msgdata['digest_number']
         with nested(Mailbox(msgdata['digest_path']),
-                    i18n.using_language(mlist.preferred_language)) as (
-            mailbox, language):
+                    i18n.using_language(mlist.preferred_language.code)) as (
+            mailbox, language_code):
             # Create the digesters.
             mime_digest = MIMEDigester(mlist, volume, digest_number)
             rfc1153_digest = RFC1153Digester(mlist, volume, digest_number)

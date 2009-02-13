@@ -73,7 +73,7 @@ def send_welcome_message(mlist, address, language, delivery_mode, text=''):
             'optionsurl'        : options_url,
             'request_address'   : mlist.request_address,
             'welcome'           : welcome,
-            }, lang=language, mlist=mlist)
+            }, lang=language.code, mlist=mlist)
     if delivery_mode is not DeliveryMode.regular:
         digmode = _(' (Digest mode)')
     else:
@@ -124,9 +124,9 @@ def send_admin_subscription_notice(mlist, address, full_name, language):
     :param language: the language of the address's realname
     :type language: string
     """
-    with i18n.using_language(mlist.preferred_language):
+    with i18n.using_language(mlist.preferred_language.code):
         subject = _('$mlist.real_name subscription notification')
-    full_name = full_name.encode(Utils.GetCharSet(language), 'replace')
+    full_name = full_name.encode(language.charset, 'replace')
     text = Utils.maketext(
         'adminsubscribeack.txt',
         {'listname' : mlist.real_name,

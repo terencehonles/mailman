@@ -17,12 +17,12 @@
 
 import sys
 
-from mailman import Message
 from mailman import Utils
 from mailman import i18n
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.core import errors
+from mailman.email.message import UserNotification
 from mailman.interfaces.listmanager import ListAlreadyExistsError
 from mailman.options import SingleMailingListOptions
 
@@ -121,8 +121,8 @@ def main():
         # Set the I18N language to the list's preferred language so the header
         # will match the template language.  Stashing and restoring the old
         # translation context is just (healthy? :) paranoia.
-        with i18n.using_language(mlist.preferred_language):
-            msg = Message.UserNotification(
+        with i18n.using_language(mlist.preferred_language.code):
+            msg = UserNotification(
                 owner_mail, mlist.no_reply_address,
                 _('Your new mailing list: $fqdn_listname'),
                 text, mlist.preferred_language)

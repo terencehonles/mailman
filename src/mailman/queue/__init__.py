@@ -434,8 +434,8 @@ class Runner:
                         else mlist.preferred_language)
         else:
             language = mlist.preferred_language
-        with i18n.using_language(language):
-            msgdata['lang'] = language
+        with i18n.using_language(language.code):
+            msgdata['lang'] = language.code
             keepqueued = self._dispose(mlist, msg, msgdata)
         if keepqueued:
             self.switchboard.enqueue(msg, msgdata)

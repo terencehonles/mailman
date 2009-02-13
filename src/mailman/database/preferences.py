@@ -28,6 +28,7 @@ __all__ = [
 from storm.locals import *
 from zope.interface import implements
 
+from mailman.config import config
 from mailman.database.model import Model
 from mailman.database.types import Enum
 from mailman.interfaces.preferences import IPreferences
@@ -40,7 +41,7 @@ class Preferences(Model):
     id = Int(primary=True)
     acknowledge_posts = Bool()
     hide_address = Bool()
-    preferred_language = Unicode()
+    _preferred_language = Unicode(name='preferred_language')
     receive_list_copy = Bool()
     receive_own_postings = Bool()
     delivery_mode = Enum()
@@ -48,3 +49,19 @@ class Preferences(Model):
 
     def __repr__(self):
         return '<Preferences object at {0:#x}>'.format(id(self))
+
+    @property
+    def preferred_language(self):
+        if self._preferred_language is None:
+            return None
+        return config.languages[self._preferred_language]
+
+    @preferred_language.setter
+    def preferred_language(self, language):
+        if language is None:
+            self._preferred_language = None
+        # Accept both a language code and a `Language` instance.
+        try:
+            self._preferred_language = language.code
+        except AttributeError:
+            self._preferred_language = language

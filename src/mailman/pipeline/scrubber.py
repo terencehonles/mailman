@@ -42,7 +42,7 @@ from mimetypes import guess_all_extensions
 from string import Template
 from zope.interface import implements
 
-from mailman import Utils
+from mailman.Utils import oneline, websafe
 from mailman.config import config
 from mailman.core.errors import DiscardMessage
 from mailman.core.plugins import get_plugin
@@ -175,7 +175,7 @@ def process(mlist, msg, msgdata=None):
             return
     dir = calculate_attachments_dir(mlist, msg, msgdata)
     charset = format = delsp = None
-    lcset = Utils.GetCharSet(mlist.preferred_language)
+    lcset = mlist.preferred_language.charset
     lcset_out = Charset(lcset).output_charset or lcset
     # Now walk over all subparts of this message and scrub out various types
     for part in msg.walk():
@@ -206,7 +206,7 @@ def process(mlist, msg, msgdata=None):
                not part.get_content_charset():
                 url = save_attachment(mlist, part, dir)
                 filename = part.get_filename(_('not available'))
-                filename = Utils.oneline(filename, lcset)
+                filename = oneline(filename, lcset)
                 replace_payload_by_text(part, _("""\
 An embedded and charset-unspecified text was scrubbed...
 Name: $filename
@@ -236,7 +236,7 @@ URL: $url
             else:
                 # HTML-escape it and store it as an attachment, but make it
                 # look a /little/ bit prettier. :(
-                payload = Utils.websafe(part.get_payload(decode=True))
+                payload = websafe(part.get_payload(decode=True))
                 # For whitespace in the margin, change spaces into
                 # non-breaking spaces, and tabs into 8 of those.  Then use a
                 # mono-space font.  Still looks hideous to me, but then I'd
@@ -287,9 +287,9 @@ URL: $url
             size = len(payload)
             url = save_attachment(mlist, part, dir)
             desc = part.get('content-description', _('not available'))
-            desc = Utils.oneline(desc, lcset)
+            desc = oneline(desc, lcset)
             filename = part.get_filename(_('not available'))
-            filename = Utils.oneline(filename, lcset)
+            filename = oneline(filename, lcset)
             replace_payload_by_text(part, _("""\
 A non-text attachment was scrubbed...
 Name: $filename
@@ -390,8 +390,8 @@ def save_attachment(mlist, msg, dir, filter_html=True):
     # things as application/octet-streams since that seems the safest.
     ctype = msg.get_content_type()
     # i18n file name is encoded
-    lcset = Utils.GetCharSet(mlist.preferred_language)
-    filename = Utils.oneline(msg.get_filename(''), lcset)
+    lcset = mlist.preferred_language.charset
+    filename = oneline(msg.get_filename(''), lcset)
     filename, fnext = os.path.splitext(filename)
     # For safety, we should confirm this is valid ext for content-type
     # but we can use fnext if we introduce fnext filtering
@@ -481,7 +481,7 @@ def save_attachment(mlist, msg, dir, filter_html=True):
     elif ctype == 'message/rfc822':
         submsg = msg.get_payload()
         # BAW: I'm sure we can eventually do better than this. :(
-        decodedpayload = Utils.websafe(str(submsg))
+        decodedpayload = websafe(str(submsg))
     fp = open(path, 'w')
     fp.write(decodedpayload)
     fp.close()

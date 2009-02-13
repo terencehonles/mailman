@@ -31,6 +31,7 @@ __all__ = [
 from zope.interface import implements
 
 from mailman import Utils
+from mailman.config import config
 from mailman.email.message import Message, UserNotification
 from mailman.i18n import _
 from mailman.interfaces.handler import IHandler
@@ -60,21 +61,23 @@ class Acknowledge:
         original_subject = msgdata.get(
             'origsubj', msg.get('subject', _('(no subject)')))
         # Get the user's preferred language.
-        lang = msgdata.get('lang', member.preferred_language)
+        language = (config.languages[msgdata['lang']]
+                    if 'lang' in msgdata
+                    else member.preferred_language)
+        charset = config.languages[language.code].charset
         # Now get the acknowledgement template.
         realname = mlist.real_name
         text = Utils.maketext(
             'postack.txt',
-            {'subject'     : Utils.oneline(original_subject,
-                                           Utils.GetCharSet(lang)),
+            {'subject'     : Utils.oneline(original_subject, charset),
              'listname'    : realname,
              'listinfo_url': mlist.script_url('listinfo'),
              'optionsurl'  : member.options_url,
-             }, lang=lang, mlist=mlist, raw=True)
+             }, lang=language.code, mlist=mlist, raw=True)
         # Craft the outgoing message, with all headers and attributes
         # necessary for general delivery.  Then enqueue it to the outgoing
         # queue.
         subject = _('$realname post acknowledgment')
         usermsg = UserNotification(sender, mlist.bounces_address,
-                                   subject, text, lang)
+                                   subject, text, language)
         usermsg.send(mlist)

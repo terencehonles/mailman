@@ -80,14 +80,14 @@ if sys.platform == 'darwin':
 
 
 
-def html_quote(s, lang=None):
+def html_quote(s, langcode=None):
     repls = ( ('&', '&amp;'),
               ("<", '&lt;'),
               (">", '&gt;'),
               ('"', '&quot;'))
     for thing, repl in repls:
         s = s.replace(thing, repl)
-    return Utils.uncanonstr(s, lang)
+    return Utils.uncanonstr(s, langcode)
 
 
 def url_quote(s):
@@ -107,7 +107,7 @@ def sizeof(filename, lang):
         if e.errno <> errno.ENOENT: raise
         return _('size not available')
     if size < 1000:
-        with i18n.using_language(lang):
+        with i18n.using_language(lang.code):
             out = _(' %(size)i bytes ')
         return out
     elif size < 1000000:
@@ -124,7 +124,7 @@ def CGIescape(arg, lang=None):
         s = Utils.websafe(arg)
     else:
         s = Utils.websafe(str(arg))
-    return Utils.uncanonstr(s.replace('"', '&quot;'), lang)
+    return Utils.uncanonstr(s.replace('"', '&quot;'), lang.code)
 
 # Parenthesized human name
 paren_name_pat = re.compile(r'([(].*[)])')
@@ -184,7 +184,7 @@ def quick_maketext(templatefile, dict=None, lang=None, mlist=None):
         template = _templatecache.get(filepath)
     if filepath is None or template is None:
         # Use the basic maketext, with defaults to get the raw template
-        template, filepath = Utils.findtext(templatefile, lang=lang,
+        template, filepath = Utils.findtext(templatefile, lang=lang.code,
                                             raw=True, mlist=mlist)
         _templatefilepathcache[cachekey] = filepath
         _templatecache[filepath] = template
@@ -196,16 +196,14 @@ def quick_maketext(templatefile, dict=None, lang=None, mlist=None):
                 text = Template(template).safe_substitute(**dict)
             except UnicodeError:
                 # Try again after coercing the template to unicode
-                utemplate = unicode(template,
-                                    Utils.GetCharSet(lang),
-                                    'replace')
+                utemplate = unicode(template, lang.charset, 'replace')
                 text = Template(utemplate).safe_substitute(**dict)
         except (TypeError, ValueError):
             # The template is really screwed up
             pass
     # Make sure the text is in the given character set, or html-ify any bogus
     # characters.
-    return Utils.uncanonstr(text, lang)
+    return Utils.uncanonstr(text, lang.code)
 
 
 
@@ -256,7 +254,7 @@ class Article(pipermail.Article):
             # article (for this list) could be different from the site-wide
             # preferred language, so we need to ensure no side-effects will
             # occur.  Think what happens when executing bin/arch.
-            with i18n.using_language(lang):
+            with i18n.using_language(lang.code):
                 if self.author == self.email:
                     self.author = self.email = re.sub('@', _(' at '),
                                                       self.email)
@@ -269,7 +267,7 @@ class Article(pipermail.Article):
         self.ctype = ctype.lower()
         self.cenc = cenc.lower()
         self.decoded = {}
-        cset = Utils.GetCharSet(mlist.preferred_language)
+        cset = mlist.preferred_language.charset
         cset_out = Charset(cset).output_charset or cset
         charset = message.get_content_charset(cset_out)
         if charset:
@@ -282,7 +280,7 @@ class Article(pipermail.Article):
                 body = message.get_payload(decode=True)
             except binascii.Error:
                 body = None
-            if body and charset != Utils.GetCharSet(self._lang):
+            if body and charset != self._lang.charset:
                 # decode body
                 try:
                     body = unicode(body, charset)
@@ -337,7 +335,7 @@ class Article(pipermail.Article):
             self._mlist = mlist
 
     def quote(self, buf):
-        return html_quote(buf, self._lang)
+        return html_quote(buf, self._lang.code)
 
     def decode_headers(self):
         """MIME-decode headers.
@@ -359,7 +357,7 @@ class Article(pipermail.Article):
                 self.decoded['email'] = email
         if subject:
             if as_boolean(config.archiver.pipermail.obscure_email_addresses):
-                with i18n.using_language(self._lang):
+                with i18n.using_language(self._lang.code):
                     atmark = _(' at ')
                     subject = re.sub(r'([-+,.\w]+)@([-+.\w]+)',
                               '\g<1>' + atmark + '\g<2>', subject)
@@ -388,7 +386,7 @@ class Article(pipermail.Article):
             ustr = make_header(pairs).__unicode__()
         except (LookupError, UnicodeError, ValueError, HeaderParseError):
             # assume list's language
-            cset = Utils.GetCharSet(self._mlist.preferred_language)
+            cset = self._mlist.preferred_language.charset
             if cset == 'us-ascii':
                 cset = 'iso-8859-1' # assume this for English list
             ustr = unicode(field, cset, 'replace')
@@ -397,7 +395,7 @@ class Article(pipermail.Article):
     def as_html(self):
         d = self.__dict__.copy()
         # avoid i18n side-effects
-        with i18n.using_language(self._lang):
+        with i18n.using_language(self._lang.code):
             d["prev"], d["prev_wsubj"] = self._get_prev()
             d["next"], d["next_wsubj"] = self._get_next()
 
@@ -420,7 +418,7 @@ class Article(pipermail.Article):
             d['listurl'] = self._mlist.script_url('listinfo')
             d['listname'] = self._mlist.real_name
             d['encoding'] = ''
-        charset = Utils.GetCharSet(self._lang)
+        charset = self._lang.charset
         d["encoding"] = html_charset % charset
 
         self._add_decoded(d)
@@ -506,12 +504,12 @@ class Article(pipermail.Article):
         if d['_message_id']:
             headers.append('Message-ID: %(_message_id)s')
         body = EMPTYSTRING.join(self.body)
-        cset = Utils.GetCharSet(self._lang)
+        cset = self._lang.charset
         # Coerce the body to Unicode and replace any invalid characters.
         if not isinstance(body, unicode):
             body = unicode(body, cset, 'replace')
         if as_boolean(config.archiver.pipermail.obscure_email_addresses):
-            with i18n.using_language(self._lang):
+            with i18n.using_language(self._lang.code):
                 atmark = _(' at ')
                 body = re.sub(r'([-+,.\w]+)@([-+.\w]+)',
                               '\g<1>' + atmark + '\g<2>', body)
@@ -577,7 +575,7 @@ class HyperArchive(pipermail.T):
         self.maillist = maillist
         self._lock_file = None
         self.lang = maillist.preferred_language
-        self.charset = Utils.GetCharSet(maillist.preferred_language)
+        self.charset = maillist.preferred_language.charset
 
         if hasattr(self.maillist,'archive_volume_frequency'):
             if self.maillist.archive_volume_frequency == 0:
@@ -612,8 +610,8 @@ class HyperArchive(pipermail.T):
         mlist = self.maillist
         # Convenience
         def quotetime(s):
-            return html_quote(i18n.ctime(s), self.lang)
-        with i18n.using_language(mlist.preferred_language):
+            return html_quote(i18n.ctime(s), self.lang.code)
+        with i18n.using_language(mlist.preferred_language.code):
             d = {"lastdate": quotetime(self.lastdate),
                  "archivedate": quotetime(self.archivedate),
                  "listinfo": mlist.script_url('listinfo'),
@@ -640,9 +638,9 @@ class HyperArchive(pipermail.T):
         mlist = self.maillist
         # Convenience
         def quotetime(s):
-            return html_quote(i18n.ctime(s), self.lang)
-        with i18n.using_language(mlist.preferred_language):
-            d = {"listname": html_quote(mlist.real_name, self.lang),
+            return html_quote(i18n.ctime(s), self.lang.code)
+        with i18n.using_language(mlist.preferred_language.code):
+            d = {"listname": html_quote(mlist.real_name, self.lang.code),
                  "archtype": self.type,
                  "archive":  self.volNameToDesc(self.archive),
                  "listinfo": mlist.script_url('listinfo'),
@@ -682,7 +680,7 @@ class HyperArchive(pipermail.T):
              'meta': '',
              }
         # Avoid i18n side-effects
-        with i18n.using_language(mlist.preferred_language):
+        with i18n.using_language(mlist.preferred_language.code):
             if not self.archives:
                 d["noarchive_msg"] = _(
                     '<P>Currently, there are no archives. </P>')
@@ -704,7 +702,7 @@ class HyperArchive(pipermail.T):
                     accum.append(self.html_TOC_entry(a))
                 d["archive_listing"] = EMPTYSTRING.join(accum)
         # The TOC is always in the charset of the list's preferred language
-        d['meta'] += html_charset % Utils.GetCharSet(mlist.preferred_language)
+        d['meta'] += html_charset % mlist.preferred_language.charset
         # The site can disable public access to the mbox file.
         if as_boolean(config.archiver.pipermail.public_mbox):
             template = 'archtoc.html'
@@ -1096,7 +1094,7 @@ class HyperArchive(pipermail.T):
         # TK: Prepare for unicode obscure.
         atmark = _(' at ')
         if lines and isinstance(lines[0], unicode):
-            atmark = unicode(atmark, Utils.GetCharSet(self.lang), 'replace')
+            atmark = unicode(atmark, self.lang.charset, 'replace')
         source = lines[:]
         dest = lines
         last_line_was_quoted = 0

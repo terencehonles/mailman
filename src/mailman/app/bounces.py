@@ -29,7 +29,7 @@ import logging
 from email.mime.message import MIMEMessage
 from email.mime.text import MIMEText
 
-from mailman import Utils
+from mailman.Utils import oneline
 from mailman.email.message import Message, UserNotification
 from mailman.i18n import _
 
@@ -45,8 +45,7 @@ def bounce_message(mlist, msg, e=None):
         # to.
         return
     subject = msg.get('subject', _('(no subject)'))
-    subject = Utils.oneline(subject,
-                            Utils.GetCharSet(mlist.preferred_language))
+    subject = oneline(subject, mlist.preferred_language.charset)
     if e is None:
         notice = _('[No bounce details are available]')
     else:
@@ -57,8 +56,7 @@ def bounce_message(mlist, msg, e=None):
     # BAW: Be sure you set the type before trying to attach, or you'll get
     # a MultipartConversionError.
     bmsg.set_type('multipart/mixed')
-    txt = MIMEText(notice,
-                   _charset=Utils.GetCharSet(mlist.preferred_language))
+    txt = MIMEText(notice, _charset=mlist.preferred_language.charset)
     bmsg.attach(txt)
     bmsg.attach(MIMEMessage(msg))
     bmsg.send(mlist)
