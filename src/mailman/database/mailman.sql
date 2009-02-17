@@ -20,6 +20,26 @@ CREATE TABLE address (
          CONSTRAINT address_user_id_fk FOREIGN KEY(user_id) REFERENCES user (id),
          CONSTRAINT address_preferences_id_fk FOREIGN KEY(preferences_id) REFERENCES preferences (id)
 );
+
+CREATE TABLE autoresponserecord (
+        id INTEGER NOT NULL,
+        address_id INTEGER,
+        mailing_list_id INTEGER,
+        response_type INTEGER,
+        date_sent TIMESTAMP,
+        PRIMARY KEY (id),
+        CONSTRAINT autoresponserecord_address_id_fk
+            FOREIGN KEY (address_id)
+            REFERENCES address (id),
+        CONSTRAINT autoresponserecord_mailing_list_id
+            FOREIGN KEY (mailing_list_id)
+            REFERENCES mailinglist (id)
+        );
+CREATE INDEX ix_autoresponserecord_address_id
+    ON autoresponserecord (address_id);
+CREATE INDEX ix_autoresponserecord_mailing_list_id
+    ON autoresponserecord (mailing_list_id);
+
 CREATE TABLE language (
         id INTEGER NOT NULL,
         code TEXT,

@@ -101,6 +101,7 @@ case second `m'.  Any other spelling is incorrect.""",
         },
     install_requires = [
         'lazr.config',
+        'lazr.delegates',
         'locknix',
         'munepy',
         'storm',

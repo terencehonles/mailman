@@ -1,0 +1,62 @@
+Automatic responder
+===================
+
+In various situations, Mailman will send an automatic response to the author
+of an email message.  For example, if someone sends a command to the -request
+address, Mailman will send a response, but to cut down on third party spam,
+the sender will only get a certain number of responses per day.
+
+First, given a mailing list you need to adapt it to an IAutoResponseSet.
+
+    >>> mlist = create_list('test@example.com')
+    >>> from mailman.interfaces.autorespond import IAutoResponseSet
+    >>> response_set = IAutoResponseSet(mlist)
+
+    >>> from zope.interface.verify import verifyObject
+    >>> verifyObject(IAutoResponseSet, response_set)
+    True
+
+You can't adapt other objects to an IAutoResponseSet.
+
+    >>> IAutoResponseSet(object())
+    Traceback (most recent call last):
+    ...
+    TypeError: ('Could not adapt', ...
+
+There are various kinds of response types.  For example, Mailman will send an
+automatic response when messages are held for approval, or when it receives an
+email command.  You can find out how many responses for a particular address
+have already been sent today.
+
+    >>> address = config.db.user_manager.create_address(
+    ...     u'aperson@example.com')
+    >>> from mailman.interfaces.autorespond import Response
+    >>> response_set.todays_count(address, Response.hold)
+    0
+    >>> response_set.todays_count(address, Response.command)
+    0
+
+Using the response set, we can record that a hold response is sent to the
+address.
+
+    >>> response_set.response_sent(address, Response.hold)
+    >>> response_set.todays_count(address, Response.hold)
+    1
+    >>> response_set.todays_count(address, Response.command)
+    0
+
+We can also record that a command response was sent.
+
+    >>> response_set.response_sent(address, Response.command)
+    >>> response_set.todays_count(address, Response.hold)
+    1
+    >>> response_set.todays_count(address, Response.command)
+    1
+
+Let's send one more.
+
+    >>> response_set.response_sent(address, Response.command)
+    >>> response_set.todays_count(address, Response.hold)
+    1
+    >>> response_set.todays_count(address, Response.command)
+    2
