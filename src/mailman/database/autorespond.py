@@ -27,7 +27,6 @@ __all__ = [
     ]
 
 
-from datetime import date
 from storm.locals import And, Date, Int, Reference
 from zope.interface import implements
 
@@ -37,6 +36,7 @@ from mailman.database.types import Enum
 from mailman.interfaces.autorespond import (
     IAutoResponseRecord, IAutoResponseSet, Response)
 from mailman.interfaces.mailinglist import IMailingList
+from mailman.utilities.datetime import today
 
 
 
@@ -58,7 +58,7 @@ class AutoResponseRecord(Model):
         self.mailing_list = mailing_list
         self.address = address
         self.response_type = response_type
-        self.date_sent = date.today()
+        self.date_sent = today()
 
 
 
@@ -75,7 +75,7 @@ class AutoResponseSet:
             And(AutoResponseRecord.address == address,
                 AutoResponseRecord.mailing_list == self._mailing_list,
                 AutoResponseRecord.response_type == response_type,
-                AutoResponseRecord.date_sent == date.today())).count()
+                AutoResponseRecord.date_sent == today())).count()
 
     def response_sent(self, address, response_type):
         """See `IAutoResponseSet`."""

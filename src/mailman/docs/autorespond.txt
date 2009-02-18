@@ -60,3 +60,13 @@ Let's send one more.
     1
     >>> response_set.todays_count(address, Response.command)
     2
+
+Now the day flips over and all the counts reset.
+
+    >>> from mailman.utilities.datetime import factory
+    >>> factory.fast_forward()
+
+    >>> response_set.todays_count(address, Response.hold)
+    0
+    >>> response_set.todays_count(address, Response.command)
+    0

@@ -22,6 +22,7 @@ from __future__ import absolute_import, unicode_literals
 __metaclass__ = type
 __all__ = [
     'ConfigLayer',
+    'MockAndMonkeyLayer',
     'SMTPLayer',
     ]
 
@@ -40,6 +41,7 @@ from mailman.core import initialize
 from mailman.core.logging import get_handler
 from mailman.i18n import _
 from mailman.testing.helpers import SMTPServer
+from mailman.utilities.datetime import factory
 from mailman.utilities.string import expand
 
 
@@ -47,7 +49,24 @@ NL = '\n'
 
 
 
-class ConfigLayer:
+class MockAndMonkeyLayer:
+    """Layer for mocking and monkey patching for testing."""
+
+    @classmethod
+    def setUp(cls):
+        factory.testing_mode = True
+
+    @classmethod
+    def tearDown(cls):
+        factory.testing_mode = False
+
+    @classmethod
+    def testTearDown(cls):
+        factory.reset()
+
+
+
+class ConfigLayer(MockAndMonkeyLayer):
     """Layer for pushing and popping test configurations."""
 
     var_dir = None
