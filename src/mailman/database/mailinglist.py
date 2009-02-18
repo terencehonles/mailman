@@ -57,7 +57,6 @@ class MailingList(Model):
     # Attributes not directly modifiable via the web u/i
     created_at = DateTime()
     admin_member_chunksize = Int()
-    hold_and_cmd_autoresponses = Pickle()
     # Attributes which are directly modifiable via the web u/i.  The more
     # complicated attributes are currently stored as pickles, though that
     # will change as the schema and implementation is developed.
@@ -181,10 +180,6 @@ class MailingList(Model):
         # For the pending database
         self.next_request_id = 1
         self._restore()
-        # Max autoresponses per day.  A mapping between addresses and a
-        # 2-tuple of the date of the last autoresponse and the number of
-        # autoresponses sent on that date.
-        self.hold_and_cmd_autoresponses = {}
         self.personalization = Personalization.none
         self.real_name = string.capwords(
             SPACE.join(listname.split(UNDERSCORE)))

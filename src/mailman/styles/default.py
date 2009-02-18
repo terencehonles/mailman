@@ -147,7 +147,6 @@ ${listinfo_page}
         # Max autoresponses per day.  A mapping between addresses and a
         # 2-tuple of the date of the last autoresponse and the number of
         # autoresponses sent on that date.
-        mlist.hold_and_cmd_autoresponses = {}
         mlist.subject_prefix = _('[$mlist.real_name] ')
         mlist.msg_header = ''
         mlist.msg_footer = """\

@@ -51,7 +51,6 @@ CREATE TABLE mailinglist (
         host_name TEXT,
         created_at TIMESTAMP,
         admin_member_chunksize INTEGER,
-        hold_and_cmd_autoresponses BLOB,
         next_request_id INTEGER,
         next_digest_number INTEGER,
         admin_responses BLOB,

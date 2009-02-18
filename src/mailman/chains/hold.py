@@ -39,6 +39,7 @@ from mailman.app.replybot import autorespond_to_sender, can_acknowledge
 from mailman.chains.base import TerminalChainBase
 from mailman.config import config
 from mailman.email.message import UserNotification
+from mailman.interfaces.autorespond import Response
 from mailman.interfaces.pending import IPendable
 
 
@@ -117,7 +118,7 @@ class HoldChain(TerminalChainBase):
         if (not msgdata.get('fromusenet') and
             can_acknowledge(msg) and
             mlist.respond_to_post_requests and
-            autorespond_to_sender(mlist, msg.sender, language)):
+            autorespond_to_sender(mlist, msg.sender, Response.hold, language)):
             # We can respond to the sender with a message indicating their
             # posting was held.
             subject = _(

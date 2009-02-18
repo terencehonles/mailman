@@ -35,6 +35,8 @@ import datetime
 from mailman import Utils
 from mailman import i18n
 from mailman.config import config
+from mailman.utilities.datetime import today
+from mailman.interfaces.autorespond import IAutoResponseSet, Response
 
 
 log = logging.getLogger('mailman.vette')
@@ -42,12 +44,21 @@ _ = i18n._
 
 
 
-def autorespond_to_sender(mlist, sender, lang=None):
-    """Return True if Mailman should auto-respond to this sender.
+def autorespond_to_sender(mlist, sender, response_type, lang=None):
+    """Should Mailman automatically respond to this sender?
 
-    This is only consulted for messages sent to the -request address, or
-    for posting hold notifications, and serves only as a safety value for
-    mail loops with email 'bots.
+    :param mlist: The mailing list.
+    :type mlist: `IMailingList`.
+    :param sender: The sender's email address.
+    :type sender: string
+    :param response_type: The type of response that might be sent.
+    :type response_type: `Response` enum
+    :param lang: Optional language.
+    :type lang: `ILanguage` or None
+    :return: True if an automatic response should be sent, otherwise False.
+        If an automatic response is not sent, a message is sent indicating
+        that, er no more will be sent today.
+    :rtype: bool
     """
     if lang is None:
         lang = mlist.preferred_language
@@ -55,22 +66,24 @@ def autorespond_to_sender(mlist, sender, lang=None):
     if max_autoresponses_per_day == 0:
         # Unlimited.
         return True
-    today = datetime.date.today()
-    info = mlist.hold_and_cmd_autoresponses.get(sender)
-    if info is None or info[0] <> today:
-        # This is the first time we've seen a -request/post-hold for this
-        # sender today.
-        mlist.hold_and_cmd_autoresponses[sender] = (today, 1)
+    # Get an IAddress from an email address.
+    address = config.db.user_manager.get_address(sender)
+    if address is None:
+        address = config.db.user_manager.create_address(sender)
+    response_set = IAutoResponseSet(mlist)
+    todays_count = response_set.todays_count(address, response_type)
+    if todays_count < max_autoresponses_per_day:
+        # This person has not reached their automatic response limit, so it's
+        # okay to send a response.
+        response_set.response_sent(address, response_type)
         return True
-    date, count = info
-    if count < 0:
-        # They've already hit the limit for today, and we've already notified
-        # them of this fact, so there's nothing more to do.
-        log.info('-request/hold autoresponse discarded for: %s', sender)
-        return False
-    if count >= max_autoresponses_per_day:
-        log.info('-request/hold autoresponse limit hit for: %s', sender)
-        mlist.hold_and_cmd_autoresponses[sender] = (today, -1)
+    elif todays_count == max_autoresponses_per_day:
+        # The last one we sent was the last one we should send today.  Instead
+        # of sending an automatic response, send them the "no more today"
+        # message.
+        log.info('-request/hold autoresponse limit hit (%s): %s',
+                 response_type, sender)
+        response_set.response_sent(address, response_type)
         # Send this notification message instead.
         text = Utils.maketext(
             'nomoretoday.txt',
@@ -87,8 +100,11 @@ def autorespond_to_sender(mlist, sender, lang=None):
                 text, lang=lang)
         msg.send(mlist)
         return False
-    mlist.hold_and_cmd_autoresponses[sender] = (today, count + 1)
-    return True
+    else:
+        # We've sent them everything we're going to send them today.
+        log.info('Automatic response limit discard (%s): %s',
+                 response_type, sender)
+        return False
 
 
 
