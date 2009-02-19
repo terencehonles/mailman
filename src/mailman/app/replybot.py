@@ -25,86 +25,16 @@ from __future__ import unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'autorespond_to_sender',
     'can_acknowledge',
     ]
 
 import logging
-import datetime
 
-from mailman import Utils
 from mailman import i18n
-from mailman.config import config
-from mailman.utilities.datetime import today
-from mailman.interfaces.autorespond import IAutoResponseSet, Response
 
 
 log = logging.getLogger('mailman.vette')
 _ = i18n._
-
-
-
-def autorespond_to_sender(mlist, sender, response_type, lang=None):
-    """Should Mailman automatically respond to this sender?
-
-    :param mlist: The mailing list.
-    :type mlist: `IMailingList`.
-    :param sender: The sender's email address.
-    :type sender: string
-    :param response_type: The type of response that might be sent.
-    :type response_type: `Response` enum
-    :param lang: Optional language.
-    :type lang: `ILanguage` or None
-    :return: True if an automatic response should be sent, otherwise False.
-        If an automatic response is not sent, a message is sent indicating
-        that, er no more will be sent today.
-    :rtype: bool
-    """
-    if lang is None:
-        lang = mlist.preferred_language
-    max_autoresponses_per_day = int(config.mta.max_autoresponses_per_day)
-    if max_autoresponses_per_day == 0:
-        # Unlimited.
-        return True
-    # Get an IAddress from an email address.
-    address = config.db.user_manager.get_address(sender)
-    if address is None:
-        address = config.db.user_manager.create_address(sender)
-    response_set = IAutoResponseSet(mlist)
-    todays_count = response_set.todays_count(address, response_type)
-    if todays_count < max_autoresponses_per_day:
-        # This person has not reached their automatic response limit, so it's
-        # okay to send a response.
-        response_set.response_sent(address, response_type)
-        return True
-    elif todays_count == max_autoresponses_per_day:
-        # The last one we sent was the last one we should send today.  Instead
-        # of sending an automatic response, send them the "no more today"
-        # message.
-        log.info('-request/hold autoresponse limit hit (%s): %s',
-                 response_type, sender)
-        response_set.response_sent(address, response_type)
-        # Send this notification message instead.
-        text = Utils.maketext(
-            'nomoretoday.txt',
-            {'sender' : sender,
-             'listname': mlist.fqdn_listname,
-             'num' : count,
-             'owneremail': mlist.owner_address,
-             },
-            lang=lang)
-        with i18n.using_language(lang.code):
-            msg = Message.UserNotification(
-                sender, mlist.owner_address,
-                _('Last autoresponse notification for today'),
-                text, lang=lang)
-        msg.send(mlist)
-        return False
-    else:
-        # We've sent them everything we're going to send them today.
-        log.info('Automatic response limit discard (%s): %s',
-                 response_type, sender)
-        return False
 
 
 

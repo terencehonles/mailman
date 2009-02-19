@@ -35,11 +35,11 @@ from zope.interface import implements
 from mailman import i18n
 from mailman.Utils import maketext, oneline, wrap
 from mailman.app.moderator import hold_message
-from mailman.app.replybot import autorespond_to_sender, can_acknowledge
+from mailman.app.replybot import can_acknowledge
 from mailman.chains.base import TerminalChainBase
 from mailman.config import config
 from mailman.email.message import UserNotification
-from mailman.interfaces.autorespond import Response
+from mailman.interfaces.autorespond import IAutoResponseSet, Response
 from mailman.interfaces.pending import IPendable
 
 
@@ -52,6 +52,66 @@ _ = i18n._
 class HeldMessagePendable(dict):
     implements(IPendable)
     PEND_KEY = 'held message'
+
+
+
+def autorespond_to_sender(mlist, sender, lang=None):
+    """Should Mailman automatically respond to this sender?
+
+    :param mlist: The mailing list.
+    :type mlist: `IMailingList`.
+    :param sender: The sender's email address.
+    :type sender: string
+    :param lang: Optional language.
+    :type lang: `ILanguage` or None
+    :return: True if an automatic response should be sent, otherwise False.
+        If an automatic response is not sent, a message is sent indicating
+        that, er no more will be sent today.
+    :rtype: bool
+    """
+    if lang is None:
+        lang = mlist.preferred_language
+    max_autoresponses_per_day = int(config.mta.max_autoresponses_per_day)
+    if max_autoresponses_per_day == 0:
+        # Unlimited.
+        return True
+    # Get an IAddress from an email address.
+    address = config.db.user_manager.get_address(sender)
+    if address is None:
+        address = config.db.user_manager.create_address(sender)
+    response_set = IAutoResponseSet(mlist)
+    todays_count = response_set.todays_count(address, Response.hold)
+    if todays_count < max_autoresponses_per_day:
+        # This person has not reached their automatic response limit, so it's
+        # okay to send a response.
+        response_set.response_sent(address, Response.hold)
+        return True
+    elif todays_count == max_autoresponses_per_day:
+        # The last one we sent was the last one we should send today.  Instead
+        # of sending an automatic response, send them the "no more today"
+        # message.
+        log.info('hold autoresponse limit hit: %s', sender)
+        response_set.response_sent(address, Response.hold)
+        # Send this notification message instead.
+        text = Utils.maketext(
+            'nomoretoday.txt',
+            {'sender' : sender,
+             'listname': mlist.fqdn_listname,
+             'num' : count,
+             'owneremail': mlist.owner_address,
+             },
+            lang=lang)
+        with i18n.using_language(lang.code):
+            msg = Message.UserNotification(
+                sender, mlist.owner_address,
+                _('Last autoresponse notification for today'),
+                text, lang=lang)
+        msg.send(mlist)
+        return False
+    else:
+        # We've sent them everything we're going to send them today.
+        log.info('Automatic response limit discard: %s', sender)
+        return False
 
 
 
@@ -118,7 +178,7 @@ class HoldChain(TerminalChainBase):
         if (not msgdata.get('fromusenet') and
             can_acknowledge(msg) and
             mlist.respond_to_post_requests and
-            autorespond_to_sender(mlist, msg.sender, Response.hold, language)):
+            autorespond_to_sender(mlist, msg.sender, language)):
             # We can respond to the sender with a message indicating their
             # posting was held.
             subject = _(
