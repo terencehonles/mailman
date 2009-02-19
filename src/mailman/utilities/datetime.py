@@ -44,7 +44,7 @@ class DateFactory:
     predictable_today = None
 
     def now(self, tz=None):
-        return (self.predictable_now
+        return (yself.predictable_now
                 if self.testing_mode
                 else datetime.datetime.now(tz))
 
@@ -56,11 +56,12 @@ class DateFactory:
     @classmethod
     def reset(cls):
         cls.predictable_now = datetime.datetime(2005, 8, 1, 7, 49, 23)
-        cls.predictable_today = cls.predictable_now.today()
+        cls.predictable_today = cls.predictable_now.date()
 
     @classmethod
     def fast_forward(cls, days=1):
-        cls.predictable_today += datetime.timedelta(days=days)
+        cls.predictable_now += datetime.timedelta(days=days)
+        cls.predictable_today = cls.predictable_now.date()
 
 
 factory = DateFactory()

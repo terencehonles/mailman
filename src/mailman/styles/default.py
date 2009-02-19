@@ -177,9 +177,6 @@ ${listinfo_page}
         mlist.autoresponse_admin_text = ''
         mlist.autoresponse_request_text = ''
         mlist.autoresponse_graceperiod = datetime.timedelta(days=90)
-        mlist.postings_responses = {}
-        mlist.admin_responses = {}
-        mlist.request_responses = {}
         # Bounces
         mlist.bounce_processing = True
         mlist.bounce_score_threshold = 5.0

@@ -70,3 +70,40 @@ Now the day flips over and all the counts reset.
     0
     >>> response_set.todays_count(address, Response.command)
     0
+
+
+Response dates
+--------------
+
+You can also use the response set to get the date of the last response sent.
+
+    >>> response = response_set.last_response(address, Response.hold)
+    >>> response.mailing_list
+    <mailing list "test@example.com" at ...>
+    >>> response.address
+    <Address: aperson@example.com [not verified] at ...>
+    >>> response.response_type
+    <EnumValue: Response.hold [int=1]>
+    >>> response.date_sent
+    datetime.date(2005, 8, 1)
+
+When another response is sent today, that becomes the last one sent.
+
+    >>> response_set.response_sent(address, Response.command)
+    >>> response_set.last_response(address, Response.command).date_sent
+    datetime.date(2005, 8, 2)
+
+    >>> factory.fast_forward(days=3)
+    >>> response_set.response_sent(address, Response.command)
+    >>> response_set.last_response(address, Response.command).date_sent
+    datetime.date(2005, 8, 5)
+
+If there's been no response sent to a particular address, None is returned.
+
+    >>> address = config.db.user_manager.create_address(
+    ...     u'bperson@example.com')
+
+    >>> response_set.todays_count(address, Response.command)
+    0
+    >>> print response_set.last_response(address, Response.command)
+    None

@@ -27,7 +27,7 @@ __all__ = [
     ]
 
 
-from storm.locals import And, Date, Int, Reference
+from storm.locals import And, Date, Desc, Int, Reference
 from zope.interface import implements
 
 from mailman.config import config
@@ -82,6 +82,16 @@ class AutoResponseSet:
         response = AutoResponseRecord(
             self._mailing_list, address, response_type)
         config.db.store.add(response)
+
+    def last_response(self, address, response_type):
+        """See `IAutoResponseSet`."""
+        results = config.db.store.find(
+            AutoResponseRecord,
+            And(AutoResponseRecord.address == address,
+                AutoResponseRecord.mailing_list == self._mailing_list,
+                AutoResponseRecord.response_type == response_type)
+            ).order_by(Desc(AutoResponseRecord.date_sent)) 
+        return (None if results.count() == 0 else results.first())
 
 
 

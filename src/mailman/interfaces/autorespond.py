@@ -37,6 +37,10 @@ class Response(Enum):
     hold = 1
     # Email commands, i.e. -request messages.
     command = 2
+    # Messages to the list owner/administrator.
+    owner = 3
+    # Messages to the list's posting address.
+    postings = 4
 
 
 
@@ -84,4 +88,15 @@ class IAutoResponseSet(Interface):
         :type address: `IAddress`
         :param response_type: The response type being sent.
         :type response_type: `Response`
+        """
+
+    def last_response(address, response_type):
+        """Record the fact that another response is being sent to the address.
+
+        :param address: The address who is the recipient of the auto-response.
+        :type address: `IAddress`
+        :param response_type: The response type being sent.
+        :type response_type: `Response`
+        :return: the last response recorded.
+        :rtype: `IAutoResponseRecord`
         """

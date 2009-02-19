@@ -62,9 +62,6 @@ class MailingList(Model):
     # will change as the schema and implementation is developed.
     next_request_id = Int()
     next_digest_number = Int()
-    admin_responses = Pickle()
-    postings_responses = Pickle()
-    request_responses = Pickle()
     digest_last_sent_at = DateTime()
     one_last_digest = Pickle()
     volume = Int()
