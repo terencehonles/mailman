@@ -44,7 +44,7 @@ class DateFactory:
     predictable_today = None
 
     def now(self, tz=None):
-        return (yself.predictable_now
+        return (self.predictable_now
                 if self.testing_mode
                 else datetime.datetime.now(tz))
 

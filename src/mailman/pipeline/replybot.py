@@ -25,16 +25,18 @@ __all__ = [
     ]
 
 
-import time
 import logging
 import datetime
 
 from zope.interface import implements
 
 from mailman import Utils
+from mailman.config import config
 from mailman.email.message import Message, UserNotification
 from mailman.i18n import _
+from mailman.interfaces.autorespond import IAutoResponseSet, Response
 from mailman.interfaces.handler import IHandler
+from mailman.utilities.datetime import today
 from mailman.utilities.string import expand
 
 
@@ -65,22 +67,25 @@ def process(mlist, msg, msgdata):
     toadmin = msgdata.get('toowner')
     torequest = msgdata.get('torequest')
     if ((toadmin and not mlist.autorespond_admin) or
-           (torequest and not mlist.autorespond_requests) or \
-           (not toadmin and not torequest and not mlist.autorespond_postings)):
+        (torequest and not mlist.autorespond_requests) or \
+        (not toadmin and not torequest and not mlist.autorespond_postings)):
         return
     # Now see if we're in the grace period for this sender.  graceperiod <= 0
     # means always autorespond, as does an "X-Ack: yes" header (useful for
     # debugging).
-    now = time.time()
-    graceperiod = mlist.autoresponse_graceperiod
-    if graceperiod > NODELTA and ack <> 'yes':
+    response_set = IAutoResponseSet(mlist)
+    address = config.db.user_manager.get_address(msg.sender)
+    if address is None:
+        address = config.db.user_manager.create_address(msg.sender)
+    grace_period = mlist.autoresponse_graceperiod
+    if grace_period > NODELTA and ack <> 'yes':
         if toadmin:
-            quiet_until = mlist.admin_responses.get(msg.sender, 0)
+            last = response_set.last_response(address, Response.owner)
         elif torequest:
-            quiet_until = mlist.request_responses.get(msg.sender, 0)
+            last = response_set.last_response(address, Response.command)
         else:
-            quiet_until = mlist.postings_responses.get(msg.sender, 0)
-        if quiet_until > now:
+            last = response_set.last_response(address, Response.postings)
+        if last is not None and last.date_sent + grace_period > today():
             return
     # Okay, we know we're going to auto-respond to this sender, craft the
     # message, send it, and update the database.
@@ -108,15 +113,14 @@ def process(mlist, msg, msgdata):
     outmsg['X-Ack'] = 'No'
     outmsg.send(mlist)
     # update the grace period database
-    if graceperiod > NODELTA:
+    if grace_period > NODELTA:
         # graceperiod is in days, we need # of seconds
-        quiet_until = now + graceperiod * 24 * 60 * 60
         if toadmin:
-            mlist.admin_responses[msg.sender] = quiet_until
+            response_set.response_sent(address, Response.owner)
         elif torequest:
-            mlist.request_responses[msg.sender] = quiet_until
+            response_set.response_sent(address, Response.command)
         else:
-            mlist.postings_responses[msg.sender] = quiet_until
+            response_set.response_sent(address, Response.postings)
 
 
 
