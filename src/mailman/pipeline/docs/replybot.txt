@@ -1,19 +1,13 @@
-Auto-reply handler
-==================
+Automatic response handler
+==========================
 
-Mailman has an auto-reply handler that sends automatic responses to messages
-it receives on its posting address, owner address, or robot address.
-Automatic responses are subject to various conditions, such as headers in the
-original message or the amount of time since the last auto-response.
+Mailman has a replybot handler that sends automatic responses to messages it
+receives on its posting address, owner address, or robot address.  Automatic
+responses are subject to various conditions, such as headers in the original
+message or the amount of time since the last auto-response.
 
     >>> mlist = create_list(u'_xtest@example.com')
     >>> mlist.real_name = u'XTest'
-
-    >>> # Ensure that the virgin queue is empty, since we'll be checking this
-    >>> # for new auto-response messages.
-    >>> virginq = config.switchboards['virgin']
-    >>> virginq.files
-    []
 
 
 Basic automatic responding
@@ -26,9 +20,11 @@ automatic response grace period which specifies how much time must pass before
 a second response will be sent, with 0 meaning "there is no grace period".
 
     >>> import datetime
-    >>> mlist.autorespond_admin = True
-    >>> mlist.autoresponse_graceperiod = datetime.timedelta()
-    >>> mlist.autoresponse_admin_text = u'admin autoresponse text'
+    >>> from mailman.interfaces.autorespond import ResponseAction
+
+    >>> mlist.autorespond_owner = ResponseAction.respond_and_continue
+    >>> mlist.autoresponse_grace_period = datetime.timedelta()
+    >>> mlist.autoresponse_owner_text = u'owner autoresponse text'
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
@@ -40,9 +36,10 @@ a second response will be sent, with 0 meaning "there is no grace period".
 The preceding message to the mailing list's owner will trigger an automatic
 response.
 
-    >>> from mailman.pipeline.replybot import process
     >>> from mailman.testing.helpers import get_queue_messages
-    >>> process(mlist, msg, dict(toowner=True))
+
+    >>> handler = config.handlers['replybot']
+    >>> handler.process(mlist, msg, dict(to_owner=True))
     >>> messages = get_queue_messages('virgin')
     >>> len(messages)
     1
@@ -68,7 +65,7 @@ response.
     Date: ...
     Precedence: bulk
     <BLANKLINE>
-    admin autoresponse text
+    owner autoresponse text
 
 
 Short circuiting
@@ -85,7 +82,7 @@ header, no auto-response is sent.
     ... help me
     ... """)
 
-    >>> process(mlist, msg, dict(toowner=True))
+    >>> handler.process(mlist, msg, dict(to_owner=True))
     >>> get_queue_messages('virgin')
     []
 
@@ -98,7 +95,7 @@ internally crafted messages, by setting the 'noack' metadata key.
     ... help for you
     ... """)
 
-    >>> process(mlist, msg, dict(noack=True, toowner=True))
+    >>> handler.process(mlist, msg, dict(noack=True, to_owner=True))
     >>> get_queue_messages('virgin')
     []
 
@@ -112,17 +109,17 @@ If there is a Precedence: header with any of the values 'bulk', 'junk', or
     ... hey!
     ... """)
 
-    >>> process(mlist, msg, dict(toowner=True))
+    >>> handler.process(mlist, msg, dict(to_owner=True))
     >>> get_queue_messages('virgin')
     []
 
     >>> msg.replace_header('precedence', 'junk')
-    >>> process(mlist, msg, dict(toowner=True))
+    >>> handler.process(mlist, msg, dict(to_owner=True))
     >>> get_queue_messages('virgin')
     []
 
     >>> msg.replace_header('precedence', 'list')
-    >>> process(mlist, msg, dict(toowner=True))
+    >>> handler.process(mlist, msg, dict(to_owner=True))
     >>> get_queue_messages('virgin')
     []
 
@@ -130,7 +127,7 @@ Unless the X-Ack: header has a value of "yes", in which case, the Precedence
 header is ignored.
 
     >>> msg['X-Ack'] = 'yes'
-    >>> process(mlist, msg, dict(toowner=True))
+    >>> handler.process(mlist, msg, dict(to_owner=True))
     >>> messages = get_queue_messages('virgin')
     >>> len(messages)
     1
@@ -156,7 +153,7 @@ header is ignored.
     Date: ...
     Precedence: bulk
     <BLANKLINE>
-    admin autoresponse text
+    owner autoresponse text
 
 
 Available auto-responses
@@ -166,7 +163,7 @@ As shown above, a message sent to the -owner address will get an auto-response
 with the text set for owner responses.  Two other types of email will get
 auto-responses: those sent to the -request address...
 
-    >>> mlist.autorespond_requests = True
+    >>> mlist.autorespond_requests = ResponseAction.respond_and_continue
     >>> mlist.autoresponse_request_text = u'robot autoresponse text'
 
     >>> msg = message_from_string("""\
@@ -176,7 +173,7 @@ auto-responses: those sent to the -request address...
     ... help me
     ... """)
 
-    >>> process(mlist, msg, dict(torequest=True))
+    >>> handler.process(mlist, msg, dict(to_request=True))
     >>> messages = get_queue_messages('virgin')
     >>> len(messages)
     1
@@ -198,7 +195,7 @@ auto-responses: those sent to the -request address...
 
 ...and those sent to the posting address.
 
-    >>> mlist.autorespond_postings = True
+    >>> mlist.autorespond_postings = ResponseAction.respond_and_continue
     >>> mlist.autoresponse_postings_text = u'postings autoresponse text'
 
     >>> msg = message_from_string("""\
@@ -208,7 +205,7 @@ auto-responses: those sent to the -request address...
     ... help me
     ... """)
 
-    >>> process(mlist, msg, {})
+    >>> handler.process(mlist, msg, dict(to_list=True))
     >>> messages = get_queue_messages('virgin')
     >>> len(messages)
     1
@@ -236,7 +233,7 @@ Automatic responses have a grace period, during which no additional responses
 will be sent.  This is so as not to bombard the sender with responses.  The
 grace period is measured in days.
 
-    >>> mlist.autoresponse_graceperiod = datetime.timedelta(days=10)
+    >>> mlist.autoresponse_grace_period = datetime.timedelta(days=10)
 
 When a response is sent to a person via any of the owner, request, or postings
 addresses, the response date is recorded.  The grace period is usually
@@ -251,14 +248,14 @@ measured in days.
 
 This is the first response to bperson, so it gets sent.
 
-    >>> process(mlist, msg, dict(toowner=True))
+    >>> handler.process(mlist, msg, dict(to_owner=True))
     >>> print len(get_queue_messages('virgin'))
     1
 
 But with a grace period greater than zero, no subsequent response will be sent
 right now.
 
-    >>> process(mlist, msg, dict(toowner=True))
+    >>> handler.process(mlist, msg, dict(to_owner=True))
     >>> print len(get_queue_messages('virgin'))
     0
 
@@ -267,14 +264,14 @@ Fast forward 9 days and you still don't get a response.
     >>> from mailman.utilities.datetime import factory
     >>> factory.fast_forward(days=9)
 
-    >>> process(mlist, msg, dict(toowner=True))
+    >>> handler.process(mlist, msg, dict(to_owner=True))
     >>> print len(get_queue_messages('virgin'))
     0
 
 But tomorrow, the sender will get a new auto-response.
 
     >>> factory.fast_forward()
-    >>> process(mlist, msg, dict(toowner=True))
+    >>> handler.process(mlist, msg, dict(to_owner=True))
     >>> print len(get_queue_messages('virgin'))
     1
 
@@ -288,21 +285,21 @@ address, even if the sender is the same person...
     ... help
     ... """)
 
-    >>> process(mlist, msg, dict(torequest=True))
+    >>> handler.process(mlist, msg, dict(to_request=True))
     >>> print len(get_queue_messages('virgin'))
     1
 
-    >>> process(mlist, msg, dict(torequest=True))
+    >>> handler.process(mlist, msg, dict(to_request=True))
     >>> print len(get_queue_messages('virgin'))
     0
 
     >>> factory.fast_forward(days=9)
-    >>> process(mlist, msg, dict(torequest=True))
+    >>> handler.process(mlist, msg, dict(to_request=True))
     >>> print len(get_queue_messages('virgin'))
     0
 
     >>> factory.fast_forward()
-    >>> process(mlist, msg, dict(torequest=True))
+    >>> handler.process(mlist, msg, dict(to_request=True))
     >>> print len(get_queue_messages('virgin'))
     1
 
@@ -315,20 +312,20 @@ address, even if the sender is the same person...
     ... help
     ... """)
 
-    >>> process(mlist, msg, {})
+    >>> handler.process(mlist, msg, dict(to_list=True))
     >>> print len(get_queue_messages('virgin'))
     1
 
-    >>> process(mlist, msg, {})
+    >>> handler.process(mlist, msg, dict(to_list=True))
     >>> print len(get_queue_messages('virgin'))
     0
 
     >>> factory.fast_forward(days=9)
-    >>> process(mlist, msg, {})
+    >>> handler.process(mlist, msg, dict(to_list=True))
     >>> print len(get_queue_messages('virgin'))
     0
 
     >>> factory.fast_forward()
-    >>> process(mlist, msg, {})
+    >>> handler.process(mlist, msg, dict(to_list=True))
     >>> print len(get_queue_messages('virgin'))
     1

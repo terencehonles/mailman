@@ -33,6 +33,7 @@ from zope.interface import implements
 from mailman.config import config
 from mailman.i18n import _
 from mailman.interfaces import Action, NewsModeration
+from mailman.interfaces.autorespond import ResponseAction
 from mailman.interfaces.mailinglist import (
     DigestFrequency, Personalization, ReplyToMunging)
 from mailman.interfaces.styles import IStyle
@@ -166,17 +167,13 @@ ${listinfo_page}
         # automatic discarding
         mlist.max_days_to_hold = 0
         # Autoresponder
-        mlist.autorespond_postings = False
-        mlist.autorespond_admin = False
-        # this value can be
-        #  0 - no autoresponse on the -request line
-        #  1 - autorespond, but discard the original message
-        #  2 - autorespond, and forward the message on to be processed
-        mlist.autorespond_requests = 0
+        mlist.autorespond_owner = ResponseAction.none
+        mlist.autoresponse_owner_text = ''
+        mlist.autorespond_postings = ResponseAction.none
         mlist.autoresponse_postings_text = ''
-        mlist.autoresponse_admin_text = ''
+        mlist.autorespond_requests = ResponseAction.none
         mlist.autoresponse_request_text = ''
-        mlist.autoresponse_graceperiod = datetime.timedelta(days=90)
+        mlist.autoresponse_grace_period = datetime.timedelta(days=90)
         # Bounces
         mlist.bounce_processing = True
         mlist.bounce_score_threshold = 5.0

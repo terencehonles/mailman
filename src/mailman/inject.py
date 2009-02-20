@@ -32,7 +32,7 @@ from mailman.email.message import Message
 
 
 
-def inject_message(mlist, msg, recips=None, switchboard=None):
+def inject_message(mlist, msg, recips=None, switchboard=None, **kws):
     """Inject a message into a queue.
 
     :param mlist: The mailing list this message is destined for.
@@ -45,6 +45,8 @@ def inject_message(mlist, msg, recips=None, switchboard=None):
     :param switchboard: Optional name of switchboard to inject this message
         into.  If not given, the 'in' switchboard is used.
     :type switchboard: string
+    :param kws: Additional values for the message metadata.
+    :type kws: dictionary
     """
     if switchboard is None:
         switchboard = 'in'
@@ -55,14 +57,14 @@ def inject_message(mlist, msg, recips=None, switchboard=None):
     # Ditto for Date: as required by RFC 2822.
     if 'date' not in msg:
         msg['Date'] = formatdate(localtime=True)
-    kws = dict(
+    msgdata = dict(
         listname=mlist.fqdn_listname,
-        tolist=True,
         original_size=getattr(msg, 'original_size', len(msg.as_string())),
         )
+    msgdata.update(kws)
     if recips is not None:
-        kws['recips'] = recips
-    config.switchboards[switchboard].enqueue(msg, **kws)
+        msgdata['recips'] = recips
+    config.switchboards[switchboard].enqueue(msg, **msgdata)
 
 
 

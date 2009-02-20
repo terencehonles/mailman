@@ -170,25 +170,25 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
                 if subaddress in ('bounces', 'admin'):
                     queue = 'bounce'
                 elif subaddress == 'confirm':
-                    msgdata['toconfirm'] = True
+                    msgdata['to_confirm'] = True
                     queue = 'command'
                 elif subaddress in ('join', 'subscribe'):
-                    msgdata['tojoin'] = True
+                    msgdata['to_join'] = True
                     queue = 'command'
                 elif subaddress in ('leave', 'unsubscribe'):
-                    msgdata['toleave'] = True
+                    msgdata['to_leave'] = True
                     queue = 'command'
                 elif subaddress == 'owner':
                     msgdata.update(dict(
-                        toowner=True,
+                        to_owner=True,
                         envsender=config.mailman.site_owner,
                         ))
                     queue = 'in'
                 elif subaddress is None:
-                    msgdata['tolist'] = True
+                    msgdata['to_list'] = True
                     queue = 'in'
                 elif subaddress == 'request':
-                    msgdata['torequest'] = True
+                    msgdata['to_request'] = True
                     queue = 'command'
                 else:
                     elog.error('Unknown sub-address: %s', subaddress)

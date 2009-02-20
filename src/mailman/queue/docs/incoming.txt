@@ -73,8 +73,6 @@ And now the message is in the pipeline queue.
     _parsemsg    : False
     envsender    : noreply@example.com
     ...
-    tolist       : True
-    ...
 
 
 Held messages

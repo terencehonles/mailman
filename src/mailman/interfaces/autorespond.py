@@ -21,14 +21,19 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
+    'ALWAYS_REPLY',
     'IAutoResponseRecord',
     'IAutoResponseSet',
     'Response',
+    'ResponseAction',
     ]
 
 
+from datetime import timedelta
 from munepy import Enum
 from zope.interface import Interface, Attribute
+
+ALWAYS_REPLY = timedelta()
 
 
 
@@ -41,6 +46,16 @@ class Response(Enum):
     owner = 3
     # Messages to the list's posting address.
     postings = 4
+
+
+
+class ResponseAction(Enum):
+    # No automatic response.
+    none = 0
+    # Respond, but discard the original message.
+    respond_and_discard = 1
+    # Respond and continue processing the message.
+    respond_and_continue = 2
 
 
 

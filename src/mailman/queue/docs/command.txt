@@ -6,7 +6,6 @@ Commands are extensible using the Mailman plugin system, but Mailman comes
 with a number of email commands out of the box.  These are processed when a
 message is sent to the list's -request address.
 
-    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list(u'test@example.com')
 
 
