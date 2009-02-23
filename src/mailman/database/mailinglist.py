@@ -29,7 +29,8 @@ import os
 import string
 
 from storm.locals import (
-    Bool, DateTime, Float, Int, Pickle, Store, TimeDelta, Unicode)
+    And, Bool, DateTime, Float, Int, Pickle, Reference, Store, TimeDelta,
+    Unicode)
 from urlparse import urljoin
 from zope.interface import implements
 
@@ -38,7 +39,8 @@ from mailman.database import roster
 from mailman.database.digests import OneLastDigest
 from mailman.database.model import Model
 from mailman.database.types import Enum
-from mailman.interfaces.mailinglist import IMailingList, Personalization
+from mailman.interfaces.mailinglist import (
+    IAcceptableAlias, IMailingList, Personalization)
 from mailman.utilities.filesystem import makedirs
 from mailman.utilities.string import expand
 
@@ -67,11 +69,13 @@ class MailingList(Model):
     digest_last_sent_at = DateTime()
     volume = Int()
     last_post_time = DateTime()
+    # Implicit destination.
+    acceptable_aliases_id = Int()
+    acceptable_alias = Reference(acceptable_aliases_id, 'AcceptableAlias.id')
     # Attributes which are directly modifiable via the web u/i.  The more
     # complicated attributes are currently stored as pickles, though that
     # will change as the schema and implementation is developed.
     accept_these_nonmembers = Pickle()
-    acceptable_aliases = Pickle()
     admin_immed_notify = Bool()
     admin_notify_mchanges = Bool()
     administrivia = Bool()
@@ -293,3 +297,45 @@ class MailingList(Model):
                       for digest in results]
         results.remove()
         return recipients
+
+    def clear_acceptable_aliases(self):
+        """See `IMailingList`."""
+        Store.of(self).find(
+            AcceptableAlias,
+            AcceptableAlias.mailing_list == self).remove()
+
+    def add_acceptable_alias(self, alias):
+        if not (alias.startswith('^') or '@' in alias):
+            raise ValueError(alias)
+        alias = AcceptableAlias(self, alias.lower())
+        Store.of(self).add(alias)
+
+    def remove_acceptable_alias(self, alias):
+        Store.of(self).find(
+            AcceptableAlias,
+            And(AcceptableAlias.mailing_list == self,
+                AcceptableAlias.alias == alias.lower())).remove()
+
+    @property
+    def acceptable_aliases(self):
+        aliases = Store.of(self).find(
+            AcceptableAlias,
+            AcceptableAlias.mailing_list == self)
+        for alias in aliases:
+            yield alias.alias
+
+
+
+class AcceptableAlias(Model):
+    implements(IAcceptableAlias)
+
+    id = Int(primary=True)
+
+    mailing_list_id = Int()
+    mailing_list = Reference(mailing_list_id, MailingList.id)
+
+    alias = Unicode()
+
+    def __init__(self, mailing_list, alias):
+        self.mailing_list = mailing_list
+        self.alias = alias

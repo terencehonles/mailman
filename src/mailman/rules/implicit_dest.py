@@ -55,16 +55,11 @@ class ImplicitDestination:
         # a caret (i.e. ^), then it's a regular expression to match against.
         aliases = set()
         alias_patterns = set()
-        for alias in mlist.acceptable_aliases.splitlines():
-            alias = alias.strip().lower()
+        for alias in mlist.acceptable_aliases:
             if alias.startswith('^'):
                 alias_patterns.add(alias)
-            elif '@' in alias:
-                aliases.add(alias)
             else:
-                # This is not a regular expression, nor a fully-qualified
-                # email address, so skip it.
-                pass
+                aliases.add(alias)
         # Add the list's posting address, i.e. the explicit address, to the
         # set of acceptable aliases.
         aliases.add(mlist.posting_address)

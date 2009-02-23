@@ -280,3 +280,38 @@ class IMailingList(Interface):
         An example of list-specific data is the temporary digest mbox file
         that gets created to accumlate messages for the digest.
         """)
+
+    def clear_acceptable_aliases():
+        """Clear the set of acceptable posting aliases."""
+
+    def add_acceptable_alias(alias):
+        """Add the given address as an acceptable aliases for posting.
+
+        :param alias: The email address to accept as a recipient for implicit
+            destination posting purposes.  The alias is coerced to lower
+            case.  If `alias` begins with a '^' character, it is interpreted
+            as a regular expression, otherwise it must be an email address.
+        :type alias: string
+        :raises ValueError: when the alias neither starts with '^' nor has an
+            '@' sign in it.
+        """
+
+    def remove_acceptable_alias(alias):
+        """Remove the given address as an acceptable aliases for posting.
+
+        :param alias: The email address to no longer accept as a recipient for
+            implicit destination posting purposes.
+        :type alias: string
+        """
+
+    acceptable_aliases = Attribute(
+        """An iterator over all the acceptable aliases.""")
+
+
+
+class IAcceptableAlias(Interface):
+    """An acceptable alias for implicit destinations."""
+
+    mailing_list = Attribute('The associated mailing list.')
+
+    address = Attribute('The address or pattern to match against recipients.')

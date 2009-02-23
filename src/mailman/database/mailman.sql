@@ -7,6 +7,20 @@ CREATE TABLE _request (
         PRIMARY KEY (id),
          CONSTRAINT _request_mailing_list_id_fk FOREIGN KEY(mailing_list_id) REFERENCES mailinglist (id)
 );
+
+CREATE TABLE acceptablealias (
+    id INTEGER NOT NULL,
+    "alias" TEXT NOT NULL,
+    mailing_list_id INTEGER NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT acceptablealias_mailing_list_id_fk
+        FOREIGN KEY(mailing_list_id) REFERENCES mailinglist (id)
+    );
+CREATE INDEX ix_acceptablealias_mailing_list_id
+    ON acceptablealias (mailing_list_id);
+CREATE INDEX ix_acceptablealias_alias
+    ON acceptablealias ("alias");
+
 CREATE TABLE address (
         id INTEGER NOT NULL,
         address TEXT,
@@ -57,7 +71,7 @@ CREATE TABLE mailinglist (
         volume INTEGER,
         last_post_time TIMESTAMP,
         accept_these_nonmembers BLOB,
-        acceptable_aliases BLOB,
+        acceptable_aliases_id INTEGER,
         admin_immed_notify BOOLEAN,
         admin_notify_mchanges BOOLEAN,
         administrivia BOOLEAN,
