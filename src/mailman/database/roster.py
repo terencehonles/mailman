@@ -37,12 +37,13 @@ __all__ = [
     ]
 
 
-from storm.locals import *
+from storm.expr import And, LeftJoin, Or
 from zope.interface import implements
 
 from mailman.config import config
 from mailman.database.address import Address
 from mailman.database.member import Member
+from mailman.database.preferences import Preferences
 from mailman.interfaces.member import DeliveryMode, MemberRole
 from mailman.interfaces.roster import IRoster
 
@@ -167,49 +168,49 @@ class AdministratorRoster(AbstractRoster):
 
 
 
-class RegularMemberRoster(AbstractRoster):
+class DeliveryMemberRoster(AbstractRoster):
+    """Return all the members having a particular kind of delivery."""
+
+    def _get_members(self, *delivery_modes):
+        """The set of members for a mailing list, filter by delivery mode.
+
+        :param delivery_modes: The modes to filter on.
+        :type delivery_modes: sequence of `DeliveryMode`.
+        :return: A generator of members.
+        :rtype: generator
+        """
+        results = config.db.store.find(
+            Member,
+            And(Member.mailing_list == self._mlist.fqdn_listname,
+                Member.role == MemberRole.member))
+        for member in results:
+            if member.delivery_mode in delivery_modes:
+                yield member
+
+
+class RegularMemberRoster(DeliveryMemberRoster):
     """Return all the regular delivery members of a list."""
 
     name = 'regular_members'
 
     @property
     def members(self):
-        # Query for all the Members which have a role of MemberRole.member and
-        # are subscribed to this mailing list.  Then return only those members
-        # that have a regular delivery mode.
-        for member in config.db.store.find(
-                Member,
-                mailing_list=self._mlist.fqdn_listname,
-                role=MemberRole.member):
-            if member.delivery_mode == DeliveryMode.regular:
-                yield member
+        for member in self._get_members(DeliveryMode.regular):
+            yield member
 
 
 
-_digest_modes = (
-    DeliveryMode.mime_digests,
-    DeliveryMode.plaintext_digests,
-    DeliveryMode.summary_digests,
-    )
-
-
-
-class DigestMemberRoster(AbstractRoster):
+class DigestMemberRoster(DeliveryMemberRoster):
     """Return all the regular delivery members of a list."""
 
     name = 'digest_members'
 
     @property
     def members(self):
-        # Query for all the Members which have a role of MemberRole.member and
-        # are subscribed to this mailing list.  Then return only those members
-        # that have one of the digest delivery modes.
-        for member in config.db.store.find(
-                Member,
-                mailing_list=self._mlist.fqdn_listname,
-                role=MemberRole.member):
-            if member.delivery_mode in _digest_modes:
-                yield member
+        for member in self._get_members(DeliveryMode.plaintext_digests,
+                                        DeliveryMode.mime_digests,
+                                        DeliveryMode.summary_digests):
+            yield member
 
 
 

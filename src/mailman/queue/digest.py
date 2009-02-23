@@ -43,6 +43,7 @@ from mailman.Utils import maketext, oneline, wrap
 from mailman.config import config
 from mailman.core.errors import DiscardMessage
 from mailman.i18n import _
+from mailman.interfaces.member import DeliveryMode, DeliveryStatus
 from mailman.pipeline.decorate import decorate
 from mailman.pipeline.scrubber import process as scrubber
 from mailman.queue import Runner
@@ -332,10 +333,6 @@ class DigestRunner(Runner):
         # digest to ensure that there will be no gaps in the messages they
         # receive.
         digest_members = set(mlist.digest_members.members)
-        for address in mlist.one_last_digest:
-            member = mlist.digest_members.get_member(address)
-            if member:
-                digest_members.add(member)
         for member in digest_members:
             if member.delivery_status <> DeliveryStatus.enabled:
                 continue
@@ -350,6 +347,16 @@ class DigestRunner(Runner):
                 raise AssertionError(
                     'Digest member "{0}" unexpected delivery mode: {1}'.format(
                         email_address, member.delivery_mode))
+        # Add also the folks who are receiving one last digest.
+        for address, delivery_mode in mlist.last_digest_recipients:
+            if delivery_mode == DeliveryMode.plaintext_digests:
+                rfc1153_recipients.add(address.original_address)
+            elif delivery_mode == DeliveryMode.mime_digests:
+                mime_recipients.add(address.original_address)
+            else:
+                raise AssertionError(
+                    'OLD recipient "{0}" unexpected delivery mode: {1}'.format(
+                        address, delivery_mode))
         # Send the digests to the virgin queue for final delivery.
         queue = config.switchboards['virgin']
         queue.enqueue(mime,
@@ -360,6 +367,3 @@ class DigestRunner(Runner):
                       recips=rfc1153_recipients,
                       listname=mlist.fqdn_listname,
                       isdigest=True)
-        # Now that we've delivered the last digest to folks who were waiting
-        # for it, clear that recipient set.
-        mlist.one_last_digest.clear()

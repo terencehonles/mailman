@@ -2,7 +2,7 @@ List memberships
 ================
 
 Users represent people in Mailman.  Users control email addresses, and rosters
-are collectons of members.  A member gives an email address a role, such as
+are collections of members.  A member gives an email address a role, such as
 'member', 'administrator', or 'moderator'.  Roster sets are collections of
 rosters and a mailing list has a single roster set that contains all its
 members, regardless of that member's role.

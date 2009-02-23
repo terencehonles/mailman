@@ -148,7 +148,8 @@ subscribed, a role is specified.
 
     >>> address_5 = usermgr.create_address(
     ...     u'eperson@example.com', u'Elly Person')
-    >>> mlist = config.db.list_manager.create(u'_xtext@example.com')
+    >>> mlist = create_list(u'_xtext@example.com')
+
     >>> from mailman.interfaces.member import MemberRole
     >>> address_5.subscribe(mlist, MemberRole.owner)
     <Member: Elly Person <eperson@example.com> on

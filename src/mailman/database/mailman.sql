@@ -54,7 +54,6 @@ CREATE TABLE mailinglist (
         next_request_id INTEGER,
         next_digest_number INTEGER,
         digest_last_sent_at TIMESTAMP,
-        one_last_digest BLOB,
         volume INTEGER,
         last_post_time TIMESTAMP,
         accept_these_nonmembers BLOB,
@@ -178,6 +177,17 @@ CREATE TABLE message (
         message_id TEXT,
         PRIMARY KEY (id)
 );
+CREATE TABLE onelastdigest (
+    id INTEGER NOT NULL,
+    mailing_list_id INTEGER,
+    address_id INTEGER,
+    delivery_mode TEXT,
+    PRIMARY KEY (id),
+    CONSTRAINT onelastdigest_mailing_list_id_fk
+        FOREIGN KEY(mailing_list_id) REFERENCES mailinglist(id),
+    CONSTRAINT onelastdigest_address_id_fk
+        FOREIGN KEY(address_id) REFERENCES address(id)
+    );
 CREATE TABLE pended (
         id INTEGER NOT NULL,
         token TEXT,

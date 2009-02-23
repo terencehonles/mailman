@@ -26,10 +26,9 @@ __all__ = [
 
 
 from email.utils import formataddr
-from storm.locals import *
+from storm.locals import DateTime, Int, Reference, Store, Unicode
 from zope.interface import implements
 
-from mailman.config import config
 from mailman.database.member import Member
 from mailman.database.model import Model
 from mailman.database.preferences import Preferences
@@ -76,7 +75,8 @@ class Address(Model):
 
     def subscribe(self, mailing_list, role):
         # This member has no preferences by default.
-        member = config.db.store.find(
+        store = Store.of(self)
+        member = store.find(
             Member,
             Member.role == role,
             Member.mailing_list == mailing_list.fqdn_listname,
@@ -88,7 +88,7 @@ class Address(Model):
                         mailing_list=mailing_list.fqdn_listname,
                         address=self)
         member.preferences = Preferences()
-        config.db.store.add(member)
+        store.add(member)
         return member
 
     @property

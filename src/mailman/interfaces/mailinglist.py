@@ -216,25 +216,30 @@ class IMailingList(Interface):
         the digest volume number is bumped, the digest number is reset to
         1.""")
 
-    message_count = Attribute(
-        """The number of messages in the digest currently being collected.""")
-
     digest_size_threshold = Attribute(
         """The maximum (approximate) size in kilobytes of the digest currently
         being collected.""")
 
-    messages = Attribute(
-        """An iterator over all the messages in the digest currently being
-        created.  Returns individual IPostedMessage objects.
+    def send_one_last_digest_to(address, delivery_mode):
+        """Make sure to send one last digest to an address.
+
+        This is used when a person transitions from digest delivery to regular
+        delivery and wants to make sure they don't miss anything.  By
+        indicating that they'd like to receive one last digest, they will
+        ensure continuity in receiving mailing lists posts.
+
+        :param address: The address of the person receiving one last digest.
+        :type address: `IAddress`
+        :param delivery_mode: The type of digest to receive.
+        :type delivery_mode: `DeliveryMode`
+        """
+
+    last_digest_recipients = Attribute(
+        """An iterator over the addresses that should receive one last digest.
+
+        Items are 2-tuples of (`IAddress`, `DeliveryMode`).  The one last
+        digest recipients are cleared.
         """)
-
-    limits = Attribute(
-        """An iterator over the IDigestLimiters associated with this digest.
-        Each limiter can make a determination of whether the digest has
-        reached the threshold for being automatically sent.""")
-
-    def send():
-        """Send this digest now."""
 
     decorators = Attribute(
         """An iterator over all the IDecorators associated with this digest.

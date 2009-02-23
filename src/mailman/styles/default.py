@@ -123,7 +123,6 @@ $fqdn_listname
 ${listinfo_page}
 """
         mlist.digest_volume_frequency = DigestFrequency.monthly
-        mlist.one_last_digest = {}
         mlist.next_digest_number = 1
         mlist.nondigestable = True
         mlist.personalize = Personalization.none

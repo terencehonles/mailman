@@ -28,12 +28,14 @@ __all__ = [
 import os
 import string
 
-from storm.locals import *
+from storm.locals import (
+    Bool, DateTime, Float, Int, Pickle, Store, TimeDelta, Unicode)
 from urlparse import urljoin
 from zope.interface import implements
 
 from mailman.config import config
 from mailman.database import roster
+from mailman.database.digests import OneLastDigest
 from mailman.database.model import Model
 from mailman.database.types import Enum
 from mailman.interfaces.mailinglist import IMailingList, Personalization
@@ -63,7 +65,6 @@ class MailingList(Model):
     next_request_id = Int()
     next_digest_number = Int()
     digest_last_sent_at = DateTime()
-    one_last_digest = Pickle()
     volume = Int()
     last_post_time = DateTime()
     # Attributes which are directly modifiable via the web u/i.  The more
@@ -276,3 +277,19 @@ class MailingList(Model):
             self._preferred_language = language.code
         except AttributeError:
             self._preferred_language = language
+
+    def send_one_last_digest_to(self, address, delivery_mode):
+        """See `IMailingList`."""
+        digest = OneLastDigest(self, address, delivery_mode)
+        Store.of(self).add(digest)
+
+    @property
+    def last_digest_recipients(self):
+        """See `IMailingList`."""
+        results = Store.of(self).find(
+            OneLastDigest,
+            OneLastDigest.mailing_list == self)
+        recipients = [(digest.address, digest.delivery_mode)
+                      for digest in results]
+        results.remove()
+        return recipients
