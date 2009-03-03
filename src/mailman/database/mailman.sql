@@ -74,8 +74,13 @@ CREATE TABLE language (
 );
 CREATE TABLE mailinglist (
         id INTEGER NOT NULL,
+        -- List identity
         list_name TEXT,
         host_name TEXT,
+        list_id TEXT,
+        include_list_post_header BOOLEAN,
+        include_rfc2369_headers BOOLEAN,
+        -- Attributes not directly modifiable via the web u/i        
         created_at TIMESTAMP,
         admin_member_chunksize INTEGER,
         next_request_id INTEGER,
@@ -136,8 +141,6 @@ CREATE TABLE mailinglist (
         goodbye_msg TEXT,
         header_matches BLOB,
         hold_these_nonmembers BLOB,
-        include_list_post_header BOOLEAN,
-        include_rfc2369_headers BOOLEAN,
         info TEXT,
         linked_newsgroup TEXT,
         max_days_to_hold INTEGER,

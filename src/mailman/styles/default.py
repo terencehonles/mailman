@@ -52,12 +52,15 @@ class DefaultStyle:
         """See `IStyle`."""
         # For cut-n-paste convenience.
         mlist = mailing_list
+        # List identity.
+        mlist.real_name = mlist.list_name.capitalize()
+        mlist.list_id = u'{0.list_name}.{0.host_name}'.format(mlist)
+        mlist.include_rfc2369_headers = True
+        mlist.include_list_post_header = True
         # Most of these were ripped from the old MailList.InitVars() method.
         mlist.volume = 1
         mlist.post_id = 1
         mlist.new_member_options = 256
-        # This stuff is configurable
-        mlist.real_name = mlist.list_name.capitalize()
         mlist.respond_to_post_requests = True
         mlist.advertised = True
         mlist.max_num_recipients = 10
@@ -92,8 +95,6 @@ from: .*@uplinkpro.com
         mlist.admin_member_chunksize = 30
         mlist.administrivia = True
         mlist.preferred_language = 'en'
-        mlist.include_rfc2369_headers = True
-        mlist.include_list_post_header = True
         mlist.collapse_alternatives = True
         # Digest related variables
         mlist.digestable = True

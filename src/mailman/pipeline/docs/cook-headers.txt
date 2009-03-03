@@ -7,8 +7,7 @@ transformations.  Some headers get added, others get changed.  Some of these
 changes depend on mailing list settings and others depend on how the message
 is getting sent through the system.  We'll take things one-by-one.
 
-    >>> from mailman.pipeline.cook_headers import process
-    >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
+    >>> mlist = create_list(u'_xtest@example.com')
     >>> mlist.subject_prefix = u''
     >>> mlist.include_list_post_header = False
     >>> mlist.archive = True
@@ -26,6 +25,8 @@ will place the sender in the message metadata for safe keeping.
     ... A message of great import.
     ... """)
     >>> msgdata = {}
+
+    >>> from mailman.pipeline.cook_headers import process
     >>> process(mlist, msg, msgdata)
     >>> msgdata['original_sender']
     u'aperson@example.com'
@@ -218,6 +219,38 @@ header.
     List-Unsubscribe: <http://lists.example.com/listinfo/_xtest@example.com>,
     	<mailto:_xtest-leave@example.com>
     ---end---
+
+There are some circumstances when the list administrator wants to explicitly
+set the List-ID header.
+
+    >>> from mailman.domain import Domain
+    >>> domain = Domain(u'mail.example.net')
+    >>> config.domains[domain.email_host] = domain
+    >>> mlist.host_name = u'mail.example.net'
+
+    >>> process(mlist, msg, {})
+    >>> print msg['list-id']
+    My test mailing list <_xtest.example.com>
+
+    >>> mlist.list_id = u'_xtest.mail.example.net'
+    >>> process(mlist, msg, {})
+    >>> print msg['list-id']
+    My test mailing list <_xtest.mail.example.net>
+
+    >>> mlist.host_name = u'example.com'
+    >>> mlist.list_id = u'_xtest.example.com'
+
+Any existing List-ID headers are removed from the original message.
+
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.com
+    ... List-ID: <123.456.789>
+    ...
+    ... """)
+
+    >>> process(mlist, msg, {})
+    >>> sorted(msg.get_all('list-id'))
+    [u'My test mailing list <_xtest.example.com>']
 
 Administrative messages crafted by Mailman will have a reduced set of headers.
 

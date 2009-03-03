@@ -66,6 +66,8 @@ class DigestFrequency(Enum):
 class IMailingList(Interface):
     """A mailing list."""
 
+    # List identity
+
     list_name = Attribute(
         """The read-only short name of the mailing list.  Note that where a
         Mailman installation supports multiple domains, this short name may
@@ -73,13 +75,6 @@ class IMailingList(Interface):
         unique id for the mailing list.  This short name is always the local
         part of the posting email address.  For example, if messages are
         posted to mylist@example.com, then the list_name is 'mylist'.
-        """)
-
-    real_name = Attribute(
-        """The short human-readable descriptive name for the mailing list.  By
-        default, this is the capitalized `list_name`, but it can be changed to
-        anything.  This is used in locations such as the message footers and
-        Subject prefix.
         """)
 
     host_name = Attribute(
@@ -96,6 +91,26 @@ class IMailingList(Interface):
         address to which messages are posted, e.g. mylist@example.com.  It is
         always comprised of the list_name + '@' + host_name.
         """)
+
+    real_name = Attribute(
+        """The short human-readable descriptive name for the mailing list.  By
+        default, this is the capitalized `list_name`, but it can be changed to
+        anything.  This is used in locations such as the message footers and
+        Subject prefix.
+        """)
+
+    list_id = Attribute(
+        """The RFC 2919 List-ID header value.""")
+
+    include_list_post_header = Attribute(
+        """Flag specifying whether to include the RFC 2369 List-Post header.
+        This is usually set to True, except for announce-only lists.""")
+
+    include_rfc2369_headers = Attribute(
+        """Flag specifying whether to include any RFC 2369 header, including
+        the RFC 2919 List-ID header.""")
+
+    # Contact addresses
 
     posting_address = Attribute(
         """The address to which messages are posted for copying to the full

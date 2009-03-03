@@ -179,17 +179,16 @@ def process(mlist, msg, msgdata):
     if msgdata.get('_nolist') or not mlist.include_rfc2369_headers:
         return
     # This will act like an email address for purposes of formataddr()
-    listid = '{0}.{1}'.format(mlist.list_name, mlist.host_name)
     cset = mlist.preferred_language.charset
     if mlist.description:
         # Don't wrap the header since here we just want to get it properly RFC
         # 2047 encoded.
         i18ndesc = uheader(mlist, mlist.description, 'List-Id', maxlinelen=998)
-        listid_h = formataddr((str(i18ndesc), listid))
+        listid_h = formataddr((str(i18ndesc), mlist.list_id))
     else:
         # without desc we need to ensure the MUST brackets
-        listid_h = '<{0}>'.format(listid)
-    # We always add a List-ID: header.
+        listid_h = '<{0}>'.format(mlist.list_id)
+    # No other agent should add a List-ID header except Mailman.
     del msg['list-id']
     msg['List-Id'] = listid_h
     # For internally crafted messages, we also add a (nonstandard),

@@ -61,6 +61,9 @@ class MailingList(Model):
     # List identity
     list_name = Unicode()
     host_name = Unicode()
+    list_id = Unicode()
+    include_list_post_header = Bool()
+    include_rfc2369_headers = Bool()
     # Attributes not directly modifiable via the web u/i
     created_at = DateTime()
     admin_member_chunksize = Int()
@@ -130,8 +133,6 @@ class MailingList(Model):
     goodbye_msg = Unicode()
     header_matches = Pickle()
     hold_these_nonmembers = Pickle()
-    include_list_post_header = Bool()
-    include_rfc2369_headers = Bool()
     info = Unicode()
     linked_newsgroup = Unicode()
     max_days_to_hold = Int()
