@@ -22,6 +22,7 @@ from __future__ import absolute_import, unicode_literals
 __metaclass__ = type
 __all__ = [
     'MailingList',
+    'adapt_mailing_list_to_acceptable_alias_set',
     ]
 
 
@@ -37,10 +38,12 @@ from zope.interface import implements
 from mailman.config import config
 from mailman.database import roster
 from mailman.database.digests import OneLastDigest
+from mailman.database.mime import ContentFilter
 from mailman.database.model import Model
 from mailman.database.types import Enum
 from mailman.interfaces.mailinglist import (
-    IAcceptableAlias, IMailingList, Personalization)
+    IAcceptableAlias, IAcceptableAliasSet, IMailingList, Personalization)
+from mailman.interfaces.mime import FilterType
 from mailman.utilities.filesystem import makedirs
 from mailman.utilities.string import expand
 
@@ -92,6 +95,10 @@ class MailingList(Model):
     autoresponse_postings_text = Unicode()
     autorespond_requests = Enum()
     autoresponse_request_text = Unicode()
+    # Content filters.
+    filter_content = Bool()
+    collapse_alternatives = Bool()
+    convert_html_to_plaintext = Bool()
     # Bounces and bans.
     ban_list = Pickle()
     bounce_info_stale_after = TimeDelta()
@@ -103,8 +110,6 @@ class MailingList(Model):
     bounce_unrecognized_goes_to_list_owner = Bool()
     bounce_you_are_disabled_warnings = Int()
     bounce_you_are_disabled_warnings_interval = TimeDelta()
-    collapse_alternatives = Bool()
-    convert_html_to_plaintext = Bool()
     default_member_moderation = Bool()
     description = Unicode()
     digest_footer = Unicode()
@@ -117,10 +122,6 @@ class MailingList(Model):
     discard_these_nonmembers = Pickle()
     emergency = Bool()
     encode_ascii_prefixes = Bool()
-    filter_action = Int()
-    filter_content = Bool()
-    filter_filename_extensions = Pickle()
-    filter_mime_types = Pickle()
     first_strip_reply_to = Bool()
     forward_auto_discards = Bool()
     gateway_to_mail = Bool()
@@ -149,8 +150,6 @@ class MailingList(Model):
     nondigestable = Bool()
     nonmember_rejection_notice = Unicode()
     obscure_addresses = Bool()
-    pass_filename_extensions = Pickle()
-    pass_mime_types = Pickle()
     personalize = Enum()
     pipeline = Unicode()
     post_id = Int()
@@ -230,41 +229,51 @@ class MailingList(Model):
 
     @property
     def posting_address(self):
+        """See `IMailingList`."""
         return self.fqdn_listname
 
     @property
     def no_reply_address(self):
+        """See `IMailingList`."""
         return '{0}@{1}'.format(config.mailman.noreply_address, self.host_name)
 
     @property
     def owner_address(self):
+        """See `IMailingList`."""
         return '{0}-owner@{1}'.format(self.list_name, self.host_name)
 
     @property
     def request_address(self):
+        """See `IMailingList`."""
         return '{0}-request@{1}'.format(self.list_name, self.host_name)
 
     @property
     def bounces_address(self):
+        """See `IMailingList`."""
         return '{0}-bounces@{1}'.format(self.list_name, self.host_name)
 
     @property
     def join_address(self):
+        """See `IMailingList`."""
         return '{0}-join@{1}'.format(self.list_name, self.host_name)
 
     @property
     def leave_address(self):
+        """See `IMailingList`."""
         return '{0}-leave@{1}'.format(self.list_name, self.host_name)
 
     @property
     def subscribe_address(self):
+        """See `IMailingList`."""
         return '{0}-subscribe@{1}'.format(self.list_name, self.host_name)
 
     @property
     def unsubscribe_address(self):
+        """See `IMailingList`."""
         return '{0}-unsubscribe@{1}'.format(self.list_name, self.host_name)
 
     def confirm_address(self, cookie):
+        """See `IMailingList`."""
         local_part = expand(config.mta.verp_confirm_format, dict(
             address = '{0}-confirm'.format(self.list_name),
             cookie  = cookie))
@@ -272,10 +281,12 @@ class MailingList(Model):
 
     @property
     def preferred_language(self):
+        """See `IMailingList`."""
         return config.languages[self._preferred_language]
 
     @preferred_language.setter
     def preferred_language(self, language):
+        """See `IMailingList`."""
         # Accept both a language code and a `Language` instance.
         try:
             self._preferred_language = language.code
@@ -298,31 +309,109 @@ class MailingList(Model):
         results.remove()
         return recipients
 
-    def clear_acceptable_aliases(self):
+    @property
+    def filter_types(self):
         """See `IMailingList`."""
-        Store.of(self).find(
-            AcceptableAlias,
-            AcceptableAlias.mailing_list == self).remove()
+        results = Store.of(self).find(
+            ContentFilter,
+            And(ContentFilter.mailing_list == self,
+                ContentFilter.filter_type == FilterType.filter_mime))
+        for content_filter in results:
+            yield content_filter.filter_pattern
 
-    def add_acceptable_alias(self, alias):
-        if not (alias.startswith('^') or '@' in alias):
-            raise ValueError(alias)
-        alias = AcceptableAlias(self, alias.lower())
-        Store.of(self).add(alias)
-
-    def remove_acceptable_alias(self, alias):
-        Store.of(self).find(
-            AcceptableAlias,
-            And(AcceptableAlias.mailing_list == self,
-                AcceptableAlias.alias == alias.lower())).remove()
+    @filter_types.setter
+    def filter_types(self, sequence):
+        """See `IMailingList`."""
+        # First, delete all existing MIME type filter patterns.
+        store = Store.of(self)
+        results = store.find(
+            ContentFilter,
+            And(ContentFilter.mailing_list == self,
+                ContentFilter.filter_type == FilterType.filter_mime))
+        results.remove()
+        # Now add all the new filter types.
+        for mime_type in sequence:
+            content_filter = ContentFilter(
+                self, mime_type, FilterType.filter_mime)
+            store.add(content_filter)
 
     @property
-    def acceptable_aliases(self):
-        aliases = Store.of(self).find(
-            AcceptableAlias,
-            AcceptableAlias.mailing_list == self)
-        for alias in aliases:
-            yield alias.alias
+    def pass_types(self):
+        """See `IMailingList`."""
+        results = Store.of(self).find(
+            ContentFilter,
+            And(ContentFilter.mailing_list == self,
+                ContentFilter.filter_type == FilterType.pass_mime))
+        for content_filter in results:
+            yield content_filter.filter_pattern
+
+    @pass_types.setter
+    def pass_types(self, sequence):
+        """See `IMailingList`."""
+        # First, delete all existing MIME type pass patterns.
+        store = Store.of(self)
+        results = store.find(
+            ContentFilter,
+            And(ContentFilter.mailing_list == self,
+                ContentFilter.filter_type == FilterType.pass_mime))
+        results.remove()
+        # Now add all the new filter types.
+        for mime_type in sequence:
+            content_filter = ContentFilter(
+                self, mime_type, FilterType.pass_mime)
+            store.add(content_filter)
+
+    @property
+    def filter_extensions(self):
+        """See `IMailingList`."""
+        results = Store.of(self).find(
+            ContentFilter,
+            And(ContentFilter.mailing_list == self,
+                ContentFilter.filter_type == FilterType.filter_extension))
+        for content_filter in results:
+            yield content_filter.filter_pattern
+
+    @filter_extensions.setter
+    def filter_extensions(self, sequence):
+        """See `IMailingList`."""
+        # First, delete all existing file extensions filter patterns.
+        store = Store.of(self)
+        results = store.find(
+            ContentFilter,
+            And(ContentFilter.mailing_list == self,
+                ContentFilter.filter_type == FilterType.filter_extension))
+        results.remove()
+        # Now add all the new filter types.
+        for mime_type in sequence:
+            content_filter = ContentFilter(
+                self, mime_type, FilterType.filter_extension)
+            store.add(content_filter)
+
+    @property
+    def pass_extensions(self):
+        """See `IMailingList`."""
+        results = Store.of(self).find(
+            ContentFilter,
+            And(ContentFilter.mailing_list == self,
+                ContentFilter.filter_type == FilterType.pass_extension))
+        for content_filter in results:
+            yield content_filter.pass_pattern
+
+    @pass_extensions.setter
+    def pass_extensions(self, sequence):
+        """See `IMailingList`."""
+        # First, delete all existing file extensions pass patterns.
+        store = Store.of(self)
+        results = store.find(
+            ContentFilter,
+            And(ContentFilter.mailing_list == self,
+                ContentFilter.filter_type == FilterType.pass_extension))
+        results.remove()
+        # Now add all the new filter types.
+        for mime_type in sequence:
+            content_filter = ContentFilter(
+                self, mime_type, FilterType.pass_extension)
+            store.add(content_filter)
 
 
 
@@ -339,3 +428,52 @@ class AcceptableAlias(Model):
     def __init__(self, mailing_list, alias):
         self.mailing_list = mailing_list
         self.alias = alias
+
+
+class AcceptableAliasSet:
+    implements(IAcceptableAliasSet)
+
+    def __init__(self, mailing_list):
+        self._mailing_list = mailing_list
+
+    def clear(self):
+        """See `IAcceptableAliasSet`."""
+        Store.of(self._mailing_list).find(
+            AcceptableAlias,
+            AcceptableAlias.mailing_list == self._mailing_list).remove()
+
+    def add(self, alias):
+        if not (alias.startswith('^') or '@' in alias):
+            raise ValueError(alias)
+        alias = AcceptableAlias(self._mailing_list, alias.lower())
+        Store.of(self._mailing_list).add(alias)
+
+    def remove(self, alias):
+        Store.of(self._mailing_list).find(
+            AcceptableAlias,
+            And(AcceptableAlias.mailing_list == self._mailing_list,
+                AcceptableAlias.alias == alias.lower())).remove()
+
+    @property
+    def aliases(self):
+        aliases = Store.of(self._mailing_list).find(
+            AcceptableAlias,
+            AcceptableAlias.mailing_list == self._mailing_list)
+        for alias in aliases:
+            yield alias.alias
+
+
+
+def adapt_mailing_list_to_acceptable_alias_set(iface, obj):
+    """Adapt an `IMailingList` to an `IAcceptableAliasSet`.
+
+    :param iface: The interface to adapt to.
+    :type iface: `zope.interface.Interface`
+    :param obj: The object being adapted.
+    :type obj: `IMailingList`
+    :return: An `IAcceptableAliasSet` instance if adaptation succeeded or None
+        if it didn't.
+    """
+    return (AcceptableAliasSet(obj)
+            if IMailingList.providedBy(obj) and iface is IAcceptableAliasSet
+            else None)

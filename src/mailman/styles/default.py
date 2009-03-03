@@ -94,20 +94,7 @@ from: .*@uplinkpro.com
         mlist.preferred_language = 'en'
         mlist.include_rfc2369_headers = True
         mlist.include_list_post_header = True
-        mlist.filter_mime_types = []
-        mlist.pass_mime_types = [
-            'multipart/mixed',
-            'multipart/alternative',
-            'text/plain',
-            ]
-        mlist.filter_filename_extensions = [
-            'exe', 'bat', 'cmd', 'com', 'pif', 'scr', 'vbs', 'cpl',
-            ]
-        mlist.pass_filename_extensions = []
-        mlist.filter_content = False
         mlist.collapse_alternatives = True
-        mlist.convert_html_to_plaintext = True
-        mlist.filter_action = 0
         # Digest related variables
         mlist.digestable = True
         mlist.digest_is_default = False

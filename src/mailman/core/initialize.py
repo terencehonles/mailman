@@ -118,6 +118,9 @@ def initialize_3():
     adapter_hooks.append(adapt_domain_to_registrar)
     from mailman.database.autorespond import adapt_mailing_list_to_response_set
     adapter_hooks.append(adapt_mailing_list_to_response_set)
+    from mailman.database.mailinglist import (
+        adapt_mailing_list_to_acceptable_alias_set)
+    adapter_hooks.append(adapt_mailing_list_to_acceptable_alias_set)
 
 
 

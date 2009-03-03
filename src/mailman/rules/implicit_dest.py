@@ -30,6 +30,7 @@ from email.utils import getaddresses
 from zope.interface import implements
 
 from mailman.i18n import _
+from mailman.interfaces.mailinglist import IAcceptableAliasSet
 from mailman.interfaces.rules import IRule
 
 
@@ -55,7 +56,9 @@ class ImplicitDestination:
         # a caret (i.e. ^), then it's a regular expression to match against.
         aliases = set()
         alias_patterns = set()
-        for alias in mlist.acceptable_aliases:
+        # Adapt the mailing list to the appropriate interface.
+        alias_set = IAcceptableAliasSet(mlist)
+        for alias in alias_set.aliases:
             if alias.startswith('^'):
                 alias_patterns.add(alias)
             else:

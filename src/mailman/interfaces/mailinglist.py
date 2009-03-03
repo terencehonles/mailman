@@ -22,6 +22,8 @@ from __future__ import absolute_import, unicode_literals
 __metaclass__ = type
 __all__ = [
     'DigestFrequency',
+    'IAcceptableAlias',
+    'IAcceptableAliasSet',
     'IMailingList',
     'Personalization',
     'ReplyToMunging',
@@ -281,10 +283,74 @@ class IMailingList(Interface):
         that gets created to accumlate messages for the digest.
         """)
 
-    def clear_acceptable_aliases():
+    filter_content = Attribute(
+        """Flag specifying whether to filter a message's content.
+
+        Filtering is performed on MIME type and file name extension.
+        """)
+
+    convert_html_to_plaintext = Attribute(
+        """Flag specifying whether text/html parts should be converted.
+
+        When True, after filtering, if there are any text/html parts left in
+        the original message, they are converted to text/plain.
+        """)
+
+    collapse_alternatives = Attribute(
+        """Flag specifying whether multipart/alternatives should be collapsed.
+
+        After all MIME content filtering is complete, collapsing alternatives
+        replaces the outer multipart/alternative parts with the first
+        subpart.
+        """)
+
+    filter_types = Attribute(
+        """Sequence of MIME types that should be filtered out.
+
+        These can be either main types or main/sub types.  Set this attribute
+        to a sequence to change it, or to None to empty it.
+        """)
+
+    pass_types = Attribute(
+        """Sequence of MIME types to explicitly pass.
+
+        These can be either main types or main/sub types.  Set this attribute
+        to a sequence to change it, or to None to empty it.  Pass types are
+        consulted after filter types, and only if `pass_types` is non-empty.
+        """)
+        
+    filter_extensions = Attribute(
+        """Sequence of file extensions that should be filtered out.
+
+        Set this attribute to a sequence to change it, or to None to empty it.
+        """)
+
+    pass_extensions = Attribute(
+        """Sequence of file extensions to explicitly pass.
+
+        Set this attribute to a sequence to change it, or to None to empty it.
+        Pass extensions are consulted after filter extensions, and only if
+        `pass_extensions` is non-empty.
+        """)
+        
+
+
+
+class IAcceptableAlias(Interface):
+    """An acceptable alias for implicit destinations."""
+
+    mailing_list = Attribute('The associated mailing list.')
+
+    address = Attribute('The address or pattern to match against recipients.')
+
+
+class IAcceptableAliasSet(Interface):
+    """The set of acceptable aliases for a mailing list."""
+
+    def clear():
         """Clear the set of acceptable posting aliases."""
 
-    def add_acceptable_alias(alias):
+    def add(alias):
         """Add the given address as an acceptable aliases for posting.
 
         :param alias: The email address to accept as a recipient for implicit
@@ -296,7 +362,7 @@ class IMailingList(Interface):
             '@' sign in it.
         """
 
-    def remove_acceptable_alias(alias):
+    def remove(alias):
         """Remove the given address as an acceptable aliases for posting.
 
         :param alias: The email address to no longer accept as a recipient for
@@ -304,14 +370,5 @@ class IMailingList(Interface):
         :type alias: string
         """
 
-    acceptable_aliases = Attribute(
+    aliases = Attribute(
         """An iterator over all the acceptable aliases.""")
-
-
-
-class IAcceptableAlias(Interface):
-    """An acceptable alias for implicit destinations."""
-
-    mailing_list = Attribute('The associated mailing list.')
-
-    address = Attribute('The address or pattern to match against recipients.')

@@ -9,11 +9,17 @@ not explicitly mentioned in the set of message recipients.
     >>> print rule.name
     implicit-dest
 
+In order to check for implicit destinations, we need to adapt the mailing list
+to the appropriate interface.
+
+    >>> from mailman.interfaces.mailinglist import IAcceptableAliasSet
+    >>> alias_set = IAcceptableAliasSet(mlist)
+
 This rule matches messages that have an implicit destination, meaning that the
 mailing list's posting address isn't included in the explicit recipients.
 
     >>> mlist.require_explicit_destination = True
-    >>> mlist.clear_acceptable_aliases()
+    >>> alias_set.clear()
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.org
@@ -50,7 +56,7 @@ then the rule will not match.
     >>> rule.check(mlist, msg, {})
     True
 
-    >>> mlist.add_acceptable_alias(u'myfriend@example.com')
+    >>> alias_set.add(u'myfriend@example.com')
     >>> rule.check(mlist, msg, {})
     False
 
@@ -63,7 +69,7 @@ that Mailman pulled it from the appropriate news group.
 
 Additional aliases can be added.
 
-    >>> mlist.add_acceptable_alias(u'other@example.com')
+    >>> alias_set.add(u'other@example.com')
     >>> del msg['to']
     >>> rule.check(mlist, msg, {})
     True
@@ -74,7 +80,7 @@ Additional aliases can be added.
 
 Aliases can be removed.
 
-    >>> mlist.remove_acceptable_alias(u'other@example.com')
+    >>> alias_set.remove(u'other@example.com')
     >>> rule.check(mlist, msg, {})
     True
 
@@ -84,7 +90,7 @@ Aliases can also be cleared.
     >>> rule.check(mlist, msg, {})
     False
 
-    >>> mlist.clear_acceptable_aliases()
+    >>> alias_set.clear()
     >>> rule.check(mlist, msg, {})
     True
 
@@ -96,7 +102,7 @@ It's also possible to specify an alias pattern, i.e. a regular expression to
 match against the recipients.  For example, we can say that if there is a
 recipient in the example.net domain, then the rule does not match.
 
-    >>> mlist.add_acceptable_alias(u'^.*@example.net')
+    >>> alias_set.add(u'^.*@example.net')
     >>> rule.check(mlist, msg, {})
     True
 
@@ -111,7 +117,7 @@ Bad aliases
 You cannot add an alias that looks like neither a pattern nor an email
 address.
 
-    >>> mlist.add_acceptable_alias('foobar')
+    >>> alias_set.add('foobar')
     Traceback (most recent call last):
     ...
     ValueError: foobar

@@ -54,17 +54,12 @@ log = logging.getLogger('mailman.error')
 
 
 def process(mlist, msg, msgdata):
-    # Short-circuits
-    if not mlist.filter_content:
-        return
-    if msgdata.get('isdigest'):
-        return
     # We also don't care about our own digests or plaintext
     ctype = msg.get_content_type()
     mtype = msg.get_content_maintype()
     # Check to see if the outer type matches one of the filter types
-    filtertypes = mlist.filter_mime_types
-    passtypes = mlist.pass_mime_types
+    filtertypes = set(mlist.filter_types)
+    passtypes = set(mlist.pass_types)
     if ctype in filtertypes or mtype in filtertypes:
         dispose(mlist, msg, msgdata,
                 _("The message's content type was explicitly disallowed"))
@@ -74,8 +69,8 @@ def process(mlist, msg, msgdata):
         dispose(mlist, msg, msgdata,
                 _("The message's content type was not explicitly allowed"))
     # Filter by file extensions
-    filterexts = mlist.filter_filename_extensions
-    passexts = mlist.pass_filename_extensions
+    filterexts = set(mlist.filter_extensions)
+    passexts = set(mlist.pass_extensions)
     fext = get_file_ext(msg)
     if fext:
         if fext in filterexts:
@@ -282,4 +277,9 @@ class MIMEDelete:
     description = _('Filter the MIME content of messages.')
 
     def process(self, mlist, msg, msgdata):
+        # Short-circuits
+        if not mlist.filter_content:
+            return
+        if msgdata.get('isdigest'):
+            return
         process(mlist, msg, msgdata)

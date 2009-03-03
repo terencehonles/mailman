@@ -54,6 +54,19 @@ CREATE INDEX ix_autoresponserecord_address_id
 CREATE INDEX ix_autoresponserecord_mailing_list_id
     ON autoresponserecord (mailing_list_id);
 
+CREATE TABLE contentfilter (
+    id INTEGER NOT NULL,
+    mailing_list_id INTEGER,
+    filter_pattern TEXT,
+    filter_type INTEGER,
+    PRIMARY KEY (id),
+    CONSTRAINT contentfilter_mailing_list_id
+        FOREIGN KEY (mailing_list_id)
+        REFERENCES mailinglist (id)
+    );
+CREATE INDEX ix_contentfilter_mailing_list_id
+    ON contentfilter (mailing_list_id);
+
 CREATE TABLE language (
         id INTEGER NOT NULL,
         code TEXT,
@@ -99,6 +112,8 @@ CREATE TABLE mailinglist (
         bounce_unrecognized_goes_to_list_owner BOOLEAN,
         bounce_you_are_disabled_warnings INTEGER,
         bounce_you_are_disabled_warnings_interval TEXT,
+        -- Content filtering.
+        filter_content BOOLEAN,
         collapse_alternatives BOOLEAN,
         convert_html_to_plaintext BOOLEAN,
         default_member_moderation BOOLEAN,
@@ -113,10 +128,6 @@ CREATE TABLE mailinglist (
         discard_these_nonmembers BLOB,
         emergency BOOLEAN,
         encode_ascii_prefixes BOOLEAN,
-        filter_action INTEGER,
-        filter_content BOOLEAN,
-        filter_filename_extensions BLOB,
-        filter_mime_types BLOB,
         first_strip_reply_to BOOLEAN,
         forward_auto_discards BOOLEAN,
         gateway_to_mail BOOLEAN,
@@ -145,8 +156,6 @@ CREATE TABLE mailinglist (
         nondigestable BOOLEAN,
         nonmember_rejection_notice TEXT,
         obscure_addresses BOOLEAN,
-        pass_filename_extensions BLOB,
-        pass_mime_types BLOB,
         personalize TEXT,
         pipeline TEXT,
         post_id INTEGER,
