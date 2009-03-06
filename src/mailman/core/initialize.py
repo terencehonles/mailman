@@ -36,6 +36,7 @@ __all__ = [
 
 
 import os
+import sys
 
 from zope.interface.interface import adapter_hooks
 from zope.interface.verify import verifyObject
@@ -43,7 +44,6 @@ from zope.interface.verify import verifyObject
 import mailman.config.config
 import mailman.core.logging
 
-from mailman.core.plugins import get_plugin
 from mailman.interfaces.database import IDatabase
 
 
@@ -89,10 +89,12 @@ def initialize_2(debug=False):
     :param debug: Should the database layer be put in debug mode?
     :type debug: boolean
     """
-    database_plugin = get_plugin('mailman.database')
-    # Instantiate the database plugin, ensure that it's of the right type, and
+    # Instantiate the database class, ensure that it's of the right type, and
     # initialize it.  Then stash the object on our configuration object.
-    database = database_plugin()
+    database_class = mailman.config.config.database['class']
+    module_name, class_name = database_class.rsplit('.', 1)
+    __import__(module_name)
+    database = getattr(sys.modules[module_name], class_name)()
     verifyObject(IDatabase, database)
     database.initialize(debug)
     mailman.config.config.db = database

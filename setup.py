@@ -94,7 +94,6 @@ case second `m'.  Any other spelling is incorrect.""",
     entry_points    = {
         'console_scripts': list(scripts),
         'mailman.commands'  : list(commands),
-        'mailman.database'  : 'stock = mailman.database:StockDatabase',
         'mailman.handlers'  : 'default = mailman.pipeline:initialize',
         'mailman.rules'     : 'default = mailman.rules:initialize',
         'mailman.scrubber'  : 'stock = mailman.archiving.pipermail:Pipermail',

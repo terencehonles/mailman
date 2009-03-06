@@ -25,7 +25,7 @@ __all__ = [
     ]
 
 
-from zope.interface import Interface, Attribute
+from zope.interface import Attribute, Interface
 
 
 
