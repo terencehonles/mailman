@@ -14,7 +14,7 @@ store mailing list data in a different database than user data.
 
 When we create a mailing list, it starts out with no members...
 
-    >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
+    >>> mlist = create_list(u'_xtest@example.com')
     >>> mlist
     <mailing list "_xtest@example.com" at ...>
     >>> sorted(member.address.address for member in mlist.members.members)

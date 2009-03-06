@@ -337,7 +337,6 @@ Registration and subscription
 Fred registers with Mailman at the same time that he subscribes to a mailing
 list.
 
-    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list(u'alpha@example.com')
     >>> token = registrar.register(
     ...     u'fred.person@example.com', 'Fred Person', mlist)

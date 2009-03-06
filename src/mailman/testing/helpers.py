@@ -36,6 +36,7 @@ import signal
 import socket
 import logging
 import smtplib
+import datetime
 import threading
 
 from Queue import Empty, Queue
@@ -46,6 +47,7 @@ from mailman.testing.smtplistener import Server
 from mailman.utilities.mailbox import Mailbox
 
 
+STARTUP_WAIT = datetime.timedelta(seconds=5)
 log = logging.getLogger('mailman.debug')
 
 
@@ -239,7 +241,8 @@ def get_lmtp_client():
     # It's possible the process has started but is not yet accepting
     # connections.  Wait a little while.
     lmtp = LMTP()
-    for attempts in range(3):
+    until = datetime.datetime.now() + STARTUP_WAIT
+    while datetime.datetime.now() < until:
         try:
             response = lmtp.connect(
                 config.mta.lmtp_host, int(config.mta.lmtp_port))
@@ -247,7 +250,7 @@ def get_lmtp_client():
             return lmtp
         except socket.error, error:
             if error[0] == errno.ECONNREFUSED:
-                time.sleep(1)
+                time.sleep(0.5)
             else:
                 raise
     else:
