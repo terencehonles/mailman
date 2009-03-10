@@ -65,13 +65,6 @@ scripts = set(
     for script in mailman.bin.__all__
     )
 
-# Default email commands
-template = Template('$command = mailman.commands.$command')
-commands = set(
-    template.substitute(command=command)
-    for command in mailman.commands.__all__
-    )
-
 
 
 setup(
@@ -92,8 +85,7 @@ case second `m'.  Any other spelling is incorrect.""",
     package_dir     = {'': 'src'},
     include_package_data = True,
     entry_points    = {
-        'console_scripts': list(scripts),
-        'mailman.commands'  : list(commands),
+        'console_scripts'   : list(scripts),
         'mailman.handlers'  : 'default = mailman.pipeline:initialize',
         'mailman.rules'     : 'default = mailman.rules:initialize',
         'mailman.scrubber'  : 'stock = mailman.archiving.pipermail:Pipermail',

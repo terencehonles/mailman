@@ -25,18 +25,27 @@ __all__ = [
     ]
 
 
+import sys
+
+from mailman import commands
 from mailman.config import config
-from mailman.core.plugins import get_plugins
 from mailman.interfaces.command import IEmailCommand
 
 
 
 def initialize():
     """Initialize the email commands."""
-    for module in get_plugins('mailman.commands'):
-        for name in module.__all__:
+    for command_module in commands.__all__:
+        module_name = 'mailman.commands.' + command_module
+        __import__(module_name)
+        module = sys.modules[module_name]
+        for name in dir(module):
             command_class = getattr(module, name)
-            if not IEmailCommand.implementedBy(command_class):
+            try:
+                is_command = IEmailCommand.implementedBy(command_class)
+            except TypeError:
+                is_command = False
+            if not is_command:
                 continue
             assert command_class.name not in config.commands, (
                 'Duplicate email command "{0}" found in {1}'.format(
