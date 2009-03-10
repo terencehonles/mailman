@@ -27,6 +27,7 @@ __all__ = [
 
 import os
 import re
+import sys
 import time
 import errno
 import hashlib
@@ -45,7 +46,6 @@ from zope.interface import implements
 from mailman.Utils import oneline, websafe
 from mailman.config import config
 from mailman.core.errors import DiscardMessage
-from mailman.core.plugins import get_plugin
 from mailman.i18n import _
 from mailman.interfaces.handler import IHandler
 from mailman.utilities.filesystem import makedirs
@@ -486,7 +486,10 @@ def save_attachment(mlist, msg, dir, filter_html=True):
     fp.write(decodedpayload)
     fp.close()
     # Now calculate the url to the list's archive.
-    baseurl = get_plugin('mailman.scrubber').list_url(mlist)
+    scrubber_path = config.scrubber.archive_scrubber
+    package_name, module_name = scrubber_path.rsplit('.', 1)
+    __import__(package_name)
+    baseurl = getattr(sys.modules[package_name], module_name).list_url(mlist)
     if not baseurl.endswith('/'):
         baseurl += '/'
     # Trailing space will definitely be a problem with format=flowed.

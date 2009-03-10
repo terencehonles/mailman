@@ -85,8 +85,7 @@ case second `m'.  Any other spelling is incorrect.""",
     package_dir     = {'': 'src'},
     include_package_data = True,
     entry_points    = {
-        'console_scripts'   : list(scripts),
-        'mailman.scrubber'  : 'stock = mailman.archiving.pipermail:Pipermail',
+        'console_scripts' : list(scripts),
         },
     install_requires = [
         'lazr.config',
