@@ -28,19 +28,18 @@ __all__ = [
 from zope.interface.verify import verifyObject
 
 from mailman.config import config
-from mailman.core.plugins import get_plugins
 from mailman.interfaces.rules import IRule
+from mailman.rules import builtin_rules
 
 
 
 def initialize():
     """Find and register all rules in all plugins."""
     # Find rules in plugins.
-    for rule_finder in get_plugins('mailman.rules'):
-        for rule_class in rule_finder():
-            rule = rule_class()
-            verifyObject(IRule, rule)
-            assert rule.name not in config.rules, (
-                'Duplicate rule "{0}" found in {1}'.format(
-                    rule.name, rule_finder))
-            config.rules[rule.name] = rule
+    for rule_class in builtin_rules():
+        rule = rule_class()
+        verifyObject(IRule, rule)
+        assert rule.name not in config.rules, (
+            'Duplicate rule "{0}" found in {1}'.format(
+                rule.name, rule_finder))
+        config.rules[rule.name] = rule

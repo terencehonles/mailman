@@ -33,7 +33,7 @@ from mailman.interfaces.handler import IHandler
 
 
 def builtin_handlers():
-    """Initialize the built-in handlers.
+    """Return the built-in handlers.
 
     Rules are auto-discovered by searching for IHandler implementations in all
     importable modules in this subpackage.

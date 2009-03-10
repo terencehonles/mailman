@@ -21,7 +21,7 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'initialize',
+    'builtin_rules',
     ]
 
 
@@ -32,8 +32,8 @@ from mailman.interfaces.rules import IRule
 
 
 
-def initialize():
-    """Initialize the built-in rules.
+def builtin_rules():
+    """Return the built-in rules.
 
     Rules are auto-discovered by searching for IRule implementations in all
     importable modules in this subpackage.
