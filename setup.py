@@ -86,7 +86,6 @@ case second `m'.  Any other spelling is incorrect.""",
     include_package_data = True,
     entry_points    = {
         'console_scripts'   : list(scripts),
-        'mailman.handlers'  : 'default = mailman.pipeline:initialize',
         'mailman.rules'     : 'default = mailman.rules:initialize',
         'mailman.scrubber'  : 'stock = mailman.archiving.pipermail:Pipermail',
         },

@@ -21,7 +21,7 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'initialize',
+    'builtin_handlers',
     ]
 
 
@@ -32,7 +32,7 @@ from mailman.interfaces.handler import IHandler
 
 
 
-def initialize():
+def builtin_handlers():
     """Initialize the built-in handlers.
 
     Rules are auto-discovered by searching for IHandler implementations in all

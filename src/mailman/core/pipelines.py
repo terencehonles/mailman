@@ -30,10 +30,10 @@ from zope.interface import implements
 from zope.interface.verify import verifyObject
 
 from mailman.config import config
-from mailman.core.plugins import get_plugins
 from mailman.i18n import _
 from mailman.interfaces.handler import IHandler
 from mailman.interfaces.pipeline import IPipeline
+from mailman.pipeline import builtin_handlers
 
 
 
@@ -111,14 +111,13 @@ class VirginPipeline(BasePipeline):
 def initialize():
     """Initialize the pipelines."""
     # Find all handlers in the registered plugins.
-    for handler_finder in get_plugins('mailman.handlers'):
-        for handler_class in handler_finder():
-            handler = handler_class()
-            verifyObject(IHandler, handler)
-            assert handler.name not in config.handlers, (
-                'Duplicate handler "{0}" found in {1}'.format(
-                    handler.name, handler_finder))
-            config.handlers[handler.name] = handler
+    for handler_class in builtin_handlers():
+        handler = handler_class()
+        verifyObject(IHandler, handler)
+        assert handler.name not in config.handlers, (
+            'Duplicate handler "{0}" found in {1}'.format(
+                handler.name, handler_finder))
+        config.handlers[handler.name] = handler
     # Set up some pipelines.
     for pipeline_class in (BuiltInPipeline, VirginPipeline):
         pipeline = pipeline_class()
