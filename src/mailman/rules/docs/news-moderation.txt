@@ -13,16 +13,16 @@ directly to the mailing list.
     >>> print rule.name
     news-moderation
 
-Set the list configuraiton variable to enable newsgroup moderation.
+Set the list configuration variable to enable newsgroup moderation.
 
-    >>> from mailman.interfaces import NewsModeration
+    >>> from mailman.interfaces.nntp import NewsModeration
     >>> mlist.news_moderation = NewsModeration.moderated
 
 And now all messages will match the rule.
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.org
-    ... Subject: An announcment
+    ... Subject: An announcement
     ...
     ... Great things are happening.
     ... """)

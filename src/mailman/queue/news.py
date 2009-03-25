@@ -27,7 +27,7 @@ from cStringIO import StringIO
 
 from mailman import Utils
 from mailman.config import config
-from mailman.interfaces import NewsModeration
+from mailman.interfaces.nntp import NewsModeration
 from mailman.queue import Runner
 
 COMMASPACE = ', '

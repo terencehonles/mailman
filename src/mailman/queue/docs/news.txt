@@ -117,7 +117,7 @@ Newsgroup moderation
 When the newsgroup is moderated, an Approved: header with the list's posting
 address is added for the benefit of the Usenet system.
 
-    >>> from mailman.interfaces import NewsModeration
+    >>> from mailman.interfaces.nntp import NewsModeration
     >>> mlist.news_moderation = NewsModeration.open_moderated
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
@@ -140,7 +140,7 @@ address is added for the benefit of the Usenet system.
     >>> msg['approved']
     u'_xtest@example.com'
 
-But if the newsgroup is not moderated, the Approved: header is not chnaged.
+But if the newsgroup is not moderated, the Approved: header is not changed.
 
     >>> mlist.news_moderation = NewsModeration.none
     >>> msg = message_from_string("""\

@@ -15,35 +15,20 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""The news moderation rule."""
-
-from __future__ import absolute_import, unicode_literals
-
 __metaclass__ = type
 __all__ = [
-    'ModeratedNewsgroup',
+    'NewsModeration',
     ]
 
 
-from zope.interface import implements
-
-from mailman.i18n import _
-from mailman.interfaces.nntp import NewsModeration
-from mailman.interfaces.rules import IRule
+from munepy import Enum
 
 
 
-class ModeratedNewsgroup:
-    """The news moderation rule."""
-    implements(IRule)
-
-    name = 'news-moderation'
-    description = _(
-        """Match all messages posted to a mailing list that gateways to a
-        moderated newsgroup.
-        """)
-    record = True
-
-    def check(self, mlist, msg, msgdata):
-        """See `IRule`."""
-        return mlist.news_moderation == NewsModeration.moderated
+class NewsModeration(Enum):
+    # The newsgroup is not moderated
+    none = 0
+    # The newsgroup is moderated, but allows for an open posting policy.
+    open_moderated = 1
+    # The newsgroup is moderated
+    moderated = 2

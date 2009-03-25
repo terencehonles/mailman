@@ -42,7 +42,7 @@ from mailman.app.notifications import (
 from mailman.config import config
 from mailman.core import errors
 from mailman.email.message import Message, UserNotification
-from mailman.interfaces import Action
+from mailman.interfaces.action import Action
 from mailman.interfaces.member import AlreadySubscribedError, DeliveryMode
 from mailman.interfaces.requests import RequestType
 

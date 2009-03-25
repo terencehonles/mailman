@@ -250,7 +250,7 @@ We can also hold a message with some additional metadata.
 Once held, the moderator can select one of several dispositions.  The most
 trivial is to simply defer a decision for now.
 
-    >>> from mailman.interfaces import Action
+    >>> from mailman.interfaces.action import Action
     >>> moderator.handle_message(mlist, id_1, Action.defer)
     >>> requests.get_request(id_1) is not None
     True
@@ -411,7 +411,7 @@ For closed lists, subscription requests will also be held for moderator
 approval.  In this case, several pieces of information related to the
 subscription must be provided, including the subscriber's address and real
 name, their password (possibly hashed), what kind of delivery option they are
-chosing and their preferred language.
+choosing and their preferred language.
 
     >>> from mailman.interfaces.member import DeliveryMode
     >>> mlist.admin_immed_notify = False
