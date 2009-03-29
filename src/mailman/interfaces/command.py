@@ -66,3 +66,8 @@ class IEmailCommand(Interface):
         :return: A `ContinueProcessing` enum specifying whether to continue
             processing or not.
         """
+
+
+
+class IBinCommand(Interface):
+    """A command line (i.e. bin) command."""

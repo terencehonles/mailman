@@ -21,7 +21,7 @@
         supplied by a mailback confirmation notice.
 """
 
-from mailman import Errors
+from mailman import errors
 from mailman import Pending
 from mailman.config import config
 from mailman.i18n import _

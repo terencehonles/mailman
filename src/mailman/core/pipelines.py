@@ -29,11 +29,11 @@ __all__ = [
 from zope.interface import implements
 from zope.interface.verify import verifyObject
 
+from mailman.app.finder import find_components
 from mailman.config import config
 from mailman.i18n import _
 from mailman.interfaces.handler import IHandler
 from mailman.interfaces.pipeline import IPipeline
-from mailman.pipeline import builtin_handlers
 
 
 
@@ -111,7 +111,7 @@ class VirginPipeline(BasePipeline):
 def initialize():
     """Initialize the pipelines."""
     # Find all handlers in the registered plugins.
-    for handler_class in builtin_handlers():
+    for handler_class in find_components('mailman.pipeline', IHandler):
         handler = handler_class()
         verifyObject(IHandler, handler)
         assert handler.name not in config.handlers, (

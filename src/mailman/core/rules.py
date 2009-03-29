@@ -27,16 +27,16 @@ __all__ = [
 
 from zope.interface.verify import verifyObject
 
+from mailman.app.finder import find_components
 from mailman.config import config
 from mailman.interfaces.rules import IRule
-from mailman.rules import builtin_rules
 
 
 
 def initialize():
     """Find and register all rules in all plugins."""
     # Find rules in plugins.
-    for rule_class in builtin_rules():
+    for rule_class in find_components('mailman.rules', IRule):
         rule = rule_class()
         verifyObject(IRule, rule)
         assert rule.name not in config.rules, (

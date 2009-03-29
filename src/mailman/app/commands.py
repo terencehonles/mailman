@@ -25,9 +25,9 @@ __all__ = [
     ]
 
 
-import sys
+from zope.interface.verify import verifyObject
 
-from mailman import commands
+from mailman.app.finder import find_components
 from mailman.config import config
 from mailman.interfaces.command import IEmailCommand
 
@@ -35,19 +35,10 @@ from mailman.interfaces.command import IEmailCommand
 
 def initialize():
     """Initialize the email commands."""
-    for command_module in commands.__all__:
-        module_name = 'mailman.commands.' + command_module
-        __import__(module_name)
-        module = sys.modules[module_name]
-        for name in dir(module):
-            command_class = getattr(module, name)
-            try:
-                is_command = IEmailCommand.implementedBy(command_class)
-            except TypeError:
-                is_command = False
-            if not is_command:
-                continue
-            assert command_class.name not in config.commands, (
-                'Duplicate email command "{0}" found in {1}'.format(
-                    command_class.name, module))
-            config.commands[command_class.name] = command_class()
+    for command_class in find_components('mailman.commands', IEmailCommand):
+        command = command_class()
+        verifyObject(IEmailCommand, command)
+        assert command_class.name not in config.commands, (
+            'Duplicate email command "{0}" found in {1}'.format(
+                command_class.name, module))
+        config.commands[command_class.name] = command_class()
