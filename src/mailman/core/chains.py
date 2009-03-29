@@ -56,7 +56,7 @@ def process(mlist, msg, msgdata, start_chain='built-in'):
     while chain:
         # Iterate over all links in the chain.  Do this outside a for-loop so
         # we can capture a chain's link iterator in mid-flight.  This supports
-        # the 'detour' link action
+        # the 'detour' link action.
         try:
             link = next(chain_iter)
         except StopIteration:
