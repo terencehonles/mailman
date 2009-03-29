@@ -27,6 +27,7 @@ __all__ = [
 
 import os
 import sys
+from pkg_resources import resource_listdir
 
 from mailman.interfaces.rules import IRule
 
@@ -39,9 +40,7 @@ def builtin_rules():
     importable modules in this subpackage.
     """
     # Find all rules found in all modules inside our package.
-    import mailman.rules
-    here = os.path.dirname(mailman.rules.__file__)
-    for filename in os.listdir(here):
+    for filename in resource_listdir('mailman.rules', ''):
         basename, extension = os.path.splitext(filename)
         if extension <> '.py':
             continue
