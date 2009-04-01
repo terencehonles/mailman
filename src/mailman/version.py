@@ -46,3 +46,4 @@ QFILE_SCHEMA_VERSION = 3
 
 # Printable version string used by command line scripts
 MAILMAN_VERSION = 'GNU Mailman ' + VERSION
+MAILMAN_VERSION_FULL = MAILMAN_VERSION + ' (' + CODENAME + ')'

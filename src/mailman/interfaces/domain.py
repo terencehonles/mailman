@@ -61,7 +61,7 @@ class IDomain(Interface):
     contact_address = Attribute(
         """The contact address for the human at this domain.
 
-        E.g. postmaster@python.org.
+        E.g. postmaster@example.com
 
         :type: string
         """)

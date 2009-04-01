@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2009 by the Free Software Foundation, Inc.
+# Copyright (C) 2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -15,31 +15,34 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Print the Mailman version."""
+"""System information."""
 
 from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'main',
+    'system',
     ]
 
 
-from mailman.core.system import system
-from mailman.i18n import _
-from mailman.options import Options
+import sys
+from zope.interface import implements
+
+from mailman import version
+from mailman.interfaces.system import ISystem
 
 
 
-class ScriptOptions(Options):
-    usage = _("""\
-%prog
+class System:
+    implements(ISystem)
 
-Print the Mailman version and exit.""")
+    @property
+    def mailman_version(self):
+        return version.MAILMAN_VERSION_FULL
+
+    @property
+    def python_version(self):
+        return sys.version
 
 
-
-def main():
-    options = ScriptOptions()
-    options.initialize()
-    print _('Using $system.mailman_version')
+system = System()
