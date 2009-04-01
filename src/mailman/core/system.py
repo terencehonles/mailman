@@ -26,7 +26,9 @@ __all__ = [
 
 
 import sys
+
 from zope.interface import implements
+from zope.location.interfaces import ILocation
 
 from mailman import version
 from mailman.interfaces.system import ISystem
@@ -34,14 +36,16 @@ from mailman.interfaces.system import ISystem
 
 
 class System:
-    implements(ISystem)
+    implements(ISystem, ILocation)
 
     @property
     def mailman_version(self):
+        """See `ISystem`."""
         return version.MAILMAN_VERSION_FULL
 
     @property
     def python_version(self):
+        """See `ISystem`."""
         return sys.version
 
 
