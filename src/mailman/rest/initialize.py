@@ -31,4 +31,5 @@ from zope.configuration import xmlconfig
 
 def initialize():
     """Initialize the admin web service and the Zope Component Architecture."""
-    xmlconfig.file('mailman', 'mailman.rest')
+    import mailman.rest
+    xmlconfig.file('configure.zcml', mailman.rest)

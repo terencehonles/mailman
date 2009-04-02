@@ -32,6 +32,8 @@ from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse, NotFound
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
+from mailman.interfaces.rest import IHasGet
+
 
 
 class Traverse:

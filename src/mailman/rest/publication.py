@@ -24,6 +24,9 @@ __all__ = [
     ]
 
 
+from lazr.restful.publisher import WebServicePublicationMixin
+
+
 
-class WebServiceTestPublication(WebServicePublicationMixin, TestPublication):
+class AdminWebServiceTestPublication(WebServicePublicationMixin, TestPublication):
     """Test publication that mixes in the necessary web service stuff."""

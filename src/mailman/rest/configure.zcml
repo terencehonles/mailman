@@ -3,9 +3,13 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:webservice="http://namespaces.canonical.com/webservice">
 
+  <include package="zope.component" file="meta.zcml"/>
+  <include package="zope.security" file="meta.zcml"/>
+  <include package="lazr.restful" file="meta.zcml"/>
+
   <webservice:register module="mailman.interfaces.rest" />
 
-  <adapter factory="mailman.rest.traversal.Traverse" />
+  <adapter factory="mailman.rest.traverse.Traverse" />
 
   <adapter factory="mailman.rest.root.AdminWebServiceRootAbsoluteURL" />
 

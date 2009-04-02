@@ -66,7 +66,7 @@ class AdminWebServiceConfiguration:
         """See `IWebServiceConfiguration`."""
         request = AdminWebServiceRequest(body_instream, environ)
         request.setPublication(
-            AdminWebServicePublication(AdminWebServiceRootResource())
+            AdminWebServicePublication(AdminWebServiceRootResource()))
         return request
 
     def get_request_user(self):
