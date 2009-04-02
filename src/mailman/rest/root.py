@@ -21,19 +21,25 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'AdminServiceRootResource',
+    'AdminWebServiceRootResource',
+    'AdminWebServiceRootAbsoluteURL',
     ]
 
 
 from lazr.restful import ServiceRootResource
+from zope.component import adapts
 from zope.interface import implements
+from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+from zope.traversing.browser.interfaces import IAbsoluteURL
 
+from mailman.config import config
 from mailman.core.system import system
 from mailman.interfaces.rest import IHasGet
+from mailman.rest.configuration import AdminWebServiceConfiguration
 
 
 
-class AdminServiceRootResource(ServiceRootResource):
+class AdminWebServiceRootResource(ServiceRootResource):
     """The root of the Mailman RESTful admin web service."""
 
     implements(IHasGet)
@@ -44,3 +50,23 @@ class AdminServiceRootResource(ServiceRootResource):
             'sys': system,
             }
         return top_level.get(name)
+
+
+class AdminWebServiceRootAbsoluteURL:
+    """A basic implementation of `IAbsoluteURL` for the root object."""
+
+    implements(IAbsoluteURL)
+    adapts(AdminWebServiceRootResource, IDefaultBrowserLayer)
+
+    def __init__(self, context, request):
+        """Initialize with respect to a context and request."""
+        self.webservice_config = AdminWebServiceConfiguration()
+        self.version = webservice_config.service_version_uri_prefix
+        self.schema = ('https' if self.webservice_config.use_https else 'http')
+        self.hostname = config.webservice.hostname
+
+    def __str__(self):
+        """Return the semi-hard-coded URL to the service root."""
+        return '{0.schema}://{0.hostname}/{0.version}'.format(self)
+
+    __call__ = __str__

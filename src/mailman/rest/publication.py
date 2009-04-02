@@ -15,35 +15,15 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""System information."""
+"""Module stuff."""
 
 from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'ISystem',
     ]
 
 
-from lazr.restful.declarations import export_as_webservice_entry, exported
-from zope.interface import Interface
-from zope.schema import TextLine
-
-from mailman.i18n import _
-
-
 
-class ISystem(Interface):
-    """Information about the Mailman system."""
-
-    export_as_webservice_entry()
-
-    mailman_version = exported(TextLine(
-        title=_('Mailman version'),
-        description=_('The GNU Mailman version.'),
-        ))
-
-    python_version = exported(TextLine(
-        title=_('Python version'),
-        description=_('The Python version.'),
-        ))
+class WebServiceTestPublication(WebServicePublicationMixin, TestPublication):
+    """Test publication that mixes in the necessary web service stuff."""

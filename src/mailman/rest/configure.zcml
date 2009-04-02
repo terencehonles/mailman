@@ -1,0 +1,17 @@
+<!-- -*- xml -*- -->
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:webservice="http://namespaces.canonical.com/webservice">
+
+  <webservice:register module="mailman.interfaces.rest" />
+
+  <adapter factory="mailman.rest.traversal.Traverse" />
+
+  <adapter factory="mailman.rest.root.AdminWebServiceRootAbsoluteURL" />
+
+  <adapter
+    factory="mailman.rest.root.AdminWebServiceRootAbsoluteURL"
+    name="absolute_url"
+    />
+
+</configure>
