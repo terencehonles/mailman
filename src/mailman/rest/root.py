@@ -35,7 +35,6 @@ from zope.traversing.browser.interfaces import IAbsoluteURL
 from mailman.config import config
 from mailman.core.system import system
 from mailman.interfaces.rest import IHasGet
-from mailman.rest.configuration import AdminWebServiceConfiguration
 
 
 
@@ -60,6 +59,8 @@ class AdminWebServiceRootAbsoluteURL:
 
     def __init__(self, context, request):
         """Initialize with respect to a context and request."""
+        # Avoid circular imports.
+        from mailman.rest.configuration import AdminWebServiceConfiguration
         self.webservice_config = AdminWebServiceConfiguration()
         self.version = webservice_config.service_version_uri_prefix
         self.schema = ('https' if self.webservice_config.use_https else 'http')
