@@ -15,39 +15,39 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Traversal rules for the Mailman RESTful admin web service."""
+"""Module stuff."""
 
 from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'Traverse',
+    'AbsoluteURLMapper',
     ]
 
 
-from urllib import unquote
-
 from zope.component import adapts
-from zope.interface import implements
-from zope.publisher.interfaces import IPublishTraverse, NotFound
-from zope.publisher.interfaces.browser import IDefaultBrowserLayer
-
-from mailman.interfaces.rest import IHasGet
+from zope.interface import implements, Interface
+from zope.traversing.browser.interfaces import IAbsoluteURL
 
 
 
-class Traverse:
-    """An implementation of `IPublishTraverse` that uses the get() method."""
+class AbsoluteURLMapper:
+    """Generic absolute url mapper."""
 
-    implements(IPublishTraverse)
+    implements(IAbsoluteURL)
+    adapts(Interface, IAbsoluteURL)
 
     def __init__(self, context, request):
-        self.context = context
+        """Initialize with respect to a context and request."""
+        # Avoid circular imports.
+        from mailman.rest.configuration import AdminWebServiceConfiguration
+        self.webservice_config = AdminWebServiceConfiguration()
+        self.version = webservice_config.service_version_uri_prefix
+        self.schema = ('https' if self.webservice_config.use_https else 'http')
+        self.hostname = config.webservice.hostname
 
-    def publishTraverse(self, request, name):
-        """See `IPublishTraverse`."""
-        name = unquote(name)
-        value = self.context.get(name)
-        if value is None:
-            raise NotFound(self, name)
-        return value
+    def __str__(self):
+        """Return the semi-hard-coded URL to the service root."""
+        return '{0.schema}://{0.hostname}/{0.version}'.format(self)
+
+    __call__ = __str__

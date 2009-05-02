@@ -6,16 +6,20 @@
   <include package="zope.component" file="meta.zcml"/>
   <include package="zope.security" file="meta.zcml"/>
   <include package="lazr.restful" file="meta.zcml"/>
+  <include package="lazr.restful" file="configure.zcml"/>
 
-  <webservice:register module="mailman.interfaces.rest" />
+  <webservice:register module="mailman.interfaces.system" />
 
-  <adapter factory="mailman.rest.traverse.Traverse" />
-
-  <adapter factory="mailman.rest.root.AdminWebServiceRootAbsoluteURL" />
+  <adapter factory="mailman.rest.urls.AbsoluteURLMapper" />
 
   <adapter
     factory="mailman.rest.root.AdminWebServiceRootAbsoluteURL"
     name="absolute_url"
     />
+
+  <utility
+    factory="mailman.rest.configuration.AdminWebServiceConfiguration"
+    provides="lazr.restful.interfaces.IWebServiceConfiguration">
+  </utility>
 
 </configure>

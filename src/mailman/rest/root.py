@@ -27,6 +27,7 @@ __all__ = [
 
 
 from lazr.restful import ServiceRootResource
+from lazr.restful.interfaces import ICollection
 from zope.component import adapts
 from zope.interface import implements
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
@@ -34,14 +35,11 @@ from zope.traversing.browser.interfaces import IAbsoluteURL
 
 from mailman.config import config
 from mailman.core.system import system
-from mailman.interfaces.rest import IHasGet
 
 
 
 class AdminWebServiceRootResource(ServiceRootResource):
     """The root of the Mailman RESTful admin web service."""
-
-    implements(IHasGet)
 
     def get(self, name):
         """See `IHasGet`."""

@@ -21,7 +21,7 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'IHasGet',
+    'IResolvePathNames',
     ]
 
 
@@ -29,8 +29,8 @@ from zope.interface import Interface
 
 
 
-class IHasGet(Interface):
-    """A marker interface objects that implement traversal with get()."""
+class IResolvePathNames(Interface):
+    """A marker interface objects that implement simple traversal."""
 
     def get(name):
         """Traverse to a contained object."""

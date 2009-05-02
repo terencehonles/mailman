@@ -26,11 +26,12 @@ __all__ = [
 
 
 from lazr.restful.interfaces import IWebServiceConfiguration
+from zope.interface import implements
 
+from mailman import version
 from mailman.config import config
 from mailman.rest.publication import AdminWebServicePublication
 from mailman.rest.root import AdminWebServiceRootResource
-from mailman.version import VERSION
 
 
 
@@ -43,7 +44,7 @@ class AdminWebServiceConfiguration:
     def view_permission(self):
         return config.webservice.view_permission
 
-    path_override = 'admin'
+    path_override = None
 
     @property
     def use_https(self):
@@ -51,8 +52,8 @@ class AdminWebServiceConfiguration:
         return config.webservice.use_https
 
     # This should match the major.minor Mailman version.
-    service_version_uri_prefix = '3.0'
-    code_revision = VERSION
+    service_version_uri_prefix = '{0.MAJOR_REV}.{0.MINOR_REV}'.format(version)
+    code_revision = version.VERSION
 
     @property
     def show_tracebacks(self):
