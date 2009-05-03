@@ -36,6 +36,7 @@ from zope.interface import implements
 from zope.publisher.browser import BrowserRequest
 from zope.publisher.publish import publish
 
+from mailman.config import config
 from mailman.core.system import system
 from mailman.interfaces.rest import IResolvePathNames
 from mailman.rest.publication import AdminWebServicePublication
@@ -52,6 +53,11 @@ class AdminWebServiceApplication:
     implements(IResolvePathNames)
 
     def __init__(self, environ, start_response):
+        self.environ = environ
+        self.start_response = start_response
+
+    def __iter__(self):
+        environ = self.environ
         # Create the request based on the HTTP method used.
         method = environ.get('REQUEST_METHOD', 'GET').upper()
         request = AdminWebServiceRequest(environ['wsgi.input'], environ)
@@ -63,9 +69,9 @@ class AdminWebServiceApplication:
         request = publish(request, handle_errors=handle_errors)
         # Start the WSGI server response.
         response = request.response
-        start_response(response.getStatusString(), response.getHeaders())
+        self.start_response(response.getStatusString(), response.getHeaders())
         # Return the result body iterable.
-        return response.consumeBodyIter()
+        return iter(response.consumeBodyIter())
 
     def get(self, name):
         """Maps root names to resources."""
@@ -80,9 +86,7 @@ def start():
     """Start the WSGI admin REST service."""
     zcml = resource_string('mailman.rest', 'configure.zcml')
     xmlconfig.string(zcml)
-    server = make_server('', 8001, AdminWebServiceApplication)
-    return server
-
-
-if __name__ == '__main__':
-    start().serve_forever()
+    host = config.webservice.hostname
+    port = int(config.webservice.port)
+    server = make_server(host, port, AdminWebServiceApplication)
+    server.serve_forever()

@@ -202,12 +202,16 @@ def main():
     options.initialize()
 
     if options.options.list:
-        prefixlen = max(len(shortname)
-                        for shortname in config.qrunner_shortcuts)
-        for shortname in sorted(config.qrunner_shortcuts):
-            runnername = config.qrunner_shortcuts[shortname]
-            shortname = (' ' * (prefixlen - len(shortname))) + shortname
-            print _('$shortname runs $runnername')
+        descriptions = {}
+        for section in config.qrunner_configs:
+            shortname = section.name.rsplit('.', 1)[-1]
+            classname = getattr(section, 'class').rsplit('.', 1)[-1]
+            descriptions[shortname] = classname
+        longest = max(len(name) for name in descriptions)
+        for shortname in sorted(descriptions):
+            classname = descriptions[shortname]
+            name = (' ' * (longest - len(shortname))) + shortname
+            print _('$name runs $classname')
         sys.exit(0)
 
     # Fast track for one infinite runner

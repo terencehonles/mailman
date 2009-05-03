@@ -10,11 +10,11 @@
 
   <webservice:register module="mailman.interfaces.system" />
 
-  <adapter factory="mailman.rest.urls.AbsoluteURLMapper" />
-
   <adapter
-    factory="mailman.rest.root.AdminWebServiceRootAbsoluteURL"
-    name="absolute_url"
+    for="zope.interface.Interface
+         mailman.rest.webservice.AdminWebServiceRequest"
+    provides="zope.traversing.browser.interfaces.IAbsoluteURL"
+    factory="mailman.rest.urls.AbsoluteURLMapper"
     />
 
   <utility

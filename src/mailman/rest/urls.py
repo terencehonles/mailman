@@ -29,25 +29,49 @@ from zope.component import adapts
 from zope.interface import implements, Interface
 from zope.traversing.browser.interfaces import IAbsoluteURL
 
+from mailman.config import config
+from mailman.core.system import system
+from mailman.rest.configuration import AdminWebServiceConfiguration
+from mailman.rest.webservice import AdminWebServiceApplication
+
 
 
 class AbsoluteURLMapper:
     """Generic absolute url mapper."""
 
     implements(IAbsoluteURL)
-    adapts(Interface, IAbsoluteURL)
 
     def __init__(self, context, request):
         """Initialize with respect to a context and request."""
-        # Avoid circular imports.
-        from mailman.rest.configuration import AdminWebServiceConfiguration
+        self.context = context
+        self.request = request
         self.webservice_config = AdminWebServiceConfiguration()
-        self.version = webservice_config.service_version_uri_prefix
+        self.version = self.webservice_config.service_version_uri_prefix
         self.schema = ('https' if self.webservice_config.use_https else 'http')
         self.hostname = config.webservice.hostname
+        self.port = int(config.webservice.port)
 
     def __str__(self):
         """Return the semi-hard-coded URL to the service root."""
-        return '{0.schema}://{0.hostname}/{0.version}'.format(self)
+        path = self[self.context]
+        return '{0.schema}://{0.hostname}:{0.port}/{0.version}/{1}'.format(
+            self, path)
 
     __call__ = __str__
+
+    def __getitem__(self, ob):
+        """Return the path component for the object.
+
+        :param ob: The object we're looking for.
+        :type ob: anything
+        :return: The path component.
+        :rtype: string
+        :raises KeyError: if no path component can be found.
+        """
+        # Special cases.
+        if isinstance(ob, AdminWebServiceApplication):
+            return ''
+        urls = {
+            system: 'sys',
+            }
+        return urls[ob]
