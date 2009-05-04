@@ -72,6 +72,6 @@ class AbsoluteURLMapper:
         if isinstance(ob, AdminWebServiceApplication):
             return ''
         urls = {
-            system: 'sys',
+            system: 'system',
             }
         return urls[ob]

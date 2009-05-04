@@ -54,7 +54,7 @@ class TestableServer:
         self.event.set()
         # Fire off one more request so the handle_request() will exit.  XXX
         # Should we set a .timeout on the server instead?
-        fp = urlopen('http://localhost:8001/3.0/sys')
+        fp = urlopen('http://localhost:8001/3.0/system')
         fp.close()
         self.thread.join()
 

@@ -15,13 +15,12 @@ major and minor version numbers are in the URL.
 System information can be retrieved from the server.  By default JSON is
 returned.
 
-    >>> dump_json('http://localhost:8001/3.0/sys')
-    http_etag: "b49c76fb07102f7d56884268c46091367fef180d"
-    mailman_version: GNU Mailman 3.0.0a3 (Working Man)
-    python_version: 2.6.2+ (release26-maint:71636:71637, Apr 15 2009, 20:51:2)
-        [GCC 4.0.1 (Apple Inc. build 5490)]
+    >>> dump_json('http://localhost:8001/3.0/system')
+    http_etag: "..."
+    mailman_version: GNU Mailman 3.0... (...)
+    python_version: ...
     resource_type_link: https://localhost:8001/3.0/#system
-    self_link: https://localhost:8001/3.0/sys
+    self_link: https://localhost:8001/3.0/system
 
 
 Cleanup

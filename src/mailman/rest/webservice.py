@@ -83,7 +83,7 @@ class AdminWebServiceApplication:
     def get(self, name):
         """Maps root names to resources."""
         top_level = dict(
-            sys=system,
+            system=system,
             )
         return top_level.get(name)
 
