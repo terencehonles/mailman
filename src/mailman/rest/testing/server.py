@@ -15,36 +15,49 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Start the administrative HTTP server."""
+"""A testable REST server."""
 
 from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'RESTRunner',
+    'TestableServer',
     ]
 
 
-import sys
-import errno
-import select
-import signal
 import logging
+import threading
 
-from mailman.queue import Runner
+from urllib2 import urlopen
+
 from mailman.rest.webservice import make_server
 
 
+log = logging.getLogger('mailman.http')
+
+
 
-class RESTRunner(Runner):
-    def run(self):
-        try:
-            make_server.serve_forever()
-        except KeyboardInterrupt:
-            sys.exit(signal.SIGTERM)
-        except select.error as (errcode, message):
-            if errcode == errno.EINTR:
-                sys.exit(signal.SIGTERM)
-            raise
-        except:
-            raise
+class TestableServer:
+    """A REST server which polls for the stop action."""
+
+    def __init__(self):
+        self.server = make_server()
+        self.event = threading.Event()
+        self.thread = threading.Thread(target=self.loop)
+        
+    def start(self):
+        """Start the server."""
+        self.thread.start()
+
+    def stop(self):
+        """Stop the server by firing the event."""
+        self.event.set()
+        # Fire off one more request so the handle_request() will exit.  XXX
+        # Should we set a .timeout on the server instead?
+        fp = urlopen('http://localhost:8001/3.0/sys')
+        fp.close()
+        self.thread.join()
+
+    def loop(self):
+        while not self.event.is_set():
+            self.server.handle_request()

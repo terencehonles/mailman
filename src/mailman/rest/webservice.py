@@ -23,11 +23,16 @@ __metaclass__ = type
 __all__ = [
     'AdminWebServiceApplication',
     'AdminWebServiceRequest',
-    'start',
+    'make_server',
     ]
 
 
-from wsgiref.simple_server import make_server
+import logging
+
+# Don't use wsgiref.simple_server.make_server() because we need to override
+# BaseHTTPRequestHandler.log_message() so that logging output will go to the
+# proper Mailman logger instead of stderr, as is the default.
+from wsgiref.simple_server import WSGIServer, WSGIRequestHandler
 
 from lazr.restful.publisher import WebServiceRequestTraversal
 from pkg_resources import resource_string
@@ -40,6 +45,8 @@ from mailman.config import config
 from mailman.core.system import system
 from mailman.interfaces.rest import IResolvePathNames
 from mailman.rest.publication import AdminWebServicePublication
+
+log = logging.getLogger('mailman.http')
 
 
 
@@ -82,11 +89,20 @@ class AdminWebServiceApplication:
 
 
 
-def start():
-    """Start the WSGI admin REST service."""
+class AdminWebServiceWSGIRequestHandler(WSGIRequestHandler):
+    """Handler class which just logs output to the right place."""
+
+    def log_message(self, format, *args):
+        """See `BaseHTTPRequestHandler`."""
+        log.info('%s - - %s', self.address_string(), format % args)
+
+
+def make_server():
+    """Create the WSGI admin REST server."""
     zcml = resource_string('mailman.rest', 'configure.zcml')
     xmlconfig.string(zcml)
     host = config.webservice.hostname
     port = int(config.webservice.port)
-    server = make_server(host, port, AdminWebServiceApplication)
-    server.serve_forever()
+    server = WSGIServer((host, port), AdminWebServiceWSGIRequestHandler)
+    server.set_app(AdminWebServiceApplication)
+    return server

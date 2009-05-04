@@ -30,11 +30,13 @@ __all__ = [
 
 
 import os
+import json
 import random
 import doctest
 import unittest
 
 from email import message_from_string
+from urllib2 import urlopen
 
 import mailman
 
@@ -103,6 +105,22 @@ def dump_msgdata(msgdata, *additional_skips):
         print '{0:{2}}: {1}'.format(key, msgdata[key], longest)
 
 
+def dump_json(url):
+    """Print the JSON dictionary read from a URL.
+
+    :param url: The url to open, read, and print.
+    :type url: string
+    """
+    fp = urlopen(url)
+    # fp does not support the context manager protocol.
+    try:
+        data = json.load(fp)
+    finally:
+        fp.close()
+    for key in sorted(data):
+        print '{0}: {1}'.format(key, data[key])
+
+
 
 def setup(testobj):
     """Test setup."""
@@ -113,6 +131,7 @@ def setup(testobj):
     testobj.globs['commit'] = config.db.commit
     testobj.globs['config'] = config
     testobj.globs['create_list'] = create_list
+    testobj.globs['dump_json'] = dump_json
     testobj.globs['dump_msgdata'] = dump_msgdata
     testobj.globs['message_from_string'] = specialized_message_from_string
     testobj.globs['smtpd'] = SMTPLayer.smtpd
