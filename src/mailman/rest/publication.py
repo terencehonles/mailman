@@ -34,6 +34,7 @@ from zope.publisher.interfaces import IPublication, NotFound
 from zope.publisher.publish import mapply
 from zope.security.management import endInteraction, newInteraction
 
+from mailman.config import config
 from mailman.interfaces.rest import IResolvePathNames
 
 
@@ -66,28 +67,30 @@ class Publication:
         return ob.get(name)
 
     def afterTraversal(self, request, ob):
+        """See `IPublication`."""
         pass
 
     def callObject(self, request, ob):
-        """Call the object, returning the result."""
+        """See `IPublication`."""
         # XXX Bad hack.
         from zope.security.proxy import removeSecurityProxy
         ob = removeSecurityProxy(ob)
         return mapply(ob, request.getPositionalArguments(), request)
 
     def afterCall(self, request, ob):
+        """See `IPublication`."""
         pass
 
-    def handleException(self, object, request, exc_info, retry_allowed=1):
-        """Prints the exception."""
-        # Reproduce the behavior of ZopePublication by looking up a view
-        # for this exception.
+    def handleException(self, application, request, exc_info,
+                        retry_allowed=True):
+        """See `IPublication`."""
+        # Any in-progress transaction must be aborted.
+        config.db.abort()
         exception = exc_info[1]
-        view = queryMultiAdapter((exception, request), name='index.html')
-        if view is not None:
-            exc_info = None
+        if isinstance(exception, NotFound):
             request.response.reset()
-            request.response.setResult(view())
+            request.response.setStatus(404)
+            request.response.setResult('')
         else:
             traceback.print_exception(*exc_info)
 

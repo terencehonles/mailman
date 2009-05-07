@@ -39,7 +39,7 @@ from mailman.rest.webservice import make_server
 class RESTRunner(Runner):
     def run(self):
         try:
-            make_server.serve_forever()
+            make_server().serve_forever()
         except KeyboardInterrupt:
             sys.exit(signal.SIGTERM)
         except select.error as (errcode, message):
