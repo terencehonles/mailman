@@ -35,15 +35,21 @@ from mailman.queue import Runner
 from mailman.rest.webservice import make_server
 
 
+log = logging.getLogger('mailman.http')
+
+
 
 class RESTRunner(Runner):
     def run(self):
+        log.info('Starting REST server')
         try:
             make_server().serve_forever()
         except KeyboardInterrupt:
+            log.info('REST server interrupted')
             sys.exit(signal.SIGTERM)
         except select.error as (errcode, message):
             if errcode == errno.EINTR:
+                log.info('REST server exiting')
                 sys.exit(signal.SIGTERM)
             raise
         except:

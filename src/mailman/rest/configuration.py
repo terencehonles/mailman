@@ -63,6 +63,7 @@ class AdminWebServiceConfiguration:
     default_batch_size = 50
     max_batch_size = 300
 
+    # XXX What's this for?
     def createRequest(self, body_instream, environ):
         """See `IWebServiceConfiguration`."""
         request = AdminWebServiceRequest(body_instream, environ)

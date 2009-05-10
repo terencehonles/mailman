@@ -30,9 +30,8 @@ import sys
 import errno
 import logging
 
-from StringIO import StringIO
 from lazr.config import ConfigSchema, as_boolean
-from pkg_resources import resource_string
+from pkg_resources import resource_stream
 
 from mailman import version
 from mailman.core import errors
@@ -76,17 +75,24 @@ class Configuration(object):
 
     def load(self, filename=None):
         """Load the configuration from the schema and config files."""
-        schema_string = resource_string('mailman.config', 'schema.cfg')
-        schema = ConfigSchema('schema.cfg', StringIO(schema_string))
-        # If a configuration file was given, load it now too.  First, load the
-        # absolute minimum default configuration, then if a configuration
-        # filename was given by the user, push it.
-        config_string = resource_string('mailman.config', 'mailman.cfg')
-        self._config = schema.loadFile(StringIO(config_string), 'mailman.cfg')
-        if filename is not None:
-            self.filename = filename
-            with open(filename) as user_config:
-                self._config.push(filename, user_config.read())
+        schema_file = config_file = None
+        try:
+            schema_file = resource_stream('mailman.config', 'schema.cfg')
+            schema = ConfigSchema('schema.cfg', schema_file)
+            # If a configuration file was given, load it now too.  First, load
+            # the absolute minimum default configuration, then if a
+            # configuration filename was given by the user, push it.
+            config_file = resource_stream('mailman.config', 'mailman.cfg')
+            self._config = schema.loadFile(config_file, 'mailman.cfg')
+            if filename is not None:
+                self.filename = filename
+                with open(filename) as user_config:
+                    self._config.push(filename, user_config.read())
+        finally:
+            if schema_file:
+                schema_file.close()
+            if config_file:
+                config_file.close()
         self._post_process()
 
     def push(self, config_name, config_string):

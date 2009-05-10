@@ -26,6 +26,7 @@ __all__ = [
     'get_lmtp_client',
     'get_queue_messages',
     'make_testable_runner',
+    'wait_for_webservice',
     ]
 
 
@@ -122,9 +123,18 @@ def digest_mbox(mlist):
 class TestableMaster(Master):
     """A testable master loop watcher."""
 
-    def __init__(self):
+    def __init__(self, start_check=None):
+        """Create a testable master loop watcher.
+
+        :param start_check: Optional callable used to check whether everything
+            is running as the test expects.  Called in `loop()` in the
+            subthread before the event is set.  The callback should block
+            until the pass condition is set.
+        :type start_check: Callable taking no arguments, returning nothing.
+        """
         super(TestableMaster, self).__init__(
             restartable=False, config_file=config.filename)
+        self.start_check = start_check
         self.event = threading.Event()
         self.thread = threading.Thread(target=self.loop)
         self._started_kids = None
@@ -159,6 +169,9 @@ class TestableMaster(Master):
         # Keeping a copy of all the started child processes for use by the
         # testing environment, even after all have exited.
         self._started_kids = set(self._kids)
+        # If there are extra conditions to check, do it now.
+        if self.start_check is not None:
+            self.start_check()
         # Let the blocking thread know everything's running.
         self.event.set()
         super(TestableMaster, self).loop()
@@ -255,3 +268,17 @@ def get_lmtp_client():
                 raise
     else:
         raise RuntimeError('Connection refused')
+
+
+
+def wait_for_webservice():
+    """Wait for the REST server to start serving requests."""
+    # Time out after approximately 3 seconds.
+    for count in range(30):
+        try:
+            socket.socket().connect((config.webservice.hostname,
+                                     int(config.webservice.port)))
+        except socket.error:
+            time.sleep(0.1)
+        else:
+            break

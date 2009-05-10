@@ -214,7 +214,7 @@ def main():
             print _('$name runs $classname')
         sys.exit(0)
 
-    # Fast track for one infinite runner
+    # Fast track for one infinite runner.
     if len(options.options.runners) == 1 and not options.options.once:
         qrunner = make_qrunner(*options.options.runners[0])
         class Loop:
@@ -233,7 +233,7 @@ def main():
         qrunner.run()
         log.info('%s qrunner exiting.', loop.name())
     else:
-        # Anything else we have to handle a bit more specially
+        # Anything else we have to handle a bit more specially.
         qrunners = []
         for runner, rslice, rrange in options.options.runners:
             qrunner = make_qrunner(runner, rslice, rrange, once=True)
