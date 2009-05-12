@@ -45,21 +45,17 @@ class AbsoluteURLMapper:
         """Initialize with respect to a context and request."""
         self.context = context
         self.request = request
-        # XXX Is this strictly necessary?
         self.webservice_config = AdminWebServiceConfiguration()
         self.version = self.webservice_config.service_version_uri_prefix
         self.schema = ('https' if self.webservice_config.use_https else 'http')
         self.hostname = config.webservice.hostname
         self.port = int(config.webservice.port)
 
-    def __str__(self):
+    def __call__(self):
         """Return the semi-hard-coded URL to the service root."""
         path = self._lookup(self.context)
         return '{0.schema}://{0.hostname}:{0.port}/{0.version}/{1}'.format(
             self, path)
-
-    # XXX Is this strictly necessary?
-    __call__ = __str__
 
     def _lookup(self, ob):
         """Return the path component for the object.
