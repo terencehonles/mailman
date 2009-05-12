@@ -40,6 +40,8 @@ log = logging.getLogger('mailman.http')
 
 
 class RESTRunner(Runner):
+    intercept_signals = False
+
     def run(self):
         log.info('Starting REST server')
         try:

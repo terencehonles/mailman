@@ -281,6 +281,8 @@ class Switchboard:
 class Runner:
     implements(IRunner)
 
+    intercept_signals = True
+
     def __init__(self, name, slice=None):
         """Create a queue runner.
 

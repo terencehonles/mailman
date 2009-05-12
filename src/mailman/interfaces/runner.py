@@ -47,6 +47,14 @@ class IRunner(Interface):
         `config.QRUNNER_SLEEP_TIME`
         """)
 
+    intercept_signals = Attribute("""\
+        Should the qrunner mechanism intercept signals?
+
+        In general, the qrunner catches SIGINT, SIGTERM, SIGUSR1, and SIGHUP
+        to manage the process.  Some qrunners need to manage their own
+        signals, and set this attribute to False.
+        """)
+
     def _one_iteration():
         """The work done in one iteration of the main loop.
 

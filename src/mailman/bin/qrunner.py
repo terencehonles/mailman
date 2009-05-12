@@ -226,7 +226,8 @@ def main():
             def stop(self):
                 self._qrunner.stop()
         loop = Loop(qrunner)
-        set_signals(loop)
+        if qrunner.intercept_signals:
+            set_signals(loop)
         # Now start up the main loop
         log = logging.getLogger('mailman.qrunner')
         log.info('%s qrunner started.', loop.name())
@@ -250,7 +251,8 @@ def main():
             def isdone(self):
                 return self._isdone
         loop = Loop()
-        set_signals(loop)
+        if qrunner.intercept_signals:
+            set_signals(loop)
         log.info('Main qrunner loop started.')
         while not loop.isdone():
             for qrunner in qrunners:
