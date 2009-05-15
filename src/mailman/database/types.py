@@ -41,10 +41,10 @@ class _EnumVariable(Variable):
             return None
         if not from_db:
             return value
-        path, intvalue = value.rsplit(':', 1)
-        modulename, classname = path.rsplit('.', 1)
-        __import__(modulename)
-        cls = getattr(sys.modules[modulename], classname)
+        path, colon, intvalue = value.rpartition(':')
+        package, dot, classname = path.rpartition('.')
+        __import__(package)
+        cls = getattr(sys.modules[package], classname)
         return cls[int(intvalue)]
 
     def parse_get(self, value, to_db):

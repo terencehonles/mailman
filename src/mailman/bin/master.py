@@ -319,7 +319,7 @@ class Loop:
             qrunner_config = getattr(config, section_name)
             if not as_boolean(qrunner_config.start):
                 continue
-            package, class_name = qrunner_config['class'].rsplit(DOT, 1)
+            package, dot, class_name = qrunner_config['class'].rpartition(DOT)
             __import__(package)
             # Let AttributeError propagate.
             class_ = getattr(sys.modules[package], class_name)

@@ -487,9 +487,9 @@ def save_attachment(mlist, msg, dir, filter_html=True):
     fp.close()
     # Now calculate the url to the list's archive.
     scrubber_path = config.scrubber.archive_scrubber
-    package_name, module_name = scrubber_path.rsplit('.', 1)
-    __import__(package_name)
-    baseurl = getattr(sys.modules[package_name], module_name).list_url(mlist)
+    package, dot, module_name = scrubber_path.rpartition('.')
+    __import__(package)
+    baseurl = getattr(sys.modules[package], module_name).list_url(mlist)
     if not baseurl.endswith('/'):
         baseurl += '/'
     # Trailing space will definitely be a problem with format=flowed.

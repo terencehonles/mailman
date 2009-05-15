@@ -45,9 +45,9 @@ class OutgoingRunner(Runner, BounceMixin):
         Runner.__init__(self, slice, numslices)
         BounceMixin.__init__(self)
         # We look this function up only at startup time.
-        module_name, callable_name = config.mta.outgoing.rsplit('.', 1)
-        __import__(module_name)
-        self._func = getattr(sys.modules[module_name], callable_name)
+        package, dot, callable_name = config.mta.outgoing.rpartition('.')
+        __import__(package)
+        self._func = getattr(sys.modules[package], callable_name)
         # This prevents smtp server connection problems from filling up the
         # error log.  It gets reset if the message was successfully sent, and
         # set if there was a socket.error.

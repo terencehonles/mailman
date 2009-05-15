@@ -146,7 +146,7 @@ class Pendings:
                                    PendedKeyValue.pended_id == pending.id):
             if keyvalue.value is not None and '\1' in keyvalue.value:
                 typename, value = keyvalue.value.split('\1', 1)
-                package, classname = typename.rsplit('.', 1)
+                package, dot, classname = typename.rpartition('.')
                 __import__(package)
                 module = sys.modules[package]
                 pendable[keyvalue.key] = getattr(module, classname)(value)

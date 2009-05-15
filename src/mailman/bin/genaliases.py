@@ -54,7 +54,7 @@ def main():
     options.initialize()
 
     # Get the MTA-specific module.
-    module_path, class_path = config.mta.incoming.rsplit('.', 1)
+    package, dot, class_path = config.mta.incoming.rpartition('.')
     __import__(module_path)
     getattr(sys.modules[module_path], class_path)().regenerate()
 

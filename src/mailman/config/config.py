@@ -191,9 +191,9 @@ class Configuration(object):
             if not as_boolean(section.enable):
                 continue
             class_path = section['class']
-            module_name, class_name = class_path.rsplit('.', 1)
-            __import__(module_name)
-            yield getattr(sys.modules[module_name], class_name)()
+            package, dot, class_name = class_path.rpartition('.')
+            __import__(package)
+            yield getattr(sys.modules[package], class_name)()
 
     @property
     def style_configs(self):

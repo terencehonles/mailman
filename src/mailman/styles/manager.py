@@ -52,9 +52,9 @@ class StyleManager:
         # Install all the styles described by the configuration files.
         for section in config.style_configs:
             class_path = section['class']
-            module_name, class_name = class_path.rsplit('.', 1)
-            __import__(module_name)
-            style = getattr(sys.modules[module_name], class_name)()
+            package, dot, class_name = class_path.rpartition('.')
+            __import__(package)
+            style = getattr(sys.modules[package], class_name)()
             assert section.name.startswith('style'), (
                 'Bad style section name: %s' % section.name)
             style.name = section.name[6:]

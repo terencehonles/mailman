@@ -54,9 +54,9 @@ def create_list(fqdn_listname, owners=None):
     for style in config.style_manager.lookup(mlist):
         style.apply(mlist)
     # Coordinate with the MTA, as defined in the configuration file.
-    module_name, class_name = config.mta.incoming.rsplit('.', 1)
-    __import__(module_name)
-    getattr(sys.modules[module_name], class_name)().create(mlist)
+    package, dot, class_name = config.mta.incoming.rpartition('.')
+    __import__(package)
+    getattr(sys.modules[package], class_name)().create(mlist)
     # Create any owners that don't yet exist, and subscribe all addresses as
     # owners of the mailing list.
     usermgr = config.db.user_manager
@@ -83,9 +83,9 @@ def remove_list(fqdn_listname, mailing_list=None, archives=True):
         # Delete the mailing list from the database.
         config.db.list_manager.delete(mailing_list)
         # Do the MTA-specific list deletion tasks
-        module_name, class_name = config.mta.incoming.rsplit('.', 1)
-        __import__(module_name)
-        getattr(sys.modules[module_name], class_name)().create(mailing_list)
+        package, dot, class_name = config.mta.incoming.rpartition('.')
+        __import__(package)
+        getattr(sys.modules[package], class_name)().create(mailing_list)
         # Remove the list directory.
         removeables.append(os.path.join(config.LIST_DATA_DIR, fqdn_listname))
     # Remove any stale locks associated with the list.

@@ -133,9 +133,9 @@ def make_qrunner(name, slice, range, once=False):
         class_path = 'mailman.queue' + name
     else:
         class_path = name
-    module_name, class_name = class_path.rsplit('.', 1)
+    package, dot, class_name = class_path.rpartition('.')
     try:
-        __import__(module_name)
+        __import__(package)
     except ImportError, e:
         if config.options.options.subproc:
             # Exit with SIGTERM exit code so the master watcher won't try to
@@ -145,7 +145,7 @@ def make_qrunner(name, slice, range, once=False):
             sys.exit(signal.SIGTERM)
         else:
             raise
-    qrclass = getattr(sys.modules[module_name], class_name)
+    qrclass = getattr(sys.modules[package], class_name)
     if once:
         # Subclass to hack in the setting of the stop flag in _do_periodic()
         class Once(qrclass):
@@ -204,8 +204,8 @@ def main():
     if options.options.list:
         descriptions = {}
         for section in config.qrunner_configs:
-            shortname = section.name.rsplit('.', 1)[-1]
-            classname = getattr(section, 'class').rsplit('.', 1)[-1]
+            ignore, dot, shortname = section.name.rpartition('.')
+            ignore, dot, classname = getattr(section, 'class').rpartition('.')
             descriptions[shortname] = classname
         longest = max(len(name) for name in descriptions)
         for shortname in sorted(descriptions):
