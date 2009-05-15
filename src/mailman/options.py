@@ -137,8 +137,10 @@ class Options:
             from the configuration files.
         :type propagate_logs: bool or None.
         """
-        # The environment variable overrides the -C option.
-        config_file = os.getenv('MAILMAN_CONFIG_FILE', self.options.config)
+        # Fall back to using the environment variable if -C is not given.
+        config_file = (os.getenv('MAILMAN_CONFIG_FILE')
+                       if self.options.config is None
+                       else self.options.config)
         initialize(config_file, propagate_logs=propagate_logs)
         self.sanity_check()
 
