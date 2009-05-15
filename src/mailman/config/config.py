@@ -40,7 +40,6 @@ from mailman.languages.manager import LanguageManager
 from mailman.styles.manager import StyleManager
 from mailman.utilities.filesystem import makedirs
 
-
 SPACE = ' '
 
 

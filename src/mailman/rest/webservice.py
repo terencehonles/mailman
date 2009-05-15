@@ -28,13 +28,6 @@ __all__ = [
 
 
 import logging
-import warnings
-
-# lazr.restful uses the sha module, but that's deprecated in Python 2.6 in
-# favor of the hashlib module.
-warnings.filterwarnings(
-    'ignore', category=DeprecationWarning, module='lazr.restful._resource')
-
 
 # Don't use wsgiref.simple_server.make_server() because we need to override
 # BaseHTTPRequestHandler.log_message() so that logging output will go to the

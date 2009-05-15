@@ -89,15 +89,21 @@ def initialize_2(debug=False):
     :param debug: Should the database layer be put in debug mode?
     :type debug: boolean
     """
+    # Run the pre-hook if there is one.
+    config = mailman.config.config
+    if config.mailman.pre_hook:
+        package, dot, function = config.mailman.pre_hook.rpartition('.')
+        __import__(package)
+        getattr(sys.modules[package], function)()
     # Instantiate the database class, ensure that it's of the right type, and
     # initialize it.  Then stash the object on our configuration object.
-    database_class = mailman.config.config.database['class']
-    module_name, class_name = database_class.rsplit('.', 1)
-    __import__(module_name)
-    database = getattr(sys.modules[module_name], class_name)()
+    database_class = config.database['class']
+    package, dot, class_name = database_class.rpartition('.')
+    __import__(package)
+    database = getattr(sys.modules[package], class_name)()
     verifyObject(IDatabase, database)
     database.initialize(debug)
-    mailman.config.config.db = database
+    config.db = database
     # Initialize the rules and chains.  Do the imports here so as to avoid
     # circular imports.
     from mailman.app.commands import initialize as initialize_commands
@@ -123,6 +129,12 @@ def initialize_3():
     from mailman.database.mailinglist import (
         adapt_mailing_list_to_acceptable_alias_set)
     adapter_hooks.append(adapt_mailing_list_to_acceptable_alias_set)
+    # Run the post-hook if there is one.
+    config = mailman.config.config
+    if config.mailman.post_hook:
+        package, dot, function = config.mailman.post_hook.rpartition('.')
+        __import__(package)
+        getattr(sys.modules[package], function)()
 
 
 
