@@ -31,6 +31,8 @@ import sys
 from storm.properties import SimpleProperty
 from storm.variables import Variable
 
+from mailman.utilities.modules import find_name
+
 
 
 class _EnumVariable(Variable):
@@ -42,10 +44,8 @@ class _EnumVariable(Variable):
         if not from_db:
             return value
         path, colon, intvalue = value.rpartition(':')
-        package, dot, classname = path.rpartition('.')
-        __import__(package)
-        cls = getattr(sys.modules[package], classname)
-        return cls[int(intvalue)]
+        class_ = find_name(path)
+        return class_[int(intvalue)]
 
     def parse_get(self, value, to_db):
         if value is None:

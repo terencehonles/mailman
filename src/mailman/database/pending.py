@@ -40,6 +40,7 @@ from mailman.config import config
 from mailman.database.model import Model
 from mailman.interfaces.pending import (
     IPendable, IPended, IPendedKeyValue, IPendings)
+from mailman.utilities.modules import call_name
 
 
 
@@ -145,11 +146,8 @@ class Pendings:
         for keyvalue in store.find(PendedKeyValue,
                                    PendedKeyValue.pended_id == pending.id):
             if keyvalue.value is not None and '\1' in keyvalue.value:
-                typename, value = keyvalue.value.split('\1', 1)
-                package, dot, classname = typename.rpartition('.')
-                __import__(package)
-                module = sys.modules[package]
-                pendable[keyvalue.key] = getattr(module, classname)(value)
+                type_name, value = keyvalue.value.split('\1', 1)
+                pendable[keyvalue.key] = call_name(type_name, value)
             else:
                 pendable[keyvalue.key] = keyvalue.value
             if expunge:

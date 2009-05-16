@@ -49,6 +49,7 @@ from mailman.core.errors import DiscardMessage
 from mailman.i18n import _
 from mailman.interfaces.handler import IHandler
 from mailman.utilities.filesystem import makedirs
+from mailman.utilities.modules import find_name
 
 
 # Path characters for common platforms
@@ -487,14 +488,12 @@ def save_attachment(mlist, msg, dir, filter_html=True):
     fp.close()
     # Now calculate the url to the list's archive.
     scrubber_path = config.scrubber.archive_scrubber
-    package, dot, module_name = scrubber_path.rpartition('.')
-    __import__(package)
-    baseurl = getattr(sys.modules[package], module_name).list_url(mlist)
-    if not baseurl.endswith('/'):
-        baseurl += '/'
+    base_url = find_name(scrubber_path).list_url(mlist)
+    if not base_url.endswith('/'):
+        base_url += '/'
     # Trailing space will definitely be a problem with format=flowed.
     # Bracket the URL instead.
-    url = '<' + baseurl + '%s/%s%s%s>' % (dir, filebase, extra, ext)
+    url = '<' + base_url + '%s/%s%s%s>' % (dir, filebase, extra, ext)
     return url
 
 

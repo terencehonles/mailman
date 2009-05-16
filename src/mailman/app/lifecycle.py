@@ -36,6 +36,7 @@ from mailman.config import config
 from mailman.core import errors
 from mailman.email.validate import validate
 from mailman.interfaces.member import MemberRole
+from mailman.utilities.modules import call_name
 
 
 log = logging.getLogger('mailman.error')
@@ -54,9 +55,7 @@ def create_list(fqdn_listname, owners=None):
     for style in config.style_manager.lookup(mlist):
         style.apply(mlist)
     # Coordinate with the MTA, as defined in the configuration file.
-    package, dot, class_name = config.mta.incoming.rpartition('.')
-    __import__(package)
-    getattr(sys.modules[package], class_name)().create(mlist)
+    call_name(config.mta.incoming).create(mlist)
     # Create any owners that don't yet exist, and subscribe all addresses as
     # owners of the mailing list.
     usermgr = config.db.user_manager
@@ -83,9 +82,7 @@ def remove_list(fqdn_listname, mailing_list=None, archives=True):
         # Delete the mailing list from the database.
         config.db.list_manager.delete(mailing_list)
         # Do the MTA-specific list deletion tasks
-        package, dot, class_name = config.mta.incoming.rpartition('.')
-        __import__(package)
-        getattr(sys.modules[package], class_name)().create(mailing_list)
+        call_name(config.mta.incoming).create(mailing_list)
         # Remove the list directory.
         removeables.append(os.path.join(config.LIST_DATA_DIR, fqdn_listname))
     # Remove any stale locks associated with the list.

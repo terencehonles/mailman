@@ -39,6 +39,8 @@ from mailman.domain import Domain
 from mailman.languages.manager import LanguageManager
 from mailman.styles.manager import StyleManager
 from mailman.utilities.filesystem import makedirs
+from mailman.utilities.modules import call_name
+
 
 SPACE = ' '
 
@@ -191,9 +193,7 @@ class Configuration(object):
             if not as_boolean(section.enable):
                 continue
             class_path = section['class']
-            package, dot, class_name = class_path.rpartition('.')
-            __import__(package)
-            yield getattr(sys.modules[package], class_name)()
+            yield call_name(class_path)
 
     @property
     def style_configs(self):

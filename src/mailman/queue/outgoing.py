@@ -29,6 +29,8 @@ from mailman.config import config
 from mailman.core import errors
 from mailman.queue import Runner
 from mailman.queue.bounce import BounceMixin
+from mailman.utilities.modules import find_name
+
 
 # This controls how often _do_periodic() will try to deal with deferred
 # permanent failures.  It is a count of calls to _do_periodic()
@@ -45,9 +47,7 @@ class OutgoingRunner(Runner, BounceMixin):
         Runner.__init__(self, slice, numslices)
         BounceMixin.__init__(self)
         # We look this function up only at startup time.
-        package, dot, callable_name = config.mta.outgoing.rpartition('.')
-        __import__(package)
-        self._func = getattr(sys.modules[package], callable_name)
+        self._func = find_name(config.mta.outgoing)
         # This prevents smtp server connection problems from filling up the
         # error log.  It gets reset if the message was successfully sent, and
         # set if there was a socket.error.

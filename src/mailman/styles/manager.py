@@ -33,6 +33,7 @@ from zope.interface.verify import verifyObject
 
 from mailman.interfaces.styles import (
     DuplicateStyleError, IStyle, IStyleManager)
+from mailman.utilities.modules import call_name
 
 
 
@@ -52,9 +53,7 @@ class StyleManager:
         # Install all the styles described by the configuration files.
         for section in config.style_configs:
             class_path = section['class']
-            package, dot, class_name = class_path.rpartition('.')
-            __import__(package)
-            style = getattr(sys.modules[package], class_name)()
+            style = call_name(class_path)
             assert section.name.startswith('style'), (
                 'Bad style section name: %s' % section.name)
             style.name = section.name[6:]

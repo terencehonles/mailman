@@ -26,6 +26,7 @@ import sys
 from mailman.config import config
 from mailman.i18n import _
 from mailman.options import Options
+from mailman.utilities.modules import call_name
 
 
 
@@ -54,9 +55,7 @@ def main():
     options.initialize()
 
     # Get the MTA-specific module.
-    package, dot, class_path = config.mta.incoming.rpartition('.')
-    __import__(module_path)
-    getattr(sys.modules[module_path], class_path)().regenerate()
+    call_name(config.mta.incoming).regenerate()
 
 
 

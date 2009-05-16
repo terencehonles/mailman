@@ -45,6 +45,7 @@ import mailman.config.config
 import mailman.core.logging
 
 from mailman.interfaces.database import IDatabase
+from mailman.utilities.modules import call_name
 
 
 
@@ -92,15 +93,11 @@ def initialize_2(debug=False):
     # Run the pre-hook if there is one.
     config = mailman.config.config
     if config.mailman.pre_hook:
-        package, dot, function = config.mailman.pre_hook.rpartition('.')
-        __import__(package)
-        getattr(sys.modules[package], function)()
+        call_name(config.mailman.pre_hook)
     # Instantiate the database class, ensure that it's of the right type, and
     # initialize it.  Then stash the object on our configuration object.
     database_class = config.database['class']
-    package, dot, class_name = database_class.rpartition('.')
-    __import__(package)
-    database = getattr(sys.modules[package], class_name)()
+    database = call_name(database_class)
     verifyObject(IDatabase, database)
     database.initialize(debug)
     config.db = database
@@ -132,9 +129,7 @@ def initialize_3():
     # Run the post-hook if there is one.
     config = mailman.config.config
     if config.mailman.post_hook:
-        package, dot, function = config.mailman.post_hook.rpartition('.')
-        __import__(package)
-        getattr(sys.modules[package], function)()
+        call_name(config.mailman.post_hook)
 
 
 

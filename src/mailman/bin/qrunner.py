@@ -23,6 +23,7 @@ from mailman.config import config
 from mailman.core.logging import reopen
 from mailman.i18n import _
 from mailman.options import Options
+from mailman.utilities.modules import find_name
 
 
 COMMASPACE = ', '
@@ -133,19 +134,17 @@ def make_qrunner(name, slice, range, once=False):
         class_path = 'mailman.queue' + name
     else:
         class_path = name
-    package, dot, class_name = class_path.rpartition('.')
     try:
-        __import__(package)
-    except ImportError, e:
+        qrclass = find_name(class_path)
+    except ImportError as error:
         if config.options.options.subproc:
             # Exit with SIGTERM exit code so the master watcher won't try to
             # restart us.
             print >> sys.stderr, _('Cannot import runner module: $module_name')
-            print >> sys.stderr, e
+            print >> sys.stderr, error
             sys.exit(signal.SIGTERM)
         else:
             raise
-    qrclass = getattr(sys.modules[package], class_name)
     if once:
         # Subclass to hack in the setting of the stop flag in _do_periodic()
         class Once(qrclass):

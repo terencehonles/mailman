@@ -119,9 +119,9 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
     def __init__(self, slice=None, numslices=1):
         localaddr = config.mta.lmtp_host, int(config.mta.lmtp_port)
         # Do not call Runner's constructor because there's no QDIR to create
-        smtpd.SMTPServer.__init__(self, localaddr, remoteaddr=None)
         qlog.debug('LMTP server listening on %s:%s',
                    localaddr[0], localaddr[1])
+        smtpd.SMTPServer.__init__(self, localaddr, remoteaddr=None)
 
     def handle_accept(self):
         conn, addr = self.accept()

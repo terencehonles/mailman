@@ -40,6 +40,7 @@ from mailman.config import config
 from mailman.core.logging import reopen
 from mailman.i18n import _
 from mailman.options import Options
+from mailman.utilities.modules import find_name
 
 
 DOT = '.'
@@ -319,10 +320,7 @@ class Loop:
             qrunner_config = getattr(config, section_name)
             if not as_boolean(qrunner_config.start):
                 continue
-            package, dot, class_name = qrunner_config['class'].rpartition(DOT)
-            __import__(package)
-            # Let AttributeError propagate.
-            class_ = getattr(sys.modules[package], class_name)
+            class_ = find_name(qrunner_config['class'])
             # Find out how many qrunners to instantiate.  This must be a power
             # of 2.
             count = int(qrunner_config.instances)
