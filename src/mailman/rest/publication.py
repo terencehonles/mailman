@@ -72,10 +72,7 @@ class Publication:
 
     def callObject(self, request, ob):
         """See `IPublication`."""
-        # XXX Bad hack.
-        from zope.security.proxy import removeSecurityProxy
-        ob = removeSecurityProxy(ob)
-        return mapply(ob, request.getPositionalArguments(), request)
+        return ob()
 
     def afterCall(self, request, ob):
         """See `IPublication`."""
