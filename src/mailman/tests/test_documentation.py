@@ -30,6 +30,7 @@ __all__ = [
 
 
 import os
+import sys
 import json
 import random
 import doctest
@@ -156,17 +157,26 @@ def test_suite():
     doctest_files = {}
     with chdir(topdir):
         for docsdir in packages:
+            # Look to see if the package defines a test layer, otherwise use
+            # SMTPLayer.
+            package_path = 'mailman.' + DOT.join(docsdir.split(os.sep))
+            try:
+                __import__(package_path)
+            except ImportError:
+                layer = SMTPLayer
+            else:
+                layer = getattr(sys.modules[package_path], 'layer', SMTPLayer)
             for filename in os.listdir(docsdir):
                 if os.path.splitext(filename)[1] == '.txt':
-                    doctest_files[filename] = os.path.join(docsdir, filename)
-    files = sorted(doctest_files)
-    for filename in files:
-        path = doctest_files[filename]
+                    doctest_files[filename] = (
+                        os.path.join(docsdir, filename), layer)
+    for filename in sorted(doctest_files):
+        path, layer = doctest_files[filename]
         test = doctest.DocFileSuite(
             path,
             package='mailman',
             optionflags=flags,
             setUp=setup)
-        test.layer = SMTPLayer
+        test.layer = layer
         suite.addTest(test)
     return suite

@@ -23,6 +23,7 @@ __metaclass__ = type
 __all__ = [
     'ConfigLayer',
     'MockAndMonkeyLayer',
+    'RESTLayer',
     'SMTPLayer',
     ]
 
@@ -221,3 +222,23 @@ class SMTPLayer(ConfigLayer):
     @classmethod
     def testTearDown(cls):
         pass
+
+
+
+class RESTLayer(SMTPLayer):
+    """Layer for starting, stopping, and accessing the test REST layer."""
+
+    server = None
+
+    @classmethod
+    def setUp(cls):
+        assert cls.server is None, 'Layer already set up'
+        from mailman.rest.testing.server import TestableServer
+        cls.server = TestableServer()
+        cls.server.start()
+
+    @classmethod
+    def tearDown(cls):
+        assert cls.server is not None, 'Layer not set up'
+        cls.server.stop()
+        cls.server = None
