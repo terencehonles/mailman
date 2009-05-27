@@ -23,7 +23,7 @@ returned.
 Non-existent links
 ==================
 
-when you try to access an admin link that doesn't exist, you get the
+When you try to access an admin link that doesn't exist, you get the
 appropriate HTTP 404 Not Found error.
 
     >>> from urllib2 import urlopen
