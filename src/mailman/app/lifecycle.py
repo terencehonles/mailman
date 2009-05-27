@@ -101,7 +101,9 @@ def remove_list(fqdn_listname, mailing_list=None, archives=True):
             ])
     # Now that we know what files and directories to delete, delete them.
     for target in removeables:
-        if os.path.islink(target):
+        if not os.path.exists(target):
+            pass
+        elif os.path.islink(target):
             os.unlink(target)
         elif os.path.isdir(target):
             shutil.rmtree(target)

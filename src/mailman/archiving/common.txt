@@ -1,3 +1,4 @@
+=========
 Archivers
 =========
 
@@ -46,7 +47,7 @@ interoperate.
 
 
 Sending the message to the archiver
------------------------------------
+===================================
 
 The archiver is also able to archive the message.
 
@@ -69,7 +70,7 @@ Note however that the prototype archiver can't archive messages.
 
 
 The Mail-Archive.com
---------------------
+====================
 
 The Mail-Archive <http://www.mail-archive.com> is a public archiver that can
 be used to archive message for free.  Mailman comes with a plugin for this
@@ -157,7 +158,7 @@ Additionally, this archiver can handle malformed Message-IDs.
 
 
 MHonArc
--------
+=======
 
 The MHonArc archiver <http://www.mhonarc.org> is also available.
 

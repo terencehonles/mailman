@@ -1,3 +1,4 @@
+=======
 Digests
 =======
 
@@ -30,7 +31,7 @@ update the tests when we switch to a different mailbox format.
 
 
 Short circuiting
-----------------
+================
 
 When a message is posted to the mailing list, it is generally added to a
 mailbox, unless the mailing list does not allow digests.
@@ -56,7 +57,7 @@ mailbox, unless the mailing list does not allow digests.
 
 
 Sending a digest
-----------------
+================
 
 For messages which are not digests, but which are posted to a digesting
 mailing list, the messages will be stored until they reach a criteria

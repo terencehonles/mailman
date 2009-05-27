@@ -1,3 +1,4 @@
+=========
 Pipelines
 =========
 
@@ -16,7 +17,7 @@ message once it's started.
 
 
 Processing a message
---------------------
+====================
 
 Messages hit the pipeline after they've been accepted for posting.
 
@@ -47,12 +48,12 @@ etc.
     List-Post: <mailto:xtest@example.com>
     List-Subscribe:
         <http://lists.example.com/listinfo/xtest@example.com>,
-    	<mailto:xtest-join@example.com>
+        <mailto:xtest-join@example.com>
     Archived-At:
         http://lists.example.com/archives/4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
     List-Unsubscribe:
         <http://lists.example.com/listinfo/xtest@example.com>,
-    	<mailto:xtest-leave@example.com>
+        <mailto:xtest-leave@example.com>
     List-Archive: <http://lists.example.com/archives/xtest@example.com>
     List-Help: <mailto:xtest-request@example.com?subject=help>
     <BLANKLINE>
@@ -183,4 +184,11 @@ There's now one message in the digest mailbox, getting ready to be sent.
     <BLANKLINE>
     <BLANKLINE>
 
+
+Clean up the digests
+====================
+
     >>> digest.clear()
+    >>> digest.flush()
+    >>> sum(1 for msg in digest_mbox(mlist))
+    0
