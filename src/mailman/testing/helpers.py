@@ -137,6 +137,7 @@ class TestableMaster(Master):
         self.start_check = start_check
         self.event = threading.Event()
         self.thread = threading.Thread(target=self.loop)
+        self.thread.daemon = True
         self._started_kids = None
 
     def start(self, *qrunners):
@@ -194,6 +195,7 @@ class SMTPServer:
         self.port = int(config.mta.smtp_port)
         self._server = Server((self.host, self.port), self._queue)
         self._thread = threading.Thread(target=self._server.start)
+        self._thread.daemon = True
 
     def start(self):
         """Start the smtp server in a thread."""

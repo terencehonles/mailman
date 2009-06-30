@@ -44,6 +44,7 @@ class TestableServer:
         self.server = make_server()
         self.event = threading.Event()
         self.thread = threading.Thread(target=self.loop)
+        self.thread.daemon = True
         
     def start(self):
         """Start the server."""
