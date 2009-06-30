@@ -23,7 +23,6 @@ __metaclass__ = type
 __all__ = [
     'AutoResponseRecord',
     'AutoResponseSet',
-    'adapt_mailing_list_to_response_set',
     ]
 
 
@@ -92,19 +91,3 @@ class AutoResponseSet:
                 AutoResponseRecord.response_type == response_type)
             ).order_by(Desc(AutoResponseRecord.date_sent)) 
         return (None if results.count() == 0 else results.first())
-
-
-
-def adapt_mailing_list_to_response_set(iface, obj):
-    """Adapt an `IMailingList` to an `IAutoResponseSet`.
-
-    :param iface: The interface to adapt to.
-    :type iface: `zope.interface.Interface`
-    :param obj: The object being adapted.
-    :type obj: `IMailingList`
-    :return: An `IAutoResponseSet` instance if adaptation succeeded or None if
-        it didn't.
-    """
-    return (AutoResponseSet(obj)
-            if IMailingList.providedBy(obj) and iface is IAutoResponseSet
-            else None)

@@ -32,6 +32,7 @@ import logging
 
 from lazr.config import ConfigSchema, as_boolean
 from pkg_resources import resource_stream
+from zope.interface import Interface, implements
 
 from mailman import version
 from mailman.core import errors
@@ -46,8 +47,15 @@ SPACE = ' '
 
 
 
-class Configuration(object):
+class IConfiguration(Interface):
+    """Marker interface; used for adaptation in the REST API."""
+
+
+
+class Configuration:
     """The core global configuration object."""
+
+    implements(IConfiguration)
 
     def __init__(self):
         self.domains = {}       # email host -> IDomain

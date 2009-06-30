@@ -69,7 +69,8 @@ class AbsoluteURLMapper:
         # Special cases.
         if isinstance(ob, AdminWebServiceApplication):
             return ''
-        urls = {
-            system: 'system',
-            }
+        urls = dict(
+            system='system',
+            domains='domains',
+            )
         return urls[ob]

@@ -1,0 +1,8 @@
+=======
+Domains
+=======
+
+The REST API can be queried for the set of known domains.
+
+    >>> dump_json('http://localhost:8001/3.0/domains')
+    XXX

@@ -22,49 +22,54 @@ from __future__ import absolute_import, unicode_literals
 __metaclass__ = type
 __all__ = [
     'IDomain',
+    'IDomainSet',
     ]
 
 
+from lazr.restful.declarations import (
+    collection_default_content, export_as_webservice_collection,
+    export_as_webservice_entry, exported)
 from zope.interface import Interface, Attribute
+from zope.schema import TextLine
+
+from mailman.i18n import _
 
 
 
 class IDomain(Interface):
     """Interface representing domains."""
 
-    email_host = Attribute(
-        """The host name for email for this domain.
+    export_as_webservice_entry()
 
-        :type: string
-        """)
+    email_host = exported(TextLine(
+        title=_('Email host name'),
+        description=_('The host name for email for this domain.'),
+        ))
 
-    url_host = Attribute(
-        """The host name for the web interface for this domain.
+    url_host = exported(TextLine(
+        title=_('Web host name'),
+        description=_('The host name for the web interface for this domain.')
+        ))
 
-        :type: string
-        """)
+    base_url = exported(TextLine(
+        title=_('Base URL'),
+        description=_("""\
+        The base url for the Mailman server at this domain, which includes the
+        scheme and host name."""),
+        ))
 
-    base_url = Attribute(
-        """The base url for the Mailman server at this domain.
+    description = exported(TextLine(
+        title=_('Description'),
+        description=_('The human readable description of the domain name.'),
+        ))
 
-        The base url includes the scheme and host name.
+    contact_address = exported(TextLine(
+        title=_('Contact address'),
+        description=_("""\
+        The contact address for the human at this domain.
 
-        :type: string
-        """)
-
-    description = Attribute(
-        """The human readable description of the domain name.
-
-        :type: string
-        """)
-
-    contact_address = Attribute(
-        """The contact address for the human at this domain.
-
-        E.g. postmaster@example.com
-
-        :type: string
-        """)
+        E.g. postmaster@example.com"""),
+        ))
 
     def confirm_address(token=''):
         """The address used for various forms of email confirmation.
@@ -83,3 +88,14 @@ class IDomain(Interface):
         :return: The confirmation url.
         :rtype: string
         """
+
+
+
+class IDomainSet(Interface):
+    """The set of all known domains."""
+
+    export_as_webservice_collection(IDomain)
+
+    @collection_default_content()
+    def __iter__():
+        """Iterate over all domains."""

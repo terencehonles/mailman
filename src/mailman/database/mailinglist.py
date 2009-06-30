@@ -22,7 +22,6 @@ from __future__ import absolute_import, unicode_literals
 __metaclass__ = type
 __all__ = [
     'MailingList',
-    'adapt_mailing_list_to_acceptable_alias_set',
     ]
 
 
@@ -462,19 +461,3 @@ class AcceptableAliasSet:
             AcceptableAlias.mailing_list == self._mailing_list)
         for alias in aliases:
             yield alias.alias
-
-
-
-def adapt_mailing_list_to_acceptable_alias_set(iface, obj):
-    """Adapt an `IMailingList` to an `IAcceptableAliasSet`.
-
-    :param iface: The interface to adapt to.
-    :type iface: `zope.interface.Interface`
-    :param obj: The object being adapted.
-    :type obj: `IMailingList`
-    :return: An `IAcceptableAliasSet` instance if adaptation succeeded or None
-        if it didn't.
-    """
-    return (AcceptableAliasSet(obj)
-            if IMailingList.providedBy(obj) and iface is IAcceptableAliasSet
-            else None)

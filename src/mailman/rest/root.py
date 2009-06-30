@@ -41,13 +41,6 @@ from mailman.core.system import system
 class AdminWebServiceRootResource(ServiceRootResource):
     """The root of the Mailman RESTful admin web service."""
 
-    def get(self, name):
-        """See `IHasGet`."""
-        top_level = {
-            'sys': system,
-            }
-        return top_level.get(name)
-
 
 class AdminWebServiceRootAbsoluteURL:
     """A basic implementation of `IAbsoluteURL` for the root object."""

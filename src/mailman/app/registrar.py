@@ -22,7 +22,6 @@ from __future__ import unicode_literals
 __metaclass__ = type
 __all__ = [
     'Registrar',
-    'adapt_domain_to_registrar',
     ]
 
 
@@ -145,19 +144,3 @@ class Registrar:
     def discard(self, token):
         # Throw the record away.
         config.db.pendings.confirm(token)
-
-
-
-def adapt_domain_to_registrar(iface, obj):
-    """Adapt `IDomain` to `IRegistrar`.
-
-    :param iface: The interface to adapt to.
-    :type iface: `zope.interface.Interface`
-    :param obj: The object being adapted.
-    :type obj: `IDomain`
-    :return: An `IRegistrar` instance if adaptation succeeded or None if it
-        didn't.
-    """
-    return (Registrar(obj)
-            if IDomain.providedBy(obj) and iface is IRegistrar
-            else None)

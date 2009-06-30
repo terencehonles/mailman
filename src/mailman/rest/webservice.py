@@ -35,14 +35,13 @@ import logging
 from wsgiref.simple_server import WSGIServer, WSGIRequestHandler
 
 from lazr.restful.publisher import WebServiceRequestTraversal
-from pkg_resources import resource_string
-from zope.configuration import xmlconfig
 from zope.interface import implements
 from zope.publisher.browser import BrowserRequest
 from zope.publisher.publish import publish
 
 from mailman.config import config
 from mailman.core.system import system
+from mailman.interfaces.domain import IDomainSet
 from mailman.interfaces.rest import IResolvePathNames
 from mailman.rest.publication import AdminWebServicePublication
 
@@ -84,6 +83,7 @@ class AdminWebServiceApplication:
         """Maps root names to resources."""
         top_level = dict(
             system=system,
+            domains=IDomainSet(config),
             )
         return top_level.get(name)
 
@@ -99,8 +99,6 @@ class AdminWebServiceWSGIRequestHandler(WSGIRequestHandler):
 
 def make_server():
     """Create the WSGI admin REST server."""
-    zcml = resource_string('mailman.rest', 'configure.zcml')
-    xmlconfig.string(zcml)
     host = config.webservice.hostname
     port = int(config.webservice.port)
     server = WSGIServer((host, port), AdminWebServiceWSGIRequestHandler)

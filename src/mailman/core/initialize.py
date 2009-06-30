@@ -38,7 +38,8 @@ __all__ = [
 import os
 import sys
 
-from zope.interface.interface import adapter_hooks
+from pkg_resources import resource_string
+from zope.configuration import xmlconfig
 from zope.interface.verify import verifyObject
 
 import mailman.config.config
@@ -82,6 +83,7 @@ def initialize_1(config_path=None, propagate_logs=None):
 def initialize_2(debug=False):
     """Second initialization step.
 
+    * Pre-hook
     * Rules
     * Chains
     * Pipelines
@@ -117,15 +119,11 @@ def initialize_2(debug=False):
 def initialize_3():
     """Third initialization step.
 
-    * Adapters
+    * Zope component architecture
+    * Post-hook
     """
-    from mailman.app.registrar import adapt_domain_to_registrar
-    adapter_hooks.append(adapt_domain_to_registrar)
-    from mailman.database.autorespond import adapt_mailing_list_to_response_set
-    adapter_hooks.append(adapt_mailing_list_to_response_set)
-    from mailman.database.mailinglist import (
-        adapt_mailing_list_to_acceptable_alias_set)
-    adapter_hooks.append(adapt_mailing_list_to_acceptable_alias_set)
+    zcml = resource_string('mailman.config', 'configure.zcml')
+    xmlconfig.string(zcml)
     # Run the post-hook if there is one.
     config = mailman.config.config
     if config.mailman.post_hook:

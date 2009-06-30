@@ -9,12 +9,19 @@
   <include package="lazr.restful" file="configure.zcml"/>
 
   <webservice:register module="mailman.interfaces.system" />
+  <webservice:register module="mailman.interfaces.domain" />
 
   <adapter
     for="zope.interface.Interface
          mailman.rest.webservice.AdminWebServiceRequest"
     provides="zope.traversing.browser.interfaces.IAbsoluteURL"
     factory="mailman.rest.urls.AbsoluteURLMapper"
+    />
+
+  <adapter
+    for="mailman.config.config.IConfiguration"
+    provides="mailman.interfaces.domain.IDomainSet"
+    factory="mailman.rest.adapters.DomainSet"
     />
 
   <utility

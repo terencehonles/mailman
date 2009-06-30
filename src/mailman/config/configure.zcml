@@ -1,0 +1,27 @@
+<!-- -*- xml -*- -->
+<configure
+    xmlns="http://namespaces.zope.org/zope">
+
+  <include package="mailman.rest" file="configure.zcml"/>
+
+  <!-- adapters -->
+
+  <adapter
+    for="mailman.interfaces.domain.IDomain"
+    provides="mailman.interfaces.registrar.IRegistrar"
+    factory="mailman.app.registrar.Registrar"
+    />
+
+  <adapter
+    for="mailman.interfaces.mailinglist.IMailingList"
+    provides="mailman.interfaces.autorespond.IAutoResponseSet"
+    factory="mailman.database.autorespond.AutoResponseSet"
+    />
+
+  <adapter
+    for="mailman.interfaces.mailinglist.IMailingList"
+    provides="mailman.interfaces.mailinglist.IAcceptableAliasSet"
+    factory="mailman.database.mailinglist.AcceptableAliasSet"
+    />
+
+</configure>

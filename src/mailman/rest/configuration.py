@@ -42,6 +42,8 @@ class AdminWebServiceConfiguration:
 
     @property
     def view_permission(self):
+        if config.webservice.view_permission.lower() == 'none':
+            return None
         return config.webservice.view_permission
 
     path_override = None
