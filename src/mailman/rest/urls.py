@@ -15,13 +15,14 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Module stuff."""
+"""Mappers from objects to absolute URLs."""
 
 from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
     'AbsoluteURLMapper',
+    'DomainURLMapper',
     ]
 
 
@@ -36,8 +37,8 @@ from mailman.rest.webservice import AdminWebServiceApplication
 
 
 
-class AbsoluteURLMapper:
-    """Generic absolute url mapper."""
+class BasicURLMapper:
+    """Base absolute URL mapper."""
 
     implements(IAbsoluteURL)
 
@@ -50,6 +51,11 @@ class AbsoluteURLMapper:
         self.schema = ('https' if self.webservice_config.use_https else 'http')
         self.hostname = config.webservice.hostname
         self.port = int(config.webservice.port)
+
+
+
+class FallbackURLMapper(BasicURLMapper):
+    """Generic absolute url mapper."""
 
     def __call__(self):
         """Return the semi-hard-coded URL to the service root."""
@@ -73,3 +79,16 @@ class AbsoluteURLMapper:
             system: 'system',
             }
         return urls[ob]
+
+
+
+class DomainURLMapper(BasicURLMapper):
+    """Mapper of `IDomains` to `IAbsoluteURL`."""
+
+    implements(IAbsoluteURL)
+
+    def __call__(self):
+        """Return the hard-coded URL to the domain."""
+        return ('{0.schema}://{0.hostname}:{0.port}/{0.version}/domains/'
+                '{1.email_host}').format(self, self.context)
+        

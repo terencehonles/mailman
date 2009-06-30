@@ -48,7 +48,8 @@ class Publication:
 
     def beforeTraversal(self, request):
         """See `IPublication`."""
-        pass
+        endInteraction()
+        newInteraction(request)
 
     def getApplication(self, request):
         """See `IPublication`."""

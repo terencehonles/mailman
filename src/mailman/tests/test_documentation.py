@@ -119,7 +119,14 @@ def dump_json(url):
     finally:
         fp.close()
     for key in sorted(data):
-        print '{0}: {1}'.format(key, data[key])
+        if key == 'entries':
+            for i, entry in enumerate(data[key]):
+                # entry is a dictionary.
+                print 'entry %d:' % i
+                for entry_key in sorted(entry):
+                    print '    {0}: {1}'.format(entry_key, entry[entry_key])
+        else:
+            print '{0}: {1}'.format(key, data[key])
 
 
 
