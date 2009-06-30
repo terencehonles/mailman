@@ -101,4 +101,7 @@ case second `m'.  Any other spelling is incorrect.""",
     setup_requires = [
         'setuptools_bzr',
         ],
+    extras_require=dict(
+        docs=['Sphinx', 'z3c.recipe.sphinxdoc'],
+        )
     )
