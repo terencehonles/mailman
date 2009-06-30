@@ -17,3 +17,80 @@ The REST API can be queried for the set of known domains.
     resource_type_link: https://localhost:8001/3.0/#domains
     start: 0
     total_size: 1
+
+All domains are returned.
+
+    >>> from mailman.config import config
+    >>> config.push('test domains', """\
+    ... [domain.example_dot_org]
+    ... email_host: example.org
+    ... base_url: http://mail.example.org
+    ... contact_address: listmaster@example.org
+    ...
+    ... [domain.example_dot_net]
+    ... email_host: lists.example.net
+    ... base_url: http://example.net
+    ... contact_address: porkmaster@example.net
+    ... """)
+
+    >>> dump_json('http://localhost:8001/3.0/domains')
+    entry 0:
+        base_url: http://lists.example.com
+        contact_address: postmaster@example.com
+        description: An example domain.
+        email_host: example.com
+        http_etag: "546791f38192b347db544481f1386d33607ccf3d"
+        resource_type_link: https://localhost:8001/3.0/#domain
+        self_link: https://localhost:8001/3.0/domains/example.com
+        url_host: lists.example.com
+    entry 1:
+        base_url: http://mail.example.org
+        contact_address: listmaster@example.org
+        description: An example domain.
+        email_host: example.org
+        http_etag: "4ff00fefca81b99ce2c7e6c50223107daf0649ff"
+        resource_type_link: https://localhost:8001/3.0/#domain
+        self_link: https://localhost:8001/3.0/domains/example.org
+        url_host: mail.example.org
+    entry 2:
+        base_url: http://example.net
+        contact_address: porkmaster@example.net
+        description: An example domain.
+        email_host: lists.example.net
+        http_etag: "aa5a388197948f21b8a3eb940b6c9725c5f41fac"
+        resource_type_link: https://localhost:8001/3.0/#domain
+        self_link: https://localhost:8001/3.0/domains/lists.example.net
+        url_host: example.net
+    resource_type_link: https://localhost:8001/3.0/#domains
+    start: 0
+    total_size: 3
+
+
+Individual domains
+==================
+
+The information for a single domain is available by following one of the
+self_links from the above collection.
+
+    >>> dump_json('http://localhost:8001/3.0/domains/lists.example.net')
+    base_url: http://example.net
+    contact_address: porkmaster@example.net
+    description: An example domain.
+    email_host: lists.example.net
+    http_etag: "aa5a388197948f21b8a3eb940b6c9725c5f41fac"
+    resource_type_link: https://localhost:8001/3.0/#domain
+    self_link: https://localhost:8001/3.0/domains/lists.example.net
+    url_host: example.net
+
+But we get a 404 for a non-existent domain.
+
+    >>> dump_json('http://localhost:8001/3.0/domains/does-not-exist')
+    Traceback (most recent call last):
+    ...
+    HTTPError: HTTP Error 404: Not Found
+
+
+Clean up
+========
+
+    >>> config.pop('test domains')

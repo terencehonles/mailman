@@ -26,15 +26,17 @@ __all__ = [
 
 
 from zope.interface import implements
+from zope.publisher.interfaces import NotFound
 
 from mailman.interfaces.domain import IDomainSet
+from mailman.interfaces.rest import IResolvePathNames
 
 
 
 class DomainSet:
     """Sets of known domains."""
 
-    implements(IDomainSet)
+    implements(IDomainSet, IResolvePathNames)
 
     __name__ = 'domains'
 
@@ -45,3 +47,10 @@ class DomainSet:
         """See `IDomainSet`."""
         domains = self._config.domains
         return [domains[domain] for domain in sorted(domains)]
+
+    def get(self, name):
+        """See `IResolvePathNames`."""
+        domain = self._config.domains.get(name)
+        if domain is None:
+            raise NotFound(self, name)
+        return domain
