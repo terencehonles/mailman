@@ -30,11 +30,10 @@ from zope.interface import implements
 
 from mailman import version
 from mailman.config import config
-from mailman.rest.publication import AdminWebServicePublication
-from mailman.rest.root import AdminWebServiceRootResource
 
 
 
+# pylint: disable-msg=W0232,R0201
 class AdminWebServiceConfiguration:
     """A configuration object for the Mailman admin web service."""
 
@@ -42,6 +41,7 @@ class AdminWebServiceConfiguration:
 
     @property
     def view_permission(self):
+        """See `IWebServiceConfiguration`."""
         if config.webservice.view_permission.lower() == 'none':
             return None
         return config.webservice.view_permission
@@ -64,14 +64,6 @@ class AdminWebServiceConfiguration:
         
     default_batch_size = 50
     max_batch_size = 300
-
-    ## # XXX What's this for?
-    ## def createRequest(self, body_instream, environ):
-    ##     """See `IWebServiceConfiguration`."""
-    ##     request = AdminWebServiceRequest(body_instream, environ)
-    ##     request.setPublication(
-    ##         AdminWebServicePublication(AdminWebServiceRootResource()))
-    ##     return request
 
     def get_request_user(self):
         """See `IWebServiceConfiguration`."""
