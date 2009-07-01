@@ -33,19 +33,31 @@ DEFAULT_BANNER = object()
 
 
 def interact(upframe=True, banner=DEFAULT_BANNER, overrides=None):
-    # The interactive prompt's namespace
-    ns = dict()
-    # If uplocals is true, also populate the console's locals with the locals
-    # of the frame that called this function (i.e. one up from here).
+    """Start an interactive interpreter prompt.
+
+    :param upframe: Whether or not to populate the interpreter's globals with
+        the locals from the frame that called this function.
+    :type upfframe: bool
+    :param banner: The banner to print before the interpreter starts.
+    :type banner: string
+    :param overrides: Additional interpreter globals to add.
+    :type overrides: dict
+    """
+    # The interactive prompt's namespace.
+    namespace = dict()
+    # Populate the console's with the locals of the frame that called this
+    # function (i.e. one up from here).
     if upframe:
+        # pylint: disable-msg=W0212
         frame = sys._getframe(1)
-        ns.update(frame.f_globals)
-        ns.update(frame.f_locals)
+        namespace.update(frame.f_globals)
+        namespace.update(frame.f_locals)
     if overrides is not None:
-        ns.update(overrides)
-    interp = code.InteractiveConsole(ns)
-    # Try to import the readline module, but don't worry if it's unavailable
+        namespace.update(overrides)
+    interp = code.InteractiveConsole(namespace)
+    # Try to import the readline module, but don't worry if it's unavailable.
     try:
+        # pylint: disable-msg=W0612
         import readline
     except ImportError:
         pass
@@ -54,8 +66,9 @@ def interact(upframe=True, banner=DEFAULT_BANNER, overrides=None):
     # than once, this could cause a problem.
     startup = os.environ.get('PYTHONSTARTUP')
     if startup:
+        # pylint: disable-msg=W0702
         try:
-            execfile(startup, ns)
+            execfile(startup, namespace)
         except:
             pass
     # We don't want the funky console object in parentheses in the banner.

@@ -17,7 +17,7 @@
 
 """Common argument parsing."""
 
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -40,7 +40,9 @@ from mailman.version import MAILMAN_VERSION
 
 
 
+# pylint: disable-msg=W0613
 def check_unicode(option, opt, value):
+    """Check that the value is a unicode string."""
     if isinstance(value, unicode):
         return value
     try:
@@ -50,7 +52,9 @@ def check_unicode(option, opt, value):
             'option {0}: Cannot decode: {1}'.format(opt, value))
 
 
+# pylint: disable-msg=W0613
 def check_yesno(option, opt, value):
+    """Check that the value is 'yes' or 'no'."""
     value = value.lower()
     if value not in ('yes', 'no', 'y', 'n'):
         raise OptionValueError('option {0}: invalid: {1}'.format(opt, value))
@@ -73,6 +77,7 @@ class SafeOptionParser(OptionParser):
     having to wrap the options in str() calls.
     """
     def add_option(self, *args, **kwargs):
+        """See `OptionParser`."""
         # Check to see if the first or first two options are unicodes and turn
         # them into 8-bit strings before calling the superclass's method.
         if len(args) == 0:
@@ -150,6 +155,7 @@ class SingleMailingListOptions(Options):
     """A helper for specifying the mailing list on the command line."""
 
     def add_options(self):
+        """See `Options`."""
         self.parser.add_option(
             '-l', '--listname',
             type='unicode', help=_('The mailing list name'))
@@ -160,6 +166,7 @@ class MultipleMailingListOptions(Options):
     """A helper for specifying multiple mailing lists on the command line."""
 
     def add_options(self):
+        """See `Options`."""
         self.parser.add_option(
             '-l', '--listname',
             default=[], action='append', dest='listnames', type='unicode',

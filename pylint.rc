@@ -53,8 +53,14 @@ load-plugins=
 #enable-msg=
 
 # Disable the message(s) with the given id(s).
+# C0103: *Invalid name %s* in module globals
 # I0011: *Locally disabling %s*
-disable-msg=I0011
+# R0903: *Too few public methods*
+# R0913: *Too many arguments*
+# R0914: *Too many local variables*
+# W0142: *Used * or ** magic*
+# W0704: *Except doesn't do anything*
+disable-msg=C0103,I0011,R0903,R0914,W0142,W0704
 
 
 [REPORTS]
@@ -250,7 +256,7 @@ max-public-methods=50
 [IMPORTS]
 
 # Deprecated modules which should not be used, separated by a comma
-deprecated-modules=regsub,string,TERMIOS,Bastion,rexec
+deprecated-modules=regsub,TERMIOS,Bastion,rexec
 
 # Create a graph of every (i.e. internal and external) dependencies in the
 # given file (report R0402 must not be disabled)

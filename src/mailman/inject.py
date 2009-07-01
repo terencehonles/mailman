@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
+"""Inject a message into a queue."""
+
 from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
@@ -24,6 +26,8 @@ __all__ = [
     ]
 
 
+# pylint doesn't understand absolute_import
+# pylint: disable-msg=E0611,W0403
 from email import message_from_string
 from email.utils import formatdate, make_msgid
 

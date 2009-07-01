@@ -30,7 +30,7 @@ from email.mime.message import MIMEMessage
 from email.mime.text import MIMEText
 
 from mailman.Utils import oneline
-from mailman.email.message import Message, UserNotification
+from mailman.email.message import UserNotification
 from mailman.i18n import _
 
 log = logging.getLogger('mailman.config')
@@ -38,6 +38,15 @@ log = logging.getLogger('mailman.config')
 
 
 def bounce_message(mlist, msg, e=None):
+    """Bounce the message back to the original author.
+
+    :param mlist: The mailing list that the message was posted to.
+    :type mlist: `IMailingList`
+    :param msg: The original message.
+    :type msg: `email.message.Message`
+    :param e: Optional exception causing the bounce.
+    :type e: Exception
+    """
     # Bounce a message back to the sender, with an error message if provided
     # in the exception argument.
     if msg.sender is None:

@@ -27,6 +27,7 @@ __all__ = [
 
 import os
 import sys
+
 from pkg_resources import resource_listdir
 
 
@@ -45,7 +46,7 @@ def find_components(package, interface):
     # Find all rules found in all modules inside our package.
     for filename in resource_listdir(package, ''):
         basename, extension = os.path.splitext(filename)
-        if extension <> '.py':
+        if extension != '.py':
             continue
         module_name = '{0}.{1}'.format(package, basename)
         __import__(module_name, fromlist='*')

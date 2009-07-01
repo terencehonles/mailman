@@ -17,7 +17,7 @@
 
 """Application level list creation."""
 
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -27,11 +27,9 @@ __all__ = [
 
 
 import os
-import sys
 import shutil
 import logging
 
-from mailman import Utils
 from mailman.config import config
 from mailman.core import errors
 from mailman.email.validate import validate
@@ -48,6 +46,7 @@ def create_list(fqdn_listname, owners=None):
     if owners is None:
         owners = []
     validate(fqdn_listname)
+    # pylint: disable-msg=W0612
     listname, domain = fqdn_listname.split('@', 1)
     if domain not in config.domains:
         raise errors.BadDomainSpecificationError(domain)

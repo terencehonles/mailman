@@ -20,13 +20,13 @@
 Represents passwords using RFC 2307 syntax (as best we can tell).
 """
 
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
     'Schemes',
-    'make_secret',
     'check_response',
+    'make_secret',
     ]
 
 
@@ -47,71 +47,102 @@ ITERATIONS  = 2000
 
 
 
+# pylint: disable-msg=W0232
 class PasswordScheme:
+    """Password scheme base class."""
     TAG = b''
 
     @staticmethod
     def make_secret(password):
-        """Return the hashed password"""
+        """Return the hashed password.
+
+        :param password: The clear text password.
+        :type password: string
+        :return: The encrypted password.
+        :rtype: string
+        """
         raise NotImplementedError
 
     @staticmethod
     def check_response(challenge, response):
-        """Return True if response matches challenge.
+        """Check a response against a challenge.
 
         It is expected that the scheme specifier prefix is already stripped
         from the response string.
+
+        :param challenge: The challenge.
+        :type challenge: string
+        :param response: The response.
+        :type response: string
+        :return: True if the response matches the challenge.
+        :rtype: bool
         """
         raise NotImplementedError
 
 
 
 class NoPasswordScheme(PasswordScheme):
+    """A password scheme without passwords."""
+
     TAG = b'NONE'
 
     @staticmethod
     def make_secret(password):
+        """See `PasswordScheme`."""
         return b''
 
+    # pylint: disable-msg=W0613
     @staticmethod
     def check_response(challenge, response):
+        """See `PasswordScheme`."""
         return False
 
 
 
 class ClearTextPasswordScheme(PasswordScheme):
+    """A password scheme that stores clear text passwords."""
+
     TAG = b'CLEARTEXT'
 
     @staticmethod
     def make_secret(password):
+        """See `PasswordScheme`."""
         return password
 
     @staticmethod
     def check_response(challenge, response):
+        """See `PasswordScheme`."""
         return challenge == response
 
 
 
 class SHAPasswordScheme(PasswordScheme):
+    """A password scheme that encodes the password using SHA1."""
+
     TAG = b'SHA'
 
     @staticmethod
     def make_secret(password):
+        """See `PasswordScheme`."""
         h = hashlib.sha1(password)
         return encode(h.digest())
 
     @staticmethod
     def check_response(challenge, response):
+        """See `PasswordScheme`."""
         h = hashlib.sha1(response)
         return challenge == encode(h.digest())
 
 
 
 class SSHAPasswordScheme(PasswordScheme):
+    """A password scheme that encodes the password using salted SHA1."""
+
     TAG = b'SSHA'
 
     @staticmethod
     def make_secret(password):
+        """See `PasswordScheme`."""
         salt = os.urandom(SALT_LENGTH)
         h = hashlib.sha1(password)
         h.update(salt)
@@ -119,6 +150,7 @@ class SSHAPasswordScheme(PasswordScheme):
 
     @staticmethod
     def check_response(challenge, response):
+        """See `PasswordScheme`."""
         # Get the salt from the challenge
         challenge_bytes = decode(challenge)
         digest = challenge_bytes[:20]
@@ -131,6 +163,8 @@ class SSHAPasswordScheme(PasswordScheme):
 
 # Basic algorithm given by Bob Fleck
 class PBKDF2PasswordScheme(PasswordScheme):
+    """RFC 2989 password encoding scheme."""
+
     # This is a bit nasty if we wanted a different prf or iterations.  OTOH,
     # we really have no clue what the standard LDAP-ish specification for
     # those options is.
@@ -157,7 +191,9 @@ class PBKDF2PasswordScheme(PasswordScheme):
 
     @staticmethod
     def make_secret(password):
-        """From RFC2898 sec. 5.2.  Simplified to handle only 20 byte output
+        """See `PasswordScheme`.
+
+        From RFC2898 sec. 5.2.  Simplified to handle only 20 byte output
         case.  Output of 20 bytes means always exactly one block to handle,
         and a constant block counter appended to the salt in the initial hmac
         update.
@@ -167,11 +203,13 @@ class PBKDF2PasswordScheme(PasswordScheme):
         derived_key = encode(digest + salt)
         return derived_key
 
+    # pylint: disable-msg=W0221
     @staticmethod
     def check_response(challenge, response, prf, iterations):
-        # Decode the challenge to get the number of iterations and salt
-        # XXX we don't support anything but sha prf
-        if prf.lower() <> b'sha':
+        """See `PasswordScheme`."""
+        # Decode the challenge to get the number of iterations and salt.  We
+        # don't support anything but SHA PRF.
+        if prf.lower() != b'sha':
             return False
         try:
             iterations = int(iterations)
@@ -186,6 +224,7 @@ class PBKDF2PasswordScheme(PasswordScheme):
 
 
 class Schemes(Enum):
+    """List of password schemes."""
     # no_scheme is deliberately ugly because no one should be using it.  Yes,
     # this makes cleartext inconsistent, but that's a common enough
     # terminology to justify the missing underscore.
@@ -215,6 +254,15 @@ _DEFAULT_SCHEME = NoPasswordScheme
 
 
 def make_secret(password, scheme=None):
+    """Encrypt a password.
+
+    :param password: The clear text password.
+    :type password: string
+    :param scheme: The password scheme name.
+    :type scheme: string
+    :return: The encrypted password.
+    :rtype: string
+    """
     # The hash algorithms operate on bytes not strings.  The password argument
     # as provided here by the client will be a string (in Python 2 either
     # unicode or 8-bit, in Python 3 always unicode).  We need to encode this
@@ -231,6 +279,15 @@ def make_secret(password, scheme=None):
 
 
 def check_response(challenge, response):
+    """Check a response against a challenge.
+
+    :param challenge: The challenge.
+    :type challenge: string
+    :param response: The response.
+    :type response: string
+    :return: True if the response matches the challenge.
+    :rtype: bool
+    """
     mo = re.match(r'{(?P<scheme>[^}]+?)}(?P<rest>.*)',
                   challenge, re.IGNORECASE)
     if not mo:
@@ -250,4 +307,11 @@ def check_response(challenge, response):
 
 
 def lookup_scheme(scheme_name):
+    """Look up a password scheme.
+
+    :param scheme_name: The password scheme name.
+    :type scheme_name: string
+    :return: Password scheme class.
+    :rtype: `PasswordScheme`
+    """
     return _SCHEMES_BY_TAG.get(scheme_name.lower())

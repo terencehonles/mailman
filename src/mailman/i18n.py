@@ -46,10 +46,12 @@ MESSAGES_DIR = os.path.dirname(mailman.messages.__file__)
 
 
 class Template(string.Template):
+    """Match any attribute path."""
     idpattern = r'[_a-z][_a-z0-9.]*'
 
 
 class attrdict(dict):
+    """Follow attribute paths."""
     def __getitem__(self, key):
         parts = key.split('.')
         value = super(attrdict, self).__getitem__(parts.pop(0))
@@ -62,6 +64,12 @@ class attrdict(dict):
 
 
 def set_language(language_code=None):
+    """Set the global translation context from a language code.
+
+    :param language_code: The two letter language code to set.
+    :type language_code: str
+    """
+    # pylint: disable-msg=W0603
     global _translation
     # gettext.translation() API requires None or a sequence.
     codes = (None if language_code is None else [language_code])
@@ -74,10 +82,21 @@ def set_language(language_code=None):
 
 
 def get_translation():
+    """Return the global translation context.
+
+    :return: The global translation context.
+    :rtype: `GNUTranslation`
+    """
     return _translation
 
 
 def set_translation(translation):
+    """Set the global translation context.
+
+    :param translation: The translation context.
+    :type translation: `GNUTranslation`.
+    """
+    # pylint: disable-msg=W0603
     global _translation
     _translation = translation
 
@@ -92,7 +111,9 @@ class using_language:
         self._old_translation = _translation
         set_language(self._language_code)
 
+    # pylint: disable-msg=W0613
     def __exit__(self, *exc_info):
+        # pylint: disable-msg=W0603
         global _translation
         _translation = self._old_translation
         # Do not suppress exceptions.
@@ -107,6 +128,13 @@ if _translation is None:
 
 
 def _(s):
+    """Translate the string.
+
+    :param s: The string to transate
+    :type s: string
+    :return: The translated string
+    :rtype: string
+    """
     if s == '':
         return ''
     assert s, 'Cannot translate: {0}'.format(s)
@@ -122,6 +150,7 @@ def _(s):
     # original string is 1) locals dictionary, 2) globals dictionary.
     #
     # Get the frame of the caller.
+    # pylint: disable-msg=W0212
     frame = sys._getframe(1)
     # A `safe' dictionary is used so we won't get an exception if there's a
     # missing key in the dictionary.
@@ -144,6 +173,13 @@ def _(s):
 
 
 def ctime(date):
+    """Translate a ctime.
+
+    :param date: The date to translate.
+    :type date: str or time float
+    :return: The translated date.
+    :rtype: string
+    """
     # Don't make these module globals since we have to do runtime translation
     # of the strings anyway.
     daysofweek = [
@@ -156,6 +192,7 @@ def ctime(date):
         _('Jul'), _('Aug'), _('Sep'), _('Oct'), _('Nov'), _('Dec')
         ]
 
+    # pylint: disable-msg=W0612
     tzname = _('Server Local Time')
     if isinstance(date, str):
         try:
@@ -189,6 +226,7 @@ def ctime(date):
                         mon = i
                         break
     else:
+        # pylint: disable-msg=W0612
         year, mon, day, hh, mm, ss, wday, yday, dst = time.localtime(date)
         if dst in (0, 1):
             tzname = time.tzname[dst]

@@ -39,6 +39,7 @@ import random
 import logging
 import htmlentitydefs
 
+# pylint: disable-msg=E0611,W0403
 from email.errors import HeaderParseError
 from email.header import decode_header, make_header
 from lazr.config import as_boolean
@@ -71,7 +72,8 @@ log = logging.getLogger('mailman.error')
 
 
 
-# a much more naive implementation than say, Emacs's fill-paragraph!
+# A much more naive implementation than say, Emacs's fill-paragraph!
+# pylint: disable-msg=R0912
 def wrap(text, column=70, honor_leading_ws=True):
     """Wrap and fill the text to the specified column.
 
@@ -179,7 +181,7 @@ def Secure_MakeRandomPassword(length):
                     try:
                         fd = os.open('/dev/urandom', os.O_RDONLY)
                     except OSError, e:
-                        if e.errno <> errno.ENOENT:
+                        if e.errno != errno.ENOENT:
                             raise
                         # We have no available source of cryptographically
                         # secure random characters.  Log an error and fallback
@@ -246,7 +248,7 @@ def get_global_password(siteadmin=True):
         challenge = fp.read()[:-1]                # strip off trailing nl
         fp.close()
     except IOError, e:
-        if e.errno <> errno.ENOENT:
+        if e.errno != errno.ENOENT:
             raise
         # It's okay not to have a site admin password
         return None
@@ -378,7 +380,7 @@ def findtext(templatefile, raw_dict=None, raw=False, lang=None, mlist=None):
                     fp = open(filename)
                     raise OuterExit
                 except IOError, e:
-                    if e.errno <> errno.ENOENT:
+                    if e.errno != errno.ENOENT:
                         raise
                     # Okay, it doesn't exist, keep looping
                     fp = None
@@ -391,7 +393,7 @@ def findtext(templatefile, raw_dict=None, raw=False, lang=None, mlist=None):
             filename = os.path.join(TEMPLATE_DIR, 'en', templatefile)
             fp = open(filename)
         except IOError, e:
-            if e.errno <> errno.ENOENT:
+            if e.errno != errno.ENOENT:
                 raise
             # We never found the template.  BAD!
             raise IOError(errno.ENOENT, 'No template file found', templatefile)

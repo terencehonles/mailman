@@ -59,6 +59,8 @@ class Domain:
         self.contact_address = (contact_address
                                 if contact_address is not None
                                 else 'postmaster@' + email_host)
+        # pylint: disable-msg=E1101
+        # no netloc member; yes it does
         self.url_host = urlparse(self.base_url).netloc
 
     def confirm_address(self, token=''):

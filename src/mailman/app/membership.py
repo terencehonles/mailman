@@ -17,7 +17,7 @@
 
 """Application support for membership management."""
 
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -33,7 +33,7 @@ from mailman import i18n
 from mailman.app.notifications import send_goodbye_message
 from mailman.config import config
 from mailman.core import errors
-from mailman.email.message import Message, OwnerNotification
+from mailman.email.message import OwnerNotification
 from mailman.email.validate import validate
 from mailman.interfaces.member import AlreadySubscribedError, MemberRole
 
@@ -47,17 +47,17 @@ def add_member(mlist, address, realname, password, delivery_mode, language):
     The member's subscription must be approved by whatever policy the list
     enforces.
 
-    :param mlist: the mailing list to add the member to
-    :type mlist: IMailingList
-    :param address: the address to subscribe
+    :param mlist: The mailing list to add the member to.
+    :type mlist: `IMailingList`
+    :param address: The address to subscribe.
     :type address: string
-    :param realname: the subscriber's full name
+    :param realname: The subscriber's full name.
     :type realname: string
-    :param password: the subscriber's password
+    :param password: The subscriber's password.
     :type password: string
-    :param delivery_mode: the delivery mode the subscriber has chosen
+    :param delivery_mode: The delivery mode the subscriber has chosen.
     :type delivery_mode: DeliveryMode
-    :param language: the language that the subscriber is going to use
+    :param language: The language that the subscriber is going to use.
     :type language: string
     """
     # Let's be extra cautious.
@@ -104,6 +104,7 @@ def add_member(mlist, address, realname, password, delivery_mode, language):
             raise AssertionError(
                 'User should have had linked address: {0}'.format(address))
         # Create the member and set the appropriate preferences.
+        # pylint: disable-msg=W0631
         member = address_obj.subscribe(mlist, MemberRole.member)
         member.preferences.preferred_language = language
         member.preferences.delivery_mode = delivery_mode
@@ -113,6 +114,17 @@ def add_member(mlist, address, realname, password, delivery_mode, language):
 
 
 def delete_member(mlist, address, admin_notif=None, userack=None):
+    """Delete a member right now.
+
+    :param mlist: The mailing list to add the member to.
+    :type mlist: `IMailingList`
+    :param address: The address to subscribe.
+    :type address: string
+    :param admin_notif: Whether the list administrator should be notified that
+        this member was deleted.
+    :type admin_notif: bool, or None to let the mailing list's
+        `admin_notify_mchange` attribute decide.
+    """
     if userack is None:
         userack = mlist.send_goodbye_msg
     if admin_notif is None:

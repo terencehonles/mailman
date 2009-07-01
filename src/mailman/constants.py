@@ -33,7 +33,13 @@ from mailman.interfaces.preferences import IPreferences
 
 
 
+# pylint: disable-msg=W0232
+# no class __init__()
+# pylint: disable-msg=R0903
+# too few public methods
 class SystemDefaultPreferences:
+    """The default system preferences."""
+
     implements(IPreferences)
 
     acknowledge_posts = False
