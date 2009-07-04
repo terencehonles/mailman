@@ -1,4 +1,4 @@
 #! /bin/bash
 
 export PYTHONPATH=${os-paths}
-bin/pylint ${package} --rcfile=pylint.rc
+bin/pylint --rcfile=pylint.rc ${package}

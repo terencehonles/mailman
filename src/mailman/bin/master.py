@@ -40,7 +40,6 @@ from mailman.config import config
 from mailman.core.logging import reopen
 from mailman.i18n import _
 from mailman.options import Options
-from mailman.utilities.modules import find_name
 
 
 DOT = '.'
@@ -76,6 +75,7 @@ to use this pid directly.
 Usage: %prog [options]""")
 
     def add_options(self):
+        """See `Options`."""
         self.parser.add_option(
             '-n', '--no-restart',
             dest='restartable', default=True, action='store_false',
@@ -101,6 +101,7 @@ instead of the default set.  Multiple -r options may be given.  The values for
 -r are passed straight through to bin/qrunner."""))
 
     def sanity_check(self):
+        """See `Options`."""
         if len(self.arguments) > 0:
             self.parser.error(_('Too many arguments'))
 
@@ -120,7 +121,9 @@ def get_lock_data():
     return hostname, int(pid), filename
 
 
+# pylint: disable-msg=W0232
 class WatcherState(Enum):
+    """Enum for the state of the master process watcher."""
     # Another master watcher is running.
     conflict = 1
     # No conflicting process exists.
@@ -134,12 +137,9 @@ def master_state():
 
     :return: WatcherState describing the state of the lock file.
     """
-
-    # 1 if proc exists on host (but is it qrunner? ;)
-    # 0 if host matches but no proc
-    # hostname if hostname doesn't match
+    # pylint: disable-msg=W0612
     hostname, pid, tempfile = get_lock_data()
-    if hostname <> socket.gethostname():
+    if hostname != socket.gethostname():
         return WatcherState.host_mismatch
     # Find out if the process exists by calling kill with a signal 0.
     try:
@@ -169,6 +169,7 @@ def acquire_lock_1(force):
             raise
         # Force removal of lock first.
         lock.disown()
+        # pylint: disable-msg=W0612
         hostname, pid, tempfile = get_lock_data()
         os.unlink(config.LOCK_FILE)
         os.unlink(os.path.join(config.LOCK_DIR, tempfile))
@@ -200,9 +201,10 @@ The master qrunner lock could not be acquired.  It appears as though there is
 a stale master qrunner lock.  Try re-running mailmanctl with the -s flag.
 """)
         else:
+            # Hostname doesn't even match.
             assert status == WatcherState.host_mismatch, (
                 'Invalid enum value: %s' % status)
-            # Hostname doesn't even match.
+            # pylint: disable-msg=W0612
             hostname, pid, tempfile = get_lock_data()
             message = _("""\
 The master qrunner lock could not be acquired, because it appears as if some
@@ -232,6 +234,7 @@ class Loop:
         # Set up our signal handlers.  Also set up a SIGALRM handler to
         # refresh the lock once per day.  The lock lifetime is 1 day + 6 hours
         # so this should be plenty.
+        # pylint: disable-msg=W0613,C0111
         def sigalrm_handler(signum, frame):
             self._lock.refresh()
             signal.alarm(SECONDS_IN_A_DAY)
@@ -320,7 +323,6 @@ class Loop:
             qrunner_config = getattr(config, section_name)
             if not as_boolean(qrunner_config.start):
                 continue
-            class_ = find_name(qrunner_config['class'])
             # Find out how many qrunners to instantiate.  This must be a power
             # of 2.
             count = int(qrunner_config.instances)
@@ -409,6 +411,7 @@ qrunner %s reached maximum restart limit of %d, not restarting.""",
         # Wait for all the children to go away.
         while self._kids:
             try:
+                # pylint: disable-msg=W0612
                 pid, status = os.wait()
                 del self._kids[pid]
             except OSError, e:

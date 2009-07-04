@@ -80,7 +80,7 @@ lists and archives, etc., are available at:
 Requirements
 ============
 
-Mailman 3.0 requires `Python 2.6` or newer.
+Mailman 3.0 requires `Python 2.6`_ or newer.
 
 
 .. _`GNU Mailman`: http://www.list.org

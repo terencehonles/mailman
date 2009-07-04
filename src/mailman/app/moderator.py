@@ -41,13 +41,14 @@ from mailman.app.notifications import (
     send_admin_subscription_notice, send_welcome_message)
 from mailman.config import config
 from mailman.core import errors
-from mailman.email.message import Message, UserNotification
+from mailman.email.message import UserNotification
 from mailman.interfaces.action import Action
 from mailman.interfaces.member import AlreadySubscribedError, DeliveryMode
 from mailman.interfaces.requests import RequestType
 
 
 _ = i18n._
+NL = '\n'
 
 vlog = logging.getLogger('mailman.vette')
 slog = logging.getLogger('mailman.subscribe')

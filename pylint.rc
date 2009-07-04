@@ -60,7 +60,7 @@ load-plugins=
 # R0914: *Too many local variables*
 # W0142: *Used * or ** magic*
 # W0704: *Except doesn't do anything*
-disable-msg=C0103,I0011,R0903,R0914,W0142,W0704
+disable-msg=C0103,I0011,R0903,R0913,R0914,W0142,W0704
 
 
 [REPORTS]

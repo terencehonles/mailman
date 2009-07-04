@@ -33,7 +33,7 @@ from lazr.config import as_boolean
 from mailman import Utils
 from mailman import i18n
 from mailman.config import config
-from mailman.email.message import Message, OwnerNotification, UserNotification
+from mailman.email.message import OwnerNotification, UserNotification
 from mailman.interfaces.member import DeliveryMode
 
 
