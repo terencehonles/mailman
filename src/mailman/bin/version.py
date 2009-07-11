@@ -25,6 +25,7 @@ __all__ = [
     ]
 
 
+# pylint: disable-msg=W0611
 from mailman.core.system import system
 from mailman.i18n import _
 from mailman.options import Options
@@ -32,6 +33,7 @@ from mailman.options import Options
 
 
 class ScriptOptions(Options):
+    """See `Options`."""
     usage = _("""\
 %prog
 
@@ -40,6 +42,7 @@ Print the Mailman version and exit.""")
 
 
 def main():
+    """Main entry point."""
     options = ScriptOptions()
     options.initialize()
     print _('Using $system.mailman_version')

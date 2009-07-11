@@ -267,8 +267,3 @@ def main():
         log.info('Main qrunner loop exiting.')
     # All done
     sys.exit(loop.status)
-
-
-
-if __name__ == '__main__':
-    main()

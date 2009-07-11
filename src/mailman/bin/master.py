@@ -446,8 +446,3 @@ def main():
             os.remove(config.PIDFILE)
     finally:
         lock.unlock()
-
-
-
-if __name__ == '__main__':
-    main()
