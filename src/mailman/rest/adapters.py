@@ -43,8 +43,9 @@ class DomainSet:
     def __init__(self, config):
         self._config = config
 
-    def __iter__(self):
+    def get_domains(self):
         """See `IDomainSet`."""
+        # lazr.restful will not allow this to be a generator.
         domains = self._config.domains
         return [domains[domain] for domain in sorted(domains)]
 

@@ -8,8 +8,9 @@
   <include package="lazr.restful" file="meta.zcml"/>
   <include package="lazr.restful" file="configure.zcml"/>
 
-  <webservice:register module="mailman.interfaces.system" />
   <webservice:register module="mailman.interfaces.domain" />
+  <webservice:register module="mailman.interfaces.listmanager" />
+  <webservice:register module="mailman.interfaces.system" />
 
   <adapter
     for="mailman.config.config.IConfiguration"

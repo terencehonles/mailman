@@ -97,5 +97,9 @@ class IDomainSet(Interface):
     export_as_webservice_collection(IDomain)
 
     @collection_default_content()
-    def __iter__():
-        """Iterate over all domains."""
+    def get_domains():
+        """The list of all domains.
+
+        :return: The list of all known domains.
+        :rtype: list of `IDomain`
+        """

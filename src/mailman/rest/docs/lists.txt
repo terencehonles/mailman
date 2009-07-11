@@ -1,0 +1,12 @@
+=============
+Mailing lists
+=============
+
+The REST API can be queried for the set of known mailing lists.  There is a
+top level collection that can return all the mailing lists.  There aren't any
+yet though.
+
+    >>> dump_json('http://localhost:8001/3.0/lists')
+    resource_type_link: https://localhost:8001/3.0/#mailing_lists
+    start: None
+    total_size: 0

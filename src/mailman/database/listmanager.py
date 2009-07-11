@@ -40,6 +40,7 @@ class ListManager(object):
 
     implements(IListManager)
 
+    # pylint: disable-msg=R0201
     def create(self, fqdn_listname):
         """See `IListManager`."""
         listname, hostname = fqdn_listname.split('@', 1)
@@ -80,3 +81,8 @@ class ListManager(object):
         """See `IListManager`."""
         for mlist in config.db.store.find(MailingList):
             yield '{0}@{1}'.format(mlist.list_name, mlist.host_name)
+
+    def get_mailing_lists(self):
+        """See `IListManager`."""
+        # lazr.restful will not allow this to be a generator.
+        return list(self.mailing_lists)

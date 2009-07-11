@@ -30,8 +30,13 @@ __all__ = [
     ]
 
 
+from lazr.restful.declarations import (
+    export_as_webservice_entry, exported)
 from munepy import Enum
 from zope.interface import Interface, Attribute
+from zope.schema import TextLine
+
+from mailman.i18n import _
 
 
 
@@ -66,31 +71,39 @@ class DigestFrequency(Enum):
 class IMailingList(Interface):
     """A mailing list."""
 
+    export_as_webservice_entry()
+
     # List identity
 
-    list_name = Attribute(
-        """The read-only short name of the mailing list.  Note that where a
+    list_name = exported(TextLine(
+        title=_("The mailing list's short name"),
+        description=_("""\
+        The read-only short name of the mailing list.  Note that where a
         Mailman installation supports multiple domains, this short name may
         not be unique.  Use the fqdn_listname attribute for a guaranteed
         unique id for the mailing list.  This short name is always the local
         part of the posting email address.  For example, if messages are
         posted to mylist@example.com, then the list_name is 'mylist'.
-        """)
+        """)))
 
-    host_name = Attribute(
-        """The read-only domain name 'hosting' this mailing list.  This is
-        always the domain name part of the posting email address, and it may
-        bear no relationship to the web url used to access this mailing list.
-        For example, if messages are posted to mylist@example.com, then the
+    host_name = exported(TextLine(
+        title=_("The mailing list's host name"),
+        description=_("""\
+        The read-only domain name 'hosting' this mailing list.  This is always
+        the domain name part of the posting email address, and it may bear no
+        relationship to the web url used to access this mailing list.  For
+        example, if messages are posted to mylist@example.com, then the
         host_name is 'example.com'.
-        """)
+        """)))
 
-    fqdn_listname = Attribute(
-        """The read-only fully qualified name of the mailing list.  This is
-        the guaranteed unique id for the mailing list, and it is always the
+    fqdn_listname = exported(TextLine(
+        title=_("The mailing list's filly qualified name"),
+        description=_("""\
+        The read-only fully qualified name of the mailing list.  This is the
+        guaranteed unique id for the mailing list, and it is always the
         address to which messages are posted, e.g. mylist@example.com.  It is
         always comprised of the list_name + '@' + host_name.
-        """)
+        """)))
 
     real_name = Attribute(
         """The short human-readable descriptive name for the mailing list.  By

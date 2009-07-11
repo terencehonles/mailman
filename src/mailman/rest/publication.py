@@ -41,6 +41,7 @@ from mailman.interfaces.rest import IResolvePathNames
 
 class Publication:
     """Very simple implementation of `IPublication`."""
+
     implements(IPublication)
 
     def __init__(self, application):
@@ -94,6 +95,7 @@ class Publication:
 
     def endRequest(self, request, ob):
         """Ends the interaction."""
+        config.db.commit()
         endInteraction()
 
 

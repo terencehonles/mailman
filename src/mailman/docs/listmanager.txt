@@ -1,5 +1,6 @@
-Using the IListManager interface
-================================
+========================
+The mailing list manager
+========================
 
 The IListManager is how you create, delete, and retrieve mailing list
 objects.  The Mailman system instantiates an IListManager for you based on the
@@ -13,7 +14,7 @@ on the global config object.
 
 
 Creating a mailing list
------------------------
+=======================
 
 Creating the list returns the newly created IMailList object.
 
@@ -43,7 +44,7 @@ you will get an exception.
 
 
 Deleting a mailing list
------------------------
+=======================
 
 Use the list manager to delete a mailing list.
 
@@ -59,7 +60,7 @@ After deleting the list, you can create it again.
 
 
 Retrieving a mailing list
--------------------------
+=========================
 
 When a mailing list exists, you can ask the list manager for it and you will
 always get the same object back.
@@ -75,7 +76,7 @@ If you try to get a list that doesn't existing yet, you get None.
 
 
 Iterating over all mailing lists
---------------------------------
+================================
 
 Once you've created a bunch of mailing lists, you can use the list manager to
 iterate over either the list objects, or the list names.

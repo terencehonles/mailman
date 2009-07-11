@@ -32,20 +32,23 @@ import os
 import sys
 import shutil
 import logging
+import datetime
 import tempfile
 
 from pkg_resources import resource_string
 from textwrap import dedent
+from urllib2 import urlopen, URLError
 
 from mailman.config import config
 from mailman.core import initialize
 from mailman.core.logging import get_handler
 from mailman.i18n import _
-from mailman.testing.helpers import SMTPServer
+from mailman.testing.helpers import SMTPServer, TestableMaster
 from mailman.utilities.datetime import factory
 from mailman.utilities.string import expand
 
 
+TEST_TIMEOUT = datetime.timedelta(seconds=5)
 NL = '\n'
 
 
@@ -230,12 +233,25 @@ class RESTLayer(SMTPLayer):
 
     server = None
 
+    @staticmethod
+    def _wait_for_rest_server():
+        until = datetime.datetime.now() + TEST_TIMEOUT
+        while datetime.datetime.now() < until:
+            try:
+                fp = urlopen('http://localhost:8001/3.0/system')
+            except URLError:
+                pass
+            else:
+                fp.close()
+                break
+        else:
+            raise RuntimeError('REST server did not start up')
+
     @classmethod
     def setUp(cls):
         assert cls.server is None, 'Layer already set up'
-        from mailman.rest.testing.server import TestableServer
-        cls.server = TestableServer()
-        cls.server.start()
+        cls.server = TestableMaster(cls._wait_for_rest_server)
+        cls.server.start('rest')
 
     @classmethod
     def tearDown(cls):

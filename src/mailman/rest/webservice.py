@@ -49,6 +49,7 @@ log = logging.getLogger('mailman.http')
 
 
 
+# pylint: disable-msg: W0232
 class AdminWebServiceRequest(WebServiceRequestTraversal, BrowserRequest):
     """A request for the admin REST interface."""
 
@@ -81,9 +82,11 @@ class AdminWebServiceApplication:
 
     def get(self, name):
         """Maps root names to resources."""
+        log.debug('Getting top level name: %s', name)
         top_level = dict(
             system=system,
             domains=IDomainSet(config),
+            lists=config.db.list_manager,
             )
         return top_level.get(name)
 

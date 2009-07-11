@@ -26,6 +26,8 @@ __all__ = [
     ]
 
 
+import logging
+
 from zope.component import adapts
 from zope.interface import implements, Interface
 from zope.traversing.browser.interfaces import IAbsoluteURL
@@ -34,6 +36,8 @@ from mailman.config import config
 from mailman.core.system import system
 from mailman.rest.configuration import AdminWebServiceConfiguration
 from mailman.rest.webservice import AdminWebServiceApplication
+
+log = logging.getLogger('mailman.http')
 
 
 
@@ -72,11 +76,13 @@ class FallbackURLMapper(BasicURLMapper):
         :rtype: string
         :raises KeyError: if no path component can be found.
         """
+        log.debug('generic url mapper lookup: %s', ob)
         # Special cases.
         if isinstance(ob, AdminWebServiceApplication):
             return ''
         urls = {
             system: 'system',
+            #config.db.list_manager: 'lists',
             }
         return urls[ob]
 

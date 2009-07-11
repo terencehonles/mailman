@@ -26,8 +26,12 @@ __all__ = [
     ]
 
 
+from lazr.restful.declarations import (
+    collection_default_content, export_as_webservice_collection)
 from zope.interface import Interface, Attribute
+
 from mailman.interfaces.errors import MailmanError
+from mailman.interfaces.mailinglist import IMailingList
 
 
 
@@ -48,6 +52,8 @@ class IListManager(Interface):
     from the manager via their fully qualified list name, e.g.:
     `mylist@example.com`.
     """
+
+    export_as_webservice_collection(IMailingList)
 
     def create(fqdn_listname):
         """Create a mailing list with the given name.
@@ -82,3 +88,11 @@ class IListManager(Interface):
     names = Attribute(
         """An iterator over the fully qualified list names of all mailing
         lists managed by this list manager.""")
+
+    @collection_default_content()
+    def get_mailing_lists():
+        """The list of all mailing lists.
+
+        :return: The list of all known mailing lists.
+        :rtype: list of `IMailingList`
+        """
