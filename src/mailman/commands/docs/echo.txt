@@ -9,13 +9,13 @@ to the sender.
     'echo'
     >>> command.argument_description
     '[args]'
-    >>> command.description
-    u'Echo an acknowledgement.  Arguments are return unchanged.'
+    >>> print command.description
+    Echo an acknowledgement.  Arguments are return unchanged.
 
 The original message is ignored, but the results receive the echoed command.
 
     >>> from mailman.app.lifecycle import create_list
-    >>> mlist = create_list(u'test@example.com')
+    >>> mlist = create_list('test@example.com')
 
     >>> from mailman.queue.command import Results
     >>> results = Results()

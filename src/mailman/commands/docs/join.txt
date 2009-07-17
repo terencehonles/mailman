@@ -28,7 +28,7 @@ No address to join
     >>> from mailman.email.message import Message
     >>> from mailman.app.lifecycle import create_list
     >>> from mailman.queue.command import Results
-    >>> mlist = create_list(u'alpha@example.com')
+    >>> mlist = create_list('alpha@example.com')
 
 When no address argument is given, the message's From address will be used.
 If that's missing though, then an error is returned.
@@ -78,7 +78,7 @@ When the message has a From field, that address will be subscribed.
 Anne is not yet a member because she must confirm her subscription request
 first.
 
-    >>> print config.db.user_manager.get_user(u'anne@example.com')
+    >>> print config.db.user_manager.get_user('anne@example.com')
     None
 
 Mailman has sent her the confirmation message.
@@ -121,11 +121,11 @@ list.
     >>> token = str(qmsg['subject']).split()[1].strip()
     >>> from mailman.interfaces.domain import IDomainManager
     >>> from mailman.interfaces.registrar import IRegistrar
-    >>> registrar = IRegistrar(IDomainManager(config)[u'example.com'])
+    >>> registrar = IRegistrar(IDomainManager(config)['example.com'])
     >>> registrar.confirm(token)
     True
 
-    >>> user = config.db.user_manager.get_user(u'anne@example.com')
+    >>> user = config.db.user_manager.get_user('anne@example.com')
     >>> print user.real_name
     Anne Person
     >>> list(user.addresses)
@@ -133,7 +133,7 @@ list.
 
 Anne is also now a member of the mailing list.
 
-    >>> mlist.members.get_member(u'anne@example.com')
+    >>> mlist.members.get_member('anne@example.com')
     <Member: Anne Person <anne@example.com>
              on alpha@example.com as MemberRole.member>
 
@@ -141,7 +141,7 @@ Anne is also now a member of the mailing list.
 Joining a second list
 ---------------------
 
-    >>> mlist_2 = create_list(u'baker@example.com')
+    >>> mlist_2 = create_list('baker@example.com')
     >>> msg = message_from_string("""\
     ... From: Anne Person <anne@example.com>
     ...
@@ -151,12 +151,12 @@ Joining a second list
 
 Anne of course, is still registered.
 
-    >>> print config.db.user_manager.get_user(u'anne@example.com')
+    >>> print config.db.user_manager.get_user('anne@example.com')
     <User "Anne Person" at ...>
 
 But she is not a member of the mailing list.
 
-    >>> print mlist_2.members.get_member(u'anne@example.com')
+    >>> print mlist_2.members.get_member('anne@example.com')
     None
 
 One Anne confirms this subscription, she becomes a member of the mailing list.
@@ -166,6 +166,6 @@ One Anne confirms this subscription, she becomes a member of the mailing list.
     >>> registrar.confirm(token)
     True
 
-    >>> print mlist_2.members.get_member(u'anne@example.com')
+    >>> print mlist_2.members.get_member('anne@example.com')
     <Member: Anne Person <anne@example.com>
              on baker@example.com as MemberRole.member>

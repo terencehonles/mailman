@@ -122,7 +122,7 @@ class StockDatabase:
             for statement in sql.split(';'):
                 store.execute(statement + ';')
         # Validate schema version.
-        v = store.find(Version, component=u'schema').one()
+        v = store.find(Version, component='schema').one()
         if not v:
             # Database has not yet been initialized
             v = Version(component='schema',

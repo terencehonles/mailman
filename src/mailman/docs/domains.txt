@@ -6,7 +6,7 @@ Domains
     # that first.
     >>> from mailman.interfaces.domain import IDomainManager
     >>> manager = IDomainManager(config)
-    >>> manager.remove(u'example.com')
+    >>> manager.remove('example.com')
     <Domain example.com...>
 
 Domains are how Mailman interacts with email host names and web host names.
@@ -25,7 +25,7 @@ Domains are how Mailman interacts with email host names and web host names.
 Adding a domain requires some basic information, of which the email host name
 is the only required piece.  The other parts are inferred from that.
 
-    >>> manager.add(u'example.org')
+    >>> manager.add('example.org')
     <Domain example.org, base_url: http://example.org,
             contact_address: postmaster@example.org>
     >>> show_domains()
@@ -34,7 +34,7 @@ is the only required piece.  The other parts are inferred from that.
 
 We can remove domains too.
 
-    >>> manager.remove(u'example.org')
+    >>> manager.remove('example.org')
     <Domain example.org, base_url: http://example.org,
             contact_address: postmaster@example.org>
     >>> show_domains()
@@ -43,7 +43,7 @@ We can remove domains too.
 Sometimes the email host name is different than the base url for hitting the
 web interface for the domain.
 
-    >>> manager.add(u'example.com', base_url=u'https://mail.example.com')
+    >>> manager.add('example.com', base_url='https://mail.example.com')
     <Domain example.com, base_url: https://mail.example.com,
             contact_address: postmaster@example.com>
     >>> show_domains()
@@ -53,10 +53,10 @@ web interface for the domain.
 Domains can have explicit descriptions and contact addresses.
 
     >>> manager.add(
-    ...     u'example.net',
-    ...     base_url=u'http://lists.example.net',
-    ...     contact_address=u'postmaster@example.com',
-    ...     description=u'The example domain')
+    ...     'example.net',
+    ...     base_url='http://lists.example.net',
+    ...     contact_address='postmaster@example.com',
+    ...     description='The example domain')
     <Domain example.net, The example domain,
             base_url: http://lists.example.net,
             contact_address: postmaster@example.com>
@@ -75,12 +75,12 @@ In the global domain manager, domains are indexed by their email host name.
     example.com
     example.net
 
-    >>> print manager[u'example.net']
+    >>> print manager['example.net']
     <Domain example.net, The example domain,
             base_url: http://lists.example.net,
             contact_address: postmaster@example.com>
 
-    >>> print manager[u'doesnotexist.com']
+    >>> print manager['doesnotexist.com']
     Traceback (most recent call last):
     ...
     KeyError: u'doesnotexist.com'
@@ -88,20 +88,20 @@ In the global domain manager, domains are indexed by their email host name.
 As with a dictionary, you can also get the domain.  If the domain does not
 exist, None or a default is returned.
 
-    >>> print manager.get(u'example.net')
+    >>> print manager.get('example.net')
     <Domain example.net, The example domain,
             base_url: http://lists.example.net,
             contact_address: postmaster@example.com>
 
-    >>> print manager.get(u'doesnotexist.com')
+    >>> print manager.get('doesnotexist.com')
     None
 
-    >>> print manager.get(u'doesnotexist.com', u'blahdeblah')
+    >>> print manager.get('doesnotexist.com', 'blahdeblah')
     blahdeblah
 
 Non-existent domains cannot be removed.
 
-    >>> manager.remove(u'doesnotexist.com')
+    >>> manager.remove('doesnotexist.com')
     Traceback (most recent call last):
     ...
     KeyError: u'doesnotexist.com'
@@ -112,11 +112,11 @@ Confirmation tokens
 
 Confirmation tokens can be added to either the email confirmation address...
 
-    >>> domain = manager[u'example.net']
-    >>> print domain.confirm_address(u'xyz')
+    >>> domain = manager['example.net']
+    >>> print domain.confirm_address('xyz')
     confirm-xyz@example.net
 
 ...or the confirmation url.
 
-    >>> print domain.confirm_url(u'abc')
+    >>> print domain.confirm_url('abc')
     http://lists.example.net/confirm/abc

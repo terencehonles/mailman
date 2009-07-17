@@ -13,8 +13,8 @@ Mailman can also bounce messages back to the original sender.  This is
 essentially equivalent to rejecting the message with notification.  Mailing
 lists can bounce a message with an optional error message.
 
-    >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
-    >>> mlist.preferred_language = u'en'
+    >>> mlist = config.db.list_manager.create('_xtest@example.com')
+    >>> mlist.preferred_language = 'en'
 
 Any message can be bounced.
 

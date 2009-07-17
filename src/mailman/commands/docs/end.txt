@@ -7,8 +7,8 @@ processing email messages.
     >>> command = config.commands['end']
     >>> command.name
     'end'
-    >>> command.description
-    u'Stop processing commands.'
+    >>> print command.description
+    Stop processing commands.
 
 The 'end' command takes no arguments.
 
@@ -19,7 +19,7 @@ The command itself is fairly simple; it just stops command processing, and the
 message isn't even looked at.
 
     >>> from mailman.app.lifecycle import create_list
-    >>> mlist = create_list(u'test@example.com')
+    >>> mlist = create_list('test@example.com')
     >>> from mailman.email.message import Message
     >>> print command.process(mlist, Message(), {}, (), None)
     ContinueProcessing.no
@@ -27,10 +27,10 @@ message isn't even looked at.
 The 'stop' command is a synonym for 'end'.
 
     >>> command = config.commands['stop']
-    >>> command.name
-    'stop'
-    >>> command.description
-    u'Stop processing commands.'
+    >>> print command.name
+    stop
+    >>> print command.description
+    Stop processing commands.
     >>> command.argument_description
     ''
     >>> print command.process(mlist, Message(), {}, (), None)

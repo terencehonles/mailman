@@ -6,7 +6,7 @@ Mailman supports pluggable archivers, and it comes with several default
 archivers.
 
     >>> from mailman.app.lifecycle import create_list
-    >>> mlist = create_list(u'test@example.com')
+    >>> mlist = create_list('test@example.com')
     >>> msg = message_from_string("""\
     ... From: aperson@example.org
     ... To: test@example.com

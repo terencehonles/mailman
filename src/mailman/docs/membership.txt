@@ -14,7 +14,7 @@ store mailing list data in a different database than user data.
 
 When we create a mailing list, it starts out with no members...
 
-    >>> mlist = create_list(u'_xtest@example.com')
+    >>> mlist = create_list('_xtest@example.com')
     >>> mlist
     <mailing list "_xtest@example.com" at ...>
     >>> sorted(member.address.address for member in mlist.members.members)
@@ -63,9 +63,9 @@ assigning roles to users.  First we have to create the user, because there are
 no users in the user database yet.
 
     >>> usermgr = config.db.user_manager
-    >>> user_1 = usermgr.create_user(u'aperson@example.com', u'Anne Person')
-    >>> user_1.real_name
-    u'Anne Person'
+    >>> user_1 = usermgr.create_user('aperson@example.com', 'Anne Person')
+    >>> print user_1.real_name
+    Anne Person
     >>> sorted(address.address for address in user_1.addresses)
     [u'aperson@example.com']
 
@@ -74,8 +74,8 @@ her.
 
     >>> from mailman.interfaces.member import MemberRole
     >>> address_1 = list(user_1.addresses)[0]
-    >>> address_1.address
-    u'aperson@example.com'
+    >>> print address_1.address
+    aperson@example.com
     >>> address_1.subscribe(mlist, MemberRole.owner)
     <Member: Anne Person <aperson@example.com> on
              _xtest@example.com as MemberRole.owner>
@@ -99,12 +99,12 @@ her a moderator.  Nor does it make her a member of the list.
 We can add Ben as a moderator of the list, by creating a different member role
 for him.
 
-    >>> user_2 = usermgr.create_user(u'bperson@example.com', u'Ben Person')
-    >>> user_2.real_name
-    u'Ben Person'
+    >>> user_2 = usermgr.create_user('bperson@example.com', 'Ben Person')
+    >>> print user_2.real_name
+    Ben Person
     >>> address_2 = list(user_2.addresses)[0]
-    >>> address_2.address
-    u'bperson@example.com'
+    >>> print address_2.address
+    bperson@example.com
     >>> address_2.subscribe(mlist, MemberRole.moderator)
     <Member: Ben Person <bperson@example.com>
              on _xtest@example.com as MemberRole.moderator>
@@ -136,12 +136,12 @@ delivery.  Without a preference, Mailman will fall back first to the address's
 preference, then the user's preference, then the list's preference.  Start
 without any member preference to see the system defaults.
 
-    >>> user_3 = usermgr.create_user(u'cperson@example.com', u'Claire Person')
-    >>> user_3.real_name
-    u'Claire Person'
+    >>> user_3 = usermgr.create_user('cperson@example.com', 'Claire Person')
+    >>> print user_3.real_name
+    Claire Person
     >>> address_3 = list(user_3.addresses)[0]
-    >>> address_3.address
-    u'cperson@example.com'
+    >>> print address_3.address
+    cperson@example.com
     >>> address_3.subscribe(mlist, MemberRole.member)
     <Member: Claire Person <cperson@example.com>
              on _xtest@example.com as MemberRole.member>
@@ -180,24 +180,24 @@ Finding members
 You can find the IMember object that is a member of a roster for a given text
 email address by using an IRoster's .get_member() method.
 
-    >>> mlist.owners.get_member(u'aperson@example.com')
+    >>> mlist.owners.get_member('aperson@example.com')
     <Member: Anne Person <aperson@example.com> on
              _xtest@example.com as MemberRole.owner>
-    >>> mlist.administrators.get_member(u'aperson@example.com')
+    >>> mlist.administrators.get_member('aperson@example.com')
     <Member: Anne Person <aperson@example.com> on
              _xtest@example.com as MemberRole.owner>
-    >>> mlist.members.get_member(u'aperson@example.com')
+    >>> mlist.members.get_member('aperson@example.com')
     <Member: Anne Person <aperson@example.com> on
              _xtest@example.com as MemberRole.member>
 
 However, if the address is not subscribed with the appropriate role, then None
 is returned.
 
-    >>> print mlist.administrators.get_member(u'zperson@example.com')
+    >>> print mlist.administrators.get_member('zperson@example.com')
     None
-    >>> print mlist.moderators.get_member(u'aperson@example.com')
+    >>> print mlist.moderators.get_member('aperson@example.com')
     None
-    >>> print mlist.members.get_member(u'zperson@example.com')
+    >>> print mlist.members.get_member('zperson@example.com')
     None
 
 

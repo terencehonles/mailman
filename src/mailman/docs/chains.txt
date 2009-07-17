@@ -25,7 +25,7 @@ The Discard chain simply throws the message away.
     Discard a message and stop processing.
 
     >>> from mailman.app.lifecycle import create_list
-    >>> mlist = create_list(u'_xtest@example.com')
+    >>> mlist = create_list('_xtest@example.com')
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... To: _xtest@example.com

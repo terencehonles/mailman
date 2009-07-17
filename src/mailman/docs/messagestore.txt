@@ -43,9 +43,9 @@ There are several ways to find a message given either the Message-ID or
 X-Message-ID-Hash headers.  In either case, if no matching message is found,
 None is returned.
 
-    >>> print store.get_message_by_id(u'nothing')
+    >>> print store.get_message_by_id('nothing')
     None
-    >>> print store.get_message_by_hash(u'nothing')
+    >>> print store.get_message_by_hash('nothing')
     None
 
 Given an existing Message-ID, the message can be found.
@@ -96,7 +96,7 @@ You delete a message from the storage service by providing the Message-ID for
 the message you want to delete.  If you try to delete a Message-ID that isn't
 in the store, you get an exception.
 
-    >>> store.delete_message(u'nothing')
+    >>> store.delete_message('nothing')
     Traceback (most recent call last):
     ...
     LookupError: nothing

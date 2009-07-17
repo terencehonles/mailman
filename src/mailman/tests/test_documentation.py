@@ -132,6 +132,10 @@ def dump_json(url):
 
 def setup(testobj):
     """Test setup."""
+    # Make sure future statements in our doctests are the same as everywhere
+    # else.
+    testobj.globs['absolute_import'] = absolute_import
+    testobj.globs['unicode_literals'] = unicode_literals
     # In general, I don't like adding convenience functions, since I think
     # doctests should do the imports themselves.  It makes for better
     # documentation that way.  However, a few are really useful, or help to
