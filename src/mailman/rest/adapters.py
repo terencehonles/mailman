@@ -21,37 +21,43 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'DomainSet',
+    'DomainCollection',
     ]
 
+
+from operator import attrgetter
 
 from zope.interface import implements
 from zope.publisher.interfaces import NotFound
 
-from mailman.interfaces.domain import IDomainSet
+from mailman.interfaces.domain import IDomainCollection
 from mailman.interfaces.rest import IResolvePathNames
 
 
 
-class DomainSet:
+class DomainCollection:
     """Sets of known domains."""
 
-    implements(IDomainSet, IResolvePathNames)
+    implements(IDomainCollection, IResolvePathNames)
 
     __name__ = 'domains'
 
-    def __init__(self, config):
-        self._config = config
+    def __init__(self, manager):
+        """Initialize the adapter from an `IDomainManager`.
+
+        :param manager: The domain manager.
+        :type manager: `IDomainManager`.
+        """
+        self._manager = manager
 
     def get_domains(self):
-        """See `IDomainSet`."""
-        # lazr.restful will not allow this to be a generator.
-        domains = self._config.domains
-        return [domains[domain] for domain in sorted(domains)]
+        """See `IDomainCollection`."""
+        # lazr.restful requires the return value to be a concrete list.
+        return sorted(self._manager, key=attrgetter('email_host'))
 
     def get(self, name):
         """See `IResolvePathNames`."""
-        domain = self._config.domains.get(name)
+        domain = self._manager.get(name)
         if domain is None:
             raise NotFound(self, name)
         return domain

@@ -21,7 +21,7 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'SystemDefaultPreferences',
+    'system_preferences',
     ]
 
 
@@ -44,8 +44,16 @@ class SystemDefaultPreferences:
 
     acknowledge_posts = False
     hide_address = True
-    preferred_language = config.languages['en']
     receive_list_copy = True
     receive_own_postings = True
     delivery_mode = DeliveryMode.regular
     delivery_status = DeliveryStatus.enabled
+
+    @property
+    def preferred_language(self):
+        """Return the system preferred language."""
+        return config.languages['en']
+
+
+
+system_preferences = SystemDefaultPreferences()

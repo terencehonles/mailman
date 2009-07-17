@@ -119,8 +119,9 @@ Once Anne confirms her registration, she will be made a member of the mailing
 list.
 
     >>> token = str(qmsg['subject']).split()[1].strip()
+    >>> from mailman.interfaces.domain import IDomainManager
     >>> from mailman.interfaces.registrar import IRegistrar
-    >>> registrar = IRegistrar(config.domains['example.com'])
+    >>> registrar = IRegistrar(IDomainManager(config)[u'example.com'])
     >>> registrar.confirm(token)
     True
 

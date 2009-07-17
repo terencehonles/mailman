@@ -67,11 +67,21 @@ CREATE TABLE contentfilter (
 CREATE INDEX ix_contentfilter_mailing_list_id
     ON contentfilter (mailing_list_id);
 
+CREATE TABLE domain (
+    id INTEGER NOT NULL,
+    email_host TEXT,
+    base_url TEXT,
+    description TEXT,
+    contact_address TEXT,
+    PRIMARY KEY (id)
+    );
+
 CREATE TABLE language (
-        id INTEGER NOT NULL,
-        code TEXT,
-        PRIMARY KEY (id)
-);
+    id INTEGER NOT NULL,
+    code TEXT,
+    PRIMARY KEY (id)
+    );
+
 CREATE TABLE mailinglist (
         id INTEGER NOT NULL,
         -- List identity
@@ -80,7 +90,7 @@ CREATE TABLE mailinglist (
         list_id TEXT,
         include_list_post_header BOOLEAN,
         include_rfc2369_headers BOOLEAN,
-        -- Attributes not directly modifiable via the web u/i        
+        -- Attributes not directly modifiable via the web u/i
         created_at TIMESTAMP,
         admin_member_chunksize INTEGER,
         next_request_id INTEGER,

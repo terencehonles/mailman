@@ -13,9 +13,9 @@
   <webservice:register module="mailman.interfaces.system" />
 
   <adapter
-    for="mailman.config.config.IConfiguration"
-    provides="mailman.interfaces.domain.IDomainSet"
-    factory="mailman.rest.adapters.DomainSet"
+    for="mailman.interfaces.domain.IDomainManager"
+    provides="mailman.interfaces.domain.IDomainCollection"
+    factory="mailman.rest.adapters.DomainCollection"
     />
 
   <adapter

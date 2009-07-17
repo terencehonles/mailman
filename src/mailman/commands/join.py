@@ -30,6 +30,7 @@ from zope.interface import implements
 from mailman.config import config
 from mailman.i18n import _
 from mailman.interfaces.command import ContinueProcessing, IEmailCommand
+from mailman.interfaces.domain import IDomainManager
 from mailman.interfaces.member import DeliveryMode
 from mailman.interfaces.registrar import IRegistrar
 
@@ -66,7 +67,7 @@ example:
             print >> results, _(
                 '$self.name: No valid address found to subscribe')
             return ContinueProcessing.no
-        domain = config.domains[mlist.host_name]
+        domain = IDomainManager(config)[mlist.host_name]
         registrar = IRegistrar(domain)
         registrar.register(address, real_name, mlist)
         person = formataddr((real_name, address))

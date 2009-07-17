@@ -24,4 +24,10 @@
     factory="mailman.database.mailinglist.AcceptableAliasSet"
     />
 
+  <adapter
+    for="mailman.config.config.IConfiguration"
+    provides="mailman.interfaces.domain.IDomainManager"
+    factory="mailman.database.domain.DomainManager"
+    />
+
 </configure>

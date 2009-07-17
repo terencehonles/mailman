@@ -40,6 +40,7 @@ from mailman.database.digests import OneLastDigest
 from mailman.database.mime import ContentFilter
 from mailman.database.model import Model
 from mailman.database.types import Enum
+from mailman.interfaces.domain import IDomainManager
 from mailman.interfaces.mailinglist import (
     IAcceptableAlias, IAcceptableAliasSet, IMailingList, Personalization)
 from mailman.interfaces.mime import FilterType
@@ -210,12 +211,12 @@ class MailingList(Model):
     @property
     def web_host(self):
         """See `IMailingList`."""
-        return config.domains[self.host_name]
+        return IDomainManager(config)[self.host_name]
 
     def script_url(self, target, context=None):
         """See `IMailingList`."""
         # Find the domain for this mailing list.
-        domain = config.domains[self.host_name]
+        domain = IDomainManager(config)[self.host_name]
         # XXX Handle the case for when context is not None; those would be
         # relative URLs.
         return urljoin(domain.base_url, target + '/' + self.fqdn_listname)

@@ -221,11 +221,11 @@ header.
     ---end---
 
 There are some circumstances when the list administrator wants to explicitly
-set the List-ID header.
+set the List-ID header.  Start by creating a new domain.
 
-    >>> from mailman.domain import Domain
-    >>> domain = Domain(u'mail.example.net')
-    >>> config.domains[domain.email_host] = domain
+    >>> from mailman.interfaces.domain import IDomainManager
+    >>> manager = IDomainManager(config)
+    >>> domain = manager.add(u'mail.example.net')
     >>> mlist.host_name = u'mail.example.net'
 
     >>> process(mlist, msg, {})

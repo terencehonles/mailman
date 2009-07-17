@@ -36,7 +36,6 @@ from zope.interface import Interface, implements
 
 from mailman import version
 from mailman.core import errors
-from mailman.domain import Domain
 from mailman.languages.manager import LanguageManager
 from mailman.styles.manager import StyleManager
 from mailman.utilities.filesystem import makedirs
@@ -58,7 +57,6 @@ class Configuration:
     implements(IConfiguration)
 
     def __init__(self):
-        self.domains = {}       # email host -> IDomain
         self.switchboards = {}
         self.languages = LanguageManager()
         self.style_manager = StyleManager()
@@ -74,7 +72,6 @@ class Configuration:
 
     def _clear(self):
         """Clear the cached configuration variables."""
-        self.domains.clear()
         self.switchboards.clear()
         self.languages = LanguageManager()
 
@@ -118,21 +115,6 @@ class Configuration:
 
     def _post_process(self):
         """Perform post-processing after loading the configuration files."""
-        # Set up the domains.
-        domains = self._config.getByCategory('domain', [])
-        for section in domains:
-            domain = Domain(section.email_host, section.base_url,
-                            section.description, section.contact_address)
-            if domain.email_host in self.domains:
-                raise errors.BadDomainSpecificationError(
-                    'Duplicate email host: %s' % domain.email_host)
-            # Make sure there's only one mapping for the url_host
-            if domain.url_host in self.domains.values():
-                raise errors.BadDomainSpecificationError(
-                    'Duplicate url host: %s' % domain.url_host)
-            # We'll do the reverse mappings on-demand.  There shouldn't be too
-            # many virtual hosts that it will really matter that much.
-            self.domains[domain.email_host] = domain
         # Set up directories.
         self.BIN_DIR = os.path.abspath(os.path.dirname(sys.argv[0]))
         self.VAR_DIR = var_dir = self._config.mailman.var_dir

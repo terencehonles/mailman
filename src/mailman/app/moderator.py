@@ -330,8 +330,9 @@ def _refuse(mlist, request, recip, comment, origmsg=None, lang=None):
     realname = mlist.real_name
     if lang is None:
         member = mlist.members.get_member(recip)
-        lang = (member.preferred_language if member
-                else mlist.preferred_language)
+        lang = (mlist.preferred_language
+                if member is None
+                else member.preferred_language)
     text = Utils.maketext(
         'refuse.txt',
         {'listname' : mlist.fqdn_listname,

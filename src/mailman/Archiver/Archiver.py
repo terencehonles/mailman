@@ -33,6 +33,7 @@ from string import Template
 
 from mailman import Utils
 from mailman.config import config
+from mailman.interfaces.domain import IDomainManager
 
 log = logging.getLogger('mailman.error')
 
@@ -128,7 +129,8 @@ class Archiver:
         if self.archive_private:
             url = self.GetScriptURL('private') + '/index.html'
         else:
-            web_host = config.domains.get(self.host_name, self.host_name)
+            domain = IDomainManager(config).get(self.host_name)
+            web_host = (self.host_name if domain is None else domain.url_host)
             url = Template(config.PUBLIC_ARCHIVE_URL).safe_substitute(
                 listname=self.fqdn_listname,
                 hostname=web_host,

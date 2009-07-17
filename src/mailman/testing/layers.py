@@ -43,6 +43,7 @@ from mailman.config import config
 from mailman.core import initialize
 from mailman.core.logging import get_handler
 from mailman.i18n import _
+from mailman.interfaces.domain import IDomainManager
 from mailman.testing.helpers import SMTPServer, TestableMaster
 from mailman.utilities.datetime import factory
 from mailman.utilities.string import expand
@@ -161,7 +162,11 @@ class ConfigLayer(MockAndMonkeyLayer):
 
     @classmethod
     def testSetUp(cls):
-        pass
+        # Add an example domain.
+        IDomainManager(config).add(
+            'example.com', 'An example domain.',
+            'http://lists.example.com', 'postmaster@example.com')
+        config.db.commit()
 
     @classmethod
     def testTearDown(cls):

@@ -1,3 +1,4 @@
+===============
 Email addresses
 ===============
 
@@ -10,7 +11,7 @@ about.  Addresses are subscribed to mailing lists though members.
 
 
 Creating addresses
-------------------
+==================
 
 Addresses are created directly through the user manager, which starts out with
 no addresses.
@@ -82,7 +83,7 @@ And now you can find the associated user.
 
 
 Deleting addresses
-------------------
+==================
 
 You can remove an unlinked address from the user manager.
 
@@ -110,7 +111,7 @@ address from the user.
 
 
 Registration and validation
----------------------------
+===========================
 
 Addresses have two dates, the date the address was registered on and the date
 the address was validated on.  Neither date is set by default.
@@ -141,7 +142,7 @@ And of course, you can also set the validation date.
 
 
 Subscriptions
--------------
+=============
 
 Addresses get subscribed to mailing lists, not users.  When the address is
 subscribed, a role is specified.
@@ -179,7 +180,7 @@ Now Elly is both an owner and a member of the mailing list.
 
 
 Case-preserved addresses
-------------------------
+========================
 
 Technically speaking, email addresses are case sensitive in the local part.
 Mailman preserves the case of addresses and uses the case preserved version

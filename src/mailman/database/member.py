@@ -28,7 +28,7 @@ from storm.locals import *
 from zope.interface import implements
 
 from mailman.config import config
-from mailman.constants import SystemDefaultPreferences
+from mailman.constants import system_preferences
 from mailman.database.model import Model
 from mailman.database.types import Enum
 from mailman.interfaces.member import IMember
@@ -69,7 +69,7 @@ class Member(Model):
             pref = getattr(self.address.user.preferences, preference)
             if pref is not None:
                 return pref
-        return getattr(SystemDefaultPreferences, preference)
+        return getattr(system_preferences, preference)
 
     @property
     def acknowledge_posts(self):

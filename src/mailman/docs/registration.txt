@@ -1,11 +1,11 @@
+====================
 Address registration
 ====================
 
-When a user wants to join a mailing list -- any mailing list -- in the running
-instance, he or she must first register with Mailman.  The only thing they
-must supply is an email address, although there is additional information they
-may supply.  All registered email addresses must be verified before Mailman
-will send them any list traffic.
+Before users can join a mailing list, they must first register with Mailman.
+The only thing they must supply is an email address, although there is
+additional information they may supply.  All registered email addresses must
+be verified before Mailman will send them any list traffic.
 
     >>> from mailman.app.registrar import Registrar
     >>> from mailman.interfaces.registrar import IRegistrar
@@ -15,19 +15,11 @@ Specifically, it does not handle verifications, email address syntax validity
 checks, etc.  The IRegistrar is the interface to the object handling all this
 stuff.
 
-Add a domain, which will provide the context for the verification email
-message.
+    >>> from mailman.interfaces.domain import IDomainManager
+    >>> manager = IDomainManager(config)
+    >>> domain = manager[u'example.com']
 
-    >>> config.push('mail', """
-    ... [domain.mail_example_dot_com]
-    ... email_host: mail.example.com
-    ... base_url: http://mail.example.com
-    ... contact_address: postmaster@mail.example.com
-    ... """)
-
-    >>> domain = config.domains['mail.example.com']
-
-Get a registrar by adapting a context to the interface.
+Get a registrar by adapting a domain.
 
     >>> from zope.interface.verify import verifyObject
     >>> registrar = IRegistrar(domain)
@@ -45,14 +37,14 @@ Here is a helper function to check the token strings.
 Here is a helper function to extract tokens from confirmation messages.
 
     >>> import re
-    >>> cre = re.compile('http://mail.example.com/confirm/(.*)')
+    >>> cre = re.compile('http://lists.example.com/confirm/(.*)')
     >>> def extract_token(msg):
     ...     mo = cre.search(qmsg.get_payload())
     ...     return mo.group(1)
 
 
 Invalid email addresses
------------------------
+=======================
 
 The only piece of information you need to register is the email address.
 Some amount of sanity checks are performed on the email address, although
@@ -86,7 +78,7 @@ addresses are rejected outright.
 
 
 Register an email address
--------------------------
+=========================
 
 Registration of an unknown address creates nothing until the confirmation step
 is complete.  No IUser or IAddress is created at registration time, but a
@@ -115,7 +107,7 @@ But this address is waiting for confirmation.
 
 
 Verification by email
----------------------
+=====================
 
 There is also a verification email sitting in the virgin queue now.  This
 message is sent to the user in order to verify the registered address.
@@ -131,7 +123,7 @@ message is sent to the user in order to verify the registered address.
     Content-Type: text/plain; charset="us-ascii"
     Content-Transfer-Encoding: 7bit
     Subject: confirm ...
-    From: confirm-...@mail.example.com
+    From: confirm-...@example.com
     To: aperson@example.com
     Message-ID: <...>
     Date: ...
@@ -139,7 +131,7 @@ message is sent to the user in order to verify the registered address.
     <BLANKLINE>
     Email Address Registration Confirmation
     <BLANKLINE>
-    Hello, this is the GNU Mailman server at mail.example.com.
+    Hello, this is the GNU Mailman server at example.com.
     <BLANKLINE>
     We have received a registration request for the email address
     <BLANKLINE>
@@ -150,13 +142,13 @@ message is sent to the user in order to verify the registered address.
     this message, keeping the Subject header intact.  Or you can visit this
     web page
     <BLANKLINE>
-        http://mail.example.com/confirm/...
+        http://lists.example.com/confirm/...
     <BLANKLINE>
     If you do not wish to register this email address simply disregard this
     message.  If you think you are being maliciously subscribed to the list,
     or have any other questions, you may contact
     <BLANKLINE>
-        postmaster@mail.example.com
+        postmaster@example.com
     <BLANKLINE>
     >>> dump_msgdata(qdata)
     _parsemsg           : False
@@ -175,7 +167,7 @@ appear in a URL in the body of the message.
 
 The same token will appear in the From header.
 
-    >>> qmsg['from'] == 'confirm-' + token + '@mail.example.com'
+    >>> qmsg['from'] == 'confirm-' + token + '@example.com'
     True
 
 It will also appear in the Subject header.
@@ -207,7 +199,7 @@ IUser linked to this address.  The IAddress is verified.
 
 
 Non-standard registrations
---------------------------
+==========================
 
 If you try to confirm a registration token twice, of course only the first one
 will work.  The second one is ignored.
@@ -254,7 +246,7 @@ registration sends a confirmation.
 
 
 Discarding
-----------
+==========
 
 A confirmation token can also be discarded, say if the user changes his or her
 mind about registering.  When discarded, no IAddress or IUser is created.
@@ -272,7 +264,7 @@ mind about registering.  When discarded, no IAddress or IUser is created.
 
 
 Registering a new address for an existing user
-----------------------------------------------
+==============================================
 
 When a new address for an existing user is registered, there isn't too much
 different except that the new address will still need to be verified before it
@@ -306,7 +298,7 @@ can be used.
 
 
 Corner cases
-------------
+============
 
 If you try to confirm a token that doesn't exist in the pending database, the
 confirm method will just return None.
@@ -332,7 +324,7 @@ pending even matched with that token will still be removed.
 
 
 Registration and subscription
------------------------------
+=============================
 
 Fred registers with Mailman at the same time that he subscribes to a mailing
 list.
@@ -353,9 +345,3 @@ But after confirmation, he is.
     >>> print mlist.members.get_member(u'fred.person@example.com')
     <Member: Fred Person <fred.person@example.com>
              on alpha@example.com as MemberRole.member>
-
-
-Clean up
---------
-
-    >>> config.pop('mail')

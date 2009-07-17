@@ -33,6 +33,7 @@ import logging
 from mailman.config import config
 from mailman.core import errors
 from mailman.email.validate import validate
+from mailman.interfaces.domain import IDomainManager
 from mailman.interfaces.member import MemberRole
 from mailman.utilities.modules import call_name
 
@@ -48,7 +49,7 @@ def create_list(fqdn_listname, owners=None):
     validate(fqdn_listname)
     # pylint: disable-msg=W0612
     listname, domain = fqdn_listname.split('@', 1)
-    if domain not in config.domains:
+    if domain not in IDomainManager(config):
         raise errors.BadDomainSpecificationError(domain)
     mlist = config.db.list_manager.create(fqdn_listname)
     for style in config.style_manager.lookup(mlist):

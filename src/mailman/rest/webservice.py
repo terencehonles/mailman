@@ -41,7 +41,7 @@ from zope.publisher.publish import publish
 
 from mailman.config import config
 from mailman.core.system import system
-from mailman.interfaces.domain import IDomainSet
+from mailman.interfaces.domain import IDomainCollection, IDomainManager
 from mailman.interfaces.rest import IResolvePathNames
 from mailman.rest.publication import AdminWebServicePublication
 
@@ -82,13 +82,14 @@ class AdminWebServiceApplication:
 
     def get(self, name):
         """Maps root names to resources."""
-        log.debug('Getting top level name: %s', name)
         top_level = dict(
             system=system,
-            domains=IDomainSet(config),
+            domains=IDomainCollection(IDomainManager(config)),
             lists=config.db.list_manager,
             )
-        return top_level.get(name)
+        next_step = top_level.get(name)
+        log.debug('Top level name: %s -> %s', name, next_step)
+        return next_step
 
 
 

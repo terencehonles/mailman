@@ -35,6 +35,7 @@ from zope.interface.interface import adapter_hooks
 
 from mailman.config import config
 from mailman.interfaces.archiver import IArchiver, IPipermailMailingList
+from mailman.interfaces.domain import IDomainManager
 from mailman.interfaces.mailinglist import IMailingList
 from mailman.utilities.filesystem import makedirs
 from mailman.utilities.string import expand
@@ -97,7 +98,7 @@ class Pipermail:
         if mlist.archive_private:
             url = mlist.script_url('private') + '/index.html'
         else:
-            web_host = config.domains[mlist.host_name].url_host
+            web_host = IDomainManager(config)[mlist.host_name].url_host
             return expand(config.archiver.pipermail.base_url,
                           dict(listname=mlist.fqdn_listname,
                                hostname=web_host,

@@ -2,15 +2,38 @@
 Domains
 =======
 
-The REST API can be queried for the set of known domains.
+    # The test framework starts out with an example domain, so let's delete
+    # that first.
+    >>> from mailman.interfaces.domain import IDomainManager
+    >>> manager = IDomainManager(config)
+    >>> manager.remove(u'example.com')
+    <Domain example.com...>
+    >>> commit()
+
+The REST API can be queried for the set of known domains, of which there are
+initially none.
+
+    >>> dump_json('http://localhost:8001/3.0/domains')
+    resource_type_link: https://localhost:8001/3.0/#domains
+    start: None
+    total_size: 0
+
+Once a domain is added though, it is accessible through the API.
+
+    >>> manager.add(u'example.com', u'An example domain',
+    ...             u'http://lists.example.com')
+    <Domain example.com, An example domain,
+            base_url: http://lists.example.com,
+            contact_address: postmaster@example.com>
+    >>> commit()
 
     >>> dump_json('http://localhost:8001/3.0/domains')
     entry 0:
         base_url: http://lists.example.com
         contact_address: postmaster@example.com
-        description: An example domain.
+        description: An example domain
         email_host: example.com
-        http_etag: "546791f38192b347db544481f1386d33607ccf3d"
+        http_etag: "..."
         resource_type_link: https://localhost:8001/3.0/#domain
         self_link: https://localhost:8001/3.0/domains/example.com
         url_host: lists.example.com
@@ -18,46 +41,47 @@ The REST API can be queried for the set of known domains.
     start: 0
     total_size: 1
 
-All domains are returned.
+At the top level, all domains are returned as separate entries.
 
-    >>> from mailman.config import config
-    >>> config.push('test domains', """\
-    ... [domain.example_dot_org]
-    ... email_host: example.org
-    ... base_url: http://mail.example.org
-    ... contact_address: listmaster@example.org
-    ...
-    ... [domain.example_dot_net]
-    ... email_host: lists.example.net
-    ... base_url: http://example.net
-    ... contact_address: porkmaster@example.net
-    ... """)
+    >>> manager.add(u'example.org',
+    ...             base_url=u'http://mail.example.org',
+    ...             contact_address=u'listmaster@example.org')
+    <Domain example.org, base_url: http://mail.example.org,
+            contact_address: listmaster@example.org>
+    >>> manager.add(u'lists.example.net',
+    ...             u'Porkmasters',
+    ...             u'http://example.net',
+    ...             u'porkmaster@example.net')
+    <Domain lists.example.net, Porkmasters,
+            base_url: http://example.net,
+            contact_address: porkmaster@example.net>
+    >>> commit()
 
     >>> dump_json('http://localhost:8001/3.0/domains')
     entry 0:
         base_url: http://lists.example.com
         contact_address: postmaster@example.com
-        description: An example domain.
+        description: An example domain
         email_host: example.com
-        http_etag: "546791f38192b347db544481f1386d33607ccf3d"
+        http_etag: "..."
         resource_type_link: https://localhost:8001/3.0/#domain
         self_link: https://localhost:8001/3.0/domains/example.com
         url_host: lists.example.com
     entry 1:
         base_url: http://mail.example.org
         contact_address: listmaster@example.org
-        description: An example domain.
+        description: None
         email_host: example.org
-        http_etag: "4ff00fefca81b99ce2c7e6c50223107daf0649ff"
+        http_etag: "..."
         resource_type_link: https://localhost:8001/3.0/#domain
         self_link: https://localhost:8001/3.0/domains/example.org
         url_host: mail.example.org
     entry 2:
         base_url: http://example.net
         contact_address: porkmaster@example.net
-        description: An example domain.
+        description: Porkmasters
         email_host: lists.example.net
-        http_etag: "aa5a388197948f21b8a3eb940b6c9725c5f41fac"
+        http_etag: "..."
         resource_type_link: https://localhost:8001/3.0/#domain
         self_link: https://localhost:8001/3.0/domains/lists.example.net
         url_host: example.net
@@ -75,9 +99,9 @@ self_links from the above collection.
     >>> dump_json('http://localhost:8001/3.0/domains/lists.example.net')
     base_url: http://example.net
     contact_address: porkmaster@example.net
-    description: An example domain.
+    description: Porkmasters
     email_host: lists.example.net
-    http_etag: "aa5a388197948f21b8a3eb940b6c9725c5f41fac"
+    http_etag: "..."
     resource_type_link: https://localhost:8001/3.0/#domain
     self_link: https://localhost:8001/3.0/domains/lists.example.net
     url_host: example.net
@@ -88,9 +112,3 @@ But we get a 404 for a non-existent domain.
     Traceback (most recent call last):
     ...
     HTTPError: HTTP Error 404: Not Found
-
-
-Clean up
-========
-
-    >>> config.pop('test domains')

@@ -174,11 +174,13 @@ def test_suite():
             else:
                 layer = getattr(sys.modules[package_path], 'layer', SMTPLayer)
             for filename in os.listdir(docsdir):
+                base, extension = os.path.splitext(filename)
                 if os.path.splitext(filename)[1] == '.txt':
-                    doctest_files[filename] = (
+                    module_path = package_path + '.' + base
+                    doctest_files[module_path] = (
                         os.path.join(docsdir, filename), layer)
-    for filename in sorted(doctest_files):
-        path, layer = doctest_files[filename]
+    for module_path in sorted(doctest_files):
+        path, layer = doctest_files[module_path]
         test = doctest.DocFileSuite(
             path,
             package='mailman',
