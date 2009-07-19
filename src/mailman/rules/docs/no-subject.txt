@@ -1,10 +1,11 @@
+=================
 No Subject header
 =================
 
 This rule matches if the message has no Subject header, or if the header is
 the empty string when stripped.
 
-    >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
+    >>> mlist = config.db.list_manager.create('_xtest@example.com')
     >>> rule = config.rules['no-subject']
     >>> print rule.name
     no-subject
@@ -28,6 +29,6 @@ Delete the Subject header and the rule matches.
 
 Even a Subject header with only whitespace still matches the rule.
 
-    >>> msg['Subject'] = u'    '
+    >>> msg['Subject'] = '    '
     >>> rule.check(mlist, msg, {})
     True

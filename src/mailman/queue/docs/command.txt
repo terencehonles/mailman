@@ -1,3 +1,4 @@
+========================
 The command queue runner
 ========================
 
@@ -6,11 +7,11 @@ Commands are extensible using the Mailman plugin system, but Mailman comes
 with a number of email commands out of the box.  These are processed when a
 message is sent to the list's -request address.
 
-    >>> mlist = create_list(u'test@example.com')
+    >>> mlist = create_list('test@example.com')
 
 
 A command in the Subject
-------------------------
+========================
 
 For example, the 'echo' command simply echoes the original command back to the
 sender.  The command can be in the Subject header.
@@ -64,7 +65,7 @@ And now the response is in the virgin queue.
 
 
 A command in the body
----------------------
+=====================
 
 The command can also be found in the body of the message, as long as the
 message is plain text.
@@ -105,7 +106,7 @@ message is plain text.
 
 
 Stopping command processing
----------------------------
+===========================
 
 The 'end' command stops email processing, so that nothing following is looked
 at by the command queue.

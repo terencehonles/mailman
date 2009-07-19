@@ -38,7 +38,7 @@ basically means returning the IPendable structure (as a dict) from the
 database that matches the token.  If the token isn't in the database, None is
 returned.
 
-    >>> pendable = pendingdb.confirm('missing')
+    >>> pendable = pendingdb.confirm(bytes('missing'))
     >>> print pendable
     None
     >>> pendable = pendingdb.confirm(token)

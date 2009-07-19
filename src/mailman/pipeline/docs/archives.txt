@@ -1,3 +1,4 @@
+========
 Archives
 ========
 
@@ -9,7 +10,7 @@ processes.
 
     >>> from mailman.app.lifecycle import create_list
     >>> handler = config.handlers['to-archive']
-    >>> mlist = create_list(u'_xtest@example.com')
+    >>> mlist = create_list('_xtest@example.com')
     >>> switchboard = config.switchboards['archive']
 
 A helper function.

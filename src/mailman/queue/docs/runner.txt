@@ -1,3 +1,4 @@
+=============
 Queue runners
 =============
 
@@ -8,14 +9,14 @@ while, then wakes up and runs through its queue files again.
 
 
 Basic architecture
-------------------
+==================
 
 The basic architecture of qrunner is implemented in the base class that all
 runners inherit from.  This base class implements a .run() method that runs
 continuously in a loop until the .stop() method is called.
 
-    >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
-    >>> mlist.preferred_language = u'en'
+    >>> mlist = config.db.list_manager.create('_xtest@example.com')
+    >>> mlist.preferred_language = 'en'
 
 Here is a very simple derived qrunner class.  Queue runners use a
 configuration section in the configuration files to determine run

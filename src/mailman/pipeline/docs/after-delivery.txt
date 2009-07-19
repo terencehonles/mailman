@@ -1,3 +1,4 @@
+==============
 After delivery
 ==============
 
@@ -7,7 +8,7 @@ bookkeeping pieces of information are updated.
 
     >>> import datetime
     >>> handler = config.handlers['after-delivery']
-    >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
+    >>> mlist = config.db.list_manager.create('_xtest@example.com')
     >>> post_time = datetime.datetime.now() - datetime.timedelta(minutes=10)
     >>> mlist.last_post_time = post_time
     >>> mlist.post_id = 10

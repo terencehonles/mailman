@@ -1,3 +1,4 @@
+=================
 Content filtering
 =================
 
@@ -5,7 +6,7 @@ Mailman can filter the content of messages posted to a mailing list by
 stripping MIME subparts, and possibly reorganizing the MIME structure of a
 message.
 
-    >>> mlist = create_list(u'test@example.com')
+    >>> mlist = create_list('test@example.com')
 
 Several mailing list options control content filtering.  First, the feature
 must be enabled, then there are two options that control which MIME types get
@@ -20,7 +21,7 @@ for these variables, then we'll explain them in more detail below.
 
 
 Filtering the outer content type
---------------------------------
+================================
 
 A simple filtering setting will just search the content types of the messages
 parts, discarding all parts with a matching MIME type.  If the message's outer
@@ -28,7 +29,7 @@ content type matches the filter, the entire message will be discarded.
 
     >>> from mailman.interfaces.mime import FilterAction
 
-    >>> mlist.filter_types = [u'image/jpeg']
+    >>> mlist.filter_types = ['image/jpeg']
     >>> mlist.filter_action = FilterAction.discard
 
     >>> msg = message_from_string("""\
@@ -73,11 +74,11 @@ crafted internally by Mailman.
     <BLANKLINE>
     xxxxx
     >>> msgdata
-    {'isdigest': True}
+    {u'isdigest': True}
 
 
 Simple multipart filtering
---------------------------
+==========================
 
 If one of the subparts in a multipart message matches the filter type, then
 just that subpart will be stripped.
@@ -118,7 +119,7 @@ just that subpart will be stripped.
 
 
 Collapsing multipart/alternative messages
------------------------------------------
+=========================================
 
 When content filtering encounters a multipart/alternative part, and the
 results of filtering leave only one of the subparts, then the
@@ -178,7 +179,7 @@ part with just one subpart, the entire message is converted to the left over
 part's content type.  In other words, the left over inner part is promoted to
 being the outer part.
 
-    >>> mlist.filter_types = [u'image/jpeg', u'text/html']
+    >>> mlist.filter_types = ['image/jpeg', 'text/html']
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... Content-Type: multipart/alternative; boundary=AAA
@@ -204,11 +205,11 @@ being the outer part.
 
 Clean up.
 
-    >>> mlist.filter_types = [u'image/jpeg']
+    >>> mlist.filter_types = ['image/jpeg']
 
 
 Conversion to plain text
-------------------------
+========================
 
 Many mailing lists prohibit HTML email, and in fact, such email can be a
 phishing or spam vector.  However, many mail readers will send HTML email by
@@ -265,7 +266,7 @@ name of the file containing the message payload to filter.
 
 
 Discarding empty parts
-----------------------
+======================
 
 Similarly, if after filtering a multipart section ends up empty, then the
 entire multipart is discarded.  For example, here's a message where an inner
@@ -337,7 +338,7 @@ the entire inner multipart/mixed is discarded.
 
 
 Passing MIME types
-------------------
+==================
 
 XXX Describe the pass_mime_types setting and how it interacts with
 filter_mime_types.

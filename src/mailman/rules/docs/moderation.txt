@@ -1,3 +1,4 @@
+=================
 Member moderation
 =================
 
@@ -6,7 +7,7 @@ postings, then only members with a cleared moderation flag will be able to
 email the list without having those messages be held for approval.  The
 'moderation' rule determines whether the message should be moderated or not.
 
-    >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
+    >>> mlist = config.db.list_manager.create('_xtest@example.com')
     >>> rule = config.rules['moderation']
     >>> print rule.name
     moderation
@@ -26,7 +27,7 @@ moderation rule can't match.
 Let's add the message author as a non-moderated member.
 
     >>> user = config.db.user_manager.create_user(
-    ...     u'aperson@example.org', u'Anne Person')
+    ...     'aperson@example.org', 'Anne Person')
     >>> address = list(user.addresses)[0]
     >>> from mailman.interfaces.member import MemberRole
     >>> member = address.subscribe(mlist, MemberRole.member)
@@ -43,7 +44,7 @@ Once the member's moderation flag is set though, the rule matches.
 
 
 Non-members
------------
+===========
 
 There is another, related rule for matching non-members, which simply matches
 if the sender is /not/ a member of the mailing list.

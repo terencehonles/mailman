@@ -1,3 +1,4 @@
+===============
 File recipients
 ===============
 
@@ -6,11 +7,11 @@ include file.  This file must be called members.txt and it must live in the
 list's data directory.
 
     >>> handler = config.handlers['file-recipients']
-    >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
+    >>> mlist = config.db.list_manager.create('_xtest@example.com')
 
 
 Short circuiting
-----------------
+================
 
 If the message's metadata already has recipients, this handler immediately
 returns.
@@ -28,11 +29,11 @@ returns.
     A message.
     <BLANKLINE>
     >>> msgdata
-    {'recips': 7}
+    {u'recips': 7}
 
 
 Missing file
-------------
+============
 
 The include file must live inside the list's data directory, under the name
 members.txt.  If the file doesn't exist, the list of recipients will be
@@ -52,7 +53,7 @@ empty.
 
 
 Existing file
--------------
+=============
 
 If the file exists, it contains a list of addresses, one per line.  These
 addresses are returned as the set of recipients.
@@ -80,7 +81,7 @@ in the recipients list.
 
     >>> from mailman.interfaces.member import MemberRole
     >>> address_1 = config.db.user_manager.create_address(
-    ...     u'cperson@example.com')
+    ...     'cperson@example.com')
     >>> address_1.subscribe(mlist, MemberRole.member)
     <Member: cperson@example.com on _xtest@example.com as MemberRole.member>
 

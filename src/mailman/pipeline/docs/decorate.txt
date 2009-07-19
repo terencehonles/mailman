@@ -1,3 +1,4 @@
+==================
 Message decoration
 ==================
 
@@ -6,7 +7,7 @@ original message.  A handler module takes care of this based on the settings
 of the mailing list and the type of message being processed.
 
     >>> from mailman.pipeline.decorate import process
-    >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
+    >>> mlist = config.db.list_manager.create('_xtest@example.com')
     >>> msg_text = """\
     ... From: aperson@example.org
     ...
@@ -16,7 +17,7 @@ of the mailing list and the type of message being processed.
 
 
 Short circuiting
-----------------
+================
 
 Digest messages get decorated during the digest creation phase so no extra
 decorations are added for digest messages.
@@ -35,7 +36,7 @@ decorations are added for digest messages.
 
 
 Decorating simple text messages
--------------------------------
+===============================
 
 Text messages that have no declared content type character set are by default,
 encoded in us-ascii.  When the mailing list's preferred language is 'en'
@@ -45,9 +46,9 @@ placeholder variables, the message's payload will be prepended by the verbatim
 header, and appended with the verbatim footer.
 
     >>> msg = message_from_string(msg_text)
-    >>> mlist.msg_header = u'header\n'
-    >>> mlist.msg_footer = u'footer'
-    >>> mlist.preferred_language = u'en'
+    >>> mlist.msg_header = 'header\n'
+    >>> mlist.msg_footer = 'footer'
+    >>> mlist.preferred_language = 'en'
     >>> process(mlist, msg, {})
     >>> print msg.as_string()
     From: aperson@example.org
@@ -63,9 +64,9 @@ data.  An example of such information is the mailing list's "real name" (a
 short descriptive name for the mailing list).
 
     >>> msg = message_from_string(msg_text)
-    >>> mlist.msg_header = u'$real_name header\n'
-    >>> mlist.msg_footer = u'$real_name footer'
-    >>> mlist.real_name = u'XTest'
+    >>> mlist.msg_header = '$real_name header\n'
+    >>> mlist.msg_footer = '$real_name footer'
+    >>> mlist.real_name = 'XTest'
     >>> process(mlist, msg, {})
     >>> print msg.as_string()
     From: aperson@example.org
@@ -78,8 +79,8 @@ You can't just pick any interpolation variable though; if you do, the variable
 will remain in the header or footer unchanged.
 
     >>> msg = message_from_string(msg_text)
-    >>> mlist.msg_header = u'$dummy header\n'
-    >>> mlist.msg_footer = u'$dummy footer'
+    >>> mlist.msg_header = '$dummy header\n'
+    >>> mlist.msg_footer = '$dummy footer'
     >>> process(mlist, msg, {})
     >>> print msg.as_string()
     From: aperson@example.org
@@ -90,7 +91,7 @@ will remain in the header or footer unchanged.
 
 
 Handling RFC 3676 'format=flowed' parameters
---------------------------------------------
+============================================
 
 RFC 3676 describes a standard by which text/plain messages can marked by
 generating MUAs for better readability in compatible receiving MUAs.  The
@@ -102,9 +103,9 @@ When Mailman sees text/plain messages with such RFC 3676 parameters, it
 preserves these parameters when it concatenates headers and footers to the
 message payload.
 
-    >>> mlist.msg_header = u'header'
-    >>> mlist.msg_footer = u'footer'
-    >>> mlist.preferred_language = u'en'
+    >>> mlist.msg_header = 'header'
+    >>> mlist.msg_footer = 'footer'
+    >>> mlist.preferred_language = 'en'
     >>> msg = message_from_string("""\
     ... From: aperson@example.org
     ... Content-Type: text/plain; format=flowed; delsp=no
@@ -116,14 +117,14 @@ message payload.
     >>> # Don't use 'print' here as above because it won't be obvious from the
     >>> # output that the soft-line break space at the end of the 'Here is a
     >>> # message' line will be retained in the output.
-    >>> msg['content-type']
-    u'text/plain; format="flowed"; delsp="no"; charset="us-ascii"'
+    >>> print msg['content-type']
+    text/plain; format="flowed"; delsp="no"; charset="us-ascii"
     >>> [line for line in msg.get_payload().splitlines()]
     ['header', 'Here is a message ', 'with soft line breaks.', 'footer']
 
 
 Decorating mixed-charset messages
----------------------------------
+=================================
 
 When a message has no explicit character set, it is assumed to be us-ascii.
 However, if the mailing list's preferred language has a different character
@@ -131,10 +132,10 @@ set, Mailman will still try to concatenate the header and footer, but it will
 convert the text to utf-8 and base-64 encode the message payload.
 
     # 'ja' = Japanese; charset = 'euc-jp'
-    >>> mlist.preferred_language = u'ja'
-    >>> mlist.msg_header = u'$description header'
-    >>> mlist.msg_footer = u'$description footer'
-    >>> mlist.description = u'\u65e5\u672c\u8a9e'
+    >>> mlist.preferred_language = 'ja'
+    >>> mlist.msg_header = '$description header'
+    >>> mlist.msg_footer = '$description footer'
+    >>> mlist.description = '\u65e5\u672c\u8a9e'
 
     >>> from email.message import Message
     >>> msg = Message()
@@ -153,14 +154,13 @@ convert the text to utf-8 and base-64 encode the message payload.
     <BLANKLINE>
     5pel5pys6KqeIGhlYWRlcgpGcmFuw6dhaXNlCuaXpeacrOiqniBmb290ZXI=
 
-
 Sometimes the message even has an unknown character set.  In this case,
 Mailman has no choice but to decorate the original message with MIME
 attachments.
 
-    >>> mlist.preferred_language = u'en'
-    >>> mlist.msg_header = u'header'
-    >>> mlist.msg_footer = u'footer'
+    >>> mlist.preferred_language = 'en'
+    >>> mlist.msg_header = 'header'
+    >>> mlist.msg_footer = 'footer'
     >>> msg = message_from_string("""\
     ... From: aperson@example.org
     ... Content-Type: text/plain; charset=unknown
@@ -198,7 +198,7 @@ attachments.
 
 
 Decorating multipart messages
------------------------------
+=============================
 
 Multipart messages have to be decorated differently.  The header and footer
 cannot be simply concatenated into the payload because that will break the
@@ -209,9 +209,9 @@ When the outerpart is multipart/mixed, the header and footer can have a
 Content-Disposition of 'inline' so that MUAs can display these headers as if
 they were simply concatenated.
 
-    >>> mlist.preferred_language = u'en'
-    >>> mlist.msg_header = u'header'
-    >>> mlist.msg_footer = u'footer'
+    >>> mlist.preferred_language = 'en'
+    >>> mlist.msg_header = 'header'
+    >>> mlist.msg_footer = 'footer'
     >>> part_1 = message_from_string("""\
     ... From: aperson@example.org
     ...
@@ -258,7 +258,7 @@ they were simply concatenated.
 
 
 Decorating other content types
-------------------------------
+==============================
 
 Non-multipart non-text content types will get wrapped in a multipart/mixed so
 that the header and footer can be added as attachments.
@@ -297,7 +297,7 @@ that the header and footer can be added as attachments.
 
 
 Personalization
----------------
+===============
 
 A mailing list can be 'personalized', meaning that each message is unique for
 each recipient.  When the list is personalized, additional interpolation

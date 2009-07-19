@@ -6,7 +6,7 @@ Domains
     # that first.
     >>> from mailman.interfaces.domain import IDomainManager
     >>> manager = IDomainManager(config)
-    >>> manager.remove(u'example.com')
+    >>> manager.remove('example.com')
     <Domain example.com...>
     >>> commit()
 
@@ -20,8 +20,8 @@ initially none.
 
 Once a domain is added though, it is accessible through the API.
 
-    >>> manager.add(u'example.com', u'An example domain',
-    ...             u'http://lists.example.com')
+    >>> manager.add('example.com', 'An example domain',
+    ...             'http://lists.example.com')
     <Domain example.com, An example domain,
             base_url: http://lists.example.com,
             contact_address: postmaster@example.com>
@@ -43,15 +43,15 @@ Once a domain is added though, it is accessible through the API.
 
 At the top level, all domains are returned as separate entries.
 
-    >>> manager.add(u'example.org',
-    ...             base_url=u'http://mail.example.org',
-    ...             contact_address=u'listmaster@example.org')
+    >>> manager.add('example.org',
+    ...             base_url='http://mail.example.org',
+    ...             contact_address='listmaster@example.org')
     <Domain example.org, base_url: http://mail.example.org,
             contact_address: listmaster@example.org>
-    >>> manager.add(u'lists.example.net',
-    ...             u'Porkmasters',
-    ...             u'http://example.net',
-    ...             u'porkmaster@example.net')
+    >>> manager.add('lists.example.net',
+    ...             'Porkmasters',
+    ...             'http://example.net',
+    ...             'porkmaster@example.net')
     <Domain lists.example.net, Porkmasters,
             base_url: http://example.net,
             contact_address: porkmaster@example.net>

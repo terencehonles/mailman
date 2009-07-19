@@ -1,10 +1,11 @@
+====================
 Implicit destination
 ====================
 
 The 'implicit-dest' rule matches when the mailing list's posting address is
 not explicitly mentioned in the set of message recipients.
 
-    >>> mlist = create_list(u'_xtest@example.com')
+    >>> mlist = create_list('_xtest@example.com')
     >>> rule = config.rules['implicit-dest']
     >>> print rule.name
     implicit-dest
@@ -56,7 +57,7 @@ then the rule will not match.
     >>> rule.check(mlist, msg, {})
     True
 
-    >>> alias_set.add(u'myfriend@example.com')
+    >>> alias_set.add('myfriend@example.com')
     >>> rule.check(mlist, msg, {})
     False
 
@@ -69,7 +70,7 @@ that Mailman pulled it from the appropriate news group.
 
 Additional aliases can be added.
 
-    >>> alias_set.add(u'other@example.com')
+    >>> alias_set.add('other@example.com')
     >>> del msg['to']
     >>> rule.check(mlist, msg, {})
     True
@@ -80,13 +81,13 @@ Additional aliases can be added.
 
 Aliases can be removed.
 
-    >>> alias_set.remove(u'other@example.com')
+    >>> alias_set.remove('other@example.com')
     >>> rule.check(mlist, msg, {})
     True
 
 Aliases can also be cleared.
 
-    >>> msg['Cc'] = u'myfriend@example.com'
+    >>> msg['Cc'] = 'myfriend@example.com'
     >>> rule.check(mlist, msg, {})
     False
 
@@ -96,13 +97,13 @@ Aliases can also be cleared.
 
 
 Alias patterns
---------------
+==============
 
 It's also possible to specify an alias pattern, i.e. a regular expression to
 match against the recipients.  For example, we can say that if there is a
 recipient in the example.net domain, then the rule does not match.
 
-    >>> alias_set.add(u'^.*@example.net')
+    >>> alias_set.add('^.*@example.net')
     >>> rule.check(mlist, msg, {})
     True
 
@@ -112,7 +113,7 @@ recipient in the example.net domain, then the rule does not match.
 
 
 Bad aliases
------------
+===========
 
 You cannot add an alias that looks like neither a pattern nor an email
 address.

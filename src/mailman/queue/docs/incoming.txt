@@ -1,3 +1,4 @@
+=========================
 The incoming queue runner
 =========================
 
@@ -12,13 +13,13 @@ message eventually ending up in one of the four disposition states described
 above.
 
     >>> from mailman.app.lifecycle import create_list
-    >>> mlist = create_list(u'_xtest@example.com')
-    >>> mlist.start_chain
-    u'built-in'
+    >>> mlist = create_list('_xtest@example.com')
+    >>> print mlist.start_chain
+    built-in
 
 
 Accepted messages
------------------
+=================
 
 We have a message that is going to be sent to the mailing list.  This message
 is so perfectly fine for posting that it will be accepted and forward to the
@@ -76,7 +77,7 @@ And now the message is in the pipeline queue.
 
 
 Held messages
--------------
+=============
 
 The list moderator sets the emergency flag on the mailing list.  The built-in
 chain will now hold all posted messages, so nothing will show up in the
@@ -106,7 +107,7 @@ pipeline queue.
 
 
 Discarded messages
-------------------
+==================
 
 Another possibility is that the message would get immediately discarded.  The
 built-in chain does not have such a disposition by default, so let's craft a
@@ -116,10 +117,10 @@ new chain and set it as the mailing list's start chain.
     >>> from mailman.interfaces.chain import LinkAction
     >>> truth_rule = config.rules['truth']
     >>> discard_chain = config.chains['discard']
-    >>> test_chain = Chain('always-discard', u'Testing discards')
+    >>> test_chain = Chain('always-discard', 'Testing discards')
     >>> link = Link(truth_rule, LinkAction.jump, discard_chain)
     >>> test_chain.append_link(link)
-    >>> mlist.start_chain = u'always-discard'
+    >>> mlist.start_chain = 'always-discard'
 
     >>> inject_message(mlist, msg)
     >>> file_pos = fp.tell()
@@ -137,17 +138,17 @@ new chain and set it as the mailing list's start chain.
 
 
 Rejected messages
------------------
+=================
 
 Similar to discarded messages, a message can be rejected, or bounced back to
 the original sender.  Again, the built-in chain doesn't support this so we'll
 just create a new chain that does.
 
     >>> reject_chain = config.chains['reject']
-    >>> test_chain = Chain('always-reject', u'Testing rejections')
+    >>> test_chain = Chain('always-reject', 'Testing rejections')
     >>> link = Link(truth_rule, LinkAction.jump, reject_chain)
     >>> test_chain.append_link(link)
-    >>> mlist.start_chain = u'always-reject'
+    >>> mlist.start_chain = 'always-reject'
 
 The virgin queue needs to be cleared out due to artifacts from the previous
 tests above.

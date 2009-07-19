@@ -39,7 +39,7 @@ mailing list you need to get its requests object.
     >>> from zope.interface.verify import verifyObject
     >>> verifyObject(IRequests, config.db.requests)
     True
-    >>> mlist = create_list(u'test@example.com')
+    >>> mlist = create_list('test@example.com')
     >>> requests = config.db.requests.get_list_requests(mlist)
     >>> verifyObject(IListRequests, requests)
     True
@@ -63,10 +63,10 @@ of associated data.  The request database assigns no semantics to the held
 data, except for the request type.  Here we hold some simple bits of data.
 
     >>> from mailman.interfaces.requests import RequestType
-    >>> id_1 = requests.hold_request(RequestType.held_message,   u'hold_1')
-    >>> id_2 = requests.hold_request(RequestType.subscription,   u'hold_2')
-    >>> id_3 = requests.hold_request(RequestType.unsubscription, u'hold_3')
-    >>> id_4 = requests.hold_request(RequestType.held_message,   u'hold_4')
+    >>> id_1 = requests.hold_request(RequestType.held_message,   'hold_1')
+    >>> id_2 = requests.hold_request(RequestType.subscription,   'hold_2')
+    >>> id_3 = requests.hold_request(RequestType.unsubscription, 'hold_3')
+    >>> id_4 = requests.hold_request(RequestType.held_message,   'hold_4')
     >>> id_1, id_2, id_3, id_4
     (1, 2, 3, 4)
 
@@ -96,7 +96,7 @@ If we try to hold a request with a bogus type, we get an exception.
 We can hold requests with additional data.
 
     >>> data = dict(foo='yes', bar='no')
-    >>> id_5 = requests.hold_request(RequestType.held_message, u'hold_5', data)
+    >>> id_5 = requests.hold_request(RequestType.held_message, 'hold_5', data)
     >>> id_5
     5
     >>> requests.count
@@ -215,9 +215,9 @@ Holding messages
 
 For this section, we need a mailing list and at least one message.
 
-    >>> mlist = create_list(u'alist@example.com')
-    >>> mlist.preferred_language = u'en'
-    >>> mlist.real_name = u'A Test List'
+    >>> mlist = create_list('alist@example.com')
+    >>> mlist.preferred_language = 'en'
+    >>> mlist.real_name = 'A Test List'
     >>> msg = message_from_string("""\
     ... From: aperson@example.org
     ... To: alist@example.com
@@ -243,7 +243,7 @@ We can also hold a message with some additional metadata.
     >>> msgdata = dict(sender='aperson@example.com',
     ...                approved=True,
     ...                received_time=123.45)
-    >>> id_2 = moderator.hold_message(mlist, msg, msgdata, u'Feeling ornery')
+    >>> id_2 = moderator.hold_message(mlist, msg, msgdata, 'Feeling ornery')
     >>> requests.get_request(id_2) is not None
     True
 
@@ -346,7 +346,7 @@ is deleted.
     ... """)
     >>> id_4 = moderator.hold_message(mlist, msg, {}, 'Needs approval')
     >>> moderator.handle_message(mlist, id_4, Action.discard)
-    >>> print config.db.message_store.get_message_by_id(u'<12345>')
+    >>> print config.db.message_store.get_message_by_id('<12345>')
     None
 
 But if we ask to preserve the message when we discard it, it will be held in
@@ -354,7 +354,7 @@ the message store after disposition.
 
     >>> id_4 = moderator.hold_message(mlist, msg, {}, 'Needs approval')
     >>> moderator.handle_message(mlist, id_4, Action.discard, preserve=True)
-    >>> stored_msg = config.db.message_store.get_message_by_id(u'<12345>')
+    >>> stored_msg = config.db.message_store.get_message_by_id('<12345>')
     >>> print stored_msg.as_string()
     From: aperson@example.org
     To: alist@example.com
@@ -372,10 +372,10 @@ moderators.
     # Set a new Message-ID from the previous hold so we don't try to store
     # collisions in the message storage.
     >>> del msg['message-id']
-    >>> msg['Message-ID'] = u'<abcde>'
+    >>> msg['Message-ID'] = '<abcde>'
     >>> id_4 = moderator.hold_message(mlist, msg, {}, 'Needs approval')
     >>> moderator.handle_message(mlist, id_4, Action.discard,
-    ...                          forward=[u'zperson@example.com'])
+    ...                          forward=['zperson@example.com'])
     >>> qmsg, qdata = dequeue()
     >>> print qmsg.as_string()
     Subject: Forward of moderated message
@@ -416,8 +416,8 @@ choosing and their preferred language.
     >>> from mailman.interfaces.member import DeliveryMode
     >>> mlist.admin_immed_notify = False
     >>> id_3 = moderator.hold_subscription(mlist,
-    ...     u'bperson@example.org', u'Ben Person',
-    ...     u'{NONE}abcxyz', DeliveryMode.regular, u'en')
+    ...     'bperson@example.org', 'Ben Person',
+    ...     '{NONE}abcxyz', DeliveryMode.regular, 'en')
     >>> requests.get_request(id_3) is not None
     True
 
@@ -436,8 +436,8 @@ queue when the message is held.
     >>> # XXX This will almost certainly change once we've worked out the web
     >>> # space layout for mailing lists now.
     >>> id_4 = moderator.hold_subscription(mlist,
-    ...     u'cperson@example.org', u'Claire Person',
-    ...     u'{NONE}zyxcba', DeliveryMode.regular, u'en')
+    ...     'cperson@example.org', 'Claire Person',
+    ...     '{NONE}zyxcba', DeliveryMode.regular, 'en')
     >>> requests.get_request(id_4) is not None
     True
     >>> qmsg, qdata = dequeue()
@@ -533,8 +533,8 @@ mailing list.
 
     >>> mlist.send_welcome_msg = True
     >>> id_4 = moderator.hold_subscription(mlist,
-    ...     u'fperson@example.org', u'Frank Person',
-    ...     u'{NONE}abcxyz', DeliveryMode.regular, u'en')
+    ...     'fperson@example.org', 'Frank Person',
+    ...     '{NONE}abcxyz', DeliveryMode.regular, 'en')
 
 A message will be sent to the moderators telling them about the held
 subscription and the fact that they may need to approve it.
@@ -673,7 +673,7 @@ The admin message is sent to the moderators.
 
 Frank Person is now a member of the mailing list.
 
-    >>> member = mlist.members.get_member(u'fperson@example.org')
+    >>> member = mlist.members.get_member('fperson@example.org')
     >>> member
     <Member: Frank Person <fperson@example.org>
              on alist@example.com as MemberRole.member>
@@ -682,10 +682,10 @@ Frank Person is now a member of the mailing list.
     >>> print member.delivery_mode
     DeliveryMode.regular
     >>> user = config.db.user_manager.get_user(member.address.address)
-    >>> user.real_name
-    u'Frank Person'
-    >>> user.password
-    u'{NONE}abcxyz'
+    >>> print user.real_name
+    Frank Person
+    >>> print user.password
+    {NONE}abcxyz
 
 
 Holding unsubscription requests
@@ -697,21 +697,21 @@ unsubscription holds can send the list's moderators an immediate notification.
 
     >>> mlist.admin_immed_notify = False
     >>> from mailman.interfaces.member import MemberRole
-    >>> user_1 = config.db.user_manager.create_user(u'gperson@example.com')
+    >>> user_1 = config.db.user_manager.create_user('gperson@example.com')
     >>> address_1 = list(user_1.addresses)[0]
     >>> address_1.subscribe(mlist, MemberRole.member)
     <Member: gperson@example.com on alist@example.com as MemberRole.member>
-    >>> user_2 = config.db.user_manager.create_user(u'hperson@example.com')
+    >>> user_2 = config.db.user_manager.create_user('hperson@example.com')
     >>> address_2 = list(user_2.addresses)[0]
     >>> address_2.subscribe(mlist, MemberRole.member)
     <Member: hperson@example.com on alist@example.com as MemberRole.member>
-    >>> id_5 = moderator.hold_unsubscription(mlist, u'gperson@example.com')
+    >>> id_5 = moderator.hold_unsubscription(mlist, 'gperson@example.com')
     >>> requests.get_request(id_5) is not None
     True
     >>> virginq.files
     []
     >>> mlist.admin_immed_notify = True
-    >>> id_6 = moderator.hold_unsubscription(mlist, u'hperson@example.com')
+    >>> id_6 = moderator.hold_unsubscription(mlist, 'hperson@example.com')
     >>> qmsg, qdata = dequeue()
     >>> print qmsg.as_string()
     MIME-Version: 1.0
@@ -758,7 +758,7 @@ subscribed.
     >>> moderator.handle_unsubscription(mlist, id_5, Action.discard)
     >>> print requests.get_request(id_5)
     None
-    >>> mlist.members.get_member(u'gperson@example.com')
+    >>> mlist.members.get_member('gperson@example.com')
     <Member: gperson@example.com on alist@example.com as MemberRole.member>
 
 The request can be rejected, in which case a message is sent to the member,
@@ -802,18 +802,18 @@ and the person remains a member of the mailing list.
     reduced_list_headers: True
     version             : 3
 
-    >>> mlist.members.get_member(u'hperson@example.com')
+    >>> mlist.members.get_member('hperson@example.com')
     <Member: hperson@example.com on alist@example.com as MemberRole.member>
 
 The unsubscription request can also be accepted.  This removes the member from
 the mailing list.
 
     >>> mlist.send_goodbye_msg = True
-    >>> mlist.goodbye_msg = u'So long!'
+    >>> mlist.goodbye_msg = 'So long!'
     >>> mlist.admin_immed_notify = False
-    >>> id_7 = moderator.hold_unsubscription(mlist, u'gperson@example.com')
+    >>> id_7 = moderator.hold_unsubscription(mlist, 'gperson@example.com')
     >>> moderator.handle_unsubscription(mlist, id_7, Action.accept)
-    >>> print mlist.members.get_member(u'gperson@example.com')
+    >>> print mlist.members.get_member('gperson@example.com')
     None
 
 There are now two messages in the virgin queue, one to the member who was just

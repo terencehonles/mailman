@@ -1,10 +1,11 @@
+============================
 Maximum number of recipients
 ============================
 
 The 'max-recipients' rule matches when there are more than the maximum allowed
 number of explicit recipients addressed by the message.
 
-    >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
+    >>> mlist = config.db.list_manager.create('_xtest@example.com')
     >>> rule = config.rules['max-recipients']
     >>> print rule.name
     max-recipients

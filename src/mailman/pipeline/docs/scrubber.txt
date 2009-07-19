@@ -1,3 +1,4 @@
+============
 The scrubber
 ============
 
@@ -7,8 +8,8 @@ scrub attachments from messages so that binary goop doesn't end up in an
 archive message.
 
     >>> from mailman.pipeline.scrubber import process, save_attachment
-    >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
-    >>> mlist.preferred_language = u'en'
+    >>> mlist = config.db.list_manager.create('_xtest@example.com')
+    >>> mlist.preferred_language = 'en'
 
 Helper functions for getting the attachment data.
 
@@ -38,7 +39,7 @@ Helper functions for getting the attachment data.
 
 
 Saving attachments
-------------------
+==================
 
 The Scrubber handler exposes a function called save_attachments() which can be
 used to strip various types of attachments and store them in the archive
@@ -61,11 +62,11 @@ this is an unfortunate double negative).
     ... 
     ... R0lGODdhAQABAIAAAAAAAAAAACwAAAAAAQABAAACAQUAOw==
     ... """)
-    >>> save_attachment(mlist, msg, 'dir')
-    u'<http://www.example.com/pipermail/_xtest@example.com/dir/xtest.gif>'
+    >>> print save_attachment(mlist, msg, 'dir')
+    <http://www.example.com/pipermail/_xtest@example.com/dir/xtest.gif>
     >>> data = read_attachment('dir/xtest.gif')
-    >>> data[:6]
-    'GIF87a'
+    >>> print data[:6]
+    GIF87a
     >>> len(data)
     34
 
@@ -93,21 +94,21 @@ Content-Disposition: filename.  This is the default.
     ... 
     ... R0lGODdhAQABAIAAAAAAAAAAACwAAAAAAQABAAACAQUAOw==
     ... """)
-    >>> save_attachment(mlist, msg, 'dir')
-    u'<http://www.example.com/pipermail/_xtest@example.com/dir/attachment.gif>'
+    >>> print save_attachment(mlist, msg, 'dir')
+    <http://www.example.com/pipermail/_xtest@example.com/dir/attachment.gif>
     >>> data = read_attachment('dir/xtest.gif')
     Traceback (most recent call last):
     IOError: [Errno ...] No such file or directory:
         u'.../archives/private/_xtest@example.com/dir/xtest.gif'
     >>> data = read_attachment('dir/attachment.gif')
-    >>> data[:6]
-    'GIF87a'
+    >>> print data[:6]
+    GIF87a
     >>> len(data)
     34
 
 
 Scrubbing image attachments
----------------------------
+===========================
 
 When scrubbing image attachments, the original message is modified to include
 a reference to the attachment file as available through the on-line archive.
@@ -182,7 +183,7 @@ The URL will point to the attachment sitting in the archive.
 
 
 Scrubbing text attachments
---------------------------
+==========================
 
 Similar to image attachments, text attachments will also be scrubbed, but the
 placeholder will be slightly different.
@@ -220,6 +221,6 @@ placeholder will be slightly different.
 
 
 Clean up
---------
+========
 
     >>> config.pop('test config')

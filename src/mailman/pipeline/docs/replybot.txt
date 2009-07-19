@@ -1,3 +1,4 @@
+==========================
 Automatic response handler
 ==========================
 
@@ -6,12 +7,12 @@ receives on its posting address, owner address, or robot address.  Automatic
 responses are subject to various conditions, such as headers in the original
 message or the amount of time since the last auto-response.
 
-    >>> mlist = create_list(u'_xtest@example.com')
-    >>> mlist.real_name = u'XTest'
+    >>> mlist = create_list('_xtest@example.com')
+    >>> mlist.real_name = 'XTest'
 
 
 Basic automatic responding
---------------------------
+==========================
 
 Basic automatic responding occurs when the list is set up to respond to either
 its -owner address, its -request address, or to the posting address, and a
@@ -24,7 +25,7 @@ a second response will be sent, with 0 meaning "there is no grace period".
 
     >>> mlist.autorespond_owner = ResponseAction.respond_and_continue
     >>> mlist.autoresponse_grace_period = datetime.timedelta()
-    >>> mlist.autoresponse_owner_text = u'owner autoresponse text'
+    >>> mlist.autoresponse_owner_text = 'owner autoresponse text'
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
@@ -69,7 +70,7 @@ response.
 
 
 Short circuiting
-----------------
+================
 
 Several headers in the original message determine whether an automatic
 response should even be sent.  For example, if the message has an "X-Ack: No"
@@ -157,14 +158,14 @@ header is ignored.
 
 
 Available auto-responses
-------------------------
+========================
 
 As shown above, a message sent to the -owner address will get an auto-response
 with the text set for owner responses.  Two other types of email will get
 auto-responses: those sent to the -request address...
 
     >>> mlist.autorespond_requests = ResponseAction.respond_and_continue
-    >>> mlist.autoresponse_request_text = u'robot autoresponse text'
+    >>> mlist.autoresponse_request_text = 'robot autoresponse text'
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
@@ -196,7 +197,7 @@ auto-responses: those sent to the -request address...
 ...and those sent to the posting address.
 
     >>> mlist.autorespond_postings = ResponseAction.respond_and_continue
-    >>> mlist.autoresponse_postings_text = u'postings autoresponse text'
+    >>> mlist.autoresponse_postings_text = 'postings autoresponse text'
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
@@ -227,7 +228,7 @@ auto-responses: those sent to the -request address...
 
 
 Grace periods
--------------
+=============
 
 Automatic responses have a grace period, during which no additional responses
 will be sent.  This is so as not to bombard the sender with responses.  The

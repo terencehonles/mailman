@@ -1,3 +1,4 @@
+======================
 Calculating recipients
 ======================
 
@@ -6,18 +7,18 @@ of recipient addresses.  These addresses are calculated by one of the handler
 modules and depends on a host of factors.
 
     >>> handler = config.handlers['calculate-recipients']
-    >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
+    >>> mlist = config.db.list_manager.create('_xtest@example.com')
 
 Recipients are calculate from the list members, so add a bunch of members to
 start out with.  First, create a bunch of addresses...
 
     >>> usermgr = config.db.user_manager
-    >>> address_a = usermgr.create_address(u'aperson@example.com')
-    >>> address_b = usermgr.create_address(u'bperson@example.com')
-    >>> address_c = usermgr.create_address(u'cperson@example.com')
-    >>> address_d = usermgr.create_address(u'dperson@example.com')
-    >>> address_e = usermgr.create_address(u'eperson@example.com')
-    >>> address_f = usermgr.create_address(u'fperson@example.com')
+    >>> address_a = usermgr.create_address('aperson@example.com')
+    >>> address_b = usermgr.create_address('bperson@example.com')
+    >>> address_c = usermgr.create_address('cperson@example.com')
+    >>> address_d = usermgr.create_address('dperson@example.com')
+    >>> address_e = usermgr.create_address('eperson@example.com')
+    >>> address_f = usermgr.create_address('fperson@example.com')
 
 ...then subscribe these addresses to the mailing list as members...
 
@@ -38,7 +39,7 @@ start out with.  First, create a bunch of addresses...
 
 
 Short-circuiting
-----------------
+================
 
 Sometimes, the list of recipients already exists in the message metadata.
 This can happen for example, when a message was previously delivered to some
@@ -49,7 +50,7 @@ but not all of the recipients.
     ...
     ... Something of great import.
     ... """)
-    >>> recips = set((u'qperson@example.com', u'zperson@example.com'))
+    >>> recips = set(('qperson@example.com', 'zperson@example.com'))
     >>> msgdata = dict(recips=recips)
     >>> handler.process(mlist, msg, msgdata)
     >>> sorted(msgdata['recips'])
@@ -57,7 +58,7 @@ but not all of the recipients.
 
 
 Regular delivery recipients
----------------------------
+===========================
 
 Regular delivery recipients are those people who get messages from the list as
 soon as they are posted.  In other words, these folks are not digest members.
@@ -86,13 +87,13 @@ for details.
 
 
 Digest recipients
------------------
+=================
 
 XXX Test various digest deliveries.
 
 
 Urgent messages
----------------
+===============
 
 XXX Test various urgent deliveries:
     * test_urgent_moderator()

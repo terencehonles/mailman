@@ -1,3 +1,4 @@
+=====
 Rules
 =====
 
@@ -7,7 +8,7 @@ links determine what happens when a rule matches.
 
 
 All rules
----------
+=========
 
 Rules are maintained in the configuration object as a dictionary mapping rule
 names to rule objects.
@@ -40,13 +41,13 @@ You can get a rule by name.
 
 
 Rule checks
------------
+===========
 
 Individual rules can be checked to see if they match, by running the rule's
 `check()` method.  This returns a boolean indicating whether the rule was
 matched or not.
 
-    >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
+    >>> mlist = config.db.list_manager.create('_xtest@example.com')
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...

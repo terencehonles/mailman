@@ -1,3 +1,4 @@
+=========
 Digesting
 =========
 
@@ -272,7 +273,7 @@ The RFC 1153 contains the digest in a single plain text message.
 
 
 Internationalized digests
--------------------------
+=========================
 
 When messages come in with a content-type character set different than that of
 the list's preferred language, recipients will get an internationalized
@@ -286,7 +287,7 @@ digest.  French is not enabled by default site-wide, so enable that now.
     ... default_language: fr
     ... """)
 
-    >>> mlist.preferred_language = u'fr'
+    >>> mlist.preferred_language =  'fr'
     >>> msg = message_from_string("""\
     ... From: aperson@example.org
     ... To: test@example.com
@@ -467,7 +468,7 @@ The content can be decoded to see the actual digest text.
 
 
 Digest delivery
----------------
+===============
 
 A mailing list's members can choose to receive normal delivery, plain text
 digests, or MIME digests.
@@ -484,24 +485,24 @@ digests, or MIME digests.
 
 Two regular delivery members subscribe to the mailing list.
 
-    >>> member_1 = subscribe(u'uperson@example.com', DeliveryMode.regular)
-    >>> member_2 = subscribe(u'vperson@example.com', DeliveryMode.regular)
+    >>> member_1 = subscribe('uperson@example.com', DeliveryMode.regular)
+    >>> member_2 = subscribe('vperson@example.com', DeliveryMode.regular)
 
 Two MIME digest members subscribe to the mailing list.
 
-    >>> member_3 = subscribe(u'wperson@example.com', DeliveryMode.mime_digests)
-    >>> member_4 = subscribe(u'xperson@example.com', DeliveryMode.mime_digests)
+    >>> member_3 = subscribe('wperson@example.com', DeliveryMode.mime_digests)
+    >>> member_4 = subscribe('xperson@example.com', DeliveryMode.mime_digests)
 
 One RFC 1153 digest member subscribes to the mailing list.
 
     >>> member_5 = subscribe(
-    ...     u'yperson@example.com', DeliveryMode.plaintext_digests)
+    ...     'yperson@example.com', DeliveryMode.plaintext_digests)
     >>> member_6 = subscribe(
-    ...     u'zperson@example.com', DeliveryMode.plaintext_digests)
+    ...     'zperson@example.com', DeliveryMode.plaintext_digests)
 
 When a digest gets sent, the appropriate recipient list is chosen.
 
-    >>> mlist.preferred_language = u'en'
+    >>> mlist.preferred_language = 'en'
     >>> mlist.digest_size_threshold = 0.5
     >>> fill_digest()
     >>> runner.run()

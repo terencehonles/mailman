@@ -1,13 +1,14 @@
-NNTP (i.e. Usenet) Gateway
-==========================
+============
+NNTP Gateway
+============
 
 Mailman has an NNTP gateway, whereby messages posted to the mailing list can
 be forwarded onto an NNTP newsgroup.  Typically this means Usenet, but since
 NNTP is to Usenet as IP is to the web, it's more general than that.
 
     >>> handler = config.handlers['to-usenet']
-    >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
-    >>> mlist.preferred_language = u'en'
+    >>> mlist = config.db.list_manager.create('_xtest@example.com')
+    >>> mlist.preferred_language = 'en'
     >>> switchboard = config.switchboards['news']
 
 Gatewaying from the mailing list to the newsgroup happens through a separate
@@ -46,8 +47,8 @@ However, other posted messages get gated to the newsgroup via the nntp queue.
 The list owner can set the linked newsgroup and the nntp host that its
 messages are gated to.
 
-    >>> mlist.linked_newsgroup = u'comp.lang.thing'
-    >>> mlist.nntp_host = u'news.example.com'
+    >>> mlist.linked_newsgroup = 'comp.lang.thing'
+    >>> mlist.nntp_host = 'news.example.com'
     >>> handler.process(mlist, msg, {})
     >>> len(switchboard.files)
     1

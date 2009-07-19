@@ -1,3 +1,4 @@
+================
 The user manager
 ================
 
@@ -14,7 +15,7 @@ config object.
 
 
 Creating users
---------------
+==============
 
 There are several ways you can create a user object.  The simplest is to
 create a 'blank' user by not providing an address or real name at creation
@@ -39,19 +40,19 @@ The user has preferences, but none of them will be specified.
 
 A user can be assigned a real name.
 
-    >>> user.real_name = u'Anne Person'
+    >>> user.real_name = 'Anne Person'
     >>> sorted(user.real_name for user in usermgr.users)
     [u'Anne Person']
 
 A user can be assigned a password.
 
-    >>> user.password = u'secret'
+    >>> user.password = 'secret'
     >>> sorted(user.password for user in usermgr.users)
     [u'secret']
 
 You can also create a user with an address to start out with.
 
-    >>> user_2 = usermgr.create_user(u'bperson@example.com')
+    >>> user_2 = usermgr.create_user('bperson@example.com')
     >>> verifyObject(IUser, user_2)
     True
     >>> sorted(address.address for address in user_2.addresses)
@@ -61,13 +62,13 @@ You can also create a user with an address to start out with.
 
 As above, you can assign a real name to such users.
 
-    >>> user_2.real_name = u'Ben Person'
+    >>> user_2.real_name = 'Ben Person'
     >>> sorted(user.real_name for user in usermgr.users)
     [u'Anne Person', u'Ben Person']
 
 You can also create a user with just a real name.
 
-    >>> user_3 = usermgr.create_user(real_name=u'Claire Person')
+    >>> user_3 = usermgr.create_user(real_name='Claire Person')
     >>> verifyObject(IUser, user_3)
     True
     >>> sorted(address.address for address in user.addresses)
@@ -77,7 +78,7 @@ You can also create a user with just a real name.
 
 Finally, you can create a user with both an address and a real name.
 
-    >>> user_4 = usermgr.create_user(u'dperson@example.com', u'Dan Person')
+    >>> user_4 = usermgr.create_user('dperson@example.com', 'Dan Person')
     >>> verifyObject(IUser, user_3)
     True
     >>> sorted(address.address for address in user_4.addresses)
@@ -89,7 +90,7 @@ Finally, you can create a user with both an address and a real name.
 
 
 Deleting users
---------------
+==============
 
 You delete users by going through the user manager.  The deleted user is no
 longer available through the user manager iterator.
@@ -100,7 +101,7 @@ longer available through the user manager iterator.
 
 
 Finding users
--------------
+=============
 
 You can ask the user manager to find the IUser that controls a particular
 email address.  You'll get back the original user object if it's found.  Note
@@ -117,7 +118,7 @@ object.
 If the address is not in the user database or does not have a user associated
 with it, you will get None back.
 
-    >>> print usermgr.get_user(u'zperson@example.com')
+    >>> print usermgr.get_user('zperson@example.com')
     None
     >>> user_4.unlink(address)
     >>> print usermgr.get_user(address.address)

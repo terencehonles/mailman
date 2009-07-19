@@ -1,3 +1,4 @@
+=================
 Cleansing headers
 =================
 
@@ -6,7 +7,7 @@ related to additional permissions that can be granted to the message and other
 headers can be used to fish for membership.
 
     >>> handler = config.handlers['cleanse']
-    >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
+    >>> mlist = config.db.list_manager.create('_xtest@example.com')
 
 Headers such as Approved, Approve, and Urgent are used to grant special
 pemissions to individual messages.  All may contain a password; the first two
@@ -62,7 +63,7 @@ Pegasus mail.  I don't remember what program uses X-Confirm-Reading-To though
 
 
 Anonymous lists
----------------
+===============
 
 Anonymous mailing lists also try to cleanse certain identifying headers from
 the original posting, so that it is at least a bit more difficult to determine
@@ -73,8 +74,8 @@ and Reply-To headers in the posted message are taken from list attributes.
 Hotmail apparently sets X-Originating-Email.
 
     >>> mlist.anonymous_list = True
-    >>> mlist.description = u'A Test Mailing List'
-    >>> mlist.preferred_language = u'en'
+    >>> mlist.description = 'A Test Mailing List'
+    >>> mlist.preferred_language = 'en'
     >>> msg = message_from_string("""\
     ... From: bperson@example.com
     ... Reply-To: bperson@example.org

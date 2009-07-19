@@ -10,7 +10,7 @@ rules and chains, there is no way to stop a pipeline from processing the
 message once it's started.
 
     >>> from mailman.app.lifecycle import create_list
-    >>> mlist = create_list(u'xtest@example.com')
+    >>> mlist = create_list('xtest@example.com')
     >>> print mlist.pipeline
     built-in
     >>> from mailman.core.pipelines import process

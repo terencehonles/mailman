@@ -1,3 +1,4 @@
+================
 Avoid duplicates
 ================
 
@@ -7,24 +8,24 @@ recipients from the list of recipients that earlier handler modules
 (e.g. CalcRecips) calculates.
 
     >>> handler = config.handlers['avoid-duplicates']
-    >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
+    >>> mlist = config.db.list_manager.create('_xtest@example.com')
 
 Create some members we're going to use.
 
     >>> from mailman.interfaces.member import MemberRole
     >>> address_a = config.db.user_manager.create_address(
-    ...     u'aperson@example.com')
+    ...     'aperson@example.com')
     >>> address_b = config.db.user_manager.create_address(
-    ...     u'bperson@example.com')
+    ...     'bperson@example.com')
     >>> member_a = address_a.subscribe(mlist, MemberRole.member)
     >>> member_b = address_b.subscribe(mlist, MemberRole.member)
     >>> # This is the message metadata dictionary as it would be produced by
     >>> # the CalcRecips handler.
-    >>> recips = dict(recips=[u'aperson@example.com', u'bperson@example.com'])
+    >>> recips = dict(recips=['aperson@example.com', 'bperson@example.com'])
 
 
 Short circuiting
-----------------
+================
 
 The module short-circuits if there are no recipients.
 
@@ -47,7 +48,7 @@ The module short-circuits if there are no recipients.
 
 
 Suppressing the list copy
--------------------------
+=========================
 
 Members can elect not to receive a list copy of any message on which they are
 explicitly named as a recipient.  This is done by setting their

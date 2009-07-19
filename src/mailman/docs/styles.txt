@@ -1,3 +1,4 @@
+===========
 List styles
 ===========
 
@@ -13,7 +14,7 @@ modify the mailing list any way it wants.
 
 Let's start with a vanilla mailing list and a default style manager.
 
-    >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
+    >>> mlist = config.db.list_manager.create('_xtest@example.com')
     >>> from mailman.styles.manager import StyleManager
     >>> style_manager = StyleManager()
     >>> style_manager.populate()
@@ -22,7 +23,7 @@ Let's start with a vanilla mailing list and a default style manager.
 
 
 The default style
------------------
+=================
 
 There is a default style which implements the legacy application of list
 defaults from previous versions of Mailman.  This style only matching a
@@ -49,7 +50,7 @@ manager's `lookup()` method.
 
 
 Registering styles
-------------------
+==================
 
 New styles must implement the IStyle interface.
 
@@ -61,7 +62,7 @@ New styles must implement the IStyle interface.
     ...     priority = 10
     ...     def apply(self, mailing_list):
     ...         # Just does something very simple.
-    ...         mailing_list.msg_footer = u'test footer'
+    ...         mailing_list.msg_footer = 'test footer'
     ...     def match(self, mailing_list, styles):
     ...         # Applies to any test list
     ...         if 'test' in mailing_list.fqdn_listname:
@@ -76,15 +77,15 @@ style.  This is because the default style only gets applied when no other
 styles match the mailing list.
 
     >>> sorted(style.name for style in style_manager.lookup(mlist))
-    ['test']
+    [u'test']
     >>> for style in style_manager.lookup(mlist):
     ...     style.apply(mlist)
-    >>> mlist.msg_footer
-    u'test footer'
+    >>> print mlist.msg_footer
+    test footer
 
 
 Style priority
---------------
+==============
 
 When multiple styles match a particular mailing list, they are applied in
 descending order of priority.  In other words, a priority zero style would be
@@ -95,16 +96,16 @@ applied last.
     ...     priority = 5
     ...     # Use the base class's match() method.
     ...     def apply(self, mailing_list):
-    ...         mailing_list.msg_footer = u'another footer'
+    ...         mailing_list.msg_footer = 'another footer'
 
-    >>> mlist.msg_footer = u''
+    >>> mlist.msg_footer = ''
     >>> mlist.msg_footer
     u''
     >>> style_manager.register(AnotherTestStyle())
     >>> for style in style_manager.lookup(mlist):
     ...     style.apply(mlist)
-    >>> mlist.msg_footer
-    u'another footer'
+    >>> print mlist.msg_footer
+    another footer
 
 You can change the priority of a style, and if you reapply the styles, they
 will take effect in the new priority order.
@@ -115,22 +116,22 @@ will take effect in the new priority order.
     >>> style_2.priority = 10
     >>> for style in style_manager.lookup(mlist):
     ...     style.apply(mlist)
-    >>> mlist.msg_footer
-    u'test footer'
+    >>> print mlist.msg_footer
+    test footer
 
 
 Unregistering styles
---------------------
+====================
 
 You can unregister a style, making it unavailable in the future.
 
     >>> style_manager.unregister(style_2)
     >>> sorted(style.name for style in style_manager.lookup(mlist))
-    ['test']
+    [u'test']
 
 
 Corner cases
-------------
+============
 
 If you register a style with the same name as an already registered style, you
 get an exception.
@@ -153,4 +154,4 @@ If you try to unregister a style that isn't registered, you get an exception.
     >>> style_manager.unregister(style_2)
     Traceback (most recent call last):
     ...
-    KeyError: 'another'
+    KeyError: u'another'

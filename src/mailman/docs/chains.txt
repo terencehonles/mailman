@@ -1,3 +1,4 @@
+======
 Chains
 ======
 
@@ -10,7 +11,7 @@ processing of messages.
 
 
 The Discard chain
------------------
+=================
 
 The Discard chain simply throws the message away.
 
@@ -50,7 +51,7 @@ The Discard chain simply throws the message away.
 
 
 The Reject chain
-----------------
+================
 
 The Reject chain bounces the message back to the original sender, and logs
 this action.
@@ -95,7 +96,7 @@ The bounce message is now sitting in the Virgin queue.
 
 
 The Hold Chain
---------------
+==============
 
 The Hold chain places the message into the admin request database and
 depending on the list's settings, sends a notification to both the original
@@ -248,7 +249,7 @@ The message itself is held in the message store.
 
 
 The Accept chain
-----------------
+================
 
 The Accept chain sends the message on the 'prep' queue, where it will be
 processed and sent on to the list membership.
@@ -282,7 +283,7 @@ processed and sent on to the list membership.
 
 
 Run-time chains
----------------
+===============
 
 We can also define chains at run time, and these chains can be mutated.
 Run-time chains are made up of links where each link associates both a rule

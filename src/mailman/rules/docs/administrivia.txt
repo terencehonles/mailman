@@ -1,3 +1,4 @@
+=============
 Administrivia
 =============
 
@@ -6,7 +7,7 @@ commands in the Subject header or first few lines of the payload.  This is
 used to catch messages posted to the list which should have been sent to the
 -request robot address.
 
-    >>> mlist = config.db.list_manager.create(u'_xtest@example.com')
+    >>> mlist = config.db.list_manager.create('_xtest@example.com')
     >>> mlist.administrivia = True
     >>> rule = config.rules['administrivia']
     >>> print rule.name
@@ -72,7 +73,7 @@ We don't show all the other possible email commands, but you get the idea.
 
 
 Non-administrivia
------------------
+=================
 
 Of course, messages that don't contain administrivia, don't match the rule.
 

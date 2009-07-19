@@ -1,3 +1,4 @@
+===========
 LTMP server
 ===========
 
@@ -23,7 +24,7 @@ It also helps to have a nice LMTP client.
 
 
 Posting address
----------------
+===============
 
 If the mail server tries to send a message to a nonexistent mailing list, it
 will get a 550 error.
@@ -45,7 +46,7 @@ will get a 550 error.
 Once the mailing list is created, the posting address is valid.
 
     >>> from mailman.app.lifecycle import create_list
-    >>> create_list(u'mylist@example.com')
+    >>> create_list('mylist@example.com')
     <mailing list "mylist@example.com" at ...>
     >>> commit()
     >>> lmtp.sendmail(
@@ -62,7 +63,7 @@ Once the mailing list is created, the posting address is valid.
 
 
 Sub-addresses
--------------
+=============
 
 The LMTP server understands each of the list's sub-addreses, such as -join,
 -leave, -request and so on.  If the message is posted to an invalid
@@ -98,6 +99,6 @@ But the message is accepted if posted to a valid sub-address.
 
 
 Clean up
---------
+========
 
     >>> master.stop()

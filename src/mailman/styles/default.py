@@ -55,7 +55,7 @@ class DefaultStyle:
         mlist = mailing_list
         # List identity.
         mlist.real_name = mlist.list_name.capitalize()
-        mlist.list_id = u'{0.list_name}.{0.host_name}'.format(mlist)
+        mlist.list_id = '{0.list_name}.{0.host_name}'.format(mlist)
         mlist.include_rfc2369_headers = True
         mlist.include_list_post_header = True
         # Most of these were ripped from the old MailList.InitVars() method.

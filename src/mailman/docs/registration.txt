@@ -17,7 +17,7 @@ stuff.
 
     >>> from mailman.interfaces.domain import IDomainManager
     >>> manager = IDomainManager(config)
-    >>> domain = manager[u'example.com']
+    >>> domain = manager['example.com']
 
 Get a registrar by adapting a domain.
 
@@ -51,27 +51,27 @@ Some amount of sanity checks are performed on the email address, although
 honestly, not as much as probably should be done.  Still, some patently bad
 addresses are rejected outright.
 
-    >>> registrar.register(u'')
+    >>> registrar.register('')
     Traceback (most recent call last):
     ...
     InvalidEmailAddress: u''
-    >>> registrar.register(u'some name@example.com')
+    >>> registrar.register('some name@example.com')
     Traceback (most recent call last):
     ...
     InvalidEmailAddress: u'some name@example.com'
-    >>> registrar.register(u'<script>@example.com')
+    >>> registrar.register('<script>@example.com')
     Traceback (most recent call last):
     ...
     InvalidEmailAddress: u'<script>@example.com'
-    >>> registrar.register(u'\xa0@example.com')
+    >>> registrar.register('\xa0@example.com')
     Traceback (most recent call last):
     ...
     InvalidEmailAddress: u'\xa0@example.com'
-    >>> registrar.register(u'noatsign')
+    >>> registrar.register('noatsign')
     Traceback (most recent call last):
     ...
     InvalidEmailAddress: u'noatsign'
-    >>> registrar.register(u'nodom@ain')
+    >>> registrar.register('nodom@ain')
     Traceback (most recent call last):
     ...
     InvalidEmailAddress: u'nodom@ain'
@@ -85,16 +85,16 @@ is complete.  No IUser or IAddress is created at registration time, but a
 record is added to the pending database, and the token for that record is
 returned.
 
-    >>> token = registrar.register(u'aperson@example.com', u'Anne Person')
+    >>> token = registrar.register('aperson@example.com', 'Anne Person')
     >>> check_token(token)
     ok
 
 There should be no records in the user manager for this address yet.
 
     >>> usermgr = config.db.user_manager
-    >>> print usermgr.get_user(u'aperson@example.com')
+    >>> print usermgr.get_user('aperson@example.com')
     None
-    >>> print usermgr.get_address(u'aperson@example.com')
+    >>> print usermgr.get_address('aperson@example.com')
     None
 
 But this address is waiting for confirmation.
@@ -185,10 +185,10 @@ extracts the token and uses that to confirm the pending registration.
 Now, there is an IAddress in the database matching the address, as well as an
 IUser linked to this address.  The IAddress is verified.
 
-    >>> found_address = usermgr.get_address(u'aperson@example.com')
+    >>> found_address = usermgr.get_address('aperson@example.com')
     >>> found_address
     <Address: Anne Person <aperson@example.com> [verified] at ...>
-    >>> found_user = usermgr.get_user(u'aperson@example.com')
+    >>> found_user = usermgr.get_user('aperson@example.com')
     >>> found_user
     <User "Anne Person" at ...>
     >>> found_user.controls(found_address.address)
@@ -204,7 +204,7 @@ Non-standard registrations
 If you try to confirm a registration token twice, of course only the first one
 will work.  The second one is ignored.
 
-    >>> token = registrar.register(u'bperson@example.com')
+    >>> token = registrar.register('bperson@example.com')
     >>> check_token(token)
     ok
     >>> filebase = switchboard.files[0]
@@ -222,25 +222,25 @@ If an address is in the system, but that address is not linked to a user yet
 and the address is not yet validated, then no user is created until the
 confirmation step is completed.
 
-    >>> usermgr.create_address(u'cperson@example.com')
+    >>> usermgr.create_address('cperson@example.com')
     <Address: cperson@example.com [not verified] at ...>
-    >>> token = registrar.register(u'cperson@example.com', u'Claire Person')
-    >>> print usermgr.get_user(u'cperson@example.com')
+    >>> token = registrar.register('cperson@example.com', 'Claire Person')
+    >>> print usermgr.get_user('cperson@example.com')
     None
     >>> filebase = switchboard.files[0]
     >>> qmsg, qdata = switchboard.dequeue(filebase)
     >>> switchboard.finish(filebase)
     >>> registrar.confirm(token)
     True
-    >>> usermgr.get_user(u'cperson@example.com')
+    >>> usermgr.get_user('cperson@example.com')
     <User "Claire Person" at ...>
-    >>> usermgr.get_address(u'cperson@example.com')
+    >>> usermgr.get_address('cperson@example.com')
     <Address: cperson@example.com [verified] at ...>
 
 Even if the address being registered has already been verified, the
 registration sends a confirmation.
 
-    >>> token = registrar.register(u'cperson@example.com')
+    >>> token = registrar.register('cperson@example.com')
     >>> token is not None
     True
 
@@ -251,15 +251,15 @@ Discarding
 A confirmation token can also be discarded, say if the user changes his or her
 mind about registering.  When discarded, no IAddress or IUser is created.
 
-    >>> token = registrar.register(u'eperson@example.com', u'Elly Person')
+    >>> token = registrar.register('eperson@example.com', 'Elly Person')
     >>> check_token(token)
     ok
     >>> registrar.discard(token)
     >>> print pendingdb.confirm(token)
     None
-    >>> print usermgr.get_address(u'eperson@example.com')
+    >>> print usermgr.get_address('eperson@example.com')
     None
-    >>> print usermgr.get_user(u'eperson@example.com')
+    >>> print usermgr.get_user('eperson@example.com')
     None
 
 
@@ -270,24 +270,24 @@ When a new address for an existing user is registered, there isn't too much
 different except that the new address will still need to be verified before it
 can be used.
 
-    >>> dperson = usermgr.create_user(u'dperson@example.com', u'Dave Person')
+    >>> dperson = usermgr.create_user('dperson@example.com', 'Dave Person')
     >>> dperson
     <User "Dave Person" at ...>
-    >>> address = usermgr.get_address(u'dperson@example.com')
+    >>> address = usermgr.get_address('dperson@example.com')
     >>> address.verified_on = datetime.now()
 
     >>> from operator import attrgetter
     >>> sorted((addr for addr in dperson.addresses), key=attrgetter('address'))
     [<Address: Dave Person <dperson@example.com> [verified] at ...>]
-    >>> dperson.register(u'david.person@example.com', u'David Person')
+    >>> dperson.register('david.person@example.com', 'David Person')
     <Address: David Person <david.person@example.com> [not verified] at ...>
-    >>> token = registrar.register(u'david.person@example.com')
+    >>> token = registrar.register('david.person@example.com')
     >>> filebase = switchboard.files[0]
     >>> qmsg, qdata = switchboard.dequeue(filebase)
     >>> switchboard.finish(filebase)
     >>> registrar.confirm(token)
     True
-    >>> user = usermgr.get_user(u'david.person@example.com')
+    >>> user = usermgr.get_user('david.person@example.com')
     >>> user is dperson
     True
     >>> user
@@ -303,7 +303,7 @@ Corner cases
 If you try to confirm a token that doesn't exist in the pending database, the
 confirm method will just return None.
 
-    >>> registrar.confirm('no token')
+    >>> registrar.confirm(bytes('no token'))
     False
 
 Likewise, if you try to confirm, through the IUserRegistrar interface, a token
@@ -329,19 +329,19 @@ Registration and subscription
 Fred registers with Mailman at the same time that he subscribes to a mailing
 list.
 
-    >>> mlist = create_list(u'alpha@example.com')
+    >>> mlist = create_list('alpha@example.com')
     >>> token = registrar.register(
-    ...     u'fred.person@example.com', 'Fred Person', mlist)
+    ...     'fred.person@example.com', 'Fred Person', mlist)
 
 Before confirmation, Fred is not a member of the mailing list.
 
-    >>> print mlist.members.get_member(u'fred.person@example.com')
+    >>> print mlist.members.get_member('fred.person@example.com')
     None
 
 But after confirmation, he is.
 
     >>> registrar.confirm(token)
     True
-    >>> print mlist.members.get_member(u'fred.person@example.com')
+    >>> print mlist.members.get_member('fred.person@example.com')
     <Member: Fred Person <fred.person@example.com>
              on alpha@example.com as MemberRole.member>

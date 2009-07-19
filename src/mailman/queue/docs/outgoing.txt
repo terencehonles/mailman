@@ -1,3 +1,4 @@
+=====================
 Outgoing queue runner
 =====================
 
@@ -11,16 +12,16 @@ recipient set will be batched, whether messages will be personalized and
 VERP'd, etc.  The outgoing runner doesn't itself support retrying but it can
 move messages to the 'retry queue' for handling delivery failures.
 
-    >>> mlist = create_list(u'test@example.com')
+    >>> mlist = create_list('test@example.com')
 
     >>> from mailman.app.membership import add_member
     >>> from mailman.interfaces.member import DeliveryMode
-    >>> add_member(mlist, u'aperson@example.com', u'Anne Person',
-    ...            u'password', DeliveryMode.regular, u'en')
-    >>> add_member(mlist, u'bperson@example.com', u'Bart Person',
-    ...            u'password', DeliveryMode.regular, u'en')
-    >>> add_member(mlist, u'cperson@example.com', u'Cris Person',
-    ...            u'password', DeliveryMode.regular, u'en')
+    >>> add_member(mlist, 'aperson@example.com', 'Anne Person',
+    ...            'password', DeliveryMode.regular, 'en')
+    >>> add_member(mlist, 'bperson@example.com', 'Bart Person',
+    ...            'password', DeliveryMode.regular, 'en')
+    >>> add_member(mlist, 'cperson@example.com', 'Cris Person',
+    ...            'password', DeliveryMode.regular, 'en')
 
 By setting the mailing list to personalize messages, each recipient will get a
 unique copy of the message, with certain headers tailored for that recipient.

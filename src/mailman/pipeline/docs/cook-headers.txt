@@ -1,3 +1,4 @@
+===============
 Cooking headers
 ===============
 
@@ -7,14 +8,14 @@ transformations.  Some headers get added, others get changed.  Some of these
 changes depend on mailing list settings and others depend on how the message
 is getting sent through the system.  We'll take things one-by-one.
 
-    >>> mlist = create_list(u'_xtest@example.com')
-    >>> mlist.subject_prefix = u''
+    >>> mlist = create_list('_xtest@example.com')
+    >>> mlist.subject_prefix = ''
     >>> mlist.include_list_post_header = False
     >>> mlist.archive = True
 
 
 Saving the original sender
---------------------------
+==========================
 
 Because the original sender headers may get deleted or changed, CookHeaders
 will place the sender in the message metadata for safe keeping.
@@ -28,8 +29,8 @@ will place the sender in the message metadata for safe keeping.
 
     >>> from mailman.pipeline.cook_headers import process
     >>> process(mlist, msg, msgdata)
-    >>> msgdata['original_sender']
-    u'aperson@example.com'
+    >>> print msgdata['original_sender']
+    aperson@example.com
 
 But if there was no original sender, then the empty string will be saved.
 
@@ -45,7 +46,7 @@ But if there was no original sender, then the empty string will be saved.
 
 
 X-BeenThere header
-------------------
+==================
 
 The X-BeenThere header is what Mailman uses to recognize messages that have
 already been processed by this mailing list.  It's one small measure against
@@ -57,8 +58,8 @@ mail loops.
     ... A message of great import.
     ... """)
     >>> process(mlist, msg, {})
-    >>> msg['x-beenthere']
-    u'_xtest@example.com'
+    >>> print msg['x-beenthere']
+    _xtest@example.com
 
 Mailman appends X-BeenThere headers, so if there already is one in the
 original message, the posted message will contain two such headers.
@@ -75,7 +76,7 @@ original message, the posted message will contain two such headers.
 
 
 Mailman version header
-----------------------
+======================
 
 Mailman will also insert an X-Mailman-Version header...
 
@@ -98,12 +99,12 @@ Mailman will also insert an X-Mailman-Version header...
     ... A message of great import.
     ... """)
     >>> process(mlist, msg, {})
-    >>> msg['x-mailman-version']
-    u'3000'
+    >>> print msg['x-mailman-version']
+    3000
 
 
 Precedence header
------------------
+=================
 
 Mailman will insert a Precedence header, which is a de-facto standard for
 telling automatic reply software (e.g. vacation(1)) not to respond to this
@@ -115,8 +116,8 @@ message.
     ... A message of great import.
     ... """)
     >>> process(mlist, msg, {})
-    >>> msg['precedence']
-    u'list'
+    >>> print msg['precedence']
+    list
 
 But Mailman will only add that header if the original message doesn't already
 have one of them.
@@ -128,12 +129,12 @@ have one of them.
     ... A message of great import.
     ... """)
     >>> process(mlist, msg, {})
-    >>> msg['precedence']
-    u'junk'
+    >>> print msg['precedence']
+    junk
 
 
 RFC 2919 and 2369 headers
--------------------------
+=========================
 
 This is a helper function for the following section.
 
@@ -180,7 +181,7 @@ But normally, a list will include these headers.
 
     >>> mlist.include_rfc2369_headers = True
     >>> mlist.include_list_post_header = True
-    >>> mlist.preferred_language = u'en'
+    >>> mlist.preferred_language = 'en'
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... Message-ID: <12345>
@@ -202,7 +203,7 @@ But normally, a list will include these headers.
 If the mailing list has a description, then it is included in the List-Id
 header.
 
-    >>> mlist.description = u'My test mailing list'
+    >>> mlist.description = 'My test mailing list'
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...
@@ -225,20 +226,20 @@ set the List-ID header.  Start by creating a new domain.
 
     >>> from mailman.interfaces.domain import IDomainManager
     >>> manager = IDomainManager(config)
-    >>> domain = manager.add(u'mail.example.net')
-    >>> mlist.host_name = u'mail.example.net'
+    >>> domain = manager.add('mail.example.net')
+    >>> mlist.host_name = 'mail.example.net'
 
     >>> process(mlist, msg, {})
     >>> print msg['list-id']
     My test mailing list <_xtest.example.com>
 
-    >>> mlist.list_id = u'_xtest.mail.example.net'
+    >>> mlist.list_id = '_xtest.mail.example.net'
     >>> process(mlist, msg, {})
     >>> print msg['list-id']
     My test mailing list <_xtest.mail.example.net>
 
-    >>> mlist.host_name = u'example.com'
-    >>> mlist.list_id = u'_xtest.example.com'
+    >>> mlist.host_name = 'example.com'
+    >>> mlist.list_id = '_xtest.example.com'
 
 Any existing List-ID headers are removed from the original message.
 
@@ -313,7 +314,7 @@ List-Archive header either.
 
 
 Archived-At
------------
+===========
 
 RFC 5064 (draft) defines a new Archived-At header which contains the url to
 the individual message in the archives.  The stock Pipermail archiver doesn't
@@ -326,7 +327,7 @@ available to us now.
 
 
 Personalization
----------------
+===============
 
 The To field normally contains the list posting address.  However when
 messages are fully personalized, that header will get overwritten with the
