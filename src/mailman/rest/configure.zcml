@@ -12,6 +12,8 @@
   <webservice:register module="mailman.interfaces.listmanager" />
   <webservice:register module="mailman.interfaces.system" />
 
+  <adapter factory="zope.publisher.http.HTTPCharsets" />
+
   <adapter
     for="mailman.interfaces.domain.IDomainManager"
     provides="mailman.interfaces.domain.IDomainCollection"

@@ -61,3 +61,10 @@ class DomainCollection:
         if domain is None:
             raise NotFound(self, name)
         return domain
+
+    def new(self, email_host, description=None, base_url=None,
+            contact_address=None):
+        """See `IDomainCollection`."""
+        value = self._manager.add(
+            email_host, description, base_url, contact_address)
+        return value

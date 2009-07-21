@@ -37,6 +37,7 @@ import doctest
 import unittest
 
 from email import message_from_string
+from urllib import urlencode
 from urllib2 import urlopen
 
 import mailman
@@ -109,16 +110,28 @@ def dump_msgdata(msgdata, *additional_skips):
         print '{0:{2}}: {1}'.format(key, msgdata[key], longest)
 
 
-def dump_json(url):
+def dump_json(url, data=None):
     """Print the JSON dictionary read from a URL.
 
     :param url: The url to open, read, and print.
     :type url: string
+    :param data: Data to use to POST to a URL.
+    :type data: dict
     """
-    fp = urlopen(url)
+    if data is None:
+        fp = urlopen(url)
+    else:
+        fp = urlopen(url, urlencode(data))
     # fp does not support the context manager protocol.
     try:
-        data = json.load(fp)
+        raw_data = fp.read()
+        if len(raw_data) == 0:
+            print 'URL:', fp.geturl()
+            info = fp.info()
+            for header in sorted(info):
+                print '{0}: {1}'.format(header, info[header])
+            return
+        data = json.loads(raw_data)
     finally:
         fp.close()
     for key in sorted(data):

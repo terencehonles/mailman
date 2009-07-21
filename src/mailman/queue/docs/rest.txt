@@ -1,3 +1,4 @@
+===========
 REST server
 ===========
 
@@ -13,11 +14,11 @@ The RESTful server can be used to access basic version information.
     http_etag: "..."
     mailman_version: GNU Mailman 3.0... (...)
     python_version: ...
-    resource_type_link: https://localhost:8001/3.0/#system
-    self_link: https://localhost:8001/3.0/system
+    resource_type_link: http://localhost:8001/3.0/#system
+    self_link: http://localhost:8001/3.0/system
 
 
 Clean up
---------
+========
 
     >>> master.stop()

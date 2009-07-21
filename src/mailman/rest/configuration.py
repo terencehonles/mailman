@@ -25,6 +25,7 @@ __all__ = [
     ]
 
 
+from lazr.config import as_boolean
 from lazr.restful.interfaces import IWebServiceConfiguration
 from zope.interface import implements
 
@@ -51,7 +52,7 @@ class AdminWebServiceConfiguration:
     @property
     def use_https(self):
         """See `IWebServiceConfiguration`."""
-        return config.webservice.use_https
+        return as_boolean(config.webservice.use_https)
 
     # This should match the major.minor Mailman version.
     service_version_uri_prefix = '{0.MAJOR_REV}.{0.MINOR_REV}'.format(version)
