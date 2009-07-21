@@ -7,7 +7,7 @@ interface.  By default, there's a Pipermail archiver.
 
     >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('test@example.com')
-    >>> commit()
+    >>> transaction.commit()
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com

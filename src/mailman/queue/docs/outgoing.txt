@@ -28,7 +28,7 @@ unique copy of the message, with certain headers tailored for that recipient.
 
     >>> from mailman.interfaces.mailinglist import Personalization
     >>> mlist.personalize = Personalization.individual
-    >>> commit()
+    >>> transaction.commit()
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com

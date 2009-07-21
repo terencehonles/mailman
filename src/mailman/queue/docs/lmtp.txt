@@ -48,7 +48,8 @@ Once the mailing list is created, the posting address is valid.
     >>> from mailman.app.lifecycle import create_list
     >>> create_list('mylist@example.com')
     <mailing list "mylist@example.com" at ...>
-    >>> commit()
+
+    >>> transaction.commit()
     >>> lmtp.sendmail(
     ...     'anne.person@example.com',
     ...     ['mylist@example.com'], """\

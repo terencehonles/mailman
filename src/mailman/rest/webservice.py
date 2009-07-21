@@ -49,7 +49,7 @@ log = logging.getLogger('mailman.http')
 
 
 
-# pylint: disable-msg: W0232
+# pylint: disable-msg=W0232
 class AdminWebServiceRequest(WebServiceRequestTraversal, BrowserRequest):
     """A request for the admin REST interface."""
 

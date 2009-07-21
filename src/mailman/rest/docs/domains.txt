@@ -8,7 +8,7 @@ Domains
     >>> manager = IDomainManager(config)
     >>> manager.remove('example.com')
     <Domain example.com...>
-    >>> commit()
+    >>> transaction.commit()
 
 The REST API can be queried for the set of known domains, of which there are
 initially none.
@@ -25,7 +25,7 @@ Once a domain is added though, it is accessible through the API.
     <Domain example.com, An example domain,
             base_url: http://lists.example.com,
             contact_address: postmaster@example.com>
-    >>> commit()
+    >>> transaction.commit()
 
     >>> dump_json('http://localhost:8001/3.0/domains')
     entry 0:
@@ -55,7 +55,7 @@ At the top level, all domains are returned as separate entries.
     <Domain lists.example.net, Porkmasters,
             base_url: http://example.net,
             contact_address: porkmaster@example.net>
-    >>> commit()
+    >>> transaction.commit()
 
     >>> dump_json('http://localhost:8001/3.0/domains')
     entry 0:
@@ -141,7 +141,7 @@ Now the web service knows about our new domain.
     contact_address: postmaster@lists.example.com
     description: None
     email_host: lists.example.com
-    http_etag: "349365fdbf946e64fc1052b936b9192eaa94b850"
+    http_etag: "..."
     resource_type_link: http://localhost:8001/3.0/#domain
     self_link: http://localhost:8001/3.0/domains/lists.example.com
     url_host: lists.example.com
@@ -152,3 +152,43 @@ And the new domain is in our database.
     <Domain lists.example.com,
             base_url: http://lists.example.com,
             contact_address: postmaster@lists.example.com>
+
+    # Unlock the database.
+    >>> transaction.abort()
+
+You can also create a new domain with a description, a base url, and a contact
+address.
+
+    >>> dump_json('http://localhost:8001/3.0/domains', {
+    ...           'ws.op': 'new',
+    ...           'email_host': 'my.example.com',
+    ...           'description': 'My new domain',
+    ...           'base_url': 'http://allmy.example.com',
+    ...           'contact_address': 'helpme@example.com'
+    ...           })
+    URL: http://localhost:8001/3.0/domains
+    content-length: 0
+    content-type: text/plain
+    date: ...
+    location: http://localhost:8001/3.0/domains/my.example.com
+    server: WSGIServer/... Python/...
+    x-content-type-warning: guessed from content
+    x-powered-by: Zope (www.zope.org), Python (www.python.org)
+
+    >>> dump_json('http://localhost:8001/3.0/domains/my.example.com')
+    base_url: http://allmy.example.com
+    contact_address: helpme@example.com
+    description: My new domain
+    email_host: my.example.com
+    http_etag: "..."
+    resource_type_link: http://localhost:8001/3.0/#domain
+    self_link: http://localhost:8001/3.0/domains/my.example.com
+    url_host: allmy.example.com
+
+    >>> manager['my.example.com']
+    <Domain my.example.com, My new domain,
+            base_url: http://allmy.example.com,
+            contact_address: helpme@example.com>
+
+    # Unlock the database.
+    >>> transaction.abort()

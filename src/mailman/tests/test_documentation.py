@@ -156,7 +156,6 @@ def setup(testobj):
     # doctests should do the imports themselves.  It makes for better
     # documentation that way.  However, a few are really useful, or help to
     # hide some icky test implementation details.
-    testobj.globs['commit'] = config.db.commit
     testobj.globs['config'] = config
     testobj.globs['create_list'] = create_list
     testobj.globs['dump_json'] = dump_json
@@ -164,6 +163,7 @@ def setup(testobj):
     testobj.globs['message_from_string'] = specialized_message_from_string
     testobj.globs['smtpd'] = SMTPLayer.smtpd
     testobj.globs['stop'] = stop
+    testobj.globs['transaction'] = config.db
 
 
 
