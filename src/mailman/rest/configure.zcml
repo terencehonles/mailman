@@ -34,6 +34,13 @@
     factory="mailman.rest.urls.FallbackURLMapper"
     />
 
+  <adapter
+    for="mailman.interfaces.mailinglist.IMailingList
+         mailman.rest.webservice.AdminWebServiceRequest"
+    provides="zope.traversing.browser.interfaces.IAbsoluteURL"
+    factory="mailman.rest.urls.MailingListURLMapper"
+    />
+
   <utility
     factory="mailman.rest.configuration.AdminWebServiceConfiguration"
     provides="lazr.restful.interfaces.IWebServiceConfiguration">

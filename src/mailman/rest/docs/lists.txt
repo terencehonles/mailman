@@ -10,3 +10,23 @@ yet though.
     resource_type_link: http://localhost:8001/3.0/#mailing_lists
     start: None
     total_size: 0
+
+Create a mailing list in a domain and it's accessible via the API.
+
+    >>> from mailman.app.lifecycle import create_list
+    >>> create_list('test-one@example.com')
+    <mailing list "test-one@example.com" at ...>
+    >>> transaction.commit()
+
+    >>> dump_json('http://localhost:8001/3.0/lists')
+    entry 0:
+        fqdn_listname: test-one@example.com
+        host_name: example.com
+        http_etag: "..."
+        list_name: test-one
+        real_name: Test-one
+        resource_type_link: http://localhost:8001/3.0/#mailing_list
+        self_link: http://localhost:8001/3.0/mailing_lists/test-one@example.com
+    resource_type_link: http://localhost:8001/3.0/#mailing_lists
+    start: 0
+    total_size: 1

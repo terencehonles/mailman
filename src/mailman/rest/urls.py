@@ -21,8 +21,8 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'AbsoluteURLMapper',
     'DomainURLMapper',
+    'MailingListURLMapper',
     ]
 
 
@@ -82,19 +82,35 @@ class FallbackURLMapper(BasicURLMapper):
             return ''
         urls = {
             system: 'system',
-            #config.db.list_manager: 'lists',
+            config.db.list_manager: 'lists',
             }
         return urls[ob]
 
 
 
-class DomainURLMapper(BasicURLMapper):
-    """Mapper of `IDomains` to `IAbsoluteURL`."""
+class TopLevelURLMapper(BasicURLMapper):
+    """A simple mapper for top level objects."""
 
     implements(IAbsoluteURL)
 
+    format_string = None
+
     def __call__(self):
-        """Return the hard-coded URL to the domain."""
-        return ('{0.schema}://{0.hostname}:{0.port}/{0.version}/domains/'
-                '{1.email_host}').format(self, self.context)
-        
+        """Return the hard-coded URL to the resource."""
+        return self.format_string.format(self)
+
+
+class DomainURLMapper(TopLevelURLMapper):
+    """Mapper of `IDomains` to `IAbsoluteURL`."""
+
+    format_string = (
+        '{0.schema}://{0.hostname}:{0.port}/{0.version}/'
+        'domains/{0.context.email_host}')
+
+
+class MailingListURLMapper(TopLevelURLMapper):
+    """Mapper of `IMailingList` to `IAbsoluteURL`."""
+
+    format_string = (
+        '{0.schema}://{0.hostname}:{0.port}/{0.version}/'
+        'mailing_lists/{0.context.fqdn_listname}')
