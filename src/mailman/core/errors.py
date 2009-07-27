@@ -23,7 +23,6 @@ __metaclass__ = type
 __all__ = [
     'AlreadyReceivingDigests',
     'AlreadyReceivingRegularDeliveries',
-    'BadDomainSpecificationError',
     'BadPasswordSchemeError',
     'CantDigestError',
     'DiscardMessage',
@@ -71,9 +70,6 @@ class MembershipIsBanned(MemberError): pass
 class MailmanError(MailmanException):
     """Base class for all Mailman errors."""
     pass
-
-class BadDomainSpecificationError(MailmanError):
-    """The specification of a virtual domain is invalid or duplicated."""
 
 
 

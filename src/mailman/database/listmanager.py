@@ -86,3 +86,8 @@ class ListManager(object):
         """See `IListManager`."""
         # lazr.restful will not allow this to be a generator.
         return list(self.mailing_lists)
+
+    def new(self, fqdn_listname):
+        """See `IListManager."""
+        from mailman.app.lifecycle import create_list
+        return create_list(fqdn_listname)

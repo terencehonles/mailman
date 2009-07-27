@@ -21,6 +21,7 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
+    'BadDomainSpecificationError',
     'IDomain',
     'IDomainCollection',
     'IDomainManager',
@@ -28,12 +29,20 @@ __all__ = [
 
 
 from lazr.restful.declarations import (
-    collection_default_content, export_as_webservice_collection,
+    collection_default_content, error_status, export_as_webservice_collection,
     export_as_webservice_entry, export_factory_operation, exported)
 from zope.interface import Interface, Attribute
 from zope.schema import TextLine
 
+from mailman.core.errors import MailmanError
 from mailman.i18n import _
+
+
+
+@error_status(400)
+class BadDomainSpecificationError(MailmanError):
+    """The specification of a virtual domain is invalid or duplicated."""
+
 
 
 

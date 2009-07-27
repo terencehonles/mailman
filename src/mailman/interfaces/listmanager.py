@@ -27,7 +27,8 @@ __all__ = [
 
 
 from lazr.restful.declarations import (
-    collection_default_content, export_as_webservice_collection)
+    collection_default_content, export_as_webservice_collection,
+    export_factory_operation)
 from zope.interface import Interface, Attribute
 
 from mailman.interfaces.errors import MailmanError
@@ -95,4 +96,22 @@ class IListManager(Interface):
 
         :return: The list of all known mailing lists.
         :rtype: list of `IMailingList`
+        """
+
+    @export_factory_operation(IMailingList, ('fqdn_listname',))
+    def new(fqdn_listname):
+        """Add a new maling list.
+
+        The mailing may not exist yet, but the domain specified in
+        `fqdn_listname` must exist.
+
+        :param fqdn_listname: The fully qualified name for the new
+            mailing list.
+        :type fqdn_listname: string
+        :return: The new mailing list
+        :rtype: `IMailingList`
+        :raises `BadDomainSpecificationError`: when the hostname part of
+            `fqdn_listname` does not exist.
+        :raises `ListAlreadyExistsError`: when the mailing list already
+            exists.
         """

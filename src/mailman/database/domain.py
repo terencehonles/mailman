@@ -29,9 +29,9 @@ from urlparse import urljoin, urlparse
 from storm.locals import Int, Unicode
 from zope.interface import implements
 
-from mailman.core.errors import BadDomainSpecificationError
 from mailman.database.model import Model
-from mailman.interfaces.domain import IDomain, IDomainManager
+from mailman.interfaces.domain import (
+    BadDomainSpecificationError, IDomain, IDomainManager)
 
 
 

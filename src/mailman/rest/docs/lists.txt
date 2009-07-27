@@ -30,3 +30,46 @@ Create a mailing list in a domain and it's accessible via the API.
     resource_type_link: http://localhost:8001/3.0/#mailing_lists
     start: 0
     total_size: 1
+
+
+Creating lists via the API
+==========================
+
+New mailing lists can also be created through the API, by posting to the
+'mailing_lists' URL.  However lazr.restful requires us to use a 'named
+operation' instead of posting directly to the URL.
+
+    >>> dump_json('http://localhost:8001/3.0/lists', {
+    ...           'ws.op': 'new',
+    ...           'fqdn_listname': 'test-two@example.com',
+    ...           })
+    URL: http://localhost:8001/3.0/lists
+    content-length: 0
+    content-type: text/plain
+    date: ...
+    location: http://localhost:8001/3.0/mailing_lists/test-two@example.com
+    server: WSGIServer/... Python/...
+    x-content-type-warning: guessed from content
+    x-powered-by: Zope (www.zope.org), Python (www.python.org)
+
+The mailing list exists in the database.
+
+    >>> config.db.list_manager.get('test-two@example.com')
+    <mailing list "test-two@example.com" at ...>
+
+However, you are not allowed to create a mailing list in a domain that does
+not exist.
+
+    >>> dump_json('http://localhost:8001/3.0/lists', {
+    ...           'ws.op': 'new',
+    ...           'fqdn_listname': 'test-three@example.org',
+    ...           })
+    XXX
+
+Nor can you create a mailing list that already exists.
+
+    >>> dump_json('http://localhost:8001/3.0/lists', {
+    ...           'ws.op': 'new',
+    ...           'fqdn_listname': 'test-one@example.com',
+    ...           })
+    XXX

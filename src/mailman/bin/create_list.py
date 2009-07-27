@@ -23,6 +23,7 @@ from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.core import errors
 from mailman.email.message import UserNotification
+from mailman.interfaces.domain import BadDomainSpecificationError
 from mailman.interfaces.listmanager import ListAlreadyExistsError
 from mailman.options import SingleMailingListOptions
 
@@ -104,7 +105,7 @@ def main():
         options.parser.error(_('Illegal list name: $fqdn_listname'))
     except ListAlreadyExistsError:
         options.parser.error(_('List already exists: $fqdn_listname'))
-    except errors.BadDomainSpecificationError, domain:
+    except BadDomainSpecificationError, domain:
         options.parser.error(_('Undefined domain: $domain'))
 
     config.db.commit()
