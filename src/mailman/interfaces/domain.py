@@ -44,7 +44,6 @@ class BadDomainSpecificationError(MailmanError):
     """The specification of a virtual domain is invalid or duplicated."""
 
 
-
 
 class IDomain(Interface):
     """Interface representing domains."""
