@@ -17,6 +17,10 @@
 
 """Traversal rules for the Mailman RESTful admin web service."""
 
+# XXX BAW 2009-08-06 Can we get rid of this module?  It only seems to be used
+# for NotFound traversals from the top level.  See the failure in basic.txt if
+# we remove this module.
+
 from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
@@ -27,12 +31,8 @@ __all__ = [
 
 from urllib import unquote
 
-from zope.component import adapts
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse, NotFound
-from zope.publisher.interfaces.browser import IDefaultBrowserLayer
-
-from mailman.interfaces.rest import IHasGet
 
 
 

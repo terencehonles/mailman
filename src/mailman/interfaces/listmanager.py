@@ -27,7 +27,7 @@ __all__ = [
 
 
 from lazr.restful.declarations import (
-    collection_default_content, export_as_webservice_collection,
+    collection_default_content, error_status, export_as_webservice_collection,
     export_factory_operation)
 from zope.interface import Interface, Attribute
 
@@ -36,6 +36,7 @@ from mailman.interfaces.mailinglist import IMailingList
 
 
 
+@error_status(400)
 class ListAlreadyExistsError(MailmanError):
     """Attempted to create a mailing list that already exists.
 

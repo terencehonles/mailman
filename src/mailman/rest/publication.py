@@ -85,11 +85,21 @@ class Publication:
         """See `IPublication`."""
         # Any in-progress transaction must be aborted.
         config.db.abort()
+        # Reproduce the behavior of ZopePublication by looking up a view
+        # for this exception.
         exception = exc_info[1]
+        # XXX BAW 2009-08-06 This should not be necessary.  I need to register
+        # a view so that 404 will be returned for a NotFound.
         if isinstance(exception, NotFound):
             request.response.reset()
             request.response.setStatus(404)
             request.response.setResult('')
+            return
+        view = queryMultiAdapter((exception, request), name='index.html')
+        if view is not None:
+            exc_info = None
+            request.response.reset()
+            request.response.setResult(view())
         else:
             traceback.print_exception(*exc_info)
 

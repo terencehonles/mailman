@@ -64,7 +64,9 @@ not exist.
     ...           'ws.op': 'new',
     ...           'fqdn_listname': 'test-three@example.org',
     ...           })
-    XXX
+    Traceback (most recent call last):
+    ...
+    HTTPError: HTTP Error 400: Bad Request
 
 Nor can you create a mailing list that already exists.
 
@@ -72,4 +74,6 @@ Nor can you create a mailing list that already exists.
     ...           'ws.op': 'new',
     ...           'fqdn_listname': 'test-one@example.com',
     ...           })
-    XXX
+    Traceback (most recent call last):
+    ...
+    HTTPError: HTTP Error 400: Bad Request
