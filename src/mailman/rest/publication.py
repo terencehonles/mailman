@@ -66,7 +66,10 @@ class Publication:
         resolver = IResolvePathNames(ob, missing)
         if resolver is missing:
             raise NotFound(ob, name, request)
-        return ob.get(name)
+        next_step = ob.get(name)
+        if next_step is None:
+            raise NotFound(ob, name, request)
+        return next_step
 
     def afterTraversal(self, request, ob):
         """See `IPublication`."""

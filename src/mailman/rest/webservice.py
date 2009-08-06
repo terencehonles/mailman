@@ -37,6 +37,7 @@ from wsgiref.simple_server import WSGIServer, WSGIRequestHandler
 from lazr.restful.publisher import WebServiceRequestTraversal
 from zope.interface import implements
 from zope.publisher.browser import BrowserRequest
+from zope.publisher.interfaces import NotFound
 from zope.publisher.publish import publish
 
 from mailman.config import config
