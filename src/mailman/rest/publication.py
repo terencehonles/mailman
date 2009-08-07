@@ -31,7 +31,6 @@ from lazr.restful.publisher import WebServicePublicationMixin
 from zope.component import queryMultiAdapter
 from zope.interface import implements
 from zope.publisher.interfaces import IPublication, NotFound
-from zope.publisher.publish import mapply
 from zope.security.management import endInteraction, newInteraction
 
 from mailman.config import config

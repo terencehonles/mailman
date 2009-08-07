@@ -28,8 +28,7 @@ __all__ = [
 
 import logging
 
-from zope.component import adapts
-from zope.interface import implements, Interface
+from zope.interface import implements
 from zope.traversing.browser.interfaces import IAbsoluteURL
 
 from mailman.config import config

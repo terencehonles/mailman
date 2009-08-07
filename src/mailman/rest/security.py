@@ -32,6 +32,6 @@ from zope.security.simplepolicies import PermissiveSecurityPolicy
 class AdminWebServiceSecurityPolicy(PermissiveSecurityPolicy):
     """A very basic wide-open security policy."""
 
-    def checkPermission(self, permission, object):
+    def checkPermission(self, permission, obj):
         """By default, allow all access!"""
         return True
