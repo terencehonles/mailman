@@ -7,7 +7,7 @@ top level collection that can return all the mailing lists.  There aren't any
 yet though.
 
     >>> dump_json('http://localhost:8001/3.0/lists')
-    resource_type_link: http://localhost:8001/3.0/#mailing_lists
+    resource_type_link: http://localhost:8001/3.0/#lists
     start: None
     total_size: 0
 
@@ -25,9 +25,9 @@ Create a mailing list in a domain and it's accessible via the API.
         http_etag: "..."
         list_name: test-one
         real_name: Test-one
-        resource_type_link: http://localhost:8001/3.0/#mailing_list
-        self_link: http://localhost:8001/3.0/mailing_lists/test-one@example.com
-    resource_type_link: http://localhost:8001/3.0/#mailing_lists
+        resource_type_link: http://localhost:8001/3.0/#list
+        self_link: http://localhost:8001/3.0/lists/test-one@example.com
+    resource_type_link: http://localhost:8001/3.0/#lists
     start: 0
     total_size: 1
 
@@ -36,8 +36,8 @@ Creating lists via the API
 ==========================
 
 New mailing lists can also be created through the API, by posting to the
-'mailing_lists' URL.  However lazr.restful requires us to use a 'named
-operation' instead of posting directly to the URL.
+'lists' URL.  However lazr.restful requires us to use a 'named operation'
+instead of posting directly to the URL.
 
     >>> dump_json('http://localhost:8001/3.0/lists', {
     ...           'ws.op': 'new',
@@ -47,7 +47,7 @@ operation' instead of posting directly to the URL.
     content-length: 0
     content-type: text/plain
     date: ...
-    location: http://localhost:8001/3.0/mailing_lists/test-two@example.com
+    location: http://localhost:8001/3.0/lists/test-two@example.com
     server: WSGIServer/... Python/...
     x-content-type-warning: guessed from content
     x-powered-by: Zope (www.zope.org), Python (www.python.org)
@@ -56,6 +56,21 @@ The mailing list exists in the database.
 
     >>> config.db.list_manager.get('test-two@example.com')
     <mailing list "test-two@example.com" at ...>
+
+    # The above starts a Storm transaction, which will lock the database
+    # unless we abort it.
+    >>> transaction.abort()
+
+It is also available via the location given in the response.
+
+    >>> dump_json('http://localhost:8001/3.0/lists/test-two@example.com')
+    fqdn_listname: test-two@example.com
+    host_name: example.com
+    http_etag: "..."
+    list_name: test-two
+    real_name: Test-two
+    resource_type_link: http://localhost:8001/3.0/#list
+    self_link: http://localhost:8001/3.0/lists/test-two@example.com
 
 However, you are not allowed to create a mailing list in a domain that does
 not exist.

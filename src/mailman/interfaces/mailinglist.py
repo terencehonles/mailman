@@ -71,7 +71,10 @@ class DigestFrequency(Enum):
 class IMailingList(Interface):
     """A mailing list."""
 
-    export_as_webservice_entry()
+    # Use a different singular and plural name for the resource type than
+    # lazr.restful gives it as a default (which is normally taken from the
+    # interface name).
+    export_as_webservice_entry('list', 'lists')
 
     # List identity
 

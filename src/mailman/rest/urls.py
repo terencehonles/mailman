@@ -112,4 +112,4 @@ class MailingListURLMapper(TopLevelURLMapper):
 
     format_string = (
         '{0.schema}://{0.hostname}:{0.port}/{0.version}/'
-        'mailing_lists/{0.context.fqdn_listname}')
+        'lists/{0.context.fqdn_listname}')
