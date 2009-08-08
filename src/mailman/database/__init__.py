@@ -28,6 +28,7 @@ import logging
 from locknix.lockfile import Lock
 from lazr.config import as_boolean
 from pkg_resources import resource_string
+from storm.cache import GenerationalCache
 from storm.locals import create_database, Store
 from urlparse import urlparse
 from zope.interface import implements
@@ -106,7 +107,7 @@ class StockDatabase:
         # half dozen and all...
         touch(url)
         database = create_database(url)
-        store = Store(database)
+        store = Store(database, GenerationalCache())
         database.DEBUG = (as_boolean(config.database.debug)
                           if debug is None else debug)
         # Check the sqlite master database to see if the version file exists.
