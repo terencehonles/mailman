@@ -38,7 +38,7 @@ class Lists:
 
     implements(ICLISubCommand)
 
-    def add(self, subparser):
+    def add(self, parser, subparser):
         """See `ICLISubCommand`."""
         lists_parser = subparser.add_parser(
             'lists', help=_('List all mailing lists'))

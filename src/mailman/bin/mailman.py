@@ -63,7 +63,7 @@ def main():
     for command_class in find_components('mailman.commands', ICLISubCommand):
         command = command_class()
         verifyObject(ICLISubCommand, command)
-        command.add(subparser)
+        command.add(parser, subparser)
     args = parser.parse_args()
     if len(args.__dict__) == 0:
         # No arguments or subcommands were given.
