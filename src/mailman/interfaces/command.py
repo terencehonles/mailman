@@ -22,6 +22,7 @@ from __future__ import absolute_import, unicode_literals
 __metaclass__ = type
 __all__ = [
     'ContinueProcessing',
+    'ICLISubCommand',
     'IEmailCommand',
     'IEmailResults',
     ]
@@ -69,5 +70,19 @@ class IEmailCommand(Interface):
 
 
 
-class IBinCommand(Interface):
-    """A command line (i.e. bin) command."""
+class ICLISubCommand(Interface):
+    """A command line interface subcommand."""
+
+    def add(subparser):
+        """Add the subcommand to the subparser.
+
+        :param subparser: The argument subparser.
+        :type subparser: `argparse.ArgumentParser`
+        """
+
+    def process(args):
+        """Process the subcommand.
+
+        :param args: The namespace, as passed in by argparse.
+        :type args: `argparse.Namespace`
+        """

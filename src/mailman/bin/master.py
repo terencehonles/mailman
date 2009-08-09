@@ -17,10 +17,11 @@
 
 """Master sub-process watcher."""
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
 __all__ = [
-    'Loop',
-    'get_lock_data',
+    'main',
     ]
 
 

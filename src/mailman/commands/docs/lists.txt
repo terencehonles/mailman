@@ -1,0 +1,127 @@
+=========================
+Command line list display
+=========================
+
+A system administrator can display all the mailing lists via the command
+line.  When there are no mailing lists, a helpful message is displayed.
+
+    >>> class FakeArgs:
+    ...     advertised = False
+    ...     bare = False
+    ...     domains = None
+    ...     full = False
+
+    >>> from mailman.commands.lists import Lists
+    >>> command = Lists()
+    >>> command.process(FakeArgs)
+    No matching mailing lists found
+
+When there are a few mailing lists, they are shown in alphabetical order by
+their fully qualified list names, with a description.
+
+    >>> from mailman.config import config
+    >>> from mailman.interfaces.domain import IDomainManager
+    >>> domain_mgr = IDomainManager(config)
+    >>> domain_mgr.add('example.net')
+    <Domain example.net...>
+
+    >>> from mailman.app.lifecycle import create_list
+    >>> mlist_1 = create_list('list-one@example.com')
+    >>> mlist_1.description = 'List One'
+
+    >>> mlist_2 = create_list('list-two@example.com')
+    >>> mlist_2.description = 'List Two'
+
+    >>> mlist_3 = create_list('list-one@example.net')
+    >>> mlist_3.description = 'List One in Example.Net'
+    >>> transaction.commit()
+
+    >>> command.process(FakeArgs)
+    3 matching mailing lists found:
+    List-one - List One
+    List-one - List One in Example.Net
+    List-two - List Two
+
+
+Full names
+==========
+
+You can display the mailing lists' full names, i.e. their posting addresses,
+with the --full switch.
+
+    >>> FakeArgs.full = True
+    >>> command.process(FakeArgs)
+    3 matching mailing lists found:
+    list-one@example.com - List One
+    list-one@example.net - List One in Example.Net
+    list-two@example.com - List Two
+
+
+Bare names
+==========
+
+You can print less verbose output, such that only the mailing list's name is
+shown, with the --bare option.
+
+    >>> FakeArgs.bare = True
+    >>> FakeArgs.full = False
+    >>> command.process(FakeArgs)
+    List-one
+    List-one
+    List-two
+
+--full and --bare can be combined.
+
+    >>> FakeArgs.full = True
+    >>> command.process(FakeArgs)
+    list-one@example.com
+    list-one@example.net
+    list-two@example.com
+
+
+Specific domain
+===============
+
+You can narrow the search down to a specific domain with the --domain option.
+A helpful message is displayed if no matching domains are given.
+
+    >>> FakeArgs.bare = False
+    >>> FakeArgs.domains = ['example.org']
+    >>> command.process(FakeArgs)
+    No matching mailing lists found
+
+But if a matching domain is given, only mailing lists in that domain are
+shown.
+
+    >>> FakeArgs.domains = ['example.net']
+    >>> command.process(FakeArgs)
+    1 matching mailing lists found:
+    list-one@example.net - List One in Example.Net
+
+More than one --domain argument can be given; then all mailing lists in
+matching domains are shown.
+
+    >>> FakeArgs.domains = ['example.com', 'example.net']
+    >>> command.process(FakeArgs)
+    3 matching mailing lists found:
+    list-one@example.com - List One
+    list-one@example.net - List One in Example.Net
+    list-two@example.com - List Two
+
+
+Advertised lists
+================
+
+Mailing lists can be 'advertised' meaning their existence is public
+knowledge.  Non-advertised lists are considered private.  Display through the
+command line can select on this attribute.
+
+    >>> FakeArgs.domains = []
+    >>> FakeArgs.advertised = True
+    >>> mlist_1.advertised = False
+    >>> transaction.commit()
+
+    >>> command.process(FakeArgs)
+    2 matching mailing lists found:
+    list-one@example.net - List One in Example.Net
+    list-two@example.com - List Two

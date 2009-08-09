@@ -17,10 +17,11 @@
 
 """Internationalization support."""
 
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
+    'Translator',
     '_',
     'get_translation',
     'set_language',
@@ -34,6 +35,8 @@ import sys
 import time
 import string
 import gettext
+
+from textwrap import dedent
 
 import mailman.messages
 from mailman.utilities.string import expand
@@ -127,48 +130,68 @@ if _translation is None:
 
 
 
-def _(s):
-    """Translate the string.
+class Translator:
+    def __init__(self, dedent=True):
+        """Create a translation context.
 
-    :param s: The string to transate
-    :type s: string
-    :return: The translated string
-    :rtype: string
-    """
-    if s == '':
-        return ''
-    assert s, 'Cannot translate: {0}'.format(s)
-    # Do translation of the given string into the current language, and do PEP
-    # 292 style $-string interpolation into the resulting string.
-    #
-    # This lets you write something like:
-    #
-    #     now = time.ctime(time.time())
-    #     print _('The current time is: $now')
-    #
-    # and have it Just Work.  Note that the lookup order for keys in the
-    # original string is 1) locals dictionary, 2) globals dictionary.
-    #
-    # Get the frame of the caller.
-    # pylint: disable-msg=W0212
-    frame = sys._getframe(1)
-    # A `safe' dictionary is used so we won't get an exception if there's a
-    # missing key in the dictionary.
-    raw_dict = frame.f_globals.copy()
-    raw_dict.update(frame.f_locals)
-    # Mailman must be unicode safe internally (i.e. all strings inside Mailman
-    # must be unicodes).  The translation service is one boundary to the
-    # outside world, so to honor this constraint, make sure that all strings
-    # to come out of _() are unicodes, even if the translated string or
-    # dictionary values are 8-bit strings.
-    tns = _translation.ugettext(s)
-    charset = _translation.charset() or 'us-ascii'
-    # Python requires ** dictionaries to have str, not unicode keys.  For our
-    # purposes, keys should always be ascii.  Values though should be unicode.
-    translated_string = expand(tns, attrdict(raw_dict), Template)
-    if isinstance(translated_string, str):
-        translated_string = unicode(translated_string, charset)
-    return translated_string
+        :param dedent: Whether the input string should be dedented.
+        :type dedent: bool
+        """
+        self.dedent = dedent
+
+    def _(self, original):
+        """Translate the string.
+
+        :param original: The original string to translate.
+        :type original: string
+        :return: The translated string.
+        :rtype: string
+        """
+        if original == '':
+            return ''
+        assert original, 'Cannot translate: {0}'.format(s)
+        # Because the original string is what the text extractors put into the
+        # catalog, we must first look up the original unadulterated string in
+        # the catalog.  Use the global translation context for this.
+        #
+        # Mailman must be unicode safe internally (i.e. all strings inside
+        # Mailman are unicodes).  The translation service is one boundary to
+        # the outside world, so to honor this constraint, make sure that all
+        # strings to come out of _() are unicodes, even if the translated
+        # string or dictionary values are 8-bit strings.
+        tns = _translation.ugettext(original)
+        charset = _translation.charset() or 'us-ascii'
+        # Do PEP 292 style $-string interpolation into the resulting string.
+        #
+        # This lets you write something like:
+        #
+        #     now = time.ctime(time.time())
+        #     print _('The current time is: $now')
+        #
+        # and have it Just Work.  Note that the lookup order for keys in the
+        # original string is 1) locals dictionary, 2) globals dictionary.
+        #
+        # Get the frame of the caller.
+        # pylint: disable-msg=W0212
+        frame = sys._getframe(1)
+        # A 'safe' dictionary is used so we won't get an exception if there's
+        # a missing key in the dictionary.
+        raw_dict = frame.f_globals.copy()
+        raw_dict.update(frame.f_locals)
+        # Python requires ** dictionaries to have str, not unicode keys.  For
+        # our purposes, keys should always be ascii.  Values though should be
+        # unicode.
+        translated_string = expand(tns, attrdict(raw_dict), Template)
+        if isinstance(translated_string, str):
+            translated_string = unicode(translated_string, charset)
+        # Dedent the string if so desired.
+        if self.dedent:
+            translated_string = dedent(translated_string)
+        return translated_string
+
+
+# Global defaults.
+_ = Translator()._
 
 
 

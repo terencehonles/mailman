@@ -23,7 +23,6 @@ from string import Template
 
 sys.path.insert(0, 'src')
 
-import mailman.bin
 from mailman.version import VERSION as __version__
 from setuptools import setup, find_packages
 
@@ -62,7 +61,7 @@ for dirpath, dirnames, filenames in os.walk(start_dir):
 template = Template('$script = mailman.bin.$script:main')
 scripts = set(
     template.substitute(script=script)
-    for script in mailman.bin.__all__
+    for script in ('mailman', 'mailmanctl', 'qrunner', 'master')
     )
 
 
