@@ -44,13 +44,13 @@ We can set the pre-hook in the configuration file.
     ... """
 
 The hooks are run in the second and third steps of initialization.  However,
-we can't run those initialization steps in process, so call `bin/version` to
-force the hooks to run.
+we can't run those initialization steps in process, so call a command line
+script that will produce no output to force the hooks to run.
 
     >>> import subprocess
     >>> def call():
     ...     proc = subprocess.Popen(
-    ...         'bin/version',
+    ...         'bin/mailman lists -d ignore -b'.split(),
     ...         cwd='../..',  # testrunner runs from ./parts/test
     ...         env=dict(MAILMAN_CONFIG_FILE=config_path,
     ...                  PYTHONPATH=config_directory),
@@ -61,7 +61,6 @@ force the hooks to run.
 
     >>> call()
     pre-hook: 1
-    Using GNU Mailman 3...
     <BLANKLINE>
 
     >>> os.remove(config_path)
@@ -83,7 +82,6 @@ We can set the post-hook in the configuration file.
 
     >>> call()
     post-hook: 1
-    Using GNU Mailman 3...
     <BLANKLINE>
 
     >>> os.remove(config_path)
@@ -107,5 +105,4 @@ We can set the pre- and post-hooks in the configuration file.
     >>> call()
     pre-hook: 1
     post-hook: 2
-    Using GNU Mailman 3...
     <BLANKLINE>

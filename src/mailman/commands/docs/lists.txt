@@ -11,7 +11,7 @@ line.  When there are no mailing lists, a helpful message is displayed.
     ...     domains = None
     ...     full = False
 
-    >>> from mailman.commands.lists import Lists
+    >>> from mailman.commands.cli_lists import Lists
     >>> command = Lists()
     >>> command.process(FakeArgs)
     No matching mailing lists found
