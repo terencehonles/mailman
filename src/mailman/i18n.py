@@ -41,10 +41,9 @@ from textwrap import dedent
 import mailman.messages
 from mailman.utilities.string import expand
 
+
 _translation = None
 _missing = object()
-
-MESSAGES_DIR = os.path.dirname(mailman.messages.__file__)
 
 
 
@@ -72,12 +71,13 @@ def set_language(language_code=None):
     :param language_code: The two letter language code to set.
     :type language_code: str
     """
+    messages_dir = os.path.dirname(mailman.messages.__file__)
     # pylint: disable-msg=W0603
     global _translation
     # gettext.translation() API requires None or a sequence.
     codes = (None if language_code is None else [language_code])
     try:
-        _translation = gettext.translation('mailman', MESSAGES_DIR, codes)
+        _translation = gettext.translation('mailman', messages_dir, codes)
     except IOError:
         # The selected language was not installed in messages, so fall back to
         # untranslated English.
