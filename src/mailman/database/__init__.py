@@ -55,6 +55,7 @@ class StockDatabase:
     implements(IDatabase)
 
     def __init__(self):
+        self.url = None
         self.list_manager = None
         self.user_manager = None
         self.message_store = None
@@ -105,6 +106,7 @@ class StockDatabase:
         # ensuring the right permissions.  We only try to do this for SQLite
         # engines, and yes, we could have chmod'd the file after the fact, but
         # half dozen and all...
+        self.url = url
         touch(url)
         database = create_database(url)
         store = Store(database, GenerationalCache())

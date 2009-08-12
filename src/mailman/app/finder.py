@@ -54,6 +54,9 @@ def find_components(package, interface):
         if not hasattr(module, '__all__'):
             continue
         for name in module.__all__:
-            component = getattr(module, name)
+            missing = object()
+            component = getattr(module, name, missing)
+            assert component is not missing, (
+                '%s has bad __all__: %s' % (module, name))
             if interface.implementedBy(component):
                 yield component

@@ -1,0 +1,35 @@
+===================
+Getting information
+===================
+
+You can get information about Mailman's environment by using the command line
+script 'mailman info'.  By default, the info is printed to standard output.
+
+    >>> from mailman.commands.cli_info import Info
+    >>> command = Info()
+
+    >>> class FakeArgs:
+    ...     output = None
+    >>> args = FakeArgs()
+
+    >>> command.process(args)
+    GNU Mailman 3...
+    Python ...
+    ...
+    config file: .../test.cfg
+    db url: sqlite:.../mailman.db
+
+By passing in the -o/--output option, you can print the info to a file.
+
+    >>> from mailman.config import config
+    >>> import os
+    >>> output_path = os.path.join(config.VAR_DIR, 'output.txt')
+    >>> args.output = output_path
+    >>> command.process(args)
+    >>> with open(output_path) as fp:
+    ...     print fp.read()
+    GNU Mailman 3...
+    Python ...
+    ...
+    config file: .../test.cfg
+    db url: sqlite:.../mailman.db
