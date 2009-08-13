@@ -212,7 +212,7 @@ class Create:
             # the old translation context is just (healthy? :) paranoia.
             with using_language(mlist.preferred_language.code):
                 msg = UserNotification(
-                    owner_mail, mlist.no_reply_address,
+                    args.owners, mlist.no_reply_address,
                     _('Your new mailing list: $fqdn_listname'),
                     text, mlist.preferred_language)
                 msg.send(mlist)
