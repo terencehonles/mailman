@@ -1,0 +1,45 @@
+==========================
+Command line list creation
+==========================
+
+A system administrator can create mailing lists from the command line.
+
+    >>> class FakeArgs:
+    ...     language = None
+    ...     owners = []
+    ...     quiet = False
+    ...     domain = None
+    ...     listname = None
+    ...     notify = False
+    >>> args = FakeArgs()
+
+You cannot create a mailing list in an unknown domain...
+
+    >>> from mailman.commands.cli_lists import Create
+    >>> command = Create()
+
+    >>> class FakeParser:
+    ...     def error(self, message):
+    ...         print message
+    >>> command.parser = FakeParser()
+
+    >>> args.listname = ['test@example.xx']
+    >>> command.process(args)
+    Undefined domain: example.xx
+
+...although you can tell Mailman to auto-register the domain.  In that case,
+the mailing list and domain will be created.
+
+    >>> args.domain = True
+    >>> command.process(args)
+    Created mailing list: test@example.xx
+
+Now both the domain and the mailing list exist in the database.
+
+    >>> config.db.list_manager.get('test@example.xx')
+    <mailing list "test@example.xx" at ...>
+
+    >>> from mailman.interfaces.domain import IDomainManager
+    >>> IDomainManager(config).get('example.xx')
+    <Domain example.xx, base_url: http://example.xx,
+            contact_address: postmaster@example.xx>
