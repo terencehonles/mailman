@@ -23,13 +23,14 @@ __metaclass__ = type
 __all__ = [
     'Create',
     'Lists',
+    'Remove',
     ]
 
 
 from zope.interface import implements
 
 from mailman.Utils import maketext
-from mailman.app.lifecycle import create_list
+from mailman.app.lifecycle import create_list, remove_list
 from mailman.config import config
 from mailman.constants import system_preferences
 from mailman.core.errors import InvalidEmailAddress
@@ -216,3 +217,56 @@ class Create:
                     _('Your new mailing list: $fqdn_listname'),
                     text, mlist.preferred_language)
                 msg.send(mlist)
+
+
+
+class Remove:
+    """The `remove` subcommand."""
+
+    implements(ICLISubCommand)
+
+    def add(self, parser, subparser):
+        """See `ICLISubCommand`."""
+        self.parser = parser
+        remove_parser = subparser.add_parser(
+            'remove', help=_('Remove a mailing list'))
+        remove_parser.set_defaults(func=self.process)
+        remove_parser.add_argument(
+            '-a', '--archives',
+            default=False, action='store_true',
+            help=_("""\
+Remove the list's archives too, or if the list has already been deleted,
+remove any residual archives."""))
+        remove_parser.add_argument(
+            '-q', '--quiet',
+            default=False, action='store_true',
+            help=_('Suppress status messages'))
+        # Required positional argument.
+        remove_parser.add_argument(
+            'listname', metavar='LISTNAME', nargs=1,
+            help=_("""\
+            The 'fully qualified list name', i.e. the posting address of the
+            mailing list."""))
+
+    def process(self, args):
+        """See `ICLISubCommand`."""
+        def log(message):
+            if not args.quiet:
+                print message
+        assert len(args.listname) == 1, (
+            'Unexpected positional arguments: %s' % args.listname)
+        fqdn_listname = args.listname[0]
+        mlist = config.db.list_manager.get(fqdn_listname)
+        if mlist is None:
+            if args.archives:
+                log(_('No such list: $fqdn_listname; '
+                      'removing residual archives.'))
+            else:
+                log(_('No such list: $fqdn_listname'))
+                return
+        else:
+            log(_('Removed list: $fqdn_listname'))
+        if not args.archives:
+            log(_('Not removing archives.  Reinvoke with -a to remove them.'))
+        remove_list(fqdn_listname, mlist, args.archives)
+        config.db.commit()

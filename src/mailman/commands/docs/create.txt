@@ -2,7 +2,7 @@
 Command line list creation
 ==========================
 
-A system administrator can create mailing lists from the command line.
+A system administrator can create mailing lists by the command line.
 
     >>> class FakeArgs:
     ...     language = None
