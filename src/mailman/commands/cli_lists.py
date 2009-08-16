@@ -44,31 +44,30 @@ from mailman.interfaces.listmanager import ListAlreadyExistsError
 
 
 class Lists:
-    """The `lists` subcommand."""
+    """List all mailing lists"""
 
     implements(ICLISubCommand)
 
-    def add(self, parser, subparser):
+    name = 'lists'
+
+    def add(self, parser, command_parser):
         """See `ICLISubCommand`."""
-        lists_parser = subparser.add_parser(
-            'lists', help=_('List all mailing lists'))
-        lists_parser.set_defaults(func=self.process)
-        lists_parser.add_argument(
+        command_parser.add_argument(
             '-a', '--advertised',
             default=False, action='store_true',
             help=_(
                 'List only those mailing lists that are publicly advertised'))
-        lists_parser.add_argument(
+        command_parser.add_argument(
             '-b', '--bare',
             default=False, action='store_true',
             help=_('Show only the list name, with no description'))
-        lists_parser.add_argument(
+        command_parser.add_argument(
             '-d', '--domain',
             action='append', help=_("""\
             List only those mailing lists hosted on the given domain, which
             must be the email host name.  Multiple -d options may be given.
             """))
-        lists_parser.add_argument(
+        command_parser.add_argument(
             '-f', '--full',
             default=False, action='store_true',
             help=_(
@@ -115,22 +114,20 @@ class Lists:
 
 
 class Create:
-    """The `create` subcommand."""
+    """Create a mailing list"""
 
     implements(ICLISubCommand)
 
-    def add(self, parser, subparser):
+    name = 'create'
+
+    def add(self, parser, command_parser):
         """See `ICLISubCommand`."""
-        self.parser = parser
-        create_parser = subparser.add_parser(
-            'create', help=_('Create a mailing list'))
-        create_parser.set_defaults(func=self.process)
-        create_parser.add_argument(
+        command_parser.add_argument(
             '--language',
             type='unicode', metavar='CODE', help=_("""\
             Set the list's preferred language to CODE, which must be a
             registered two letter language code."""))
-        create_parser.add_argument(
+        command_parser.add_argument(
             '-o', '--owner',
             type='unicode', action='append', default=[],
             dest='owners', metavar='OWNER', help=_("""\
@@ -139,23 +136,23 @@ class Create:
             linked to a user.  Mailman will send a confirmation message to the
             address, but it will also send a list creation notice to the
             address.  More than one owner can be specified."""))
-        create_parser.add_argument(
+        command_parser.add_argument(
             '-n', '--notify',
             default=False, action='store_true',
             help=_("""\
             Notify the list owner by email that their mailing list has been
             created."""))
-        create_parser.add_argument(
+        command_parser.add_argument(
             '-q', '--quiet',
             default=False, action='store_true',
             help=_('Print less output.'))
-        create_parser.add_argument(
+        command_parser.add_argument(
             '-d', '--domain',
             default=False, action='store_true',
             help=_("""\
             Register the mailing list's domain if not yet registered."""))
         # Required positional argument.
-        create_parser.add_argument(
+        command_parser.add_argument(
             'listname', metavar='LISTNAME', nargs=1,
             help=_("""\
             The 'fully qualified list name', i.e. the posting address of the
@@ -221,28 +218,26 @@ class Create:
 
 
 class Remove:
-    """The `remove` subcommand."""
+    """Remove a mailing list"""
 
     implements(ICLISubCommand)
 
-    def add(self, parser, subparser):
+    name = 'remove'
+
+    def add(self, parser, command_parser):
         """See `ICLISubCommand`."""
-        self.parser = parser
-        remove_parser = subparser.add_parser(
-            'remove', help=_('Remove a mailing list'))
-        remove_parser.set_defaults(func=self.process)
-        remove_parser.add_argument(
+        command_parser.add_argument(
             '-a', '--archives',
             default=False, action='store_true',
             help=_("""\
 Remove the list's archives too, or if the list has already been deleted,
 remove any residual archives."""))
-        remove_parser.add_argument(
+        command_parser.add_argument(
             '-q', '--quiet',
             default=False, action='store_true',
             help=_('Suppress status messages'))
         # Required positional argument.
-        remove_parser.add_argument(
+        command_parser.add_argument(
             'listname', metavar='LISTNAME', nargs=1,
             help=_("""\
             The 'fully qualified list name', i.e. the posting address of the

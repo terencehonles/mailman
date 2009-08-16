@@ -15,34 +15,32 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""The 'help' subcommand."""
+"""The 'members' subcommand."""
 
 from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'Help',
+    'Members',
     ]
 
 
 from zope.interface import implements
 
+from mailman.i18n import _
 from mailman.interfaces.command import ICLISubCommand
 
 
 
-class Help:
-    # Lowercase, to match argparse's default --help text.
-    """show this help message and exit"""
+class Members:
+    """Manage list memberships"""
 
     implements(ICLISubCommand)
 
-    name = 'help'
+    name = 'members'
 
     def add(self, parser, command_parser):
         """See `ICLISubCommand`."""
-        self.parser = parser
 
     def process(self, args):
         """See `ICLISubCommand`."""
-        self.parser.print_help()

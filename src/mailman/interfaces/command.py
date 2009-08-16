@@ -73,12 +73,16 @@ class IEmailCommand(Interface):
 class ICLISubCommand(Interface):
     """A command line interface subcommand."""
 
-    def add(parser, subparser):
+    name = Attribute('The command name; must be unique')
+
+    __doc__ = Attribute('The command short help')
+
+    def add(parser, command_parser):
         """Add the subcommand to the subparser.
 
         :param parser: The argument parser.
         :type parser: `argparse.ArgumentParser`
-        :param subparser: The argument subparser.
+        :param subparser: The command subparser.
         :type subparser: `argparse.ArgumentParser`
         """
 

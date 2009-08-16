@@ -60,10 +60,26 @@ def main():
     # partially parse the arguments now, then initialize the system, then find
     # the plugins.  Punt on this for now.
     subparser = parser.add_subparsers(title='Commands')
+    subcommands = []
     for command_class in find_components('mailman.commands', ICLISubCommand):
         command = command_class()
         verifyObject(ICLISubCommand, command)
-        command.add(parser, subparser)
+        subcommands.append(command)
+    # --help should display the subcommands by alphabetical order, except that
+    # 'mailman help' should be first.
+    def sort_function(command, other):
+        if command.name == 'help':
+            return -1
+        elif other.name == 'help':
+            return 1
+        else:
+            return cmp(command.name, other.name)
+    subcommands.sort(cmp=sort_function)
+    for command in subcommands:
+        command_parser = subparser.add_parser(
+            command.name, help=_(command.__doc__))
+        command.add(parser, command_parser)
+        command_parser.set_defaults(func=command.process)
     args = parser.parse_args()
     if len(args.__dict__) == 0:
         # No arguments or subcommands were given.

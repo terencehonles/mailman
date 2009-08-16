@@ -37,16 +37,15 @@ from mailman.version import MAILMAN_VERSION_FULL
 
 
 class Info:
-    """The `info` subcommand."""
+    """Information about this Mailman instance."""
 
     implements(ICLISubCommand)
 
-    def add(self, parser, subparser):
+    name = 'info'
+
+    def add(self, parser, command_parser):
         """See `ICLISubCommand`."""
-        info_parser = subparser.add_parser(
-            'info', help=_('Information about this Mailman instance.'))
-        info_parser.set_defaults(func=self.process)
-        info_parser.add_argument(
+        command_parser.add_argument(
             '-o', '--output',
             action='store', help=_("""\
             File to send the output to.  If not given, standard output is
