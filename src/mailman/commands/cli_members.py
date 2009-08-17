@@ -25,10 +25,17 @@ __all__ = [
     ]
 
 
+import sys
+import codecs
+
+from email.utils import parseaddr
 from zope.interface import implements
 
+from mailman.app.membership import add_member
+from mailman.config import config
 from mailman.i18n import _
 from mailman.interfaces.command import ICLISubCommand
+from mailman.interfaces.member import DeliveryMode
 
 
 
@@ -41,6 +48,43 @@ class Members:
 
     def add(self, parser, command_parser):
         """See `ICLISubCommand`."""
+        command_parser.add_argument(
+            '-a', '--add',
+            dest='filename',
+            help=_('Add all member addresses in FILENAME.  FILENAME can be '
+                   "'-' to indicate standard input."))
+        # Required positional argument.
+        command_parser.add_argument(
+            'listname', metavar='LISTNAME', nargs=1,
+            help=_("""\
+            The 'fully qualified list name', i.e. the posting address of the
+            mailing list.  It must be a valid email address and the domain
+            must be registered with Mailman.  List names are forced to lower
+            case."""))
 
     def process(self, args):
         """See `ICLISubCommand`."""
+        assert len(args.listname) == 1, (
+            'Unexpected positional arguments: %s' % args.listname)
+        fqdn_listname = args.listname[0]
+        mlist = config.db.list_manager.get(fqdn_listname)
+        if mlist is None:
+            self.parser.error(_('No such list: $fqdn_listname'))
+        if args.filename == '-':
+            fp = sys.stdin
+        else:
+            fp = codecs.open(args.filename, 'r', 'utf-8')
+        try:
+            for line in fp:
+                real_name, email = parseaddr(line)
+                # If not given in the input data, parseaddr() will return the
+                # empty string, as opposed to the empty unicode.  We need a
+                # unicode real name here.
+                if real_name == '':
+                    real_name = u''
+                add_member(mlist, email, real_name, None,
+                           DeliveryMode.regular, mlist.preferred_language.code)
+        finally:
+            if fp is not sys.stdin:
+                fp.close()
+        config.db.commit()

@@ -89,7 +89,7 @@ def add_member(mlist, address, realname, password, delivery_mode, language):
             user = config.db.user_manager.create_user()
             user.real_name = (realname if realname else address_obj.real_name)
             user.link(address_obj)
-        # Since created the user, then the member,  and set preferences on the
+        # Since created the user, then the member, and set preferences on the
         # appropriate object.
         user.password = password
         user.preferences.preferred_language = language
