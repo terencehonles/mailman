@@ -41,6 +41,14 @@
     factory="mailman.rest.urls.MailingListURLMapper"
     />
 
+  <adapter
+    for="zope.publisher.interfaces.NotFound
+         lazr.restful.simple.Request"
+    provides="zope.interface.Interface"
+    factory="lazr.restful.error.NotFoundView"
+    name="index.html"
+    />
+
   <utility
     factory="mailman.rest.configuration.AdminWebServiceConfiguration"
     provides="lazr.restful.interfaces.IWebServiceConfiguration">

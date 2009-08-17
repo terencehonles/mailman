@@ -56,16 +56,8 @@ class AdminWebServicePublication(Publication):
         """See `IPublication`."""
         # Any in-progress transaction must be aborted.
         config.db.abort()
-        # XXX BAW 2009-08-06 This should not be necessary.  I need to register
-        # a view so that 404 will be returned for a NotFound.
-        exception = exc_info[1]
-        if isinstance(exception, NotFound):
-            request.response.reset()
-            request.response.setStatus(404)
-            request.response.setResult('')
-        else:
-            super(AdminWebServicePublication, self).handleException(
-                application, request, exc_info, retry_allowed)
+        super(AdminWebServicePublication, self).handleException(
+            application, request, exc_info, retry_allowed)
 
     def endRequest(self, request, ob):
         """Ends the interaction."""
