@@ -34,9 +34,8 @@ import logging
 # proper Mailman logger instead of stderr, as is the default.
 from wsgiref.simple_server import WSGIServer, WSGIRequestHandler
 
-from lazr.restful.publisher import WebServiceRequestTraversal
+from lazr.restful.simple import Request
 from zope.interface import implements
-from zope.publisher.browser import BrowserRequest
 from zope.publisher.publish import publish
 
 from mailman.config import config
@@ -49,11 +48,6 @@ log = logging.getLogger('mailman.http')
 
 
 
-# pylint: disable-msg=W0232
-class AdminWebServiceRequest(WebServiceRequestTraversal, BrowserRequest):
-    """A request for the admin REST interface."""
-
-
 class AdminWebServiceApplication:
     """A WSGI application for the admin REST interface."""
 
@@ -67,7 +61,7 @@ class AdminWebServiceApplication:
         environ = self.environ
         # Create the request based on the HTTP method used.
         method = environ.get('REQUEST_METHOD', 'GET').upper()
-        request = AdminWebServiceRequest(environ['wsgi.input'], environ)
+        request = Request(environ['wsgi.input'], environ)
         request.setPublication(AdminWebServicePublication(self))
         # Support post-mortem debugging.
         handle_errors = environ.get('wsgi.handleErrors', True)

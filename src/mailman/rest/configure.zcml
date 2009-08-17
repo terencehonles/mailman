@@ -22,21 +22,21 @@
 
   <adapter
     for="mailman.interfaces.domain.IDomain
-         mailman.rest.webservice.AdminWebServiceRequest"
+         lazr.restful.simple.Request"
     provides="zope.traversing.browser.interfaces.IAbsoluteURL"
     factory="mailman.rest.urls.DomainURLMapper"
     />
 
   <adapter
     for="zope.interface.Interface
-         mailman.rest.webservice.AdminWebServiceRequest"
+         lazr.restful.simple.Request"
     provides="zope.traversing.browser.interfaces.IAbsoluteURL"
     factory="mailman.rest.urls.FallbackURLMapper"
     />
 
   <adapter
     for="mailman.interfaces.mailinglist.IMailingList
-         mailman.rest.webservice.AdminWebServiceRequest"
+         lazr.restful.simple.Request"
     provides="zope.traversing.browser.interfaces.IAbsoluteURL"
     factory="mailman.rest.urls.MailingListURLMapper"
     />
