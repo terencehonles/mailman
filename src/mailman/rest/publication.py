@@ -28,36 +28,17 @@ __all__ = [
 import traceback
 
 from lazr.restful.publisher import WebServicePublicationMixin
+from lazr.restful.simple import Publication
 from zope.component import queryMultiAdapter
-from zope.interface import implements
-from zope.publisher.interfaces import IPublication, NotFound
-from zope.security.management import endInteraction, newInteraction
+from zope.publisher.interfaces import NotFound
 
 from mailman.config import config
 from mailman.interfaces.rest import IResolvePathNames
 
 
 
-class Publication:
+class AdminWebServicePublication(Publication):
     """Very simple implementation of `IPublication`."""
-
-    implements(IPublication)
-
-    def __init__(self, application):
-        self.application = application
-
-    def beforeTraversal(self, request):
-        """See `IPublication`."""
-        endInteraction()
-        newInteraction(request)
-
-    def getApplication(self, request):
-        """See `IPublication`."""
-        return self.application
-
-    def callTraversalHooks(self, request, ob):
-        """See `IPublication`."""
-        pass
 
     def traverseName(self, request, ob, name):
         """See `IPublication`."""
@@ -70,47 +51,23 @@ class Publication:
             raise NotFound(ob, name, request)
         return next_step
 
-    def afterTraversal(self, request, ob):
-        """See `IPublication`."""
-        pass
-
-    def callObject(self, request, ob):
-        """See `IPublication`."""
-        return ob()
-
-    def afterCall(self, request, ob):
-        """See `IPublication`."""
-        pass
-
     def handleException(self, application, request, exc_info,
                         retry_allowed=True):
         """See `IPublication`."""
         # Any in-progress transaction must be aborted.
         config.db.abort()
-        # Reproduce the behavior of ZopePublication by looking up a view
-        # for this exception.
-        exception = exc_info[1]
         # XXX BAW 2009-08-06 This should not be necessary.  I need to register
         # a view so that 404 will be returned for a NotFound.
+        exception = exc_info[1]
         if isinstance(exception, NotFound):
             request.response.reset()
             request.response.setStatus(404)
             request.response.setResult('')
-            return
-        view = queryMultiAdapter((exception, request), name='index.html')
-        if view is not None:
-            exc_info = None
-            request.response.reset()
-            request.response.setResult(view())
         else:
-            traceback.print_exception(*exc_info)
+            super(AdminWebServicePublication, self).handleException(
+                application, request, exc_info, retry_allowed)
 
     def endRequest(self, request, ob):
         """Ends the interaction."""
         config.db.commit()
-        endInteraction()
-
-
-
-class AdminWebServicePublication(WebServicePublicationMixin, Publication):
-    """A publication that mixes in the necessary web service stuff."""
+        super(AdminWebServicePublication, self).endRequest(request, ob)
