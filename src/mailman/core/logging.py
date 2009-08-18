@@ -78,6 +78,8 @@ class ReopenableFileHandler(logging.Handler):
                 stream.write('{0}'.format(msg))
             except UnicodeError:
                 stream.write('{0}'.format(msg.encode('string-escape')))
+            if msg[-1] != '\n':
+                stream.write('\n')
             self.flush()
         except:
             self.handleError(record)
