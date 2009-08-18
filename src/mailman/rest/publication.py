@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Module stuff."""
+"""Publication hooks."""
 
 from __future__ import absolute_import, unicode_literals
 
@@ -25,11 +25,7 @@ __all__ = [
     ]
 
 
-import traceback
-
-from lazr.restful.publisher import WebServicePublicationMixin
 from lazr.restful.simple import Publication
-from zope.component import queryMultiAdapter
 from zope.publisher.interfaces import NotFound
 
 from mailman.config import config
