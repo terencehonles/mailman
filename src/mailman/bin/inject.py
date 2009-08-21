@@ -24,6 +24,7 @@ from mailman import Utils
 from mailman.configuration import config
 from mailman.i18n import _
 from mailman.inject import inject_text
+from mailman.interfaces.listmanager import IListManager
 from mailman.message import Message
 from mailman.options import SingleMailingListOptions
 
@@ -71,7 +72,7 @@ def main():
             options.parser.error(_('Bad queue directory: $qdir'))
 
     fqdn_listname = options.options.listname
-    mlist = config.db.list_manager.get(fqdn_listname)
+    mlist = IListManager(config).get(fqdn_listname)
     if mlist is None:
         options.parser.error(_('No such list: $fqdn_listname'))
 

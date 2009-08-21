@@ -39,7 +39,7 @@ from mailman.i18n import _, using_language
 from mailman.interfaces.command import ICLISubCommand
 from mailman.interfaces.domain import (
     BadDomainSpecificationError, IDomainManager)
-from mailman.interfaces.listmanager import ListAlreadyExistsError
+from mailman.interfaces.listmanager import IListManager, ListAlreadyExistsError
 
 
 
@@ -76,7 +76,7 @@ class Lists:
     def process(self, args):
         """See `ICLISubCommand`."""
         mailing_lists = []
-        list_manager = config.db.list_manager
+        list_manager = IListManager(config)
         # Gather the matching mailing lists.
         for fqdn_name in sorted(list_manager.names):
             mlist = list_manager.get(fqdn_name)
@@ -251,7 +251,7 @@ remove any residual archives."""))
         assert len(args.listname) == 1, (
             'Unexpected positional arguments: %s' % args.listname)
         fqdn_listname = args.listname[0]
-        mlist = config.db.list_manager.get(fqdn_listname)
+        mlist = IListManager(config).get(fqdn_listname)
         if mlist is None:
             if args.archives:
                 log(_('No such list: $fqdn_listname; '

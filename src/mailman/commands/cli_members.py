@@ -35,6 +35,7 @@ from mailman.app.membership import add_member
 from mailman.config import config
 from mailman.i18n import _
 from mailman.interfaces.command import ICLISubCommand
+from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import DeliveryMode
 
 
@@ -67,7 +68,7 @@ class Members:
         assert len(args.listname) == 1, (
             'Unexpected positional arguments: %s' % args.listname)
         fqdn_listname = args.listname[0]
-        mlist = config.db.list_manager.get(fqdn_listname)
+        mlist = IListManager(config).get(fqdn_listname)
         if mlist is None:
             self.parser.error(_('No such list: $fqdn_listname'))
         if args.filename == '-':

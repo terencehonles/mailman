@@ -36,7 +36,6 @@ from zope.interface import implements
 import mailman.version
 
 from mailman.config import config
-from mailman.database.listmanager import ListManager
 from mailman.database.messagestore import MessageStore
 from mailman.database.pending import Pendings
 from mailman.database.requests import Requests
@@ -69,7 +68,6 @@ class StockDatabase:
         # the database at the same time.
         with Lock(os.path.join(config.LOCK_DIR, 'dbcreate.lck')):
             self._create(debug)
-        self.list_manager = ListManager()
         self.user_manager = UserManager()
         self.message_store = MessageStore()
         self.pendings = Pendings()

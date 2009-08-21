@@ -49,6 +49,7 @@ from mailman import i18n
 from mailman.Archiver import HyperDatabase
 from mailman.Archiver import pipermail
 from mailman.config import config
+from mailman.interfaces.listmanager import IListManager
 
 
 log = logging.getLogger('mailman.error')
@@ -319,7 +320,7 @@ class Article(pipermail.Article):
         listname = d.get('__listname')
         if listname:
             del d['__listname']
-            d['_mlist'] = config.db.list_manager.get(listname)
+            d['_mlist'] = IListManager(config).get(listname)
         if not d.has_key('_lang'):
             if hasattr(self, '_mlist'):
                 self._lang = self._mlist.preferred_language

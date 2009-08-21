@@ -34,6 +34,7 @@ from mailman.config import config
 from mailman.email.validate import validate
 from mailman.interfaces.domain import (
     BadDomainSpecificationError, IDomainManager)
+from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import MemberRole
 from mailman.utilities.modules import call_name
 
@@ -51,7 +52,7 @@ def create_list(fqdn_listname, owners=None):
     listname, domain = fqdn_listname.split('@', 1)
     if domain not in IDomainManager(config):
         raise BadDomainSpecificationError(domain)
-    mlist = config.db.list_manager.create(fqdn_listname)
+    mlist = IListManager(config).create(fqdn_listname)
     for style in config.style_manager.lookup(mlist):
         style.apply(mlist)
     # Coordinate with the MTA, as defined in the configuration file.
@@ -80,7 +81,7 @@ def remove_list(fqdn_listname, mailing_list=None, archives=True):
         for member in mailing_list.subscribers.members:
             member.unsubscribe()
         # Delete the mailing list from the database.
-        config.db.list_manager.delete(mailing_list)
+        IListManager(config).delete(mailing_list)
         # Do the MTA-specific list deletion tasks
         call_name(config.mta.incoming).create(mailing_list)
         # Remove the list directory.

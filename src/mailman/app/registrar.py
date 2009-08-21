@@ -35,6 +35,7 @@ from mailman.email.message import UserNotification
 from mailman.email.validate import validate
 from mailman.i18n import _
 from mailman.interfaces.domain import IDomain
+from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import MemberRole
 from mailman.interfaces.pending import IPendable
 from mailman.interfaces.registrar import IRegistrar
@@ -136,7 +137,7 @@ class Registrar:
         # to the list right now.
         list_name = pendable.get('list_name')
         if list_name is not None:
-            mlist = config.db.list_manager.get(list_name)
+            mlist = IListManager(config).get(list_name)
             if mlist:
                 addr.subscribe(mlist, MemberRole.member)
         return True

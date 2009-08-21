@@ -7,6 +7,12 @@
   <!-- adapters -->
 
   <adapter
+    for="mailman.config.config.IConfiguration"
+    provides="mailman.interfaces.listmanager.IListManager"
+    factory="mailman.database.listmanager.ListManager"
+    />
+
+  <adapter
     for="mailman.interfaces.domain.IDomain"
     provides="mailman.interfaces.registrar.IRegistrar"
     factory="mailman.app.registrar.Registrar"
