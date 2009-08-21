@@ -18,8 +18,8 @@
 """Mailman version strings."""
 
 # Mailman version
-VERSION = "3.0.0a3"
-CODENAME = 'Working Man'
+VERSION = "3.0.0a4"
+CODENAME = 'Vital Signs'
 
 # And as a hex number in the manner of PY_VERSION_HEX
 ALPHA = 0xa
@@ -34,7 +34,7 @@ MINOR_REV = 0
 MICRO_REV = 0
 REL_LEVEL = ALPHA
 # at most 15 beta releases!
-REL_SERIAL = 3
+REL_SERIAL = 4
 
 HEX_VERSION = ((MAJOR_REV << 24) | (MINOR_REV << 16) | (MICRO_REV << 8) |
                (REL_LEVEL << 4)  | (REL_SERIAL << 0))
