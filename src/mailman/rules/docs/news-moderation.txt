@@ -9,7 +9,8 @@ posted to the newsgroup, and from there, gated to the mailing list.  It's a
 circuitous route, but it works nonetheless by holding all messages posted
 directly to the mailing list.
 
-    >>> mlist = config.db.list_manager.create('_xtest@example.com')
+    >>> from mailman.app.lifecycle import create_list
+    >>> mlist = create_list('_xtest@example.com')
     >>> rule = config.rules['news-moderation']
     >>> print rule.name
     news-moderation

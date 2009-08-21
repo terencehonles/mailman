@@ -47,7 +47,8 @@ Individual rules can be checked to see if they match, by running the rule's
 `check()` method.  This returns a boolean indicating whether the rule was
 matched or not.
 
-    >>> mlist = config.db.list_manager.create('_xtest@example.com')
+    >>> from mailman.app.lifecycle import create_list
+    >>> mlist = create_list('_xtest@example.com')
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...

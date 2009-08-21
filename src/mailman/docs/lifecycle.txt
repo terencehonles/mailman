@@ -125,7 +125,9 @@ artifacts.
 
     >>> from mailman.app.lifecycle import remove_list
     >>> remove_list(mlist_2.fqdn_listname, mlist_2, True)
-    >>> print config.db.list_manager.get('test_2@example.com')
+
+    >>> from mailman.interfaces.listmanager import IListManager
+    >>> print IListManager(config).get('test_2@example.com')
     None
 
 We should now be able to completely recreate the mailing list.

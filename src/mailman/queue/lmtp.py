@@ -41,6 +41,7 @@ from email.utils import parseaddr
 from mailman.config import config
 from mailman.database.transaction import txn
 from mailman.email.message import Message
+from mailman.interfaces.listmanager import IListManager
 from mailman.queue import Runner
 
 elog = logging.getLogger('mailman.error')
@@ -133,7 +134,7 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
         try:
             # Refresh the list of list names every time we process a message
             # since the set of mailing lists could have changed.
-            listnames = set(config.db.list_manager.names)
+            listnames = set(IListManager(config).names)
             qlog.debug('listnames: %s', listnames)
             # Parse the message data.  If there are any defects in the
             # message, reject it right away; it's probably spam. 

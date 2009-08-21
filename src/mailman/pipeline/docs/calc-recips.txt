@@ -6,8 +6,8 @@ Every message that makes it through to the list membership gets sent to a set
 of recipient addresses.  These addresses are calculated by one of the handler
 modules and depends on a host of factors.
 
-    >>> handler = config.handlers['calculate-recipients']
-    >>> mlist = config.db.list_manager.create('_xtest@example.com')
+    >>> from mailman.app.lifecycle import create_list
+    >>> mlist = create_list('_xtest@example.com')
 
 Recipients are calculate from the list members, so add a bunch of members to
 start out with.  First, create a bunch of addresses...
@@ -52,6 +52,8 @@ but not all of the recipients.
     ... """)
     >>> recips = set(('qperson@example.com', 'zperson@example.com'))
     >>> msgdata = dict(recips=recips)
+
+    >>> handler = config.handlers['calculate-recipients']
     >>> handler.process(mlist, msg, msgdata)
     >>> sorted(msgdata['recips'])
     [u'qperson@example.com', u'zperson@example.com']

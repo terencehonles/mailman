@@ -8,7 +8,9 @@ A system administrator can remove mailing lists by the command line.
     >>> create_list('test@example.com')
     <mailing list "test@example.com" at ...>
 
-    >>> config.db.list_manager.get('test@example.com')
+    >>> from mailman.interfaces.listmanager import IListManager
+    >>> list_manager = IListManager(config)
+    >>> list_manager.get('test@example.com')
     <mailing list "test@example.com" at ...>
 
     >>> class FakeArgs:
@@ -23,7 +25,7 @@ A system administrator can remove mailing lists by the command line.
     Removed list: test@example.com
     Not removing archives.  Reinvoke with -a to remove them.
 
-    >>> print config.db.list_manager.get('test@example.com')
+    >>> print list_manager.get('test@example.com')
     None
 
 You can also remove lists quietly.
@@ -35,7 +37,7 @@ You can also remove lists quietly.
     >>> args.quiet = True
     >>> command.process(args)
 
-    >>> print config.db.list_manager.get('test@example.com')
+    >>> print list_manager.get('test@example.com')
     None
 
 

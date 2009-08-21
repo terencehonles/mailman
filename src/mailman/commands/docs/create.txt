@@ -36,7 +36,9 @@ the mailing list and domain will be created.
 
 Now both the domain and the mailing list exist in the database.
 
-    >>> config.db.list_manager.get('test@example.xx')
+    >>> from mailman.interfaces.listmanager import IListManager
+    >>> list_manager = IListManager(config)
+    >>> list_manager.get('test@example.xx')
     <mailing list "test@example.xx" at ...>
 
     >>> from mailman.interfaces.domain import IDomainManager
@@ -52,7 +54,7 @@ auto-creation flag.
     >>> command.process(args)
     Created mailing list: test1@example.com
 
-    >>> config.db.list_manager.get('test1@example.com')
+    >>> list_manager.get('test1@example.com')
     <mailing list "test1@example.com" at ...>
 
 The command can also operate quietly.
@@ -61,7 +63,7 @@ The command can also operate quietly.
     >>> args.listname = ['test2@example.com']
     >>> command.process(args)
 
-    >>> mlist = config.db.list_manager.get('test2@example.com')
+    >>> mlist = list_manager.get('test2@example.com')
     >>> mlist
     <mailing list "test2@example.com" at ...>
 
@@ -83,7 +85,7 @@ mailing list.
     >>> command.process(args)
     Created mailing list: test4@example.com
 
-    >>> mlist = config.db.list_manager.get('test4@example.com')
+    >>> mlist = list_manager.get('test4@example.com')
     >>> print list(mlist.owners.addresses)
     [<Address: foo@example.org [not verified] at ...>]
 
@@ -94,7 +96,7 @@ You can even specify more than one address for the owners.
     >>> command.process(args)
     Created mailing list: test5@example.com
 
-    >>> mlist = config.db.list_manager.get('test5@example.com')
+    >>> mlist = list_manager.get('test5@example.com')
     >>> from operator import attrgetter
     >>> print sorted(mlist.owners.addresses, key=attrgetter('address'))
     [<Address: bar@example.net [not verified] at ...>,
@@ -121,7 +123,7 @@ The language must be known to Mailman.
     >>> command.process(args)
     Created mailing list: test3@example.com
 
-    >>> mlist = config.db.list_manager.get('test3@example.com')
+    >>> mlist = list_manager.get('test3@example.com')
     >>> print mlist.preferred_language
     <Language [it] Italian>
     >>> args.language = None

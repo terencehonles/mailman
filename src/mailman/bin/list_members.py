@@ -23,7 +23,8 @@ from mailman.config import config
 from mailman.core import errors
 from mailman.email.validate import is_valid
 from mailman.i18n import _
-from mailman.interfaces import DeliveryStatus
+from mailman.interfaces.listmanager import IListManager
+from mailman.interfaces.members import DeliveryStatus
 from mailman.options import SingleMailingListOptions
 
 
@@ -142,7 +143,7 @@ def main():
     else:
         fp = sys.stdout
 
-    mlist = config.db.list_manager.get(fqdn_listname)
+    mlist = IListManager(config).get(fqdn_listname)
     if mlist is None:
         options.parser.error(_('No such list: $fqdn_listname'))
 

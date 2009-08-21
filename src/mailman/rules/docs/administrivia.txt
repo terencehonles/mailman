@@ -7,7 +7,8 @@ commands in the Subject header or first few lines of the payload.  This is
 used to catch messages posted to the list which should have been sent to the
 -request robot address.
 
-    >>> mlist = config.db.list_manager.create('_xtest@example.com')
+    >>> from mailman.app.lifecycle import create_list
+    >>> mlist = create_list('_xtest@example.com')
     >>> mlist.administrivia = True
     >>> rule = config.rules['administrivia']
     >>> print rule.name

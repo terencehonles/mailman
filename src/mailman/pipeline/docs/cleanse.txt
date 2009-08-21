@@ -6,8 +6,8 @@ All messages posted to a list get their headers cleansed.  Some headers are
 related to additional permissions that can be granted to the message and other
 headers can be used to fish for membership.
 
-    >>> handler = config.handlers['cleanse']
-    >>> mlist = config.db.list_manager.create('_xtest@example.com')
+    >>> from mailman.app.lifecycle import create_list
+    >>> mlist = create_list('_xtest@example.com')
 
 Headers such as Approved, Approve, and Urgent are used to grant special
 pemissions to individual messages.  All may contain a password; the first two
@@ -25,6 +25,8 @@ headers contain passwords, they must be removed from any posted message.
     ...
     ... Blah blah blah
     ... """)
+
+    >>> handler = config.handlers['cleanse']
     >>> handler.process(mlist, msg, {})
     >>> print msg.as_string()
     From: aperson@example.com

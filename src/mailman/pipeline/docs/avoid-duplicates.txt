@@ -7,8 +7,8 @@ reduce the reception of duplicate messages.  It does this by removing certain
 recipients from the list of recipients that earlier handler modules
 (e.g. CalcRecips) calculates.
 
-    >>> handler = config.handlers['avoid-duplicates']
-    >>> mlist = config.db.list_manager.create('_xtest@example.com')
+    >>> from mailman.app.lifecycle import create_list
+    >>> mlist = create_list('_xtest@example.com')
 
 Create some members we're going to use.
 
@@ -36,6 +36,8 @@ The module short-circuits if there are no recipients.
     ... Something
     ... """)
     >>> msgdata = {}
+
+    >>> handler = config.handlers['avoid-duplicates']
     >>> handler.process(mlist, msg, msgdata)
     >>> msgdata
     {}

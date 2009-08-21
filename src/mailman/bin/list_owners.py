@@ -22,6 +22,7 @@ from mailman.MailList import MailList
 from mailman.configuration import config
 from mailman.i18n import _
 from mailman.initialize import initialize
+from mailman.interfaces.listmanager import IListManager
 from mailman.version import MAILMAN_VERSION
 
 
@@ -53,7 +54,7 @@ def main():
     parser, opts, args = parseargs()
     initialize(opts.config)
 
-    listmgr = config.db.list_manager
+    listmgr = IListManager(config)
     listnames = set(args or listmgr.names)
     bylist = {}
 

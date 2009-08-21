@@ -23,6 +23,7 @@ from mailman import interact
 from mailman.config import config
 from mailman.core.initialize import initialize
 from mailman.i18n import _
+from mailman.interfaces.listmanager import IListManager
 from mailman.version import MAILMAN_VERSION
 
 
@@ -40,7 +41,7 @@ def do_list(listname, args, func):
     # XXX FIXME Remove this when this script is converted to
     # MultipleMailingListOptions.
     listname = listname.decode(sys.getdefaultencoding())
-    mlist = config.db.list_manager.get(listname)
+    mlist = IListManager(config).get(listname)
     if mlist is None:
         print >> sys.stderr, _('Unknown list: $listname')
     else:

@@ -6,8 +6,8 @@ When a user posts a message to a mailing list, and that user has chosen to
 receive acknowledgments of their postings, Mailman will sent them such an
 acknowledgment.
 
-    >>> handler = config.handlers['acknowledge']
-    >>> mlist = config.db.list_manager.create('_xtest@example.com')
+    >>> from mailman.app.lifecycle import create_list
+    >>> mlist = create_list('_xtest@example.com')
     >>> mlist.real_name = 'XTest'
     >>> mlist.preferred_language = 'en'
     >>> # XXX This will almost certainly change once we've worked out the web
@@ -38,6 +38,8 @@ Non-members can't get acknowledgments of their posts to the mailing list.
     ... From: bperson@example.com
     ...
     ... """)
+
+    >>> handler = config.handlers['acknowledge']
     >>> handler.process(mlist, msg, {})
     >>> virginq.files
     []

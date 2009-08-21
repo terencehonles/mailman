@@ -52,6 +52,7 @@ from zope.interface import implements
 from mailman import i18n
 from mailman.config import config
 from mailman.email.message import Message
+from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.runner import IRunner
 from mailman.interfaces.switchboard import ISwitchboard
 from mailman.utilities.filesystem import makedirs
@@ -417,7 +418,7 @@ class Runner:
         #
         # Find out which mailing list this message is destined for.
         listname = unicode(msgdata.get('listname'))
-        mlist = config.db.list_manager.get(listname)
+        mlist = IListManager(config).get(listname)
         if mlist is None:
             elog.error('Dequeuing message destined for missing list: %s',
                        listname)

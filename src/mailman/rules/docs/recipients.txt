@@ -5,7 +5,8 @@ Maximum number of recipients
 The 'max-recipients' rule matches when there are more than the maximum allowed
 number of explicit recipients addressed by the message.
 
-    >>> mlist = config.db.list_manager.create('_xtest@example.com')
+    >>> from mailman.app.lifecycle import create_list
+    >>> mlist = create_list('_xtest@example.com')
     >>> rule = config.rules['max-recipients']
     >>> print rule.name
     max-recipients

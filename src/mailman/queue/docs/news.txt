@@ -7,8 +7,8 @@ NNTP newsgroup.  One of the most important things this runner does is prepare
 the message for Usenet (yes, I know that NNTP is not Usenet, but this runner
 was originally written to gate to Usenet, which has its own rules).
 
-    >>> from mailman.queue.news import prepare_message
-    >>> mlist = config.db.list_manager.create('_xtest@example.com')
+    >>> from mailman.app.lifecycle import create_list
+    >>> mlist = create_list('_xtest@example.com')
     >>> mlist.linked_newsgroup = 'comp.lang.python'
 
 Some NNTP servers such as INN reject messages containing a set of prohibited
@@ -33,6 +33,8 @@ prohibited headers.
     ... A message
     ... """)
     >>> msgdata = {}
+
+    >>> from mailman.queue.news import prepare_message
     >>> prepare_message(mlist, msg, msgdata)
     >>> msgdata['prepped']
     True

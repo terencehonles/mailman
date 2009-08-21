@@ -38,6 +38,7 @@ from zope.interface import implements
 
 from mailman import Utils
 from mailman.config import config
+from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.mta import IMailTransportAgent
 from mailman.i18n import _
 
@@ -79,7 +80,7 @@ class LMTP:
         # Sort all existing mailing list names first by domain, then my local
         # part.  For postfix we need a dummy entry for the domain.
         by_domain = {}
-        for mailing_list in config.db.list_manager.mailing_lists:
+        for mailing_list in IListManager(config).mailing_lists:
             by_domain.setdefault(mailing_list.host_name, []).append(
                 mailing_list.list_name)
         with open(path + '.new', 'w') as fp:

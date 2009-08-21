@@ -10,10 +10,10 @@ term somewhat incorrectly, but within the spirit of the standard, which
 basically describes how to encode the recipient's address in the originator
 headers for unambigous bounce processing.
 
-    >>> handler = config.handlers['to-outgoing']
-    >>> mlist = config.db.list_manager.create('_xtest@example.com')
-    >>> switchboard = config.switchboards['out']
+    >>> from mailman.app.lifecycle import create_list
+    >>> mlist = create_list('_xtest@example.com')
 
+    >>> switchboard = config.switchboards['out']
     >>> def queue_size():
     ...     size = len(switchboard.files)
     ...     for filebase in switchboard.files:
@@ -34,6 +34,8 @@ When certain conditions are met, the message will be VERP'd.  For example, if
 the message metadata already has a VERP key, this message will be VERP'd.
 
     >>> msgdata = dict(foo=1, bar=2, verp=True)
+
+    >>> handler = config.handlers['to-outgoing']
     >>> handler.process(mlist, msg, msgdata)
     >>> print msg.as_string()
     Subject: Here is a message

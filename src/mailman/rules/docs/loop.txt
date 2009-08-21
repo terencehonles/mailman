@@ -5,7 +5,8 @@ Posting loops
 To avoid a posting loop, Mailman has a rule to check for the existence of an
 X-BeenThere header with the value of the list's posting address.
 
-    >>> mlist = config.db.list_manager.create('_xtest@example.com')
+    >>> from mailman.app.lifecycle import create_list
+    >>> mlist = create_list('_xtest@example.com')
     >>> rule = config.rules['loop']
     >>> print rule.name
     loop
