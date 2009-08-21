@@ -9,6 +9,7 @@ Here is a history of user visible changes to Mailman.
 
 3.0 alpha 3 -- "Working Man"
 ============================
+(2009-08-21)
 
 Configuration
 -------------
