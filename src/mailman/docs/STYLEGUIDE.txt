@@ -1,6 +1,6 @@
-================================================
-Mailman - The GNU Mailing List Management System
-================================================
+==============================
+GNU Mailman Coding Style Guide
+==============================
 
 Copyright (C) 2002-2009 Barry A. Warsaw
 
@@ -126,5 +126,5 @@ should be followed except for the differences outlined here.
   than ``klass``.
 
 
-.. `PEP 8`: http://www.python.org/peps/pep-0008.html
-.. `GNU Mailman Python template`: http://bazaar.launchpad.net/~mailman-coders/mailman/3.0/annotate/head%3A/template.py
+.. _`PEP 8`: http://www.python.org/peps/pep-0008.html
+.. _`GNU Mailman Python template`: http://bazaar.launchpad.net/~mailman-coders/mailman/3.0/annotate/head%3A/template.py
