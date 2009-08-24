@@ -76,6 +76,8 @@ lists and archives, etc., are available at:
 
     http://www.list.org/help.html
 
+For more information about the alpha releases, see `ALPHA.txt`_.
+
 
 Requirements
 ============
