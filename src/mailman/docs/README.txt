@@ -16,7 +16,7 @@ fine.
 Copyright
 =========
 
-Copyright 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 by the Free Software Foundation, Inc.
+Copyright 1998-2009 by the Free Software Foundation, Inc.
 
 This file is part of GNU Mailman.
 
@@ -90,6 +90,7 @@ Mailman 3.0 requires `Python 2.6`_ or newer.
 .. _Python: http://www.python.org
 .. _FAQ: http://wiki.list.org/display/DOC/Frequently+Asked+Questions
 .. _`Python 2.6`: http://www.python.org/download/releases/2.6.2/
+.. _`ALPHA.txt`: ALPHA.html
 
 
 Table of Contents

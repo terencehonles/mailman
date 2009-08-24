@@ -1,12 +1,11 @@
-================================================
-Mailman - The GNU Mailing List Management System
-================================================
+=====================================
+GNU Mailman Alpha Release Information
+=====================================
 
 Copyright (C) 2008-2009 by the Free Software Foundation, Inc.
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 
 
-ALPHA RELEASE
+Alpha Release
 =============
 
 The Mailman 3 alpha releases are being provided to give developers and other
@@ -18,7 +17,7 @@ to have a login on Launchpad to do so.  You can also send email to the
 mailman-developers mailing list.
 
 
-USING THE ALPHA
+Using the Alpha
 ===============
 
 Python 2.6 is required.  It can either be the default 'python' on your $PATH

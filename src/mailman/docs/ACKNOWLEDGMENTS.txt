@@ -1,9 +1,14 @@
-================================================
-Mailman - The GNU Mailing List Management System
-================================================
+.. -*- coding: utf-8 -*-
+
+===========================
+GNU Mailman Acknowledgments
+===========================
 
 Copyright (C) 1998-2009 by the Free Software Foundation, Inc.
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
+
+
+Core Developers
+===============
 
 The following folks are or have been core developers of Mailman (in reverse
 alphabetical order):
@@ -17,8 +22,16 @@ alphabetical order):
 * Ken Manheimer, Mailman's savior
 * Scott Cotton, Cookie-Monster
 
+
+Steering Committee
+==================
+
 The Mailman Steering Committee can be contacted directly via
 mailman-cabal@python.org
+
+
+Copyright Assignees
+===================
 
 Here is the list of other contributors who have donated large bits of
 code, and have assigned copyright for contributions to the FSF:
@@ -34,6 +47,10 @@ code, and have assigned copyright for contributions to the FSF:
 * Les Niles
 * Terri Oda
 * Simone Piunno
+
+
+Other Thanks
+============
 
 Thanks also go to the following people for their important contributions in
 other aspects of the Mailman project:
@@ -68,10 +85,10 @@ left off the list!
 * Stuart Bishop
 * David Blomquist
 * Bojan
-* Søren Bondrup
+* SÃ¸ren Bondrup
 * Grant Bowman
 * Alessio Bragadini
-* J. D. Bronson
+* J\. D\. Bronson
 * Stan Bubrouski
 * Daniel Buchmann
 * Ben Burnett
@@ -95,7 +112,7 @@ left off the list!
 * Maximillian Dornseif
 * Fred Drake
 * Maxim Dzumanenko
-* Piarres Beobide Egaña
+* Piarres Beobide EgaÃ±a
 * Rob Ellis
 * Kerem Erkan
 * Fil
@@ -103,7 +120,7 @@ left off the list!
 * Bob Fleck
 * Erik Forsberg
 * Darrell Fuhriman
-* Robert Garrigós
+* Robert GarrigÃ³s
 * Carson Gaspar
 * Pascal GEORGE
 * Vadim Getmanshchuk
@@ -147,7 +164,7 @@ left off the list!
 * Greg Lindahl
 * Christopher P. Lindsey
 * Martin von Loewis
-* Dario Lopez-Kästen
+* Dario Lopez-KÃ¤sten
 * Tanner Lovelace
 * Jay Luker
 * Gergely Madarasz
@@ -163,7 +180,7 @@ left off the list!
 * Garey Mills
 * Martin Mokrejs
 * Michael Fischer v. Mollard
-* David Martínez Moreno
+* David MartÃ­nez Moreno
 * Dirk Mueller
 * Jonas Muerer
 * Erik Myllymaki
@@ -178,8 +195,8 @@ left off the list!
 * "office"
 * Dan Ohnesorg
 * Gerald Oskoboiny
-* Eva Österlind
-* Toni Panadès
+* Eva Ã–sterlind
+* Toni PanadÃ¨s
 * Jon Parise
 * Chris Pepper
 * Tim Peters
@@ -189,7 +206,7 @@ left off the list!
 * Skye Poier
 * Martin Pool
 * Don Porter
-* Francesco Potortì
+* Francesco PotortÃ¬
 * Bob Puff
 * Michael Ranner
 * John Read
@@ -209,7 +226,7 @@ left off the list!
 * Kai Schaetzl
 * Karoly Segesdi
 * Gleydson Mazioli da Silva
-* Pasi Sjöholm
+* Pasi SjÃ¶holm
 * Chris Snell
 * Mikhail Sobolev
 * Greg Stein
