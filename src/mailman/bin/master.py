@@ -220,6 +220,66 @@ Exiting.""")
 
 
 
+class PIDWatcher:
+    """A class which safely manages child process ids."""
+
+    def __init__(self):
+        self._pids = {}
+
+    def __iter__(self):
+        # Safely iterate over all the keys in the dictionary.  Because
+        # asynchronous signals are involved, the dictionary's size could
+        # change during iteration.  Iterate over a copy of the keys to avoid
+        # that.
+        for pid in self._pids.keys():
+            yield pid
+
+    def add(self, pid, info):
+        """Add process information.
+
+        :param pid: The process id.  The watcher must not already be tracking
+            this process id.
+        :type pid: int
+        :param info: The process information.
+        :type info: 4-tuple consisting of
+            (queue-runner-name, slice-number, slice-count, restart-count)
+        """
+        old_info = self._pids.get(pid)
+        assert old_info is None, (
+            'Duplicate process id {0} with existing info: {1}'.format(
+                pid, old_info))
+        self._pids[pid] = info
+
+    def pop(self, pid):
+        """Remove and return existing process information.
+
+        :param pid: The process id.  The watcher must already be tracking this
+            process id.
+        :type pid: int
+        :return: The process information.
+        :rtype: 4-tuple consisting of
+            (queue-runner-name, slice-number, slice-count, restart-count)
+        :raise KeyError: if the process id is not being tracked.
+        """
+        return self._pids.pop(pid)
+
+    def drop(self, pid):
+        """Remove and return existing process information.
+
+        This is like `pop()` except that no `KeyError` is raised if the
+        process id is not being tracked.
+
+        :param pid: The process id.
+        :type pid: int
+        :return: The process information, or None if the process id is not
+            being tracked.
+        :rtype: 4-tuple consisting of
+            (queue-runner-name, slice-number, slice-count, restart-count)
+        """
+        return self._pids.pop(pid, None)
+
+
+
 class Loop:
     """Main control loop class."""
 
@@ -227,7 +287,7 @@ class Loop:
         self._lock = lock
         self._restartable = restartable
         self._config_file = config_file
-        self._kids = {}
+        self._kids = PIDWatcher()
 
     def install_signal_handlers(self):
         """Install various signals handlers for control from mailmanctl."""
@@ -336,7 +396,7 @@ class Loop:
                 pid = self._start_runner(spec)
                 log = logging.getLogger('mailman.qrunner')
                 log.debug('[%d] %s', pid, spec)
-                self._kids[pid] = info
+                self._kids.add(pid, info)
 
     def loop(self):
         """Main loop.
@@ -394,8 +454,9 @@ qrunner %s reached maximum restart limit of %d, not restarting.""",
             # SIGTERM or we aren't restarting.
             if restart:
                 spec = '%s:%d:%d' % (qrname, slice_number, count)
-                newpid = self._start_runner(spec)
-                self._kids[newpid] = (qrname, slice_number, count, restarts)
+                new_pid = self._start_runner(spec)
+                new_info = (qrname, slice_number, count, restarts)
+                self._kids.add(new_pid, new_info)
 
     def cleanup(self):
         """Ensure that all children have exited."""
@@ -414,7 +475,7 @@ qrunner %s reached maximum restart limit of %d, not restarting.""",
             try:
                 # pylint: disable-msg=W0612
                 pid, status = os.wait()
-                del self._kids[pid]
+                self._kids.drop(pid)
             except OSError, e:
                 if e.errno == errno.ECHILD:
                     break

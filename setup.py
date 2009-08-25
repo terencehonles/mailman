@@ -42,6 +42,8 @@ import os
 import mailman.commands
 import mailman.messages
 
+# Create the .mo files from the .po files.  There may be errors and warnings
+# here and that could cause the digester.txt test to fail.
 start_dir = os.path.dirname(mailman.messages.__file__)
 for dirpath, dirnames, filenames in os.walk(start_dir):
     for filename in filenames:
