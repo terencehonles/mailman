@@ -122,6 +122,7 @@ class Create:
 
     def add(self, parser, command_parser):
         """See `ICLISubCommand`."""
+        self.parser = parser
         command_parser.add_argument(
             '--language',
             type='unicode', metavar='CODE', help=_("""\
