@@ -14,7 +14,8 @@ essentially equivalent to rejecting the message with notification.  Mailing
 lists can bounce a message with an optional error message.
 
     >>> from mailman.interfaces.listmanager import IListManager
-    >>> mlist = IListManager(config).create('_xtest@example.com')
+    >>> from zope.component import getUtility
+    >>> mlist = getUtility(IListManager).create('_xtest@example.com')
     >>> mlist.preferred_language = 'en'
 
 Any message can be bounced.

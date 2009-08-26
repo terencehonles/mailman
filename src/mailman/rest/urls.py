@@ -28,6 +28,7 @@ __all__ = [
 
 import logging
 
+from zope.component import getUtility
 from zope.interface import implements
 from zope.traversing.browser.interfaces import IAbsoluteURL
 
@@ -82,7 +83,7 @@ class FallbackURLMapper(BasicURLMapper):
             return ''
         urls = {
             system: 'system',
-            IListManager(config): 'lists',
+            getUtility(IListManager): 'lists',
             }
         return urls[ob]
 

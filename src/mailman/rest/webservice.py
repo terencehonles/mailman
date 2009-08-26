@@ -35,6 +35,7 @@ import logging
 from wsgiref.simple_server import WSGIServer, WSGIRequestHandler
 
 from lazr.restful.simple import Request
+from zope.component import getUtility
 from zope.interface import implements
 from zope.publisher.publish import publish
 
@@ -80,7 +81,7 @@ class AdminWebServiceApplication:
         top_level = dict(
             system=system,
             domains=IDomainCollection(IDomainManager(config)),
-            lists=IListManager(config),
+            lists=getUtility(IListManager),
             )
         next_step = top_level.get(name)
         log.debug('Top level name: %s -> %s', name, next_step)

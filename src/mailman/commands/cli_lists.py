@@ -27,6 +27,7 @@ __all__ = [
     ]
 
 
+from zope.component import getUtility
 from zope.interface import implements
 
 from mailman.Utils import maketext
@@ -76,7 +77,7 @@ class Lists:
     def process(self, args):
         """See `ICLISubCommand`."""
         mailing_lists = []
-        list_manager = IListManager(config)
+        list_manager = getUtility(IListManager)
         # Gather the matching mailing lists.
         for fqdn_name in sorted(list_manager.names):
             mlist = list_manager.get(fqdn_name)
@@ -252,7 +253,7 @@ remove any residual archives."""))
         assert len(args.listname) == 1, (
             'Unexpected positional arguments: %s' % args.listname)
         fqdn_listname = args.listname[0]
-        mlist = IListManager(config).get(fqdn_listname)
+        mlist = getUtility(IListManager).get(fqdn_listname)
         if mlist is None:
             if args.archives:
                 log(_('No such list: $fqdn_listname; '

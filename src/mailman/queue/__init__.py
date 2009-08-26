@@ -47,6 +47,7 @@ import traceback
 
 from cStringIO import StringIO
 from lazr.config import as_boolean, as_timedelta
+from zope.component import getUtility
 from zope.interface import implements
 
 from mailman import i18n
@@ -418,7 +419,7 @@ class Runner:
         #
         # Find out which mailing list this message is destined for.
         listname = unicode(msgdata.get('listname'))
-        mlist = IListManager(config).get(listname)
+        mlist = getUtility(IListManager).get(listname)
         if mlist is None:
             elog.error('Dequeuing message destined for missing list: %s',
                        listname)

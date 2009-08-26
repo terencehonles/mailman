@@ -34,6 +34,7 @@ import logging
 import datetime
 
 from locknix.lockfile import Lock
+from zope.component import getUtility
 from zope.interface import implements
 
 from mailman import Utils
@@ -80,7 +81,7 @@ class LMTP:
         # Sort all existing mailing list names first by domain, then my local
         # part.  For postfix we need a dummy entry for the domain.
         by_domain = {}
-        for mailing_list in IListManager(config).mailing_lists:
+        for mailing_list in getUtility(IListManager).mailing_lists:
             by_domain.setdefault(mailing_list.host_name, []).append(
                 mailing_list.list_name)
         with open(path + '.new', 'w') as fp:

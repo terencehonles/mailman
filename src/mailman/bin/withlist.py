@@ -19,6 +19,8 @@ import os
 import sys
 import optparse
 
+from zope.component import getUtility
+
 from mailman import interact
 from mailman.config import config
 from mailman.core.initialize import initialize
@@ -41,7 +43,7 @@ def do_list(listname, args, func):
     # XXX FIXME Remove this when this script is converted to
     # MultipleMailingListOptions.
     listname = listname.decode(sys.getdefaultencoding())
-    mlist = IListManager(config).get(listname)
+    mlist = getUtility(IListManager).get(listname)
     if mlist is None:
         print >> sys.stderr, _('Unknown list: $listname')
     else:
@@ -202,7 +204,7 @@ def main():
     r = None
     if opts.all:
         r = [do_list(listname, args, func)
-             for listname in config.list_manager.names]
+             for listname in getUtility(IListManager).names]
     elif dolist:
         listname = args.pop(0).lower().strip()
         r = do_list(listname, args, func)

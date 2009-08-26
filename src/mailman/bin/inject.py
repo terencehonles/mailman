@@ -19,6 +19,7 @@ import os
 import sys
 
 from email import message_from_string
+from zope.component import getUtility
 
 from mailman import Utils
 from mailman.configuration import config
@@ -72,7 +73,7 @@ def main():
             options.parser.error(_('Bad queue directory: $qdir'))
 
     fqdn_listname = options.options.listname
-    mlist = IListManager(config).get(fqdn_listname)
+    mlist = getUtility(IListManager).get(fqdn_listname)
     if mlist is None:
         options.parser.error(_('No such list: $fqdn_listname'))
 

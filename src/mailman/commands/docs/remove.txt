@@ -9,7 +9,8 @@ A system administrator can remove mailing lists by the command line.
     <mailing list "test@example.com" at ...>
 
     >>> from mailman.interfaces.listmanager import IListManager
-    >>> list_manager = IListManager(config)
+    >>> from zope.component import getUtility
+    >>> list_manager = getUtility(IListManager)
     >>> list_manager.get('test@example.com')
     <mailing list "test@example.com" at ...>
 

@@ -15,7 +15,9 @@ modify the mailing list any way it wants.
 Let's start with a vanilla mailing list and a default style manager.
 
     >>> from mailman.interfaces.listmanager import IListManager
-    >>> mlist = IListManager(config).create('_xtest@example.com')
+    >>> from zope.component import getUtility
+    >>> mlist = getUtility(IListManager).create('_xtest@example.com')
+
     >>> from mailman.styles.manager import StyleManager
     >>> style_manager = StyleManager()
     >>> style_manager.populate()

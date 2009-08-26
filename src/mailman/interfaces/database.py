@@ -84,9 +84,6 @@ class IDatabase(Interface):
     def abort():
         """Abort the current transaction."""
 
-    list_manager = Attribute(
-        """The IListManager instance provided by the database layer.""")
-
     user_manager = Attribute(
         """The IUserManager instance provided by the database layer.""")
 

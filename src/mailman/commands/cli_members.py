@@ -29,6 +29,7 @@ import sys
 import codecs
 
 from email.utils import parseaddr
+from zope.component import getUtility
 from zope.interface import implements
 
 from mailman.app.membership import add_member
@@ -68,7 +69,7 @@ class Members:
         assert len(args.listname) == 1, (
             'Unexpected positional arguments: %s' % args.listname)
         fqdn_listname = args.listname[0]
-        mlist = IListManager(config).get(fqdn_listname)
+        mlist = getUtility(IListManager).get(fqdn_listname)
         if mlist is None:
             self.parser.error(_('No such list: $fqdn_listname'))
         if args.filename == '-':

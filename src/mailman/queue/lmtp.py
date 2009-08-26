@@ -37,6 +37,7 @@ import logging
 import asyncore
 
 from email.utils import parseaddr
+from zope.component import getUtility
 
 from mailman.config import config
 from mailman.database.transaction import txn
@@ -134,7 +135,7 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
         try:
             # Refresh the list of list names every time we process a message
             # since the set of mailing lists could have changed.
-            listnames = set(IListManager(config).names)
+            listnames = set(getUtility(IListManager).names)
             qlog.debug('listnames: %s', listnames)
             # Parse the message data.  If there are any defects in the
             # message, reject it right away; it's probably spam. 

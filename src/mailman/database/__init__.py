@@ -55,7 +55,6 @@ class StockDatabase:
 
     def __init__(self):
         self.url = None
-        self.list_manager = None
         self.user_manager = None
         self.message_store = None
         self.pendings = None

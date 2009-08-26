@@ -55,7 +55,8 @@ instead of posting directly to the URL.
 The mailing list exists in the database.
 
     >>> from mailman.interfaces.listmanager import IListManager
-    >>> IListManager(config).get('test-two@example.com')
+    >>> from zope.component import getUtility
+    >>> getUtility(IListManager).get('test-two@example.com')
     <mailing list "test-two@example.com" at ...>
 
     # The above starts a Storm transaction, which will lock the database

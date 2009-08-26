@@ -30,6 +30,8 @@ import os
 import shutil
 import logging
 
+from zope.component import getUtility
+
 from mailman.config import config
 from mailman.email.validate import validate
 from mailman.interfaces.domain import (
@@ -52,7 +54,7 @@ def create_list(fqdn_listname, owners=None):
     listname, domain = fqdn_listname.split('@', 1)
     if domain not in IDomainManager(config):
         raise BadDomainSpecificationError(domain)
-    mlist = IListManager(config).create(fqdn_listname)
+    mlist = getUtility(IListManager).create(fqdn_listname)
     for style in config.style_manager.lookup(mlist):
         style.apply(mlist)
     # Coordinate with the MTA, as defined in the configuration file.
@@ -81,7 +83,7 @@ def remove_list(fqdn_listname, mailing_list=None, archives=True):
         for member in mailing_list.subscribers.members:
             member.unsubscribe()
         # Delete the mailing list from the database.
-        IListManager(config).delete(mailing_list)
+        getUtility(IListManager).delete(mailing_list)
         # Do the MTA-specific list deletion tasks
         call_name(config.mta.incoming).create(mailing_list)
         # Remove the list directory.

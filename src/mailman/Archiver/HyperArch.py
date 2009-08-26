@@ -43,6 +43,7 @@ from email.Header import decode_header, make_header
 from lazr.config import as_boolean
 from locknix.lockfile import Lock
 from string import Template
+from zope.component import getUtility
 
 from mailman import Utils
 from mailman import i18n
@@ -320,7 +321,7 @@ class Article(pipermail.Article):
         listname = d.get('__listname')
         if listname:
             del d['__listname']
-            d['_mlist'] = IListManager(config).get(listname)
+            d['_mlist'] = getUtility(IListManager).get(listname)
         if not d.has_key('_lang'):
             if hasattr(self, '_mlist'):
                 self._lang = self._mlist.preferred_language

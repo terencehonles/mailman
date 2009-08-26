@@ -29,31 +29,23 @@ import datetime
 
 from zope.interface import implements
 
+from mailman.config import config
 from mailman.database.mailinglist import MailingList
 from mailman.interfaces.listmanager import IListManager, ListAlreadyExistsError
 from mailman.interfaces.rest import IResolvePathNames
 
 
 
-class ListManager(object):
+class ListManager:
     """An implementation of the `IListManager` interface."""
 
     implements(IListManager, IResolvePathNames)
-
-    def __init__(self, config):
-        """Create a list manager.
-
-        :param config: The configuration object.
-        :type config: `IConfiguration`
-        """
-        self.config = config
-        self.store = config.db.store
 
     # pylint: disable-msg=R0201
     def create(self, fqdn_listname):
         """See `IListManager`."""
         listname, hostname = fqdn_listname.split('@', 1)
-        mlist = self.store.find(
+        mlist = config.db.store.find(
             MailingList,
             MailingList.list_name == listname,
             MailingList.host_name == hostname).one()
@@ -61,13 +53,13 @@ class ListManager(object):
             raise ListAlreadyExistsError(fqdn_listname)
         mlist = MailingList(fqdn_listname)
         mlist.created_at = datetime.datetime.now()
-        self.store.add(mlist)
+        config.db.store.add(mlist)
         return mlist
 
     def get(self, fqdn_listname):
         """See `IListManager`."""
         listname, hostname = fqdn_listname.split('@', 1)
-        mlist = self.store.find(MailingList,
+        mlist = config.db.store.find(MailingList,
                                      list_name=listname,
                                      host_name=hostname).one()
         if mlist is not None:
@@ -77,7 +69,7 @@ class ListManager(object):
 
     def delete(self, mlist):
         """See `IListManager`."""
-        self.store.remove(mlist)
+        config.db.store.remove(mlist)
 
     @property
     def mailing_lists(self):
@@ -88,7 +80,7 @@ class ListManager(object):
     @property
     def names(self):
         """See `IListManager`."""
-        for mlist in self.store.find(MailingList):
+        for mlist in config.db.store.find(MailingList):
             yield '{0}@{1}'.format(mlist.list_name, mlist.host_name)
 
     def get_mailing_lists(self):

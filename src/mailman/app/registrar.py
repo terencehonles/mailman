@@ -28,6 +28,7 @@ __all__ = [
 import datetime
 
 from pkg_resources import resource_string
+from zope.component import getUtility
 from zope.interface import implements
 
 from mailman.config import config
@@ -137,7 +138,7 @@ class Registrar:
         # to the list right now.
         list_name = pendable.get('list_name')
         if list_name is not None:
-            mlist = IListManager(config).get(list_name)
+            mlist = getUtility(IListManager).get(list_name)
             if mlist:
                 addr.subscribe(mlist, MemberRole.member)
         return True

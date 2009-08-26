@@ -8,7 +8,8 @@ configuration variable MANAGERS_INIT_FUNCTION.  The instance is accessible
 on the global config object.
 
     >>> from mailman.interfaces.listmanager import IListManager
-    >>> list_manager = IListManager(config)
+    >>> from zope.component import getUtility
+    >>> list_manager = getUtility(IListManager)
 
 
 Creating a mailing list

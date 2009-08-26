@@ -1,11 +1,12 @@
+======================
 Mailing list addresses
 ======================
 
 Every mailing list has a number of addresses which are publicly available.
 These are defined in the IMailingListAddresses interface.
 
-    >>> from mailman.interfaces.listmanager import IListManager
-    >>> mlist = IListManager(config).create('_xtest@example.com')
+    >>> from mailman.app.lifecycle import create_list
+    >>> mlist = create_list('_xtest@example.com')
 
 The posting address is where people send messages to be posted to the mailing
 list.  This is exactly the same as the fully qualified list name.
@@ -56,7 +57,7 @@ deprecated.
 
 
 Email confirmations
--------------------
+===================
 
 Email confirmation messages are sent when actions such as subscriptions need
 to be confirmed.  It requires that a cookie be provided, which will be

@@ -18,8 +18,9 @@
 import sys
 import optparse
 
+from zope.component import getUtility
+
 from mailman.MailList import MailList
-from mailman.configuration import config
 from mailman.i18n import _
 from mailman.initialize import initialize
 from mailman.interfaces.listmanager import IListManager
@@ -54,12 +55,12 @@ def main():
     parser, opts, args = parseargs()
     initialize(opts.config)
 
-    listmgr = IListManager(config)
-    listnames = set(args or listmgr.names)
+    list_manager = getUtility(IListManager)
+    listnames = set(args or list_manager.names)
     bylist = {}
 
     for listname in listnames:
-        mlist = listmgr.get(listname)
+        mlist = list_manager.get(listname)
         addrs = [addr.address for addr in mlist.owners.addresses]
         if opts.moderators:
             addrs.extend([addr.address for addr in mlist.moderators.addresses])

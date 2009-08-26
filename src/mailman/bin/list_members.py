@@ -18,6 +18,7 @@
 import sys
 
 from email.Utils import formataddr
+from zope.component import getUtility
 
 from mailman.config import config
 from mailman.core import errors
@@ -143,7 +144,7 @@ def main():
     else:
         fp = sys.stdout
 
-    mlist = IListManager(config).get(fqdn_listname)
+    mlist = getUtility(IListManager).get(fqdn_listname)
     if mlist is None:
         options.parser.error(_('No such list: $fqdn_listname'))
 

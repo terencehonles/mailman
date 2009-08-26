@@ -1,5 +1,6 @@
-Application level list lifecycle
---------------------------------
+=================================
+Application level list life cycle
+=================================
 
 The low-level way to create and delete a mailing list is to use the
 IListManager interface.  This interface simply adds or removes the appropriate
@@ -20,7 +21,7 @@ which performs additional tasks such as:
 
 
 Posting address validation
---------------------------
+==========================
 
 If you try to use the higher-level interface to create a mailing list with a
 bogus posting address, you get an exception.
@@ -40,7 +41,7 @@ Mailman yet, you get an exception.
 
 
 Creating a list applies its styles
-----------------------------------
+==================================
 
 Start by registering a test style.
 
@@ -71,7 +72,7 @@ list styles.
 
 
 Creating a list with owners
----------------------------
+===========================
 
 You can also specify a list of owner email addresses.  If these addresses are
 not yet known, they will be registered, and new users will be linked to them.
@@ -118,7 +119,7 @@ the system, they won't be created again.
 
 
 Removing a list
----------------
+===============
 
 Removing a mailing list deletes the list, all its subscribers, and any related
 artifacts.
@@ -127,7 +128,8 @@ artifacts.
     >>> remove_list(mlist_2.fqdn_listname, mlist_2, True)
 
     >>> from mailman.interfaces.listmanager import IListManager
-    >>> print IListManager(config).get('test_2@example.com')
+    >>> from zope.component import getUtility
+    >>> print getUtility(IListManager).get('test_2@example.com')
     None
 
 We should now be able to completely recreate the mailing list.
