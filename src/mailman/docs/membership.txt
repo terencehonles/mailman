@@ -62,8 +62,10 @@ the list's moderators.  We can add new owners or moderators to this list by
 assigning roles to users.  First we have to create the user, because there are
 no users in the user database yet.
 
-    >>> usermgr = config.db.user_manager
-    >>> user_1 = usermgr.create_user('aperson@example.com', 'Anne Person')
+    >>> from mailman.interfaces.usermanager import IUserManager
+    >>> from zope.component import getUtility
+    >>> user_manager = getUtility(IUserManager)
+    >>> user_1 = user_manager.create_user('aperson@example.com', 'Anne Person')
     >>> print user_1.real_name
     Anne Person
     >>> sorted(address.address for address in user_1.addresses)
@@ -99,7 +101,7 @@ her a moderator.  Nor does it make her a member of the list.
 We can add Ben as a moderator of the list, by creating a different member role
 for him.
 
-    >>> user_2 = usermgr.create_user('bperson@example.com', 'Ben Person')
+    >>> user_2 = user_manager.create_user('bperson@example.com', 'Ben Person')
     >>> print user_2.real_name
     Ben Person
     >>> address_2 = list(user_2.addresses)[0]
@@ -136,7 +138,8 @@ delivery.  Without a preference, Mailman will fall back first to the address's
 preference, then the user's preference, then the list's preference.  Start
 without any member preference to see the system defaults.
 
-    >>> user_3 = usermgr.create_user('cperson@example.com', 'Claire Person')
+    >>> user_3 = user_manager.create_user(
+    ...     'cperson@example.com', 'Claire Person')
     >>> print user_3.real_name
     Claire Person
     >>> address_3 = list(user_3.addresses)[0]

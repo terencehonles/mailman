@@ -30,6 +30,7 @@ import logging
 from email.mime.message import MIMEMessage
 from email.mime.text import MIMEText
 from email.utils import formatdate, make_msgid
+from zope.component import getUtility
 from zope.interface import implements
 
 from mailman import i18n
@@ -41,6 +42,7 @@ from mailman.config import config
 from mailman.email.message import UserNotification
 from mailman.interfaces.autorespond import IAutoResponseSet, Response
 from mailman.interfaces.pending import IPendable
+from mailman.interfaces.usermanager import IUserManager
 
 
 log = logging.getLogger('mailman.vette')
@@ -76,9 +78,10 @@ def autorespond_to_sender(mlist, sender, lang=None):
         # Unlimited.
         return True
     # Get an IAddress from an email address.
-    address = config.db.user_manager.get_address(sender)
+    user_manager = getUtility(IUserManager)
+    address = user_manager.get_address(sender)
     if address is None:
-        address = config.db.user_manager.create_address(sender)
+        address = user_manager.create_address(sender)
     response_set = IAutoResponseSet(mlist)
     todays_count = response_set.todays_count(address, Response.hold)
     if todays_count < max_autoresponses_per_day:

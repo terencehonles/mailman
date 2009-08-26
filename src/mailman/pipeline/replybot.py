@@ -28,6 +28,7 @@ __all__ = [
 import logging
 import datetime
 
+from zope.component import getUtility
 from zope.interface import implements
 
 from mailman import Utils
@@ -37,6 +38,7 @@ from mailman.i18n import _
 from mailman.interfaces.autorespond import (
     ALWAYS_REPLY, IAutoResponseSet, Response, ResponseAction)
 from mailman.interfaces.handler import IHandler
+from mailman.interfaces.usermanager import IUserManager
 from mailman.utilities.datetime import today
 from mailman.utilities.string import expand
 
@@ -91,9 +93,10 @@ class Replybot:
         # = 0 means always automatically respond, as does an "X-Ack: yes"
         # header (useful for debugging).
         response_set = IAutoResponseSet(mlist)
-        address = config.db.user_manager.get_address(msg.sender)
+        user_manager = getUtility(IUserManager)
+        address = user_manager.get_address(msg.sender)
         if address is None:
-            address = config.db.user_manager.create_address(msg.sender)
+            address = user_manager.create_address(msg.sender)
         grace_period = mlist.autoresponse_grace_period
         if grace_period > ALWAYS_REPLY and ack <> 'yes':
             last = response_set.last_response(address, response_type)

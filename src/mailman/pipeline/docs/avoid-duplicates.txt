@@ -12,11 +12,14 @@ recipients from the list of recipients that earlier handler modules
 
 Create some members we're going to use.
 
+    >>> from mailman.interfaces.usermanager import IUserManager
+    >>> from zope.component import getUtility
+    >>> user_manager = getUtility(IUserManager)
+
+    >>> address_a = user_manager.create_address('aperson@example.com')
+    >>> address_b = user_manager.create_address('bperson@example.com')
+
     >>> from mailman.interfaces.member import MemberRole
-    >>> address_a = config.db.user_manager.create_address(
-    ...     'aperson@example.com')
-    >>> address_b = config.db.user_manager.create_address(
-    ...     'bperson@example.com')
     >>> member_a = address_a.subscribe(mlist, MemberRole.member)
     >>> member_b = address_b.subscribe(mlist, MemberRole.member)
     >>> # This is the message metadata dictionary as it would be produced by

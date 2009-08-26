@@ -12,13 +12,16 @@ modules and depends on a host of factors.
 Recipients are calculate from the list members, so add a bunch of members to
 start out with.  First, create a bunch of addresses...
 
-    >>> usermgr = config.db.user_manager
-    >>> address_a = usermgr.create_address('aperson@example.com')
-    >>> address_b = usermgr.create_address('bperson@example.com')
-    >>> address_c = usermgr.create_address('cperson@example.com')
-    >>> address_d = usermgr.create_address('dperson@example.com')
-    >>> address_e = usermgr.create_address('eperson@example.com')
-    >>> address_f = usermgr.create_address('fperson@example.com')
+    >>> from mailman.interfaces.usermanager import IUserManager
+    >>> from zope.component import getUtility
+    >>> user_manager = getUtility(IUserManager)
+
+    >>> address_a = user_manager.create_address('aperson@example.com')
+    >>> address_b = user_manager.create_address('bperson@example.com')
+    >>> address_c = user_manager.create_address('cperson@example.com')
+    >>> address_d = user_manager.create_address('dperson@example.com')
+    >>> address_e = user_manager.create_address('eperson@example.com')
+    >>> address_f = user_manager.create_address('fperson@example.com')
 
 ...then subscribe these addresses to the mailing list as members...
 

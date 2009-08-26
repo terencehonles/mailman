@@ -28,7 +28,11 @@ automatic response when messages are held for approval, or when it receives an
 email command.  You can find out how many responses for a particular address
 have already been sent today.
 
-    >>> address = config.db.user_manager.create_address('aperson@example.com')
+    >>> from mailman.interfaces.usermanager import IUserManager
+    >>> from zope.component import getUtility
+    >>> address = getUtility(IUserManager).create_address(
+    ...     'aperson@example.com')
+
     >>> from mailman.interfaces.autorespond import Response
     >>> response_set.todays_count(address, Response.hold)
     0
@@ -99,7 +103,8 @@ When another response is sent today, that becomes the last one sent.
 
 If there's been no response sent to a particular address, None is returned.
 
-    >>> address = config.db.user_manager.create_address('bperson@example.com')
+    >>> address = getUtility(IUserManager).create_address(
+    ...     'bperson@example.com')
     >>> response_set.todays_count(address, Response.command)
     0
     >>> print response_set.last_response(address, Response.command)

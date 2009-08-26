@@ -38,6 +38,7 @@ from mailman.interfaces.domain import (
     BadDomainSpecificationError, IDomainManager)
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import MemberRole
+from mailman.interfaces.usermanager import IUserManager
 from mailman.utilities.modules import call_name
 
 
@@ -61,13 +62,13 @@ def create_list(fqdn_listname, owners=None):
     call_name(config.mta.incoming).create(mlist)
     # Create any owners that don't yet exist, and subscribe all addresses as
     # owners of the mailing list.
-    usermgr = config.db.user_manager
+    user_manager = getUtility(IUserManager)
     for owner_address in owners:
-        addr = usermgr.get_address(owner_address)
+        addr = user_manager.get_address(owner_address)
         if addr is None:
             # XXX Make this use an IRegistrar instead, but that requires
             # sussing out the IDomain stuff.  For now, fake it.
-            user = usermgr.create_user(owner_address)
+            user = user_manager.create_user(owner_address)
             addr = list(user.addresses)[0]
         addr.subscribe(mlist, MemberRole.owner)
     return mlist

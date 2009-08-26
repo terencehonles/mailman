@@ -103,11 +103,14 @@ However, all addresses are linked to users.
 If you create a mailing list with owner addresses that are already known to
 the system, they won't be created again.
 
-    >>> usermgr = config.db.user_manager
-    >>> user_a = usermgr.get_user('aperson@example.com')
-    >>> user_b = usermgr.get_user('bperson@example.com')
-    >>> user_c = usermgr.get_user('cperson@example.com')
-    >>> user_d = usermgr.get_user('dperson@example.com')
+    >>> from mailman.interfaces.usermanager import IUserManager
+    >>> from zope.component import getUtility
+    >>> user_manager = getUtility(IUserManager)
+
+    >>> user_a = user_manager.get_user('aperson@example.com')
+    >>> user_b = user_manager.get_user('bperson@example.com')
+    >>> user_c = user_manager.get_user('cperson@example.com')
+    >>> user_d = user_manager.get_user('dperson@example.com')
     >>> user_a.real_name = 'Anne Person'
     >>> user_b.real_name = 'Bart Person'
     >>> user_c.real_name = 'Caty Person'

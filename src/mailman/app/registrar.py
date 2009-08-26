@@ -40,6 +40,7 @@ from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import MemberRole
 from mailman.interfaces.pending import IPendable
 from mailman.interfaces.registrar import IRegistrar
+from mailman.interfaces.usermanager import IUserManager
 
 
 
@@ -105,17 +106,17 @@ class Registrar:
         # We are going to end up with an IAddress for the verified address
         # and an IUser linked to this IAddress.  See if any of these objects
         # currently exist in our database.
-        usermgr = config.db.user_manager
-        addr = (usermgr.get_address(address)
+        user_manager = getUtility(IUserManager)
+        addr = (user_manager.get_address(address)
                 if address is not missing else None)
-        user = (usermgr.get_user(address)
+        user = (user_manager.get_user(address)
                 if address is not missing else None)
         # If there is neither an address nor a user matching the confirmed
         # record, then create the user, which will in turn create the address
         # and link the two together
         if addr is None:
             assert user is None, 'How did we get a user but not an address?'
-            user = usermgr.create_user(address, real_name)
+            user = user_manager.create_user(address, real_name)
             # Because the database changes haven't been flushed, we can't use
             # IUserManager.get_address() to find the IAddress just created
             # under the hood.  Instead, iterate through the IUser's addresses,
@@ -126,7 +127,7 @@ class Registrar:
             else:
                 raise AssertionError('Could not find expected IAddress')
         elif user is None:
-            user = usermgr.create_user()
+            user = user_manager.create_user()
             user.real_name = real_name
             user.link(addr)
         else:

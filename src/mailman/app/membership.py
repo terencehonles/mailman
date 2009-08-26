@@ -27,15 +27,16 @@ __all__ = [
 
 
 from email.utils import formataddr
+from zope.component import getUtility
 
 from mailman import Utils
 from mailman import i18n
 from mailman.app.notifications import send_goodbye_message
-from mailman.config import config
 from mailman.core import errors
 from mailman.email.message import OwnerNotification
 from mailman.email.validate import validate
 from mailman.interfaces.member import AlreadySubscribedError, MemberRole
+from mailman.interfaces.usermanager import IUserManager
 
 _ = i18n._
 
@@ -72,21 +73,22 @@ def add_member(mlist, address, realname, password, delivery_mode, language):
         raise errors.MembershipIsBanned(pattern)
     # Do the actual addition.  First, see if there's already a user linked
     # with the given address.
-    user = config.db.user_manager.get_user(address)
+    user_manager = getUtility(IUserManager)
+    user = user_manager.get_user(address)
     if user is None:
         # A user linked to this address does not yet exist.  Is the address
         # itself known but just not linked to a user?
-        address_obj = config.db.user_manager.get_address(address)
+        address_obj = user_manager.get_address(address)
         if address_obj is None:
             # Nope, we don't even know about this address, so create both the
             # user and address now.
-            user = config.db.user_manager.create_user(address, realname)
+            user = user_manager.create_user(address, realname)
             # Do it this way so we don't have to flush the previous change.
             address_obj = list(user.addresses)[0]
         else:
             # The address object exists, but it's not linked to a user.
             # Create the user and link it now.
-            user = config.db.user_manager.create_user()
+            user = user_manager.create_user()
             user.real_name = (realname if realname else address_obj.real_name)
             user.link(address_obj)
         # Since created the user, then the member, and set preferences on the
@@ -138,7 +140,7 @@ def delete_member(mlist, address, admin_notif=None, userack=None):
         send_goodbye_message(mlist, address, language)
     # ...and to the administrator.
     if admin_notif:
-        user = config.db.user_manager.get_user(address)
+        user = getUtility(IUserManager).get_user(address)
         realname = user.real_name
         subject = _('$mlist.real_name unsubscription notification')
         text = Utils.maketext(

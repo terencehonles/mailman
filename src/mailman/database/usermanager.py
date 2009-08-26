@@ -24,6 +24,7 @@ __all__ = [
     'UserManager',
     ]
 
+
 from zope.interface import implements
 
 from mailman.config import config

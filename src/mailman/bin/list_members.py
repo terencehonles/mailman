@@ -20,12 +20,12 @@ import sys
 from email.Utils import formataddr
 from zope.component import getUtility
 
-from mailman.config import config
 from mailman.core import errors
 from mailman.email.validate import is_valid
 from mailman.i18n import _
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.members import DeliveryStatus
+from mailman.interfaces.usermanager import IUserManager
 from mailman.options import SingleMailingListOptions
 
 
@@ -153,17 +153,18 @@ def main():
     dmembers = set(mlist.digest_members.members)
 
     fullnames = options.options.fullnames
+    user_manager = getUtility(IUserManager)
     if options.options.invalid:
         all = sorted(member.address.address for member in rmembers + dmembers)
         for address in all:
-            user = config.db.user_manager.get_user(address)
+            user = user_manager.get_user(address)
             name = (user.real_name if fullnames and user else u'')
             if options.options.invalid and not is_valid(address):
                 print >> fp, formataddr((safe(name), address))
         return
     if options.options.regular:
         for address in sorted(member.address.address for member in rmembers):
-            user = config.db.user_manager.get_user(address)
+            user = user_manager.get_user(address)
             name = (user.real_name if fullnames and user else u'')
             # Filter out nomails
             if (options.options.nomail and
@@ -172,7 +173,7 @@ def main():
             print >> fp, formataddr((safe(name), address))
     if options.options.digest:
         for address in sorted(member.address.address for member in dmembers):
-            user = config.db.user_manager.get_user(address)
+            user = user_manager.get_user(address)
             name = (user.real_name if fullnames and user else u'')
             # Filter out nomails
             if (options.options.nomail and

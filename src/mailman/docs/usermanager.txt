@@ -8,10 +8,8 @@ variable MANAGERS_INIT_FUNCTION.  The instance is accessible on the global
 config object.
 
     >>> from mailman.interfaces.usermanager import IUserManager
-    >>> from zope.interface.verify import verifyObject
-    >>> usermgr = config.db.user_manager
-    >>> verifyObject(IUserManager, usermgr)
-    True
+    >>> from zope.component import getUtility
+    >>> user_manager = getUtility(IUserManager)
 
 
 Creating users
@@ -23,9 +21,11 @@ time.  This user will have an empty string as their real name, but will not
 have a password.
 
     >>> from mailman.interfaces.user import IUser
-    >>> user = usermgr.create_user()
+    >>> from zope.interface.verify import verifyObject
+    >>> user = user_manager.create_user()
     >>> verifyObject(IUser, user)
     True
+
     >>> sorted(address.address for address in user.addresses)
     []
     >>> user.real_name
@@ -41,51 +41,51 @@ The user has preferences, but none of them will be specified.
 A user can be assigned a real name.
 
     >>> user.real_name = 'Anne Person'
-    >>> sorted(user.real_name for user in usermgr.users)
+    >>> sorted(user.real_name for user in user_manager.users)
     [u'Anne Person']
 
 A user can be assigned a password.
 
     >>> user.password = 'secret'
-    >>> sorted(user.password for user in usermgr.users)
+    >>> sorted(user.password for user in user_manager.users)
     [u'secret']
 
 You can also create a user with an address to start out with.
 
-    >>> user_2 = usermgr.create_user('bperson@example.com')
+    >>> user_2 = user_manager.create_user('bperson@example.com')
     >>> verifyObject(IUser, user_2)
     True
     >>> sorted(address.address for address in user_2.addresses)
     [u'bperson@example.com']
-    >>> sorted(user.real_name for user in usermgr.users)
+    >>> sorted(user.real_name for user in user_manager.users)
     [u'', u'Anne Person']
 
 As above, you can assign a real name to such users.
 
     >>> user_2.real_name = 'Ben Person'
-    >>> sorted(user.real_name for user in usermgr.users)
+    >>> sorted(user.real_name for user in user_manager.users)
     [u'Anne Person', u'Ben Person']
 
 You can also create a user with just a real name.
 
-    >>> user_3 = usermgr.create_user(real_name='Claire Person')
+    >>> user_3 = user_manager.create_user(real_name='Claire Person')
     >>> verifyObject(IUser, user_3)
     True
     >>> sorted(address.address for address in user.addresses)
     []
-    >>> sorted(user.real_name for user in usermgr.users)
+    >>> sorted(user.real_name for user in user_manager.users)
     [u'Anne Person', u'Ben Person', u'Claire Person']
 
 Finally, you can create a user with both an address and a real name.
 
-    >>> user_4 = usermgr.create_user('dperson@example.com', 'Dan Person')
+    >>> user_4 = user_manager.create_user('dperson@example.com', 'Dan Person')
     >>> verifyObject(IUser, user_3)
     True
     >>> sorted(address.address for address in user_4.addresses)
     [u'dperson@example.com']
     >>> sorted(address.real_name for address in user_4.addresses)
     [u'Dan Person']
-    >>> sorted(user.real_name for user in usermgr.users)
+    >>> sorted(user.real_name for user in user_manager.users)
     [u'Anne Person', u'Ben Person', u'Claire Person', u'Dan Person']
 
 
@@ -95,8 +95,8 @@ Deleting users
 You delete users by going through the user manager.  The deleted user is no
 longer available through the user manager iterator.
 
-    >>> usermgr.delete_user(user)
-    >>> sorted(user.real_name for user in usermgr.users)
+    >>> user_manager.delete_user(user)
+    >>> sorted(user.real_name for user in user_manager.users)
     [u'Ben Person', u'Claire Person', u'Dan Person']
 
 
@@ -109,7 +109,7 @@ that the .get_user() method takes a string email address, not an IAddress
 object.
 
     >>> address = list(user_4.addresses)[0]
-    >>> found_user = usermgr.get_user(address.address)
+    >>> found_user = user_manager.get_user(address.address)
     >>> found_user
     <User "Dan Person" at ...>
     >>> found_user is user_4
@@ -118,8 +118,8 @@ object.
 If the address is not in the user database or does not have a user associated
 with it, you will get None back.
 
-    >>> print usermgr.get_user('zperson@example.com')
+    >>> print user_manager.get_user('zperson@example.com')
     None
     >>> user_4.unlink(address)
-    >>> print usermgr.get_user(address.address)
+    >>> print user_manager.get_user(address.address)
     None

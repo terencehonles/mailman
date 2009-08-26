@@ -681,7 +681,12 @@ Frank Person is now a member of the mailing list.
     <Language [en] English (USA)>
     >>> print member.delivery_mode
     DeliveryMode.regular
-    >>> user = config.db.user_manager.get_user(member.address.address)
+
+    >>> from mailman.interfaces.usermanager import IUserManager
+    >>> from zope.component import getUtility
+    >>> user_manager = getUtility(IUserManager)
+
+    >>> user = user_manager.get_user(member.address.address)
     >>> print user.real_name
     Frank Person
     >>> print user.password
@@ -697,14 +702,16 @@ unsubscription holds can send the list's moderators an immediate notification.
 
     >>> mlist.admin_immed_notify = False
     >>> from mailman.interfaces.member import MemberRole
-    >>> user_1 = config.db.user_manager.create_user('gperson@example.com')
+    >>> user_1 = user_manager.create_user('gperson@example.com')
     >>> address_1 = list(user_1.addresses)[0]
     >>> address_1.subscribe(mlist, MemberRole.member)
     <Member: gperson@example.com on alist@example.com as MemberRole.member>
-    >>> user_2 = config.db.user_manager.create_user('hperson@example.com')
+
+    >>> user_2 = user_manager.create_user('hperson@example.com')
     >>> address_2 = list(user_2.addresses)[0]
     >>> address_2.subscribe(mlist, MemberRole.member)
     <Member: hperson@example.com on alist@example.com as MemberRole.member>
+
     >>> id_5 = moderator.hold_unsubscription(mlist, 'gperson@example.com')
     >>> requests.get_request(id_5) is not None
     True

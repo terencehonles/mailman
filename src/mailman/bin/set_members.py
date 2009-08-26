@@ -18,6 +18,8 @@
 import csv
 import optparse
 
+from zope.component import getUtility
+
 from mailman import Message
 from mailman import Utils
 from mailman import i18n
@@ -27,7 +29,8 @@ from mailman.app.notifications import (
     send_admin_subscription_notice, send_welcome_message)
 from mailman.configuration import config
 from mailman.initialize import initialize
-from mailman.interfaces import DeliveryMode
+from mailman.interfaces.members import DeliveryMode
+from mailman.interfaces.usermanager import IUserManager
 from mailman.version import MAILMAN_VERSION
 
 
@@ -165,7 +168,7 @@ def main():
             real_name, delivery_mode = member_data[address]
             member = mlist.members.get_member(address)
             member.preferences.delivery_mode = delivery_mode
-            user = config.db.user_manager.get_user(address)
+            user = getUtility(IUserManager).get_user(address)
             user.real_name = real_name
         for address in add_members:
             print _('adding address: $address')

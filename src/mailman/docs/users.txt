@@ -6,9 +6,11 @@ Users are entities that represent people.  A user has a real name and a
 password.  Optionally a user may have some preferences and a set of addresses
 they control.  A user also knows which mailing lists they are subscribed to.
 
-See usermanager.txt for examples of how to create, delete, and find users.
+See `usermanager.txt`_ for examples of how to create, delete, and find users.
 
-    >>> usermgr = config.db.user_manager
+    >>> from mailman.interfaces.usermanager import IUserManager
+    >>> from zope.component import getUtility
+    >>> user_manager = getUtility(IUserManager)
 
 
 User data
@@ -16,21 +18,21 @@ User data
 
 Users may have a real name and a password.
 
-    >>> user_1 = usermgr.create_user()
+    >>> user_1 = user_manager.create_user()
     >>> user_1.password = 'my password'
     >>> user_1.real_name = 'Zoe Person'
-    >>> sorted(user.real_name for user in usermgr.users)
+    >>> sorted(user.real_name for user in user_manager.users)
     [u'Zoe Person']
-    >>> sorted(user.password for user in usermgr.users)
+    >>> sorted(user.password for user in user_manager.users)
     [u'my password']
 
 The password and real name can be changed at any time.
 
     >>> user_1.real_name = 'Zoe X. Person'
     >>> user_1.password = 'another password'
-    >>> sorted(user.real_name for user in usermgr.users)
+    >>> sorted(user.real_name for user in user_manager.users)
     [u'Zoe X. Person']
-    >>> sorted(user.password for user in usermgr.users)
+    >>> sorted(user.password for user in user_manager.users)
     [u'another password']
 
 
@@ -55,7 +57,7 @@ address on a user object.
 
 You can also create the address separately and then link it to the user.
 
-    >>> address_1 = usermgr.create_address('zperson@example.net')
+    >>> address_1 = user_manager.create_address('zperson@example.net')
     >>> user_1.link(address_1)
     >>> sorted(address.address for address in user_1.addresses)
     [u'zperson@example.com', u'zperson@example.net', u'zperson@example.org']
@@ -64,7 +66,7 @@ You can also create the address separately and then link it to the user.
 
 But don't try to link an address to more than one user.
 
-    >>> another_user = usermgr.create_user()
+    >>> another_user = user_manager.create_user()
     >>> another_user.link(address_1)
     Traceback (most recent call last):
     ...
@@ -80,13 +82,13 @@ You can also ask whether a given user controls a given address.
 Given a text email address, the user manager can find the user that controls
 that address.
 
-    >>> usermgr.get_user('zperson@example.com') is user_1
+    >>> user_manager.get_user('zperson@example.com') is user_1
     True
-    >>> usermgr.get_user('zperson@example.net') is user_1
+    >>> user_manager.get_user('zperson@example.net') is user_1
     True
-    >>> usermgr.get_user('zperson@example.org') is user_1
+    >>> user_manager.get_user('zperson@example.org') is user_1
     True
-    >>> print usermgr.get_user('bperson@example.com')
+    >>> print user_manager.get_user('bperson@example.com')
     None
 
 Addresses can also be unlinked from a user.
@@ -94,7 +96,7 @@ Addresses can also be unlinked from a user.
     >>> user_1.unlink(address_1)
     >>> user_1.controls('zperson@example.net')
     False
-    >>> print usermgr.get_user('aperson@example.net')
+    >>> print user_manager.get_user('aperson@example.net')
     None
 
 But don't try to unlink the address from a user it's not linked to.
@@ -159,9 +161,9 @@ membership role.
     >>> user_1.link(address_1)
     >>> sorted(address.address for address in user_1.addresses)
     [u'zperson@example.com', u'zperson@example.net', u'zperson@example.org']
-    >>> com = usermgr.get_address('zperson@example.com')
-    >>> org = usermgr.get_address('zperson@example.org')
-    >>> net = usermgr.get_address('zperson@example.net')
+    >>> com = user_manager.get_address('zperson@example.com')
+    >>> org = user_manager.get_address('zperson@example.org')
+    >>> net = user_manager.get_address('zperson@example.net')
 
     >>> from mailman.app.lifecycle import create_list
     >>> mlist_1 = create_list('xtest_1@example.com')
@@ -197,3 +199,10 @@ membership role.
     zperson@example.net xtest_3@example.com MemberRole.moderator
     zperson@example.org xtest_2@example.com MemberRole.member
     zperson@example.org xtest_2@example.com MemberRole.owner
+
+
+Cross references
+================
+
+.. _`usermanager.txt`: usermanager.html
+

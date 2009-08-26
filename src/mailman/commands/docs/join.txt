@@ -78,7 +78,9 @@ When the message has a From field, that address will be subscribed.
 Anne is not yet a member because she must confirm her subscription request
 first.
 
-    >>> print config.db.user_manager.get_user('anne@example.com')
+    >>> from mailman.interfaces.usermanager import IUserManager
+    >>> from zope.component import getUtility
+    >>> print getUtility(IUserManager).get_user('anne@example.com')
     None
 
 Mailman has sent her the confirmation message.
@@ -125,7 +127,7 @@ list.
     >>> registrar.confirm(token)
     True
 
-    >>> user = config.db.user_manager.get_user('anne@example.com')
+    >>> user = getUtility(IUserManager).get_user('anne@example.com')
     >>> print user.real_name
     Anne Person
     >>> list(user.addresses)
@@ -151,7 +153,7 @@ Joining a second list
 
 Anne of course, is still registered.
 
-    >>> print config.db.user_manager.get_user('anne@example.com')
+    >>> print getUtility(IUserManager).get_user('anne@example.com')
     <User "Anne Person" at ...>
 
 But she is not a member of the mailing list.

@@ -36,4 +36,9 @@
     provides="mailman.interfaces.listmanager.IListManager"
     />
 
+  <utility
+    factory="mailman.database.usermanager.UserManager"
+    provides="mailman.interfaces.usermanager.IUserManager"
+    />
+
 </configure>

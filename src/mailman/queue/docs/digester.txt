@@ -476,9 +476,13 @@ digests, or MIME digests.
     >>> len(get_queue_messages('virgin'))
     0
 
+    >>> from mailman.interfaces.usermanager import IUserManager
+    >>> from zope.component import getUtility
+    >>> user_manager = getUtility(IUserManager)
+
     >>> from mailman.interfaces.member import DeliveryMode, MemberRole
     >>> def subscribe(email, mode):
-    ...     address = config.db.user_manager.create_address(email)
+    ...     address = user_manager.create_address(email)
     ...     member = address.subscribe(mlist, MemberRole.member)
     ...     member.preferences.delivery_mode = mode
     ...     return member

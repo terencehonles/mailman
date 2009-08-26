@@ -39,7 +39,6 @@ from mailman.config import config
 from mailman.database.messagestore import MessageStore
 from mailman.database.pending import Pendings
 from mailman.database.requests import Requests
-from mailman.database.usermanager import UserManager
 from mailman.database.version import Version
 from mailman.interfaces.database import IDatabase, SchemaVersionMismatchError
 from mailman.utilities.string import expand
@@ -55,7 +54,6 @@ class StockDatabase:
 
     def __init__(self):
         self.url = None
-        self.user_manager = None
         self.message_store = None
         self.pendings = None
         self.requests = None
@@ -67,7 +65,6 @@ class StockDatabase:
         # the database at the same time.
         with Lock(os.path.join(config.LOCK_DIR, 'dbcreate.lck')):
             self._create(debug)
-        self.user_manager = UserManager()
         self.message_store = MessageStore()
         self.pendings = Pendings()
         self.requests = Requests()

@@ -27,8 +27,11 @@ moderation rule can't match.
 
 Let's add the message author as a non-moderated member.
 
-    >>> user = config.db.user_manager.create_user(
+    >>> from mailman.interfaces.usermanager import IUserManager
+    >>> from zope.component import getUtility
+    >>> user = getUtility(IUserManager).create_user(
     ...     'aperson@example.org', 'Anne Person')
+
     >>> address = list(user.addresses)[0]
     >>> from mailman.interfaces.member import MemberRole
     >>> member = address.subscribe(mlist, MemberRole.member)
