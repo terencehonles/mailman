@@ -227,14 +227,19 @@ first item is a type code and the second item is a message id.
     ...         cookie = mo.group('cookie')
     ...         break
     >>> assert cookie is not None, 'No confirmation token found'
-    >>> data = config.db.pendings.confirm(cookie)
+
+    >>> from mailman.interfaces.pending import IPendings
+    >>> from zope.component import getUtility
+
+    >>> data = getUtility(IPendings).confirm(cookie)
     >>> sorted(data.items())
     [(u'id', ...), (u'type', u'held message')]
 
 The message itself is held in the message store.
 
-    >>> rkey, rdata = config.db.requests.get_list_requests(mlist).get_request(
-    ...     data['id'])
+    >>> from mailman.interfaces.requests import IRequests
+    >>> list_requests = getUtility(IRequests).get_list_requests(mlist)
+    >>> rkey, rdata = list_requests.get_request(data['id'])
 
     >>> from mailman.interfaces.messages import IMessageStore
     >>> from zope.component import getUtility

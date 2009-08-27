@@ -101,7 +101,10 @@ There should be no records in the user manager for this address yet.
 
 But this address is waiting for confirmation.
 
-    >>> pendingdb = config.db.pendings
+    >>> from mailman.interfaces.pending import IPendings
+    >>> from zope.component import getUtility
+    >>> pendingdb = getUtility(IPendings)
+
     >>> sorted(pendingdb.confirm(token, expunge=False).items())
     [(u'address', u'aperson@example.com'),
      (u'real_name', u'Anne Person'),

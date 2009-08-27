@@ -27,12 +27,13 @@ __all__ = [
 
 from datetime import timedelta
 from storm.locals import *
+from zope.component import getUtility
 from zope.interface import implements
 
 from mailman.config import config
 from mailman.database.model import Model
 from mailman.database.types import Enum
-from mailman.interfaces.pending import IPendable
+from mailman.interfaces.pending import IPendable, IPendings
 from mailman.interfaces.requests import IListRequests, IRequests, RequestType
 
 
@@ -84,7 +85,7 @@ class ListRequests:
             # lock this down more later.
             pendable = DataPendable()
             pendable.update(data)
-            token = config.db.pendings.add(pendable, timedelta(days=5000))
+            token = getUtility(IPendings).add(pendable, timedelta(days=5000))
             data_hash = token
         request = _Request(key, request_type, self.mailing_list, data_hash)
         config.db.store.add(request)
@@ -96,7 +97,8 @@ class ListRequests:
             return None
         if result.data_hash is None:
             return result.key, result.data_hash
-        pendable = config.db.pendings.confirm(result.data_hash, expunge=False)
+        pendable = getUtility(IPendings).confirm(
+            result.data_hash, expunge=False)
         data = dict()
         data.update(pendable)
         return result.key, data
@@ -106,7 +108,7 @@ class ListRequests:
         if request is None:
             raise KeyError(request_id)
         # Throw away the pended data.
-        config.db.pendings.confirm(request.data_hash)
+        getUtility(IPendings).confirm(request.data_hash)
         config.db.store.remove(request)
 
 

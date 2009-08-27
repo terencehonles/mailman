@@ -41,7 +41,7 @@ from mailman.chains.base import TerminalChainBase
 from mailman.config import config
 from mailman.email.message import UserNotification
 from mailman.interfaces.autorespond import IAutoResponseSet, Response
-from mailman.interfaces.pending import IPendable
+from mailman.interfaces.pending import IPendable, IPendings
 from mailman.interfaces.usermanager import IUserManager
 
 
@@ -142,7 +142,7 @@ class HoldChain(TerminalChainBase):
         # message.
         pendable = HeldMessagePendable(type=HeldMessagePendable.PEND_KEY,
                                        id=request_id)
-        token = config.db.pendings.add(pendable)
+        token = getUtility(IPendings).add(pendable)
         # Get the language to send the response in.  If the sender is a
         # member, then send it in the member's language, otherwise send it in
         # the mailing list's preferred language.

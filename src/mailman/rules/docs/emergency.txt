@@ -30,6 +30,8 @@ pending requests.
     >>> virginq = config.switchboards['virgin']
 
     >>> from mailman.interfaces.messages import IMessageStore
+    >>> from mailman.interfaces.pending import IPendings
+    >>> from mailman.interfaces.requests import IRequests
     >>> from zope.component import getUtility
     >>> message_store = getUtility(IMessageStore)
 
@@ -49,8 +51,8 @@ pending requests.
     ...             cookie = mo.group('cookie')
     ...             break
     ...     assert cookie is not None, 'No confirmation token found'
-    ...     data = config.db.pendings.confirm(cookie)
-    ...     requestdb = config.db.requests.get_list_requests(mlist)
+    ...     data = getUtility(IPendings).confirm(cookie)
+    ...     requestdb = getUtility(IRequests).get_list_requests(mlist)
     ...     rkey, rdata = requestdb.get_request(data['id'])
     ...     return message_store.get_message_by_id(
     ...         rdata['_mod_message_id'])

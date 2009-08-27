@@ -83,6 +83,3 @@ class IDatabase(Interface):
 
     def abort():
         """Abort the current transaction."""
-
-    pendings = Attribute(
-        """The IPending instance provided by the database layer.""")

@@ -38,7 +38,7 @@ from mailman.i18n import _
 from mailman.interfaces.domain import IDomain
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import MemberRole
-from mailman.interfaces.pending import IPendable
+from mailman.interfaces.pending import IPendable, IPendings
 from mailman.interfaces.registrar import IRegistrar
 from mailman.interfaces.usermanager import IUserManager
 
@@ -68,7 +68,7 @@ class Registrar:
             real_name=real_name)
         if mlist is not None:
             pendable['list_name'] = mlist.fqdn_listname
-        token = config.db.pendings.add(pendable)
+        token = getUtility(IPendings).add(pendable)
         # Set up some local variables for translation interpolation.
         domain = IDomain(self._context)
         domain_name = _(domain.email_host)
@@ -89,7 +89,7 @@ class Registrar:
     def confirm(self, token):
         """See `IUserRegistrar`."""
         # For convenience
-        pendable = config.db.pendings.confirm(token)
+        pendable = getUtility(IPendings).confirm(token)
         if pendable is None:
             return False
         missing = object()
@@ -146,4 +146,4 @@ class Registrar:
 
     def discard(self, token):
         # Throw the record away.
-        config.db.pendings.confirm(token)
+        getUtility(IPendings).confirm(token)

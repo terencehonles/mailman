@@ -46,4 +46,14 @@
     provides="mailman.interfaces.messages.IMessageStore"
     />
 
+  <utility
+    factory="mailman.database.pending.Pendings"
+    provides="mailman.interfaces.pending.IPendings"
+    />
+
+  <utility
+    factory="mailman.database.requests.Requests"
+    provides="mailman.interfaces.requests.IRequests"
+    />
+
 </configure>

@@ -54,8 +54,6 @@ class StockDatabase:
 
     def __init__(self):
         self.url = None
-        self.pendings = None
-        self.requests = None
         self._store = None
 
     def initialize(self, debug=None):
@@ -64,8 +62,6 @@ class StockDatabase:
         # the database at the same time.
         with Lock(os.path.join(config.LOCK_DIR, 'dbcreate.lck')):
             self._create(debug)
-        self.pendings = Pendings()
-        self.requests = Requests()
 
     def begin(self):
         """See `IDatabase`."""

@@ -20,6 +20,7 @@ import time
 import optparse
 
 from email.Charset import Charset
+from zope.component import getUtility
 
 from mailman import MailList
 from mailman import Utils
@@ -27,6 +28,7 @@ from mailman import i18n
 from mailman.app.requests import handle_request
 from mailman.configuration import config
 from mailman.email.message import UserNotification
+from mailman.interfaces.requests import IRequests
 from mailman.version import MAILMAN_VERSION
 
 _ = i18n._
@@ -159,7 +161,7 @@ def main():
         # The list must be locked in order to open the requests database
         mlist = MailList.MailList(name)
         try:
-            count = config.db.requests.get_list_requests(mlist).count
+            count = getUtility(IRequests).get_list_requests(mlist).count
             # While we're at it, let's evict yesterday's autoresponse data
             midnight_today = midnight()
             evictions = []

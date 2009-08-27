@@ -46,7 +46,7 @@ from mailman.email.message import UserNotification
 from mailman.interfaces.action import Action
 from mailman.interfaces.member import AlreadySubscribedError, DeliveryMode
 from mailman.interfaces.messages import IMessageStore
-from mailman.interfaces.requests import RequestType
+from mailman.interfaces.requests import IRequests, RequestType
 
 
 _ = i18n._
@@ -96,7 +96,7 @@ def hold_message(mlist, msg, msgdata=None, reason=None):
     msgdata['_mod_reason'] = reason
     msgdata['_mod_hold_date'] = datetime.now().isoformat()
     # Now hold this request.  We'll use the message_id as the key.
-    requestsdb = config.db.requests.get_list_requests(mlist)
+    requestsdb = getUtility(IRequests).get_list_requests(mlist)
     request_id = requestsdb.hold_request(
         RequestType.held_message, message_id, msgdata)
     return request_id
@@ -106,7 +106,7 @@ def hold_message(mlist, msg, msgdata=None, reason=None):
 def handle_message(mlist, id, action,
                    comment=None, preserve=False, forward=None):
     message_store = getUtility(IMessageStore)
-    requestdb = config.db.requests.get_list_requests(mlist)
+    requestdb = getUtility(IRequests).get_list_requests(mlist)
     key, msgdata = requestdb.get_request(id)
     # Handle the action.
     rejection = None
@@ -200,7 +200,7 @@ def hold_subscription(mlist, address, realname, password, mode, language):
                 delivery_mode=str(mode),
                 language=language)
     # Now hold this request.  We'll use the address as the key.
-    requestsdb = config.db.requests.get_list_requests(mlist)
+    requestsdb = getUtility(IRequests).get_list_requests(mlist)
     request_id = requestsdb.hold_request(
         RequestType.subscription, address, data)
     vlog.info('%s: held subscription request from %s',
@@ -226,7 +226,7 @@ def hold_subscription(mlist, address, realname, password, mode, language):
 
 
 def handle_subscription(mlist, id, action, comment=None):
-    requestdb = config.db.requests.get_list_requests(mlist)
+    requestdb = getUtility(IRequests).get_list_requests(mlist)
     if action is Action.defer:
         # Nothing to do.
         return
@@ -272,7 +272,7 @@ def handle_subscription(mlist, id, action, comment=None):
 
 def hold_unsubscription(mlist, address):
     data = dict(address=address)
-    requestsdb = config.db.requests.get_list_requests(mlist)
+    requestsdb = getUtility(IRequests).get_list_requests(mlist)
     request_id = requestsdb.hold_request(
         RequestType.unsubscription, address, data)
     vlog.info('%s: held unsubscription request from %s',
@@ -298,7 +298,7 @@ def hold_unsubscription(mlist, address):
 
 
 def handle_unsubscription(mlist, id, action, comment=None):
-    requestdb = config.db.requests.get_list_requests(mlist)
+    requestdb = getUtility(IRequests).get_list_requests(mlist)
     key, data = requestdb.get_request(id)
     address = data['address']
     if action is Action.defer:
