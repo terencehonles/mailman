@@ -33,6 +33,7 @@ import logging
 
 from datetime import datetime
 from email.utils import formataddr, formatdate, getaddresses, make_msgid
+from zope.component import getUtility
 
 from mailman import Utils
 from mailman import i18n
@@ -44,6 +45,7 @@ from mailman.core import errors
 from mailman.email.message import UserNotification
 from mailman.interfaces.action import Action
 from mailman.interfaces.member import AlreadySubscribedError, DeliveryMode
+from mailman.interfaces.messages import IMessageStore
 from mailman.interfaces.requests import RequestType
 
 
@@ -84,7 +86,7 @@ def hold_message(mlist, msg, msgdata=None, reason=None):
         msg['Message-ID'] = message_id = unicode(make_msgid())
     assert isinstance(message_id, unicode), (
         'Message-ID is not a unicode: %s' % message_id)
-    config.db.message_store.add(msg)
+    getUtility(IMessageStore).add(msg)
     # Prepare the message metadata with some extra information needed only by
     # the moderation interface.
     msgdata['_mod_message_id'] = message_id
@@ -103,6 +105,7 @@ def hold_message(mlist, msg, msgdata=None, reason=None):
 
 def handle_message(mlist, id, action,
                    comment=None, preserve=False, forward=None):
+    message_store = getUtility(IMessageStore)
     requestdb = config.db.requests.get_list_requests(mlist)
     key, msgdata = requestdb.get_request(id)
     # Handle the action.
@@ -126,7 +129,7 @@ def handle_message(mlist, id, action,
                 sender, comment or _('[No reason given]'), language)
     elif action is Action.accept:
         # Start by getting the message from the message store.
-        msg = config.db.message_store.get_message_by_id(message_id)
+        msg = message_store.get_message_by_id(message_id)
         # Delete moderation-specific entries from the message metadata.
         for key in msgdata.keys():
             if key.startswith('_mod_'):
@@ -152,7 +155,7 @@ def handle_message(mlist, id, action,
     # Forward the message.
     if forward:
         # Get a copy of the original message from the message store.
-        msg = config.db.message_store.get_message_by_id(message_id)
+        msg = message_store.get_message_by_id(message_id)
         # It's possible the forwarding address list is a comma separated list
         # of realname/address pairs.
         addresses = [addr[1] for addr in getaddresses(forward)]
@@ -176,7 +179,7 @@ def handle_message(mlist, id, action,
         fmsg.send(mlist)
     # Delete the message from the message store if it is not being preserved.
     if not preserve:
-        config.db.message_store.delete_message(message_id)
+        message_store.delete_message(message_id)
         requestdb.delete_request(id)
     # Log the rejection
     if rejection:

@@ -38,12 +38,14 @@ import tempfile
 from pkg_resources import resource_string
 from textwrap import dedent
 from urllib2 import urlopen, URLError
+from zope.component import getUtility
 
 from mailman.config import config
 from mailman.core import initialize
 from mailman.core.logging import get_handler
 from mailman.i18n import _
 from mailman.interfaces.domain import IDomainManager
+from mailman.interfaces.messages import IMessageStore
 from mailman.testing.helpers import SMTPServer, TestableMaster
 from mailman.utilities.datetime import factory
 from mailman.utilities.string import expand
@@ -177,8 +179,9 @@ class ConfigLayer(MockAndMonkeyLayer):
             for filename in filenames:
                 os.remove(os.path.join(dirpath, filename))
         # Clear out messages in the message store.
-        for message in config.db.message_store.messages:
-            config.db.message_store.delete_message(message['message-id'])
+        message_store = getUtility(IMessageStore)
+        for message in message_store.messages:
+            message_store.delete_message(message['message-id'])
         config.db.commit()
         # Reset the global style manager.
         config.style_manager.populate()

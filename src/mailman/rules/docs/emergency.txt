@@ -29,6 +29,10 @@ pending requests.
 
     >>> virginq = config.switchboards['virgin']
 
+    >>> from mailman.interfaces.messages import IMessageStore
+    >>> from zope.component import getUtility
+    >>> message_store = getUtility(IMessageStore)
+
     >>> def get_held_message():
     ...     import re
     ...     qfiles = []
@@ -48,7 +52,7 @@ pending requests.
     ...     data = config.db.pendings.confirm(cookie)
     ...     requestdb = config.db.requests.get_list_requests(mlist)
     ...     rkey, rdata = requestdb.get_request(data['id'])
-    ...     return config.db.message_store.get_message_by_id(
+    ...     return message_store.get_message_by_id(
     ...         rdata['_mod_message_id'])
 
     >>> msg = get_held_message()

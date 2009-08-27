@@ -346,7 +346,12 @@ is deleted.
     ... """)
     >>> id_4 = moderator.hold_message(mlist, msg, {}, 'Needs approval')
     >>> moderator.handle_message(mlist, id_4, Action.discard)
-    >>> print config.db.message_store.get_message_by_id('<12345>')
+
+    >>> from mailman.interfaces.messages import IMessageStore
+    >>> from zope.component import getUtility
+    >>> message_store = getUtility(IMessageStore)
+
+    >>> print message_store.get_message_by_id('<12345>')
     None
 
 But if we ask to preserve the message when we discard it, it will be held in
@@ -354,7 +359,7 @@ the message store after disposition.
 
     >>> id_4 = moderator.hold_message(mlist, msg, {}, 'Needs approval')
     >>> moderator.handle_message(mlist, id_4, Action.discard, preserve=True)
-    >>> stored_msg = config.db.message_store.get_message_by_id('<12345>')
+    >>> stored_msg = message_store.get_message_by_id('<12345>')
     >>> print stored_msg.as_string()
     From: aperson@example.org
     To: alist@example.com

@@ -41,4 +41,9 @@
     provides="mailman.interfaces.usermanager.IUserManager"
     />
 
+  <utility
+    factory="mailman.database.messagestore.MessageStore"
+    provides="mailman.interfaces.messages.IMessageStore"
+    />
+
 </configure>

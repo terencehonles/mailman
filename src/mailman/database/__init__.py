@@ -54,7 +54,6 @@ class StockDatabase:
 
     def __init__(self):
         self.url = None
-        self.message_store = None
         self.pendings = None
         self.requests = None
         self._store = None
@@ -65,7 +64,6 @@ class StockDatabase:
         # the database at the same time.
         with Lock(os.path.join(config.LOCK_DIR, 'dbcreate.lck')):
             self._create(debug)
-        self.message_store = MessageStore()
         self.pendings = Pendings()
         self.requests = Requests()
 
