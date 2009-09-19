@@ -170,7 +170,7 @@ The message text can also be provided on standard input.
     listname     : test@example.com
     original_size: 100
     version      : 3
-    
+
     # Clean up.
     >>> sys.stdin = sys.__stdin__
     >>> args.filename = filename
