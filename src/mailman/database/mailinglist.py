@@ -178,7 +178,8 @@ class MailingList(Model):
 
     def __init__(self, fqdn_listname):
         super(MailingList, self).__init__()
-        listname, hostname = fqdn_listname.split('@', 1)
+        listname, at, hostname = fqdn_listname.partition('@')
+        assert hostname, 'Bad list name: {0}'.format(fqdn_listname)
         self.list_name = listname
         self.host_name = hostname
         # For the pending database

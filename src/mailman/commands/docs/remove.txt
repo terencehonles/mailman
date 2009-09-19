@@ -4,7 +4,6 @@ Command line list removal
 
 A system administrator can remove mailing lists by the command line.
 
-    >>> from mailman.app.lifecycle import create_list
     >>> create_list('test@example.com')
     <mailing list "test@example.com" at ...>
 
@@ -31,7 +30,6 @@ A system administrator can remove mailing lists by the command line.
 
 You can also remove lists quietly.
 
-    >>> from mailman.app.lifecycle import create_list
     >>> create_list('test@example.com')
     <mailing list "test@example.com" at ...>
 
@@ -47,7 +45,6 @@ Removing archives
 
 By default 'mailman remove' does not remove a mailing list's archives.
 
-    >>> from mailman.app.lifecycle import create_list
     >>> create_list('test@example.com')
     <mailing list "test@example.com" at ...>
 

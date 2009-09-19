@@ -4,7 +4,6 @@ Adding members
 
 You can add members to a mailing list from the command line.
 
-    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('test@example.com')
 
     >>> class FakeArgs:

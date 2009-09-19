@@ -30,6 +30,7 @@ import datetime
 from zope.interface import implements
 
 from mailman.config import config
+from mailman.core.errors import InvalidEmailAddress
 from mailman.database.mailinglist import MailingList
 from mailman.interfaces.listmanager import IListManager, ListAlreadyExistsError
 from mailman.interfaces.rest import IResolvePathNames
@@ -44,7 +45,9 @@ class ListManager:
     # pylint: disable-msg=R0201
     def create(self, fqdn_listname):
         """See `IListManager`."""
-        listname, hostname = fqdn_listname.split('@', 1)
+        listname, at, hostname = fqdn_listname.partition('@')
+        if len(hostname) == 0:
+            raise InvalidEmailAddress(fqdn_listname)
         mlist = config.db.store.find(
             MailingList,
             MailingList.list_name == listname,
@@ -58,7 +61,7 @@ class ListManager:
 
     def get(self, fqdn_listname):
         """See `IListManager`."""
-        listname, hostname = fqdn_listname.split('@', 1)
+        listname, at, hostname = fqdn_listname.partition('@')
         mlist = config.db.store.find(MailingList,
                                      list_name=listname,
                                      host_name=hostname).one()

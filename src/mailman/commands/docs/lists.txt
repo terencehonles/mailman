@@ -25,7 +25,6 @@ their fully qualified list names, with a description.
     >>> domain_mgr.add('example.net')
     <Domain example.net...>
 
-    >>> from mailman.app.lifecycle import create_list
     >>> mlist_1 = create_list('list-one@example.com')
     >>> mlist_1.description = 'List One'
 

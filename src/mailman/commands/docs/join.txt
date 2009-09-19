@@ -26,7 +26,6 @@ No address to join
 ------------------
 
     >>> from mailman.email.message import Message
-    >>> from mailman.app.lifecycle import create_list
     >>> from mailman.queue.command import Results
     >>> mlist = create_list('alpha@example.com')
 

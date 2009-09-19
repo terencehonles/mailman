@@ -54,7 +54,7 @@ class StockDatabase:
 
     def __init__(self):
         self.url = None
-        self._store = None
+        self.store = None
 
     def initialize(self, debug=None):
         """See `IDatabase`."""

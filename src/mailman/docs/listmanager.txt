@@ -36,10 +36,18 @@ list to the system.
 If you try to create a mailing list with the same name as an existing list,
 you will get an exception.
 
-    >>> mlist_dup = list_manager.create('_xtest@example.com')
+    >>> list_manager.create('_xtest@example.com')
     Traceback (most recent call last):
     ...
     ListAlreadyExistsError: _xtest@example.com
+
+It is an error to create a mailing list that isn't a fully qualified list name
+(i.e. posting address).
+
+    >>> list_manager.create('foo')
+    Traceback (most recent call last):
+    ...
+    InvalidEmailAddress: foo
 
 
 Deleting a mailing list
@@ -71,6 +79,11 @@ always get the same object back.
 If you try to get a list that doesn't existing yet, you get None.
 
     >>> print list_manager.get('_xtest_2@example.com')
+    None
+
+You also get None if the list name is invalid.
+
+    >>> print list_manager.get('foo')
     None
 
 

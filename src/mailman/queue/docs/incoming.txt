@@ -12,7 +12,6 @@ processing begins, with a global default.  This chain is processed with the
 message eventually ending up in one of the four disposition states described
 above.
 
-    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('_xtest@example.com')
     >>> print mlist.start_chain
     built-in
