@@ -36,7 +36,6 @@ with open('src/mailman/version.py') as fp:
         mo = re.match('VERSION = "(?P<version>[^"]+?)"', line)
         if mo:
             __version__ = mo.group('version')
-            print __version__
             break
     else:
         print 'No version number found'
@@ -76,7 +75,7 @@ scripts = set(
 
 setup(
     name            = 'mailman',
-    ##version         = __version__,
+    version         = __version__,
     description     = 'Mailman -- the GNU mailing list manager',
     long_description= """\
 This is GNU Mailman, a mailing list management system distributed under the
