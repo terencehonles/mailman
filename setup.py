@@ -18,19 +18,28 @@
 import ez_setup
 ez_setup.use_setuptools()
 
+import os
+import re
 import sys
+
+from setuptools import setup, find_packages
 from string import Template
 
-sys.path.insert(0, 'src')
-
-from mailman.version import VERSION as __version__
-from setuptools import setup, find_packages
-
-
-
 if sys.hexversion < 0x20600f0:
     print 'Mailman requires at least Python 2.6'
     sys.exit(1)
+
+
+# Calculate the version number without importing the mailman package.
+with open('src/mailman/version.py') as fp:
+    for line in fp:
+        mo = re.match('VERSION = "(?P<version>[^"]+?)"', line)
+        if mo:
+            __version__ = mo.group('version')
+            break
+    else:
+        print 'No version number found'
+        sys.exit(1)
 
 
 
@@ -38,13 +47,9 @@ if sys.hexversion < 0x20600f0:
 # This procedure needs to be made sane, probably when the language packs are
 # properly split out.
 
-import os
-import mailman.commands
-import mailman.messages
-
 # Create the .mo files from the .po files.  There may be errors and warnings
 # here and that could cause the digester.txt test to fail.
-start_dir = os.path.dirname(mailman.messages.__file__)
+start_dir = os.path.dirname('src/mailman/messages')
 for dirpath, dirnames, filenames in os.walk(start_dir):
     for filename in filenames:
         po_file = os.path.join(dirpath, filename)
