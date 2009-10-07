@@ -27,12 +27,13 @@ __all__ = [
 
 import os
 import sys
+import time
 import errno
 import signal
 import socket
 import logging
 
-from datetime import timedelta
+from datetime import datetime, timedelta
 from lazr.config import as_boolean
 from locknix import lockfile
 from munepy import Enum
@@ -46,6 +47,7 @@ from mailman.options import Options
 DOT = '.'
 LOCK_LIFETIME = timedelta(days=1, hours=6)
 SECONDS_IN_A_DAY = 86400
+SUBPROC_START_WAIT = timedelta(seconds=20)
 
 
 
@@ -146,8 +148,8 @@ def master_state():
     try:
         os.kill(pid, 0)
         return WatcherState.conflict
-    except OSError, e:
-        if e.errno == errno.ESRCH:
+    except OSError as error:
+        if error.errno == errno.ESRCH:
             # No matching process id.
             return WatcherState.stale_lock
         # Some other error occurred.
@@ -405,10 +407,14 @@ class Loop:
         and configured to do so.
         """
         log = logging.getLogger('mailman.qrunner')
+        # Sleep until a signal is received.  This prevents the master from
+        # existing immediately even if there are no qrunners (as happens in
+        # the test suite).
+        signal.pause()
         while True:
             try:
                 pid, status = os.wait()
-            except OSError, error:
+            except OSError as error:
                 # No children?  We're done.
                 if error.errno == errno.ECHILD:
                     break
@@ -466,7 +472,7 @@ qrunner %s reached maximum restart limit of %d, not restarting.""",
         for pid in self._kids:
             try:
                 os.kill(pid, signal.SIGTERM)
-            except OSError, error:
+            except OSError as error:
                 if error.errno == errno.ESRCH:
                     # The child has already exited.
                     log.info('ESRCH on pid: %d', pid)
@@ -476,10 +482,10 @@ qrunner %s reached maximum restart limit of %d, not restarting.""",
                 # pylint: disable-msg=W0612
                 pid, status = os.wait()
                 self._kids.drop(pid)
-            except OSError, e:
-                if e.errno == errno.ECHILD:
+            except OSError as error:
+                if error.errno == errno.ECHILD:
                     break
-                elif e.errno == errno.EINTR:
+                elif error.errno == errno.EINTR:
                     continue
                 raise
 
