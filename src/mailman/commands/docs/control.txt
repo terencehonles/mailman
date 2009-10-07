@@ -126,3 +126,6 @@ stops all the child processes too.
 
     >>> bury_master()
     Master process went bye bye
+
+
+XXX We need tests for restart (SIGUSR1) and reopen (SIGHUP).

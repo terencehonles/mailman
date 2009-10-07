@@ -21,6 +21,8 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
+    'Reopen',
+    'Restart',
     'Start',
     'Stop',
     ]
@@ -144,12 +146,14 @@ def kill_watcher(sig):
 
 
 
-class Stop:
-    """Stop the Mailman daemons."""
-
+class SignalCommand:
+    """Common base class for simple, signal sending commands."""
+    
     implements(ICLISubCommand)
 
-    name = 'stop'
+    name = None
+    message = None
+    signal = None
 
     def add(self, parser, command_parser):
         """See `ICLISubCommand`."""
@@ -162,8 +166,32 @@ class Stop:
 
     def process(self, args):
         """See `ICLISubCommand`."""
-        def log(message):
-            if not args.quiet:
-                print message
-        log(_("Shutting down Mailman's master qrunner"))
-        kill_watcher(signal.SIGTERM)
+        if not args.quiet:
+            print _(self.message)
+        kill_watcher(self.signal)
+
+
+class Stop(SignalCommand):
+    """Stop the Malman daemons."""
+
+    name = 'stop'
+    message = _("Shutting down Mailman's master qrunner")
+    signal = signal.SIGTERM
+
+
+class Reopen(SignalCommand):
+    """Reopen the Mailman daemons."""
+
+    name = 'reopen'
+    message = _('Reopening the Mailman qrunners')
+    signal = signal.SIGHUP
+
+
+class Restart(SignalCommand):
+    """Stop the Mailman daemons."""
+
+    implements(ICLISubCommand)
+
+    name = 'restart'
+    message = _('Restarting the Mailman qrunners')
+    signal = signal.SIGUSR1
