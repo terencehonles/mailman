@@ -28,15 +28,15 @@ __all__ = [
 from zope.interface import implements
 
 from mailman.config import config
-from mailman.database.address import Address
-from mailman.database.preferences import Preferences
-from mailman.database.user import User
 from mailman.interfaces.address import ExistingAddressError
 from mailman.interfaces.usermanager import IUserManager
+from mailman.model.address import Address
+from mailman.model.preferences import Preferences
+from mailman.model.user import User
 
 
 
-class UserManager(object):
+class UserManager:
     implements(IUserManager)
 
     def create_user(self, address=None, real_name=None):

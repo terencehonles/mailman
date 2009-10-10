@@ -29,12 +29,12 @@ from zope.interface import implements
 
 from mailman.config import config
 from mailman.database.model import Model
-from mailman.database.address import Address
-from mailman.database.preferences import Preferences
-from mailman.database.roster import Memberships
 from mailman.interfaces.address import (
     AddressAlreadyLinkedError, AddressNotLinkedError)
 from mailman.interfaces.user import IUser
+from mailman.model.address import Address
+from mailman.model.preferences import Preferences
+from mailman.model.roster import Memberships
 
 
 

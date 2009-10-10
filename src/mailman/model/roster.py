@@ -41,11 +41,11 @@ from storm.expr import And, LeftJoin, Or
 from zope.interface import implements
 
 from mailman.config import config
-from mailman.database.address import Address
-from mailman.database.member import Member
-from mailman.database.preferences import Preferences
 from mailman.interfaces.member import DeliveryMode, MemberRole
 from mailman.interfaces.roster import IRoster
+from mailman.model.address import Address
+from mailman.model.member import Member
+from mailman.model.preferences import Preferences
 
 
 

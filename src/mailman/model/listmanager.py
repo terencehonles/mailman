@@ -31,9 +31,9 @@ from zope.interface import implements
 
 from mailman.config import config
 from mailman.core.errors import InvalidEmailAddress
-from mailman.database.mailinglist import MailingList
 from mailman.interfaces.listmanager import IListManager, ListAlreadyExistsError
 from mailman.interfaces.rest import IResolvePathNames
+from mailman.model.mailinglist import MailingList
 
 
 
