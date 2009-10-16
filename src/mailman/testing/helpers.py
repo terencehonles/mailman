@@ -140,6 +140,12 @@ class TestableMaster(Master):
         self.thread.daemon = True
         self._started_kids = None
 
+    def _pause(self):
+        """See `Master`."""
+        # No-op this because the tests generally do not signal the master,
+        # which would mean the signal.pause() never exits.
+        pass
+
     def start(self, *qrunners):
         """Start the master."""
         self.start_qrunners(qrunners)
@@ -162,7 +168,7 @@ class TestableMaster(Master):
                 try:
                     os.kill(pid, 0)
                     starting_kids.remove(pid)
-                except OSError, error:
+                except OSError as error:
                     if error.errno == errno.ESRCH:
                         # The child has not yet started.
                         pass

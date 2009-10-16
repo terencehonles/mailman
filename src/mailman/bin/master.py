@@ -400,6 +400,13 @@ class Loop:
                 log.debug('[%d] %s', pid, spec)
                 self._kids.add(pid, info)
 
+    def _pause(self):
+        """Sleep until a signal is received."""
+        # Sleep until a signal is received.  This prevents the master from
+        # existing immediately even if there are no qrunners (as happens in
+        # the test suite).
+        signal.pause()
+
     def loop(self):
         """Main loop.
 
@@ -407,10 +414,7 @@ class Loop:
         and configured to do so.
         """
         log = logging.getLogger('mailman.qrunner')
-        # Sleep until a signal is received.  This prevents the master from
-        # existing immediately even if there are no qrunners (as happens in
-        # the test suite).
-        signal.pause()
+        self._pause()
         while True:
             try:
                 pid, status = os.wait()

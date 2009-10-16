@@ -9,7 +9,7 @@ just a wrapper around the real queue runner watcher script called master.py.
 
     >>> from mailman.testing.helpers import TestableMaster
 
-Start the master in a subthread.
+Start the master in a sub-thread.
 
     >>> master = TestableMaster()
     >>> master.start()
