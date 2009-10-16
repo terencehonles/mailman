@@ -27,6 +27,7 @@ __all__ = [
 
 from lazr.config import as_boolean
 from lazr.restful.interfaces import IWebServiceConfiguration
+from lazr.restful.wsgi import BaseWSGIWebServiceConfiguration
 from zope.interface import implements
 
 from mailman import version
@@ -35,7 +36,7 @@ from mailman.config import config
 
 
 # pylint: disable-msg=W0232,R0201
-class AdminWebServiceConfiguration:
+class AdminWebServiceConfiguration(BaseWSGIWebServiceConfiguration):
     """A configuration object for the Mailman admin web service."""
 
     implements(IWebServiceConfiguration)

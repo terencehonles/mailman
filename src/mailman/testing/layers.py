@@ -35,6 +35,7 @@ import logging
 import datetime
 import tempfile
 
+from lazr.smtptest.controller import QueueController
 from pkg_resources import resource_string
 from textwrap import dedent
 from urllib2 import urlopen, URLError
@@ -46,7 +47,7 @@ from mailman.core.logging import get_handler
 from mailman.i18n import _
 from mailman.interfaces.domain import IDomainManager
 from mailman.interfaces.messages import IMessageStore
-from mailman.testing.helpers import SMTPServer, TestableMaster
+from mailman.testing.helpers import TestableMaster
 from mailman.utilities.datetime import factory
 from mailman.utilities.string import expand
 
@@ -209,6 +210,20 @@ class ConfigLayer(MockAndMonkeyLayer):
 
 
 
+class ExtendedQueueController(QueueController):
+    """QueueController with a little extra API."""
+
+    @property
+    def messages(self):
+        """Return all the messages received by the SMTP server."""
+        for message in self:
+            yield message
+
+    def clear(self):
+        """Clear all the messages from the queue."""
+        list(self)
+
+
 class SMTPLayer(ConfigLayer):
     """Layer for starting, stopping, and accessing a test SMTP server."""
 
@@ -217,7 +232,9 @@ class SMTPLayer(ConfigLayer):
     @classmethod
     def setUp(cls):
         assert cls.smtpd is None, 'Layer already set up'
-        cls.smtpd = SMTPServer()
+        host = config.mta.smtp_host
+        port = int(config.mta.smtp_port)
+        cls.smtpd = ExtendedQueueController(host, port)
         cls.smtpd.start()
 
     @classmethod
