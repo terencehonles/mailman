@@ -40,11 +40,8 @@ import smtplib
 import datetime
 import threading
 
-from Queue import Empty, Queue
-
 from mailman.bin.master import Loop as Master
 from mailman.config import config
-from mailman.testing.smtplistener import Server
 from mailman.utilities.mailbox import Mailbox
 
 
@@ -188,63 +185,6 @@ class TestableMaster(Master):
         """The pids of all the child qrunner processes."""
         for pid in self._started_kids:
             yield pid
-
-
-
-class SMTPServer:
-    """An smtp server for testing."""
-
-    def __init__(self):
-        self._messages = []
-        self._queue = Queue()
-        self.host = config.mta.smtp_host
-        self.port = int(config.mta.smtp_port)
-        self._server = Server((self.host, self.port), self._queue)
-        self._thread = threading.Thread(target=self._server.start)
-        self._thread.daemon = True
-
-    def start(self):
-        """Start the smtp server in a thread."""
-        log.info('test SMTP server starting')
-        self._thread.start()
-        smtpd = smtplib.SMTP()
-        log.info('connecting to %s:%s', self.host, self.port)
-        smtpd.connect(self.host, self.port)
-        response = smtpd.helo('test.localhost')
-        smtpd.quit()
-        log.info('SMTP server is running: %s', response)
-
-    def stop(self):
-        """Stop the smtp server."""
-        smtpd = smtplib.SMTP()
-        smtpd.connect(self.host, self.port)
-        smtpd.docmd('EXIT')
-        self.clear()
-        # Wait for the thread to exit.
-        self._thread.join()
-        log.info('test SMTP server stopped')
-
-    @property
-    def messages(self):
-        """Return all the messages received by the smtp server."""
-        # Look at the thread queue and append any messages from there to our
-        # internal list of messages.
-        while True:
-            try:
-                message = self._queue.get_nowait()
-            except Empty:
-                break
-            else:
-                self._messages.append(message)
-        # Now return all the messages we know about.
-        for message in self._messages:
-            yield message
-
-    def clear(self):
-        """Clear all messages from the queue."""
-        # Just throw these away.
-        list(self._messages)
-        self._messages = []
 
 
 
