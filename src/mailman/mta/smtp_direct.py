@@ -60,49 +60,6 @@ log = logging.getLogger('mailman.smtp')
 
 
 
-# Manage a connection to the SMTP server
-class Connection:
-    def __init__(self):
-        self._conn = None
-
-    def _connect(self):
-        self._conn = smtplib.SMTP()
-        host = config.mta.smtp_host
-        port = int(config.mta.smtp_port)
-        log.debug('Connecting to %s:%s', host, port)
-        self._conn.connect(host, port)
-        self._numsessions = int(config.mta.max_sessions_per_connection)
-
-    def sendmail(self, envsender, recips, msgtext):
-        if self._conn is None:
-            self._connect()
-        try:
-            results = self._conn.sendmail(envsender, recips, msgtext)
-        except smtplib.SMTPException:
-            # For safety, close this connection.  The next send attempt will
-            # automatically re-open it.  Pass the exception on up.
-            self.quit()
-            raise
-        # This session has been successfully completed.
-        self._numsessions -= 1
-        # By testing exactly for equality to 0, we automatically handle the
-        # case for SMTP_MAX_SESSIONS_PER_CONNECTION <= 0 meaning never close
-        # the connection.  We won't worry about wraparound <wink>.
-        if self._numsessions == 0:
-            self.quit()
-        return results
-
-    def quit(self):
-        if self._conn is None:
-            return
-        try:
-            self._conn.quit()
-        except smtplib.SMTPException:
-            pass
-        self._conn = None
-
-
-
 def process(mlist, msg, msgdata):
     recips = msgdata.get('recips')
     if not recips:

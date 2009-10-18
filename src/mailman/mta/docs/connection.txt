@@ -1,0 +1,16 @@
+===============
+MTA connections
+===============
+
+Outgoing connections to the outgoing mail transport agent (MTA) are mitigated
+through a Connection class, which can transparently manage multiple sessions
+to a single physical MTA.
+
+    >>> from mailman.mta.connection import Connection
+
+The number of connections per session is specified when the Connection object
+is created, as is the host and port number of the SMTP server.
+
+    >>> connection = Connection(
+    ...     config.mta.smtp_host, int(config.mta.smtp_port), 1)
+    
