@@ -53,7 +53,7 @@ class Connection:
         """
         self._host = host
         self._port = port
-        self._connections_per_session = sessions_per_connection
+        self._sessions_per_connection = sessions_per_connection
         self._connection = None
 
     def _connect(self):
