@@ -14,3 +14,7 @@ is created, as is the host and port number of the SMTP server.
     >>> connection = Connection(
     ...     config.mta.smtp_host, int(config.mta.smtp_port), 1)
     
+At the start, there have been no connections to the server.
+
+    >>> smtpd.get_session_count()
+    0
