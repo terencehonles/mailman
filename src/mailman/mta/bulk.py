@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2009 by the Free Software Foundation, Inc.
+# Copyright (C) 2009 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -15,37 +15,26 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Creation/deletion hooks for the MTAs that do things automatically.
-
-Exim one example of an MTA that Just Works.
-"""
+"""Module stuff."""
 
 from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'NullMTA',
+    'BulkDelivery',
     ]
 
 
 from zope.interface import implements
-from mailman.interfaces.mta import IMailTransportAgentAliases
+
+from mailman.interfaces.mta import IMailTransportAgentDelivery
 
 
 
-class NullMTA:
-    """Null MTA that just satisfies the interface."""
+class BulkDelivery:
+    """Deliver messages to the MTA in as few sessions as possible."""
 
-    implements(IMailTransportAgentAliases)
+    implements(IMailTransportAgentDelivery)
 
-    def create(self, mlist):
-        """See `IMailTransportAgentAliases`."""
-        pass
-
-    def delete(self, mlist):
-        """See `IMailTransportAgentAliases`."""
-        pass
-
-    def regenerate(self):
-        """See `IMailTransportAgentAliases`."""
-        pass
+    def deliver(self, mlist, msg, msgdata):
+        """See `IMailTransportAgentDelivery`."""

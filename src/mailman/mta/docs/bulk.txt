@@ -1,0 +1,24 @@
+======================
+Standard bulk delivery
+======================
+
+Mailman has several built in strategies for completing the actual delivery of
+messages to the immediate upstream mail transport agent, which completes the
+actual final delivery to recipients.
+
+Bulk delivery attempts to deliver as few copies of the identical message as
+possible to as many recipients as possible.  By grouping recipients this way,
+bandwidth between Mailman and the MTA, and consequently between the MTA and
+remote mail servers, can be greatly reduced.  The downside is the messages
+cannot be personalized.  See `verp.txt`_ for an alternative strategy.
+
+    >>> from mailman.mta.bulk import BulkDelivery
+
+Delivery strategies must implement the proper interface.
+
+    >>> bulk = BulkDelivery()
+
+    >>> from mailman.interfaces.mta import IMailTransportAgentDelivery
+    >>> from zope.interface.verify import verifyObject
+    >>> verifyObject(IMailTransportAgentDelivery, bulk)    
+    True

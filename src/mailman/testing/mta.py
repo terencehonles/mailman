@@ -33,7 +33,7 @@ from lazr.smtptest.controller import QueueController
 from lazr.smtptest.server import Channel, QueueServer
 from zope.interface import implements
 
-from mailman.interfaces.mta import IMailTransportAgent
+from mailman.interfaces.mta import IMailTransportAgentAliases
 
 
 log = logging.getLogger('lazr.smtptest')
@@ -43,7 +43,7 @@ log = logging.getLogger('lazr.smtptest')
 class FakeMTA:
     """Fake MTA for testing purposes."""
 
-    implements(IMailTransportAgent)
+    implements(IMailTransportAgentAliases)
 
     def create(self, mlist):
         pass
