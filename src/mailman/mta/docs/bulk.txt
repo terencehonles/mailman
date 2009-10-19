@@ -14,11 +14,123 @@ cannot be personalized.  See `verp.txt`_ for an alternative strategy.
 
     >>> from mailman.mta.bulk import BulkDelivery
 
-Delivery strategies must implement the proper interface.
+The standard bulk deliverer takes as an argument the maximum number of
+recipients per session.  The default is to deliver the message in one chunk,
+containing all recipients.
 
-    >>> bulk = BulkDelivery()
+    >>> bulk = BulkDelivery(0)
+
+Delivery strategies must implement the proper interface.
 
     >>> from mailman.interfaces.mta import IMailTransportAgentDelivery
     >>> from zope.interface.verify import verifyObject
-    >>> verifyObject(IMailTransportAgentDelivery, bulk)    
+    >>> verifyObject(IMailTransportAgentDelivery, bulk)
     True
+
+
+Chunking recipients
+===================
+
+The set of final recipients is contained in the 'recipients' key in the
+message metadata.  When `max_recipients` is specified as zero, then the bulk
+deliverer puts all recipients into one big chunk.
+
+    >>> from string import ascii_letters
+    >>> recipients = set(letter + 'person@example.com'
+    ...                  for letter in ascii_letters)
+
+    >>> chunks = list(bulk.chunkify(recipients))
+    >>> len(chunks)
+    1
+    >>> len(chunks[0])
+    52
+
+Let say the maximum number of recipients allowed is 4, then no chunk will have
+more than 4 recipients, though they can have fewer (but still not zero).
+
+    >>> bulk = BulkDelivery(4)
+    >>> chunks = list(bulk.chunkify(recipients))
+    >>> len(chunks)
+    13
+    >>> all(0 < len(chunk) <= 4 for chunk in chunks)
+    True
+
+The chunking algorithm sorts recipients by top level domain by length.
+
+    >>> recipients = set([
+    ...     'anne@example.com',
+    ...     'bart@example.org',
+    ...     'cate@example.net',
+    ...     'dave@example.com',
+    ...     'elle@example.org',
+    ...     'fred@example.net',
+    ...     'gwen@example.com',
+    ...     'herb@example.us',
+    ...     'ione@example.net',
+    ...     'john@example.com',
+    ...     'kate@example.com',
+    ...     'liam@example.ca',
+    ...     'mary@example.us',
+    ...     'neil@example.net',
+    ...     'ocho@example.org',
+    ...     'paco@example.xx',
+    ...     'quaq@example.zz',
+    ...     ])
+
+    >>> bulk = BulkDelivery(4)
+    >>> chunks = list(bulk.chunkify(recipients))
+    >>> len(chunks)
+    6
+
+We can't make any guarantees about sorting within each chunk, but we can tell
+a few things.  For example, the first two chunks will be composed of .net (4)
+and .org (3) domains (for a total of 7).
+
+    >>> len(chunks[0])
+    4
+    >>> len(chunks[1])
+    3
+
+    >>> for address in sorted(chunks[0].union(chunks[1])):
+    ...     print address
+    bart@example.org
+    cate@example.net
+    elle@example.org
+    fred@example.net
+    ione@example.net
+    neil@example.net
+    ocho@example.org
+
+We also know that the next two chunks will contain .com (5) addresses.
+
+    >>> len(chunks[2])
+    4
+    >>> len(chunks[3])
+    1
+
+    >>> for address in sorted(chunks[2].union(chunks[3])):
+    ...     print address
+    anne@example.com
+    dave@example.com
+    gwen@example.com
+    john@example.com
+    kate@example.com
+
+The next chunk will contain the .us (2) and .ca (1) domains.
+
+    >>> len(chunks[4])
+    3
+    >>> for address in sorted(chunks[4]):
+    ...     print address
+    herb@example.us
+    liam@example.ca
+    mary@example.us
+
+The final chunk will contain the outliers, .xx (1) and .zz (2).
+
+    >>> len(chunks[5])
+    2    
+    >>> for address in sorted(chunks[5]):
+    ...     print address
+    paco@example.xx
+    quaq@example.zz

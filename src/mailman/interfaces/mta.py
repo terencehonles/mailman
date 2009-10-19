@@ -53,7 +53,13 @@ class IMailTransportAgentDelivery(Interface):
         Ordinarily the mailing list is consulted for delivery specifics,
         however the message metadata dictionary can contain additional
         directions to control delivery.  Specifics are left to the
-        implementation.
+        implementation, but there are a few common keys:
+
+        * envelope_sender - the email address of the RFC 2821 envelope sender;
+        * decorated - a flag indicating whether the message has been decorated
+            with headers and footers yet;
+        * recipients - the set of all recipients who should receive this
+            message, as a set of email addresses;
 
         :param mlist: The mailing list being delivered to.
         :type mlist: `IMailingList`

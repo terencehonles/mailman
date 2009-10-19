@@ -25,9 +25,24 @@ __all__ = [
     ]
 
 
+from itertools import chain
+
 from zope.interface import implements
 
 from mailman.interfaces.mta import IMailTransportAgentDelivery
+
+
+# A mapping of top-level domains to bucket numbers.  The zeroth bucket is
+# reserved for everything else.  At one time, these were the most common
+# domains.
+CHUNKMAP = dict(
+    com=1,
+    net=2,
+    org=2,
+    edu=3,
+    us=3,
+    ca=3,
+    )
 
 
 
@@ -36,5 +51,57 @@ class BulkDelivery:
 
     implements(IMailTransportAgentDelivery)
 
+    def __init__(self, max_recipients):
+        """Create a bulk deliverer.
+
+        :param max_recipients: The maximum number of recipients per delivery
+            chunk.  Zero or less means to group all recipients into one
+            chunk.
+        :type max_recipients: integer
+        """
+        self._max_recipients = max_recipients
+
     def deliver(self, mlist, msg, msgdata):
         """See `IMailTransportAgentDelivery`."""
+
+    def chunkify(self, recipients):
+        """Split a set of recipients into chunks.
+
+        The `max_recipients` argument given to the constructor specifies the
+        maximum number of recipients in each chunk.
+
+        :param recipients: The set of recipient email addresses
+        :type recipients: sequence of email address strings
+        :return: A list of chunks, where each chunk is a set containing no
+            more than `max_recipients` number of addresses.  The chunk can
+            contain fewer, and no packing is guaranteed.
+        :rtype: list of sets of strings
+        """
+        if self._max_recipients <= 0:
+            yield set(recipients)
+            return
+        # This algorithm was originally suggested by Chuq Von Rospach.  Start
+        # by splitting the recipient addresses into top-level domain buckets,
+        # using the "most common" domains.  Everything else ends up in the
+        # zeroth bucket.
+        by_bucket = {}
+        for address in recipients:
+            localpart, at, domain = address.partition('@')
+            domain_parts = domain.split('.')
+            bucket_number = CHUNKMAP.get(domain_parts[-1], 0)
+            by_bucket.setdefault(bucket_number, set()).add(address)
+        # Fill chunks by sorting the tld values by length.
+        chunk = set()
+        for tld_chunk in sorted(by_bucket.values(), key=len, reverse=True):
+            while tld_chunk:
+                chunk.add(tld_chunk.pop())
+                if len(chunk) == self._max_recipients:
+                    yield chunk
+                    chunk = set()
+            # Every tld bucket starts a new chunk, but only if non-empty
+            if len(chunk) > 0:
+                yield chunk
+                chunk = set()
+        # Be sure to include the last chunk, but only if it's non-empty.
+        if len(chunk) > 0:
+            yield chunk
