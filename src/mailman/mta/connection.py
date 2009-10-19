@@ -54,6 +54,7 @@ class Connection:
         self._host = host
         self._port = port
         self._sessions_per_connection = sessions_per_connection
+        self._session_count = None
         self._connection = None
 
     def _connect(self):
@@ -61,6 +62,7 @@ class Connection:
         self._connection = smtplib.SMTP()
         log.debug('Connecting to %s:%s', self._host, self._port)
         self._connection.connect(self._host, self._port)
+        self._session_count = self._sessions_per_connection
 
     def sendmail(self, envsender, recips, msgtext):
         """Mimic `smtplib.SMTP.sendmail`."""
@@ -74,11 +76,11 @@ class Connection:
             self.quit()
             raise
         # This session has been successfully completed.
-        self._sessions_per_connection -= 1
+        self._session_count -= 1
         # By testing exactly for equality to 0, we automatically handle the
         # case for SMTP_MAX_SESSIONS_PER_CONNECTION <= 0 meaning never close
         # the connection.  We won't worry about wraparound <wink>.
-        if self._sessions_per_connection == 0:
+        if self._session_count == 0:
             self.quit()
         return results
 

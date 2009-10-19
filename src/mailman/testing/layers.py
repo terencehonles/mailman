@@ -47,7 +47,7 @@ from mailman.i18n import _
 from mailman.interfaces.domain import IDomainManager
 from mailman.interfaces.messages import IMessageStore
 from mailman.testing.helpers import TestableMaster
-from mailman.testing.mta import SessionCountingController
+from mailman.testing.mta import ConnectionCountingController
 from mailman.utilities.datetime import factory
 from mailman.utilities.string import expand
 
@@ -220,7 +220,7 @@ class SMTPLayer(ConfigLayer):
         assert cls.smtpd is None, 'Layer already set up'
         host = config.mta.smtp_host
         port = int(config.mta.smtp_port)
-        cls.smtpd = SessionCountingController(host, port)
+        cls.smtpd = ConnectionCountingController(host, port)
         cls.smtpd.start()
 
     @classmethod

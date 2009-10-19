@@ -56,8 +56,8 @@ class FakeMTA:
 
 
 
-class SessionCountingChannel(Channel):
-    """Count the number of SMTP sessions opened and closed."""
+class StatisticsChannel(Channel):
+    """A channel that can answers to the fake STAT command."""
 
     def smtp_STAT(self, arg):
         """Cause the server to send statistics to its controller."""
@@ -66,13 +66,13 @@ class SessionCountingChannel(Channel):
 
 
 
-class SessionCountingServer(QueueServer):
-    """Count the number of SMTP sessions opened and closed."""
+class ConnectionCountingServer(QueueServer):
+    """Count the number of SMTP connections opened."""
 
     def __init__(self, host, port, queue, oob_queue):
         """See `lazr.smtptest.server.QueueServer`."""
         QueueServer.__init__(self, host, port, queue)
-        self.session_count = 0
+        self._connection_count = 0
         # The out-of-band queue is where the server sends statistics to the
         # controller upon request.
         self._oob_queue = oob_queue
@@ -80,25 +80,25 @@ class SessionCountingServer(QueueServer):
     def handle_accept(self):
         """See `lazr.smtp.server.Server`."""
         connection, address = self.accept()
-        self.session_count += 1
-        log.info('[SessionCountingServer] accepted: %s', address)
-        SessionCountingChannel(self, connection, address)
+        self._connection_count += 1
+        log.info('[ConnectionCountingServer] accepted: %s', address)
+        StatisticsChannel(self, connection, address)
 
     def reset(self):
         """See `lazr.smtp.server.Server`."""
         QueueServer.reset(self)
-        self.session_count = 0
+        self._connection_count = 0
 
     def send_statistics(self):
         """Send the current connection statistics to the controller."""
         # Do not count the connection caused by the STAT connect.
-        self.session_count -= 1
-        self._oob_queue.put(self.session_count)
+        self._connection_count -= 1
+        self._oob_queue.put(self._connection_count)
 
 
 
-class SessionCountingController(QueueController):
-    """Count the number of SMTP sessions opened and closed."""
+class ConnectionCountingController(QueueController):
+    """Count the number of SMTP connections opened."""
 
     def __init__(self, host, port):
         """See `lazr.smtptest.controller.QueueController`."""
@@ -107,7 +107,7 @@ class SessionCountingController(QueueController):
 
     def _make_server(self, host, port):
         """See `lazr.smtptest.controller.QueueController`."""
-        self.server = SessionCountingServer(
+        self.server = ConnectionCountingServer(
             host, port, self.queue, self.oob_queue)
 
     def start(self):
@@ -117,10 +117,10 @@ class SessionCountingController(QueueController):
         # method causes a connection to occur.
         self.reset()
 
-    def get_session_count(self):
-        """Retrieve the number of sessions.
+    def get_connection_count(self):
+        """Retrieve the number of connections.
 
-        :return: The number of sessions that have been opened.
+        :return: The number of connections to the server that have been made.
         :rtype: integer
         """
         smtpd = self._connect()
