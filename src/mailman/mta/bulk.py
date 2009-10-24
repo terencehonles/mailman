@@ -115,6 +115,25 @@ class BulkDelivery:
         recipients = msgdata.get('recipients')
         if recipients is None:
             return
+        # Blow away any existing Sender and Errors-To headers and substitute
+        # our own.  Our interpretation of RFC 5322 $3.6.2 is that Mailman is
+        # the "agent responsible for actual transmission of the message"
+        # because what we send to list members is different than what the
+        # original author sent.  RFC 2076 says Errors-To is "non-standard,
+        # discouraged" but we include it for historical purposes.
+        del msg['sender']
+        del msg['errors-to']
+        # The message metadata can override the calculation of the sender, but
+        # otherwise it falls to the list's -bounces robot.  If this message is
+        # not intended for any specific mailing list, the site owner's address
+        # is used.
+        sender = msgdata.get('sender')
+        if sender is None:
+            sender = (config.mailman.site_owner
+                      if mlist is None
+                      else mlist.bounces_address)
+        msg['Sender'] = sender
+        msg['Errors-To'] = sender
         for recipients in self.chunkify(msgdata['recipients']):
             self._connection.sendmail(
                 'foo@example.com', recipients, msg.as_string())

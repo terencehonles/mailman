@@ -173,8 +173,7 @@ message sent, with all the recipients packed into the envelope recipients
     To: test@example.com
     Subject: test one
     Message-ID: <aardvark>
-    X-Peer: ...
-    X-MailFrom: ...
+    ...
     X-RcptTo: person_...
         person_...
     ...
@@ -202,3 +201,118 @@ each with 20 addresses in the RCPT TO header.
     Number of recipients: 20
     Number of recipients: 20
     Number of recipients: 20
+
+
+Delivery headers
+================
+
+The message delivered to bulk recipients has its Sender and Errors-To headers
+set to some Mailman-responsible agent that can handle such errors, for example
+the -bounces robot for the list or the site owner's address.  The relevant
+RFCs are 5321, 5322, and 2076.
+
+It is arguably incorrect for Mailman to touch the Sender header, if the
+interpretation is such that the original author's agent is considered the
+"agent responsible for actual transmission of the message" (RFC 5322 $3.6.2).
+On the other hand, a reasonable argument can be made that Mailman is the
+responsible agent since the message being received by list members is
+different than the message sent by the original author.  We make the latter
+interpretation, and thus Mailman removes all existing Sender headers and
+inserts its own.
+
+RFC 2076 states that Errors-To is "non-standard, discouraged".  We treat it
+the same as Sender for historical de-facto purposes.
+
+The bulk delivery module calculates the sending agent address first from the
+message metadata...
+
+    >>> bulk = BulkDelivery()
+    >>> recipients = set(['aperson@example.com'])
+    >>> msgdata = dict(recipients=recipients,
+    ...                sender='asender@example.org')
+    >>> bulk.deliver(mlist, msg, msgdata)
+    >>> message = list(smtpd.messages)[0]
+    >>> print message.as_string()
+    From: aperson@example.org
+    To: test@example.com
+    Subject: test one
+    Message-ID: <aardvark>
+    Sender: asender@example.org
+    Errors-To: asender@example.org
+    X-Peer: ...
+    X-MailFrom: foo@example.com
+    X-RcptTo: aperson@example.com
+    <BLANKLINE>
+    This is a test.
+
+...followed by the mailing list's bounces robot address...
+
+    >>> del msgdata['sender']
+    >>> bulk.deliver(mlist, msg, msgdata)
+    >>> message = list(smtpd.messages)[0]
+    >>> print message.as_string()
+    From: aperson@example.org
+    To: test@example.com
+    Subject: test one
+    Message-ID: <aardvark>
+    Sender: test-bounces@example.com
+    Errors-To: test-bounces@example.com
+    X-Peer: ...
+    X-MailFrom: foo@example.com
+    X-RcptTo: aperson@example.com
+    <BLANKLINE>
+    This is a test.
+
+...and finally the site owner, if there is no mailing list target for this
+message.
+
+    >>> config.push('site-owner', """\
+    ... [mailman]
+    ... site_owner: site-owner@example.com
+    ... """)
+
+    >>> bulk.deliver(None, msg, msgdata)
+    >>> message = list(smtpd.messages)[0]
+    >>> print message.as_string()
+    From: aperson@example.org
+    To: test@example.com
+    Subject: test one
+    Message-ID: <aardvark>
+    Sender: site-owner@example.com
+    Errors-To: site-owner@example.com
+    X-Peer: ...
+    X-MailFrom: foo@example.com
+    X-RcptTo: aperson@example.com
+    <BLANKLINE>
+    This is a test.
+
+Any existing Sender or Errors-To headers in the original message are always
+deleted first.
+
+    >>> msg = message_from_string("""\
+    ... From: bperson@example.org
+    ... To: test@example.com
+    ... Subject: test two
+    ... Message-ID: <badger>
+    ... Sender: robot@example.org
+    ... Errors-To: robot@example.org
+    ...
+    ... This is a test.
+    ... """)
+
+    >>> bulk.deliver(mlist, msg, msgdata)
+    >>> message = list(smtpd.messages)[0]
+    >>> print message.as_string()
+    From: bperson@example.org
+    To: test@example.com
+    Subject: test two
+    Message-ID: <badger>
+    Sender: test-bounces@example.com
+    Errors-To: test-bounces@example.com
+    X-Peer: ...
+    X-MailFrom: foo@example.com
+    X-RcptTo: aperson@example.com
+    <BLANKLINE>
+    This is a test.
+
+    >>> config.pop('site-owner')
