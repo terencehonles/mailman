@@ -19,7 +19,7 @@
 
 This module calculates the non-digest recipients for the message based on the
 list's membership and configuration options.  It places the list of recipients
-on the `recips' attribute of the message.  This attribute is used by the
+on the `recipients' attribute of the message.  This attribute is used by the
 SendmailDeliver and BulkDeliver modules.
 """
 
@@ -52,7 +52,7 @@ class CalculateRecipients:
     def process(self, mlist, msg, msgdata):
         # Short circuit if we've already calculated the recipients list,
         # regardless of whether the list is empty or not.
-        if 'recips' in msgdata:
+        if 'recipients' in msgdata:
             return
         # Should the original sender should be included in the recipients list?
         include_sender = True
@@ -72,10 +72,10 @@ class CalculateRecipients:
             if mlist.Authenticate((config.AuthListModerator,
                                    config.AuthListAdmin),
                                   password):
-                recips = mlist.getMemberCPAddresses(
+                recipients = mlist.getMemberCPAddresses(
                     mlist.getRegularMemberKeys() +
                     mlist.getDigestMemberKeys())
-                msgdata['recips'] = recips
+                msgdata['recipients'] = recipients
                 return
             else:
                 # Bad Urgent: password, so reject it instead of passing it on.
@@ -88,30 +88,30 @@ delivery.  The original message as received by Mailman is attached.
 """)
                 raise errors.RejectMessage(Utils.wrap(text))
         # Calculate the regular recipients of the message
-        recips = set(member.address.address
-                     for member in mlist.regular_members.members
-                     if member.delivery_status == DeliveryStatus.enabled)
+        recipients = set(member.address.address
+                         for member in mlist.regular_members.members
+                         if member.delivery_status == DeliveryStatus.enabled)
         # Remove the sender if they don't want to receive their own posts
-        if not include_sender and member.address.address in recips:
-            recips.remove(member.address.address)
+        if not include_sender and member.address.address in recipients:
+            recipients.remove(member.address.address)
         # Handle topic classifications
-        do_topic_filters(mlist, msg, msgdata, recips)
+        do_topic_filters(mlist, msg, msgdata, recipients)
         # Bookkeeping
-        msgdata['recips'] = recips
+        msgdata['recipients'] = recipients
 
 
 
-def do_topic_filters(mlist, msg, msgdata, recips):
+def do_topic_filters(mlist, msg, msgdata, recipients):
     if not mlist.topics_enabled:
         # MAS: if topics are currently disabled for the list, send to all
         # regardless of ReceiveNonmatchingTopics
         return
     hits = msgdata.get('topichits')
-    zaprecips = []
+    zap_recipients = []
     if hits:
         # The message hit some topics, so only deliver this message to those
         # who are interested in one of the hit topics.
-        for user in recips:
+        for user in recipients:
             utopics = mlist.getMemberTopics(user)
             if not utopics:
                 # This user is not interested in any topics, so they get all
@@ -125,13 +125,13 @@ def do_topic_filters(mlist, msg, msgdata, recips):
             else:
                 # The user was interested in topics, but not any of the ones
                 # this message matched, so zap him.
-                zaprecips.append(user)
+                zap_recipients.append(user)
     else:
         # The semantics for a message that did not hit any of the pre-canned
         # topics is to troll through the membership list, looking for users
         # who selected at least one topic of interest, but turned on
         # ReceiveNonmatchingTopics.
-        for user in recips:
+        for user in recipients:
             if not mlist.getMemberTopics(user):
                 # The user did not select any topics of interest, so he gets
                 # this message by default.
@@ -140,8 +140,8 @@ def do_topic_filters(mlist, msg, msgdata, recips):
                 user, config.ReceiveNonmatchingTopics):
                 # The user has interest in some topics, but elects not to
                 # receive message that match no topics, so zap him.
-                zaprecips.append(user)
+                zap_recipients.append(user)
             # Otherwise, the user wants non-matching messages.
     # Prune out the non-receiving users
-    for user in zaprecips:
-        recips.remove(user)
+    for user in zap_recipients:
+        recipients.remove(user)
