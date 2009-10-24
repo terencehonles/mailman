@@ -18,7 +18,7 @@ The standard bulk deliverer takes as an argument the maximum number of
 recipients per session.  The default is to deliver the message in one chunk,
 containing all recipients.
 
-    >>> bulk = BulkDelivery(0)
+    >>> bulk = BulkDelivery()
 
 Delivery strategies must implement the proper interface.
 
@@ -134,3 +134,71 @@ The final chunk will contain the outliers, .xx (1) and .zz (2).
     ...     print address
     paco@example.xx
     quaq@example.zz
+
+
+Bulk delivery
+=============
+
+The set of recipients for bulk delivery comes from the message metadata.  If
+there are no calculated recipients, nothing gets sent.
+
+    >>> smtpd.clear()
+    >>> mlist = create_list('test@example.com')
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.org
+    ... To: test@example.com
+    ... Subject: test one
+    ... Message-ID: <aardvark>
+    ...
+    ... This is a test.
+    ... """)
+
+    >>> bulk = BulkDelivery()
+    >>> bulk.deliver(mlist, msg, {})
+    >>> len(list(smtpd.messages))
+    0
+
+With bulk delivery and no maximum number of recipients, there will be just one
+message sent, with all the recipients packed into the envelope recipients
+(i.e. RCTP TO).
+
+    >>> recipients = set('person_{0:02d}'.format(i) for i in range(100))
+    >>> msgdata = dict(recipients=recipients)
+    >>> bulk.deliver(mlist, msg, msgdata)
+    >>> messages = list(smtpd.messages)
+    >>> len(messages)
+    1
+    >>> print messages[0].as_string()
+    From: aperson@example.org
+    To: test@example.com
+    Subject: test one
+    Message-ID: <aardvark>
+    X-Peer: ...
+    X-MailFrom: ...
+    X-RcptTo: person_...
+        person_...
+    ...
+    <BLANKLINE>
+    This is a test.
+
+The X-RcptTo header contains the set of recipients, in random order.
+
+    >>> len(messages[0]['x-rcptto'].split(','))
+    100
+
+When the maximum number of recipients is set to 20, 5 messages will be sent,
+each with 20 addresses in the RCPT TO header.
+
+    >>> bulk = BulkDelivery(20)
+    >>> bulk.deliver(mlist, msg, msgdata)
+    >>> messages = list(smtpd.messages)
+    >>> len(messages)
+    5
+    >>> for message in messages:
+    ...     x_rcptto = message['x-rcptto']
+    ...     print 'Number of recipients:', len(x_rcptto.split(','))
+    Number of recipients: 20
+    Number of recipients: 20
+    Number of recipients: 20
+    Number of recipients: 20
+    Number of recipients: 20

@@ -29,7 +29,9 @@ from itertools import chain
 
 from zope.interface import implements
 
+from mailman.config import config
 from mailman.interfaces.mta import IMailTransportAgentDelivery
+from mailman.mta.connection import Connection
 
 
 # A mapping of top-level domains to bucket numbers.  The zeroth bucket is
@@ -51,18 +53,20 @@ class BulkDelivery:
 
     implements(IMailTransportAgentDelivery)
 
-    def __init__(self, max_recipients):
+    def __init__(self, max_recipients=None):
         """Create a bulk deliverer.
 
         :param max_recipients: The maximum number of recipients per delivery
-            chunk.  Zero or less means to group all recipients into one
-            chunk.
+            chunk.  None, zero or less means to group all recipients into one
+            big chunk.
         :type max_recipients: integer
         """
-        self._max_recipients = max_recipients
-
-    def deliver(self, mlist, msg, msgdata):
-        """See `IMailTransportAgentDelivery`."""
+        self._max_recipients = (max_recipients
+                                if max_recipients is not None
+                                else 0)
+        self._connection = Connection(
+            config.mta.smtp_host, int(config.mta.smtp_port),
+            self._max_recipients)
 
     def chunkify(self, recipients):
         """Split a set of recipients into chunks.
@@ -105,3 +109,12 @@ class BulkDelivery:
         # Be sure to include the last chunk, but only if it's non-empty.
         if len(chunk) > 0:
             yield chunk
+
+    def deliver(self, mlist, msg, msgdata):
+        """See `IMailTransportAgentDelivery`."""
+        recipients = msgdata.get('recipients')
+        if recipients is None:
+            return
+        for recipients in self.chunkify(msgdata['recipients']):
+            self._connection.sendmail(
+                'foo@example.com', recipients, msg.as_string())
