@@ -129,7 +129,7 @@ The next chunk will contain the .us (2) and .ca (1) domains.
 The final chunk will contain the outliers, .xx (1) and .zz (2).
 
     >>> len(chunks[5])
-    2    
+    2
     >>> for address in sorted(chunks[5]):
     ...     print address
     paco@example.xx
@@ -397,3 +397,5 @@ Or there could be some other problem causing an SMTP response failure.
     aperson@example.org 500 Error: SMTPResponseException
     bperson@example.org 500 Error: SMTPResponseException
     cperson@example.org 500 Error: SMTPResponseException
+
+XXX Untested: socket.error, IOError, smtplib.SMTPException.

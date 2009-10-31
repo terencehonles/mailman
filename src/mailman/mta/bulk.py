@@ -153,4 +153,15 @@ class BulkDelivery:
                     # recipient -> (code, error)
                     (recipient, (error.smtp_code, error.smtp_error))
                     for recipient in recipients)
+            except (socket.error, IOError, smtplib.SMTPException) as error:
+                # MTA not responding, or other socket problems, or any other
+                # kind of SMTPException.  In that case, nothing got delivered,
+                # so treat this as a temporary failure.  We use error code 444
+                # for this (temporary, unspecified failure, cf RFC 5321).
+                log.error('%s low level smtp error: %s', message_id, error)
+                error = str(error)
+                refused = dict(
+                    # recipient -> (code, error)
+                    (recipient, (444, error))
+                    for recipient in recipients)
         return refused
