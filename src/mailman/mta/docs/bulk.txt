@@ -338,14 +338,14 @@ local mail server which manages queuing and final delivery.  However, even
 this local mail server can produce delivery failures visible to Mailman in
 certain situations.
 
-For example, something could be seriously wrong with the mail server and it
-could refuse delivery to all recipients.
+For example, there could be a problem delivering to any of the specified
+recipients.
 
     # Tell the mail server to fail on the next 3 RCPT TO commands, one for
     # each recipient in the following message.
-    >>> smtpd.err_queue.put('rcpt')
-    >>> smtpd.err_queue.put('rcpt')
-    >>> smtpd.err_queue.put('rcpt')
+    >>> smtpd.err_queue.put(('rcpt', 500))
+    >>> smtpd.err_queue.put(('rcpt', 500))
+    >>> smtpd.err_queue.put(('rcpt', 500))
 
     >>> recipients = set([
     ...     'aperson@example.org',
@@ -373,3 +373,27 @@ could refuse delivery to all recipients.
     >>> messages = list(smtpd.messages)
     >>> len(messages)
     0
+
+Or there could be some other problem causing an SMTP response failure.
+
+    # Tell the mail server to register a temporary failure on the next MAIL
+    # FROM command.
+    >>> smtpd.err_queue.put(('mail', 450))
+
+    >>> failures = bulk.deliver(mlist, msg, msgdata)
+    >>> for address in sorted(failures):
+    ...     print address, failures[address][0], failures[address][1]
+    aperson@example.org 450 Error: SMTPResponseException
+    bperson@example.org 450 Error: SMTPResponseException
+    cperson@example.org 450 Error: SMTPResponseException
+
+    # Tell the mail server to register a permanent failure on the next MAIL
+    # FROM command.
+    >>> smtpd.err_queue.put(('mail', 500))
+
+    >>> failures = bulk.deliver(mlist, msg, msgdata)
+    >>> for address in sorted(failures):
+    ...     print address, failures[address][0], failures[address][1]
+    aperson@example.org 500 Error: SMTPResponseException
+    bperson@example.org 500 Error: SMTPResponseException
+    cperson@example.org 500 Error: SMTPResponseException

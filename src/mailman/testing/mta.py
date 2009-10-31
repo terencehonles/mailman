@@ -66,13 +66,25 @@ class StatisticsChannel(Channel):
 
     def smtp_RCPT(self, arg):
         """For testing, sometimes cause a non-25x response."""
-        if self._server.next_error == 'rcpt':
-            # The test suite wants this to fail.  The message corresponds to
-            # the exception we expect smtplib.SMTP to raise.
-            self.push(b'500 Error: SMTPRecipientsRefused')
-        else:
+        code = self._server.next_error('rcpt')
+        if code is None:
             # Everything's cool.
             Channel.smtp_RCPT(self, arg)
+        else:
+            # The test suite wants this to fail.  The message corresponds to
+            # the exception we expect smtplib.SMTP to raise.
+            self.push(b'%d Error: SMTPRecipientsRefused' % code)
+
+    def smtp_MAIL(self, arg):
+        """For testing, sometimes cause a non-25x response."""
+        code = self._server.next_error('mail')
+        if code is None:
+            # Everything's cool.
+            Channel.smtp_MAIL(self, arg)
+        else:
+            # The test suite wants this to fail.  The message corresponds to
+            # the exception we expect smtplib.SMTP to raise.
+            self.push(b'%d Error: SMTPResponseException' % code)
 
 
 
@@ -95,18 +107,32 @@ class ConnectionCountingServer(QueueServer):
         # controller upon request.
         self._oob_queue = oob_queue
         self._err_queue = err_queue
+        self._last_error = None
 
-    @property
-    def next_error(self):
-        """Return the next error, or None if nothing's on the stack.
+    def next_error(self, command):
+        """Return the next error for the SMTP command, if there is one.
 
-        :return: The next SMTP command that should error.
-        :rtype: string (lower cased) or None
+        :param command: The SMTP command for which an error might be
+            expected.  If the next error matches the given command, the
+            expected error code is returned.
+        :type command: string, lower-cased
+        :return: An SMTP error code
+        :rtype: integer
         """
-        try:
-            return self._err_queue.get_nowait()
-        except Empty:
-            return None
+        # If the last error we pulled from the queue didn't match, then we're
+        # caching it, and it might match this expected error.  If there is no
+        # last error in the cache, get one from the queue now.
+        if self._last_error is None:
+            try:
+                self._last_error = self._err_queue.get_nowait()
+            except Empty:
+                # No error is expected
+                return None
+        if self._last_error[0] == command:
+            code = self._last_error[1]
+            self._last_error = None
+            return code
+        return None
 
     def handle_accept(self):
         """See `lazr.smtp.server.Server`."""

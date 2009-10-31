@@ -147,4 +147,10 @@ class BulkDelivery:
             except smtplib.SMTPRecipientsRefused as error:
                 log.error('%s recipients refused: %s', message_id, error)
                 refused = error.recipients
+            except smtplib.SMTPResponseException as error:
+                log.error('%s response exception: %s', message_id, error)
+                refused = dict(
+                    # recipient -> (code, error)
+                    (recipient, (error.smtp_code, error.smtp_error))
+                    for recipient in recipients)
         return refused
