@@ -25,6 +25,9 @@ __all__ = [
     ]
 
 
+import logging
+import smtplib
+
 from itertools import chain
 
 from zope.interface import implements
@@ -33,6 +36,8 @@ from mailman.config import config
 from mailman.interfaces.mta import IMailTransportAgentDelivery
 from mailman.mta.connection import Connection
 
+
+log = logging.getLogger('mailman.smtp')
 
 # A mapping of top-level domains to bucket numbers.  The zeroth bucket is
 # reserved for everything else.  At one time, these were the most common
@@ -134,6 +139,12 @@ class BulkDelivery:
                       else mlist.bounces_address)
         msg['Sender'] = sender
         msg['Errors-To'] = sender
+        message_id = msg['message-id']
         for recipients in self.chunkify(msgdata['recipients']):
-            self._connection.sendmail(
-                'foo@example.com', recipients, msg.as_string())
+            try:
+                refused = self._connection.sendmail(
+                    sender, recipients, msg.as_string())
+            except smtplib.SMTPRecipientsRefused as error:
+                log.error('%s recipients refused: %s', message_id, error)
+                refused = error.recipients
+        return refused

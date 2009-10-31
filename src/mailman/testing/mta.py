@@ -27,7 +27,7 @@ __all__ = [
 
 import logging
 
-from Queue import Queue
+from Queue import Empty, Queue
 
 from lazr.smtptest.controller import QueueController
 from lazr.smtptest.server import Channel, QueueServer
@@ -62,20 +62,51 @@ class StatisticsChannel(Channel):
     def smtp_STAT(self, arg):
         """Cause the server to send statistics to its controller."""
         self._server.send_statistics()
-        self.push('250 Ok')
+        self.push(b'250 Ok')
+
+    def smtp_RCPT(self, arg):
+        """For testing, sometimes cause a non-25x response."""
+        if self._server.next_error == 'rcpt':
+            # The test suite wants this to fail.  The message corresponds to
+            # the exception we expect smtplib.SMTP to raise.
+            self.push(b'500 Error: SMTPRecipientsRefused')
+        else:
+            # Everything's cool.
+            Channel.smtp_RCPT(self, arg)
 
 
 
 class ConnectionCountingServer(QueueServer):
     """Count the number of SMTP connections opened."""
 
-    def __init__(self, host, port, queue, oob_queue):
-        """See `lazr.smtptest.server.QueueServer`."""
+    def __init__(self, host, port, queue, oob_queue, err_queue):
+        """See `lazr.smtptest.server.QueueServer`.
+
+        :param oob_queue: A queue for communicating information back to the
+            controller, e.g. statistics.
+        :type oob_queue: `Queue.Queue`
+        :param err_queue: A queue for allowing the controller to request SMTP
+            errors from the server.
+        :type err_queue: `Queue.Queue`
+        """
         QueueServer.__init__(self, host, port, queue)
         self._connection_count = 0
         # The out-of-band queue is where the server sends statistics to the
         # controller upon request.
         self._oob_queue = oob_queue
+        self._err_queue = err_queue
+
+    @property
+    def next_error(self):
+        """Return the next error, or None if nothing's on the stack.
+
+        :return: The next SMTP command that should error.
+        :rtype: string (lower cased) or None
+        """
+        try:
+            return self._err_queue.get_nowait()
+        except Empty:
+            return None
 
     def handle_accept(self):
         """See `lazr.smtp.server.Server`."""
@@ -103,12 +134,13 @@ class ConnectionCountingController(QueueController):
     def __init__(self, host, port):
         """See `lazr.smtptest.controller.QueueController`."""
         self.oob_queue = Queue()
+        self.err_queue = Queue()
         QueueController.__init__(self, host, port)
 
     def _make_server(self, host, port):
         """See `lazr.smtptest.controller.QueueController`."""
         self.server = ConnectionCountingServer(
-            host, port, self.queue, self.oob_queue)
+            host, port, self.queue, self.oob_queue, self.err_queue)
 
     def start(self):
         """See `lazr.smtptest.controller.QueueController`."""
@@ -124,7 +156,7 @@ class ConnectionCountingController(QueueController):
         :rtype: integer
         """
         smtpd = self._connect()
-        smtpd.docmd('STAT')
+        smtpd.docmd(b'STAT')
         # An Empty exception will occur if the data isn't available in 10
         # seconds.  Let that propagate.
         return self.oob_queue.get(block=True, timeout=10)

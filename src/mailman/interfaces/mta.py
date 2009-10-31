@@ -67,4 +67,6 @@ class IMailTransportAgentDelivery(Interface):
         :type msg: `Message`
         :param msgdata: Additional message metadata for this delivery.
         :type msgdata: dictionary
+        :return: delivery failures as defined by `smtplib.SMTP.sendmail`
+        :rtype: dictionary
         """
