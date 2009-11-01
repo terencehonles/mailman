@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""VERP (i.e. personalized) message delivery."""
+"""VERP delivery."""
 
 from __future__ import absolute_import, unicode_literals
 
@@ -55,6 +55,7 @@ class VERPDelivery(BaseDelivery):
             return
         sender = self._get_sender(mlist, msg, msgdata)
         sender_mailbox, sender_domain = split_email(sender)
+        refused = {}
         for recipient in recipients:
             # Make a copy of the original messages and operator on it, since
             # we're going to munge it repeatedly for each recipient.
@@ -80,5 +81,7 @@ class VERPDelivery(BaseDelivery):
             del message_copy['x-mailman-copy']
             if recipient in msgdata.get('add-dup-header', {}):
                 message_copy['X-Mailman-Copy'] = 'yes'
-            self._deliver_to_recipients(mlist, msg, msgdata,
-                                        verp_sender, [recipient])
+            recipient_refused = self._deliver_to_recipients(
+                mlist, msg, msgdata, verp_sender, [recipient])
+            refused.update(recipient_refused)
+        return refused

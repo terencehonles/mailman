@@ -2,13 +2,11 @@
 Standard VERP delivery
 ======================
 
-'VERP' delivery is an alternative to bulk_ delivery, where an individual
-message is crafted uniquely for each recipient.  Our use of the term `VERP`_
-is actually incorrect, since the term is narrowly defined by the technique of
-setting the return path so that bounces can be unambiguously decoded.
+Variable Envelope Return Path (VERP_) delivery is an alternative to bulk_
+delivery, where an individual message is crafted uniquely for each recipient.
 
-.. _bulk: bulk.txt
 .. _VERP: http://en.wikipedia.org/wiki/Variable_envelope_return_path
+.. _bulk: bulk.txt
 
 The cost of enabling VERP is that Mailman must send to the upstream MTA, one
 message per recipient.  Under bulk delivery, an exact copy of one message can
@@ -78,6 +76,7 @@ intended recipient's delivery address.
     ...     ])
 
     >>> verp.deliver(mlist, msg, dict(recipients=recipients))
+    {}
     >>> messages = list(smtpd.messages)
     >>> len(messages)
     3
