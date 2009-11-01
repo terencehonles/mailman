@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Module stuff."""
+"""Bulk message delivery."""
 
 from __future__ import absolute_import, unicode_literals
 
@@ -25,19 +25,8 @@ __all__ = [
     ]
 
 
-import logging
-import smtplib
+from mailman.mta.base import BaseDelivery
 
-from itertools import chain
-
-from zope.interface import implements
-
-from mailman.config import config
-from mailman.interfaces.mta import IMailTransportAgentDelivery
-from mailman.mta.connection import Connection
-
-
-log = logging.getLogger('mailman.smtp')
 
 # A mapping of top-level domains to bucket numbers.  The zeroth bucket is
 # reserved for everything else.  At one time, these were the most common
@@ -53,25 +42,8 @@ CHUNKMAP = dict(
 
 
 
-class BulkDelivery:
-    """Deliver messages to the MTA in as few sessions as possible."""
-
-    implements(IMailTransportAgentDelivery)
-
-    def __init__(self, max_recipients=None):
-        """Create a bulk deliverer.
-
-        :param max_recipients: The maximum number of recipients per delivery
-            chunk.  None, zero or less means to group all recipients into one
-            big chunk.
-        :type max_recipients: integer
-        """
-        self._max_recipients = (max_recipients
-                                if max_recipients is not None
-                                else 0)
-        self._connection = Connection(
-            config.mta.smtp_host, int(config.mta.smtp_port),
-            self._max_recipients)
+class BulkDelivery(BaseDelivery):
+    """Deliver messages to the MSA in as few sessions as possible."""
 
     def chunkify(self, recipients):
         """Split a set of recipients into chunks.
@@ -118,7 +90,8 @@ class BulkDelivery:
     def deliver(self, mlist, msg, msgdata):
         """See `IMailTransportAgentDelivery`."""
         recipients = msgdata.get('recipients')
-        if recipients is None:
+        if not recipients:
+            # Could be None, could be an empty sequence.
             return
         # Blow away any existing Sender and Errors-To headers and substitute
         # our own.  Our interpretation of RFC 5322 $3.6.2 is that Mailman is
@@ -126,42 +99,15 @@ class BulkDelivery:
         # because what we send to list members is different than what the
         # original author sent.  RFC 2076 says Errors-To is "non-standard,
         # discouraged" but we include it for historical purposes.
+        sender = self._get_sender(mlist, msg, msgdata)
         del msg['sender']
         del msg['errors-to']
-        # The message metadata can override the calculation of the sender, but
-        # otherwise it falls to the list's -bounces robot.  If this message is
-        # not intended for any specific mailing list, the site owner's address
-        # is used.
-        sender = msgdata.get('sender')
-        if sender is None:
-            sender = (config.mailman.site_owner
-                      if mlist is None
-                      else mlist.bounces_address)
         msg['Sender'] = sender
         msg['Errors-To'] = sender
-        message_id = msg['message-id']
+        refused = {}
         for recipients in self.chunkify(msgdata['recipients']):
-            try:
-                refused = self._connection.sendmail(
-                    sender, recipients, msg.as_string())
-            except smtplib.SMTPRecipientsRefused as error:
-                log.error('%s recipients refused: %s', message_id, error)
-                refused = error.recipients
-            except smtplib.SMTPResponseException as error:
-                log.error('%s response exception: %s', message_id, error)
-                refused = dict(
-                    # recipient -> (code, error)
-                    (recipient, (error.smtp_code, error.smtp_error))
-                    for recipient in recipients)
-            except (socket.error, IOError, smtplib.SMTPException) as error:
-                # MTA not responding, or other socket problems, or any other
-                # kind of SMTPException.  In that case, nothing got delivered,
-                # so treat this as a temporary failure.  We use error code 444
-                # for this (temporary, unspecified failure, cf RFC 5321).
-                log.error('%s low level smtp error: %s', message_id, error)
-                error = str(error)
-                refused = dict(
-                    # recipient -> (code, error)
-                    (recipient, (444, error))
-                    for recipient in recipients)
+            chunk_refused = self._deliver_to_recipients(
+                mlist, msg, msgdata, sender, recipients)
+            refused.update(chunk_refused)
         return refused
+

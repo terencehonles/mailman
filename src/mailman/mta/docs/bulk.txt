@@ -158,6 +158,10 @@ there are no calculated recipients, nothing gets sent.
     >>> len(list(smtpd.messages))
     0
 
+    >>> bulk.deliver(mlist, msg, dict(recipients=set()))
+    >>> len(list(smtpd.messages))
+    0
+
 With bulk delivery and no maximum number of recipients, there will be just one
 message sent, with all the recipients packed into the envelope recipients
 (i.e. RCTP TO).
