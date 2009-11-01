@@ -43,18 +43,14 @@ class PersonalizedMixin:
     concrete base class.
     """
 
-    def personalize_to(self, msg, recipient):
+    def personalize_to(self, mlist, msg, msgdata):
         """Modify the To header to contain the recipient.
 
         The To header contents is replaced with the recipient's address, and
         if the recipient is a user registered with Mailman, the recipient's
         real name too.
-
-        :param msg: The message to modify.
-        :type msg: `email.message.Message`
-        :param recipient: The recipient's email address.
-        :type recipient: string
         """
+        recipient = msgdata['recipient']
         user_manager = getUtility(IUserManager)
         user = user_manager.get_user(recipient)
         if user is None:
@@ -67,17 +63,10 @@ class PersonalizedMixin:
             msg.replace_header('To', formataddr((name, recipient)))
 
 
-class PersonalizedDelivery(VERPDelivery, PersonalizedMixin):
+class PersonalizedDelivery(PersonalizedMixin, VERPDelivery):
     """Personalize the message's To header."""
 
-    def _deliver_to_recipients(self, mlist, msg, msgdata,
-                               sender, recipients):
-        """See `BaseDelivery`."""
-        # This module only works with VERP delivery.
-        assert len(recipients) == 1, 'Single recipient is required'
-        # Try to find the real name for the recipient email address, if the
-        # address is associated with a user registered with Mailman.
-        recipient = recipients[0]
-        self.personalize_to(msg, recipient)
-        return super(PersonalizedDelivery, self)._deliver_to_recipients(
-            mlist, msg, msgdata, sender, recipients)
+    def __init__(self):
+        """See `IndividualDelivery`."""
+        super(VERPDelivery, self).__init__()
+        self.callbacks.append(self.personalize_to)
