@@ -45,6 +45,19 @@ CHUNKMAP = dict(
 class BulkDelivery(BaseDelivery):
     """Deliver messages to the MSA in as few sessions as possible."""
 
+    def __init__(self, max_recipients=None):
+        """See `BaseDelivery`.
+
+        :param max_recipients: The maximum number of recipients per delivery
+            chunk.  None, zero or less means to group all recipients into one
+            big chunk.
+        :type max_recipients: integer
+        """
+        super(BulkDelivery, self).__init__()
+        self._max_recipients = (max_recipients
+                                if max_recipients is not None
+                                else 0)
+
     def chunkify(self, recipients):
         """Split a set of recipients into chunks.
 

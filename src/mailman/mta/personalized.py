@@ -22,6 +22,7 @@ from __future__ import absolute_import, unicode_literals
 __metaclass__ = type
 __all__ = [
     'PersonalizedDelivery',
+    'PersonalizedMixin',
     ]
 
 
@@ -34,17 +35,26 @@ from mailman.mta.verp import VERPDelivery
 
 
 
-class PersonalizedDelivery(VERPDelivery):
-    """Personalize the message's To header."""
+class PersonalizedMixin:
+    """Personalize the message's To header.
 
-    def _deliver_to_recipients(self, mlist, msg, msgdata,
-                               sender, recipients):
-        """See `BaseDelivery`."""
-        # This module only works with VERP delivery.
-        assert len(recipients) == 1, 'Single recipient is required'
-        # Try to find the real name for the recipient email address, if the
-        # address is associated with a user registered with Mailman.
-        recipient = recipients[0]
+    This is a mixin class, providing the basic functionality for header
+    personalization.  The methods it provides are intended to be called from a
+    concrete base class.
+    """
+
+    def personalize_to(self, msg, recipient):
+        """Modify the To header to contain the recipient.
+
+        The To header contents is replaced with the recipient's address, and
+        if the recipient is a user registered with Mailman, the recipient's
+        real name too.
+
+        :param msg: The message to modify.
+        :type msg: `email.message.Message`
+        :param recipient: The recipient's email address.
+        :type recipient: string
+        """
         user_manager = getUtility(IUserManager)
         user = user_manager.get_user(recipient)
         if user is None:
@@ -55,5 +65,19 @@ class PersonalizedDelivery(VERPDelivery):
             # encoded for email transport.
             name = Header(user.real_name).encode()
             msg.replace_header('To', formataddr((name, recipient)))
+
+
+class PersonalizedDelivery(VERPDelivery, PersonalizedMixin):
+    """Personalize the message's To header."""
+
+    def _deliver_to_recipients(self, mlist, msg, msgdata,
+                               sender, recipients):
+        """See `BaseDelivery`."""
+        # This module only works with VERP delivery.
+        assert len(recipients) == 1, 'Single recipient is required'
+        # Try to find the real name for the recipient email address, if the
+        # address is associated with a user registered with Mailman.
+        recipient = recipients[0]
+        self.personalize_to(msg, recipient)
         return super(PersonalizedDelivery, self)._deliver_to_recipients(
             mlist, msg, msgdata, sender, recipients)

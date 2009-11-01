@@ -22,9 +22,11 @@ from __future__ import absolute_import, unicode_literals
 __metaclass__ = type
 __all__ = [
     'BaseDelivery',
+    'IndividualDelivery',
     ]
 
 
+import copy
 import logging
 import smtplib
 
@@ -44,20 +46,11 @@ class BaseDelivery:
 
     implements(IMailTransportAgentDelivery)
 
-    def __init__(self, max_recipients=None):
-        """Create a basic deliverer.
-
-        :param max_recipients: The maximum number of recipients per delivery
-            chunk.  None, zero or less means to group all recipients into one
-            big chunk.
-        :type max_recipients: integer
-        """
-        self._max_recipients = (max_recipients
-                                if max_recipients is not None
-                                else 0)
+    def __init__(self):
+        """Create a basic deliverer."""
         self._connection = Connection(
             config.mta.smtp_host, int(config.mta.smtp_port),
-            self._max_recipients)
+            int(config.mta.max_sessions_per_connection))
 
     def _deliver_to_recipients(self, mlist, msg, msgdata,
                                sender, recipients):
@@ -125,3 +118,53 @@ class BaseDelivery:
                     if mlist is None
                     else mlist.bounces_address)
         return sender
+
+
+
+class IndividualDelivery(BaseDelivery):
+    """Deliver a unique individual message to each recipient.
+
+    This is a framework delivery mechanism.  By using mixins, registration,
+    and subclassing you can customize this delivery class to do any
+    combination of VERP, full personalization, individualized header/footer
+    decoration and even full mail merging.
+
+    The core concept here is that for each recipient, the deliver() method
+    iterates over the list of registered callbacks, each of which have a
+    chance to modify the message before final delivery.
+    """
+
+    def __init__(self):
+        """See `BaseDelivery`."""
+        # 
+        super(IndividualDelivery, self).__init__()
+        self.callbacks = []
+
+    def deliver(self, mlist, msg, msgdata):
+        """See `IMailTransportAgentDelivery`.
+
+        Craft a unique message for every recipient.  Encode the recipient's
+        delivery address in the return envelope so there can be no ambiguity
+        in bounce processing.
+        """
+        recipients = msgdata.get('recipients')
+        if not recipients:
+            # Could be None, could be an empty sequence.
+            return
+        refused = {}
+        for recipient in recipients:
+            # Make a copy of the original messages and operator on it, since
+            # we're going to munge it repeatedly for each recipient.
+            message_copy = copy.deepcopy(msg)
+            msgdata_copy = msgdata.copy()
+            # Squirrel the current recipient away in the message metadata.
+            # That way the subclass's _get_sender() override can encode the
+            # recipient address in the sender, e.g. for VERP.
+            msgdata_copy['recipient'] = recipient
+            sender = self._get_sender(mlist, message_copy, msgdata_copy)
+            for callback in self.callbacks:
+                callback(mlist, message_copy, msgdata_copy)
+            status = self._deliver_to_recipients(
+                mlist, message_copy, msgdata_copy, sender, [recipient])
+            refused.update(status)
+        return refused
