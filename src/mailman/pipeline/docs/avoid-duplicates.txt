@@ -69,7 +69,7 @@ will get a list copy.
     ... """)
     >>> msgdata = recips.copy()
     >>> handler.process(mlist, msg, msgdata)
-    >>> sorted(msgdata['recips'])
+    >>> sorted(msgdata['recipients'])
     [u'aperson@example.com', u'bperson@example.com']
     >>> print msg.as_string()
     From: Claire Person <cperson@example.com>
@@ -87,7 +87,7 @@ If they're mentioned on the CC line, they won't get a list copy.
     ... """)
     >>> msgdata = recips.copy()
     >>> handler.process(mlist, msg, msgdata)
-    >>> sorted(msgdata['recips'])
+    >>> sorted(msgdata['recipients'])
     [u'bperson@example.com']
     >>> print msg.as_string()
     From: Claire Person <cperson@example.com>
@@ -107,7 +107,7 @@ But if they're mentioned on the CC line and have receive_list_copy set to True
     ... """)
     >>> msgdata = recips.copy()
     >>> handler.process(mlist, msg, msgdata)
-    >>> sorted(msgdata['recips'])
+    >>> sorted(msgdata['recipients'])
     [u'aperson@example.com', u'bperson@example.com']
     >>> print msg.as_string()
     From: Claire Person <cperson@example.com>
@@ -145,7 +145,7 @@ Other headers checked for recipients include the To...
     ... """)
     >>> msgdata = recips.copy()
     >>> handler.process(mlist, msg, msgdata)
-    >>> sorted(msgdata['recips'])
+    >>> sorted(msgdata['recipients'])
     [u'bperson@example.com']
     >>> print msg.as_string()
     From: Claire Person <cperson@example.com>
@@ -164,7 +164,7 @@ Other headers checked for recipients include the To...
     ... """)
     >>> msgdata = recips.copy()
     >>> handler.process(mlist, msg, msgdata)
-    >>> sorted(msgdata['recips'])
+    >>> sorted(msgdata['recipients'])
     [u'bperson@example.com']
     >>> print msg.as_string()
     From: Claire Person <cperson@example.com>

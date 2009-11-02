@@ -52,7 +52,7 @@ class AvoidDuplicates:
 
     def process(self, mlist, msg, msgdata):
         """See `IHandler`."""
-        recips = msgdata.get('recips')
+        recips = msgdata.get('recipients')
         # Short circuit
         if not recips:
             return
@@ -109,7 +109,7 @@ class AvoidDuplicates:
                 # having received this message.
                 newrecips.add(r)
         # Set the new list of recipients.  XXX recips should always be a set.
-        msgdata['recips'] = list(newrecips)
+        msgdata['recipients'] = list(newrecips)
         # RFC 2822 specifies zero or one CC header
         if cc_addresses:
             del msg['cc']

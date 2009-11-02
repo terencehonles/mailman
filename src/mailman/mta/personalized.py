@@ -63,10 +63,11 @@ class PersonalizedMixin:
             msg.replace_header('To', formataddr((name, recipient)))
 
 
+
 class PersonalizedDelivery(PersonalizedMixin, VERPDelivery):
     """Personalize the message's To header."""
 
     def __init__(self):
         """See `IndividualDelivery`."""
-        super(VERPDelivery, self).__init__()
+        super(PersonalizedDelivery, self).__init__()
         self.callbacks.append(self.personalize_to)

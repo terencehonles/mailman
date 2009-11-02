@@ -1,0 +1,151 @@
+=======================
+Personalized decoration
+=======================
+
+Personalized messages can be decorated by headers and footers containing
+information specific to the recipient.
+
+    >>> from mailman.mta.decorating import DecoratingDelivery
+    >>> decorating = DecoratingDelivery()
+
+Delivery strategies must implement the proper interface.
+
+    >>> from mailman.interfaces.mta import IMailTransportAgentDelivery
+    >>> from zope.interface.verify import verifyObject
+    >>> verifyObject(IMailTransportAgentDelivery, decorating)
+    True
+
+
+Decorations
+===========
+
+Decorations are added when the mailing list had a header and/or footer
+defined, and the decoration handler is told to do personalized decorations.
+
+    >>> mlist = create_list('test@example.com')
+    >>> mlist.msg_header = """\
+    ... Delivery address: $user_address
+    ... Subscribed address: $user_delivered_to
+    ... """
+
+    >>> mlist.msg_footer = """\
+    ... User name: $user_name
+    ... Password: $user_password
+    ... Language: $user_language
+    ... Options: $user_optionsurl
+    ... """
+    
+    >>> transaction.commit()
+
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.org
+    ... To: test@example.com
+    ... Subject: test one
+    ... Message-ID: <aardvark>
+    ...
+    ... This is a test.
+    ... """)
+
+    >>> recipients = set([
+    ...     'aperson@example.com',
+    ...     'bperson@example.com',
+    ...     'cperson@example.com',
+    ...     ])
+
+    >>> msgdata = dict(
+    ...     recipients=recipients,
+    ...     personalize=True,
+    ...     )
+
+More information is included when the recipient is a member of the mailing
+list.
+
+    >>> from zope.component import getUtility
+    >>> from mailman.interfaces.member import MemberRole
+    >>> from mailman.interfaces.usermanager import IUserManager
+    >>> user_manager = getUtility(IUserManager)
+
+    >>> anne = user_manager.create_user('aperson@example.com', 'Anne Person')
+    >>> anne.password = 'AAA'
+    >>> list(anne.addresses)[0].subscribe(mlist, MemberRole.member)
+    <Member: Anne Person <aperson@example.com> ...
+
+    >>> bart = user_manager.create_user('bperson@example.com', 'Bart Person')
+    >>> bart.password = 'BBB'
+    >>> list(bart.addresses)[0].subscribe(mlist, MemberRole.member)
+    <Member: Bart Person <bperson@example.com> ...
+
+    >>> cris = user_manager.create_user('cperson@example.com', 'Cris Person')
+    >>> cris.password = 'CCC'
+    >>> list(cris.addresses)[0].subscribe(mlist, MemberRole.member)
+    <Member: Cris Person <cperson@example.com> ...
+
+The decorations happen when the message is delivered.
+
+    >>> decorating.deliver(mlist, msg, msgdata)
+    {}
+    >>> messages = list(smtpd.messages)
+    >>> len(messages)
+    3
+
+    >>> from operator import itemgetter
+    >>> for message in sorted(messages, key=itemgetter('x-rcptto')):
+    ...     print message.as_string()
+    ...     print '----------'
+    From: aperson@example.org
+    To: test@example.com
+    Subject: test one
+    Message-ID: <aardvark>
+    MIME-Version: 1.0
+    Content-Type: text/plain; charset="us-ascii"
+    Content-Transfer-Encoding: 7bit
+    X-Peer: ...
+    X-MailFrom: test-bounces+aperson=example.com@example.com
+    X-RcptTo: aperson@example.com
+    <BLANKLINE>
+    Delivery address: aperson@example.com
+    Subscribed address: aperson@example.com
+    This is a test.
+    User name: Anne Person
+    Password: AAA
+    Language: English (USA)
+    Options: http://example.com/aperson@example.com
+    ----------
+    From: aperson@example.org
+    To: test@example.com
+    Subject: test one
+    Message-ID: <aardvark>
+    MIME-Version: 1.0
+    Content-Type: text/plain; charset="us-ascii"
+    Content-Transfer-Encoding: 7bit
+    X-Peer: ...
+    X-MailFrom: test-bounces+bperson=example.com@example.com
+    X-RcptTo: bperson@example.com
+    <BLANKLINE>
+    Delivery address: bperson@example.com
+    Subscribed address: bperson@example.com
+    This is a test.
+    User name: Bart Person
+    Password: BBB
+    Language: English (USA)
+    Options: http://example.com/bperson@example.com
+    ----------
+    From: aperson@example.org
+    To: test@example.com
+    Subject: test one
+    Message-ID: <aardvark>
+    MIME-Version: 1.0
+    Content-Type: text/plain; charset="us-ascii"
+    Content-Transfer-Encoding: 7bit
+    X-Peer: ...
+    X-MailFrom: test-bounces+cperson=example.com@example.com
+    X-RcptTo: cperson@example.com
+    <BLANKLINE>
+    Delivery address: cperson@example.com
+    Subscribed address: cperson@example.com
+    This is a test.
+    User name: Cris Person
+    Password: CCC
+    Language: English (USA)
+    Options: http://example.com/cperson@example.com
+    ----------

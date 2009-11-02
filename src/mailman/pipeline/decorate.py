@@ -52,10 +52,7 @@ def process(mlist, msg, msgdata):
     if msgdata.get('personalize'):
         # Calculate the extra personalization dictionary.  Note that the
         # length of the recips list better be exactly 1.
-        recips = msgdata.get('recips', [])
-        assert len(recips) == 1, (
-            'The number of intended recipients must be exactly 1')
-        recipient = recips[0].lower()
+        recipient = msgdata['recipient']
         user = getUtility(IUserManager).get_user(recipient)
         member = mlist.members.get_member(recipient)
         d['user_address'] = recipient
@@ -63,7 +60,7 @@ def process(mlist, msg, msgdata):
             d['user_delivered_to'] = member.address.original_address
             # BAW: Hmm, should we allow this?
             d['user_password'] = user.password
-            d['user_language'] = member.preferred_language
+            d['user_language'] = member.preferred_language.description
             d['user_name'] = (user.real_name if user.real_name
                               else member.address.original_address)
             d['user_optionsurl'] = member.options_url

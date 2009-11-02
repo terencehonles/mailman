@@ -312,7 +312,7 @@ provided in the message data, otherwise an exception occurs.
 
 And the number of intended recipients must be exactly 1.
 
-    >>> process(mlist, None, dict(personalize=True, recips=[1, 2, 3]))
+    >>> process(mlist, None, dict(personalize=True, recipients=[1, 2, 3]))
     Traceback (most recent call last):
     ...
     AssertionError: The number of intended recipients must be exactly 1

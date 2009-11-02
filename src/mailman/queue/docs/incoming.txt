@@ -195,7 +195,7 @@ tests above.
     >>> dump_msgdata(item.msgdata)
     _parsemsg           : False
     ...
-    recips              : [u'aperson@example.com']
+    recipients          : [u'aperson@example.com']
     ...
 
     >>> fp.seek(file_pos)

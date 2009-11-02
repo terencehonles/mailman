@@ -67,7 +67,7 @@ def inject_message(mlist, msg, recips=None, switchboard=None, **kws):
         )
     msgdata.update(kws)
     if recips is not None:
-        msgdata['recips'] = recips
+        msgdata['recipients'] = recips
     config.switchboards[switchboard].enqueue(msg, **msgdata)
 
 

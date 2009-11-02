@@ -181,7 +181,7 @@ class BounceRunner(Runner, BounceMixin):
             # get stuck in a bounce loop.
             config.switchboards['out'].enqueue(
                 msg, msgdata,
-                recips=[config.mailman.site_owner],
+                recipients=[config.mailman.site_owner],
                 envsender=config.mailman.noreply_address,
                 )
         # List isn't doing bounce processing?

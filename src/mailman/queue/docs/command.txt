@@ -60,7 +60,7 @@ And now the response is in the virgin queue.
     <BLANKLINE>
     >>> sorted(item.msgdata.items())
     [..., ('listname', u'test@example.com'), ...,
-     ('recips', [u'aperson@example.com']),
+     ('recipients', [u'aperson@example.com']),
      ...]
 
 

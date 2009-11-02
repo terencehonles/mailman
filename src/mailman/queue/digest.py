@@ -360,10 +360,10 @@ class DigestRunner(Runner):
         # Send the digests to the virgin queue for final delivery.
         queue = config.switchboards['virgin']
         queue.enqueue(mime,
-                      recips=mime_recipients,
+                      recipients=mime_recipients,
                       listname=mlist.fqdn_listname,
                       isdigest=True)
         queue.enqueue(rfc1153,
-                      recips=rfc1153_recipients,
+                      recipients=rfc1153_recipients,
                       listname=mlist.fqdn_listname,
                       isdigest=True)
