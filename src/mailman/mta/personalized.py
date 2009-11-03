@@ -30,6 +30,7 @@ from email.header import Header
 from email.utils import formataddr
 from zope.component import getUtility
 
+from mailman.interfaces.mailinglist import Personalization
 from mailman.interfaces.usermanager import IUserManager
 from mailman.mta.verp import VERPDelivery
 
@@ -50,6 +51,9 @@ class PersonalizedMixin:
         if the recipient is a user registered with Mailman, the recipient's
         real name too.
         """
+        # Personalize the To header if the list requests it.
+        if mlist.personalize != Personalization.full:
+            return
         recipient = msgdata['recipient']
         user_manager = getUtility(IUserManager)
         user = user_manager.get_user(recipient)

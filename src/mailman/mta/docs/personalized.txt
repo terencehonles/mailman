@@ -22,10 +22,10 @@ Delivery strategies must implement the proper interface.
     True
 
 
-To header
-=========
+No personalization
+==================
 
-The To header is replaced with the recipient's address and name.
+By default, the To header is not personalized.
 
     >>> mlist = create_list('test@example.com')
     >>> msg = message_from_string("""\
@@ -50,6 +50,57 @@ The To header is replaced with the recipient's address and name.
     3
 
     >>> from operator import itemgetter
+    >>> for message in sorted(messages, key=itemgetter('x-rcptto')):
+    ...     print message.as_string()
+    ...     print '----------'
+    From: aperson@example.org
+    To: test@example.com
+    Subject: test one
+    Message-ID: <aardvark>
+    X-Peer: ...
+    X-MailFrom: test-bounces+aperson=example.com@example.com
+    X-RcptTo: aperson@example.com
+    <BLANKLINE>
+    This is a test.
+    ----------
+    From: aperson@example.org
+    To: test@example.com
+    Subject: test one
+    Message-ID: <aardvark>
+    X-Peer: ...
+    X-MailFrom: test-bounces+bperson=example.com@example.com
+    X-RcptTo: bperson@example.com
+    <BLANKLINE>
+    This is a test.
+    ----------
+    From: aperson@example.org
+    To: test@example.com
+    Subject: test one
+    Message-ID: <aardvark>
+    X-Peer: ...
+    X-MailFrom: test-bounces+cperson=example.com@example.com
+    X-RcptTo: cperson@example.com
+    <BLANKLINE>
+    This is a test.
+    ----------
+
+
+To header
+=========
+
+When the mailing list requests personalization, the To header is replaced with
+the recipient's address and name.
+
+    >>> from mailman.interfaces.mailinglist import Personalization
+    >>> mlist.personalize = Personalization.full
+    >>> transaction.commit()
+
+    >>> personalized.deliver(mlist, msg, dict(recipients=recipients))
+    {}
+    >>> messages = list(smtpd.messages)
+    >>> len(messages)
+    3
+
     >>> for message in sorted(messages, key=itemgetter('to')):
     ...     print message.as_string()
     ...     print '----------'
