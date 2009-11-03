@@ -84,4 +84,4 @@ class MailArchive:
             config.switchboards['out'].enqueue(
                 msg,
                 listname=mlist.fqdn_listname,
-                recips=[config.archiver.mail_archive.recipient])
+                recipients=[config.archiver.mail_archive.recipient])

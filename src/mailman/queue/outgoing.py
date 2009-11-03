@@ -118,7 +118,7 @@ class OutgoingRunner(Runner, BounceMixin):
                             config.mta.delivery_retry_period)
                     msgdata['last_recip_count'] = len(recips)
                     msgdata['deliver_until'] = deliver_until
-                    msgdata['recips'] = recips
+                    msgdata['recipients'] = recips
                     self._retryq.enqueue(msg, msgdata)
         # We've successfully completed handling of this message
         return False

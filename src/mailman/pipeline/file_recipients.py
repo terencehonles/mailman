@@ -45,7 +45,7 @@ class FileRecipients:
 
     def process(self, mlist, msg, msgdata):
         """See `IHandler`."""
-        if 'recips' in msgdata:
+        if 'recipients' in msgdata:
             return
         filename = os.path.join(mlist.data_path, 'members.txt')
         try:
@@ -54,11 +54,11 @@ class FileRecipients:
         except IOError, e:
             if e.errno <> errno.ENOENT:
                 raise
-            msgdata['recips'] = set()
+            msgdata['recipients'] = set()
             return
         # If the sender is a member of the list, remove them from the file
         # recipients.
         member = mlist.members.get_member(msg.sender)
         if member is not None:
             addrs.discard(member.address.address)
-        msgdata['recips'] = addrs
+        msgdata['recipients'] = addrs

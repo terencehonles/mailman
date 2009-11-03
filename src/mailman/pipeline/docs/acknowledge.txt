@@ -110,7 +110,7 @@ The receipt will include the original message's subject in the response body,
     >>> virginq.files
     []
     >>> sorted(qdata.items())
-    [..., ('recips', [u'aperson@example.com']), ...]
+    [..., ('recipients', [u'aperson@example.com']), ...]
     >>> print qmsg.as_string()
     ...
     MIME-Version: 1.0
@@ -144,7 +144,7 @@ If there is no subject, then the receipt will use a generic message.
     >>> virginq.files
     []
     >>> sorted(qdata.items())
-    [..., ('recips', [u'aperson@example.com']), ...]
+    [..., ('recipients', [u'aperson@example.com']), ...]
     >>> print qmsg.as_string()
     MIME-Version: 1.0
     ...

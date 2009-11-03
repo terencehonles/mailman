@@ -29,23 +29,23 @@ __all__ = [
 
 
 from zope.interface import implements
-from mailman.interfaces.mta import IMailTransportAgent
+from mailman.interfaces.mta import IMailTransportAgentAliases
 
 
 
 class NullMTA:
     """Null MTA that just satisfies the interface."""
 
-    implements(IMailTransportAgent)
+    implements(IMailTransportAgentAliases)
 
     def create(self, mlist):
-        """See `IMailTransportAgent`."""
+        """See `IMailTransportAgentAliases`."""
         pass
 
     def delete(self, mlist):
-        """See `IMailTransportAgent`."""
+        """See `IMailTransportAgentAliases`."""
         pass
 
     def regenerate(self):
-        """See `IMailTransportAgent`."""
+        """See `IMailTransportAgentAliases`."""
         pass

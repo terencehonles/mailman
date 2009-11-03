@@ -40,7 +40,7 @@ from zope.interface import implements
 from mailman import Utils
 from mailman.config import config
 from mailman.interfaces.listmanager import IListManager
-from mailman.interfaces.mta import IMailTransportAgent
+from mailman.interfaces.mta import IMailTransportAgentAliases
 from mailman.i18n import _
 
 log = logging.getLogger('mailman.error')
@@ -56,10 +56,10 @@ SUBDESTINATIONS = (
 class LMTP:
     """Connect Mailman to Postfix via LMTP."""
 
-    implements(IMailTransportAgent)
+    implements(IMailTransportAgentAliases)
 
     def create(self, mlist):
-        """See `IMailTransportAgent`."""
+        """See `IMailTransportAgentAliases`."""
         # Acquire a lock file to prevent other processes from racing us here.
         with Lock(LOCKFILE):
             # We can ignore the mlist argument because for LMTP delivery, we
@@ -69,7 +69,7 @@ class LMTP:
     delete = create
 
     def regenerate(self):
-        """See `IMailTransportAgent`."""
+        """See `IMailTransportAgentAliases`."""
         # Acquire a lock file to prevent other processes from racing us here.
         with Lock(LOCKFILE):
             self._do_write_file()

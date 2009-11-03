@@ -53,12 +53,12 @@ but not all of the recipients.
     ...
     ... Something of great import.
     ... """)
-    >>> recips = set(('qperson@example.com', 'zperson@example.com'))
-    >>> msgdata = dict(recips=recips)
+    >>> recipients = set(('qperson@example.com', 'zperson@example.com'))
+    >>> msgdata = dict(recipients=recipients)
 
     >>> handler = config.handlers['calculate-recipients']
     >>> handler.process(mlist, msg, msgdata)
-    >>> sorted(msgdata['recips'])
+    >>> sorted(msgdata['recipients'])
     [u'qperson@example.com', u'zperson@example.com']
 
 
@@ -70,7 +70,7 @@ soon as they are posted.  In other words, these folks are not digest members.
 
     >>> msgdata = {}
     >>> handler.process(mlist, msg, msgdata)
-    >>> sorted(msgdata['recips'])
+    >>> sorted(msgdata['recipients'])
     [u'aperson@example.com', u'bperson@example.com', u'cperson@example.com']
 
 Members can elect not to receive a list copy of their own postings.
@@ -83,7 +83,7 @@ Members can elect not to receive a list copy of their own postings.
     ... """)
     >>> msgdata = {}
     >>> handler.process(mlist, msg, msgdata)
-    >>> sorted(msgdata['recips'])
+    >>> sorted(msgdata['recipients'])
     [u'aperson@example.com', u'bperson@example.com']
 
 Members can also elect not to receive a list copy of any message on which they

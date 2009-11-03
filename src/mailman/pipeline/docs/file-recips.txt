@@ -21,7 +21,7 @@ returns.
     ...
     ... A message.
     ... """)
-    >>> msgdata = {'recips': 7}
+    >>> msgdata = {'recipients': 7}
 
     >>> handler = config.handlers['file-recipients']
     >>> handler.process(mlist, msg, msgdata)
@@ -31,7 +31,7 @@ returns.
     A message.
     <BLANKLINE>
     >>> msgdata
-    {u'recips': 7}
+    {u'recipients': 7}
 
 
 Missing file
@@ -50,7 +50,7 @@ empty.
     No such file or directory: u'.../_xtest@example.com/members.txt'
     >>> msgdata = {}
     >>> handler.process(mlist, msg, msgdata)
-    >>> sorted(msgdata['recips'])
+    >>> sorted(msgdata['recipients'])
     []
 
 
@@ -73,7 +73,7 @@ addresses are returned as the set of recipients.
 
     >>> msgdata = {}
     >>> handler.process(mlist, msg, msgdata)
-    >>> sorted(msgdata['recips'])
+    >>> sorted(msgdata['recipients'])
     ['bperson@example.com', 'cperson@example.com', 'dperson@example.com',
      'eperson@example.com', 'fperson@example.com', 'gperson@example.com']
 
@@ -97,6 +97,6 @@ in the recipients list.
     ... """)
     >>> msgdata = {}
     >>> handler.process(mlist, msg, msgdata)
-    >>> sorted(msgdata['recips'])
+    >>> sorted(msgdata['recipients'])
     ['bperson@example.com', 'dperson@example.com',
      'eperson@example.com', 'fperson@example.com', 'gperson@example.com']

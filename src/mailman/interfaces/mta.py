@@ -21,7 +21,8 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'IMailTransportAgent',
+    'IMailTransportAgentAliases',
+    'IMailTransportAgentDelivery',
     ]
 
 
@@ -29,8 +30,8 @@ from zope.interface import Interface
 
 
 
-class IMailTransportAgent(Interface):
-    """Interface to the MTA."""
+class IMailTransportAgentAliases(Interface):
+    """Interface to the MTA aliases generator."""
 
     def create(mlist):
         """Tell the MTA that the mailing list was created."""
@@ -40,3 +41,32 @@ class IMailTransportAgent(Interface):
 
     def regenerate():
         """Regenerate the full aliases file."""
+
+
+
+class IMailTransportAgentDelivery(Interface):
+    """Interface to the MTA delivery strategies."""
+
+    def deliver(mlist, msg, msgdata):
+        """Deliver a message to a mailing list's recipients.
+
+        Ordinarily the mailing list is consulted for delivery specifics,
+        however the message metadata dictionary can contain additional
+        directions to control delivery.  Specifics are left to the
+        implementation, but there are a few common keys:
+
+        * envelope_sender - the email address of the RFC 2821 envelope sender;
+        * decorated - a flag indicating whether the message has been decorated
+            with headers and footers yet;
+        * recipients - the set of all recipients who should receive this
+            message, as a set of email addresses;
+
+        :param mlist: The mailing list being delivered to.
+        :type mlist: `IMailingList`
+        :param msg: The original message being delivered.
+        :type msg: `Message`
+        :param msgdata: Additional message metadata for this delivery.
+        :type msgdata: dictionary
+        :return: delivery failures as defined by `smtplib.SMTP.sendmail`
+        :rtype: dictionary
+        """
