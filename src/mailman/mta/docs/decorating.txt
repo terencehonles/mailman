@@ -157,7 +157,7 @@ Decorate only once
 Do not decorate a message twice.  Decorators must insert the 'decorated' key
 into the message metadata.
 
-    >>> msgdata['decorated'] = True
+    >>> msgdata['nodecorate'] = True
     >>> decorating.deliver(mlist, msg, msgdata)
     {}
     >>> messages = list(smtpd.messages)
