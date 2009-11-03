@@ -24,7 +24,8 @@ Create some members we're going to use.
     >>> member_b = address_b.subscribe(mlist, MemberRole.member)
     >>> # This is the message metadata dictionary as it would be produced by
     >>> # the CalcRecips handler.
-    >>> recips = dict(recips=['aperson@example.com', 'bperson@example.com'])
+    >>> recips = dict(
+    ...     recipients=['aperson@example.com', 'bperson@example.com'])
 
 
 Short circuiting
@@ -126,7 +127,7 @@ Other headers checked for recipients include the To...
     ... """)
     >>> msgdata = recips.copy()
     >>> handler.process(mlist, msg, msgdata)
-    >>> sorted(msgdata['recips'])
+    >>> sorted(msgdata['recipients'])
     [u'bperson@example.com']
     >>> print msg.as_string()
     From: Claire Person <cperson@example.com>

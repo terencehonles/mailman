@@ -204,7 +204,7 @@ class UserNotification(Message):
         virginq = config.switchboards['virgin']
         # The message metadata better have a 'recip' attribute.
         enqueue_kws = dict(
-            recips=self.recips,
+            recipients=self.recips,
             nodecorate=True,
             reduced_list_headers=True,
             )
@@ -242,7 +242,7 @@ class OwnerNotification(UserNotification):
         # The message metadata better have a `recip' attribute
         virginq.enqueue(self,
                         listname=mlist.fqdn_listname,
-                        recips=self.recips,
+                        recipients=self.recips,
                         nodecorate=True,
                         reduced_list_headers=True,
                         envsender=self._sender,

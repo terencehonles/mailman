@@ -295,24 +295,3 @@ that the header and footer can be added as attachments.
     <BLANKLINE>
     footer
     --BOUNDARY--
-
-
-Personalization
-===============
-
-A mailing list can be 'personalized', meaning that each message is unique for
-each recipient.  When the list is personalized, additional interpolation
-variables are available, however the list of intended recipients must be
-provided in the message data, otherwise an exception occurs.
-
-    >>> process(mlist, None, dict(personalize=True))
-    Traceback (most recent call last):
-    ...
-    AssertionError: The number of intended recipients must be exactly 1
-
-And the number of intended recipients must be exactly 1.
-
-    >>> process(mlist, None, dict(personalize=True, recipients=[1, 2, 3]))
-    Traceback (most recent call last):
-    ...
-    AssertionError: The number of intended recipients must be exactly 1

@@ -235,7 +235,7 @@ class SMTPLayer(ConfigLayer):
 
     @classmethod
     def testTearDown(cls):
-        pass
+        cls.smtpd.clear()
 
 
 

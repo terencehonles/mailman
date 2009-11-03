@@ -299,7 +299,7 @@ The message can be rejected, meaning it is bounced back to the sender.
     _parsemsg           : False
     listname            : alist@example.com
     nodecorate          : True
-    recips              : [u'aperson@example.org']
+    recipients          : [u'aperson@example.org']
     reduced_list_headers: True
     version             : 3
 
@@ -404,7 +404,7 @@ moderators.
     _parsemsg           : False
     listname            : alist@example.com
     nodecorate          : True
-    recips              : [u'zperson@example.com']
+    recipients          : [u'zperson@example.com']
     reduced_list_headers: True
     version             : 3
 
@@ -474,7 +474,7 @@ queue when the message is held.
     _parsemsg           : False
     listname            : alist@example.com
     nodecorate          : True
-    recips              : [u'alist-owner@example.com']
+    recipients          : [u'alist-owner@example.com']
     reduced_list_headers: True
     tomoderators        : True
     version             : 3
@@ -529,7 +529,7 @@ subscriber.
     _parsemsg           : False
     listname            : alist@example.com
     nodecorate          : True
-    recips              : [u'cperson@example.org']
+    recipients          : [u'cperson@example.org']
     reduced_list_headers: True
     version             : 3
 
@@ -573,7 +573,7 @@ subscription and the fact that they may need to approve it.
     _parsemsg           : False
     listname            : alist@example.com
     nodecorate          : True
-    recips              : [u'alist-owner@example.com']
+    recipients          : [u'alist-owner@example.com']
     reduced_list_headers: True
     tomoderators        : True
     version             : 3
@@ -590,7 +590,7 @@ at the recipient list.
 
     >>> qmsg_1, qdata_1 = dequeue(expected_count=2)
     >>> qmsg_2, qdata_2 = dequeue()
-    >>> if 'fperson@example.org' in qdata_1['recips']:
+    >>> if 'fperson@example.org' in qdata_1['recipients']:
     ...     # The first message is the welcome message
     ...     welcome_qmsg = qmsg_1
     ...     welcome_qdata = qdata_1
@@ -646,7 +646,7 @@ The welcome message is sent to the person who just subscribed.
     _parsemsg           : False
     listname            : alist@example.com
     nodecorate          : True
-    recips              : [u'fperson@example.org']
+    recipients          : [u'fperson@example.org']
     reduced_list_headers: True
     verp                : False
     version             : 3
@@ -672,7 +672,7 @@ The admin message is sent to the moderators.
     envsender           : changeme@example.com
     listname            : alist@example.com
     nodecorate          : True
-    recips              : []
+    recipients          : []
     reduced_list_headers: True
     version             : 3
 
@@ -752,7 +752,7 @@ unsubscription holds can send the list's moderators an immediate notification.
     _parsemsg           : False
     listname            : alist@example.com
     nodecorate          : True
-    recips              : [u'alist-owner@example.com']
+    recipients          : [u'alist-owner@example.com']
     reduced_list_headers: True
     tomoderators        : True
     version             : 3
@@ -810,7 +810,7 @@ and the person remains a member of the mailing list.
     _parsemsg           : False
     listname            : alist@example.com
     nodecorate          : True
-    recips              : [u'hperson@example.com']
+    recipients          : [u'hperson@example.com']
     reduced_list_headers: True
     version             : 3
 
@@ -834,7 +834,7 @@ change.
 
     >>> qmsg_1, qdata_1 = dequeue(expected_count=2)
     >>> qmsg_2, qdata_2 = dequeue()
-    >>> if 'gperson@example.com' in qdata_1['recips']:
+    >>> if 'gperson@example.com' in qdata_1['recipients']:
     ...     # The first message is the goodbye message
     ...     goodbye_qmsg = qmsg_1
     ...     goodbye_qdata = qdata_1
@@ -865,7 +865,7 @@ The goodbye message...
     _parsemsg           : False
     listname            : alist@example.com
     nodecorate          : True
-    recips              : [u'gperson@example.com']
+    recipients          : [u'gperson@example.com']
     reduced_list_headers: True
     verp                : False
     version             : 3
@@ -890,6 +890,6 @@ The goodbye message...
     envsender           : changeme@example.com
     listname            : alist@example.com
     nodecorate          : True
-    recips              : []
+    recipients          : []
     reduced_list_headers: True
     version             : 3
