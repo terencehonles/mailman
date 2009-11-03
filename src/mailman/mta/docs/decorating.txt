@@ -149,3 +149,51 @@ The decorations happen when the message is delivered.
     Language: English (USA)
     Options: http://example.com/cperson@example.com
     ----------
+
+
+Decorate only once
+==================
+
+Do not decorate a message twice.  Decorators must insert the 'decorated' key
+into the message metadata.
+
+    >>> msgdata['decorated'] = True
+    >>> decorating.deliver(mlist, msg, msgdata)
+    {}
+    >>> messages = list(smtpd.messages)
+    >>> len(messages)
+    3
+
+    >>> for message in sorted(messages, key=itemgetter('x-rcptto')):
+    ...     print message.as_string()
+    ...     print '----------'
+    From: aperson@example.org
+    To: test@example.com
+    Subject: test one
+    Message-ID: <aardvark>
+    X-Peer: ...
+    X-MailFrom: test-bounces+aperson=example.com@example.com
+    X-RcptTo: aperson@example.com
+    <BLANKLINE>
+    This is a test.
+    ----------
+    From: aperson@example.org
+    To: test@example.com
+    Subject: test one
+    Message-ID: <aardvark>
+    X-Peer: ...
+    X-MailFrom: test-bounces+bperson=example.com@example.com
+    X-RcptTo: bperson@example.com
+    <BLANKLINE>
+    This is a test.
+    ----------
+    From: aperson@example.org
+    To: test@example.com
+    Subject: test one
+    Message-ID: <aardvark>
+    X-Peer: ...
+    X-MailFrom: test-bounces+cperson=example.com@example.com
+    X-RcptTo: cperson@example.com
+    <BLANKLINE>
+    This is a test.
+    ----------

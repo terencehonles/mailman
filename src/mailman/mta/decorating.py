@@ -36,8 +36,10 @@ class DecoratingMixin:
 
     def decorate(self, mlist, msg, msgdata):
         """Add recipient-specific headers and footers."""
-        decorator = config.handlers['decorate']
-        decorator.process(mlist, msg, msgdata)
+        # Do not decorate a message more than once.
+        if not msgdata.get('decorated', False):
+            decorator = config.handlers['decorate']
+            decorator.process(mlist, msg, msgdata)
 
 
 
