@@ -28,6 +28,17 @@ __all__ = [
 
 from zope.interface import Interface
 
+from mailman.core.errors import MailmanError
+
+
+
+class SomeRecipientsFailed(MailmanError):
+    """Delivery to some or all recipients failed"""
+    def __init__(self, temporary_failures, permanent_failures):
+        HandlerError.__init__(self)
+        self.temporary_failures = temporary_failures
+        self.permanent_failures = permanent_failures
+
 
 
 class IMailTransportAgentAliases(Interface):

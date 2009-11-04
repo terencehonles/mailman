@@ -26,7 +26,7 @@ from datetime import datetime
 from lazr.config import as_timedelta
 
 from mailman.config import config
-from mailman.core import errors
+from mailman.interfaces.mta import SomeRecipientsFailed
 from mailman.queue import Runner
 from mailman.queue.bounce import BounceMixin
 from mailman.utilities.modules import find_name
@@ -81,9 +81,9 @@ class OutgoingRunner(Runner, BounceMixin):
                           config.mta.host, port)
                 self._logged = True
             return True
-        except errors.SomeRecipientsFailed, e:
+        except SomeRecipientsFailed as error:
             # Handle local rejects of probe messages differently.
-            if msgdata.get('probe_token') and e.permfailures:
+            if msgdata.get('probe_token') and error.permanent_failures:
                 self._probe_bounce(mlist, msgdata['probe_token'])
             else:
                 # Delivery failed at SMTP time for some or all of the
@@ -95,15 +95,15 @@ class OutgoingRunner(Runner, BounceMixin):
                 # this is what's sent to the user in the probe message.  Maybe
                 # we should craft a bounce-like message containing information
                 # about the permanent SMTP failure?
-                if e.permfailures:
-                    self._queue_bounces(mlist.fqdn_listname, e.permfailures,
-                                        msg)
+                if error.permanent_failures:
+                    self._queue_bounces(
+                        mlist.fqdn_listname, error.permanent_failures, msg)
                 # Move temporary failures to the qfiles/retry queue which will
                 # occasionally move them back here for another shot at
                 # delivery.
-                if e.tempfailures:
+                if error.temporary_failures:
                     now = datetime.now()
-                    recips = e.tempfailures
+                    recips = error.temporary_failures
                     last_recip_count = msgdata.get('last_recip_count', 0)
                     deliver_until = msgdata.get('deliver_until', now)
                     if len(recips) == last_recip_count:

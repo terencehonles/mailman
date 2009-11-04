@@ -84,7 +84,7 @@ automatically.
     http://go.mail-archive.dev/ZaXPPxRMM9_hFZL4vTRlQlBx8pc=
 
 To archive the message, the archiver actually mails the message to a special
-address at the Mail-Archive.
+address at the Mail-Archive.  The message gets no header or footer decoration.
 
     >>> archiver.archive_message(mlist, msg)
 
@@ -104,9 +104,6 @@ address at the Mail-Archive.
     Subject: An archived message
     Message-ID: <12345>
     X-Message-ID-Hash: ZaXPPxRMM9_hFZL4vTRlQlBx8pc=
-    MIME-Version: 1.0
-    Content-Type: text/plain; charset="us-ascii"
-    Content-Transfer-Encoding: 7bit
     Sender: test-bounces@example.com
     Errors-To: test-bounces@example.com
     X-Peer: 127.0.0.1:...
@@ -114,10 +111,6 @@ address at the Mail-Archive.
     X-RcptTo: archive@mail-archive.dev
     <BLANKLINE>
     Here is an archived message.
-    _______________________________________________
-    Test mailing list
-    test@example.com
-    http://lists.example.com/listinfo/test@example.com
 
     >>> smtpd.clear()
 

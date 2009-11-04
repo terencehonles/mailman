@@ -52,8 +52,7 @@ class BaseDelivery:
             config.mta.smtp_host, int(config.mta.smtp_port),
             int(config.mta.max_sessions_per_connection))
 
-    def _deliver_to_recipients(self, mlist, msg, msgdata,
-                               sender, recipients):
+    def _deliver_to_recipients(self, mlist, msg, msgdata, recipients):
         """Low-level delivery to a set of recipients.
 
         :param mlist: The mailing list being delivered to.
@@ -62,13 +61,23 @@ class BaseDelivery:
         :type msg: `Message`
         :param msgdata: Additional message metadata for this delivery.
         :type msgdata: dictionary
-        :param sender: The envelope sender.
-        :type sender: string
         :param recipients: The recipients of this message.
         :type recipients: sequence
         :return: delivery failures as defined by `smtplib.SMTP.sendmail`
         :rtype: dictionary
         """
+        # Blow away any existing Sender and Errors-To headers and substitute
+        # our own.  Our interpretation of RFC 5322 $3.6.2 is that Mailman is
+        # the "agent responsible for actual transmission of the message"
+        # because what we send to list members is different than what the
+        # original author sent.  RFC 2076 says Errors-To is "non-standard,
+        # discouraged" but we include it for historical purposes.
+        sender = self._get_sender(mlist, msg, msgdata)
+        del msg['sender']
+        del msg['errors-to']
+        msg['Sender'] = sender
+        msg['Errors-To'] = sender
+        # Do the actual sending.
         message_id = msg['message-id']
         try:
             refused = self._connection.sendmail(
@@ -147,11 +156,8 @@ class IndividualDelivery(BaseDelivery):
         delivery address in the return envelope so there can be no ambiguity
         in bounce processing.
         """
-        recipients = msgdata.get('recipients')
-        if not recipients:
-            # Could be None, could be an empty sequence.
-            return
         refused = {}
+        recipients = msgdata.get('recipients', set())
         for recipient in recipients:
             # Make a copy of the original messages and operator on it, since
             # we're going to munge it repeatedly for each recipient.
@@ -161,10 +167,9 @@ class IndividualDelivery(BaseDelivery):
             # That way the subclass's _get_sender() override can encode the
             # recipient address in the sender, e.g. for VERP.
             msgdata_copy['recipient'] = recipient
-            sender = self._get_sender(mlist, message_copy, msgdata_copy)
             for callback in self.callbacks:
                 callback(mlist, message_copy, msgdata_copy)
             status = self._deliver_to_recipients(
-                mlist, message_copy, msgdata_copy, sender, [recipient])
+                mlist, message_copy, msgdata_copy, [recipient])
             refused.update(status)
         return refused

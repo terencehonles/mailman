@@ -102,25 +102,10 @@ class BulkDelivery(BaseDelivery):
 
     def deliver(self, mlist, msg, msgdata):
         """See `IMailTransportAgentDelivery`."""
-        recipients = msgdata.get('recipients')
-        if not recipients:
-            # Could be None, could be an empty sequence.
-            return
-        # Blow away any existing Sender and Errors-To headers and substitute
-        # our own.  Our interpretation of RFC 5322 $3.6.2 is that Mailman is
-        # the "agent responsible for actual transmission of the message"
-        # because what we send to list members is different than what the
-        # original author sent.  RFC 2076 says Errors-To is "non-standard,
-        # discouraged" but we include it for historical purposes.
-        sender = self._get_sender(mlist, msg, msgdata)
-        del msg['sender']
-        del msg['errors-to']
-        msg['Sender'] = sender
-        msg['Errors-To'] = sender
         refused = {}
-        for recipients in self.chunkify(msgdata['recipients']):
+        for recipients in self.chunkify(msgdata.get('recipients', set())):
             chunk_refused = self._deliver_to_recipients(
-                mlist, msg, msgdata, sender, recipients)
+                mlist, msg, msgdata, recipients)
             refused.update(chunk_refused)
         return refused
 

@@ -99,8 +99,10 @@ The decorations happen when the message is delivered.
     MIME-Version: 1.0
     Content-Type: text/plain; charset="us-ascii"
     Content-Transfer-Encoding: 7bit
+    Sender: test-bounces@example.com
+    Errors-To: test-bounces@example.com
     X-Peer: ...
-    X-MailFrom: test-bounces+aperson=example.com@example.com
+    X-MailFrom: test-bounces@example.com
     X-RcptTo: aperson@example.com
     <BLANKLINE>
     Delivery address: aperson@example.com
@@ -118,8 +120,10 @@ The decorations happen when the message is delivered.
     MIME-Version: 1.0
     Content-Type: text/plain; charset="us-ascii"
     Content-Transfer-Encoding: 7bit
+    Sender: test-bounces@example.com
+    Errors-To: test-bounces@example.com
     X-Peer: ...
-    X-MailFrom: test-bounces+bperson=example.com@example.com
+    X-MailFrom: test-bounces@example.com
     X-RcptTo: bperson@example.com
     <BLANKLINE>
     Delivery address: bperson@example.com
@@ -137,8 +141,10 @@ The decorations happen when the message is delivered.
     MIME-Version: 1.0
     Content-Type: text/plain; charset="us-ascii"
     Content-Transfer-Encoding: 7bit
+    Sender: test-bounces@example.com
+    Errors-To: test-bounces@example.com
     X-Peer: ...
-    X-MailFrom: test-bounces+cperson=example.com@example.com
+    X-MailFrom: test-bounces@example.com
     X-RcptTo: cperson@example.com
     <BLANKLINE>
     Delivery address: cperson@example.com
@@ -171,8 +177,10 @@ into the message metadata.
     To: test@example.com
     Subject: test one
     Message-ID: <aardvark>
+    Sender: test-bounces@example.com
+    Errors-To: test-bounces@example.com
     X-Peer: ...
-    X-MailFrom: test-bounces+aperson=example.com@example.com
+    X-MailFrom: test-bounces@example.com
     X-RcptTo: aperson@example.com
     <BLANKLINE>
     This is a test.
@@ -181,8 +189,10 @@ into the message metadata.
     To: test@example.com
     Subject: test one
     Message-ID: <aardvark>
+    Sender: test-bounces@example.com
+    Errors-To: test-bounces@example.com
     X-Peer: ...
-    X-MailFrom: test-bounces+bperson=example.com@example.com
+    X-MailFrom: test-bounces@example.com
     X-RcptTo: bperson@example.com
     <BLANKLINE>
     This is a test.
@@ -191,8 +201,10 @@ into the message metadata.
     To: test@example.com
     Subject: test one
     Message-ID: <aardvark>
+    Sender: test-bounces@example.com
+    Errors-To: test-bounces@example.com
     X-Peer: ...
-    X-MailFrom: test-bounces+cperson=example.com@example.com
+    X-MailFrom: test-bounces@example.com
     X-RcptTo: cperson@example.com
     <BLANKLINE>
     This is a test.

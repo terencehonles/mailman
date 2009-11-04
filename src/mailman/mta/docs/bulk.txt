@@ -154,10 +154,12 @@ there are no calculated recipients, nothing gets sent.
 
     >>> bulk = BulkDelivery()
     >>> bulk.deliver(mlist, msg, {})
+    {}
     >>> len(list(smtpd.messages))
     0
 
     >>> bulk.deliver(mlist, msg, dict(recipients=set()))
+    {}
     >>> len(list(smtpd.messages))
     0
 

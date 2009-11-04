@@ -57,8 +57,10 @@ By default, the To header is not personalized.
     To: test@example.com
     Subject: test one
     Message-ID: <aardvark>
+    Sender: test-bounces@example.com
+    Errors-To: test-bounces@example.com
     X-Peer: ...
-    X-MailFrom: test-bounces+aperson=example.com@example.com
+    X-MailFrom: test-bounces@example.com
     X-RcptTo: aperson@example.com
     <BLANKLINE>
     This is a test.
@@ -67,8 +69,10 @@ By default, the To header is not personalized.
     To: test@example.com
     Subject: test one
     Message-ID: <aardvark>
+    Sender: test-bounces@example.com
+    Errors-To: test-bounces@example.com
     X-Peer: ...
-    X-MailFrom: test-bounces+bperson=example.com@example.com
+    X-MailFrom: test-bounces@example.com
     X-RcptTo: bperson@example.com
     <BLANKLINE>
     This is a test.
@@ -77,8 +81,10 @@ By default, the To header is not personalized.
     To: test@example.com
     Subject: test one
     Message-ID: <aardvark>
+    Sender: test-bounces@example.com
+    Errors-To: test-bounces@example.com
     X-Peer: ...
-    X-MailFrom: test-bounces+cperson=example.com@example.com
+    X-MailFrom: test-bounces@example.com
     X-RcptTo: cperson@example.com
     <BLANKLINE>
     This is a test.
@@ -108,8 +114,10 @@ the recipient's address and name.
     To: aperson@example.com
     Subject: test one
     Message-ID: <aardvark>
+    Sender: test-bounces@example.com
+    Errors-To: test-bounces@example.com
     X-Peer: ...
-    X-MailFrom: test-bounces+aperson=example.com@example.com
+    X-MailFrom: test-bounces@example.com
     X-RcptTo: aperson@example.com
     <BLANKLINE>
     This is a test.
@@ -118,8 +126,10 @@ the recipient's address and name.
     To: bperson@example.com
     Subject: test one
     Message-ID: <aardvark>
+    Sender: test-bounces@example.com
+    Errors-To: test-bounces@example.com
     X-Peer: ...
-    X-MailFrom: test-bounces+bperson=example.com@example.com
+    X-MailFrom: test-bounces@example.com
     X-RcptTo: bperson@example.com
     <BLANKLINE>
     This is a test.
@@ -128,8 +138,10 @@ the recipient's address and name.
     To: cperson@example.com
     Subject: test one
     Message-ID: <aardvark>
+    Sender: test-bounces@example.com
+    Errors-To: test-bounces@example.com
     X-Peer: ...
-    X-MailFrom: test-bounces+cperson=example.com@example.com
+    X-MailFrom: test-bounces@example.com
     X-RcptTo: cperson@example.com
     <BLANKLINE>
     This is a test.
@@ -160,8 +172,10 @@ associated real name, then this name also shows up in the To header.
     To: aperson@example.com
     Subject: test one
     Message-ID: <aardvark>
+    Sender: test-bounces@example.com
+    Errors-To: test-bounces@example.com
     X-Peer: ...
-    X-MailFrom: test-bounces+aperson=example.com@example.com
+    X-MailFrom: test-bounces@example.com
     X-RcptTo: aperson@example.com
     <BLANKLINE>
     This is a test.
@@ -170,8 +184,10 @@ associated real name, then this name also shows up in the To header.
     To: Bill Person <bperson@example.com>
     Subject: test one
     Message-ID: <aardvark>
+    Sender: test-bounces@example.com
+    Errors-To: test-bounces@example.com
     X-Peer: ...
-    X-MailFrom: test-bounces+bperson=example.com@example.com
+    X-MailFrom: test-bounces@example.com
     X-RcptTo: bperson@example.com
     <BLANKLINE>
     This is a test.
@@ -180,8 +196,10 @@ associated real name, then this name also shows up in the To header.
     To: Cate Person <cperson@example.com>
     Subject: test one
     Message-ID: <aardvark>
+    Sender: test-bounces@example.com
+    Errors-To: test-bounces@example.com
     X-Peer: ...
-    X-MailFrom: test-bounces+cperson=example.com@example.com
+    X-MailFrom: test-bounces@example.com
     X-RcptTo: cperson@example.com
     <BLANKLINE>
     This is a test.

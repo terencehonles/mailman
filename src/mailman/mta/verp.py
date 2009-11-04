@@ -56,34 +56,27 @@ class VERPMixin:
         :param msgdata: Additional message metadata for this delivery.
         :type msgdata: dictionary
         """
-        recipient = msgdata['recipient']
         sender = super(VERPMixin, self)._get_sender(mlist, msg, msgdata)
-        sender_mailbox, sender_domain = split_email(sender)
-        # Encode the recipient's address for VERP.
-        recipient_mailbox, recipient_domain = split_email(recipient)
-        if recipient_domain is None:
-            # The recipient address is not fully-qualified.  We can't
-            # deliver it to this person, nor can we craft a valid verp
-            # header.  I don't think there's much we can do except ignore
-            # this recipient.
-            log.info('Skipping VERP delivery to unqual recip: %s', recip)
+        if msgdata.get('verp', False):
+            recipient = msgdata['recipient']
+            sender_mailbox, sender_domain = split_email(sender)
+            # Encode the recipient's address for VERP.
+            recipient_mailbox, recipient_domain = split_email(recipient)
+            if recipient_domain is None:
+                # The recipient address is not fully-qualified.  We can't
+                # deliver it to this person, nor can we craft a valid verp
+                # header.  I don't think there's much we can do except ignore
+                # this recipient.
+                log.info('Skipping VERP delivery to unqual recip: %s', recip)
+                return sender
+            return '{0}@{1}'.format(
+                expand(config.mta.verp_format, dict(
+                    bounces=sender_mailbox,
+                    local=recipient_mailbox,
+                    domain=DOT.join(recipient_domain))),
+                DOT.join(sender_domain))
+        else:
             return sender
-        return '{0}@{1}'.format(
-            expand(config.mta.verp_format, dict(
-                bounces=sender_mailbox,
-                local=recipient_mailbox,
-                domain=DOT.join(recipient_domain))),
-            DOT.join(sender_domain))
-
-
-
-class VERPDelivery(VERPMixin, IndividualDelivery):
-    """Deliver a unique message to the MSA for each recipient."""
-
-    def __init__(self):
-        """See `IndividualDelivery`."""
-        super(VERPDelivery, self).__init__()
-        self.callbacks.append(self.avoid_duplicates)
 
     def avoid_duplicates(self, mlist, msg, msgdata):
         """Flag the message for duplicate avoidance.
@@ -96,3 +89,13 @@ class VERPDelivery(VERPMixin, IndividualDelivery):
         del msg['x-mailman-copy']
         if recipient in msgdata.get('add-dup-header', {}):
             msg['X-Mailman-Copy'] = 'yes'
+
+
+
+class VERPDelivery(VERPMixin, IndividualDelivery):
+    """Deliver a unique message to the MSA for each recipient."""
+
+    def __init__(self):
+        """See `IndividualDelivery`."""
+        super(VERPDelivery, self).__init__()
+        self.callbacks.append(self.avoid_duplicates)

@@ -72,7 +72,7 @@ class ToOutgoing:
             msgdata['verp'] = True
         else:
             # VERP every `interval' number of times
-            msgdata['verp'] = not (int(mlist.post_id) % interval)
+            msgdata['verp'] = (int(mlist.post_id) % interval == 0)
         # And now drop the message in qfiles/out
         config.switchboards['out'].enqueue(
             msg, msgdata, listname=mlist.fqdn_listname)

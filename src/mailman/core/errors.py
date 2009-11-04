@@ -40,14 +40,12 @@ __all__ = [
     'NotAMemberError',
     'PasswordError',
     'RejectMessage',
-    'SomeRecipientsFailed',
     'SubscriptionError',
     ]
 
 
 
-# Base class for all exceptions raised in Mailman (XXX except legacy string
-# exceptions).
+# Base class for all exceptions raised in Mailman.
 class MailmanException(Exception):
     pass
 
@@ -94,9 +92,11 @@ class LostHeldMessage(MailmanError):
 def _(s):
     return s
 
+
 # Exceptions for the Handler subsystem
 class HandlerError(MailmanError):
     """Base class for all handler errors."""
+
 
 class HoldMessage(HandlerError):
     """Base class for all message-being-held short circuits."""
@@ -113,15 +113,10 @@ class HoldMessage(HandlerError):
     def rejection_notice(self, mlist):
         return self.rejection
 
+
 class DiscardMessage(HandlerError):
     """The message can be discarded with no further action"""
 
-class SomeRecipientsFailed(HandlerError):
-    """Delivery to some or all recipients failed"""
-    def __init__(self, tempfailures, permfailures):
-        HandlerError.__init__(self)
-        self.tempfailures = tempfailures
-        self.permfailures = permfailures
 
 class RejectMessage(HandlerError):
     """The message will be bounced back to the sender"""
