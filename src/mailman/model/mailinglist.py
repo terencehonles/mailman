@@ -35,15 +35,15 @@ from urlparse import urljoin
 from zope.interface import implements
 
 from mailman.config import config
-from mailman.database import roster
-from mailman.database.digests import OneLastDigest
-from mailman.database.mime import ContentFilter
 from mailman.database.model import Model
 from mailman.database.types import Enum
 from mailman.interfaces.domain import IDomainManager
 from mailman.interfaces.mailinglist import (
     IAcceptableAlias, IAcceptableAliasSet, IMailingList, Personalization)
 from mailman.interfaces.mime import FilterType
+from mailman.model import roster
+from mailman.model.digests import OneLastDigest
+from mailman.model.mime import ContentFilter
 from mailman.utilities.filesystem import makedirs
 from mailman.utilities.string import expand
 

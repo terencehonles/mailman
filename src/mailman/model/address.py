@@ -29,11 +29,11 @@ from email.utils import formataddr
 from storm.locals import DateTime, Int, Reference, Store, Unicode
 from zope.interface import implements
 
-from mailman.database.member import Member
 from mailman.database.model import Model
-from mailman.database.preferences import Preferences
 from mailman.interfaces.member import AlreadySubscribedError
 from mailman.interfaces.address import IAddress
+from mailman.model.member import Member
+from mailman.model.preferences import Preferences
 
 
 

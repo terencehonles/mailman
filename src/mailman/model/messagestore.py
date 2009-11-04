@@ -34,8 +34,8 @@ import cPickle as pickle
 from zope.interface import implements
 
 from mailman.config import config
-from mailman.database.message import Message
 from mailman.interfaces.messages import IMessageStore
+from mailman.model.message import Message
 from mailman.utilities.filesystem import makedirs
 
 

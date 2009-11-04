@@ -125,7 +125,7 @@ class Pendings:
                 value = '__builtin__.bool\1%s' % value
             elif type(value) is list:
                 # We expect this to be a list of strings.
-                value = ('mailman.database.pending.unpack_list\1' +
+                value = ('mailman.model.pending.unpack_list\1' +
                          '\2'.join(value))
             keyval = PendedKeyValue(key=key, value=value)
             pending.key_values.add(keyval)

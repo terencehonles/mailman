@@ -15,13 +15,7 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Interfaces for database interaction.
-
-By providing an object with this interface and declaring it in a package
-setup.py file as an entry point in the 'mailman.database' group with the name
-'initializer', you can distribute entirely different database layers for
-Mailman's back end.
-"""
+"""Interfaces for database interaction."""
 
 from __future__ import absolute_import, unicode_literals
 
