@@ -15,52 +15,35 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Information about this Mailman instance."""
+"""The Mailman version."""
 
 from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'Info'
+    'Version',
     ]
 
 
-import sys
-
 from zope.interface import implements
 
-from mailman.config import config
-from mailman.i18n import _
 from mailman.interfaces.command import ICLISubCommand
 from mailman.version import MAILMAN_VERSION_FULL
 
 
 
-class Info:
-    """Information about this Mailman instance."""
+class Version:
+    """Mailman's version."""
 
     implements(ICLISubCommand)
 
-    name = 'info'
+    name = 'version'
 
     def add(self, parser, command_parser):
         """See `ICLISubCommand`."""
-        command_parser.add_argument(
-            '-o', '--output',
-            action='store', help=_("""\
-            File to send the output to.  If not given, standard output is
-            used."""))
+        # No extra options.
+        pass
 
     def process(self, args):
         """See `ICLISubCommand`."""
-        if args.output is None:
-            output = sys.stdout
-        else:
-            # We don't need to close output because that will happen
-            # automatically when the script exits.
-            output = open(args.output, 'w')
-
-        print >> output, MAILMAN_VERSION_FULL
-        print >> output, 'Python', sys.version
-        print >> output, 'config file:', config.filename
-        print >> output, 'db url:', config.db.url
+        print MAILMAN_VERSION_FULL
