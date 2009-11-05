@@ -13,7 +13,6 @@ yet though.
 
 Create a mailing list in a domain and it's accessible via the API.
 
-    >>> from mailman.app.lifecycle import create_list
     >>> create_list('test-one@example.com')
     <mailing list "test-one@example.com" at ...>
     >>> transaction.commit()

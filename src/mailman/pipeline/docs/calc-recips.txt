@@ -6,7 +6,6 @@ Every message that makes it through to the list membership gets sent to a set
 of recipient addresses.  These addresses are calculated by one of the handler
 modules and depends on a host of factors.
 
-    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('_xtest@example.com')
 
 Recipients are calculate from the list members, so add a bunch of members to

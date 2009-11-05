@@ -6,7 +6,6 @@ Mailman has an NNTP gateway, whereby messages posted to the mailing list can
 be forwarded onto an NNTP newsgroup.  Typically this means Usenet, but since
 NNTP is to Usenet as IP is to the web, it's more general than that.
 
-    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('_xtest@example.com')
 
 Gatewaying from the mailing list to the newsgroup happens through a separate

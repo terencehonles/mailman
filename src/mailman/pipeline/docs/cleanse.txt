@@ -6,7 +6,6 @@ All messages posted to a list get their headers cleansed.  Some headers are
 related to additional permissions that can be granted to the message and other
 headers can be used to fish for membership.
 
-    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('_xtest@example.com')
 
 Headers such as Approved, Approve, and Urgent are used to grant special

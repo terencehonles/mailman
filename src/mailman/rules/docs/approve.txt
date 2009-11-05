@@ -14,7 +14,6 @@ approval queue.  This has several use cases:
 In order to support this, a mailing list can be given a 'moderator password'
 which is shared among all the administrators.
 
-    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('_xtest@example.com')
     >>> mlist.moderator_password = 'abcxyz'
 

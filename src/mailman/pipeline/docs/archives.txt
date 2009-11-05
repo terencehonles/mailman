@@ -8,7 +8,6 @@ delivery processes while messages are archived.  This also allows external
 archivers to work in a separate process from the main Mailman delivery
 processes.
 
-    >>> from mailman.app.lifecycle import create_list
     >>> handler = config.handlers['to-archive']
     >>> mlist = create_list('_xtest@example.com')
     >>> switchboard = config.switchboards['archive']

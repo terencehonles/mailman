@@ -6,7 +6,6 @@ When a user posts a message to a mailing list, and that user has chosen to
 receive acknowledgments of their postings, Mailman will sent them such an
 acknowledgment.
 
-    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('_xtest@example.com')
     >>> mlist.real_name = 'XTest'
     >>> mlist.preferred_language = 'en'

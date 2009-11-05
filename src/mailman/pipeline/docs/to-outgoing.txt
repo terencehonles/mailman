@@ -10,7 +10,6 @@ term somewhat incorrectly, but within the spirit of the standard, which
 basically describes how to encode the recipient's address in the originator
 headers for unambigous bounce processing.
 
-    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('_xtest@example.com')
 
     >>> switchboard = config.switchboards['out']

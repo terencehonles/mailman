@@ -7,7 +7,6 @@ postings, then only members with a cleared moderation flag will be able to
 email the list without having those messages be held for approval.  The
 'moderation' rule determines whether the message should be moderated or not.
 
-    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('_xtest@example.com')
     >>> rule = config.rules['moderation']
     >>> print rule.name

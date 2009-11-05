@@ -7,7 +7,6 @@ by the rest of the handlers in the incoming queue pipeline, a couple of
 bookkeeping pieces of information are updated.
 
     >>> import datetime
-    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('_xtest@example.com')
     >>> post_time = datetime.datetime.now() - datetime.timedelta(minutes=10)
     >>> mlist.last_post_time = post_time

@@ -6,7 +6,6 @@ Message decoration is the process of adding headers and footers to the
 original message.  A handler module takes care of this based on the settings
 of the mailing list and the type of message being processed.
 
-    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('_xtest@example.com')
     >>> msg_text = """\
     ... From: aperson@example.org

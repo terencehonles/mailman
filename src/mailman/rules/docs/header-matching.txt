@@ -6,7 +6,6 @@ Mailman can do pattern based header matching during its normal rule
 processing.  There is a set of site-wide default header matches specified in
 the configuration file under the [spam.headers] section.
 
-    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('_xtest@example.com')
 
 Because the default [spam.headers] section is empty, we'll just extend the

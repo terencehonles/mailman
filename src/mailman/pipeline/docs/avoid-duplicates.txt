@@ -7,7 +7,6 @@ reduce the reception of duplicate messages.  It does this by removing certain
 recipients from the list of recipients that earlier handler modules
 (e.g. CalcRecips) calculates.
 
-    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('_xtest@example.com')
 
 Create some members we're going to use.

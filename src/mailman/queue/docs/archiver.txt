@@ -5,7 +5,6 @@ Archiving
 Mailman can archive to any number of archivers that adhere to the IArchiver
 interface.  By default, there's a Pipermail archiver.
 
-    >>> from mailman.app.lifecycle import create_list
     >>> mlist = create_list('test@example.com')
     >>> transaction.commit()
 

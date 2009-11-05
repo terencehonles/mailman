@@ -165,7 +165,6 @@ membership role.
     >>> org = user_manager.get_address('zperson@example.org')
     >>> net = user_manager.get_address('zperson@example.net')
 
-    >>> from mailman.app.lifecycle import create_list
     >>> mlist_1 = create_list('xtest_1@example.com')
     >>> mlist_2 = create_list('xtest_2@example.com')
     >>> mlist_3 = create_list('xtest_3@example.com')
