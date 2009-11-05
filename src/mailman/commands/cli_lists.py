@@ -33,7 +33,7 @@ from zope.interface import implements
 from mailman.Utils import maketext
 from mailman.app.lifecycle import create_list, remove_list
 from mailman.config import config
-from mailman.constants import system_preferences
+from mailman.core.constants import system_preferences
 from mailman.core.errors import InvalidEmailAddress
 from mailman.email.message import UserNotification
 from mailman.i18n import _, using_language

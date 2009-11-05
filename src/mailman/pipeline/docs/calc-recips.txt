@@ -35,7 +35,7 @@ start out with.  First, create a bunch of addresses...
 
 ...then make some of the members digest members.
 
-    >>> from mailman.constants import DeliveryMode
+    >>> from mailman.core.constants import DeliveryMode
     >>> member_d.preferences.delivery_mode = DeliveryMode.plaintext_digests
     >>> member_e.preferences.delivery_mode = DeliveryMode.mime_digests
     >>> member_f.preferences.delivery_mode = DeliveryMode.summary_digests

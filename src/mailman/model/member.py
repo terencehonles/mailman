@@ -28,7 +28,7 @@ from storm.locals import *
 from zope.interface import implements
 
 from mailman.config import config
-from mailman.constants import system_preferences
+from mailman.core.constants import system_preferences
 from mailman.database.model import Model
 from mailman.database.types import Enum
 from mailman.interfaces.member import IMember

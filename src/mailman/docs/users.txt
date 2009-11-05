@@ -137,7 +137,7 @@ Some of these preferences are booleans and they can be set to True or False.
 
     >>> config.languages.add('it', 'iso-8859-1', 'Italian')
 
-    >>> from mailman.constants import DeliveryMode
+    >>> from mailman.core.constants import DeliveryMode
     >>> prefs = user_1.preferences
     >>> prefs.acknowledge_posts = True
     >>> prefs.preferred_language = 'it'
