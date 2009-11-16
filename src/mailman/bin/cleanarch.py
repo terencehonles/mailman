@@ -22,7 +22,7 @@ import sys
 import mailbox
 import optparse
 
-from mailman.i18n import _
+from mailman.core.i18n import _
 from mailman.version import MAILMAN_VERSION
 
 

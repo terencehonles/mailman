@@ -39,9 +39,9 @@ from zope.interface import implements
 
 from mailman import Utils
 from mailman.config import config
+from mailman.core.i18n import _
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.mta import IMailTransportAgentAliases
-from mailman.i18n import _
 
 log = logging.getLogger('mailman.error')
 

@@ -21,7 +21,7 @@ import optparse
 from zope.component import getUtility
 
 from mailman.MailList import MailList
-from mailman.i18n import _
+from mailman.core.i18n import _
 from mailman.initialize import initialize
 from mailman.interfaces.listmanager import IListManager
 from mailman.version import MAILMAN_VERSION

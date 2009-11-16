@@ -30,8 +30,8 @@ from email.mime.message import MIMEMessage
 from email.mime.text import MIMEText
 
 from mailman.Utils import oneline
+from mailman.core.i18n import _
 from mailman.email.message import UserNotification
-from mailman.i18n import _
 
 log = logging.getLogger('mailman.config')
 

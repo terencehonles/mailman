@@ -30,15 +30,13 @@ from email.utils import formataddr
 from zope.component import getUtility
 
 from mailman import Utils
-from mailman import i18n
 from mailman.app.notifications import send_goodbye_message
 from mailman.core import errors
+from mailman.core.i18n import _
 from mailman.email.message import OwnerNotification
 from mailman.email.validate import validate
 from mailman.interfaces.member import AlreadySubscribedError, MemberRole
 from mailman.interfaces.usermanager import IUserManager
-
-_ = i18n._
 
 
 

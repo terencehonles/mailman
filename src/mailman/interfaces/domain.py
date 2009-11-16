@@ -35,7 +35,7 @@ from zope.interface import Interface, Attribute
 from zope.schema import TextLine
 
 from mailman.core.errors import MailmanError
-from mailman.i18n import _
+from mailman.core.i18n import _
 
 
 

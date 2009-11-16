@@ -46,20 +46,17 @@ from string import Template
 from zope.component import getUtility
 
 from mailman import Utils
-from mailman import i18n
 from mailman.Archiver import HyperDatabase
 from mailman.Archiver import pipermail
 from mailman.config import config
+from mailman.core.i18n import _, ctime
 from mailman.interfaces.listmanager import IListManager
 
 
 log = logging.getLogger('mailman.error')
-
-# Set up i18n.  Assume the current language has already been set in the caller.
-_ = i18n._
-
 EMPTYSTRING = ''
 NL = '\n'
+
 
 # MacOSX has a default stack size that is too small for deeply recursive
 # regular expressions.  We see this as crashes in the Python test suite when
@@ -109,7 +106,7 @@ def sizeof(filename, lang):
         if e.errno <> errno.ENOENT: raise
         return _('size not available')
     if size < 1000:
-        with i18n.using_language(lang.code):
+        with _.using(lang.code):
             out = _(' %(size)i bytes ')
         return out
     elif size < 1000000:
@@ -256,7 +253,7 @@ class Article(pipermail.Article):
             # article (for this list) could be different from the site-wide
             # preferred language, so we need to ensure no side-effects will
             # occur.  Think what happens when executing bin/arch.
-            with i18n.using_language(lang.code):
+            with _.using(lang.code):
                 if self.author == self.email:
                     self.author = self.email = re.sub('@', _(' at '),
                                                       self.email)
@@ -359,7 +356,7 @@ class Article(pipermail.Article):
                 self.decoded['email'] = email
         if subject:
             if as_boolean(config.archiver.pipermail.obscure_email_addresses):
-                with i18n.using_language(self._lang.code):
+                with _.using(self._lang.code):
                     atmark = _(' at ')
                     subject = re.sub(r'([-+,.\w]+)@([-+.\w]+)',
                               '\g<1>' + atmark + '\g<2>', subject)
@@ -396,8 +393,8 @@ class Article(pipermail.Article):
 
     def as_html(self):
         d = self.__dict__.copy()
-        # avoid i18n side-effects
-        with i18n.using_language(self._lang.code):
+        # Avoid i18n side-effects
+        with _.using(self._lang.code):
             d["prev"], d["prev_wsubj"] = self._get_prev()
             d["next"], d["next_wsubj"] = self._get_next()
 
@@ -415,7 +412,7 @@ class Article(pipermail.Article):
                 emailurl = self.email
             d["author_html"] = self.quote(author)
             d["email_url"] = url_quote(emailurl)
-            d["datestr_html"] = self.quote(i18n.ctime(int(self.date)))
+            d["datestr_html"] = self.quote(ctime(int(self.date)))
             d["body"] = self._get_body()
             d['listurl'] = self._mlist.script_url('listinfo')
             d['listname'] = self._mlist.real_name
@@ -511,7 +508,7 @@ class Article(pipermail.Article):
         if not isinstance(body, unicode):
             body = unicode(body, cset, 'replace')
         if as_boolean(config.archiver.pipermail.obscure_email_addresses):
-            with i18n.using_language(self._lang.code):
+            with _.using(self._lang.code):
                 atmark = _(' at ')
                 body = re.sub(r'([-+,.\w]+)@([-+.\w]+)',
                               '\g<1>' + atmark + '\g<2>', body)
@@ -608,12 +605,12 @@ class HyperArchive(pipermail.T):
                        mlist=self.maillist)
 
     def html_foot(self):
-        # avoid i18n side-effects
         mlist = self.maillist
         # Convenience
         def quotetime(s):
-            return html_quote(i18n.ctime(s), self.lang.code)
-        with i18n.using_language(mlist.preferred_language.code):
+            return html_quote(ctime(s), self.lang.code)
+        # Avoid i18n side-effects
+        with _.using(mlist.preferred_language.code):
             d = {"lastdate": quotetime(self.lastdate),
                  "archivedate": quotetime(self.archivedate),
                  "listinfo": mlist.script_url('listinfo'),
@@ -636,12 +633,12 @@ class HyperArchive(pipermail.T):
             mlist=mlist)
 
     def html_head(self):
-        # avoid i18n side-effects
         mlist = self.maillist
         # Convenience
         def quotetime(s):
-            return html_quote(i18n.ctime(s), self.lang.code)
-        with i18n.using_language(mlist.preferred_language.code):
+            return html_quote(ctime(s), self.lang.code)
+        # Avoid i18n side-effects
+        with _.using(mlist.preferred_language.code):
             d = {"listname": html_quote(mlist.real_name, self.lang.code),
                  "archtype": self.type,
                  "archive":  self.volNameToDesc(self.archive),
@@ -682,7 +679,7 @@ class HyperArchive(pipermail.T):
              'meta': '',
              }
         # Avoid i18n side-effects
-        with i18n.using_language(mlist.preferred_language.code):
+        with _.using(mlist.preferred_language.code):
             if not self.archives:
                 d["noarchive_msg"] = _(
                     '<P>Currently, there are no archives. </P>')

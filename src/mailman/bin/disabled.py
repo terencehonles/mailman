@@ -26,7 +26,7 @@ from mailman import Pending
 from mailman import loginit
 from mailman.Bouncer import _BounceInfo
 from mailman.configuration import config
-from mailman.i18n import _
+from mailman.core.i18n import _
 from mailman.version import MAILMAN_VERSION
 
 

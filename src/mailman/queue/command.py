@@ -38,8 +38,8 @@ from email.Iterators import typed_subpart_iterator
 from zope.interface import implements
 
 from mailman.config import config
+from mailman.core.i18n import _
 from mailman.email.message import Message, UserNotification
-from mailman.i18n import _
 from mailman.interfaces.command import ContinueProcessing, IEmailResults
 from mailman.queue import Runner
 

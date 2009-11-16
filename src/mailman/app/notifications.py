@@ -31,13 +31,10 @@ from email.utils import formataddr
 from lazr.config import as_boolean
 
 from mailman import Utils
-from mailman import i18n
 from mailman.config import config
+from mailman.core.i18n import _
 from mailman.email.message import OwnerNotification, UserNotification
 from mailman.interfaces.member import DeliveryMode
-
-
-_ = i18n._
 
 
 
@@ -124,7 +121,7 @@ def send_admin_subscription_notice(mlist, address, full_name, language):
     :param language: the language of the address's realname
     :type language: string
     """
-    with i18n.using_language(mlist.preferred_language.code):
+    with _.using(mlist.preferred_language.code):
         subject = _('$mlist.real_name subscription notification')
     full_name = full_name.encode(language.charset, 'replace')
     text = Utils.maketext(

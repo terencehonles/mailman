@@ -33,12 +33,12 @@ from email.utils import formatdate, make_msgid
 from zope.component import getUtility
 from zope.interface import implements
 
-from mailman import i18n
 from mailman.Utils import maketext, oneline, wrap
 from mailman.app.moderator import hold_message
 from mailman.app.replybot import can_acknowledge
 from mailman.chains.base import TerminalChainBase
 from mailman.config import config
+from mailman.core.i18n import _
 from mailman.email.message import UserNotification
 from mailman.interfaces.autorespond import IAutoResponseSet, Response
 from mailman.interfaces.pending import IPendable, IPendings
@@ -47,7 +47,6 @@ from mailman.interfaces.usermanager import IUserManager
 
 log = logging.getLogger('mailman.vette')
 SEMISPACE = '; '
-_ = i18n._
 
 
 
@@ -104,7 +103,7 @@ def autorespond_to_sender(mlist, sender, lang=None):
              'owneremail': mlist.owner_address,
              },
             lang=lang)
-        with i18n.using_language(lang.code):
+        with _.using(lang.code):
             msg = Message.UserNotification(
                 sender, mlist.owner_address,
                 _('Last autoresponse notification for today'),
@@ -199,7 +198,7 @@ class HoldChain(TerminalChainBase):
         if mlist.admin_immed_notify:
             # Now let's temporarily set the language context to that which the
             # administrators are expecting.
-            with i18n.using_language(mlist.preferred_language.code):
+            with _.using(mlist.preferred_language.code):
                 language = mlist.preferred_language
                 charset = language.charset
                 # We need to regenerate or re-translate a few values in the

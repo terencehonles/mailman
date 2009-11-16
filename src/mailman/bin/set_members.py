@@ -22,19 +22,17 @@ from zope.component import getUtility
 
 from mailman import Message
 from mailman import Utils
-from mailman import i18n
 from mailman import passwords
 from mailman.app.membership import add_member
 from mailman.app.notifications import (
     send_admin_subscription_notice, send_welcome_message)
 from mailman.configuration import config
+from mailman.core.i18n import _
 from mailman.initialize import initialize
 from mailman.interfaces.members import DeliveryMode
 from mailman.interfaces.usermanager import IUserManager
 from mailman.version import MAILMAN_VERSION
 
-
-_ = i18n._
 
 DELIVERY_MODES = {
     'regular':  DeliveryMode.regular,
@@ -155,7 +153,7 @@ def main():
     delete_members = current_members - future_members
     change_members = current_members & future_members
     
-    with i18n.using_language(mlist.preferred_language):
+    with _.using(mlist.preferred_language):
         # Start by removing all the delete members.
         for address in delete_members:
             print _('deleting address: $address')

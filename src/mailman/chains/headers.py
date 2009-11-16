@@ -33,7 +33,7 @@ from zope.interface import implements
 
 from mailman.chains.base import Chain, Link
 from mailman.config import config
-from mailman.i18n import _
+from mailman.core.i18n import _
 from mailman.interfaces.chain import IChainIterator, LinkAction
 from mailman.interfaces.rules import IRule
 

@@ -95,6 +95,7 @@ case second `m'.  Any other spelling is incorrect.""",
         },
     install_requires = [
         'argparse',
+        'flufl.i18n',
         'lazr.config',
         'lazr.delegates',
         'lazr.restful',

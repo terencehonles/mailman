@@ -33,8 +33,8 @@ from email.MIMEText import MIMEText
 from mailman.Utils import wrap
 from mailman.config import config
 from mailman.core import errors
+from mailman.core.i18n import _
 from mailman.email.message import UserNotification
-from mailman.i18n import _
 
 
 

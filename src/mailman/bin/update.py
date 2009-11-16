@@ -37,7 +37,7 @@ from mailman.MemberAdaptor import BYBOUNCE, ENABLED
 from mailman.OldStyleMemberships import OldStyleMemberships
 from mailman.Queue.Switchboard import Switchboard
 from mailman.configuration import config
-from mailman.i18n import _
+from mailman.core.i18n import _
 from mailman.initialize import initialize
 from mailman.utilities.filesystem import makedirs
 

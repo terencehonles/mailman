@@ -34,8 +34,8 @@ from copy import copy
 from optparse import Option, OptionParser, OptionValueError
 
 from mailman.config import config
+from mailman.core.i18n import _
 from mailman.core.initialize import initialize
-from mailman.i18n import _
 from mailman.version import MAILMAN_VERSION
 
 

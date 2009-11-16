@@ -32,7 +32,7 @@ from mailman import Message
 from mailman import Utils
 from mailman import loginit
 from mailman.configuration import config
-from mailman.i18n import _
+from mailman.core.i18n import _
 from mailman.queue import Switchboard
 from mailman.version import MAILMAN_VERSION
 

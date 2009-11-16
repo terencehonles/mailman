@@ -24,14 +24,13 @@ from zope.component import getUtility
 
 from mailman import MailList
 from mailman import Utils
-from mailman import i18n
 from mailman.app.requests import handle_request
 from mailman.configuration import config
+from mailman.core.i18n import _
 from mailman.email.message import UserNotification
+from mailman.initialize import initialize
 from mailman.interfaces.requests import IRequests
 from mailman.version import MAILMAN_VERSION
-
-_ = i18n._
 
 # Work around known problems with some RedHat cron daemons
 import signal
@@ -153,9 +152,7 @@ def midnight(date=None):
 
 def main():
     opts, args, parser = parseargs()
-    config.load(opts.config)
-
-    i18n.set_language(config.DEFAULT_SERVER_LANGUAGE)
+    initialize(opts.config)
 
     for name in config.list_manager.names:
         # The list must be locked in order to open the requests database
@@ -175,13 +172,14 @@ def main():
                 # This is the only place we've changed the list's database
                 mlist.Save()
             if count:
-                i18n.set_language(mlist.preferred_language)
+                # Set the default language the the list's preferred language.
+                _.default = mlist.preferred_language
                 realname = mlist.real_name
                 discarded = auto_discard(mlist)
                 if discarded:
                     count = count - discarded
-                    text = _(
-                 'Notice: $discarded old request(s) automatically expired.\n\n')
+                    text = _('Notice: $discarded old request(s) '
+                             'automatically expired.\n\n')
                 else:
                     text = ''
                 if count:
@@ -189,11 +187,13 @@ def main():
                         'checkdbs.txt',
                         {'count'    : count,
                          'host_name': mlist.host_name,
-                         'adminDB'  : mlist.GetScriptURL('admindb', absolute=1),
+                         'adminDB'  : mlist.GetScriptURL('admindb',
+                                                         absolute=1),
                          'real_name': realname,
                          }, mlist=mlist)
                     text += '\n' + pending_requests(mlist)
-                    subject = _('$count $realname moderator request(s) waiting')
+                    subject = _('$count $realname moderator '
+                                'request(s) waiting')
                 else:
                     subject = _('$realname moderator request check result')
                 msg = UserNotification(mlist.GetOwnerEmail(),

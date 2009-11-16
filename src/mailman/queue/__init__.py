@@ -50,8 +50,8 @@ from lazr.config import as_boolean, as_timedelta
 from zope.component import getUtility
 from zope.interface import implements
 
-from mailman import i18n
 from mailman.config import config
+from mailman.core.i18n import _
 from mailman.email.message import Message
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.runner import IRunner
@@ -438,7 +438,7 @@ class Runner:
                         else mlist.preferred_language)
         else:
             language = mlist.preferred_language
-        with i18n.using_language(language.code):
+        with _.using(language.code):
             msgdata['lang'] = language.code
             keepqueued = self._dispose(mlist, msg, msgdata)
         if keepqueued:

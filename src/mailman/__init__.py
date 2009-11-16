@@ -38,3 +38,8 @@ try:
 except ImportError:
     import pkgutil
     __path__ = pkgutil.extend_path(__path__, __name__)
+
+
+# We have to initialize the i18n subsystem before anything else happens.
+from mailman.core.i18n import initialize
+initialize()

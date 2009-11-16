@@ -30,7 +30,7 @@ from mailman import MemberAdaptor
 from mailman import Utils
 from mailman import passwords
 from mailman.MailList import MailList
-from mailman.i18n import _
+from mailman.core.i18n import _
 from mailman.initialize import initialize
 from mailman.interfaces.domain import BadDomainSpecificationError
 from mailman.version import MAILMAN_VERSION
@@ -230,7 +230,7 @@ def create(all_listdata):
                               'pass_filename_extensions'):
                     value = value.splitlines()
                 if option == 'available_languages':
-                    mlist.set_languages(*value)
+                    mlist.os(*value)
                 else:
                     setattr(mlist, option, value)
             for member in list_roster:

@@ -28,7 +28,7 @@ __all__ = [
 import logging
 
 from mailman.chains.base import TerminalChainBase
-from mailman.i18n import _
+from mailman.core.i18n import _
 
 
 log = logging.getLogger('mailman.vette')

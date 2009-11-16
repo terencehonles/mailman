@@ -29,7 +29,7 @@ from lazr.restful.declarations import export_as_webservice_entry, exported
 from zope.interface import Interface
 from zope.schema import TextLine
 
-from mailman.i18n import _
+from mailman.core.i18n import _
 
 
 
