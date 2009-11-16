@@ -34,7 +34,7 @@ from zope.interface import implements
 
 from mailman.app.membership import add_member
 from mailman.config import config
-from mailman.i18n import _
+from mailman.core.i18n import _
 from mailman.interfaces.command import ICLISubCommand
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import DeliveryMode

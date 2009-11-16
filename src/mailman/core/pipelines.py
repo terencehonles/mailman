@@ -31,7 +31,7 @@ from zope.interface.verify import verifyObject
 
 from mailman.app.finder import find_components
 from mailman.config import config
-from mailman.i18n import _
+from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
 from mailman.interfaces.pipeline import IPipeline
 

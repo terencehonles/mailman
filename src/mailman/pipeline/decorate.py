@@ -33,8 +33,8 @@ from zope.component import getUtility
 from zope.interface import implements
 
 from mailman.config import config
+from mailman.core.i18n import _
 from mailman.email.message import Message
-from mailman.i18n import _
 from mailman.interfaces.handler import IHandler
 from mailman.interfaces.usermanager import IUserManager
 from mailman.utilities.string import expand

@@ -25,7 +25,7 @@ import optparse
 from stat import *
 
 from mailman.configuration import config
-from mailman.i18n import _
+from mailman.core.i18n import _
 from mailman.version import MAILMAN_VERSION
 
 

@@ -36,12 +36,12 @@ from email.utils import formataddr, formatdate, getaddresses, make_msgid
 from zope.component import getUtility
 
 from mailman import Utils
-from mailman import i18n
 from mailman.app.membership import add_member, delete_member
 from mailman.app.notifications import (
     send_admin_subscription_notice, send_welcome_message)
 from mailman.config import config
 from mailman.core import errors
+from mailman.core.i18n import _
 from mailman.email.message import UserNotification
 from mailman.interfaces.action import Action
 from mailman.interfaces.member import AlreadySubscribedError, DeliveryMode
@@ -49,7 +49,6 @@ from mailman.interfaces.messages import IMessageStore
 from mailman.interfaces.requests import IRequests, RequestType
 
 
-_ = i18n._
 NL = '\n'
 
 vlog = logging.getLogger('mailman.vette')
@@ -169,7 +168,7 @@ def handle_message(mlist, id, action,
             member = mlist.members.get_member(addresses[0])
             if member:
                 language = member.preferred_language
-        with i18n.using_language(language.code):
+        with _.using(language.code):
             fmsg = UserNotification(
                 addresses, mlist.bounces_address,
                 _('Forward of moderated message'),
@@ -343,7 +342,7 @@ def _refuse(mlist, request, recip, comment, origmsg=None, lang=None):
          'reason'   : comment,
          'adminaddr': mlist.owner_address,
         }, lang=lang.code, mlist=mlist)
-    with i18n.using_language(lang.code):
+    with _.using(lang.code):
         # add in original message, but not wrap/filled
         if origmsg:
             text = NL.join(

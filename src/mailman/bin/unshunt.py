@@ -24,7 +24,7 @@ __all__ = [
 import sys
 
 from mailman.config import config
-from mailman.i18n import _
+from mailman.core.i18n import _
 from mailman.options import Options
 
 

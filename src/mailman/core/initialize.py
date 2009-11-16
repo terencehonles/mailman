@@ -61,6 +61,7 @@ def initialize_1(config_path=None, propagate_logs=None):
     * The configuration system
     * Run-time directories
     * The logging subsystem
+    * Internationalization
 
     :param config_path: The path to the configuration file.
     :type config_path: string

@@ -32,8 +32,8 @@ from zope.interface import implements
 
 from mailman import Utils
 from mailman.config import config
+from mailman.core.i18n import _
 from mailman.email.message import Message, UserNotification
-from mailman.i18n import _
 from mailman.interfaces.handler import IHandler
 
 

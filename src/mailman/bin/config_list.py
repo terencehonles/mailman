@@ -22,12 +22,12 @@ import optparse
 
 from mailman import MailList
 from mailman import errors
-from mailman import i18n
 from mailman.Utils import wrap
 from mailman.configuration import config
+from mailman.core.i18n import _
+from mailman.initialize import initialize
 from mailman.version import MAILMAN_VERSION
 
-_ = i18n._
 
 NL = '\n'
 nonasciipat = re.compile(r'[\x80-\xff]')
@@ -101,7 +101,8 @@ def do_output(listname, outfile, parser):
             parser.error(_('No such list: $listname'))
         # Preamble for the config info. PEP 263 charset and capture time.
         charset = mlist.preferred_language.charset
-        i18n.set_language(mlist.preferred_language.code)
+        # Set the system's default language.
+        _.default = mlist.preferred_language.code
         if not charset:
             charset = 'us-ascii'
         when = time.ctime(time.time())
@@ -310,7 +311,7 @@ def do_input(listname, infile, checkonly, verbose, parser):
 
 def main():
     parser, opts, args = parseargs()
-    config.load(opts.config)
+    initialize(opts.config)
     listname = args[0]
 
     # Sanity check

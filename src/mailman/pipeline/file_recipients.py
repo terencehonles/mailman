@@ -30,7 +30,7 @@ import errno
 
 from zope.interface import implements
 
-from mailman.i18n import _
+from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
 
 

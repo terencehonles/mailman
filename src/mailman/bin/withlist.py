@@ -23,8 +23,8 @@ from zope.component import getUtility
 
 from mailman import interact
 from mailman.config import config
+from mailman.core.i18n import _
 from mailman.core.initialize import initialize
-from mailman.i18n import _
 from mailman.interfaces.listmanager import IListManager
 from mailman.version import MAILMAN_VERSION
 

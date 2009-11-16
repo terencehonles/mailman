@@ -21,8 +21,8 @@ from email.Utils import formataddr
 from zope.component import getUtility
 
 from mailman.core import errors
+from mailman.core.i18n import _
 from mailman.email.validate import is_valid
-from mailman.i18n import _
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.members import DeliveryStatus
 from mailman.interfaces.usermanager import IUserManager

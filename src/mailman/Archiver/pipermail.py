@@ -18,7 +18,7 @@ VERSION = __version__
 CACHESIZE = 100    # Number of slots in the cache
 
 from mailman.core import errors
-from mailman.i18n import _
+from mailman.core.i18n import _
 
 SPACE = ' '
 

@@ -27,7 +27,7 @@ __all__ = [
 
 from zope.interface import implements
 
-from mailman.i18n import _
+from mailman.core.i18n import _
 from mailman.interfaces.nntp import NewsModeration
 from mailman.interfaces.rules import IRule
 

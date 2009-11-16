@@ -31,8 +31,8 @@ import argparse
 from zope.interface.verify import verifyObject
 
 from mailman.app.finder import find_components
+from mailman.core.i18n import _
 from mailman.core.initialize import initialize
-from mailman.i18n import _
 from mailman.interfaces.command import ICLISubCommand
 from mailman.version import MAILMAN_VERSION_FULL
 

@@ -21,7 +21,7 @@ import optparse
 from mailman import errors
 from mailman import MailList
 from mailman.configuration import config
-from mailman.i18n import _
+from mailman.core.i18n import _
 from mailman.version import MAILMAN_VERSION
 
 # Work around known problems with some RedHat cron daemons

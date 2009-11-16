@@ -20,7 +20,7 @@ import sys
 import optparse
 
 from mailman import MailList
-from mailman.i18n import _
+from mailman.core.i18n import _
 from mailman.initialize import initialize
 from mailman.version import MAILMAN_VERSION
 

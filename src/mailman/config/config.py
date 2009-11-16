@@ -152,6 +152,9 @@ class Configuration:
         assert self._config.mailman.default_language in self.languages
         self.ensure_directories_exist()
         self.style_manager.populate()
+        # Set the default system language.
+        from mailman.core.i18n import _
+        _.default = self.mailman.default_language
 
     @property
     def logger_configs(self):

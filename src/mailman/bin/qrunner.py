@@ -30,8 +30,8 @@ import signal
 import logging
 
 from mailman.config import config
+from mailman.core.i18n import _
 from mailman.core.logging import reopen
-from mailman.i18n import _
 from mailman.options import Options
 from mailman.utilities.modules import find_name
 

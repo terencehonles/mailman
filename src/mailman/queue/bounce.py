@@ -28,14 +28,15 @@ from lazr.config import as_timedelta
 
 from mailman.Bouncers import BouncerAPI
 from mailman.config import config
+from mailman.core.i18n import _
 from mailman.email.utils import split_email
-from mailman.i18n import _
 from mailman.queue import Runner
+
 
 COMMASPACE = ', '
 
-log     = logging.getLogger('mailman.bounce')
-elog    = logging.getLogger('mailman.error')
+log = logging.getLogger('mailman.bounce')
+elog = logging.getLogger('mailman.error')
 
 
 

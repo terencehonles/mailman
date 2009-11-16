@@ -39,8 +39,8 @@ from locknix import lockfile
 from munepy import Enum
 
 from mailman.config import config
+from mailman.core.i18n import _
 from mailman.core.logging import reopen
-from mailman.i18n import _
 from mailman.options import Options
 
 

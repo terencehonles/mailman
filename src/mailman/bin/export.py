@@ -29,7 +29,7 @@ from mailman import errors
 from mailman import MemberAdaptor
 from mailman.MailList import MailList
 from mailman.configuration import config
-from mailman.i18n import _
+from mailman.core.i18n import _
 from mailman.initialize import initialize
 from mailman.version import MAILMAN_VERSION
 

@@ -50,6 +50,7 @@ import mailman.templates
 from mailman import passwords
 from mailman.config import config
 from mailman.core import errors
+from mailman.core.i18n import _
 from mailman.utilities.string import expand
 
 
@@ -398,10 +399,9 @@ def findtext(templatefile, raw_dict=None, raw=False, lang=None, mlist=None):
             # We never found the template.  BAD!
             raise IOError(errno.ENOENT, 'No template file found', templatefile)
         else:
-            from mailman.i18n import get_translation
             # XXX BROKEN HACK
             data = fp.read()[:-1]
-            template = get_translation().ugettext(data)
+            template = _(data)
             fp.close()
     else:
         template = fp.read()

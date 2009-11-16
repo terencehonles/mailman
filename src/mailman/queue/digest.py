@@ -38,11 +38,10 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import formatdate, getaddresses, make_msgid
 
-from mailman import i18n
 from mailman.Utils import maketext, oneline, wrap
 from mailman.config import config
 from mailman.core.errors import DiscardMessage
-from mailman.i18n import _
+from mailman.core.i18n import _
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus
 from mailman.pipeline.decorate import decorate
 from mailman.pipeline.scrubber import process as scrubber
@@ -299,8 +298,8 @@ class DigestRunner(Runner):
         volume = msgdata['volume']
         digest_number = msgdata['digest_number']
         with nested(Mailbox(msgdata['digest_path']),
-                    i18n.using_language(mlist.preferred_language.code)) as (
-            mailbox, language_code):
+                    _.using(mlist.preferred_language.code)) as (mailbox,
+                                                                language_code):
             # Create the digesters.
             mime_digest = MIMEDigester(mlist, volume, digest_number)
             rfc1153_digest = RFC1153Digester(mlist, volume, digest_number)

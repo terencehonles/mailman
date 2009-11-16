@@ -46,7 +46,7 @@ from zope.interface import implements
 from mailman.Utils import oneline, websafe
 from mailman.config import config
 from mailman.core.errors import DiscardMessage
-from mailman.i18n import _
+from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
 from mailman.utilities.filesystem import makedirs
 from mailman.utilities.modules import find_name

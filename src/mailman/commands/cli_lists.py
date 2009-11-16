@@ -35,8 +35,8 @@ from mailman.app.lifecycle import create_list, remove_list
 from mailman.config import config
 from mailman.core.constants import system_preferences
 from mailman.core.errors import InvalidEmailAddress
+from mailman.core.i18n import _
 from mailman.email.message import UserNotification
-from mailman.i18n import _, using_language
 from mailman.interfaces.command import ICLISubCommand
 from mailman.interfaces.domain import (
     BadDomainSpecificationError, IDomainManager)
@@ -210,7 +210,7 @@ class Create:
             # Set the I18N language to the list's preferred language so the
             # header will match the template language.  Stashing and restoring
             # the old translation context is just (healthy? :) paranoia.
-            with using_language(mlist.preferred_language.code):
+            with _.using(mlist.preferred_language.code):
                 msg = UserNotification(
                     args.owners, mlist.no_reply_address,
                     _('Your new mailing list: $fqdn_listname'),

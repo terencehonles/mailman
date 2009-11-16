@@ -19,7 +19,7 @@ import pprint
 import cPickle
 
 from mailman.config import config
-from mailman.i18n import _
+from mailman.core.i18n import _
 from mailman.interact import interact
 from mailman.options import Options
 

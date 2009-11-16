@@ -32,9 +32,9 @@ from zope.component import getUtility
 from zope.interface import implements
 
 from mailman.config import config
+from mailman.core.i18n import _
 from mailman.email.message import UserNotification
 from mailman.email.validate import validate
-from mailman.i18n import _
 from mailman.interfaces.domain import IDomain
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import MemberRole

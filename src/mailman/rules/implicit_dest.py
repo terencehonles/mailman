@@ -29,7 +29,7 @@ import re
 from email.utils import getaddresses
 from zope.interface import implements
 
-from mailman.i18n import _
+from mailman.core.i18n import _
 from mailman.interfaces.mailinglist import IAcceptableAliasSet
 from mailman.interfaces.rules import IRule
 

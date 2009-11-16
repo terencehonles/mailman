@@ -25,14 +25,12 @@ import optparse
 
 from locknix.lockfile import Lock
 
-from mailman import i18n
 from mailman.Archiver.HyperArch import HyperArchive
 from mailman.Defaults import hours
 from mailman.configuration import config
+from mailman.core.i18n import _
 from mailman.initialize import initialize
 from mailman.version import MAILMAN_VERSION
-
-_ = i18n._
 
 
 
@@ -93,8 +91,6 @@ def main():
     parser, opts, args = parseargs()
     initialize(opts.config)
 
-    i18n.set_language(config.DEFAULT_SERVER_LANGUAGE)
-
     listname = args[0].lower().strip()
     if len(args) < 2:
         mbox = None
@@ -108,7 +104,8 @@ def main():
     if mbox is None:
         mbox = mlist.ArchiveFileName()
 
-    i18n.set_language(mlist.preferred_language)
+    # Set the default language to the list's preferred language.
+    _.default = mlist.preferred_language
     # Lay claim to the archive's lock file.  This is so no other post can
     # mess up the archive while we're processing it.  Try to pick a
     # suitably long period of time for the lock lifetime even though we
