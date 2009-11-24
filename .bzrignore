@@ -17,3 +17,5 @@ parts
 ./bin
 eggs
 diff.txt
+distribute-*.egg
+distribute-*.tar.gz

@@ -15,8 +15,8 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-import ez_setup
-ez_setup.use_setuptools()
+from distribute_setup import use_setuptools
+use_setuptools()
 
 import os
 import re
@@ -106,9 +106,6 @@ case second `m'.  Any other spelling is incorrect.""",
         'zope.component',
         'zope.interface',
         'zope.schema',
-        ],
-    setup_requires = [
-        'setuptools_bzr',
         ],
     extras_require=dict(
         docs=['Sphinx', 'z3c.recipe.sphinxdoc'],

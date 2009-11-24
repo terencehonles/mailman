@@ -1,0 +1,3 @@
+include *.py *.rc
+global-include *.txt *.po
+exclude MANIFEST.in buildout.cfg bootstrap.py .bzrignore
