@@ -404,3 +404,5 @@ Or there could be some other problem causing an SMTP response failure.
     cperson@example.org 500 Error: SMTPResponseException
 
 XXX Untested: socket.error, IOError, smtplib.SMTPException.
+
+.. _verp.txt: verp.html

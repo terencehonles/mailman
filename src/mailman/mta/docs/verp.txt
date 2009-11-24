@@ -6,7 +6,7 @@ Variable Envelope Return Path (VERP_) delivery is an alternative to bulk_
 delivery, where an individual message is crafted uniquely for each recipient.
 
 .. _VERP: http://en.wikipedia.org/wiki/Variable_envelope_return_path
-.. _bulk: bulk.txt
+.. _bulk: bulk.html
 
 The cost of enabling VERP is that Mailman must send to the upstream MTA, one
 message per recipient.  Under bulk delivery, an exact copy of one message can

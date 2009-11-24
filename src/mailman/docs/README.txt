@@ -107,3 +107,4 @@ Table of Contents
     ../rest/docs/*
     ../rules/docs/*
     ../archiving/docs/*
+    ../mta/docs/*
