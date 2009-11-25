@@ -60,13 +60,12 @@ class Inject:
             help=_('Show a list of all available queue names and exit.'))
         command_parser.add_argument(
             '-f', '--filename',
-            type='string', help=_("""
+            type=unicode, help=_("""
             Name of file containing the message to inject.  If not given, or
-            '-' (without the quotes) standard input is used.
-            """))
+            '-' (without the quotes) standard input is used."""))
         # Required positional argument.
         command_parser.add_argument(
-            'listname', metavar='LISTNAME', nargs='?',
+            'listname', metavar='LISTNAME', nargs=1,
             help=_("""\
             The 'fully qualified list name', i.e. the posting address of the
             mailing list to inject the message into."""))
@@ -97,7 +96,11 @@ class Inject:
             self.parser.error(_('No such queue: $queue'))
             return
         if args.filename in (None, '-'):
-            message_text = sys.stdin.read()
+            try:
+                message_text = sys.stdin.read()
+            except KeyboardInterrupt:
+                print 'Interrupted'
+                sys.exit(1)
         else:
             with open(args.filename) as fp:
                 message_text = fp.read()

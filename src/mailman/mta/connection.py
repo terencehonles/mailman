@@ -28,6 +28,7 @@ __all__ = [
 import logging
 import smtplib
 
+from lazr.config import as_boolean
 from mailman.config import config
 
 
@@ -66,6 +67,10 @@ class Connection:
 
     def sendmail(self, envsender, recips, msgtext):
         """Mimic `smtplib.SMTP.sendmail`."""
+        if as_boolean(config.mailman.devmode):
+            # Force the recipients to the specified address, but still deliver
+            # to the same number of recipients.
+            recips = [config.mta.devmode_recipient] * len(recips)
         if self._connection is None:
             self._connect()
         try:

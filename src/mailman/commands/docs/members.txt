@@ -57,3 +57,40 @@ taken from standard input.
     >>> sorted(address.address for address in mlist.members.addresses)
     [u'aperson@example.com', u'bperson@example.com', u'cperson@example.com',
      u'dperson@example.com', u'eperson@example.com', u'fperson@example.com']
+
+Blank lines and lines that begin with '#' are ignored.
+
+    >>> with open(path, 'w') as fp:
+    ...     for address in ('gperson@example.com',
+    ...                     '# hperson@example.com',
+    ...                     '   ',
+    ...                     '',
+    ...                     'iperson@example.com',
+    ...                     ):
+    ...         print >> fp, address
+
+    >>> args.filename = path
+    >>> command.process(args)
+    >>> sorted(address.address for address in mlist.members.addresses)
+    [u'aperson@example.com', u'bperson@example.com', u'cperson@example.com',
+     u'dperson@example.com', u'eperson@example.com', u'fperson@example.com',
+     u'gperson@example.com', u'iperson@example.com']
+
+Addresses which are already subscribed are ignored, although a warning is
+printed.
+
+    >>> with open(path, 'w') as fp:
+    ...     for address in ('gperson@example.com',
+    ...                     'aperson@example.com',
+    ...                     'jperson@example.com',
+    ...                     ):
+    ...         print >> fp, address
+
+    >>> command.process(args)
+    Already subscribed (skipping): gperson@example.com
+    Already subscribed (skipping): aperson@example.com
+
+    >>> sorted(address.address for address in mlist.members.addresses)
+    [u'aperson@example.com', u'bperson@example.com', u'cperson@example.com',
+     u'dperson@example.com', u'eperson@example.com', u'fperson@example.com',
+     u'gperson@example.com', u'iperson@example.com', u'jperson@example.com']

@@ -155,3 +155,44 @@ the server.
 
     >>> smtpd.get_connection_count()
     1
+
+
+Development mode
+================
+
+By putting Mailman into development mode, you can force the recipients to a
+given hard-coded address.  This allows you to test Mailman without worrying
+about accidental deliveries to unintended recipients.
+
+    >>> config.push('devmode', """
+    ... [mailman]
+    ... devmode: true
+    ... [mta]
+    ... devmode_recipient: zperson@example.com
+    ... """)
+
+    >>> smtpd.clear()
+    >>> connection.sendmail(
+    ...     'anne@example.com',
+    ...     ['bart@example.com', 'cate@example.com'], """\
+    ... From: anne@example.com
+    ... To: bart@example.com
+    ... Subject: aardvarks
+    ...
+    ... """)
+    {}
+
+    >>> messages = list(smtpd.messages)
+    >>> len(messages)
+    1
+    >>> print messages[0].as_string()
+    From: anne@example.com
+    To: bart@example.com
+    Subject: aardvarks
+    X-Peer: ...
+    X-MailFrom: anne@example.com
+    X-RcptTo: zperson@example.com, zperson@example.com
+    <BLANKLINE>
+    <BLANKLINE>
+
+    >>> config.pop('devmode')

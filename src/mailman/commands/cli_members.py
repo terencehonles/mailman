@@ -37,7 +37,7 @@ from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.command import ICLISubCommand
 from mailman.interfaces.listmanager import IListManager
-from mailman.interfaces.member import DeliveryMode
+from mailman.interfaces.member import AlreadySubscribedError, DeliveryMode
 
 
 
@@ -53,8 +53,10 @@ class Members:
         command_parser.add_argument(
             '-a', '--add',
             dest='filename',
-            help=_('Add all member addresses in FILENAME.  FILENAME can be '
-                   "'-' to indicate standard input."))
+            help=_("""\
+            Add all member addresses in FILENAME.  FILENAME can be '-' to
+            indicate standard input.  Blank lines and lines That start with a
+            '#' are ignored."""))
         # Required positional argument.
         command_parser.add_argument(
             'listname', metavar='LISTNAME', nargs=1,
@@ -78,14 +80,23 @@ class Members:
             fp = codecs.open(args.filename, 'r', 'utf-8')
         try:
             for line in fp:
+                # Ignore blank lines and lines that start with a '#'.
+                if line.startswith('#') or len(line.strip()) == 0:
+                    continue
                 real_name, email = parseaddr(line)
                 # If not given in the input data, parseaddr() will return the
                 # empty string, as opposed to the empty unicode.  We need a
                 # unicode real name here.
                 if real_name == '':
                     real_name = u''
-                add_member(mlist, email, real_name, None,
-                           DeliveryMode.regular, mlist.preferred_language.code)
+                try:
+                    add_member(mlist, email, real_name, None,
+                               DeliveryMode.regular,
+                               mlist.preferred_language.code)
+                except AlreadySubscribedError:
+                    # It's okay if the address is already subscribed, just
+                    # print a warning and continue.
+                    print 'Already subscribed (skipping):', email, real_name
         finally:
             if fp is not sys.stdin:
                 fp.close()
