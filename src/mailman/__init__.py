@@ -24,6 +24,10 @@ __all__ = [
     ]
 
 
+import os
+import sys
+
+
 # lazr.restful uses the sha module, but that's deprecated in Python 2.6 in
 # favor of the hashlib module.
 import warnings
@@ -40,6 +44,12 @@ except ImportError:
     __path__ = pkgutil.extend_path(__path__, __name__)
 
 
-# We have to initialize the i18n subsystem before anything else happens.
-from mailman.core.i18n import initialize
+# We have to initialize the i18n subsystem before anything else happens,
+# however, we'll initialize it differently for tests.  We have to do it this
+# early so that module contents is set up before anything that needs it is
+# imported.
+if sys.argv[0].split(os.sep)[-1] == 'test':
+    from mailman.testing.i18n import initialize
+else:
+    from mailman.core.i18n import initialize
 initialize()

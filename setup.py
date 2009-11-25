@@ -49,18 +49,18 @@ with open('src/mailman/version.py') as fp:
 
 # Create the .mo files from the .po files.  There may be errors and warnings
 # here and that could cause the digester.txt test to fail.
-start_dir = os.path.dirname('src/mailman/messages')
-for dirpath, dirnames, filenames in os.walk(start_dir):
-    for filename in filenames:
-        po_file = os.path.join(dirpath, filename)
-        basename, ext = os.path.splitext(po_file)
-        if ext <> '.po':
-            continue
-        mo_file = basename + '.mo'
-        if (not os.path.exists(mo_file) or
-            os.path.getmtime(po_file) > os.path.getmtime(mo_file)):
-            # The mo file doesn't exist or is older than the po file.
-            os.system('msgfmt -o %s %s' % (mo_file, po_file))
+## start_dir = os.path.dirname('src/mailman/messages')
+## for dirpath, dirnames, filenames in os.walk(start_dir):
+##     for filename in filenames:
+##         po_file = os.path.join(dirpath, filename)
+##         basename, ext = os.path.splitext(po_file)
+##         if ext <> '.po':
+##             continue
+##         mo_file = basename + '.mo'
+##         if (not os.path.exists(mo_file) or
+##             os.path.getmtime(po_file) > os.path.getmtime(mo_file)):
+##             # The mo file doesn't exist or is older than the po file.
+##             os.system('msgfmt -o %s %s' % (mo_file, po_file))
 
 
 

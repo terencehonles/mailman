@@ -38,11 +38,18 @@ _ = None
 
 
 
-def initialize():
-    """Initialize the i18n subsystem."""
+def initialize(application=None):
+    """Initialize the i18n subsystem.
+
+    :param application: An optional `flufl.i18n.Application` instance to use
+        as the translation context.  This primarily exists to support the
+        testing environment.
+    :type application: `flufl.i18n.Application`
+    """
     global _
-    strategy = PackageStrategy('mailman', mailman.messages)
-    application = registry.register(strategy)
+    if application is None:
+        strategy = PackageStrategy('mailman', mailman.messages)
+        application = registry.register(strategy)
     _ = application._
 
 
