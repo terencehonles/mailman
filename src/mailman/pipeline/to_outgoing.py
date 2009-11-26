@@ -50,29 +50,5 @@ class ToOutgoing:
 
     def process(self, mlist, msg, msgdata):
         """See `IHandler`."""
-        interval = int(config.mta.verp_delivery_interval)
-        # Should we VERP this message?  If personalization is enabled for this
-        # list and VERP_PERSONALIZED_DELIVERIES is true, then yes we VERP it.
-        # Also, if personalization is /not/ enabled, but
-        # VERP_DELIVERY_INTERVAL is set (and we've hit this interval), then
-        # again, this message should be VERPed. Otherwise, no.
-        #
-        # Note that the verp flag may already be set, e.g. by mailpasswds
-        # using VERP_PASSWORD_REMINDERS.  Preserve any existing verp flag.
-        if 'verp' in  msgdata:
-            pass
-        elif mlist.personalize <> Personalization.none:
-            if as_boolean(config.mta.verp_personalized_deliveries):
-                msgdata['verp'] = True
-        elif interval == 0:
-            # Never VERP
-            pass
-        elif interval == 1:
-            # VERP every time
-            msgdata['verp'] = True
-        else:
-            # VERP every `interval' number of times
-            msgdata['verp'] = (int(mlist.post_id) % interval == 0)
-        # And now drop the message in qfiles/out
         config.switchboards['out'].enqueue(
             msg, msgdata, listname=mlist.fqdn_listname)

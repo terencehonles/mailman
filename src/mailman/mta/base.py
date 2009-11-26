@@ -159,6 +159,7 @@ class IndividualDelivery(BaseDelivery):
         refused = {}
         recipients = msgdata.get('recipients', set())
         for recipient in recipients:
+            log.debug('IndividualDelivery to: %s', recipient)
             # Make a copy of the original messages and operator on it, since
             # we're going to munge it repeatedly for each recipient.
             message_copy = copy.deepcopy(msg)

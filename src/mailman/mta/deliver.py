@@ -28,6 +28,8 @@ __all__ = [
 import time
 import logging
 
+from lazr.config import as_boolean
+
 from mailman.config import config
 from mailman.interfaces.mailinglist import Personalization
 from mailman.interfaces.mta import SomeRecipientsFailed
@@ -73,6 +75,9 @@ def deliver(mlist, msg, msgdata):
     if not recipients:
         # Could be None, could be an empty sequence.
         return
+    # Calculate whether we should VERP this message or not.  The results of
+    # this set the 'verp' key in the message metadata.
+    _calculate_verp(mlist, msg, msgdata)
     # Which delivery agent should we use?  Several situations can cause us to
     # use individual delivery.  If not specified, use bulk delivery.  See the
     # to-outgoing handler for when the 'verp' key is set in the metadata.
@@ -82,6 +87,7 @@ def deliver(mlist, msg, msgdata):
         agent = Deliver()
     else:
         agent = BulkDelivery(int(config.mta.max_recipients))
+    log.debug('Using agent: %s', agent)
     # Keep track of the original recipients and the original sender for
     # logging purposes.
     original_recipients = msgdata['recipients']
@@ -152,3 +158,33 @@ def deliver(mlist, msg, msgdata):
     # Return the results
     if temporary_failures or permanent_failures:
         raise SomeRecipientsFailed(temporary_failures, permanent_failures)
+
+
+
+def _calculate_verp(mlist, msg, msgdata):
+    """Calculate whether this message should be VERP'd or not.
+
+    This function works by side-effect.  If the message should be VERP'd, then
+    the 'verp' key in msgdata is set to True, otherwise it is set to False.
+    """
+    if 'verp' in msgdata:
+        # Honor existing settings.
+        return
+    # If personalization is enabled for this list and we've configured Mailman
+    # to always VERP personalized deliveries, then yes we VERP it.  Also, if
+    # personalization is /not/ enabled, but verp_delivery_interval is set (and
+    # we've hit this interval), then again, this message should be
+    # VERP'd. Otherwise, no.
+    interval = int(config.mta.verp_delivery_interval)
+    if mlist.personalize <> Personalization.none:
+        if as_boolean(config.mta.verp_personalized_deliveries):
+            msgdata['verp'] = True
+    elif interval == 0:
+        # Never VERP.
+        msgdata['verp'] = False
+    elif interval == 1:
+        # VERP every time.
+        msgdata['verp'] = True
+    else:
+        # VERP every 'interval' number of times.
+        msgdata['verp'] = (int(mlist.post_id) % interval == 0)

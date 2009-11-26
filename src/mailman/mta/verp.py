@@ -58,6 +58,7 @@ class VERPMixin:
         """
         sender = super(VERPMixin, self)._get_sender(mlist, msg, msgdata)
         if msgdata.get('verp', False):
+            log.debug('VERPing %s', msg.get('message-id'))
             recipient = msgdata['recipient']
             sender_mailbox, sender_domain = split_email(sender)
             # Encode the recipient's address for VERP.
