@@ -25,6 +25,7 @@ __all__ = [
     ]
 
 
+import re
 import sys
 
 from zope.component import getUtility
@@ -82,7 +83,12 @@ class Withlist:
             'listname', metavar='LISTNAME', nargs='?',
             help=_("""\
             The 'fully qualified list name', i.e. the posting address of the
-            mailing list to inject the message into."""))
+            mailing list to inject the message into.  This can be a Python
+            regular expression, in which case all mailing lists whose posting
+            address matches will be processed.  To use a regular expression,
+            LISTNAME must start with a ^ (and the matching is done with
+            re.match().  LISTNAME cannot be a regular expression unless --run
+            is given."""))
 
     def process(self, args):
         """See `ICLISubCommand`."""
@@ -97,22 +103,44 @@ class Withlist:
             interactive = (args.run is None)
         else:
             interactive = args.interactive
-        # If a listname was given, open it.
-        if args.listname is not None:
-            fqdn_listname = args.listname
-            mlist = getUtility(IListManager).get(fqdn_listname)
-            if mlist is None:
-                self.parser.error(_('No such list: $fqdn_listname'))
-                return
-            m = mlist
-            banner = _("The variable 'm' is the $fqdn_listname mailing list")
-        # Handle --run
+        # List name cannot be a regular expression if --run is not given.
+        if args.listname and args.listname.startswith('^') and not args.run:
+            self.parser.error(_('Regular expression requires --run'))
+            return
+        # Handle --run.
+        list_manager = getUtility(IListManager)
         if args.run:
             # When the module and the callable have the same name, a shorthand
             # without the dot is allowed.
             dotted_name = (args.run if '.' in args.run
                            else '{0}.{0}'.format(args.run))
-            r = call_name(dotted_name, m)
+            if args.listname is None:
+                self.parser.error(_('--run requires a mailing list name'))
+                return
+            elif args.listname.startswith('^'):
+                r = {}
+                cre = re.compile(args.listname, re.IGNORECASE)
+                for mailing_list in list_manager.mailing_lists:
+                    if cre.match(mailing_list.fqdn_listname):
+                        results = call_name(dotted_name, mailing_list)
+                        r[mailing_list.fqdn_listname] = results
+            else:
+                fqdn_listname = args.listname
+                m = list_manager.get(fqdn_listname)
+                if m is None:
+                    self.parser.error(_('No such list: $fqdn_listname'))
+                    return
+                r = call_name(dotted_name, m)
+        else:
+            # Not --run.
+            if args.listname is not None:
+                fqdn_listname = args.listname
+                m = list_manager.get(fqdn_listname)
+                if m is None:
+                    self.parser.error(_('No such list: $fqdn_listname'))
+                    return
+                banner = _(
+                    "The variable 'm' is the $fqdn_listname mailing list")
         # All other processing is finished; maybe go into interactive mode.
         if interactive:
             overrides = dict(
