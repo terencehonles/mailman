@@ -3,22 +3,10 @@ The outgoing handler
 ====================
 
 Mailman's outgoing queue is used as the wrapper around SMTP delivery to the
-upstream mail server.  The ToOutgoing handler does little more than drop the
-message into the outgoing queue, after calculating whether the message should
-be VERP'd or not.  VERP means Variable Envelope Return Path; we're using that
-term somewhat incorrectly, but within the spirit of the standard, which
-basically describes how to encode the recipient's address in the originator
-headers for unambigous bounce processing.
+upstream mail server.  The to-outgoing handler does little more than drop the
+message into the outgoing queue.
 
-    >>> mlist = create_list('_xtest@example.com')
-
-    >>> switchboard = config.switchboards['out']
-    >>> def queue_size():
-    ...     size = len(switchboard.files)
-    ...     for filebase in switchboard.files:
-    ...         msg, msgdata = switchboard.dequeue(filebase)
-    ...         switchboard.finish(filebase)
-    ...     return size
+    >>> mlist = create_list('test@example.com')
 
 Craft a message destined for the outgoing queue.  Include some random metadata
 as if this message had passed through some other handlers.
@@ -29,147 +17,25 @@ as if this message had passed through some other handlers.
     ... Something of great import.
     ... """)
 
-When certain conditions are met, the message will be VERP'd.  For example, if
-the message metadata already has a VERP key, this message will be VERP'd.
-
     >>> msgdata = dict(foo=1, bar=2, verp=True)
-
     >>> handler = config.handlers['to-outgoing']
     >>> handler.process(mlist, msg, msgdata)
-    >>> print msg.as_string()
-    Subject: Here is a message
-    <BLANKLINE>
-    Something of great import.
-    >>> msgdata['verp']
-    True
 
 While the queued message will not be changed, the queued metadata will have an
 additional key set: the mailing list name.
 
-    >>> filebase = switchboard.files[0]
-    >>> qmsg, qmsgdata = switchboard.dequeue(filebase)
-    >>> switchboard.finish(filebase)
-    >>> print qmsg.as_string()
+    >>> from mailman.testing.helpers import get_queue_messages
+    >>> messages = get_queue_messages('out')
+    >>> len(messages)
+    1
+    >>> print messages[0].msg.as_string()
     Subject: Here is a message
     <BLANKLINE>
     Something of great import.
-    >>> dump_msgdata(qmsgdata)
+    >>> dump_msgdata(messages[0].msgdata)
     _parsemsg: False
     bar      : 2
     foo      : 1
-    listname : _xtest@example.com
+    listname : test@example.com
     verp     : True
     version  : 3
-    >>> queue_size()
-    0
-
-If the list is set to personalize deliveries, and the global configuration
-option to VERP personalized deliveries is set, then the message will be
-VERP'd.
-
-    >>> config.push('test config', """
-    ... [mta]
-    ... verp_personalized_deliveries: yes
-    ... """)
-
-    >>> from mailman.interfaces.mailinglist import Personalization
-    >>> mlist.personalize = Personalization.individual
-    >>> msgdata = dict(foo=1, bar=2)
-    >>> handler.process(mlist, msg, msgdata)
-    >>> msgdata['verp']
-    True
-    >>> queue_size()
-    1
-
-However, if the global configuration variable prohibits VERP'ing, even
-personalized lists will not VERP.
-
-    >>> config.pop('test config')
-    >>> config.push('test config', """
-    ... [mta]
-    ... verp_personalized_deliveries: no
-    ... """)
-
-    >>> msgdata = dict(foo=1, bar=2)
-    >>> handler.process(mlist, msg, msgdata)
-    >>> print msgdata.get('verp')
-    None
-    >>> queue_size()
-    1
-
-If the list is not personalized, then the message may still be VERP'd based on
-the global configuration variable VERP_DELIVERY_INTERVAL.  This variable tells
-Mailman how often to VERP even non-personalized mailing lists.  It can be set
-to zero, which means non-personalized messages will never be VERP'd.
-
-    >>> config.pop('test config')
-    >>> config.push('test config', """
-    ... [mta]
-    ... verp_delivery_interval: 0
-    ... """)
-
-    >>> mlist.personalize = Personalization.none
-    >>> msgdata = dict(foo=1, bar=2)
-    >>> handler.process(mlist, msg, msgdata)
-    >>> print msgdata.get('verp')
-    None
-    >>> queue_size()
-    1
-
-If the interval is set to 1, then every message will be VERP'd.
-
-    >>> config.pop('test config')
-    >>> config.push('test config', """
-    ... [mta]
-    ... verp_delivery_interval: 1
-    ... """)
-
-    >>> for i in range(10):
-    ...     msgdata = dict(foo=1, bar=2)
-    ...     handler.process(mlist, msg, msgdata)
-    ...     print i, msgdata['verp']
-    0 True
-    1 True
-    2 True
-    3 True
-    4 True
-    5 True
-    6 True
-    7 True
-    8 True
-    9 True
-    >>> queue_size()
-    10
-
-If the interval is set to some other number, then one out of that many posts
-will be VERP'd.
-
-    >>> config.pop('test config')
-    >>> config.push('test config', """
-    ... [mta]
-    ... verp_delivery_interval: 3
-    ... """)
-
-    >>> for i in range(10):
-    ...     mlist.post_id = i
-    ...     msgdata = dict(foo=1, bar=2)
-    ...     handler.process(mlist, msg, msgdata)
-    ...     print i, msgdata.get('verp', False)
-    0 True
-    1 False
-    2 False
-    3 True
-    4 False
-    5 False
-    6 True
-    7 False
-    8 False
-    9 True
-    >>> queue_size()
-    10
-
-
-Clean up
-========
-
-    >>> config.pop('test config')

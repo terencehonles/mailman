@@ -23,9 +23,10 @@ import socket
 import logging
 
 from datetime import datetime
-from lazr.config import as_timedelta
+from lazr.config import as_boolean, as_timedelta
 
 from mailman.config import config
+from mailman.interfaces.mailinglist import Personalization
 from mailman.interfaces.mta import SomeRecipientsFailed
 from mailman.queue import Runner
 from mailman.queue.bounce import BounceMixin
@@ -59,14 +60,31 @@ class OutgoingRunner(Runner, BounceMixin):
         deliver_after = msgdata.get('deliver_after', datetime.fromtimestamp(0))
         if datetime.now() < deliver_after:
             return True
-        # Make sure we have the most up-to-date state
+        # Calculate whether we should VERP this message or not.  The results of
+        # this set the 'verp' key in the message metadata.
+        interval = int(config.mta.verp_delivery_interval)
+        if 'verp' in msgdata:
+            # Honor existing settings.
+            pass
+        # If personalization is enabled for this list and we've configured
+        # Mailman to always VERP personalized deliveries, then yes we VERP it.
+        # Also, if personalization is /not/ enabled, but
+        # verp_delivery_interval is set (and we've hit this interval), then
+        # again, this message should be VERP'd. Otherwise, no.
+        elif mlist.personalize <> Personalization.none:
+            if as_boolean(config.mta.verp_personalized_deliveries):
+                msgdata['verp'] = True
+        elif interval == 0:
+            # Never VERP.
+            msgdata['verp'] = False
+        elif interval == 1:
+            # VERP every time.
+            msgdata['verp'] = True
+        else:
+            # VERP every 'interval' number of times.
+            msgdata['verp'] = (mlist.post_id % interval == 0)
         try:
-            pid = os.getpid()
             self._func(mlist, msg, msgdata)
-            # Failsafe -- a child may have leaked through.
-            if pid <> os.getpid():
-                log.error('child process leaked thru: %s', pid)
-                os._exit(1)
             self._logged = False
         except socket.error:
             # There was a problem connecting to the SMTP server.  Log this
