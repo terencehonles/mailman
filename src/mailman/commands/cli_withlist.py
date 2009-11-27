@@ -97,7 +97,7 @@ class Withlist:
         # Detailed help wanted?
         if args.details:
             self._details()
-            sys.exit(0)
+            return
         # Interactive is the default unless --run was given.
         if args.interactive is None:
             interactive = (args.run is None)
