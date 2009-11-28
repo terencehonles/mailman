@@ -46,6 +46,6 @@ class NullMTA:
         """See `IMailTransportAgentAliases`."""
         pass
 
-    def regenerate(self):
+    def regenerate(self, output=None):
         """See `IMailTransportAgentAliases`."""
         pass

@@ -50,8 +50,13 @@ class IMailTransportAgentAliases(Interface):
     def delete(mlist):
         """Tell the MTA that the mailing list was deleted."""
 
-    def regenerate():
-        """Regenerate the full aliases file."""
+    def regenerate(output=None):
+        """Regenerate the full aliases file.
+
+        :param output: The file name or file object to send the output to.  If
+            not given or None, and MTA specific file is used.
+        :type output: string, file object, None
+        """
 
 
 
