@@ -59,20 +59,23 @@ class Lists:
             help=_(
                 'List only those mailing lists that are publicly advertised'))
         command_parser.add_argument(
-            '-b', '--bare',
+            '-n', '--names',
             default=False, action='store_true',
-            help=_('Show only the list name, with no description'))
+            help=_('Show also the list names'))
         command_parser.add_argument(
-            '-d', '--domain',
+            '-d', '--descriptions',
+            default=False, action='store_true',
+            help=_('Show also the list descriptions'))
+        command_parser.add_argument(
+            '-q', '--quiet',
+            default=False, action='store_true',
+            help=_('Less verbosity'))
+        command_parser.add_argument(
+            '--domain',
             action='append', help=_("""\
             List only those mailing lists hosted on the given domain, which
             must be the email host name.  Multiple -d options may be given.
             """))
-        command_parser.add_argument(
-            '-f', '--full',
-            default=False, action='store_true',
-            help=_(
-                'Show the full mailing list name (i.e. the posting address'))
 
     def process(self, args):
         """See `ICLISubCommand`."""
@@ -89,28 +92,31 @@ class Lists:
             mailing_lists.append(mlist)
         # Maybe no mailing lists matched.
         if len(mailing_lists) == 0:
-            if not args.bare:
+            if not args.quiet:
                 print _('No matching mailing lists found')
             return
-        if not args.bare:
-            count = len(mailing_lists)
+        count = len(mailing_lists)
+        if not args.quiet:
             print _('$count matching mailing lists found:')
-        # Calculate the longest mailing list name.
-        longest = len(
-            max(mlist.fqdn_listname for mlist in mailing_lists)
-            if args.full else
-            max(mlist.real_name for mlist in mailing_lists))
-        # Print it out.
+        # Calculate the longest identifier.
+        longest = 0
+        output = []
         for mlist in mailing_lists:
-            name = (mlist.fqdn_listname if args.full else mlist.real_name)
-            if args.bare:
-                print name
+            if args.names:
+                identifier = '{0} [{1}]'.format(
+                    mlist.fqdn_listname, mlist.real_name)
             else:
-                description = (mlist.description
-                               if mlist.description is not None
-                               else _('[no description available]'))
-                print '{0:{2}} - {1:{3}}'.format(
-                    name, description, longest, 77 - longest)
+                identifier = mlist.fqdn_listname
+            longest = max(len(identifier), longest)
+            output.append((identifier, mlist.description))
+        # Print it out.
+        if args.descriptions:
+            format_string = '{0:{2}} - {1:{3}}'
+        else:
+            format_string = '{0:{2}}'
+        for identifier, description in output:
+            print format_string.format(
+                identifier, description, longest, 70 - longest)
 
 
 

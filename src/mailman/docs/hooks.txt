@@ -50,7 +50,7 @@ script that will produce no output to force the hooks to run.
     >>> import subprocess
     >>> def call():
     ...     proc = subprocess.Popen(
-    ...         'bin/mailman lists -d ignore -b'.split(),
+    ...         'bin/mailman lists --domain ignore -q'.split(),
     ...         cwd='../..',  # testrunner runs from ./parts/test
     ...         env=dict(MAILMAN_CONFIG_FILE=config_path,
     ...                  PYTHONPATH=config_directory),

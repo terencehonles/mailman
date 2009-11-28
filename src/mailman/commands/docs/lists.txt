@@ -7,9 +7,10 @@ line.  When there are no mailing lists, a helpful message is displayed.
 
     >>> class FakeArgs:
     ...     advertised = False
-    ...     bare = False
+    ...     names = False
+    ...     descriptions = False
+    ...     quiet = False
     ...     domains = None
-    ...     full = False
 
     >>> from mailman.commands.cli_lists import Lists
     >>> command = Lists()
@@ -33,22 +34,44 @@ their fully qualified list names, with a description.
 
     >>> mlist_3 = create_list('list-one@example.net')
     >>> mlist_3.description = 'List One in Example.Net'
-    >>> transaction.commit()
 
     >>> command.process(FakeArgs)
     3 matching mailing lists found:
-    List-one - List One
-    List-one - List One in Example.Net
-    List-two - List Two
+    list-one@example.com
+    list-one@example.net
+    list-two@example.com
 
 
-Full names
-==========
+Names
+=====
 
-You can display the mailing lists' full names, i.e. their posting addresses,
-with the --full switch.
+You can display the mailing list names with their posting addresses, using the
+--names/-n switch.
 
-    >>> FakeArgs.full = True
+    >>> FakeArgs.names = True
+    >>> command.process(FakeArgs)
+    3 matching mailing lists found:
+    list-one@example.com [List-one]
+    list-one@example.net [List-one]
+    list-two@example.com [List-two]
+
+
+Descriptions
+============
+
+You can also display the mailing list descriptions, using the
+--descriptions/-d option.
+
+    >>> FakeArgs.descriptions = True
+    >>> command.process(FakeArgs)
+    3 matching mailing lists found:
+    list-one@example.com [List-one] - List One
+    list-one@example.net [List-one] - List One in Example.Net
+    list-two@example.com [List-two] - List Two
+
+Maybe you want the descriptions but not the names.
+
+    >>> FakeArgs.names = False
     >>> command.process(FakeArgs)
     3 matching mailing lists found:
     list-one@example.com - List One
@@ -56,22 +79,13 @@ with the --full switch.
     list-two@example.com - List Two
 
 
-Bare names
-==========
+Less verbosity
+==============
 
-You can print less verbose output, such that only the mailing list's name is
-shown, with the --bare option.
+There's also a --quiet/-q switch which reduces the verbosity a bit.
 
-    >>> FakeArgs.bare = True
-    >>> FakeArgs.full = False
-    >>> command.process(FakeArgs)
-    List-one
-    List-one
-    List-two
-
---full and --bare can be combined.
-
-    >>> FakeArgs.full = True
+    >>> FakeArgs.quiet = True
+    >>> FakeArgs.descriptions = False
     >>> command.process(FakeArgs)
     list-one@example.com
     list-one@example.net
@@ -84,7 +98,7 @@ Specific domain
 You can narrow the search down to a specific domain with the --domain option.
 A helpful message is displayed if no matching domains are given.
 
-    >>> FakeArgs.bare = False
+    >>> FakeArgs.quiet = False
     >>> FakeArgs.domains = ['example.org']
     >>> command.process(FakeArgs)
     No matching mailing lists found
@@ -95,7 +109,7 @@ shown.
     >>> FakeArgs.domains = ['example.net']
     >>> command.process(FakeArgs)
     1 matching mailing lists found:
-    list-one@example.net - List One in Example.Net
+    list-one@example.net
 
 More than one --domain argument can be given; then all mailing lists in
 matching domains are shown.
@@ -103,9 +117,9 @@ matching domains are shown.
     >>> FakeArgs.domains = ['example.com', 'example.net']
     >>> command.process(FakeArgs)
     3 matching mailing lists found:
-    list-one@example.com - List One
-    list-one@example.net - List One in Example.Net
-    list-two@example.com - List Two
+    list-one@example.com
+    list-one@example.net
+    list-two@example.com
 
 
 Advertised lists
@@ -118,9 +132,8 @@ command line can select on this attribute.
     >>> FakeArgs.domains = []
     >>> FakeArgs.advertised = True
     >>> mlist_1.advertised = False
-    >>> transaction.commit()
 
     >>> command.process(FakeArgs)
     2 matching mailing lists found:
-    list-one@example.net - List One in Example.Net
-    list-two@example.com - List Two
+    list-one@example.net
+    list-two@example.com
