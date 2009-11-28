@@ -28,7 +28,8 @@ __all__ = [
 import sys
 import codecs
 
-from email.utils import parseaddr
+from email.utils import formataddr, parseaddr
+from operator import attrgetter
 from zope.component import getUtility
 from zope.interface import implements
 
@@ -42,7 +43,7 @@ from mailman.interfaces.member import AlreadySubscribedError, DeliveryMode
 
 
 class Members:
-    """Manage list memberships"""
+    """Manage list memberships.  With no arguments, list all members."""
 
     implements(ICLISubCommand)
 
@@ -74,7 +75,12 @@ class Members:
         mlist = getUtility(IListManager).get(fqdn_listname)
         if mlist is None:
             self.parser.error(_('No such list: $fqdn_listname'))
-        if args.filename == '-':
+        if args.filename is None:
+            for address in sorted(mlist.members.addresses,
+                                  key=attrgetter('address')):
+                print formataddr((address.real_name, address.original_address))
+            return
+        elif args.filename == '-':
             fp = sys.stdin
         else:
             fp = codecs.open(args.filename, 'r', 'utf-8')

@@ -94,3 +94,21 @@ printed.
     [u'aperson@example.com', u'bperson@example.com', u'cperson@example.com',
      u'dperson@example.com', u'eperson@example.com', u'fperson@example.com',
      u'gperson@example.com', u'iperson@example.com', u'jperson@example.com']
+
+
+Displaying members
+==================
+
+With no arguments, the command displays all members of the list.
+
+    >>> args.filename = None
+    >>> command.process(args)
+    aperson@example.com
+    Bart Person <bperson@example.com>
+    Cate Person <cperson@example.com>
+    dperson@example.com
+    Elly Person <eperson@example.com>
+    Fred Person <fperson@example.com>
+    gperson@example.com
+    iperson@example.com
+    jperson@example.com
