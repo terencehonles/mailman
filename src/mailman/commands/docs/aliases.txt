@@ -44,15 +44,15 @@ send the output to stdout.
     <BLANKLINE>
     # Aliases which are visible only in the @example.com domain.
     <BLANKLINE>
-    test@example.com               lmtp:lmtp.example.com:24
-    test-bounces@example.com       lmtp:lmtp.example.com:24
-    test-confirm@example.com       lmtp:lmtp.example.com:24
-    test-join@example.com          lmtp:lmtp.example.com:24
-    test-leave@example.com         lmtp:lmtp.example.com:24
-    test-owner@example.com         lmtp:lmtp.example.com:24
-    test-request@example.com       lmtp:lmtp.example.com:24
-    test-subscribe@example.com     lmtp:lmtp.example.com:24
-    test-unsubscribe@example.com   lmtp:lmtp.example.com:24
+    test@example.com               lmtp:[lmtp.example.com]:24
+    test-bounces@example.com       lmtp:[lmtp.example.com]:24
+    test-confirm@example.com       lmtp:[lmtp.example.com]:24
+    test-join@example.com          lmtp:[lmtp.example.com]:24
+    test-leave@example.com         lmtp:[lmtp.example.com]:24
+    test-owner@example.com         lmtp:[lmtp.example.com]:24
+    test-request@example.com       lmtp:[lmtp.example.com]:24
+    test-subscribe@example.com     lmtp:[lmtp.example.com]:24
+    test-unsubscribe@example.com   lmtp:[lmtp.example.com]:24
     <BLANKLINE>
 
 
