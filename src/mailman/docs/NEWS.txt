@@ -9,7 +9,41 @@ Here is a history of user visible changes to Mailman.
 
 3.0 alpha 4 -- "Vital Signs"
 ============================
-(20XX-XX-XX)
+(2009-11-28)
+
+Commands
+--------
+ * 'bin/inject' is now 'bin/mailman inject', with some changes
+ * 'bin/mailmanctl' is now 'bin/mailman start|stop|reopen|restart'
+ * 'bin/mailman version' is added (output same as 'bin/mailman --version')
+ * 'bin/mailman members' command line arguments have changed.  It also
+   now ignores blank lines and lines that start with #.  It also no longer
+   quits when it sees an address that's already subscribed.
+ * 'bin/withlist' is now 'bin/mailman withlist', and its command line
+   arguments have changed.
+ * 'bin/mailman lists' command line arguments have changed.
+ * 'bin/genaliases' is now 'bin/mailman aliases'
+
+Architecture
+------------
+ * A near complete rewrite of the low-level SMTP delivery machinery.  This
+   greatly improves readability, testability, reuse and extensibility.  Almost
+   all the old functionality has been retained.  The smtp_direct.py handler is
+   gone.
+ * Refactor model objects into the mailman.model subpackage.
+ * Refactor most of the i18n infrastructure into a separate flufl.i18n package.
+ * Switch from setuptools to distribute.
+ * Remove the dependency on setuptools_bzr
+ * Do not create the .mo files during setup.
+
+Configuration
+-------------
+ * All log files now have a '.log' suffix by default.
+ * The substitution placeholders in the verp_format configuration variable
+   have been renamed.
+ * Add a devmode configuration variable that changes some basic behavior.
+   Most importantly, it allows you to set a low-level SMTP recipient for all
+   mail for testing purposes.  See also devmode_recipient.
 
 
 3.0 alpha 3 -- "Working Man"
@@ -30,7 +64,6 @@ Configuration
 
 Architecture
 ------------
-
  * 'bin/mailman' is a new super-command for managing Mailman from the command
    line.  Some older bin scripts have been converted, with more to come.
  * Mailman now has an administrative REST interface which can be used to get
