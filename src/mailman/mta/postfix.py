@@ -67,7 +67,11 @@ class LMTP:
     delete = create
 
     def regenerate(self, output=None):
-        """See `IMailTransportAgentAliases`."""
+        """See `IMailTransportAgentAliases`.
+
+        The format for Postfix's LMTP transport map is defined here:
+        http://www.postfix.org/transport.5.html
+        """
         # Acquire a lock file to prevent other processes from racing us here.
         with Lock(LOCKFILE):
             # If output is a filename, open up a backing file and write the
