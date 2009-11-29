@@ -423,46 +423,46 @@ The content can be decoded to see the actual digest text.
     >>> [repr(line)
     ...  for line in rfc1153.msg.get_payload(decode=True).splitlines()]
     ["'Envoyez vos messages pour la liste Test \\xc3\\xa0'",
-     "'\\ttest@example.com'",
-     "''",
-     "'Pour vous (d\\xc3\\xa9s)abonner par le web, consultez'",
-     "'\\thttp://lists.example.com/listinfo/test@example.com'",
-     "''",
-     "'ou, par courriel, envoyez un message avec \\xc2\\xab\\xc2\\xa0...
-     "'dans le sujet \\xc3\\xa0'",
-     "'\\ttest-request@example.com'",
-     "''",
-     '"Vous pouvez contacter l\'administrateur de la liste \\xc3\\xa0 ...
-     "'\\ttest-owner@example.com'",
-     "''",
-     '"Si vous r\\xc3\\xa9pondez, n\'oubliez pas de changer l\'objet du ...
-     '"qu\'il soit plus sp\\xc3\\xa9cifique que \\xc2\\xab\\xc2\\xa0Re: ...
-     "''",
-     "'Th\\xc3\\xa8mes du jour :'",
-     "''",
-     "'   1. \\xe4\\xb8\\x80\\xe7\\x95\\xaa (aperson@example.org)'",
-     "''",
-     "''",
-     "'---------------------------------------------------------------------...
-     "''",
-     "'From: aperson@example.org'",
-     "'Subject: \\xe4\\xb8\\x80\\xe7\\x95\\xaa'",
-     "'To: test@example.com'",
-     "'Message-ID: ...
-     "'Content-Type: text/plain; charset=iso-2022-jp'",
-     "''",
-     "'\\xe4\\xb8\\x80\\xe7\\x95\\xaa'",
-     "''",
-     "'------------------------------'",
-     "''",
-     "'_______________________________________________'",
-     "'Test mailing list'",
-     "'test@example.com'",
-     "'http://lists.example.com/listinfo/test@example.com'",
-     "''",
-     "''",
-     "'Fin de Groupe Test, Vol. 1, Parution 2'",
-     "'**************************************'"]
+    "'\\ttest@example.com'",
+    "''",
+    "'Pour vous (d\\xc3\\xa9s)abonner par le web, consultez'",
+    "'\\thttp://lists.example.com/listinfo/test@example.com'",
+    "''",
+    "'ou, par courriel, envoyez un message avec \\xc2\\xab\\xc2\\xa0...
+    "'dans le sujet \\xc3\\xa0'",
+    "'\\ttest-request@example.com'",
+    "''",
+    '"Vous pouvez contacter l\'administrateur de la liste \\xc3\\xa0 ...
+    "'\\ttest-owner@example.com'",
+    "''",
+    '"Si vous r\\xc3\\xa9pondez, n\'oubliez pas de changer l\'objet du ...
+    '"qu\'il soit plus sp\\xc3\\xa9cifique que \\xc2\\xab\\xc2\\xa0Re: ...
+    "''",
+    "'Th\\xc3\\xa8mes du jour :'",
+    "''",
+    "'   1. \\xe4\\xb8\\x80\\xe7\\x95\\xaa (aperson@example.org)'",
+    "''",
+    "''",
+    "'---------------------------------------------------------------------...
+    "''",
+    "'From: aperson@example.org'",
+    "'Subject: \\xe4\\xb8\\x80\\xe7\\x95\\xaa'",
+    "'To: test@example.com'",
+    "'Message-ID: ...
+    "'Content-Type: text/plain; charset=iso-2022-jp'",
+    "''",
+    "'\\xe4\\xb8\\x80\\xe7\\x95\\xaa'",
+    "''",
+    "'------------------------------'",
+    "''",
+    "'_______________________________________________'",
+    "'Test mailing list'",
+    "'test@example.com'",
+    "'http://lists.example.com/listinfo/test@example.com'",
+    "''",
+    "''",
+    "'Fin de Groupe Test, Vol. 1, Parution 2'",
+    "'**************************************'"]
 
      >>> config.pop('french')
 
