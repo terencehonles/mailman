@@ -37,13 +37,13 @@ class TestPasswordsBase(unittest.TestCase):
 
     def setUp(self):
         # passwords; 8-bit or unicode strings; ascii or binary
-        self.pw8a       = 'abc'
-        self.pw8b       = 'abc\xc3\xbf'     # 'abc\xff'
-        self.pwub       = 'abc\xff'
+        self.pw8a       = b'abc'
+        self.pw8b       = b'abc\xc3\xbf'     # 'abc\xff'
+        self.pwub       = b'abc\xff'
         # bad password; 8-bit or unicode; ascii or binary
-        self.bad8a      = 'xyz'
-        self.bad8b      = 'xyz\xc3\xbf'     # 'xyz\xff'
-        self.badub      = 'xyz\xff'
+        self.bad8a      = b'xyz'
+        self.bad8b      = b'xyz\xc3\xbf'     # 'xyz\xff'
+        self.badub      = b'xyz\xff'
 
     def test_passwords(self):
         unless = self.failUnless
