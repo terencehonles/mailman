@@ -30,10 +30,10 @@ import sys
 import email
 import unittest
 
-import mailman.tests.bounces
-from mailman.Bouncers.BouncerAPI import Stop
+from contextlib import closing
+from pkg_resources import resource_stream
 
-MSGDIR = os.path.dirname(mailman.tests.bounces.__file__)
+from mailman.Bouncers.BouncerAPI import Stop
 
 
 
@@ -167,14 +167,16 @@ class BounceTest(unittest.TestCase):
         # Done
         )
 
+    def _getmsg(self, filename):
+        with closing(resource_stream('mailman.tests.bounces', filename)) as fp:
+            return email.message_from_file(fp)
+
     def test_bounce(self):
         for modname, filename, addrs in self.DATA:
             module = 'mailman.Bouncers.' + modname
             __import__(module)
             # XXX Convert this tousing package resources
-            path = os.path.join(MSGDIR, filename)
-            with open(path) as fp:
-                msg = email.message_from_file(fp)
+            msg = self._getmsg(filename)
             foundaddrs = sys.modules[module].process(msg)
             # Some modules return None instead of [] for failure
             if foundaddrs is None:
@@ -190,8 +192,7 @@ class BounceTest(unittest.TestCase):
     def test_SMTP32_failure(self):
         from mailman.Bouncers import SMTP32
         # This file has no X-Mailer: header
-        with open(os.path.join(MSGDIR, 'postfix_01.txt')) as fp:
-            msg = email.message_from_file(fp)
+        msg = self._getmsg('postfix_01.txt')
         self.failIf(msg['x-mailer'] is not None)
         self.failIf(SMTP32.process(msg))
 
