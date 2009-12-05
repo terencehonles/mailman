@@ -207,7 +207,6 @@ class UserNotification(Message):
             recipients=self.recips,
             nodecorate=True,
             reduced_list_headers=True,
-            original_size=len(self.as_string()),
             )
         if mlist is not None:
             enqueue_kws['listname'] = mlist.fqdn_listname

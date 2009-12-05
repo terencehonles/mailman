@@ -62,7 +62,6 @@ And now the response is in the virgin queue.
     _parsemsg           : False
     listname            : test@example.com
     nodecorate          : True
-    original_size       : 532
     recipients          : [u'aperson@example.com']
     reduced_list_headers: True
     version             : ...

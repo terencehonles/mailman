@@ -95,12 +95,15 @@ def deliver(mlist, msg, msgdata):
     refused = agent.deliver(mlist, msg, msgdata)
     t1 = time.time()
     # Log this posting.
+    size = getattr(msg, 'original_size', msgdata.get('original_size'))
+    if size is None:
+        size = len(msg.as_string())
     substitutions = dict(
         msgid       = msg.get('message-id', 'n/a'),
         listname    = mlist.fqdn_listname,
         sender      = original_sender,
         recip       = len(original_recipients),
-        size        = msg.original_size,
+        size        = size,
         time        = t1 - t0,
         refused     = len(refused),
         smtpcode    = 'n/a',

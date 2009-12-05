@@ -299,7 +299,6 @@ The message can be rejected, meaning it is bounced back to the sender.
     _parsemsg           : False
     listname            : alist@example.com
     nodecorate          : True
-    original_size       : ...
     recipients          : [u'aperson@example.org']
     reduced_list_headers: True
     version             : 3
@@ -405,7 +404,6 @@ moderators.
     _parsemsg           : False
     listname            : alist@example.com
     nodecorate          : True
-    original_size       : ...
     recipients          : [u'zperson@example.com']
     reduced_list_headers: True
     version             : 3
@@ -476,7 +474,6 @@ queue when the message is held.
     _parsemsg           : False
     listname            : alist@example.com
     nodecorate          : True
-    original_size       : ...
     recipients          : [u'alist-owner@example.com']
     reduced_list_headers: True
     tomoderators        : True
@@ -532,7 +529,6 @@ subscriber.
     _parsemsg           : False
     listname            : alist@example.com
     nodecorate          : True
-    original_size       : ...
     recipients          : [u'cperson@example.org']
     reduced_list_headers: True
     version             : 3
@@ -577,7 +573,6 @@ subscription and the fact that they may need to approve it.
     _parsemsg           : False
     listname            : alist@example.com
     nodecorate          : True
-    original_size       : ...
     recipients          : [u'alist-owner@example.com']
     reduced_list_headers: True
     tomoderators        : True
@@ -651,7 +646,6 @@ The welcome message is sent to the person who just subscribed.
     _parsemsg           : False
     listname            : alist@example.com
     nodecorate          : True
-    original_size       : ...
     recipients          : [u'fperson@example.org']
     reduced_list_headers: True
     verp                : False
@@ -758,7 +752,6 @@ unsubscription holds can send the list's moderators an immediate notification.
     _parsemsg           : False
     listname            : alist@example.com
     nodecorate          : True
-    original_size       : ...
     recipients          : [u'alist-owner@example.com']
     reduced_list_headers: True
     tomoderators        : True
@@ -817,7 +810,6 @@ and the person remains a member of the mailing list.
     _parsemsg           : False
     listname            : alist@example.com
     nodecorate          : True
-    original_size       : ...
     recipients          : [u'hperson@example.com']
     reduced_list_headers: True
     version             : 3
@@ -873,7 +865,6 @@ The goodbye message...
     _parsemsg           : False
     listname            : alist@example.com
     nodecorate          : True
-    original_size       : ...
     recipients          : [u'gperson@example.com']
     reduced_list_headers: True
     verp                : False
