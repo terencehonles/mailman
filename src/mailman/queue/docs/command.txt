@@ -58,10 +58,14 @@ And now the response is in the virgin queue.
     <BLANKLINE>
     - Done.
     <BLANKLINE>
-    >>> sorted(item.msgdata.items())
-    [..., ('listname', u'test@example.com'), ...,
-     ('recipients', [u'aperson@example.com']),
-     ...]
+    >>> dump_msgdata(item.msgdata)
+    _parsemsg           : False
+    listname            : test@example.com
+    nodecorate          : True
+    original_size       : 532
+    recipients          : [u'aperson@example.com']
+    reduced_list_headers: True
+    version             : ...
 
 
 A command in the body

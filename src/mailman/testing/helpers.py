@@ -46,7 +46,6 @@ from mailman.utilities.mailbox import Mailbox
 
 
 STARTUP_WAIT = datetime.timedelta(seconds=5)
-log = logging.getLogger('mailman.debug')
 
 
 

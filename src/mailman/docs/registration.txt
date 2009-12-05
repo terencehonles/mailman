@@ -158,6 +158,7 @@ message is sent to the user in order to verify the registered address.
     >>> dump_msgdata(qdata)
     _parsemsg           : False
     nodecorate          : True
+    original_size       : ...
     recipients          : [u'aperson@example.com']
     reduced_list_headers: True
     version             : 3

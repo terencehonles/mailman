@@ -49,6 +49,7 @@ response.
     _parsemsg           : False
     listname            : _xtest@example.com
     nodecorate          : True
+    original_size       : ...
     recipients          : [u'aperson@example.com']
     reduced_list_headers: True
     version             : 3
@@ -137,6 +138,7 @@ header is ignored.
     _parsemsg           : False
     listname            : _xtest@example.com
     nodecorate          : True
+    original_size       : ...
     recipients          : [u'asystem@example.com']
     reduced_list_headers: True
     version             : 3
