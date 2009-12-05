@@ -28,8 +28,7 @@ Mailman 3 is now based on the `zc.buildout`_ infrastructure, which greatly
 simplifies building and testing Mailman.
 
 You will need the gettext package (specifically, the msgfmt(1) command) in
-order to build the I18N message catalogs.  If you're missing this command,
-it is known that the digests.txt test will fail.
+order to build the I18N message catalogs.
 
 You do not need anything other than Python 2.6 and an internet connection
 to get all the other Mailman 3 dependencies.  Here are the commands to
@@ -62,13 +61,12 @@ square-bracketed names) and then the key/value pair you want to override.
 
 You will need to pass the ``-C`` flag to any bin command you want to invoke,
 pointing it at your ``mailman.cfg`` file.  Or you can set the environment
-variable ``$MAILMAN_CONFIG_FILE`` to point to your configuration file.  Future
-versions will look in some common locations.
+variable ``$MAILMAN_CONFIG_FILE`` to point to your configuration file.
 
 You can use the ``bin/mailman`` script to create and remove mailing lists,
 display all the existing mailing lists, subscribe members, etc.  Try
-``bin/mailman --help`` for details.  You can still use the ``bin/mailmanctl``
-script to start the queue runners.
+``bin/mailman --help`` for details.  You use the ``bin/mailman start`` command
+to start the queue runners.
 
 Please note that the web u/i does **not** work yet.  Contributions are
 welcome!

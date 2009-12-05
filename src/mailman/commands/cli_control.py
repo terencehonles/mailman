@@ -99,7 +99,7 @@ class Start:
         pid = os.fork()
         if pid:
             # parent
-            log(_("Starting Mailman's master qrunner"))
+            log(_("Starting Mailman's master queue runner"))
             return
         # child: Create a new session and become the session leader, but since
         # we won't be opening any terminal devices, don't do the
@@ -132,7 +132,7 @@ def kill_watcher(sig):
         # For i18n convenience
         print >> sys.stderr, _('PID unreadable in: $config.PIDFILE')
         print >> sys.stderr, error
-        print >> sys.stderr, _('Is qrunner even running?')
+        print >> sys.stderr, _('Is the master even running?')
         return
     try:
         os.kill(pid, sig)
@@ -175,7 +175,7 @@ class Stop(SignalCommand):
     """Stop the Malman daemons."""
 
     name = 'stop'
-    message = _("Shutting down Mailman's master qrunner")
+    message = _("Shutting down Mailman's master queue runner")
     signal = signal.SIGTERM
 
 
@@ -183,7 +183,7 @@ class Reopen(SignalCommand):
     """Reopen the Mailman daemons."""
 
     name = 'reopen'
-    message = _('Reopening the Mailman qrunners')
+    message = _('Reopening the Mailman queue runners')
     signal = signal.SIGHUP
 
 
@@ -193,5 +193,5 @@ class Restart(SignalCommand):
     implements(ICLISubCommand)
 
     name = 'restart'
-    message = _('Restarting the Mailman qrunners')
+    message = _('Restarting the Mailman queue runners')
     signal = signal.SIGUSR1

@@ -194,15 +194,14 @@ def acquire_lock(force):
         if status == WatcherState.conflict:
             # Hostname matches and process exists.
             message = _("""\
-The master qrunner lock could not be acquired because it appears
-as though another master qrunner is already running.
-""")
+The master queue runner lock could not be acquired because it appears as
+though another master is already running.""")
         elif status == WatcherState.stale_lock:
             # Hostname matches but the process does not exist.
+            program = sys.argv[0]
             message = _("""\
-The master qrunner lock could not be acquired.  It appears as though there is
-a stale master qrunner lock.  Try re-running mailmanctl with the -s flag.
-""")
+The master queue runner lock could not be acquired.  It appears as though
+there is a stale master lock.  Try re-running $program with the -s flag.""")
         else:
             # Hostname doesn't even match.
             assert status == WatcherState.host_mismatch, (
@@ -292,7 +291,7 @@ class Loop:
         self._kids = PIDWatcher()
 
     def install_signal_handlers(self):
-        """Install various signals handlers for control from mailmanctl."""
+        """Install various signals handlers for control from the master."""
         log = logging.getLogger('mailman.qrunner')
         # Set up our signal handlers.  Also set up a SIGALRM handler to
         # refresh the lock once per day.  The lock lifetime is 1 day + 6 hours
@@ -317,7 +316,7 @@ class Loop:
             log.info('Master watcher caught SIGUSR1.  Exiting.')
         signal.signal(signal.SIGUSR1, sigusr1_handler)
         # SIGTERM is what init will kill this process with when changing run
-        # levels.  It's also the signal 'mailmanctl stop' uses.
+        # levels.  It's also the signal 'bin/mailman stop' uses.
         def sigterm_handler(signum, frame):
             for pid in self._kids:
                 os.kill(pid, signal.SIGTERM)
@@ -349,7 +348,7 @@ class Loop:
         #
         # Craft the command line arguments for the exec() call.
         rswitch = '--runner=' + spec
-        # Wherever mailmanctl lives, so too must live the qrunner script.
+        # Wherever master lives, so too must live the qrunner script.
         exe = os.path.join(config.BIN_DIR, 'qrunner')
         # config.PYTHON, which is the absolute path to the Python interpreter,
         # must be given as argv[0] due to Python's library search algorithm.

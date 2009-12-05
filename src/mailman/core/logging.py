@@ -130,7 +130,8 @@ def initialize(propagate=None):
         log_format      = logger_config.format
         log_datefmt     = logger_config.datefmt
         # Propagation to the root logger is how we handle logging to stderr
-        # when the qrunners are not run as a subprocess of mailmanctl.
+        # when the queue runners are not run as a subprocess of 'bin/mailman
+        # start'.
         log.propagate   = (as_boolean(logger_config.propagate)
                            if propagate is None else propagate)
         # Set the logger's level.

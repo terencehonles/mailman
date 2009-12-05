@@ -67,20 +67,20 @@ def r_callback(option, opt, value, parser):
 class ScriptOptions(Options):
 
     usage = _("""\
-Run one or more qrunners, once or repeatedly.
+Run one or more queue runners, once or repeatedly.
 
 Each named runner class is run in round-robin fashion.  In other words, the
-first named runner is run to consume all the files currently in its
-directory.  When that qrunner is done, the next one is run to consume all the
-files in /its/ directory, and so on.  The number of total iterations can be
-given on the command line.
+first named runner is run to consume all the files currently in its directory.
+When that qrunner is done, the next one is run to consume all the files in
+/its/ directory, and so on.  The number of total iterations can be given on
+the command line.
 
 Usage: %prog [options]
 
 -r is required unless -l or -h is given, and its argument must be one of the
 names displayed by the -l switch.
 
-Normally, this script should be started from mailmanctl.  Running it
+Normally, this script should be started from 'bin/mailman start'.  Running it
 separately or with -o is generally useful only for debugging.
 """)
 
@@ -91,8 +91,8 @@ separately or with -o is generally useful only for debugging.
             type='string', default=[],
             action='callback', callback=r_callback,
             help=_("""\
-Run the named qrunner, which must be one of the strings returned by the -l
-option.  Optional slice:range if given, is used to assign multiple qrunner
+Run the named queue runner, which must be one of the strings returned by the
+-l option.  Optional slice:range if given, is used to assign multiple qrunner
 processes to a queue.  range is the total number of qrunners for this queue
 while slice is the number of this qrunner from [0..range).
 
@@ -101,27 +101,27 @@ queue is given the same range value.  If slice:runner is not given, then 1:1
 is used.
 
 Multiple -r options may be given, in which case each qrunner will run once in
-round-robin fashion.  The special runner `All' is shorthand for a qrunner for
+round-robin fashion.  The special runner 'All' is shorthand for a qrunner for
 each listed by the -l option."""))
         self.parser.add_option(
             '-o', '--once',
             default=False, action='store_true', help=_("""\
-Run each named qrunner exactly once through its main loop.  Otherwise, each
-qrunner runs indefinitely, until the process receives signal."""))
+Run each named queue runner exactly once through its main loop.  Otherwise,
+each queue runner runs indefinitely, until the process receives signal."""))
         self.parser.add_option(
             '-l', '--list',
             default=False, action='store_true',
-            help=_('List the available qrunner names and exit.'))
+            help=_('List the available queue runner names and exit.'))
         self.parser.add_option(
             '-v', '--verbose',
             default=0, action='count', help=_("""\
-Display more debugging information to the logs/qrunner log file."""))
+Display more debugging information to the log file."""))
         self.parser.add_option(
             '-s', '--subproc',
             default=False, action='store_true', help=_("""\
-This should only be used when running qrunner as a subprocess of the
-mailmanctl startup script.  It changes some of the exit-on-error behavior to
-work better with that framework."""))
+This should only be used when running the queue runner as a subprocess of the
+'bin/mailman start' startup script.  It changes some of the exit-on-error
+behavior to work better with that framework."""))
 
     def sanity_check(self):
         if self.arguments:
