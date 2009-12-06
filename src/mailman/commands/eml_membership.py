@@ -153,8 +153,16 @@ class Leave:
             print >> results, _(
                 '$self.name: No valid address found to unsubscribe')
             return ContinueProcessing.no
-        member = mlist.members.get_member(address)
-        if member is None:
+        user = getUtility(IUserManager).get_user(address)
+        if user is None:
+            print >> results, _('No registered user for address: $address')
+            return ContinueProcessing.no
+        for user_address in user.addresses:
+            member = mlist.members.get_member(user_address.address)
+            if member is not None:
+                break
+        else:
+            # None of the user's addresses are subscribed to this mailing list.
             print >> results, _(
                 '$self.name: $address is not a member of $mlist.fqdn_listname')
             return ContinueProcessing.no

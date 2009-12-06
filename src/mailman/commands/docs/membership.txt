@@ -202,3 +202,32 @@ Anne is no longer a member of the mailing list.
 
     >>> print mlist_2.members.get_member('anne@example.com')
     None
+
+Anne does not need to leave a mailing list with the same email address she's
+subscribe with.  Any of her registered and linked email addresses will do.
+
+    >>> from datetime import datetime
+    >>> anne = getUtility(IUserManager).get_user('anne@example.com')
+    >>> address = anne.register('anne.person@example.org')
+    >>> address.verified_on = datetime.now()
+
+    >>> results = Results()
+    >>> print mlist.members.get_member('anne@example.com')
+    <Member: Anne Person <anne@example.com>
+             on alpha@example.com as MemberRole.member>
+
+    >>> msg = message_from_string("""\
+    ... To: alpha-leave@example.com
+    ... From: anne.person@example.org
+    ...
+    ... """)
+    >>> print command.process(mlist, msg, {}, (), results)
+    ContinueProcessing.yes
+    
+    >>> print unicode(results)
+    The results of your email command are provided below.
+    <BLANKLINE>
+    Anne Person <anne.person@example.org> left alpha@example.com
+    <BLANKLINE>
+    >>> print mlist.members.get_member('anne@example.com')
+    None

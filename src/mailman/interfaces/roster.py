@@ -54,8 +54,10 @@ class IRoster(Interface):
         """)
 
     def get_member(address):
-        """Return the IMember for the given address.
+        """Get the member for the given address.
 
-        'address' is a text email address.  If no matching member is found,
-        None is returned.
+        :param address: The email address to search for.
+        :type address: text
+        :return: The member if found, otherwise None
+        :rtype: `IMember` or None
         """
