@@ -29,6 +29,7 @@ __all__ = [
 
 
 from email.utils import formataddr, parseaddr
+from zope.component import getUtility
 from zope.interface import implements
 
 from mailman.config import config
@@ -37,6 +38,7 @@ from mailman.interfaces.command import ContinueProcessing, IEmailCommand
 from mailman.interfaces.domain import IDomainManager
 from mailman.interfaces.member import DeliveryMode
 from mailman.interfaces.registrar import IRegistrar
+from mailman.interfaces.usermanager import IUserManager
 
 
 
@@ -63,7 +65,8 @@ example:
         """See `IEmailCommand`."""
         # Parse the arguments.
         address, delivery_mode = self._parse_arguments(arguments)
-        if address is None:
+        # address could be None or the empty string.
+        if not address:
             real_name, address = parseaddr(msg['from'])
         # Address could be None or the empty string.
         if not address:
@@ -140,11 +143,25 @@ class Leave:
 
     name = 'leave'
     argument_description = ''
-    description = ''
+    description = _(
+        'Leave this mailing list.  You will be asked to confirm your request.')
 
     def process(self, mlist, msg, msgdata, arguments, results):
         """See `IEmailCommand`."""
-        person = msg['from']
+        address = msg.sender
+        if not address:
+            print >> results, _(
+                '$self.name: No valid address found to unsubscribe')
+            return ContinueProcessing.no
+        member = mlist.members.get_member(address)
+        if member is None:
+            print >> results, _(
+                '$self.name: $address is not a member of $mlist.fqdn_listname')
+            return ContinueProcessing.no
+        member.unsubscribe()
+        # Get the user's full name.
+        user = getUtility(IUserManager).get_user(address)
+        person = formataddr((user.real_name, address))
         print >> results, _('$person left $mlist.fqdn_listname')
         return ContinueProcessing.yes
 

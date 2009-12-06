@@ -1,3 +1,4 @@
+==================
 The 'join' command
 ==================
 
@@ -23,7 +24,7 @@ The mail command 'join' subscribes an email address to the mailing list.
 
 
 No address to join
-------------------
+==================
 
     >>> from mailman.email.message import Message
     >>> from mailman.queue.command import Results
@@ -57,7 +58,7 @@ The 'subscribe' command is an alias.
 
 
 Joining the sender
-------------------
+==================
 
 When the message has a From field, that address will be subscribed.
 
@@ -140,7 +141,7 @@ Anne is also now a member of the mailing list.
 
 
 Joining a second list
----------------------
+=====================
 
     >>> mlist_2 = create_list('baker@example.com')
     >>> msg = message_from_string("""\
@@ -170,3 +171,34 @@ One Anne confirms this subscription, she becomes a member of the mailing list.
     >>> print mlist_2.members.get_member('anne@example.com')
     <Member: Anne Person <anne@example.com>
              on baker@example.com as MemberRole.member>
+
+
+Leaving a mailing list
+======================
+
+The mail command 'leave' unsubscribes an email address from the mailing list.
+'unsubscribe' is an alias for 'leave'.
+
+    >>> command = config.commands['leave']
+    >>> print command.name
+    leave
+    >>> print command.description
+    Leave this mailing list.  You will be asked to confirm your request.
+
+Anne is a member of the baker@example.com mailing list, when she decides to
+leave it.  She sends a message to the -leave address for the list and is sent
+a confirmation message for her request.
+
+    >>> results = Results()
+    >>> print command.process(mlist_2, msg, {}, (), results)
+    ContinueProcessing.yes
+    >>> print unicode(results)
+    The results of your email command are provided below.
+    <BLANKLINE>
+    Anne Person <anne@example.com> left baker@example.com
+    <BLANKLINE>
+
+Anne is no longer a member of the mailing list.
+
+    >>> print mlist_2.members.get_member('anne@example.com')
+    None
