@@ -204,12 +204,11 @@ Anne is no longer a member of the mailing list.
     None
 
 Anne does not need to leave a mailing list with the same email address she's
-subscribe with.  Any of her registered and linked email addresses will do.
+subscribe with.  Any of her registered, linked, and validated email addresses
+will do.
 
-    >>> from datetime import datetime
     >>> anne = getUtility(IUserManager).get_user('anne@example.com')
     >>> address = anne.register('anne.person@example.org')
-    >>> address.verified_on = datetime.now()
 
     >>> results = Results()
     >>> print mlist.members.get_member('anne@example.com')
@@ -221,13 +220,38 @@ subscribe with.  Any of her registered and linked email addresses will do.
     ... From: anne.person@example.org
     ...
     ... """)
+
+Since Anne's alternative address has not yet been verified, it can't be used
+to unsubscribe Anne from the alpha mailing list.
+
+    >>> print command.process(mlist, msg, {}, (), results)
+    ContinueProcessing.no
+
+    >>> print unicode(results)
+    The results of your email command are provided below.
+    <BLANKLINE>
+    Invalid or unverified address: anne.person@example.org
+    <BLANKLINE>
+
+    >>> print mlist.members.get_member('anne@example.com')
+    <Member: Anne Person <anne@example.com>
+             on alpha@example.com as MemberRole.member>
+
+Once Anne has verified her alternative address though, it can be used to
+unsubscribe her from the list.
+
+    >>> from datetime import datetime
+    >>> address.verified_on = datetime.now()
+
+    >>> results = Results()
     >>> print command.process(mlist, msg, {}, (), results)
     ContinueProcessing.yes
-    
+
     >>> print unicode(results)
     The results of your email command are provided below.
     <BLANKLINE>
     Anne Person <anne.person@example.org> left alpha@example.com
     <BLANKLINE>
+
     >>> print mlist.members.get_member('anne@example.com')
     None

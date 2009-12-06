@@ -153,11 +153,21 @@ class Leave:
             print >> results, _(
                 '$self.name: No valid address found to unsubscribe')
             return ContinueProcessing.no
-        user = getUtility(IUserManager).get_user(address)
+        user_manager = getUtility(IUserManager)
+        user = user_manager.get_user(address)
         if user is None:
             print >> results, _('No registered user for address: $address')
             return ContinueProcessing.no
+        # The address that the -leave command was sent from, must be verified.
+        # Otherwise you could link a bogus address to anyone's account, and
+        # then send a leave command from that address.
+        if user_manager.get_address(address).verified_on is None:
+            print >> results, _('Invalid or unverified address: $address')
+            return ContinueProcessing.no
         for user_address in user.addresses:
+            # Only recognize verified addresses.
+            if user_address.verified_on is None:
+                continue
             member = mlist.members.get_member(user_address.address)
             if member is not None:
                 break
@@ -167,8 +177,6 @@ class Leave:
                 '$self.name: $address is not a member of $mlist.fqdn_listname')
             return ContinueProcessing.no
         member.unsubscribe()
-        # Get the user's full name.
-        user = getUtility(IUserManager).get_user(address)
         person = formataddr((user.real_name, address))
         print >> results, _('$person left $mlist.fqdn_listname')
         return ContinueProcessing.yes
