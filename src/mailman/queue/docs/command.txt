@@ -134,8 +134,17 @@ address, and the other is the results of his email command.
     >>> def sortkey(item):
     ...     return item.msg['subject']
     >>> messages = sorted(get_queue_messages('virgin'), key=sortkey)
+
+    >>> from mailman.interfaces.domain import IDomainManager
+    >>> from mailman.interfaces.registrar import IRegistrar
+    >>> registrar = IRegistrar(IDomainManager(config)['example.com'])
     >>> for item in messages:
-    ...     print 'Subject:', item.msg['subject']
+    ...     subject = item.msg['subject']
+    ...     print 'Subject:', subject
+    ...     if 'confirm' in str(subject):
+    ...         token = str(subject).split()[1].strip()
+    ...         status = registrar.confirm(token)
+    ...         assert status, 'Confirmation failed'
     Subject: confirm ...
     Subject: The results of your email commands
 
@@ -168,7 +177,7 @@ Similarly, to leave a mailing list, the user need only email the -leave or
     Message-ID: ...
     <BLANKLINE>
     - Results:
-    dperson@example.com left test@example.com
+    Dirk Person <dperson@example.com> left test@example.com
     <BLANKLINE>
     - Done.
     <BLANKLINE>
