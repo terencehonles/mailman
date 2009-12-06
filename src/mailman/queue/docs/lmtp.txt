@@ -61,6 +61,25 @@ Once the mailing list is created, the posting address is valid.
     ... """)
     {}
 
+    >>> from mailman.testing.helpers import get_queue_messages
+    >>> messages = get_queue_messages('in')
+    >>> len(messages)
+    1
+    >>> print messages[0].msg.as_string()
+    From: anne.person@example.com
+    To: mylist@example.com
+    Subject: An interesting message
+    Message-ID: <badger>
+    X-MailFrom: anne.person@example.com
+    <BLANKLINE>
+    This is an interesting message.
+    >>> dump_msgdata(messages[0].msgdata)
+    _parsemsg    : False
+    listname     : mylist@example.com
+    original_size: ...
+    to_list      : True
+    version      : ...
+
 
 Sub-addresses
 =============
@@ -96,6 +115,193 @@ But the message is accepted if posted to a valid sub-address.
     ... Please help me.
     ... """)
     {}
+
+
+Request subaddress
+------------------
+
+Depending on the subaddress, there is a message in the appropriate queue for
+later processing.  For example, all -request messages are put into the command
+queue for processing.
+
+    >>> messages = get_queue_messages('command')
+    >>> len(messages)
+    1
+    >>> print messages[0].msg.as_string()
+    From: anne.person@example.com
+    To: mylist-request@example.com
+    Subject: Help
+    Message-ID: <dog>
+    X-MailFrom: anne.person@example.com
+    <BLANKLINE>
+    Please help me.
+    >>> dump_msgdata(messages[0].msgdata)
+    _parsemsg    : False
+    listname     : mylist@example.com
+    original_size: ...
+    subaddress   : request
+    version      : ...
+
+
+Bounce processor
+----------------
+
+A message to the -bounces address goes to the bounce processor.
+
+    >>> lmtp.sendmail(
+    ...     'mail-daemon@example.com',
+    ...     ['mylist-bounces@example.com'], """\
+    ... From: mail-daemon@example.com
+    ... To: mylist-bounces@example.com
+    ... Subject: A bounce
+    ... Message-ID: <elephant>
+    ...
+    ... Bouncy bouncy.
+    ... """)
+    {}
+    >>> messages = get_queue_messages('bounces')
+    >>> len(messages)
+    1
+    >>> dump_msgdata(messages[0].msgdata)
+    _parsemsg    : False
+    listname     : mylist@example.com
+    original_size: ...
+    subaddress   : bounces
+    version      : ...
+
+
+Command processor
+-----------------
+
+Confirmation messages go to the command processor...
+
+    >>> lmtp.sendmail(
+    ...     'anne.person@example.com',
+    ...     ['mylist-confirm@example.com'], """\
+    ... From: anne.person@example.com
+    ... To: mylist-confirm@example.com
+    ... Subject: A bounce
+    ... Message-ID: <falcon>
+    ...
+    ... confirm 123
+    ... """)
+    {}
+    >>> messages = get_queue_messages('command')
+    >>> len(messages)
+    1
+    >>> dump_msgdata(messages[0].msgdata)
+    _parsemsg    : False
+    listname     : mylist@example.com
+    original_size: ...
+    subaddress   : confirm
+    version      : ...
+
+...as do join messages...
+
+    >>> lmtp.sendmail(
+    ...     'anne.person@example.com',
+    ...     ['mylist-join@example.com'], """\
+    ... From: anne.person@example.com
+    ... To: mylist-join@example.com
+    ... Message-ID: <giraffe>
+    ...
+    ... """)
+    {}
+    >>> messages = get_queue_messages('command')
+    >>> len(messages)
+    1
+    >>> dump_msgdata(messages[0].msgdata)
+    _parsemsg    : False
+    listname     : mylist@example.com
+    original_size: ...
+    subaddress   : join
+    version      : ...
+
+    >>> lmtp.sendmail(
+    ...     'anne.person@example.com',
+    ...     ['mylist-subscribe@example.com'], """\
+    ... From: anne.person@example.com
+    ... To: mylist-subscribe@example.com
+    ... Message-ID: <hippopotamus>
+    ...
+    ... """)
+    {}
+    >>> messages = get_queue_messages('command')
+    >>> len(messages)
+    1
+    >>> dump_msgdata(messages[0].msgdata)
+    _parsemsg    : False
+    listname     : mylist@example.com
+    original_size: ...
+    subaddress   : join
+    version      : ...
+
+...and leave messages.
+
+    >>> lmtp.sendmail(
+    ...     'anne.person@example.com',
+    ...     ['mylist-leave@example.com'], """\
+    ... From: anne.person@example.com
+    ... To: mylist-leave@example.com
+    ... Message-ID: <iguana>
+    ...
+    ... """)
+    {}
+    >>> messages = get_queue_messages('command')
+    >>> len(messages)
+    1
+    >>> dump_msgdata(messages[0].msgdata)
+    _parsemsg    : False
+    listname     : mylist@example.com
+    original_size: ...
+    subaddress   : leave
+    version      : ...
+
+    >>> lmtp.sendmail(
+    ...     'anne.person@example.com',
+    ...     ['mylist-unsubscribe@example.com'], """\
+    ... From: anne.person@example.com
+    ... To: mylist-unsubscribe@example.com
+    ... Message-ID: <jackal>
+    ...
+    ... """)
+    {}
+    >>> messages = get_queue_messages('command')
+    >>> len(messages)
+    1
+    >>> dump_msgdata(messages[0].msgdata)
+    _parsemsg    : False
+    listname     : mylist@example.com
+    original_size: ...
+    subaddress   : leave
+    version      : ...
+
+
+Incoming processor
+------------------
+
+Messages to the -owner address go to the incoming processor.
+
+    >>> lmtp.sendmail(
+    ...     'anne.person@example.com',
+    ...     ['mylist-owner@example.com'], """\
+    ... From: anne.person@example.com
+    ... To: mylist-owner@example.com
+    ... Message-ID: <kangaroo>
+    ...
+    ... """)
+    {}
+    >>> messages = get_queue_messages('in')
+    >>> len(messages)
+    1
+    >>> dump_msgdata(messages[0].msgdata)
+    _parsemsg    : False
+    envsender    : changeme@example.com
+    listname     : mylist@example.com
+    original_size: ...
+    subaddress   : owner
+    to_owner     : True
+    version      : ...
 
 
 Clean up

@@ -108,6 +108,105 @@ message is plain text.
     <BLANKLINE>
 
 
+Implicit commands
+=================
+
+For some commands, specifically for joining and leaving a mailing list, there
+are email aliases that act like commands, even when there's nothing else in
+the Subject or body.  For example, to join a mailing list, a user need only
+email the -join address or -subscribe address (the latter is deprecated).
+
+Because Dirk has never registered with Mailman before, he gets two responses.
+The first is a confirmation message so that Dirk can validate his email
+address, and the other is the results of his email command.
+
+    >>> msg = message_from_string("""\
+    ... From: Dirk Person <dperson@example.com>
+    ... To: test-join@example.com
+    ...
+    ... """)
+
+    >>> inject_message(mlist, msg, switchboard='command', subaddress='join')
+    >>> command.run()
+    >>> len(virgin_queue.files)
+    2
+
+    >>> def sortkey(item):
+    ...     return item.msg['subject']
+    >>> messages = sorted(get_queue_messages('virgin'), key=sortkey)
+    >>> for item in messages:
+    ...     print 'Subject:', item.msg['subject']
+    Subject: confirm ...
+    Subject: The results of your email commands
+
+Similarly, to leave a mailing list, the user need only email the -leave or
+-unsubscribe address (the latter is deprecated).
+
+    >>> msg = message_from_string("""\
+    ... From: dperson@example.com
+    ... To: test-leave@example.com
+    ...
+    ... """)
+
+    >>> inject_message(mlist, msg, switchboard='command', subaddress='leave')
+    >>> command.run()
+    >>> len(virgin_queue.files)
+    1
+    >>> item = get_queue_messages('virgin')[0]
+    >>> print item.msg.as_string()
+    Subject: The results of your email commands
+    From: test-bounces@example.com
+    To: dperson@example.com
+    ...
+    <BLANKLINE>
+    The results of your email command are provided below.
+    <BLANKLINE>
+    - Original message details:
+    From: dperson@example.com
+    Subject: n/a
+    Date: ...
+    Message-ID: ...
+    <BLANKLINE>
+    - Results:
+    dperson@example.com left test@example.com
+    <BLANKLINE>
+    - Done.
+    <BLANKLINE>
+
+The -confirm address is also available as an implicit command.
+
+    >>> msg = message_from_string("""\
+    ... From: dperson@example.com
+    ... To: test-confirm+123@example.com
+    ...
+    ... """)
+
+    >>> inject_message(mlist, msg, switchboard='command', subaddress='confirm')
+    >>> command.run()
+    >>> len(virgin_queue.files)
+    1
+    >>> item = get_queue_messages('virgin')[0]
+    >>> print item.msg.as_string()
+    Subject: The results of your email commands
+    From: test-bounces@example.com
+    To: dperson@example.com
+    ...
+    <BLANKLINE>
+    The results of your email command are provided below.
+    <BLANKLINE>
+    - Original message details:
+    From: dperson@example.com
+    Subject: n/a
+    Date: ...
+    Message-ID: ...
+    <BLANKLINE>
+    - Results:
+    Confirmed
+    <BLANKLINE>
+    - Done.
+    <BLANKLINE>
+
+
 Stopping command processing
 ===========================
 

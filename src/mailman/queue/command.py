@@ -60,11 +60,12 @@ class CommandFinder:
         # commands.  For example, if this was sent to the -join or -leave
         # addresses, it's the same as if 'join' or 'leave' commands were sent
         # to the -request address.
-        if msgdata.get('tojoin'):
+        subaddress = msgdata.get('subaddress')
+        if subaddress == 'join':
             self.command_lines.append('join')
-        elif msgdata.get('toleave'):
+        elif subaddress == 'leave':
             self.command_lines.append('leave')
-        elif msgdata.get('toconfirm'):
+        elif subaddress == 'confirm':
             mo = re.match(config.mta.verp_confirm_regexp, msg.get('to', ''))
             if mo:
                 self.command_lines.append('confirm ' + mo.group('cookie'))

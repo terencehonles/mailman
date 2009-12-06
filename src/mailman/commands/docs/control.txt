@@ -63,7 +63,7 @@ Starting the daemons prints a useful message and starts the master qrunner
 watcher process in the background.
 
     >>> start.process(args)
-    Starting Mailman's master qrunner
+    Starting Mailman's master queue runner
 
     >>> import errno, os, time
     >>> from datetime import timedelta, datetime
@@ -104,7 +104,7 @@ stops all the child processes too.
     >>> from mailman.commands.cli_control import Stop
     >>> stop = Stop()
     >>> stop.process(args)
-    Shutting down Mailman's master qrunner
+    Shutting down Mailman's master queue runner
 
     >>> def bury_master():
     ...     until = timedelta(seconds=10) + datetime.now()

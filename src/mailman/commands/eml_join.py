@@ -17,10 +17,14 @@
 
 """The email commands 'join' and 'subscribe'."""
 
+from __future__ import absolute_import, unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'Join',
     'Subscribe',
+    'Leave',
+    'Unsubscribe',
     ]
 
 
@@ -38,6 +42,7 @@ from mailman.interfaces.registrar import IRegistrar
 
 class Join:
     """The email 'join' command."""
+
     implements(IEmailCommand)
 
     name = 'join'
@@ -125,3 +130,26 @@ class Subscribe(Join):
     """The email 'subscribe' command (an alias for 'join')."""
 
     name = 'subscribe'
+
+
+
+class Leave:
+    """The email 'leave' command."""
+
+    implements(IEmailCommand)
+
+    name = 'leave'
+    argument_description = ''
+    description = ''
+
+    def process(self, mlist, msg, msgdata, arguments, results):
+        """See `IEmailCommand`."""
+        person = msg['from']
+        print >> results, _('$person left $mlist.fqdn_listname')
+        return ContinueProcessing.yes
+
+
+class Unsubscribe(Leave):
+    """The email 'unsubscribe' command (an alias for 'leave')."""
+
+    name = 'unsubscribe'

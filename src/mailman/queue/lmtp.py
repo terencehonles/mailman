@@ -50,10 +50,29 @@ qlog = logging.getLogger('mailman.qrunner')
 
 
 # We only care about the listname and the sub-addresses as in listname@ or
-# listname-request@
-SUBADDRESS_NAMES = (
-    'bounces',  'confirm',  'join', '       leave',
-    'owner',    'request',  'subscribe',    'unsubscribe',
+# listname-request@.  This maps user visible subaddress names (which may
+# include aliases) to the internal canonical subaddress name.
+SUBADDRESS_NAMES = dict(
+    admin='bounces',
+    bounces='bounces',
+    confirm='confirm',
+    join='join',
+    leave='leave',
+    owner='owner',
+    request='request',
+    subscribe='join',
+    unsubscribe='leave',
+    )
+
+# This maps subaddress canonical name to the destination queue that handles
+# messages sent to that subaddress.
+SUBADDRESS_QUEUES = dict(
+    bounces='bounces',
+    confirm='command',
+    join='command',
+    leave='command',
+    owner='in',
+    request='command',
     )
 
 DASH    = '-'
@@ -136,7 +155,6 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
             # Refresh the list of list names every time we process a message
             # since the set of mailing lists could have changed.
             listnames = set(getUtility(IListManager).names)
-            qlog.debug('listnames: %s', listnames)
             # Parse the message data.  If there are any defects in the
             # message, reject it right away; it's probably spam. 
             msg = email.message_from_string(data, Message)
@@ -144,6 +162,7 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
             if msg.defects:
                 return ERR_501
             msg['X-MailFrom'] = mailfrom
+            message_id = msg['message-id']
         except Exception, e:
             elog.exception('LMTP message parsing')
             config.db.abort()
@@ -158,48 +177,45 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
             try:
                 to = parseaddr(to)[1].lower()
                 listname, subaddress, domain = split_recipient(to)
-                qlog.debug('to: %s, list: %s, sub: %s, dom: %s',
-                           to, listname, subaddress, domain)
+                qlog.debug('%s to: %s, list: %s, sub: %s, dom: %s',
+                           message_id, to, listname, subaddress, domain)
                 listname += '@' + domain
                 if listname not in listnames:
                     status.append(ERR_550)
                     continue
-                # The recipient is a valid mailing list; see if it's a valid
-                # sub-address, and if so, enqueue it.
+                # The recipient is a valid mailing list.  Find the subaddress
+                # if there is one, and set things up to enqueue to the proper
+                # queue runner.
                 queue = None
                 msgdata = dict(listname=listname,
                                original_size=msg.original_size)
-                if subaddress in ('bounces', 'admin'):
-                    queue = 'bounce'
-                elif subaddress == 'confirm':
-                    msgdata['to_confirm'] = True
-                    queue = 'command'
-                elif subaddress in ('join', 'subscribe'):
-                    msgdata['to_join'] = True
-                    queue = 'command'
-                elif subaddress in ('leave', 'unsubscribe'):
-                    msgdata['to_leave'] = True
-                    queue = 'command'
-                elif subaddress == 'owner':
-                    msgdata.update(dict(
-                        to_owner=True,
-                        envsender=config.mailman.site_owner,
-                        ))
-                    queue = 'in'
-                elif subaddress is None:
+                canonical_subaddress = SUBADDRESS_NAMES.get(subaddress)
+                queue = SUBADDRESS_QUEUES.get(canonical_subaddress)
+                if subaddress is None:
+                    # The message is destined for the mailing list.
                     msgdata['to_list'] = True
                     queue = 'in'
-                elif subaddress == 'request':
-                    msgdata['to_request'] = True
-                    queue = 'command'
-                else:
-                    elog.error('Unknown sub-address: %s', subaddress)
+                elif canonical_subaddress is None:
+                    # The subaddress was bogus.
+                    elog.error('%s unknown sub-address: %s',
+                               message_id, subaddress)
                     status.append(ERR_550)
                     continue
-                # If we found a valid subaddress, enqueue the message and add
+                else:
+                    # A valid subaddress.
+                    msgdata['subaddress'] = canonical_subaddress
+                    if canonical_subaddress == 'owner':
+                        msgdata.update(dict(
+                            to_owner=True,
+                            envsender=config.mailman.site_owner,
+                            ))
+                        queue = 'in'
+                # If we found a valid destination, enqueue the message and add
                 # a success status for this recipient.
                 if queue is not None:
                     config.switchboards[queue].enqueue(msg, msgdata)
+                    qlog.debug('%s subaddress: %s, queue: %s',
+                               message_id, canonical_subaddress, queue)
                     status.append('250 Ok')
             except Exception, e:
                 elog.exception('Queue detection: %s', msg['message-id'])
