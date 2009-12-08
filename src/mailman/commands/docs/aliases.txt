@@ -27,6 +27,7 @@ generation.
     ... incoming: mailman.mta.postfix.LMTP
     ... lmtp_host: lmtp.example.com
     ... lmtp_port: 24
+    ... postfix_map_cmd: /bin/true
     ... """)
 
 Let's create a mailing list and then display the transport map for it.  We'll

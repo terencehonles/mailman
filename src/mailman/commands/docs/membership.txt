@@ -255,3 +255,8 @@ unsubscribe her from the list.
 
     >>> print mlist.members.get_member('anne@example.com')
     None
+
+
+Confirmations
+=============
+

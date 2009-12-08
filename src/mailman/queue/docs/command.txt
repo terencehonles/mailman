@@ -132,7 +132,7 @@ address, and the other is the results of his email command.
     2
 
     >>> def sortkey(item):
-    ...     return item.msg['subject']
+    ...     return str(item.msg['subject'])
     >>> messages = sorted(get_queue_messages('virgin'), key=sortkey)
 
     >>> from mailman.interfaces.domain import IDomainManager
@@ -145,8 +145,8 @@ address, and the other is the results of his email command.
     ...         token = str(subject).split()[1].strip()
     ...         status = registrar.confirm(token)
     ...         assert status, 'Confirmation failed'
-    Subject: confirm ...
     Subject: The results of your email commands
+    Subject: confirm ...
 
 Similarly, to leave a mailing list, the user need only email the -leave or
 -unsubscribe address (the latter is deprecated).
