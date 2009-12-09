@@ -33,7 +33,6 @@ from zope.interface import implements
 
 from mailman.config import config
 from mailman.interfaces.archiver import IArchiver
-from mailman.interfaces.domain import IDomainManager
 
 
 
@@ -51,7 +50,7 @@ class Prototype:
     @staticmethod
     def list_url(mlist):
         """See `IArchiver`."""
-        return IDomainManager(config)[mlist.host_name].base_url
+        return mlist.domain.base_url
 
     @staticmethod
     def permalink(mlist, msg):

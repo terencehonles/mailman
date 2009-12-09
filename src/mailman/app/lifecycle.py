@@ -53,7 +53,7 @@ def create_list(fqdn_listname, owners=None):
     validate(fqdn_listname)
     # pylint: disable-msg=W0612
     listname, domain = fqdn_listname.split('@', 1)
-    if domain not in IDomainManager(config):
+    if domain not in getUtility(IDomainManager):
         raise BadDomainSpecificationError(domain)
     mlist = getUtility(IListManager).create(fqdn_listname)
     for style in config.style_manager.lookup(mlist):

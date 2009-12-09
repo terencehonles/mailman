@@ -35,7 +35,6 @@ from zope.interface import implements
 
 from mailman.config import config
 from mailman.interfaces.archiver import IArchiver
-from mailman.interfaces.domain import IDomainManager
 from mailman.utilities.string import expand
 
 
@@ -54,10 +53,9 @@ class MHonArc:
     def list_url(mlist):
         """See `IArchiver`."""
         # XXX What about private MHonArc archives?
-        web_host = IDomainManager(config)[mlist.host_name].url_host
         return expand(config.archiver.mhonarc.base_url,
                       dict(listname=mlist.fqdn_listname,
-                           hostname=web_host,
+                           hostname=mlist.domain.url_host,
                            fqdn_listname=mlist.fqdn_listname,
                            ))
 

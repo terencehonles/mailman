@@ -183,14 +183,16 @@ class CommandRunner(Runner):
                     'Invalid status: %s' % status)
                 if status == ContinueProcessing.no:
                     break
-        # All done, send the response.
-        if len(finder.command_lines) > 0:
+        # All done.  Strip blank lines and send the response.
+        lines = filter(None, (line.strip() for line in finder.command_lines))
+        if len(lines) > 0:
             print >> results, _('\n- Unprocessed:')
-            for line in finder.command_lines:
+            for line in lines:
                 print >> results, line
-        if len(finder.ignored_lines) > 0:
+        lines = filter(None, (line.strip() for line in finder.ignored_lines))
+        if len(lines) > 0:
             print >> results, _('\n- Ignored:')
-            for line in finder.ignored_lines:
+            for line in lines:
                 print >> results, line
         print >> results, _('\n- Done.')
         # Send a reply, but do not attach the original message.  This is a

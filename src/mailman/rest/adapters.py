@@ -27,10 +27,11 @@ __all__ = [
 
 from operator import attrgetter
 
+from zope.component import getUtility
 from zope.interface import implements
 from zope.publisher.interfaces import NotFound
 
-from mailman.interfaces.domain import IDomainCollection
+from mailman.interfaces.domain import IDomainCollection, IDomainManager
 from mailman.interfaces.rest import IResolvePathNames
 
 
@@ -42,22 +43,14 @@ class DomainCollection:
 
     __name__ = 'domains'
 
-    def __init__(self, manager):
-        """Initialize the adapter from an `IDomainManager`.
-
-        :param manager: The domain manager.
-        :type manager: `IDomainManager`.
-        """
-        self._manager = manager
-
     def get_domains(self):
         """See `IDomainCollection`."""
         # lazr.restful requires the return value to be a concrete list.
-        return sorted(self._manager, key=attrgetter('email_host'))
+        return sorted(getUtility(IDomainManager), key=attrgetter('email_host'))
 
     def get(self, name):
         """See `IResolvePathNames`."""
-        domain = self._manager.get(name)
+        domain = getUtility(IDomainManager).get(name)
         if domain is None:
             raise NotFound(self, name)
         return domain
@@ -65,6 +58,6 @@ class DomainCollection:
     def new(self, email_host, description=None, base_url=None,
             contact_address=None):
         """See `IDomainCollection`."""
-        value = self._manager.add(
+        value = getUtility(IDomainManager).add(
             email_host, description, base_url, contact_address)
         return value

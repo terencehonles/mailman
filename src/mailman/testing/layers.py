@@ -166,7 +166,7 @@ class ConfigLayer(MockAndMonkeyLayer):
     @classmethod
     def testSetUp(cls):
         # Add an example domain.
-        IDomainManager(config).add(
+        getUtility(IDomainManager).add(
             'example.com', 'An example domain.',
             'http://lists.example.com', 'postmaster@example.com')
         config.db.commit()

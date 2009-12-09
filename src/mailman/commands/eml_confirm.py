@@ -29,6 +29,7 @@ from zope.interface import implements
 
 from mailman.core.i18n import _
 from mailman.interfaces.command import ContinueProcessing, IEmailCommand
+from mailman.interfaces.registrar import IRegistrar
 
 
 
@@ -43,5 +44,13 @@ class Confirm:
 
     def process(self, mlist, msg, msgdata, arguments, results):
         """See `IEmailCommand`."""
-        print >> results, _('Confirmed')
-        return ContinueProcessing.yes
+        # The token must be in the arguments.
+        if len(arguments) == 0:
+            print >> results, _('No confirmation token found')
+            return ContinueProcessing.no
+        succeeded = IRegistrar(mlist.domain).confirm(arguments[0])
+        if succeeded:
+            print >> results, _('Confirmed')
+            return ContinueProcessing.yes
+        print >> results, _('Confirmation token did not match')
+        return ContinueProcessing.no

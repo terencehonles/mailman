@@ -225,8 +225,8 @@ There are some circumstances when the list administrator wants to explicitly
 set the List-ID header.  Start by creating a new domain.
 
     >>> from mailman.interfaces.domain import IDomainManager
-    >>> manager = IDomainManager(config)
-    >>> domain = manager.add('mail.example.net')
+    >>> from zope.component import getUtility
+    >>> domain = getUtility(IDomainManager).add('mail.example.net')
     >>> mlist.host_name = 'mail.example.net'
 
     >>> process(mlist, msg, {})

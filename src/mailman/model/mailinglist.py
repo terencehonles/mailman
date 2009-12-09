@@ -32,6 +32,7 @@ from storm.locals import (
     And, Bool, DateTime, Float, Int, Pickle, Reference, Store, TimeDelta,
     Unicode)
 from urlparse import urljoin
+from zope.component import getUtility
 from zope.interface import implements
 
 from mailman.config import config
@@ -210,17 +211,20 @@ class MailingList(Model):
         return '{0}@{1}'.format(self.list_name, self.host_name)
 
     @property
+    def domain(self):
+        """See `IMailingList`."""
+        return getUtility(IDomainManager)[self.host_name]
+
+    @property
     def web_host(self):
         """See `IMailingList`."""
-        return IDomainManager(config)[self.host_name]
+        return self.domain.url_host
 
     def script_url(self, target, context=None):
         """See `IMailingList`."""
-        # Find the domain for this mailing list.
-        domain = IDomainManager(config)[self.host_name]
         # XXX Handle the case for when context is not None; those would be
         # relative URLs.
-        return urljoin(domain.base_url, target + '/' + self.fqdn_listname)
+        return urljoin(self.domain.base_url, target + '/' + self.fqdn_listname)
 
     @property
     def data_path(self):

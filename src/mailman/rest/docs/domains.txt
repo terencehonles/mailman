@@ -5,8 +5,10 @@ Domains
     # The test framework starts out with an example domain, so let's delete
     # that first.
     >>> from mailman.interfaces.domain import IDomainManager
-    >>> manager = IDomainManager(config)
-    >>> manager.remove('example.com')
+    >>> from zope.component import getUtility
+    >>> domain_manager = getUtility(IDomainManager)
+
+    >>> domain_manager.remove('example.com')
     <Domain example.com...>
     >>> transaction.commit()
 
@@ -20,8 +22,8 @@ initially none.
 
 Once a domain is added though, it is accessible through the API.
 
-    >>> manager.add('example.com', 'An example domain',
-    ...             'http://lists.example.com')
+    >>> domain_manager.add(
+    ...     'example.com', 'An example domain', 'http://lists.example.com')
     <Domain example.com, An example domain,
             base_url: http://lists.example.com,
             contact_address: postmaster@example.com>
@@ -43,15 +45,17 @@ Once a domain is added though, it is accessible through the API.
 
 At the top level, all domains are returned as separate entries.
 
-    >>> manager.add('example.org',
-    ...             base_url='http://mail.example.org',
-    ...             contact_address='listmaster@example.org')
+    >>> domain_manager.add(
+    ...     'example.org',
+    ...     base_url='http://mail.example.org',
+    ...     contact_address='listmaster@example.org')
     <Domain example.org, base_url: http://mail.example.org,
             contact_address: listmaster@example.org>
-    >>> manager.add('lists.example.net',
-    ...             'Porkmasters',
-    ...             'http://example.net',
-    ...             'porkmaster@example.net')
+    >>> domain_manager.add(
+    ...     'lists.example.net',
+    ...     'Porkmasters',
+    ...     'http://example.net',
+    ...     'porkmaster@example.net')
     <Domain lists.example.net, Porkmasters,
             base_url: http://example.net,
             contact_address: porkmaster@example.net>
@@ -148,7 +152,7 @@ Now the web service knows about our new domain.
 
 And the new domain is in our database.
 
-    >>> manager['lists.example.com']
+    >>> domain_manager['lists.example.com']
     <Domain lists.example.com,
             base_url: http://lists.example.com,
             contact_address: postmaster@lists.example.com>
@@ -185,7 +189,7 @@ address.
     self_link: http://localhost:8001/3.0/domains/my.example.com
     url_host: allmy.example.com
 
-    >>> manager['my.example.com']
+    >>> domain_manager['my.example.com']
     <Domain my.example.com, My new domain,
             base_url: http://allmy.example.com,
             contact_address: helpme@example.com>

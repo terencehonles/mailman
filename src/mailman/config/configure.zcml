@@ -4,8 +4,6 @@
 
   <include package="mailman.rest" file="configure.zcml"/>
 
-  <!-- adapters -->
-
   <adapter
     for="mailman.interfaces.domain.IDomain"
     provides="mailman.interfaces.registrar.IRegistrar"
@@ -24,13 +22,11 @@
     factory="mailman.model.mailinglist.AcceptableAliasSet"
     />
 
-  <adapter
-    for="mailman.config.config.IConfiguration"
-    provides="mailman.interfaces.domain.IDomainManager"
+  <utility
     factory="mailman.model.domain.DomainManager"
+    provides="mailman.interfaces.domain.IDomainManager"
     />
 
-  <!-- utilities -->
   <utility
     factory="mailman.model.listmanager.ListManager"
     provides="mailman.interfaces.listmanager.IListManager"

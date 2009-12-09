@@ -80,7 +80,7 @@ class AdminWebServiceApplication:
         """Maps root names to resources."""
         top_level = dict(
             system=system,
-            domains=IDomainCollection(IDomainManager(config)),
+            domains=getUtility(IDomainCollection),
             lists=getUtility(IListManager),
             )
         next_step = top_level.get(name)

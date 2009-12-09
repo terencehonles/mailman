@@ -20,10 +20,9 @@ line.  When there are no mailing lists, a helpful message is displayed.
 When there are a few mailing lists, they are shown in alphabetical order by
 their fully qualified list names, with a description.
 
-    >>> from mailman.config import config
     >>> from mailman.interfaces.domain import IDomainManager
-    >>> domain_mgr = IDomainManager(config)
-    >>> domain_mgr.add('example.net')
+    >>> from zope.component import getUtility
+    >>> getUtility(IDomainManager).add('example.net')
     <Domain example.net...>
 
     >>> mlist_1 = create_list('list-one@example.com')

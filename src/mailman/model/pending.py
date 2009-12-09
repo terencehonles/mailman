@@ -134,7 +134,9 @@ class Pendings:
 
     def confirm(self, token, expunge=True):
         store = config.db.store
-        pendings = store.find(Pended, token=token)
+        # Token can come in as a unicode, but it's stored in the database as
+        # bytes.  They must be ascii.
+        pendings = store.find(Pended, token=str(token))
         if pendings.count() == 0:
             return None
         assert pendings.count() == 1, (

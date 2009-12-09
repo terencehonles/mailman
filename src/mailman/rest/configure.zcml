@@ -15,12 +15,6 @@
   <adapter factory="zope.publisher.http.HTTPCharsets" />
 
   <adapter
-    for="mailman.interfaces.domain.IDomainManager"
-    provides="mailman.interfaces.domain.IDomainCollection"
-    factory="mailman.rest.adapters.DomainCollection"
-    />
-
-  <adapter
     for="mailman.interfaces.domain.IDomain
          lazr.restful.simple.Request"
     provides="zope.traversing.browser.interfaces.IAbsoluteURL"
@@ -51,7 +45,12 @@
 
   <utility
     factory="mailman.rest.configuration.AdminWebServiceConfiguration"
-    provides="lazr.restful.interfaces.IWebServiceConfiguration">
-  </utility>
+    provides="lazr.restful.interfaces.IWebServiceConfiguration"
+    />
+
+  <utility
+    factory="mailman.rest.adapters.DomainCollection"
+    provides="mailman.interfaces.domain.IDomainCollection"
+    />
 
 </configure>

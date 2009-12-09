@@ -43,7 +43,7 @@ Now both the domain and the mailing list exist in the database.
     <mailing list "test@example.xx" at ...>
 
     >>> from mailman.interfaces.domain import IDomainManager
-    >>> IDomainManager(config).get('example.xx')
+    >>> getUtility(IDomainManager).get('example.xx')
     <Domain example.xx, base_url: http://example.xx,
             contact_address: postmaster@example.xx>
 

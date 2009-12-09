@@ -182,9 +182,9 @@ class Create:
         # Check to see if the domain exists or not.
         fqdn_listname = args.listname[0]
         listname, at, domain = fqdn_listname.partition('@')
-        domain_mgr = IDomainManager(config)
-        if domain_mgr.get(domain) is None and args.domain:
-            domain_mgr.add(domain)
+        domain_manager = getUtility(IDomainManager)
+        if domain_manager.get(domain) is None and args.domain:
+            domain_manager.add(domain)
         try:
             mlist = create_list(fqdn_listname, args.owners)
         except InvalidEmailAddress:

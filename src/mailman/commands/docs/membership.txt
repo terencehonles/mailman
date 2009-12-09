@@ -80,7 +80,8 @@ first.
 
     >>> from mailman.interfaces.usermanager import IUserManager
     >>> from zope.component import getUtility
-    >>> print getUtility(IUserManager).get_user('anne@example.com')
+    >>> user_manager = getUtility(IUserManager)
+    >>> print user_manager.get_user('anne@example.com')
     None
 
 Mailman has sent her the confirmation message.
@@ -123,11 +124,11 @@ list.
     >>> token = str(qmsg['subject']).split()[1].strip()
     >>> from mailman.interfaces.domain import IDomainManager
     >>> from mailman.interfaces.registrar import IRegistrar
-    >>> registrar = IRegistrar(IDomainManager(config)['example.com'])
+    >>> registrar = IRegistrar(getUtility(IDomainManager)['example.com'])
     >>> registrar.confirm(token)
     True
 
-    >>> user = getUtility(IUserManager).get_user('anne@example.com')
+    >>> user = user_manager.get_user('anne@example.com')
     >>> print user.real_name
     Anne Person
     >>> list(user.addresses)
@@ -153,7 +154,7 @@ Joining a second list
 
 Anne of course, is still registered.
 
-    >>> print getUtility(IUserManager).get_user('anne@example.com')
+    >>> print user_manager.get_user('anne@example.com')
     <User "Anne Person" at ...>
 
 But she is not a member of the mailing list.
@@ -207,7 +208,7 @@ Anne does not need to leave a mailing list with the same email address she's
 subscribe with.  Any of her registered, linked, and validated email addresses
 will do.
 
-    >>> anne = getUtility(IUserManager).get_user('anne@example.com')
+    >>> anne = user_manager.get_user('anne@example.com')
     >>> address = anne.register('anne.person@example.org')
 
     >>> results = Results()
@@ -260,3 +261,63 @@ unsubscribe her from the list.
 Confirmations
 =============
 
+Bart wants to join the alpha list, so he sends his subscription request.
+
+    >>> msg = message_from_string("""\
+    ... From: Bart Person <bart@example.com>
+    ...
+    ... """)
+
+    >>> command = config.commands['join']
+    >>> print command.process(mlist, msg, {}, (), Results())
+    ContinueProcessing.yes
+
+There are two messages in the virgin queue, one of which is the confirmation
+message.
+
+    >>> from mailman.testing.helpers import get_queue_messages
+    >>> for item in get_queue_messages('virgin'):
+    ...     subject = str(item.msg['subject'])
+    ...     if subject.startswith('confirm'):
+    ...         break
+    ... else:
+    ...     raise AssertionError('No confirmation message')
+    >>> token = subject.split()[1].strip()
+
+Bart is still not a user.
+
+    >>> print user_manager.get_user('bart@example.com')
+    None
+
+Bart replies to the original message, specifically keeping the Subject header
+intact except for any prefix.  Mailman matches the token and confirms Bart as
+a user of the system.
+
+    >>> msg = message_from_string("""\
+    ... From: Bart Person <bart@example.com>
+    ... To: alpha-confirm@example.com
+    ... Subject: Re: confirm {token}
+    ...
+    ... """.format(token=token))
+
+    >>> command = config.commands['confirm']
+    >>> results = Results()
+    >>> print command.process(mlist, msg, {}, (token,), results)
+    ContinueProcessing.yes
+
+    >>> print unicode(results)
+    The results of your email command are provided below.
+    <BLANKLINE>
+    Confirmed
+    <BLANKLINE>
+
+Now Bart is a user...
+
+    >>> print user_manager.get_user('bart@example.com')
+    <User "Bart Person" at ...>
+
+...and a member of the mailing list.
+
+    >>> print mlist.members.get_member('bart@example.com')
+    <Member: Bart Person <bart@example.com>
+             on alpha@example.com as MemberRole.member>

@@ -5,7 +5,8 @@ Domains
     # The test framework starts out with an example domain, so let's delete
     # that first.
     >>> from mailman.interfaces.domain import IDomainManager
-    >>> manager = IDomainManager(config)
+    >>> from zope.component import getUtility
+    >>> manager = getUtility(IDomainManager)
     >>> manager.remove('example.com')
     <Domain example.com...>
 

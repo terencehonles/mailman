@@ -88,7 +88,6 @@ class IMailingList(Interface):
         part of the posting email address.  For example, if messages are
         posted to mylist@example.com, then the list_name is 'mylist'.
         """)))
-
     host_name = exported(TextLine(
         title=_('Host name'),
         description=_("""\
@@ -107,6 +106,9 @@ class IMailingList(Interface):
         address to which messages are posted, e.g. mylist@example.com.  It is
         always comprised of the list_name + '@' + host_name.
         """)))
+
+    domain = Attribute(
+        """The `IDomain` that this mailing list is defined in.""")
 
     real_name = exported(TextLine(
         title=_('Real name'),

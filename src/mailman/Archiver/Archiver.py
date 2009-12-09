@@ -30,6 +30,7 @@ import mailbox
 
 from cStringIO import StringIO
 from string import Template
+from zope.component import getUtility
 
 from mailman import Utils
 from mailman.config import config
@@ -129,7 +130,7 @@ class Archiver:
         if self.archive_private:
             url = self.GetScriptURL('private') + '/index.html'
         else:
-            domain = IDomainManager(config).get(self.host_name)
+            domain = getUtility(IDomainManager).get(self.host_name)
             web_host = (self.host_name if domain is None else domain.url_host)
             url = Template(config.PUBLIC_ARCHIVE_URL).safe_substitute(
                 listname=self.fqdn_listname,

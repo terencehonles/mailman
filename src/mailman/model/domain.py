@@ -29,6 +29,7 @@ from urlparse import urljoin, urlparse
 from storm.locals import Int, Unicode
 from zope.interface import implements
 
+from mailman.config import config
 from mailman.database.model import Model
 from mailman.interfaces.domain import (
     BadDomainSpecificationError, IDomain, IDomainManager)
@@ -105,13 +106,8 @@ class DomainManager:
 
     implements(IDomainManager)
 
-    def __init__(self, config):
-        """Create a domain manager.
-
-        :param config: The configuration object.
-        :type config: `IConfiguration`
-        """
-        self.config = config
+    def __init__(self):
+        """Create a domain manager."""
         self.store = config.db.store
 
     def add(self, email_host,

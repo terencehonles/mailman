@@ -137,7 +137,8 @@ address, and the other is the results of his email command.
 
     >>> from mailman.interfaces.domain import IDomainManager
     >>> from mailman.interfaces.registrar import IRegistrar
-    >>> registrar = IRegistrar(IDomainManager(config)['example.com'])
+    >>> from zope.component import getUtility
+    >>> registrar = IRegistrar(getUtility(IDomainManager)['example.com'])
     >>> for item in messages:
     ...     subject = item.msg['subject']
     ...     print 'Subject:', subject
@@ -210,7 +211,7 @@ The -confirm address is also available as an implicit command.
     Message-ID: ...
     <BLANKLINE>
     - Results:
-    Confirmed
+    Confirmation token did not match
     <BLANKLINE>
     - Done.
     <BLANKLINE>

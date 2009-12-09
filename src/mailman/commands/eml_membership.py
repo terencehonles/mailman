@@ -35,7 +35,6 @@ from zope.interface import implements
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.command import ContinueProcessing, IEmailCommand
-from mailman.interfaces.domain import IDomainManager
 from mailman.interfaces.member import DeliveryMode
 from mailman.interfaces.registrar import IRegistrar
 from mailman.interfaces.usermanager import IUserManager
@@ -75,8 +74,7 @@ example:
             print >> results, _(
                 '$self.name: No valid address found to subscribe')
             return ContinueProcessing.no
-        domain = IDomainManager(config)[mlist.host_name]
-        registrar = IRegistrar(domain)
+        registrar = IRegistrar(mlist.domain)
         registrar.register(address, real_name, mlist)
         person = formataddr((real_name, address))
         print >> results, _('Confirmation email sent to $person')
