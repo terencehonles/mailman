@@ -25,6 +25,8 @@ __all__ = [
     ]
 
 
+import sys
+
 from zope.interface import implements
 
 from mailman.config import config
