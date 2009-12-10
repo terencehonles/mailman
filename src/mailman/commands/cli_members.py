@@ -51,6 +51,7 @@ class Members:
 
     def add(self, parser, command_parser):
         """See `ICLISubCommand`."""
+        self.parser = parser
         command_parser.add_argument(
             '-a', '--add',
             dest='filename',
