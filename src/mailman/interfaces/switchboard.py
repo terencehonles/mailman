@@ -32,8 +32,11 @@ from zope.interface import Interface, Attribute
 class ISwitchboard(Interface):
     """The switchboard."""
 
+    name = Attribute(
+        """The name of the switchboard's queue.""")
+
     queue_directory = Attribute(
-        """The name of the queue directory this switchboard is responsible for.
+        """The queue directory this switchboard is responsible for.
 
         This should be a subdirectory of the system-wide top-level queue
         directory.

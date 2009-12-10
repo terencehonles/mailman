@@ -153,29 +153,29 @@ class MaildirRunner(Runner):
                 msgdata = {'listname': listname}
                 # -admin is deprecated
                 if subq in ('bounces', 'admin'):
-                    queue = Switchboard(config.BOUNCEQUEUE_DIR)
+                    queue = Switchboard('bounces', config.BOUNCEQUEUE_DIR)
                 elif subq == 'confirm':
                     msgdata['toconfirm'] = 1
-                    queue = Switchboard(config.CMDQUEUE_DIR)
+                    queue = Switchboard('command', config.CMDQUEUE_DIR)
                 elif subq in ('join', 'subscribe'):
                     msgdata['tojoin'] = 1
-                    queue = Switchboard(config.CMDQUEUE_DIR)
+                    queue = Switchboard('command', config.CMDQUEUE_DIR)
                 elif subq in ('leave', 'unsubscribe'):
                     msgdata['toleave'] = 1
-                    queue = Switchboard(config.CMDQUEUE_DIR)
+                    queue = Switchboard('command', config.CMDQUEUE_DIR)
                 elif subq == 'owner':
                     msgdata.update({
                         'toowner': True,
                         'envsender': config.SITE_OWNER_ADDRESS,
                         'pipeline': config.OWNER_PIPELINE,
                         })
-                    queue = Switchboard(config.INQUEUE_DIR)
+                    queue = Switchboard('in', config.INQUEUE_DIR)
                 elif subq is None:
                     msgdata['tolist'] = 1
-                    queue = Switchboard(config.INQUEUE_DIR)
+                    queue = Switchboard('in', config.INQUEUE_DIR)
                 elif subq == 'request':
                     msgdata['torequest'] = 1
-                    queue = Switchboard(config.CMDQUEUE_DIR)
+                    queue = Switchboard('command', config.CMDQUEUE_DIR)
                 else:
                     log.error('Unknown sub-queue: %s', subq)
                     os.rename(dstname, xdstname)

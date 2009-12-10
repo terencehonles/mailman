@@ -246,7 +246,7 @@ are receiving the only remaining copy of the discarded message.
             subject=_('Content filtered message notification'))
     if mlist.filter_action == 3 and \
            config.OWNERS_CAN_PRESERVE_FILTERED_MESSAGES:
-        badq = Switchboard(config.BADQUEUE_DIR)
+        badq = Switchboard('bad', config.BADQUEUE_DIR)
         badq.enqueue(msg, msgdata)
     # Most cases also discard the message
     raise errors.DiscardMessage

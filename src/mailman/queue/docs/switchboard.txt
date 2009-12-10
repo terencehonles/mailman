@@ -11,12 +11,14 @@ instance of a switchboard is responsible for one queue directory.
     ... A test message.
     ... """)
 
-Create a switchboard by giving its queue directory.
+Create a switchboard by giving its queue name and directory.
 
     >>> import os
     >>> queue_directory = os.path.join(config.QUEUE_DIR, 'test')
     >>> from mailman.queue import Switchboard
-    >>> switchboard = Switchboard(queue_directory)
+    >>> switchboard = Switchboard('test', queue_directory)
+    >>> print switchboard.name
+    test
     >>> switchboard.queue_directory == queue_directory
     True
 
@@ -136,7 +138,7 @@ place.  These can be recovered when the switchboard is instantiated.
     ...     # Don't call .finish()
     >>> check_qfiles()
     .bak: 3
-    >>> switchboard_2 = Switchboard(queue_directory, recover=True)
+    >>> switchboard_2 = Switchboard('test', queue_directory, recover=True)
     >>> check_qfiles()
     .pck: 3
 

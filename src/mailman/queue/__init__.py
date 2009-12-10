@@ -90,12 +90,14 @@ class Switchboard:
             substitutions = config.paths
             substitutions['name'] = name
             path = expand(conf.path, substitutions)
-            config.switchboards[name] = Switchboard(path)
+            config.switchboards[name] = Switchboard(name, path)
 
-    def __init__(self, queue_directory,
+    def __init__(self, name, queue_directory,
                  slice=None, numslices=1, recover=False):
         """Create a switchboard object.
 
+        :param name: The queue name.
+        :type name: str
         :param queue_directory: The queue directory.
         :type queue_directory: str
         :param slice: The slice number for this switchboard, or None.  If not
@@ -109,6 +111,7 @@ class Switchboard:
         """
         assert (numslices & (numslices - 1)) == 0, (
             'Not a power of 2: {0}'.format(numslices))
+        self.name = name
         self.queue_directory = queue_directory
         # Create the directory if it doesn't yet exist.
         makedirs(self.queue_directory, 0770)
@@ -300,7 +303,7 @@ class Runner:
         self.queue_directory = expand(section.path, substitutions)
         numslices = int(section.instances)
         self.switchboard = Switchboard(
-            self.queue_directory, slice, numslices, True)
+            name, self.queue_directory, slice, numslices, True)
         self.sleep_time = as_timedelta(section.sleep_time)
         # sleep_time is a timedelta; turn it into a float for time.sleep().
         self.sleep_float = (86400 * self.sleep_time.days +
@@ -378,7 +381,7 @@ class Runner:
                 # intervention.
                 self._log(error)
                 # Put a marker in the metadata for unshunting.
-                msgdata['whichq'] = self.switchboard.queue_directory
+                msgdata['whichq'] = self.switchboard.name
                 # It is possible that shunting can throw an exception, e.g. a
                 # permissions problem or a MemoryError due to a really large
                 # message.  Try to be graceful.
