@@ -75,7 +75,7 @@ example:
                 '$self.name: No valid address found to subscribe')
             return ContinueProcessing.no
         registrar = IRegistrar(mlist.domain)
-        registrar.register(address, real_name, mlist)
+        registrar.register(mlist, address, real_name)
         person = formataddr((real_name, address))
         print >> results, _('Confirmation email sent to $person')
         return ContinueProcessing.yes

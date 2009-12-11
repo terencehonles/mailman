@@ -46,32 +46,37 @@ Here is a helper function to extract tokens from confirmation messages.
 Invalid email addresses
 =======================
 
-The only piece of information you need to register is the email address.
+Addresses are registered within the context of a mailing list, mostly so that
+confirmation emails can come from some place.  You also need the email
+address.
+
+    >>> mlist = create_list('alpha@example.com')
+
 Some amount of sanity checks are performed on the email address, although
 honestly, not as much as probably should be done.  Still, some patently bad
 addresses are rejected outright.
 
-    >>> registrar.register('')
+    >>> registrar.register(mlist, '')
     Traceback (most recent call last):
     ...
     InvalidEmailAddress: u''
-    >>> registrar.register('some name@example.com')
+    >>> registrar.register(mlist, 'some name@example.com')
     Traceback (most recent call last):
     ...
     InvalidEmailAddress: u'some name@example.com'
-    >>> registrar.register('<script>@example.com')
+    >>> registrar.register(mlist, '<script>@example.com')
     Traceback (most recent call last):
     ...
     InvalidEmailAddress: u'<script>@example.com'
-    >>> registrar.register('\xa0@example.com')
+    >>> registrar.register(mlist, '\xa0@example.com')
     Traceback (most recent call last):
     ...
     InvalidEmailAddress: u'\xa0@example.com'
-    >>> registrar.register('noatsign')
+    >>> registrar.register(mlist, 'noatsign')
     Traceback (most recent call last):
     ...
     InvalidEmailAddress: u'noatsign'
-    >>> registrar.register('nodom@ain')
+    >>> registrar.register(mlist, 'nodom@ain')
     Traceback (most recent call last):
     ...
     InvalidEmailAddress: u'nodom@ain'
@@ -85,7 +90,7 @@ is complete.  No IUser or IAddress is created at registration time, but a
 record is added to the pending database, and the token for that record is
 returned.
 
-    >>> token = registrar.register('aperson@example.com', 'Anne Person')
+    >>> token = registrar.register(mlist, 'aperson@example.com', 'Anne Person')
     >>> check_token(token)
     ok
 
@@ -105,10 +110,11 @@ But this address is waiting for confirmation.
     >>> from zope.component import getUtility
     >>> pendingdb = getUtility(IPendings)
 
-    >>> sorted(pendingdb.confirm(token, expunge=False).items())
-    [(u'address', u'aperson@example.com'),
-     (u'real_name', u'Anne Person'),
-     (u'type', u'registration')]
+    >>> dump_msgdata(pendingdb.confirm(token, expunge=False))
+    address  : aperson@example.com
+    list_name: alpha@example.com
+    real_name: Anne Person
+    type     : registration
 
 
 Verification by email
@@ -157,6 +163,7 @@ message is sent to the user in order to verify the registered address.
     <BLANKLINE>
     >>> dump_msgdata(qdata)
     _parsemsg           : False
+    listname            : alpha@example.com
     nodecorate          : True
     recipients          : [u'aperson@example.com']
     reduced_list_headers: True
@@ -209,7 +216,7 @@ Non-standard registrations
 If you try to confirm a registration token twice, of course only the first one
 will work.  The second one is ignored.
 
-    >>> token = registrar.register('bperson@example.com')
+    >>> token = registrar.register(mlist, 'bperson@example.com')
     >>> check_token(token)
     ok
     >>> filebase = switchboard.files[0]
@@ -229,7 +236,8 @@ confirmation step is completed.
 
     >>> user_manager.create_address('cperson@example.com')
     <Address: cperson@example.com [not verified] at ...>
-    >>> token = registrar.register('cperson@example.com', 'Claire Person')
+    >>> token = registrar.register(
+    ...     mlist, 'cperson@example.com', 'Claire Person')
     >>> print user_manager.get_user('cperson@example.com')
     None
     >>> filebase = switchboard.files[0]
@@ -245,7 +253,7 @@ confirmation step is completed.
 Even if the address being registered has already been verified, the
 registration sends a confirmation.
 
-    >>> token = registrar.register('cperson@example.com')
+    >>> token = registrar.register(mlist, 'cperson@example.com')
     >>> token is not None
     True
 
@@ -256,7 +264,7 @@ Discarding
 A confirmation token can also be discarded, say if the user changes his or her
 mind about registering.  When discarded, no IAddress or IUser is created.
 
-    >>> token = registrar.register('eperson@example.com', 'Elly Person')
+    >>> token = registrar.register(mlist, 'eperson@example.com', 'Elly Person')
     >>> check_token(token)
     ok
     >>> registrar.discard(token)
@@ -287,7 +295,7 @@ can be used.
     [<Address: Dave Person <dperson@example.com> [verified] at ...>]
     >>> dperson.register('david.person@example.com', 'David Person')
     <Address: David Person <david.person@example.com> [not verified] at ...>
-    >>> token = registrar.register('david.person@example.com')
+    >>> token = registrar.register(mlist, 'david.person@example.com')
     >>> filebase = switchboard.files[0]
     >>> qmsg, qdata = switchboard.dequeue(filebase)
     >>> switchboard.finish(filebase)
@@ -335,9 +343,8 @@ Registration and subscription
 Fred registers with Mailman at the same time that he subscribes to a mailing
 list.
 
-    >>> mlist = create_list('alpha@example.com')
     >>> token = registrar.register(
-    ...     'fred.person@example.com', 'Fred Person', mlist)
+    ...     mlist, 'fred.person@example.com', 'Fred Person')
 
 Before confirmation, Fred is not a member of the mailing list.
 

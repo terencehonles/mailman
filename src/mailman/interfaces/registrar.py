@@ -42,7 +42,7 @@ class IRegistrar(Interface):
     syntax checking, or confirmation, while this interface does.
     """
 
-    def register(address, real_name=None, mlist=None):
+    def register(mlist, address, real_name=None):
         """Register the email address, requesting verification.
 
         No IAddress or IUser is created during this step, but after successful
@@ -53,9 +53,14 @@ class IRegistrar(Interface):
 
         In all cases, the email address is sanity checked for validity first.
 
-        :param address: The textual email address to register.
+        :param mlist: The mailing list that is the focus of this registration.
+        :type mlist: `IMailingList`
+        :param address: The email address to register.
+        :type address: str
         :param real_name: The optional real name of the user.
+        :type real_name: str
         :return: The confirmation token string.
+        :rtype: str
         :raises InvalidEmailAddress: if the address is not allowed.
         """
 

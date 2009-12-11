@@ -56,7 +56,7 @@ class Registrar:
     def __init__(self, context):
         self._context = context
 
-    def register(self, address, real_name=None, mlist=None):
+    def register(self, mlist, address, real_name=None):
         """See `IUserRegistrar`."""
         # First, do validation on the email address.  If the address is
         # invalid, it will raise an exception, otherwise it just returns.
@@ -66,8 +66,7 @@ class Registrar:
             type=PendableRegistration.PEND_KEY,
             address=address,
             real_name=real_name)
-        if mlist is not None:
-            pendable['list_name'] = mlist.fqdn_listname
+        pendable['list_name'] = mlist.fqdn_listname
         token = getUtility(IPendings).add(pendable)
         # Set up some local variables for translation interpolation.
         domain = IDomain(self._context)
@@ -83,7 +82,7 @@ class Registrar:
         # Send a verification email to the address.
         text = _(resource_string('mailman.templates.en', 'verify.txt'))
         msg = UserNotification(address, confirm_address, subject, text)
-        msg.send(mlist=mlist)
+        msg.send(mlist)
         return token
 
     def confirm(self, token):
