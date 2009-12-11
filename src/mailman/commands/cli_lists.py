@@ -40,6 +40,7 @@ from mailman.email.message import UserNotification
 from mailman.interfaces.command import ICLISubCommand
 from mailman.interfaces.domain import (
     BadDomainSpecificationError, IDomainManager)
+from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.listmanager import IListManager, ListAlreadyExistsError
 
 
@@ -174,7 +175,7 @@ class Create:
                          if args.language is not None
                          else system_preferences.preferred_language.code)
         # Make sure that the selected language code is known.
-        if language_code not in config.languages.codes:
+        if language_code not in getUtility(ILanguageManager).codes:
             self.parser.error(_('Invalid language code: $language_code'))
             return
         assert len(args.listname) == 1, (
@@ -199,7 +200,7 @@ class Create:
         # Find the language associated with the code, then set the mailing
         # list's preferred language to that.  The changes then must be
         # committed to the database.
-        mlist.preferred_language = config.languages[language_code]
+        mlist.preferred_language = getUtility(ILanguageManager)[language_code]
         config.db.commit()
         # Do the notification.
         if not args.quiet:

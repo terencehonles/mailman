@@ -28,6 +28,7 @@ __all__ = [
     ]
 
 
+from zope.component import getUtility
 from zope.interface import implements
 
 from mailman import Utils
@@ -35,6 +36,7 @@ from mailman.config import config
 from mailman.core.i18n import _
 from mailman.email.message import Message, UserNotification
 from mailman.interfaces.handler import IHandler
+from mailman.interfaces.languages import ILanguageManager
 
 
 
@@ -61,10 +63,11 @@ class Acknowledge:
         original_subject = msgdata.get(
             'origsubj', msg.get('subject', _('(no subject)')))
         # Get the user's preferred language.
-        language = (config.languages[msgdata['lang']]
+        language_manager = getUtility(ILanguageManager)
+        language = (language_manager[msgdata['lang']]
                     if 'lang' in msgdata
                     else member.preferred_language)
-        charset = config.languages[language.code].charset
+        charset = language_manager[language.code].charset
         # Now get the acknowledgement template.
         realname = mlist.real_name
         text = Utils.maketext(

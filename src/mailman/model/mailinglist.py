@@ -39,6 +39,7 @@ from mailman.config import config
 from mailman.database.model import Model
 from mailman.database.types import Enum
 from mailman.interfaces.domain import IDomainManager
+from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.mailinglist import (
     IAcceptableAlias, IAcceptableAliasSet, IMailingList, Personalization)
 from mailman.interfaces.mime import FilterType
@@ -288,7 +289,7 @@ class MailingList(Model):
     @property
     def preferred_language(self):
         """See `IMailingList`."""
-        return config.languages[self._preferred_language]
+        return getUtility(ILanguageManager)[self._preferred_language]
 
     @preferred_language.setter
     def preferred_language(self, language):

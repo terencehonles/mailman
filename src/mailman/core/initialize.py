@@ -58,6 +58,7 @@ from mailman.utilities.modules import call_name
 def initialize_1(config_path=None, propagate_logs=None):
     """First initialization step.
 
+    * Zope component architecture
     * The configuration system
     * Run-time directories
     * The logging subsystem
@@ -68,6 +69,8 @@ def initialize_1(config_path=None, propagate_logs=None):
     :param propagate_logs: Should the log output propagate to stderr?
     :type propagate_logs: boolean or None
     """
+    zcml = resource_string('mailman.config', 'configure.zcml')
+    xmlconfig.string(zcml)
     # By default, set the umask so that only owner and group can read and
     # write our files.  Specifically we must have g+rw and we probably want
     # o-rwx although I think in most cases it doesn't hurt if other can read
@@ -120,11 +123,8 @@ def initialize_2(debug=False):
 def initialize_3():
     """Third initialization step.
 
-    * Zope component architecture
     * Post-hook
     """
-    zcml = resource_string('mailman.config', 'configure.zcml')
-    xmlconfig.string(zcml)
     # Run the post-hook if there is one.
     config = mailman.config.config
     if config.mailman.post_hook:

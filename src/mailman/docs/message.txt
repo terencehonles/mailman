@@ -1,3 +1,4 @@
+========
 Messages
 ========
 
@@ -6,7 +7,7 @@ email.message.Message class, but providing additional useful methods.
 
 
 User notifications
-------------------
+==================
 
 When Mailman needs to send a message to a user, it creates a UserNotification
 instance, and then calls the .send() method on this object.  This method

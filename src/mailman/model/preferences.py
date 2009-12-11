@@ -26,11 +26,13 @@ __all__ = [
 
 
 from storm.locals import *
+from zope.component import getUtility
 from zope.interface import implements
 
 from mailman.config import config
 from mailman.database.model import Model
 from mailman.database.types import Enum
+from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.preferences import IPreferences
 
 
@@ -54,7 +56,7 @@ class Preferences(Model):
     def preferred_language(self):
         if self._preferred_language is None:
             return None
-        return config.languages[self._preferred_language]
+        return getUtility(ILanguageManager)[self._preferred_language]
 
     @preferred_language.setter
     def preferred_language(self, language):

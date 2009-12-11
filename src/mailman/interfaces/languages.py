@@ -93,3 +93,6 @@ class ILanguageManager(Interface):
         :return: A flag indicating whether the language code is known or not.
         :rtype: bool
         """
+
+    def clear():
+        """Remove all language code mappings."""

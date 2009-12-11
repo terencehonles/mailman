@@ -106,10 +106,6 @@ class DomainManager:
 
     implements(IDomainManager)
 
-    def __init__(self):
-        """Create a domain manager."""
-        self.store = config.db.store
-
     def add(self, email_host,
             description=None,
             base_url=None,
@@ -121,17 +117,17 @@ class DomainManager:
             raise BadDomainSpecificationError(
                 'Duplicate email host: %s' % email_host)
         domain = Domain(email_host, description, base_url, contact_address)
-        self.store.add(domain)
+        config.db.store.add(domain)
         return domain
 
     def remove(self, email_host):
         domain = self[email_host]
-        self.store.remove(domain)
+        config.db.store.remove(domain)
         return domain
 
     def get(self, email_host, default=None):
         """See `IDomainManager`."""
-        domains = self.store.find(Domain, email_host=email_host)
+        domains = config.db.store.find(Domain, email_host=email_host)
         if domains.count() < 1:
             return default
         assert domains.count() == 1, (
@@ -147,13 +143,13 @@ class DomainManager:
         return domain
 
     def __len__(self):
-        return self.store.find(Domain).count()
+        return config.db.store.find(Domain).count()
 
     def __iter__(self):
         """See `IDomainManager`."""
-        for domain in self.store.find(Domain):
+        for domain in config.db.store.find(Domain):
             yield domain
 
     def __contains__(self, email_host):
         """See `IDomainManager`."""
-        return self.store.find(Domain, email_host=email_host).count() > 0
+        return config.db.store.find(Domain, email_host=email_host).count() > 0

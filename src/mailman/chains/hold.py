@@ -41,6 +41,7 @@ from mailman.config import config
 from mailman.core.i18n import _
 from mailman.email.message import UserNotification
 from mailman.interfaces.autorespond import IAutoResponseSet, Response
+from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.pending import IPendable, IPendings
 from mailman.interfaces.usermanager import IUserManager
 
@@ -189,8 +190,9 @@ class HoldChain(TerminalChainBase):
             text = maketext('postheld.txt', substitutions,
                             lang=send_language_code, mlist=mlist)
             adminaddr = mlist.bounces_address
-            nmsg = UserNotification(msg.sender, adminaddr, subject, text,
-                                    config.languages[send_language_code])
+            nmsg = UserNotification(
+                msg.sender, adminaddr, subject, text,
+                getUtility(ILanguageManager)[send_language_code])
             nmsg.send(mlist)
         # Now the message for the list moderators.  This one should appear to
         # come from <list>-owner since we really don't need to do bounce

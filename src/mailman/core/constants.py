@@ -25,9 +25,11 @@ __all__ = [
     ]
 
 
+from zope.component import getUtility
 from zope.interface import implements
 
 from mailman.config import config
+from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus
 from mailman.interfaces.preferences import IPreferences
 
@@ -52,7 +54,7 @@ class SystemDefaultPreferences:
     @property
     def preferred_language(self):
         """Return the system preferred language."""
-        return config.languages['en']
+        return getUtility(ILanguageManager)[config.mailman.default_language]
 
 
 

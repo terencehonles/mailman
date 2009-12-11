@@ -83,7 +83,7 @@ class Registrar:
         # Send a verification email to the address.
         text = _(resource_string('mailman.templates.en', 'verify.txt'))
         msg = UserNotification(address, confirm_address, subject, text)
-        msg.send(mlist=None)
+        msg.send(mlist=mlist)
         return token
 
     def confirm(self, token):

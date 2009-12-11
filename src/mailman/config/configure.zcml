@@ -28,6 +28,11 @@
     />
 
   <utility
+    factory="mailman.languages.manager.LanguageManager"
+    provides="mailman.interfaces.languages.ILanguageManager"
+    />
+
+  <utility
     factory="mailman.model.listmanager.ListManager"
     provides="mailman.interfaces.listmanager.IListManager"
     />

@@ -30,6 +30,7 @@ __all__ = [
 
 import os
 import sys
+import errno
 import signal
 import logging
 
@@ -137,10 +138,10 @@ def kill_watcher(sig):
     try:
         os.kill(pid, sig)
     except OSError as error:
-        if e.errno != errno.ESRCH:
+        if error.errno != errno.ESRCH:
             raise
         print >> sys.stderr, _('No child with pid: $pid')
-        print >> sys.stderr, e
+        print >> sys.stderr, error
         print >> sys.stderr, _('Stale pid file removed.')
         os.unlink(config.PIDFILE)
 

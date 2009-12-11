@@ -53,6 +53,7 @@ from zope.interface import implements
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.email.message import Message
+from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.runner import IRunner
 from mailman.interfaces.switchboard import ISwitchboard
@@ -421,11 +422,16 @@ class Runner:
         # them out of our sight.
         #
         # Find out which mailing list this message is destined for.
-        listname = unicode(msgdata.get('listname'))
-        mlist = getUtility(IListManager).get(listname)
+        missing = object()
+        listname = msgdata.get('listname', missing)
+        mlist = (None
+                 if listname is missing
+                 else getUtility(IListManager).get(unicode(listname)))
         if mlist is None:
-            elog.error('Dequeuing message destined for missing list: %s',
-                       listname)
+            elog.error(
+                '%s runner "%s" shunting message for missing list: %s',
+                msg['message-id'], self.name,
+                ('n/a' if listname is missing else listname))
             config.switchboards['shunt'].enqueue(msg, msgdata)
             return
         # Now process this message.  We also want to set up the language
@@ -434,7 +440,10 @@ class Runner:
         # will be the list's preferred language.  However, we must take
         # special care to reset the defaults, otherwise subsequent messages
         # may be translated incorrectly.
-        if msg.sender:
+        if mlist is None:
+            language_manager = getUtility(ILanguageManager)
+            language = language_manager[config.mailman.default_language]
+        elif msg.sender:
             member = mlist.members.get_member(msg.sender)
             language = (member.preferred_language
                         if member is not None

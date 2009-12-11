@@ -44,6 +44,7 @@ from email.errors import HeaderParseError
 from email.header import decode_header, make_header
 from lazr.config import as_boolean
 from string import ascii_letters, digits, whitespace
+from zope.component import getUtility
 
 import mailman.templates
 
@@ -51,6 +52,7 @@ from mailman import passwords
 from mailman.config import config
 from mailman.core import errors
 from mailman.core.i18n import _
+from mailman.interfaces.languages import ILanguageManager
 from mailman.utilities.string import expand
 
 
@@ -406,7 +408,7 @@ def findtext(templatefile, raw_dict=None, raw=False, lang=None, mlist=None):
     else:
         template = fp.read()
         fp.close()
-        charset = config.languages[lang].charset
+        charset = getUtility(ILanguageManager)[lang].charset
         template = unicode(template, charset, 'replace')
     text = template
     if raw_dict is not None:
@@ -431,7 +433,7 @@ def uncanonstr(s, lang=None):
     if lang is None:
         charset = 'us-ascii'
     else:
-        charset = config.languages[lang].charset
+        charset = getUtility(ILanguageManager)[lang].charset
     # See if the string contains characters only in the desired character
     # set.  If so, return it unchanged, except for coercing it to a byte
     # string.

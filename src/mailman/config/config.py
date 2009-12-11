@@ -32,11 +32,12 @@ import logging
 
 from lazr.config import ConfigSchema, as_boolean
 from pkg_resources import resource_stream
+from zope.component import getUtility
 from zope.interface import Interface, implements
 
 from mailman import version
 from mailman.core import errors
-from mailman.languages.manager import LanguageManager
+from mailman.interfaces.languages import ILanguageManager
 from mailman.styles.manager import StyleManager
 from mailman.utilities.filesystem import makedirs
 from mailman.utilities.modules import call_name
@@ -58,7 +59,6 @@ class Configuration:
 
     def __init__(self):
         self.switchboards = {}
-        self.languages = LanguageManager()
         self.style_manager = StyleManager()
         self.QFILE_SCHEMA_VERSION = version.QFILE_SCHEMA_VERSION
         self._config = None
@@ -73,7 +73,7 @@ class Configuration:
     def _clear(self):
         """Clear the cached configuration variables."""
         self.switchboards.clear()
-        self.languages = LanguageManager()
+        getUtility(ILanguageManager).clear()
 
     def __getattr__(self, name):
         """Delegate to the configuration object."""
@@ -143,13 +143,16 @@ class Configuration:
         Switchboard.initialize()
         # Set up all the languages.
         languages = self._config.getByCategory('language', [])
+        language_manager = getUtility(ILanguageManager)
         for language in languages:
             if language.enabled:
                 code = language.name.split('.')[1]
-                self.languages.add(
+                language_manager.add(
                     code, language.charset, language.description)
         # The default language must always be available.
-        assert self._config.mailman.default_language in self.languages
+        assert self._config.mailman.default_language in language_manager, (
+            'System default language code not defined: %s' %
+            self._config.mailman.default_language)
         self.ensure_directories_exist()
         self.style_manager.populate()
         # Set the default system language.

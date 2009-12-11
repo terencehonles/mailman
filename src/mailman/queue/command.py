@@ -32,15 +32,17 @@ import re
 import logging
 
 from StringIO import StringIO
-from email.Errors import HeaderParseError
-from email.Header import decode_header, make_header
-from email.Iterators import typed_subpart_iterator
+from email.errors import HeaderParseError
+from email.header import decode_header, make_header
+from email.iterators import typed_subpart_iterator
+from zope.component import getUtility
 from zope.interface import implements
 
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.email.message import Message, UserNotification
 from mailman.interfaces.command import ContinueProcessing, IEmailResults
+from mailman.interfaces.languages import ILanguageManager
 from mailman.queue import Runner
 
 
@@ -198,7 +200,7 @@ class CommandRunner(Runner):
         # Send a reply, but do not attach the original message.  This is a
         # compromise because the original message is often helpful in tracking
         # down problems, but it's also a vector for backscatter spam.
-        language = config.languages[msgdata['lang']]
+        language = getUtility(ILanguageManager)[msgdata['lang']]
         reply = UserNotification(msg.sender, mlist.bounces_address,
                                  _('The results of your email commands'),
                                  lang=language)

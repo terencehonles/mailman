@@ -68,3 +68,7 @@ class LanguageManager:
     def __contains__(self, code):
         """See `ILanguageManager`."""
         return code in self._languages
+
+    def clear(self):
+        """See `ILanguageManager`."""
+        self._languages.clear()

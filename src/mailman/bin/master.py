@@ -194,14 +194,15 @@ def acquire_lock(force):
         if status == WatcherState.conflict:
             # Hostname matches and process exists.
             message = _("""\
-The master queue runner lock could not be acquired because it appears as
-though another master is already running.""")
+The master queue runner lock could not be acquired because it
+appears as though another master is already running.""")
         elif status == WatcherState.stale_lock:
             # Hostname matches but the process does not exist.
             program = sys.argv[0]
             message = _("""\
-The master queue runner lock could not be acquired.  It appears as though
-there is a stale master lock.  Try re-running $program with the -s flag.""")
+The master queue runner lock could not be acquired.  It appears
+as though there is a stale master lock.  Try re-running $program
+with the -s flag.""")
         else:
             # Hostname doesn't even match.
             assert status == WatcherState.host_mismatch, (
@@ -209,9 +210,10 @@ there is a stale master lock.  Try re-running $program with the -s flag.""")
             # pylint: disable-msg=W0612
             hostname, pid, tempfile = get_lock_data()
             message = _("""\
-The master qrunner lock could not be acquired, because it appears as if some
-process on some other host may have acquired it.  We can't test for stale
-locks across host boundaries, so you'll have to clean this up manually.
+The master qrunner lock could not be acquired, because it appears
+as if some process on some other host may have acquired it.  We
+can't test for stale locks across host boundaries, so you'll have
+to clean this up manually.
 
 Lock file: $config.LOCK_FILE
 Lock host: $hostname

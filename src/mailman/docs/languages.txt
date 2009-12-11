@@ -1,3 +1,4 @@
+=========
 Languages
 =========
 
@@ -6,11 +7,15 @@ languages at run time, as well as enabling those languages for use in a
 running Mailman instance.
 
     >>> from mailman.interfaces.languages import ILanguageManager
-    >>> from mailman.languages.manager import LanguageManager
+    >>> from zope.component import getUtility
     >>> from zope.interface.verify import verifyObject
-    >>> mgr = LanguageManager()
+
+    >>> mgr = getUtility(ILanguageManager)
     >>> verifyObject(ILanguageManager, mgr)
     True
+
+    # The language manager component comes pre-populated; clear it out.
+    >>> mgr.clear()
 
 A language manager keeps track of the languages it knows about.
 
@@ -21,7 +26,7 @@ A language manager keeps track of the languages it knows about.
     
 
 Adding languages
-----------------
+================
 
 Adding a new language requires three pieces of information, the 2-character
 language code, the English description of the language, and the character set
@@ -43,7 +48,7 @@ And you can get information for all known languages.
 
 
 Other iterations
-----------------
+================
 
 You can iterate over all the known language codes.
 
@@ -83,3 +88,23 @@ You can get a particular language by its code.
     None
     >>> print mgr.get('xx', 'missing')
     missing
+
+
+Clearing the known languages
+============================
+
+The language manager can forget about all the language codes it knows about.
+
+    >>> 'en' in mgr
+    True
+
+    # Make a copy of the language manager's dictionary, so we can restore it
+    # after the test.  Currently the test layer doesn't manage this.
+    >>> saved = mgr._languages.copy()
+
+    >>> mgr.clear()
+    >>> 'en' in mgr
+    False
+
+    # Restore the data.
+    >>> mgr._languages = saved

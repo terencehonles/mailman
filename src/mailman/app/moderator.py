@@ -44,6 +44,7 @@ from mailman.core import errors
 from mailman.core.i18n import _
 from mailman.email.message import UserNotification
 from mailman.interfaces.action import Action
+from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.member import AlreadySubscribedError, DeliveryMode
 from mailman.interfaces.messages import IMessageStore
 from mailman.interfaces.requests import IRequests, RequestType
@@ -237,14 +238,14 @@ def handle_subscription(mlist, id, action, comment=None):
         _refuse(mlist, _('Subscription request'),
                 data['address'],
                 comment or _('[No reason given]'),
-                lang=config.languages[data['language']])
+                lang=getUtility(ILanguageManager)[data['language']])
     elif action is Action.accept:
         key, data = requestdb.get_request(id)
         enum_value = data['delivery_mode'].split('.')[-1]
         delivery_mode = DeliveryMode(enum_value)
         address = data['address']
         realname = data['realname']
-        language = config.languages[data['language']]
+        language = getUtility(ILanguageManager)[data['language']]
         password = data['password']
         try:
             add_member(mlist, address, realname, password,
