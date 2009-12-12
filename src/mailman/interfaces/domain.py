@@ -80,15 +80,6 @@ class IDomain(Interface):
         E.g. postmaster@example.com"""),
         ))
 
-    def confirm_address(token=''):
-        """The address used for various forms of email confirmation.
-
-        :param token: The confirmation token to use in the email address.
-        :type token: string
-        :return: The email confirmation address.
-        :rtype: string
-        """
-
     def confirm_url(token=''):
         """The url used for various forms of confirmation.
 

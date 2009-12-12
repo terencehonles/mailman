@@ -7,24 +7,14 @@ The only thing they must supply is an email address, although there is
 additional information they may supply.  All registered email addresses must
 be verified before Mailman will send them any list traffic.
 
-    >>> from mailman.app.registrar import Registrar
-    >>> from mailman.interfaces.registrar import IRegistrar
-
 The IUserManager manages users, but it does so at a fairly low level.
 Specifically, it does not handle verifications, email address syntax validity
 checks, etc.  The IRegistrar is the interface to the object handling all this
 stuff.
 
-    >>> from mailman.interfaces.domain import IDomainManager
+    >>> from mailman.interfaces.registrar import IRegistrar
     >>> from zope.component import getUtility
-    >>> domain = getUtility(IDomainManager)['example.com']
-
-Get a registrar by adapting a domain.
-
-    >>> from zope.interface.verify import verifyObject
-    >>> registrar = IRegistrar(domain)
-    >>> verifyObject(IRegistrar, registrar)
-    True
+    >>> registrar = getUtility(IRegistrar)
 
 Here is a helper function to check the token strings.
 
@@ -48,7 +38,7 @@ Invalid email addresses
 
 Addresses are registered within the context of a mailing list, mostly so that
 confirmation emails can come from some place.  You also need the email
-address.
+address of the user who is registering.
 
     >>> mlist = create_list('alpha@example.com')
 
@@ -107,7 +97,6 @@ There should be no records in the user manager for this address yet.
 But this address is waiting for confirmation.
 
     >>> from mailman.interfaces.pending import IPendings
-    >>> from zope.component import getUtility
     >>> pendingdb = getUtility(IPendings)
 
     >>> dump_msgdata(pendingdb.confirm(token, expunge=False))
@@ -123,22 +112,17 @@ Verification by email
 There is also a verification email sitting in the virgin queue now.  This
 message is sent to the user in order to verify the registered address.
 
-    >>> switchboard = config.switchboards['virgin']
-    >>> len(switchboard.files)
+    >>> from mailman.testing.helpers import get_queue_messages
+    >>> items = get_queue_messages('virgin')
+    >>> len(items)
     1
-    >>> filebase = switchboard.files[0]
-    >>> qmsg, qdata = switchboard.dequeue(filebase)
-    >>> switchboard.finish(filebase)
-    >>> print qmsg.as_string()
+    >>> print items[0].msg.as_string()
     MIME-Version: 1.0
-    Content-Type: text/plain; charset="us-ascii"
-    Content-Transfer-Encoding: 7bit
+    ...
     Subject: confirm ...
-    From: confirm-...@example.com
+    From: alpha-confirm+...@example.com
     To: aperson@example.com
-    Message-ID: <...>
-    Date: ...
-    Precedence: bulk
+    ...
     <BLANKLINE>
     Email Address Registration Confirmation
     <BLANKLINE>
@@ -161,7 +145,7 @@ message is sent to the user in order to verify the registered address.
     <BLANKLINE>
         postmaster@example.com
     <BLANKLINE>
-    >>> dump_msgdata(qdata)
+    >>> dump_msgdata(items[0].msgdata)
     _parsemsg           : False
     listname            : alpha@example.com
     nodecorate          : True
@@ -179,7 +163,7 @@ appear in a URL in the body of the message.
 
 The same token will appear in the From header.
 
-    >>> qmsg['from'] == 'confirm-' + token + '@example.com'
+    >>> qmsg['from'] == 'alpha-confirm+' + token + '@example.com'
     True
 
 It will also appear in the Subject header.
@@ -187,9 +171,9 @@ It will also appear in the Subject header.
     >>> qmsg['subject'] == 'confirm ' + token
     True
 
-The user would then validate their just registered address by clicking on a
-url or responding to the message.  Either way, the confirmation process
-extracts the token and uses that to confirm the pending registration.
+The user would then validate their registered address by clicking on a url or
+responding to the message.  Either way, the confirmation process extracts the
+token and uses that to confirm the pending registration.
 
     >>> registrar.confirm(token)
     True
@@ -219,10 +203,10 @@ will work.  The second one is ignored.
     >>> token = registrar.register(mlist, 'bperson@example.com')
     >>> check_token(token)
     ok
-    >>> filebase = switchboard.files[0]
-    >>> qmsg, qdata = switchboard.dequeue(filebase)
-    >>> switchboard.finish(filebase)
-    >>> sent_token = extract_token(qmsg)
+    >>> items = get_queue_messages('virgin')
+    >>> len(items)
+    1
+    >>> sent_token = extract_token(items[0].msg)
     >>> token == sent_token
     True
     >>> registrar.confirm(token)
@@ -240,10 +224,11 @@ confirmation step is completed.
     ...     mlist, 'cperson@example.com', 'Claire Person')
     >>> print user_manager.get_user('cperson@example.com')
     None
-    >>> filebase = switchboard.files[0]
-    >>> qmsg, qdata = switchboard.dequeue(filebase)
-    >>> switchboard.finish(filebase)
-    >>> registrar.confirm(token)
+    >>> items = get_queue_messages('virgin')
+    >>> len(items)
+    1
+    >>> sent_token = extract_token(items[0].msg)
+    >>> registrar.confirm(sent_token)
     True
     >>> user_manager.get_user('cperson@example.com')
     <User "Claire Person" at ...>
@@ -296,10 +281,12 @@ can be used.
     >>> dperson.register('david.person@example.com', 'David Person')
     <Address: David Person <david.person@example.com> [not verified] at ...>
     >>> token = registrar.register(mlist, 'david.person@example.com')
-    >>> filebase = switchboard.files[0]
-    >>> qmsg, qdata = switchboard.dequeue(filebase)
-    >>> switchboard.finish(filebase)
-    >>> registrar.confirm(token)
+
+    >>> items = get_queue_messages('virgin')
+    >>> len(items)
+    1
+    >>> sent_token = extract_token(items[0].msg)
+    >>> registrar.confirm(sent_token)
     True
     >>> user = user_manager.get_user('david.person@example.com')
     >>> user is dperson
@@ -315,14 +302,14 @@ Corner cases
 ============
 
 If you try to confirm a token that doesn't exist in the pending database, the
-confirm method will just return None.
+confirm method will just return False.
 
     >>> registrar.confirm(bytes('no token'))
     False
 
 Likewise, if you try to confirm, through the IUserRegistrar interface, a token
-that doesn't match a registration even, you will get None.  However, the
-pending even matched with that token will still be removed.
+that doesn't match a registration event, you will get None.  However, the
+pending event matched with that token will still be removed.
 
     >>> from mailman.interfaces.pending import IPendable
     >>> from zope.interface import implements

@@ -5,12 +5,6 @@
   <include package="mailman.rest" file="configure.zcml"/>
 
   <adapter
-    for="mailman.interfaces.domain.IDomain"
-    provides="mailman.interfaces.registrar.IRegistrar"
-    factory="mailman.app.registrar.Registrar"
-    />
-
-  <adapter
     for="mailman.interfaces.mailinglist.IMailingList"
     provides="mailman.interfaces.autorespond.IAutoResponseSet"
     factory="mailman.model.autorespond.AutoResponseSet"
@@ -55,6 +49,11 @@
   <utility
     factory="mailman.model.requests.Requests"
     provides="mailman.interfaces.requests.IRequests"
+    />
+
+  <utility
+    provides="mailman.interfaces.registrar.IRegistrar"
+    factory="mailman.app.registrar.Registrar"
     />
 
 </configure>

@@ -111,13 +111,9 @@ Non-existent domains cannot be removed.
 Confirmation tokens
 ===================
 
-Confirmation tokens can be added to either the email confirmation address...
+Confirmation tokens can be added to the domain's url to generate the URL to a
+page users can use to confirm their subscriptions.
 
     >>> domain = manager['example.net']
-    >>> print domain.confirm_address('xyz')
-    confirm-xyz@example.net
-
-...or the confirmation url.
-
     >>> print domain.confirm_url('abc')
     http://lists.example.net/confirm/abc

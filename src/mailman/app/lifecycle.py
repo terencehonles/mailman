@@ -66,8 +66,6 @@ def create_list(fqdn_listname, owners=None):
     for owner_address in owners:
         addr = user_manager.get_address(owner_address)
         if addr is None:
-            # XXX Make this use an IRegistrar instead, but that requires
-            # sussing out the IDomain stuff.  For now, fake it.
             user = user_manager.create_user(owner_address)
             addr = list(user.addresses)[0]
         addr.subscribe(mlist, MemberRole.owner)

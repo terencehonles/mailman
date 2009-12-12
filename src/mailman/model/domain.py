@@ -81,10 +81,6 @@ class Domain(Model):
         # no netloc member; yes it does
         return urlparse(self.base_url).netloc
 
-    def confirm_address(self, token=''):
-        """See `IDomain`."""
-        return 'confirm-{0}@{1}'.format(token, self.email_host)
-
     def confirm_url(self, token=''):
         """See `IDomain`."""
         return urljoin(self.base_url, 'confirm/' + token)

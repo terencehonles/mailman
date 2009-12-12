@@ -25,6 +25,7 @@ __all__ = [
     ]
 
 
+from zope.component import getUtility
 from zope.interface import implements
 
 from mailman.core.i18n import _
@@ -48,7 +49,7 @@ class Confirm:
         if len(arguments) == 0:
             print >> results, _('No confirmation token found')
             return ContinueProcessing.no
-        succeeded = IRegistrar(mlist.domain).confirm(arguments[0])
+        succeeded = getUtility(IRegistrar).confirm(arguments[0])
         if succeeded:
             print >> results, _('Confirmed')
             return ContinueProcessing.yes

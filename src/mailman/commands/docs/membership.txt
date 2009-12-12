@@ -1,14 +1,23 @@
-==================
-The 'join' command
-==================
+============================
+Membership changes via email
+============================
+
+Membership changes such as joining and leaving a mailing list, can be effected
+via the email interface.  The Mailman email commands 'join', 'leave', and
+'confirm' are used.
+
+
+Joining a mailing list
+======================
 
 The mail command 'join' subscribes an email address to the mailing list.
 'subscribe' is an alias for 'join'.
 
-    >>> command = config.commands['join']
-    >>> print command.name
+    >>> from mailman.commands.eml_membership import Join
+    >>> join = Join()
+    >>> print join.name
     join
-    >>> print command.description
+    >>> print join.description
     Join this mailing list.  You will be asked to confirm your subscription
     request and you may be issued a provisional password.
     <BLANKLINE>
@@ -19,22 +28,23 @@ The mail command 'join' subscribes an email address to the mailing list.
     <BLANKLINE>
         join address=myotheraddress@example.com
     <BLANKLINE>
-    >>> print command.argument_description
+    >>> print join.argument_description
     [digest=<yes|no>] [address=<address>]
 
 
 No address to join
-==================
+------------------
 
-    >>> from mailman.email.message import Message
-    >>> from mailman.queue.command import Results
     >>> mlist = create_list('alpha@example.com')
 
 When no address argument is given, the message's From address will be used.
 If that's missing though, then an error is returned.
 
+    >>> from mailman.queue.command import Results
     >>> results = Results()
-    >>> print command.process(mlist, Message(), {}, (), results)
+
+    >>> from mailman.email.message import Message
+    >>> print join.process(mlist, Message(), {}, (), results)
     ContinueProcessing.no
     >>> print unicode(results)
     The results of your email command are provided below.
@@ -44,7 +54,8 @@ If that's missing though, then an error is returned.
 
 The 'subscribe' command is an alias.
 
-    >>> subscribe = config.commands['subscribe']
+    >>> from mailman.commands.eml_membership import Subscribe
+    >>> subscribe = Subscribe()
     >>> print subscribe.name
     subscribe
     >>> results = Results()
@@ -58,7 +69,7 @@ The 'subscribe' command is an alias.
 
 
 Joining the sender
-==================
+------------------
 
 When the message has a From field, that address will be subscribed.
 
@@ -67,7 +78,7 @@ When the message has a From field, that address will be subscribed.
     ...
     ... """)
     >>> results = Results()
-    >>> print command.process(mlist, msg, {}, (), results)
+    >>> print join.process(mlist, msg, {}, (), results)
     ContinueProcessing.yes
     >>> print unicode(results)
     The results of your email command are provided below.
@@ -86,13 +97,15 @@ first.
 
 Mailman has sent her the confirmation message.
 
-    >>> virginq = config.switchboards['virgin']
-    >>> qmsg, qdata = virginq.dequeue(virginq.files[0])
-    >>> print qmsg.as_string()
+    >>> from mailman.testing.helpers import get_queue_messages
+    >>> items = get_queue_messages('virgin')
+    >>> len(items)
+    1
+    >>> print items[0].msg.as_string()
     MIME-Version: 1.0
     ...
     Subject: confirm ...
-    From: confirm-...@example.com
+    From: alpha-confirm+...@example.com
     To: anne@example.com
     ...
     <BLANKLINE>
@@ -121,12 +134,27 @@ Mailman has sent her the confirmation message.
 Once Anne confirms her registration, she will be made a member of the mailing
 list.
 
-    >>> token = str(qmsg['subject']).split()[1].strip()
-    >>> from mailman.interfaces.domain import IDomainManager
-    >>> from mailman.interfaces.registrar import IRegistrar
-    >>> registrar = IRegistrar(getUtility(IDomainManager)['example.com'])
-    >>> registrar.confirm(token)
-    True
+    >>> def extract_token(message):
+    ...     return str(message['subject']).split()[1].strip()
+    >>> token = extract_token(items[0].msg)
+
+    >>> from mailman.commands.eml_confirm import Confirm
+    >>> confirm = Confirm()
+    >>> msg = message_from_string("""\
+    ... To: alpha-confirm+{token}@example.com
+    ... From: anne@example.com
+    ... Subject: Re: confirm {token}
+    ...
+    ... """.format(token=token))
+
+    >>> results = Results()
+    >>> print confirm.process(mlist, msg, {}, (token,), results)
+    ContinueProcessing.yes
+    >>> print unicode(results)
+    The results of your email command are provided below.
+    <BLANKLINE>
+    Confirmed
+    <BLANKLINE>
 
     >>> user = user_manager.get_user('anne@example.com')
     >>> print user.real_name
@@ -142,14 +170,14 @@ Anne is also now a member of the mailing list.
 
 
 Joining a second list
-=====================
+---------------------
 
     >>> mlist_2 = create_list('baker@example.com')
     >>> msg = message_from_string("""\
     ... From: Anne Person <anne@example.com>
     ...
     ... """)
-    >>> print command.process(mlist_2, msg, {}, (), Results())
+    >>> print join.process(mlist_2, msg, {}, (), Results())
     ContinueProcessing.yes
 
 Anne of course, is still registered.
@@ -164,10 +192,25 @@ But she is not a member of the mailing list.
 
 One Anne confirms this subscription, she becomes a member of the mailing list.
 
-    >>> qmsg, qdata = virginq.dequeue(virginq.files[0])
-    >>> token = str(qmsg['subject']).split()[1].strip()
-    >>> registrar.confirm(token)
-    True
+    >>> items = get_queue_messages('virgin')
+    >>> len(items)
+    1
+    >>> token = extract_token(items[0].msg)
+    >>> msg = message_from_string("""\
+    ... To: baker-confirm+{token}@example.com
+    ... From: anne@example.com
+    ... Subject: Re: confirm {token}
+    ...
+    ... """.format(token=token))
+
+    >>> results = Results()
+    >>> print confirm.process(mlist_2, msg, {}, (token,), results)
+    ContinueProcessing.yes
+    >>> print unicode(results)
+    The results of your email command are provided below.
+    <BLANKLINE>
+    Confirmed
+    <BLANKLINE>
 
     >>> print mlist_2.members.get_member('anne@example.com')
     <Member: Anne Person <anne@example.com>
@@ -180,10 +223,11 @@ Leaving a mailing list
 The mail command 'leave' unsubscribes an email address from the mailing list.
 'unsubscribe' is an alias for 'leave'.
 
-    >>> command = config.commands['leave']
-    >>> print command.name
+    >>> from mailman.commands.eml_membership import Leave
+    >>> leave = Leave()
+    >>> print leave.name
     leave
-    >>> print command.description
+    >>> print leave.description
     Leave this mailing list.  You will be asked to confirm your request.
 
 Anne is a member of the baker@example.com mailing list, when she decides to
@@ -191,7 +235,7 @@ leave it.  She sends a message to the -leave address for the list and is sent
 a confirmation message for her request.
 
     >>> results = Results()
-    >>> print command.process(mlist_2, msg, {}, (), results)
+    >>> print leave.process(mlist_2, msg, {}, (), results)
     ContinueProcessing.yes
     >>> print unicode(results)
     The results of your email command are provided below.
@@ -225,7 +269,7 @@ will do.
 Since Anne's alternative address has not yet been verified, it can't be used
 to unsubscribe Anne from the alpha mailing list.
 
-    >>> print command.process(mlist, msg, {}, (), results)
+    >>> print leave.process(mlist, msg, {}, (), results)
     ContinueProcessing.no
 
     >>> print unicode(results)
@@ -245,7 +289,7 @@ unsubscribe her from the list.
     >>> address.verified_on = datetime.now()
 
     >>> results = Results()
-    >>> print command.process(mlist, msg, {}, (), results)
+    >>> print leave.process(mlist, msg, {}, (), results)
     ContinueProcessing.yes
 
     >>> print unicode(results)
@@ -268,21 +312,18 @@ Bart wants to join the alpha list, so he sends his subscription request.
     ...
     ... """)
 
-    >>> command = config.commands['join']
-    >>> print command.process(mlist, msg, {}, (), Results())
+    >>> print join.process(mlist, msg, {}, (), Results())
     ContinueProcessing.yes
 
 There are two messages in the virgin queue, one of which is the confirmation
 message.
 
-    >>> from mailman.testing.helpers import get_queue_messages
     >>> for item in get_queue_messages('virgin'):
-    ...     subject = str(item.msg['subject'])
-    ...     if subject.startswith('confirm'):
+    ...     if str(item.msg['subject']).startswith('confirm'):
     ...         break
     ... else:
     ...     raise AssertionError('No confirmation message')
-    >>> token = subject.split()[1].strip()
+    >>> token = extract_token(item.msg)
 
 Bart is still not a user.
 
@@ -295,14 +336,13 @@ a user of the system.
 
     >>> msg = message_from_string("""\
     ... From: Bart Person <bart@example.com>
-    ... To: alpha-confirm@example.com
+    ... To: alpha-confirm+{token}@example.com
     ... Subject: Re: confirm {token}
     ...
     ... """.format(token=token))
 
-    >>> command = config.commands['confirm']
     >>> results = Results()
-    >>> print command.process(mlist, msg, {}, (token,), results)
+    >>> print confirm.process(mlist, msg, {}, (token,), results)
     ContinueProcessing.yes
 
     >>> print unicode(results)

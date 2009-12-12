@@ -35,7 +35,6 @@ from mailman.config import config
 from mailman.core.i18n import _
 from mailman.email.message import UserNotification
 from mailman.email.validate import validate
-from mailman.interfaces.domain import IDomain
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import MemberRole
 from mailman.interfaces.pending import IPendable, IPendings
@@ -51,10 +50,9 @@ class PendableRegistration(dict):
 
 
 class Registrar:
-    implements(IRegistrar)
+    """Handle registrations and confirmations for subscriptions."""
 
-    def __init__(self, context):
-        self._context = context
+    implements(IRegistrar)
 
     def register(self, mlist, address, real_name=None):
         """See `IUserRegistrar`."""
@@ -68,17 +66,18 @@ class Registrar:
             real_name=real_name)
         pendable['list_name'] = mlist.fqdn_listname
         token = getUtility(IPendings).add(pendable)
-        # Set up some local variables for translation interpolation.
-        domain = IDomain(self._context)
-        domain_name = _(domain.email_host)
-        contact_address = domain.contact_address
-        confirm_url = domain.confirm_url(token)
-        confirm_address = domain.confirm_address(token)
-        email_address = address
-        # Calculate the message's Subject header.  XXX Have to deal with
-        # translating this subject header properly.  XXX Must deal with
-        # VERP_CONFIRMATIONS as well.
+        # There are three ways for a user to confirm their subscription.  They
+        # can reply to the original message and let the VERP'd return address
+        # encode the token, they can reply to the robot and keep the token in
+        # the Subject header, or they can click on the URL in the body of the
+        # message and confirm through the web.
         subject = 'confirm ' + token
+        confirm_address = mlist.confirm_address(token)
+        confirm_url = mlist.domain.confirm_url(token)
+        # For i18n interpolation.
+        email_address = address
+        domain_name = mlist.domain.email_host
+        contact_address = mlist.domain.contact_address
         # Send a verification email to the address.
         text = _(resource_string('mailman.templates.en', 'verify.txt'))
         msg = UserNotification(address, confirm_address, subject, text)
