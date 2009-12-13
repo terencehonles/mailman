@@ -29,7 +29,7 @@ Here is a helper function to extract tokens from confirmation messages.
     >>> import re
     >>> cre = re.compile('http://lists.example.com/confirm/(.*)')
     >>> def extract_token(msg):
-    ...     mo = cre.search(qmsg.get_payload())
+    ...     mo = cre.search(msg.get_payload())
     ...     return mo.group(1)
 
 
@@ -157,18 +157,18 @@ The confirmation token shows up in several places, each of which provides an
 easy way for the user to complete the confirmation.  The token will always
 appear in a URL in the body of the message.
 
-    >>> sent_token = extract_token(qmsg)
+    >>> sent_token = extract_token(items[0].msg)
     >>> sent_token == token
     True
 
 The same token will appear in the From header.
 
-    >>> qmsg['from'] == 'alpha-confirm+' + token + '@example.com'
+    >>> items[0].msg['from'] == 'alpha-confirm+' + token + '@example.com'
     True
 
 It will also appear in the Subject header.
 
-    >>> qmsg['subject'] == 'confirm ' + token
+    >>> items[0].msg['subject'] == 'confirm ' + token
     True
 
 The user would then validate their registered address by clicking on a url or
@@ -259,6 +259,9 @@ mind about registering.  When discarded, no IAddress or IUser is created.
     None
     >>> print user_manager.get_user('eperson@example.com')
     None
+
+    # Clear the virgin queue of all the preceding confirmation messages.
+    >>> ignore = get_queue_messages('virgin')
 
 
 Registering a new address for an existing user

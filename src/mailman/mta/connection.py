@@ -67,10 +67,10 @@ class Connection:
 
     def sendmail(self, envsender, recipients, msgtext):
         """Mimic `smtplib.SMTP.sendmail`."""
-        if as_boolean(config.mailman.devmode):
+        if as_boolean(config.devmode.enabled):
             # Force the recipients to the specified address, but still deliver
             # to the same number of recipients.
-            recipients = [config.mta.devmode_recipient] * len(recipients)
+            recipients = [config.devmode.recipient] * len(recipients)
         if self._connection is None:
             self._connect()
         try:

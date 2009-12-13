@@ -165,10 +165,9 @@ given hard-coded address.  This allows you to test Mailman without worrying
 about accidental deliveries to unintended recipients.
 
     >>> config.push('devmode', """
-    ... [mailman]
-    ... devmode: true
-    ... [mta]
-    ... devmode_recipient: zperson@example.com
+    ... [devmode]
+    ... enabled: yes
+    ... recipient: zperson@example.com
     ... """)
 
     >>> smtpd.clear()
