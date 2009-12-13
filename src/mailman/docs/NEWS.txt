@@ -9,6 +9,27 @@ Here is a history of user visible changes to Mailman.
 
 3.0 alpha 5 -- "Distant Early Warning"
 ======================================
+(2009-12-XX)
+
+Commands
+--------
+ * 'bin/dumpdb' is now 'bin/mailman qfile'
+ * 'bin/unshunt' is now 'bin/mailman unshunt'
+ * Mailman now properly handles the '-join', '-leave', and '-confirm' email
+   commands and sub-addresses.  '-subscribe' and '-unsubscribe' are aliases
+   for '-join' and '-leave' respectively.
+
+Configuration
+-------------
+ * devmode settings now live in their own [devmode] section.
+ * Mailman now searches for a configuration file using this search order.  The
+   first file that exists is used.
+   * -C config command line argument
+   * $MAILMAN_CONFIG_FILE environment variable
+   * ./mailman.cfg
+   * ~/.mailman.cfg
+   * /etc/mailman.cfg
+
 
 3.0 alpha 4 -- "Vital Signs"
 ============================
