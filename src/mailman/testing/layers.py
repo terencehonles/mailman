@@ -42,6 +42,7 @@ from zope.component import getUtility
 
 from mailman.config import config
 from mailman.core import initialize
+from mailman.core.initialize import INHIBIT_CONFIG_FILE
 from mailman.core.i18n import _
 from mailman.core.logging import get_handler
 from mailman.interfaces.domain import IDomainManager
@@ -83,7 +84,7 @@ class ConfigLayer(MockAndMonkeyLayer):
     @classmethod
     def setUp(cls):
         # Set up the basic configuration stuff.
-        initialize.initialize_1()
+        initialize.initialize_1(INHIBIT_CONFIG_FILE)
         assert cls.var_dir is None, 'Layer already set up'
         # Calculate a temporary VAR_DIR directory so that run-time artifacts
         # of the tests won't tread on the installation's data.  This also

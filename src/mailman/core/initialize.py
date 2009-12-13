@@ -32,6 +32,7 @@ __all__ = [
     'initialize_1',
     'initialize_2',
     'initialize_3',
+    'INHIBIT_CONFIG_FILE',
     ]
 
 
@@ -47,6 +48,11 @@ import mailman.core.logging
 
 from mailman.interfaces.database import IDatabase
 from mailman.utilities.modules import call_name
+
+# The test infrastructure uses this to prevent the search and loading of any
+# existing configuration file.  Otherwise the existence of say a
+# ~/.mailman.cfg file can break tests.
+INHIBIT_CONFIG_FILE = object()
 
 
 
@@ -109,6 +115,9 @@ def initialize_1(config_path=None, propagate_logs=None):
     # configuration file is searched for in the file system.
     if config_path is None:
         config_path = search_for_configuration_file()
+    elif config_path is INHIBIT_CONFIG_FILE:
+        # For the test suite, force this back to not using a config file.
+        config_path = None
     mailman.config.config.load(config_path)
     # Create the queue and log directories if they don't already exist.
     mailman.config.config.ensure_directories_exist()
