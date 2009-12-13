@@ -65,16 +65,18 @@ class Connection:
         self._connection.connect(self._host, self._port)
         self._session_count = self._sessions_per_connection
 
-    def sendmail(self, envsender, recips, msgtext):
+    def sendmail(self, envsender, recipients, msgtext):
         """Mimic `smtplib.SMTP.sendmail`."""
         if as_boolean(config.mailman.devmode):
             # Force the recipients to the specified address, but still deliver
             # to the same number of recipients.
-            recips = [config.mta.devmode_recipient] * len(recips)
+            recipients = [config.mta.devmode_recipient] * len(recipients)
         if self._connection is None:
             self._connect()
         try:
-            results = self._connection.sendmail(envsender, recips, msgtext)
+            log.debug('envsender: %s, recipients: %s, size(msgtext): %s',
+                      envsender, recipients, len(msgtext))
+            results = self._connection.sendmail(envsender, recipients, msgtext)
         except smtplib.SMTPException:
             # For safety, close this connection.  The next send attempt will
             # automatically re-open it.  Pass the exception on up.

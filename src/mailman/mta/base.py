@@ -27,6 +27,7 @@ __all__ = [
 
 
 import copy
+import socket
 import logging
 import smtplib
 
