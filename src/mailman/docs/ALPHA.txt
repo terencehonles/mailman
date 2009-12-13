@@ -14,7 +14,7 @@ things may not work yet.  Your participation is encouraged.  Your feedback and
 contributions are welcome.  Please submit bug reports on the Mailman bug
 tracker at https://bugs.launchpad.net/mailman though you will currently need
 to have a login on Launchpad to do so.  You can also send email to the
-mailman-developers mailing list.
+mailman-developers@python.org mailing list.
 
 
 Using the Alpha
@@ -26,9 +26,6 @@ for details on getting Python 2.6.
 
 Mailman 3 is now based on the `zc.buildout`_ infrastructure, which greatly
 simplifies building and testing Mailman.
-
-You will need the gettext package (specifically, the msgfmt(1) command) in
-order to build the I18N message catalogs.
 
 You do not need anything other than Python 2.6 and an internet connection
 to get all the other Mailman 3 dependencies.  Here are the commands to
@@ -59,17 +56,25 @@ anywhere, but I like to call it ``mailman.cfg``.  For any value in
 ``schema.cfg`` you want to override, just add a section header (the
 square-bracketed names) and then the key/value pair you want to override.
 
-You will need to pass the ``-C`` flag to any bin command you want to invoke,
-pointing it at your ``mailman.cfg`` file.  Or you can set the environment
-variable ``$MAILMAN_CONFIG_FILE`` to point to your configuration file.
+Mailman searches for its configuration file using the following search path.
+The first existing file found wins.
 
-You can use the ``bin/mailman`` script to create and remove mailing lists,
-display all the existing mailing lists, subscribe members, etc.  Try
-``bin/mailman --help`` for details.  You use the ``bin/mailman start`` command
-to start the queue runners.
+ * ``-C config`` command line option
+ * ``$MAILMAN_CONFIG_FILE`` environment variable
+ * ``./mailman.cfg``
+ * ``~/.mailman.cfg``
+ * ``/etc/mailman.cfg``
 
-Please note that the web u/i does **not** work yet.  Contributions are
-welcome!
+Run the ``bin/mailman info`` command to see which configuration file Mailman
+will use, and where it will put its database file.  The first time you run
+this, Mailman will also create any necessary run-time directories and log
+files.
+
+Try ``bin/mailman --help`` for more details.  You can use the commands
+``bin/mailman start`` to start the queue runner daemons, and of course
+``bin/mailman stop`` to stop them.
+
+There is no web u/i right now.  Contributions are welcome!
 
 
 .. _`zc.buildout`: http://pypi.python.org/pypi/zc.buildout
