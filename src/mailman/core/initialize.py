@@ -50,6 +50,32 @@ from mailman.utilities.modules import call_name
 
 
 
+def search_for_configuration_file():
+    """Search the file system for a configuration file to use.
+
+    This is only called if the -C command line argument was not given.
+    """
+    config_path = os.getenv('MAILMAN_CONFIG_FILE')
+    # Both None and the empty string are considered "missing".
+    if config_path and os.path.exists(config_path):
+        return config_path
+    # ./mailman.cfg
+    config_path = os.path.abspath('mailman.cfg')
+    if os.path.exists(config_path):
+        return config_path
+    # ~/.mailman.cfg
+    config_path = os.path.join(os.getenv('HOME'), '.mailman.cfg')
+    if os.path.exists(config_path):
+        return config_path
+    # /etc/mailman.cfg
+    config_path = '/etc/mailman.cfg'
+    if os.path.exists(config_path):
+        return config_path
+    # Are there any others we should search by default?
+    return None
+
+
+
 # These initialization calls are separated for the testing framework, which
 # needs to do some internal calculations after config file loading and log
 # initialization, but before database initialization.  Generally all other
@@ -78,6 +104,11 @@ def initialize_1(config_path=None, propagate_logs=None):
     # restrictive permissions in order to handle private archives, but it
     # handles that correctly.
     os.umask(007)
+    # config_path will be set if the command line argument -C is given.  That
+    # case overrides all others.  When not given on the command line, the
+    # configuration file is searched for in the file system.
+    if config_path is None:
+        config_path = search_for_configuration_file()
     mailman.config.config.load(config_path)
     # Create the queue and log directories if they don't already exist.
     mailman.config.config.ensure_directories_exist()
