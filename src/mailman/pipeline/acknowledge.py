@@ -32,14 +32,14 @@ from zope.component import getUtility
 from zope.interface import implements
 
 from mailman import Utils
-from mailman.config import config
 from mailman.core.i18n import _
-from mailman.email.message import Message, UserNotification
+from mailman.email.message import UserNotification
 from mailman.interfaces.handler import IHandler
 from mailman.interfaces.languages import ILanguageManager
 
 
 
+# pylint: disable-msg=W0232,R0201
 class Acknowledge:
     """Send an acknowledgment."""
     implements(IHandler)

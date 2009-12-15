@@ -31,7 +31,7 @@ __all__ = [
     ]
 
 
-from email.Utils import getaddresses, formataddr
+from email.utils import getaddresses, formataddr
 from zope.interface import implements
 
 from mailman.core.i18n import _
@@ -42,6 +42,7 @@ COMMASPACE = ', '
 
 
 
+# pylint: disable-msg=W0232,R0201
 class AvoidDuplicates:
     """If the user wishes it, do not send duplicates of the same message."""
 

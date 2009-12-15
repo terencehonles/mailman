@@ -39,6 +39,7 @@ from mailman.utilities.mailbox import Mailbox
 
 
 
+# pylint: disable-msg=W0232,R0201
 class ToDigest:
     """Add the message to the digest, possibly sending it."""
 
@@ -72,7 +73,7 @@ class ToDigest:
                 'digest.{0.volume}.{0.next_digest_number}.mmdf'.format(mlist))
             volume = mlist.volume
             digest_number = mlist.next_digest_number
-            bump(mlist)
+            bump_digest_number_and_volume(mlist)
             os.rename(mailbox_path, mailbox_dest)
             config.switchboards['digest'].enqueue(
                 Message(),
@@ -83,7 +84,7 @@ class ToDigest:
 
 
 
-def bump(mlist):
+def bump_digest_number_and_volume(mlist):
     """Bump the digest number and volume."""
     now = datetime.datetime.now()
     if mlist.digest_last_sent_at is None:

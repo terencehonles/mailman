@@ -42,6 +42,7 @@ from mailman.interfaces.handler import IHandler
 
 
 
+# pylint: disable-msg=W0232,R0201,W0613
 class CleanseDKIM:
     """Remove DomainKeys headers."""
 

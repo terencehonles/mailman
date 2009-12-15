@@ -68,49 +68,36 @@ log = logging.getLogger('mailman.error')
 
 
 def guess_extension(ctype, ext):
-    # mimetypes maps multiple extensions to the same type, e.g. .doc, .dot,
-    # and .wiz are all mapped to application/msword.  This sucks for finding
-    # the best reverse mapping.  If the extension is one of the giving
-    # mappings, we'll trust that, otherwise we'll just guess. :/
-    all = guess_all_extensions(ctype, strict=False)
-    if ext in all:
+    """Find the extension mapped to the given content-type.
+    
+    mimetypes maps multiple extensions to the same type, e.g. .doc, .dot, and
+    .wiz are all mapped to application/msword.  This sucks for finding the
+    best reverse mapping.  If the extension is one of the giving mappings,
+    we'll trust that, otherwise we'll just guess. :/
+    """
+    all_extensions = guess_all_extensions(ctype, strict=False)
+    if ext in all_extensions:
         return ext
-    return all and all[0]
+    return (all_extensions[0] if len(all) > 0 else [])
 
-
-
-# We're using a subclass of the standard Generator because we want to suppress
-# headers in the subparts of multiparts.  We use a hack -- the ctor argument
-# skipheaders to accomplish this.  It's set to true for the outer Message
-# object, but false for all internal objects.  We recognize that
-# sub-Generators will get created passing only mangle_from_ and maxheaderlen
-# to the ctors.
-#
-# This isn't perfect because we still get stuff like the multipart boundaries,
-# but see below for how we corrupt that to our nefarious goals.
-class ScrubberGenerator(Generator):
-    def __init__(self, outfp, mangle_from_=True,
-                 maxheaderlen=78, skipheaders=True):
-        Generator.__init__(self, outfp, mangle_from_=False)
-        self.__skipheaders = skipheaders
-
-    def _write_headers(self, msg):
-        if not self.__skipheaders:
-            Generator._write_headers(self, msg)
 
 
 def safe_strftime(fmt, t):
+    """A time.strftime() that eats exceptions, returning None instead."""
     try:
         return time.strftime(fmt, t)
     except (TypeError, ValueError, OverflowError):
         return None
 
 
-def calculate_attachments_dir(mlist, msg, msgdata):
-    # Calculate the directory that attachments for this message will go
-    # under.  To avoid inode limitations, the scheme will be:
-    # archives/private/<listname>/attachments/YYYYMMDD/<msgid-hash>/<files>
-    # Start by calculating the date-based and msgid-hash components.
+def calculate_attachments_dir(msg, msgdata):
+    """Calculate the directory for attachements.
+    
+    Calculate the directory that attachments for this message will go under.
+    To avoid inode limitations, the scheme will be:
+    archives/private/<listname>/attachments/YYYYMMDD/<msgid-hash>/<files>
+    Start by calculating the date-based and msgid-hash components.
+    """
     fmt = '%Y%m%d'
     datestr = msg.get('Date')
     if datestr:
@@ -151,6 +138,7 @@ def calculate_attachments_dir(mlist, msg, msgdata):
 
 
 def replace_payload_by_text(msg, text, charset):
+    """Replace the payload of the message with some text."""
     # TK: This is a common function in replacing the attachment and the main
     # message by a text (scrubbing).
     del msg['content-type']
@@ -164,6 +152,7 @@ def replace_payload_by_text(msg, text, charset):
 
 
 def process(mlist, msg, msgdata=None):
+    """Process the message through the scrubber."""
     sanitize = int(config.scrubber.archive_html_sanitizer)
     outer = True
     if msgdata is None:
@@ -174,8 +163,8 @@ def process(mlist, msg, msgdata=None):
         # check if the list owner want to scrub regular delivery
         if not mlist.scrub_nondigest:
             return
-    dir = calculate_attachments_dir(mlist, msg, msgdata)
-    charset = format = delsp = None
+    attachments_dir = calculate_attachments_dir(msg, msgdata)
+    charset = format_param = delsp = None
     lcset = mlist.preferred_language.charset
     lcset_out = Charset(lcset).output_charset or lcset
     # Now walk over all subparts of this message and scrub out various types
@@ -200,12 +189,12 @@ def process(mlist, msg, msgdata=None):
             # can do without having get_payload() process the parameters.
             if charset is None:
                 charset = part.get_content_charset(lcset)
-                format = part.get_param('format')
+                format_param = part.get_param('format')
                 delsp = part.get_param('delsp')
             # TK: if part is attached then check charset and scrub if none
             if part.get('content-disposition') and \
                not part.get_content_charset():
-                url = save_attachment(mlist, part, dir)
+                url = save_attachment(mlist, part, attachments_dir)
                 filename = part.get_filename(_('not available'))
                 filename = oneline(filename, lcset)
                 replace_payload_by_text(part, _("""\
@@ -229,7 +218,8 @@ URL: $url
                 # Pull it out as an attachment but leave it unescaped.  This
                 # is dangerous, but perhaps useful for heavily moderated
                 # lists.
-                url = save_attachment(mlist, part, dir, filter_html=False)
+                url = save_attachment(mlist, part, attachments_dir,
+                                      filter_html=False)
                 replace_payload_by_text(part, _("""\
 An HTML attachment was scrubbed...
 URL: $url
@@ -242,15 +232,15 @@ URL: $url
                 # non-breaking spaces, and tabs into 8 of those.  Then use a
                 # mono-space font.  Still looks hideous to me, but then I'd
                 # just as soon discard them.
-                def doreplace(s):
-                    return s.replace(' ', '&nbsp;').replace('\t', '&nbsp'*8)
-                lines = [doreplace(s) for s in payload.split('\n')]
+                lines = [s.replace(' ', '&nbsp;').replace('\t', '&nbsp' * 8)
+                         for s in payload.split('\n')]
                 payload = '<tt>\n' + BR.join(lines) + '\n</tt>\n'
                 part.set_payload(payload)
                 # We're replacing the payload with the decoded payload so this
                 # will just get in the way.
                 del part['content-transfer-encoding']
-                url = save_attachment(mlist, part, dir, filter_html=False)
+                url = save_attachment(mlist, part, attachments_dir,
+                                      filter_html=False)
                 replace_payload_by_text(part, _("""\
 An HTML attachment was scrubbed...
 URL: $url
@@ -258,7 +248,7 @@ URL: $url
         elif ctype == 'message/rfc822':
             # This part contains a submessage, so it too needs scrubbing
             submsg = part.get_payload(0)
-            url = save_attachment(mlist, part, dir)
+            url = save_attachment(mlist, part, attachments_dir)
             subject = submsg.get('subject', _('no subject'))
             date = submsg.get('date', _('no date'))
             who = submsg.get('from', _('unknown sender'))
@@ -286,7 +276,7 @@ URL: $url
             if payload is None:
                 continue
             size = len(payload)
-            url = save_attachment(mlist, part, dir)
+            url = save_attachment(mlist, part, attachments_dir)
             desc = part.get('content-description', _('not available'))
             desc = oneline(desc, lcset)
             filename = part.get_filename(_('not available'))
@@ -303,7 +293,7 @@ URL: $url
     # We still have to sanitize multipart messages to flat text because
     # Pipermail can't handle messages with list payloads.  This is a kludge;
     # def (n) clever hack ;).
-    if msg.is_multipart() and sanitize <> 2:
+    if msg.is_multipart() and sanitize != 2:
         # By default we take the charset of the first text/plain part in the
         # message, but if there was none, we'll use the list's preferred
         # language's charset.
@@ -327,7 +317,7 @@ URL: $url
                 continue
             # All parts should be scrubbed to text/plain by now.
             partctype = part.get_content_type()
-            if partctype <> 'text/plain':
+            if partctype != 'text/plain':
                 text.append(_('Skipped content of type $partctype\n'))
                 continue
             try:
@@ -372,17 +362,17 @@ URL: $url
             except (UnicodeError, LookupError, ValueError, TypeError,
                     AssertionError):
                 pass
-        if format:
-            msg.set_param('format', format)
+        if format_param:
+            msg.set_param('format', format_param)
         if delsp:
             msg.set_param('delsp', delsp)
     return msg
 
 
 
-def save_attachment(mlist, msg, dir, filter_html=True):
+def save_attachment(mlist, msg, attachments_dir, filter_html=True):
     fsdir = os.path.join(config.PRIVATE_ARCHIVE_FILE_DIR,
-                         mlist.fqdn_listname, dir)
+                         mlist.fqdn_listname, attachments_dir)
     makedirs(fsdir)
     # Figure out the attachment type and get the decoded data
     decodedpayload = msg.get_payload(decode=True)
@@ -493,7 +483,8 @@ def save_attachment(mlist, msg, dir, filter_html=True):
         base_url += '/'
     # Trailing space will definitely be a problem with format=flowed.
     # Bracket the URL instead.
-    url = '<' + base_url + '%s/%s%s%s>' % (dir, filebase, extra, ext)
+    url = '<' + base_url + '%s/%s%s%s>' % (
+        attachments_dir, filebase, extra, ext)
     return url
 
 

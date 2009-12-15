@@ -48,6 +48,7 @@ except ImportError:
 # however, we'll initialize it differently for tests.  We have to do it this
 # early so that module contents is set up before anything that needs it is
 # imported.
+# pylint: disable-msg=E0611
 if sys.argv[0].split(os.sep)[-1] == 'test':
     from mailman.testing.i18n import initialize
 else:

@@ -30,16 +30,15 @@ __all__ = [
     ]
 
 
-from lazr.config import as_boolean
 from zope.interface import implements
 
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
-from mailman.interfaces.mailinglist import Personalization
 
 
 
+# pylint: disable-msg=W0203,R0201
 class ToOutgoing:
     """Send the message to the outgoing queue."""
 

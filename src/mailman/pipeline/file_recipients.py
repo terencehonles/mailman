@@ -35,6 +35,7 @@ from mailman.interfaces.handler import IHandler
 
 
 
+# pylint: disable-msg=W0232,R0201,W0613
 class FileRecipients:
     """Get the normal delivery recipients from an include file."""
 
@@ -51,8 +52,8 @@ class FileRecipients:
         try:
             with open(filename) as fp:
                 addrs = set(line.strip() for line in fp)
-        except IOError, e:
-            if e.errno <> errno.ENOENT:
+        except IOError as error:
+            if error.errno != errno.ENOENT:
                 raise
             msgdata['recipients'] = set()
             return

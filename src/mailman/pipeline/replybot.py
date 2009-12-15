@@ -26,15 +26,13 @@ __all__ = [
 
 
 import logging
-import datetime
 
 from zope.component import getUtility
 from zope.interface import implements
 
 from mailman import Utils
-from mailman.config import config
 from mailman.core.i18n import _
-from mailman.email.message import Message, UserNotification
+from mailman.email.message import UserNotification
 from mailman.interfaces.autorespond import (
     ALWAYS_REPLY, IAutoResponseSet, Response, ResponseAction)
 from mailman.interfaces.handler import IHandler
@@ -47,6 +45,7 @@ log = logging.getLogger('mailman.error')
 
 
 
+# pylint: disable-msg=W0232,R0201,R0911
 class Replybot:
     """Send automatic responses."""
 
@@ -66,7 +65,7 @@ class Replybot:
         if ack == 'no' or msgdata.get('noack'):
             return
         precedence = msg.get('precedence', '').lower()
-        if ack <> 'yes' and precedence in ('bulk', 'junk', 'list'):
+        if ack != 'yes' and precedence in ('bulk', 'junk', 'list'):
             return
         # Check to see if the list is even configured to autorespond to this
         # email message.  Note: the incoming message processors should set the
@@ -98,7 +97,7 @@ class Replybot:
         if address is None:
             address = user_manager.create_address(msg.sender)
         grace_period = mlist.autoresponse_grace_period
-        if grace_period > ALWAYS_REPLY and ack <> 'yes':
+        if grace_period > ALWAYS_REPLY and ack != 'yes':
             last = response_set.last_response(address, response_type)
             if last is not None and last.date_sent + grace_period > today():
                 return

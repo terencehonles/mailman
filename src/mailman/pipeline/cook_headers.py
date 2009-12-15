@@ -48,10 +48,13 @@ nonascii = re.compile('[^\s!-~]')
 
 
 def uheader(mlist, s, header_name=None, continuation_ws='\t', maxlinelen=None):
-    # Get the charset to encode the string in. Then search if there is any
-    # non-ascii character is in the string. If there is and the charset is
-    # us-ascii then we use iso-8859-1 instead. If the string is ascii only
-    # we use 'us-ascii' if another charset is specified.
+    """Get the charset to encode the string in.
+
+    Then search if there is any non-ascii character is in the string.  If
+    there is and the charset is us-ascii then we use iso-8859-1 instead.  If
+    the string is ascii only we use 'us-ascii' if another charset is
+    specified.
+    """
     charset = mlist.preferred_language.charset
     if nonascii.search(s):
         # use list charset but ...
@@ -65,6 +68,7 @@ def uheader(mlist, s, header_name=None, continuation_ws='\t', maxlinelen=None):
 
 
 def process(mlist, msg, msgdata):
+    """Process the headers of the message."""
     # Set the "X-Ack: no" header if noack flag is set.
     if msgdata.get('noack'):
         del msg['x-ack']
@@ -157,7 +161,7 @@ def process(mlist, msg, msgdata):
         # Also skip Cc if this is an anonymous list as list posting address
         # is already in From and Reply-To in this case.
         if (mlist.personalize == Personalization.full and
-            mlist.reply_goes_to_list <> ReplyToMunging.point_to_list and
+            mlist.reply_goes_to_list != ReplyToMunging.point_to_list and
             not mlist.anonymous_list):
             # Watch out for existing Cc headers, merge, and remove dups.  Note
             # that RFC 2822 says only zero or one Cc header is allowed.
@@ -179,7 +183,6 @@ def process(mlist, msg, msgdata):
     if msgdata.get('_nolist') or not mlist.include_rfc2369_headers:
         return
     # This will act like an email address for purposes of formataddr()
-    cset = mlist.preferred_language.charset
     if mlist.description:
         # Don't wrap the header since here we just want to get it properly RFC
         # 2047 encoded.
@@ -237,9 +240,12 @@ def process(mlist, msg, msgdata):
 
 
 def prefix_subject(mlist, msg, msgdata):
-    # Add the subject prefix unless the message is a digest or is being fast
-    # tracked (e.g. internally crafted, delivered to a single user such as the
-    # list admin).
+    """Maybe add a subject prefix.
+    
+    Add the subject prefix unless the message is a digest or is being fast
+    tracked (e.g. internally crafted, delivered to a single user such as the
+    list admin).
+    """
     if not mlist.subject_prefix.strip():
         return
     prefix = mlist.subject_prefix
@@ -341,6 +347,7 @@ def ch_oneline(headerstr):
 
 
 
+# pylint: disable-msg=W0232,R0201
 class CookHeaders:
     """Modify message headers."""
 

@@ -43,8 +43,8 @@ from mailman.email.message import UserNotification
 ##     # situation and normal ModeratedPost reasons.  Greg Ward and Stonewall
 ##     # Ballard thought the language was too harsh and mentioned offense taken
 ##     # by some list members.  I'd still like this class's reason to be
-##     # different than the base class's reason, but we'll use this until someone
-##     # can come up with something more clever but inoffensive.
+##     # different than the base class's reason, but we'll use this until
+##     # someone can come up with something more clever but inoffensive.
 ##     #
 ##     # reason = _('Posts by member are currently quarantined for moderation')
 ##     pass

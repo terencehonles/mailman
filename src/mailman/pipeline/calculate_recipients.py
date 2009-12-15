@@ -41,6 +41,7 @@ from mailman.interfaces.member import DeliveryStatus
 
 
 
+# pylint: disable-msg=W0232,R0201
 class CalculateRecipients:
     """Calculate the regular (i.e. non-digest) recipients of the message."""
 
@@ -50,6 +51,7 @@ class CalculateRecipients:
     description = _('Calculate the regular recipients of the message.')
 
     def process(self, mlist, msg, msgdata):
+        """See `IHandler`."""
         # Short circuit if we've already calculated the recipients list,
         # regardless of whether the list is empty or not.
         if 'recipients' in msgdata:
@@ -81,9 +83,10 @@ class CalculateRecipients:
                 # Bad Urgent: password, so reject it instead of passing it on.
                 # I think it's better that the sender know they screwed up
                 # than to deliver it normally.
+                # pylint: disable-msg=W0612
                 realname = mlist.real_name
                 text = _("""\
-Your urgent message to the %(realname)s mailing list was not authorized for
+Your urgent message to the $realname mailing list was not authorized for
 delivery.  The original message as received by Mailman is attached.
 """)
                 raise errors.RejectMessage(Utils.wrap(text))
@@ -102,6 +105,7 @@ delivery.  The original message as received by Mailman is attached.
 
 
 def do_topic_filters(mlist, msg, msgdata, recipients):
+    """Filter out recipients based on topics."""
     if not mlist.topics_enabled:
         # MAS: if topics are currently disabled for the list, send to all
         # regardless of ReceiveNonmatchingTopics

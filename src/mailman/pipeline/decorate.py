@@ -28,11 +28,10 @@ __all__ = [
 import re
 import logging
 
-from email.MIMEText import MIMEText
+from email.mime.text import MIMEText
 from zope.component import getUtility
 from zope.interface import implements
 
-from mailman.config import config
 from mailman.core.i18n import _
 from mailman.email.message import Message
 from mailman.interfaces.handler import IHandler
@@ -45,7 +44,8 @@ log = logging.getLogger('mailman.error')
 
 
 def process(mlist, msg, msgdata):
-    # Digests and Mailman-craft messages should not get additional headers
+    """Decorate the message with headers and footers."""
+    # Digests and Mailman-craft messages should not get additional headers.
     if msgdata.get('isdigest') or msgdata.get('nodecorate'):
         return
     d = {}
@@ -96,7 +96,7 @@ def process(mlist, msg, msgdata):
     wrap = True
     if not msg.is_multipart() and msgtype == 'text/plain':
         # Save the RFC-3676 format parameters.
-        format = msg.get_param('format')
+        format_param = msg.get_param('format')
         delsp = msg.get_param('delsp')
         # Save 'Content-Transfer-Encoding' header in case decoration fails.
         cte = msg.get('content-transfer-encoding')
@@ -120,8 +120,8 @@ def process(mlist, msg, msgdata):
                 except UnicodeError:
                     pass
                 else:
-                    if format:
-                        msg.set_param('format', format)
+                    if format_param:
+                        msg.set_param('format', format_param)
                     if delsp:
                         msg.set_param('delsp', delsp)
                     wrap = False
@@ -196,6 +196,7 @@ def process(mlist, msg, msgdata):
 
 
 def decorate(mlist, template, extradict=None):
+    """Expand the decoration template."""
     # Create a dictionary which includes the default set of interpolation
     # variables allowed in headers and footers.  These will be augmented by
     # any key/value pairs in the extradict.
@@ -216,6 +217,7 @@ def decorate(mlist, template, extradict=None):
 
 
 
+# pylint: disable-msg=W0232,R0201
 class Decorate:
     """Decorate a message with headers and footers."""
 

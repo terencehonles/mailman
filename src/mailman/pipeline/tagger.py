@@ -26,10 +26,8 @@ __all__ = [
 
 
 import re
-import email
-import email.Errors
-import email.Iterators
-import email.Parser
+import email.iterators
+import email.parser
 
 from zope.interface import implements
 
@@ -45,6 +43,7 @@ NLTAB = '\n\t'
 
 
 def process(mlist, msg, msgdata):
+    """Tag the message for topics."""
     if not mlist.topics_enabled:
         return
     # Extract the Subject:, Keywords:, and possibly body text
@@ -60,11 +59,13 @@ def process(mlist, msg, msgdata):
     else:
         # Scan just some of the body lines
         matchlines.extend(scanbody(msg, mlist.topics_bodylines_limit))
-    matchlines = filter(None, matchlines)
+    # Filter out any 'false' items.
+    matchlines = [item for item in matchlines if item]
     # For each regular expression in the topics list, see if any of the lines
     # of interest from the message match the regexp.  If so, the message gets
     # added to the specific topics bucket.
     hits = {}
+    # pylint: disable-msg=W0612
     for name, pattern, desc, emptyflag in mlist.topics:
         pattern = OR.join(pattern.splitlines())
         cre = re.compile(pattern, re.IGNORECASE)
@@ -81,6 +82,7 @@ def process(mlist, msg, msgdata):
 
 
 def scanbody(msg, numlines=None):
+    """Scan the body for keywords."""
     # We only scan the body of the message if it is of MIME type text/plain,
     # or if the outer type is multipart/alternative and there is a text/plain
     # part.  Anything else, and the body is ignored for header-scan purposes.
@@ -100,7 +102,7 @@ def scanbody(msg, numlines=None):
     # the first numlines of body text.
     lines = []
     lineno = 0
-    reader = list(email.Iterators.body_line_iterator(msg))
+    reader = list(email.iterators.body_line_iterator(msg))
     while numlines is None or lineno < numlines:
         try:
             line = bytes(reader.pop(0))
@@ -119,13 +121,16 @@ def scanbody(msg, numlines=None):
 
 
 
-class _ForgivingParser(email.Parser.HeaderParser):
-    # Be a little more forgiving about non-header/continuation lines, since
-    # we'll just read as much as we can from "header-like" lines in the body.
-    #
+class _ForgivingParser(email.parser.HeaderParser):
+    """An lax email parser.
+
+    Be a little more forgiving about non-header/continuation lines, since
+    we'll just read as much as we can from 'header-like' lines in the body.
+    """
     # BAW: WIBNI we didn't have to cut-n-paste this whole thing just to
     # specialize the way it returns?
     def _parseheaders(self, container, fp):
+        """See `email.parser.HeaderParser`."""
         # Parse the headers, returning a list of header/value pairs.  None as
         # the header means the Unix-From header.
         lastheader = ''
