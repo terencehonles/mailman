@@ -37,6 +37,13 @@
     />
 
   <adapter
+    for="mailman.interfaces.member.IMember
+         lazr.restful.simple.Request"
+    provides="zope.traversing.browser.interfaces.IAbsoluteURL"
+    factory="mailman.rest.urls.MemberURLMapper"
+    />
+
+  <adapter
     for="zope.publisher.interfaces.NotFound
          lazr.restful.simple.Request"
     provides="zope.interface.Interface"

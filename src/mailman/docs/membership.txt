@@ -1,3 +1,4 @@
+================
 List memberships
 ================
 
@@ -55,7 +56,7 @@ When we create a mailing list, it starts out with no members...
 
 
 Administrators
---------------
+==============
 
 A mailing list's administrators are defined as union of the list's owners and
 the list's moderators.  We can add new owners or moderators to this list by
@@ -129,7 +130,7 @@ Now, both Anne and Ben are list administrators.
 
 
 Members
--------
+=======
 
 Similarly, list members are born of users being given the proper role.  It's
 more interesting here because these roles should have a preference which can
@@ -178,7 +179,7 @@ It's easy to make the list administrators members of the mailing list too.
 
 
 Finding members
----------------
+===============
 
 You can find the IMember object that is a member of a roster for a given text
 email address by using an IRoster's .get_member() method.
@@ -205,7 +206,7 @@ is returned.
 
 
 All subscribers
----------------
+===============
 
 There is also a roster containing all the subscribers of a mailing list,
 regardless of their role.
@@ -222,7 +223,7 @@ regardless of their role.
 
 
 Double subscriptions
---------------------
+====================
 
 It is an error to subscribe someone to a list with the same role twice.
 

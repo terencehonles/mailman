@@ -15,11 +15,38 @@ There are no mailing lists and no members yet.
 
 We create a mailing list, which starts out with no members.
 
-    >>> create_list('test-one@example.com')
-    <mailing list "test-one@example.com" at ...>
+    >>> mlist_one = create_list('test-one@example.com')
     >>> transaction.commit()
 
     >>> dump_json('http://localhost:8001/3.0/members')
     resource_type_link: http://localhost:8001/3.0/#members
     start: None
     total_size: 0
+
+
+Subscribers
+===========
+
+After Anne subscribes to the mailing list, her subscription is available via
+the REST interface.
+
+    >>> from mailman.interfaces.member import MemberRole
+    >>> from mailman.interfaces.usermanager import IUserManager
+    >>> from zope.component import getUtility
+    >>> user_manager = getUtility(IUserManager)
+
+    >>> anne = user_manager.create_user('aperson@example.com', 'Anne Person')
+    >>> anne_address = list(anne.addresses)[0]
+    >>> anne_address.subscribe(mlist_one, MemberRole.member)
+    <Member: Anne Person <aperson@example.com>
+             on test-one@example.com as MemberRole.member>
+    >>> transaction.commit()
+
+    >>> dump_json('http://localhost:8001/3.0/members')
+    entry 0:
+        http_etag: "a0213c9ff485ef3d24a6e2cc8ee68ed147f05398"
+        resource_type_link: http://localhost:8001/3.0/#member
+        self_link: http://localhost:8001/3.0/members/test-one@example.com/member/aperson@example.com
+    resource_type_link: http://localhost:8001/3.0/#members
+    start: 0
+    total_size: 1

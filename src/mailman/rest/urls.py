@@ -117,3 +117,17 @@ class MailingListURLMapper(TopLevelURLMapper):
     format_string = (
         '{0.schema}://{0.hostname}:{0.port}/{0.version}/'
         'lists/{0.context.fqdn_listname}')
+
+
+class MemberURLMapper(TopLevelURLMapper):
+    """Mapper of `IMember` to `IAbsoluteURL`."""
+
+    def __init__(self, context, request):
+        super(MemberURLMapper, self).__init__(context, request)
+        # Use a shorted version of the MemberRole string.
+        enum, dot, self.role = str(self.context.role).partition('.')
+
+    format_string = (
+        '{0.schema}://{0.hostname}:{0.port}/{0.version}/'
+        'members/{0.context.mailing_list}/'
+        '{0.role}/{0.context.address.address}')
