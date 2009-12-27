@@ -29,6 +29,8 @@ __all__ = [
     ]
 
 
+from lazr.restful.declarations import (
+    export_as_webservice_entry, exported)
 from munepy import Enum
 from zope.interface import Interface, Attribute
 
@@ -86,6 +88,8 @@ class AlreadySubscribedError(SubscriptionError):
 
 class IMember(Interface):
     """A member of a mailing list."""
+
+    export_as_webservice_entry()
 
     mailing_list = Attribute(
         """The mailing list subscribed to.""")

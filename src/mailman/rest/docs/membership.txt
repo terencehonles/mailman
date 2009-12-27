@@ -1,0 +1,25 @@
+==========
+Membership
+==========
+
+The REST API can be used to subscribe and unsubscribe users to mailing lists.
+A subscribed user is called a 'member'.  There is a top level collection that
+returns all the members of all known mailing lists.
+
+There are no mailing lists and no members yet.
+
+    >>> dump_json('http://localhost:8001/3.0/members')
+    resource_type_link: http://localhost:8001/3.0/#members
+    start: None
+    total_size: 0
+
+We create a mailing list, which starts out with no members.
+
+    >>> create_list('test-one@example.com')
+    <mailing list "test-one@example.com" at ...>
+    >>> transaction.commit()
+
+    >>> dump_json('http://localhost:8001/3.0/members')
+    resource_type_link: http://localhost:8001/3.0/#members
+    start: None
+    total_size: 0

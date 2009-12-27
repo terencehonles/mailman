@@ -35,6 +35,7 @@ from zope.traversing.browser.interfaces import IAbsoluteURL
 from mailman.config import config
 from mailman.core.system import system
 from mailman.interfaces.listmanager import IListManager
+from mailman.interfaces.membership import ISubscriptionService
 from mailman.rest.configuration import AdminWebServiceConfiguration
 from mailman.rest.webservice import AdminWebServiceApplication
 
@@ -84,6 +85,7 @@ class FallbackURLMapper(BasicURLMapper):
         urls = {
             system: 'system',
             getUtility(IListManager): 'lists',
+            getUtility(ISubscriptionService): 'members',
             }
         return urls[ob]
 

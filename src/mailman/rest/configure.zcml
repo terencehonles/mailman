@@ -10,6 +10,7 @@
 
   <webservice:register module="mailman.interfaces.domain" />
   <webservice:register module="mailman.interfaces.listmanager" />
+  <webservice:register module="mailman.interfaces.membership" />
   <webservice:register module="mailman.interfaces.system" />
 
   <adapter factory="zope.publisher.http.HTTPCharsets" />
@@ -51,6 +52,11 @@
   <utility
     factory="mailman.rest.adapters.DomainCollection"
     provides="mailman.interfaces.domain.IDomainCollection"
+    />
+
+  <utility
+    factory="mailman.rest.adapters.SubscriptionService"
+    provides="mailman.interfaces.membership.ISubscriptionService"
     />
 
 </configure>

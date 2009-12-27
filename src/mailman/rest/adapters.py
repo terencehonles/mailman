@@ -32,6 +32,8 @@ from zope.interface import implements
 from zope.publisher.interfaces import NotFound
 
 from mailman.interfaces.domain import IDomainCollection, IDomainManager
+from mailman.interfaces.listmanager import IListManager
+from mailman.interfaces.membership import ISubscriptionService
 from mailman.interfaces.rest import IResolvePathNames
 
 
@@ -61,3 +63,31 @@ class DomainCollection:
         value = getUtility(IDomainManager).add(
             email_host, description, base_url, contact_address)
         return value
+
+
+
+class SubscriptionService:
+    """Subscription services for the REST API."""
+
+    implements(ISubscriptionService, IResolvePathNames)
+
+    __name__ = 'members'
+
+    def get_members(self):
+        """See `ISubscriptionService`."""
+        # lazr.restful requires the return value to be a concrete list.
+        members = []
+        address_of_member = attrgetter('address.address')
+        list_manager = getUtility(IListManager)
+        for fqdn_listname in sorted(list_manager.names):
+            mailing_list = list_manager.get(fqdn_listname)
+            members.extend(
+                sorted((member for member in mailing_list.owners.members),
+                       key=address_of_member))
+            members.extend(
+                sorted((member for member in mailing_list.moderators.members),
+                       key=address_of_member))
+            members.extend(
+                sorted((member for member in mailing_list.members.members),
+                       key=address_of_member))
+        return members
