@@ -125,3 +125,47 @@ address.  Anna and Cris subscribe to this new mailing list.
     resource_type_link: http://localhost:8001/3.0/#members
     start: 0
     total_size: 5
+
+
+Owners and moderators
+=====================
+
+Mailing list owners and moderators also show up in the REST API.  Cris becomes
+an owner of the alpha mailing list and Dave becomes a moderator of the
+test-one mailing list.
+
+    >>> subscribe(mlist_one, 'Cris', MemberRole.owner)
+    >>> subscribe(mlist_two, 'Dave', MemberRole.moderator)
+    
+    >>> dump_json('http://localhost:8001/3.0/members')
+    entry 0:
+        http_etag: ...
+        resource_type_link: http://localhost:8001/3.0/#member
+        self_link: http://localhost:8001/3.0/lists/alpha@example.com/moderator/dperson@example.com
+    entry 1:
+        http_etag: ...
+        resource_type_link: http://localhost:8001/3.0/#member
+        self_link: http://localhost:8001/3.0/lists/alpha@example.com/member/aperson@example.com
+    entry 2:
+        http_etag: ...
+        resource_type_link: http://localhost:8001/3.0/#member
+        self_link: http://localhost:8001/3.0/lists/alpha@example.com/member/cperson@example.com
+    entry 3:
+        http_etag: ...
+        resource_type_link: http://localhost:8001/3.0/#member
+        self_link: http://localhost:8001/3.0/lists/test-one@example.com/owner/cperson@example.com
+    entry 4:
+        http_etag: ...
+        resource_type_link: http://localhost:8001/3.0/#member
+        self_link: http://localhost:8001/3.0/lists/test-one@example.com/member/aperson@example.com
+    entry 5:
+        http_etag: ...
+        resource_type_link: http://localhost:8001/3.0/#member
+        self_link: http://localhost:8001/3.0/lists/test-one@example.com/member/bperson@example.com
+    entry 6:
+        http_etag: ...
+        resource_type_link: http://localhost:8001/3.0/#member
+        self_link: http://localhost:8001/3.0/lists/test-one@example.com/member/cperson@example.com
+    resource_type_link: http://localhost:8001/3.0/#members
+    start: 0
+    total_size: 7
