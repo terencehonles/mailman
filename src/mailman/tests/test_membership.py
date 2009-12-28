@@ -30,7 +30,7 @@ import unittest
 
 from mailman import passwords
 from mailman.config import config
-from mailman.core.errors import NotAMemberError
+from mailman.interfaces.member import NotAMemberError
 
 
 

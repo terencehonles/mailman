@@ -93,3 +93,23 @@ class ISubscriptionService(Interface):
         :raises NoSuchListError: if the named mailing list does not exist.
         :raises ValueError: when `delivery_mode` is invalid.
         """
+
+    @operation_parameters(
+        fqdn_listname=TextLine(),
+        address=TextLine(),
+        )
+    @export_write_operation()
+    def leave(fqdn_listname, address):
+        """Unsubscribe from a mailing list.
+
+        :param fqdn_listname: The posting address of the mailing list to
+            subscribe the user to.
+        :type fqdn_listname: string
+        :param address: The address of the user getting subscribed.
+        :type address: string
+        :raises InvalidEmailAddressError: if the email address is not valid.
+        :raises NoSuchListError: if the named mailing list does not exist.
+        :raises NotAMemberError: if the given address is not a member of the
+            mailing list.
+        """
+        

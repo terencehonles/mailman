@@ -132,13 +132,17 @@ def delete_member(mlist, address, admin_notif=None, userack=None):
         this member was deleted.
     :type admin_notif: bool, or None to let the mailing list's
         `admin_notify_mchange` attribute decide.
+    :raises NotAMemberError: if the address is not a member of the
+        mailing list.
     """
     if userack is None:
         userack = mlist.send_goodbye_msg
     if admin_notif is None:
         admin_notif = mlist.admin_notify_mchanges
-    # Delete a member, for which we know the approval has been made
+    # Delete a member, for which we know the approval has been made.
     member = mlist.members.get_member(address)
+    if member is None:
+        raise NotAMemberError(mlist, address)
     language = member.preferred_language
     member.unsubscribe()
     # And send an acknowledgement to the user...

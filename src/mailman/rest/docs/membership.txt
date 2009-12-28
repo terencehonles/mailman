@@ -136,7 +136,7 @@ test-one mailing list.
 
     >>> subscribe(mlist_one, 'Cris', MemberRole.owner)
     >>> subscribe(mlist_two, 'Dave', MemberRole.moderator)
-    
+
     >>> dump_json('http://localhost:8001/3.0/members')
     entry 0:
         http_etag: ...
@@ -198,7 +198,34 @@ Elly is now a member of the mailing list.
     >>> elly
     <User "Elly Person" at ...>
 
-    >>> member_of_lists = set(member.mailing_list
-    ...                       for member in elly.memberships.members)
-    >>> member_of_lists
+    >>> set(member.mailing_list for member in elly.memberships.members)
     set([u'alpha@example.com'])
+
+    >>> dump_json('http://localhost:8001/3.0/members')
+    entry 0:
+    ...
+    entry 3:
+        http_etag: ...
+        resource_type_link: http://localhost:8001/3.0/#member
+        self_link: http://localhost:8001/3.0/lists/alpha@example.com/member/eperson@example.com
+    ...
+
+
+Leaving a mailing list
+======================
+
+Elly decides she does not want to be a member of the mailing list after all,
+so she unsubscribes from the mailing list.
+
+    # Ensure our previous reads don't keep the database lock.
+    >>> transaction.abort()
+    >>> dump_json('http://localhost:8001/3.0/members', {
+    ...           'ws.op': 'leave',
+    ...           'fqdn_listname': 'alpha@example.com',
+    ...           'address': 'eperson@example.com',
+    ...           })
+
+Elly is no longer a member of the mailing list.
+
+    >>> set(member.mailing_list for member in elly.memberships.members)
+    set([])

@@ -31,12 +31,12 @@ from zope.component import getUtility
 from zope.interface import implements
 from zope.publisher.interfaces import NotFound
 
-from mailman.app.membership import add_member
+from mailman.app.membership import add_member, delete_member
 from mailman.core.constants import system_preferences
 from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.domain import IDomainCollection, IDomainManager
 from mailman.interfaces.listmanager import IListManager, NoSuchListError
-from mailman.interfaces.member import DeliveryMode
+from mailman.interfaces.member import DeliveryMode, NotAMemberError
 from mailman.interfaces.membership import ISubscriptionService
 from mailman.interfaces.rest import IResolvePathNames
 
@@ -125,3 +125,12 @@ class SubscriptionService:
         # new to us.
         return add_member(mlist, address, real_name, None, mode,
                           system_preferences.preferred_language)
+
+    def leave(self, fqdn_listname, address):
+        """See `ISubscriptionService`."""
+        mlist = getUtility(IListManager).get(fqdn_listname)
+        if mlist is None:
+            raise NoSuchListError(fqdn_listname)
+        # XXX for now, no notification or user acknowledgement.
+        delete_member(mlist, address, False, False)
+        return ''

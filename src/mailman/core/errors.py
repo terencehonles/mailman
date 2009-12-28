@@ -58,7 +58,6 @@ class MailmanException(Exception):
 
 # "New" style membership exceptions (new w/ MM2.1)
 class MemberError(MailmanException): pass
-class NotAMemberError(MemberError): pass
 class AlreadyReceivingDigests(MemberError): pass
 class AlreadyReceivingRegularDeliveries(MemberError): pass
 class CantDigestError(MemberError): pass

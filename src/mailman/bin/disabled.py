@@ -19,7 +19,6 @@ import time
 import logging
 import optparse
 
-from mailman import errors
 from mailman import MailList
 from mailman import MemberAdaptor
 from mailman import Pending
@@ -27,6 +26,7 @@ from mailman import loginit
 from mailman.Bouncer import _BounceInfo
 from mailman.configuration import config
 from mailman.core.i18n import _
+from mailman.interfaces.member import NotAMemberError
 from mailman.version import MAILMAN_VERSION
 
 
@@ -183,12 +183,12 @@ def main():
                           member, mlist.internal_name())
                 try:
                     mlist.sendNextNotification(member)
-                except errors.NotAMemberError:
+                except NotAMemberError:
                     # There must have been some problem with the data we have
                     # on this member.  Most likely it's that they don't have a
                     # password assigned.  Log this and delete the member.
                     blog.info(
-                        'NotAMemberError when sending disabled notice: %s',
+                        'Cannot send disable notice to non-member: %s',
                         member)
                     mlist.ApprovedDeleteMember(member, 'cron/disabled')
             mlist.Save()
