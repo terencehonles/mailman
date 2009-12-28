@@ -231,6 +231,32 @@ Elly is no longer a member of the mailing list.
     set([])
 
 
+Digest delivery
+===============
+
+Fred joins the alpha mailing list but wants MIME digest delivery.
+
+    >>> transaction.abort()
+    >>> dump_json('http://localhost:8001/3.0/members', {
+    ...           'ws.op': 'join',
+    ...           'fqdn_listname': 'alpha@example.com',
+    ...           'address': 'fperson@example.com',
+    ...           'real_name': 'Fred Person',
+    ...           'delivery_mode': 'mime_digests',
+    ...           })
+    http_etag: ...
+    resource_type_link: http://localhost:8001/3.0/#member
+    self_link: http://localhost:8001/3.0/lists/alpha@example.com/member/fperson@example.com
+
+    >>> fred = user_manager.get_user('fperson@example.com')
+    >>> memberships = list(fred.memberships.members)
+    >>> len(memberships)
+    1
+    >>> memberships[0]
+    <Member: Fred Person <fperson@example.com>
+             on alpha@example.com as MemberRole.member>
+
+
 Corner cases
 ============
 
@@ -258,6 +284,17 @@ Then, she tries to leave a mailing list that does not exist.
     ...
     HTTPError: HTTP Error 400: Bad Request
 
+She then tries to leave a mailing list with a bogus address.
+
+    >>> dump_json('http://localhost:8001/3.0/members', {
+    ...           'ws.op': 'leave',
+    ...           'fqdn_listname': 'alpha@example.com',
+    ...           'address': 'elly',
+    ...           })
+    Traceback (most recent call last):
+    ...
+    HTTPError: HTTP Error 400: Bad Request
+
 For some reason, Elly tries to leave the mailing list again, but she's already
 been unsubscribed.
 
@@ -265,6 +302,30 @@ been unsubscribed.
     ...           'ws.op': 'leave',
     ...           'fqdn_listname': 'alpha@example.com',
     ...           'address': 'eperson@example.com',
+    ...           })
+    Traceback (most recent call last):
+    ...
+    HTTPError: HTTP Error 400: Bad Request
+
+Anna tries to join a mailing list she's already a member of.
+
+    >>> dump_json('http://localhost:8001/3.0/members', {
+    ...           'ws.op': 'join',
+    ...           'fqdn_listname': 'alpha@example.com',
+    ...           'address': 'aperson@example.com',
+    ...           })
+    Traceback (most recent call last):
+    ...
+    HTTPError: HTTP Error 400: Bad Request
+
+Gwen tries to join the alpha mailing list using an invalid delivery mode.
+
+    >>> dump_json('http://localhost:8001/3.0/members', {
+    ...           'ws.op': 'join',
+    ...           'fqdn_listname': 'alpha@example.com',
+    ...           'address': 'gperson@example.com',
+    ...           'real_name': 'Gwen Person',
+    ...           'delivery_mode': 'in_digests',
     ...           })
     Traceback (most recent call last):
     ...

@@ -11,6 +11,7 @@
   <webservice:register module="mailman.interfaces.domain" />
   <webservice:register module="mailman.interfaces.listmanager" />
   <webservice:register module="mailman.interfaces.membership" />
+  <webservice:register module="mailman.interfaces.rest" />
   <webservice:register module="mailman.interfaces.system" />
 
   <adapter factory="zope.publisher.http.HTTPCharsets" />
@@ -52,11 +53,12 @@
     />
 
   <!--
-    XXX 2009-12-28 Why is this necessary?  NotAMemberError is decorated with
-    @error_status(400) so it /should/ already be adaptable to
-    WebServiceExceptionView.  For some reason though rest/membership.txt fails
-    without this.
+    XXX 2009-12-28 Why are these necessary?  NotAMemberError and
+    AlreadySubscribedError are decorated with @error_status(400) so they
+    /should/ already be adaptable to WebServiceExceptionView.  For some reason
+    though rest/membership.txt fails without these.
   -->
+
   <adapter
     for="mailman.interfaces.member.NotAMemberError
          lazr.restful.simple.Request"
@@ -64,6 +66,16 @@
     factory="lazr.restful.error.WebServiceExceptionView"
     name="index.html"
     />
+
+  <adapter
+    for="mailman.interfaces.member.AlreadySubscribedError
+         lazr.restful.simple.Request"
+    provides="zope.interface.Interface"
+    factory="lazr.restful.error.WebServiceExceptionView"
+    name="index.html"
+    />
+
+  <!-- Utilities -->
 
   <utility
     factory="mailman.rest.configuration.AdminWebServiceConfiguration"

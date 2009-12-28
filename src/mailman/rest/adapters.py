@@ -38,7 +38,7 @@ from mailman.interfaces.domain import IDomainCollection, IDomainManager
 from mailman.interfaces.listmanager import IListManager, NoSuchListError
 from mailman.interfaces.member import DeliveryMode, NotAMemberError
 from mailman.interfaces.membership import ISubscriptionService
-from mailman.interfaces.rest import IResolvePathNames
+from mailman.interfaces.rest import APIValueError, IResolvePathNames
 
 
 
@@ -102,12 +102,15 @@ class SubscriptionService:
         mlist = getUtility(IListManager).get(fqdn_listname)
         if mlist is None:
             raise NoSuchListError(fqdn_listname)
-        # Convert from string to enum.  Allow ValueError exceptions to be
-        # returned by the API.  XXX 2009-12-30 Does lazr.restful intelligently
-        # handle ValueError?
-        mode = (DeliveryMode.regular
-                if delivery_mode is None
-                else DeliveryMode(delivery_mode))
+        # Convert from string to enum.  Turn Python's ValueErrors into one
+        # suitable for the REST API.
+        try:
+            mode = (DeliveryMode.regular
+                    if delivery_mode is None
+                    else DeliveryMode(delivery_mode))
+        except ValueError:
+            raise APIValueError(
+                'Invalid delivery_mode: {0}'.format(delivery_mode))
         if real_name is None:
             real_name, at, domain = address.partition('@')
             if len(at) == 0:
