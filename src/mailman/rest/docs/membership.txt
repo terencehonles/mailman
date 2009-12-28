@@ -188,7 +188,7 @@ created for her.
     ...           'address': 'eperson@example.com',
     ...           'real_name': 'Elly Person',
     ...           })
-    http_etag: "a0213c9ff485ef3d24a6e2cc8ee68ed147f05398"
+    http_etag: ...
     resource_type_link: http://localhost:8001/3.0/#member
     self_link: http://localhost:8001/3.0/lists/alpha@example.com/member/eperson@example.com
 
@@ -229,3 +229,43 @@ Elly is no longer a member of the mailing list.
 
     >>> set(member.mailing_list for member in elly.memberships.members)
     set([])
+
+
+Corner cases
+============
+
+For some reason Elly tries to join a mailing list that does not exist.
+
+    >>> dump_json('http://localhost:8001/3.0/members', {
+    ...           'ws.op': 'join',
+    ...           'fqdn_listname': 'beta@example.com',
+    ...           'address': 'eperson@example.com',
+    ...           'real_name': 'Elly Person',
+    ...           })
+    Traceback (most recent call last):
+    ...
+    HTTPError: HTTP Error 400: Bad Request
+
+Then, she tries to leave a mailing list that does not exist.
+
+    >>> dump_json('http://localhost:8001/3.0/members', {
+    ...           'ws.op': 'leave',
+    ...           'fqdn_listname': 'beta@example.com',
+    ...           'address': 'eperson@example.com',
+    ...           'real_name': 'Elly Person',
+    ...           })
+    Traceback (most recent call last):
+    ...
+    HTTPError: HTTP Error 400: Bad Request
+
+For some reason, Elly tries to leave the mailing list again, but she's already
+been unsubscribed.
+
+    >>> dump_json('http://localhost:8001/3.0/members', {
+    ...           'ws.op': 'leave',
+    ...           'fqdn_listname': 'alpha@example.com',
+    ...           'address': 'eperson@example.com',
+    ...           })
+    Traceback (most recent call last):
+    ...
+    HTTPError: HTTP Error 400: Bad Request

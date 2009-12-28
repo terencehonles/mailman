@@ -36,7 +36,8 @@ from mailman.core.i18n import _
 from mailman.email.message import OwnerNotification
 from mailman.email.validate import validate
 from mailman.interfaces.member import (
-    AlreadySubscribedError, MemberRole, MembershipIsBannedError)
+    AlreadySubscribedError, MemberRole, MembershipIsBannedError,
+    NotAMemberError)
 from mailman.interfaces.usermanager import IUserManager
 
 

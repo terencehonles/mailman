@@ -51,6 +51,20 @@
     name="index.html"
     />
 
+  <!--
+    XXX 2009-12-28 Why is this necessary?  NotAMemberError is decorated with
+    @error_status(400) so it /should/ already be adaptable to
+    WebServiceExceptionView.  For some reason though rest/membership.txt fails
+    without this.
+  -->
+  <adapter
+    for="mailman.interfaces.member.NotAMemberError
+         lazr.restful.simple.Request"
+    provides="zope.interface.Interface"
+    factory="lazr.restful.error.WebServiceExceptionView"
+    name="index.html"
+    />
+
   <utility
     factory="mailman.rest.configuration.AdminWebServiceConfiguration"
     provides="lazr.restful.interfaces.IWebServiceConfiguration"

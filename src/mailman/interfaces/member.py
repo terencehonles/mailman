@@ -78,6 +78,7 @@ class MembershipError(MailmanError):
     """Base exception for all membership errors."""
 
 
+@error_status(400)
 class AlreadySubscribedError(MembershipError):
     """The member is already subscribed to the mailing list with this role."""
 
