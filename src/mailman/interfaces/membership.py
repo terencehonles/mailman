@@ -27,8 +27,9 @@ __all__ = [
 
 from lazr.restful.declarations import (
     collection_default_content, export_as_webservice_collection,
-    export_factory_operation)
+    export_write_operation, operation_parameters)
 from zope.interface import Interface
+from zope.schema import TextLine
 
 from mailman.core.i18n import _
 from mailman.interfaces.member import IMember
@@ -52,4 +53,43 @@ class ISubscriptionService(Interface):
 
         :return: The list of all members.
         :rtype: list of `IMember`
+        """
+
+    @operation_parameters(
+        fqdn_listname=TextLine(),
+        address=TextLine(),
+        real_name=TextLine(),
+        delivery_mode=TextLine(),
+        )
+    @export_write_operation()
+    def join(fqdn_listname, address, real_name=None, delivery_mode=None):
+        """Subscribe to a mailing list.
+
+        A user for the address is created if it is not yet known to Mailman,
+        however newly registered addresses will not yet be validated.  No
+        confirmation message will be sent to the address, and the approval of
+        the subscription request is still dependent on the policy of the
+        mailing list.
+
+        :param fqdn_listname: The posting address of the mailing list to
+            subscribe the user to.
+        :type fqdn_listname: string
+        :param address: The address of the user getting subscribed.
+        :type address: string
+        :param real_name: The name of the user.  This is only used if a new
+            user is created, and it defaults to the local part of the email
+            address if not given.
+        :type real_name: string
+        :param delivery_mode: The delivery mode for this subscription.  This
+            can be one of the enum values of `DeliveryMode`.  If not given,
+            regular delivery is assumed.
+        :type delivery_mode: string
+        :return: The just created member.
+        :rtype: `IMember`
+        :raises AlreadySubscribedError: if the user is already subscribed to
+            the mailing list.
+        :raises InvalidEmailAddressError: if the email address is not valid.
+        :raises MembershipIsBannedError: if the membership is not allowed.
+        :raises NoSuchListError: if the named mailing list does not exist.
+        :raises ValueError: when `delivery_mode` is invalid.
         """

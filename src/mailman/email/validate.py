@@ -28,8 +28,8 @@ __all__ = [
 
 import re
 
-from mailman.core.errors import InvalidEmailAddress
 from mailman.email.utils import split_email
+from mailman.interfaces.address import InvalidEmailAddressError
 
 
 # What other characters should be disallowed?
@@ -42,10 +42,10 @@ def validate(address):
 
     :param address: An email address.
     :type address: string
-    :raise `InvalidEmailAddress`: when the address is deemed invalid.
+    :raise InvalidEmailAddressError: when the address is deemed invalid.
     """
     if not is_valid(address):
-        raise InvalidEmailAddress(repr(address))
+        raise InvalidEmailAddressError(repr(address))
 
 
 

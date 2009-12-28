@@ -34,9 +34,9 @@ from mailman.Utils import maketext
 from mailman.app.lifecycle import create_list, remove_list
 from mailman.config import config
 from mailman.core.constants import system_preferences
-from mailman.core.errors import InvalidEmailAddress
 from mailman.core.i18n import _
 from mailman.email.message import UserNotification
+from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.command import ICLISubCommand
 from mailman.interfaces.domain import (
     BadDomainSpecificationError, IDomainManager)
@@ -188,7 +188,7 @@ class Create:
             domain_manager.add(domain)
         try:
             mlist = create_list(fqdn_listname, args.owners)
-        except InvalidEmailAddress:
+        except InvalidEmailAddressError:
             self.parser.error(_('Illegal list name: $fqdn_listname'))
             return
         except ListAlreadyExistsError:

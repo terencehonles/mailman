@@ -35,7 +35,8 @@ from mailman.core import errors
 from mailman.core.i18n import _
 from mailman.email.message import OwnerNotification
 from mailman.email.validate import validate
-from mailman.interfaces.member import AlreadySubscribedError, MemberRole
+from mailman.interfaces.member import (
+    AlreadySubscribedError, MemberRole, MembershipIsBannedError)
 from mailman.interfaces.usermanager import IUserManager
 
 
@@ -58,6 +59,12 @@ def add_member(mlist, address, realname, password, delivery_mode, language):
     :type delivery_mode: DeliveryMode
     :param language: The language that the subscriber is going to use.
     :type language: string
+    :return: The just created member.
+    :rtype: `IMember`
+    :raises AlreadySubscribedError: if the user is already subscribed to
+        the mailing list.
+    :raises InvalidEmailAddressError: if the email address is not valid.
+    :raises MembershipIsBannedError: if the membership is not allowed.
     """
     # Let's be extra cautious.
     validate(address)
@@ -68,7 +75,7 @@ def add_member(mlist, address, realname, password, delivery_mode, language):
     # confirmations.
     pattern = Utils.get_pattern(address, mlist.ban_list)
     if pattern:
-        raise errors.MembershipIsBanned(pattern)
+        raise MembershipIsBannedError(mlist, address)
     # Do the actual addition.  First, see if there's already a user linked
     # with the given address.
     user_manager = getUtility(IUserManager)
@@ -110,6 +117,7 @@ def add_member(mlist, address, realname, password, delivery_mode, language):
         member.preferences.delivery_mode = delivery_mode
 ##     mlist.setMemberOption(email, config.Moderate,
 ##                          mlist.default_member_moderation)
+    return member
 
 
 

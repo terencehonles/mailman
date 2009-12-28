@@ -47,7 +47,7 @@ It is an error to create a mailing list that isn't a fully qualified list name
     >>> list_manager.create('foo')
     Traceback (most recent call last):
     ...
-    InvalidEmailAddress: foo
+    InvalidEmailAddressError: foo
 
 
 Deleting a mailing list

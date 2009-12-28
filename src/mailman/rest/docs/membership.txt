@@ -169,3 +169,36 @@ test-one mailing list.
     resource_type_link: http://localhost:8001/3.0/#members
     start: 0
     total_size: 7
+
+
+Joining a mailing list
+======================
+
+A user can be subscribed to a mailing list via the REST API.  Actually,
+addresses not users are subscribed to mailing lists, but addresses are always
+tied to users.  A subscribed user is called a member.
+
+Elly subscribes to the alpha mailing list.  By default, get gets a regular
+delivery.  Since Elly's email address is not yet known to Mailman, a user is
+created for her.
+
+    >>> dump_json('http://localhost:8001/3.0/members', {
+    ...           'ws.op': 'join',
+    ...           'fqdn_listname': 'alpha@example.com',
+    ...           'address': 'eperson@example.com',
+    ...           'real_name': 'Elly Person',
+    ...           })
+    http_etag: "a0213c9ff485ef3d24a6e2cc8ee68ed147f05398"
+    resource_type_link: http://localhost:8001/3.0/#member
+    self_link: http://localhost:8001/3.0/lists/alpha@example.com/member/eperson@example.com
+
+Elly is now a member of the mailing list.
+
+    >>> elly = user_manager.get_user('eperson@example.com')
+    >>> elly
+    <User "Elly Person" at ...>
+
+    >>> member_of_lists = set(member.mailing_list
+    ...                       for member in elly.memberships.members)
+    >>> member_of_lists
+    set([u'alpha@example.com'])

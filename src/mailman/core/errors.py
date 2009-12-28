@@ -15,7 +15,16 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Mailman errors."""
+"""Legacy Mailman exceptions.
+
+This module is largely obsolete, though not all exceptions in use have been
+migrated to their proper location.  There are still a number of Mailman 2.1
+exceptions floating about in here too.
+
+The right place for exceptions is in the interface module for their related
+interfaces.
+"""
+
 
 from __future__ import absolute_import, unicode_literals
 
@@ -29,18 +38,14 @@ __all__ = [
     'EmailAddressError',
     'HandlerError',
     'HoldMessage',
-    'HostileSubscriptionError',
-    'InvalidEmailAddress',
     'LostHeldMessage',
     'MailmanError',
     'MailmanException',
     'MemberError',
-    'MembershipIsBanned',
     'MustDigestError',
     'NotAMemberError',
     'PasswordError',
     'RejectMessage',
-    'SubscriptionError',
     ]
 
 
@@ -58,7 +63,6 @@ class AlreadyReceivingDigests(MemberError): pass
 class AlreadyReceivingRegularDeliveries(MemberError): pass
 class CantDigestError(MemberError): pass
 class MustDigestError(MemberError): pass
-class MembershipIsBanned(MemberError): pass
 
 
 
@@ -68,17 +72,6 @@ class MembershipIsBanned(MemberError): pass
 class MailmanError(MailmanException):
     """Base class for all Mailman errors."""
     pass
-
-
-
-# Exception hierarchy for bad email address errors that can be raised from
-# mailman.email.validate.validate()
-class EmailAddressError(MailmanError):
-    """Base class for email address validation errors."""
-
-
-class InvalidEmailAddress(EmailAddressError):
-    """Email address is invalid."""
 
 
 
@@ -131,20 +124,6 @@ class RejectMessage(HandlerError):
         else:
             notice += '\n\n'
         self.notice = notice
-
-
-
-# Subscription exceptions
-class SubscriptionError(MailmanError):
-    """Subscription errors base class."""
-
-
-class HostileSubscriptionError(SubscriptionError):
-    """A cross-subscription attempt was made.
-
-    This exception gets raised when an invitee attempts to use the
-    invitation to cross-subscribe to some other mailing list.
-    """
 
 
 

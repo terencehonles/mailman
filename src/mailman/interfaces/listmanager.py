@@ -23,6 +23,7 @@ __metaclass__ = type
 __all__ = [
     'IListManager',
     'ListAlreadyExistsError',
+    'NoSuchListError',
     ]
 
 
@@ -43,6 +44,18 @@ class ListAlreadyExistsError(MailmanError):
     Mailing list objects must be uniquely named by their fully qualified list
     name.
     """
+
+
+@error_status(400)
+class NoSuchListError(MailmanError):
+    """Attempt to access a mailing list that does not exist."""
+
+    def __init__(self, fqdn_listname):
+        self.fqdn_listname = fqdn_listname
+
+    def __str__(self):
+        return 'No such mailing list: {0.fqdn_listname}'.format(self)
+
 
 
 

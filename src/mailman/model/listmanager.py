@@ -30,7 +30,7 @@ import datetime
 from zope.interface import implements
 
 from mailman.config import config
-from mailman.core.errors import InvalidEmailAddress
+from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.listmanager import IListManager, ListAlreadyExistsError
 from mailman.interfaces.rest import IResolvePathNames
 from mailman.model.mailinglist import MailingList
@@ -47,7 +47,7 @@ class ListManager:
         """See `IListManager`."""
         listname, at, hostname = fqdn_listname.partition('@')
         if len(hostname) == 0:
-            raise InvalidEmailAddress(fqdn_listname)
+            raise InvalidEmailAddressError(fqdn_listname)
         mlist = config.db.store.find(
             MailingList,
             MailingList.list_name == listname,

@@ -29,7 +29,7 @@ bogus posting address, you get an exception.
     >>> create_list('not a valid address')
     Traceback (most recent call last):
     ...
-    InvalidEmailAddress: u'not a valid address'
+    InvalidEmailAddressError: u'not a valid address'
 
 If the posting address is valid, but the domain has not been registered with
 Mailman yet, you get an exception.

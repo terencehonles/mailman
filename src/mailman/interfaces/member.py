@@ -26,15 +26,17 @@ __all__ = [
     'DeliveryStatus',
     'IMember',
     'MemberRole',
+    'MembershipError',
+    'MembershipIsBannedError',
     ]
 
 
 from lazr.restful.declarations import (
-    export_as_webservice_entry, exported)
+    error_status, export_as_webservice_entry, exported)
 from munepy import Enum
 from zope.interface import Interface, Attribute
 
-from mailman.core.errors import SubscriptionError
+from mailman.core.errors import MailmanError
 
 
 
@@ -71,7 +73,11 @@ class MemberRole(Enum):
 
 
 
-class AlreadySubscribedError(SubscriptionError):
+class MembershipError(MailmanError):
+    """Base exception for all membership errors."""
+
+
+class AlreadySubscribedError(MembershipError):
     """The member is already subscribed to the mailing list with this role."""
 
     def __init__(self, fqdn_listname, address, role):
@@ -83,6 +89,20 @@ class AlreadySubscribedError(SubscriptionError):
     def __str__(self):
         return '{0} is already a {1} of mailing list {2}'.format(
             self._address, self._role, self._fqdn_listname)
+
+
+@error_status(400)
+class MembershipIsBannedError(MembershipError):
+    """The address is not allowed to subscribe to the mailing list."""
+
+    def __init__(self, mlist, address):
+        super(MembershipIsBanned, self).__init__()
+        self._mlist = mlist
+        self._address = address
+
+    def __str__(self):
+        return '{0} is not allowed to subscribe to {1.fqdn_listname}'.format(
+            self._address, self._mlist)
 
 
 

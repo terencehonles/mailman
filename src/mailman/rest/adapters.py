@@ -31,8 +31,12 @@ from zope.component import getUtility
 from zope.interface import implements
 from zope.publisher.interfaces import NotFound
 
+from mailman.app.membership import add_member
+from mailman.core.constants import system_preferences
+from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.domain import IDomainCollection, IDomainManager
-from mailman.interfaces.listmanager import IListManager
+from mailman.interfaces.listmanager import IListManager, NoSuchListError
+from mailman.interfaces.member import DeliveryMode
 from mailman.interfaces.membership import ISubscriptionService
 from mailman.interfaces.rest import IResolvePathNames
 
@@ -91,3 +95,33 @@ class SubscriptionService:
                 sorted((member for member in mailing_list.members.members),
                        key=address_of_member))
         return members
+
+    def join(self, fqdn_listname, address,
+             real_name= None, delivery_mode=None):
+        """See `ISubscriptionService`."""
+        mlist = getUtility(IListManager).get(fqdn_listname)
+        if mlist is None:
+            raise NoSuchListError(fqdn_listname)
+        # Convert from string to enum.  Allow ValueError exceptions to be
+        # returned by the API.  XXX 2009-12-30 Does lazr.restful intelligently
+        # handle ValueError?
+        mode = (DeliveryMode.regular
+                if delivery_mode is None
+                else DeliveryMode(delivery_mode))
+        if real_name is None:
+            real_name, at, domain = address.partition('@')
+            if len(at) == 0:
+                # It can't possibly be a valid email address.
+                raise InvalidEmailAddressError(address)
+        # Because we want to keep the REST API simple, there is no password or
+        # language given to us.  We'll use the system's default language for
+        # the user's default language.  We'll set the password to None.  XXX
+        # Is that a good idea?  Maybe we should set it to something else,
+        # except that once we encode the password (as we must do to avoid
+        # cleartext passwords in the database) we'll never be able to retrieve
+        # it.
+        #
+        # Note that none of these are used unless the address is completely
+        # new to us.
+        return add_member(mlist, address, real_name, None, mode,
+                          system_preferences.preferred_language)

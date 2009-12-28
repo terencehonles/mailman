@@ -67,6 +67,7 @@ class AbstractRoster:
 
     @property
     def members(self):
+        """See `IRoster`."""
         for member in config.db.store.find(
                 Member,
                 mailing_list=self._mlist.fqdn_listname,
@@ -75,6 +76,7 @@ class AbstractRoster:
 
     @property
     def users(self):
+        """See `IRoster`."""
         # Members are linked to addresses, which in turn are linked to users.
         # So while the 'members' attribute does most of the work, we have to
         # keep a set of unique users.  It's possible for the same user to be
@@ -86,12 +88,14 @@ class AbstractRoster:
 
     @property
     def addresses(self):
+        """See `IRoster`."""
         # Every Member is linked to exactly one address so the 'members'
         # attribute does most of the work.
         for member in self.members:
             yield member.address
 
     def get_member(self, address):
+        """See `IRoster`."""
         results = config.db.store.find(
             Member,
             Member.mailing_list == self._mlist.fqdn_listname,
@@ -140,6 +144,7 @@ class AdministratorRoster(AbstractRoster):
 
     @property
     def members(self):
+        """See `IRoster`."""
         # Administrators are defined as the union of the owners and the
         # moderators.
         members = config.db.store.find(
@@ -151,6 +156,7 @@ class AdministratorRoster(AbstractRoster):
             yield member
 
     def get_member(self, address):
+        """See `IRoster`."""
         results = config.db.store.find(
                 Member,
                 Member.mailing_list == self._mlist.fqdn_listname,
@@ -195,6 +201,7 @@ class RegularMemberRoster(DeliveryMemberRoster):
 
     @property
     def members(self):
+        """See `IRoster`."""
         for member in self._get_members(DeliveryMode.regular):
             yield member
 
@@ -207,6 +214,7 @@ class DigestMemberRoster(DeliveryMemberRoster):
 
     @property
     def members(self):
+        """See `IRoster`."""
         for member in self._get_members(DeliveryMode.plaintext_digests,
                                         DeliveryMode.mime_digests,
                                         DeliveryMode.summary_digests):
@@ -221,6 +229,7 @@ class Subscribers(AbstractRoster):
 
     @property
     def members(self):
+        """See `IRoster`."""
         for member in config.db.store.find(
                 Member,
                 mailing_list=self._mlist.fqdn_listname):
@@ -240,6 +249,7 @@ class Memberships:
 
     @property
     def members(self):
+        """See `IRoster`."""
         results = config.db.store.find(
             Member,
             Address.user_id == self._user.id,
@@ -249,14 +259,17 @@ class Memberships:
 
     @property
     def users(self):
+        """See `IRoster`."""
         yield self._user
 
     @property
     def addresses(self):
+        """See `IRoster`."""
         for address in self._user.addresses:
             yield address
 
     def get_member(self, address):
+        """See `IRoster`."""
         results = config.db.store.find(
             Member,
             Member.address_id == Address.id,

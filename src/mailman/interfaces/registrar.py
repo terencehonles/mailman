@@ -61,7 +61,7 @@ class IRegistrar(Interface):
         :type real_name: str
         :return: The confirmation token string.
         :rtype: str
-        :raises InvalidEmailAddress: if the address is not allowed.
+        :raises InvalidEmailAddressError: if the address is not allowed.
         """
 
     def confirm(token):
