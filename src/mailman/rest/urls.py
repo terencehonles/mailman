@@ -129,5 +129,5 @@ class MemberURLMapper(TopLevelURLMapper):
 
     format_string = (
         '{0.schema}://{0.hostname}:{0.port}/{0.version}/'
-        'members/{0.context.mailing_list}/'
+        'lists/{0.context.mailing_list}/'
         '{0.role}/{0.context.address.address}')

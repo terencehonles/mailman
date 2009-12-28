@@ -27,7 +27,7 @@ We create a mailing list, which starts out with no members.
 Subscribers
 ===========
 
-After Anne subscribes to the mailing list, her subscription is available via
+After Bart subscribes to the mailing list, his subscription is available via
 the REST interface.
 
     >>> from mailman.interfaces.member import MemberRole
@@ -35,18 +35,93 @@ the REST interface.
     >>> from zope.component import getUtility
     >>> user_manager = getUtility(IUserManager)
 
-    >>> anne = user_manager.create_user('aperson@example.com', 'Anne Person')
-    >>> anne_address = list(anne.addresses)[0]
-    >>> anne_address.subscribe(mlist_one, MemberRole.member)
-    <Member: Anne Person <aperson@example.com>
-             on test-one@example.com as MemberRole.member>
-    >>> transaction.commit()
+    >>> def subscribe(mlist, first_name, role=MemberRole.member):
+    ...     address = '{0}person@example.com'.format(first_name[0].lower())
+    ...     full_name = '{0} Person'.format(first_name)
+    ...     person = user_manager.get_user(address)
+    ...     if person is None:
+    ...         person = user_manager.create_user(address, full_name)
+    ...     preferred_address = list(person.addresses)[0]
+    ...     preferred_address.subscribe(mlist, role)
+    ...     transaction.commit()
 
+    >>> subscribe(mlist_one, 'Bart')
     >>> dump_json('http://localhost:8001/3.0/members')
     entry 0:
-        http_etag: "a0213c9ff485ef3d24a6e2cc8ee68ed147f05398"
+        http_etag: ...
         resource_type_link: http://localhost:8001/3.0/#member
-        self_link: http://localhost:8001/3.0/members/test-one@example.com/member/aperson@example.com
+        self_link: http://localhost:8001/3.0/lists/test-one@example.com/member/bperson@example.com
     resource_type_link: http://localhost:8001/3.0/#members
     start: 0
     total_size: 1
+
+When Cris also joins the mailing list, her subscription is also available via
+the REST interface.
+
+    >>> subscribe(mlist_one, 'Cris')
+    >>> dump_json('http://localhost:8001/3.0/members')
+    entry 0:
+        http_etag: ...
+        resource_type_link: http://localhost:8001/3.0/#member
+        self_link: http://localhost:8001/3.0/lists/test-one@example.com/member/bperson@example.com
+    entry 1:
+        http_etag: ...
+        resource_type_link: http://localhost:8001/3.0/#member
+        self_link: http://localhost:8001/3.0/lists/test-one@example.com/member/cperson@example.com
+    resource_type_link: http://localhost:8001/3.0/#members
+    start: 0
+    total_size: 2
+
+The subscribed members are returned in alphabetical order, so when Anna
+subscribes, she is returned first.
+
+    >>> subscribe(mlist_one, 'Anna')
+
+    >>> dump_json('http://localhost:8001/3.0/members')
+    entry 0:
+        http_etag: ...
+        resource_type_link: http://localhost:8001/3.0/#member
+        self_link: http://localhost:8001/3.0/lists/test-one@example.com/member/aperson@example.com
+    entry 1:
+        http_etag: ...
+        resource_type_link: http://localhost:8001/3.0/#member
+        self_link: http://localhost:8001/3.0/lists/test-one@example.com/member/bperson@example.com
+    entry 2:
+        http_etag: ...
+        resource_type_link: http://localhost:8001/3.0/#member
+        self_link: http://localhost:8001/3.0/lists/test-one@example.com/member/cperson@example.com
+    resource_type_link: http://localhost:8001/3.0/#members
+    start: 0
+    total_size: 3
+
+Subscriptions are also returned alphabetically by mailing list posting
+address.  Anna and Cris subscribe to this new mailing list.
+
+    >>> mlist_two = create_list('alpha@example.com')
+    >>> subscribe(mlist_two, 'Anna')
+    >>> subscribe(mlist_two, 'Cris')
+
+    >>> dump_json('http://localhost:8001/3.0/members')
+    entry 0:
+        http_etag: ...
+        resource_type_link: http://localhost:8001/3.0/#member
+        self_link: http://localhost:8001/3.0/lists/alpha@example.com/member/aperson@example.com
+    entry 1:
+        http_etag: ...
+        resource_type_link: http://localhost:8001/3.0/#member
+        self_link: http://localhost:8001/3.0/lists/alpha@example.com/member/cperson@example.com
+    entry 2:
+        http_etag: ...
+        resource_type_link: http://localhost:8001/3.0/#member
+        self_link: http://localhost:8001/3.0/lists/test-one@example.com/member/aperson@example.com
+    entry 3:
+        http_etag: ...
+        resource_type_link: http://localhost:8001/3.0/#member
+        self_link: http://localhost:8001/3.0/lists/test-one@example.com/member/bperson@example.com
+    entry 4:
+        http_etag: ...
+        resource_type_link: http://localhost:8001/3.0/#member
+        self_link: http://localhost:8001/3.0/lists/test-one@example.com/member/cperson@example.com
+    resource_type_link: http://localhost:8001/3.0/#members
+    start: 0
+    total_size: 5
