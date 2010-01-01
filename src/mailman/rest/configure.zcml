@@ -14,6 +14,11 @@
   <webservice:register module="mailman.interfaces.rest" />
   <webservice:register module="mailman.interfaces.system" />
 
+  <!-- XXX 2010-01-01 This can't be included without breaking
+       zope.configuration
+  <webservice:register module="mailman.interfaces.member" />
+  -->
+
   <adapter factory="zope.publisher.http.HTTPCharsets" />
 
   <adapter
