@@ -2,7 +2,7 @@
 GNU Mailman Alpha Release Information
 =====================================
 
-Copyright (C) 2008-2009 by the Free Software Foundation, Inc.
+Copyright (C) 2008-2010 by the Free Software Foundation, Inc.
 
 
 Alpha Release
