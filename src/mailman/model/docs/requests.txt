@@ -1,3 +1,4 @@
+==================
 Moderator requests
 ==================
 
@@ -30,7 +31,7 @@ And another helper for displaying messages in the virgin queue.
 
 
 Mailing list centric
---------------------
+====================
 
 A set of requests are always related to a particular mailing list, so given a
 mailing list you need to get its requests object.
@@ -48,7 +49,7 @@ mailing list you need to get its requests object.
 
 
 Holding requests
-----------------
+================
 
 The list's requests database starts out empty.
 
@@ -112,7 +113,7 @@ We can hold requests with additional data.
 
 
 Getting requests
-----------------
+================
 
 We can ask the requests database for a specific request, by providing the id
 of the request data we want.  This returns a 2-tuple of the key and data we
@@ -144,7 +145,7 @@ If we ask for a request that is not in the database, we get None back.
 
 
 Iterating over requests
------------------------
+=======================
 
 To make it easier to find specific requests, the list requests can be iterated
 over by type.
@@ -166,7 +167,7 @@ over by type.
 
 
 Deleting requests
------------------
+=================
 
 Once a specific request has been handled, it will be deleted from the requests
 database.
@@ -200,7 +201,7 @@ For the next section, we first clean up all the current requests.
 
 
 Application support
--------------------
+===================
 
 There are several higher level interfaces available in the mailman.app package
 which can be used to hold messages, subscription, and unsubscriptions.  There
@@ -211,7 +212,7 @@ and consistent way.
 
 
 Holding messages
-----------------
+================
 
 For this section, we need a mailing list and at least one message.
 
@@ -410,7 +411,7 @@ moderators.
 
 
 Holding subscription requests
------------------------------
+=============================
 
 For closed lists, subscription requests will also be held for moderator
 approval.  In this case, several pieces of information related to the
@@ -699,7 +700,7 @@ Frank Person is now a member of the mailing list.
 
 
 Holding unsubscription requests
--------------------------------
+===============================
 
 Some lists, though it is rare, require moderator approval for unsubscriptions.
 In this case, only the unsubscribing address is required.  Like subscriptions,

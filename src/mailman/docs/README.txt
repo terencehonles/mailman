@@ -12,6 +12,8 @@ includes GNU/Linux and most other Unix-like operating systems (e.g. Solaris,
 mail clients on any platform should be able to interact with Mailman just
 fine.
 
+Learn more about GNU Mailman in the `Getting Started`_ documentation.
+
 
 Copyright
 =========
@@ -75,8 +77,6 @@ Other help resources, such as on-line documentation, links to the mailing
 lists and archives, etc., are available at:
 
     http://www.list.org/help.html
-
-For more information about the alpha releases, see `ALPHA.txt`_.
 
 
 Requirements

@@ -1,3 +1,4 @@
+=======
 Bounces
 =======
 
@@ -7,16 +8,13 @@ XXX Many more converted tests go here.
 
 
 Bounces, or message rejection
------------------------------
+=============================
 
 Mailman can also bounce messages back to the original sender.  This is
 essentially equivalent to rejecting the message with notification.  Mailing
 lists can bounce a message with an optional error message.
 
-    >>> from mailman.interfaces.listmanager import IListManager
-    >>> from zope.component import getUtility
-    >>> mlist = getUtility(IListManager).create('_xtest@example.com')
-    >>> mlist.preferred_language = 'en'
+    >>> mlist = create_list('_xtest@example.com')
 
 Any message can be bounced.
 
@@ -32,15 +30,13 @@ Bounce a message by passing in the original message, and an optional error
 message.  The bounced message ends up in the virgin queue, awaiting sending
 to the original messageauthor.
 
-    >>> switchboard = config.switchboards['virgin']
     >>> from mailman.app.bounces import bounce_message
     >>> bounce_message(mlist, msg)
-    >>> len(switchboard.files)
+    >>> from mailman.testing.helpers import get_queue_messages
+    >>> items = get_queue_messages('virgin')
+    >>> len(items)
     1
-    >>> filebase = switchboard.files[0]
-    >>> qmsg, qmsgdata = switchboard.dequeue(filebase)
-    >>> switchboard.finish(filebase)
-    >>> print qmsg.as_string()
+    >>> print items[0].msg.as_string()
     Subject: Something important
     From: _xtest-owner@example.com
     To: aperson@example.com
@@ -75,12 +71,10 @@ passed in as an instance of a RejectMessage exception.
     >>> from mailman.core.errors import RejectMessage
     >>> error = RejectMessage("This wasn't very important after all.")
     >>> bounce_message(mlist, msg, error)
-    >>> len(switchboard.files)
+    >>> items = get_queue_messages('virgin')
+    >>> len(items)
     1
-    >>> filebase = switchboard.files[0]
-    >>> qmsg, qmsgdata = switchboard.dequeue(filebase)
-    >>> switchboard.finish(filebase)
-    >>> print qmsg.as_string()
+    >>> print items[0].msg.as_string()
     Subject: Something important
     From: _xtest-owner@example.com
     To: aperson@example.com

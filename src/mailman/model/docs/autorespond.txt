@@ -1,3 +1,4 @@
+===================
 Automatic responder
 ===================
 
@@ -76,7 +77,7 @@ Now the day flips over and all the counts reset.
 
 
 Response dates
---------------
+==============
 
 You can also use the response set to get the date of the last response sent.
 
