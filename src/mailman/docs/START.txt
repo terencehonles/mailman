@@ -1,6 +1,6 @@
-=====================================
-GNU Mailman Alpha Release Information
-=====================================
+================================
+Getting started with GNU Mailman
+================================
 
 Copyright (C) 2008-2010 by the Free Software Foundation, Inc.
 
