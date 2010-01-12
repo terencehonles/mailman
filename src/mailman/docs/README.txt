@@ -64,8 +64,8 @@ The Mailman home page is:
 
 with mirrors at:
 
-    http://www.gnu.org/software/mailman
-    http://mailman.sf.net
+    * http://www.gnu.org/software/mailman
+    * http://mailman.sf.net
 
 The community driven wiki (including the FAQ_) is at:
 
