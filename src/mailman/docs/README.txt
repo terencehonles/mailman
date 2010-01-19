@@ -87,6 +87,7 @@ Mailman 3.0 requires `Python 2.6`_ or newer.
 
 .. _`GNU Mailman`: http://www.list.org
 .. _`GNU General Public License`: http://www.gnu.org/licenses/gpl.txt
+.. _`Getting Started`: START.html
 .. _Python: http://www.python.org
 .. _FAQ: http://wiki.list.org/display/DOC/Frequently+Asked+Questions
 .. _`Python 2.6`: http://www.python.org/download/releases/2.6.2/
@@ -102,6 +103,8 @@ Table of Contents
     *
     ../bin/docs/*
     ../commands/docs/*
+    ../model/docs/*
+    ../app/docs/*
     ../pipeline/docs/*
     ../queue/docs/*
     ../rest/docs/*
