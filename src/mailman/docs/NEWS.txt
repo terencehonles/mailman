@@ -9,7 +9,7 @@ Here is a history of user visible changes to Mailman.
 
 3.0 alpha 5 -- "Distant Early Warning"
 ======================================
-(2010-01-11)
+(2010-01-18)
 
 REST
 ----
