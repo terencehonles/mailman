@@ -77,11 +77,34 @@ class Members:
         if mlist is None:
             self.parser.error(_('No such list: $fqdn_listname'))
         if args.input_filename is None:
-            for address in sorted(mlist.members.addresses,
-                                  key=attrgetter('address')):
-                print formataddr((address.real_name, address.original_address))
+            self.display_members(mlist, args)
+        else:
+            self.add_members(mlist, args)
+
+    def display_members(self, mlist, args):
+        """Display the members of a mailing list.
+
+        :param mlist: The mailing list to operate on.
+        :type mlist: `IMailingList`
+        :param args: The command line arguments.
+        :type args: `argparse.Namespace`
+        """
+        addresses = list(mlist.members.addresses)
+        if len(addresses) == 0:
+            print mlist.fqdn_listname, 'has no members'
             return
-        elif args.input_filename == '-':
+        for address in sorted(addresses, key=attrgetter('address')):
+            print formataddr((address.real_name, address.original_address))
+
+    def add_members(self, mlist, args):
+        """Add the members in a file to a mailing list.
+
+        :param mlist: The mailing list to operate on.
+        :type mlist: `IMailingList`
+        :param args: The command line arguments.
+        :type args: `argparse.Namespace`
+        """
+        if args.input_filename == '-':
             fp = sys.stdin
         else:
             fp = codecs.open(args.input_filename, 'r', 'utf-8')

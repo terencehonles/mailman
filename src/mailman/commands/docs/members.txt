@@ -1,22 +1,69 @@
-==============
-Adding members
-==============
+================
+Managing members
+================
 
-You can add members to a mailing list from the command line.
+The `bin/mailman members` command allows a site administrator to display, add,
+and remove members from a mailing list.
 
-    >>> mlist = create_list('test@example.com')
+    >>> mlist1 = create_list('test1@example.com')
 
     >>> class FakeArgs:
     ...     input_filename = None
-    ...     listname = None
+    ...     listname = []
     >>> args = FakeArgs()
 
     >>> from mailman.commands.cli_members import Members
     >>> command = Members()
 
-To do so, you need a file containing email addresses and full names that can
-be parsed by email.utils.parseaddr().
 
+Listing members
+===============
+
+You can list all the members of a mailing list by calling the command with no
+options.  To start with, there are no members of the mailing list.
+
+    >>> args.listname = [mlist1.fqdn_listname]
+    >>> command.process(args)
+    test1@example.com has no members
+
+Once the mailing list add some members, they will be displayed.
+
+    >>> from mailman.interfaces.member import DeliveryMode
+    >>> from mailman.app.membership import add_member
+    >>> add_member(mlist1, 'anne@example.com', 'Anne Person', 'xxx',
+    ...            DeliveryMode.regular, mlist1.preferred_language.code)
+    <Member: Anne Person <anne@example.com>
+             on test1@example.com as MemberRole.member>
+    >>> add_member(mlist1, 'bart@example.com', 'Bart Person', 'xxx',
+    ...            DeliveryMode.regular, mlist1.preferred_language.code)
+    <Member: Bart Person <bart@example.com>
+             on test1@example.com as MemberRole.member>
+
+    >>> command.process(args)
+    Anne Person <anne@example.com>
+    Bart Person <bart@example.com>
+
+Members are displayed in alphabetical order based on their address.
+
+    >>> add_member(mlist1, 'anne@aaaxample.com', 'Anne Person', 'xxx',
+    ...            DeliveryMode.regular, mlist1.preferred_language.code)
+    <Member: Anne Person <anne@aaaxample.com>
+             on test1@example.com as MemberRole.member>
+
+    >>> command.process(args)
+    Anne Person <anne@aaaxample.com>
+    Anne Person <anne@example.com>
+    Bart Person <bart@example.com>
+
+
+Adding members
+==============
+
+You can add members to a mailing list from the command line.  To do so, you
+need a file containing email addresses and full names that can be parsed by
+email.utils.parseaddr().
+
+    >>> mlist2 = create_list('test2@example.com')
     >>> addresses = [
     ...     ]
 
@@ -30,10 +77,10 @@ be parsed by email.utils.parseaddr().
     ...         print >> fp, address
 
     >>> args.input_filename = path
-    >>> args.listname = [mlist.fqdn_listname]
+    >>> args.listname = [mlist2.fqdn_listname]
     >>> command.process(args)
 
-    >>> sorted(address.address for address in mlist.members.addresses)
+    >>> sorted(address.address for address in mlist2.members.addresses)
     [u'aperson@example.com', u'bperson@example.com', u'cperson@example.com']
 
 You can also specify '-' as the filename, in which case the addresses are
@@ -55,7 +102,7 @@ taken from standard input.
     >>> command.process(args)
     >>> sys.stdin = sys.__stdin__
 
-    >>> sorted(address.address for address in mlist.members.addresses)
+    >>> sorted(address.address for address in mlist2.members.addresses)
     [u'aperson@example.com', u'bperson@example.com', u'cperson@example.com',
      u'dperson@example.com', u'eperson@example.com', u'fperson@example.com']
 
@@ -72,7 +119,7 @@ Blank lines and lines that begin with '#' are ignored.
 
     >>> args.input_filename = path
     >>> command.process(args)
-    >>> sorted(address.address for address in mlist.members.addresses)
+    >>> sorted(address.address for address in mlist2.members.addresses)
     [u'aperson@example.com', u'bperson@example.com', u'cperson@example.com',
      u'dperson@example.com', u'eperson@example.com', u'fperson@example.com',
      u'gperson@example.com', u'iperson@example.com']
@@ -91,7 +138,7 @@ printed.
     Already subscribed (skipping): gperson@example.com
     Already subscribed (skipping): aperson@example.com
 
-    >>> sorted(address.address for address in mlist.members.addresses)
+    >>> sorted(address.address for address in mlist2.members.addresses)
     [u'aperson@example.com', u'bperson@example.com', u'cperson@example.com',
      u'dperson@example.com', u'eperson@example.com', u'fperson@example.com',
      u'gperson@example.com', u'iperson@example.com', u'jperson@example.com']
