@@ -54,11 +54,12 @@ class Members:
         self.parser = parser
         command_parser.add_argument(
             '-a', '--add',
-            dest='filename',
+            dest='input_filename', metavar='FILENAME',
             help=_("""\
             Add all member addresses in FILENAME.  FILENAME can be '-' to
             indicate standard input.  Blank lines and lines That start with a
-            '#' are ignored."""))
+            '#' are ignored.  Without this option, this command displays
+            mailing list members."""))
         # Required positional argument.
         command_parser.add_argument(
             'listname', metavar='LISTNAME', nargs=1,
@@ -70,32 +71,29 @@ class Members:
 
     def process(self, args):
         """See `ICLISubCommand`."""
-        assert len(args.listname) == 1, (
-            'Unexpected positional arguments: %s' % args.listname)
+        assert len(args.listname) == 1, 'Missing mailing list name'
         fqdn_listname = args.listname[0]
         mlist = getUtility(IListManager).get(fqdn_listname)
         if mlist is None:
             self.parser.error(_('No such list: $fqdn_listname'))
-        if args.filename is None:
+        if args.input_filename is None:
             for address in sorted(mlist.members.addresses,
                                   key=attrgetter('address')):
                 print formataddr((address.real_name, address.original_address))
             return
-        elif args.filename == '-':
+        elif args.input_filename == '-':
             fp = sys.stdin
         else:
-            fp = codecs.open(args.filename, 'r', 'utf-8')
+            fp = codecs.open(args.input_filename, 'r', 'utf-8')
         try:
             for line in fp:
                 # Ignore blank lines and lines that start with a '#'.
                 if line.startswith('#') or len(line.strip()) == 0:
                     continue
+                # Parse the line and ensure that the values are unicodes.
                 real_name, email = parseaddr(line)
-                # If not given in the input data, parseaddr() will return the
-                # empty string, as opposed to the empty unicode.  We need a
-                # unicode real name here.
-                if real_name == '':
-                    real_name = u''
+                real_name = real_name.decode(fp.encoding)
+                email = email.decode(fp.encoding)
                 try:
                     add_member(mlist, email, real_name, None,
                                DeliveryMode.regular,
