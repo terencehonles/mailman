@@ -38,7 +38,8 @@ from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.command import ICLISubCommand
 from mailman.interfaces.listmanager import IListManager
-from mailman.interfaces.member import AlreadySubscribedError, DeliveryMode
+from mailman.interfaces.member import (
+    AlreadySubscribedError, DeliveryMode, DeliveryStatus)
 
 
 
@@ -77,6 +78,19 @@ class Members:
             help=_("""Display only digest members of KIND.  'any' means any
             digest type, 'plaintext' means only plain text (RFC 1153) type
             digests, 'mime' means MIME type digests."""))
+        command_parser.add_argument(
+            '-n', '--nomail',
+            default=None, metavar='WHY',
+            choices=('enabled', 'any', 'unknown'
+                     'byadmin', 'byuser', 'bybounces'),
+            help=_("""Display only members with a given delivery
+            status. 'enabled' means all members whose delivery is enabled,
+            'any' means members whose delivery is disabled for any reason,
+            'byuser' means that the member disabled their own delivery,
+            'bybounces' means that delivery was disabled by the automated
+            bounce processor, 'byadmin' means delivery was disabled by the
+            list administrator or moderator, and 'unknown' means that delivery
+            was disabled for unknown (legacy) reasons."""))
         # Required positional argument.
         command_parser.add_argument(
             'listname', metavar='LISTNAME', nargs=1,
@@ -119,6 +133,24 @@ class Members:
         else:
             # Don't filter on digest type.
             pass
+        if args.nomail is None:
+            # Don't filter on delivery status.
+            pass
+        elif args.nomail == 'byadmin':
+            status_types = [DeliveryStatus.by_moderator]
+        elif args.nomail.startswith('by'):
+            status_types = [DeliveryStatus('by_' + args.nomail[2:])]
+        elif args.nomail == 'enabled':
+            status_types = [DeliveryStatus.enabled]
+        elif args.nomail == 'unknown':
+            status_types = [DeliveryStatus.unknown]
+        elif args.nomail == 'any':
+            status_types = [DeliveryStatus.by_user,
+                            DeliveryStatus.by_bounces,
+                            DeliveryStatus.by_moderator,
+                            DeliveryStatus.unknown]
+        else:
+            raise AssertionError('Unknown delivery status: %s' % args.nomail)
         try:
             addresses = list(mlist.members.addresses)
             if len(addresses) == 0:
@@ -132,6 +164,10 @@ class Members:
                 if args.digest is not None:
                     member = mlist.members.get_member(address.address)
                     if member.delivery_mode not in digest_types:
+                        continue
+                if args.nomail is not None:
+                    member = mlist.members.get_member(address.address)
+                    if member.delivery_status not in status_types:
                         continue
                 print >> fp, formataddr(
                     (address.real_name, address.original_address))

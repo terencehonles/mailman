@@ -13,6 +13,7 @@ and remove members from a mailing list.
     ...     listname = []
     ...     regular = False
     ...     digest = None
+    ...     nomail = None
     >>> args = FakeArgs()
 
     >>> from mailman.commands.cli_members import Members
@@ -82,6 +83,10 @@ The output file can also be standard out.
     Bart Person <bart@example.com>
     >>> args.output_filename = None
 
+
+Filtering on delivery mode
+--------------------------
+
 You can limit output to just the regular non-digest members...
 
     >>> args.regular = True
@@ -116,6 +121,73 @@ members...
 
     # Reset for following tests.
     >>> args.digest = None
+
+
+Filtering on delivery status
+----------------------------
+
+You can also filter the display on the member's delivery status.  By default,
+all members are displayed, but you can filter out only those whose delivery
+status is enabled...
+
+    >>> from mailman.interfaces.member import DeliveryStatus
+    >>> member = mlist1.members.get_member('anne@aaaxample.com')
+    >>> member.preferences.delivery_status = DeliveryStatus.by_moderator
+    >>> member = mlist1.members.get_member('bart@example.com')
+    >>> member.preferences.delivery_status = DeliveryStatus.by_user
+    >>> member = add_member(
+    ...     mlist1, 'cris@example.com', 'Cris Person', 'xxx',
+    ...     DeliveryMode.regular, mlist1.preferred_language.code)
+    >>> member.preferences.delivery_status = DeliveryStatus.unknown
+    >>> member = add_member(
+    ...     mlist1, 'dave@example.com', 'Dave Person', 'xxx',
+    ...     DeliveryMode.regular, mlist1.preferred_language.code)
+    >>> member.preferences.delivery_status = DeliveryStatus.enabled
+    >>> member = add_member(
+    ...     mlist1, 'elly@example.com', 'Elly Person', 'xxx',
+    ...     DeliveryMode.regular, mlist1.preferred_language.code)
+    >>> member.preferences.delivery_status = DeliveryStatus.by_bounces
+
+    >>> args.nomail = 'enabled'
+    >>> command.process(args)
+    Anne Person <anne@example.com>
+    Dave Person <dave@example.com>
+
+...or disabled by the user...
+
+    >>> args.nomail = 'byuser'
+    >>> command.process(args)
+    Bart Person <bart@example.com>
+
+...or disabled by the list administrator (or moderator)...
+
+    >>> args.nomail = 'byadmin'
+    >>> command.process(args)
+    Anne Person <anne@aaaxample.com>
+
+...or by the bounce processor...
+
+    >>> args.nomail = 'bybounces'
+    >>> command.process(args)
+    Elly Person <elly@example.com>
+
+...or for unknown (legacy) reasons.
+
+    >>> args.nomail = 'unknown'
+    >>> command.process(args)
+    Cris Person <cris@example.com>
+
+You can also display all members who have delivery disabled for any reason.
+
+    >>> args.nomail = 'any'
+    >>> command.process(args)
+    Anne Person <anne@aaaxample.com>
+    Bart Person <bart@example.com>
+    Cris Person <cris@example.com>
+    Elly Person <elly@example.com>
+
+    # Reset for following tests.
+    >>> args.nomail = None
 
 
 Adding members
