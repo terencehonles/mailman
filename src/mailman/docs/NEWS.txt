@@ -11,6 +11,11 @@ Here is a history of user visible changes to Mailman.
 =================================
 (2010-XX-XX)
 
+Commands
+--------
+ * The functionality of 'bin/list_members' has been moved to
+   'bin/mailman members'
+
 
 3.0 alpha 5 -- "Distant Early Warning"
 ======================================
