@@ -60,6 +60,11 @@ class Members:
             indicate standard input.  Blank lines and lines That start with a
             '#' are ignored.  Without this option, this command displays
             mailing list members."""))
+        command_parser.add_argument(
+            '-o', '--output',
+            dest='output_filename', metavar='FILENAME',
+            help=_("""Display output to FILENAME instead of stdout.  FILENAME
+            can be '-' to indicate standard output."""))
         # Required positional argument.
         command_parser.add_argument(
             'listname', metavar='LISTNAME', nargs=1,
@@ -89,12 +94,21 @@ class Members:
         :param args: The command line arguments.
         :type args: `argparse.Namespace`
         """
-        addresses = list(mlist.members.addresses)
-        if len(addresses) == 0:
-            print mlist.fqdn_listname, 'has no members'
-            return
-        for address in sorted(addresses, key=attrgetter('address')):
-            print formataddr((address.real_name, address.original_address))
+        if args.output_filename == '-' or args.output_filename is None:
+            fp = sys.stdout
+        else:
+            fp = codecs.open(args.output_filename, 'w', 'utf-8')
+        try:
+            addresses = list(mlist.members.addresses)
+            if len(addresses) == 0:
+                print >> fp, mlist.fqdn_listname, 'has no members'
+                return
+            for address in sorted(addresses, key=attrgetter('address')):
+                print >> fp, formataddr(
+                    (address.real_name, address.original_address))
+        finally:
+            if fp is not sys.stdout:
+                fp.close()
 
     def add_members(self, mlist, args):
         """Add the members in a file to a mailing list.

@@ -9,6 +9,7 @@ and remove members from a mailing list.
 
     >>> class FakeArgs:
     ...     input_filename = None
+    ...     output_filename = None
     ...     listname = []
     >>> args = FakeArgs()
 
@@ -54,6 +55,30 @@ Members are displayed in alphabetical order based on their address.
     Anne Person <anne@aaaxample.com>
     Anne Person <anne@example.com>
     Bart Person <bart@example.com>
+
+You can also output this list to a file.
+
+    >>> from tempfile import mkstemp
+    >>> fd, args.output_filename = mkstemp()
+    >>> import os
+    >>> os.close(fd)
+    >>> command.process(args)
+    >>> with open(args.output_filename) as fp:
+    ...     print fp.read()
+    Anne Person <anne@aaaxample.com>
+    Anne Person <anne@example.com>
+    Bart Person <bart@example.com>
+    >>> os.remove(args.output_filename)
+    >>> args.output_filename = None
+
+The output file can also be standard out.
+
+    >>> args.output_filename = '-'
+    >>> command.process(args)
+    Anne Person <anne@aaaxample.com>
+    Anne Person <anne@example.com>
+    Bart Person <bart@example.com>
+    >>> args.output_filename = None
 
 
 Adding members
