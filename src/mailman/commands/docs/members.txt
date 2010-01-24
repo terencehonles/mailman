@@ -11,6 +11,8 @@ and remove members from a mailing list.
     ...     input_filename = None
     ...     output_filename = None
     ...     listname = []
+    ...     regular = False
+    ...     digest = None
     >>> args = FakeArgs()
 
     >>> from mailman.commands.cli_members import Members
@@ -79,6 +81,41 @@ The output file can also be standard out.
     Anne Person <anne@example.com>
     Bart Person <bart@example.com>
     >>> args.output_filename = None
+
+You can limit output to just the regular non-digest members...
+
+    >>> args.regular = True
+    >>> member = mlist1.members.get_member('anne@example.com')
+    >>> member.preferences.delivery_mode = DeliveryMode.plaintext_digests
+    >>> command.process(args)
+    Anne Person <anne@aaaxample.com>
+    Bart Person <bart@example.com>
+
+...or just the digest members.  Furthermore, you can either display all digest
+members...
+
+    >>> member = mlist1.members.get_member('anne@aaaxample.com')
+    >>> member.preferences.delivery_mode = DeliveryMode.mime_digests
+    >>> args.regular = False
+    >>> args.digest = 'any'
+    >>> command.process(args)
+    Anne Person <anne@aaaxample.com>
+    Anne Person <anne@example.com>
+
+...just plain text digest members...
+
+    >>> args.digest = 'plaintext'
+    >>> command.process(args)
+    Anne Person <anne@example.com>
+
+...just MIME digest members.
+
+    >>> args.digest = 'mime'
+    >>> command.process(args)
+    Anne Person <anne@aaaxample.com>
+
+    # Reset for following tests.
+    >>> args.digest = None
 
 
 Adding members

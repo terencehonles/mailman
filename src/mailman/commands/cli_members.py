@@ -65,6 +65,18 @@ class Members:
             dest='output_filename', metavar='FILENAME',
             help=_("""Display output to FILENAME instead of stdout.  FILENAME
             can be '-' to indicate standard output."""))
+        command_parser.add_argument(
+            '-r', '--regular',
+            default=None, action='store_true',
+            help=_('Display only regular delivery members.'))
+        command_parser.add_argument(
+            '-d', '--digest',
+            default=None, metavar='KIND',
+            # BAW 2010-01-23 summary digests are not really supported yet.
+            choices=('any', 'plaintext', 'mime'),
+            help=_("""Display only digest members of KIND.  'any' means any
+            digest type, 'plaintext' means only plain text (RFC 1153) type
+            digests, 'mime' means MIME type digests."""))
         # Required positional argument.
         command_parser.add_argument(
             'listname', metavar='LISTNAME', nargs=1,
@@ -98,12 +110,29 @@ class Members:
             fp = sys.stdout
         else:
             fp = codecs.open(args.output_filename, 'w', 'utf-8')
+        if args.digest == 'any':
+            digest_types = [DeliveryMode.plaintext_digests,
+                            DeliveryMode.mime_digests,
+                            DeliveryMode.summary_digests]
+        elif args.digest is not None:
+            digest_types = [DeliveryMode(args.digest + '_digests')]
+        else:
+            # Don't filter on digest type.
+            pass
         try:
             addresses = list(mlist.members.addresses)
             if len(addresses) == 0:
                 print >> fp, mlist.fqdn_listname, 'has no members'
                 return
             for address in sorted(addresses, key=attrgetter('address')):
+                if args.regular:
+                    member = mlist.members.get_member(address.address)
+                    if member.delivery_mode != DeliveryMode.regular:
+                        continue
+                if args.digest is not None:
+                    member = mlist.members.get_member(address.address)
+                    if member.delivery_mode not in digest_types:
+                        continue
                 print >> fp, formataddr(
                     (address.real_name, address.original_address))
         finally:
