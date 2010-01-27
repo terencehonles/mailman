@@ -32,6 +32,7 @@ import logging
 
 from lazr.config import ConfigSchema, as_boolean
 from pkg_resources import resource_stream
+from string import Template
 from zope.component import getUtility
 from zope.interface import Interface, implements
 
@@ -63,6 +64,9 @@ class Configuration:
         self.QFILE_SCHEMA_VERSION = version.QFILE_SCHEMA_VERSION
         self._config = None
         self.filename = None
+        # Whether to create run-time paths or not.  This is for the test
+        # suite, which will set this to False until the test layer is set up.
+        self.create_paths = True
         # Create various registries.
         self.chains = {}
         self.rules = {}
@@ -115,29 +119,8 @@ class Configuration:
 
     def _post_process(self):
         """Perform post-processing after loading the configuration files."""
-        # Set up directories.
-        self.BIN_DIR = os.path.abspath(os.path.dirname(sys.argv[0]))
-        self.VAR_DIR = var_dir = self._config.mailman.var_dir
-        # Now that we've loaded all the configuration files we're going to
-        # load, set up some useful directories.
-        join = os.path.join
-        self.LIST_DATA_DIR      = join(var_dir, 'lists')
-        self.LOG_DIR            = join(var_dir, 'logs')
-        self.LOCK_DIR = lockdir = join(var_dir, 'locks')
-        self.DATA_DIR = datadir = join(var_dir, 'data')
-        self.ETC_DIR = etcdir   = join(var_dir, 'etc')
-        self.SPAM_DIR           = join(var_dir, 'spam')
-        self.EXT_DIR            = join(var_dir, 'ext')
-        self.QUEUE_DIR          = join(var_dir, 'qfiles')
-        self.MESSAGES_DIR       = join(var_dir, 'messages')
-        self.PUBLIC_ARCHIVE_FILE_DIR  = join(var_dir, 'archives', 'public')
-        self.PRIVATE_ARCHIVE_FILE_DIR = join(var_dir, 'archives', 'private')
-        # Other useful files
-        self.PIDFILE                = join(datadir, 'master-qrunner.pid')
-        self.SITE_PW_FILE           = join(datadir, 'adm.pw')
-        self.LISTCREATOR_PW_FILE    = join(datadir, 'creator.pw')
-        self.CONFIG_FILE            = join(etcdir, 'mailman.cfg')
-        self.LOCK_FILE              = join(lockdir, 'master-qrunner')
+        # Expand and set up all directories.
+        self._expand_paths()
         # Set up the switchboards.
         from mailman.queue import Switchboard
         Switchboard.initialize()
@@ -159,6 +142,74 @@ class Configuration:
         from mailman.core.i18n import _
         _.default = self.mailman.default_language
 
+    def _expand_paths(self):
+        """Expand all configuration paths."""
+        # Set up directories.
+        bin_dir = os.path.abspath(os.path.dirname(sys.argv[0]))
+        # Now that we've loaded all the configuration files we're going to
+        # load, set up some useful directories based on the settings in the
+        # configuration file.
+        layout = 'paths.' + self._config.mailman.layout
+        for category in self._config.getByCategory('paths'):
+            if category.name == layout:
+                break
+        else:
+            print >> sys.stderr, 'No path configuration found:', layout
+            sys.exit(1)
+        # First, collect all variables in a substitution dictionary.
+        substitutions = dict(
+            argv                    = bin_dir,
+            # Directories.
+            bin_dir                 = category.bin_dir,
+            data_dir                = category.data_dir,
+            etc_dir                 = category.etc_dir,
+            ext_dir                 = category.ext_dir,
+            list_data_dir           = category.list_data_dir,
+            lock_dir                = category.lock_dir,
+            log_dir                 = category.log_dir,
+            messages_dir            = category.messages_dir,
+            pipermail_private_dir   = category.pipermail_private_dir,
+            pipermail_public_dir    = category.pipermail_public_dir,
+            queue_dir               = category.queue_dir,
+            var_dir                 = category.var_dir,
+            # Files.
+            creator_pw_file         = category.creator_pw_file,
+            lock_file               = category.lock_file,
+            pid_file                = category.pid_file,
+            site_pw_file            = category.site_pw_file,
+            )
+        # Now, perform substitutions recursively until there are no more
+        # variables with $-vars in them, or until substitutions are not
+        # helping any more.
+        last_dollar_count = 0
+        while True:
+            # Mutate the dictionary during iteration.
+            dollar_count = 0
+            for key in substitutions.keys():
+                raw_value = substitutions[key]
+                value = Template(raw_value).safe_substitute(substitutions)
+                if '$' in value:
+                    # Still more work to do.
+                    dollar_count += 1
+                substitutions[key] = value
+            if dollar_count == 0:
+                break
+            if dollar_count == last_dollar_count:
+                print >> sys.stderr, 'Path expansion infloop detected'
+                sys.exit(1)
+            last_dollar_count = dollar_count
+        # Ensure that all paths are normalized and made absolute.  Handle the
+        # few special cases first.  Most of these are due to backward
+        # compatibility.
+        self.PUBLIC_ARCHIVE_FILE_DIR = substitutions.pop(
+            'pipermail_public_dir')
+        self.PRIVATE_ARCHIVE_FILE_DIR = substitutions.pop(
+            'pipermail_private_dir')
+        self.PID_FILE = substitutions.pop('pid_file')
+        for key in substitutions:
+            attribute = key.upper()
+            setattr(self, attribute, os.path.abspath(substitutions[key]))
+
     @property
     def logger_configs(self):
         """Return all log config sections."""
@@ -173,8 +224,9 @@ class Configuration:
 
     def ensure_directories_exist(self):
         """Create all path directories if they do not exist."""
-        for variable, directory in self.paths.items():
-            makedirs(directory)
+        if self.create_paths:
+            for variable, directory in self.paths.items():
+                makedirs(directory)
 
     @property
     def qrunner_configs(self):

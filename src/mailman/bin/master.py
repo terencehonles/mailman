@@ -507,7 +507,7 @@ def main():
     # because Lock's constructor doesn't support a timeout.
     lock = acquire_lock(options.options.force)
     try:
-        with open(config.PIDFILE, 'w') as fp:
+        with open(config.PID_FILE, 'w') as fp:
             print >> fp, os.getpid()
         loop = Loop(lock, options.options.restartable, options.options.config)
         loop.install_signal_handlers()
@@ -516,6 +516,6 @@ def main():
             loop.loop()
         finally:
             loop.cleanup()
-            os.remove(config.PIDFILE)
+            os.remove(config.PID_FILE)
     finally:
         lock.unlock()

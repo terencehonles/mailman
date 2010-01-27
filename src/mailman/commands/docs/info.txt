@@ -10,6 +10,7 @@ script 'mailman info'.  By default, the info is printed to standard output.
 
     >>> class FakeArgs:
     ...     output = None
+    ...     paths = None
     >>> args = FakeArgs()
 
     >>> command.process(args)
@@ -33,3 +34,45 @@ By passing in the -o/--output option, you can print the info to a file.
     ...
     config file: .../test.cfg
     db url: sqlite:.../mailman.db
+
+You can also get more verbose information, which contains a list of the file
+system paths that Mailman is using.
+
+    >>> args.output = None
+    >>> args.paths = True
+    >>> config.create_paths = False
+    >>> config.push('fhs', """
+    ... [mailman]
+    ... layout: fhs
+    ... """)
+    >>> config.create_paths = True
+
+The File System Hierarchy layout is the same every by definition.
+
+    >>> command.process(args)
+    GNU Mailman 3...
+    Python ...
+    ...
+    File system paths:
+        BIN_DIR                  = /sbin
+        CREATOR_PW_FILE          = /var/lib/mailman/data/creator.pw
+        DATA_DIR                 = /var/lib/mailman/data
+        ETC_DIR                  = /etc
+        EXT_DIR                  = /etc/mailman.d
+        LIST_DATA_DIR            = /var/lib/mailman/lists
+        LOCK_DIR                 = /var/lock/mailman
+        LOCK_FILE                = /var/lock/mailman/master-qrunner.lck
+        LOG_DIR                  = /var/log/mailman
+        MESSAGES_DIR             = /var/lib/mailman/messages
+        PID_FILE                 = /var/run/mailman/master-qrunner.pid
+        PRIVATE_ARCHIVE_FILE_DIR = /var/lib/mailman/archives/private
+        PUBLIC_ARCHIVE_FILE_DIR  = /var/lib/mailman/archives/public
+        QUEUE_DIR                = /var/spool/mailman
+        SITE_PW_FILE             = /var/lib/mailman/data/adm.pw
+        VAR_DIR                  = /var/lib/mailman
+
+
+Clean up
+========
+
+    >>> config.pop('fhs')

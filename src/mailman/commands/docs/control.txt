@@ -72,7 +72,7 @@ watcher process in the background.
     ...     while datetime.now() < until:
     ...         time.sleep(0.1)
     ...         try:
-    ...             with open(config.PIDFILE) as fp:
+    ...             with open(config.PID_FILE) as fp:
     ...                 pid = int(fp.read().strip())
     ...             os.kill(pid, 0)
     ...         except IOError as error:

@@ -120,7 +120,6 @@ def initialize_1(config_path=None, propagate_logs=None):
         config_path = None
     mailman.config.config.load(config_path)
     # Create the queue and log directories if they don't already exist.
-    mailman.config.config.ensure_directories_exist()
     mailman.core.logging.initialize(propagate_logs)
 
 

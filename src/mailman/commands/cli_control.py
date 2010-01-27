@@ -127,11 +127,11 @@ class Start:
 
 def kill_watcher(sig):
     try:
-        with open(config.PIDFILE) as fp:
+        with open(config.PID_FILE) as fp:
             pid = int(fp.read().strip())
     except (IOError, ValueError) as error:
         # For i18n convenience
-        print >> sys.stderr, _('PID unreadable in: $config.PIDFILE')
+        print >> sys.stderr, _('PID unreadable in: $config.PID_FILE')
         print >> sys.stderr, error
         print >> sys.stderr, _('Is the master even running?')
         return
@@ -143,7 +143,7 @@ def kill_watcher(sig):
         print >> sys.stderr, _('No child with pid: $pid')
         print >> sys.stderr, error
         print >> sys.stderr, _('Stale pid file removed.')
-        os.unlink(config.PIDFILE)
+        os.unlink(config.PID_FILE)
 
 
 

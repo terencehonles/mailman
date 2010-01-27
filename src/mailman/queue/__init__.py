@@ -114,8 +114,9 @@ class Switchboard:
             'Not a power of 2: {0}'.format(numslices))
         self.name = name
         self.queue_directory = queue_directory
-        # Create the directory if it doesn't yet exist.
-        makedirs(self.queue_directory, 0770)
+        # If configured to, create the directory if it doesn't yet exist.
+        if config.create_paths:
+            makedirs(self.queue_directory, 0770)
         # Fast track for no slices
         self._lower = None
         self._upper = None

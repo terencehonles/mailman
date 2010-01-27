@@ -50,6 +50,11 @@ class Info:
             action='store', help=_("""\
             File to send the output to.  If not given, standard output is
             used."""))
+        command_parser.add_argument(
+            '-p', '--paths',
+            action='store_true', help=_("""\
+            A more verbose output including the file system paths that Mailman
+            is using."""))
 
     def process(self, args):
         """See `ICLISubCommand`."""
@@ -59,8 +64,18 @@ class Info:
             # We don't need to close output because that will happen
             # automatically when the script exits.
             output = open(args.output, 'w')
-
         print >> output, MAILMAN_VERSION_FULL
         print >> output, 'Python', sys.version
         print >> output, 'config file:', config.filename
         print >> output, 'db url:', config.db.url
+        if args.paths:
+            print >> output, 'File system paths:'
+            longest = 0
+            paths = {}
+            for attribute in dir(config):
+                if attribute.endswith('_DIR') or attribute.endswith('_FILE'):
+                    paths[attribute] = getattr(config, attribute)
+                longest = max(longest, len(attribute))
+            for attribute in sorted(paths):
+                print '    {0:{2}} = {1}'.format(attribute, paths[attribute],
+                                                 longest)

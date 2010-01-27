@@ -23,6 +23,8 @@ Let's say there is a message in the shunt queue.
     ... """)
 
     >>> shuntq = config.switchboards['shunt']
+    >>> len(list(shuntq.files))
+    0
     >>> base_name = shuntq.enqueue(msg, {})
     >>> len(list(shuntq.files))
     1

@@ -83,7 +83,9 @@ class ConfigLayer(MockAndMonkeyLayer):
 
     @classmethod
     def setUp(cls):
-        # Set up the basic configuration stuff.
+        # Set up the basic configuration stuff.  Turn off path creation until
+        # we've pushed the testing config.
+        config.create_paths = False
         initialize.initialize_1(INHIBIT_CONFIG_FILE)
         assert cls.var_dir is None, 'Layer already set up'
         # Calculate a temporary VAR_DIR directory so that run-time artifacts
@@ -100,10 +102,13 @@ class ConfigLayer(MockAndMonkeyLayer):
         # also write it out to a temp file for -C.
         test_config = dedent("""
         [mailman]
+        layout: testing
+        [paths.testing]
         var_dir: %s
         """ % cls.var_dir)
         # Read the testing config and push it.
         test_config += resource_string('mailman.testing', 'testing.cfg')
+        config.create_paths = True
         config.push('test config', test_config)
         # Initialize everything else.
         initialize.initialize_2()
