@@ -16,6 +16,15 @@ Commands
  * The functionality of 'bin/list_members' has been moved to
    'bin/mailman members'
 
+Configuration
+-------------
+ * You can now configure the paths Mailman uses for queue files, lock files,
+   data files, etc. via the configuration file.  Define a file system 'layout'
+   and then select that layout in the [mailman] section.  Default layouts
+   include 'local' for putting everything in /var/tmp/mailman, 'dev' for local
+   development, and 'fhs' for Filesystem Hierarchy Standard 2.3 (LP #490144).
+ * Queue file directories now live in $var_dir/queues.
+
 
 3.0 alpha 5 -- "Distant Early Warning"
 ======================================
