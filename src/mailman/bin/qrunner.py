@@ -41,7 +41,9 @@ log = None
 
 
 
+# pylint: disable-msg=W0613
 def r_callback(option, opt, value, parser):
+    """Callback for -r/--runner option."""
     dest = getattr(parser.values, option.dest)
     parts = value.split(':')
     if len(parts) == 1:
@@ -65,7 +67,7 @@ def r_callback(option, opt, value, parser):
 
 
 class ScriptOptions(Options):
-
+    """Options for bin/qrunner."""
     usage = _("""\
 Run one or more queue runners, once or repeatedly.
 
@@ -85,6 +87,7 @@ separately or with -o is generally useful only for debugging.
 """)
 
     def add_options(self):
+        """See `Options`."""
         self.parser.add_option(
             '-r', '--runner',
             metavar='runner[:slice:range]', dest='runners',
@@ -124,6 +127,7 @@ This should only be used when running the queue runner as a subprocess of the
 behavior to work better with that framework."""))
 
     def sanity_check(self):
+        """See `Options`."""
         if self.arguments:
             self.parser.error(_('Unexpected arguments'))
         if not self.options.runners and not self.options.list:

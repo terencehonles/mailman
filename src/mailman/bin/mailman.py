@@ -39,6 +39,7 @@ from mailman.version import MAILMAN_VERSION_FULL
 
 
 def main():
+    """bin/mailman"""
     # Create the basic parser and add all globally common options.
     parser = argparse.ArgumentParser(
         description=_("""\
@@ -68,6 +69,7 @@ def main():
     # --help should display the subcommands by alphabetical order, except that
     # 'mailman help' should be first.
     def sort_function(command, other):
+        """Sorting helper."""
         if command.name == 'help':
             return -1
         elif other.name == 'help':
