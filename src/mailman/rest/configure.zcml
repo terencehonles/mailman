@@ -5,8 +5,7 @@
 
   <include package="zope.component" file="meta.zcml"/>
   <include package="zope.security" file="meta.zcml"/>
-  <include package="lazr.restful" file="meta.zcml"/>
-  <include package="lazr.restful" file="configure.zcml"/>
+  <include package="lazr.restful.example.wsgi" file="site.zcml"/>
 
   <webservice:register module="mailman.interfaces.domain" />
   <webservice:register module="mailman.interfaces.listmanager" />
@@ -35,6 +34,12 @@
     factory="mailman.rest.urls.FallbackURLMapper"
     />
 
+  <adapter
+    for="mailman.interfaces.system.ISystem
+         lazr.restful.simple.Request"
+    provides="zope.traversing.browser.interfaces.IAbsoluteURL"
+    factory="mailman.rest.urls.FallbackURLMapper"
+    />
   <adapter
     for="mailman.interfaces.mailinglist.IMailingList
          lazr.restful.simple.Request"
@@ -81,6 +86,11 @@
     />
 
   <!-- Utilities -->
+
+  <utility
+    factory="mailman.rest.webservice.AdminWebServiceRootResource"
+    provides="lazr.restful.interfaces.IServiceRootResource"
+    />
 
   <utility
     factory="mailman.rest.configuration.AdminWebServiceConfiguration"

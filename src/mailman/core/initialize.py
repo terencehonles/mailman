@@ -87,19 +87,15 @@ def search_for_configuration_file():
 # initialization, but before database initialization.  Generally all other
 # code will just call initialize().
 
-def initialize_1(config_path=None, propagate_logs=None):
+def initialize_1(config_path=None):
     """First initialization step.
 
     * Zope component architecture
     * The configuration system
     * Run-time directories
-    * The logging subsystem
-    * Internationalization
 
     :param config_path: The path to the configuration file.
     :type config_path: string
-    :param propagate_logs: Should the log output propagate to stderr?
-    :type propagate_logs: boolean or None
     """
     zcml = resource_string('mailman.config', 'configure.zcml')
     xmlconfig.string(zcml)
@@ -119,13 +115,12 @@ def initialize_1(config_path=None, propagate_logs=None):
         # For the test suite, force this back to not using a config file.
         config_path = None
     mailman.config.config.load(config_path)
-    # Create the queue and log directories if they don't already exist.
-    mailman.core.logging.initialize(propagate_logs)
 
 
-def initialize_2(debug=False):
+def initialize_2(debug=False, propagate_logs=None):
     """Second initialization step.
 
+    * Logging
     * Pre-hook
     * Rules
     * Chains
@@ -134,7 +129,11 @@ def initialize_2(debug=False):
 
     :param debug: Should the database layer be put in debug mode?
     :type debug: boolean
+    :param propagate_logs: Should the log output propagate to stderr?
+    :type propagate_logs: boolean or None
     """
+    # Create the queue and log directories if they don't already exist.
+    mailman.core.logging.initialize(propagate_logs)
     # Run the pre-hook if there is one.
     config = mailman.config.config
     if config.mailman.pre_hook:
@@ -172,6 +171,6 @@ def initialize_3():
 
 
 def initialize(config_path=None, propagate_logs=None):
-    initialize_1(config_path, propagate_logs)
-    initialize_2()
+    initialize_1(config_path)
+    initialize_2(propagate_logs=propagate_logs)
     initialize_3()

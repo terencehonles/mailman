@@ -25,11 +25,15 @@ __all__ = [
     ]
 
 
+import logging
+
 from lazr.restful.simple import Publication
 from zope.publisher.interfaces import NotFound
 
 from mailman.config import config
 from mailman.interfaces.rest import IResolvePathNames
+
+log = logging.getLogger('mailman.http')
 
 
 

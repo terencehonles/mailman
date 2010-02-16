@@ -34,15 +34,21 @@ import logging
 # proper Mailman logger instead of stderr, as is the default.
 from wsgiref.simple_server import WSGIServer, WSGIRequestHandler
 
-from lazr.restful.simple import Request
+from lazr.restful import register_versioned_request_utility
+from lazr.restful.interfaces import (
+    IServiceRootResource, IWebServiceClientRequest)
+from lazr.restful.simple import Request, RootResource
+from lazr.restful.wsgi import WSGIApplication
 from zope.component import getUtility
 from zope.interface import implements
 from zope.publisher.publish import publish
 
 from mailman.config import config
 from mailman.core.system import system
-from mailman.interfaces.domain import IDomainCollection, IDomainManager
+from mailman.interfaces.domain import IDomain, IDomainCollection
 from mailman.interfaces.listmanager import IListManager
+from mailman.interfaces.mailinglist import IMailingList
+from mailman.interfaces.member import IMember
 from mailman.interfaces.membership import ISubscriptionService
 from mailman.interfaces.rest import IResolvePathNames
 from mailman.rest.publication import AdminWebServicePublication
@@ -51,46 +57,59 @@ log = logging.getLogger('mailman.http')
 
 
 
-class AdminWebServiceApplication:
-    """A WSGI application for the admin REST interface."""
+# Marker interfaces for multiversion lazr.restful.
+class I30Version(IWebServiceClientRequest):
+    pass
 
-    implements(IResolvePathNames)
 
-    def __init__(self, environ, start_response):
-        self.environ = environ
-        self.start_response = start_response
-
-    def __iter__(self):
-        environ = self.environ
-        # Create the request based on the HTTP method used.
-        method = environ.get('REQUEST_METHOD', 'GET').upper()
-        request = Request(environ['wsgi.input'], environ)
-        request.setPublication(AdminWebServicePublication(self))
-        # Support post-mortem debugging.
-        handle_errors = environ.get('wsgi.handleErrors', True)
-        # The request returned by the publisher may in fact be different than
-        # the one passed in.
-        request = publish(request, handle_errors=handle_errors)
-        # Start the WSGI server response.
-        response = request.response
-        self.start_response(response.getStatusString(), response.getHeaders())
-        # Return the result body iterable.
-        return iter(response.consumeBodyIter())
-
-    def get(self, name):
-        """Maps root names to resources."""
-        top_level = dict(
-            system=system,
-            domains=getUtility(IDomainCollection),
-            lists=getUtility(IListManager),
-            members=getUtility(ISubscriptionService),
-            )
-        next_step = top_level.get(name)
-        log.debug('Top level name: %s -> %s', name, next_step)
-        return next_step
+class IDevVersion(IWebServiceClientRequest):
+    pass
 
 
 
+class AdminWebServiceRootResource(RootResource):
+    """The lazr.restful non-versioned root resource."""
+
+    implements(IResolvePathNames)
+
+    def __init__(self):
+        # We can't build these mappings at construction time.
+        self._collections = None
+        self._entry_links = None
+        self._top_names = None
+
+    def _build_top_level_objects(self):
+        """See `RootResource`."""
+        self._collections = dict(
+            domains=(IDomain, getUtility(IDomainCollection)),
+            lists=(IMailingList, getUtility(IListManager)),
+            members=(IMember, getUtility(ISubscriptionService)),
+            )
+        self._entry_links = dict(
+            system=system,
+            )
+        self._top_names = self._collection.copy()
+        self._top_names.update(self._entry_links)
+        return (self._collections, self._entry_links)
+
+    def get(self, name):
+        """See `IResolvePathNames`."""
+        top_names = dict(
+            domains=getUtility(IDomainCollection),
+            lists=getUtility(IListManager),
+            members=getUtility(ISubscriptionService),
+            system=system,
+            )
+        return top_names.get(name)
+
+
+class AdminWebServiceApplication(WSGIApplication):
+    """A WSGI application for the admin REST interface."""
+
+    # The only thing we need to override is the publication class.
+    publication_class = AdminWebServicePublication
+
+
 class AdminWebServiceWSGIRequestHandler(WSGIRequestHandler):
     """Handler class which just logs output to the right place."""
 
@@ -99,8 +118,11 @@ class AdminWebServiceWSGIRequestHandler(WSGIRequestHandler):
         log.info('%s - - %s', self.address_string(), format % args)
 
 
+
 def make_server():
     """Create the WSGI admin REST server."""
+    register_versioned_request_utility(I30Version, '3.0')
+    register_versioned_request_utility(IDevVersion, 'dev')
     host = config.webservice.hostname
     port = int(config.webservice.port)
     server = WSGIServer((host, port), AdminWebServiceWSGIRequestHandler)

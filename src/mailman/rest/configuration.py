@@ -55,18 +55,33 @@ class AdminWebServiceConfiguration(BaseWSGIWebServiceConfiguration):
         """See `IWebServiceConfiguration`."""
         return as_boolean(config.webservice.use_https)
 
-    # This should match the major.minor Mailman version.
-    service_version_uri_prefix = '{0.MAJOR_REV}.{0.MINOR_REV}'.format(version)
+    # We currently have only one active version; the first entry in this list
+    # should match the major.minor Mailman version.  The second entry is just
+    # an alias for the 'floating' development version.
+    active_versions = [
+        '{0.MAJOR_REV}.{0.MINOR_REV}'.format(version),
+        'dev',
+        ]
     code_revision = version.VERSION
 
     @property
     def show_tracebacks(self):
         """See `IWebServiceConfiguration`."""
         return config.webservice.show_tracebacks
-        
+
     default_batch_size = 50
     max_batch_size = 300
 
     def get_request_user(self):
         """See `IWebServiceConfiguration`."""
         return None
+
+    @property
+    def hostname(self):
+        """See `IWebServiceConfiguration`."""
+        return config.webservice.hostname
+
+    @property
+    def port(self):
+        """See `IWebServiceConfiguration`."""
+        return int(config.webservice.port)

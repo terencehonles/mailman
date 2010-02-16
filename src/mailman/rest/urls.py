@@ -22,7 +22,9 @@ from __future__ import absolute_import, unicode_literals
 __metaclass__ = type
 __all__ = [
     'DomainURLMapper',
+    'FallbackURLMapper',
     'MailingListURLMapper',
+    'MemberURLMapper',
     ]
 
 
@@ -53,10 +55,10 @@ class BasicURLMapper:
         self.context = context
         self.request = request
         self.webservice_config = AdminWebServiceConfiguration()
-        self.version = self.webservice_config.service_version_uri_prefix
+        self.version = self.webservice_config.active_versions[0]
         self.schema = ('https' if self.webservice_config.use_https else 'http')
-        self.hostname = config.webservice.hostname
-        self.port = int(config.webservice.port)
+        self.hostname = self.webservice_config.hostname
+        self.port = self.webservice_config.port
 
 
 
