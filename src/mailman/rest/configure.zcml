@@ -34,6 +34,12 @@
     factory="mailman.rest.urls.FallbackURLMapper"
     />
 
+  <!--
+    XXX 2010-02-16 barry Why is this necessary?  Without this, lazr.restful
+    does not adapt the ISystem to the FallbackURLMapper.  I don't know why
+    that happens because the above generic mapper should do the trick.
+  -->
+
   <adapter
     for="mailman.interfaces.system.ISystem
          lazr.restful.simple.Request"

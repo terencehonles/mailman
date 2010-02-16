@@ -58,6 +58,11 @@ log = logging.getLogger('mailman.http')
 
 
 # Marker interfaces for multiversion lazr.restful.
+#
+# XXX 2010-02-16 barry Gah!  lazr.restful's multiversion.txt document says
+# these classes should get generated, and the registrations should happen,
+# automatically.  This is not the case AFAICT.  Why?!
+
 class I30Version(IWebServiceClientRequest):
     pass
 
@@ -72,25 +77,18 @@ class AdminWebServiceRootResource(RootResource):
 
     implements(IResolvePathNames)
 
-    def __init__(self):
-        # We can't build these mappings at construction time.
-        self._collections = None
-        self._entry_links = None
-        self._top_names = None
-
+    # XXX 2010-02-16 barry lazr.restful really wants this class to exist and
+    # be a subclass of RootResource.  Our own traversal really wants this to
+    # implement IResolvePathNames.  RootResource says to override
+    # _build_top_level_objects() to return the top-level objects, but that
+    # appears to never be called by lazr.restful, so you've got me.  I don't
+    # understand this, which sucks, so just ensure that it doesn't do anything
+    # useful so if/when I do understand this, I can resolve the conflict
+    # between the way lazr.restful wants us to do things and the way our
+    # traversal wants to do things.
     def _build_top_level_objects(self):
         """See `RootResource`."""
-        self._collections = dict(
-            domains=(IDomain, getUtility(IDomainCollection)),
-            lists=(IMailingList, getUtility(IListManager)),
-            members=(IMember, getUtility(ISubscriptionService)),
-            )
-        self._entry_links = dict(
-            system=system,
-            )
-        self._top_names = self._collection.copy()
-        self._top_names.update(self._entry_links)
-        return (self._collections, self._entry_links)
+        raise NotImplementedError('Magic suddenly got invoked')
 
     def get(self, name):
         """See `IResolvePathNames`."""
@@ -121,6 +119,9 @@ class AdminWebServiceWSGIRequestHandler(WSGIRequestHandler):
 
 def make_server():
     """Create the WSGI admin REST server."""
+    # XXX 2010-02-16 barry Gah!  lazr.restful's multiversion.txt document says
+    # these classes should get generated, and the registrations should happen,
+    # automatically.  This is not the case AFAICT.  Why?!
     register_versioned_request_utility(I30Version, '3.0')
     register_versioned_request_utility(IDevVersion, 'dev')
     host = config.webservice.hostname

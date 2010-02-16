@@ -55,6 +55,13 @@ class BasicURLMapper:
         self.context = context
         self.request = request
         self.webservice_config = AdminWebServiceConfiguration()
+        # XXX 2010-02-16 barry This kind of sucks, but I don't understand how
+        # to reconcile the way we used to do things with the way lazr.restful
+        # as of 0.9.18 wants to do multiversion webservices.  And really, I
+        # don't care because right now I don't have any need for
+        # multiversioned services.  lazr.restful forced me to think about it
+        # though, so this just hardcodes the version part of the resource URL
+        # path to the first (i.e. numbered) version.
         self.version = self.webservice_config.active_versions[0]
         self.schema = ('https' if self.webservice_config.use_https else 'http')
         self.hostname = self.webservice_config.hostname
