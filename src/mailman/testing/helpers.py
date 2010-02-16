@@ -23,6 +23,7 @@ __metaclass__ = type
 __all__ = [
     'TestableMaster',
     'digest_mbox',
+    'event_subscribers',
     'get_lmtp_client',
     'get_queue_messages',
     'make_testable_runner',
@@ -39,6 +40,9 @@ import logging
 import smtplib
 import datetime
 import threading
+
+from contextlib import contextmanager
+from zope import event
 
 from mailman.bin.master import Loop as Master
 from mailman.config import config
@@ -88,10 +92,12 @@ class _Bag:
             setattr(self, key, value)
 
 
-def get_queue_messages(queue_name):
+def get_queue_messages(queue_name, sort_on=None):
     """Return and clear all the messages in the given queue.
 
     :param queue_name: A string naming a queue.
+    :param sort_on: The message header to sort on.  If None (the default),
+        no sorting is performed.
     :return: A list of 2-tuples where each item contains the message and
         message metadata.
     """
@@ -101,6 +107,8 @@ def get_queue_messages(queue_name):
         msg, msgdata = queue.dequeue(filebase)
         messages.append(_Bag(msg=msg, msgdata=msgdata))
         queue.finish(filebase)
+    if sort_on is not None:
+        messages.sort(key=lambda item: item.msg[sort_on])
     return messages
 
 
@@ -229,3 +237,18 @@ def wait_for_webservice():
             time.sleep(0.1)
         else:
             break
+
+
+
+@contextmanager
+def event_subscribers(*subscribers):
+    """Temporarily set the Zope event subscribers list.
+
+    :param subscribers: A sequence of event subscribers.
+    :type subscribers: sequence of callables, each receiving one argument, the
+        event.
+    """
+    old_subscribers = event.subscribers[:]
+    event.subscribers = list(subscribers)
+    yield
+    event.subscribers[:] = old_subscribers

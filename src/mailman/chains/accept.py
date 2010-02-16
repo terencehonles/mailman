@@ -22,17 +22,26 @@ from __future__ import absolute_import, unicode_literals
 __metaclass__ = type
 __all__ = [
     'AcceptChain',
+    'AcceptNotification',
     ]
+
 
 import logging
 
-from mailman.chains.base import TerminalChainBase
+from zope.event import notify
+
+from mailman.chains.base import ChainNotification, TerminalChainBase
 from mailman.config import config
 from mailman.core.i18n import _
 
 
 log = logging.getLogger('mailman.vette')
 SEMISPACE = '; '
+
+
+
+class AcceptNotification(ChainNotification):
+    """A notification event signaling that a message is being accepted."""
 
 
 
@@ -56,3 +65,4 @@ class AcceptChain(TerminalChainBase):
         accept_queue = config.switchboards['pipeline']
         accept_queue.enqueue(msg, msgdata)
         log.info('ACCEPT: %s', msg.get('message-id', 'n/a'))
+        notify(AcceptNotification(mlist, msg, msgdata, self))

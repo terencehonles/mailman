@@ -22,6 +22,7 @@ from __future__ import absolute_import, unicode_literals
 __metaclass__ = type
 __all__ = [
     'Chain',
+    'ChainNotification',
     'Link',
     'TerminalChainBase',
     ]
@@ -50,7 +51,7 @@ class Link:
 class TerminalChainBase:
     """A base chain that always matches and executes a method.
 
-    The method is called 'process' and must be provided by the subclass.
+    The method is called '_process()' and must be provided by the subclass.
     """
     implements(IChain, IChainIterator)
 
@@ -58,6 +59,10 @@ class TerminalChainBase:
         """Process the message for the given mailing list.
 
         This must be overridden by subclasses.
+
+        :param mlist: The mailing list.
+        :param msg: The message.
+        :param msgdata: The message metadata.
         """
         raise NotImplementedError
 
@@ -120,3 +125,14 @@ class ChainIterator:
     def __iter__(self):
         """See `IChainIterator`."""
         return self._chain.get_iterator()
+
+
+
+class ChainNotification:
+    """Base class for chain notification events."""
+
+    def __init__(self, mlist, msg, msgdata, chain):
+        self.mlist = mlist
+        self.msg = msg
+        self.msgdata = msgdata
+        self.chain = chain

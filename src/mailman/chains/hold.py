@@ -22,6 +22,7 @@ from __future__ import absolute_import, unicode_literals
 __metaclass__ = type
 __all__ = [
     'HoldChain',
+    'HoldNotification',
     ]
 
 
@@ -31,12 +32,13 @@ from email.mime.message import MIMEMessage
 from email.mime.text import MIMEText
 from email.utils import formatdate, make_msgid
 from zope.component import getUtility
+from zope.event import notify
 from zope.interface import implements
 
 from mailman.Utils import maketext, oneline, wrap
 from mailman.app.moderator import hold_message
 from mailman.app.replybot import can_acknowledge
-from mailman.chains.base import TerminalChainBase
+from mailman.chains.base import ChainNotification, TerminalChainBase
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.email.message import UserNotification
@@ -54,6 +56,10 @@ SEMISPACE = '; '
 class HeldMessagePendable(dict):
     implements(IPendable)
     PEND_KEY = 'held message'
+
+
+class HoldNotification(ChainNotification):
+    """A notification event signaling that a message is being held."""
 
 
 
@@ -241,3 +247,4 @@ also appear in the first line of the body of the reply.""")),
         log.info('HOLD: %s post from %s held, message-id=%s: %s',
                  mlist.fqdn_listname, msg.sender,
                  msg.get('message-id', 'n/a'), reason)
+        notify(HoldNotification(mlist, msg, msgdata, self))

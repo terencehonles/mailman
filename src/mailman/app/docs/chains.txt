@@ -35,18 +35,16 @@ The Discard chain simply throws the message away.
     ... An important message.
     ... """)
 
-    >>> from mailman.core.chains import process
+    >>> def print_msgid(event):
+    ...     print '{0}: {1}'.format(
+    ...         event.chain.name.upper(), event.msg.get('message-id', 'n/a'))
 
-    # XXX This checks the vette log file because there is no other evidence
-    # that this chain has done anything.
-    >>> import os
-    >>> fp = open(os.path.join(config.LOG_DIR, 'vette'))
-    >>> file_pos = fp.tell()
-    >>> process(mlist, msg, {}, 'discard')
-    >>> fp.seek(file_pos)
-    >>> print 'LOG:', fp.read()
-    LOG: ... DISCARD: <first>
-    <BLANKLINE>
+    >>> from mailman.core.chains import process
+    >>> from mailman.testing.helpers import event_subscribers
+
+    >>> with event_subscribers(print_msgid):
+    ...     process(mlist, msg, {}, 'discard')
+    DISCARD: <first>
 
 
 The Reject chain
@@ -62,19 +60,18 @@ this action.
     reject
     >>> print chain.description
     Reject/bounce a message and stop processing.
-    >>> file_pos = fp.tell()
-    >>> process(mlist, msg, {}, 'reject')
-    >>> fp.seek(file_pos)
-    >>> print 'LOG:', fp.read()
-    LOG: ... REJECT: <first>
+
+    >>> with event_subscribers(print_msgid):
+    ...     process(mlist, msg, {}, 'reject')
+    REJECT: <first>
 
 The bounce message is now sitting in the Virgin queue.
 
-    >>> virginq = config.switchboards['virgin']
-    >>> len(virginq.files)
+    >>> from mailman.testing.helpers import get_queue_messages
+    >>> qfiles = get_queue_messages('virgin')
+    >>> len(qfiles)
     1
-    >>> qmsg, qdata = virginq.dequeue(virginq.files[0])
-    >>> print qmsg.as_string()
+    >>> print qfiles[0].msg.as_string()
     Subject: My first post
     From: _xtest-owner@example.com
     To: aperson@example.com
@@ -109,30 +106,20 @@ sender and the list moderators.
     >>> print chain.description
     Hold a message and stop processing.
 
-    >>> file_pos = fp.tell()
-    >>> process(mlist, msg, {}, 'hold')
-    >>> fp.seek(file_pos)
-    >>> print 'LOG:', fp.read()
-    LOG: ... HOLD: _xtest@example.com post from aperson@example.com held,
-        message-id=<first>: n/a
-    <BLANKLINE>
+    >>> with event_subscribers(print_msgid):
+    ...     process(mlist, msg, {}, 'hold')
+    HOLD: <first>
 
 There are now two messages in the Virgin queue, one to the list moderators and
 one to the original author.
 
-    >>> len(virginq.files)
+    >>> qfiles = get_queue_messages('virgin', sort_on='to')
+    >>> len(qfiles)
     2
-    >>> qfiles = []
-    >>> for filebase in virginq.files:
-    ...     qmsg, qdata = virginq.dequeue(filebase)
-    ...     virginq.finish(filebase)
-    ...     qfiles.append(qmsg)
-    >>> from operator import itemgetter
-    >>> qfiles.sort(key=itemgetter('to'))
 
 This message is addressed to the mailing list moderators.
 
-    >>> print qfiles[0].as_string()
+    >>> print qfiles[0].msg.as_string()
     Subject: _xtest@example.com post from aperson@example.com requires approval
     From: _xtest-owner@example.com
     To: _xtest-owner@example.com
@@ -186,7 +173,7 @@ This message is addressed to the mailing list moderators.
 
 This message is addressed to the sender of the message.
 
-    >>> print qfiles[1].as_string()
+    >>> print qfiles[1].msg.as_string()
     MIME-Version: 1.0
     Content-Type: text/plain; charset="us-ascii"
     Content-Transfer-Encoding: 7bit
@@ -220,7 +207,7 @@ first item is a type code and the second item is a message id.
 
     >>> import re
     >>> cookie = None
-    >>> for line in qfiles[1].get_payload().splitlines():
+    >>> for line in qfiles[1].msg.get_payload().splitlines():
     ...     mo = re.search('confirm/[^/]+/(?P<cookie>.*)$', line)
     ...     if mo:
     ...         cookie = mo.group('cookie')
@@ -269,17 +256,14 @@ processed and sent on to the list membership.
     accept
     >>> print chain.description
     Accept a message.
-    >>> file_pos = fp.tell()
-    >>> process(mlist, msg, {}, 'accept')
-    >>> fp.seek(file_pos)
-    >>> print 'LOG:', fp.read()
-    LOG: ... ACCEPT: <first>
+    >>> with event_subscribers(print_msgid):
+    ...     process(mlist, msg, {}, 'accept')
+    ACCEPT: <first>
 
-    >>> pipelineq = config.switchboards['pipeline']
-    >>> len(pipelineq.files)
+    >>> qfiles = get_queue_messages('pipeline')
+    >>> len(qfiles)
     1
-    >>> qmsg, qdata = pipelineq.dequeue(pipelineq.files[0])
-    >>> print qmsg.as_string()
+    >>> print qfiles[0].msg.as_string()
     From: aperson@example.com
     To: _xtest@example.com
     Subject: My first post
@@ -314,14 +298,14 @@ the Hold handler from previous versions of Mailman.
 The previously created message is innocuous enough that it should pass through
 all default rules.  This message will end up in the pipeline queue.
 
-    >>> file_pos = fp.tell()
-    >>> process(mlist, msg, {})
-    >>> fp.seek(file_pos)
-    >>> print 'LOG:', fp.read()
-    LOG: ... ACCEPT: <first>
+    >>> with event_subscribers(print_msgid):
+    ...     process(mlist, msg, {})
+    ACCEPT: <first>
 
-    >>> qmsg, qdata = pipelineq.dequeue(pipelineq.files[0])
-    >>> print qmsg.as_string()
+    >>> qfiles = get_queue_messages('pipeline')
+    >>> len(qfiles)
+    1
+    >>> print qfiles[0].msg.as_string()
     From: aperson@example.com
     To: _xtest@example.com
     Subject: My first post
@@ -338,9 +322,9 @@ all default rules.  This message will end up in the pipeline queue.
 In addition, the message metadata now contains lists of all rules that have
 hit and all rules that have missed.
 
-    >>> sorted(qdata['rule_hits'])
+    >>> sorted(qfiles[0].msgdata['rule_hits'])
     []
-    >>> for rule_name in sorted(qdata['rule_misses']):
+    >>> for rule_name in sorted(qfiles[0].msgdata['rule_misses']):
     ...     print rule_name
     administrivia
     approved
