@@ -62,10 +62,10 @@ class BuiltInChain:
         ('suspicious-header', LinkAction.defer, None),
         # Now if any of the above hit, jump to the hold chain.
         ('any', LinkAction.jump, 'hold'),
-        # Take a detour through the self header matching chain, which we'll
-        # create later.
+        # Take a detour through the header matching chain, which we'll create
+        # later.
         ('truth', LinkAction.detour, 'header-match'),
-        # Finally, the builtin chain selfs to acceptance.
+        # Finally, the builtin chain jumps to acceptance.
         ('truth', LinkAction.jump, 'accept'),
         )
 

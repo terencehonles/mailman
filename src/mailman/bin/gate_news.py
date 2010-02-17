@@ -113,6 +113,7 @@ def poll_newsgroup(mlist, conn, first, last, glock):
                 value = header[:i].lower()
                 if i > 0 and value == 'to':
                     found_to = True
+                # FIXME 2010-02-16 barry use List-Post header.
                 if value <> 'x-beenthere':
                     continue
                 if header[i:] == ': %s' % mlist.posting_address:

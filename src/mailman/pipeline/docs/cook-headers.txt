@@ -45,36 +45,6 @@ But if there was no original sender, then the empty string will be saved.
     <BLANKLINE>
 
 
-X-BeenThere header
-==================
-
-The X-BeenThere header is what Mailman uses to recognize messages that have
-already been processed by this mailing list.  It's one small measure against
-mail loops.
-
-    >>> msg = message_from_string("""\
-    ... From: aperson@example.com
-    ...
-    ... A message of great import.
-    ... """)
-    >>> process(mlist, msg, {})
-    >>> print msg['x-beenthere']
-    _xtest@example.com
-
-Mailman appends X-BeenThere headers, so if there already is one in the
-original message, the posted message will contain two such headers.
-
-    >>> msg = message_from_string("""\
-    ... From: aperson@example.com
-    ... X-BeenThere: another@example.com
-    ...
-    ... A message of great import.
-    ... """)
-    >>> process(mlist, msg, {})
-    >>> sorted(msg.get_all('x-beenthere'))
-    [u'_xtest@example.com', u'another@example.com']
-
-
 Mailman version header
 ======================
 

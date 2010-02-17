@@ -37,12 +37,12 @@ class Loop:
     implements(IRule)
 
     name = 'loop'
-    description = _('Look for a posting loop, via the X-BeenThere header.')
+    description = _('Look for a posting loop.')
     record = True
 
     def check(self, mlist, msg, msgdata):
         """See `IRule`."""
         # Has this message already been posted to this list?
-        been_theres = [value.strip().lower()
-                       for value in msg.get_all('x-beenthere', [])]
-        return mlist.posting_address in been_theres
+        list_posts = set(value.strip().lower()
+                         for value in msg.get_all('list-post', []))
+        return mlist.posting_address in list_posts
