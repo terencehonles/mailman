@@ -101,7 +101,11 @@ class TestConfigFileSearch(TestConfigFileBase):
             with open(os.path.join(fake_testdir, 'mailman.cfg'), 'w') as fp:
                 print >> fp, '# Fake mailman.cfg file'
             with chdir(fake_testdir):
-                self.assertEqual(search_for_configuration_file(), config_file)
+                # Split off any /private prefix imposed by Mac OS X.
+                found = search_for_configuration_file()
+                if found.startswith('/private'):
+                    found = found[8:]
+                self.assertEqual(found, config_file)
 
 
 class TestConfigFileSearchWithChroot(TestConfigFileBase):
