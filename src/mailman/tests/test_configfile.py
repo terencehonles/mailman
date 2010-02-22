@@ -95,16 +95,15 @@ class TestConfigFileSearch(TestConfigFileBase):
     def test_current_working_directory(self):
         fake_cwd = '/home/alex/mailman/hacking'
         fake_testdir = self._make_fake(fake_cwd)
-        config_file = os.path.join(fake_testdir, 'mailman.cfg')
+        config_file = os.path.realpath(
+                os.path.join(fake_testdir, 'mailman.cfg'))
         with fakedirs(fake_testdir):
             # Write a mostly empty configuration file.
             with open(os.path.join(fake_testdir, 'mailman.cfg'), 'w') as fp:
                 print >> fp, '# Fake mailman.cfg file'
             with chdir(fake_testdir):
-                # Split off any /private prefix imposed by Mac OS X.
-                found = search_for_configuration_file()
-                if found.startswith('/private'):
-                    found = found[8:]
+                # sometimes symlinks bite us (eg. OS X /var -> /private/var)
+                found = os.path.realpath(search_for_configuration_file())
                 self.assertEqual(found, config_file)
 
 
