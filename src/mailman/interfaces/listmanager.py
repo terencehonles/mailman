@@ -73,6 +73,25 @@ class IListManager(Interface):
         :raise `ListAlreadyExistsError` if the named list already exists.
         """
 
+
+    def new(fqdn_listname):
+        """Add a new mailing list.
+
+        The mailing may not exist yet, but the domain specified in
+        `fqdn_listname` must exist.  This is a higher level interface than
+        create() and should generally be used instead of that method.
+
+        :param fqdn_listname: The fully qualified name for the new
+            mailing list.
+        :type fqdn_listname: string
+        :return: The new mailing list
+        :rtype: `IMailingList`
+        :raises `BadDomainSpecificationError`: when the hostname part of
+            `fqdn_listname` does not exist.
+        :raises `ListAlreadyExistsError`: when the mailing list already
+            exists.
+        """
+
     def get(fqdn_listname):
         """Return the mailing list with the given name, if it exists.
 
@@ -93,6 +112,12 @@ class IListManager(Interface):
         """An iterator over all the mailing list objects managed by this list
         manager.""")
 
+    def __iter__():
+        """An iterator over all the mailing lists.
+
+        :return: iterator over `IMailingList`.
+        """
+
     names = Attribute(
         """An iterator over the fully qualified list names of all mailing
         lists managed by this list manager.""")
@@ -102,21 +127,4 @@ class IListManager(Interface):
 
         :return: The list of all known mailing lists.
         :rtype: list of `IMailingList`
-        """
-
-    def new(fqdn_listname):
-        """Add a new maling list.
-
-        The mailing may not exist yet, but the domain specified in
-        `fqdn_listname` must exist.
-
-        :param fqdn_listname: The fully qualified name for the new
-            mailing list.
-        :type fqdn_listname: string
-        :return: The new mailing list
-        :rtype: `IMailingList`
-        :raises `BadDomainSpecificationError`: when the hostname part of
-            `fqdn_listname` does not exist.
-        :raises `ListAlreadyExistsError`: when the mailing list already
-            exists.
         """

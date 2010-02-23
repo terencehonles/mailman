@@ -43,7 +43,7 @@ from mailman.config import config
 from mailman.core.system import system
 from mailman.interfaces.domain import (
     BadDomainSpecificationError, IDomain, IDomainManager)
-from mailman.interfaces.listmanager import IListManager
+from mailman.interfaces.listmanager import ListAlreadyExistsError, IListManager
 from mailman.interfaces.mailinglist import IMailingList
 from mailman.interfaces.member import IMember
 from mailman.interfaces.membership import ISubscriptionService
@@ -85,6 +85,15 @@ class TopLevel(resource.Resource):
             return AllDomains()
         elif len(segments) == 1:
             return ADomain(segments[0]), []
+        else:
+            return http.bad_request()
+
+    @resource.child()
+    def lists(self, request, segments):
+        if len(segments) == 0:
+            return AllLists()
+        elif len(segments) == 1:
+            return AList(segments[0]), []
         else:
             return http.bad_request()
 
@@ -143,11 +152,11 @@ class AllDomains(_DomainBase):
             domain = domain_manager.add(**kws)
         except BadDomainSpecificationError:
             return http.bad_request([], 'Domain exists')
-        # wsgiref wants headers to be strings, not unicodes.
-        location = 'http://localhost:8001/3.0/domains/{0}'.format(
+        # wsgiref wants headers to be bytes, not unicodes.
+        location = b'http://localhost:8001/3.0/domains/{0}'.format(
             domain.email_host)
         # Include no extra headers or body.
-        return http.created(str(location), [], None)
+        return http.created(location, [], None)
 
     @resource.GET()
     def container(self, request):
@@ -169,6 +178,91 @@ class AllDomains(_DomainBase):
         for domain in domains:
             domain_data = self._format_domain(domain)
             entries.append(domain_data)
+        return http.ok([], json.dumps(response))
+
+
+class _ListBase(resource.Resource):
+    """Shared base class for mailing list representations."""
+
+    def _format_list(self, mlist):
+        """Format the mailing list for a single domain."""
+        list_data = dict(
+            fqdn_listname=mlist.fqdn_listname,
+            host_name=mlist.host_name,
+            list_name=mlist.list_name,
+            real_name=mlist.real_name,
+            resource_type_link='http://localhost:8001/3.0/#list',
+            self_link='http://localhost:8001/3.0/lists/{0}'.format(
+                mlist.fqdn_listname),
+            )
+        etag = hashlib.sha1(repr(list_data)).hexdigest()
+        list_data['http_etag'] = '"{0}"'.format(etag)
+        return list_data
+
+
+class AList(_ListBase):
+    """A mailing list."""
+
+    def __init__(self, mlist):
+        self._mlist = mlist
+
+    @resource.GET()
+    def mailing_list(self, request):
+        """Return a single mailing list end-point."""
+        mlist = getUtility(IListManager).get(self._mlist)
+        if mlist is None:
+            return http.not_found()
+        return http.ok([], json.dumps(self._format_list(mlist)))
+
+
+class AllLists(_ListBase):
+    """The mailing lists."""
+
+    @resource.POST()
+    def create(self, request):
+        """Create a new mailing list."""
+        # XXX 2010-02-23 barry Sanity check the POST arguments by
+        # introspection of the target method, or via descriptors.
+        list_manager = getUtility(IListManager)
+        try:
+            # Hmmm... webob gives this to us as a string, but we need
+            # unicodes.  For backward compatibility with lazr.restful style
+            # requests, ignore any ws.op parameter.
+            kws = dict((key, unicode(value))
+                       for key, value in request.POST.items()
+                       if key != 'ws.op')
+            mlist = list_manager.new(**kws)
+        except ListAlreadyExistsError:
+            return http.bad_request([], b'Mailing list exists')
+        except BadDomainSpecificationError as error:
+            return http.bad_request([], b'Domain does not exist {0}'.format(
+                error.domain))
+        # wsgiref wants headers to be bytes, not unicodes.
+        location = b'http://localhost:8001/3.0/lists/{0}'.format(
+            mlist.fqdn_listname)
+        # Include no extra headers or body.
+        return http.created(location, [], None)
+
+    @resource.GET()
+    def container(self, request):
+        """Return the /lists end-point."""
+        mlists = list(getUtility(IListManager))
+        if len(mlists) == 0:
+            return http.ok(
+                [], json.dumps(dict(resource_type_link=
+                                    'http://localhost:8001/3.0/#lists',
+                                    start=None,
+                                    total_size=0)))
+        entries = []
+        response = dict(
+            resource_type_link='http://localhost:8001/3.0/#lists',
+            start=0,
+            total_size=len(mlists),
+            entries=entries,
+            )
+        for mlist in mlists:
+            list_data = self._format_list(mlist)
+            entries.append(list_data)
         return http.ok([], json.dumps(response))
 
 

@@ -44,12 +44,9 @@ instead of posting directly to the URL.
     ...           })
     URL: http://localhost:8001/3.0/lists
     content-length: 0
-    content-type: text/plain;charset=utf-8
     date: ...
     location: http://localhost:8001/3.0/lists/test-two@example.com
-    server: WSGIServer/... Python/...
-    x-content-type-warning: guessed from content
-    x-powered-by: Zope (www.zope.org), Python (www.python.org)
+    ...
 
 The mailing list exists in the database.
 
