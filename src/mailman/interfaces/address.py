@@ -30,7 +30,6 @@ __all__ = [
     ]
 
 
-from lazr.restful.declarations import error_status
 from zope.interface import Interface, Attribute
 
 from mailman.interfaces.errors import MailmanError
@@ -53,7 +52,6 @@ class AddressNotLinkedError(AddressError):
     """The address is not linked to the user."""
 
 
-@error_status(400)
 class InvalidEmailAddressError(AddressError):
     """Email address is invalid."""
 

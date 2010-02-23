@@ -26,14 +26,12 @@ __all__ = [
     ]
 
 
-from lazr.restful.declarations import error_status
 from zope.interface import Interface
 
 from mailman.core.errors import MailmanError
 
 
 
-@error_status(400)
 class APIValueError(MailmanError, ValueError):
     """A `ValueError` from the REST API."""
 

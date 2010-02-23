@@ -2,7 +2,9 @@
 <configure
     xmlns="http://namespaces.zope.org/zope">
 
-  <include package="mailman.rest" file="configure.zcml"/>
+  <include package="zope.component" file="meta.zcml"/>
+
+  <!-- include package="mailman.rest" file="configure.zcml"/ -->
 
   <adapter
     for="mailman.interfaces.mailinglist.IMailingList"

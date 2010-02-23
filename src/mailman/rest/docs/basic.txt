@@ -26,8 +26,7 @@ Non-existent links
 When you try to access an admin link that doesn't exist, you get the
 appropriate HTTP 404 Not Found error.
 
-    >>> from urllib2 import urlopen
-    >>> urlopen('http://localhost:8001/3.0/does-not-exist')
+    >>> dump_json('http://localhost:8001/3.0/does-not-exist')
     Traceback (most recent call last):
     ...
     HTTPError: HTTP Error 404: Not Found

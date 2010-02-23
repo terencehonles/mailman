@@ -32,8 +32,6 @@ __all__ = [
     ]
 
 
-from lazr.restful.declarations import (
-    error_status, export_as_webservice_entry, exported)
 from munepy import Enum
 from zope.interface import Interface, Attribute
 
@@ -78,7 +76,6 @@ class MembershipError(MailmanError):
     """Base exception for all membership errors."""
 
 
-@error_status(400)
 class AlreadySubscribedError(MembershipError):
     """The member is already subscribed to the mailing list with this role."""
 
@@ -93,7 +90,6 @@ class AlreadySubscribedError(MembershipError):
             self._address, self._role, self._fqdn_listname)
 
 
-@error_status(400)
 class MembershipIsBannedError(MembershipError):
     """The address is not allowed to subscribe to the mailing list."""
 
@@ -107,7 +103,6 @@ class MembershipIsBannedError(MembershipError):
             self._address, self._mlist)
 
 
-@error_status(400)
 class NotAMemberError(MembershipError):
     """The address is not a member of the mailing list."""
 
@@ -124,8 +119,6 @@ class NotAMemberError(MembershipError):
 
 class IMember(Interface):
     """A member of a mailing list."""
-
-    export_as_webservice_entry()
 
     mailing_list = Attribute(
         """The mailing list subscribed to.""")

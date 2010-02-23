@@ -27,85 +27,185 @@ __all__ = [
     ]
 
 
+import json
+import hashlib
 import logging
 
-# Don't use wsgiref.simple_server.make_server() because we need to override
-# BaseHTTPRequestHandler.log_message() so that logging output will go to the
-# proper Mailman logger instead of stderr, as is the default.
-from wsgiref.simple_server import WSGIServer, WSGIRequestHandler
+from restish.app import RestishApp
+from restish import http, resource
+from wsgiref.simple_server import (
+    make_server as wsgi_server, WSGIRequestHandler)
 
-from lazr.restful import register_versioned_request_utility
-from lazr.restful.interfaces import (
-    IServiceRootResource, IWebServiceClientRequest)
-from lazr.restful.simple import Request, RootResource
-from lazr.restful.wsgi import WSGIApplication
 from zope.component import getUtility
 from zope.interface import implements
-from zope.publisher.publish import publish
 
 from mailman.config import config
 from mailman.core.system import system
-from mailman.interfaces.domain import IDomain, IDomainCollection
+from mailman.interfaces.domain import (
+    BadDomainSpecificationError, IDomain, IDomainManager)
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.mailinglist import IMailingList
 from mailman.interfaces.member import IMember
 from mailman.interfaces.membership import ISubscriptionService
 from mailman.interfaces.rest import IResolvePathNames
-from mailman.rest.publication import AdminWebServicePublication
+#from mailman.rest.publication import AdminWebServicePublication
 
+
+COMMASPACE = ', '
 log = logging.getLogger('mailman.http')
 
 
 
-# Marker interfaces for multiversion lazr.restful.
-#
-# XXX 2010-02-16 barry Gah!  lazr.restful's multiversion.txt document says
-# these classes should get generated, and the registrations should happen,
-# automatically.  This is not the case AFAICT.  Why?!
+class Root(resource.Resource):
+    """The RESTful root resource."""
 
-class I30Version(IWebServiceClientRequest):
-    pass
+    @resource.child('3.0')
+    def api_version(self, request, segments):
+        return TopLevel()
 
 
-class IDevVersion(IWebServiceClientRequest):
-    pass
+class TopLevel(resource.Resource):
+    """Top level collections and entries."""
 
-
-
-class AdminWebServiceRootResource(RootResource):
-    """The lazr.restful non-versioned root resource."""
-
-    implements(IResolvePathNames)
-
-    # XXX 2010-02-16 barry lazr.restful really wants this class to exist and
-    # be a subclass of RootResource.  Our own traversal really wants this to
-    # implement IResolvePathNames.  RootResource says to override
-    # _build_top_level_objects() to return the top-level objects, but that
-    # appears to never be called by lazr.restful, so you've got me.  I don't
-    # understand this, which sucks, so just ensure that it doesn't do anything
-    # useful so if/when I do understand this, I can resolve the conflict
-    # between the way lazr.restful wants us to do things and the way our
-    # traversal wants to do things.
-    def _build_top_level_objects(self):
-        """See `RootResource`."""
-        raise NotImplementedError('Magic suddenly got invoked')
-
-    def get(self, name):
-        """See `IResolvePathNames`."""
-        top_names = dict(
-            domains=getUtility(IDomainCollection),
-            lists=getUtility(IListManager),
-            members=getUtility(ISubscriptionService),
-            system=system,
+    @resource.child()
+    def system(self, request, segments):
+        response = dict(
+            mailman_version=system.mailman_version,
+            python_version=system.python_version,
+            resource_type_link='http://localhost:8001/3.0/#system',
+            self_link='http://localhost:8001/3.0/system',
             )
-        return top_names.get(name)
+        etag = hashlib.sha1(repr(response)).hexdigest()
+        response['http_etag'] = '"{0}"'.format(etag)
+        return http.ok([], json.dumps(response))
+
+    @resource.child()
+    def domains(self, request, segments):
+        if len(segments) == 0:
+            return AllDomains()
+        elif len(segments) == 1:
+            return ADomain(segments[0]), []
+        else:
+            return http.bad_request()
 
 
-class AdminWebServiceApplication(WSGIApplication):
-    """A WSGI application for the admin REST interface."""
+class _DomainBase(resource.Resource):
+    """Shared base class for domain representations."""
 
-    # The only thing we need to override is the publication class.
-    publication_class = AdminWebServicePublication
+    def _format_domain(self, domain):
+        """Format the data for a single domain."""
+        domain_data = dict(
+            base_url=domain.base_url,
+            contact_address=domain.contact_address,
+            description=domain.description,
+            email_host=domain.email_host,
+            resource_type_link='http://localhost:8001/3.0/#domain',
+            self_link='http://localhost:8001/3.0/domains/{0}'.format(
+                domain.email_host),
+            url_host=domain.url_host,
+            )
+        etag = hashlib.sha1(repr(domain_data)).hexdigest()
+        domain_data['http_etag'] = '"{0}"'.format(etag)
+        return domain_data
+
+
+class ADomain(_DomainBase):
+    """A domain."""
+
+    def __init__(self, domain):
+        self._domain = domain
+
+    @resource.GET()
+    def domain(self, request):
+        """Return a single domain end-point."""
+        domain = getUtility(IDomainManager).get(self._domain)
+        if domain is None:
+            return http.not_found()
+        return http.ok([], json.dumps(self._format_domain(domain)))
+
+
+class AllDomains(_DomainBase):
+    """The domains."""
+
+    @resource.POST()
+    def create(self, request):
+        """Create a new domain."""
+        # XXX 2010-02-23 barry Sanity check the POST arguments by
+        # introspection of the target method, or via descriptors.
+        domain_manager = getUtility(IDomainManager)
+        try:
+            # Hmmm... webob gives this to us as a string, but we need
+            # unicodes.  For backward compatibility with lazr.restful style
+            # requests, ignore any ws.op parameter.
+            kws = dict((key, unicode(value))
+                       for key, value in request.POST.items()
+                       if key != 'ws.op')
+            domain = domain_manager.add(**kws)
+        except BadDomainSpecificationError:
+            return http.bad_request([], 'Domain exists')
+        # wsgiref wants headers to be strings, not unicodes.
+        location = 'http://localhost:8001/3.0/domains/{0}'.format(
+            domain.email_host)
+        # Include no extra headers or body.
+        return http.created(str(location), [], None)
+
+    @resource.GET()
+    def container(self, request):
+        """Return the /domains end-point."""
+        domains = list(getUtility(IDomainManager))
+        if len(domains) == 0:
+            return http.ok(
+                [], json.dumps(dict(resource_type_link=
+                                    'http://localhost:8001/3.0/#domains',
+                                    start=None,
+                                    total_size=0)))
+        entries = []
+        response = dict(
+            resource_type_link='http://localhost:8001/3.0/#domains',
+            start=0,
+            total_size=len(domains),
+            entries=entries,
+            )
+        for domain in domains:
+            domain_data = self._format_domain(domain)
+            entries.append(domain_data)
+        return http.ok([], json.dumps(response))
+
+
+## class AdminWebServiceRootResource(RootResource):
+##     """The lazr.restful non-versioned root resource."""
+
+##     implements(IResolvePathNames)
+
+##     # XXX 2010-02-16 barry lazr.restful really wants this class to exist and
+##     # be a subclass of RootResource.  Our own traversal really wants this to
+##     # implement IResolvePathNames.  RootResource says to override
+##     # _build_top_level_objects() to return the top-level objects, but that
+##     # appears to never be called by lazr.restful, so you've got me.  I don't
+##     # understand this, which sucks, so just ensure that it doesn't do anything
+##     # useful so if/when I do understand this, I can resolve the conflict
+##     # between the way lazr.restful wants us to do things and the way our
+##     # traversal wants to do things.
+##     def _build_top_level_objects(self):
+##         """See `RootResource`."""
+##         raise NotImplementedError('Magic suddenly got invoked')
+
+##     def get(self, name):
+##         """See `IResolvePathNames`."""
+##         top_names = dict(
+##             domains=getUtility(IDomainCollection),
+##             lists=getUtility(IListManager),
+##             members=getUtility(ISubscriptionService),
+##             system=system,
+##             )
+##         return top_names.get(name)
+
+
+## class AdminWebServiceApplication(WSGIApplication):
+##     """A WSGI application for the admin REST interface."""
+
+##     # The only thing we need to override is the publication class.
+##     publication_class = AdminWebServicePublication
 
 
 class AdminWebServiceWSGIRequestHandler(WSGIRequestHandler):
@@ -116,16 +216,29 @@ class AdminWebServiceWSGIRequestHandler(WSGIRequestHandler):
         log.info('%s - - %s', self.address_string(), format % args)
 
 
+class AdminWebServiceApplication(RestishApp):
+    """Interpose in the restish request processor."""
+
+    def __call__(self, environ, start_response):
+        """See `RestishApp`."""
+        try:
+            response = super(AdminWebServiceApplication, self).__call__(
+                environ, start_response)
+        except:
+            config.db.abort()
+            raise
+        else:
+            config.db.commit()
+            return response
+
+
 
 def make_server():
     """Create the WSGI admin REST server."""
-    # XXX 2010-02-16 barry Gah!  lazr.restful's multiversion.txt document says
-    # these classes should get generated, and the registrations should happen,
-    # automatically.  This is not the case AFAICT.  Why?!
-    register_versioned_request_utility(I30Version, '3.0')
-    register_versioned_request_utility(IDevVersion, 'dev')
+    app = AdminWebServiceApplication(Root())
     host = config.webservice.hostname
     port = int(config.webservice.port)
-    server = WSGIServer((host, port), AdminWebServiceWSGIRequestHandler)
-    server.set_app(AdminWebServiceApplication)
+    server = wsgi_server(
+        host, port, app,
+        handler_class=AdminWebServiceWSGIRequestHandler)
     return server

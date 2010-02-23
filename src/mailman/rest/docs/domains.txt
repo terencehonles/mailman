@@ -126,17 +126,13 @@ lazr.restful requires us to use a 'named operation' instead of posting
 directly to the URL.
 
     >>> dump_json('http://localhost:8001/3.0/domains', {
-    ...           'ws.op': 'new',
     ...           'email_host': 'lists.example.com',
     ...           })
     URL: http://localhost:8001/3.0/domains
     content-length: 0
-    content-type: text/plain;charset=utf-8
     date: ...
     location: http://localhost:8001/3.0/domains/lists.example.com
-    server: WSGIServer/... Python/...
-    x-content-type-warning: guessed from content
-    x-powered-by: Zope (www.zope.org), Python (www.python.org)
+    ...
 
 Now the web service knows about our new domain.
 
@@ -172,12 +168,9 @@ address.
     ...           })
     URL: http://localhost:8001/3.0/domains
     content-length: 0
-    content-type: text/plain;charset=utf-8
     date: ...
     location: http://localhost:8001/3.0/domains/my.example.com
-    server: WSGIServer/... Python/...
-    x-content-type-warning: guessed from content
-    x-powered-by: Zope (www.zope.org), Python (www.python.org)
+    ...
 
     >>> dump_json('http://localhost:8001/3.0/domains/my.example.com')
     base_url: http://allmy.example.com
