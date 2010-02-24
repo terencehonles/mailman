@@ -121,14 +121,11 @@ But we get a 404 for a non-existent domain.
 Creating new domains
 ====================
 
-New domains can be created by posting to the 'domains' url.  However
-lazr.restful requires us to use a 'named operation' instead of posting
-directly to the URL.
+New domains can be created by posting to the 'domains' url.
 
     >>> dump_json('http://localhost:8001/3.0/domains', {
     ...           'email_host': 'lists.example.com',
     ...           })
-    URL: http://localhost:8001/3.0/domains
     content-length: 0
     date: ...
     location: http://localhost:8001/3.0/domains/lists.example.com
@@ -160,13 +157,11 @@ You can also create a new domain with a description, a base url, and a contact
 address.
 
     >>> dump_json('http://localhost:8001/3.0/domains', {
-    ...           'ws.op': 'new',
     ...           'email_host': 'my.example.com',
     ...           'description': 'My new domain',
     ...           'base_url': 'http://allmy.example.com',
     ...           'contact_address': 'helpme@example.com'
     ...           })
-    URL: http://localhost:8001/3.0/domains
     content-length: 0
     date: ...
     location: http://localhost:8001/3.0/domains/my.example.com

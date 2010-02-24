@@ -58,4 +58,9 @@
     factory="mailman.app.registrar.Registrar"
     />
 
+  <utility
+    factory="mailman.rest.adapters.SubscriptionService"
+    provides="mailman.interfaces.membership.ISubscriptionService"
+    />
+
 </configure>

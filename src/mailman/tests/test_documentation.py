@@ -37,8 +37,9 @@ import doctest
 import unittest
 
 from email import message_from_string
+from httplib2 import Http
 from urllib import urlencode
-from urllib2 import urlopen
+from urllib2 import HTTPError
 
 import mailman
 
@@ -110,30 +111,37 @@ def dump_msgdata(msgdata, *additional_skips):
         print '{0:{2}}: {1}'.format(key, msgdata[key], longest)
 
 
-def dump_json(url, data=None):
+def dump_json(url, data=None, method=None):
     """Print the JSON dictionary read from a URL.
 
     :param url: The url to open, read, and print.
     :type url: string
     :param data: Data to use to POST to a URL.
     :type data: dict
+    :param method: Alternative HTTP method to use.
+    :type method: str
     """
-    if data is None:
-        fp = urlopen(url)
-    else:
-        fp = urlopen(url, urlencode(data))
+    if data is not None:
+        data = urlencode(data)
+    headers = {}
+    if method is None:
+        if data is None:
+            method = 'GET'
+        else:
+            method = 'POST'
+            headers['Content-Type'] = 'application/x-www-form-urlencoded'
+    method = method.upper()
+    response, content = Http().request(url, method, data, headers)
+    # If we did not get a 2xx status code, make this look like a urllib2
+    # exception, for backward compatibility with existing doctests.
+    if response.status // 100 != 2:
+        raise HTTPError(url, response.status, response.reason, response, None)
     # fp does not support the context manager protocol.
-    try:
-        raw_data = fp.read()
-        if len(raw_data) == 0:
-            print 'URL:', fp.geturl()
-            info = fp.info()
-            for header in sorted(info):
-                print '{0}: {1}'.format(header, info[header])
-            return
-        data = json.loads(raw_data)
-    finally:
-        fp.close()
+    if len(content) == 0:
+        for header in sorted(response):
+            print '{0}: {1}'.format(header, response[header])
+        return
+    data = json.loads(content)
     for key in sorted(data):
         if key == 'entries':
             for i, entry in enumerate(data[key]):

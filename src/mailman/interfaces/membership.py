@@ -48,6 +48,9 @@ class ISubscriptionService(Interface):
         :rtype: list of `IMember`
         """
 
+    def __iter__():
+        """See `get_members()`."""
+
     def join(fqdn_listname, address, real_name=None, delivery_mode=None):
         """Subscribe to a mailing list.
 

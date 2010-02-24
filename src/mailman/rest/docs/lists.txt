@@ -35,14 +35,11 @@ Creating lists via the API
 ==========================
 
 New mailing lists can also be created through the API, by posting to the
-'lists' URL.  However lazr.restful requires us to use a 'named operation'
-instead of posting directly to the URL.
+'lists' URL.
 
     >>> dump_json('http://localhost:8001/3.0/lists', {
-    ...           'ws.op': 'new',
     ...           'fqdn_listname': 'test-two@example.com',
     ...           })
-    URL: http://localhost:8001/3.0/lists
     content-length: 0
     date: ...
     location: http://localhost:8001/3.0/lists/test-two@example.com
@@ -74,7 +71,6 @@ However, you are not allowed to create a mailing list in a domain that does
 not exist.
 
     >>> dump_json('http://localhost:8001/3.0/lists', {
-    ...           'ws.op': 'new',
     ...           'fqdn_listname': 'test-three@example.org',
     ...           })
     Traceback (most recent call last):
@@ -84,7 +80,6 @@ not exist.
 Nor can you create a mailing list that already exists.
 
     >>> dump_json('http://localhost:8001/3.0/lists', {
-    ...           'ws.op': 'new',
     ...           'fqdn_listname': 'test-one@example.com',
     ...           })
     Traceback (most recent call last):

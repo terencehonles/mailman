@@ -96,6 +96,7 @@ class ListManager:
         for mlist in config.db.store.find(MailingList):
             yield '{0}@{1}'.format(mlist.list_name, mlist.host_name)
 
+    # XXX 2010-02-24 barry Get rid of this.
     def get_mailing_lists(self):
         """See `IListManager`."""
         # lazr.restful will not allow this to be a generator.

@@ -29,56 +29,27 @@ from operator import attrgetter
 
 from zope.component import getUtility
 from zope.interface import implements
-from zope.publisher.interfaces import NotFound
 
 from mailman.app.membership import add_member, delete_member
 from mailman.core.constants import system_preferences
 from mailman.interfaces.address import InvalidEmailAddressError
-from mailman.interfaces.domain import IDomainCollection, IDomainManager
 from mailman.interfaces.listmanager import IListManager, NoSuchListError
-from mailman.interfaces.member import DeliveryMode, NotAMemberError
+from mailman.interfaces.member import DeliveryMode
 from mailman.interfaces.membership import ISubscriptionService
-from mailman.interfaces.rest import APIValueError, IResolvePathNames
-
-
-
-class DomainCollection:
-    """Sets of known domains."""
-
-    implements(IDomainCollection, IResolvePathNames)
-
-    __name__ = 'domains'
-
-    def get_domains(self):
-        """See `IDomainCollection`."""
-        # lazr.restful requires the return value to be a concrete list.
-        return sorted(getUtility(IDomainManager), key=attrgetter('email_host'))
-
-    def get(self, name):
-        """See `IResolvePathNames`."""
-        domain = getUtility(IDomainManager).get(name)
-        if domain is None:
-            raise NotFound(self, name)
-        return domain
-
-    def new(self, email_host, description=None, base_url=None,
-            contact_address=None):
-        """See `IDomainCollection`."""
-        value = getUtility(IDomainManager).add(
-            email_host, description, base_url, contact_address)
-        return value
+from mailman.interfaces.rest import APIValueError
 
 
 
 class SubscriptionService:
     """Subscription services for the REST API."""
 
-    implements(ISubscriptionService, IResolvePathNames)
+    implements(ISubscriptionService)
 
     __name__ = 'members'
 
     def get_members(self):
         """See `ISubscriptionService`."""
+        # XXX 2010-02-24 barry Clean this up.
         # lazr.restful requires the return value to be a concrete list.
         members = []
         address_of_member = attrgetter('address.address')
@@ -95,6 +66,10 @@ class SubscriptionService:
                 sorted((member for member in mailing_list.members.members),
                        key=address_of_member))
         return members
+
+    def __iter__(self):
+        for member in self.get_members():
+            yield member
 
     def join(self, fqdn_listname, address,
              real_name= None, delivery_mode=None):

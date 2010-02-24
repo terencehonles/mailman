@@ -96,6 +96,7 @@ case second `m'.  Any other spelling is incorrect.""",
     install_requires = [
         'argparse',
         'flufl.i18n',
+        'httplib2',
         'lazr.config',
         'lazr.smtptest',
         'locknix',
