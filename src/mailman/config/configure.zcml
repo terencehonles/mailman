@@ -4,8 +4,6 @@
 
   <include package="zope.component" file="meta.zcml"/>
 
-  <!-- include package="mailman.rest" file="configure.zcml"/ -->
-
   <adapter
     for="mailman.interfaces.mailinglist.IMailingList"
     provides="mailman.interfaces.autorespond.IAutoResponseSet"
