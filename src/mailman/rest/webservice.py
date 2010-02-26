@@ -52,87 +52,6 @@ log = logging.getLogger('mailman.http')
 
 
 
-class _DomainBase(resource.Resource):
-    """Shared base class for domain representations."""
-
-    def _format_domain(self, domain):
-        """Format the data for a single domain."""
-        domain_data = dict(
-            base_url=domain.base_url,
-            contact_address=domain.contact_address,
-            description=domain.description,
-            email_host=domain.email_host,
-            resource_type_link='http://localhost:8001/3.0/#domain',
-            self_link='http://localhost:8001/3.0/domains/{0}'.format(
-                domain.email_host),
-            url_host=domain.url_host,
-            )
-        etag = hashlib.sha1(repr(domain_data)).hexdigest()
-        domain_data['http_etag'] = '"{0}"'.format(etag)
-        return domain_data
-
-
-class ADomain(_DomainBase):
-    """A domain."""
-
-    def __init__(self, domain):
-        self._domain = domain
-
-    @resource.GET()
-    def domain(self, request):
-        """Return a single domain end-point."""
-        domain = getUtility(IDomainManager).get(self._domain)
-        if domain is None:
-            return http.not_found()
-        return http.ok([], json.dumps(self._format_domain(domain)))
-
-
-class AllDomains(_DomainBase):
-    """The domains."""
-
-    @resource.POST()
-    def create(self, request):
-        """Create a new domain."""
-        # XXX 2010-02-23 barry Sanity check the POST arguments by
-        # introspection of the target method, or via descriptors.
-        domain_manager = getUtility(IDomainManager)
-        try:
-            # webob gives this to us as a string, but we need unicodes.
-            kws = dict((key, unicode(value))
-                       for key, value in request.POST.items())
-            domain = domain_manager.add(**kws)
-        except BadDomainSpecificationError:
-            return http.bad_request([], 'Domain exists')
-        # wsgiref wants headers to be bytes, not unicodes.
-        location = b'http://localhost:8001/3.0/domains/{0}'.format(
-            domain.email_host)
-        # Include no extra headers or body.
-        return http.created(location, [], None)
-
-    @resource.GET()
-    def container(self, request):
-        """Return the /domains end-point."""
-        domains = list(getUtility(IDomainManager))
-        if len(domains) == 0:
-            return http.ok(
-                [], json.dumps(dict(resource_type_link=
-                                    'http://localhost:8001/3.0/#domains',
-                                    start=None,
-                                    total_size=0)))
-        entries = []
-        response = dict(
-            resource_type_link='http://localhost:8001/3.0/#domains',
-            start=0,
-            total_size=len(domains),
-            entries=entries,
-            )
-        for domain in domains:
-            domain_data = self._format_domain(domain)
-            entries.append(domain_data)
-        return http.ok([], json.dumps(response))
-
-
-
 class _ListBase(resource.Resource):
     """Shared base class for mailing list representations."""
 

@@ -25,16 +25,14 @@ __all__ = [
     ]
 
 
-import json
-import hashlib
-
 from restish import http, resource
 
 from mailman.config import config
 from mailman.core.system import system
+from mailman.rest.domains import ADomain, AllDomains
 from mailman.rest.helpers import etag, path_to
 from mailman.rest.webservice import (
-    ADomain, AList, AllDomains, AllLists, AllMembers)
+    AList, AllLists, AllMembers)
 
 
 
@@ -66,6 +64,9 @@ class TopLevel(resource.Resource):
 
     @resource.child()
     def domains(self, request, segments):
+        """/<api>/domains
+           /<api>/domains/<domain>
+        """
         if len(segments) == 0:
             return AllDomains()
         elif len(segments) == 1:
@@ -75,6 +76,10 @@ class TopLevel(resource.Resource):
 
     @resource.child()
     def lists(self, request, segments):
+        """/<api>/lists
+           /<api>/lists/<list>
+           /<api>/lists/<list>/...
+        """
         if len(segments) == 0:
             return AllLists()
         else:
@@ -83,6 +88,7 @@ class TopLevel(resource.Resource):
 
     @resource.child()
     def members(self, request, segments):
+        """/<api>/members"""
         if len(segments) == 0:
             return AllMembers()
         return http.bad_request()

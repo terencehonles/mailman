@@ -41,9 +41,9 @@ def path_to(resource):
         system base URI.
     :type resource: string
     :return: The full path to the resource.
-    :rtype: string
+    :rtype: bytes
     """
-    return '{0}://{1}:{2}/{3}/{4}'.format(
+    return b'{0}://{1}:{2}/{3}/{4}'.format(
         ('https' if as_boolean(config.webservice.use_https) else 'http'),
         config.webservice.hostname,
         config.webservice.port,

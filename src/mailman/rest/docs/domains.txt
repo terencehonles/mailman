@@ -16,7 +16,7 @@ The REST API can be queried for the set of known domains, of which there are
 initially none.
 
     >>> dump_json('http://localhost:8001/3.0/domains')
-    resource_type_link: http://localhost:8001/3.0/#domains
+    http_etag: "f62b4cab6d4bfa731d5ff091dde29d318a3234a8"
     start: None
     total_size: 0
 
@@ -36,10 +36,9 @@ Once a domain is added though, it is accessible through the API.
         description: An example domain
         email_host: example.com
         http_etag: "..."
-        resource_type_link: http://localhost:8001/3.0/#domain
         self_link: http://localhost:8001/3.0/domains/example.com
         url_host: lists.example.com
-    resource_type_link: http://localhost:8001/3.0/#domains
+    http_etag: "..."
     start: 0
     total_size: 1
 
@@ -68,7 +67,6 @@ At the top level, all domains are returned as separate entries.
         description: An example domain
         email_host: example.com
         http_etag: "..."
-        resource_type_link: http://localhost:8001/3.0/#domain
         self_link: http://localhost:8001/3.0/domains/example.com
         url_host: lists.example.com
     entry 1:
@@ -77,7 +75,6 @@ At the top level, all domains are returned as separate entries.
         description: None
         email_host: example.org
         http_etag: "..."
-        resource_type_link: http://localhost:8001/3.0/#domain
         self_link: http://localhost:8001/3.0/domains/example.org
         url_host: mail.example.org
     entry 2:
@@ -86,10 +83,9 @@ At the top level, all domains are returned as separate entries.
         description: Porkmasters
         email_host: lists.example.net
         http_etag: "..."
-        resource_type_link: http://localhost:8001/3.0/#domain
         self_link: http://localhost:8001/3.0/domains/lists.example.net
         url_host: example.net
-    resource_type_link: http://localhost:8001/3.0/#domains
+    http_etag: "..."
     start: 0
     total_size: 3
 
@@ -106,7 +102,6 @@ self_links from the above collection.
     description: Porkmasters
     email_host: lists.example.net
     http_etag: "..."
-    resource_type_link: http://localhost:8001/3.0/#domain
     self_link: http://localhost:8001/3.0/domains/lists.example.net
     url_host: example.net
 
@@ -139,7 +134,6 @@ Now the web service knows about our new domain.
     description: None
     email_host: lists.example.com
     http_etag: "..."
-    resource_type_link: http://localhost:8001/3.0/#domain
     self_link: http://localhost:8001/3.0/domains/lists.example.com
     url_host: lists.example.com
 
@@ -173,7 +167,6 @@ address.
     description: My new domain
     email_host: my.example.com
     http_etag: "..."
-    resource_type_link: http://localhost:8001/3.0/#domain
     self_link: http://localhost:8001/3.0/domains/my.example.com
     url_host: allmy.example.com
 
