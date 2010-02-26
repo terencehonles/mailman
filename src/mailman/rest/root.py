@@ -31,8 +31,8 @@ from mailman.config import config
 from mailman.core.system import system
 from mailman.rest.domains import ADomain, AllDomains
 from mailman.rest.helpers import etag, path_to
-from mailman.rest.webservice import (
-    AList, AllLists, AllMembers)
+from mailman.rest.lists import AList, AllLists
+from mailman.rest.members import AllMembers
 
 
 

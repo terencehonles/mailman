@@ -96,12 +96,12 @@ class AllDomains(_DomainBase):
         if len(domains) == 0:
             resource = dict(start=None, total_size=0)
             return http.ok([], etag(resource))
-        domain_data = [self._domain_data(domain) for domain in domains]
-        # Tag this domain data, but ignore the results.
-        [etag(data) for data in domain_data]
+        entries = [self._domain_data(domain) for domain in domains]
+        # Tag the domain entries, but use the dictionaries.
+        [etag(data) for data in entries]
         resource = dict(
             start=0,
             total_size=len(domains),
-            entries=domain_data,
+            entries=entries,
             )
         return http.ok([], etag(resource))
