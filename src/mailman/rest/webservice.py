@@ -21,7 +21,6 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'Root',
     ]
 
 
@@ -37,7 +36,6 @@ from zope.interface import implements
 
 from mailman.app.membership import delete_member
 from mailman.config import config
-from mailman.core.system import system
 from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.domain import (
     BadDomainSpecificationError, IDomain, IDomainManager)
@@ -51,54 +49,6 @@ from mailman.interfaces.membership import ISubscriptionService
 
 COMMASPACE = ', '
 log = logging.getLogger('mailman.http')
-
-
-
-class Root(resource.Resource):
-    """The RESTful root resource."""
-
-    @resource.child('3.0')
-    def api_version(self, request, segments):
-        return TopLevel()
-
-
-class TopLevel(resource.Resource):
-    """Top level collections and entries."""
-
-    @resource.child()
-    def system(self, request, segments):
-        response = dict(
-            mailman_version=system.mailman_version,
-            python_version=system.python_version,
-            resource_type_link='http://localhost:8001/3.0/#system',
-            self_link='http://localhost:8001/3.0/system',
-            )
-        etag = hashlib.sha1(repr(response)).hexdigest()
-        response['http_etag'] = '"{0}"'.format(etag)
-        return http.ok([], json.dumps(response))
-
-    @resource.child()
-    def domains(self, request, segments):
-        if len(segments) == 0:
-            return AllDomains()
-        elif len(segments) == 1:
-            return ADomain(segments[0]), []
-        else:
-            return http.bad_request()
-
-    @resource.child()
-    def lists(self, request, segments):
-        if len(segments) == 0:
-            return AllLists()
-        else:
-            list_name = segments.pop(0)
-            return AList(list_name), segments
-
-    @resource.child()
-    def members(self, request, segments):
-        if len(segments) == 0:
-            return AllMembers()
-        return http.bad_request()
 
 
 

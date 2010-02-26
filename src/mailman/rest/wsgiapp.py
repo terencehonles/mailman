@@ -33,7 +33,7 @@ from wsgiref.simple_server import WSGIRequestHandler
 from wsgiref.simple_server import make_server as wsgi_server
 
 from mailman.config import config
-from mailman.rest.webservice import Root
+from mailman.rest.root import Root
 
 
 log = logging.getLogger('mailman.http')
