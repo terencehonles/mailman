@@ -21,6 +21,7 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
+    'ContainerMixin',
     'etag',
     'path_to',
     ]
@@ -71,3 +72,52 @@ def etag(resource):
     etag = hashlib.sha1(repr(resource)).hexdigest()
     resource['http_etag'] = '"{0}"'.format(etag)
     return json.dumps(resource)
+
+
+
+class CollectionMixin:
+    """Mixin class for common collection-ish things."""
+
+    def _resource_as_dict(self, resource):
+        """Return the dictionary representation of a resource.
+
+        This must be implemented by subclasses.
+
+        :param resource: The resource object.
+        :type resource: object
+        :return: The representation of the resource.
+        :rtype: dict
+        """
+        raise NotImplementedError
+
+    def _resource_as_json(self, resource):
+        """Return the JSON formatted representation of the resource."""
+        return etag(self._resource_as_dict(resource))
+
+    def _get_collection(self, request):
+        """Return the collection as a concrete list.
+
+        This must be implemented by subclasses.
+
+        :param request: A restish request.
+        :return: The collection
+        :rtype: list
+        """
+        raise NotImplementedError
+
+    def _make_collection(self, request):
+        """Provide the collection to restish."""
+        collection = self._get_collection(request)
+        if len(collection) == 0:
+            return dict(start=0, total_size=0)
+        else:
+            entries = [self._resource_as_dict(resource)
+                       for resource in collection]
+            # Tag the resources but use the dictionaries.
+            [etag(resource) for resource in entries]
+            # Create the collection resource
+            return dict(
+                start=0,
+                total_size=len(collection),
+                entries=entries,
+                )

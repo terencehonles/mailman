@@ -8,7 +8,7 @@ yet though.
 
     >>> dump_json('http://localhost:8001/3.0/lists')
     http_etag: "..."
-    start: None
+    start: 0
     total_size: 0
 
 Create a mailing list in a domain and it's accessible via the API.

@@ -31,15 +31,15 @@ from zope.component import getUtility
 
 from mailman.interfaces.domain import (
     BadDomainSpecificationError, IDomainManager)
-from mailman.rest.helpers import etag, path_to
+from mailman.rest.helpers import CollectionMixin, etag, path_to
 
 
 
-class _DomainBase(resource.Resource):
+class _DomainBase(resource.Resource, CollectionMixin):
     """Shared base class for domain representations."""
 
-    def _domain_data(self, domain):
-        """Return the domain data for a single domain."""
+    def _resource_as_dict(self, domain):
+        """See `CollectionMixin`."""
         return dict(
             base_url=domain.base_url,
             contact_address=domain.contact_address,
@@ -49,9 +49,9 @@ class _DomainBase(resource.Resource):
             url_host=domain.url_host,
             )
 
-    def _format_domain(self, domain):
-        """Format the data for a single domain."""
-        return etag(self._domain_data(domain))
+    def _get_collection(self, request):
+        """See `CollectionMixin`."""
+        return list(getUtility(IDomainManager))
 
 
 class ADomain(_DomainBase):
@@ -66,7 +66,7 @@ class ADomain(_DomainBase):
         domain = getUtility(IDomainManager).get(self._domain)
         if domain is None:
             return http.not_found()
-        return http.ok([], self._format_domain(domain))
+        return http.ok([], self._resource_as_json(domain))
 
 
 class AllDomains(_DomainBase):
@@ -90,18 +90,7 @@ class AllDomains(_DomainBase):
         return http.created(location, [], None)
 
     @resource.GET()
-    def container(self, request):
-        """Return the /domains end-point."""
-        domains = list(getUtility(IDomainManager))
-        if len(domains) == 0:
-            resource = dict(start=None, total_size=0)
-            return http.ok([], etag(resource))
-        entries = [self._domain_data(domain) for domain in domains]
-        # Tag the domain entries, but use the dictionaries.
-        [etag(data) for data in entries]
-        resource = dict(
-            start=0,
-            total_size=len(domains),
-            entries=entries,
-            )
+    def collection(self, request):
+        """/domains"""
+        resource = self._make_collection(request)
         return http.ok([], etag(resource))

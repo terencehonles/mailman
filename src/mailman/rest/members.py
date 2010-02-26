@@ -34,24 +34,24 @@ from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.listmanager import NoSuchListError
 from mailman.interfaces.member import AlreadySubscribedError, MemberRole
 from mailman.interfaces.membership import ISubscriptionService
-from mailman.rest.helpers import etag, path_to
+from mailman.rest.helpers import CollectionMixin, etag, path_to
 
 
 
-class _MemberBase(resource.Resource):
+class _MemberBase(resource.Resource, CollectionMixin):
     """Shared base class for member representations."""
 
-    def _member_data(self, member):
-        """Return the member data for a single member."""
+    def _resource_as_dict(self, member):
+        """See `CollectionMixin`."""
         enum, dot, role = str(member.role).partition('.')
         return dict(
             self_link=path_to('lists/{0}/{1}/{2}'.format(
                 member.mailing_list, role, member.address.address)),
             )
 
-    def _format_member(self, member):
-        """Format the data for a single member."""
-        return etag(self._member_data(member))
+    def _get_collection(self, request):
+        """See `CollectionMixin`."""
+        return list(getUtility(ISubscriptionService))
 
 
 class AMember(_MemberBase):
@@ -77,7 +77,7 @@ class AMember(_MemberBase):
     @resource.GET()
     def member(self, request):
         """Return a single member end-point."""
-        return http.ok([], self._format_member(self._member))
+        return http.ok([], self._resource_as_json(self._member))
 
     @resource.DELETE()
     def delete(self, request):
@@ -122,17 +122,6 @@ class AllMembers(_MemberBase):
 
     @resource.GET()
     def container(self, request):
-        """Return the /members end-point."""
-        members = list(getUtility(ISubscriptionService))
-        if len(members) == 0:
-            resource = dict(start=None, total_size=0)
-            return http.ok([], etag(resource))
-        entries = [self._member_data(member) for member in members]
-        # Tag the domain entries, but use the dictionaries.
-        [etag(data) for data in entries]
-        resource = dict(
-            start=0,
-            total_size=len(members),
-            entries=entries,
-            )
+        """/members"""
+        resource = self._make_collection(request)
         return http.ok([], etag(resource))

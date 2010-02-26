@@ -33,7 +33,7 @@ from mailman.interfaces.domain import BadDomainSpecificationError
 from mailman.interfaces.listmanager import (
     IListManager, ListAlreadyExistsError)
 from mailman.interfaces.member import MemberRole
-from mailman.rest.helpers import etag, path_to
+from mailman.rest.helpers import CollectionMixin, etag, path_to
 from mailman.rest.members import AMember
 
 
@@ -62,11 +62,11 @@ member_matcher.score = ()
 
 
 
-class _ListBase(resource.Resource):
+class _ListBase(resource.Resource, CollectionMixin):
     """Shared base class for mailing list representations."""
 
-    def _list_data(self, mlist):
-        """Return the list data for a single mailing list."""
+    def _resource_as_dict(self, mlist):
+        """See `CollectionMixin`."""
         return dict(
             fqdn_listname=mlist.fqdn_listname,
             host_name=mlist.host_name,
@@ -75,9 +75,9 @@ class _ListBase(resource.Resource):
             self_link=path_to('lists/{0}'.format(mlist.fqdn_listname)),
             )
 
-    def _format_list(self, mlist):
-        """Format the mailing list for a single mailing list."""
-        return etag(self._list_data(mlist))
+    def _get_collection(self, request):
+        """See `CollectionMixin`."""
+        return list(getUtility(IListManager))
 
 
 class AList(_ListBase):
@@ -91,7 +91,7 @@ class AList(_ListBase):
         """Return a single mailing list end-point."""
         if self._mlist is None:
             return http.not_found()
-        return http.ok([], self._format_list(self._mlist))
+        return http.ok([], self._resource_as_json(self._mlist))
 
     @resource.child(member_matcher)
     def member(self, request, segments, role, address):
@@ -123,18 +123,7 @@ class AllLists(_ListBase):
         return http.created(location, [], None)
 
     @resource.GET()
-    def container(self, request):
-        """Return the /lists end-point."""
-        mlists = list(getUtility(IListManager))
-        if len(mlists) == 0:
-            resource = dict(start=None, total_size=0)
-            return http.ok([], etag(resource))
-        entries = [self._list_data(mlist) for mlist in mlists]
-        # Tag the list entries, but use the dictionaries.
-        [etag(data) for data in entries]
-        resource = dict(
-            start=0,
-            total_size=len(mlists),
-            entries=entries,
-            )
+    def collection(self, request):
+        """/lists"""
+        resource = self._make_collection(request)
         return http.ok([], etag(resource))

@@ -10,7 +10,7 @@ There are no mailing lists and no members yet.
 
     >>> dump_json('http://localhost:8001/3.0/members')
     http_etag: "..."
-    start: None
+    start: 0
     total_size: 0
 
 We create a mailing list, which starts out with no members.
@@ -20,7 +20,7 @@ We create a mailing list, which starts out with no members.
 
     >>> dump_json('http://localhost:8001/3.0/members')
     http_etag: "..."
-    start: None
+    start: 0
     total_size: 0
 
 

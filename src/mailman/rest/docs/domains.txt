@@ -16,8 +16,8 @@ The REST API can be queried for the set of known domains, of which there are
 initially none.
 
     >>> dump_json('http://localhost:8001/3.0/domains')
-    http_etag: "f62b4cab6d4bfa731d5ff091dde29d318a3234a8"
-    start: None
+    http_etag: "..."
+    start: 0
     total_size: 0
 
 Once a domain is added though, it is accessible through the API.
