@@ -36,7 +36,6 @@ from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.listmanager import IListManager, NoSuchListError
 from mailman.interfaces.member import DeliveryMode
 from mailman.interfaces.membership import ISubscriptionService
-from mailman.interfaces.rest import APIValueError
 
 
 
@@ -77,15 +76,10 @@ class SubscriptionService:
         mlist = getUtility(IListManager).get(fqdn_listname)
         if mlist is None:
             raise NoSuchListError(fqdn_listname)
-        # Convert from string to enum.  Turn Python's ValueErrors into one
-        # suitable for the REST API.
-        try:
-            mode = (DeliveryMode.regular
-                    if delivery_mode is None
-                    else DeliveryMode(delivery_mode))
-        except ValueError:
-            raise APIValueError(
-                'Invalid delivery_mode: {0}'.format(delivery_mode))
+        # Convert from string to enum.
+        mode = (DeliveryMode.regular
+                if delivery_mode is None
+                else DeliveryMode(delivery_mode))
         if real_name is None:
             real_name, at, domain = address.partition('@')
             if len(at) == 0:

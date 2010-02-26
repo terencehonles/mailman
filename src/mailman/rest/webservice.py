@@ -21,9 +21,7 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'AdminWebServiceApplication',
-    'AdminWebServiceRequest',
-    'make_server',
+    'Root',
     ]
 
 
@@ -31,10 +29,8 @@ import json
 import hashlib
 import logging
 
-from restish.app import RestishApp
 from restish import http, resource
-from wsgiref.simple_server import (
-    make_server as wsgi_server, WSGIRequestHandler)
+from wsgiref.simple_server import make_server as wsgi_server
 
 from zope.component import getUtility
 from zope.interface import implements
@@ -51,8 +47,6 @@ from mailman.interfaces.mailinglist import IMailingList
 from mailman.interfaces.member import (
     AlreadySubscribedError, IMember, MemberRole)
 from mailman.interfaces.membership import ISubscriptionService
-from mailman.interfaces.rest import APIValueError, IResolvePathNames
-#from mailman.rest.publication import AdminWebServicePublication
 
 
 COMMASPACE = ', '
@@ -370,7 +364,7 @@ class AllMembers(_MemberBase):
             return http.bad_request([], b'No such list')
         except InvalidEmailAddressError:
             return http.bad_request([], b'Invalid email address')
-        except APIValueError as error:
+        except ValueError as error:
             return http.bad_request([], str(error))
         # wsgiref wants headers to be bytes, not unicodes.
         location = b'http://localhost:8001/3.0/lists/{0}/member/{1}'.format(
@@ -399,77 +393,3 @@ class AllMembers(_MemberBase):
             member_data = self._format_member(member)
             entries.append(member_data)
         return http.ok([], json.dumps(response))
-
-
-
-
-## class AdminWebServiceRootResource(RootResource):
-##     """The lazr.restful non-versioned root resource."""
-
-##     implements(IResolvePathNames)
-
-##     # XXX 2010-02-16 barry lazr.restful really wants this class to exist and
-##     # be a subclass of RootResource.  Our own traversal really wants this to
-##     # implement IResolvePathNames.  RootResource says to override
-##     # _build_top_level_objects() to return the top-level objects, but that
-##     # appears to never be called by lazr.restful, so you've got me.  I don't
-##     # understand this, which sucks, so just ensure that it doesn't do anything
-##     # useful so if/when I do understand this, I can resolve the conflict
-##     # between the way lazr.restful wants us to do things and the way our
-##     # traversal wants to do things.
-##     def _build_top_level_objects(self):
-##         """See `RootResource`."""
-##         raise NotImplementedError('Magic suddenly got invoked')
-
-##     def get(self, name):
-##         """See `IResolvePathNames`."""
-##         top_names = dict(
-##             domains=getUtility(IDomainCollection),
-##             lists=getUtility(IListManager),
-##             members=getUtility(ISubscriptionService),
-##             system=system,
-##             )
-##         return top_names.get(name)
-
-
-## class AdminWebServiceApplication(WSGIApplication):
-##     """A WSGI application for the admin REST interface."""
-
-##     # The only thing we need to override is the publication class.
-##     publication_class = AdminWebServicePublication
-
-
-class AdminWebServiceWSGIRequestHandler(WSGIRequestHandler):
-    """Handler class which just logs output to the right place."""
-
-    def log_message(self, format, *args):
-        """See `BaseHTTPRequestHandler`."""
-        log.info('%s - - %s', self.address_string(), format % args)
-
-
-class AdminWebServiceApplication(RestishApp):
-    """Interpose in the restish request processor."""
-
-    def __call__(self, environ, start_response):
-        """See `RestishApp`."""
-        try:
-            response = super(AdminWebServiceApplication, self).__call__(
-                environ, start_response)
-        except:
-            config.db.abort()
-            raise
-        else:
-            config.db.commit()
-            return response
-
-
-
-def make_server():
-    """Create the WSGI admin REST server."""
-    app = AdminWebServiceApplication(Root())
-    host = config.webservice.hostname
-    port = int(config.webservice.port)
-    server = wsgi_server(
-        host, port, app,
-        handler_class=AdminWebServiceWSGIRequestHandler)
-    return server

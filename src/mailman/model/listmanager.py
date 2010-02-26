@@ -32,7 +32,6 @@ from zope.interface import implements
 from mailman.config import config
 from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.listmanager import IListManager, ListAlreadyExistsError
-from mailman.interfaces.rest import IResolvePathNames
 from mailman.model.mailinglist import MailingList
 
 
@@ -40,7 +39,7 @@ from mailman.model.mailinglist import MailingList
 class ListManager:
     """An implementation of the `IListManager` interface."""
 
-    implements(IListManager, IResolvePathNames)
+    implements(IListManager)
 
     # pylint: disable-msg=R0201
     def create(self, fqdn_listname):
