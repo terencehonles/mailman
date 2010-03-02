@@ -58,11 +58,6 @@ class ListManager:
         config.db.store.add(mlist)
         return mlist
 
-    def new(self, fqdn_listname):
-        """See `IListManager."""
-        from mailman.app.lifecycle import create_list
-        return create_list(fqdn_listname)
-
     def get(self, fqdn_listname):
         """See `IListManager`."""
         listname, at, hostname = fqdn_listname.partition('@')

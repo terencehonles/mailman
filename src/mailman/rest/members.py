@@ -32,9 +32,10 @@ from zope.component import getUtility
 from mailman.app.membership import delete_member
 from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.listmanager import NoSuchListError
-from mailman.interfaces.member import AlreadySubscribedError, MemberRole
+from mailman.interfaces.member import (
+    AlreadySubscribedError, DeliveryMode, MemberRole)
 from mailman.interfaces.membership import ISubscriptionService
-from mailman.rest.helpers import CollectionMixin, etag, path_to
+from mailman.rest.helpers import CollectionMixin, Validator, etag, path_to
 
 
 
@@ -98,14 +99,14 @@ class AllMembers(_MemberBase):
     @resource.POST()
     def create(self, request):
         """Create a new member."""
-        # XXX 2010-02-23 barry Sanity check the POST arguments by
-        # introspection of the target method, or via descriptors.
         service = getUtility(ISubscriptionService)
         try:
-            # webob gives this to us as a string, but we need unicodes.
-            kws = dict((key, unicode(value))
-                       for key, value in request.POST.items())
-            member = service.join(**kws)
+            validator = Validator(fqdn_listname=unicode,
+                                  address=unicode,
+                                  real_name=unicode,
+                                  delivery_mode=unicode,
+                                  _optional=('real_name', 'delivery_mode'))
+            member = service.join(**validator(request))
         except AlreadySubscribedError:
             return http.bad_request([], b'Member already subscribed')
         except NoSuchListError:

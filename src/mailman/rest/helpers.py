@@ -33,6 +33,8 @@ import hashlib
 from lazr.config import as_boolean
 from mailman.config import config
 
+COMMASPACE = ', '
+
 
 
 def path_to(resource):
@@ -121,3 +123,42 @@ class CollectionMixin:
                 total_size=len(collection),
                 entries=entries,
                 )
+
+
+
+class Validator:
+    """A validator of parameter input."""
+
+    def __init__(self, **kws):
+        if '_optional' in kws:
+            self._optional = set(kws.pop('_optional'))
+        else:
+            self._optional = set()
+        self._converters = kws.copy()
+
+    def __call__(self, request):
+        values = {}
+        extras = set()
+        cannot_convert = set()
+        for key, value in request.POST.items():
+            try:
+                values[key] = self._converters[key](value)
+            except KeyError:
+                extras.add(key)
+            except (TypeError, ValueError):
+                cannot_convert.add(key)
+        # Make sure there are no unexpected values.
+        if len(extras) != 0:
+            extras = COMMASPACE.join(sorted(extras))
+            raise ValueError('Unexpected parameters: {0}'.format(extras))
+        # Make sure everything could be converted.
+        if len(cannot_convert) != 0:
+            bad = COMMASPACE.join(sorted(cannot_convert))
+            raise ValueError('Cannot convert parameters: {0}'.format(bad))
+        # Make sure nothing's missing.
+        value_keys = set(values)
+        required_keys = set(self._converters) - self._optional
+        if value_keys & required_keys != required_keys:
+            missing = COMMASPACE.join(sorted(required_keys - value_keys))
+            raise ValueError('Missing parameters: {0}'.format(missing))
+        return values

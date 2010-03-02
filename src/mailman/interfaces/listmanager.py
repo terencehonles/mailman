@@ -73,25 +73,6 @@ class IListManager(Interface):
         :raise `ListAlreadyExistsError` if the named list already exists.
         """
 
-
-    def new(fqdn_listname):
-        """Add a new mailing list.
-
-        The mailing may not exist yet, but the domain specified in
-        `fqdn_listname` must exist.  This is a higher level interface than
-        create() and should generally be used instead of that method.
-
-        :param fqdn_listname: The fully qualified name for the new
-            mailing list.
-        :type fqdn_listname: string
-        :return: The new mailing list
-        :rtype: `IMailingList`
-        :raises `BadDomainSpecificationError`: when the hostname part of
-            `fqdn_listname` does not exist.
-        :raises `ListAlreadyExistsError`: when the mailing list already
-            exists.
-        """
-
     def get(fqdn_listname):
         """Return the mailing list with the given name, if it exists.
 

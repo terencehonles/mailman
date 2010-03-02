@@ -57,3 +57,87 @@ dictionary after tagging, since that's almost always what you want.
     geddy    : bass
     http_etag: "43942176d8d5bb4414ccf35e2720ccd5251e66da"
     neil     : drums
+
+
+POST unpacking
+==============
+
+Another helper unpacks POST request variables, validating and converting their
+values.
+
+    >>> from mailman.rest.helpers import Validator
+    >>> validator = Validator(one=int, two=unicode, three=bool)
+
+    >>> class FakeRequest:
+    ...     POST = {}
+    >>> FakeRequest.POST = dict(one='1', two='two', three='yes')
+
+On valid input, the validator can be used as a **kw argument.
+
+    >>> def print_request(one, two, three):
+    ...     print repr(one), repr(two), repr(three)
+    >>> print_request(**validator(FakeRequest))
+    1 u'two' True
+
+On invalid input, an exception is raised.
+
+    >>> FakeRequest.POST['one'] = 'hello'
+    >>> print_request(**validator(FakeRequest))
+    Traceback (most recent call last):
+    ...
+    ValueError: Cannot convert parameters: one
+
+On missing input, an exception is raised.
+
+    >>> del FakeRequest.POST['one']
+    >>> print_request(**validator(FakeRequest))
+    Traceback (most recent call last):
+    ...
+    ValueError: Missing parameters: one
+
+If more than one key is missing, it will be reflected in the error message.
+
+    >>> del FakeRequest.POST['two']
+    >>> print_request(**validator(FakeRequest))
+    Traceback (most recent call last):
+    ...
+    ValueError: Missing parameters: one, two
+
+Extra keys are also not allowed.
+
+    >>> FakeRequest.POST = dict(one='1', two='two', three='yes',
+    ...                         four='', five='')
+    >>> print_request(**validator(FakeRequest))
+    Traceback (most recent call last):
+    ...
+    ValueError: Unexpected parameters: five, four
+
+However, if optional keys are missing, it's okay.
+
+    >>> validator = Validator(one=int, two=unicode, three=bool,
+    ...                       four=int, five=int,
+    ...                       _optional=('four', 'five'))
+
+    >>> FakeRequest.POST = dict(one='1', two='two', three='yes',
+    ...                         four='4', five='5')
+    >>> def print_request(one, two, three, four=None, five=None):
+    ...     print repr(one), repr(two), repr(three), repr(four), repr(five)
+    >>> print_request(**validator(FakeRequest))
+    1 u'two' True 4 5
+
+    >>> del FakeRequest.POST['four']
+    >>> print_request(**validator(FakeRequest))
+    1 u'two' True None 5
+
+    >>> del FakeRequest.POST['five']
+    >>> print_request(**validator(FakeRequest))
+    1 u'two' True None None
+
+But if the optional values are present, they must of course also be valid.
+
+    >>> FakeRequest.POST = dict(one='1', two='two', three='yes',
+    ...                         four='no', five='maybe')
+    >>> print_request(**validator(FakeRequest))
+    Traceback (most recent call last):
+    ...
+    ValueError: Cannot convert parameters: five, four

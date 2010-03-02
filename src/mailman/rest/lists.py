@@ -29,11 +29,12 @@ __all__ = [
 from restish import http, resource
 from zope.component import getUtility
 
+from mailman.app.lifecycle import create_list
 from mailman.interfaces.domain import BadDomainSpecificationError
 from mailman.interfaces.listmanager import (
     IListManager, ListAlreadyExistsError)
 from mailman.interfaces.member import MemberRole
-from mailman.rest.helpers import CollectionMixin, etag, path_to
+from mailman.rest.helpers import CollectionMixin, Validator, etag, path_to
 from mailman.rest.members import AMember
 
 
@@ -104,19 +105,16 @@ class AllLists(_ListBase):
     @resource.POST()
     def create(self, request):
         """Create a new mailing list."""
-        # XXX 2010-02-23 barry Sanity check the POST arguments by
-        # introspection of the target method, or via descriptors.
-        list_manager = getUtility(IListManager)
         try:
-            # webob gives this to us as a string, but we need unicodes.
-            kws = dict((key, unicode(value))
-                       for key, value in request.POST.items())
-            mlist = list_manager.new(**kws)
+            validator = Validator(fqdn_listname=unicode)
+            mlist = create_list(**validator(request))
         except ListAlreadyExistsError:
             return http.bad_request([], b'Mailing list exists')
         except BadDomainSpecificationError as error:
             return http.bad_request([], b'Domain does not exist {0}'.format(
                 error.domain))
+        except ValueError as error:
+            return http.bad_request([], str(error))
         # wsgiref wants headers to be bytes, not unicodes.
         location = path_to('lists/{0}'.format(mlist.fqdn_listname))
         # Include no extra headers or body.

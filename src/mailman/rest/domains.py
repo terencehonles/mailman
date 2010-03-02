@@ -31,7 +31,7 @@ from zope.component import getUtility
 
 from mailman.interfaces.domain import (
     BadDomainSpecificationError, IDomainManager)
-from mailman.rest.helpers import CollectionMixin, etag, path_to
+from mailman.rest.helpers import CollectionMixin, Validator, etag, path_to
 
 
 
@@ -75,16 +75,19 @@ class AllDomains(_DomainBase):
     @resource.POST()
     def create(self, request):
         """Create a new domain."""
-        # XXX 2010-02-23 barry Sanity check the POST arguments by
-        # introspection of the target method, or via descriptors.
         domain_manager = getUtility(IDomainManager)
         try:
-            # webob gives this to us as a string, but we need unicodes.
-            kws = dict((key, unicode(value))
-                       for key, value in request.POST.items())
-            domain = domain_manager.add(**kws)
+            validator = Validator(email_host=unicode,
+                                  description=unicode,
+                                  base_url=unicode,
+                                  contact_address=unicode,
+                                  _optional=('description', 'base_url',
+                                             'contact_address'))
+            domain = domain_manager.add(**validator(request))
         except BadDomainSpecificationError:
-            return http.bad_request([], 'Domain exists')
+            return http.bad_request([], b'Domain exists')
+        except ValueError as error:
+            return http.bad_request([], str(error))
         location = path_to('domains/{0}'.format(domain.email_host))
         # Include no extra headers or body.
         return http.created(location, [], None)
