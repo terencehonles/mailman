@@ -28,13 +28,6 @@ import os
 import sys
 
 
-# lazr.restful uses the sha module, but that's deprecated in Python 2.6 in
-# favor of the hashlib module.
-import warnings
-warnings.filterwarnings(
-    'ignore', category=DeprecationWarning, module='lazr.restful._resource')
-
-
 # This is a namespace package.
 try:
     import pkg_resources

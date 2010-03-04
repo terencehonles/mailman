@@ -32,7 +32,7 @@ import signal
 import logging
 
 from mailman.queue import Runner
-from mailman.rest.webservice import make_server
+from mailman.rest.wsgiapp import make_server
 
 
 log = logging.getLogger('mailman.http')

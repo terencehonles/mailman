@@ -32,7 +32,6 @@ from zope.interface import implements
 from mailman.config import config
 from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.listmanager import IListManager, ListAlreadyExistsError
-from mailman.interfaces.rest import IResolvePathNames
 from mailman.model.mailinglist import MailingList
 
 
@@ -40,7 +39,7 @@ from mailman.model.mailinglist import MailingList
 class ListManager:
     """An implementation of the `IListManager` interface."""
 
-    implements(IListManager, IResolvePathNames)
+    implements(IListManager)
 
     # pylint: disable-msg=R0201
     def create(self, fqdn_listname):
@@ -80,18 +79,19 @@ class ListManager:
         for fqdn_listname in self.names:
             yield self.get(fqdn_listname)
 
+    def __iter__(self):
+        """See `IListManager`."""
+        for fqdn_listname in self.names:
+            yield self.get(fqdn_listname)
+
     @property
     def names(self):
         """See `IListManager`."""
         for mlist in config.db.store.find(MailingList):
             yield '{0}@{1}'.format(mlist.list_name, mlist.host_name)
 
+    # XXX 2010-02-24 barry Get rid of this.
     def get_mailing_lists(self):
         """See `IListManager`."""
         # lazr.restful will not allow this to be a generator.
         return list(self.mailing_lists)
-
-    def new(self, fqdn_listname):
-        """See `IListManager."""
-        from mailman.app.lifecycle import create_list
-        return create_list(fqdn_listname)

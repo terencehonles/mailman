@@ -25,9 +25,7 @@ __all__ = [
     ]
 
 
-from lazr.restful.declarations import export_as_webservice_entry, exported
-from zope.interface import Interface
-from zope.schema import TextLine
+from zope.interface import Interface, Attribute
 
 from mailman.core.i18n import _
 
@@ -36,14 +34,6 @@ from mailman.core.i18n import _
 class ISystem(Interface):
     """Information about the Mailman system."""
 
-    export_as_webservice_entry()
+    mailman_version = Attribute('The GNU Mailman version.')
 
-    mailman_version = exported(TextLine(
-        title=_('Mailman version'),
-        description=_('The GNU Mailman version.'),
-        ))
-
-    python_version = exported(TextLine(
-        title=_('Python version'),
-        description=_('The Python version.'),
-        ))
+    python_version = Attribute('The Python version.')

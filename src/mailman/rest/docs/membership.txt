@@ -9,8 +9,8 @@ returns all the members of all known mailing lists.
 There are no mailing lists and no members yet.
 
     >>> dump_json('http://localhost:8001/3.0/members')
-    resource_type_link: http://localhost:8001/3.0/#members
-    start: None
+    http_etag: "..."
+    start: 0
     total_size: 0
 
 We create a mailing list, which starts out with no members.
@@ -19,8 +19,8 @@ We create a mailing list, which starts out with no members.
     >>> transaction.commit()
 
     >>> dump_json('http://localhost:8001/3.0/members')
-    resource_type_link: http://localhost:8001/3.0/#members
-    start: None
+    http_etag: "..."
+    start: 0
     total_size: 0
 
 
@@ -49,9 +49,8 @@ the REST interface.
     >>> dump_json('http://localhost:8001/3.0/members')
     entry 0:
         http_etag: ...
-        resource_type_link: http://localhost:8001/3.0/#member
         self_link: http://localhost:8001/3.0/lists/test-one@example.com/member/bperson@example.com
-    resource_type_link: http://localhost:8001/3.0/#members
+    http_etag: "..."
     start: 0
     total_size: 1
 
@@ -62,13 +61,11 @@ the REST interface.
     >>> dump_json('http://localhost:8001/3.0/members')
     entry 0:
         http_etag: ...
-        resource_type_link: http://localhost:8001/3.0/#member
         self_link: http://localhost:8001/3.0/lists/test-one@example.com/member/bperson@example.com
     entry 1:
         http_etag: ...
-        resource_type_link: http://localhost:8001/3.0/#member
         self_link: http://localhost:8001/3.0/lists/test-one@example.com/member/cperson@example.com
-    resource_type_link: http://localhost:8001/3.0/#members
+    http_etag: "..."
     start: 0
     total_size: 2
 
@@ -80,17 +77,14 @@ subscribes, she is returned first.
     >>> dump_json('http://localhost:8001/3.0/members')
     entry 0:
         http_etag: ...
-        resource_type_link: http://localhost:8001/3.0/#member
         self_link: http://localhost:8001/3.0/lists/test-one@example.com/member/aperson@example.com
     entry 1:
         http_etag: ...
-        resource_type_link: http://localhost:8001/3.0/#member
         self_link: http://localhost:8001/3.0/lists/test-one@example.com/member/bperson@example.com
     entry 2:
         http_etag: ...
-        resource_type_link: http://localhost:8001/3.0/#member
         self_link: http://localhost:8001/3.0/lists/test-one@example.com/member/cperson@example.com
-    resource_type_link: http://localhost:8001/3.0/#members
+    http_etag: "..."
     start: 0
     total_size: 3
 
@@ -104,25 +98,20 @@ address.  Anna and Cris subscribe to this new mailing list.
     >>> dump_json('http://localhost:8001/3.0/members')
     entry 0:
         http_etag: ...
-        resource_type_link: http://localhost:8001/3.0/#member
         self_link: http://localhost:8001/3.0/lists/alpha@example.com/member/aperson@example.com
     entry 1:
         http_etag: ...
-        resource_type_link: http://localhost:8001/3.0/#member
         self_link: http://localhost:8001/3.0/lists/alpha@example.com/member/cperson@example.com
     entry 2:
         http_etag: ...
-        resource_type_link: http://localhost:8001/3.0/#member
         self_link: http://localhost:8001/3.0/lists/test-one@example.com/member/aperson@example.com
     entry 3:
         http_etag: ...
-        resource_type_link: http://localhost:8001/3.0/#member
         self_link: http://localhost:8001/3.0/lists/test-one@example.com/member/bperson@example.com
     entry 4:
         http_etag: ...
-        resource_type_link: http://localhost:8001/3.0/#member
         self_link: http://localhost:8001/3.0/lists/test-one@example.com/member/cperson@example.com
-    resource_type_link: http://localhost:8001/3.0/#members
+    http_etag: "..."
     start: 0
     total_size: 5
 
@@ -140,33 +129,26 @@ test-one mailing list.
     >>> dump_json('http://localhost:8001/3.0/members')
     entry 0:
         http_etag: ...
-        resource_type_link: http://localhost:8001/3.0/#member
         self_link: http://localhost:8001/3.0/lists/alpha@example.com/moderator/dperson@example.com
     entry 1:
         http_etag: ...
-        resource_type_link: http://localhost:8001/3.0/#member
         self_link: http://localhost:8001/3.0/lists/alpha@example.com/member/aperson@example.com
     entry 2:
         http_etag: ...
-        resource_type_link: http://localhost:8001/3.0/#member
         self_link: http://localhost:8001/3.0/lists/alpha@example.com/member/cperson@example.com
     entry 3:
         http_etag: ...
-        resource_type_link: http://localhost:8001/3.0/#member
         self_link: http://localhost:8001/3.0/lists/test-one@example.com/owner/cperson@example.com
     entry 4:
         http_etag: ...
-        resource_type_link: http://localhost:8001/3.0/#member
         self_link: http://localhost:8001/3.0/lists/test-one@example.com/member/aperson@example.com
     entry 5:
         http_etag: ...
-        resource_type_link: http://localhost:8001/3.0/#member
         self_link: http://localhost:8001/3.0/lists/test-one@example.com/member/bperson@example.com
     entry 6:
         http_etag: ...
-        resource_type_link: http://localhost:8001/3.0/#member
         self_link: http://localhost:8001/3.0/lists/test-one@example.com/member/cperson@example.com
-    resource_type_link: http://localhost:8001/3.0/#members
+    http_etag: "..."
     start: 0
     total_size: 7
 
@@ -183,14 +165,14 @@ delivery.  Since Elly's email address is not yet known to Mailman, a user is
 created for her.
 
     >>> dump_json('http://localhost:8001/3.0/members', {
-    ...           'ws.op': 'join',
     ...           'fqdn_listname': 'alpha@example.com',
     ...           'address': 'eperson@example.com',
     ...           'real_name': 'Elly Person',
     ...           })
-    http_etag: ...
-    resource_type_link: http://localhost:8001/3.0/#member
-    self_link: http://localhost:8001/3.0/lists/alpha@example.com/member/eperson@example.com
+    content-length: 0
+    date: ...
+    location: http://localhost:8001/3.0/lists/alpha@example.com/member/eperson@example.com
+    ...
 
 Elly is now a member of the mailing list.
 
@@ -206,7 +188,6 @@ Elly is now a member of the mailing list.
     ...
     entry 3:
         http_etag: ...
-        resource_type_link: http://localhost:8001/3.0/#member
         self_link: http://localhost:8001/3.0/lists/alpha@example.com/member/eperson@example.com
     ...
 
@@ -215,15 +196,16 @@ Leaving a mailing list
 ======================
 
 Elly decides she does not want to be a member of the mailing list after all,
-so she unsubscribes from the mailing list.
+so she leaves from the mailing list.
 
     # Ensure our previous reads don't keep the database lock.
     >>> transaction.abort()
-    >>> dump_json('http://localhost:8001/3.0/members', {
-    ...           'ws.op': 'leave',
-    ...           'fqdn_listname': 'alpha@example.com',
-    ...           'address': 'eperson@example.com',
-    ...           })
+    >>> dump_json('http://localhost:8001/3.0/lists/alpha@example.com'
+    ...           '/member/eperson@example.com',
+    ...           method='DELETE')
+    content-length: 0
+    ...
+    status: 200
 
 Elly is no longer a member of the mailing list.
 
@@ -238,15 +220,16 @@ Fred joins the alpha mailing list but wants MIME digest delivery.
 
     >>> transaction.abort()
     >>> dump_json('http://localhost:8001/3.0/members', {
-    ...           'ws.op': 'join',
     ...           'fqdn_listname': 'alpha@example.com',
     ...           'address': 'fperson@example.com',
     ...           'real_name': 'Fred Person',
     ...           'delivery_mode': 'mime_digests',
     ...           })
-    http_etag: ...
-    resource_type_link: http://localhost:8001/3.0/#member
-    self_link: http://localhost:8001/3.0/lists/alpha@example.com/member/fperson@example.com
+    content-length: 0
+    ...
+    location: http://localhost:8001/3.0/lists/alpha@example.com/member/fperson@example.com
+    ...
+    status: 201
 
     >>> fred = user_manager.get_user('fperson@example.com')
     >>> memberships = list(fred.memberships.members)
@@ -263,7 +246,6 @@ Corner cases
 For some reason Elly tries to join a mailing list that does not exist.
 
     >>> dump_json('http://localhost:8001/3.0/members', {
-    ...           'ws.op': 'join',
     ...           'fqdn_listname': 'beta@example.com',
     ...           'address': 'eperson@example.com',
     ...           'real_name': 'Elly Person',
@@ -274,43 +256,35 @@ For some reason Elly tries to join a mailing list that does not exist.
 
 Then, she tries to leave a mailing list that does not exist.
 
-    >>> dump_json('http://localhost:8001/3.0/members', {
-    ...           'ws.op': 'leave',
-    ...           'fqdn_listname': 'beta@example.com',
-    ...           'address': 'eperson@example.com',
-    ...           'real_name': 'Elly Person',
-    ...           })
+    >>> dump_json('http://localhost:8001/3.0/lists/beta@example.com'
+    ...           '/members/eperson@example.com',
+    ...           method='DELETE')
     Traceback (most recent call last):
     ...
-    HTTPError: HTTP Error 400: Bad Request
+    HTTPError: HTTP Error 404: Not Found
 
 She then tries to leave a mailing list with a bogus address.
 
-    >>> dump_json('http://localhost:8001/3.0/members', {
-    ...           'ws.op': 'leave',
-    ...           'fqdn_listname': 'alpha@example.com',
-    ...           'address': 'elly',
-    ...           })
+    >>> dump_json('http://localhost:8001/3.0/lists/alpha@example.com'
+    ...           '/members/elly',
+    ...           method='DELETE')
     Traceback (most recent call last):
     ...
-    HTTPError: HTTP Error 400: Bad Request
+    HTTPError: HTTP Error 404: Not Found
 
 For some reason, Elly tries to leave the mailing list again, but she's already
 been unsubscribed.
 
-    >>> dump_json('http://localhost:8001/3.0/members', {
-    ...           'ws.op': 'leave',
-    ...           'fqdn_listname': 'alpha@example.com',
-    ...           'address': 'eperson@example.com',
-    ...           })
+    >>> dump_json('http://localhost:8001/3.0/lists/alpha@example.com'
+    ...           '/members/eperson@example.com',
+    ...           method='DELETE')
     Traceback (most recent call last):
     ...
-    HTTPError: HTTP Error 400: Bad Request
+    HTTPError: HTTP Error 404: Not Found
 
 Anna tries to join a mailing list she's already a member of.
 
     >>> dump_json('http://localhost:8001/3.0/members', {
-    ...           'ws.op': 'join',
     ...           'fqdn_listname': 'alpha@example.com',
     ...           'address': 'aperson@example.com',
     ...           })
@@ -321,7 +295,6 @@ Anna tries to join a mailing list she's already a member of.
 Gwen tries to join the alpha mailing list using an invalid delivery mode.
 
     >>> dump_json('http://localhost:8001/3.0/members', {
-    ...           'ws.op': 'join',
     ...           'fqdn_listname': 'alpha@example.com',
     ...           'address': 'gperson@example.com',
     ...           'real_name': 'Gwen Person',

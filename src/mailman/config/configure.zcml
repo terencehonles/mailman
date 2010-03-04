@@ -2,7 +2,7 @@
 <configure
     xmlns="http://namespaces.zope.org/zope">
 
-  <include package="mailman.rest" file="configure.zcml"/>
+  <include package="zope.component" file="meta.zcml"/>
 
   <adapter
     for="mailman.interfaces.mailinglist.IMailingList"
@@ -54,6 +54,11 @@
   <utility
     provides="mailman.interfaces.registrar.IRegistrar"
     factory="mailman.app.registrar.Registrar"
+    />
+
+  <utility
+    factory="mailman.rest.adapters.SubscriptionService"
+    provides="mailman.interfaces.membership.ISubscriptionService"
     />
 
 </configure>

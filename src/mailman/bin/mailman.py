@@ -47,8 +47,11 @@ def main():
         Copyright 1998-2010 by the Free Software Foundation, Inc.
         http://www.list.org
         """),
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        version=MAILMAN_VERSION_FULL)
+        formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument(
+        '-v', '--version',
+        action='version', version=MAILMAN_VERSION_FULL,
+        help=_('Print this version string and exit'))
     parser.add_argument(
         '-C', '--config',
         help=_("""\

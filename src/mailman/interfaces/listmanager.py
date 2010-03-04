@@ -27,9 +27,6 @@ __all__ = [
     ]
 
 
-from lazr.restful.declarations import (
-    collection_default_content, error_status, export_as_webservice_collection,
-    export_factory_operation)
 from zope.interface import Interface, Attribute
 
 from mailman.interfaces.errors import MailmanError
@@ -37,7 +34,6 @@ from mailman.interfaces.mailinglist import IMailingList
 
 
 
-@error_status(400)
 class ListAlreadyExistsError(MailmanError):
     """Attempted to create a mailing list that already exists.
 
@@ -46,7 +42,6 @@ class ListAlreadyExistsError(MailmanError):
     """
 
 
-@error_status(400)
 class NoSuchListError(MailmanError):
     """Attempt to access a mailing list that does not exist."""
 
@@ -67,8 +62,6 @@ class IListManager(Interface):
     from the manager via their fully qualified list name, e.g.:
     `mylist@example.com`.
     """
-
-    export_as_webservice_collection(IMailingList)
 
     def create(fqdn_listname):
         """Create a mailing list with the given name.
@@ -100,32 +93,19 @@ class IListManager(Interface):
         """An iterator over all the mailing list objects managed by this list
         manager.""")
 
+    def __iter__():
+        """An iterator over all the mailing lists.
+
+        :return: iterator over `IMailingList`.
+        """
+
     names = Attribute(
         """An iterator over the fully qualified list names of all mailing
         lists managed by this list manager.""")
 
-    @collection_default_content()
     def get_mailing_lists():
         """The list of all mailing lists.
 
         :return: The list of all known mailing lists.
         :rtype: list of `IMailingList`
-        """
-
-    @export_factory_operation(IMailingList, ('fqdn_listname',))
-    def new(fqdn_listname):
-        """Add a new maling list.
-
-        The mailing may not exist yet, but the domain specified in
-        `fqdn_listname` must exist.
-
-        :param fqdn_listname: The fully qualified name for the new
-            mailing list.
-        :type fqdn_listname: string
-        :return: The new mailing list
-        :rtype: `IMailingList`
-        :raises `BadDomainSpecificationError`: when the hostname part of
-            `fqdn_listname` does not exist.
-        :raises `ListAlreadyExistsError`: when the mailing list already
-            exists.
         """

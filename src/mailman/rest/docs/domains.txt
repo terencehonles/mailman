@@ -16,8 +16,8 @@ The REST API can be queried for the set of known domains, of which there are
 initially none.
 
     >>> dump_json('http://localhost:8001/3.0/domains')
-    resource_type_link: http://localhost:8001/3.0/#domains
-    start: None
+    http_etag: "..."
+    start: 0
     total_size: 0
 
 Once a domain is added though, it is accessible through the API.
@@ -36,10 +36,9 @@ Once a domain is added though, it is accessible through the API.
         description: An example domain
         email_host: example.com
         http_etag: "..."
-        resource_type_link: http://localhost:8001/3.0/#domain
         self_link: http://localhost:8001/3.0/domains/example.com
         url_host: lists.example.com
-    resource_type_link: http://localhost:8001/3.0/#domains
+    http_etag: "..."
     start: 0
     total_size: 1
 
@@ -68,7 +67,6 @@ At the top level, all domains are returned as separate entries.
         description: An example domain
         email_host: example.com
         http_etag: "..."
-        resource_type_link: http://localhost:8001/3.0/#domain
         self_link: http://localhost:8001/3.0/domains/example.com
         url_host: lists.example.com
     entry 1:
@@ -77,7 +75,6 @@ At the top level, all domains are returned as separate entries.
         description: None
         email_host: example.org
         http_etag: "..."
-        resource_type_link: http://localhost:8001/3.0/#domain
         self_link: http://localhost:8001/3.0/domains/example.org
         url_host: mail.example.org
     entry 2:
@@ -86,10 +83,9 @@ At the top level, all domains are returned as separate entries.
         description: Porkmasters
         email_host: lists.example.net
         http_etag: "..."
-        resource_type_link: http://localhost:8001/3.0/#domain
         self_link: http://localhost:8001/3.0/domains/lists.example.net
         url_host: example.net
-    resource_type_link: http://localhost:8001/3.0/#domains
+    http_etag: "..."
     start: 0
     total_size: 3
 
@@ -106,7 +102,6 @@ self_links from the above collection.
     description: Porkmasters
     email_host: lists.example.net
     http_etag: "..."
-    resource_type_link: http://localhost:8001/3.0/#domain
     self_link: http://localhost:8001/3.0/domains/lists.example.net
     url_host: example.net
 
@@ -121,22 +116,15 @@ But we get a 404 for a non-existent domain.
 Creating new domains
 ====================
 
-New domains can be created by posting to the 'domains' url.  However
-lazr.restful requires us to use a 'named operation' instead of posting
-directly to the URL.
+New domains can be created by posting to the 'domains' url.
 
     >>> dump_json('http://localhost:8001/3.0/domains', {
-    ...           'ws.op': 'new',
     ...           'email_host': 'lists.example.com',
     ...           })
-    URL: http://localhost:8001/3.0/domains
     content-length: 0
-    content-type: text/plain;charset=utf-8
     date: ...
     location: http://localhost:8001/3.0/domains/lists.example.com
-    server: WSGIServer/... Python/...
-    x-content-type-warning: guessed from content
-    x-powered-by: Zope (www.zope.org), Python (www.python.org)
+    ...
 
 Now the web service knows about our new domain.
 
@@ -146,7 +134,6 @@ Now the web service knows about our new domain.
     description: None
     email_host: lists.example.com
     http_etag: "..."
-    resource_type_link: http://localhost:8001/3.0/#domain
     self_link: http://localhost:8001/3.0/domains/lists.example.com
     url_host: lists.example.com
 
@@ -164,20 +151,15 @@ You can also create a new domain with a description, a base url, and a contact
 address.
 
     >>> dump_json('http://localhost:8001/3.0/domains', {
-    ...           'ws.op': 'new',
     ...           'email_host': 'my.example.com',
     ...           'description': 'My new domain',
     ...           'base_url': 'http://allmy.example.com',
     ...           'contact_address': 'helpme@example.com'
     ...           })
-    URL: http://localhost:8001/3.0/domains
     content-length: 0
-    content-type: text/plain;charset=utf-8
     date: ...
     location: http://localhost:8001/3.0/domains/my.example.com
-    server: WSGIServer/... Python/...
-    x-content-type-warning: guessed from content
-    x-powered-by: Zope (www.zope.org), Python (www.python.org)
+    ...
 
     >>> dump_json('http://localhost:8001/3.0/domains/my.example.com')
     base_url: http://allmy.example.com
@@ -185,7 +167,6 @@ address.
     description: My new domain
     email_host: my.example.com
     http_etag: "..."
-    resource_type_link: http://localhost:8001/3.0/#domain
     self_link: http://localhost:8001/3.0/domains/my.example.com
     url_host: allmy.example.com
 

@@ -25,11 +25,7 @@ __all__ = [
     ]
 
 
-from lazr.restful.declarations import (
-    collection_default_content, export_as_webservice_collection,
-    export_write_operation, operation_parameters)
 from zope.interface import Interface
-from zope.schema import TextLine
 
 from mailman.core.i18n import _
 from mailman.interfaces.member import IMember
@@ -39,9 +35,6 @@ from mailman.interfaces.member import IMember
 class ISubscriptionService(Interface):
     """Subscription services for the REST API."""
 
-    export_as_webservice_collection(IMember)
-
-    @collection_default_content()
     def get_members():
         """Return a sequence of all members of all mailing lists.
 
@@ -55,13 +48,9 @@ class ISubscriptionService(Interface):
         :rtype: list of `IMember`
         """
 
-    @operation_parameters(
-        fqdn_listname=TextLine(),
-        address=TextLine(),
-        real_name=TextLine(),
-        delivery_mode=TextLine(),
-        )
-    @export_write_operation()
+    def __iter__():
+        """See `get_members()`."""
+
     def join(fqdn_listname, address, real_name=None, delivery_mode=None):
         """Subscribe to a mailing list.
 
@@ -94,11 +83,6 @@ class ISubscriptionService(Interface):
         :raises ValueError: when `delivery_mode` is invalid.
         """
 
-    @operation_parameters(
-        fqdn_listname=TextLine(),
-        address=TextLine(),
-        )
-    @export_write_operation()
     def leave(fqdn_listname, address):
         """Unsubscribe from a mailing list.
 

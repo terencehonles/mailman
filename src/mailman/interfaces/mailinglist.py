@@ -30,11 +30,8 @@ __all__ = [
     ]
 
 
-from lazr.restful.declarations import (
-    export_as_webservice_entry, exported)
 from munepy import Enum
 from zope.interface import Interface, Attribute
-from zope.schema import TextLine
 
 from mailman.core.i18n import _
 
@@ -71,53 +68,40 @@ class DigestFrequency(Enum):
 class IMailingList(Interface):
     """A mailing list."""
 
-    # Use a different singular and plural name for the resource type than
-    # lazr.restful gives it as a default (which is normally taken from the
-    # interface name).
-    export_as_webservice_entry('list', 'lists')
-
     # List identity
 
-    list_name = exported(TextLine(
-        title=_('Short name'),
-        description=_("""\
+    list_name = Attribute("""\
         The read-only short name of the mailing list.  Note that where a
         Mailman installation supports multiple domains, this short name may
         not be unique.  Use the fqdn_listname attribute for a guaranteed
         unique id for the mailing list.  This short name is always the local
         part of the posting email address.  For example, if messages are
         posted to mylist@example.com, then the list_name is 'mylist'.
-        """)))
-    host_name = exported(TextLine(
-        title=_('Host name'),
-        description=_("""\
+        """)
+    host_name = Attribute("""\
         The read-only domain name 'hosting' this mailing list.  This is always
         the domain name part of the posting email address, and it may bear no
         relationship to the web url used to access this mailing list.  For
         example, if messages are posted to mylist@example.com, then the
         host_name is 'example.com'.
-        """)))
+        """)
 
-    fqdn_listname = exported(TextLine(
-        title=_('Fully qualified list name'),
-        description=_("""\
+    fqdn_listname = Attribute("""\
         The read-only fully qualified name of the mailing list.  This is the
         guaranteed unique id for the mailing list, and it is always the
         address to which messages are posted, e.g. mylist@example.com.  It is
         always comprised of the list_name + '@' + host_name.
-        """)))
+        """)
 
     domain = Attribute(
         """The `IDomain` that this mailing list is defined in.""")
 
-    real_name = exported(TextLine(
-        title=_('Real name'),
-        description=_("""\
+    real_name = Attribute("""\
         The short human-readable descriptive name for the mailing list.  By
         default, this is the capitalized `list_name`, but it can be changed to
         anything.  This is used in locations such as the message footers and
         Subject prefix.
-        """)))
+        """)
 
     list_id = Attribute(
         """The RFC 2919 List-ID header value.""")

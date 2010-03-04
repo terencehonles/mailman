@@ -28,6 +28,7 @@ __all__ = [
 import sys
 import signal
 import logging
+import traceback
 
 from mailman.config import config
 from mailman.core.i18n import _
@@ -154,8 +155,8 @@ def make_qrunner(name, slice, range, once=False):
         if config.options.options.subproc:
             # Exit with SIGTERM exit code so the master watcher won't try to
             # restart us.
-            print >> sys.stderr, _('Cannot import runner module: $module_name')
-            print >> sys.stderr, error
+            print >> sys.stderr, _('Cannot import runner module: $class_path')
+            traceback.print_exc()
             sys.exit(signal.SIGTERM)
         else:
             raise

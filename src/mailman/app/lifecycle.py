@@ -47,7 +47,21 @@ log = logging.getLogger('mailman.error')
 
 
 def create_list(fqdn_listname, owners=None):
-    """Create the named list and apply styles."""
+    """Create the named list and apply styles.
+
+    The mailing may not exist yet, but the domain specified in `fqdn_listname`
+    must exist.
+
+    :param fqdn_listname: The fully qualified name for the new mailing list.
+    :type fqdn_listname: string
+    :param owners: The mailing list owners.
+    :type owners: list of string email addresses
+    :return: The new mailing list.
+    :rtype: `IMailingList`
+    :raises `BadDomainSpecificationError`: when the hostname part of
+        `fqdn_listname` does not exist.
+    :raises `ListAlreadyExistsError`: when the mailing list already exists.
+    """
     if owners is None:
         owners = []
     validate(fqdn_listname)

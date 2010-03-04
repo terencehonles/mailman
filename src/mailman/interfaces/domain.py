@@ -23,62 +23,44 @@ __metaclass__ = type
 __all__ = [
     'BadDomainSpecificationError',
     'IDomain',
-    'IDomainCollection',
     'IDomainManager',
     ]
 
 
-from lazr.restful.declarations import (
-    collection_default_content, error_status, export_as_webservice_collection,
-    export_as_webservice_entry, export_factory_operation, exported)
 from zope.interface import Interface, Attribute
-from zope.schema import TextLine
 
 from mailman.core.errors import MailmanError
 from mailman.core.i18n import _
 
 
 
-@error_status(400)
 class BadDomainSpecificationError(MailmanError):
     """The specification of a virtual domain is invalid or duplicated."""
+
+    def __init__(self, domain):
+        super(BadDomainSpecificationError, self).__init__(domain)
+        self.domain = domain
 
 
 
 class IDomain(Interface):
     """Interface representing domains."""
 
-    export_as_webservice_entry()
+    email_host = Attribute('The host name for email for this domain.')
 
-    email_host = exported(TextLine(
-        title=_('Email host name'),
-        description=_('The host name for email for this domain.'),
-        ))
+    url_host = Attribute(
+        'The host name for the web interface for this domain.')
 
-    url_host = exported(TextLine(
-        title=_('Web host name'),
-        description=_('The host name for the web interface for this domain.')
-        ))
+    base_url = Attribute("""\
+    The base url for the Mailman server at this domain, which includes the
+    scheme and host name.""")
 
-    base_url = exported(TextLine(
-        title=_('Base URL'),
-        description=_("""\
-        The base url for the Mailman server at this domain, which includes the
-        scheme and host name."""),
-        ))
+    description = Attribute(
+        'The human readable description of the domain name.')
 
-    description = exported(TextLine(
-        title=_('Description'),
-        description=_('The human readable description of the domain name.'),
-        ))
-
-    contact_address = exported(TextLine(
-        title=_('Contact address'),
-        description=_("""\
-        The contact address for the human at this domain.
-
-        E.g. postmaster@example.com"""),
-        ))
+    contact_address = Attribute("""\
+    The contact address for the human at this domain.
+    E.g. postmaster@example.com""")
 
     def confirm_url(token=''):
         """The url used for various forms of confirmation.
@@ -157,43 +139,4 @@ class IDomainManager(Interface):
         :type email_host: string
         :return: True if this domain is known.
         :rtype: bool
-        """
-
-
-
-class IDomainCollection(Interface):
-    """The set of domains available via the REST API."""
-
-    export_as_webservice_collection(IDomain)
-
-    @collection_default_content()
-    def get_domains():
-        """The list of all domains.
-
-        :return: The list of all known domains.
-        :rtype: list of `IDomain`
-        """
-
-    @export_factory_operation(
-        IDomain,
-        ('email_host', 'description', 'base_url', 'contact_address'))
-    def new(email_host, description=None, base_url=None, contact_address=None):
-        """Add a new domain.
-
-        :param email_host: The email host name for the domain.
-        :type email_host: string
-        :param description: The description of the domain.
-        :type description: string
-        :param base_url: The base url, including the scheme for the web
-            interface of the domain.  If not given, it defaults to
-            http://`email_host`/
-        :type base_url: string
-        :param contact_address: The email contact address for the human
-            managing the domain.  If not given, defaults to
-            postmaster@`email_host`
-        :type contact_address: string
-        :return: The new domain object
-        :rtype: `IDomain`
-        :raises `BadDomainSpecificationError`: when the `email_host` is
-            already registered.
         """
