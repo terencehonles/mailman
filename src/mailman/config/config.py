@@ -156,7 +156,14 @@ class Configuration:
         else:
             print >> sys.stderr, 'No path configuration found:', layout
             sys.exit(1)
-        # First, collect all variables in a substitution dictionary.
+        # First, collect all variables in a substitution dictionary.  $VAR_DIR
+        # is taken from the environment or from the configuration file if the
+        # environment is not set.  Because the var_dir setting in the config
+        # file could be a relative path, and because 'bin/mailman start'
+        # chdirs to $VAR_DIR, without this subprocesses bin/master and
+        # bin/qrunner will create $VAR_DIR hierarchies under $VAR_DIR when
+        # that path is relative.
+        var_dir = os.environ.get('MAILMAN_VAR_DIR', category.var_dir)
         substitutions = dict(
             argv                    = bin_dir,
             # Directories.
@@ -171,7 +178,7 @@ class Configuration:
             pipermail_private_dir   = category.pipermail_private_dir,
             pipermail_public_dir    = category.pipermail_public_dir,
             queue_dir               = category.queue_dir,
-            var_dir                 = category.var_dir,
+            var_dir                 = var_dir,
             # Files.
             creator_pw_file         = category.creator_pw_file,
             lock_file               = category.lock_file,

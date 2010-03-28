@@ -108,6 +108,9 @@ class Start:
         # call.
         os.setsid()
         # Instead of cd'ing to root, cd to the Mailman runtime directory.
+        # However, before we do that, set an environment variable used by the
+        # subprocesses to calculate their path to the $VAR_DIR.
+        os.environ['MAILMAN_VAR_DIR'] = config.VAR_DIR
         os.chdir(config.VAR_DIR)
         # Exec the master watcher.
         execl_args = [

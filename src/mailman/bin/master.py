@@ -55,6 +55,8 @@ class ScriptOptions(Options):
     """Options for the master watcher."""
 
     usage = _("""\
+%prog [options]
+
 Master sub-process watcher.
 
 Start and watch the configured queue runners and ensure that they stay alive
@@ -73,9 +75,7 @@ The master also responds to SIGINT, SIGTERM, SIGUSR1 and SIGHUP, which it
 simply passes on to the qrunners.  Note that the master will close and reopen
 its own log files on receipt of a SIGHUP.  The master also leaves its own
 process id in the file `data/master-qrunner.pid` but you normally don't need
-to use this pid directly.
-
-Usage: %prog [options]""")
+to use this pid directly.""")
 
     def add_options(self):
         """See `Options`."""
@@ -119,8 +119,10 @@ def get_lock_data():
     with open(config.LOCK_FILE) as fp:
         filename = os.path.split(fp.read().strip())[1]
     parts = filename.split('.')
-    hostname = DOT.join(parts[1:-2])
-    pid = int(parts[-2])
+    timestamp = parts.pop()
+    pid = parts.pop()
+    hostname = parts.pop()
+    filename = DOT.join(reversed(parts))
     return hostname, int(pid), filename
 
 
@@ -194,15 +196,15 @@ def acquire_lock(force):
         if status == WatcherState.conflict:
             # Hostname matches and process exists.
             message = _("""\
-The master queue runner lock could not be acquired because it
-appears as though another master is already running.""")
+The master queue runner lock could not be acquired
+because it appears as though another master is already running.""")
         elif status == WatcherState.stale_lock:
             # Hostname matches but the process does not exist.
             program = sys.argv[0]
             message = _("""\
-The master queue runner lock could not be acquired.  It appears
-as though there is a stale master lock.  Try re-running $program
-with the -s flag.""")
+The master queue runner lock could not be acquired.
+It appears as though there is a stale master lock.  Try re-running
+$program with the --force flag.""")
         else:
             # Hostname doesn't even match.
             assert status == WatcherState.host_mismatch, (
@@ -210,10 +212,10 @@ with the -s flag.""")
             # pylint: disable-msg=W0612
             hostname, pid, tempfile = get_lock_data()
             message = _("""\
-The master qrunner lock could not be acquired, because it appears
-as if some process on some other host may have acquired it.  We
-can't test for stale locks across host boundaries, so you'll have
-to clean this up manually.
+The master qrunner lock could not be acquired, because it
+appears as if some process on some other host may have acquired it.  We can't
+test for stale locks across host boundaries, so you'll have to clean this up
+manually.
 
 Lock file: $config.LOCK_FILE
 Lock host: $hostname
@@ -348,13 +350,17 @@ class Loop:
             return pid
         # Child.
         #
+        # Set the environment variable which tells the qrunner that it's
+        # running under bin/master control.  This subtly changes the error
+        # behavior of bin/qrunner.
+        os.environ['MAILMAN_UNDER_MASTER_CONTROL'] = '1'
         # Craft the command line arguments for the exec() call.
         rswitch = '--runner=' + spec
         # Wherever master lives, so too must live the qrunner script.
         exe = os.path.join(config.BIN_DIR, 'qrunner')
         # config.PYTHON, which is the absolute path to the Python interpreter,
         # must be given as argv[0] due to Python's library search algorithm.
-        args = [sys.executable, sys.executable, exe, rswitch, '-s']
+        args = [sys.executable, sys.executable, exe, rswitch]
         if self._config_file is not None:
             args.extend(['-C', self._config_file])
         log = logging.getLogger('mailman.qrunner')

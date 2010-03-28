@@ -84,7 +84,9 @@ Usage: %prog [options]
 names displayed by the -l switch.
 
 Normally, this script should be started from 'bin/mailman start'.  Running it
-separately or with -o is generally useful only for debugging.
+separately or with -o is generally useful only for debugging.  When run this
+way, the environment variable $MAILMAN_UNDER_MASTER_CONTROL will be set which
+subtly changes some error handling behavior.
 """)
 
     def add_options(self):
@@ -120,12 +122,6 @@ each queue runner runs indefinitely, until the process receives signal."""))
             '-v', '--verbose',
             default=0, action='count', help=_("""\
 Display more debugging information to the log file."""))
-        self.parser.add_option(
-            '-s', '--subproc',
-            default=False, action='store_true', help=_("""\
-This should only be used when running the queue runner as a subprocess of the
-'bin/mailman start' startup script.  It changes some of the exit-on-error
-behavior to work better with that framework."""))
 
     def sanity_check(self):
         """See `Options`."""
@@ -152,7 +148,7 @@ def make_qrunner(name, slice, range, once=False):
     try:
         qrclass = find_name(class_path)
     except ImportError as error:
-        if config.options.options.subproc:
+        if os.environ.get('MAILMAN_UNDER_MASTER_CONTROL') is not None:
             # Exit with SIGTERM exit code so the master watcher won't try to
             # restart us.
             print >> sys.stderr, _('Cannot import runner module: $class_path')
