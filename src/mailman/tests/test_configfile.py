@@ -76,9 +76,17 @@ class TestConfigFileBase(unittest.TestCase):
 
     def setUp(self):
         self._root = tempfile.mkdtemp()
+        # Ensure that the environment can't cause test failures.
+        self.mailman_config_file = os.environ('MAILMAN_CONFIG_FILE')
+        if self.mailman_config_file is not None:
+            del os.environ['MAILMAN_CONFIG_FILE']
 
     def tearDown(self):
         shutil.rmtree(self._root)
+        # Restore the environment, though I'm not actually sure this is
+        # necessary.
+        if self.mailman_config_file is not None:
+            os.environ['MAILMAN_CONFIG_FILE'] = self.mailman_config_file
 
     def _make_fake(self, path):
         if path.startswith('/'):
