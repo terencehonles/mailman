@@ -51,7 +51,7 @@ class Info:
             File to send the output to.  If not given, standard output is
             used."""))
         command_parser.add_argument(
-            '-p', '--paths',
+            '-v', '--verbose',
             action='store_true', help=_("""\
             A more verbose output including the file system paths that Mailman
             is using."""))
@@ -68,7 +68,7 @@ class Info:
         print >> output, 'Python', sys.version
         print >> output, 'config file:', config.filename
         print >> output, 'db url:', config.db.url
-        if args.paths:
+        if args.verbose:
             print >> output, 'File system paths:'
             longest = 0
             paths = {}
