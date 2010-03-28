@@ -6,7 +6,7 @@ Mailman crafts and sends digests by a separate digest queue runner process.
 This starts by a number of messages being posted to the mailing list.
 
     >>> mlist = create_list('test@example.com')
-    >>> mlist.digest_size_threshold = 0.5
+    >>> mlist.digest_size_threshold = 0.6
     >>> mlist.volume = 1
     >>> mlist.next_digest_number = 1
 
@@ -20,6 +20,7 @@ This starts by a number of messages being posted to the mailing list.
     ... From: aperson@example.com
     ... To: xtest@example.com
     ... Subject: Test message $i
+    ... List-Post: <test@example.com>
     ...
     ... Here is message $i
     ... """).substitute(i=i)
@@ -141,6 +142,7 @@ The MIME digest has lots of good stuff, all contained in the multipart.
     From: aperson@example.com
     To: xtest@example.com
     Subject: Test message 1
+    List-Post: <test@example.com>
     <BLANKLINE>
     Here is message 1
     <BLANKLINE>
@@ -151,6 +153,7 @@ The MIME digest has lots of good stuff, all contained in the multipart.
     From: aperson@example.com
     To: xtest@example.com
     Subject: Test message 2
+    List-Post: <test@example.com>
     <BLANKLINE>
     Here is message 2
     <BLANKLINE>
@@ -161,6 +164,7 @@ The MIME digest has lots of good stuff, all contained in the multipart.
     From: aperson@example.com
     To: xtest@example.com
     Subject: Test message 3
+    List-Post: <test@example.com>
     <BLANKLINE>
     Here is message 3
     <BLANKLINE>
@@ -171,6 +175,7 @@ The MIME digest has lots of good stuff, all contained in the multipart.
     From: aperson@example.com
     To: xtest@example.com
     Subject: Test message 4
+    List-Post: <test@example.com>
     <BLANKLINE>
     Here is message 4
     <BLANKLINE>
@@ -562,9 +567,6 @@ as much and does not want to receive one last digest.
     >>> runner.run()
 
     >>> messages = get_queue_messages('virgin')
-    >>> len(messages)
-    2
-
     >>> mime, rfc1153 = mime_rfc1153(messages)
     >>> sorted(mime.msgdata['recipients'])
     [u'uperson@example.com', u'xperson@example.com']

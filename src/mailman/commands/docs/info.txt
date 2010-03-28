@@ -10,7 +10,7 @@ script 'mailman info'.  By default, the info is printed to standard output.
 
     >>> class FakeArgs:
     ...     output = None
-    ...     paths = None
+    ...     verbose = None
     >>> args = FakeArgs()
 
     >>> command.process(args)
@@ -39,7 +39,7 @@ You can also get more verbose information, which contains a list of the file
 system paths that Mailman is using.
 
     >>> args.output = None
-    >>> args.paths = True
+    >>> args.verbose = True
     >>> config.create_paths = False
     >>> config.push('fhs', """
     ... [mailman]
