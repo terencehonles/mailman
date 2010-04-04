@@ -1,0 +1,26 @@
+===================
+Importing list data
+===================
+
+If you have the config.pck file for a version 2.1 mailing list, you can import
+that into an existing mailing list in Mailman 3.0.
+
+    >>> from mailman.commands.cli_import import Import21
+    >>> command = Import21()
+
+    >>> class FakeArgs:
+    ...     listname = None
+
+    >>> class FakeParser:
+    ...     def error(self, message):
+    ...         print message
+    >>> command.parser = FakeParser()
+
+You must specify the mailing list you are importing into, and it must exist.
+
+    >>> command.process(FakeArgs)
+    List name is required
+
+    >>> FakeArgs.listname = ['import@example.com']
+    >>> command.process(FakeArgs)
+    No such list: import@example.com
