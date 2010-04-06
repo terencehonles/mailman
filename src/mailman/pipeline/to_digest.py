@@ -33,8 +33,8 @@ from zope.interface import implements
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.email.message import Message
+from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.handler import IHandler
-from mailman.interfaces.mailinglist import DigestFrequency
 from mailman.utilities.mailbox import Mailbox
 
 

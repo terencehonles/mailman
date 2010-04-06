@@ -56,14 +56,6 @@ class ReplyToMunging(Enum):
     explicit_header = 2
 
 
-class DigestFrequency(Enum):
-    yearly = 0
-    monthly = 1
-    quarterly = 2
-    weekly = 3
-    daily = 4
-
-
 
 class IMailingList(Interface):
     """A mailing list."""

@@ -33,9 +33,9 @@ from zope.interface import implements
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.action import Action
+from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.autorespond import ResponseAction
-from mailman.interfaces.mailinglist import (
-    DigestFrequency, Personalization, ReplyToMunging)
+from mailman.interfaces.mailinglist import Personalization, ReplyToMunging
 from mailman.interfaces.nntp import NewsModeration
 from mailman.interfaces.styles import IStyle
 

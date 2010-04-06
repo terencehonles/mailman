@@ -25,7 +25,17 @@ __all__ = [
     ]
 
 
+from munepy import Enum
 from zope.interface import Interface, Attribute
+
+
+
+class DigestFrequency(Enum):
+    yearly = 0
+    monthly = 1
+    quarterly = 2
+    weekly = 3
+    daily = 4
 
 
 
