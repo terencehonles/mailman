@@ -30,7 +30,7 @@ __all__ = [
 
 
 from datetime import timedelta
-from munepy import Enum
+from flufl.enum import Enum
 from zope.interface import Interface, Attribute
 
 ALWAYS_REPLY = timedelta()

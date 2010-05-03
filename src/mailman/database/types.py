@@ -59,6 +59,6 @@ class _EnumVariable(Variable):
 
 
 class Enum(SimpleProperty):
-    """Custom munepy.Enum type for Storm."""
+    """Custom Enum type for Storm."""
 
     variable_class = _EnumVariable

@@ -21,7 +21,7 @@ __all__ = [
     ]
 
 
-from munepy import Enum
+from flufl.enum import Enum
 
 
 

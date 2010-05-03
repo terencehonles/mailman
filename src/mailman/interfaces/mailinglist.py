@@ -30,7 +30,7 @@ __all__ = [
     ]
 
 
-from munepy import Enum
+from flufl.enum import Enum
 from zope.interface import Interface, Attribute
 
 from mailman.core.i18n import _

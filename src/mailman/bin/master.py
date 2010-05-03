@@ -34,9 +34,9 @@ import socket
 import logging
 
 from datetime import datetime, timedelta
+from flufl.enum import Enum
 from lazr.config import as_boolean
 from locknix import lockfile
-from munepy import Enum
 
 from mailman.config import config
 from mailman.core.i18n import _

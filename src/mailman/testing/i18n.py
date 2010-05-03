@@ -40,8 +40,8 @@ class TestingStrategy:
     def __init__(self, name):
         self.name = name
 
-    def __call__(self, language_code):
-        if language_code == 'en':
+    def __call__(self, language_code=None):
+        if language_code in ('en', None):
             return NullTranslations()
         mo_file = 'mailman-%s.mo' % language_code
         with closing(resource_stream('mailman.testing', mo_file)) as fp:
