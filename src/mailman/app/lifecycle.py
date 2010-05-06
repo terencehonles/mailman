@@ -91,7 +91,7 @@ def remove_list(fqdn_listname, mailing_list=None, archives=True):
     """Remove the list and all associated artifacts and subscriptions."""
     removeables = []
     # mailing_list will be None when only residual archives are being removed.
-    if mailing_list:
+    if mailing_list is not None:
         # Remove all subscriptions, regardless of role.
         for member in mailing_list.subscribers.members:
             member.unsubscribe()

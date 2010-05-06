@@ -29,8 +29,10 @@ import time
 import unittest
 
 from mailman import passwords
+from mailman.app.lifecycle import create_list, remove_list
 from mailman.config import config
 from mailman.interfaces.member import NotAMemberError
+from mailman.testing.layers import ConfigLayer
 
 
 
@@ -40,6 +42,14 @@ def password(cleartext):
 
 
 class TestNoMembers(unittest.TestCase):
+    layer = ConfigLayer
+
+    def setUp(self):
+        self._mlist = create_list('test@example.com')
+
+    def tearDown(self):
+        remove_list(self._mlist.fqdn_listname, self._mlist)
+
     def test_no_member(self):
         eq = self.assertEqual
         raises = self.assertRaises
@@ -389,4 +399,7 @@ class TestMembers(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
+    # XXX 2010-05-06 None of these tests work.
+    ## suite.addTest(unittest.makeSuite(TestNoMembers))
+    ## suite.addTest(unittest.makeSuite(TestMembers))
     return suite
