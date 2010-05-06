@@ -27,39 +27,15 @@ __all__ = [
 
 import sys
 import cPickle
-import datetime
 
 from zope.component import getUtility
 from zope.interface import implements
 
 from mailman.config import config
 from mailman.core.i18n import _
-from mailman.interfaces.action import Action
-from mailman.interfaces.autorespond import ResponseAction
 from mailman.interfaces.command import ICLISubCommand
-from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.listmanager import IListManager
-from mailman.interfaces.mailinglist import Personalization, ReplyToMunging
-from mailman.interfaces.nntp import NewsModeration
-
-
-
-def seconds_to_delta(value):
-    return datetime.timedelta(seconds=value)
-
-
-TYPES = dict(
-    autorespond_owner=ResponseAction,
-    autorespond_postings=ResponseAction,
-    autorespond_requests=ResponseAction,
-    bounce_info_stale_after=seconds_to_delta,
-    bounce_you_are_disabled_warnings_interval=seconds_to_delta,
-    digest_volume_frequency=DigestFrequency,
-    member_moderation_action=Action,
-    news_moderation=NewsModeration,
-    personalize=Personalization,
-    reply_goes_to_list=ReplyToMunging,
-    )
+from mailman.utilities.importer import import_config_pck
 
 
 
@@ -118,34 +94,6 @@ class Import21:
                             'Ignoring non-dictionary: {0!r}').format(
                             config_dict)
                         continue
-                    import_config(mlist, config_dict, args)
+                    import_config_pck(mlist, config_dict, args)
         # Commit the changes to the database.
         config.db.commit()
-
-
-
-def import_config(mlist, config_dict, args):
-    """Apply a configuration dictionary to a mailing list.
-
-    :param mlist: The mailing list.
-    :type mlist: IMailingList
-    :param config_dict: The Mailman 2.1 configuration dictionary.
-    :type config_dict: dict
-    :param args: Command line arguments.
-    """
-    for key, value in config_dict.items():
-        # Handle the simple case where the key is an attribute of the
-        # IMailingList and the types are the same (modulo 8-bit/unicode
-        # strings).
-        if hasattr(mlist, key):
-            if isinstance(value, str):
-                value = unicode(value, 'ascii')
-            # Some types require conversion.
-            converter = TYPES.get(key)
-            if converter is not None:
-                value = converter(value)
-            try:
-                setattr(mlist, key, value)
-            except TypeError as error:
-                print >> sys.stderr, 'Type conversion error:', key
-                raise

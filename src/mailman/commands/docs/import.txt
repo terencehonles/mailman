@@ -50,3 +50,5 @@ import, the mailing list's 'real name' has changed.
     >>> command.process(FakeArgs)
     >>> print mlist.real_name
     Test
+
+See `../../utilities/docs/importer.txt` for more details.
