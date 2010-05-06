@@ -55,14 +55,13 @@ TYPES = dict(
 
 
 
-def import_config_pck(mlist, config_dict, args):
+def import_config_pck(mlist, config_dict):
     """Apply a config.pck configuration dictionary to a mailing list.
 
     :param mlist: The mailing list.
     :type mlist: IMailingList
     :param config_dict: The Mailman 2.1 configuration dictionary.
     :type config_dict: dict
-    :param args: Command line arguments.
     """
     for key, value in config_dict.items():
         # Handle the simple case where the key is an attribute of the

@@ -94,6 +94,6 @@ class Import21:
                             'Ignoring non-dictionary: {0!r}').format(
                             config_dict)
                         continue
-                    import_config_pck(mlist, config_dict, args)
+                    import_config_pck(mlist, config_dict)
         # Commit the changes to the database.
         config.db.commit()
