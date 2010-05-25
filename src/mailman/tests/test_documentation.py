@@ -32,7 +32,6 @@ __all__ = [
 import os
 import sys
 import json
-import random
 import doctest
 import unittest
 
@@ -50,7 +49,6 @@ from mailman.testing.layers import SMTPLayer
 
 
 DOT = '.'
-COMMASPACE = ', '
 
 
 
