@@ -108,7 +108,7 @@ class AllMembers(_MemberBase):
                                   _optional=('real_name', 'delivery_mode'))
             member = service.join(**validator(request))
         except AlreadySubscribedError:
-            return http.bad_request([], b'Member already subscribed')
+            return http.conflict([], b'Member already subscribed')
         except NoSuchListError:
             return http.bad_request([], b'No such list')
         except InvalidEmailAddressError:

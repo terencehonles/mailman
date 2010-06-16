@@ -290,7 +290,7 @@ Anna tries to join a mailing list she's already a member of.
     ...           })
     Traceback (most recent call last):
     ...
-    HTTPError: HTTP Error 400: Bad Request
+    HTTPError: HTTP Error 409: Conflict
 
 Gwen tries to join the alpha mailing list using an invalid delivery mode.
 
