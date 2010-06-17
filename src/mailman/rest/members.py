@@ -27,6 +27,7 @@ __all__ = [
 
 
 from restish import http, resource
+from urllib import quote
 from zope.component import getUtility
 
 from mailman.app.membership import delete_member
@@ -115,9 +116,12 @@ class AllMembers(_MemberBase):
             return http.bad_request([], b'Invalid email address')
         except ValueError as error:
             return http.bad_request([], str(error))
-        # wsgiref wants headers to be bytes, not unicodes.
+        # wsgiref wants headers to be bytes, not unicodes.  Also, we have to
+        # quote any unsafe characters in the address.  Specifically, we need
+        # to quote forward slashes, but not @-signs.
+        quoted_address = quote(member.address.address, safe=b'@')
         location = path_to('lists/{0}/member/{1}'.format(
-            member.mailing_list, member.address.address))
+            member.mailing_list, quoted_address))
         # Include no extra headers or body.
         return http.created(location, [], None)
 

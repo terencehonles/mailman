@@ -303,3 +303,17 @@ Gwen tries to join the alpha mailing list using an invalid delivery mode.
     Traceback (most recent call last):
     ...
     HTTPError: HTTP Error 400: Bad Request
+
+Even using an address with "funny" characters Hugh can join the mailing list.
+
+    >>> transaction.abort()
+    >>> dump_json('http://localhost:8001/3.0/members', {
+    ...           'fqdn_listname': 'alpha@example.com',
+    ...           'address': 'hugh/person@example.com',
+    ...           'real_name': 'Hugh Person',
+    ...           })
+    content-length: 0
+    date: ...
+    location: http://localhost:8001/3.0/lists/alpha@example.com/member/hugh%2Fperson@example.com
+    ...
+
