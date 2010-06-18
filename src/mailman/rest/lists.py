@@ -34,11 +34,13 @@ from mailman.interfaces.domain import BadDomainSpecificationError
 from mailman.interfaces.listmanager import (
     IListManager, ListAlreadyExistsError)
 from mailman.interfaces.member import MemberRole
-from mailman.rest.helpers import CollectionMixin, Validator, etag, path_to
+from mailman.rest.helpers import (
+    CollectionMixin, Validator, etag, path_to, restish_matcher)
 from mailman.rest.members import AMember
 
 
 
+@restish_matcher
 def member_matcher(request, segments):
     """A matcher of member URLs inside mailing lists.
 
@@ -55,11 +57,6 @@ def member_matcher(request, segments):
     # XXX 2010-02-25 barry Matchers are undocumented in restish; they return a
     # 3-tuple of (match_args, match_kws, segments).
     return (), dict(role=role, address=segments[1]), ()
-
-# XXX 2010-02-24 barry Seems like contrary to the documentation, matchers
-# cannot be plain function, because matchers must have a .score attribute.
-# OTOH, I think they support regexps, so that might be a better way to go.
-member_matcher.score = ()
 
 
 

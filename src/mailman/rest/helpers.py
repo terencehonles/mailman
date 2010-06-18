@@ -24,6 +24,7 @@ __all__ = [
     'ContainerMixin',
     'etag',
     'path_to',
+    'restish_matcher',
     ]
 
 
@@ -162,3 +163,13 @@ class Validator:
             missing = COMMASPACE.join(sorted(required_keys - value_keys))
             raise ValueError('Missing parameters: {0}'.format(missing))
         return values
+
+
+
+# XXX 2010-02-24 barry Seems like contrary to the documentation, matchers
+# cannot be plain functions, because matchers must have a .score attribute.
+# OTOH, I think they support regexps, so that might be a better way to go.
+def restish_matcher(function):
+    """Decorator for restish matchers."""
+    function.score = ()
+    return function
