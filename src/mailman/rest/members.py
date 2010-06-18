@@ -23,9 +23,11 @@ __metaclass__ = type
 __all__ = [
     'AMember',
     'AllMembers',
+    'MembersOfList',
     ]
 
 
+from operator import attrgetter
 from restish import http, resource
 from urllib import quote
 from zope.component import getUtility
@@ -63,17 +65,7 @@ class AMember(_MemberBase):
         self._mlist = mailing_list
         self._role = role
         self._address = address
-        # XXX 2010-02-24 barry There should be a more direct way to get a
-        # member out of a mailing list.
-        if self._role is MemberRole.member:
-            roster = self._mlist.members
-        elif self._role is MemberRole.owner:
-            roster = self._mlist.owners
-        elif self._role is MemberRole.moderator:
-            roster = self._mlist.moderators
-        else:
-            raise AssertionError(
-                'Undefined MemberRole: {0}'.format(self._role))
+        roster = self._mlist.get_roster(role)
         self._member = roster.get_member(self._address)
 
     @resource.GET()
@@ -128,5 +120,28 @@ class AllMembers(_MemberBase):
     @resource.GET()
     def container(self, request):
         """/members"""
+        resource = self._make_collection(request)
+        return http.ok([], etag(resource))
+
+
+
+class MembersOfList(_MemberBase):
+    """The members of a mailing list."""
+
+    def __init__(self, mailing_list, role):
+        self._mlist = mailing_list
+        self._role = role
+
+    def _get_collection(self, request):
+        """See `CollectionMixin`."""
+        # Overrides _MemberBase._get_collection() because we only want to
+        # return the members from the requested roster.
+        roster = self._mlist.get_roster(self._role)
+        address_of_member = attrgetter('address.address')
+        return list(sorted(roster.members, key=address_of_member))
+
+    @resource.GET()
+    def container(self, request):
+        """roster/[members|owners|moderators]"""
         resource = self._make_collection(request)
         return http.ok([], etag(resource))

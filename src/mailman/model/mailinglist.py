@@ -42,6 +42,7 @@ from mailman.interfaces.domain import IDomainManager
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.mailinglist import (
     IAcceptableAlias, IAcceptableAliasSet, IMailingList, Personalization)
+from mailman.interfaces.member import MemberRole
 from mailman.interfaces.mime import FilterType
 from mailman.model import roster
 from mailman.model.digests import OneLastDigest
@@ -419,6 +420,18 @@ class MailingList(Model):
             content_filter = ContentFilter(
                 self, mime_type, FilterType.pass_extension)
             store.add(content_filter)
+
+    def get_roster(self, role):
+        """See `IMailingList`."""
+        if role is MemberRole.member:
+            return self.members
+        elif role is MemberRole.owner:
+            return self.owners
+        elif role is MemberRole.moderator:
+            return self.moderators
+        else:
+            raise TypeError(
+                'Undefined MemberRole: {0}'.format(role))
 
 
 

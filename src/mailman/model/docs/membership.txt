@@ -54,7 +54,6 @@ When we create a mailing list, it starts out with no members...
     []
 
 
-
 Administrators
 ==============
 

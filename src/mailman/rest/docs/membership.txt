@@ -35,16 +35,7 @@ the REST interface.
     >>> from zope.component import getUtility
     >>> user_manager = getUtility(IUserManager)
 
-    >>> def subscribe(mlist, first_name, role=MemberRole.member):
-    ...     address = '{0}person@example.com'.format(first_name[0].lower())
-    ...     full_name = '{0} Person'.format(first_name)
-    ...     person = user_manager.get_user(address)
-    ...     if person is None:
-    ...         person = user_manager.create_user(address, full_name)
-    ...     preferred_address = list(person.addresses)[0]
-    ...     preferred_address.subscribe(mlist, role)
-    ...     transaction.commit()
-
+    >>> from mailman.testing.helpers import subscribe
     >>> subscribe(mlist_one, 'Bart')
     >>> dump_json('http://localhost:8001/3.0/members')
     entry 0:
@@ -114,6 +105,20 @@ address.  Anna and Cris subscribe to this new mailing list.
     http_etag: "..."
     start: 0
     total_size: 5
+
+We can also get just the members of a single mailing list.
+
+    >>> dump_json(
+    ...     'http://localhost:8001/3.0/lists/alpha@example.com/roster/members')
+    entry 0:
+        http_etag: ...
+        self_link: http://localhost:8001/3.0/lists/alpha@example.com/member/aperson@example.com
+    entry 1:
+        http_etag: ...
+        self_link: http://localhost:8001/3.0/lists/alpha@example.com/member/cperson@example.com
+    http_etag: ...
+    start: 0
+    total_size: 2
 
 
 Owners and moderators
@@ -316,4 +321,3 @@ Even using an address with "funny" characters Hugh can join the mailing list.
     date: ...
     location: http://localhost:8001/3.0/lists/alpha@example.com/member/hugh%2Fperson@example.com
     ...
-

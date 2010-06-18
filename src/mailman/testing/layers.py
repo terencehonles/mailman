@@ -197,22 +197,25 @@ class ConfigLayer(MockAndMonkeyLayer):
     stderr = False
 
     @classmethod
-    def handle_stderr(cls, *ignore):
-        cls.stderr = True
+    def enable_stderr(cls):
+        """Enable stderr logging if -e/--stderr is given.
 
-    @classmethod
-    def hack_options_parser(cls):
-        """Hack our way into the zc.testing framework.
+        We used to hack our way into the zc.testing framework, but that was
+        undocumented and way too fragile.  Well, this probably is too, but now
+        we just scan sys.argv for -e/--stderr and enable logging if found.
+        Then we remove the option from sys.argv.  This works because this
+        method is called before zope.testrunner sees the options.
 
-        Add our custom command line option parsing into zc.testing's.  We do
-        the imports here so that if zc.testing isn't invoked, this stuff never
-        gets in the way.  This is pretty fragile, depend on changes in the
-        zc.testing package.  There should be a better way!
+        As a bonus, we'll check an environment variable too.
         """
-        from zope.testing.testrunner.options import parser
-        parser.add_option(str('-e'), str('--stderr'),
-                          action='callback', callback=cls.handle_stderr,
-                          help=_('Propagate log errors to stderr.'))
+        if '-e' in sys.argv:
+            cls.stderr = True
+            sys.argv.remove('-e')
+        if '--stderr' in sys.argv:
+            cls.stderr = True
+            sys.argv.remove('--stderr')
+        if len(os.environ.get('MM_VERBOSE_TESTLOG', '').strip()) > 0:
+            cls.stderr = True
 
 
 

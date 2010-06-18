@@ -36,7 +36,7 @@ from mailman.interfaces.listmanager import (
 from mailman.interfaces.member import MemberRole
 from mailman.rest.helpers import (
     CollectionMixin, Validator, etag, path_to, restish_matcher)
-from mailman.rest.members import AMember
+from mailman.rest.members import AMember, MembersOfList
 
 
 
@@ -57,6 +57,27 @@ def member_matcher(request, segments):
     # XXX 2010-02-25 barry Matchers are undocumented in restish; they return a
     # 3-tuple of (match_args, match_kws, segments).
     return (), dict(role=role, address=segments[1]), ()
+
+
+@restish_matcher
+def roster_matcher(request, segments):
+    """A matcher of all members URLs inside mailing lists.
+
+    e.g. /roster/members
+         /roster/owners
+         /roster/moderators
+
+    The URL roles are the plural form of the MemberRole enum, because the
+    former reads better.
+    """
+    if len(segments) != 2 or segments[0] != 'roster':
+        return None
+    role = segments[1][:-1]
+    try:
+        return (), dict(role=MemberRole[role]), ()
+    except ValueError:
+        # Not a valid role.
+        return None
 
 
 
@@ -93,7 +114,13 @@ class AList(_ListBase):
 
     @resource.child(member_matcher)
     def member(self, request, segments, role, address):
+        """Return a single member representation."""
         return AMember(self._mlist, role, address)
+
+    @resource.child(roster_matcher)
+    def roster(self, request, segments, role):
+        """Return the collection of all a mailing list's members."""
+        return MembersOfList(self._mlist, role)
 
 
 class AllLists(_ListBase):

@@ -218,6 +218,15 @@ class IMailingList(Interface):
         role.
         """)
 
+    def get_roster(role):
+        """Return the appropriate roster for the given role.
+
+        :param role: The requested roster's role.
+        :type role: MemberRole
+        :return: The requested roster.
+        :rtype: Roster
+        """
+
     volume = Attribute(
         """A monotonically increasing integer sequentially assigned to each
         new digest volume.  The volume number may be bumped either

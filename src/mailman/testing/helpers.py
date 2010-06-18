@@ -27,6 +27,7 @@ __all__ = [
     'get_lmtp_client',
     'get_queue_messages',
     'make_testable_runner',
+    'subscribe',
     'wait_for_webservice',
     ]
 
@@ -43,9 +44,12 @@ import threading
 
 from contextlib import contextmanager
 from zope import event
+from zope.component import getUtility
 
 from mailman.bin.master import Loop as Master
 from mailman.config import config
+from mailman.interfaces.member import MemberRole
+from mailman.interfaces.usermanager import IUserManager
 from mailman.utilities.mailbox import Mailbox
 
 
@@ -252,3 +256,17 @@ def event_subscribers(*subscribers):
     event.subscribers = list(subscribers)
     yield
     event.subscribers[:] = old_subscribers
+
+
+
+def subscribe(mlist, first_name, role=MemberRole.member):
+    """Helper for subscribing a sample person to a mailing list."""
+    user_manager = getUtility(IUserManager)
+    address = '{0}person@example.com'.format(first_name[0].lower())
+    full_name = '{0} Person'.format(first_name)
+    person = user_manager.get_user(address)
+    if person is None:
+        person = user_manager.create_user(address, full_name)
+    preferred_address = list(person.addresses)[0]
+    preferred_address.subscribe(mlist, role)
+    config.db.commit()

@@ -56,14 +56,11 @@ class SubscriptionService:
         for fqdn_listname in sorted(list_manager.names):
             mailing_list = list_manager.get(fqdn_listname)
             members.extend(
-                sorted((member for member in mailing_list.owners.members),
-                       key=address_of_member))
+                sorted(mailing_list.owners.members, key=address_of_member))
             members.extend(
-                sorted((member for member in mailing_list.moderators.members),
-                       key=address_of_member))
+                sorted(mailing_list.moderators.members, key=address_of_member))
             members.extend(
-                sorted((member for member in mailing_list.members.members),
-                       key=address_of_member))
+                sorted(mailing_list.members.members, key=address_of_member))
         return members
 
     def __iter__(self):

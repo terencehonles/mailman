@@ -1,0 +1,73 @@
+=============
+Mailing lists
+=============
+
+XXX 2010-06-18 BAW: This documentation needs a lot more detail.
+
+The mailing list is a core object in Mailman.  It is uniquely identified in
+the system by its posting address, i.e. the email address you would send a
+message to in order to post a message to the mailing list.  This must be fully
+qualified.
+
+    >>> alpha = create_list('alpha@example.com')
+    >>> print alpha.fqdn_listname
+    alpha@example.com
+
+The mailing list also has convenient attributes for accessing the list's short
+name (i.e. local part) and host name.
+
+    >>> print alpha.list_name
+    alpha
+    >>> print alpha.host_name
+    example.com
+
+
+Rosters
+=======
+
+Mailing list membership is represented by 'rosters'.  Each mailing list has
+several rosters of members, representing the subscribers to the mailing list,
+the owners, the moderators, and so on.  The rosters are defined by a
+membership role.
+
+    >>> from mailman.interfaces.member import MemberRole
+    >>> from mailman.testing.helpers import subscribe
+
+    >>> subscribe(alpha, 'Anne')
+    >>> subscribe(alpha, 'Bart')
+    >>> subscribe(alpha, 'Cris')
+    >>> subscribe(alpha, 'Anne', MemberRole.owner)
+    >>> subscribe(alpha, 'Dave', MemberRole.owner)
+    >>> subscribe(alpha, 'Elle', MemberRole.moderator)
+
+We can retrieve a roster directly...
+
+    >>> for member in alpha.members.members:
+    ...     print member.address
+    Anne Person <aperson@example.com>
+    Bart Person <bperson@example.com>
+    Cris Person <cperson@example.com>
+
+...or programmatically.
+
+    >>> roster = alpha.get_roster(MemberRole.member)
+    >>> for member in roster.members:
+    ...     print member.address
+    Anne Person <aperson@example.com>
+    Bart Person <bperson@example.com>
+    Cris Person <cperson@example.com>
+
+This includes the roster of owners...
+
+    >>> roster = alpha.get_roster(MemberRole.owner)
+    >>> for member in roster.members:
+    ...     print member.address
+    Anne Person <aperson@example.com>
+    Dave Person <dperson@example.com>
+
+...and moderators.
+
+    >>> roster = alpha.get_roster(MemberRole.moderator)
+    >>> for member in roster.members:
+    ...     print member.address
+    Elle Person <eperson@example.com>
