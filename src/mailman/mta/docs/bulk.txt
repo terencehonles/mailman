@@ -215,22 +215,8 @@ each with 20 addresses in the RCPT TO header.
 Delivery headers
 ================
 
-The message delivered to bulk recipients has its Sender and Errors-To headers
-set to some Mailman-responsible agent that can handle such errors, for example
-the -bounces robot for the list or the site owner's address.  The relevant
-RFCs are 5321, 5322, and 2076.
-
-It is arguably incorrect for Mailman to touch the Sender header, if the
-interpretation is such that the original author's agent is considered the
-"agent responsible for actual transmission of the message" (RFC 5322 $3.6.2).
-On the other hand, a reasonable argument can be made that Mailman is the
-responsible agent since the message being received by list members is
-different than the message sent by the original author.  We make the latter
-interpretation, and thus Mailman removes all existing Sender headers and
-inserts its own.
-
-RFC 2076 states that Errors-To is "non-standard, discouraged".  We treat it
-the same as Sender for historical de-facto purposes.
+The sending agent shows up in the RFC 5321 MAIL FROM header, which shows up in
+the X-MailFrom header in the sample message.
 
 The bulk delivery module calculates the sending agent address first from the
 message metadata...
@@ -248,8 +234,6 @@ message metadata...
     To: test@example.com
     Subject: test one
     Message-ID: <aardvark>
-    Sender: asender@example.org
-    Errors-To: asender@example.org
     X-Peer: ...
     X-MailFrom: asender@example.org
     X-RcptTo: aperson@example.com
@@ -268,8 +252,6 @@ message metadata...
     To: test@example.com
     Subject: test one
     Message-ID: <aardvark>
-    Sender: test-bounces@example.com
-    Errors-To: test-bounces@example.com
     X-Peer: ...
     X-MailFrom: test-bounces@example.com
     X-RcptTo: aperson@example.com
@@ -293,45 +275,13 @@ message.
     To: test@example.com
     Subject: test one
     Message-ID: <aardvark>
-    Sender: site-owner@example.com
-    Errors-To: site-owner@example.com
     X-Peer: ...
     X-MailFrom: site-owner@example.com
     X-RcptTo: aperson@example.com
     <BLANKLINE>
     This is a test.
 
-Any existing Sender or Errors-To headers in the original message are always
-deleted first.
-
-    >>> msg = message_from_string("""\
-    ... From: bperson@example.org
-    ... To: test@example.com
-    ... Subject: test two
-    ... Message-ID: <badger>
-    ... Sender: robot@example.org
-    ... Errors-To: robot@example.org
-    ...
-    ... This is a test.
-    ... """)
-
-    >>> bulk.deliver(mlist, msg, msgdata)
-    {}
-
-    >>> message = list(smtpd.messages)[0]
-    >>> print message.as_string()
-    From: bperson@example.org
-    To: test@example.com
-    Subject: test two
-    Message-ID: <badger>
-    Sender: test-bounces@example.com
-    Errors-To: test-bounces@example.com
-    X-Peer: ...
-    X-MailFrom: test-bounces@example.com
-    X-RcptTo: aperson@example.com
-    <BLANKLINE>
-    This is a test.
-
+    # Remove test configuration.
     >>> config.pop('site-owner')
 
 

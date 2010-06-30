@@ -233,7 +233,6 @@ message will be approved for posting to the list.  The Approved: header can
 also appear in the first line of the body of the reply.""")),
                                 _charset=language.charset)
                 dmsg['Subject'] = 'confirm ' + token
-                dmsg['Sender'] = mlist.request_address
                 dmsg['From'] = mlist.request_address
                 dmsg['Date'] = formatdate(localtime=True)
                 dmsg['Message-ID'] = make_msgid()

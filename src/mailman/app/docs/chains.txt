@@ -159,7 +159,6 @@ This message is addressed to the mailing list moderators.
     MIME-Version: 1.0
     Content-Transfer-Encoding: 7bit
     Subject: confirm ...
-    Sender: _xtest-request@example.com
     From: _xtest-request@example.com
     ...
     <BLANKLINE>

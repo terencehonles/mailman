@@ -67,18 +67,8 @@ class BaseDelivery:
         :return: delivery failures as defined by `smtplib.SMTP.sendmail`
         :rtype: dictionary
         """
-        # Blow away any existing Sender and Errors-To headers and substitute
-        # our own.  Our interpretation of RFC 5322 $3.6.2 is that Mailman is
-        # the "agent responsible for actual transmission of the message"
-        # because what we send to list members is different than what the
-        # original author sent.  RFC 2076 says Errors-To is "non-standard,
-        # discouraged" but we include it for historical purposes.
-        sender = self._get_sender(mlist, msg, msgdata)
-        del msg['sender']
-        del msg['errors-to']
-        msg['Sender'] = sender
-        msg['Errors-To'] = sender
         # Do the actual sending.
+        sender = self._get_sender(mlist, msg, msgdata)
         message_id = msg['message-id']
         try:
             refused = self._connection.sendmail(

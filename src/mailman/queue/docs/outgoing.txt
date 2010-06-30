@@ -76,8 +76,6 @@ Every recipient got the same copy of the message.
     To: test@example.com
     Subject: My first post
     Message-ID: <first>
-    Sender: test-bounces@example.com
-    Errors-To: test-bounces@example.com
     X-Peer: ...
     X-MailFrom: test-bounces@example.com
     X-RcptTo: cperson@example.com, bperson@example.com, aperson@example.com
@@ -117,7 +115,7 @@ recipients.
     >>> from operator import itemgetter
     >>> def show_headers(messages):
     ...     for message in sorted(messages, key=itemgetter('x-rcptto')):
-    ...         print message['X-RcptTo'], message['Sender']
+    ...         print message['X-RcptTo'], message['X-MailFrom']
 
     >>> show_headers(messages)
     aperson@example.com   test-bounces@example.com

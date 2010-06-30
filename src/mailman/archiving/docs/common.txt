@@ -103,8 +103,6 @@ address at the Mail-Archive.  The message gets no header or footer decoration.
     Subject: An archived message
     Message-ID: <12345>
     X-Message-ID-Hash: ZaXPPxRMM9_hFZL4vTRlQlBx8pc=
-    Sender: test-bounces@example.com
-    Errors-To: test-bounces@example.com
     X-Peer: 127.0.0.1:...
     X-MailFrom: test-bounces@example.com
     X-RcptTo: archive@mail-archive.dev

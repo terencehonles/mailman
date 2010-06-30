@@ -93,8 +93,6 @@ VERPing is only actually done if the metadata requests it.
     To: test@example.com
     Subject: test one
     Message-ID: <aardvark>
-    Sender: test-bounces+aperson=example.com@example.com
-    Errors-To: test-bounces+aperson=example.com@example.com
     X-Peer: ...
     X-MailFrom: test-bounces+aperson=example.com@example.com
     X-RcptTo: aperson@example.com
@@ -105,8 +103,6 @@ VERPing is only actually done if the metadata requests it.
     To: test@example.com
     Subject: test one
     Message-ID: <aardvark>
-    Sender: test-bounces+bperson=example.com@example.com
-    Errors-To: test-bounces+bperson=example.com@example.com
     X-Peer: ...
     X-MailFrom: test-bounces+bperson=example.com@example.com
     X-RcptTo: bperson@example.com
@@ -117,8 +113,6 @@ VERPing is only actually done if the metadata requests it.
     To: test@example.com
     Subject: test one
     Message-ID: <aardvark>
-    Sender: test-bounces+cperson=example.com@example.com
-    Errors-To: test-bounces+cperson=example.com@example.com
     X-Peer: ...
     X-MailFrom: test-bounces+cperson=example.com@example.com
     X-RcptTo: cperson@example.com
