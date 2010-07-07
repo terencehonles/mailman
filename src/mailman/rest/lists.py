@@ -29,13 +29,13 @@ __all__ = [
 from restish import http, resource
 from zope.component import getUtility
 
-from mailman.app.lifecycle import create_list
+from mailman.app.lifecycle import create_list, remove_list
 from mailman.interfaces.domain import BadDomainSpecificationError
 from mailman.interfaces.listmanager import (
     IListManager, ListAlreadyExistsError)
 from mailman.interfaces.member import MemberRole
 from mailman.rest.helpers import (
-    CollectionMixin, Validator, etag, path_to, restish_matcher)
+    CollectionMixin, Validator, etag, no_content, path_to, restish_matcher)
 from mailman.rest.members import AMember, MembersOfList
 
 
@@ -111,6 +111,17 @@ class AList(_ListBase):
         if self._mlist is None:
             return http.not_found()
         return http.ok([], self._resource_as_json(self._mlist))
+
+    @resource.DELETE()
+    def delete_list(self, request):
+        """Delete the named mailing list."""
+        if self._mlist is None:
+            return http.not_found()
+        remove_list(self._mlist.fqdn_listname, self._mlist,
+                    # XXX 2010-07-06 barry we need a way to remove the list
+                    # archives either with the mailing list or afterward.
+                    archives=False)
+        return no_content()
 
     @resource.child(member_matcher)
     def member(self, request, segments, role, address):
