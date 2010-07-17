@@ -193,6 +193,7 @@ def test_suite():
             # SMTPLayer.
             package_path = 'mailman.' + DOT.join(docsdir.split(os.sep))
             try:
+
                 __import__(package_path)
             except ImportError:
                 layer = SMTPLayer
