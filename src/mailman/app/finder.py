@@ -42,8 +42,9 @@ def find_components(package, interface):
     :type package: string
     :param interface: The interface that returned objects must conform to.
     :type interface: `Interface`
+    :return: The sequence of matching components.
+    :rtype: objects implementing `interface`
     """
-    # Find all rules found in all modules inside our package.
     for filename in resource_listdir(package, ''):
         basename, extension = os.path.splitext(filename)
         if extension != '.py':

@@ -173,9 +173,8 @@ class BounceTest(unittest.TestCase):
 
     def test_bounce(self):
         for modname, filename, addrs in self.DATA:
-            module = 'mailman.Bouncers.' + modname
+            module = 'mailman.bouncers.' + modname
             __import__(module)
-            # XXX Convert this tousing package resources
             msg = self._getmsg(filename)
             foundaddrs = sys.modules[module].process(msg)
             # Some modules return None instead of [] for failure

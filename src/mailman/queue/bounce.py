@@ -26,10 +26,11 @@ import datetime
 from email.Utils import parseaddr
 from lazr.config import as_timedelta
 
-from mailman.Bouncers import BouncerAPI
+from mailman.app.bounce import scan_message
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.email.utils import split_email
+from mailman.interfaces.bounce import Stop
 from mailman.queue import Runner
 
 
@@ -192,7 +193,7 @@ class BounceRunner(Runner, BounceMixin):
         addrs = verp_bounce(mlist, msg)
         if addrs:
             # We have an address, but check if the message is non-fatal.
-            if BouncerAPI.ScanMessages(mlist, msg) is BouncerAPI.Stop:
+            if scan_messages(mlist, msg) is Stop:
                 return
         else:
             # See if this was a probe message.
@@ -202,8 +203,8 @@ class BounceRunner(Runner, BounceMixin):
                 return
             # That didn't give us anything useful, so try the old fashion
             # bounce matching modules.
-            addrs = BouncerAPI.ScanMessages(mlist, msg)
-            if addrs is BouncerAPI.Stop:
+            addrs = scan_messages(mlist, msg)
+            if addrs is Stop:
                 # This is a recognized, non-fatal notice. Ignore it.
                 return
         # If that still didn't return us any useful addresses, then send it on
@@ -214,7 +215,7 @@ class BounceRunner(Runner, BounceMixin):
             maybe_forward(mlist, msg)
             return
         # BAW: It's possible that there are None's in the list of addresses,
-        # although I'm unsure how that could happen.  Possibly ScanMessages()
+        # although I'm unsure how that could happen.  Possibly scan_messages()
         # can let None's sneak through.  In any event, this will kill them.
         addrs = filter(None, addrs)
         self._queue_bounces(mlist.fqdn_listname, addrs, msg)

@@ -22,6 +22,7 @@ from __future__ import absolute_import, unicode_literals
 __metaclass__ = type
 __all__ = [
     'bounce_message',
+    'scan_message',
     ]
 
 import logging
@@ -30,8 +31,10 @@ from email.mime.message import MIMEMessage
 from email.mime.text import MIMEText
 
 from mailman.Utils import oneline
+from mailman.app.finder import find_components
 from mailman.core.i18n import _
 from mailman.email.message import UserNotification
+from mailman.interfaces.bounce import IBounceDetector
 
 log = logging.getLogger('mailman.config')
 
@@ -69,3 +72,15 @@ def bounce_message(mlist, msg, e=None):
     bmsg.attach(txt)
     bmsg.attach(MIMEMessage(msg))
     bmsg.send(mlist)
+
+
+
+def scan_message(mlist, msg):
+    """Scan all the message for heuristically determined bounce addresses."""
+    for detector_class in find_components('mailman.bouncers', IBounceDetector):
+        addresses = detector().process(msg)
+        # Detectors may return None or an empty sequence to signify that no
+        # addresses have been found.
+        if addresses:
+            return addresses
+    return []
