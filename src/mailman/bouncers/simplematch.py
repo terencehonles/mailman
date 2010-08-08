@@ -17,22 +17,41 @@
 
 """Recognizes simple heuristically delimited bounces."""
 
+from __future__ import absolute_import, unicode_literals
+
+__metaclass__ = type
+__all__ = [
+    'SimpleMatch',
+    ]
+
+
 import re
-import email.Iterators
+
+from email.iterators import body_line_iterator
+from flufl.enum import Enum
+from zope.interface import implements
+
+from mailman.interfaces.bounce import IBounceDetector
+
+
+class ParseState(Enum):
+    start = 0
+    tag_seen = 1
 
 
 
 def _c(pattern):
     return re.compile(pattern, re.IGNORECASE)
 
+
 # This is a list of tuples of the form
 #
 #     (start cre, end cre, address cre)
 #
-# where `cre' means compiled regular expression, start is the line just before
+# where 'cre' means compiled regular expression, start is the line just before
 # the bouncing address block, end is the line just after the bouncing address
 # block, and address cre is the regexp that will recognize the addresses.  It
-# must have a group called `addr' which will contain exactly and only the
+# must have a group called 'addr' which will contain exactly and only the
 # address that bounced.
 PATTERNS = [
     # sdm.de
@@ -171,34 +190,37 @@ PATTERNS = [
 
 
 
-def process(msg, patterns=None):
-    if patterns is None:
-        patterns = PATTERNS
-    # simple state machine
-    #     0 = nothing seen yet
-    #     1 = intro seen
-    addrs = {}
-    # MAS: This is a mess. The outer loop used to be over the message
-    # so we only looped through the message once.  Looping through the
-    # message for each set of patterns is obviously way more work, but
-    # if we don't do it, problems arise because scre from the wrong
-    # pattern set matches first and then acre doesn't match.  The
-    # alternative is to split things into separate modules, but then
-    # we process the message multiple times anyway.
-    for scre, ecre, acre in patterns:
-        state = 0
-        for line in email.Iterators.body_line_iterator(msg):
-            if state == 0:
-                if scre.search(line):
-                    state = 1
-            if state == 1:
-                mo = acre.search(line)
-                if mo:
-                    addr = mo.group('addr')
-                    if addr:
-                        addrs[mo.group('addr')] = 1
-                elif ecre.search(line):
-                    break
-        if addrs:
-            break
-    return addrs.keys()
+class SimpleMatch:
+    """Recognizes simple heuristically delimited bounces."""
+
+    implements(IBounceDetector)
+
+    PATTERNS = PATTERNS
+
+    def process(self, msg):
+        """See `IBounceDetector`."""
+        addresses = set()
+        # MAS: This is a mess. The outer loop used to be over the message
+        # so we only looped through the message once.  Looping through the
+        # message for each set of patterns is obviously way more work, but
+        # if we don't do it, problems arise because scre from the wrong
+        # pattern set matches first and then acre doesn't match.  The
+        # alternative is to split things into separate modules, but then
+        # we process the message multiple times anyway.
+        for scre, ecre, acre in self.PATTERNS:
+            state = ParseState.start
+            for line in body_line_iterator(msg):
+                if state is ParseState.start:
+                    if scre.search(line):
+                        state = ParseState.tag_seen
+                if state is ParseState.tag_seen:
+                    mo = acre.search(line)
+                    if mo:
+                        address = mo.group('addr')
+                        if address:
+                            addresses.add(address)
+                    elif ecre.search(line):
+                        break
+            if len(addresses) > 0:
+                break
+        return list(addresses)

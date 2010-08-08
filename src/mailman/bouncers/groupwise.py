@@ -22,9 +22,22 @@ X-Mailer: NTMail v4.30.0012
 X-Mailer: Internet Mail Service (5.5.2653.19)
 """
 
+from __future__ import absolute_import, unicode_literals
+
+__metaclass__ = type
+__all__ = [
+    'GroupWise',
+    ]
+
+
 import re
+
 from email.Message import Message
 from cStringIO import StringIO
+from zope.interface import implements
+
+from mailman.interfaces.bounce import IBounceDetector
+
 
 acre = re.compile(r'<(?P<addr>[^>]*)>')
 
@@ -44,28 +57,31 @@ def find_textplain(msg):
 
 
 
-def process(msg):
-    if msg.get_content_type() <> 'multipart/mixed' or not msg['x-mailer']:
-        return None
-    addrs = {}
-    # find the first text/plain part in the message
-    textplain = find_textplain(msg)
-    if not textplain:
-        return None
-    body = StringIO(textplain.get_payload())
-    while 1:
-        line = body.readline()
-        if not line:
-            break
-        mo = acre.search(line)
-        if mo:
-            addrs[mo.group('addr')] = 1
-        elif '@' in line:
-            i = line.find(' ')
-            if i == 0:
-                continue
-            if i < 0:
-                addrs[line] = 1
-            else:
-                addrs[line[:i]] = 1
-    return addrs.keys()
+class GroupWise:
+    """Parse Novell GroupWise and NTMail bounces."""
+
+    implements(IBounceDetector)
+
+    def process(self, msg):
+        """See `IBounceDetector`."""
+        if msg.get_content_type() != 'multipart/mixed' or not msg['x-mailer']:
+            return None
+        addresses = set()
+        # Find the first text/plain part in the message.
+        text_plain = find_textplain(msg)
+        if text_plain is None:
+            return None
+        body = StringIO(text_plain.get_payload())
+        for line in body:
+            mo = acre.search(line)
+            if mo:
+                addresses.add(mo.group('addr'))
+            elif '@' in line:
+                i = line.find(' ')
+                if i == 0:
+                    continue
+                if i < 0:
+                    addresses.add(line)
+                else:
+                    addresses.add(line[:i])
+        return list(addresses)

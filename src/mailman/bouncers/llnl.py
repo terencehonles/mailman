@@ -17,16 +17,36 @@
 
 """LLNL's custom Sendmail bounce message."""
 
+from __future__ import absolute_import, unicode_literals
+
+__metaclass__ = type
+__all__ = [
+    'LLNL',
+    ]
+
+
 import re
-import email
+
+from email.iterators import body_line_iterator
+from zope.interface import implements
+
+from mailman.interfaces.bounce import IBounceDetector
+
 
 acre = re.compile(r',\s*(?P<addr>\S+@[^,]+),', re.IGNORECASE)
 
 
 
-def process(msg):
-    for line in email.Iterators.body_line_iterator(msg):
-        mo = acre.search(line)
-        if mo:
-            return [mo.group('addr')]
-    return []
+class LLNL:
+    """LLNL's custom Sendmail bounce message."""
+
+    implements(IBounceDetector)
+
+    def process(self, msg):
+        """See `IBounceDetector`."""
+
+        for line in body_line_iterator(msg):
+            mo = acre.search(line)
+            if mo:
+                return [mo.group('addr')]
+        return []

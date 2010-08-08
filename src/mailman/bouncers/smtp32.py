@@ -28,8 +28,21 @@ Escape character is '^]'.
 
 """
 
+from __future__ import absolute_import, unicode_literals
+
+__metaclass__ = type
+__all__ = [
+    'SMTP32',
+    ]
+
+
 import re
-import email
+
+from email.iterators import body_line_iterator
+from zope.interface import implements
+
+from mailman.interfaces.bounce import IBounceDetector
+
 
 ecre = re.compile('original message follows', re.IGNORECASE)
 acre = re.compile(r'''
@@ -46,15 +59,23 @@ acre = re.compile(r'''
 
 
 
-def process(msg):
-    mailer = msg.get('x-mailer', '')
-    if not mailer.startswith('<SMTP32 v'):
-        return
-    addrs = {}
-    for line in email.Iterators.body_line_iterator(msg):
-        if ecre.search(line):
-            break
-        mo = acre.search(line)
-        if mo:
-            addrs[mo.group('addr')] = 1
-    return addrs.keys()
+class SMTP32:
+    """Something which claims
+
+    X-Mailer: <SMTP32 vXXXXXX>
+    """
+
+    implements(IBounceDetector)
+
+    def process(self, msg):
+        mailer = msg.get('x-mailer', '')
+        if not mailer.startswith('<SMTP32 v'):
+            return None
+        addrs = set()
+        for line in body_line_iterator(msg):
+            if ecre.search(line):
+                break
+            mo = acre.search(line)
+            if mo:
+                addrs.add(mo.group('addr'))
+        return list(addrs)

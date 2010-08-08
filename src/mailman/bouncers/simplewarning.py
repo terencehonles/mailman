@@ -17,9 +17,17 @@
 
 """Recognizes simple heuristically delimited warnings."""
 
-from mailman.Bouncers.BouncerAPI import Stop
-from mailman.Bouncers.SimpleMatch import _c
-from mailman.Bouncers.SimpleMatch import process as _process
+from __future__ import absolute_import, unicode_literals
+
+__metaclass__ = type
+__all__ = [
+    'SimpleWarning',
+    ]
+
+
+from mailman.bouncers.simplematch import _c
+from mailman.bouncers.simplematch import SimpleMatch
+from mailman.interfaces.bounce import NonFatal
 
 
 
@@ -27,12 +35,12 @@ from mailman.Bouncers.SimpleMatch import process as _process
 #
 #     (start cre, end cre, address cre)
 #
-# where `cre' means compiled regular expression, start is the line just before
+# where 'cre' means compiled regular expression, start is the line just before
 # the bouncing address block, end is the line just after the bouncing address
 # block, and address cre is the regexp that will recognize the addresses.  It
-# must have a group called `addr' which will contain exactly and only the
+# must have a group called 'addr' which will contain exactly and only the
 # address that bounced.
-patterns = [
+PATTERNS = [
     # pop3.pta.lia.net
     (_c('The address to which the message has not yet been delivered is'),
      _c('No action is required on your part'),
@@ -54,9 +62,15 @@ patterns = [
 
 
 
-def process(msg):
-    if _process(msg, patterns):
-        # It's a recognized warning so stop now
-        return Stop
-    else:
-        return []
+class SimpleWarning(SimpleMatch):
+    """Recognizes simple heuristically delimited warnings."""
+
+    PATTERNS = PATTERNS
+
+    def process(self, msg):
+        """See `SimpleMatch`."""
+        if super(SimpleWarning, self).process(msg):
+            # It's a recognized warning so stop now.
+            return NonFatal
+        else:
+            return None

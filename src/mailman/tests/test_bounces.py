@@ -33,7 +33,11 @@ import unittest
 from contextlib import closing
 from pkg_resources import resource_stream
 
-from mailman.Bouncers.BouncerAPI import Stop
+from mailman.app.finder import find_components
+from mailman.bouncers.caiwireless import Caiwireless
+from mailman.bouncers.microsoft import Microsoft
+from mailman.bouncers.smtp32 import SMTP32
+from mailman.interfaces.bounce import IBounceDetector, NonFatal
 
 
 
@@ -80,9 +84,9 @@ class BounceTest(unittest.TestCase):
         ('SimpleMatch', 'bounce_02.txt', ['acinsp1@midsouth.rr.com']),
         ('SimpleMatch', 'bounce_03.txt', ['james@jeborall.demon.co.uk']),
         # SimpleWarning
-        ('SimpleWarning', 'simple_03.txt', Stop),
-        ('SimpleWarning', 'simple_21.txt', Stop),
-        ('SimpleWarning', 'simple_22.txt', Stop),
+        ('SimpleWarning', 'simple_03.txt', NonFatal),
+        ('SimpleWarning', 'simple_21.txt', NonFatal),
+        ('SimpleWarning', 'simple_22.txt', NonFatal),
         # GroupWise
         ('GroupWise', 'groupwise_01.txt', ['thoff@MAINEX1.ASU.EDU']),
         # This one really sucks 'cause it's text/html.  Just make sure it
@@ -99,10 +103,10 @@ class BounceTest(unittest.TestCase):
         ('DSN', 'dsn_02.txt', ['zzzzz@zeus.hud.ac.uk']),
         ('DSN', 'dsn_03.txt', ['ddd.kkk@advalvas.be']),
         ('DSN', 'dsn_04.txt', ['max.haas@unibas.ch']),
-        ('DSN', 'dsn_05.txt', Stop),
-        ('DSN', 'dsn_06.txt', Stop),
-        ('DSN', 'dsn_07.txt', Stop),
-        ('DSN', 'dsn_08.txt', Stop),
+        ('DSN', 'dsn_05.txt', NonFatal),
+        ('DSN', 'dsn_06.txt', NonFatal),
+        ('DSN', 'dsn_07.txt', NonFatal),
+        ('DSN', 'dsn_08.txt', NonFatal),
         ('DSN', 'dsn_09.txt', ['pr@allen-heath.com']),
         ('DSN', 'dsn_10.txt', ['anne.person@dom.ain']),
         ('DSN', 'dsn_11.txt', ['joem@example.com']),
@@ -172,31 +176,28 @@ class BounceTest(unittest.TestCase):
             return email.message_from_file(fp)
 
     def test_bounce(self):
-        for modname, filename, addrs in self.DATA:
-            module = 'mailman.bouncers.' + modname
-            __import__(module)
+        detectors = {}
+        for detector in find_components('mailman.bouncers', IBounceDetector):
+            detectors[detector.__name__] = detector()
+        for detector_name, filename, expected_addresses in self.DATA:
             msg = self._getmsg(filename)
-            foundaddrs = sys.modules[module].process(msg)
-            # Some modules return None instead of [] for failure
-            if foundaddrs is None:
-                foundaddrs = []
-            if foundaddrs is not Stop:
-                # MAS: The following strip() is only because of my
-                # hybrid test environment.  It is not otherwise needed.
-                foundaddrs = [found.strip() for found in foundaddrs]
-                addrs.sort()
-                foundaddrs.sort()
-            self.assertEqual(addrs, foundaddrs)
+            found_addresses = detectors[detector_name].process(msg)
+            # Some modules return None instead of the empty sequence.
+            if found_addresses is None:
+                found_addresses = set()
+            elif found_addresses is not NonFatal:
+                found_addresses = set(found_addresses)
+            if expected_addresses is not NonFatal:
+                expected_addresses = set(expected_addresses)
+            self.assertEqual(found_addresses, expected_addresses)
 
     def test_SMTP32_failure(self):
-        from mailman.Bouncers import SMTP32
         # This file has no X-Mailer: header
         msg = self._getmsg('postfix_01.txt')
         self.failIf(msg['x-mailer'] is not None)
-        self.failIf(SMTP32.process(msg))
+        self.failIf(SMTP32().process(msg))
 
     def test_caiwireless(self):
-        from mailman.Bouncers import Caiwireless
         # BAW: this is a mostly bogus test; I lost the samples. :(
         msg = email.message_from_string("""\
 Content-Type: multipart/report; boundary=BOUNDARY
@@ -206,10 +207,9 @@ Content-Type: multipart/report; boundary=BOUNDARY
 --BOUNDARY--
 
 """)
-        self.assertEqual(None, Caiwireless.process(msg))
+        self.assertEqual(None, Caiwireless().process(msg))
 
     def test_microsoft(self):
-        from mailman.Bouncers import Microsoft
         # BAW: similarly as above, I lost the samples. :(
         msg = email.message_from_string("""\
 Content-Type: multipart/report; boundary=BOUNDARY
@@ -219,7 +219,7 @@ Content-Type: multipart/report; boundary=BOUNDARY
 --BOUNDARY--
 
 """)
-        self.assertEqual(None, Microsoft.process(msg))
+        self.assertEqual(None, Microsoft().process(msg))
 
 
 

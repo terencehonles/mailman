@@ -17,8 +17,21 @@
 
 """Recognizes (some) Microsoft Exchange formats."""
 
+from __future__ import absolute_import, unicode_literals
+
+__metaclass__ = type
+__all__ = [
+    'Exchange',
+    ]
+
+
 import re
-import email.Iterators
+
+from email.iterators import body_line_iterator
+from zope.interface import implements
+
+from mailman.interfaces.bounce import IBounceDetector
+
 
 scre = re.compile('did not reach the following recipient')
 ecre = re.compile('MSEXCH:')
@@ -27,22 +40,28 @@ a2cre = re.compile('(?P<addr>[^ ]+) on ')
 
 
 
-def process(msg):
-    addrs = {}
-    it = email.Iterators.body_line_iterator(msg)
-    # Find the start line
-    for line in it:
-        if scre.search(line):
-            break
-    else:
-        return []
-    # Search each line until we hit the end line
-    for line in it:
-        if ecre.search(line):
-            break
-        mo = a1cre.search(line)
-        if not mo:
-            mo = a2cre.search(line)
-        if mo:
-            addrs[mo.group('addr')] = 1
-    return addrs.keys()
+class Exchange:
+    """Recognizes (some) Microsoft Exchange formats."""
+
+    implements(IBounceDetector)
+
+    def process(self, msg):
+        """See `IBounceDetector`."""
+        addresses = set()
+        it = body_line_iterator(msg)
+        # Find the start line.
+        for line in it:
+            if scre.search(line):
+                break
+        else:
+            return []
+        # Search each line until we hit the end line.
+        for line in it:
+            if ecre.search(line):
+                break
+            mo = a1cre.search(line)
+            if not mo:
+                mo = a2cre.search(line)
+            if mo:
+                addresses.add(mo.group('addr'))
+        return list(addresses)
