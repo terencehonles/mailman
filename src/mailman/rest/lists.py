@@ -27,16 +27,19 @@ __all__ = [
     ]
 
 
+from lazr.config import as_boolean
 from restish import http, resource
 from zope.component import getUtility
 
 from mailman.app.lifecycle import create_list, remove_list
+from mailman.config import config
 from mailman.interfaces.domain import BadDomainSpecificationError
 from mailman.interfaces.listmanager import (
     IListManager, ListAlreadyExistsError)
 from mailman.interfaces.member import MemberRole
 from mailman.rest.helpers import (
-    CollectionMixin, Validator, etag, no_content, path_to, restish_matcher)
+    CollectionMixin, PATCH, Validator, etag, no_content, path_to,
+    restish_matcher)
 from mailman.rest.members import AMember, MembersOfList
 
 
@@ -182,6 +185,66 @@ class AllLists(_ListBase):
 
 
 
+# The set of readable IMailingList attributes.
+READABLE = (
+    # Identity.
+    'created_at',
+    'list_name',
+    'host_name',
+    'fqdn_listname',
+    'real_name',
+    'list_id',
+    'include_list_post_header',
+    'include_rfc2369_headers',
+    # Contact addresses.
+    'posting_address',
+    'no_reply_address',
+    'owner_address',
+    'request_address',
+    'bounces_address',
+    'join_address',
+    'leave_address',
+    # Posting history.
+    'last_post_at',
+    'post_id',
+    # Digests.
+    'digest_last_sent_at',
+    'volume',
+    'next_digest_number',
+    'digest_size_threshold',
+    # Web access.
+    'scheme',
+    'web_host',
+    # Processing.
+    'pipeline',
+    'filter_content',
+    'convert_html_to_plaintext',
+    'collapse_alternatives',
+    )
+
+
+def pipeline_validator(pipeline_name):
+    """Convert the pipeline name to a string, but only if it's known."""
+    if pipeline_name in config.pipelines:
+        return unicode(pipeline_name)
+    raise ValueError('Unknown pipeline: {0}'.format(pipeline_name))
+
+
+VALIDATORS = {
+    # Identity.
+    'real_name': unicode,
+    'include_list_post_header': as_boolean,
+    'include_rfc2369_headers': as_boolean,
+    # Digests.
+    'digest_size_threshold': float,
+    # Processing.
+    'pipeline': pipeline_validator,
+    'filter_content': as_boolean,
+    'convert_html_to_plaintext': as_boolean,
+    'collapse_alternatives': as_boolean,
+    }
+
+
 class ListConfiguration(resource.Resource):
     """A mailing list configuration resource."""
 
@@ -189,45 +252,26 @@ class ListConfiguration(resource.Resource):
         self._mlist = mailing_list
 
     @resource.GET()
-    def configuration(self, request):
+    def get_configuration(self, request):
         """Return a mailing list's readable configuration."""
-        # The set of readable IMailingList attributes.
-        readable=(
-            # Identity.
-            'created_at',
-            'list_name',
-            'host_name',
-            'fqdn_listname',
-            'real_name',
-            'list_id',
-            'include_list_post_header',
-            'include_rfc2369_headers',
-            # Contact addresses.
-            'posting_address',
-            'no_reply_address',
-            'owner_address',
-            'request_address',
-            'bounces_address',
-            'join_address',
-            'leave_address',
-            # Posting history.
-            'last_post_at',
-            'post_id',
-            # Digests.
-            'digest_last_sent_at',
-            'volume',
-            'next_digest_number',
-            'digest_size_threshold',
-            # Web access.
-            'scheme',
-            'web_host',
-            # Processing.
-            'pipeline',
-            'filter_content',
-            'convert_html_to_plaintext',
-            'collapse_alternatives',
-            )
         resource = {}
-        for attribute in readable:
+        for attribute in READABLE:
             resource[attribute] = getattr(self._mlist, attribute)
         return http.ok([], etag(resource))
+
+    @resource.PUT()
+    def put_configuration(self, request):
+        """Set all of a mailing list's configuration."""
+        # Use PATCH to change just one or a few of the attributes.
+        validator = Validator(**VALIDATORS)
+        for key, value in validator(request).items():
+            setattr(self._mlist, key, value)
+        return http.ok([], '')
+
+    @PATCH()
+    def patch_configuration(self, request):
+        """Set a subset of the mailing list's configuration."""
+        validator = Validator(_optional=VALIDATORS.keys(), **VALIDATORS)
+        for key, value in validator(request).items():
+            setattr(self._mlist, key, value)
+        return http.ok([], '')

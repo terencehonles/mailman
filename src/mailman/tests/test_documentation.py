@@ -119,15 +119,15 @@ def dump_json(url, data=None, method=None):
     :param method: Alternative HTTP method to use.
     :type method: str
     """
+    headers = {}
     if data is not None:
         data = urlencode(data)
-    headers = {}
+        headers['Content-Type'] = 'application/x-www-form-urlencoded'
     if method is None:
         if data is None:
             method = 'GET'
         else:
             method = 'POST'
-            headers['Content-Type'] = 'application/x-www-form-urlencoded'
     method = method.upper()
     response, content = Http().request(url, method, data, headers)
     # If we did not get a 2xx status code, make this look like a urllib2

@@ -40,3 +40,43 @@ All readable attributes for a list are available on a sub-resource.
     scheme: http
     volume: 1
     web_host: lists.example.com
+
+Not all of the readable attributes can be set through the web interface.  The
+once that can, can either be set via PUT or PATCH.  PUT changes all the
+writable attributes in one request.
+
+    >>> dump_json('http://localhost:8001/3.0/lists/'
+    ...           'test-one@example.com/config',
+    ...           dict(real_name='Fnords',
+    ...                include_rfc2369_headers=False,
+    ...                include_list_post_header=False,
+    ...                digest_size_threshold=10.5,
+    ...                pipeline='virgin',
+    ...                filter_content=True,
+    ...                convert_html_to_plaintext=True,
+    ...                collapse_alternatives=False,
+    ...                ),
+    ...           'PUT')
+    content-length: 0
+    date: ...
+    server: WSGIServer/...
+    status: 200
+
+These values are changed permanently.
+
+    >>> dump_json('http://localhost:8001/3.0/lists/'
+    ...           'test-one@example.com/config')
+    bounces_address: test-one-bounces@example.com
+    collapse_alternatives: False
+    convert_html_to_plaintext: True
+    ...
+    digest_size_threshold: 10.5
+    filter_content: True
+    ...
+    include_list_post_header: False
+    include_rfc2369_headers: False
+    ...
+    pipeline: virgin
+    ...
+    real_name: Fnords
+    ...

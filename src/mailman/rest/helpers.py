@@ -35,6 +35,7 @@ import hashlib
 from datetime import datetime
 from lazr.config import as_boolean
 from restish.http import Response
+from restish.resource import MethodDecorator
 
 from mailman.config import config
 
@@ -193,3 +194,9 @@ def restish_matcher(function):
 def no_content():
     """204 No Content."""
     return Response('204 No Content', [], None)
+
+
+# restish doesn't support HTTP PATCH (it's not standard).
+class PATCH(MethodDecorator):
+    """ http PATCH method """
+    method = 'PATCH'
