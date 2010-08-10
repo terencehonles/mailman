@@ -62,6 +62,9 @@ class IMailingList(Interface):
 
     # List identity
 
+    created_at = Attribute(
+        """The date and time that the mailing list was created.""")
+
     list_name = Attribute("""\
         The read-only short name of the mailing list.  Note that where a
         Mailman installation supports multiple domains, this short name may
@@ -70,6 +73,7 @@ class IMailingList(Interface):
         part of the posting email address.  For example, if messages are
         posted to mylist@example.com, then the list_name is 'mylist'.
         """)
+
     host_name = Attribute("""\
         The read-only domain name 'hosting' this mailing list.  This is always
         the domain name part of the posting email address, and it may bear no
@@ -142,42 +146,27 @@ class IMailingList(Interface):
         """)
 
     join_address = Attribute(
-        """The address to which subscription requests should be sent.  See
-        subscribe_address for a backward compatible alias.
-        """)
+        """The address to which subscription requests should be sent.""")
 
     leave_address = Attribute(
-        """The address to which unsubscription requests should be sent.  See
-        unsubscribe_address for a backward compatible alias.
-        """)
+        """The address to which unsubscription requests should be sent.""")
 
     subscribe_address = Attribute(
         """Deprecated address to which subscription requests may be sent.
         This address is provided for backward compatibility only.  See
-        join_address for the preferred alias.
+        `join_address` for the preferred alias.
         """)
 
-    leave_address = Attribute(
+    unsubscribe_address = Attribute(
         """Deprecated address to which unsubscription requests may be sent.
         This address is provided for backward compatibility only.  See
-        leave_address for the preferred alias.
+        `leave_address` for the preferred alias.
         """)
 
     def confirm_address(cookie=''):
         """The address used for various forms of email confirmation."""
 
-    creation_date = Attribute(
-        """The date and time that the mailing list was created.""")
-
-    last_post_date = Attribute(
-        """The date and time a message was last posted to the mailing list.""")
-
-    post_id = Attribute(
-        """A monotonically increasing integer sequentially assigned to each
-        list posting.""")
-
-    digest_last_sent_at = Attribute(
-        """The date and time a digest of this mailing list was last sent.""")
+    # Rosters.
 
     owners = Attribute(
         """The IUser owners of this mailing list.
@@ -227,6 +216,20 @@ class IMailingList(Interface):
         :rtype: Roster
         """
 
+    # Posting history.
+
+    last_post_at = Attribute(
+        """The date and time a message was last posted to the mailing list.""")
+
+    post_id = Attribute(
+        """A monotonically increasing integer sequentially assigned to each
+        list posting.""")
+
+    # Digests.
+
+    digest_last_sent_at = Attribute(
+        """The date and time a digest of this mailing list was last sent.""")
+
     volume = Attribute(
         """A monotonically increasing integer sequentially assigned to each
         new digest volume.  The volume number may be bumped either
@@ -268,10 +271,12 @@ class IMailingList(Interface):
         When a digest is being sent, each decorator may modify the final
         digest text.""")
 
-    protocol = Attribute(
+    # Web access.
+
+    scheme = Attribute(
         """The protocol scheme used to contact this list's server.
 
-        The web server on thi protocol provides the web interface for this
+        The web server on this protocol provides the web interface for this
         mailing list.  The protocol scheme should be 'http' or 'https'.""")
 
     web_host = Attribute(
@@ -288,6 +293,8 @@ class IMailingList(Interface):
         object, and the returned url will be relative to that object's
         'location' attribute.
         """
+
+    # Processing.
 
     pipeline = Attribute(
         """The name of this mailing list's processing pipeline.

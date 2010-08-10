@@ -1,0 +1,42 @@
+==========================
+Mailing list configuration
+==========================
+
+Mailing lists can be configured via the REST API.
+
+    >>> create_list('test-one@example.com')
+    <mailing list "test-one@example.com" at ...>
+    >>> transaction.commit()
+
+All readable attributes for a list are available on a sub-resource.
+
+    >>> dump_json('http://localhost:8001/3.0/lists/'
+    ...           'test-one@example.com/config')
+    bounces_address: test-one-bounces@example.com
+    collapse_alternatives: True
+    convert_html_to_plaintext: False
+    created_at: 20...T...
+    digest_last_sent_at: None
+    digest_size_threshold: 30.0
+    filter_content: False
+    fqdn_listname: test-one@example.com
+    host_name: example.com
+    http_etag: "..."
+    include_list_post_header: True
+    include_rfc2369_headers: True
+    join_address: test-one-join@example.com
+    last_post_at: None
+    leave_address: test-one-leave@example.com
+    list_id: test-one.example.com
+    list_name: test-one
+    next_digest_number: 1
+    no_reply_address: noreply@example.com
+    owner_address: test-one-owner@example.com
+    pipeline: built-in
+    post_id: 1
+    posting_address: test-one@example.com
+    real_name: Test-one
+    request_address: test-one-request@example.com
+    scheme: http
+    volume: 1
+    web_host: lists.example.com

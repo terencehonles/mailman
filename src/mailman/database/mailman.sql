@@ -97,7 +97,7 @@ CREATE TABLE mailinglist (
         next_digest_number INTEGER,
         digest_last_sent_at TIMESTAMP,
         volume INTEGER,
-        last_post_time TIMESTAMP,
+        last_post_at TIMESTAMP,
         accept_these_nonmembers BLOB,
         acceptable_aliases_id INTEGER,
         admin_immed_notify BOOLEAN,

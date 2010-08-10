@@ -55,6 +55,9 @@ class IDomain(Interface):
     The base url for the Mailman server at this domain, which includes the
     scheme and host name.""")
 
+    scheme = Attribute(
+        """The protocol scheme used to contact this list's server.""")
+
     description = Attribute(
         'The human readable description of the domain name.')
 

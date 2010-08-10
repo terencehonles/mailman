@@ -32,6 +32,7 @@ __all__ = [
 import json
 import hashlib
 
+from datetime import datetime
 from lazr.config import as_boolean
 from restish.http import Response
 
@@ -61,6 +62,15 @@ def path_to(resource):
 
 
 
+class ExtendedEncoder(json.JSONEncoder):
+    """An extended JSON encoder which knows about other data types."""
+
+    def default(self, obj):
+        if isinstance(obj, datetime):
+            return obj.isoformat()
+        return json.JSONEncoder.default(self, obj)
+
+
 def etag(resource):
     """Calculate the etag and return a JSON representation.
 
@@ -78,7 +88,7 @@ def etag(resource):
     assert 'http_etag' not in resource, 'Resource already etagged'
     etag = hashlib.sha1(repr(resource)).hexdigest()
     resource['http_etag'] = '"{0}"'.format(etag)
-    return json.dumps(resource)
+    return json.dumps(resource, cls=ExtendedEncoder)
 
 
 

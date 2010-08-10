@@ -77,7 +77,7 @@ class MailingList(Model):
     next_digest_number = Int()
     digest_last_sent_at = DateTime()
     volume = Int()
-    last_post_time = DateTime()
+    last_post_at = DateTime()
     # Implicit destination.
     acceptable_aliases_id = Int()
     acceptable_alias = Reference(acceptable_aliases_id, 'AcceptableAlias.id')
@@ -216,6 +216,11 @@ class MailingList(Model):
     def domain(self):
         """See `IMailingList`."""
         return getUtility(IDomainManager)[self.host_name]
+
+    @property
+    def scheme(self):
+        """See `IMailingList`."""
+        return self.domain.scheme
 
     @property
     def web_host(self):

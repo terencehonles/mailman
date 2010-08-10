@@ -97,6 +97,8 @@ from: .*@uplinkpro.com
         mlist.administrivia = True
         mlist.preferred_language = 'en'
         mlist.collapse_alternatives = True
+        mlist.convert_html_to_plaintext = False
+        mlist.filter_content = False
         # Digest related variables
         mlist.digestable = True
         mlist.digest_is_default = False

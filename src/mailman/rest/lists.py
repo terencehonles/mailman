@@ -23,6 +23,7 @@ __metaclass__ = type
 __all__ = [
     'AList',
     'AllLists',
+    'ListConfiguration',
     ]
 
 
@@ -80,6 +81,18 @@ def roster_matcher(request, segments):
         return None
 
 
+@restish_matcher
+def config_matcher(request, segments):
+    """A matcher for a mailing list's configuration resource.
+
+    e.g. /config
+    """
+    if len(segments) == 1 and segments[0] == 'config':
+        return (), {}, ()
+    # It's something else.
+    return None
+
+
 
 class _ListBase(resource.Resource, CollectionMixin):
     """Shared base class for mailing list representations."""
@@ -133,7 +146,13 @@ class AList(_ListBase):
         """Return the collection of all a mailing list's members."""
         return MembersOfList(self._mlist, role)
 
+    @resource.child(config_matcher)
+    def config(self, request, segments):
+        """Return a mailing list configuration object."""
+        return ListConfiguration(self._mlist)
 
+
+
 class AllLists(_ListBase):
     """The mailing lists."""
 
@@ -159,4 +178,56 @@ class AllLists(_ListBase):
     def collection(self, request):
         """/lists"""
         resource = self._make_collection(request)
+        return http.ok([], etag(resource))
+
+
+
+class ListConfiguration(resource.Resource):
+    """A mailing list configuration resource."""
+
+    def __init__(self, mailing_list):
+        self._mlist = mailing_list
+
+    @resource.GET()
+    def configuration(self, request):
+        """Return a mailing list's readable configuration."""
+        # The set of readable IMailingList attributes.
+        readable=(
+            # Identity.
+            'created_at',
+            'list_name',
+            'host_name',
+            'fqdn_listname',
+            'real_name',
+            'list_id',
+            'include_list_post_header',
+            'include_rfc2369_headers',
+            # Contact addresses.
+            'posting_address',
+            'no_reply_address',
+            'owner_address',
+            'request_address',
+            'bounces_address',
+            'join_address',
+            'leave_address',
+            # Posting history.
+            'last_post_at',
+            'post_id',
+            # Digests.
+            'digest_last_sent_at',
+            'volume',
+            'next_digest_number',
+            'digest_size_threshold',
+            # Web access.
+            'scheme',
+            'web_host',
+            # Processing.
+            'pipeline',
+            'filter_content',
+            'convert_html_to_plaintext',
+            'collapse_alternatives',
+            )
+        resource = {}
+        for attribute in readable:
+            resource[attribute] = getattr(self._mlist, attribute)
         return http.ok([], etag(resource))
