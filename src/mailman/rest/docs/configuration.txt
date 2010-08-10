@@ -8,6 +8,10 @@ Mailing lists can be configured via the REST API.
     <mailing list "test-one@example.com" at ...>
     >>> transaction.commit()
 
+
+Reading a configuration
+=======================
+
 All readable attributes for a list are available on a sub-resource.
 
     >>> dump_json('http://localhost:8001/3.0/lists/'
@@ -41,8 +45,12 @@ All readable attributes for a list are available on a sub-resource.
     volume: 1
     web_host: lists.example.com
 
+
+Changing the full configuration
+===============================
+
 Not all of the readable attributes can be set through the web interface.  The
-once that can, can either be set via PUT or PATCH.  PUT changes all the
+ones that can, can either be set via PUT or PATCH.  PUT changes all the
 writable attributes in one request.
 
     >>> dump_json('http://localhost:8001/3.0/lists/'
@@ -80,3 +88,95 @@ These values are changed permanently.
     ...
     real_name: Fnords
     ...
+
+If you use PUT to change a list's configuration, all writable attributes must
+be included.  It is an error to leave one out (e.g. `pipeline`)...
+
+    >>> dump_json('http://localhost:8001/3.0/lists/'
+    ...           'test-one@example.com/config',
+    ...           dict(real_name='Fnords',
+    ...                include_rfc2369_headers=False,
+    ...                include_list_post_header=False,
+    ...                digest_size_threshold=10.5,
+    ...                filter_content=True,
+    ...                convert_html_to_plaintext=True,
+    ...                collapse_alternatives=False,
+    ...                ),
+    ...           'PUT')
+    Traceback (most recent call last):
+    ...
+    HTTPError: HTTP Error 400: Bad Request
+
+...or to add an unknown one.
+
+    >>> dump_json('http://localhost:8001/3.0/lists/'
+    ...           'test-one@example.com/config',
+    ...           dict(real_name='Fnords',
+    ...                include_rfc2369_headers=False,
+    ...                include_list_post_header=False,
+    ...                digest_size_threshold=10.5,
+    ...                pipeline='virgin',
+    ...                filter_content=True,
+    ...                convert_html_to_plaintext=True,
+    ...                collapse_alternatives=False,
+    ...                whats_this=True,
+    ...                ),
+    ...           'PUT')
+    Traceback (most recent call last):
+    ...
+    HTTPError: HTTP Error 400: Bad Request
+
+It is also an error to spell an attribute value incorrectly...
+
+    >>> dump_json('http://localhost:8001/3.0/lists/'
+    ...           'test-one@example.com/config',
+    ...           dict(real_name='Fnords',
+    ...                include_rfc2369_headers=False,
+    ...                include_list_post_header=False,
+    ...                digest_size_threshold=10.5,
+    ...                pipeline='virgin',
+    ...                filter_content=True,
+    ...                convert_html_to_plaintext=True,
+    ...                collapse_alternatives='Nope',
+    ...                ),
+    ...           'PUT')
+    Traceback (most recent call last):
+    ...
+    HTTPError: HTTP Error 400: Bad Request
+
+...or to name a pipeline that doesn't exist.
+
+    >>> dump_json('http://localhost:8001/3.0/lists/'
+    ...           'test-one@example.com/config',
+    ...           dict(real_name='Fnords',
+    ...                include_rfc2369_headers=False,
+    ...                include_list_post_header=False,
+    ...                digest_size_threshold=10.5,
+    ...                pipeline='dummy',
+    ...                filter_content=True,
+    ...                convert_html_to_plaintext=True,
+    ...                collapse_alternatives=False,
+    ...                ),
+    ...           'PUT')
+    Traceback (most recent call last):
+    ...
+    HTTPError: HTTP Error 400: Bad Request
+
+
+Changing a partial configuration
+================================
+
+Using PATCH, you can change just one attribute.
+
+    >>> dump_json('http://localhost:8001/3.0/lists/'
+    ...           'test-one@example.com/config',
+    ...           dict(real_name='My List'),
+    ...           'PATCH')
+    content-length: 0
+    date: ...
+    server: WSGIServer/...
+    status: 200
+
+These values are changed permanently.
+
+XXX WebOb does not currently support PATCH, so neither does restish.

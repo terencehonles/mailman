@@ -264,14 +264,20 @@ class ListConfiguration(resource.Resource):
         """Set all of a mailing list's configuration."""
         # Use PATCH to change just one or a few of the attributes.
         validator = Validator(**VALIDATORS)
-        for key, value in validator(request).items():
-            setattr(self._mlist, key, value)
+        try:
+            for key, value in validator(request).items():
+                setattr(self._mlist, key, value)
+        except ValueError as error:
+            return http.bad_request([], str(error))
         return http.ok([], '')
 
     @PATCH()
     def patch_configuration(self, request):
         """Set a subset of the mailing list's configuration."""
         validator = Validator(_optional=VALIDATORS.keys(), **VALIDATORS)
-        for key, value in validator(request).items():
-            setattr(self._mlist, key, value)
+        try:
+            for key, value in validator(request).items():
+                setattr(self._mlist, key, value)
+        except ValueError as error:
+            return http.bad_request([], str(error))
         return http.ok([], '')
