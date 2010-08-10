@@ -48,7 +48,9 @@ The mailing list exists in the database.
 
     >>> from mailman.interfaces.listmanager import IListManager
     >>> from zope.component import getUtility
-    >>> getUtility(IListManager).get('test-two@example.com')
+    >>> list_manager = getUtility(IListManager)
+
+    >>> list_manager.get('test-two@example.com')
     <mailing list "test-two@example.com" at ...>
 
     # The above starts a Storm transaction, which will lock the database
@@ -83,3 +85,41 @@ Nor can you create a mailing list that already exists.
     Traceback (most recent call last):
     ...
     HTTPError: HTTP Error 400: Bad Request
+
+
+Deleting lists via the API
+==========================
+
+Existing mailing lists can be deleted through the API, by doing an HTTP DELETE
+on the mailing list URL.
+
+    >>> dump_json('http://localhost:8001/3.0/lists/test-two@example.com',
+    ...           method='DELETE')
+    content-length: 0
+    date: ...
+    server: ...
+    status: 204
+
+    # The above starts a Storm transaction, which will lock the database
+    # unless we abort it.
+    >>> transaction.abort()
+
+The mailing list does not exist.
+
+    >>> print list_manager.get('test-two@example.com')
+    None
+
+You cannot delete a mailing list that does not exist or has already been
+deleted.
+
+    >>> dump_json('http://localhost:8001/3.0/lists/test-two@example.com',
+    ...           method='DELETE')
+    Traceback (most recent call last):
+    ...
+    HTTPError: HTTP Error 404: Not Found
+
+    >>> dump_json('http://localhost:8001/3.0/lists/test-ten@example.com',
+    ...           method='DELETE')
+    Traceback (most recent call last):
+    ...
+    HTTPError: HTTP Error 404: Not Found

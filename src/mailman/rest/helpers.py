@@ -23,6 +23,7 @@ __metaclass__ = type
 __all__ = [
     'ContainerMixin',
     'etag',
+    'no_content',
     'path_to',
     'restish_matcher',
     ]
@@ -32,7 +33,10 @@ import json
 import hashlib
 
 from lazr.config import as_boolean
+from restish.http import Response
+
 from mailman.config import config
+
 
 COMMASPACE = ', '
 
@@ -173,3 +177,9 @@ def restish_matcher(function):
     """Decorator for restish matchers."""
     function.score = ()
     return function
+
+
+# restish doesn't support HTTP response code 204.
+def no_content():
+    """204 No Content."""
+    return Response('204 No Content', [], None)

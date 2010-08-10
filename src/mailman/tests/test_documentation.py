@@ -134,7 +134,6 @@ def dump_json(url, data=None, method=None):
     # exception, for backward compatibility with existing doctests.
     if response.status // 100 != 2:
         raise HTTPError(url, response.status, response.reason, response, None)
-    # fp does not support the context manager protocol.
     if len(content) == 0:
         for header in sorted(response):
             print '{0}: {1}'.format(header, response[header])
