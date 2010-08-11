@@ -4,8 +4,7 @@ Mailing list configuration
 
 Mailing lists can be configured via the REST API.
 
-    >>> create_list('test-one@example.com')
-    <mailing list "test-one@example.com" at ...>
+    >>> mlist = create_list('test-one@example.com')
     >>> transaction.commit()
 
 
@@ -180,3 +179,57 @@ Using PATCH, you can change just one attribute.
 These values are changed permanently.
 
 XXX WebOb does not currently support PATCH, so neither does restish.
+
+
+Sub-resources
+=============
+
+Many of the mailing list configuration variables are actually available as
+sub-resources on the mailing list.  This is because they are collections,
+sequences, and other complex configuration types.  Their values can be
+retrieved and set through the sub-resource.
+
+
+Acceptable aliases
+------------------
+
+These are recipient aliases that can be used in the To and CC headers instead
+of the posting address.  They are often used in forwarded emails.  By default,
+a mailing list has no acceptable aliases.
+
+    >>> dump_json('http://localhost:8001/3.0/lists/'
+    ...           'test-one@example.com/config/acceptable_aliases')
+    aliases: []
+    http_etag: "c883ba7e4f62819da3c087f086feb5fe524c10b4"
+
+We can add a few by PUTting them on the sub-resource.  The keys in the
+dictionary are ignored.
+
+    >>> dump_json('http://localhost:8001/3.0/lists/'
+    ...           'test-one@example.com/config/acceptable_aliases',
+    ...           dict(one='foo@example.com',
+    ...                two='bar@example.net'),
+    ...           'PUT')
+    content-length: 0
+    date: ...
+    server: WSGIServer/...
+    status: 200
+
+The order of aliases is not guaranteed.
+
+    >>> response = call_http(
+    ...     'http://localhost:8001/3.0/lists/'
+    ...     'test-one@example.com/config/acceptable_aliases')
+    >>> for alias in sorted(response['aliases']):
+    ...     print alias
+    bar@example.net
+    foo@example.com
+
+The mailing list has its aliases set.
+
+    >>> from mailman.interfaces.mailinglist import IAcceptableAliasSet
+    >>> aliases = IAcceptableAliasSet(mlist)
+    >>> for alias in sorted(aliases.aliases):
+    ...     print alias
+    bar@example.net
+    foo@example.com

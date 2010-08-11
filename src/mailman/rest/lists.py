@@ -36,6 +36,7 @@ from mailman.config import config
 from mailman.interfaces.domain import BadDomainSpecificationError
 from mailman.interfaces.listmanager import (
     IListManager, ListAlreadyExistsError)
+from mailman.interfaces.mailinglist import IAcceptableAliasSet
 from mailman.interfaces.member import MemberRole
 from mailman.rest.helpers import (
     CollectionMixin, PATCH, Validator, etag, no_content, path_to,
@@ -96,6 +97,19 @@ def config_matcher(request, segments):
     return None
 
 
+@restish_matcher
+def subresource_config_matcher(request, segments):
+    """A matcher for configuration sub-resources.
+
+    e.g. /config/acceptable_aliases
+    """
+    if len(segments) != 2 or segments[0] != 'config':
+        return None
+    # Don't check here whether it's a known subresource or not.  Let that be
+    # done in subresource_config() method below.
+    return (), dict(attribute=segments[1]), ()
+
+
 
 class _ListBase(resource.Resource, CollectionMixin):
     """Shared base class for mailing list representations."""
@@ -153,6 +167,19 @@ class AList(_ListBase):
     def config(self, request, segments):
         """Return a mailing list configuration object."""
         return ListConfiguration(self._mlist)
+
+    @resource.child(subresource_config_matcher)
+    def subresource_config(self, request, segments, attribute):
+        """Return the subresource configuration object.
+
+        This will return a Bad Request if it isn't a known subresource.
+        """
+        missing = object()
+        subresource_class = SUBRESOURCES.get(attribute, missing)
+        if subresource_class is missing:
+            return http.bad_request(
+                [], 'Unknown attribute {0}'.format(attribute))
+        return subresource_class(self._mlist, attribute)
 
 
 
@@ -281,3 +308,40 @@ class ListConfiguration(resource.Resource):
         except ValueError as error:
             return http.bad_request([], str(error))
         return http.ok([], '')
+
+
+
+class AcceptableAliases(resource.Resource):
+    """Resource for the acceptable aliases of a mailing list."""
+
+    def __init__(self, mailing_list, attribute):
+        assert attribute == 'acceptable_aliases', (
+            'unexpected attribute: {0}'.format(attribute))
+        self._mlist = mailing_list
+
+    @resource.GET()
+    def aliases(self, request):
+        """Return the mailing list's acceptable aliases."""
+        aliases = IAcceptableAliasSet(self._mlist)
+        resource = dict(aliases=list(aliases.aliases))
+        return http.ok([], etag(resource))
+
+    @resource.PUT()
+    def put_configuration(self, request):
+        """Change the acceptable aliases.
+
+        Because this is a PUT operation, all previous aliases are cleared
+        first.  Thus, this is an overwrite.  The keys in the request are
+        ignored.
+        """
+        aliases = IAcceptableAliasSet(self._mlist)
+        aliases.clear()
+        for alias in request.POST.values():
+            aliases.add(unicode(alias))
+        return http.ok([], '')
+
+
+
+SUBRESOURCES = dict(
+    acceptable_aliases=AcceptableAliases,
+    )

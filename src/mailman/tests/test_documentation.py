@@ -109,8 +109,10 @@ def dump_msgdata(msgdata, *additional_skips):
         print '{0:{2}}: {1}'.format(key, msgdata[key], longest)
 
 
-def dump_json(url, data=None, method=None):
-    """Print the JSON dictionary read from a URL.
+def call_http(url, data=None, method=None):
+    """'Call' a URL with a given HTTP method and return the resulting object.
+
+    The object will have been JSON decoded.
 
     :param url: The url to open, read, and print.
     :type url: string
@@ -137,8 +139,23 @@ def dump_json(url, data=None, method=None):
     if len(content) == 0:
         for header in sorted(response):
             print '{0}: {1}'.format(header, response[header])
+        return None
+    return json.loads(content)
+
+
+def dump_json(url, data=None, method=None):
+    """Print the JSON dictionary read from a URL.
+
+    :param url: The url to open, read, and print.
+    :type url: string
+    :param data: Data to use to POST to a URL.
+    :type data: dict
+    :param method: Alternative HTTP method to use.
+    :type method: str
+    """
+    data = call_http(url, data, method)
+    if data is None:
         return
-    data = json.loads(content)
     for key in sorted(data):
         if key == 'entries':
             for i, entry in enumerate(data[key]):
@@ -161,6 +178,7 @@ def setup(testobj):
     # doctests should do the imports themselves.  It makes for better
     # documentation that way.  However, a few are really useful, or help to
     # hide some icky test implementation details.
+    testobj.globs['call_http'] = call_http
     testobj.globs['config'] = config
     testobj.globs['create_list'] = create_list
     testobj.globs['dump_json'] = dump_json
