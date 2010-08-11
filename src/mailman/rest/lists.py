@@ -249,6 +249,7 @@ READABLE = (
     'admin_notify_mchanges',
     # Processing.
     'pipeline',
+    'administrivia',
     'filter_content',
     'convert_html_to_plaintext',
     'collapse_alternatives',
@@ -276,6 +277,7 @@ VALIDATORS = {
     'admin_notify_mchanges': as_boolean,
     # Processing.
     'pipeline': pipeline_validator,
+    'administrivia': as_boolean,
     'filter_content': as_boolean,
     'convert_html_to_plaintext': as_boolean,
     'collapse_alternatives': as_boolean,

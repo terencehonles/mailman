@@ -340,6 +340,17 @@ class IMailingList(Interface):
         that gets created to accumlate messages for the digest.
         """)
 
+    administrative = Attribute(
+        """Flag controlling `administrivia` checks.
+
+        Administrivia tests check whether postings to the mailing list are
+        really meant for the -request address.  Examples include messages with
+        `help`, `subscribe`, `unsubscribe`, and other commands.  When such
+        messages are incorrectly posted to the general mailing list, they are
+        just noise, and when this flag is set will be intercepted and in
+        general held for moderator approval.
+        """)
+
     filter_content = Attribute(
         """Flag specifying whether to filter a message's content.
 

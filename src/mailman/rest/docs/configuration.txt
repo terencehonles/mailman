@@ -17,6 +17,7 @@ All readable attributes for a list are available on a sub-resource.
     ...           'test-one@example.com/config')
     admin_immed_notify: True
     admin_notify_mchanges: False
+    administrivia: True
     advertised: True
     anonymous_list: False
     bounces_address: test-one-bounces@example.com
@@ -61,6 +62,7 @@ writable attributes in one request.
     ...           dict(
     ...             admin_immed_notify=False,
     ...             admin_notify_mchanges=True,
+    ...             administrivia=False,
     ...             advertised=False,
     ...             anonymous_list=True,
     ...             real_name='Fnords',
@@ -84,6 +86,7 @@ These values are changed permanently.
     ...           'test-one@example.com/config')
     admin_immed_notify: False
     admin_notify_mchanges: True
+    administrivia: False
     advertised: False
     anonymous_list: True
     ...
@@ -109,6 +112,7 @@ be included.  It is an error to leave one out (e.g. `pipeline`)...
     ...           dict(
     ...             #admin_immed_notify=False,
     ...             admin_notify_mchanges=True,
+    ...             administrivia=False,
     ...             advertised=False,
     ...             anonymous_list=True,
     ...             real_name='Fnords',
@@ -133,6 +137,7 @@ be included.  It is an error to leave one out (e.g. `pipeline`)...
     ...             a_mailing_list_attribute=False,
     ...             admin_immed_notify=False,
     ...             admin_notify_mchanges=True,
+    ...             administrivia=False,
     ...             advertised=False,
     ...             anonymous_list=True,
     ...             real_name='Fnords',
@@ -156,6 +161,7 @@ It is also an error to spell an attribute value incorrectly...
     ...           dict(
     ...             admin_immed_notify='Nope',
     ...             admin_notify_mchanges=True,
+    ...             administrivia=False,
     ...             advertised=False,
     ...             anonymous_list=True,
     ...             real_name='Fnords',
