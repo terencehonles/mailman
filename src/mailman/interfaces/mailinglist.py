@@ -110,6 +110,18 @@ class IMailingList(Interface):
         """Flag specifying whether to include any RFC 2369 header, including
         the RFC 2919 List-ID header.""")
 
+    anonymous_list = Attribute(
+        """Flag controlling whether messages to this list are anonymized.
+
+        Anonymizing messages is not perfect, however setting this flag removes
+        the sender of the message (in the From, Sender, and Reply-To fields)
+        and replaces these with the list's posting address.
+        """)
+
+    advertised = Attribute(
+        """Advertise this mailing list when people ask for an overview of the
+        available mailing lists.""")
+
     # Contact addresses
 
     posting_address = Attribute(

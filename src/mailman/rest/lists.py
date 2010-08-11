@@ -223,6 +223,8 @@ READABLE = (
     'list_id',
     'include_list_post_header',
     'include_rfc2369_headers',
+    'advertised',
+    'anonymous_list',
     # Contact addresses.
     'posting_address',
     'no_reply_address',
@@ -265,6 +267,8 @@ VALIDATORS = {
     'real_name': unicode,
     'include_list_post_header': as_boolean,
     'include_rfc2369_headers': as_boolean,
+    'advertised': as_boolean,
+    'anonymous_list': as_boolean,
     # Digests.
     'digest_size_threshold': float,
     # Notifications.
