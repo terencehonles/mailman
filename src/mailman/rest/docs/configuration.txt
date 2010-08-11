@@ -15,6 +15,8 @@ All readable attributes for a list are available on a sub-resource.
 
     >>> dump_json('http://localhost:8001/3.0/lists/'
     ...           'test-one@example.com/config')
+    admin_immed_notify: True
+    admin_notify_mchanges: False
     bounces_address: test-one-bounces@example.com
     collapse_alternatives: True
     convert_html_to_plaintext: False
@@ -54,15 +56,18 @@ writable attributes in one request.
 
     >>> dump_json('http://localhost:8001/3.0/lists/'
     ...           'test-one@example.com/config',
-    ...           dict(real_name='Fnords',
-    ...                include_rfc2369_headers=False,
-    ...                include_list_post_header=False,
-    ...                digest_size_threshold=10.5,
-    ...                pipeline='virgin',
-    ...                filter_content=True,
-    ...                convert_html_to_plaintext=True,
-    ...                collapse_alternatives=False,
-    ...                ),
+    ...           dict(
+    ...             admin_immed_notify=False,
+    ...             admin_notify_mchanges=True,
+    ...             real_name='Fnords',
+    ...             include_rfc2369_headers=False,
+    ...             include_list_post_header=False,
+    ...             digest_size_threshold=10.5,
+    ...             pipeline='virgin',
+    ...             filter_content=True,
+    ...             convert_html_to_plaintext=True,
+    ...             collapse_alternatives=False,
+    ...             ),
     ...           'PUT')
     content-length: 0
     date: ...
@@ -73,7 +78,9 @@ These values are changed permanently.
 
     >>> dump_json('http://localhost:8001/3.0/lists/'
     ...           'test-one@example.com/config')
-    bounces_address: test-one-bounces@example.com
+    admin_immed_notify: False
+    admin_notify_mchanges: True
+    ...
     collapse_alternatives: False
     convert_html_to_plaintext: True
     ...
@@ -93,14 +100,18 @@ be included.  It is an error to leave one out (e.g. `pipeline`)...
 
     >>> dump_json('http://localhost:8001/3.0/lists/'
     ...           'test-one@example.com/config',
-    ...           dict(real_name='Fnords',
-    ...                include_rfc2369_headers=False,
-    ...                include_list_post_header=False,
-    ...                digest_size_threshold=10.5,
-    ...                filter_content=True,
-    ...                convert_html_to_plaintext=True,
-    ...                collapse_alternatives=False,
-    ...                ),
+    ...           dict(
+    ...             #admin_immed_notify=False,
+    ...             admin_notify_mchanges=True,
+    ...             real_name='Fnords',
+    ...             include_rfc2369_headers=False,
+    ...             include_list_post_header=False,
+    ...             digest_size_threshold=10.5,
+    ...             pipeline='virgin',
+    ...             filter_content=True,
+    ...             convert_html_to_plaintext=True,
+    ...             collapse_alternatives=False,
+    ...             ),
     ...           'PUT')
     Traceback (most recent call last):
     ...
@@ -110,16 +121,19 @@ be included.  It is an error to leave one out (e.g. `pipeline`)...
 
     >>> dump_json('http://localhost:8001/3.0/lists/'
     ...           'test-one@example.com/config',
-    ...           dict(real_name='Fnords',
-    ...                include_rfc2369_headers=False,
-    ...                include_list_post_header=False,
-    ...                digest_size_threshold=10.5,
-    ...                pipeline='virgin',
-    ...                filter_content=True,
-    ...                convert_html_to_plaintext=True,
-    ...                collapse_alternatives=False,
-    ...                whats_this=True,
-    ...                ),
+    ...           dict(
+    ...             a_mailing_list_attribute=False,
+    ...             admin_immed_notify=False,
+    ...             admin_notify_mchanges=True,
+    ...             real_name='Fnords',
+    ...             include_rfc2369_headers=False,
+    ...             include_list_post_header=False,
+    ...             digest_size_threshold=10.5,
+    ...             pipeline='virgin',
+    ...             filter_content=True,
+    ...             convert_html_to_plaintext=True,
+    ...             collapse_alternatives=False,
+    ...             ),
     ...           'PUT')
     Traceback (most recent call last):
     ...
@@ -129,15 +143,18 @@ It is also an error to spell an attribute value incorrectly...
 
     >>> dump_json('http://localhost:8001/3.0/lists/'
     ...           'test-one@example.com/config',
-    ...           dict(real_name='Fnords',
-    ...                include_rfc2369_headers=False,
-    ...                include_list_post_header=False,
-    ...                digest_size_threshold=10.5,
-    ...                pipeline='virgin',
-    ...                filter_content=True,
-    ...                convert_html_to_plaintext=True,
-    ...                collapse_alternatives='Nope',
-    ...                ),
+    ...           dict(
+    ...             admin_immed_notify='Nope',
+    ...             admin_notify_mchanges=True,
+    ...             real_name='Fnords',
+    ...             include_rfc2369_headers=False,
+    ...             include_list_post_header=False,
+    ...             digest_size_threshold=10.5,
+    ...             pipeline='virgin',
+    ...             filter_content=True,
+    ...             convert_html_to_plaintext=True,
+    ...             collapse_alternatives=False,
+    ...             ),
     ...           'PUT')
     Traceback (most recent call last):
     ...
@@ -147,15 +164,18 @@ It is also an error to spell an attribute value incorrectly...
 
     >>> dump_json('http://localhost:8001/3.0/lists/'
     ...           'test-one@example.com/config',
-    ...           dict(real_name='Fnords',
-    ...                include_rfc2369_headers=False,
-    ...                include_list_post_header=False,
-    ...                digest_size_threshold=10.5,
-    ...                pipeline='dummy',
-    ...                filter_content=True,
-    ...                convert_html_to_plaintext=True,
-    ...                collapse_alternatives=False,
-    ...                ),
+    ...           dict(
+    ...             admin_immed_notify=False,
+    ...             admin_notify_mchanges=True,
+    ...             real_name='Fnords',
+    ...             include_rfc2369_headers=False,
+    ...             include_list_post_header=False,
+    ...             digest_size_threshold=10.5,
+    ...             pipeline='dummy',
+    ...             filter_content=True,
+    ...             convert_html_to_plaintext=True,
+    ...             collapse_alternatives=False,
+    ...             ),
     ...           'PUT')
     Traceback (most recent call last):
     ...
@@ -215,12 +235,12 @@ dictionary are ignored.
     server: WSGIServer/...
     status: 200
 
-The order of aliases is not guaranteed.
+Aliases are returned as a list on the 'aliases' key.
 
     >>> response = call_http(
     ...     'http://localhost:8001/3.0/lists/'
     ...     'test-one@example.com/config/acceptable_aliases')
-    >>> for alias in sorted(response['aliases']):
+    >>> for alias in response['aliases']:
     ...     print alias
     bar@example.net
     foo@example.com

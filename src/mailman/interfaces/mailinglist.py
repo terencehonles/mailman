@@ -294,6 +294,24 @@ class IMailingList(Interface):
         'location' attribute.
         """
 
+    # Notifications.
+
+    admin_immed_notify = Attribute(
+        """Flag controlling immediate notification of requests.
+
+        List moderators normally get daily notices about pending
+        administrative requests.  This flag controls whether moderators also
+        receive immediate notification of such pending requests.
+        """)
+
+    admin_notify_mchanges = Attribute(
+        """Flag controlling notification of joins and leaves.
+
+        List moderators can receive notifications for every member that joins
+        or leaves their mailing lists.  This flag controls those
+        notifications.
+        """)
+
     # Processing.
 
     pipeline = Attribute(

@@ -242,6 +242,9 @@ READABLE = (
     # Web access.
     'scheme',
     'web_host',
+    # Notifications.
+    'admin_immed_notify',
+    'admin_notify_mchanges',
     # Processing.
     'pipeline',
     'filter_content',
@@ -264,6 +267,9 @@ VALIDATORS = {
     'include_rfc2369_headers': as_boolean,
     # Digests.
     'digest_size_threshold': float,
+    # Notifications.
+    'admin_immed_notify': as_boolean,
+    'admin_notify_mchanges': as_boolean,
     # Processing.
     'pipeline': pipeline_validator,
     'filter_content': as_boolean,
@@ -323,7 +329,7 @@ class AcceptableAliases(resource.Resource):
     def aliases(self, request):
         """Return the mailing list's acceptable aliases."""
         aliases = IAcceptableAliasSet(self._mlist)
-        resource = dict(aliases=list(aliases.aliases))
+        resource = dict(aliases=sorted(aliases.aliases))
         return http.ok([], etag(resource))
 
     @resource.PUT()

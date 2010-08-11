@@ -61,6 +61,9 @@ class MailingList(Model):
 
     id = Int(primary=True)
 
+    # XXX denotes attributes that should be part of the public interface but
+    # are currently missing.
+
     # List identity
     list_name = Unicode()
     host_name = Unicode()
@@ -84,7 +87,7 @@ class MailingList(Model):
     # Attributes which are directly modifiable via the web u/i.  The more
     # complicated attributes are currently stored as pickles, though that
     # will change as the schema and implementation is developed.
-    accept_these_nonmembers = Pickle()
+    accept_these_nonmembers = Pickle() # XXX
     admin_immed_notify = Bool()
     admin_notify_mchanges = Bool()
     administrivia = Bool()
