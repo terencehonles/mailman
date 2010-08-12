@@ -31,6 +31,7 @@ All readable attributes for a list are available on a sub-resource.
     collapse_alternatives: True
     convert_html_to_plaintext: False
     created_at: 20...T...
+    description:
     digest_last_sent_at: None
     digest_size_threshold: 30.0
     filter_content: False
@@ -80,6 +81,7 @@ writable attributes in one request.
     ...             autoresponse_postings_text='the mailing list',
     ...             autoresponse_request_text='the robot',
     ...             real_name='Fnords',
+    ...             description='This is my mailing list',
     ...             include_rfc2369_headers=False,
     ...             include_list_post_header=False,
     ...             digest_size_threshold=10.5,
@@ -114,6 +116,8 @@ These values are changed permanently.
     collapse_alternatives: False
     convert_html_to_plaintext: True
     ...
+    description: This is my mailing list
+    ...
     digest_size_threshold: 10.5
     filter_content: True
     ...
@@ -144,6 +148,7 @@ be included.  It is an error to leave one out (e.g. `pipeline`)...
     ...             autoresponse_postings_text='the mailing list',
     ...             autoresponse_request_text='the robot',
     ...             real_name='Fnords',
+    ...             description='This is my mailing list',
     ...             include_rfc2369_headers=False,
     ...             include_list_post_header=False,
     ...             digest_size_threshold=10.5,
@@ -176,6 +181,7 @@ be included.  It is an error to leave one out (e.g. `pipeline`)...
     ...             autoresponse_postings_text='the mailing list',
     ...             autoresponse_request_text='the robot',
     ...             real_name='Fnords',
+    ...             description='This is my mailing list',
     ...             include_rfc2369_headers=False,
     ...             include_list_post_header=False,
     ...             digest_size_threshold=10.5,
@@ -207,6 +213,7 @@ It is also an error to spell an attribute value incorrectly...
     ...             autoresponse_postings_text='the mailing list',
     ...             autoresponse_request_text='the robot',
     ...             real_name='Fnords',
+    ...             description='This is my mailing list',
     ...             include_rfc2369_headers=False,
     ...             include_list_post_header=False,
     ...             digest_size_threshold=10.5,
@@ -237,6 +244,7 @@ It is also an error to spell an attribute value incorrectly...
     ...             autoresponse_postings_text='the mailing list',
     ...             autoresponse_request_text='the robot',
     ...             real_name='Fnords',
+    ...             description='This is my mailing list',
     ...             include_rfc2369_headers=False,
     ...             include_list_post_header=False,
     ...             digest_size_threshold=10.5,
@@ -267,6 +275,7 @@ It is also an error to spell an attribute value incorrectly...
     ...             autoresponse_postings_text='the mailing list',
     ...             autoresponse_request_text='the robot',
     ...             real_name='Fnords',
+    ...             description='This is my mailing list',
     ...             include_rfc2369_headers=False,
     ...             include_list_post_header=False,
     ...             digest_size_threshold=10.5,

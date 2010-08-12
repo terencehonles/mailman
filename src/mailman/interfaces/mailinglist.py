@@ -99,6 +99,13 @@ class IMailingList(Interface):
         Subject prefix.
         """)
 
+    description = Attribute("""\
+        A terse phrase identifying this mailing list.
+
+        This description is used when the mailing list is listed with other
+        mailing lists, or in headers, and so forth.  It should be as succinct
+        as you can get it, while still identifying what the list is.""")
+
     list_id = Attribute(
         """The RFC 2919 List-ID header value.""")
 

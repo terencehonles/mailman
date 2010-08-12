@@ -225,6 +225,7 @@ READABLE = (
     'host_name',
     'fqdn_listname',
     'real_name',
+    'description',
     'list_id',
     'include_list_post_header',
     'include_rfc2369_headers',
@@ -291,6 +292,7 @@ class enum_validator:
 VALIDATORS = {
     # Identity.
     'real_name': unicode,
+    'description': unicode,
     'include_list_post_header': as_boolean,
     'include_rfc2369_headers': as_boolean,
     'advertised': as_boolean,
