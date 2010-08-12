@@ -93,9 +93,9 @@ class MailingList(Model):
     admin_immed_notify = Bool()
     admin_notify_mchanges = Bool()
     administrivia = Bool()
-    archive = Bool()
-    archive_private = Bool()
-    archive_volume_frequency = Int()
+    archive = Bool() # XXX
+    archive_private = Bool() # XXX
+    archive_volume_frequency = Int() # XXX
     # Automatic responses.
     autoresponse_grace_period = TimeDelta()
     autorespond_owner = Enum()

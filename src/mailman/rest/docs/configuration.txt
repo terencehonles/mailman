@@ -20,6 +20,13 @@ All readable attributes for a list are available on a sub-resource.
     administrivia: True
     advertised: True
     anonymous_list: False
+    autorespond_owner: none
+    autorespond_postings: none
+    autorespond_requests: none
+    autoresponse_grace_period: 90d
+    autoresponse_owner_text:
+    autoresponse_postings_text:
+    autoresponse_request_text:
     bounces_address: test-one-bounces@example.com
     collapse_alternatives: True
     convert_html_to_plaintext: False
@@ -65,6 +72,13 @@ writable attributes in one request.
     ...             administrivia=False,
     ...             advertised=False,
     ...             anonymous_list=True,
+    ...             autorespond_owner='respond_and_discard',
+    ...             autorespond_postings='respond_and_continue',
+    ...             autorespond_requests='respond_and_discard',
+    ...             autoresponse_grace_period='45d',
+    ...             autoresponse_owner_text='the owner',
+    ...             autoresponse_postings_text='the mailing list',
+    ...             autoresponse_request_text='the robot',
     ...             real_name='Fnords',
     ...             include_rfc2369_headers=False,
     ...             include_list_post_header=False,
@@ -89,6 +103,13 @@ These values are changed permanently.
     administrivia: False
     advertised: False
     anonymous_list: True
+    autorespond_owner: respond_and_discard
+    autorespond_postings: respond_and_continue
+    autorespond_requests: respond_and_discard
+    autoresponse_grace_period: 45d
+    autoresponse_owner_text: the owner
+    autoresponse_postings_text: the mailing list
+    autoresponse_request_text: the robot
     ...
     collapse_alternatives: False
     convert_html_to_plaintext: True
@@ -115,6 +136,13 @@ be included.  It is an error to leave one out (e.g. `pipeline`)...
     ...             administrivia=False,
     ...             advertised=False,
     ...             anonymous_list=True,
+    ...             autorespond_owner='respond_and_discard',
+    ...             autorespond_postings='respond_and_continue',
+    ...             autorespond_requests='respond_and_discard',
+    ...             autoresponse_grace_period='45d',
+    ...             autoresponse_owner_text='the owner',
+    ...             autoresponse_postings_text='the mailing list',
+    ...             autoresponse_request_text='the robot',
     ...             real_name='Fnords',
     ...             include_rfc2369_headers=False,
     ...             include_list_post_header=False,
@@ -140,6 +168,13 @@ be included.  It is an error to leave one out (e.g. `pipeline`)...
     ...             administrivia=False,
     ...             advertised=False,
     ...             anonymous_list=True,
+    ...             autorespond_owner='respond_and_discard',
+    ...             autorespond_postings='respond_and_continue',
+    ...             autorespond_requests='respond_and_discard',
+    ...             autoresponse_grace_period='45d',
+    ...             autoresponse_owner_text='the owner',
+    ...             autoresponse_postings_text='the mailing list',
+    ...             autoresponse_request_text='the robot',
     ...             real_name='Fnords',
     ...             include_rfc2369_headers=False,
     ...             include_list_post_header=False,
@@ -164,6 +199,13 @@ It is also an error to spell an attribute value incorrectly...
     ...             administrivia=False,
     ...             advertised=False,
     ...             anonymous_list=True,
+    ...             autorespond_owner='respond_and_discard',
+    ...             autorespond_postings='respond_and_continue',
+    ...             autorespond_requests='respond_and_discard',
+    ...             autoresponse_grace_period='45d',
+    ...             autoresponse_owner_text='the owner',
+    ...             autoresponse_postings_text='the mailing list',
+    ...             autoresponse_request_text='the robot',
     ...             real_name='Fnords',
     ...             include_rfc2369_headers=False,
     ...             include_list_post_header=False,
@@ -178,7 +220,7 @@ It is also an error to spell an attribute value incorrectly...
     ...
     HTTPError: HTTP Error 400: Bad Request
 
-...or to name a pipeline that doesn't exist.
+...or to name a pipeline that doesn't exist...
 
     >>> dump_json('http://localhost:8001/3.0/lists/'
     ...           'test-one@example.com/config',
@@ -187,6 +229,43 @@ It is also an error to spell an attribute value incorrectly...
     ...             admin_notify_mchanges=True,
     ...             advertised=False,
     ...             anonymous_list=True,
+    ...             autorespond_owner='respond_and_discard',
+    ...             autorespond_postings='respond_and_continue',
+    ...             autorespond_requests='respond_and_discard',
+    ...             autoresponse_grace_period='45d',
+    ...             autoresponse_owner_text='the owner',
+    ...             autoresponse_postings_text='the mailing list',
+    ...             autoresponse_request_text='the robot',
+    ...             real_name='Fnords',
+    ...             include_rfc2369_headers=False,
+    ...             include_list_post_header=False,
+    ...             digest_size_threshold=10.5,
+    ...             pipeline='dummy',
+    ...             filter_content=True,
+    ...             convert_html_to_plaintext=True,
+    ...             collapse_alternatives=False,
+    ...             ),
+    ...           'PUT')
+    Traceback (most recent call last):
+    ...
+    HTTPError: HTTP Error 400: Bad Request
+
+...or to name an invalid auto-response enumeration value.
+
+    >>> dump_json('http://localhost:8001/3.0/lists/'
+    ...           'test-one@example.com/config',
+    ...           dict(
+    ...             admin_immed_notify=False,
+    ...             admin_notify_mchanges=True,
+    ...             advertised=False,
+    ...             anonymous_list=True,
+    ...             autorespond_owner='do_not_respond',
+    ...             autorespond_postings='respond_and_continue',
+    ...             autorespond_requests='respond_and_discard',
+    ...             autoresponse_grace_period='45d',
+    ...             autoresponse_owner_text='the owner',
+    ...             autoresponse_postings_text='the mailing list',
+    ...             autoresponse_request_text='the robot',
     ...             real_name='Fnords',
     ...             include_rfc2369_headers=False,
     ...             include_list_post_header=False,

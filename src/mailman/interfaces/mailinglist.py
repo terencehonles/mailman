@@ -324,6 +324,58 @@ class IMailingList(Interface):
         notifications.
         """)
 
+    # Autoresponses.
+
+    autoresponse_grace_period = Attribute(
+        """Time period (in days) between automatic responses.
+
+        When this mailing list is set to send an auto-response for messages
+        sent to mailing list posts, the mailing list owners, or the `-request`
+        address, such reponses will not be sent to the same user more than
+        once during the grace period.  Set to zero (or a negative value) for
+        no grace period (i.e. auto-respond to every message).
+        """)
+
+    autorespond_owner = Attribute(
+        """How should the mailing list automatically respond to messages sent
+        to the -owner or -moderator address?
+
+        Options are:
+        * No response sent
+        * Send a response and discard the original messge
+        * Send a response and continue processing the original message
+        """)
+
+    autoresponse_owner_text = Attribute(
+        """The text sent in an autoresponse to the owner or moderator.""")
+
+    autorespond_postings = Attribute(
+        """How should the mailing list automatically respond to messages sent
+        to the list's posting address?
+
+        Options are:
+        * No response sent
+        * Send a response and discard the original messge
+        * Send a response and continue processing the original message
+        """)
+
+    autoresponse_postings_text = Attribute(
+        """The text sent in an autoresponse to the list's posting address.""")
+
+    autorespond_requests = Attribute(
+        """How should the mailing list automatically respond to messages sent
+        to the list's `-request` address?
+
+        Options are:
+        * No response sent
+        * Send a response and discard the original messge
+        * Send a response and continue processing the original message
+        """)
+
+    autoresponse_request_text = Attribute(
+        """The text sent in an autoresponse to the list's `-request`
+        address.""")
+
     # Processing.
 
     pipeline = Attribute(
@@ -386,7 +438,7 @@ class IMailingList(Interface):
         to a sequence to change it, or to None to empty it.  Pass types are
         consulted after filter types, and only if `pass_types` is non-empty.
         """)
-        
+
     filter_extensions = Attribute(
         """Sequence of file extensions that should be filtered out.
 
@@ -400,7 +452,7 @@ class IMailingList(Interface):
         Pass extensions are consulted after filter extensions, and only if
         `pass_extensions` is non-empty.
         """)
-        
+
 
 
 

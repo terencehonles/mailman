@@ -27,12 +27,17 @@ __all__ = [
     ]
 
 
-from lazr.config import as_boolean
+import os
+import sys
+
+from lazr.config import as_boolean, as_timedelta
+from pkg_resources import resource_listdir
 from restish import http, resource
 from zope.component import getUtility
 
 from mailman.app.lifecycle import create_list, remove_list
 from mailman.config import config
+from mailman.interfaces.autorespond import ResponseAction
 from mailman.interfaces.domain import BadDomainSpecificationError
 from mailman.interfaces.listmanager import (
     IListManager, ListAlreadyExistsError)
@@ -247,6 +252,14 @@ READABLE = (
     # Notifications.
     'admin_immed_notify',
     'admin_notify_mchanges',
+    # Automatic responses.
+    'autoresponse_grace_period',
+    'autorespond_owner',
+    'autoresponse_owner_text',
+    'autorespond_postings',
+    'autoresponse_postings_text',
+    'autorespond_requests',
+    'autoresponse_request_text',
     # Processing.
     'pipeline',
     'administrivia',
@@ -263,6 +276,18 @@ def pipeline_validator(pipeline_name):
     raise ValueError('Unknown pipeline: {0}'.format(pipeline_name))
 
 
+class enum_validator:
+    """Convert an enum value name into an enum value."""
+
+    def __init__(self, enum_class):
+        self._enum_class = enum_class
+
+    def __call__(self, enum_value):
+        # This will raise a ValueError if the enum value is unknown.  Let that
+        # percolate up.
+        return self._enum_class[enum_value]
+
+
 VALIDATORS = {
     # Identity.
     'real_name': unicode,
@@ -275,6 +300,14 @@ VALIDATORS = {
     # Notifications.
     'admin_immed_notify': as_boolean,
     'admin_notify_mchanges': as_boolean,
+    # Automatic responses.
+    'autoresponse_grace_period': as_timedelta,
+    'autorespond_owner': enum_validator(ResponseAction),
+    'autoresponse_owner_text': unicode,
+    'autorespond_postings': enum_validator(ResponseAction),
+    'autoresponse_postings_text': unicode,
+    'autorespond_requests': enum_validator(ResponseAction),
+    'autoresponse_request_text': unicode,
     # Processing.
     'pipeline': pipeline_validator,
     'administrivia': as_boolean,

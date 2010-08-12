@@ -32,7 +32,8 @@ __all__ = [
 import json
 import hashlib
 
-from datetime import datetime
+from datetime import datetime, timedelta
+from flufl.enum import Enum
 from lazr.config import as_boolean
 from restish.http import Response
 from restish.resource import MethodDecorator
@@ -69,6 +70,17 @@ class ExtendedEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, datetime):
             return obj.isoformat()
+        elif isinstance(obj, timedelta):
+            # as_timedelta() does not recognize microseconds, so convert these
+            # to floating seconds, but only if there are any seconds.
+            if obj.seconds > 0 or obj.microseconds > 0:
+                seconds = obj.seconds + obj.microseconds / 1000000.0
+                return '{0}d{1}s'.format(obj.days, seconds)
+            return '{0}d'.format(obj.days)
+        elif hasattr(obj, 'enumclass') and issubclass(obj.enumclass, Enum):
+            # It's up to the decoding validator to associate this name with
+            # the right Enum class.
+            return obj.enumname
         return json.JSONEncoder.default(self, obj)
 
 
