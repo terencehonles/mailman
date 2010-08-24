@@ -27,25 +27,17 @@ __all__ = [
     ]
 
 
-import os
-import sys
-
-from lazr.config import as_boolean, as_timedelta
-from pkg_resources import resource_listdir
 from restish import http, resource
 from zope.component import getUtility
 
 from mailman.app.lifecycle import create_list, remove_list
-from mailman.config import config
-from mailman.interfaces.autorespond import ResponseAction
 from mailman.interfaces.domain import BadDomainSpecificationError
 from mailman.interfaces.listmanager import (
     IListManager, ListAlreadyExistsError)
-from mailman.interfaces.mailinglist import IAcceptableAliasSet
 from mailman.interfaces.member import MemberRole
+from mailman.rest.configuration import ListConfiguration
 from mailman.rest.helpers import (
-    CollectionMixin, PATCH, Validator, etag, no_content, path_to,
-    restish_matcher)
+    CollectionMixin, Validator, etag, no_content, path_to, restish_matcher)
 from mailman.rest.members import AMember, MembersOfList
 
 
@@ -95,24 +87,16 @@ def config_matcher(request, segments):
     """A matcher for a mailing list's configuration resource.
 
     e.g. /config
+    e.g. /config/description
     """
-    if len(segments) == 1 and segments[0] == 'config':
-        return (), {}, ()
-    # It's something else.
-    return None
-
-
-@restish_matcher
-def subresource_config_matcher(request, segments):
-    """A matcher for configuration sub-resources.
-
-    e.g. /config/acceptable_aliases
-    """
-    if len(segments) != 2 or segments[0] != 'config':
+    if len(segments) < 1 or segments[0] != 'config':
         return None
-    # Don't check here whether it's a known subresource or not.  Let that be
-    # done in subresource_config() method below.
-    return (), dict(attribute=segments[1]), ()
+    if len(segments) == 1:
+        return (), {}, ()
+    if len(segments) == 2:
+        return (), dict(attribute=segments[1]), ()
+    # More segments are not allowed.
+    return None
 
 
 
@@ -169,22 +153,9 @@ class AList(_ListBase):
         return MembersOfList(self._mlist, role)
 
     @resource.child(config_matcher)
-    def config(self, request, segments):
+    def config(self, request, segments, attribute=None):
         """Return a mailing list configuration object."""
-        return ListConfiguration(self._mlist)
-
-    @resource.child(subresource_config_matcher)
-    def subresource_config(self, request, segments, attribute):
-        """Return the subresource configuration object.
-
-        This will return a Bad Request if it isn't a known subresource.
-        """
-        missing = object()
-        subresource_class = SUBRESOURCES.get(attribute, missing)
-        if subresource_class is missing:
-            return http.bad_request(
-                [], 'Unknown attribute {0}'.format(attribute))
-        return subresource_class(self._mlist, attribute)
+        return ListConfiguration(self._mlist, attribute)
 
 
 
@@ -214,181 +185,3 @@ class AllLists(_ListBase):
         """/lists"""
         resource = self._make_collection(request)
         return http.ok([], etag(resource))
-
-
-
-# The set of readable IMailingList attributes.
-READABLE = (
-    # Identity.
-    'created_at',
-    'list_name',
-    'host_name',
-    'fqdn_listname',
-    'real_name',
-    'description',
-    'list_id',
-    'include_list_post_header',
-    'include_rfc2369_headers',
-    'advertised',
-    'anonymous_list',
-    # Contact addresses.
-    'posting_address',
-    'no_reply_address',
-    'owner_address',
-    'request_address',
-    'bounces_address',
-    'join_address',
-    'leave_address',
-    # Posting history.
-    'last_post_at',
-    'post_id',
-    # Digests.
-    'digest_last_sent_at',
-    'volume',
-    'next_digest_number',
-    'digest_size_threshold',
-    # Web access.
-    'scheme',
-    'web_host',
-    # Notifications.
-    'admin_immed_notify',
-    'admin_notify_mchanges',
-    # Automatic responses.
-    'autoresponse_grace_period',
-    'autorespond_owner',
-    'autoresponse_owner_text',
-    'autorespond_postings',
-    'autoresponse_postings_text',
-    'autorespond_requests',
-    'autoresponse_request_text',
-    # Processing.
-    'pipeline',
-    'administrivia',
-    'filter_content',
-    'convert_html_to_plaintext',
-    'collapse_alternatives',
-    )
-
-
-def pipeline_validator(pipeline_name):
-    """Convert the pipeline name to a string, but only if it's known."""
-    if pipeline_name in config.pipelines:
-        return unicode(pipeline_name)
-    raise ValueError('Unknown pipeline: {0}'.format(pipeline_name))
-
-
-class enum_validator:
-    """Convert an enum value name into an enum value."""
-
-    def __init__(self, enum_class):
-        self._enum_class = enum_class
-
-    def __call__(self, enum_value):
-        # This will raise a ValueError if the enum value is unknown.  Let that
-        # percolate up.
-        return self._enum_class[enum_value]
-
-
-VALIDATORS = {
-    # Identity.
-    'real_name': unicode,
-    'description': unicode,
-    'include_list_post_header': as_boolean,
-    'include_rfc2369_headers': as_boolean,
-    'advertised': as_boolean,
-    'anonymous_list': as_boolean,
-    # Digests.
-    'digest_size_threshold': float,
-    # Notifications.
-    'admin_immed_notify': as_boolean,
-    'admin_notify_mchanges': as_boolean,
-    # Automatic responses.
-    'autoresponse_grace_period': as_timedelta,
-    'autorespond_owner': enum_validator(ResponseAction),
-    'autoresponse_owner_text': unicode,
-    'autorespond_postings': enum_validator(ResponseAction),
-    'autoresponse_postings_text': unicode,
-    'autorespond_requests': enum_validator(ResponseAction),
-    'autoresponse_request_text': unicode,
-    # Processing.
-    'pipeline': pipeline_validator,
-    'administrivia': as_boolean,
-    'filter_content': as_boolean,
-    'convert_html_to_plaintext': as_boolean,
-    'collapse_alternatives': as_boolean,
-    }
-
-
-class ListConfiguration(resource.Resource):
-    """A mailing list configuration resource."""
-
-    def __init__(self, mailing_list):
-        self._mlist = mailing_list
-
-    @resource.GET()
-    def get_configuration(self, request):
-        """Return a mailing list's readable configuration."""
-        resource = {}
-        for attribute in READABLE:
-            resource[attribute] = getattr(self._mlist, attribute)
-        return http.ok([], etag(resource))
-
-    @resource.PUT()
-    def put_configuration(self, request):
-        """Set all of a mailing list's configuration."""
-        # Use PATCH to change just one or a few of the attributes.
-        validator = Validator(**VALIDATORS)
-        try:
-            for key, value in validator(request).items():
-                setattr(self._mlist, key, value)
-        except ValueError as error:
-            return http.bad_request([], str(error))
-        return http.ok([], '')
-
-    @PATCH()
-    def patch_configuration(self, request):
-        """Set a subset of the mailing list's configuration."""
-        validator = Validator(_optional=VALIDATORS.keys(), **VALIDATORS)
-        try:
-            for key, value in validator(request).items():
-                setattr(self._mlist, key, value)
-        except ValueError as error:
-            return http.bad_request([], str(error))
-        return http.ok([], '')
-
-
-
-class AcceptableAliases(resource.Resource):
-    """Resource for the acceptable aliases of a mailing list."""
-
-    def __init__(self, mailing_list, attribute):
-        assert attribute == 'acceptable_aliases', (
-            'unexpected attribute: {0}'.format(attribute))
-        self._mlist = mailing_list
-
-    @resource.GET()
-    def aliases(self, request):
-        """Return the mailing list's acceptable aliases."""
-        aliases = IAcceptableAliasSet(self._mlist)
-        resource = dict(aliases=sorted(aliases.aliases))
-        return http.ok([], etag(resource))
-
-    @resource.PUT()
-    def put_configuration(self, request):
-        """Change the acceptable aliases.
-
-        Because this is a PUT operation, all previous aliases are cleared
-        first.  Thus, this is an overwrite.  The keys in the request are
-        ignored.
-        """
-        aliases = IAcceptableAliasSet(self._mlist)
-        aliases.clear()
-        for alias in request.POST.values():
-            aliases.add(unicode(alias))
-        return http.ok([], '')
-
-
-
-SUBRESOURCES = dict(
-    acceptable_aliases=AcceptableAliases,
-    )

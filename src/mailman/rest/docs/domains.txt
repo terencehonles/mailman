@@ -110,7 +110,7 @@ But we get a 404 for a non-existent domain.
     >>> dump_json('http://localhost:8001/3.0/domains/does-not-exist')
     Traceback (most recent call last):
     ...
-    HTTPError: HTTP Error 404: Not Found
+    HTTPError: HTTP Error 404: 404 Not Found
 
 
 Creating new domains

@@ -75,7 +75,7 @@ not exist.
     ...           })
     Traceback (most recent call last):
     ...
-    HTTPError: HTTP Error 400: Bad Request
+    HTTPError: HTTP Error 400: Domain does not exist example.org
 
 Nor can you create a mailing list that already exists.
 
@@ -84,7 +84,7 @@ Nor can you create a mailing list that already exists.
     ...           })
     Traceback (most recent call last):
     ...
-    HTTPError: HTTP Error 400: Bad Request
+    HTTPError: HTTP Error 400: Mailing list exists
 
 
 Deleting lists via the API
@@ -116,10 +116,10 @@ deleted.
     ...           method='DELETE')
     Traceback (most recent call last):
     ...
-    HTTPError: HTTP Error 404: Not Found
+    HTTPError: HTTP Error 404: 404 Not Found
 
     >>> dump_json('http://localhost:8001/3.0/lists/test-ten@example.com',
     ...           method='DELETE')
     Traceback (most recent call last):
     ...
-    HTTPError: HTTP Error 404: Not Found
+    HTTPError: HTTP Error 404: 404 Not Found

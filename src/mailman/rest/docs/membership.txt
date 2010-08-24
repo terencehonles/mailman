@@ -257,7 +257,7 @@ For some reason Elly tries to join a mailing list that does not exist.
     ...           })
     Traceback (most recent call last):
     ...
-    HTTPError: HTTP Error 400: Bad Request
+    HTTPError: HTTP Error 400: No such list
 
 Then, she tries to leave a mailing list that does not exist.
 
@@ -266,7 +266,7 @@ Then, she tries to leave a mailing list that does not exist.
     ...           method='DELETE')
     Traceback (most recent call last):
     ...
-    HTTPError: HTTP Error 404: Not Found
+    HTTPError: HTTP Error 404: 404 Not Found
 
 She then tries to leave a mailing list with a bogus address.
 
@@ -275,7 +275,7 @@ She then tries to leave a mailing list with a bogus address.
     ...           method='DELETE')
     Traceback (most recent call last):
     ...
-    HTTPError: HTTP Error 404: Not Found
+    HTTPError: HTTP Error 404: 404 Not Found
 
 For some reason, Elly tries to leave the mailing list again, but she's already
 been unsubscribed.
@@ -285,7 +285,7 @@ been unsubscribed.
     ...           method='DELETE')
     Traceback (most recent call last):
     ...
-    HTTPError: HTTP Error 404: Not Found
+    HTTPError: HTTP Error 404: 404 Not Found
 
 Anna tries to join a mailing list she's already a member of.
 
@@ -295,7 +295,7 @@ Anna tries to join a mailing list she's already a member of.
     ...           })
     Traceback (most recent call last):
     ...
-    HTTPError: HTTP Error 409: Conflict
+    HTTPError: HTTP Error 409: Member already subscribed
 
 Gwen tries to join the alpha mailing list using an invalid delivery mode.
 
@@ -307,7 +307,7 @@ Gwen tries to join the alpha mailing list using an invalid delivery mode.
     ...           })
     Traceback (most recent call last):
     ...
-    HTTPError: HTTP Error 400: Bad Request
+    HTTPError: HTTP Error 400: Cannot convert parameters: delivery_mode
 
 Even using an address with "funny" characters Hugh can join the mailing list.
 

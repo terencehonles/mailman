@@ -76,7 +76,7 @@ class SubscriptionService:
         # Convert from string to enum.
         mode = (DeliveryMode.regular
                 if delivery_mode is None
-                else DeliveryMode(delivery_mode))
+                else delivery_mode)
         if real_name is None:
             real_name, at, domain = address.partition('@')
             if len(at) == 0:

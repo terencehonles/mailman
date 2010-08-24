@@ -123,7 +123,7 @@ def call_http(url, data=None, method=None):
     """
     headers = {}
     if data is not None:
-        data = urlencode(data)
+        data = urlencode(data, doseq=True)
         headers['Content-Type'] = 'application/x-www-form-urlencoded'
     if method is None:
         if data is None:
@@ -135,7 +135,7 @@ def call_http(url, data=None, method=None):
     # If we did not get a 2xx status code, make this look like a urllib2
     # exception, for backward compatibility with existing doctests.
     if response.status // 100 != 2:
-        raise HTTPError(url, response.status, response.reason, response, None)
+        raise HTTPError(url, response.status, content, response, None)
     if len(content) == 0:
         for header in sorted(response):
             print '{0}: {1}'.format(header, response[header])

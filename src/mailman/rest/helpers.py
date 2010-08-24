@@ -22,6 +22,7 @@ from __future__ import absolute_import, unicode_literals
 __metaclass__ = type
 __all__ = [
     'ContainerMixin',
+    'enum_validator',
     'etag',
     'no_content',
     'path_to',
@@ -36,7 +37,6 @@ from datetime import datetime, timedelta
 from flufl.enum import Enum
 from lazr.config import as_boolean
 from restish.http import Response
-from restish.resource import MethodDecorator
 
 from mailman.config import config
 
@@ -154,6 +154,18 @@ class CollectionMixin:
 
 
 
+class enum_validator:
+    """Convert an enum value name into an enum value."""
+
+    def __init__(self, enum_class):
+        self._enum_class = enum_class
+
+    def __call__(self, enum_value):
+        # This will raise a ValueError if the enum value is unknown.  Let that
+        # percolate up.
+        return self._enum_class[enum_value]
+
+
 class Validator:
     """A validator of parameter input."""
 
@@ -168,7 +180,21 @@ class Validator:
         values = {}
         extras = set()
         cannot_convert = set()
-        for key, value in request.POST.items():
+        form_data = {}
+        # All keys which show up only once in the form data get a scalar value
+        # in the pre-converted dictionary.  All keys which show up more than
+        # once get a list value.
+        missing = object()
+        for key, new_value in request.POST.items():
+            old_value = form_data.get(key, missing)
+            if old_value is missing:
+                form_data[key] = new_value
+            elif isinstance(old_value, list):
+                old_value.append(new_value)
+            else:
+                form_data[key] = [old_value, new_value]
+        # Now do all the conversions.
+        for key, value in form_data.items():
             try:
                 values[key] = self._converters[key](value)
             except KeyError:
@@ -206,9 +232,3 @@ def restish_matcher(function):
 def no_content():
     """204 No Content."""
     return Response('204 No Content', [], None)
-
-
-# restish doesn't support HTTP PATCH (it's not standard).
-class PATCH(MethodDecorator):
-    """ http PATCH method """
-    method = 'PATCH'

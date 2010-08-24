@@ -141,3 +141,57 @@ But if the optional values are present, they must of course also be valid.
     Traceback (most recent call last):
     ...
     ValueError: Cannot convert parameters: five, four
+
+
+Arrays
+------
+
+Some POST forms include more than one value for a particular key.  This is how
+lists and arrays are modeled.  The Validator does the right thing with such
+form data.  Specifically, when a key shows up multiple times in the form data,
+a list is given to the validator.
+
+    # Of course we can't use a normal dictionary, but webob has a useful data
+    # type we can use.
+    >>> from webob.multidict import MultiDict
+    >>> form_data = MultiDict(one='1', many='3')
+    >>> form_data.add('many', '4')
+    >>> form_data.add('many', '5')
+
+This is a validation function that ensures the value is a list.
+
+    >>> def must_be_list(value):
+    ...     if not isinstance(value, list):
+    ...         raise ValueError('not a list')
+    ...     return [int(item) for item in value]
+
+This is a validation function that ensure the value is *not* a list.
+
+    >>> def must_be_scalar(value):
+    ...     if isinstance(value, list):
+    ...         raise ValueError('is a list')
+    ...     return int(value)
+
+And a validator to pull it all together.
+
+    >>> validator = Validator(one=must_be_scalar, many=must_be_list)
+    >>> FakeRequest.POST = form_data
+    >>> values = validator(FakeRequest)
+    >>> print values['one']
+    1
+    >>> print values['many']
+    [3, 4, 5]
+
+The list values are guaranteed to be in the same order they show up in the
+form data.
+
+    >>> from webob.multidict import MultiDict
+    >>> form_data = MultiDict(one='1', many='3')
+    >>> form_data.add('many', '5')
+    >>> form_data.add('many', '4')
+    >>> FakeRequest.POST = form_data
+    >>> values = validator(FakeRequest)
+    >>> print values['one']
+    1
+    >>> print values['many']
+    [3, 5, 4]

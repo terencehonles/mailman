@@ -38,7 +38,8 @@ from mailman.interfaces.listmanager import NoSuchListError
 from mailman.interfaces.member import (
     AlreadySubscribedError, DeliveryMode, MemberRole)
 from mailman.interfaces.membership import ISubscriptionService
-from mailman.rest.helpers import CollectionMixin, Validator, etag, path_to
+from mailman.rest.helpers import (
+    CollectionMixin, Validator, enum_validator, etag, path_to)
 
 
 
@@ -97,7 +98,7 @@ class AllMembers(_MemberBase):
             validator = Validator(fqdn_listname=unicode,
                                   address=unicode,
                                   real_name=unicode,
-                                  delivery_mode=unicode,
+                                  delivery_mode=enum_validator(DeliveryMode),
                                   _optional=('real_name', 'delivery_mode'))
             member = service.join(**validator(request))
         except AlreadySubscribedError:
