@@ -38,8 +38,8 @@ from mailman.interfaces.listmanager import NoSuchListError
 from mailman.interfaces.member import (
     AlreadySubscribedError, DeliveryMode, MemberRole)
 from mailman.interfaces.membership import ISubscriptionService
-from mailman.rest.helpers import (
-    CollectionMixin, Validator, enum_validator, etag, path_to)
+from mailman.rest.helpers import CollectionMixin, etag, path_to
+from mailman.rest.validator import Validator, enum_validator
 
 
 

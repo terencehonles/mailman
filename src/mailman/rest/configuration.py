@@ -31,7 +31,8 @@ from restish import http, resource
 from mailman.config import config
 from mailman.interfaces.autorespond import ResponseAction
 from mailman.interfaces.mailinglist import IAcceptableAliasSet
-from mailman.rest.helpers import Validator, enum_validator, etag
+from mailman.rest.helpers import etag
+from mailman.rest.validator import Validator, enum_validator
 
 
 

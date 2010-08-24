@@ -31,7 +31,8 @@ from zope.component import getUtility
 
 from mailman.interfaces.domain import (
     BadDomainSpecificationError, IDomainManager)
-from mailman.rest.helpers import CollectionMixin, Validator, etag, path_to
+from mailman.rest.helpers import CollectionMixin, etag, path_to
+from mailman.rest.validator import Validator
 
 
 

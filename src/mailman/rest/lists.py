@@ -37,8 +37,9 @@ from mailman.interfaces.listmanager import (
 from mailman.interfaces.member import MemberRole
 from mailman.rest.configuration import ListConfiguration
 from mailman.rest.helpers import (
-    CollectionMixin, Validator, etag, no_content, path_to, restish_matcher)
+    CollectionMixin, etag, no_content, path_to, restish_matcher)
 from mailman.rest.members import AMember, MembersOfList
+from mailman.rest.validator import Validator
 
 
 

@@ -65,7 +65,7 @@ POST unpacking
 Another helper unpacks POST request variables, validating and converting their
 values.
 
-    >>> from mailman.rest.helpers import Validator
+    >>> from mailman.rest.validator import Validator
     >>> validator = Validator(one=int, two=unicode, three=bool)
 
     >>> class FakeRequest:
