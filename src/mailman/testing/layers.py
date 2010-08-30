@@ -217,6 +217,21 @@ class ConfigLayer(MockAndMonkeyLayer):
         if len(os.environ.get('MM_VERBOSE_TESTLOG', '').strip()) > 0:
             cls.stderr = True
 
+    # The top of our source tree, for tests that care (e.g. hooks.txt).
+    root_directory = None
+
+    @classmethod
+    def set_root_directory(cls, directory):
+        """Set the directory at the root of our source tree.
+
+        zc.recipe.testrunner runs from parts/test/working-directory, but
+        that's actually changed over the life of the package.  Some tests
+        care, e.g. because they need to find our built-out bin directory.
+        Fortunately, buildout can give us this information.  See the
+        `buildout.cfg` file for where this method is called.
+        """
+        cls.root_directory = directory
+
 
 
 class SMTPLayer(ConfigLayer):
