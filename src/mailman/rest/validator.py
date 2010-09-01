@@ -61,7 +61,12 @@ class Validator:
         # in the pre-converted dictionary.  All keys which show up more than
         # once get a list value.
         missing = object()
-        for key, new_value in request.POST.items():
+        # This is a gross hack to allow PATCH.  See helpers.py for details.
+        try:
+            items = request.PATCH.items()
+        except AttributeError:
+            items = request.POST.items()
+        for key, new_value in items:
             old_value = form_data.get(key, missing)
             if old_value is missing:
                 form_data[key] = new_value

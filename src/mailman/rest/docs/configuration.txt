@@ -303,14 +303,19 @@ Changing a partial configuration
 
 Using PATCH, you can change just one attribute.
 
-XXX WebOb does not currently support PATCH, so neither does restish.
-
-#    >>> dump_json('http://localhost:8001/3.0/lists/'
-#    ...           'test-one@example.com/config',
-#    ...           dict(real_name='My List'),
-#    ...           'PATCH')
+    >>> dump_json('http://localhost:8001/3.0/lists/'
+    ...           'test-one@example.com/config',
+    ...           dict(real_name='My List'),
+    ...           'PATCH')
+    content-length: 0
+    date: ...
+    server: ...
+    status: 200
 
 These values are changed permanently.
+
+    >>> print mlist.real_name
+    My List
 
 
 Sub-resources

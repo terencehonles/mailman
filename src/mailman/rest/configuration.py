@@ -31,7 +31,7 @@ from restish import http, resource
 from mailman.config import config
 from mailman.interfaces.autorespond import ResponseAction
 from mailman.interfaces.mailinglist import IAcceptableAliasSet
-from mailman.rest.helpers import etag
+from mailman.rest.helpers import PATCH, etag
 from mailman.rest.validator import Validator, enum_validator
 
 
@@ -232,18 +232,29 @@ class ListConfiguration(resource.Resource):
             resource[attribute] = value
         return http.ok([], etag(resource))
 
+    # XXX 2010-09-01 barry: Refactor {put,patch}_configuration() for common
+    # code paths.
+
+    def _set_writable_attributes(self, validator, request):
+        """Common code for setting all attributes given in the request.
+
+        Returns an HTTP 400 when a request tries to write to a read-only
+        attribute.
+        """
+        converted = validator(request)
+        for key, value in converted.items():
+            ATTRIBUTES[key].put(self._mlist, key, value)
+
     @resource.PUT()
     def put_configuration(self, request):
         """Set a mailing list configuration."""
         attribute = self._attribute
         if attribute is None:
-            # Set all writable attributes.
+            validator = Validator(**VALIDATORS)
             try:
-                converted = Validator(**VALIDATORS)(request)
+                self._set_writable_attributes(validator, request)
             except ValueError as error:
                 return http.bad_request([], str(error))
-            for key, value in converted.items():
-                ATTRIBUTES[key].put(self._mlist, key, value)
         elif attribute not in ATTRIBUTES:
             return http.bad_request(
                 [], b'Unknown attribute: {0}'.format(attribute))
@@ -253,9 +264,28 @@ class ListConfiguration(resource.Resource):
         else:
             validator = Validator(**{attribute: VALIDATORS[attribute]})
             try:
-                values = validator(request)
+                self._set_writable_attributes(validator, request)
             except ValueError as error:
                 return http.bad_request([], str(error))
-            ATTRIBUTES[attribute].put(
-                self._mlist, attribute, values[attribute])
+        return http.ok([], '')
+
+    @PATCH()
+    def patch_configuration(self, request):
+        """Patch the configuration (i.e. partial update)."""
+        # Validate only the partial subset of attributes given in the request.
+        validationators = {}
+        for attribute in request.PATCH:
+            if attribute not in ATTRIBUTES:
+                return http.bad_request(
+                    [], b'Unknown attribute: {0}'.format(attribute))
+            elif ATTRIBUTES[attribute].decoder is None:
+                return http.bad_request(
+                    [], b'Read-only attribute: {0}'.format(attribute))
+            else:
+                validationators[attribute] = VALIDATORS[attribute]
+        validator = Validator(**validationators)
+        try:
+            self._set_writable_attributes(validator, request)
+        except ValueError as error:
+            return http.bad_request([], str(error))
         return http.ok([], '')

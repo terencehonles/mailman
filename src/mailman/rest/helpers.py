@@ -22,6 +22,7 @@ from __future__ import absolute_import, unicode_literals
 __metaclass__ = type
 __all__ = [
     'ContainerMixin',
+    'PATCH',
     'etag',
     'no_content',
     'path_to',
@@ -29,13 +30,17 @@ __all__ = [
     ]
 
 
+import cgi
 import json
 import hashlib
 
+from cStringIO import StringIO
 from datetime import datetime, timedelta
 from flufl.enum import Enum
 from lazr.config import as_boolean
 from restish.http import Response
+from restish.resource import MethodDecorator
+from webob.multidict import MultiDict
 
 from mailman.config import config
 
@@ -163,3 +168,41 @@ def restish_matcher(function):
 def no_content():
     """204 No Content."""
     return Response('204 No Content', [], None)
+
+
+# These two classes implement an ugly, dirty hack to work around the fact that
+# neither WebOb nor really the stdlib cgi module support non-standard HTTP
+# verbs such as PATCH.  Note that restish handles it just fine in the sense
+# that the right method gets called, but without the following kludge, the
+# body of the request will never get decoded, so the method won't see any
+# data.
+#
+# Stuffing the MultiDict on request.PATCH is pretty ugly, but it mirrors
+# WebOb's use of request.POST and request.PUT for those standard verbs.
+# Besides, WebOb refuses to allow us to set request.POST.  This does make
+# validators.py a bit more complicated. :(
+
+class PATCHWrapper:
+    """Hack to decode the request body for PATCH."""
+    def __init__(self, func):
+        self.func = func
+
+    def __call__(self, resource, request):
+        # We can't use request.body_file because that's a socket that's
+        # already had its data read off of.  IOW, if we use that directly,
+        # we'll block here.
+        field_storage = cgi.FieldStorage(
+            fp=StringIO(request.body),
+            # Yes, lie about the method so cgi will do the right thing.
+            environ=dict(REQUEST_METHOD='POST'),
+            keep_blank_values=True)
+        request.PATCH = MultiDict.from_fieldstorage(field_storage)
+        return self.func(resource, request)
+
+
+class PATCH(MethodDecorator):
+    method = 'PATCH'
+
+    def __call__(self, func):
+        really_wrapped_func = PATCHWrapper(func)
+        return super(PATCH, self).__call__(really_wrapped_func)
