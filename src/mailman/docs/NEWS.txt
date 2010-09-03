@@ -15,8 +15,8 @@ Here is a history of user visible changes to Mailman.
 Commands
 --------
  * The functionality of 'bin/list_members' has been moved to
-   'bin/mailman members'
- * 'bin/mailman info' grew a -p/--paths option to display the file system
+   'bin/mailman members'.
+ * 'bin/mailman info' -v/--verbose output displays the file system
    layout paths Mailman is currently configured to use.
 
 Configuration
@@ -27,6 +27,38 @@ Configuration
    include 'local' for putting everything in /var/tmp/mailman, 'dev' for local
    development, and 'fhs' for Filesystem Hierarchy Standard 2.3 (LP #490144).
  * Queue file directories now live in $var_dir/queues.
+
+REST
+----
+ * lazr.restful has been replaced by restish as the REST publishing technology
+   used by Mailman.
+ * New REST API for getting all the members of a roster for a specific mailing
+   list.
+ * New REST API for getting and setting a mailing list's configuration.  GET
+   and PUT are supported to retrieve the current configuration, and set all
+   the list's writable attributes in one request.  PATCH is supported to
+   partially update a mailing list's configuration.  Individual options can be
+   set and retrieved by using subpaths.
+ * Subscribing an already subscribed member via REST now returns a 409 HTTP
+   error.  LP: #552917
+ * Fixed a bug when deleting a list via the REST API.  LP: #601899
+
+Architecture
+------------
+ * X-BeenThere header is removed.
+ * Mailman no longer touches the Sender or Errors-To headers.
+ * Chain actions can now fire Zope events in their _process()
+   implementations.
+ * Environment variable $MAILMAN_VAR_DIR can be used to control the var/
+   directory for Mailman's runtime files.  New environment variable
+   $MAILMAN_UNDER_MASTER_CONTROL is used instead of the qrunner's --subproc/-s
+   option.
+
+Miscellaneous
+-----------
+ * Various test failure fixes.  LP: #543618, LP: #544477
+ * List-Post header is retained in MIME digest messages.  LP: #526143
+ * Importing from a Mailman 2.1.x list is partially supported.
 
 
 3.0 alpha 5 -- "Distant Early Warning"
