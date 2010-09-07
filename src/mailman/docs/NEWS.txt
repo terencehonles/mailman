@@ -55,7 +55,7 @@ Architecture
    option.
 
 Miscellaneous
------------
+-------------
  * Various test failure fixes.  LP: #543618, LP: #544477
  * List-Post header is retained in MIME digest messages.  LP: #526143
  * Importing from a Mailman 2.1.x list is partially supported.

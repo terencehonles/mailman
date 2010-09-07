@@ -72,7 +72,7 @@ values.
     ...     POST = {}
     >>> FakeRequest.POST = dict(one='1', two='two', three='yes')
 
-On valid input, the validator can be used as a **kw argument.
+On valid input, the validator can be used as a ``**keyword`` argument.
 
     >>> def print_request(one, two, three):
     ...     print repr(one), repr(two), repr(three)
