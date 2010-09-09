@@ -9,12 +9,13 @@ NNTP is to Usenet as IP is to the web, it's more general than that.
     >>> mlist = create_list('_xtest@example.com')
 
 Gatewaying from the mailing list to the newsgroup happens through a separate
-'nntp' queue and happen immediately when the message is posted through to the
-list.  Note that gatewaying from the newsgroup to the list happens via a
-cronjob (currently not shown).  
+``nntp`` queue and happen immediately when the message is posted through to
+the list.  Note that gatewaying from the newsgroup to the list happens via a
+cronjob (currently not shown).
 
 There are several situations which prevent a message from being gatewayed to
 the newsgroup.  The feature could be disabled, as is the default.
+::
 
     >>> mlist.gateway_to_news = False
     >>> msg = message_from_string("""\

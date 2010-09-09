@@ -3,8 +3,8 @@ File recipients
 ===============
 
 Mailman can calculate the recipients for a message from a Sendmail-style
-include file.  This file must be called members.txt and it must live in the
-list's data directory.
+include file.  This file must be called ``members.txt`` and it must live in
+the list's data directory.
 
     >>> mlist = create_list('_xtest@example.com')
 
@@ -14,6 +14,7 @@ Short circuiting
 
 If the message's metadata already has recipients, this handler immediately
 returns.
+::
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
@@ -37,7 +38,7 @@ Missing file
 ============
 
 The include file must live inside the list's data directory, under the name
-members.txt.  If the file doesn't exist, the list of recipients will be
+``members.txt``.  If the file doesn't exist, the list of recipients will be
 empty.
 
     >>> import os
@@ -58,6 +59,7 @@ Existing file
 
 If the file exists, it contains a list of addresses, one per line.  These
 addresses are returned as the set of recipients.
+::
 
     >>> fp = open(file_path, 'w')
     >>> try:
@@ -77,8 +79,9 @@ addresses are returned as the set of recipients.
      'eperson@example.com', 'fperson@example.com', 'gperson@example.com']
 
 However, if the sender of the original message is a member of the list and
-their address is in the include file, the sender's address is /not/ included
+their address is in the include file, the sender's address is *not* included
 in the recipients list.
+::
 
     >>> from mailman.interfaces.usermanager import IUserManager
     >>> from zope.component import getUtility

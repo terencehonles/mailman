@@ -12,6 +12,7 @@ digests, although only two are currently supported: MIME digests and RFC 1153
 This is a helper function used to iterate through all the accumulated digest
 messages, in the order in which they were posted.  This makes it easier to
 update the tests when we switch to a different mailbox format.
+::
 
     >>> from mailman.testing.helpers import digest_mbox
     >>> from itertools import count

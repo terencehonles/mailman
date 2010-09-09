@@ -20,6 +20,7 @@ Short circuiting
 
 Digest messages get decorated during the digest creation phase so no extra
 decorations are added for digest messages.
+::
 
     >>> from mailman.pipeline.decorate import process
     >>> process(mlist, msg, dict(isdigest=True))
@@ -39,7 +40,7 @@ Decorating simple text messages
 ===============================
 
 Text messages that have no declared content type character set are by default,
-encoded in us-ascii.  When the mailing list's preferred language is 'en'
+encoded in us-ascii.  When the mailing list's preferred language is ``en``
 (i.e. English), the character set of the mailing list and of the message will
 match.  In this case, and when the header and footer have no interpolation
 placeholder variables, the message's payload will be prepended by the verbatim
@@ -60,7 +61,7 @@ header, and appended with the verbatim footer.
 
 Mailman supports a number of interpolation variables, placeholders in the
 header and footer for information to be filled in with mailing list specific
-data.  An example of such information is the mailing list's "real name" (a
+data.  An example of such information is the mailing list's `real name` (a
 short descriptive name for the mailing list).
 
     >>> msg = message_from_string(msg_text)
@@ -95,9 +96,9 @@ Handling RFC 3676 'format=flowed' parameters
 
 RFC 3676 describes a standard by which text/plain messages can marked by
 generating MUAs for better readability in compatible receiving MUAs.  The
-'format' parameter on the text/plain Content-Type header gives hints as to how
-the receiving MUA may flow and delete trailing whitespace for better display
-in a proportional font.
+``format`` parameter on the text/plain ``Content-Type`` header gives hints as
+to how the receiving MUA may flow and delete trailing whitespace for better
+display in a proportional font.
 
 When Mailman sees text/plain messages with such RFC 3676 parameters, it
 preserves these parameters when it concatenates headers and footers to the
@@ -130,6 +131,7 @@ When a message has no explicit character set, it is assumed to be us-ascii.
 However, if the mailing list's preferred language has a different character
 set, Mailman will still try to concatenate the header and footer, but it will
 convert the text to utf-8 and base-64 encode the message payload.
+::
 
     # 'ja' = Japanese; charset = 'euc-jp'
     >>> mlist.preferred_language = 'ja'
@@ -205,9 +207,9 @@ cannot be simply concatenated into the payload because that will break the
 MIME structure of the message.  Instead, the header and footer are attached as
 separate MIME subparts.
 
-When the outerpart is multipart/mixed, the header and footer can have a
-Content-Disposition of 'inline' so that MUAs can display these headers as if
-they were simply concatenated.
+When the outer part is ``multipart/mixed``, the header and footer can have a
+``Content-Disposition`` of ``inline`` so that MUAs can display these headers
+as if they were simply concatenated.
 
     >>> mlist.preferred_language = 'en'
     >>> mlist.msg_header = 'header'
@@ -260,8 +262,8 @@ they were simply concatenated.
 Decorating other content types
 ==============================
 
-Non-multipart non-text content types will get wrapped in a multipart/mixed so
-that the header and footer can be added as attachments.
+Non-multipart non-text content types will get wrapped in a ``multipart/mixed``
+so that the header and footer can be added as attachments.
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.org
