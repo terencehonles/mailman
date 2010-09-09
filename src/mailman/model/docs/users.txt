@@ -133,7 +133,9 @@ Users have preferences, but these preferences have no default settings.
     receive_own_postings : None
     delivery_mode        : None
 
-Some of these preferences are booleans and they can be set to True or False.
+Some of these preferences are booleans and they can be set to ``True`` or
+``False``.
+::
 
     >>> from mailman.interfaces.languages import ILanguageManager
     >>> getUtility(ILanguageManager).add('it', 'iso-8859-1', 'Italian')
@@ -158,6 +160,7 @@ Subscriptions
 
 Users know which mailing lists they are subscribed to, regardless of
 membership role.
+::
 
     >>> user_1.link(address_1)
     >>> sorted(address.address for address in user_1.addresses)
@@ -201,8 +204,4 @@ membership role.
     zperson@example.org xtest_2@example.com MemberRole.owner
 
 
-Cross references
-================
-
 .. _`usermanager.txt`: usermanager.html
-

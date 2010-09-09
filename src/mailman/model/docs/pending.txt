@@ -17,8 +17,8 @@ available by adapting the list manager.
     >>> from zope.component import getUtility
     >>> pendingdb = getUtility(IPendings)
 
-The pending database can add any IPendable to the database, returning a token
-that can be used in urls and such.
+The pending database can add any ``IPendable`` to the database, returning a
+token that can be used in urls and such.
 
     >>> from mailman.interfaces.pending import IPendable
     >>> class SimplePendable(dict):
@@ -33,10 +33,10 @@ that can be used in urls and such.
     >>> len(token)
     40
 
-There's not much you can do with tokens except to 'confirm' them, which
-basically means returning the IPendable structure (as a dict) from the
-database that matches the token.  If the token isn't in the database, None is
-returned.
+There's not much you can do with tokens except to `confirm` them, which
+basically means returning the ``IPendable`` structure (as a dictionary) from
+the database that matches the token.  If the token isn't in the database,
+``None`` is returned.
 
     >>> pendable = pendingdb.confirm(bytes('missing'))
     >>> print pendable
@@ -56,7 +56,7 @@ After confirmation, the token is no longer in the database.
     None
 
 There are a few other things you can do with the pending database.  When you
-confirm a token, you can leave it in the database, or in otherwords, not
+confirm a token, you can leave it in the database, or in other words, not
 expunge it.
 
     >>> event_1 = SimplePendable(type='one')

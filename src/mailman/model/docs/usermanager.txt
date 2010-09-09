@@ -2,10 +2,7 @@
 The user manager
 ================
 
-The IUserManager is how you create, delete, and manage users.  The Mailman
-system instantiates an IUserManager for you based on the configuration
-variable MANAGERS_INIT_FUNCTION.  The instance is accessible on the global
-config object.
+The ``IUserManager`` is how you create, delete, and manage users.
 
     >>> from mailman.interfaces.usermanager import IUserManager
     >>> from zope.component import getUtility
@@ -16,9 +13,10 @@ Creating users
 ==============
 
 There are several ways you can create a user object.  The simplest is to
-create a 'blank' user by not providing an address or real name at creation
+create a `blank` user by not providing an address or real name at creation
 time.  This user will have an empty string as their real name, but will not
 have a password.
+::
 
     >>> from mailman.interfaces.user import IUser
     >>> from zope.interface.verify import verifyObject
@@ -103,10 +101,10 @@ longer available through the user manager iterator.
 Finding users
 =============
 
-You can ask the user manager to find the IUser that controls a particular
+You can ask the user manager to find the ``IUser`` that controls a particular
 email address.  You'll get back the original user object if it's found.  Note
-that the .get_user() method takes a string email address, not an IAddress
-object.
+that the ``.get_user()`` method takes a string email address, not an
+``IAddress`` object.
 
     >>> address = list(user_4.addresses)[0]
     >>> found_user = user_manager.get_user(address.address)
@@ -116,7 +114,7 @@ object.
     True
 
 If the address is not in the user database or does not have a user associated
-with it, you will get None back.
+with it, you will get ``None`` back.
 
     >>> print user_manager.get_user('zperson@example.com')
     None

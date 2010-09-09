@@ -13,6 +13,7 @@ to the sender.
     Echo an acknowledgement.  Arguments are return unchanged.
 
 The original message is ignored, but the results receive the echoed command.
+::
 
     >>> mlist = create_list('test@example.com')
 

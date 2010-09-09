@@ -2,7 +2,7 @@
 Domains
 =======
 
-    # The test framework starts out with an example domain, so let's delete
+..  # The test framework starts out with an example domain, so let's delete
     # that first.
     >>> from mailman.interfaces.domain import IDomainManager
     >>> from zope.component import getUtility
@@ -11,6 +11,7 @@ Domains
     <Domain example.com...>
 
 Domains are how Mailman interacts with email host names and web host names.
+::
 
     >>> from operator import attrgetter
     >>> def show_domains():
@@ -52,6 +53,7 @@ web interface for the domain.
             contact_address: postmaster@example.com>
 
 Domains can have explicit descriptions and contact addresses.
+::
 
     >>> manager.add(
     ...     'example.net',
@@ -70,6 +72,7 @@ Domains can have explicit descriptions and contact addresses.
             contact_address: postmaster@example.com>
 
 In the global domain manager, domains are indexed by their email host name.
+::
 
     >>> for domain in sorted(manager, key=attrgetter('email_host')):
     ...     print domain.email_host
@@ -87,7 +90,8 @@ In the global domain manager, domains are indexed by their email host name.
     KeyError: u'doesnotexist.com'
 
 As with a dictionary, you can also get the domain.  If the domain does not
-exist, None or a default is returned.
+exist, ``None`` or a default is returned.
+::
 
     >>> print manager.get('example.net')
     <Domain example.net, The example domain,

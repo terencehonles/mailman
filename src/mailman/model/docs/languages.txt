@@ -5,6 +5,7 @@ Languages
 Mailman is multilingual.  A language manager handles the known set of
 languages at run time, as well as enabling those languages for use in a
 running Mailman instance.
+::
 
     >>> from mailman.interfaces.languages import ILanguageManager
     >>> from zope.component import getUtility
@@ -94,6 +95,7 @@ Clearing the known languages
 ============================
 
 The language manager can forget about all the language codes it knows about.
+::
 
     >>> 'en' in mgr
     True

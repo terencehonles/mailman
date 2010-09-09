@@ -3,7 +3,7 @@ Mailing list addresses
 ======================
 
 Every mailing list has a number of addresses which are publicly available.
-These are defined in the IMailingListAddresses interface.
+These are defined in the ``IMailingListAddresses`` interface.
 
     >>> mlist = create_list('_xtest@example.com')
 
@@ -15,7 +15,7 @@ list.  This is exactly the same as the fully qualified list name.
     >>> print mlist.posting_address
     _xtest@example.com
 
-Messages to the mailing list's 'no reply' address always get discarded without
+Messages to the mailing list's `no reply` address always get discarded without
 prejudice.
 
     >>> print mlist.no_reply_address
@@ -61,7 +61,8 @@ Email confirmations
 Email confirmation messages are sent when actions such as subscriptions need
 to be confirmed.  It requires that a cookie be provided, which will be
 included in the local part of the email address.  The exact format of this is
-dependent on the VERP_CONFIRM_FORMAT configuration variable.
+dependent on the ``verp_confirm_format`` configuration variable.
+::
 
     >>> print mlist.confirm_address('cookie')
     _xtest-confirm+cookie@example.com

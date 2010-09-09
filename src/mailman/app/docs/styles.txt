@@ -13,6 +13,7 @@ or not.  And finally, application of a style to a mailing list can really
 modify the mailing list any way it wants.
 
 Let's start with a vanilla mailing list and a default style manager.
+::
 
     >>> from mailman.interfaces.listmanager import IListManager
     >>> from zope.component import getUtility
@@ -44,9 +45,9 @@ last.
 
 Given a mailing list, you can ask the style manager to find all the styles
 that match the list.  The registered styles will be sorted by decreasing
-priority and each style's `match()` method will be called in turn.  The sorted
-list of matching styles will be returned -- but not applied -- by the style
-manager's `lookup()` method.
+priority and each style's ``match()`` method will be called in turn.  The
+sorted list of matching styles will be returned -- but not applied -- by the
+style manager's ``lookup()`` method.
 
     >>> [style.name for style in style_manager.lookup(mlist)]
     ['default']
@@ -55,7 +56,7 @@ manager's `lookup()` method.
 Registering styles
 ==================
 
-New styles must implement the IStyle interface.
+New styles must implement the ``IStyle`` interface.
 
     >>> from zope.interface import implements
     >>> from mailman.interfaces.styles import IStyle
@@ -93,6 +94,7 @@ Style priority
 When multiple styles match a particular mailing list, they are applied in
 descending order of priority.  In other words, a priority zero style would be
 applied last.
+::
 
     >>> class AnotherTestStyle(TestStyle):
     ...     name = 'another'

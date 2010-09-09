@@ -7,10 +7,10 @@ The only thing they must supply is an email address, although there is
 additional information they may supply.  All registered email addresses must
 be verified before Mailman will send them any list traffic.
 
-The IUserManager manages users, but it does so at a fairly low level.
+The ``IUserManager`` manages users, but it does so at a fairly low level.
 Specifically, it does not handle verifications, email address syntax validity
-checks, etc.  The IRegistrar is the interface to the object handling all this
-stuff.
+checks, etc.  The ``IRegistrar`` is the interface to the object handling all
+this stuff.
 
     >>> from mailman.interfaces.registrar import IRegistrar
     >>> from zope.component import getUtility
@@ -76,9 +76,9 @@ Register an email address
 =========================
 
 Registration of an unknown address creates nothing until the confirmation step
-is complete.  No IUser or IAddress is created at registration time, but a
-record is added to the pending database, and the token for that record is
-returned.
+is complete.  No ``IUser`` or ``IAddress`` is created at registration time,
+but a record is added to the pending database, and the token for that record
+is returned.
 
     >>> token = registrar.register(mlist, 'aperson@example.com', 'Anne Person')
     >>> check_token(token)
@@ -161,12 +161,12 @@ appear in a URL in the body of the message.
     >>> sent_token == token
     True
 
-The same token will appear in the From header.
+The same token will appear in the ``From`` header.
 
     >>> items[0].msg['from'] == 'alpha-confirm+' + token + '@example.com'
     True
 
-It will also appear in the Subject header.
+It will also appear in the ``Subject`` header.
 
     >>> items[0].msg['subject'] == 'confirm ' + token
     True
@@ -178,8 +178,8 @@ token and uses that to confirm the pending registration.
     >>> registrar.confirm(token)
     True
 
-Now, there is an IAddress in the database matching the address, as well as an
-IUser linked to this address.  The IAddress is verified.
+Now, there is an ``IAddress`` in the database matching the address, as well as
+an ``IUser`` linked to this address.  The ``IAddress`` is verified.
 
     >>> found_address = user_manager.get_address('aperson@example.com')
     >>> found_address
@@ -247,7 +247,9 @@ Discarding
 ==========
 
 A confirmation token can also be discarded, say if the user changes his or her
-mind about registering.  When discarded, no IAddress or IUser is created.
+mind about registering.  When discarded, no ``IAddress`` or ``IUser`` is
+created.
+::
 
     >>> token = registrar.register(mlist, 'eperson@example.com', 'Elly Person')
     >>> check_token(token)
@@ -270,6 +272,7 @@ Registering a new address for an existing user
 When a new address for an existing user is registered, there isn't too much
 different except that the new address will still need to be verified before it
 can be used.
+::
 
     >>> dperson = user_manager.create_user(
     ...     'dperson@example.com', 'Dave Person')
@@ -310,9 +313,9 @@ confirm method will just return False.
     >>> registrar.confirm(bytes('no token'))
     False
 
-Likewise, if you try to confirm, through the IUserRegistrar interface, a token
-that doesn't match a registration event, you will get None.  However, the
-pending event matched with that token will still be removed.
+Likewise, if you try to confirm, through the ``IUserRegistrar`` interface, a
+token that doesn't match a registration event, you will get ``None``.
+However, the pending event matched with that token will still be removed.
 
     >>> from mailman.interfaces.pending import IPendable
     >>> from zope.interface import implements

@@ -4,6 +4,7 @@ Importing list data
 
 If you have the config.pck file for a version 2.1 mailing list, you can import
 that into an existing mailing list in Mailman 3.0.
+::
 
     >>> from mailman.commands.cli_import import Import21
     >>> command = Import21()
@@ -18,6 +19,7 @@ that into an existing mailing list in Mailman 3.0.
     >>> command.parser = FakeParser()
 
 You must specify the mailing list you are importing into, and it must exist.
+::
 
     >>> command.process(FakeArgs)
     List name is required
@@ -28,6 +30,7 @@ You must specify the mailing list you are importing into, and it must exist.
 
 When the mailing list exists, you must specify a real pickle file to import
 from.
+::
 
     >>> mlist = create_list('import@example.com')
     >>> command.process(FakeArgs)
@@ -39,6 +42,7 @@ from.
 
 Now we can import the test pickle file.  As a simple illustration of the
 import, the mailing list's 'real name' has changed.
+::
 
     >>> from pkg_resources import resource_filename
     >>> FakeArgs.pickle_file = [
@@ -50,5 +54,3 @@ import, the mailing list's 'real name' has changed.
     >>> command.process(FakeArgs)
     >>> print mlist.real_name
     Test
-
-See `../../utilities/docs/importer.txt` for more details.

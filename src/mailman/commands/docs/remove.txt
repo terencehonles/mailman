@@ -3,6 +3,7 @@ Command line list removal
 =========================
 
 A system administrator can remove mailing lists by the command line.
+::
 
     >>> create_list('test@example.com')
     <mailing list "test@example.com" at ...>
@@ -29,6 +30,7 @@ A system administrator can remove mailing lists by the command line.
     None
 
 You can also remove lists quietly.
+::
 
     >>> create_list('test@example.com')
     <mailing list "test@example.com" at ...>
@@ -44,6 +46,7 @@ Removing archives
 =================
 
 By default 'mailman remove' does not remove a mailing list's archives.
+::
 
     >>> create_list('test@example.com')
     <mailing list "test@example.com" at ...>
@@ -71,6 +74,7 @@ By default 'mailman remove' does not remove a mailing list's archives.
 
 Even if the mailing list has been deleted, you can still delete the archives
 afterward.
+::
 
     >>> args.archives = True
     

@@ -3,15 +3,15 @@ Membership changes via email
 ============================
 
 Membership changes such as joining and leaving a mailing list, can be effected
-via the email interface.  The Mailman email commands 'join', 'leave', and
-'confirm' are used.
+via the email interface.  The Mailman email commands ``join``, ``leave``, and
+``confirm`` are used.
 
 
 Joining a mailing list
 ======================
 
-The mail command 'join' subscribes an email address to the mailing list.
-'subscribe' is an alias for 'join'.
+The mail command ``join`` subscribes an email address to the mailing list.
+``subscribe`` is an alias for ``join``.
 
     >>> from mailman.commands.eml_membership import Join
     >>> join = Join()
@@ -39,6 +39,7 @@ No address to join
 
 When no address argument is given, the message's From address will be used.
 If that's missing though, then an error is returned.
+::
 
     >>> from mailman.queue.command import Results
     >>> results = Results()
@@ -52,7 +53,7 @@ If that's missing though, then an error is returned.
     join: No valid address found to subscribe
     <BLANKLINE>
 
-The 'subscribe' command is an alias.
+The ``subscribe`` command is an alias.
 
     >>> from mailman.commands.eml_membership import Subscribe
     >>> subscribe = Subscribe()
@@ -133,6 +134,7 @@ Mailman has sent her the confirmation message.
 
 Once Anne confirms her registration, she will be made a member of the mailing
 list.
+::
 
     >>> def extract_token(message):
     ...     return str(message['subject']).split()[1].strip()
@@ -190,7 +192,9 @@ But she is not a member of the mailing list.
     >>> print mlist_2.members.get_member('anne@example.com')
     None
 
-One Anne confirms this subscription, she becomes a member of the mailing list.
+One Anne confirms this subscription, she becomes a member of the mailing
+list.
+::
 
     >>> items = get_queue_messages('virgin')
     >>> len(items)
@@ -220,8 +224,8 @@ One Anne confirms this subscription, she becomes a member of the mailing list.
 Leaving a mailing list
 ======================
 
-The mail command 'leave' unsubscribes an email address from the mailing list.
-'unsubscribe' is an alias for 'leave'.
+The mail command ``leave`` unsubscribes an email address from the mailing
+list.  ``unsubscribe`` is an alias for ``leave``.
 
     >>> from mailman.commands.eml_membership import Leave
     >>> leave = Leave()
@@ -230,9 +234,9 @@ The mail command 'leave' unsubscribes an email address from the mailing list.
     >>> print leave.description
     Leave this mailing list.  You will be asked to confirm your request.
 
-Anne is a member of the baker@example.com mailing list, when she decides to
-leave it.  She sends a message to the -leave address for the list and is sent
-a confirmation message for her request.
+Anne is a member of the ``baker@example.com`` mailing list, when she decides
+to leave it.  She sends a message to the ``-leave`` address for the list and
+is sent a confirmation message for her request.
 
     >>> results = Results()
     >>> print leave.process(mlist_2, msg, {}, (), results)
@@ -251,6 +255,7 @@ Anne is no longer a member of the mailing list.
 Anne does not need to leave a mailing list with the same email address she's
 subscribe with.  Any of her registered, linked, and validated email addresses
 will do.
+::
 
     >>> anne = user_manager.get_user('anne@example.com')
     >>> address = anne.register('anne.person@example.org')
@@ -268,6 +273,7 @@ will do.
 
 Since Anne's alternative address has not yet been verified, it can't be used
 to unsubscribe Anne from the alpha mailing list.
+::
 
     >>> print leave.process(mlist, msg, {}, (), results)
     ContinueProcessing.no
@@ -284,6 +290,7 @@ to unsubscribe Anne from the alpha mailing list.
 
 Once Anne has verified her alternative address though, it can be used to
 unsubscribe her from the list.
+::
 
     >>> from datetime import datetime
     >>> address.verified_on = datetime.now()
@@ -306,6 +313,7 @@ Confirmations
 =============
 
 Bart wants to join the alpha list, so he sends his subscription request.
+::
 
     >>> msg = message_from_string("""\
     ... From: Bart Person <bart@example.com>
@@ -333,6 +341,7 @@ Bart is still not a user.
 Bart replies to the original message, specifically keeping the Subject header
 intact except for any prefix.  Mailman matches the token and confirms Bart as
 a user of the system.
+::
 
     >>> msg = message_from_string("""\
     ... From: Bart Person <bart@example.com>

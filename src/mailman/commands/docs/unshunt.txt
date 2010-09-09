@@ -3,8 +3,9 @@ Unshunt
 =======
 
 When errors occur while processing email messages, the messages will end up in
-the 'shunt' queue.  The 'unshunt' command allows system administrators to
+the ``shunt`` queue.  The ``unshunt`` command allows system administrators to
 manage the shunt queue.
+::
 
     >>> from mailman.commands.cli_unshunt import Unshunt
     >>> command = Unshunt()
@@ -13,6 +14,7 @@ manage the shunt queue.
     ...     discard = False
 
 Let's say there is a message in the shunt queue.
+::
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
@@ -29,7 +31,9 @@ Let's say there is a message in the shunt queue.
     >>> len(list(shuntq.files))
     1
 
-The unshunt command by default moves the message back to the incoming queue.
+The ``unshunt`` command by default moves the message back to the incoming
+queue.
+::
 
     >>> inq = config.switchboards['in']
     >>> len(list(inq.files))
@@ -49,7 +53,8 @@ The unshunt command by default moves the message back to the incoming queue.
     <BLANKLINE>
     <BLANKLINE>
 
-'unshunt' moves all shunt queue messages.
+``unshunt`` moves all shunt queue messages.
+::
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
@@ -97,6 +102,7 @@ different queue, it will be returned to the queue it came from.
     ... """)
 
 The queue that the message comes from is in message metadata.
+::
 
     >>> base_name = shuntq.enqueue(msg, {}, whichq='bounces')
 
@@ -106,6 +112,7 @@ The queue that the message comes from is in message metadata.
     0
 
 The message is automatically re-queued to the bounces queue.
+::
 
     >>> command.process(FakeArgs)
     >>> len(list(shuntq.files))
@@ -127,6 +134,7 @@ Discarding all shunted messages
 ===============================
 
 If you don't care about the shunted messages, just discard them.
+::
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com

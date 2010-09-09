@@ -4,7 +4,7 @@ List memberships
 
 Users represent people in Mailman.  Users control email addresses, and rosters
 are collections of members.  A member gives an email address a role, such as
-'member', 'administrator', or 'moderator'.  Roster sets are collections of
+`member`, `administrator`, or `moderator`.  Roster sets are collections of
 rosters and a mailing list has a single roster set that contains all its
 members, regardless of that member's role.
 
@@ -180,8 +180,8 @@ It's easy to make the list administrators members of the mailing list too.
 Finding members
 ===============
 
-You can find the IMember object that is a member of a roster for a given text
-email address by using an IRoster's .get_member() method.
+You can find the ``IMember`` object that is a member of a roster for a given
+text email address by using the ``IRoster.get_member()`` method.
 
     >>> mlist.owners.get_member('aperson@example.com')
     <Member: Anne Person <aperson@example.com> on

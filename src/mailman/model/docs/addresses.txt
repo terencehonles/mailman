@@ -41,8 +41,8 @@ You can also create an email address object with a real name.
     >>> sorted(address.real_name for address in user_manager.addresses)
     [u'', u'Ben Person']
 
-The str() of the address is the RFC 2822 preferred originator format, while
-the repr() carries more information.
+The ``str()`` of the address is the RFC 2822 preferred originator format,
+while the ``repr()`` carries more information.
 
     >>> str(address_2)
     'Ben Person <bperson@example.com>'
@@ -149,6 +149,7 @@ Subscriptions
 
 Addresses get subscribed to mailing lists, not users.  When the address is
 subscribed, a role is specified.
+::
 
     >>> address_5 = user_manager.create_address(
     ...     'eperson@example.com', 'Elly Person')

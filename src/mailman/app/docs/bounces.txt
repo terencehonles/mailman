@@ -28,7 +28,7 @@ Any message can be bounced.
 
 Bounce a message by passing in the original message, and an optional error
 message.  The bounced message ends up in the virgin queue, awaiting sending
-to the original messageauthor.
+to the original message author.
 
     >>> from mailman.app.bounces import bounce_message
     >>> bounce_message(mlist, msg)
@@ -66,7 +66,7 @@ to the original messageauthor.
 
 An error message can be given when the message is bounced, and this will be
 included in the payload of the text/plain part.  The error message must be
-passed in as an instance of a RejectMessage exception.
+passed in as an instance of a ``RejectMessage`` exception.
 
     >>> from mailman.core.errors import RejectMessage
     >>> error = RejectMessage("This wasn't very important after all.")

@@ -2,10 +2,8 @@
 The mailing list manager
 ========================
 
-The IListManager is how you create, delete, and retrieve mailing list
-objects.  The Mailman system instantiates an IListManager for you based on the
-configuration variable MANAGERS_INIT_FUNCTION.  The instance is accessible
-on the global config object.
+The ``IListManager`` is how you create, delete, and retrieve mailing list
+objects.
 
     >>> from mailman.interfaces.listmanager import IListManager
     >>> from zope.component import getUtility
@@ -76,12 +74,12 @@ always get the same object back.
     >>> mlist_2 is mlist
     True
 
-If you try to get a list that doesn't existing yet, you get None.
+If you try to get a list that doesn't existing yet, you get ``None``.
 
     >>> print list_manager.get('_xtest_2@example.com')
     None
 
-You also get None if the list name is invalid.
+You also get ``None`` if the list name is invalid.
 
     >>> print list_manager.get('foo')
     None

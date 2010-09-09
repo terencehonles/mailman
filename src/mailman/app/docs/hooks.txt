@@ -4,7 +4,8 @@ Hooks
 
 Mailman defines two initialization hooks, one which is run early in the
 initialization process and the other run late in the initialization process.
-Hooks name an importable callable so it must be accessible on sys.path.
+Hooks name an importable callable so it must be accessible on ``sys.path``.
+::
 
     >>> import os, sys
     >>> from mailman.config import config
@@ -46,6 +47,7 @@ We can set the pre-hook in the configuration file.
 The hooks are run in the second and third steps of initialization.  However,
 we can't run those initialization steps in process, so call a command line
 script that will produce no output to force the hooks to run.
+::
 
     >>> import subprocess
     >>> from mailman.testing.layers import ConfigLayer
@@ -71,6 +73,7 @@ Post-hook
 =========
 
 We can set the post-hook in the configuration file.
+::
 
     >>> with open(config_path, 'w') as fp:
     ...     print >> fp, """\
@@ -92,6 +95,7 @@ Running both hooks
 ==================
 
 We can set the pre- and post-hooks in the configuration file.
+::
 
     >>> with open(config_path, 'w') as fp:
     ...     print >> fp, """\

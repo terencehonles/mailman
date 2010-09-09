@@ -4,6 +4,7 @@ Command line list display
 
 A system administrator can display all the mailing lists via the command
 line.  When there are no mailing lists, a helpful message is displayed.
+::
 
     >>> class FakeArgs:
     ...     advertised = False
@@ -19,6 +20,7 @@ line.  When there are no mailing lists, a helpful message is displayed.
 
 When there are a few mailing lists, they are shown in alphabetical order by
 their fully qualified list names, with a description.
+::
 
     >>> from mailman.interfaces.domain import IDomainManager
     >>> from zope.component import getUtility
@@ -45,7 +47,7 @@ Names
 =====
 
 You can display the mailing list names with their posting addresses, using the
---names/-n switch.
+``--names/-n`` switch.
 
     >>> FakeArgs.names = True
     >>> command.process(FakeArgs)
@@ -59,7 +61,7 @@ Descriptions
 ============
 
 You can also display the mailing list descriptions, using the
---descriptions/-d option.
+``--descriptions/-d`` option.
 
     >>> FakeArgs.descriptions = True
     >>> command.process(FakeArgs)
@@ -81,7 +83,7 @@ Maybe you want the descriptions but not the names.
 Less verbosity
 ==============
 
-There's also a --quiet/-q switch which reduces the verbosity a bit.
+There's also a ``--quiet/-q`` switch which reduces the verbosity a bit.
 
     >>> FakeArgs.quiet = True
     >>> FakeArgs.descriptions = False
@@ -127,6 +129,7 @@ Advertised lists
 Mailing lists can be 'advertised' meaning their existence is public
 knowledge.  Non-advertised lists are considered private.  Display through the
 command line can select on this attribute.
+::
 
     >>> FakeArgs.domains = []
     >>> FakeArgs.advertised = True

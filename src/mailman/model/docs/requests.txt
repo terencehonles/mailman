@@ -35,6 +35,7 @@ Mailing list centric
 
 A set of requests are always related to a particular mailing list, so given a
 mailing list you need to get its requests object.
+::
 
     >>> from mailman.interfaces.requests import IListRequests, IRequests
     >>> from zope.component import getUtility
@@ -203,10 +204,10 @@ For the next section, we first clean up all the current requests.
 Application support
 ===================
 
-There are several higher level interfaces available in the mailman.app package
-which can be used to hold messages, subscription, and unsubscriptions.  There
-are also interfaces for disposing of these requests in an application specific
-and consistent way.
+There are several higher level interfaces available in the ``mailman.app``
+package which can be used to hold messages, subscription, and unsubscriptions.
+There are also interfaces for disposing of these requests in an application
+specific and consistent way.
 
     >>> from mailman.app import moderator
 
@@ -237,6 +238,7 @@ this case, we won't include any additional metadata.
     True
 
 We can also hold a message with some additional metadata.
+::
 
     # Delete the Message-ID from the previous hold so we don't try to store
     # collisions in the message storage.
@@ -336,6 +338,7 @@ re-added to the message store).  When handling a message, we can tell the
 moderator interface to also preserve a copy, essentially telling it not to
 delete the message from the storage.  First, without the switch, the message
 is deleted.
+::
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.org
@@ -374,6 +377,7 @@ the message store after disposition.
 Orthogonal to preservation, the message can also be forwarded to another
 address.  This is helpful for getting the message into the inbox of one of the
 moderators.
+::
 
     # Set a new Message-ID from the previous hold so we don't try to store
     # collisions in the message storage.
@@ -678,6 +682,7 @@ The admin message is sent to the moderators.
     version             : 3
 
 Frank Person is now a member of the mailing list.
+::
 
     >>> member = mlist.members.get_member('fperson@example.org')
     >>> member
@@ -704,7 +709,9 @@ Holding unsubscription requests
 
 Some lists, though it is rare, require moderator approval for unsubscriptions.
 In this case, only the unsubscribing address is required.  Like subscriptions,
-unsubscription holds can send the list's moderators an immediate notification.
+unsubscription holds can send the list's moderators an immediate
+notification.
+::
 
     >>> mlist.admin_immed_notify = False
     >>> from mailman.interfaces.member import MemberRole
@@ -776,6 +783,7 @@ subscribed.
 
 The request can be rejected, in which case a message is sent to the member,
 and the person remains a member of the mailing list.
+::
 
     >>> moderator.handle_unsubscription(mlist, id_6, Action.reject,
     ...     'This list is a prison.')

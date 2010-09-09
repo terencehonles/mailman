@@ -2,7 +2,7 @@
 Mailing lists
 =============
 
-XXX 2010-06-18 BAW: This documentation needs a lot more detail.
+.. XXX 2010-06-18 BAW: This documentation needs a lot more detail.
 
 The mailing list is a core object in Mailman.  It is uniquely identified in
 the system by its posting address, i.e. the email address you would send a
@@ -25,10 +25,11 @@ name (i.e. local part) and host name.
 Rosters
 =======
 
-Mailing list membership is represented by 'rosters'.  Each mailing list has
+Mailing list membership is represented by `rosters`.  Each mailing list has
 several rosters of members, representing the subscribers to the mailing list,
 the owners, the moderators, and so on.  The rosters are defined by a
 membership role.
+::
 
     >>> from mailman.interfaces.member import MemberRole
     >>> from mailman.testing.helpers import subscribe

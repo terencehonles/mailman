@@ -3,7 +3,8 @@ Getting information
 ===================
 
 You can get information about Mailman's environment by using the command line
-script 'mailman info'.  By default, the info is printed to standard output.
+script ``mailman info``.  By default, the info is printed to standard output.
+::
 
     >>> from mailman.commands.cli_info import Info
     >>> command = Info()
@@ -20,7 +21,7 @@ script 'mailman info'.  By default, the info is printed to standard output.
     config file: .../test.cfg
     db url: sqlite:.../mailman.db
 
-By passing in the -o/--output option, you can print the info to a file.
+By passing in the ``-o/--output`` option, you can print the info to a file.
 
     >>> from mailman.config import config
     >>> import os

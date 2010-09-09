@@ -35,6 +35,7 @@ the mailing list and domain will be created.
     Created mailing list: test@example.xx
 
 Now both the domain and the mailing list exist in the database.
+::
 
     >>> from mailman.interfaces.listmanager import IListManager
     >>> from zope.component import getUtility
@@ -49,6 +50,7 @@ Now both the domain and the mailing list exist in the database.
 
 You can also create mailing lists in existing domains without the
 auto-creation flag.
+::
 
     >>> args.domain = False
     >>> args.listname = ['test1@example.com']
@@ -59,6 +61,7 @@ auto-creation flag.
     <mailing list "test1@example.com" at ...>
 
 The command can also operate quietly.
+::
 
     >>> args.quiet = True
     >>> args.listname = ['test2@example.com']
@@ -79,6 +82,7 @@ By default, no list owners are specified.
 
 But you can specify an owner address on the command line when you create the
 mailing list.
+::
 
     >>> args.quiet = False
     >>> args.listname = ['test4@example.com']
@@ -91,6 +95,7 @@ mailing list.
     [<Address: foo@example.org [not verified] at ...>]
 
 You can even specify more than one address for the owners.
+::
 
     >>> args.owners = ['foo@example.net', 'bar@example.net', 'baz@example.net']
     >>> args.listname = ['test5@example.com']
@@ -110,6 +115,7 @@ Setting the language
 
 You can set the default language for the new mailing list when you create it.
 The language must be known to Mailman.
+::
 
     >>> args.listname = ['test3@example.com']
     >>> args.language = 'ee'
@@ -142,6 +148,7 @@ When told to, Mailman will notify the list owners of their new mailing list.
     Created mailing list: test6@example.com
 
 The notification message is in the virgin queue.
+::
 
     >>> from mailman.testing.helpers import get_queue_messages
     >>> messages = get_queue_messages('virgin')

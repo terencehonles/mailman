@@ -13,7 +13,8 @@ processing of messages.
 The Discard chain
 =================
 
-The Discard chain simply throws the message away.
+The `discard` chain simply throws the message away.
+::
 
     >>> from zope.interface.verify import verifyObject
     >>> from mailman.interfaces.chain import IChain
@@ -50,8 +51,9 @@ The Discard chain simply throws the message away.
 The Reject chain
 ================
 
-The Reject chain bounces the message back to the original sender, and logs
+The `reject` chain bounces the message back to the original sender, and logs
 this action.
+::
 
     >>> chain = config.chains['reject']
     >>> verifyObject(IChain, chain)
@@ -65,7 +67,7 @@ this action.
     ...     process(mlist, msg, {}, 'reject')
     REJECT: <first>
 
-The bounce message is now sitting in the Virgin queue.
+The bounce message is now sitting in the `virgin` queue.
 
     >>> from mailman.testing.helpers import get_queue_messages
     >>> qfiles = get_queue_messages('virgin')
@@ -94,9 +96,10 @@ The bounce message is now sitting in the Virgin queue.
 The Hold Chain
 ==============
 
-The Hold chain places the message into the admin request database and
+The `hold` chain places the message into the admin request database and
 depending on the list's settings, sends a notification to both the original
 sender and the list moderators.
+::
 
     >>> chain = config.chains['hold']
     >>> verifyObject(IChain, chain)
@@ -203,6 +206,7 @@ for them to be disposed of by the original author or the list moderators.  The
 database is essentially a dictionary, with the keys being the randomly
 selected tokens included in the urls and the values being a 2-tuple where the
 first item is a type code and the second item is a message id.
+::
 
     >>> import re
     >>> cookie = None
@@ -221,6 +225,7 @@ first item is a type code and the second item is a message id.
     [(u'id', ...), (u'type', u'held message')]
 
 The message itself is held in the message store.
+::
 
     >>> from mailman.interfaces.requests import IRequests
     >>> list_requests = getUtility(IRequests).get_list_requests(mlist)
@@ -245,7 +250,7 @@ The message itself is held in the message store.
 The Accept chain
 ================
 
-The Accept chain sends the message on the 'prep' queue, where it will be
+The `accept` chain sends the message on the `pipeline` queue, where it will be
 processed and sent on to the list membership.
 
     >>> chain = config.chains['accept']
@@ -278,10 +283,10 @@ Run-time chains
 
 We can also define chains at run time, and these chains can be mutated.
 Run-time chains are made up of links where each link associates both a rule
-and a 'jump'.  The rule is really a rule name, which is looked up when
+and a `jump`.  The rule is really a rule name, which is looked up when
 needed.  The jump names a chain which is jumped to if the rule matches.
 
-There is one built-in run-time chain, called appropriately 'built-in'.  This
+There is one built-in run-time chain, called appropriately `built-in`.  This
 is the default chain to use when no other input chain is defined for a mailing
 list.  It runs through the default rules, providing functionality similar to
 the Hold handler from previous versions of Mailman.
@@ -295,7 +300,8 @@ the Hold handler from previous versions of Mailman.
     The built-in moderation chain.
 
 The previously created message is innocuous enough that it should pass through
-all default rules.  This message will end up in the pipeline queue.
+all default rules.  This message will end up in the `pipeline` queue.
+::
 
     >>> with event_subscribers(print_msgid):
     ...     process(mlist, msg, {})

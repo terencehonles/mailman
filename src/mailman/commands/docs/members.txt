@@ -2,8 +2,9 @@
 Managing members
 ================
 
-The `bin/mailman members` command allows a site administrator to display, add,
-and remove members from a mailing list.
+The ``bin/mailman members`` command allows a site administrator to display,
+add, and remove members from a mailing list.
+::
 
     >>> mlist1 = create_list('test1@example.com')
 
@@ -31,6 +32,7 @@ options.  To start with, there are no members of the mailing list.
     test1@example.com has no members
 
 Once the mailing list add some members, they will be displayed.
+::
 
     >>> from mailman.interfaces.member import DeliveryMode
     >>> from mailman.app.membership import add_member
@@ -48,6 +50,7 @@ Once the mailing list add some members, they will be displayed.
     Bart Person <bart@example.com>
 
 Members are displayed in alphabetical order based on their address.
+::
 
     >>> add_member(mlist1, 'anne@aaaxample.com', 'Anne Person', 'xxx',
     ...            DeliveryMode.regular, mlist1.preferred_language.code)
@@ -114,6 +117,7 @@ members...
     Anne Person <anne@example.com>
 
 ...just MIME digest members.
+::
 
     >>> args.digest = 'mime'
     >>> command.process(args)
@@ -129,6 +133,7 @@ Filtering on delivery status
 You can also filter the display on the member's delivery status.  By default,
 all members are displayed, but you can filter out only those whose delivery
 status is enabled...
+::
 
     >>> from mailman.interfaces.member import DeliveryStatus
     >>> member = mlist1.members.get_member('anne@aaaxample.com')
@@ -178,6 +183,7 @@ status is enabled...
     Cris Person <cris@example.com>
 
 You can also display all members who have delivery disabled for any reason.
+::
 
     >>> args.nomail = 'any'
     >>> command.process(args)
@@ -195,7 +201,8 @@ Adding members
 
 You can add members to a mailing list from the command line.  To do so, you
 need a file containing email addresses and full names that can be parsed by
-email.utils.parseaddr().
+``email.utils.parseaddr()``.
+::
 
     >>> mlist2 = create_list('test2@example.com')
     >>> addresses = [
@@ -217,8 +224,9 @@ email.utils.parseaddr().
     >>> sorted(address.address for address in mlist2.members.addresses)
     [u'aperson@example.com', u'bperson@example.com', u'cperson@example.com']
 
-You can also specify '-' as the filename, in which case the addresses are
+You can also specify ``-`` as the filename, in which case the addresses are
 taken from standard input.
+::
 
     >>> from StringIO import StringIO
     >>> fp = StringIO()
@@ -241,6 +249,7 @@ taken from standard input.
      u'dperson@example.com', u'eperson@example.com', u'fperson@example.com']
 
 Blank lines and lines that begin with '#' are ignored.
+::
 
     >>> with open(path, 'w') as fp:
     ...     for address in ('gperson@example.com',
@@ -260,6 +269,7 @@ Blank lines and lines that begin with '#' are ignored.
 
 Addresses which are already subscribed are ignored, although a warning is
 printed.
+::
 
     >>> with open(path, 'w') as fp:
     ...     for address in ('gperson@example.com',

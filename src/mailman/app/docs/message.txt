@@ -3,19 +3,19 @@ Messages
 ========
 
 Mailman has its own Message classes, derived from the standard
-email.message.Message class, but providing additional useful methods.
+``email.message.Message`` class, but providing additional useful methods.
 
 
 User notifications
 ==================
 
-When Mailman needs to send a message to a user, it creates a UserNotification
-instance, and then calls the .send() method on this object.  This method
-requires a mailing list instance.
+When Mailman needs to send a message to a user, it creates a
+``UserNotification`` instance, and then calls the ``.send()`` method on this
+object.  This method requires a mailing list instance.
 
     >>> mlist = create_list('_xtest@example.com')
 
-The UserNotification constructor takes the recipient address, the sender
+The ``UserNotification`` constructor takes the recipient address, the sender
 address, an optional subject, optional body text, and optional language.
 
     >>> from mailman.email.message import UserNotification
@@ -26,7 +26,7 @@ address, an optional subject, optional body text, and optional language.
     ...     'I needed to tell you this.')
     >>> msg.send(mlist)
 
-The message will end up in the virgin queue.
+The message will end up in the `virgin` queue.
 
     >>> switchboard = config.switchboards['virgin']
     >>> len(switchboard.files)
