@@ -10,6 +10,7 @@ modules and depends on a host of factors.
 
 Recipients are calculate from the list members, so add a bunch of members to
 start out with.  First, create a bunch of addresses...
+::
 
     >>> from mailman.interfaces.usermanager import IUserManager
     >>> from zope.component import getUtility
@@ -46,6 +47,7 @@ Short-circuiting
 Sometimes, the list of recipients already exists in the message metadata.
 This can happen for example, when a message was previously delivered to some
 but not all of the recipients.
+::
 
     >>> msg = message_from_string("""\
     ... From: Xavier Person <xperson@example.com>
@@ -86,8 +88,8 @@ Members can elect not to receive a list copy of their own postings.
     [u'aperson@example.com', u'bperson@example.com']
 
 Members can also elect not to receive a list copy of any message on which they
-are explicitly named as a recipient.  However, see the AvoidDuplicates handler
-for details.
+are explicitly named as a recipient.  However, see the `avoid duplicates`_
+handler for details.
 
 
 Digest recipients
@@ -103,3 +105,6 @@ XXX Test various urgent deliveries:
     * test_urgent_moderator()
     * test_urgent_admin()
     * test_urgent_reject()
+
+
+.. _`avoid duplicates`: avoid-duplicates.html

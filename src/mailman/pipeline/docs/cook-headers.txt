@@ -17,8 +17,9 @@ is getting sent through the system.  We'll take things one-by-one.
 Saving the original sender
 ==========================
 
-Because the original sender headers may get deleted or changed, CookHeaders
+Because the original sender headers may get deleted or changed, this handler
 will place the sender in the message metadata for safe keeping.
+::
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
@@ -48,7 +49,7 @@ But if there was no original sender, then the empty string will be saved.
 Mailman version header
 ======================
 
-Mailman will also insert an X-Mailman-Version header...
+Mailman will also insert an ``X-Mailman-Version`` header...
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
@@ -76,8 +77,8 @@ Mailman will also insert an X-Mailman-Version header...
 Precedence header
 =================
 
-Mailman will insert a Precedence header, which is a de-facto standard for
-telling automatic reply software (e.g. vacation(1)) not to respond to this
+Mailman will insert a ``Precedence`` header, which is a de-facto standard for
+telling automatic reply software (e.g. ``vacation(1)``) not to respond to this
 message.
 
     >>> msg = message_from_string("""\
@@ -165,12 +166,12 @@ But normally, a list will include these headers.
     List-Id: <_xtest.example.com>
     List-Post: <mailto:_xtest@example.com>
     List-Subscribe: <http://lists.example.com/listinfo/_xtest@example.com>,
-    	<mailto:_xtest-join@example.com>
+        <mailto:_xtest-join@example.com>
     List-Unsubscribe: <http://lists.example.com/listinfo/_xtest@example.com>,
-    	<mailto:_xtest-leave@example.com>
+        <mailto:_xtest-leave@example.com>
     ---end---
 
-If the mailing list has a description, then it is included in the List-Id
+If the mailing list has a description, then it is included in the ``List-Id``
 header.
 
     >>> mlist.description = 'My test mailing list'
@@ -186,13 +187,14 @@ header.
     List-Id: My test mailing list <_xtest.example.com>
     List-Post: <mailto:_xtest@example.com>
     List-Subscribe: <http://lists.example.com/listinfo/_xtest@example.com>,
-    	<mailto:_xtest-join@example.com>
+        <mailto:_xtest-join@example.com>
     List-Unsubscribe: <http://lists.example.com/listinfo/_xtest@example.com>,
-    	<mailto:_xtest-leave@example.com>
+        <mailto:_xtest-leave@example.com>
     ---end---
 
 There are some circumstances when the list administrator wants to explicitly
-set the List-ID header.  Start by creating a new domain.
+set the ``List-ID`` header.  Start by creating a new domain.
+::
 
     >>> from mailman.interfaces.domain import IDomainManager
     >>> from zope.component import getUtility
@@ -211,7 +213,7 @@ set the List-ID header.  Start by creating a new domain.
     >>> mlist.host_name = 'example.com'
     >>> mlist.list_id = '_xtest.example.com'
 
-Any existing List-ID headers are removed from the original message.
+Any existing ``List-ID`` headers are removed from the original message.
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
@@ -235,14 +237,14 @@ Administrative messages crafted by Mailman will have a reduced set of headers.
     List-Help: <mailto:_xtest-request@example.com?subject=help>
     List-Id: My test mailing list <_xtest.example.com>
     List-Subscribe: <http://lists.example.com/listinfo/_xtest@example.com>,
-    	<mailto:_xtest-join@example.com>
+        <mailto:_xtest-join@example.com>
     List-Unsubscribe: <http://lists.example.com/listinfo/_xtest@example.com>,
-    	<mailto:_xtest-leave@example.com>
+        <mailto:_xtest-leave@example.com>
     X-List-Administrivia: yes
     ---end---
 
-With the normal set of List-* headers, it's still possible to suppress the
-List-Post header, which is reasonable for an announce only mailing list.
+With the normal set of ``List-*`` headers, it's still possible to suppress the
+``List-Post`` header, which is reasonable for an announce only mailing list.
 
     >>> mlist.include_list_post_header = False
     >>> msg = message_from_string("""\
@@ -256,13 +258,13 @@ List-Post header, which is reasonable for an announce only mailing list.
     List-Help: <mailto:_xtest-request@example.com?subject=help>
     List-Id: My test mailing list <_xtest.example.com>
     List-Subscribe: <http://lists.example.com/listinfo/_xtest@example.com>,
-    	<mailto:_xtest-join@example.com>
+        <mailto:_xtest-join@example.com>
     List-Unsubscribe: <http://lists.example.com/listinfo/_xtest@example.com>,
-    	<mailto:_xtest-leave@example.com>
+        <mailto:_xtest-leave@example.com>
     ---end---
 
 And if the list isn't being archived, it makes no sense to add the
-List-Archive header either.
+``List-Archive`` header either.
 
     >>> mlist.include_list_post_header = True
     >>> mlist.archive = False
@@ -277,16 +279,16 @@ List-Archive header either.
     List-Id: My test mailing list <_xtest.example.com>
     List-Post: <mailto:_xtest@example.com>
     List-Subscribe: <http://lists.example.com/listinfo/_xtest@example.com>,
-    	<mailto:_xtest-join@example.com>
+        <mailto:_xtest-join@example.com>
     List-Unsubscribe: <http://lists.example.com/listinfo/_xtest@example.com>,
-    	<mailto:_xtest-leave@example.com>
+        <mailto:_xtest-leave@example.com>
     ---end---
 
 
 Archived-At
 ===========
 
-RFC 5064 (draft) defines a new Archived-At header which contains the url to
+RFC 5064 (draft) defines a new ``Archived-At`` header which contains the url to
 the individual message in the archives.  The stock Pipermail archiver doesn't
 support this because the url can't be calculated until after the message is
 archived.  Because this is done by the archive runner, this information isn't
@@ -299,7 +301,7 @@ available to us now.
 Personalization
 ===============
 
-The To field normally contains the list posting address.  However when
+The ``To`` field normally contains the list posting address.  However when
 messages are fully personalized, that header will get overwritten with the
 address of the recipient.  The list's posting address will be added to one of
 the recipient headers so that users will be able to reply back to the list.
@@ -321,10 +323,10 @@ the recipient headers so that users will be able to reply back to the list.
     Cc: My test mailing list <_xtest@example.com>
     List-Id: My test mailing list <_xtest.example.com>
     List-Unsubscribe: <http://lists.example.com/listinfo/_xtest@example.com>,
-    	<mailto:_xtest-leave@example.com>
+        <mailto:_xtest-leave@example.com>
     List-Post: <mailto:_xtest@example.com>
     List-Help: <mailto:_xtest-request@example.com?subject=help>
     List-Subscribe: <http://lists.example.com/listinfo/_xtest@example.com>,
-    	<mailto:_xtest-join@example.com>
+        <mailto:_xtest-join@example.com>
     <BLANKLINE>
     <BLANKLINE>

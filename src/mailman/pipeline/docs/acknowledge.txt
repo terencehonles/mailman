@@ -5,6 +5,7 @@ Message acknowledgment
 When a user posts a message to a mailing list, and that user has chosen to
 receive acknowledgments of their postings, Mailman will sent them such an
 acknowledgment.
+::
 
     >>> mlist = create_list('_xtest@example.com')
     >>> mlist.real_name = 'XTest'
@@ -19,6 +20,7 @@ acknowledgment.
     []
 
 Subscribe a user to the mailing list.
+::
 
     >>> from mailman.interfaces.usermanager import IUserManager
     >>> from zope.component import getUtility
@@ -35,6 +37,7 @@ Non-member posts
 ================
 
 Non-members can't get acknowledgments of their posts to the mailing list.
+::
 
     >>> msg = message_from_string("""\
     ... From: bperson@example.com
@@ -75,6 +78,7 @@ Unless the user has requested acknowledgments, they will not get one.
 Similarly if the original sender is specified in the message metadata, and
 that sender is a member but not one who has requested acknowledgments, none
 will be sent.
+::
 
     >>> user_2 = user_manager.create_user('dperson@example.com')
     >>> address_2 = list(user_2.addresses)[0]

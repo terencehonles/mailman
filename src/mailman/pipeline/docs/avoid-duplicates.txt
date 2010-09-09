@@ -2,14 +2,14 @@
 Avoid duplicates
 ================
 
-The AvoidDuplicates handler module implements several strategies to try to
-reduce the reception of duplicate messages.  It does this by removing certain
-recipients from the list of recipients that earlier handler modules
-(e.g. CalcRecips) calculates.
+This handler implements several strategies to reduce the reception of
+duplicate messages.  It does this by removing certain recipients from the list
+of recipients calculated earlier.
 
     >>> mlist = create_list('_xtest@example.com')
 
 Create some members we're going to use.
+::
 
     >>> from mailman.interfaces.usermanager import IUserManager
     >>> from zope.component import getUtility
@@ -31,6 +31,7 @@ Short circuiting
 ================
 
 The module short-circuits if there are no recipients.
+::
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
@@ -57,9 +58,9 @@ Suppressing the list copy
 
 Members can elect not to receive a list copy of any message on which they are
 explicitly named as a recipient.  This is done by setting their
-receive_list_copy preference to False.  However, if they aren't mentioned in
-one of the recipient headers (i.e. To, CC, Resent-To, or Resent-CC), then they
-will get a list copy.
+``receive_list_copy`` preference to ``False``.  However, if they aren't
+mentioned in one of the recipient headers (i.e. ``To``, ``CC``, ``Resent-To``,
+or ``Resent-CC``), then they will get a list copy.
 
     >>> member_a.preferences.receive_list_copy = False
     >>> msg = message_from_string("""\
@@ -77,7 +78,7 @@ will get a list copy.
     Something of great import.
     <BLANKLINE>
 
-If they're mentioned on the CC line, they won't get a list copy.
+If they're mentioned on the ``CC`` line, they won't get a list copy.
 
     >>> msg = message_from_string("""\
     ... From: Claire Person <cperson@example.com>
@@ -96,8 +97,8 @@ If they're mentioned on the CC line, they won't get a list copy.
     Something of great import.
     <BLANKLINE>
 
-But if they're mentioned on the CC line and have receive_list_copy set to True
-(the default), then they still get a list copy.
+But if they're mentioned on the ``CC`` line and have ``receive_list_copy`` set
+to ``True`` (the default), then they still get a list copy.
 
     >>> msg = message_from_string("""\
     ... From: Claire Person <cperson@example.com>
@@ -116,7 +117,7 @@ But if they're mentioned on the CC line and have receive_list_copy set to True
     Something of great import.
     <BLANKLINE>
 
-Other headers checked for recipients include the To...
+Other headers checked for recipients include the ``To``...
 
     >>> msg = message_from_string("""\
     ... From: Claire Person <cperson@example.com>
@@ -135,7 +136,7 @@ Other headers checked for recipients include the To...
     Something of great import.
     <BLANKLINE>
 
-...Resent-To...
+... ``Resent-To`` ...
 
     >>> msg = message_from_string("""\
     ... From: Claire Person <cperson@example.com>
@@ -154,7 +155,7 @@ Other headers checked for recipients include the To...
     Something of great import.
     <BLANKLINE>
 
-...and Resent-CC headers.
+...and ``Resent-CC`` headers.
 
     >>> msg = message_from_string("""\
     ... From: Claire Person <cperson@example.com>

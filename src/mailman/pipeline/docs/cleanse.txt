@@ -8,12 +8,13 @@ headers can be used to fish for membership.
 
     >>> mlist = create_list('_xtest@example.com')
 
-Headers such as Approved, Approve, and Urgent are used to grant special
-pemissions to individual messages.  All may contain a password; the first two
-headers are used by list administrators to pre-approve a message normal held
-for approval.  The latter header is used to send a regular message to all
-members, regardless of whether they get digests or not.  Because all three
-headers contain passwords, they must be removed from any posted message.
+Headers such as ``Approved``, ``Approve``, and ``Urgent`` are used to grant
+special permissions to individual messages.  All may contain a password; the
+first two headers are used by list administrators to pre-approve a message
+normal held for approval.  The latter header is used to send a regular message
+to all members, regardless of whether they get digests or not.  Because all
+three headers contain passwords, they must be removed from any posted message.
+::
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
@@ -36,9 +37,9 @@ headers contain passwords, they must be removed from any posted message.
 
 Other headers can be used by list members to fish the list for membership, so
 we don't let them go through.  These are a mix of standard headers and custom
-headers supported by some mail readers.  For example, X-PMRC is supported by
-Pegasus mail.  I don't remember what program uses X-Confirm-Reading-To though
-(Some Microsoft product perhaps?).
+headers supported by some mail readers.  For example, ``X-PMRC`` is supported
+by Pegasus mail.  I don't remember what program uses ``X-Confirm-Reading-To``
+though (Some Microsoft product perhaps?).
 
     >>> msg = message_from_string("""\
     ... From: bperson@example.com
@@ -69,10 +70,11 @@ Anonymous lists
 Anonymous mailing lists also try to cleanse certain identifying headers from
 the original posting, so that it is at least a bit more difficult to determine
 who sent the message.  This isn't perfect though, for example, the body of the
-messages are never scrubbed (though that might not be a bad idea).  The From
-and Reply-To headers in the posted message are taken from list attributes.
+messages are never scrubbed (though that might not be a bad idea).  The
+``From`` and ``Reply-To`` headers in the posted message are taken from list
+attributes.
 
-Hotmail apparently sets X-Originating-Email.
+Hotmail apparently sets ``X-Originating-Email``.
 
     >>> mlist.anonymous_list = True
     >>> mlist.description = 'A Test Mailing List'
