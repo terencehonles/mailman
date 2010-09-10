@@ -2,8 +2,9 @@
 Archiving
 =========
 
-Mailman can archive to any number of archivers that adhere to the IArchiver
-interface.  By default, there's a Pipermail archiver.
+Mailman can archive to any number of archivers that adhere to the
+``IArchiver`` interface.  By default, there's a Pipermail archiver.
+::
 
     >>> mlist = create_list('test@example.com')
     >>> transaction.commit()

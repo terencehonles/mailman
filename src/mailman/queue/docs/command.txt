@@ -3,9 +3,9 @@ The command queue runner
 ========================
 
 This queue runner's purpose is to process and respond to email commands.
-Commands are extensible using the Mailman plugin system, but Mailman comes
+Commands are extensible using the Mailman plug-in system, but Mailman comes
 with a number of email commands out of the box.  These are processed when a
-message is sent to the list's -request address.
+message is sent to the list's ``-request`` address.
 
     >>> mlist = create_list('test@example.com')
 
@@ -13,8 +13,9 @@ message is sent to the list's -request address.
 A command in the Subject
 ========================
 
-For example, the 'echo' command simply echoes the original command back to the
-sender.  The command can be in the Subject header.
+For example, the ``echo`` command simply echoes the original command back to
+the sender.  The command can be in the ``Subject`` header.
+::
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
@@ -31,7 +32,7 @@ sender.  The command can be in the Subject header.
     >>> command = make_testable_runner(CommandRunner)
     >>> command.run()
 
-And now the response is in the virgin queue.
+And now the response is in the ``virgin`` queue.
 
     >>> from mailman.queue import Switchboard
     >>> virgin_queue = config.switchboards['virgin']
@@ -72,6 +73,7 @@ A command in the body
 
 The command can also be found in the body of the message, as long as the
 message is plain text.
+::
 
     >>> msg = message_from_string("""\
     ... From: bperson@example.com
@@ -113,12 +115,14 @@ Implicit commands
 
 For some commands, specifically for joining and leaving a mailing list, there
 are email aliases that act like commands, even when there's nothing else in
-the Subject or body.  For example, to join a mailing list, a user need only
-email the -join address or -subscribe address (the latter is deprecated).
+the ``Subject`` or body.  For example, to join a mailing list, a user need
+only email the ``-join`` address or ``-subscribe`` address (the latter is
+deprecated).
 
 Because Dirk has never registered with Mailman before, he gets two responses.
 The first is a confirmation message so that Dirk can validate his email
 address, and the other is the results of his email command.
+::
 
     >>> msg = message_from_string("""\
     ... From: Dirk Person <dperson@example.com>
@@ -148,8 +152,9 @@ address, and the other is the results of his email command.
     Subject: The results of your email commands
     Subject: confirm ...
 
-Similarly, to leave a mailing list, the user need only email the -leave or
--unsubscribe address (the latter is deprecated).
+Similarly, to leave a mailing list, the user need only email the ``-leave`` or
+``-unsubscribe`` address (the latter is deprecated).
+::
 
     >>> msg = message_from_string("""\
     ... From: dperson@example.com
@@ -182,7 +187,8 @@ Similarly, to leave a mailing list, the user need only email the -leave or
     - Done.
     <BLANKLINE>
 
-The -confirm address is also available as an implicit command.
+The ``-confirm`` address is also available as an implicit command.
+::
 
     >>> msg = message_from_string("""\
     ... From: dperson@example.com
@@ -219,8 +225,9 @@ The -confirm address is also available as an implicit command.
 Stopping command processing
 ===========================
 
-The 'end' command stops email processing, so that nothing following is looked
-at by the command queue.
+The ``end`` command stops email processing, so that nothing following is
+looked at by the command queue.
+::
 
     >>> msg = message_from_string("""\
     ... From: cperson@example.com
@@ -250,7 +257,8 @@ at by the command queue.
     - Done.
     <BLANKLINE>
 
-The 'stop' command is an alias for 'end'.
+The ``stop`` command is an alias for ``end``.
+::
 
     >>> msg = message_from_string("""\
     ... From: cperson@example.com
