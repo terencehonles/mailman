@@ -11,6 +11,7 @@ archive message.
     >>> mlist.preferred_language = 'en'
 
 Helper functions for getting the attachment data.
+::
 
     >>> import os, re
     >>> def read_attachment(filename, remove=True):
@@ -40,15 +41,16 @@ Helper functions for getting the attachment data.
 Saving attachments
 ==================
 
-The Scrubber handler exposes a function called save_attachment() which can be
-used to strip various types of attachments and store them in the archive
+The Scrubber handler exposes a function called ``save_attachment()`` which can
+be used to strip various types of attachments and store them in the archive
 directory.  This is a public interface used by components outside the normal
 processing pipeline.
 
 Site administrators can decide whether the scrubber should use the attachment
-filename suggested in the message's Content-Disposition: header or not.  If
-enabled, the filename will be used when this header attribute is present (yes,
-this is an unfortunate double negative).
+filename suggested in the message's ``Content-Disposition:`` header or not.
+If enabled, the filename will be used when this header attribute is present
+(yes, this is an unfortunate double negative).
+::
 
     >>> config.push('test config', """
     ... [scrubber]
@@ -81,7 +83,7 @@ Saving the attachment does not alter the original message.
     R0lGODdhAQABAIAAAAAAAAAAACwAAAAAAQABAAACAQUAOw==
 
 The site administrator can also configure Mailman to ignore the
-Content-Disposition: filename.  This is the default.
+``Content-Disposition:`` filename.  This is the default.
 
     >>> config.pop('test config')
     >>> config.push('test config', """
@@ -132,7 +134,7 @@ a reference to the attachment file as available through the on-line archive.
     ... """)
     >>> msgdata = {}
 
-The Scrubber.process() function is different than other handler process
+The ``Scrubber.process()`` function is different than other handler process
 functions in that it returns the scrubbed message.
 
     >>> from mailman.pipeline.scrubber import process

@@ -2,7 +2,7 @@
 Automatic response handler
 ==========================
 
-Mailman has a replybot handler that sends automatic responses to messages it
+Mailman has a autoreply handler that sends automatic responses to messages it
 receives on its posting address, owner address, or robot address.  Automatic
 responses are subject to various conditions, such as headers in the original
 message or the amount of time since the last auto-response.
@@ -15,10 +15,11 @@ Basic automatic responding
 ==========================
 
 Basic automatic responding occurs when the list is set up to respond to either
-its -owner address, its -request address, or to the posting address, and a
-message is sent to one of these addresses.  A mailing list also has an
+its ``-owner`` address, its ``-request`` address, or to the posting address,
+and a message is sent to one of these addresses.  A mailing list also has an
 automatic response grace period which specifies how much time must pass before
 a second response will be sent, with 0 meaning "there is no grace period".
+::
 
     >>> import datetime
     >>> from mailman.interfaces.autorespond import ResponseAction
@@ -36,6 +37,7 @@ a second response will be sent, with 0 meaning "there is no grace period".
 
 The preceding message to the mailing list's owner will trigger an automatic
 response.
+::
 
     >>> from mailman.testing.helpers import get_queue_messages
 
@@ -73,8 +75,9 @@ Short circuiting
 ================
 
 Several headers in the original message determine whether an automatic
-response should even be sent.  For example, if the message has an "X-Ack: No"
-header, no auto-response is sent.
+response should even be sent.  For example, if the message has an
+``X-Ack: No`` header, no auto-response is sent.
+::
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
@@ -88,7 +91,8 @@ header, no auto-response is sent.
     []
 
 Mailman itself can suppress automatic responses for certain types of
-internally crafted messages, by setting the 'noack' metadata key.
+internally crafted messages, by setting the ``noack`` metadata key.
+::
 
     >>> msg = message_from_string("""\
     ... From: mailman@example.com
@@ -100,8 +104,9 @@ internally crafted messages, by setting the 'noack' metadata key.
     >>> get_queue_messages('virgin')
     []
 
-If there is a Precedence: header with any of the values 'bulk', 'junk', or
-'list', then the automatic response is also suppressed.
+If there is a ``Precedence:`` header with any of the values ``bulk``,
+``junk``, or ``list``, then the automatic response is also suppressed.
+::
 
     >>> msg = message_from_string("""\
     ... From: asystem@example.com
@@ -124,8 +129,9 @@ If there is a Precedence: header with any of the values 'bulk', 'junk', or
     >>> get_queue_messages('virgin')
     []
 
-Unless the X-Ack: header has a value of "yes", in which case, the Precedence
-header is ignored.
+Unless the ``X-Ack:`` header has a value of ``yes``, in which case, the
+``Precedence`` header is ignored.
+::
 
     >>> msg['X-Ack'] = 'yes'
     >>> handler.process(mlist, msg, dict(to_owner=True))
@@ -160,9 +166,10 @@ header is ignored.
 Available auto-responses
 ========================
 
-As shown above, a message sent to the -owner address will get an auto-response
-with the text set for owner responses.  Two other types of email will get
-auto-responses: those sent to the -request address...
+As shown above, a message sent to the ``-owner`` address will get an
+auto-response with the text set for owner responses.  Two other types of email
+will get auto-responses: those sent to the ``-request`` address...
+::
 
     >>> mlist.autorespond_requests = ResponseAction.respond_and_continue
     >>> mlist.autoresponse_request_text = 'robot autoresponse text'
@@ -195,6 +202,7 @@ auto-responses: those sent to the -request address...
     robot autoresponse text
 
 ...and those sent to the posting address.
+::
 
     >>> mlist.autorespond_postings = ResponseAction.respond_and_continue
     >>> mlist.autoresponse_postings_text = 'postings autoresponse text'
@@ -261,6 +269,7 @@ right now.
     0
 
 Fast forward 9 days and you still don't get a response.
+::
 
     >>> from mailman.utilities.datetime import factory
     >>> factory.fast_forward(days=9)
@@ -278,6 +287,7 @@ But tomorrow, the sender will get a new auto-response.
 
 Of course, everything works the same way for messages to the request
 address, even if the sender is the same person...
+::
 
     >>> msg = message_from_string("""\
     ... From: bperson@example.com
@@ -305,6 +315,7 @@ address, even if the sender is the same person...
     1
 
 ...and for messages to the posting address.
+::
 
     >>> msg = message_from_string("""\
     ... From: bperson@example.com
