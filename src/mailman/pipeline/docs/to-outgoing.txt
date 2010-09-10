@@ -10,6 +10,7 @@ message into the outgoing queue.
 
 Craft a message destined for the outgoing queue.  Include some random metadata
 as if this message had passed through some other handlers.
+::
 
     >>> msg = message_from_string("""\
     ... Subject: Here is a message

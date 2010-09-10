@@ -5,14 +5,15 @@ Message tagger
 Mailman has a topics system which works like this: a mailing list
 administrator sets up one or more topics, which is essentially a named regular
 expression.  The topic name can be any arbitrary string, and the name serves
-double duty as the 'topic tag'.  Each message that flows the mailing list has
-its Subject: and Keywords: headers compared against these regular
+double duty as the *topic tag*.  Each message that flows the mailing list has
+its ``Subject:`` and ``Keywords:`` headers compared against these regular
 expressions.  The message then gets tagged with the topic names of each hit.
 
     >>> mlist = create_list('_xtest@example.com')
 
 Topics must be enabled for Mailman to do any topic matching, even if topics
 are defined.
+::
 
     >>> mlist.topics = [('bar fight', '.*bar.*', 'catch any bars', False)]
     >>> mlist.topics_enabled = False
@@ -36,8 +37,8 @@ are defined.
     {}
 
 However, once topics are enabled, message will be tagged.  There are two
-artifacts of tagging; an X-Topics: header is added with the topic name, and
-the message metadata gets a key with a list of matching topic names.
+artifacts of tagging; an ``X-Topics:`` header is added with the topic name,
+and the message metadata gets a key with a list of matching topic names.
 
     >>> mlist.topics_enabled = True
     >>> msg = message_from_string("""\
@@ -61,8 +62,8 @@ Scanning body lines
 ===================
 
 The tagger can also look at a certain number of body lines, but only for
-Subject: and Keyword: header-like lines.  When set to zero, no body lines are
-scanned.
+``Subject:`` and ``Keyword:`` header-like lines.  When set to zero, no body
+lines are scanned.
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
