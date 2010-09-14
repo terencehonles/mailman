@@ -7,10 +7,11 @@ directly upstream SMTP server.  It is this upstream SMTP server that performs
 final delivery to the intended recipients.
 
 Messages that appear in the outgoing queue are processed individually through
-a 'delivery module', essentially a pluggable interface for determining how the
+a *delivery module*, essentially a pluggable interface for determining how the
 recipient set will be batched, whether messages will be personalized and
 VERP'd, etc.  The outgoing runner doesn't itself support retrying but it can
 move messages to the 'retry queue' for handling delivery failures.
+::
 
     >>> mlist = create_list('test@example.com')
 
@@ -32,8 +33,9 @@ move messages to the 'retry queue' for handling delivery failures.
 Normally, messages would show up in the outgoing queue after the message has
 been processed by the rule set and pipeline.  But we can simulate that here by
 injecting a message directly into the outgoing queue.  First though, we must
-call the calculate-recipients handler so that the message metadata will be
+call the ``calculate-recipients`` handler so that the message metadata will be
 populated with the list of addresses to deliver the message to.
+::
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
@@ -49,8 +51,8 @@ populated with the list of addresses to deliver the message to.
     >>> handler.process(mlist, msg, msgdata)
     >>> outgoing_queue = config.switchboards['out']
 
-The to-outgoing handler populates the message metadata with the destination
-mailing list name.  Simulate that here too.
+The ``to-outgoing`` handler populates the message metadata with the
+destination mailing list name.  Simulate that here too.
 
     >>> ignore = outgoing_queue.enqueue(
     ...     msg, msgdata,
@@ -66,6 +68,7 @@ upstream SMTP.
     >>> outgoing.run()
 
 Every recipient got the same copy of the message.
+::
 
     >>> messages = list(smtpd.messages)
     >>> len(messages)
@@ -111,6 +114,7 @@ just one.
 Since we've done no other configuration, the only difference in the messages
 is the recipient address.  Specifically, the Sender header is the same for all
 recipients.
+::
 
     >>> from operator import itemgetter
     >>> def show_headers(messages):
@@ -137,7 +141,8 @@ the Sender header.
 Forcing VERP
 ------------
 
-A handler can force VERP by setting the 'verp' key in the message metadata.
+A handler can force VERP by setting the ``verp`` key in the message metadata.
+::
 
     >>> ignore = outgoing_queue.enqueue(
     ...     msg, msgdata,
@@ -164,7 +169,8 @@ The site administrator can enable VERP whenever messages are personalized.
     ... verp_personalized_deliveries: yes
     ... """)
 
-Again, we get three individual messages, with VERP'd Sender headers.
+Again, we get three individual messages, with VERP'd ``Sender`` headers.
+::
 
     >>> ignore = outgoing_queue.enqueue(
     ...     msg, msgdata,
@@ -192,6 +198,7 @@ still like to occasionally get the benefits of VERP.  The site administrator
 can enable occasional VERPing of messages every so often, by setting a
 delivery interval.  Every N non-personalized deliveries turns on VERP for just
 the next one.
+::
 
     >>> config.push('verp occasionally', """
     ... [mta]
@@ -204,6 +211,7 @@ the next one.
 
 The first message is sent to the list, and it is neither personalized nor
 VERP'd.
+::
 
     >>> ignore = outgoing_queue.enqueue(
     ...     msg, msgdata,
@@ -223,6 +231,7 @@ VERP'd.
     >>> transaction.commit()
 
 The second message sent to the list is also not VERP'd.
+::
 
     >>> ignore = outgoing_queue.enqueue(
     ...     msg, msgdata,
@@ -241,6 +250,7 @@ The second message sent to the list is also not VERP'd.
     >>> transaction.commit()
 
 The third message though is VERP'd.
+::
 
     >>> ignore = outgoing_queue.enqueue(
     ...     msg, msgdata,
@@ -260,6 +270,7 @@ The third message though is VERP'd.
     >>> transaction.commit()
 
 The next one is back to bulk delivery.
+::
 
     >>> ignore = outgoing_queue.enqueue(
     ...     msg, msgdata,
@@ -281,6 +292,7 @@ VERP every time
 
 If the site administrator wants to enable VERP for every delivery, even if no
 personalization is going on, they can set the interval to 1.
+::
 
     >>> config.push('always verp', """
     ... [mta]
@@ -292,6 +304,7 @@ personalization is going on, they can set the interval to 1.
     >>> transaction.commit()
 
 The first message is VERP'd.
+::
 
     >>> ignore = outgoing_queue.enqueue(
     ...     msg, msgdata,
@@ -311,6 +324,7 @@ The first message is VERP'd.
     >>> transaction.commit()
 
 As is the second message.
+::
 
     >>> ignore = outgoing_queue.enqueue(
     ...     msg, msgdata,
@@ -330,6 +344,7 @@ As is the second message.
     >>> transaction.commit()
 
 And the third message.
+::
 
     >>> ignore = outgoing_queue.enqueue(
     ...     msg, msgdata,
@@ -356,6 +371,7 @@ Never VERP
 
 Similarly, the site administrator can disable occasional VERP'ing of
 non-personalized messages by setting the interval to zero.
+::
 
     >>> config.push('never verp', """
     ... [mta]
@@ -367,6 +383,7 @@ non-personalized messages by setting the interval to zero.
     >>> transaction.commit()
 
 Neither the first message...
+::
 
     >>> ignore = outgoing_queue.enqueue(
     ...     msg, msgdata,
@@ -381,6 +398,7 @@ Neither the first message...
     test-bounces@example.com
 
 ...nor the second message is VERP'd.
+::
 
     >>> ignore = outgoing_queue.enqueue(
     ...     msg, msgdata,

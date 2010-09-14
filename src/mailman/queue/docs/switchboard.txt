@@ -156,6 +156,7 @@ The files can be recovered explicitly.
 But the files will only be recovered at most three times before they are
 considered defective.  In order to prevent mail bombs and loops, once this
 maximum is reached, the files will be preserved in the 'bad' queue.
+::
 
     >>> for filebase in switchboard.files:
     ...     msg, msgdata = switchboard.dequeue(filebase)
@@ -170,7 +171,9 @@ maximum is reached, the files will be preserved in the 'bad' queue.
     >>> check_qfiles(bad.queue_directory)
     .psv: 3
 
+
 Clean up
+--------
 
     >>> for file in os.listdir(bad.queue_directory):
     ...     os.remove(os.path.join(bad.queue_directory, file))

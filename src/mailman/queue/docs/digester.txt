@@ -4,6 +4,7 @@ Digesting
 
 Mailman crafts and sends digests by a separate digest queue runner process.
 This starts by a number of messages being posted to the mailing list.
+::
 
     >>> mlist = create_list('test@example.com')
     >>> mlist.digest_size_threshold = 0.6
@@ -35,6 +36,7 @@ This starts by a number of messages being posted to the mailing list.
 The queue runner gets kicked off when a marker message gets dropped into the
 digest queue.  The message metadata points to the mailbox file containing the
 messages to put in the digest.
+::
 
     >>> digestq = config.switchboards['digest']
     >>> len(digestq.files)
@@ -48,6 +50,7 @@ The marker message is empty.
     >>> print entry.msg.as_string()
 
 But the message metadata has a reference to the digest file.
+::
 
     >>> dump_msgdata(entry.msgdata)
     _parsemsg    : False
@@ -82,6 +85,7 @@ delivery.
     2
 
 The MIME digest is a multipart, and the RFC 1153 digest is the other one.
+::
 
     >>> def mime_rfc1153(messages):
     ...     if messages[0].msg.is_multipart():
@@ -283,6 +287,7 @@ Internationalized digests
 When messages come in with a content-type character set different than that of
 the list's preferred language, recipients will get an internationalized
 digest.  French is not enabled by default site-wide, so enable that now.
+::
 
     # Simulate the site administrator setting the default server language to
     # French in the configuration file.  Without this, the English template
@@ -324,6 +329,7 @@ The marker message is sitting in the digest queue.
 
 The digest queue runner runs a loop, placing the two digests into the virgin
 queue.
+::
 
     # Put the messages back in the queue for the runner to handle.
     >>> filebase = digestq.enqueue(entry.msg, entry.msgdata)
@@ -422,6 +428,7 @@ French and Japanese characters.
     <BLANKLINE>
 
 The content can be decoded to see the actual digest text.
+::
 
     # We must display the repr of the decoded value because doctests cannot
     # handle the non-ascii characters.
@@ -477,6 +484,7 @@ Digest delivery
 
 A mailing list's members can choose to receive normal delivery, plain text
 digests, or MIME digests.
+::
 
     >>> len(get_queue_messages('virgin'))
     0
@@ -518,6 +526,7 @@ When a digest gets sent, the appropriate recipient list is chosen.
 
 The digests are sitting in the virgin queue.  One of them is the MIME digest
 and the other is the RFC 1153 digest.
+::
 
     >>> messages = get_queue_messages('virgin')
     >>> len(messages)
@@ -536,6 +545,7 @@ Only yperson and zperson get the RFC 1153 digests.
     [u'yperson@example.com', u'zperson@example.com']
 
 Now uperson decides that they would like to start receiving digests too.
+::
 
     >>> member_1.preferences.delivery_mode = DeliveryMode.mime_digests
     >>> fill_digest()
@@ -556,6 +566,7 @@ At this point, both uperson and wperson decide that they'd rather receive
 regular deliveries instead of digests.  uperson would like to get any last
 digest that may be sent so that she doesn't miss anything.  wperson does care
 as much and does not want to receive one last digest.
+::
 
     >>> mlist.send_one_last_digest_to(
     ...     member_1.address, member_1.preferences.delivery_mode)
@@ -576,6 +587,7 @@ as much and does not want to receive one last digest.
 
 Since uperson has received their last digest, they will not get any more of
 them.
+::
 
     >>> fill_digest()
     >>> runner.run()

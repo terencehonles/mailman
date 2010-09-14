@@ -2,7 +2,7 @@
 REST server
 ===========
 
-Mailman is controllable through an administrative RESTful HTTP server.
+Mailman is controllable through an administrative `REST`_ HTTP server.
 
     >>> from mailman.testing import helpers
     >>> master = helpers.TestableMaster(helpers.wait_for_webservice)
@@ -21,3 +21,5 @@ Clean up
 ========
 
     >>> master.stop()
+
+.. _REST: http://en.wikipedia.org/wiki/REST

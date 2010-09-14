@@ -2,7 +2,7 @@
 Queue runners
 =============
 
-The queue runners (qrunner) are the processes that move messages around the
+The queue runners (*qrunner*) are the processes that move messages around the
 Mailman system.  Each qrunner is responsible for a slice of the hash space in
 a queue directory.  It processes all the files in its slice, sleeps a little
 while, then wakes up and runs through its queue files again.
@@ -12,8 +12,8 @@ Basic architecture
 ==================
 
 The basic architecture of qrunner is implemented in the base class that all
-runners inherit from.  This base class implements a .run() method that runs
-continuously in a loop until the .stop() method is called.
+runners inherit from.  This base class implements a ``.run()`` method that
+runs continuously in a loop until the ``.stop()`` method is called.
 
     >>> mlist = create_list('_xtest@example.com')
 
@@ -21,6 +21,7 @@ Here is a very simple derived qrunner class.  Queue runners use a
 configuration section in the configuration files to determine run
 characteristics, such as the queue directory to use.  Here we push a
 configuration section for the test runner.
+::
 
     >>> config.push('test-runner', """
     ... [qrunner.test]

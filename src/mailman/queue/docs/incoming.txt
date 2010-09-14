@@ -81,6 +81,7 @@ Held messages
 The list moderator sets the emergency flag on the mailing list.  The built-in
 chain will now hold all posted messages, so nothing will show up in the
 pipeline queue.
+:::
 
     # XXX This checks the vette log file because there is no other evidence
     # that this chain has done anything.
@@ -111,6 +112,7 @@ Discarded messages
 Another possibility is that the message would get immediately discarded.  The
 built-in chain does not have such a disposition by default, so let's craft a
 new chain and set it as the mailing list's start chain.
+::
 
     >>> from mailman.chains.base import Chain, Link
     >>> from mailman.interfaces.chain import LinkAction
@@ -151,6 +153,7 @@ just create a new chain that does.
 
 The virgin queue needs to be cleared out due to artifacts from the previous
 tests above.
+::
 
     >>> virgin_queue = config.switchboards['virgin']
     >>> ignore = get_queue_messages('virgin')

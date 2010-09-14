@@ -7,7 +7,7 @@ support LMTP local delivery, so this is a very portable way to connect Mailman
 with your mail server.
 
 Our LMTP server is fairly simple though; all it does is make sure that the
-message is destined for a valid endpoint, e.g. mylist-join@example.com.
+message is destined for a valid endpoint, e.g. ``mylist-join@example.com``.
 
 Let's start a testable LMTP queue runner.
 
@@ -44,6 +44,7 @@ will get a 550 error.
     SMTPDataError: (550, 'Requested action not taken: mailbox unavailable')
 
 Once the mailing list is created, the posting address is valid.
+::
 
     >>> create_list('mylist@example.com')
     <mailing list "mylist@example.com" at ...>
@@ -197,6 +198,7 @@ Confirmation messages go to the command processor...
     version      : ...
 
 ...as do join messages...
+::
 
     >>> lmtp.sendmail(
     ...     'anne.person@example.com',
@@ -237,6 +239,7 @@ Confirmation messages go to the command processor...
     version      : ...
 
 ...and leave messages.
+::
 
     >>> lmtp.sendmail(
     ...     'anne.person@example.com',

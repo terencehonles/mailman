@@ -13,6 +13,7 @@ was originally written to gate to Usenet, which has its own rules).
 Some NNTP servers such as INN reject messages containing a set of prohibited
 headers, so one of the things that the news runner does is remove these
 prohibited headers.
+::
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
@@ -49,7 +50,7 @@ prohibited headers.
 
 Some NNTP servers will reject messages where certain headers are duplicated,
 so the news runner must collapse or move these duplicate headers to an
-X-Original-* header that the news server doesn't care about.
+``X-Original-*`` header that the news server doesn't care about.
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
@@ -116,8 +117,9 @@ the message.
 Newsgroup moderation
 ====================
 
-When the newsgroup is moderated, an Approved: header with the list's posting
-address is added for the benefit of the Usenet system.
+When the newsgroup is moderated, an ``Approved:`` header with the list's
+posting address is added for the benefit of the Usenet system.
+::
 
     >>> from mailman.interfaces.nntp import NewsModeration
     >>> mlist.news_moderation = NewsModeration.open_moderated
@@ -142,7 +144,7 @@ address is added for the benefit of the Usenet system.
     >>> print msg['approved']
     _xtest@example.com
 
-But if the newsgroup is not moderated, the Approved: header is not changed.
+But if the newsgroup is not moderated, the ``Approved:`` header is not changed.
 
     >>> mlist.news_moderation = NewsModeration.none
     >>> msg = message_from_string("""\
