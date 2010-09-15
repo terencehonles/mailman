@@ -2,7 +2,7 @@
 Newsgroup moderation
 ====================
 
-The 'news-moderation' rule matches all messages posted to mailing lists that
+The ``news-moderation`` rule matches all messages posted to mailing lists that
 gateway to a moderated newsgroup.  The reason for this is that such messages
 must get forwarded on to the newsgroup moderator.  From there it will get
 posted to the newsgroup, and from there, gated to the mailing list.  It's a

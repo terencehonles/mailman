@@ -2,7 +2,7 @@
 Message size
 ============
 
-The 'message-size' rule matches when the posted message is bigger than a
+The ``message-size`` rule matches when the posted message is bigger than a
 specified maximum.  Generally this is used to prevent huge attachments from
 getting posted to the list.  This value is calculated in terms of KB (1024
 bytes).

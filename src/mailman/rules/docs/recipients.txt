@@ -2,16 +2,16 @@
 Maximum number of recipients
 ============================
 
-The 'max-recipients' rule matches when there are more than the maximum allowed
-number of explicit recipients addressed by the message.
+This rule matches when there are more than the maximum allowed number of
+explicit recipients addressed by the message.
 
     >>> mlist = create_list('_xtest@example.com')
     >>> rule = config.rules['max-recipients']
     >>> print rule.name
     max-recipients
 
-In this case, we'll create a message with 5 recipients.  These include all
-addresses in the To and CC headers.
+In this case, we'll create a message with five recipients.  These include all
+addresses in the ``To:`` and ``CC:`` headers.
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com

@@ -25,6 +25,7 @@ moderation rule can't match.
     False
 
 Let's add the message author as a non-moderated member.
+::
 
     >>> from mailman.interfaces.usermanager import IUserManager
     >>> from zope.component import getUtility
@@ -50,7 +51,7 @@ Non-members
 ===========
 
 There is another, related rule for matching non-members, which simply matches
-if the sender is /not/ a member of the mailing list.
+if the sender is *not* a member of the mailing list.
 
     >>> rule = config.rules['non-member']
     >>> print rule.name

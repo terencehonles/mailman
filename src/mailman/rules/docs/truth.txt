@@ -1,7 +1,8 @@
+=====
 Truth
 =====
 
-The 'truth' rule always matches.  This makes it useful as a terminus rule for
+This rule always matches.  This makes it useful as a terminus rule for
 unconditionally jumping to another chain.
 
     >>> rule = config.rules['truth']

@@ -24,7 +24,7 @@ Set the so-called suspicious header configuration variable.
     True
 
 But if the header doesn't match the regular expression, the rule won't match.
-This one comes from a .org address.
+This one comes from a ``.org`` address.
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.org

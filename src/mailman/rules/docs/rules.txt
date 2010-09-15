@@ -44,7 +44,7 @@ Rule checks
 ===========
 
 Individual rules can be checked to see if they match, by running the rule's
-`check()` method.  This returns a boolean indicating whether the rule was
+``check()`` method.  This returns a boolean indicating whether the rule was
 matched or not.
 
     >>> mlist = create_list('_xtest@example.com')
@@ -54,9 +54,9 @@ matched or not.
     ... An important message.
     ... """)
 
-For example, the emergency rule just checks to see if the emergency flag is
-set on the mailing list, and the message has not been pre-approved by the list
-administrator.
+For example, the ``emergency`` rule just checks to see if the emergency flag
+is set on the mailing list, and the message has not been pre-approved by the
+list administrator.
 
     >>> print rule.name
     emergency

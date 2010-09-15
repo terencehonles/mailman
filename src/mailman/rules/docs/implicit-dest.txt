@@ -2,7 +2,7 @@
 Implicit destination
 ====================
 
-The 'implicit-dest' rule matches when the mailing list's posting address is
+The ``implicit-dest`` rule matches when the mailing list's posting address is
 not explicitly mentioned in the set of message recipients.
 
     >>> mlist = create_list('_xtest@example.com')
@@ -18,6 +18,7 @@ to the appropriate interface.
 
 This rule matches messages that have an implicit destination, meaning that the
 mailing list's posting address isn't included in the explicit recipients.
+::
 
     >>> mlist.require_explicit_destination = True
     >>> alias_set.clear()
@@ -52,6 +53,7 @@ Add the posting address as a recipient and the rule will no longer match.
 
 Alternatively, if one of the acceptable aliases is in the recipients list,
 then the rule will not match.
+::
 
     >>> del msg['cc']
     >>> rule.check(mlist, msg, {})
@@ -69,6 +71,7 @@ that Mailman pulled it from the appropriate news group.
     False
 
 Additional aliases can be added.
+::
 
     >>> alias_set.add('other@example.com')
     >>> del msg['to']
@@ -86,6 +89,7 @@ Aliases can be removed.
     True
 
 Aliases can also be cleared.
+::
 
     >>> msg['Cc'] = 'myfriend@example.com'
     >>> rule.check(mlist, msg, {})
@@ -101,7 +105,8 @@ Alias patterns
 
 It's also possible to specify an alias pattern, i.e. a regular expression to
 match against the recipients.  For example, we can say that if there is a
-recipient in the example.net domain, then the rule does not match.
+recipient in the ``example.net`` domain, then the rule does not match.
+::
 
     >>> alias_set.add('^.*@example.net')
     >>> rule.check(mlist, msg, {})

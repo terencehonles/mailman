@@ -4,19 +4,20 @@ Header matching
 
 Mailman can do pattern based header matching during its normal rule
 processing.  There is a set of site-wide default header matches specified in
-the configuration file under the [spam.headers] section.
+the configuration file under the ``[spam.headers]`` section.
 
     >>> mlist = create_list('_xtest@example.com')
 
-Because the default [spam.headers] section is empty, we'll just extend the
+Because the default ``[spam.headers]`` section is empty, we'll just extend the
 current header matching chain with a pattern that matches 4 or more stars,
 discarding the message if it hits.
 
     >>> chain = config.chains['header-match']
     >>> chain.extend('x-spam-score', '[*]{4,}', 'discard')
 
-First, if the message has no X-Spam-Score header, the message passes through
-the chain untouched (i.e. no disposition).
+First, if the message has no ``X-Spam-Score:`` header, the message passes
+through the chain untouched (i.e. no disposition).
+::
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
@@ -30,6 +31,7 @@ the chain untouched (i.e. no disposition).
     >>> from mailman.core.chains import process
 
 Pass through is seen as nothing being in the log file after processing.
+::
 
     # XXX This checks the vette log file because there is no other evidence
     # that this chain has done anything.
@@ -98,7 +100,7 @@ List-specific header matching
 
 Each mailing list can also be configured with a set of header matching regular
 expression rules.  These are used to impose list-specific header filtering
-with the same semantics as the global [spam.headers] section.
+with the same semantics as the global ``[spam.headers]`` section.
 
 The list administrator wants to match not on four stars, but on three plus
 signs, but only for the current mailing list.

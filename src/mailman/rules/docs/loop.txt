@@ -3,7 +3,7 @@ Posting loops
 =============
 
 To avoid a posting loop, Mailman has a rule to check for the existence of an
-RFC 2369 List-Post header with the value of the list's posting address.
+RFC 2369 ``List-Post:`` header with the value of the list's posting address.
 
     >>> mlist = create_list('_xtest@example.com')
     >>> rule = config.rules['loop']
@@ -34,8 +34,8 @@ matches.
     >>> rule.check(mlist, msg, {})
     True
 
-Even if there are multiple List-Post headers, as long as one with the posting
-address exists, the rule matches.
+Even if there are multiple ``List-Post:`` headers, as long as one with the
+posting address exists, the rule matches.
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com

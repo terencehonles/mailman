@@ -2,10 +2,10 @@
 Administrivia
 =============
 
-The 'administrivia' rule matches when the message contains some common email
-commands in the Subject header or first few lines of the payload.  This is
-used to catch messages posted to the list which should have been sent to the
--request robot address.
+The `administrivia` rule matches when the message contains some common email
+commands in the ``Subject:`` header or first few lines of the payload.  This
+is used to catch messages posted to the list which should have been sent to
+the ``-request`` robot address.
 
     >>> mlist = create_list('_xtest@example.com')
     >>> mlist.administrivia = True
@@ -13,8 +13,8 @@ used to catch messages posted to the list which should have been sent to the
     >>> print rule.name
     administrivia
 
-For example, if the Subject header contains the word 'unsubscribe', the rule
-matches.
+For example, if the ``Subject:`` header contains the word ``unsubscribe``, the
+rule matches.
 
     >>> msg_1 = message_from_string("""\
     ... From: aperson@example.com
@@ -24,7 +24,7 @@ matches.
     >>> rule.check(mlist, msg_1, {})
     True
 
-Similarly, if the body of the message contains the word 'subscribe' in the
+Similarly, if the body of the message contains the word ``subscribe`` in the
 first few lines of text, the rule matches.
 
     >>> msg_2 = message_from_string("""\
@@ -46,9 +46,9 @@ In both cases, administrivia checking can be disabled.
 
 To make the administrivia heuristics a little more robust, the rule actually
 looks for a minimum and maximum number of arguments, so that it really does
-seem like a mis-addressed email command.  In this case, the 'confirm' command
-requires at least one argument.  We don't give that here so the rule will not
-match.
+seem like a mis-addressed email command.  In this case, the ``confirm``
+command requires at least one argument.  We don't give that here so the rule
+will not match.
 
     >>> mlist.administrivia = True
     >>> msg = message_from_string("""\
@@ -59,7 +59,7 @@ match.
     >>> rule.check(mlist, msg, {})
     False
 
-But a real 'confirm' message will match.
+But a real ``confirm`` message will match.
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
@@ -86,7 +86,7 @@ Of course, messages that don't contain administrivia, don't match the rule.
     >>> rule.check(mlist, msg, {})
     False
 
-Also, only text/plain parts are checked for administrivia, so any email
+Also, only ``text/plain`` parts are checked for administrivia, so any email
 commands in other content type subparts are ignored.
 
     >>> msg = message_from_string("""\
