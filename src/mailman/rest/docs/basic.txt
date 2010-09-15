@@ -2,7 +2,7 @@
 REST server
 ===========
 
-Mailman exposes a REST HTTP server for administrative control.
+Mailman exposes a REST_ HTTP server for administrative control.
 
 The server listens for connections on a configurable host name and port.
 Because the REST server has full administrative access, it should always be
@@ -22,10 +22,13 @@ returned.
 Non-existent links
 ==================
 
-When you try to access an admin link that doesn't exist, you get the
-appropriate HTTP 404 Not Found error.
+When you try to access a link that doesn't exist, you get the appropriate HTTP
+404 Not Found error.
 
     >>> dump_json('http://localhost:8001/3.0/does-not-exist')
     Traceback (most recent call last):
     ...
     HTTPError: HTTP Error 404: 404 Not Found
+
+
+.. _REST: http://en.wikipedia.org/wiki/REST

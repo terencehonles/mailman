@@ -3,7 +3,7 @@ Membership
 ==========
 
 The REST API can be used to subscribe and unsubscribe users to mailing lists.
-A subscribed user is called a 'member'.  There is a top level collection that
+A subscribed user is called a *member*.  There is a top level collection that
 returns all the members of all known mailing lists.
 
 There are no mailing lists and no members yet.
@@ -14,6 +14,7 @@ There are no mailing lists and no members yet.
     total_size: 0
 
 We create a mailing list, which starts out with no members.
+::
 
     >>> mlist_one = create_list('test-one@example.com')
     >>> transaction.commit()
@@ -29,6 +30,7 @@ Subscribers
 
 After Bart subscribes to the mailing list, his subscription is available via
 the REST interface.
+::
 
     >>> from mailman.interfaces.member import MemberRole
     >>> from mailman.interfaces.usermanager import IUserManager
@@ -62,6 +64,7 @@ the REST interface.
 
 The subscribed members are returned in alphabetical order, so when Anna
 subscribes, she is returned first.
+::
 
     >>> subscribe(mlist_one, 'Anna')
 
@@ -81,6 +84,7 @@ subscribes, she is returned first.
 
 Subscriptions are also returned alphabetically by mailing list posting
 address.  Anna and Cris subscribe to this new mailing list.
+::
 
     >>> mlist_two = create_list('alpha@example.com')
     >>> subscribe(mlist_two, 'Anna')
@@ -127,6 +131,7 @@ Owners and moderators
 Mailing list owners and moderators also show up in the REST API.  Cris becomes
 an owner of the alpha mailing list and Dave becomes a moderator of the
 test-one mailing list.
+::
 
     >>> subscribe(mlist_one, 'Cris', MemberRole.owner)
     >>> subscribe(mlist_two, 'Dave', MemberRole.moderator)
@@ -180,6 +185,7 @@ created for her.
     ...
 
 Elly is now a member of the mailing list.
+::
 
     >>> elly = user_manager.get_user('eperson@example.com')
     >>> elly
@@ -202,6 +208,7 @@ Leaving a mailing list
 
 Elly decides she does not want to be a member of the mailing list after all,
 so she leaves from the mailing list.
+::
 
     # Ensure our previous reads don't keep the database lock.
     >>> transaction.abort()
@@ -222,6 +229,7 @@ Digest delivery
 ===============
 
 Fred joins the alpha mailing list but wants MIME digest delivery.
+::
 
     >>> transaction.abort()
     >>> dump_json('http://localhost:8001/3.0/members', {

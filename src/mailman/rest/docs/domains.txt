@@ -2,6 +2,9 @@
 Domains
 =======
 
+`Domains`_ are how Mailman interacts with email host names and web host names.
+::
+
     # The test framework starts out with an example domain, so let's delete
     # that first.
     >>> from mailman.interfaces.domain import IDomainManager
@@ -20,7 +23,8 @@ initially none.
     start: 0
     total_size: 0
 
-Once a domain is added though, it is accessible through the API.
+Once a domain is added, it is accessible through the API.
+::
 
     >>> domain_manager.add(
     ...     'example.com', 'An example domain', 'http://lists.example.com')
@@ -43,6 +47,7 @@ Once a domain is added though, it is accessible through the API.
     total_size: 1
 
 At the top level, all domains are returned as separate entries.
+::
 
     >>> domain_manager.add(
     ...     'example.org',
@@ -94,7 +99,7 @@ Individual domains
 ==================
 
 The information for a single domain is available by following one of the
-self_links from the above collection.
+``self_links`` from the above collection.
 
     >>> dump_json('http://localhost:8001/3.0/domains/lists.example.net')
     base_url: http://example.net
@@ -116,7 +121,7 @@ But we get a 404 for a non-existent domain.
 Creating new domains
 ====================
 
-New domains can be created by posting to the 'domains' url.
+New domains can be created by posting to the ``domains`` url.
 
     >>> dump_json('http://localhost:8001/3.0/domains', {
     ...           'email_host': 'lists.example.com',
@@ -138,6 +143,7 @@ Now the web service knows about our new domain.
     url_host: lists.example.com
 
 And the new domain is in our database.
+::
 
     >>> domain_manager['lists.example.com']
     <Domain lists.example.com,
@@ -149,6 +155,7 @@ And the new domain is in our database.
 
 You can also create a new domain with a description, a base url, and a contact
 address.
+::
 
     >>> dump_json('http://localhost:8001/3.0/domains', {
     ...           'email_host': 'my.example.com',
@@ -177,3 +184,6 @@ address.
 
     # Unlock the database.
     >>> transaction.abort()
+
+
+.. _Domains: ../../model/docs/domains.html

@@ -12,6 +12,7 @@ yet though.
     total_size: 0
 
 Create a mailing list in a domain and it's accessible via the API.
+::
 
     >>> create_list('test-one@example.com')
     <mailing list "test-one@example.com" at ...>
@@ -34,7 +35,7 @@ Creating lists via the API
 ==========================
 
 New mailing lists can also be created through the API, by posting to the
-'lists' URL.
+``lists`` URL.
 
     >>> dump_json('http://localhost:8001/3.0/lists', {
     ...           'fqdn_listname': 'test-two@example.com',
@@ -45,6 +46,7 @@ New mailing lists can also be created through the API, by posting to the
     ...
 
 The mailing list exists in the database.
+::
 
     >>> from mailman.interfaces.listmanager import IListManager
     >>> from zope.component import getUtility
@@ -90,8 +92,9 @@ Nor can you create a mailing list that already exists.
 Deleting lists via the API
 ==========================
 
-Existing mailing lists can be deleted through the API, by doing an HTTP DELETE
-on the mailing list URL.
+Existing mailing lists can be deleted through the API, by doing an HTTP
+``DELETE`` on the mailing list URL.
+::
 
     >>> dump_json('http://localhost:8001/3.0/lists/test-two@example.com',
     ...           method='DELETE')
@@ -111,6 +114,7 @@ The mailing list does not exist.
 
 You cannot delete a mailing list that does not exist or has already been
 deleted.
+::
 
     >>> dump_json('http://localhost:8001/3.0/lists/test-two@example.com',
     ...           method='DELETE')

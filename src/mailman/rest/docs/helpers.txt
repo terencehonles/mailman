@@ -16,8 +16,9 @@ function can return them the full path to the resource.
     >>> print path_to('system')
     http://localhost:8001/3.0/system
 
-Parameters like the scheme, host, port, and API version number can be set in
-the configuration file.
+Parameters like the ``scheme``, ``host``, ``port``, and API version number can
+be set in the configuration file.
+::
 
     >>> config.push('helpers', """
     ... [webservice]
@@ -34,10 +35,10 @@ the configuration file.
 Etags
 =====
 
-HTTP etags are a way for clients to decide whether their copy of a resource
+HTTP *etags* are a way for clients to decide whether their copy of a resource
 has changed or not.  Mailman's REST API calculates this in a cheap and dirty
 way.  Pass in the dictionary representing the resource and that dictionary
-gets modified to contain the etag under the `http_etag` key.
+gets modified to contain the etag under the ``http_etag`` key.
 
     >>> from mailman.rest.helpers import etag
     >>> resource = dict(geddy='bass', alex='guitar', neil='drums')
@@ -47,6 +48,7 @@ gets modified to contain the etag under the `http_etag` key.
 
 For convenience, the etag function also returns the JSON representation of the
 dictionary after tagging, since that's almost always what you want.
+::
 
     >>> import json
     >>> data = json.loads(json_data)
@@ -62,8 +64,9 @@ dictionary after tagging, since that's almost always what you want.
 POST unpacking
 ==============
 
-Another helper unpacks POST request variables, validating and converting their
-values.
+Another helper unpacks ``POST`` request variables, validating and converting
+their values.
+::
 
     >>> from mailman.rest.validator import Validator
     >>> validator = Validator(one=int, two=unicode, three=bool)
@@ -113,6 +116,7 @@ Extra keys are also not allowed.
     ValueError: Unexpected parameters: five, four
 
 However, if optional keys are missing, it's okay.
+::
 
     >>> validator = Validator(one=int, two=unicode, three=bool,
     ...                       four=int, five=int,
@@ -146,10 +150,11 @@ But if the optional values are present, they must of course also be valid.
 Arrays
 ------
 
-Some POST forms include more than one value for a particular key.  This is how
-lists and arrays are modeled.  The Validator does the right thing with such
-form data.  Specifically, when a key shows up multiple times in the form data,
-a list is given to the validator.
+Some ``POST`` forms include more than one value for a particular key.  This is
+how lists and arrays are modeled.  The validator does the right thing with
+such form data.  Specifically, when a key shows up multiple times in the form
+data, a list is given to the validator.
+::
 
     # Of course we can't use a normal dictionary, but webob has a useful data
     # type we can use.
