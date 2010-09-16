@@ -31,9 +31,10 @@ Delivery strategies must implement the proper interface.
 Chunking recipients
 ===================
 
-The set of final recipients is contained in the 'recipients' key in the
-message metadata.  When `max_recipients` is specified as zero, then the bulk
+The set of final recipients is contained in the ``recipients`` key in the
+message metadata.  When ``max_recipients`` is specified as zero, then the bulk
 deliverer puts all recipients into one big chunk.
+::
 
     >>> from string import ascii_letters
     >>> recipients = set(letter + 'person@example.com'
@@ -56,6 +57,7 @@ more than 4 recipients, though they can have fewer (but still not zero).
     True
 
 The chunking algorithm sorts recipients by top level domain by length.
+::
 
     >>> recipients = set([
     ...     'anne@example.com',
@@ -83,8 +85,9 @@ The chunking algorithm sorts recipients by top level domain by length.
     6
 
 We can't make any guarantees about sorting within each chunk, but we can tell
-a few things.  For example, the first two chunks will be composed of .net (4)
-and .org (3) domains (for a total of 7).
+a few things.  For example, the first two chunks will be composed of ``.net``
+(4) and ``.org`` (3) domains (for a total of 7).
+::
 
     >>> len(chunks[0])
     4
@@ -101,7 +104,8 @@ and .org (3) domains (for a total of 7).
     neil@example.net
     ocho@example.org
 
-We also know that the next two chunks will contain .com (5) addresses.
+We also know that the next two chunks will contain ``.com`` (5) addresses.
+::
 
     >>> len(chunks[2])
     4
@@ -116,7 +120,7 @@ We also know that the next two chunks will contain .com (5) addresses.
     john@example.com
     kate@example.com
 
-The next chunk will contain the .us (2) and .ca (1) domains.
+The next chunk will contain the ``.us`` (2) and ``.ca`` (1) domains.
 
     >>> len(chunks[4])
     3
@@ -126,7 +130,8 @@ The next chunk will contain the .us (2) and .ca (1) domains.
     liam@example.ca
     mary@example.us
 
-The final chunk will contain the outliers, .xx (1) and .zz (2).
+The final chunk will contain the outliers, ``.xx`` (1) and ``.zz`` (2).
+::
 
     >>> len(chunks[5])
     2
@@ -141,6 +146,7 @@ Bulk delivery
 
 The set of recipients for bulk delivery comes from the message metadata.  If
 there are no calculated recipients, nothing gets sent.
+::
 
     >>> mlist = create_list('test@example.com')
     >>> msg = message_from_string("""\
@@ -165,7 +171,8 @@ there are no calculated recipients, nothing gets sent.
 
 With bulk delivery and no maximum number of recipients, there will be just one
 message sent, with all the recipients packed into the envelope recipients
-(i.e. RCTP TO).
+(i.e. ``RCTP TO``).
+::
 
     >>> recipients = set('person_{0:02d}'.format(i) for i in range(100))
     >>> msgdata = dict(recipients=recipients)
@@ -187,13 +194,14 @@ message sent, with all the recipients packed into the envelope recipients
     <BLANKLINE>
     This is a test.
 
-The X-RcptTo header contains the set of recipients, in random order.
+The ``X-RcptTo:`` header contains the set of recipients, in random order.
 
     >>> len(messages[0]['x-rcptto'].split(','))
     100
 
 When the maximum number of recipients is set to 20, 5 messages will be sent,
-each with 20 addresses in the RCPT TO header.
+each with 20 addresses in the ``RCPT TO``.
+::
 
     >>> bulk = BulkDelivery(20)
     >>> bulk.deliver(mlist, msg, msgdata)
@@ -215,11 +223,12 @@ each with 20 addresses in the RCPT TO header.
 Delivery headers
 ================
 
-The sending agent shows up in the RFC 5321 MAIL FROM header, which shows up in
-the X-MailFrom header in the sample message.
+The sending agent shows up in the RFC 5321 ``MAIL FROM``, which shows up in
+the ``X-MailFrom:`` header in the sample message.
 
 The bulk delivery module calculates the sending agent address first from the
 message metadata...
+::
 
     >>> bulk = BulkDelivery()
     >>> recipients = set(['aperson@example.com'])
@@ -241,6 +250,7 @@ message metadata...
     This is a test.
 
 ...followed by the mailing list's bounces robot address...
+::
 
     >>> del msgdata['sender']
     >>> bulk.deliver(mlist, msg, msgdata)
@@ -260,6 +270,7 @@ message metadata...
 
 ...and finally the site owner, if there is no mailing list target for this
 message.
+::
 
     >>> config.push('site-owner', """\
     ... [mailman]
@@ -295,6 +306,7 @@ certain situations.
 
 For example, there could be a problem delivering to any of the specified
 recipients.
+::
 
     # Tell the mail server to fail on the next 3 RCPT TO commands, one for
     # each recipient in the following message.
@@ -330,6 +342,7 @@ recipients.
     0
 
 Or there could be some other problem causing an SMTP response failure.
+::
 
     # Tell the mail server to register a temporary failure on the next MAIL
     # FROM command.

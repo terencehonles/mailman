@@ -21,6 +21,7 @@ Decorations
 
 Decorations are added when the mailing list had a header and/or footer
 defined, and the decoration handler is told to do personalized decorations.
+::
 
     >>> mlist = create_list('test@example.com')
     >>> mlist.msg_header = """\
@@ -59,6 +60,7 @@ defined, and the decoration handler is told to do personalized decorations.
 
 More information is included when the recipient is a member of the mailing
 list.
+::
 
     >>> from zope.component import getUtility
     >>> from mailman.interfaces.member import MemberRole
@@ -81,6 +83,7 @@ list.
     <Member: Cris Person <cperson@example.com> ...
 
 The decorations happen when the message is delivered.
+::
 
     >>> decorating.deliver(mlist, msg, msgdata)
     {}
@@ -154,8 +157,9 @@ The decorations happen when the message is delivered.
 Decorate only once
 ==================
 
-Do not decorate a message twice.  Decorators must insert the 'decorated' key
+Do not decorate a message twice.  Decorators must insert the ``decorated`` key
 into the message metadata.
+::
 
     >>> msgdata['nodecorate'] = True
     >>> decorating.deliver(mlist, msg, msgdata)

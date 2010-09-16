@@ -3,14 +3,14 @@ MTA connections
 ===============
 
 Outgoing connections to the outgoing mail transport agent (MTA) are mitigated
-through a Connection class, which can transparently manage multiple sessions
-in a single connection.
+through a ``Connection`` class, which can transparently manage multiple
+sessions in a single connection.
 
     >>> from mailman.mta.connection import Connection
 
-The number of sessions per connections is specified when the Connection object
-is created, as is the host and port number of the SMTP server.  Zero means
-there's an unlimited number of sessions per connection.
+The number of sessions per connections is specified when the ``Connection``
+object is created, as is the host and port number of the SMTP server.  Zero
+means there's an unlimited number of sessions per connection.
 
     >>> connection = Connection(
     ...     config.mta.smtp_host, int(config.mta.smtp_port), 0)
@@ -21,6 +21,7 @@ At the start, there have been no connections to the server.
     0
 
 By sending a message to the server, a connection is opened.
+::
 
     >>> connection.sendmail('anne@example.com', ['bart@example.com'], """\
     ... From: anne@example.com
@@ -34,6 +35,7 @@ By sending a message to the server, a connection is opened.
     1
 
 We can reset the connection count back to zero.
+::
 
     >>> from smtplib import SMTP
     >>> def reset():
@@ -56,6 +58,7 @@ the third message is sent, the connection is torn down and a new one is
 created.
 
 The connection count starts at zero.
+::
 
     >>> connection = Connection(
     ...     config.mta.smtp_host, int(config.mta.smtp_port), 2)
@@ -63,8 +66,9 @@ The connection count starts at zero.
     >>> smtpd.get_connection_count()
     0
 
-We send two messages through the Connection object.  Only one connection is
-opened.
+We send two messages through the ``Connection`` object.  Only one connection
+is opened.
+::
 
     >>> connection.sendmail('anne@example.com', ['bart@example.com'], """\
     ... From: anne@example.com
@@ -88,8 +92,9 @@ opened.
     >>> smtpd.get_connection_count()
     1
 
-The third message causes a third session, which exceeds the maximum.  So the
+The third message would cause a third session, exceeding the maximum.  So the
 current connection is closed and a new one opened.
+::
 
     >>> connection.sendmail('anne@example.com', ['bart@example.com'], """\
     ... From: anne@example.com
@@ -103,6 +108,7 @@ current connection is closed and a new one opened.
     2
 
 A fourth message does not cause a new connection to be made.
+::
 
     >>> connection.sendmail('anne@example.com', ['bart@example.com'], """\
     ... From: anne@example.com
@@ -116,6 +122,7 @@ A fourth message does not cause a new connection to be made.
     2
 
 But a fifth one does.
+::
 
     >>> connection.sendmail('anne@example.com', ['bart@example.com'], """\
     ... From: anne@example.com
@@ -141,6 +148,7 @@ connection.
 
 Even after ten messages are sent, there's still been only one connection to
 the server.
+::
 
     >>> connection.debug = True
     >>> for i in range(10):
@@ -163,6 +171,7 @@ Development mode
 By putting Mailman into development mode, you can force the recipients to a
 given hard-coded address.  This allows you to test Mailman without worrying
 about accidental deliveries to unintended recipients.
+::
 
     >>> config.push('devmode', """
     ... [devmode]

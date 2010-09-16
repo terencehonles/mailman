@@ -15,12 +15,12 @@ archivers.
     ... Here is an archived message.
     ... """)
 
-Archivers support an interface which provides the RFC 2369 List-Archive
-header, and one that provides a 'permalink' to the specific message object in
+Archivers support an interface which provides the RFC 2369 ``List-Archive:``
+header, and one that provides a *permalink* to the specific message object in
 the archive.  This latter is appropriate for the message footer or for the RFC
-5064 Archived-At header.
+5064 ``Archived-At:`` header.
 
-Pipermail does not support a permalink, so that interface returns None.
+Pipermail does not support a permalink, so that interface returns ``None``.
 Mailman defines a draft spec for how list servers and archivers can
 interoperate.
 
@@ -49,6 +49,7 @@ Sending the message to the archiver
 ===================================
 
 The archiver is also able to archive the message.
+::
 
     >>> archivers['pipermail'].archive_message(mlist, msg)
 
@@ -71,10 +72,9 @@ Note however that the prototype archiver can't archive messages.
 The Mail-Archive.com
 ====================
 
-The Mail-Archive <http://www.mail-archive.com> is a public archiver that can
-be used to archive message for free.  Mailman comes with a plugin for this
-archiver; by enabling it messages to public lists will get sent there
-automatically.
+`The Mail Archive`_ is a public archiver that can be used to archive message
+for free.  Mailman comes with a plugin for this archiver; by enabling it
+messages to public lists will get sent there automatically.
 
     >>> archiver = archivers['mail-archive']
     >>> print archiver.list_url(mlist)
@@ -83,7 +83,8 @@ automatically.
     http://go.mail-archive.dev/ZaXPPxRMM9_hFZL4vTRlQlBx8pc=
 
 To archive the message, the archiver actually mails the message to a special
-address at the Mail-Archive.  The message gets no header or footer decoration.
+address at The Mail Archive.  The message gets no header or footer decoration.
+::
 
     >>> archiver.archive_message(mlist, msg)
 
@@ -123,7 +124,8 @@ at this service.
     >>> list(smtpd.messages)
     []
 
-Additionally, this archiver can handle malformed Message-IDs.
+Additionally, this archiver can handle malformed ``Message-IDs``.
+::
 
     >>> mlist.archive_private = False
     >>> del msg['message-id']
@@ -150,7 +152,7 @@ Additionally, this archiver can handle malformed Message-IDs.
 MHonArc
 =======
 
-The MHonArc archiver <http://www.mhonarc.org> is also available.
+A MHonArc_ archiver is also available.
 
     >>> archiver = archivers['mhonarc']
     >>> print archiver.name
@@ -173,3 +175,6 @@ subprocess call.
         -stdout /.../logs/mhonarc
         -spammode -umask 022
         ...
+
+.. _`The Mail Archive`: http://www.mail-archive.com
+.. _MHonArc: http://www.mhonarc.org

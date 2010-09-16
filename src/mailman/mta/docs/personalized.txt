@@ -3,11 +3,9 @@ Fully personalized delivery
 ===========================
 
 Fully personalized mail delivery is an enhancement over VERP_ delivery where
-the To field of the message is replaced with the recipient's address.  A
+the ``To:`` field of the message is replaced with the recipient's address.  A
 typical email message is sent to the mailing list's posting address and copied
 to the list membership that way.  Some people like the more personal address.
-
-.. _VERP: verp.txt
 
 Personalized delivery still does VERP.
 
@@ -25,7 +23,8 @@ Delivery strategies must implement the proper interface.
 No personalization
 ==================
 
-By default, the To header is not personalized.
+By default, the ``To:`` header is not personalized.
+::
 
     >>> mlist = create_list('test@example.com')
     >>> msg = message_from_string("""\
@@ -88,8 +87,9 @@ By default, the To header is not personalized.
 To header
 =========
 
-When the mailing list requests personalization, the To header is replaced with
-the recipient's address and name.
+When the mailing list requests personalization, the ``To:`` header is replaced
+with the recipient's address and name.
+::
 
     >>> from mailman.interfaces.mailinglist import Personalization
     >>> mlist.personalize = Personalization.full
@@ -136,7 +136,8 @@ the recipient's address and name.
     ----------
 
 If the recipient is a user registered with Mailman, and the user has an
-associated real name, then this name also shows up in the To header.
+associated real name, then this name also shows up in the ``To:`` header.
+::
 
     >>> from zope.component import getUtility
     >>> from mailman.interfaces.usermanager import IUserManager
@@ -186,3 +187,6 @@ associated real name, then this name also shows up in the To header.
     <BLANKLINE>
     This is a test.
     ----------
+
+
+.. _VERP: verp.html
