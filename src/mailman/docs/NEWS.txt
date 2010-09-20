@@ -10,7 +10,7 @@ Here is a history of user visible changes to Mailman.
 
 3.0 alpha 6 -- "Cut to the Chase"
 =================================
-(2010-09-07)
+(2010-09-20)
 
 Commands
 --------
@@ -56,6 +56,8 @@ Architecture
 
 Miscellaneous
 -------------
+ * Allow X-Approved and X-Approve headers, equivalent to Approved and
+   Approve. LP: #557750
  * Various test failure fixes.  LP: #543618, LP: #544477
  * List-Post header is retained in MIME digest messages.  LP: #526143
  * Importing from a Mailman 2.1.x list is partially supported.

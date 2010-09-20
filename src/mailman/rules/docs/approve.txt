@@ -28,8 +28,8 @@ approval or not.
 No approval
 ===========
 
-If the message has no ``Approve:`` or ``Approved:`` header, then the rule does
-not match.
+If the message has no ``Approve:`` or ``Approved:`` header (or their ``X-``
+equivalents), then the rule does not match.
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
@@ -39,9 +39,9 @@ not match.
     >>> rule.check(mlist, msg, {})
     False
 
-If the message has an ``Approve:`` or ``Approved:`` header with a value that
-does not match the moderator password, then the rule does not match.  However,
-the header is still removed.
+If the message has an ``Approve:``, ``Approved:``, ``X-Approve:``, or
+``X-Approved:`` header with a value that does not match the moderator
+password, then the rule does not match.  However, the header is still removed.
 ::
 
     >>> msg['Approve'] = '12345'
@@ -58,6 +58,20 @@ the header is still removed.
     None
 
     >>> del msg['approved']
+    >>> msg['X-Approve'] = '12345'
+    >>> rule.check(mlist, msg, {})
+    False
+    >>> print msg['x-approve']
+    None
+
+    >>> del msg['x-approve']
+    >>> msg['X-Approved'] = '12345'
+    >>> rule.check(mlist, msg, {})
+    False
+    >>> print msg['x-approved']
+    None
+
+    >>> del msg['x-approved']
 
 
 Using an approval header
@@ -74,11 +88,31 @@ matches, and the ``Approve:`` header is stripped.
 
 Similarly, for the ``Approved:`` header.
 
+    >>> del msg['approve']
     >>> msg['Approved'] = 'abcxyz'
     >>> rule.check(mlist, msg, {})
     True
     >>> print msg['approved']
     None
+
+The headers ``X-Approve:`` and ``X-Approved:`` are treated the same way.
+::
+
+    >>> del msg['approved']
+    >>> msg['X-Approve'] = 'abcxyz'
+    >>> rule.check(mlist, msg, {})
+    True
+    >>> print msg['x-approve']
+    None
+
+    >>> del msg['x-approve']
+    >>> msg['X-Approved'] = 'abcxyz'
+    >>> rule.check(mlist, msg, {})
+    True
+    >>> print msg['x-approved']
+    None
+
+    >>> del msg['x-approved']
 
 
 Using a pseudo-header

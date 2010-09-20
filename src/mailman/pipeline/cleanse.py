@@ -53,6 +53,8 @@ class Cleanse:
         # Remove headers that could contain passwords.
         del msg['approved']
         del msg['approve']
+        del msg['x-approved']
+        del msg['x-approve']
         del msg['urgent']
         # We remove other headers from anonymous lists.
         if mlist.anonymous_list:

@@ -34,6 +34,12 @@ from mailman.interfaces.rules import IRule
 
 
 EMPTYSTRING = ''
+HEADERS = [
+    'approve',
+    'approved',
+    'x-approve',
+    'x-approved',
+    ]
 
 
 
@@ -45,13 +51,20 @@ class Approved:
     description = _('The message has a matching Approve or Approved header.')
     record = True
 
+    def _get_password(self, msg, missing):
+        for header in HEADERS:
+            password = msg.get(header, missing)
+            if password is not missing:
+                return password
+        return missing
+
     def check(self, mlist, msg, msgdata):
         """See `IRule`."""
         # See if the message has an Approved or Approve header with a valid
         # moderator password.  Also look at the first non-whitespace line in
         # the file to see if it looks like an Approved header.
         missing = object()
-        password = msg.get('approved', msg.get('approve', missing))
+        password = self._get_password(msg, missing)
         if password is missing:
             # Find the first text/plain part in the message
             part = None
@@ -66,7 +79,7 @@ class Approved:
                         break
                 if ':' in line:
                     header, value = line.split(':', 1)
-                    if header.lower() in ('approved', 'approve'):
+                    if header.lower() in HEADERS:
                         password = value.strip()
                         # Now strip the first line from the payload so the
                         # password doesn't leak.
@@ -99,8 +112,8 @@ class Approved:
                         if re.search(pattern, payload):
                             reset_payload(part, re.sub(pattern, '', payload))
         else:
-            del msg['approved']
-            del msg['approve']
+            for header in HEADERS:
+                del msg[header]
         return password is not missing and password == mlist.moderator_password
 
 

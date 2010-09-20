@@ -8,18 +8,20 @@ headers can be used to fish for membership.
 
     >>> mlist = create_list('_xtest@example.com')
 
-Headers such as ``Approved``, ``Approve``, and ``Urgent`` are used to grant
-special permissions to individual messages.  All may contain a password; the
-first two headers are used by list administrators to pre-approve a message
-normal held for approval.  The latter header is used to send a regular message
-to all members, regardless of whether they get digests or not.  Because all
-three headers contain passwords, they must be removed from any posted message.
-::
+Headers such as ``Approved``, ``Approve``, (as well as their ``X-`` variants)
+and ``Urgent`` are used to grant special permissions to individual messages.
+All may contain a password; the first two headers are used by list
+administrators to pre-approve a message normal held for approval.  The latter
+header is used to send a regular message to all members, regardless of whether
+they get digests or not.  Because all three headers contain passwords, they
+must be removed from any posted message.  ::
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... Approved: foobar
     ... Approve: barfoo
+    ... X-Approved: bazbar
+    ... X-Approve: barbaz
     ... Urgent: notreally
     ... Subject: A message of great import
     ...
