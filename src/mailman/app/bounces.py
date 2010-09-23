@@ -76,11 +76,20 @@ def bounce_message(mlist, msg, e=None):
 
 
 def scan_message(mlist, msg):
-    """Scan all the message for heuristically determined bounce addresses."""
+    """Scan all the message for heuristically determined bounce addresses.
+
+    :param mlist: The mailing list.
+    :type mlist: `IMailingList`
+    :param msg: The bounce message to scan.
+    :type msg: `Message`
+    :return: The set of bouncing addresses found in the scanned message.  The
+        set will be empty if no addresses were found.
+    :rtype: set
+    """
     for detector_class in find_components('mailman.bouncers', IBounceDetector):
-        addresses = detector().process(msg)
+        addresses = detector_class().process(msg)
         # Detectors may return None or an empty sequence to signify that no
         # addresses have been found.
         if addresses:
-            return addresses
-    return []
+            return set(addresses)
+    return set()
