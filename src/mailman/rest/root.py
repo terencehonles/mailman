@@ -25,7 +25,8 @@ __all__ = [
     ]
 
 
-from restish import http, resource
+from restish import http, resource, guard
+from base64 import b64decode
 
 from mailman.config import config
 from mailman.core.system import system
@@ -36,6 +37,16 @@ from mailman.rest.members import AllMembers
 
 
 
+def webservice_auth_checker(request, obj):
+    if "HTTP_AUTHORIZATION" in request.environ and request.environ["HTTP_AUTHORIZATION"].startswith("Basic "):
+        credentials = b64decode(request.environ["HTTP_AUTHORIZATION"][6:])
+        username, password = credentials.split(":", 1)
+
+        if username != config.webservice.admin_user or password != config.webservice.admin_pass:
+            raise guard.GuardError(str("User is not authorized for the REST api."))
+    else:
+        raise guard.GuardError(str("The REST api requires authentication."))
+
 class Root(resource.Resource):
     """The RESTful root resource.
 
@@ -44,10 +55,11 @@ class Root(resource.Resource):
     and we start at 3.0 to match the Mailman version number.  That may not
     always be the case though.
     """
+
     @resource.child(config.webservice.api_version)
+    @guard.guard(webservice_auth_checker)
     def api_version(self, request, segments):
         return TopLevel()
-
 
 class TopLevel(resource.Resource):
     """Top level collections and entries."""
