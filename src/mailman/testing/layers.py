@@ -37,7 +37,8 @@ import tempfile
 
 from pkg_resources import resource_string
 from textwrap import dedent
-from urllib2 import urlopen, URLError
+from urllib2 import urlopen, URLError, Request
+from base64 import encodestring
 from zope.component import getUtility
 
 from mailman.config import config
@@ -273,7 +274,10 @@ class RESTLayer(SMTPLayer):
         until = datetime.datetime.now() + TEST_TIMEOUT
         while datetime.datetime.now() < until:
             try:
-                fp = urlopen('http://localhost:8001/3.0/system')
+                request = Request('http://localhost:8001/3.0/system')
+                base64string = encodestring('%s:%s' % ("restadmin", "restpass")).replace('\n', '')
+                request.add_header("Authorization", "Basic %s" % base64string)   
+                fp = urlopen(request)
             except URLError:
                 pass
             else:

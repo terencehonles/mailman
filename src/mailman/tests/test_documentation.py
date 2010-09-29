@@ -39,6 +39,7 @@ from email import message_from_string
 from httplib2 import Http
 from urllib import urlencode
 from urllib2 import HTTPError
+from base64 import encodestring
 
 import mailman
 
@@ -109,7 +110,7 @@ def dump_msgdata(msgdata, *additional_skips):
         print '{0:{2}}: {1}'.format(key, msgdata[key], longest)
 
 
-def call_http(url, data=None, method=None):
+def call_http(url, data=None, method=None, username="restadmin", password="restpass"):
     """'Call' a URL with a given HTTP method and return the resulting object.
 
     The object will have been JSON decoded.
@@ -131,6 +132,7 @@ def call_http(url, data=None, method=None):
         else:
             method = 'POST'
     method = method.upper()
+    headers['Authorization'] = 'Basic %s' % encodestring('%s:%s' % (username, password)).replace('\n', '')
     response, content = Http().request(url, method, data, headers)
     # If we did not get a 2xx status code, make this look like a urllib2
     # exception, for backward compatibility with existing doctests.
@@ -143,7 +145,7 @@ def call_http(url, data=None, method=None):
     return json.loads(content)
 
 
-def dump_json(url, data=None, method=None):
+def dump_json(url, data=None, method=None, username="restadmin", password="restpass"):
     """Print the JSON dictionary read from a URL.
 
     :param url: The url to open, read, and print.
@@ -153,7 +155,7 @@ def dump_json(url, data=None, method=None):
     :param method: Alternative HTTP method to use.
     :type method: str
     """
-    data = call_http(url, data, method)
+    data = call_http(url, data, method, username, password)
     if data is None:
         return
     for key in sorted(data):
