@@ -25,7 +25,7 @@ __all__ = [
     ]
 
 
-import cPickle
+import sys
 import datetime
 
 from mailman.interfaces.action import Action
@@ -76,6 +76,6 @@ def import_config_pck(mlist, config_dict):
                 value = converter(value)
             try:
                 setattr(mlist, key, value)
-            except TypeError as error:
+            except TypeError:
                 print >> sys.stderr, 'Type conversion error:', key
                 raise

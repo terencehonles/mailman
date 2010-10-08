@@ -35,7 +35,7 @@ from mailman.core.errors import MailmanError
 class SomeRecipientsFailed(MailmanError):
     """Delivery to some or all recipients failed"""
     def __init__(self, temporary_failures, permanent_failures):
-        HandlerError.__init__(self)
+        super(SomeRecipientsFailed, self).__init__()
         self.temporary_failures = temporary_failures
         self.permanent_failures = permanent_failures
 

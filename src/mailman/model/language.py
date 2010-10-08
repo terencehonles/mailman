@@ -25,7 +25,7 @@ __all__ = [
     ]
 
 
-from storm.locals import *
+from storm.locals import Int, Unicode
 from zope.interface import implements
 
 from mailman.database import Model

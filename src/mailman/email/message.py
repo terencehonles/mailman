@@ -33,14 +33,11 @@ __all__ = [
     ]
 
 
-import re
 import email
 import email.message
 import email.utils
 
-from email.charset import Charset
 from email.header import Header
-from lazr.config import as_boolean
 
 from mailman.config import config
 

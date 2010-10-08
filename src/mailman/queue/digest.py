@@ -130,7 +130,7 @@ class Digester:
         # through in the digest messages.
         keepers = {}
         for header in self._keepers:
-            keepers[header] = msg.get_all(keeper, [])
+            keepers[header] = msg.get_all(header, [])
         # Remove all the unkempt <wink> headers.  Use .keys() to allow for
         # destructive iteration...
         for header in msg.keys():

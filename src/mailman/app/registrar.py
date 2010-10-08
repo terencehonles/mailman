@@ -31,7 +31,6 @@ from pkg_resources import resource_string
 from zope.component import getUtility
 from zope.interface import implements
 
-from mailman.config import config
 from mailman.core.i18n import _
 from mailman.email.message import UserNotification
 from mailman.email.validate import validate
@@ -73,8 +72,8 @@ class Registrar:
         # message and confirm through the web.
         subject = 'confirm ' + token
         confirm_address = mlist.confirm_address(token)
-        confirm_url = mlist.domain.confirm_url(token)
         # For i18n interpolation.
+        confirm_url = mlist.domain.confirm_url(token)
         email_address = address
         domain_name = mlist.domain.email_host
         contact_address = mlist.domain.contact_address

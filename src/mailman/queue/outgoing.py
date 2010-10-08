@@ -17,8 +17,6 @@
 
 """Outgoing queue runner."""
 
-import os
-import sys
 import socket
 import logging
 

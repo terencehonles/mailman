@@ -41,5 +41,5 @@ def initialize():
         verifyObject(IRule, rule)
         assert rule.name not in config.rules, (
             'Duplicate rule "{0}" found in {1}'.format(
-                rule.name, rule_finder))
+                rule.name, rule_class))
         config.rules[rule.name] = rule

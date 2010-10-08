@@ -58,7 +58,7 @@ def main():
         try:
             # Be sure the list is locked
             mlist = MailList.MailList(listname)
-        except errors.MMListError, e:
+        except errors.MMListError:
             parser.print_help()
             print >> sys.stderr, _('No such list: $listname')
             sys.exit(1)

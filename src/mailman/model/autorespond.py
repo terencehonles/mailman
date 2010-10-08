@@ -33,8 +33,7 @@ from mailman.config import config
 from mailman.database.model import Model
 from mailman.database.types import Enum
 from mailman.interfaces.autorespond import (
-    IAutoResponseRecord, IAutoResponseSet, Response)
-from mailman.interfaces.mailinglist import IMailingList
+    IAutoResponseRecord, IAutoResponseSet)
 from mailman.utilities.datetime import today
 
 

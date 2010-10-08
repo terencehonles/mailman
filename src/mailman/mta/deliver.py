@@ -28,8 +28,6 @@ __all__ = [
 import time
 import logging
 
-from lazr.config import as_boolean
-
 from mailman.config import config
 from mailman.interfaces.mailinglist import Personalization
 from mailman.interfaces.mta import SomeRecipientsFailed
@@ -150,9 +148,9 @@ def deliver(mlist, msg, msgdata):
         template = config.logging.smtp.failure
         if template.lower() != 'no':
             substitutions.update(
-                recip       = recip,
+                recip       = recipient,
                 smtpcode    = code,
-                smtpmsg     = smtpmsg,
+                smtpmsg     = smtp_message,
                 )
             log.info('%s', expand(template, substitutions))
     # Return the results

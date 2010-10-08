@@ -32,12 +32,10 @@ __all__ = [
 import os
 import re
 import cgi
-import time
 import errno
 import base64
 import random
 import logging
-import htmlentitydefs
 
 # pylint: disable-msg=E0611,W0403
 from email.errors import HeaderParseError
@@ -50,7 +48,6 @@ import mailman.templates
 
 from mailman import passwords
 from mailman.config import config
-from mailman.core import errors
 from mailman.core.i18n import _
 from mailman.interfaces.languages import ILanguageManager
 from mailman.utilities.string import expand
@@ -441,7 +438,7 @@ def uncanonstr(s, lang=None):
         if isinstance(s, unicode):
             return s.encode(charset)
         else:
-            u = unicode(s, charset)
+            unicode(s, charset)
             return s
     except UnicodeError:
         # Nope, it contains funny characters, so html-ref it

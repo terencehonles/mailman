@@ -26,10 +26,6 @@ __all__ = [
 
 
 import os
-import grp
-import pwd
-import time
-import errno
 import logging
 import datetime
 
@@ -37,9 +33,7 @@ from locknix.lockfile import Lock
 from zope.component import getUtility
 from zope.interface import implements
 
-from mailman import Utils
 from mailman.config import config
-from mailman.core.i18n import _
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.mta import IMailTransportAgentAliases
 

@@ -43,7 +43,6 @@ from zope.component import getUtility
 from mailman.config import config
 from mailman.core import initialize
 from mailman.core.initialize import INHIBIT_CONFIG_FILE
-from mailman.core.i18n import _
 from mailman.core.logging import get_handler
 from mailman.interfaces.domain import IDomainManager
 from mailman.interfaces.messages import IMessageStore

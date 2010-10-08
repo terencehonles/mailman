@@ -76,7 +76,7 @@ def process(mlist, msg, msgdata):
                 # Reject
                 text = mlist.member_moderation_notice
                 if text:
-                    text = Utils.wrap(text)
+                    text = wrap(text)
                 else:
                     # Use the default RejectMessage notice string
                     text = None
@@ -144,12 +144,12 @@ def do_reject(mlist):
     listowner = mlist.GetOwnerEmail()
     if mlist.nonmember_rejection_notice:
         raise errors.RejectMessage, \
-              Utils.wrap(_(mlist.nonmember_rejection_notice))
+              wrap(_(mlist.nonmember_rejection_notice))
     else:
-        raise errors.RejectMessage, Utils.wrap(_("""\
+        raise errors.RejectMessage, wrap(_("""\
 You are not allowed to post to this mailing list, and your message has been
 automatically rejected.  If you think that your messages are being rejected in
-error, contact the mailing list owner at %(listowner)s."""))
+error, contact the mailing list owner at ${listowner}."""))
 
 
 
@@ -163,7 +163,7 @@ def do_discard(mlist, msg):
                                 _('Auto-discard notification'),
                                 lang=mlist.preferred_language)
         nmsg.set_type('multipart/mixed')
-        text = MIMEText(Utils.wrap(_(
+        text = MIMEText(wrap(_(
             'The attached message has been automatically discarded.')),
                         _charset=mlist.preferred_language.charset)
         nmsg.attach(text)

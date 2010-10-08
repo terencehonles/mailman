@@ -30,7 +30,6 @@ import datetime
 
 from zope.interface import implements
 
-from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.action import Action
 from mailman.interfaces.digests import DigestFrequency

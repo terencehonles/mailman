@@ -26,7 +26,7 @@ __all__ = [
 
 
 from datetime import timedelta
-from storm.locals import *
+from storm.locals import AutoReload, Int, RawStr, Reference, Unicode
 from zope.component import getUtility
 from zope.interface import implements
 

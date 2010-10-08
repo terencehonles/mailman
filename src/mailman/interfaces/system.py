@@ -27,8 +27,6 @@ __all__ = [
 
 from zope.interface import Interface, Attribute
 
-from mailman.core.i18n import _
-
 
 
 class ISystem(Interface):

@@ -46,6 +46,8 @@ class ParseState(Enum):
 class Microsoft:
     """Microsoft's `SMTPSVC' nears I kin tell."""
 
+    implements(IBounceDetector)
+
     def process(self, msg):
         if msg.get_content_type() != 'multipart/mixed':
             return None

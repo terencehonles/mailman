@@ -18,7 +18,6 @@
 from distribute_setup import use_setuptools
 use_setuptools()
 
-import os
 import re
 import sys
 

@@ -116,7 +116,7 @@ def initialize():
         verifyObject(IHandler, handler)
         assert handler.name not in config.handlers, (
             'Duplicate handler "{0}" found in {1}'.format(
-                handler.name, handler_finder))
+                handler.name, handler_class))
         config.handlers[handler.name] = handler
     # Set up some pipelines.
     for pipeline_class in (BuiltInPipeline, VirginPipeline):

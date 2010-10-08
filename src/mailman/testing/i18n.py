@@ -21,7 +21,8 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'install_testing_i18n',
+    'TestingStrategy',
+    'initialize',
     ]
 
 

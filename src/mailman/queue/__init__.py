@@ -34,15 +34,12 @@ __all__ = [
 
 
 import os
-import sys
 import time
 import email
-import errno
 import pickle
 import cPickle
 import hashlib
 import logging
-import marshal
 import traceback
 
 from cStringIO import StringIO

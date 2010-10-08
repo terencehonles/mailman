@@ -26,8 +26,6 @@ __all__ = [
     ]
 
 
-import sys
-
 from storm.properties import SimpleProperty
 from storm.variables import Variable
 

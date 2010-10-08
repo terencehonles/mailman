@@ -148,7 +148,7 @@ def make_qrunner(name, slice, range, once=False):
         class_path = name
     try:
         qrclass = find_name(class_path)
-    except ImportError as error:
+    except ImportError:
         if os.environ.get('MAILMAN_UNDER_MASTER_CONTROL') is not None:
             # Exit with SIGTERM exit code so the master watcher won't try to
             # restart us.

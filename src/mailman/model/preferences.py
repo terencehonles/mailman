@@ -25,11 +25,10 @@ __all__ = [
     ]
 
 
-from storm.locals import *
+from storm.locals import Bool, Int, Unicode
 from zope.component import getUtility
 from zope.interface import implements
 
-from mailman.config import config
 from mailman.database.model import Model
 from mailman.database.types import Enum
 from mailman.interfaces.languages import ILanguageManager

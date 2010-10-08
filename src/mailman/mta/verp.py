@@ -68,7 +68,8 @@ class VERPMixin:
                 # deliver it to this person, nor can we craft a valid verp
                 # header.  I don't think there's much we can do except ignore
                 # this recipient.
-                log.info('Skipping VERP delivery to unqual recip: %s', recip)
+                log.info('Skipping VERP delivery to unqual recip: %s',
+                         recipient)
                 return sender
             return '{0}@{1}'.format(
                 expand(config.mta.verp_format, dict(

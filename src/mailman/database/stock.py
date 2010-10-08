@@ -37,9 +37,6 @@ import mailman.version
 
 from mailman.config import config
 from mailman.interfaces.database import IDatabase, SchemaVersionMismatchError
-from mailman.model.messagestore import MessageStore
-from mailman.model.pending import Pendings
-from mailman.model.requests import Requests
 from mailman.model.version import Version
 from mailman.utilities.string import expand
 

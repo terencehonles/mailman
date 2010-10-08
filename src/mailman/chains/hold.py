@@ -102,16 +102,16 @@ def autorespond_to_sender(mlist, sender, lang=None):
         log.info('hold autoresponse limit hit: %s', sender)
         response_set.response_sent(address, Response.hold)
         # Send this notification message instead.
-        text = Utils.maketext(
+        text = maketext(
             'nomoretoday.txt',
             {'sender' : sender,
              'listname': mlist.fqdn_listname,
-             'num' : count,
+             'num' : todays_count,
              'owneremail': mlist.owner_address,
              },
             lang=lang)
         with _.using(lang.code):
-            msg = Message.UserNotification(
+            msg = UserNotification(
                 sender, mlist.owner_address,
                 _('Last autoresponse notification for today'),
                 text, lang=lang)

@@ -25,7 +25,7 @@ __all__ = [
     'Message',
     ]
 
-from storm.locals import *
+from storm.locals import AutoReload, Int, RawStr, Unicode
 from zope.interface import implements
 
 from mailman.config import config

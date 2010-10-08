@@ -26,7 +26,8 @@ __all__ = [
     'SchemaVersionMismatchError',
     ]
 
-from zope.interface import Interface, Attribute
+
+from zope.interface import Interface
 
 from mailman.interfaces.errors import MailmanError
 from mailman.version import DATABASE_SCHEMA_VERSION

@@ -27,13 +27,12 @@ __all__ = [
 
 import os
 import sys
-import time
 import errno
 import signal
 import socket
 import logging
 
-from datetime import datetime, timedelta
+from datetime import timedelta
 from flufl.enum import Enum
 from lazr.config import as_boolean
 from locknix import lockfile
@@ -119,7 +118,8 @@ def get_lock_data():
     with open(config.LOCK_FILE) as fp:
         filename = os.path.split(fp.read().strip())[1]
     parts = filename.split('.')
-    timestamp = parts.pop()
+    # Ignore the timestamp.
+    parts.pop()
     pid = parts.pop()
     hostname = parts.pop()
     filename = DOT.join(reversed(parts))

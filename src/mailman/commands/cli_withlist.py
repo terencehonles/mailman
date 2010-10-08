@@ -26,7 +26,6 @@ __all__ = [
 
 
 import re
-import sys
 
 from zope.component import getUtility
 from zope.interface import implements

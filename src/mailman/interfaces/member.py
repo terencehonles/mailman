@@ -94,7 +94,7 @@ class MembershipIsBannedError(MembershipError):
     """The address is not allowed to subscribe to the mailing list."""
 
     def __init__(self, mlist, address):
-        super(MembershipIsBanned, self).__init__()
+        super(MembershipIsBannedError, self).__init__()
         self._mlist = mlist
         self._address = address
 

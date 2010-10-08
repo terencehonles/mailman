@@ -25,14 +25,14 @@ __all__ = [
     'Pendings',
     ]
 
-import sys
+
 import time
 import random
 import hashlib
 import datetime
 
 from lazr.config import as_timedelta
-from storm.locals import *
+from storm.locals import DateTime, Int, RawStr, ReferenceSet, Unicode
 from zope.interface import implements
 from zope.interface.verify import verifyObject
 

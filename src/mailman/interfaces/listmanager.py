@@ -30,7 +30,6 @@ __all__ = [
 from zope.interface import Interface, Attribute
 
 from mailman.interfaces.errors import MailmanError
-from mailman.interfaces.mailinglist import IMailingList
 
 
 

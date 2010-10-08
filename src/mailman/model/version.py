@@ -24,7 +24,7 @@ __all__ = [
     'Version',
     ]
 
-from storm.locals import *
+from storm.locals import Int, Unicode
 from mailman.database.model import Model
 
 

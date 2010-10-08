@@ -21,14 +21,11 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'SubscriptionService',
+    'ISubscriptionService',
     ]
 
 
 from zope.interface import Interface
-
-from mailman.core.i18n import _
-from mailman.interfaces.member import IMember
 
 
 

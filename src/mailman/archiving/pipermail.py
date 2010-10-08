@@ -29,7 +29,6 @@ import os
 import mailbox
 import tempfile
 
-from cStringIO import StringIO
 from zope.interface import implements
 from zope.interface.interface import adapter_hooks
 
@@ -95,7 +94,7 @@ class Pipermail:
     def list_url(mlist):
         """See `IArchiver`."""
         if mlist.archive_private:
-            url = mlist.script_url('private') + '/index.html'
+            return mlist.script_url('private') + '/index.html'
         else:
             return expand(config.archiver.pipermail.base_url,
                           dict(listname=mlist.fqdn_listname,

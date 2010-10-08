@@ -58,7 +58,8 @@ from email.Utils import parseaddr
 
 from mailman.config import config
 from mailman.message import Message
-from mailman.queue import Runner
+from mailman.queue import Runner, Switchboard
+
 
 log = logging.getLogger('mailman.error')
 
@@ -66,6 +67,7 @@ log = logging.getLogger('mailman.error')
 # listname-request@
 subqnames = ('admin', 'bounces', 'confirm', 'join', 'leave',
              'owner', 'request', 'subscribe', 'unsubscribe')
+
 
 def getlistq(address):
     localpart, domain = address.split('@', 1)
@@ -82,6 +84,7 @@ def getlistq(address):
         listname = localpart
         subq = None
     return listname, subq, domain
+
 
 
 class MaildirRunner(Runner):

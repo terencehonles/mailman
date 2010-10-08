@@ -21,7 +21,6 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'DigestFrequency',
     'IAcceptableAlias',
     'IAcceptableAliasSet',
     'IMailingList',
@@ -32,8 +31,6 @@ __all__ = [
 
 from flufl.enum import Enum
 from zope.interface import Interface, Attribute
-
-from mailman.core.i18n import _
 
 
 

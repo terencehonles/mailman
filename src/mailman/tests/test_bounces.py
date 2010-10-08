@@ -25,8 +25,6 @@ __all__ = [
     ]
 
 
-import os
-import sys
 import email
 import unittest
 

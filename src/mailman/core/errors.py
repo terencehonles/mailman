@@ -35,7 +35,6 @@ __all__ = [
     'BadPasswordSchemeError',
     'CantDigestError',
     'DiscardMessage',
-    'EmailAddressError',
     'HandlerError',
     'HoldMessage',
     'LostHeldMessage',
@@ -43,7 +42,6 @@ __all__ = [
     'MailmanException',
     'MemberError',
     'MustDigestError',
-    'NotAMemberError',
     'PasswordError',
     'RejectMessage',
     ]

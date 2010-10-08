@@ -26,7 +26,6 @@ import datetime
 from email.Utils import parseaddr
 from lazr.config import as_timedelta
 
-from mailman.app.bounces import scan_message
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.email.utils import split_email

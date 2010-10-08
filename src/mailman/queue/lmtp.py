@@ -217,7 +217,7 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
                     qlog.debug('%s subaddress: %s, queue: %s',
                                message_id, canonical_subaddress, queue)
                     status.append('250 Ok')
-            except Exception, e:
+            except Exception:
                 elog.exception('Queue detection: %s', msg['message-id'])
                 config.db.abort()
                 status.append(ERR_550)

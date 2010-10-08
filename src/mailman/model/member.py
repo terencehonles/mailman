@@ -24,7 +24,7 @@ __all__ = [
     'Member',
     ]
 
-from storm.locals import *
+from storm.locals import Bool, Int, Reference, Unicode
 from zope.interface import implements
 
 from mailman.config import config

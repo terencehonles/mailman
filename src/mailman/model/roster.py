@@ -37,7 +37,7 @@ __all__ = [
     ]
 
 
-from storm.expr import And, LeftJoin, Or
+from storm.expr import And, Or
 from zope.interface import implements
 
 from mailman.config import config
@@ -45,7 +45,6 @@ from mailman.interfaces.member import DeliveryMode, MemberRole
 from mailman.interfaces.roster import IRoster
 from mailman.model.address import Address
 from mailman.model.member import Member
-from mailman.model.preferences import Preferences
 
 
 

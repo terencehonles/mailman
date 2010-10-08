@@ -24,7 +24,6 @@ __all__ = [
     '_',
     'ctime',
     'initialize',
-    'set_language',
     ]
 
 

@@ -27,8 +27,6 @@ __all__ = [
 
 import os
 import sys
-import errno
-import logging
 
 from lazr.config import ConfigSchema, as_boolean
 from pkg_resources import resource_stream
@@ -37,7 +35,6 @@ from zope.component import getUtility
 from zope.interface import Interface, implements
 
 from mailman import version
-from mailman.core import errors
 from mailman.interfaces.languages import ILanguageManager
 from mailman.styles.manager import StyleManager
 from mailman.utilities.filesystem import makedirs

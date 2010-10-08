@@ -40,7 +40,7 @@ from zope.interface import implements
 
 from mailman.config import config
 from mailman.core.i18n import _
-from mailman.email.message import Message, UserNotification
+from mailman.email.message import UserNotification
 from mailman.interfaces.command import ContinueProcessing, IEmailResults
 from mailman.interfaces.languages import ILanguageManager
 from mailman.queue import Runner

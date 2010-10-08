@@ -238,7 +238,7 @@ def dispose(mlist, msg, msgdata, why):
         mlist.ForwardMessage(
             msg,
             text=_("""\
-The attached message matched the %(listname)s mailing list's content filtering
+The attached message matched the $listname mailing list's content filtering
 rules and was prevented from being forwarded on to the list membership.  You
 are receiving the only remaining copy of the discarded message.
 

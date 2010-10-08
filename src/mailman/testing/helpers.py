@@ -1,4 +1,3 @@
-# Copyright (C) 2008-2010 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -37,7 +36,6 @@ import time
 import errno
 import signal
 import socket
-import logging
 import smtplib
 import datetime
 import threading

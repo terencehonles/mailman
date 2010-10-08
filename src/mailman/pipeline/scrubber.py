@@ -27,15 +27,12 @@ __all__ = [
 
 import os
 import re
-import sys
 import time
-import errno
 import hashlib
 import logging
 import binascii
 
 from email.charset import Charset
-from email.generator import Generator
 from email.utils import make_msgid, parsedate
 from lazr.config import as_boolean
 from locknix.lockfile import Lock

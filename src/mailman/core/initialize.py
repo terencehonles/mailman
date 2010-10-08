@@ -37,7 +37,6 @@ __all__ = [
 
 
 import os
-import sys
 
 from pkg_resources import resource_string
 from zope.configuration import xmlconfig

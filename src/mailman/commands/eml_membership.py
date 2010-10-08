@@ -32,7 +32,6 @@ from email.utils import formataddr, parseaddr
 from zope.component import getUtility
 from zope.interface import implements
 
-from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.command import ContinueProcessing, IEmailCommand
 from mailman.interfaces.member import DeliveryMode

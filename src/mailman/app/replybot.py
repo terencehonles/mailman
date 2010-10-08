@@ -30,8 +30,6 @@ __all__ = [
 
 import logging
 
-from mailman.core.i18n import _
-
 
 log = logging.getLogger('mailman.vette')
 

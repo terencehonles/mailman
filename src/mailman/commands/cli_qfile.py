@@ -28,10 +28,8 @@ __all__ = [
 import cPickle
 
 from pprint import PrettyPrinter
-from zope.component import getUtility
 from zope.interface import implements
 
-from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interact import interact
 from mailman.interfaces.command import ICLISubCommand

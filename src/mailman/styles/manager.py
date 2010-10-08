@@ -25,8 +25,6 @@ __all__ = [
     ]
 
 
-import sys
-
 from operator import attrgetter
 from zope.interface import implements
 from zope.interface.verify import verifyObject
