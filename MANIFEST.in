@@ -9,4 +9,6 @@ global-exclude *.egg-info
 exclude MANIFEST.in
 prune src/attic
 prune src/web
-
+prune eggs
+prune parts
+include MANIFEST.in
