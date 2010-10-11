@@ -35,6 +35,7 @@ import json
 import doctest
 import unittest
 
+from base64 import b64encode
 from email import message_from_string
 from httplib2 import Http
 from urllib import urlencode
@@ -109,7 +110,7 @@ def dump_msgdata(msgdata, *additional_skips):
         print '{0:{2}}: {1}'.format(key, msgdata[key], longest)
 
 
-def call_http(url, data=None, method=None):
+def call_http(url, data=None, method=None, username=None, password=None):
     """'Call' a URL with a given HTTP method and return the resulting object.
 
     The object will have been JSON decoded.
@@ -120,6 +121,12 @@ def call_http(url, data=None, method=None):
     :type data: dict
     :param method: Alternative HTTP method to use.
     :type method: str
+    :param username: The HTTP Basic Auth user name.  None means use the value
+        from the configuration.
+    :type username: str
+    :param password: The HTTP Basic Auth password.  None means use the value
+        from the configuration.
+    :type username: str
     """
     headers = {}
     if data is not None:
@@ -131,6 +138,10 @@ def call_http(url, data=None, method=None):
         else:
             method = 'POST'
     method = method.upper()
+    basic_auth = '{0}:{1}'.format(
+        (config.webservice.admin_user if username is None else username),
+        (config.webservice.admin_pass if password is None else password))
+    headers['Authorization'] = 'Basic ' + b64encode(basic_auth)
     response, content = Http().request(url, method, data, headers)
     # If we did not get a 2xx status code, make this look like a urllib2
     # exception, for backward compatibility with existing doctests.
@@ -143,7 +154,7 @@ def call_http(url, data=None, method=None):
     return json.loads(content)
 
 
-def dump_json(url, data=None, method=None):
+def dump_json(url, data=None, method=None, username=None, password=None):
     """Print the JSON dictionary read from a URL.
 
     :param url: The url to open, read, and print.
@@ -152,8 +163,14 @@ def dump_json(url, data=None, method=None):
     :type data: dict
     :param method: Alternative HTTP method to use.
     :type method: str
+    :param username: The HTTP Basic Auth user name.  None means use the value
+        from the configuration.
+    :type username: str
+    :param password: The HTTP Basic Auth password.  None means use the value
+        from the configuration.
+    :type username: str
     """
-    data = call_http(url, data, method)
+    data = call_http(url, data, method, username, password)
     if data is None:
         return
     for key in sorted(data):

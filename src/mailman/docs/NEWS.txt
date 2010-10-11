@@ -16,6 +16,10 @@ Bugs fixed
 ----------
  * Typo in scan_message() (LP: #645897)
 
+REST
+----
+ * Add Basic Auth support for REST API security.  (given by Jimmy Bergman)
+
 
 3.0 alpha 6 -- "Cut to the Chase"
 =================================

@@ -81,6 +81,7 @@ left off the list!
 * Mike Avery
 * Stonewall Ballard
 * Moreno Baricevic
+* Jimmy Bergman
 * Jeff Berliner
 * Stuart Bishop
 * David Blomquist
