@@ -44,13 +44,33 @@ Invalid credentials
 
 When you try to access the REST server using invalid credentials you will get
 an appropriate HTTP 401 Unauthorized error.
+::
 
-    >>> dump_json('http://localhost:8001/3.0/system',
-    ...           username='baduser', password='badpass')
-    Traceback (most recent call last):
-    ...
-    HTTPError: HTTP Error 401: 401 Unauthorized
-    ...
+    >>> from base64 import b64encode
+    >>> auth = b64encode('baduser:badpass')
+
+    >>> url = 'http://localhost:8001/3.0/system'
+    >>> headers = {
+    ...     'Content-Type': 'application/x-www-form-urlencode',
+    ...     'Authorization': 'Basic ' + auth,
+    ...     }
+
+    >>> from httplib2 import Http
+    >>> response, content = Http().request(url, 'GET', None, headers)
+    >>> print content
+    401 Unauthorized
+    <BLANKLINE>
+    User is not authorized for the REST API
+    <BLANKLINE>
+
+But with the right headers, the request succeeds.
+
+    >>> auth = b64encode('{0}:{1}'.format(config.webservice.admin_user,
+    ...                                   config.webservice.admin_pass))
+    >>> headers['Authorization'] = 'Basic ' + auth
+    >>> response, content = Http().request(url, 'GET', None, headers)
+    >>> print response.status
+    200
 
 
 .. _REST: http://en.wikipedia.org/wiki/REST
