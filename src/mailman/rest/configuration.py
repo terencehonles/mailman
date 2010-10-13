@@ -29,8 +29,10 @@ from lazr.config import as_boolean, as_timedelta
 from restish import http, resource
 
 from mailman.config import config
+from mailman.interfaces.action import Action
 from mailman.interfaces.autorespond import ResponseAction
 from mailman.interfaces.mailinglist import IAcceptableAliasSet
+from mailman.interfaces.mailinglist import ReplyToMunging
 from mailman.rest.helpers import PATCH, etag
 from mailman.rest.validator import Validator, enum_validator
 
@@ -173,11 +175,13 @@ ATTRIBUTES = dict(
     collapse_alternatives=GetterSetter(as_boolean),
     convert_html_to_plaintext=GetterSetter(as_boolean),
     created_at=GetterSetter(None),
+    default_member_moderation=GetterSetter(as_boolean),
     description=GetterSetter(unicode),
     digest_last_sent_at=GetterSetter(None),
     digest_size_threshold=GetterSetter(float),
     filter_content=GetterSetter(as_boolean),
     fqdn_listname=GetterSetter(None),
+    generic_nonmember_action=GetterSetter(int),
     host_name=GetterSetter(None),
     include_list_post_header=GetterSetter(as_boolean),
     include_rfc2369_headers=GetterSetter(as_boolean),
@@ -186,6 +190,7 @@ ATTRIBUTES = dict(
     leave_address=GetterSetter(None),
     list_id=GetterSetter(None),
     list_name=GetterSetter(None),
+    member_moderation_action=GetterSetter(enum_validator(Action)),
     next_digest_number=GetterSetter(None),
     no_reply_address=GetterSetter(None),
     owner_address=GetterSetter(None),
@@ -193,10 +198,13 @@ ATTRIBUTES = dict(
     post_id=GetterSetter(None),
     posting_address=GetterSetter(None),
     real_name=GetterSetter(unicode),
+    reply_goes_to_list=GetterSetter(enum_validator(ReplyToMunging)),
     request_address=GetterSetter(None),
     scheme=GetterSetter(None),
+    send_welcome_msg=GetterSetter(as_boolean),
     volume=GetterSetter(None),
     web_host=GetterSetter(None),
+    welcome_msg=GetterSetter(unicode),
     )
 
 

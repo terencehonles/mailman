@@ -32,11 +32,13 @@ All readable attributes for a list are available on a sub-resource.
     collapse_alternatives: True
     convert_html_to_plaintext: False
     created_at: 20...T...
+    default_member_moderation: False
     description:
     digest_last_sent_at: None
     digest_size_threshold: 30.0
     filter_content: False
     fqdn_listname: test-one@example.com
+    generic_nonmember_action: 1
     host_name: example.com
     http_etag: "..."
     include_list_post_header: True
@@ -46,6 +48,7 @@ All readable attributes for a list are available on a sub-resource.
     leave_address: test-one-leave@example.com
     list_id: test-one.example.com
     list_name: test-one
+    member_moderation_action: hold
     next_digest_number: 1
     no_reply_address: noreply@example.com
     owner_address: test-one-owner@example.com
@@ -53,10 +56,13 @@ All readable attributes for a list are available on a sub-resource.
     post_id: 1
     posting_address: test-one@example.com
     real_name: Test-one
+    reply_goes_to_list: no_munging
     request_address: test-one-request@example.com
     scheme: http
+    send_welcome_msg: True
     volume: 1
     web_host: lists.example.com
+    welcome_msg:
 
 
 Changing the full configuration
@@ -91,6 +97,12 @@ all the writable attributes in one request.
     ...             filter_content=True,
     ...             convert_html_to_plaintext=True,
     ...             collapse_alternatives=False,
+    ...             reply_goes_to_list='point_to_list',
+    ...             send_welcome_msg=True,
+    ...             welcome_msg='welcome message',
+    ...             member_moderation_action='reject',
+    ...             default_member_moderation=True,
+    ...             generic_nonmember_action=2,
     ...             ),
     ...           'PUT')
     content-length: 0
@@ -119,6 +131,7 @@ These values are changed permanently.
     collapse_alternatives: False
     convert_html_to_plaintext: True
     ...
+    default_member_moderation: True
     description: This is my mailing list
     ...
     digest_size_threshold: 10.5
@@ -130,7 +143,9 @@ These values are changed permanently.
     pipeline: virgin
     ...
     real_name: Fnords
+    reply_goes_to_list: point_to_list
     ...
+    welcome_msg: welcome message
 
 If you use ``PUT`` to change a list's configuration, all writable attributes
 must be included.  It is an error to leave one or more out...
@@ -160,6 +175,12 @@ must be included.  It is an error to leave one or more out...
     ...             filter_content=True,
     ...             convert_html_to_plaintext=True,
     ...             collapse_alternatives=False,
+    ...             reply_goes_to_list='point_to_list',
+    ...             send_welcome_msg=True,
+    ...             welcome_msg='welcome message',
+    ...             member_moderation_action='reject',
+    ...             default_member_moderation=True,
+    ...             generic_nonmember_action=2,
     ...             ),
     ...           'PUT')
     Traceback (most recent call last):
