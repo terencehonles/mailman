@@ -20,6 +20,10 @@ REST
 ----
  * Add Basic Auth support for REST API security.  (given by Jimmy Bergman)
 
+Build
+-----
+ * Support Python 2.7. (LP: #667472)
+
 
 3.0 alpha 6 -- "Cut to the Chase"
 =================================

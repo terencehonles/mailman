@@ -151,6 +151,8 @@ def call_http(url, data=None, method=None, username=None, password=None):
         for header in sorted(response):
             print '{0}: {1}'.format(header, response[header])
         return None
+    # XXX Workaround http://bugs.python.org/issue10038
+    content = unicode(content)
     return json.loads(content)
 
 
@@ -170,18 +172,18 @@ def dump_json(url, data=None, method=None, username=None, password=None):
         from the configuration.
     :type username: str
     """
-    data = call_http(url, data, method, username, password)
-    if data is None:
+    results = call_http(url, data, method, username, password)
+    if results is None:
         return
-    for key in sorted(data):
+    for key in sorted(results):
         if key == 'entries':
-            for i, entry in enumerate(data[key]):
+            for i, entry in enumerate(results[key]):
                 # entry is a dictionary.
                 print 'entry %d:' % i
                 for entry_key in sorted(entry):
                     print '    {0}: {1}'.format(entry_key, entry[entry_key])
         else:
-            print '{0}: {1}'.format(key, data[key])
+            print '{0}: {1}'.format(key, results[key])
 
 
 

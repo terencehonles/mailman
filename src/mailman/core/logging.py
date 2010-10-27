@@ -55,10 +55,10 @@ class ReopenableFileHandler(logging.Handler):
     """A file handler that supports reopening."""
 
     def __init__(self, name, filename):
+        logging.Handler.__init__(self)
         self.name = name
         self._filename = filename
         self._stream = self._open()
-        logging.Handler.__init__(self)
 
     def _open(self):
         return codecs.open(self._filename, 'a', 'utf-8')
