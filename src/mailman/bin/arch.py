@@ -23,7 +23,7 @@ import errno
 import shutil
 import optparse
 
-from locknix.lockfile import Lock
+from flufl.lock import Lock
 
 from mailman.Archiver.HyperArch import HyperArchive
 from mailman.Defaults import hours

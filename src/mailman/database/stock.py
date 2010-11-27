@@ -25,7 +25,7 @@ __all__ = [
 import os
 import logging
 
-from locknix.lockfile import Lock
+from flufl.lock import Lock
 from lazr.config import as_boolean
 from pkg_resources import resource_string
 from storm.cache import GenerationalCache

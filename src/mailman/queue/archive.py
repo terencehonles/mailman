@@ -28,8 +28,8 @@ import logging
 
 from datetime import datetime
 from email.Utils import parsedate_tz, mktime_tz, formatdate
+from flufl.lock import Lock
 from lazr.config import as_timedelta
-from locknix.lockfile import Lock
 
 from mailman.config import config
 from mailman.queue import Runner

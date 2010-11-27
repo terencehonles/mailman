@@ -25,7 +25,7 @@ import optparse
 import email.Errors
 
 from email.Parser import Parser
-from locknix import lockfile
+from flufl.lock import Lock, TimeOutError
 
 from mailman import MailList
 from mailman import Message
@@ -209,7 +209,7 @@ def process_lists(glock):
                         # loop over range, and this will not include the last
                         # element in the list.
                         poll_newsgroup(mlist, conn, start, last + 1, glock)
-            except lockfile.TimeOutError:
+            except TimeOutError:
                 log.error('Could not acquire list lock: %s', listname)
         finally:
             if mlist.Locked():
@@ -230,12 +230,12 @@ def main():
     log = logging.getLogger('mailman.fromusenet')
 
     try:
-        with lockfile.Lock(GATENEWS_LOCK_FILE,
-                           # It's okay to hijack this
-                           lifetime=LOCK_LIFETIME) as lock:
+        with Lock(GATENEWS_LOCK_FILE,
+                  # It's okay to hijack this
+                  lifetime=LOCK_LIFETIME) as lock:
             process_lists(lock)
         clearcache()
-    except lockfile.TimeOutError:
+    except TimeOutError:
         log.error('Could not acquire gate_news lock')
 
 

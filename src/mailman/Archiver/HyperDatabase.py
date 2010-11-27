@@ -27,7 +27,7 @@ import errno
 # package/project modules
 #
 import pipermail
-from locknix import lockfile
+from flufl.lock import Lock, NotLockedError
 
 CACHESIZE = pipermail.CACHESIZE
 
@@ -58,7 +58,7 @@ class DumbBTree:
     def __init__(self, path):
         self.current_index = 0
         self.path = path
-        self.lockfile = lockfile.Lock(self.path + ".lock")
+        self.lockfile = Lock(self.path + ".lock")
         self.lock()
         self.__dirty = 0
         self.dict = {}
@@ -80,7 +80,7 @@ class DumbBTree:
     def unlock(self):
         try:
             self.lockfile.unlock()
-        except lockfile.NotLockedError:
+        except NotLockedError:
             pass
 
     def __delitem__(self, item):

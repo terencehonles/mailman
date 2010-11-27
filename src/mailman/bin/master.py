@@ -34,8 +34,8 @@ import logging
 
 from datetime import timedelta
 from flufl.enum import Enum
+from flufl.lock import Lock, TimeOutError
 from lazr.config import as_boolean
-from locknix import lockfile
 
 from mailman.config import config
 from mailman.core.i18n import _
@@ -165,11 +165,11 @@ def acquire_lock_1(force):
     :return: The master queue runner lock.
     :raises: `TimeOutError` if the lock could not be acquired.
     """
-    lock = lockfile.Lock(config.LOCK_FILE, LOCK_LIFETIME)
+    lock = Lock(config.LOCK_FILE, LOCK_LIFETIME)
     try:
         lock.lock(timedelta(seconds=0.1))
         return lock
-    except lockfile.TimeOutError:
+    except TimeOutError:
         if not force:
             raise
         # Force removal of lock first.
@@ -191,7 +191,7 @@ def acquire_lock(force):
     try:
         lock = acquire_lock_1(force)
         return lock
-    except lockfile.TimeOutError:
+    except TimeOutError:
         status = master_state()
         if status == WatcherState.conflict:
             # Hostname matches and process exists.

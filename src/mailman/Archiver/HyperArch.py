@@ -34,14 +34,13 @@ import time
 import errno
 import urllib
 import logging
-import weakref
 import binascii
 
 from email.Charset import Charset
 from email.Errors import HeaderParseError
 from email.Header import decode_header, make_header
+from flufl.lock import Lock, TimeOutError
 from lazr.config import as_boolean
-from locknix.lockfile import Lock
 from string import Template
 from zope.component import getUtility
 
@@ -751,7 +750,7 @@ class HyperArchive(pipermail.T):
                          self.maillist.fqdn_listname + '-arch.lock'))
         try:
             self._lock_file.lock(timeout=0.5)
-        except lockfile.TimeOutError:
+        except TimeOutError:
             return 0
         return 1
 

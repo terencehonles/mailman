@@ -26,7 +26,7 @@ import cPickle
 import marshal
 import optparse
 
-from locknix.lockfile import TimeOutError
+from flufl.lock import TimeOutError
 
 from mailman import MailList
 from mailman import Message

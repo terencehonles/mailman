@@ -34,8 +34,8 @@ import binascii
 
 from email.charset import Charset
 from email.utils import make_msgid, parsedate
+from flufl.lock import Lock
 from lazr.config import as_boolean
-from locknix.lockfile import Lock
 from mimetypes import guess_all_extensions
 from string import Template
 from zope.interface import implements

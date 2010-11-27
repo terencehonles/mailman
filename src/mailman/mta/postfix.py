@@ -29,7 +29,7 @@ import os
 import logging
 import datetime
 
-from locknix.lockfile import Lock
+from flufl.lock import Lock
 from zope.component import getUtility
 from zope.interface import implements
 
