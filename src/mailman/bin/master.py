@@ -34,7 +34,7 @@ import logging
 
 from datetime import timedelta
 from flufl.enum import Enum
-from flufl.lock import Lock, TimeOutError
+from flufl.lock import Lock, NotLockedError, TimeOutError
 from lazr.config import as_boolean
 
 from mailman.config import config
@@ -109,26 +109,10 @@ instead of the default set.  Multiple -r options may be given.  The values for
 
 
 
-def get_lock_data():
-    """Get information from the master lock file.
-
-    :return: A 3-tuple of the hostname, integer process id, and file name of
-        the lock file.
-    """
-    with open(config.LOCK_FILE) as fp:
-        filename = os.path.split(fp.read().strip())[1]
-    parts = filename.split('.')
-    # Ignore the timestamp.
-    parts.pop()
-    pid = parts.pop()
-    hostname = parts.pop()
-    filename = DOT.join(reversed(parts))
-    return hostname, int(pid), filename
-
-
-# pylint: disable-msg=W0232
 class WatcherState(Enum):
     """Enum for the state of the master process watcher."""
+    # No lock has been acquired by any process.
+    none = 0
     # Another master watcher is running.
     conflict = 1
     # No conflicting process exists.
@@ -137,35 +121,49 @@ class WatcherState(Enum):
     host_mismatch = 3
 
 
-def master_state():
+def master_state(lock_file=None):
     """Get the state of the master watcher.
 
-    :return: WatcherState describing the state of the lock file.
+    :param lock_file: Path to the lock file, otherwise `config.LOCK_FILE`.
+    :type lock_file: str
+    :return: 2-tuple of the WatcherState describing the state of the lock
+        file, and the lock object.
     """
-    # pylint: disable-msg=W0612
-    hostname, pid, tempfile = get_lock_data()
-    if hostname != socket.gethostname():
-        return WatcherState.host_mismatch
+    if lock_file is None:
+        lock_file = config.LOCK_FILE
+    # We'll never acquire the lock, so the lifetime doesn't matter.
+    lock = Lock(lock_file)
+    try:
+        hostname, pid, tempfile = lock.details
+    except NotLockedError:
+        return WatcherState.none, lock
+    if hostname != socket.getfqdn():
+        return WatcherState.host_mismatch, lock
     # Find out if the process exists by calling kill with a signal 0.
     try:
         os.kill(pid, 0)
-        return WatcherState.conflict
+        return WatcherState.conflict, lock
     except OSError as error:
         if error.errno == errno.ESRCH:
             # No matching process id.
-            return WatcherState.stale_lock
+            return WatcherState.stale_lock, lock
         # Some other error occurred.
         raise
 
 
-def acquire_lock_1(force):
+def acquire_lock_1(force, lock_file=None):
     """Try to acquire the master queue runner lock.
 
     :param force: Flag that controls whether to force acquisition of the lock.
+    :type force: bool
+    :param lock_file: Path to the lock file, otherwise `config.LOCK_FILE`.
+    :type lock_file: str
     :return: The master queue runner lock.
     :raises: `TimeOutError` if the lock could not be acquired.
     """
-    lock = Lock(config.LOCK_FILE, LOCK_LIFETIME)
+    if lock_file is None:
+        lock_file = config.LOCK_FILE
+    lock = Lock(lock_file, LOCK_LIFETIME)
     try:
         lock.lock(timedelta(seconds=0.1))
         return lock
@@ -174,10 +172,9 @@ def acquire_lock_1(force):
             raise
         # Force removal of lock first.
         lock.disown()
-        # pylint: disable-msg=W0612
-        hostname, pid, tempfile = get_lock_data()
-        os.unlink(config.LOCK_FILE)
-        os.unlink(os.path.join(config.LOCK_DIR, tempfile))
+        hostname, pid, tempfile = lock.details
+        os.unlink(lock_file)
+        os.unlink(tempfile)
         return acquire_lock_1(force=False)
 
 
@@ -192,30 +189,39 @@ def acquire_lock(force):
         lock = acquire_lock_1(force)
         return lock
     except TimeOutError:
-        status = master_state()
-        if status == WatcherState.conflict:
+        status, lock = master_state()
+        if status is WatcherState.conflict:
             # Hostname matches and process exists.
             message = _("""\
 The master queue runner lock could not be acquired
 because it appears as though another master is already running.""")
-        elif status == WatcherState.stale_lock:
+        elif status is WatcherState.stale_lock:
             # Hostname matches but the process does not exist.
             program = sys.argv[0]
             message = _("""\
 The master queue runner lock could not be acquired.
 It appears as though there is a stale master lock.  Try re-running
 $program with the --force flag.""")
-        else:
+        elif status is WatcherState.host_mismatch:
             # Hostname doesn't even match.
-            assert status == WatcherState.host_mismatch, (
-                'Invalid enum value: %s' % status)
-            # pylint: disable-msg=W0612
-            hostname, pid, tempfile = get_lock_data()
+            hostname, pid, tempfile = lock.details
             message = _("""\
 The master qrunner lock could not be acquired, because it
 appears as if some process on some other host may have acquired it.  We can't
 test for stale locks across host boundaries, so you'll have to clean this up
 manually.
+
+Lock file: $config.LOCK_FILE
+Lock host: $hostname
+
+Exiting.""")
+        else:
+            assert status is WatcherState.none, (
+                'Invalid enum value: %s' % status)
+            hostname, pid, tempfile = lock.details
+            message = _("""\
+For unknown reasons, the master qrunner lock could not be acquired.
+
 
 Lock file: $config.LOCK_FILE
 Lock host: $hostname
@@ -300,7 +306,6 @@ class Loop:
         # Set up our signal handlers.  Also set up a SIGALRM handler to
         # refresh the lock once per day.  The lock lifetime is 1 day + 6 hours
         # so this should be plenty.
-        # pylint: disable-msg=W0613,C0111
         def sigalrm_handler(signum, frame):
             self._lock.refresh()
             signal.alarm(SECONDS_IN_A_DAY)
@@ -490,7 +495,6 @@ qrunner %s reached maximum restart limit of %d, not restarting.""",
         # Wait for all the children to go away.
         while self._kids:
             try:
-                # pylint: disable-msg=W0612
                 pid, status = os.wait()
                 self._kids.drop(pid)
             except OSError as error:

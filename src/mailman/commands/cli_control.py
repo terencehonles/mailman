@@ -36,6 +36,7 @@ import logging
 
 from zope.interface import implements
 
+from mailman.bin.master import WatcherState, master_state
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.command import ICLISubCommand
@@ -54,6 +55,7 @@ class Start:
 
     def add(self, parser, command_parser):
         """See `ICLISubCommand`."""
+        self.parser = parser
         command_parser.add_argument(
             '-f', '--force',
             default=False, action='store_true',
@@ -92,6 +94,15 @@ class Start:
 
     def process(self, args):
         """See `ICLISubCommand`."""
+        # Although there's a potential race condition here, it's a better user
+        # experience for the parent process to refuse to start twice, rather
+        # than having it try to start the master, which will error exit.
+        status, lock = master_state()
+        if status is WatcherState.conflict:
+            self.parser.error(_('GNU Mailman is already running'))
+        elif status in (WatcherState.stale_lock, WatcherState.host_mismatch):
+            self.parser.error(_('A previous run of GNU Mailman did not exit '
+                                'cleanly.  Try using --force.'))
         def log(message):
             if not args.quiet:
                 print message
@@ -152,7 +163,7 @@ def kill_watcher(sig):
 
 class SignalCommand:
     """Common base class for simple, signal sending commands."""
-    
+
     implements(ICLISubCommand)
 
     name = None
