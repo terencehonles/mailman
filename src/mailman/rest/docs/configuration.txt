@@ -13,7 +13,7 @@ Reading a configuration
 
 All readable attributes for a list are available on a sub-resource.
 
-    >>> dump_json('http://localhost:8001/3.0/lists/'
+    >>> dump_json('http://localhost:9001/3.0/lists/'
     ...           'test-one@example.com/config')
     acceptable_aliases: []
     admin_immed_notify: True
@@ -66,7 +66,7 @@ Not all of the readable attributes can be set through the web interface.  The
 ones that can, can either be set via ``PUT`` or ``PATCH``.  ``PUT`` changes
 all the writable attributes in one request.
 
-    >>> dump_json('http://localhost:8001/3.0/lists/'
+    >>> dump_json('http://localhost:9001/3.0/lists/'
     ...           'test-one@example.com/config',
     ...           dict(
     ...             acceptable_aliases=['one@example.com', 'two@example.com'],
@@ -100,7 +100,7 @@ all the writable attributes in one request.
 
 These values are changed permanently.
 
-    >>> dump_json('http://localhost:8001/3.0/lists/'
+    >>> dump_json('http://localhost:9001/3.0/lists/'
     ...           'test-one@example.com/config')
     acceptable_aliases: [u'one@example.com', u'two@example.com']
     admin_immed_notify: False
@@ -135,7 +135,7 @@ These values are changed permanently.
 If you use ``PUT`` to change a list's configuration, all writable attributes
 must be included.  It is an error to leave one or more out...
 
-    >>> dump_json('http://localhost:8001/3.0/lists/'
+    >>> dump_json('http://localhost:9001/3.0/lists/'
     ...           'test-one@example.com/config',
     ...           dict(
     ...             #acceptable_aliases=['one', 'two'],
@@ -168,7 +168,7 @@ must be included.  It is an error to leave one or more out...
 
 ...or to add an unknown one.
 
-    >>> dump_json('http://localhost:8001/3.0/lists/'
+    >>> dump_json('http://localhost:9001/3.0/lists/'
     ...           'test-one@example.com/config',
     ...           dict(
     ...             a_mailing_list_attribute=False,
@@ -202,7 +202,7 @@ must be included.  It is an error to leave one or more out...
 
 It is also an error to spell an attribute value incorrectly...
 
-    >>> dump_json('http://localhost:8001/3.0/lists/'
+    >>> dump_json('http://localhost:9001/3.0/lists/'
     ...           'test-one@example.com/config',
     ...           dict(
     ...             admin_immed_notify='Nope',
@@ -235,7 +235,7 @@ It is also an error to spell an attribute value incorrectly...
 
 ...or to name a pipeline that doesn't exist...
 
-    >>> dump_json('http://localhost:8001/3.0/lists/'
+    >>> dump_json('http://localhost:9001/3.0/lists/'
     ...           'test-one@example.com/config',
     ...           dict(
     ...             acceptable_aliases=['one', 'two'],
@@ -267,7 +267,7 @@ It is also an error to spell an attribute value incorrectly...
 
 ...or to name an invalid auto-response enumeration value.
 
-    >>> dump_json('http://localhost:8001/3.0/lists/'
+    >>> dump_json('http://localhost:9001/3.0/lists/'
     ...           'test-one@example.com/config',
     ...           dict(
     ...             acceptable_aliases=['one', 'two'],
@@ -303,7 +303,7 @@ Changing a partial configuration
 
 Using ``PATCH``, you can change just one attribute.
 
-    >>> dump_json('http://localhost:8001/3.0/lists/'
+    >>> dump_json('http://localhost:9001/3.0/lists/'
     ...           'test-one@example.com/config',
     ...           dict(real_name='My List'),
     ...           'PATCH')
@@ -337,7 +337,7 @@ emails.  By default, a mailing list has no acceptable aliases.
     >>> from mailman.interfaces.mailinglist import IAcceptableAliasSet
     >>> IAcceptableAliasSet(mlist).clear()
     >>> transaction.commit()
-    >>> dump_json('http://localhost:8001/3.0/lists/'
+    >>> dump_json('http://localhost:9001/3.0/lists/'
     ...           'test-one@example.com/config/acceptable_aliases')
     acceptable_aliases: []
     http_etag: "..."
@@ -345,7 +345,7 @@ emails.  By default, a mailing list has no acceptable aliases.
 We can add a few by ``PUT``-ing them on the sub-resource.  The keys in the
 dictionary are ignored.
 
-    >>> dump_json('http://localhost:8001/3.0/lists/'
+    >>> dump_json('http://localhost:9001/3.0/lists/'
     ...           'test-one@example.com/config/acceptable_aliases',
     ...           dict(acceptable_aliases=['foo@example.com',
     ...                                    'bar@example.net']),
@@ -358,7 +358,7 @@ dictionary are ignored.
 Aliases are returned as a list on the ``aliases`` key.
 
     >>> response = call_http(
-    ...     'http://localhost:8001/3.0/lists/'
+    ...     'http://localhost:9001/3.0/lists/'
     ...     'test-one@example.com/config/acceptable_aliases')
     >>> for alias in response['acceptable_aliases']:
     ...     print alias

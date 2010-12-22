@@ -14,7 +14,7 @@ function can return them the full path to the resource.
 
     >>> from mailman.rest.helpers import path_to
     >>> print path_to('system')
-    http://localhost:8001/3.0/system
+    http://localhost:9001/3.0/system
 
 Parameters like the ``scheme``, ``host``, ``port``, and API version number can
 be set in the configuration file.

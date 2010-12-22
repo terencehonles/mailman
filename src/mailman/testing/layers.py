@@ -273,7 +273,7 @@ class RESTLayer(SMTPLayer):
         until = datetime.datetime.now() + TEST_TIMEOUT
         while datetime.datetime.now() < until:
             try:
-                request = Request('http://localhost:8001/3.0/system')
+                request = Request('http://localhost:9001/3.0/system')
                 basic_auth = '{0}:{1}'.format(config.webservice.admin_user,
                                               config.webservice.admin_pass)
                 request.add_header('Authorization',
