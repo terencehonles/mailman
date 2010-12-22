@@ -18,7 +18,7 @@ Domains
 The REST API can be queried for the set of known domains, of which there are
 initially none.
 
-    >>> dump_json('http://localhost:8001/3.0/domains')
+    >>> dump_json('http://localhost:9001/3.0/domains')
     http_etag: "..."
     start: 0
     total_size: 0
@@ -33,14 +33,14 @@ Once a domain is added, it is accessible through the API.
             contact_address: postmaster@example.com>
     >>> transaction.commit()
 
-    >>> dump_json('http://localhost:8001/3.0/domains')
+    >>> dump_json('http://localhost:9001/3.0/domains')
     entry 0:
         base_url: http://lists.example.com
         contact_address: postmaster@example.com
         description: An example domain
         email_host: example.com
         http_etag: "..."
-        self_link: http://localhost:8001/3.0/domains/example.com
+        self_link: http://localhost:9001/3.0/domains/example.com
         url_host: lists.example.com
     http_etag: "..."
     start: 0
@@ -65,14 +65,14 @@ At the top level, all domains are returned as separate entries.
             contact_address: porkmaster@example.net>
     >>> transaction.commit()
 
-    >>> dump_json('http://localhost:8001/3.0/domains')
+    >>> dump_json('http://localhost:9001/3.0/domains')
     entry 0:
         base_url: http://lists.example.com
         contact_address: postmaster@example.com
         description: An example domain
         email_host: example.com
         http_etag: "..."
-        self_link: http://localhost:8001/3.0/domains/example.com
+        self_link: http://localhost:9001/3.0/domains/example.com
         url_host: lists.example.com
     entry 1:
         base_url: http://mail.example.org
@@ -80,7 +80,7 @@ At the top level, all domains are returned as separate entries.
         description: None
         email_host: example.org
         http_etag: "..."
-        self_link: http://localhost:8001/3.0/domains/example.org
+        self_link: http://localhost:9001/3.0/domains/example.org
         url_host: mail.example.org
     entry 2:
         base_url: http://example.net
@@ -88,7 +88,7 @@ At the top level, all domains are returned as separate entries.
         description: Porkmasters
         email_host: lists.example.net
         http_etag: "..."
-        self_link: http://localhost:8001/3.0/domains/lists.example.net
+        self_link: http://localhost:9001/3.0/domains/lists.example.net
         url_host: example.net
     http_etag: "..."
     start: 0
@@ -101,18 +101,18 @@ Individual domains
 The information for a single domain is available by following one of the
 ``self_links`` from the above collection.
 
-    >>> dump_json('http://localhost:8001/3.0/domains/lists.example.net')
+    >>> dump_json('http://localhost:9001/3.0/domains/lists.example.net')
     base_url: http://example.net
     contact_address: porkmaster@example.net
     description: Porkmasters
     email_host: lists.example.net
     http_etag: "..."
-    self_link: http://localhost:8001/3.0/domains/lists.example.net
+    self_link: http://localhost:9001/3.0/domains/lists.example.net
     url_host: example.net
 
 But we get a 404 for a non-existent domain.
 
-    >>> dump_json('http://localhost:8001/3.0/domains/does-not-exist')
+    >>> dump_json('http://localhost:9001/3.0/domains/does-not-exist')
     Traceback (most recent call last):
     ...
     HTTPError: HTTP Error 404: 404 Not Found
@@ -123,23 +123,23 @@ Creating new domains
 
 New domains can be created by posting to the ``domains`` url.
 
-    >>> dump_json('http://localhost:8001/3.0/domains', {
+    >>> dump_json('http://localhost:9001/3.0/domains', {
     ...           'email_host': 'lists.example.com',
     ...           })
     content-length: 0
     date: ...
-    location: http://localhost:8001/3.0/domains/lists.example.com
+    location: http://localhost:9001/3.0/domains/lists.example.com
     ...
 
 Now the web service knows about our new domain.
 
-    >>> dump_json('http://localhost:8001/3.0/domains/lists.example.com')
+    >>> dump_json('http://localhost:9001/3.0/domains/lists.example.com')
     base_url: http://lists.example.com
     contact_address: postmaster@lists.example.com
     description: None
     email_host: lists.example.com
     http_etag: "..."
-    self_link: http://localhost:8001/3.0/domains/lists.example.com
+    self_link: http://localhost:9001/3.0/domains/lists.example.com
     url_host: lists.example.com
 
 And the new domain is in our database.
@@ -157,7 +157,7 @@ You can also create a new domain with a description, a base url, and a contact
 address.
 ::
 
-    >>> dump_json('http://localhost:8001/3.0/domains', {
+    >>> dump_json('http://localhost:9001/3.0/domains', {
     ...           'email_host': 'my.example.com',
     ...           'description': 'My new domain',
     ...           'base_url': 'http://allmy.example.com',
@@ -165,16 +165,16 @@ address.
     ...           })
     content-length: 0
     date: ...
-    location: http://localhost:8001/3.0/domains/my.example.com
+    location: http://localhost:9001/3.0/domains/my.example.com
     ...
 
-    >>> dump_json('http://localhost:8001/3.0/domains/my.example.com')
+    >>> dump_json('http://localhost:9001/3.0/domains/my.example.com')
     base_url: http://allmy.example.com
     contact_address: helpme@example.com
     description: My new domain
     email_host: my.example.com
     http_etag: "..."
-    self_link: http://localhost:8001/3.0/domains/my.example.com
+    self_link: http://localhost:9001/3.0/domains/my.example.com
     url_host: allmy.example.com
 
     >>> domain_manager['my.example.com']

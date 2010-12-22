@@ -20,11 +20,11 @@ The Mailman major and minor version numbers are in the URL.
 System information can be retrieved from the server.  By default JSON is
 returned.
 
-    >>> dump_json('http://localhost:8001/3.0/system')
+    >>> dump_json('http://localhost:9001/3.0/system')
     http_etag: "..."
     mailman_version: GNU Mailman 3.0... (...)
     python_version: ...
-    self_link: http://localhost:8001/3.0/system
+    self_link: http://localhost:9001/3.0/system
 
 
 Non-existent links
@@ -33,7 +33,7 @@ Non-existent links
 When you try to access a link that doesn't exist, you get the appropriate HTTP
 404 Not Found error.
 
-    >>> dump_json('http://localhost:8001/3.0/does-not-exist')
+    >>> dump_json('http://localhost:9001/3.0/does-not-exist')
     Traceback (most recent call last):
     ...
     HTTPError: HTTP Error 404: 404 Not Found
@@ -49,7 +49,7 @@ an appropriate HTTP 401 Unauthorized error.
     >>> from base64 import b64encode
     >>> auth = b64encode('baduser:badpass')
 
-    >>> url = 'http://localhost:8001/3.0/system'
+    >>> url = 'http://localhost:9001/3.0/system'
     >>> headers = {
     ...     'Content-Type': 'application/x-www-form-urlencode',
     ...     'Authorization': 'Basic ' + auth,

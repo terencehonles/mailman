@@ -32,6 +32,7 @@ from zope.interface import implements
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.command import ICLISubCommand
+from mailman.rest.helpers import path_to
 from mailman.version import MAILMAN_VERSION_FULL
 
 
@@ -68,6 +69,9 @@ class Info:
         print >> output, 'Python', sys.version
         print >> output, 'config file:', config.filename
         print >> output, 'db url:', config.db.url
+        print >> output, 'REST root url:', path_to('/')
+        print >> output, 'REST credentials: {0}:{1}'.format(
+            config.webservice.admin_user, config.webservice.admin_pass)
         if args.verbose:
             print >> output, 'File system paths:'
             longest = 0

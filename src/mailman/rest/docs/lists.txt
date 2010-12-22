@@ -6,7 +6,7 @@ The REST API can be queried for the set of known mailing lists.  There is a
 top level collection that can return all the mailing lists.  There aren't any
 yet though.
 
-    >>> dump_json('http://localhost:8001/3.0/lists')
+    >>> dump_json('http://localhost:9001/3.0/lists')
     http_etag: "..."
     start: 0
     total_size: 0
@@ -18,14 +18,14 @@ Create a mailing list in a domain and it's accessible via the API.
     <mailing list "test-one@example.com" at ...>
     >>> transaction.commit()
 
-    >>> dump_json('http://localhost:8001/3.0/lists')
+    >>> dump_json('http://localhost:9001/3.0/lists')
     entry 0:
         fqdn_listname: test-one@example.com
         host_name: example.com
         http_etag: "..."
         list_name: test-one
         real_name: Test-one
-        self_link: http://localhost:8001/3.0/lists/test-one@example.com
+        self_link: http://localhost:9001/3.0/lists/test-one@example.com
     http_etag: "..."
     start: 0
     total_size: 1
@@ -37,12 +37,12 @@ Creating lists via the API
 New mailing lists can also be created through the API, by posting to the
 ``lists`` URL.
 
-    >>> dump_json('http://localhost:8001/3.0/lists', {
+    >>> dump_json('http://localhost:9001/3.0/lists', {
     ...           'fqdn_listname': 'test-two@example.com',
     ...           })
     content-length: 0
     date: ...
-    location: http://localhost:8001/3.0/lists/test-two@example.com
+    location: http://localhost:9001/3.0/lists/test-two@example.com
     ...
 
 The mailing list exists in the database.
@@ -61,18 +61,18 @@ The mailing list exists in the database.
 
 It is also available via the location given in the response.
 
-    >>> dump_json('http://localhost:8001/3.0/lists/test-two@example.com')
+    >>> dump_json('http://localhost:9001/3.0/lists/test-two@example.com')
     fqdn_listname: test-two@example.com
     host_name: example.com
     http_etag: "..."
     list_name: test-two
     real_name: Test-two
-    self_link: http://localhost:8001/3.0/lists/test-two@example.com
+    self_link: http://localhost:9001/3.0/lists/test-two@example.com
 
 However, you are not allowed to create a mailing list in a domain that does
 not exist.
 
-    >>> dump_json('http://localhost:8001/3.0/lists', {
+    >>> dump_json('http://localhost:9001/3.0/lists', {
     ...           'fqdn_listname': 'test-three@example.org',
     ...           })
     Traceback (most recent call last):
@@ -81,7 +81,7 @@ not exist.
 
 Nor can you create a mailing list that already exists.
 
-    >>> dump_json('http://localhost:8001/3.0/lists', {
+    >>> dump_json('http://localhost:9001/3.0/lists', {
     ...           'fqdn_listname': 'test-one@example.com',
     ...           })
     Traceback (most recent call last):
@@ -96,7 +96,7 @@ Existing mailing lists can be deleted through the API, by doing an HTTP
 ``DELETE`` on the mailing list URL.
 ::
 
-    >>> dump_json('http://localhost:8001/3.0/lists/test-two@example.com',
+    >>> dump_json('http://localhost:9001/3.0/lists/test-two@example.com',
     ...           method='DELETE')
     content-length: 0
     date: ...
@@ -116,13 +116,13 @@ You cannot delete a mailing list that does not exist or has already been
 deleted.
 ::
 
-    >>> dump_json('http://localhost:8001/3.0/lists/test-two@example.com',
+    >>> dump_json('http://localhost:9001/3.0/lists/test-two@example.com',
     ...           method='DELETE')
     Traceback (most recent call last):
     ...
     HTTPError: HTTP Error 404: 404 Not Found
 
-    >>> dump_json('http://localhost:8001/3.0/lists/test-ten@example.com',
+    >>> dump_json('http://localhost:9001/3.0/lists/test-ten@example.com',
     ...           method='DELETE')
     Traceback (most recent call last):
     ...

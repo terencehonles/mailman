@@ -10,11 +10,11 @@ Mailman is controllable through an administrative `REST`_ HTTP server.
 
 The RESTful server can be used to access basic version information.
 
-    >>> dump_json('http://localhost:8001/3.0/system')
+    >>> dump_json('http://localhost:9001/3.0/system')
     http_etag: "..."
     mailman_version: GNU Mailman 3.0... (...)
     python_version: ...
-    self_link: http://localhost:8001/3.0/system
+    self_link: http://localhost:9001/3.0/system
 
 
 Clean up

@@ -8,7 +8,7 @@ returns all the members of all known mailing lists.
 
 There are no mailing lists and no members yet.
 
-    >>> dump_json('http://localhost:8001/3.0/members')
+    >>> dump_json('http://localhost:9001/3.0/members')
     http_etag: "..."
     start: 0
     total_size: 0
@@ -19,7 +19,7 @@ We create a mailing list, which starts out with no members.
     >>> mlist_one = create_list('test-one@example.com')
     >>> transaction.commit()
 
-    >>> dump_json('http://localhost:8001/3.0/members')
+    >>> dump_json('http://localhost:9001/3.0/members')
     http_etag: "..."
     start: 0
     total_size: 0
@@ -39,10 +39,10 @@ the REST interface.
 
     >>> from mailman.testing.helpers import subscribe
     >>> subscribe(mlist_one, 'Bart')
-    >>> dump_json('http://localhost:8001/3.0/members')
+    >>> dump_json('http://localhost:9001/3.0/members')
     entry 0:
         http_etag: ...
-        self_link: http://localhost:8001/3.0/lists/test-one@example.com/member/bperson@example.com
+        self_link: http://localhost:9001/3.0/lists/test-one@example.com/member/bperson@example.com
     http_etag: "..."
     start: 0
     total_size: 1
@@ -51,13 +51,13 @@ When Cris also joins the mailing list, her subscription is also available via
 the REST interface.
 
     >>> subscribe(mlist_one, 'Cris')
-    >>> dump_json('http://localhost:8001/3.0/members')
+    >>> dump_json('http://localhost:9001/3.0/members')
     entry 0:
         http_etag: ...
-        self_link: http://localhost:8001/3.0/lists/test-one@example.com/member/bperson@example.com
+        self_link: http://localhost:9001/3.0/lists/test-one@example.com/member/bperson@example.com
     entry 1:
         http_etag: ...
-        self_link: http://localhost:8001/3.0/lists/test-one@example.com/member/cperson@example.com
+        self_link: http://localhost:9001/3.0/lists/test-one@example.com/member/cperson@example.com
     http_etag: "..."
     start: 0
     total_size: 2
@@ -68,16 +68,16 @@ subscribes, she is returned first.
 
     >>> subscribe(mlist_one, 'Anna')
 
-    >>> dump_json('http://localhost:8001/3.0/members')
+    >>> dump_json('http://localhost:9001/3.0/members')
     entry 0:
         http_etag: ...
-        self_link: http://localhost:8001/3.0/lists/test-one@example.com/member/aperson@example.com
+        self_link: http://localhost:9001/3.0/lists/test-one@example.com/member/aperson@example.com
     entry 1:
         http_etag: ...
-        self_link: http://localhost:8001/3.0/lists/test-one@example.com/member/bperson@example.com
+        self_link: http://localhost:9001/3.0/lists/test-one@example.com/member/bperson@example.com
     entry 2:
         http_etag: ...
-        self_link: http://localhost:8001/3.0/lists/test-one@example.com/member/cperson@example.com
+        self_link: http://localhost:9001/3.0/lists/test-one@example.com/member/cperson@example.com
     http_etag: "..."
     start: 0
     total_size: 3
@@ -90,22 +90,22 @@ address.  Anna and Cris subscribe to this new mailing list.
     >>> subscribe(mlist_two, 'Anna')
     >>> subscribe(mlist_two, 'Cris')
 
-    >>> dump_json('http://localhost:8001/3.0/members')
+    >>> dump_json('http://localhost:9001/3.0/members')
     entry 0:
         http_etag: ...
-        self_link: http://localhost:8001/3.0/lists/alpha@example.com/member/aperson@example.com
+        self_link: http://localhost:9001/3.0/lists/alpha@example.com/member/aperson@example.com
     entry 1:
         http_etag: ...
-        self_link: http://localhost:8001/3.0/lists/alpha@example.com/member/cperson@example.com
+        self_link: http://localhost:9001/3.0/lists/alpha@example.com/member/cperson@example.com
     entry 2:
         http_etag: ...
-        self_link: http://localhost:8001/3.0/lists/test-one@example.com/member/aperson@example.com
+        self_link: http://localhost:9001/3.0/lists/test-one@example.com/member/aperson@example.com
     entry 3:
         http_etag: ...
-        self_link: http://localhost:8001/3.0/lists/test-one@example.com/member/bperson@example.com
+        self_link: http://localhost:9001/3.0/lists/test-one@example.com/member/bperson@example.com
     entry 4:
         http_etag: ...
-        self_link: http://localhost:8001/3.0/lists/test-one@example.com/member/cperson@example.com
+        self_link: http://localhost:9001/3.0/lists/test-one@example.com/member/cperson@example.com
     http_etag: "..."
     start: 0
     total_size: 5
@@ -113,13 +113,13 @@ address.  Anna and Cris subscribe to this new mailing list.
 We can also get just the members of a single mailing list.
 
     >>> dump_json(
-    ...     'http://localhost:8001/3.0/lists/alpha@example.com/roster/members')
+    ...     'http://localhost:9001/3.0/lists/alpha@example.com/roster/members')
     entry 0:
         http_etag: ...
-        self_link: http://localhost:8001/3.0/lists/alpha@example.com/member/aperson@example.com
+        self_link: http://localhost:9001/3.0/lists/alpha@example.com/member/aperson@example.com
     entry 1:
         http_etag: ...
-        self_link: http://localhost:8001/3.0/lists/alpha@example.com/member/cperson@example.com
+        self_link: http://localhost:9001/3.0/lists/alpha@example.com/member/cperson@example.com
     http_etag: ...
     start: 0
     total_size: 2
@@ -136,28 +136,28 @@ test-one mailing list.
     >>> subscribe(mlist_one, 'Cris', MemberRole.owner)
     >>> subscribe(mlist_two, 'Dave', MemberRole.moderator)
 
-    >>> dump_json('http://localhost:8001/3.0/members')
+    >>> dump_json('http://localhost:9001/3.0/members')
     entry 0:
         http_etag: ...
-        self_link: http://localhost:8001/3.0/lists/alpha@example.com/moderator/dperson@example.com
+        self_link: http://localhost:9001/3.0/lists/alpha@example.com/moderator/dperson@example.com
     entry 1:
         http_etag: ...
-        self_link: http://localhost:8001/3.0/lists/alpha@example.com/member/aperson@example.com
+        self_link: http://localhost:9001/3.0/lists/alpha@example.com/member/aperson@example.com
     entry 2:
         http_etag: ...
-        self_link: http://localhost:8001/3.0/lists/alpha@example.com/member/cperson@example.com
+        self_link: http://localhost:9001/3.0/lists/alpha@example.com/member/cperson@example.com
     entry 3:
         http_etag: ...
-        self_link: http://localhost:8001/3.0/lists/test-one@example.com/owner/cperson@example.com
+        self_link: http://localhost:9001/3.0/lists/test-one@example.com/owner/cperson@example.com
     entry 4:
         http_etag: ...
-        self_link: http://localhost:8001/3.0/lists/test-one@example.com/member/aperson@example.com
+        self_link: http://localhost:9001/3.0/lists/test-one@example.com/member/aperson@example.com
     entry 5:
         http_etag: ...
-        self_link: http://localhost:8001/3.0/lists/test-one@example.com/member/bperson@example.com
+        self_link: http://localhost:9001/3.0/lists/test-one@example.com/member/bperson@example.com
     entry 6:
         http_etag: ...
-        self_link: http://localhost:8001/3.0/lists/test-one@example.com/member/cperson@example.com
+        self_link: http://localhost:9001/3.0/lists/test-one@example.com/member/cperson@example.com
     http_etag: "..."
     start: 0
     total_size: 7
@@ -174,14 +174,14 @@ Elly subscribes to the alpha mailing list.  By default, get gets a regular
 delivery.  Since Elly's email address is not yet known to Mailman, a user is
 created for her.
 
-    >>> dump_json('http://localhost:8001/3.0/members', {
+    >>> dump_json('http://localhost:9001/3.0/members', {
     ...           'fqdn_listname': 'alpha@example.com',
     ...           'address': 'eperson@example.com',
     ...           'real_name': 'Elly Person',
     ...           })
     content-length: 0
     date: ...
-    location: http://localhost:8001/3.0/lists/alpha@example.com/member/eperson@example.com
+    location: http://localhost:9001/3.0/lists/alpha@example.com/member/eperson@example.com
     ...
 
 Elly is now a member of the mailing list.
@@ -194,12 +194,12 @@ Elly is now a member of the mailing list.
     >>> set(member.mailing_list for member in elly.memberships.members)
     set([u'alpha@example.com'])
 
-    >>> dump_json('http://localhost:8001/3.0/members')
+    >>> dump_json('http://localhost:9001/3.0/members')
     entry 0:
     ...
     entry 3:
         http_etag: ...
-        self_link: http://localhost:8001/3.0/lists/alpha@example.com/member/eperson@example.com
+        self_link: http://localhost:9001/3.0/lists/alpha@example.com/member/eperson@example.com
     ...
 
 
@@ -212,7 +212,7 @@ so she leaves from the mailing list.
 
     # Ensure our previous reads don't keep the database lock.
     >>> transaction.abort()
-    >>> dump_json('http://localhost:8001/3.0/lists/alpha@example.com'
+    >>> dump_json('http://localhost:9001/3.0/lists/alpha@example.com'
     ...           '/member/eperson@example.com',
     ...           method='DELETE')
     content-length: 0
@@ -232,7 +232,7 @@ Fred joins the alpha mailing list but wants MIME digest delivery.
 ::
 
     >>> transaction.abort()
-    >>> dump_json('http://localhost:8001/3.0/members', {
+    >>> dump_json('http://localhost:9001/3.0/members', {
     ...           'fqdn_listname': 'alpha@example.com',
     ...           'address': 'fperson@example.com',
     ...           'real_name': 'Fred Person',
@@ -240,7 +240,7 @@ Fred joins the alpha mailing list but wants MIME digest delivery.
     ...           })
     content-length: 0
     ...
-    location: http://localhost:8001/3.0/lists/alpha@example.com/member/fperson@example.com
+    location: http://localhost:9001/3.0/lists/alpha@example.com/member/fperson@example.com
     ...
     status: 201
 
@@ -258,7 +258,7 @@ Corner cases
 
 For some reason Elly tries to join a mailing list that does not exist.
 
-    >>> dump_json('http://localhost:8001/3.0/members', {
+    >>> dump_json('http://localhost:9001/3.0/members', {
     ...           'fqdn_listname': 'beta@example.com',
     ...           'address': 'eperson@example.com',
     ...           'real_name': 'Elly Person',
@@ -269,7 +269,7 @@ For some reason Elly tries to join a mailing list that does not exist.
 
 Then, she tries to leave a mailing list that does not exist.
 
-    >>> dump_json('http://localhost:8001/3.0/lists/beta@example.com'
+    >>> dump_json('http://localhost:9001/3.0/lists/beta@example.com'
     ...           '/members/eperson@example.com',
     ...           method='DELETE')
     Traceback (most recent call last):
@@ -278,7 +278,7 @@ Then, she tries to leave a mailing list that does not exist.
 
 She then tries to leave a mailing list with a bogus address.
 
-    >>> dump_json('http://localhost:8001/3.0/lists/alpha@example.com'
+    >>> dump_json('http://localhost:9001/3.0/lists/alpha@example.com'
     ...           '/members/elly',
     ...           method='DELETE')
     Traceback (most recent call last):
@@ -288,7 +288,7 @@ She then tries to leave a mailing list with a bogus address.
 For some reason, Elly tries to leave the mailing list again, but she's already
 been unsubscribed.
 
-    >>> dump_json('http://localhost:8001/3.0/lists/alpha@example.com'
+    >>> dump_json('http://localhost:9001/3.0/lists/alpha@example.com'
     ...           '/members/eperson@example.com',
     ...           method='DELETE')
     Traceback (most recent call last):
@@ -297,7 +297,7 @@ been unsubscribed.
 
 Anna tries to join a mailing list she's already a member of.
 
-    >>> dump_json('http://localhost:8001/3.0/members', {
+    >>> dump_json('http://localhost:9001/3.0/members', {
     ...           'fqdn_listname': 'alpha@example.com',
     ...           'address': 'aperson@example.com',
     ...           })
@@ -307,7 +307,7 @@ Anna tries to join a mailing list she's already a member of.
 
 Gwen tries to join the alpha mailing list using an invalid delivery mode.
 
-    >>> dump_json('http://localhost:8001/3.0/members', {
+    >>> dump_json('http://localhost:9001/3.0/members', {
     ...           'fqdn_listname': 'alpha@example.com',
     ...           'address': 'gperson@example.com',
     ...           'real_name': 'Gwen Person',
@@ -320,12 +320,12 @@ Gwen tries to join the alpha mailing list using an invalid delivery mode.
 Even using an address with "funny" characters Hugh can join the mailing list.
 
     >>> transaction.abort()
-    >>> dump_json('http://localhost:8001/3.0/members', {
+    >>> dump_json('http://localhost:9001/3.0/members', {
     ...           'fqdn_listname': 'alpha@example.com',
     ...           'address': 'hugh/person@example.com',
     ...           'real_name': 'Hugh Person',
     ...           })
     content-length: 0
     date: ...
-    location: http://localhost:8001/3.0/lists/alpha@example.com/member/hugh%2Fperson@example.com
+    location: http://localhost:9001/3.0/lists/alpha@example.com/member/hugh%2Fperson@example.com
     ...
