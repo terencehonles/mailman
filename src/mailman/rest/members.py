@@ -50,6 +50,8 @@ class _MemberBase(resource.Resource, CollectionMixin):
         """See `CollectionMixin`."""
         enum, dot, role = str(member.role).partition('.')
         return dict(
+            fqdn_listname=member.mailing_list,
+            address=member.address.address,
             self_link=path_to('lists/{0}/{1}/{2}'.format(
                 member.mailing_list, role, member.address.address)),
             )

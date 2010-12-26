@@ -41,6 +41,8 @@ the REST interface.
     >>> subscribe(mlist_one, 'Bart')
     >>> dump_json('http://localhost:9001/3.0/members')
     entry 0:
+        address: bperson@example.com
+        fqdn_listname: test-one@example.com
         http_etag: ...
         self_link: http://localhost:9001/3.0/lists/test-one@example.com/member/bperson@example.com
     http_etag: "..."
@@ -53,9 +55,13 @@ the REST interface.
     >>> subscribe(mlist_one, 'Cris')
     >>> dump_json('http://localhost:9001/3.0/members')
     entry 0:
+        address: bperson@example.com
+        fqdn_listname: test-one@example.com
         http_etag: ...
         self_link: http://localhost:9001/3.0/lists/test-one@example.com/member/bperson@example.com
     entry 1:
+        address: cperson@example.com
+        fqdn_listname: test-one@example.com
         http_etag: ...
         self_link: http://localhost:9001/3.0/lists/test-one@example.com/member/cperson@example.com
     http_etag: "..."
@@ -70,12 +76,18 @@ subscribes, she is returned first.
 
     >>> dump_json('http://localhost:9001/3.0/members')
     entry 0:
+        address: aperson@example.com
+        fqdn_listname: test-one@example.com
         http_etag: ...
         self_link: http://localhost:9001/3.0/lists/test-one@example.com/member/aperson@example.com
     entry 1:
+        address: bperson@example.com
+        fqdn_listname: test-one@example.com
         http_etag: ...
         self_link: http://localhost:9001/3.0/lists/test-one@example.com/member/bperson@example.com
     entry 2:
+        address: cperson@example.com
+        fqdn_listname: test-one@example.com
         http_etag: ...
         self_link: http://localhost:9001/3.0/lists/test-one@example.com/member/cperson@example.com
     http_etag: "..."
@@ -92,18 +104,28 @@ address.  Anna and Cris subscribe to this new mailing list.
 
     >>> dump_json('http://localhost:9001/3.0/members')
     entry 0:
+        address: aperson@example.com
+        fqdn_listname: alpha@example.com
         http_etag: ...
         self_link: http://localhost:9001/3.0/lists/alpha@example.com/member/aperson@example.com
     entry 1:
+        address: cperson@example.com
+        fqdn_listname: alpha@example.com
         http_etag: ...
         self_link: http://localhost:9001/3.0/lists/alpha@example.com/member/cperson@example.com
     entry 2:
+        address: aperson@example.com
+        fqdn_listname: test-one@example.com
         http_etag: ...
         self_link: http://localhost:9001/3.0/lists/test-one@example.com/member/aperson@example.com
     entry 3:
+        address: bperson@example.com
+        fqdn_listname: test-one@example.com
         http_etag: ...
         self_link: http://localhost:9001/3.0/lists/test-one@example.com/member/bperson@example.com
     entry 4:
+        address: cperson@example.com
+        fqdn_listname: test-one@example.com
         http_etag: ...
         self_link: http://localhost:9001/3.0/lists/test-one@example.com/member/cperson@example.com
     http_etag: "..."
@@ -115,9 +137,13 @@ We can also get just the members of a single mailing list.
     >>> dump_json(
     ...     'http://localhost:9001/3.0/lists/alpha@example.com/roster/members')
     entry 0:
+        address: aperson@example.com
+        fqdn_listname: alpha@example.com
         http_etag: ...
         self_link: http://localhost:9001/3.0/lists/alpha@example.com/member/aperson@example.com
     entry 1:
+        address: cperson@example.com
+        fqdn_listname: alpha@example.com
         http_etag: ...
         self_link: http://localhost:9001/3.0/lists/alpha@example.com/member/cperson@example.com
     http_etag: ...
@@ -138,24 +164,38 @@ test-one mailing list.
 
     >>> dump_json('http://localhost:9001/3.0/members')
     entry 0:
+        address: dperson@example.com
+        fqdn_listname: alpha@example.com
         http_etag: ...
         self_link: http://localhost:9001/3.0/lists/alpha@example.com/moderator/dperson@example.com
     entry 1:
+        address: aperson@example.com
+        fqdn_listname: alpha@example.com
         http_etag: ...
         self_link: http://localhost:9001/3.0/lists/alpha@example.com/member/aperson@example.com
     entry 2:
+        address: cperson@example.com
+        fqdn_listname: alpha@example.com
         http_etag: ...
         self_link: http://localhost:9001/3.0/lists/alpha@example.com/member/cperson@example.com
     entry 3:
+        address: cperson@example.com
+        fqdn_listname: test-one@example.com
         http_etag: ...
         self_link: http://localhost:9001/3.0/lists/test-one@example.com/owner/cperson@example.com
     entry 4:
+        address: aperson@example.com
+        fqdn_listname: test-one@example.com
         http_etag: ...
         self_link: http://localhost:9001/3.0/lists/test-one@example.com/member/aperson@example.com
     entry 5:
+        address: bperson@example.com
+        fqdn_listname: test-one@example.com
         http_etag: ...
         self_link: http://localhost:9001/3.0/lists/test-one@example.com/member/bperson@example.com
     entry 6:
+        address: cperson@example.com
+        fqdn_listname: test-one@example.com
         http_etag: ...
         self_link: http://localhost:9001/3.0/lists/test-one@example.com/member/cperson@example.com
     http_etag: "..."
@@ -198,6 +238,8 @@ Elly is now a member of the mailing list.
     entry 0:
     ...
     entry 3:
+        address: eperson@example.com
+        fqdn_listname: alpha@example.com
         http_etag: ...
         self_link: http://localhost:9001/3.0/lists/alpha@example.com/member/eperson@example.com
     ...
