@@ -8,9 +8,9 @@ email the list without having those messages be held for approval.  The
 'moderation' rule determines whether the message should be moderated or not.
 
     >>> mlist = create_list('_xtest@example.com')
-    >>> rule = config.rules['moderation']
+    >>> rule = config.rules['member-moderation']
     >>> print rule.name
-    moderation
+    member-moderation
 
 In the simplest case, the sender is not a member of the mailing list, so the
 moderation rule can't match.
@@ -25,12 +25,13 @@ moderation rule can't match.
     False
 
 Let's add the message author as a non-moderated member.
-::
 
     >>> from mailman.interfaces.usermanager import IUserManager
     >>> from zope.component import getUtility
     >>> user = getUtility(IUserManager).create_user(
     ...     'aperson@example.org', 'Anne Person')
+
+Because the member is not moderated, the rule does not match.
 
     >>> address = list(user.addresses)[0]
     >>> from mailman.interfaces.member import MemberRole

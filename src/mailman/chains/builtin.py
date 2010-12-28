@@ -62,6 +62,8 @@ class BuiltInChain:
         ('suspicious-header', LinkAction.defer, None),
         # Now if any of the above hit, jump to the hold chain.
         ('any', LinkAction.jump, 'hold'),
+        # Hold the message if the sender is a moderated member.
+        ('member-moderation', LinkAction.jump, 'member-moderation'),
         # Take a detour through the header matching chain, which we'll create
         # later.
         ('truth', LinkAction.detour, 'header-match'),

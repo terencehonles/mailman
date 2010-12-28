@@ -21,8 +21,8 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'Moderation',
-    'NonMember',
+    'MemberModeration',
+    'NonMemberModeration',
     ]
 
 
@@ -33,11 +33,11 @@ from mailman.interfaces.rules import IRule
 
 
 
-class Moderation:
+class MemberModeration:
     """The member moderation rule."""
     implements(IRule)
 
-    name = 'moderation'
+    name = 'member-moderation'
     description = _('Match messages sent by moderated members.')
     record = True
 
@@ -51,7 +51,7 @@ class Moderation:
 
 
 
-class NonMember:
+class NonMemberModeration:
     """The non-membership rule."""
     implements(IRule)
 

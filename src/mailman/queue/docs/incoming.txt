@@ -12,7 +12,7 @@ processing begins, with a global default.  This chain is processed with the
 message eventually ending up in one of the four disposition states described
 above.
 
-    >>> mlist = create_list('_xtest@example.com')
+    >>> mlist = create_list('test@example.com')
     >>> print mlist.start_chain
     built-in
 
@@ -26,15 +26,15 @@ pipeline queue.
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
-    ... To: _xtest@example.com
+    ... To: test@example.com
     ... Subject: My first post
     ... Message-ID: <first>
     ...
     ... First post!
     ... """)
 
-Normally, the upstream mail server would drop the message in the incoming
-queue, but this is an effective simulation.
+Inject the message into the incoming queue, similar to the way the upstream
+mail server normally would.
 
     >>> from mailman.inject import inject_message
     >>> inject_message(mlist, msg)
@@ -58,14 +58,13 @@ And now the message is in the pipeline queue.
     >>> item = get_queue_messages('pipeline')[0]
     >>> print item.msg.as_string()
     From: aperson@example.com
-    To: _xtest@example.com
+    To: test@example.com
     Subject: My first post
     Message-ID: <first>
     Date: ...
     X-Mailman-Rule-Misses: approved; emergency; loop; administrivia;
-        implicit-dest;
-        max-recipients; max-size; news-moderation; no-subject;
-        suspicious-header
+        implicit-dest; max-recipients; max-size; news-moderation; no-subject;
+        suspicious-header; member-moderation
     <BLANKLINE>
     First post!
     <BLANKLINE>
@@ -81,27 +80,28 @@ Held messages
 The list moderator sets the emergency flag on the mailing list.  The built-in
 chain will now hold all posted messages, so nothing will show up in the
 pipeline queue.
-:::
+::
 
-    # XXX This checks the vette log file because there is no other evidence
-    # that this chain has done anything.
-    >>> import os
-    >>> fp = open(os.path.join(config.LOG_DIR, 'vette'))
-    >>> fp.seek(0, 2)
+    >>> from mailman.chains.base import ChainNotification
+    >>> def on_chain(event):
+    ...     if isinstance(event, ChainNotification):
+    ...         print event
+    ...         print event.chain
+    ...         print 'From: {0}\nTo: {1}\nMessage-ID: {2}'.format(
+    ...             event.msg['from'], event.msg['to'],
+    ...             event.msg['message-id'])
+
+    >>> import zope.event
+    >>> zope.event.subscribers.append(on_chain)
 
     >>> mlist.emergency = True
     >>> inject_message(mlist, msg)
-    >>> file_pos = fp.tell()
     >>> incoming.run()
-    >>> len(pipeline_queue.files)
-    0
-    >>> len(incoming_queue.files)
-    0
-    >>> fp.seek(file_pos)
-    >>> print 'LOG:', fp.read()
-    LOG: ... HOLD: _xtest@example.com post from aperson@example.com held,
-    message-id=<first>: n/a
-    <BLANKLINE>
+    <mailman.chains.hold.HoldNotification ...>
+    <mailman.chains.hold.HoldChain ...>
+    From: aperson@example.com
+    To: test@example.com
+    Message-ID: <first>
 
     >>> mlist.emergency = False
 
@@ -116,26 +116,35 @@ new chain and set it as the mailing list's start chain.
 
     >>> from mailman.chains.base import Chain, Link
     >>> from mailman.interfaces.chain import LinkAction
-    >>> truth_rule = config.rules['truth']
-    >>> discard_chain = config.chains['discard']
-    >>> test_chain = Chain('always-discard', 'Testing discards')
-    >>> link = Link(truth_rule, LinkAction.jump, discard_chain)
-    >>> test_chain.append_link(link)
-    >>> mlist.start_chain = 'always-discard'
+    >>> def make_chain(name, target_chain):
+    ...     truth_rule = config.rules['truth']
+    ...     target_chain = config.chains[target_chain]
+    ...     test_chain = Chain(name, 'Testing {0}'.format(target_chain))
+    ...     config.chains[test_chain.name] = test_chain
+    ...     link = Link(truth_rule, LinkAction.jump, target_chain)
+    ...     test_chain.append_link(link)
+    ...     return test_chain
 
+    >>> test_chain = make_chain('always-discard', 'discard')
+    >>> mlist.start_chain = test_chain.name
+
+    >>> msg.replace_header('message-id', '<second>')
     >>> inject_message(mlist, msg)
-    >>> file_pos = fp.tell()
     >>> incoming.run()
-    >>> len(pipeline_queue.files)
-    0
-    >>> len(incoming_queue.files)
-    0
-    >>> fp.seek(file_pos)
-    >>> print 'LOG:', fp.read()
-    LOG: ... DISCARD: <first>
-    <BLANKLINE>
+    <mailman.chains.discard.DiscardNotification ...>
+    <mailman.chains.discard.DiscardChain ...>
+    From: aperson@example.com
+    To: test@example.com
+    Message-ID: <second>
 
-    >>> del config.chains['always-discard']
+    >>> del config.chains[test_chain.name]
+
+..
+    The virgin queue needs to be cleared out due to artifacts from the
+    previous tests above.
+
+    >>> virgin_queue = config.switchboards['virgin']
+    >>> ignore = get_queue_messages('virgin')
 
 
 Rejected messages
@@ -145,33 +154,27 @@ Similar to discarded messages, a message can be rejected, or bounced back to
 the original sender.  Again, the built-in chain doesn't support this so we'll
 just create a new chain that does.
 
-    >>> reject_chain = config.chains['reject']
-    >>> test_chain = Chain('always-reject', 'Testing rejections')
-    >>> link = Link(truth_rule, LinkAction.jump, reject_chain)
-    >>> test_chain.append_link(link)
-    >>> mlist.start_chain = 'always-reject'
+    >>> test_chain = make_chain('always-reject', 'reject')
+    >>> mlist.start_chain = test_chain.name
 
-The virgin queue needs to be cleared out due to artifacts from the previous
-tests above.
-::
-
-    >>> virgin_queue = config.switchboards['virgin']
-    >>> ignore = get_queue_messages('virgin')
-
+    >>> msg.replace_header('message-id', '<third>')
     >>> inject_message(mlist, msg)
-    >>> file_pos = fp.tell()
     >>> incoming.run()
-    >>> len(pipeline_queue.files)
-    0
-    >>> len(incoming_queue.files)
-    0
+    <mailman.chains.reject.RejectNotification ...>
+    <mailman.chains.reject.RejectChain ...>
+    From: aperson@example.com
+    To: test@example.com
+    Message-ID: <third>
+
+The rejection message is sitting in the virgin queue waiting to be delivered
+to the original sender.
 
     >>> len(virgin_queue.files)
     1
     >>> item = get_queue_messages('virgin')[0]
     >>> print item.msg.as_string()
     Subject: My first post
-    From: _xtest-owner@example.com
+    From: test-owner@example.com
     To: aperson@example.com
     ...
     <BLANKLINE>
@@ -186,24 +189,18 @@ tests above.
     MIME-Version: 1.0
     <BLANKLINE>
     From: aperson@example.com
-    To: _xtest@example.com
+    To: test@example.com
     Subject: My first post
-    Message-ID: <first>
+    Message-ID: <third>
     Date: ...
     <BLANKLINE>
     First post!
     <BLANKLINE>
     --===============...
 
-    >>> dump_msgdata(item.msgdata)
-    _parsemsg           : False
-    ...
-    recipients          : [u'aperson@example.com']
-    ...
-
-    >>> fp.seek(file_pos)
-    >>> print 'LOG:', fp.read()
-    LOG: ... REJECT: <first>
-    <BLANKLINE>
-
     >>> del config.chains['always-reject']
+
+..
+    Clean up.
+
+    >>> zope.event.subscribers.remove(on_chain)

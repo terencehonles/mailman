@@ -25,12 +25,14 @@ __all__ = [
     ]
 
 from storm.locals import Bool, Int, Reference, Unicode
+from zope.component import getUtility
 from zope.interface import implements
 
 from mailman.config import config
 from mailman.core.constants import system_preferences
 from mailman.database.model import Model
 from mailman.database.types import Enum
+from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import IMember
 
 
@@ -52,7 +54,8 @@ class Member(Model):
         self.role = role
         self.mailing_list = mailing_list
         self.address = address
-        self.is_moderated = False
+        self.is_moderated = getUtility(IListManager).get(
+            mailing_list).default_member_moderation
 
     def __repr__(self):
         return '<Member: {0} on {1} as {2}>'.format(

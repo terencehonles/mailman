@@ -317,9 +317,8 @@ all default rules.  This message will end up in the `pipeline` queue.
     Message-ID: <first>
     X-Message-ID-Hash: RXJU4JL6N2OUN3OYMXXPPSCR7P7JE2BW
     X-Mailman-Rule-Misses: approved; emergency; loop; administrivia;
-        implicit-dest;
-        max-recipients; max-size; news-moderation; no-subject;
-        suspicious-header
+        implicit-dest; max-recipients; max-size; news-moderation; no-subject;
+        suspicious-header; member-moderation
     <BLANKLINE>
     An important message.
     <BLANKLINE>
@@ -338,6 +337,7 @@ hit and all rules that have missed.
     loop
     max-recipients
     max-size
+    member-moderation
     news-moderation
     no-subject
     suspicious-header

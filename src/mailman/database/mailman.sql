@@ -156,7 +156,7 @@ CREATE TABLE mailinglist (
         max_days_to_hold INTEGER,
         max_message_size INTEGER,
         max_num_recipients INTEGER,
-        member_moderation_action BOOLEAN,
+        member_moderation_action INTEGER,
         member_moderation_notice TEXT,
         mime_is_default_digest BOOLEAN,
         moderator_password TEXT,

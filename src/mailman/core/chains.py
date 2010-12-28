@@ -26,14 +26,12 @@ __all__ = [
     ]
 
 
-from mailman.chains.accept import AcceptChain
-from mailman.chains.builtin import BuiltInChain
-from mailman.chains.discard import DiscardChain
-from mailman.chains.headers import HeaderMatchChain
-from mailman.chains.hold import HoldChain
-from mailman.chains.reject import RejectChain
+from zope.interface.verify import verifyObject
+
+from mailman.app.finder import find_components
+from mailman.chains.base import Chain, TerminalChainBase
 from mailman.config import config
-from mailman.interfaces.chain import LinkAction
+from mailman.interfaces.chain import LinkAction, IChain
 
 
 
@@ -67,7 +65,6 @@ def process(mlist, msg, msgdata, start_chain='built-in'):
                 return
             chain, chain_iter = chain_stack.pop()
             continue
-        # Process this link.
         if link.rule.check(mlist, msg, msgdata):
             if link.rule.record:
                 hits.append(link.rule.name)
@@ -103,16 +100,19 @@ def process(mlist, msg, msgdata, start_chain='built-in'):
 
 def initialize():
     """Set up chains, both built-in and from the database."""
-    for chain_class in (DiscardChain, HoldChain, RejectChain, AcceptChain):
+    for chain_class in find_components('mailman.chains', IChain):
+        # FIXME 2010-12-28 barry: We need a generic way to disable automatic
+        # instantiation of discovered classes.  This is useful not just for
+        # chains, but also for rules, handlers, etc.  Ideally it should be
+        # part of find_components().  For now, hard code the ones we do not
+        # want to instantiate.
+        if chain_class in (Chain, TerminalChainBase):
+            continue
         chain = chain_class()
+        verifyObject(IChain, chain)
         assert chain.name not in config.chains, (
-            'Duplicate chain name: {0}'.format(chain.name))
+            'Duplicate chain "{0}" found in {1} (previously: {2}'.format(
+                chain.name, chain_class, config.chains[chain.name]))
         config.chains[chain.name] = chain
-    # Set up a couple of other default chains.
-    chain = BuiltInChain()
-    config.chains[chain.name] = chain
-    # Create and initialize the header matching chain.
-    chain = HeaderMatchChain()
-    config.chains[chain.name] = chain
     # XXX Read chains from the database and initialize them.
     pass

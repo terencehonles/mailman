@@ -231,3 +231,27 @@ It is an error to subscribe someone to a list with the same role twice.
     ...
     AlreadySubscribedError: aperson@example.com is already a MemberRole.owner
     of mailing list _xtest@example.com
+
+
+Moderation flag
+===============
+
+All members have a moderation flag which specifies whether postings from that
+member must first be approved by the list owner or moderator.  The default
+value of this flag is inherited from the mailing lists configuration.
+::
+
+    >>> mlist.default_member_moderation
+    False
+    >>> user_4 = user_manager.create_user('dperson@example.com', 'Dave')
+    >>> address_4 = list(user_4.addresses)[0]
+    >>> member_4 = address_4.subscribe(mlist, MemberRole.member)
+    >>> member_4.is_moderated
+    False
+
+    >>> mlist.default_member_moderation = True
+    >>> user_5 = user_manager.create_user('eperson@example.com', 'Elly')
+    >>> address_5 = list(user_5.addresses)[0]
+    >>> member_5 = address_5.subscribe(mlist, MemberRole.member)
+    >>> member_5.is_moderated
+    True

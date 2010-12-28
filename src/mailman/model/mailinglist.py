@@ -119,7 +119,7 @@ class MailingList(Model):
     bounce_unrecognized_goes_to_list_owner = Bool() # XXX
     bounce_you_are_disabled_warnings = Int() # XXX
     bounce_you_are_disabled_warnings_interval = TimeDelta() # XXX
-    default_member_moderation = Bool() # XXX
+    default_member_moderation = Bool()
     description = Unicode()
     digest_footer = Unicode()
     digest_header = Unicode()

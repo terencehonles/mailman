@@ -115,8 +115,6 @@ def add_member(mlist, address, realname, password, delivery_mode, language):
         member = address_obj.subscribe(mlist, MemberRole.member)
         member.preferences.preferred_language = language
         member.preferences.delivery_mode = delivery_mode
-##     mlist.setMemberOption(email, config.Moderate,
-##                          mlist.default_member_moderation)
     return member
 
 

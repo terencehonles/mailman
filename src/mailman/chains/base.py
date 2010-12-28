@@ -90,8 +90,6 @@ class Chain:
         self.name = name
         self.description = description
         self._links = []
-        # Register the chain.
-        config.chains[name] = self
 
     def append_link(self, link):
         """See `IMutableChain`."""

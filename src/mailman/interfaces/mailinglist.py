@@ -457,6 +457,16 @@ class IMailingList(Interface):
         `pass_extensions` is non-empty.
         """)
 
+    # Moderation.
+
+    default_member_moderation = Attribute(
+        """Default moderation flag for new mailing list members.
+
+        When an address is subscribed to the mailing list, this boolean
+        attribute sets the initial moderation flag value.  When a member's
+        posts are moderated, they must first be approved by the mailing list
+        owner or moderator.
+        """)
 
 
 
