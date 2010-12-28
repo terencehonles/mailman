@@ -468,6 +468,13 @@ class IMailingList(Interface):
         owner or moderator.
         """)
 
+    member_moderation_action = Attribute(
+        """Action to take when a moderated member posts to the mailing list.
+
+        This is applied when the sender is a member of the mailing list and
+        has their `is_moderated` flag set.
+        """)
+
 
 
 class IAcceptableAlias(Interface):

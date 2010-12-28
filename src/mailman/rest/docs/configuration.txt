@@ -98,8 +98,8 @@ all the writable attributes in one request.
     ...             convert_html_to_plaintext=True,
     ...             collapse_alternatives=False,
     ...             reply_goes_to_list='point_to_list',
-    ...             send_welcome_msg=True,
-    ...             welcome_msg='welcome message',
+    ...             send_welcome_msg=False,
+    ...             welcome_msg='Welcome!',
     ...             member_moderation_action='reject',
     ...             default_member_moderation=True,
     ...             generic_nonmember_action=2,
@@ -140,12 +140,16 @@ These values are changed permanently.
     include_list_post_header: False
     include_rfc2369_headers: False
     ...
+    member_moderation_action: reject
+    ...
     pipeline: virgin
     ...
     real_name: Fnords
     reply_goes_to_list: point_to_list
     ...
-    welcome_msg: welcome message
+    send_welcome_msg: False
+    ...
+    welcome_msg: Welcome!
 
 If you use ``PUT`` to change a list's configuration, all writable attributes
 must be included.  It is an error to leave one or more out...
