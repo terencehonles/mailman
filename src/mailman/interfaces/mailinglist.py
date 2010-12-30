@@ -459,20 +459,24 @@ class IMailingList(Interface):
 
     # Moderation.
 
-    default_member_moderation = Attribute(
-        """Default moderation flag for new mailing list members.
+    default_member_action = Attribute(
+        """The default action to take for postings from members.
 
-        When an address is subscribed to the mailing list, this boolean
-        attribute sets the initial moderation flag value.  When a member's
-        posts are moderated, they must first be approved by the mailing list
-        owner or moderator.
+        When an address is subscribed to the mailing list, this attribute sets
+        the initial moderation action (as an `Action`).  When the action is
+        `Action.defer` (the default), then normal posting decisions are made.
+        When the action is `Action.accept`, the postings are accepted without
+        any other checks.
         """)
 
-    member_moderation_action = Attribute(
-        """Action to take when a moderated member posts to the mailing list.
+    default_nonmember_action = Attribute(
+        """The default action to take for postings from nonmembers.
 
-        This is applied when the sender is a member of the mailing list and
-        has their `is_moderated` flag set.
+        When a nonmember address posts to the mailing list, this attribute
+        sets the initial moderation action (as an `Action`).  When the action
+        is `Action.defer` (the default), then normal posting decisions are
+        made.  When the action is `Action.accept`, the postings are accepted
+        without any other checks.
         """)
 
 

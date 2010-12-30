@@ -120,6 +120,14 @@ class MemberRoster(AbstractRoster):
 
 
 
+class NonmemberRoster(AbstractRoster):
+    """Return all the nonmembers of a list."""
+
+    name = 'nonmember'
+    role = MemberRole.nonmember
+
+
+
 class OwnerRoster(AbstractRoster):
     """Return all the owners of a list."""
 

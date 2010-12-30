@@ -51,8 +51,9 @@ class BuiltInChain:
         ('approved', LinkAction.jump, 'accept'),
         ('emergency', LinkAction.jump, 'hold'),
         ('loop', LinkAction.jump, 'discard'),
-        # Do all of the following before deciding whether to hold the message
-        # for moderation.
+        # Determine whether the member or nonmember has an action shortcut.
+        ('moderation', LinkAction.jump, 'moderation'),
+        # Do all of the following before deciding whether to hold the message.
         ('administrivia', LinkAction.defer, None),
         ('implicit-dest', LinkAction.defer, None),
         ('max-recipients', LinkAction.defer, None),
@@ -62,8 +63,6 @@ class BuiltInChain:
         ('suspicious-header', LinkAction.defer, None),
         # Now if any of the above hit, jump to the hold chain.
         ('any', LinkAction.jump, 'hold'),
-        # Hold the message if the sender is a moderated member.
-        ('member-moderation', LinkAction.jump, 'member-moderation'),
         # Take a detour through the header matching chain, which we'll create
         # later.
         ('truth', LinkAction.detour, 'header-match'),

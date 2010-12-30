@@ -8,14 +8,32 @@ moderator approval.
 
     >>> mlist = create_list('test@example.com')
 
+Members and nonmembers have a *moderation action* which can shortcut the
+normal moderation checks.  The built-in chain does just a few checks first,
+such as seeing if the message has a matching `Approved:` header, or if the
+emergency flag has been set on the mailing list, or whether a mail loop has
+been detected.
+
+After those, the moderation action for the sender is checked.  Members
+generally have a `defer` action, meaning the normal moderation checks are
+done, but it is also common for first-time posters to have a `hold` action,
+meaning that their messages are held for moderator approval for a while.
+
+Nonmembers almost always have a `hold` action, though some mailing lists may
+choose to set this default action to `discard`, meaning their posts would be
+immediately thrown away.
+
+XXX What about default nonmember actions when the poster has not been
+registered as a nonmember?
+
 
 Member moderation
 =================
 
-Posts by list members are moderated if the member's moderation flag is set.
-The default setting for the moderation flag of new members is determined by
-the mailing list's settings.  By default, a mailing list is not set to
-moderate new member postings.
+Posts by list members are moderated if the member's moderation action is not
+deferred.  The default setting for the moderation action of new members is
+determined by the mailing list's settings.  By default, a mailing list is not
+set to moderate new member postings.
 
     >>> from mailman.app.membership import add_member
     >>> from mailman.interfaces.member import DeliveryMode
@@ -23,8 +41,8 @@ moderate new member postings.
     ...                     DeliveryMode.regular, 'en')
     >>> member
     <Member: Anne <anne@example.com> on test@example.com as MemberRole.member>
-    >>> member.is_moderated
-    False
+    >>> print member.moderation_action
+    Action.defer
 
 In order to find out whether the message is held or accepted, we can subscribe
 to Zope events that are triggered on each case.
@@ -68,6 +86,7 @@ built-in chain.  No rules hit and so the message is accepted.
         approved
         emergency
         loop
+        moderation
         administrivia
         implicit-dest
         max-recipients
@@ -75,11 +94,13 @@ built-in chain.  No rules hit and so the message is accepted.
         news-moderation
         no-subject
         suspicious-header
-        member-moderation
 
-However, when Anne's moderation flag is set, and the list's member moderation
-action is set to `hold`, her post is held for moderation.
+However, when Anne's moderation action is set to `hold`, her post is held for
+moderator approval.
 ::
+
+    >>> from mailman.interfaces.action import Action
+    >>> member.moderation_action = Action.hold
 
     >>> msg = message_from_string("""\
     ... From: anne@example.com
@@ -89,33 +110,21 @@ action is set to `hold`, her post is held for moderation.
     ... This is a test.
     ... """)
 
-    >>> member.is_moderated = True
-    >>> print mlist.member_moderation_action
-    Action.hold
-
     >>> process(mlist, msg, {}, 'built-in')
     <mailman.chains.hold.HoldNotification ...>
     <mailman.chains.hold.HoldChain ...>
     Subject: badger
     Hits:
-        member-moderation
+        moderation
     Misses:
         approved
         emergency
         loop
-        administrivia
-        implicit-dest
-        max-recipients
-        max-size
-        news-moderation
-        no-subject
-        suspicious-header
 
 The list's member moderation action can also be set to `discard`...
 ::
 
-    >>> from mailman.interfaces.action import Action
-    >>> mlist.member_moderation_action = Action.discard
+    >>> member.moderation_action = Action.discard
 
     >>> msg = message_from_string("""\
     ... From: anne@example.com
@@ -130,22 +139,15 @@ The list's member moderation action can also be set to `discard`...
     <mailman.chains.discard.DiscardChain ...>
     Subject: cougar
     Hits:
-        member-moderation
+        moderation
     Misses:
         approved
         emergency
         loop
-        administrivia
-        implicit-dest
-        max-recipients
-        max-size
-        news-moderation
-        no-subject
-        suspicious-header
 
 ... or `reject`.
 
-    >>> mlist.member_moderation_action = Action.reject
+    >>> member.moderation_action = Action.reject
 
     >>> msg = message_from_string("""\
     ... From: anne@example.com
@@ -160,18 +162,18 @@ The list's member moderation action can also be set to `discard`...
     <mailman.chains.reject.RejectChain ...>
     Subject: dingo
     Hits:
-        member-moderation
+        moderation
     Misses:
         approved
         emergency
         loop
-        administrivia
-        implicit-dest
-        max-recipients
-        max-size
-        news-moderation
-        no-subject
-        suspicious-header
+
+
+Nonmembers
+==========
+
+XXX
+
 
 .. Clean up
     >>> zope.event.subscribers.remove(on_chain)

@@ -69,6 +69,7 @@ class MemberRole(Enum):
     member = 1
     owner = 2
     moderator = 3
+    nonmember = 4
 
 
 
@@ -132,8 +133,8 @@ class IMember(Interface):
     role = Attribute(
         """The role of this membership.""")
 
-    is_moderated = Attribute(
-        """True if the membership is moderated, otherwise False.""")
+    moderation_action = Attribute(
+        """The moderation action for this member as an `Action`.""")
 
     def unsubscribe():
         """Unsubscribe (and delete) this member from the mailing list."""

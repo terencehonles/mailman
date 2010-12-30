@@ -32,7 +32,8 @@ All readable attributes for a list are available on a sub-resource.
     collapse_alternatives: True
     convert_html_to_plaintext: False
     created_at: 20...T...
-    default_member_moderation: False
+    default_member_action: defer
+    default_nonmember_action: hold
     description:
     digest_last_sent_at: None
     digest_size_threshold: 30.0
@@ -48,7 +49,6 @@ All readable attributes for a list are available on a sub-resource.
     leave_address: test-one-leave@example.com
     list_id: test-one.example.com
     list_name: test-one
-    member_moderation_action: hold
     next_digest_number: 1
     no_reply_address: noreply@example.com
     owner_address: test-one-owner@example.com
@@ -72,6 +72,7 @@ Not all of the readable attributes can be set through the web interface.  The
 ones that can, can either be set via ``PUT`` or ``PATCH``.  ``PUT`` changes
 all the writable attributes in one request.
 
+    >>> from mailman.interfaces.action import Action
     >>> dump_json('http://localhost:9001/3.0/lists/'
     ...           'test-one@example.com/config',
     ...           dict(
@@ -100,8 +101,8 @@ all the writable attributes in one request.
     ...             reply_goes_to_list='point_to_list',
     ...             send_welcome_msg=False,
     ...             welcome_msg='Welcome!',
-    ...             member_moderation_action='reject',
-    ...             default_member_moderation=True,
+    ...             default_member_action='hold',
+    ...             default_nonmember_action='discard',
     ...             generic_nonmember_action=2,
     ...             ),
     ...           'PUT')
@@ -131,7 +132,8 @@ These values are changed permanently.
     collapse_alternatives: False
     convert_html_to_plaintext: True
     ...
-    default_member_moderation: True
+    default_member_action: hold
+    default_nonmember_action: discard
     description: This is my mailing list
     ...
     digest_size_threshold: 10.5
@@ -139,8 +141,6 @@ These values are changed permanently.
     ...
     include_list_post_header: False
     include_rfc2369_headers: False
-    ...
-    member_moderation_action: reject
     ...
     pipeline: virgin
     ...
@@ -182,8 +182,8 @@ must be included.  It is an error to leave one or more out...
     ...             reply_goes_to_list='point_to_list',
     ...             send_welcome_msg=True,
     ...             welcome_msg='welcome message',
-    ...             member_moderation_action='reject',
-    ...             default_member_moderation=True,
+    ...             default_member_action='accept',
+    ...             default_nonmember_action='accept',
     ...             generic_nonmember_action=2,
     ...             ),
     ...           'PUT')

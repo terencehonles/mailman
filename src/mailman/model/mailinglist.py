@@ -119,7 +119,8 @@ class MailingList(Model):
     bounce_unrecognized_goes_to_list_owner = Bool() # XXX
     bounce_you_are_disabled_warnings = Int() # XXX
     bounce_you_are_disabled_warnings_interval = TimeDelta() # XXX
-    default_member_moderation = Bool()
+    default_member_action = Enum()
+    default_nonmember_action = Enum()
     description = Unicode()
     digest_footer = Unicode()
     digest_header = Unicode()
@@ -144,7 +145,6 @@ class MailingList(Model):
     max_days_to_hold = Int()
     max_message_size = Int()
     max_num_recipients = Int()
-    member_moderation_action = Enum()
     member_moderation_notice = Unicode()
     mime_is_default_digest = Bool()
     moderator_password = Unicode()
@@ -205,6 +205,7 @@ class MailingList(Model):
         self.regular_members = roster.RegularMemberRoster(self)
         self.digest_members = roster.DigestMemberRoster(self)
         self.subscribers = roster.Subscribers(self)
+        self.nonmembers = roster.NonmemberRoster(self)
 
     def __repr__(self):
         return '<mailing list "{0}" at {1:#x}>'.format(

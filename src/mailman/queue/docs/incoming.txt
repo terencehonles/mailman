@@ -62,9 +62,9 @@ And now the message is in the pipeline queue.
     Subject: My first post
     Message-ID: <first>
     Date: ...
-    X-Mailman-Rule-Misses: approved; emergency; loop; administrivia;
-        implicit-dest; max-recipients; max-size; news-moderation; no-subject;
-        suspicious-header; member-moderation
+    X-Mailman-Rule-Misses: approved; emergency; loop; moderation;
+        administrivia; implicit-dest; max-recipients; max-size;
+        news-moderation; no-subject; suspicious-header
     <BLANKLINE>
     First post!
     <BLANKLINE>

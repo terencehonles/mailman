@@ -30,7 +30,7 @@ from zope.interface import Interface, Attribute
 
 
 class IRoster(Interface):
-    """A roster is a collection of IMembers."""
+    """A roster is a collection of `IMembers`."""
 
     name = Attribute(
         """The name for this roster.

@@ -2,74 +2,95 @@
 Member moderation
 =================
 
-Each user has a moderation flag.  When set, and the list is set to moderate
-postings, then only members with a cleared moderation flag will be able to
-email the list without having those messages be held for approval.  The
-'moderation' rule determines whether the message should be moderated or not.
+All members and nonmembers have a moderation action.  When the action is not
+`defer`, the `moderation` rule flags the message as needing a moderation
+shortcut.  This might be to automatically accept, discard, reject, or hold the
+message.
 
-    >>> mlist = create_list('_xtest@example.com')
-    >>> rule = config.rules['member-moderation']
+    >>> mlist = create_list('test@example.com')
+    >>> rule = config.rules['moderation']
     >>> print rule.name
-    member-moderation
-
-In the simplest case, the sender is not a member of the mailing list, so the
-moderation rule can't match.
-
-    >>> msg = message_from_string("""\
-    ... From: aperson@example.org
-    ... To: _xtest@example.com
-    ... Subject: A posted message
-    ...
-    ... """)
-    >>> rule.check(mlist, msg, {})
-    False
+    moderation
 
 Let's add the message author as a non-moderated member.
+::
 
+    >>> from mailman.interfaces.member import MemberRole
     >>> from mailman.interfaces.usermanager import IUserManager
+
     >>> from zope.component import getUtility
     >>> user = getUtility(IUserManager).create_user(
     ...     'aperson@example.org', 'Anne Person')
 
+    >>> address = list(user.addresses)[0]
+    >>> member = address.subscribe(mlist, MemberRole.member)
+    >>> print member.moderation_action
+    Action.defer
+
 Because the member is not moderated, the rule does not match.
 
-    >>> address = list(user.addresses)[0]
-    >>> from mailman.interfaces.member import MemberRole
-    >>> member = address.subscribe(mlist, MemberRole.member)
-    >>> member.is_moderated
-    False
-    >>> rule.check(mlist, msg, {})
-    False
-
-Once the member's moderation flag is set though, the rule matches.
-
-    >>> member.is_moderated = True
-    >>> rule.check(mlist, msg, {})
-    True
-
-
-Non-members
-===========
-
-There is another, related rule for matching non-members, which simply matches
-if the sender is *not* a member of the mailing list.
-
-    >>> rule = config.rules['non-member']
-    >>> print rule.name
-    non-member
-
-If the sender is a member of this mailing list, the rule does not match.
-
-    >>> rule.check(mlist, msg, {})
-    False
-
-But if the sender is not a member of this mailing list, the rule matches.
-
     >>> msg = message_from_string("""\
-    ... From: bperson@example.org
-    ... To: _xtest@example.com
+    ... From: aperson@example.org
+    ... To: test@example.com
     ... Subject: A posted message
     ...
     ... """)
     >>> rule.check(mlist, msg, {})
+    False
+
+Once the member's moderation action is set to something other than `defer`,
+the rule matches.  Also, the message metadata has a few extra pieces of
+information for the eventual moderation chain.
+
+    >>> from mailman.interfaces.action import Action
+    >>> member.moderation_action = Action.hold
+    >>> msgdata = {}
+    >>> rule.check(mlist, msg, msgdata)
     True
+    >>> dump_msgdata(msgdata)
+    moderation_action: hold
+    moderation_sender: aperson@example.org
+
+
+Nonmembers
+==========
+
+Nonmembers are handled in a similar way, although by default, nonmember
+postings are held for moderator approval.
+
+    >>> user = getUtility(IUserManager).create_user(
+    ...     'bperson@example.org', 'Bart Person')
+
+    >>> address = list(user.addresses)[0]
+    >>> nonmember = address.subscribe(mlist, MemberRole.nonmember)
+    >>> print nonmember.moderation_action
+    Action.hold
+
+Because the sender's moderation action is to hold by default, the rule
+matches.  Again, the message metadata carries some useful information.
+
+    >>> msg = message_from_string("""\
+    ... From: bperson@example.org
+    ... To: test@example.com
+    ... Subject: A posted message
+    ...
+    ... """)
+    >>> msgdata = {}
+    >>> rule.check(mlist, msg, msgdata)
+    True
+    >>> dump_msgdata(msgdata)
+    moderation_action: hold
+    moderation_sender: bperson@example.org
+
+Of course, the nonmember action can be set to defer the decision, in which
+case the rule does not match.
+
+    >>> nonmember.moderation_action = Action.defer
+    >>> rule.check(mlist, msg, {})
+    False
+
+
+Unregistered nonmembers
+=======================
+
+XXX

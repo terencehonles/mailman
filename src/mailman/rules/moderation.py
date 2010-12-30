@@ -21,48 +21,49 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'MemberModeration',
-    'NonMemberModeration',
+    'Moderation',
     ]
 
 
 from zope.interface import implements
 
 from mailman.core.i18n import _
+from mailman.interfaces.action import Action
 from mailman.interfaces.rules import IRule
 
 
 
-class MemberModeration:
+class Moderation:
     """The member moderation rule."""
     implements(IRule)
 
-    name = 'member-moderation'
-    description = _('Match messages sent by moderated members.')
+    name = 'moderation'
+    description = _('Match messages sent by moderated members and nonmembers.')
     record = True
 
     def check(self, mlist, msg, msgdata):
         """See `IRule`."""
         for sender in msg.senders:
             member = mlist.members.get_member(sender)
-            if member is not None and member.is_moderated:
+            action = (Action.defer if member is None
+                      else member.moderation_action)
+            if action is not Action.defer:
+                # We must stringify the moderation action so that it can be
+                # stored in the pending request table.
+                msgdata['moderation_action'] = action.enumname
+                msgdata['moderation_sender'] = sender
                 return True
-        return False
-
-
-
-class NonMemberModeration:
-    """The non-membership rule."""
-    implements(IRule)
-
-    name = 'non-member'
-    description = _('Match messages sent by non-members.')
-    record = True
-
-    def check(self, mlist, msg, msgdata):
-        """See `IRule`."""
         for sender in msg.senders:
-            if mlist.members.get_member(sender) is not None:
-                # The sender is a member of the mailing list.
-                return False
-        return True
+            nonmember = mlist.nonmembers.get_member(sender)
+            action = (Action.defer if nonmember is None
+                      else nonmember.moderation_action)
+            if action is not Action.defer:
+                # We must stringify the moderation action so that it can be
+                # stored in the pending request table.
+                msgdata['moderation_action'] = action.enumname
+                msgdata['moderation_sender'] = sender
+                return True
+        # XXX This is not correct.  If the sender is neither a member nor a
+        # nonmember, we need to register them as a nonmember and give them the
+        # default action.
+        return False

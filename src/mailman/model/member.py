@@ -24,7 +24,7 @@ __all__ = [
     'Member',
     ]
 
-from storm.locals import Bool, Int, Reference, Unicode
+from storm.locals import Int, Reference, Unicode
 from zope.component import getUtility
 from zope.interface import implements
 
@@ -32,8 +32,9 @@ from mailman.config import config
 from mailman.core.constants import system_preferences
 from mailman.database.model import Model
 from mailman.database.types import Enum
+from mailman.interfaces.action import Action
 from mailman.interfaces.listmanager import IListManager
-from mailman.interfaces.member import IMember
+from mailman.interfaces.member import IMember, MemberRole
 
 
 
@@ -43,7 +44,7 @@ class Member(Model):
     id = Int(primary=True)
     role = Enum()
     mailing_list = Unicode()
-    is_moderated = Bool()
+    moderation_action = Enum()
 
     address_id = Int()
     address = Reference(address_id, 'Address.id')
@@ -54,8 +55,16 @@ class Member(Model):
         self.role = role
         self.mailing_list = mailing_list
         self.address = address
-        self.is_moderated = getUtility(IListManager).get(
-            mailing_list).default_member_moderation
+        if role in (MemberRole.owner, MemberRole.moderator):
+            self.moderation_action = Action.accept
+        elif role is MemberRole.member:
+            self.moderation_action = getUtility(IListManager).get(
+                mailing_list).default_member_action
+        else:
+            assert role is MemberRole.nonmember, (
+                'Invalid MemberRole: {0}'.format(role))
+            self.moderation_action = getUtility(IListManager).get(
+                mailing_list).default_nonmember_action
 
     def __repr__(self):
         return '<Member: {0} on {1} as {2}>'.format(

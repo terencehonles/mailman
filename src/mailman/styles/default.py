@@ -116,13 +116,13 @@ ${listinfo_page}
         mlist.nondigestable = True
         mlist.personalize = Personalization.none
         # New sender-centric moderation (privacy) options
-        mlist.default_member_moderation = False
+        mlist.default_member_action = Action.defer
+        mlist.default_nonmember_action = Action.hold
         # Archiver
         mlist.archive = True
         mlist.archive_private = 0
         mlist.archive_volume_frequency = 1
         mlist.emergency = False
-        mlist.member_moderation_action = Action.hold
         mlist.member_moderation_notice = ''
         mlist.accept_these_nonmembers = []
         mlist.hold_these_nonmembers = []
