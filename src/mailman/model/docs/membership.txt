@@ -15,168 +15,105 @@ roster set's name.  Roster also have names, but are related to roster sets
 by a more direct containment relationship.  This is because it is possible to
 store mailing list data in a different database than user data.
 
-When we create a mailing list, it starts out with no members.
-::
+When we create a mailing list, it starts out with no members, owners,
+moderators, administrators, or nonmembers.
 
     >>> mlist = create_list('test@example.com')
-
-    >>> def print_addresses(roster_addresses):
-    ...     sorted_addresses = sorted(
-    ...         address.address for address in roster_addresses)
-    ...     if len(sorted_addresses) == 0:
-    ...         print 'No addresses'
-    ...     else:
-    ...         for address in sorted_addresses:
-    ...             print address
-
-    >>> print_addresses(mlist.members.members)
-    No addresses
-    >>> sorted(user.real_name for user in mlist.members.users)
-    []
-    >>> sorted(address.address for member in mlist.members.addresses)
-    []
-
-...no owners...
-
-    >>> print_addresses(mlist.owners.members)
-    No addresses
-    >>> sorted(user.real_name for user in mlist.owners.users)
-    []
-    >>> sorted(address.address for member in mlist.owners.addresses)
-    []
-
-...no moderators...
-
-    >>> print_addresses(mlist.moderators.members)
-    No addresses
-    >>> sorted(user.real_name for user in mlist.moderators.users)
-    []
-    >>> sorted(address.address for member in mlist.moderators.addresses)
-    []
-
-...and no administrators...
-
-    >>> print_addresses(mlist.administrators.members)
-    No addresses
-    >>> sorted(user.real_name for user in mlist.administrators.users)
-    []
-    >>> sorted(address.address for member in mlist.administrators.addresses)
-    []
-
-...and no nonmembers.
-
-    >>> print_addresses(mlist.nonmembers.members)
-    No addresses
-    >>> sorted(user.real_name for user in mlist.nonmembers.users)
-    []
-    >>> sorted(address.address for member in mlist.nonmembers.addresses)
-    []
+    >>> dump_list(mlist.members.members)
+    *Empty*
+    >>> dump_list(mlist.owners.members)
+    *Empty*
+    >>> dump_list(mlist.moderators.members)
+    *Empty*
+    >>> dump_list(mlist.administrators.members)
+    *Empty*
+    >>> dump_list(mlist.nonmembers.members)
+    *Empty*
 
 
 Administrators
 ==============
 
 A mailing list's administrators are defined as union of the list's owners and
-the list's moderators.  We can add new owners or moderators to this list by
-assigning roles to users.  First we have to create the user, because there are
-no users in the user database yet.
+moderators.  We can add new owners or moderators to this list by assigning
+roles to users.  First we have to create the user, because there are no users
+in the user database yet.
 
     >>> from mailman.interfaces.usermanager import IUserManager
     >>> from zope.component import getUtility
     >>> user_manager = getUtility(IUserManager)
     >>> user_1 = user_manager.create_user('aperson@example.com', 'Anne Person')
-    >>> print user_1.real_name
-    Anne Person
-    >>> print_addresses(user_1.addresses)
-    aperson@example.com
+    >>> print user_1
+    <User "Anne Person" at ...>
 
 We can add Anne as an owner of the mailing list, by creating a member role for
 her.
 
     >>> from mailman.interfaces.member import MemberRole
     >>> address_1 = list(user_1.addresses)[0]
-    >>> print address_1.address
-    aperson@example.com
     >>> address_1.subscribe(mlist, MemberRole.owner)
     <Member: Anne Person <aperson@example.com> on
              test@example.com as MemberRole.owner>
-    >>> print_addresses(mlist.owners.members)
+    >>> dump_list(member.address for member in mlist.owners.members)
     Anne Person <aperson@example.com>
-    >>> sorted(user.real_name for user in mlist.owners.users)
-    [u'Anne Person']
-    >>> print_addresses(mlist.owners.addresses)
-    aperson@example.com
 
 Adding Anne as a list owner also makes her an administrator, but does not make
 her a moderator.  Nor does it make her a member of the list.
 
-    >>> sorted(user.real_name for user in mlist.administrators.users)
-    [u'Anne Person']
-    >>> sorted(user.real_name for user in mlist.moderators.users)
-    []
-    >>> sorted(user.real_name for user in mlist.members.users)
-    []
+    >>> dump_list(member.address for member in mlist.administrators.members)
+    Anne Person <aperson@example.com>
+    >>> dump_list(member.address for member in mlist.moderators.members)
+    *Empty*
+    >>> dump_list(member.address for member in mlist.members.members)
+    *Empty*
 
-We can add Bart as a moderator of the list, by creating a different member role
-for him.
+Bart becomes a moderator of the list.
 
     >>> user_2 = user_manager.create_user('bperson@example.com', 'Bart Person')
-    >>> print user_2.real_name
-    Bart Person
+    >>> print user_2
+    <User "Bart Person" at ...>
     >>> address_2 = list(user_2.addresses)[0]
-    >>> print address_2.address
-    bperson@example.com
     >>> address_2.subscribe(mlist, MemberRole.moderator)
     <Member: Bart Person <bperson@example.com>
              on test@example.com as MemberRole.moderator>
-    >>> print_addresses(mlist.moderators.members)
+    >>> dump_list(member.address for member in mlist.moderators.members)
     Bart Person <bperson@example.com>
-    >>> sorted(user.real_name for user in mlist.moderators.users)
-    [u'Bart Person']
-    >>> print_addresses(mlist.moderators.addresses)
-    bperson@example.com
 
 Now, both Anne and Bart are list administrators.
+::
 
-    >>> print_addresses(mlist.administrators.members)
+    >>> from operator import attrgetter
+    >>> def dump_members(roster):
+    ...     all_addresses = list(member.address for member in roster)
+    ...     sorted_addresses = sorted(all_addresses, key=attrgetter('address'))
+    ...     dump_list(sorted_addresses)
+
+    >>> dump_members(mlist.administrators.members)
     Anne Person <aperson@example.com>
     Bart Person <bperson@example.com>
-    >>> sorted(user.real_name for user in mlist.administrators.users)
-    [u'Anne Person', u'Bart Person']
-    >>> print_addresses(mlist.administrators.addresses)
-    aperson@example.com
-    bperson@example.com
 
 
 Members
 =======
 
-Similarly, list members are born of users being given the proper role.  It's
-more interesting here because these roles should have a preference which can
-be used to decide whether the member is to get regular delivery or digest
-delivery.  Without a preference, Mailman will fall back first to the address's
-preference, then the user's preference, then the list's preference.  Start
-without any member preference to see the system defaults.
+Similarly, list members are born of users being subscribed with the proper
+role.
 
     >>> user_3 = user_manager.create_user(
     ...     'cperson@example.com', 'Cris Person')
-    >>> print user_3.real_name
-    Cris Person
     >>> address_3 = list(user_3.addresses)[0]
-    >>> print address_3.address
-    cperson@example.com
     >>> address_3.subscribe(mlist, MemberRole.member)
     <Member: Cris Person <cperson@example.com>
              on test@example.com as MemberRole.member>
 
 Cris will be a regular delivery member but not a digest member.
 
-    >>> print_addresses(mlist.members.addresses)
-    cperson@example.com
-    >>> print_addresses(mlist.regular_members.addresses)
-    cperson@example.com
-    >>> print_addresses(mlist.digest_members.addresses)
-    No addresses
+    >>> dump_members(mlist.members.members)
+    Cris Person <cperson@example.com>
+    >>> dump_members(mlist.regular_members.members)
+    Cris Person <cperson@example.com>
+    >>> dump_members(mlist.digest_members.addresses)
+    *Empty*
 
 It's easy to make the list administrators members of the mailing list too.
 
@@ -184,21 +121,21 @@ It's easy to make the list administrators members of the mailing list too.
     >>> for address in mlist.administrators.addresses:
     ...     member = address.subscribe(mlist, MemberRole.member)
     ...     members.append(member)
-    >>> sorted(members, key=lambda m: m.address.address)
-    [<Member: Anne Person <aperson@example.com> on
-              test@example.com as MemberRole.member>,
-     <Member: Bart Person <bperson@example.com> on
-              test@example.com as MemberRole.member>]
-    >>> print_addresses(mlist.members.addresses)
-    aperson@example.com
-    bperson@example.com
-    cperson@example.com
-    >>> print_addresses(mlist.regular_members.addresses)
-    aperson@example.com
-    bperson@example.com
-    cperson@example.com
-    >>> print_addresses(mlist.digest_members.addresses)
-    No addresses
+    >>> dump_list(members, key=attrgetter('address.address'))
+    <Member: Anne Person <aperson@example.com> on
+             test@example.com as MemberRole.member>
+    <Member: Bart Person <bperson@example.com> on
+             test@example.com as MemberRole.member>
+    >>> dump_members(mlist.members.members)
+    Anne Person <aperson@example.com>
+    Bart Person <bperson@example.com>
+    Cris Person <cperson@example.com>
+    >>> dump_members(mlist.regular_members.members)
+    Anne Person <aperson@example.com>
+    Bart Person <bperson@example.com>
+    Cris Person <cperson@example.com>
+    >>> dump_members(mlist.digest_members.members)
+    *Empty*
 
 
 Nonmembers
@@ -207,33 +144,32 @@ Nonmembers
 Nonmembers are used to represent people who have posted to the mailing list
 but are not subscribed to the mailing list.  These may be legitimate users who
 have found the mailing list and wish to interact without a direct
-subscription.  It may also be spammers who should never be allowed to contact
+subscription, or they may be spammers who should never be allowed to contact
 the mailing list.  Because all the same moderation rules can be applied to
 nonmembers, we represent them as the same type of object but with a different
 role.
 
-    >>> user_6 = user_manager.create_user('fperson@example.com', 'Fred')
+    >>> user_6 = user_manager.create_user('fperson@example.com', 'Fred Person')
     >>> address_6 = list(user_6.addresses)[0]
     >>> member_6 = address_6.subscribe(mlist, MemberRole.nonmember)
     >>> member_6
-    <Member: Fred <fperson@example.com> on test@example.com
+    <Member: Fred Person <fperson@example.com> on test@example.com
              as MemberRole.nonmember>
-    >>> print_addresses(mlist.nonmembers.addresses)
-    fperson@example.com
+    >>> dump_members(mlist.nonmembers.members)
+    Fred Person <fperson@example.com>
 
-Nonmembers do not get delivery of any messages.  See that Fred does not show
-up in any of the delivery rosters.
+Nonmembers do not get delivery of any messages.
 
-    >>> print_addresses(mlist.members.addresses)
-    aperson@example.com
-    bperson@example.com
-    cperson@example.com
-    >>> print_addresses(mlist.regular_members.addresses)
-    aperson@example.com
-    bperson@example.com
-    cperson@example.com
-    >>> print_addresses(mlist.digest_members.addresses)
-    No addresses
+    >>> dump_members(mlist.members.members)
+    Anne Person <aperson@example.com>
+    Bart Person <bperson@example.com>
+    Cris Person <cperson@example.com>
+    >>> dump_members(mlist.regular_members.members)
+    Anne Person <aperson@example.com>
+    Bart Person <bperson@example.com>
+    Cris Person <cperson@example.com>
+    >>> dump_members(mlist.digest_members.members)
+    *Empty*
 
 
 Finding members
@@ -252,7 +188,7 @@ text email address by using the ``IRoster.get_member()`` method.
     <Member: Anne Person <aperson@example.com> on
              test@example.com as MemberRole.member>
     >>> mlist.nonmembers.get_member('fperson@example.com')
-    <Member: Fred <fperson@example.com> on
+    <Member: Fred Person <fperson@example.com> on
              test@example.com as MemberRole.nonmember>
 
 However, if the address is not subscribed with the appropriate role, then None
@@ -305,11 +241,10 @@ All members of any role have a *moderation action* which specifies how
 postings from that member are handled.  By default, owners and moderators are
 automatically accepted for posting to the mailing list.
 
-    >>> from operator import attrgetter
     >>> for member in sorted(mlist.administrators.members,
     ...                      key=attrgetter('address.address')):
     ...     print member.address.address, member.role, member.moderation_action
-    aperson@example.com MemberRole.owner Action.accept
+    aperson@example.com MemberRole.owner     Action.accept
     bperson@example.com MemberRole.moderator Action.accept
 
 By default, members have a *deferred* action which specifies that the posting

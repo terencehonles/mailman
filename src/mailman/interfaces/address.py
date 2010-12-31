@@ -84,7 +84,7 @@ class IAddress(Interface):
 
         Registeration is really the date at which this address became known to
         us.  It may have been explicitly registered by a user, or it may have
-        been implicitly registered, e.g. by showing up in a non-member
+        been implicitly registered, e.g. by showing up in a nonmember
         posting.""")
 
     verified_on = Attribute(

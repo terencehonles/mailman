@@ -146,7 +146,7 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
 
     def handle_accept(self):
         conn, addr = self.accept()
-        channel = Channel(self, conn, addr)
+        Channel(self, conn, addr)
         qlog.debug('LMTP accept from %s', addr)
 
     @txn
@@ -163,7 +163,7 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
                 return ERR_501
             msg['X-MailFrom'] = mailfrom
             message_id = msg['message-id']
-        except Exception, e:
+        except Exception:
             elog.exception('LMTP message parsing')
             config.db.abort()
             return CRLF.join(ERR_451 for to in rcpttos)

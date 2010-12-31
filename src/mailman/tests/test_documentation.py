@@ -110,6 +110,18 @@ def dump_msgdata(msgdata, *additional_skips):
         print '{0:{2}}: {1}'.format(key, msgdata[key], longest)
 
 
+def dump_list(list_of_things, key=None):
+    """Print items in a string to get rid of stupid u'' prefixes."""
+    # List of things may be a generator.
+    list_of_things = list(list_of_things)
+    if len(list_of_things) == 0:
+        print '*Empty*'
+    if key is not None:
+        list_of_things = sorted(list_of_things, key=key)
+    for item in list_of_things:
+        print item
+
+
 def call_http(url, data=None, method=None, username=None, password=None):
     """'Call' a URL with a given HTTP method and return the resulting object.
 
@@ -202,6 +214,7 @@ def setup(testobj):
     testobj.globs['create_list'] = create_list
     testobj.globs['dump_json'] = dump_json
     testobj.globs['dump_msgdata'] = dump_msgdata
+    testobj.globs['dump_list'] = dump_list
     testobj.globs['message_from_string'] = specialized_message_from_string
     testobj.globs['smtpd'] = SMTPLayer.smtpd
     testobj.globs['stop'] = stop

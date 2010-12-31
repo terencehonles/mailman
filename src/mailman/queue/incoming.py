@@ -34,7 +34,12 @@ __all__ = [
     ]
 
 
+from zope.component import getUtility
+
+from mailman.config import config
 from mailman.core.chains import process
+from mailman.interfaces.address import ExistingAddressError
+from mailman.interfaces.usermanager import IUserManager
 from mailman.queue import Runner
 
 
@@ -46,6 +51,15 @@ class IncomingRunner(Runner):
         """See `IRunner`."""
         if msgdata.get('envsender') is None:
             msgdata['envsender'] = mlist.no_reply_address
+        # Ensure that the email addresses of the message's senders are known
+        # to Mailman.  This will be used in nonmember posting dispositions.
+        user_manager = getUtility(IUserManager)
+        for sender in msg.senders:
+            try:
+                user_manager.create_address(sender)
+            except ExistingAddressError:
+                pass
+        config.db.commit()
         # Process the message through the mailing list's start chain.
         process(mlist, msg, msgdata, mlist.start_chain)
         # Do not keep this message queued.

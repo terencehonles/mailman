@@ -17,6 +17,73 @@ above.
     built-in
 
 
+Sender addresses
+================
+
+The incoming queue runner ensures that the sender addresses on the message are
+registered with the system.  This is used for determining nonmember posting
+privileges.  The addresses will not be linked to a user and will be
+unverified, so if the real user comes along later and claims the address, it
+will be linked to their user account (and must be verified).
+
+While configurable, the *sender addresses* by default are those named in the
+`From:`, `Sender:`, and `Reply-To:` headers, as well as the envelope sender
+(though we won't worry about the latter).
+::
+
+    >>> msg = message_from_string("""\
+    ... From: zperson@example.com
+    ... Reply-To: yperson@example.com
+    ... Sender: xperson@example.com
+    ... To: test@example.com
+    ... Subject: This is spiced ham
+    ... Message-ID: <bogus>
+    ...
+    ... """)
+
+    >>> from zope.component import getUtility
+    >>> from mailman.interfaces.usermanager import IUserManager
+    >>> user_manager = getUtility(IUserManager)
+    >>> print user_manager.get_address('xperson@example.com')
+    None
+    >>> print user_manager.get_address('yperson@example.com')
+    None
+    >>> print user_manager.get_address('zperson@example.com')
+    None
+
+Inject the message into the incoming queue, similar to the way the upstream
+mail server normally would.
+
+    >>> from mailman.inject import inject_message
+    >>> inject_message(mlist, msg)
+
+The incoming queue runner runs until it is empty.
+
+    >>> from mailman.queue.incoming import IncomingRunner
+    >>> from mailman.testing.helpers import make_testable_runner
+    >>> incoming = make_testable_runner(IncomingRunner, 'in')
+    >>> incoming.run()
+
+And now the addresses are known to the system.  As mentioned above, they are
+not linked to a user and are unverified.
+
+    >>> for localpart in ('xperson', 'yperson', 'zperson'):
+    ...     email = '{0}@example.com'.format(localpart)
+    ...     address = user_manager.get_address(email)
+    ...     print '{0}; verified? {1}; user? {2}'.format(
+    ...         address.address,
+    ...         ('No' if address.verified_on is None else 'Yes'),
+    ...         user_manager.get_user(email))
+    xperson@example.com; verified? No; user? None
+    yperson@example.com; verified? No; user? None
+    zperson@example.com; verified? No; user? None
+
+..
+    Clear the pipeline queue of artifacts that affect the following tests.
+    >>> from mailman.testing.helpers import get_queue_messages
+    >>> ignore = get_queue_messages('pipeline')
+
+
 Accepted messages
 =================
 
@@ -33,20 +100,12 @@ pipeline queue.
     ... First post!
     ... """)
 
-Inject the message into the incoming queue, similar to the way the upstream
-mail server normally would.
+Inject the message into the incoming queue and run until the queue is empty.
 
-    >>> from mailman.inject import inject_message
     >>> inject_message(mlist, msg)
-
-The incoming queue runner runs until it is empty.
-
-    >>> from mailman.queue.incoming import IncomingRunner
-    >>> from mailman.testing.helpers import make_testable_runner
-    >>> incoming = make_testable_runner(IncomingRunner, 'in')
     >>> incoming.run()
 
-And now the message is in the pipeline queue.
+Now the message is in the pipeline queue.
 
     >>> pipeline_queue = config.switchboards['pipeline']
     >>> len(pipeline_queue.files)
@@ -54,7 +113,6 @@ And now the message is in the pipeline queue.
     >>> incoming_queue = config.switchboards['in']
     >>> len(incoming_queue.files)
     0
-    >>> from mailman.testing.helpers import get_queue_messages
     >>> item = get_queue_messages('pipeline')[0]
     >>> print item.msg.as_string()
     From: aperson@example.com
