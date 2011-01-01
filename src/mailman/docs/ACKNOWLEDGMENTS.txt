@@ -4,7 +4,7 @@
 GNU Mailman Acknowledgments
 ===========================
 
-Copyright (C) 1998-2010 by the Free Software Foundation, Inc.
+Copyright (C) 1998-2011 by the Free Software Foundation, Inc.
 
 
 Core Developers
