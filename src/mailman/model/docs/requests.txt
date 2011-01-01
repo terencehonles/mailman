@@ -56,8 +56,8 @@ The list's requests database starts out empty.
 
     >>> requests.count
     0
-    >>> list(requests.held_requests)
-    []
+    >>> dump_list(requests.held_requests)
+    *Empty*
 
 At the lowest level, the requests database is very simple.  Holding a request
 requires a request type (as an enum value), a key, and an optional dictionary
@@ -697,7 +697,7 @@ Frank Person is now a member of the mailing list.
     >>> from zope.component import getUtility
     >>> user_manager = getUtility(IUserManager)
 
-    >>> user = user_manager.get_user(member.address.address)
+    >>> user = user_manager.get_user(member.address.email)
     >>> print user.real_name
     Frank Person
     >>> print user.password

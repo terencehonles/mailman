@@ -77,20 +77,27 @@ You can also specify a list of owner email addresses.  If these addresses are
 not yet known, they will be registered, and new users will be linked to them.
 However the addresses are not verified.
 
-    >>> owners = ['aperson@example.com', 'bperson@example.com',
-    ...           'cperson@example.com', 'dperson@example.com']
+    >>> owners = [
+    ...     'aperson@example.com',
+    ...     'bperson@example.com',
+    ...     'cperson@example.com',
+    ...     'dperson@example.com',
+    ...     ]
     >>> mlist_2 = create_list('test_2@example.com', owners)
     >>> print mlist_2.fqdn_listname
     test_2@example.com
     >>> print mlist_2.msg_footer
     test footer
-    >>> sorted(addr.address for addr in mlist_2.owners.addresses)
-    [u'aperson@example.com', u'bperson@example.com',
-     u'cperson@example.com', u'dperson@example.com']
+    >>> dump_list(address.email for address in mlist_2.owners.addresses)
+    aperson@example.com
+    bperson@example.com
+    cperson@example.com
+    dperson@example.com
 
 None of the owner addresses are verified.
 
-    >>> any(addr.verified_on is not None for addr in mlist_2.owners.addresses)
+    >>> any(address.verified_on is not None
+    ...     for address in mlist_2.owners.addresses)
     False
 
 However, all addresses are linked to users.
@@ -117,8 +124,11 @@ the system, they won't be created again.
     >>> user_d.real_name = 'Dirk Person'
 
     >>> mlist_3 = create_list('test_3@example.com', owners)
-    >>> sorted(user.real_name for user in mlist_3.owners.users)
-    [u'Anne Person', u'Bart Person', u'Caty Person', u'Dirk Person']
+    >>> dump_list(user.real_name for user in mlist_3.owners.users)
+    Anne Person
+    Bart Person
+    Caty Person
+    Dirk Person
 
 
 Deleting a list
@@ -139,6 +149,8 @@ artifacts.
 We should now be able to completely recreate the mailing list.
 
     >>> mlist_2a = create_list('test_2@example.com', owners)
-    >>> sorted(addr.address for addr in mlist_2a.owners.addresses)
-    [u'aperson@example.com', u'bperson@example.com',
-     u'cperson@example.com', u'dperson@example.com']
+    >>> dump_list(address.email for address in mlist_2a.owners.addresses)
+    aperson@example.com
+    bperson@example.com
+    cperson@example.com
+    dperson@example.com

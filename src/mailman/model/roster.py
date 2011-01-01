@@ -99,7 +99,7 @@ class AbstractRoster:
             Member,
             Member.mailing_list == self._mlist.fqdn_listname,
             Member.role == self.role,
-            Address.address == address,
+            Address.email == address,
             Member.address_id == Address.id)
         if results.count() == 0:
             return None
@@ -169,7 +169,7 @@ class AdministratorRoster(AbstractRoster):
                 Member.mailing_list == self._mlist.fqdn_listname,
                 Or(Member.role == MemberRole.moderator,
                    Member.role == MemberRole.owner),
-                Address.address == address,
+                Address.email == address,
                 Member.address_id == Address.id)
         if results.count() == 0:
             return None

@@ -77,8 +77,8 @@ Setting the owner
 
 By default, no list owners are specified.
 
-    >>> print list(mlist.owners.addresses)
-    []
+    >>> dump_list(mlist.owners.addresses)
+    *Empty*
 
 But you can specify an owner address on the command line when you create the
 mailing list.
@@ -91,8 +91,8 @@ mailing list.
     Created mailing list: test4@example.com
 
     >>> mlist = list_manager.get('test4@example.com')
-    >>> print list(mlist.owners.addresses)
-    [<Address: foo@example.org [not verified] at ...>]
+    >>> dump_list(repr(address) for address in mlist.owners.addresses)
+    <Address: foo@example.org [not verified] at ...>
 
 You can even specify more than one address for the owners.
 ::
@@ -104,10 +104,10 @@ You can even specify more than one address for the owners.
 
     >>> mlist = list_manager.get('test5@example.com')
     >>> from operator import attrgetter
-    >>> print sorted(mlist.owners.addresses, key=attrgetter('address'))
-    [<Address: bar@example.net [not verified] at ...>,
-     <Address: baz@example.net [not verified] at ...>,
-     <Address: foo@example.net [not verified] at ...>]
+    >>> dump_list(repr(address) for address in mlist.owners.addresses)
+    <Address: bar@example.net [not verified] at ...>
+    <Address: baz@example.net [not verified] at ...>
+    <Address: foo@example.net [not verified] at ...>
 
 
 Setting the language

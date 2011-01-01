@@ -51,9 +51,9 @@ class _MemberBase(resource.Resource, CollectionMixin):
         enum, dot, role = str(member.role).partition('.')
         return dict(
             fqdn_listname=member.mailing_list,
-            address=member.address.address,
+            address=member.address.email,
             self_link=path_to('lists/{0}/{1}/{2}'.format(
-                member.mailing_list, role, member.address.address)),
+                member.mailing_list, role, member.address.email)),
             )
 
     def _get_collection(self, request):
@@ -114,7 +114,7 @@ class AllMembers(_MemberBase):
         # wsgiref wants headers to be bytes, not unicodes.  Also, we have to
         # quote any unsafe characters in the address.  Specifically, we need
         # to quote forward slashes, but not @-signs.
-        quoted_address = quote(member.address.address, safe=b'@')
+        quoted_address = quote(member.address.email, safe=b'@')
         location = path_to('lists/{0}/member/{1}'.format(
             member.mailing_list, quoted_address))
         # Include no extra headers or body.
@@ -140,7 +140,7 @@ class MembersOfList(_MemberBase):
         # Overrides _MemberBase._get_collection() because we only want to
         # return the members from the requested roster.
         roster = self._mlist.get_roster(self._role)
-        address_of_member = attrgetter('address.address')
+        address_of_member = attrgetter('address.email')
         return list(sorted(roster.members, key=address_of_member))
 
     @resource.GET()

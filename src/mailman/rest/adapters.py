@@ -51,7 +51,7 @@ class SubscriptionService:
         # XXX 2010-02-24 barry Clean this up.
         # lazr.restful requires the return value to be a concrete list.
         members = []
-        address_of_member = attrgetter('address.address')
+        address_of_member = attrgetter('address.email')
         list_manager = getUtility(IListManager)
         for fqdn_listname in sorted(list_manager.names):
             mailing_list = list_manager.get(fqdn_listname)

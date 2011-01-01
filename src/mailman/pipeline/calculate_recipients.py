@@ -91,12 +91,12 @@ delivery.  The original message as received by Mailman is attached.
 """)
                 raise errors.RejectMessage(Utils.wrap(text))
         # Calculate the regular recipients of the message
-        recipients = set(member.address.address
+        recipients = set(member.address.email
                          for member in mlist.regular_members.members
                          if member.delivery_status == DeliveryStatus.enabled)
         # Remove the sender if they don't want to receive their own posts
-        if not include_sender and member.address.address in recipients:
-            recipients.remove(member.address.address)
+        if not include_sender and member.address.email in recipients:
+            recipients.remove(member.address.email)
         # Handle topic classifications
         do_topic_filters(mlist, msg, msgdata, recipients)
         # Bookkeeping

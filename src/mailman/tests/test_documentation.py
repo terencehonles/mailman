@@ -110,7 +110,7 @@ def dump_msgdata(msgdata, *additional_skips):
         print '{0:{2}}: {1}'.format(key, msgdata[key], longest)
 
 
-def dump_list(list_of_things, key=None):
+def dump_list(list_of_things, key=str):
     """Print items in a string to get rid of stupid u'' prefixes."""
     # List of things may be a generator.
     list_of_things = list(list_of_things)

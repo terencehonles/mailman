@@ -21,19 +21,19 @@ Users may have a real name and a password.
     >>> user_1 = user_manager.create_user()
     >>> user_1.password = 'my password'
     >>> user_1.real_name = 'Zoe Person'
-    >>> sorted(user.real_name for user in user_manager.users)
-    [u'Zoe Person']
-    >>> sorted(user.password for user in user_manager.users)
-    [u'my password']
+    >>> dump_list(user.real_name for user in user_manager.users)
+    Zoe Person
+    >>> dump_list(user.password for user in user_manager.users)
+    my password
 
 The password and real name can be changed at any time.
 
     >>> user_1.real_name = 'Zoe X. Person'
     >>> user_1.password = 'another password'
-    >>> sorted(user.real_name for user in user_manager.users)
-    [u'Zoe X. Person']
-    >>> sorted(user.password for user in user_manager.users)
-    [u'another password']
+    >>> dump_list(user.real_name for user in user_manager.users)
+    Zoe X. Person
+    >>> dump_list(user.password for user in user_manager.users)
+    another password
 
 
 Users addresses
@@ -50,19 +50,25 @@ address on a user object.
     <Address: Zoe Person <zperson@example.com> [not verified] at 0x...>
     >>> user_1.register('zperson@example.org')
     <Address: zperson@example.org [not verified] at 0x...>
-    >>> sorted(address.address for address in user_1.addresses)
-    [u'zperson@example.com', u'zperson@example.org']
-    >>> sorted(address.real_name for address in user_1.addresses)
-    [u'', u'Zoe Person']
+    >>> dump_list(address.email for address in user_1.addresses)
+    zperson@example.com
+    zperson@example.org
+    >>> dump_list(address.real_name for address in user_1.addresses)
+    <BLANKLINE>
+    Zoe Person
 
 You can also create the address separately and then link it to the user.
 
     >>> address_1 = user_manager.create_address('zperson@example.net')
     >>> user_1.link(address_1)
-    >>> sorted(address.address for address in user_1.addresses)
-    [u'zperson@example.com', u'zperson@example.net', u'zperson@example.org']
-    >>> sorted(address.real_name for address in user_1.addresses)
-    [u'', u'', u'Zoe Person']
+    >>> dump_list(address.email for address in user_1.addresses)
+    zperson@example.com
+    zperson@example.net
+    zperson@example.org
+    >>> dump_list(address.real_name for address in user_1.addresses)
+    <BLANKLINE>
+    <BLANKLINE>
+    Zoe Person
 
 But don't try to link an address to more than one user.
 
@@ -74,7 +80,7 @@ But don't try to link an address to more than one user.
 
 You can also ask whether a given user controls a given address.
 
-    >>> user_1.controls(address_1.address)
+    >>> user_1.controls(address_1.email)
     True
     >>> user_1.controls('bperson@example.com')
     False
@@ -163,8 +169,10 @@ membership role.
 ::
 
     >>> user_1.link(address_1)
-    >>> sorted(address.address for address in user_1.addresses)
-    [u'zperson@example.com', u'zperson@example.net', u'zperson@example.org']
+    >>> dump_list(address.email for address in user_1.addresses)
+    zperson@example.com
+    zperson@example.net
+    zperson@example.org
     >>> com = user_manager.get_address('zperson@example.com')
     >>> org = user_manager.get_address('zperson@example.org')
     >>> net = user_manager.get_address('zperson@example.net')
@@ -194,10 +202,10 @@ membership role.
     >>> len(members)
     4
     >>> def sortkey(member):
-    ...     return (member.address.address, member.mailing_list,
+    ...     return (member.address.email, member.mailing_list,
     ...             int(member.role))
     >>> for member in sorted(members, key=sortkey):
-    ...     print member.address.address, member.mailing_list, member.role
+    ...     print member.address.email, member.mailing_list, member.role
     zperson@example.com xtest_1@example.com MemberRole.member
     zperson@example.net xtest_3@example.com MemberRole.moderator
     zperson@example.org xtest_2@example.com MemberRole.member

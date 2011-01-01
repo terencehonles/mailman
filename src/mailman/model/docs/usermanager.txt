@@ -24,10 +24,10 @@ have a password.
     >>> verifyObject(IUser, user)
     True
 
-    >>> sorted(address.address for address in user.addresses)
-    []
-    >>> user.real_name
-    u''
+    >>> dump_list(address.email for address in user.addresses)
+    *Empty*
+    >>> print user.real_name
+    <BLANKLINE>
     >>> print user.password
     None
 
@@ -39,52 +39,59 @@ The user has preferences, but none of them will be specified.
 A user can be assigned a real name.
 
     >>> user.real_name = 'Anne Person'
-    >>> sorted(user.real_name for user in user_manager.users)
-    [u'Anne Person']
+    >>> dump_list(user.real_name for user in user_manager.users)
+    Anne Person
 
 A user can be assigned a password.
 
     >>> user.password = 'secret'
-    >>> sorted(user.password for user in user_manager.users)
-    [u'secret']
+    >>> dump_list(user.password for user in user_manager.users)
+    secret
 
 You can also create a user with an address to start out with.
 
     >>> user_2 = user_manager.create_user('bperson@example.com')
     >>> verifyObject(IUser, user_2)
     True
-    >>> sorted(address.address for address in user_2.addresses)
-    [u'bperson@example.com']
-    >>> sorted(user.real_name for user in user_manager.users)
-    [u'', u'Anne Person']
+    >>> dump_list(address.email for address in user_2.addresses)
+    bperson@example.com
+    >>> dump_list(user.real_name for user in user_manager.users)
+    <BLANKLINE>
+    Anne Person
 
 As above, you can assign a real name to such users.
 
     >>> user_2.real_name = 'Ben Person'
-    >>> sorted(user.real_name for user in user_manager.users)
-    [u'Anne Person', u'Ben Person']
+    >>> dump_list(user.real_name for user in user_manager.users)
+    Anne Person
+    Ben Person
 
 You can also create a user with just a real name.
 
     >>> user_3 = user_manager.create_user(real_name='Claire Person')
     >>> verifyObject(IUser, user_3)
     True
-    >>> sorted(address.address for address in user.addresses)
-    []
-    >>> sorted(user.real_name for user in user_manager.users)
-    [u'Anne Person', u'Ben Person', u'Claire Person']
+    >>> dump_list(address.email for address in user.addresses)
+    *Empty*
+    >>> dump_list(user.real_name for user in user_manager.users)
+    Anne Person
+    Ben Person
+    Claire Person
 
 Finally, you can create a user with both an address and a real name.
 
     >>> user_4 = user_manager.create_user('dperson@example.com', 'Dan Person')
     >>> verifyObject(IUser, user_3)
     True
-    >>> sorted(address.address for address in user_4.addresses)
-    [u'dperson@example.com']
-    >>> sorted(address.real_name for address in user_4.addresses)
-    [u'Dan Person']
-    >>> sorted(user.real_name for user in user_manager.users)
-    [u'Anne Person', u'Ben Person', u'Claire Person', u'Dan Person']
+    >>> dump_list(address.email for address in user_4.addresses)
+    dperson@example.com
+    >>> dump_list(address.real_name for address in user_4.addresses)
+    Dan Person
+    >>> dump_list(user.real_name for user in user_manager.users)
+    Anne Person
+    Ben Person
+    Claire Person
+    Dan Person
 
 
 Deleting users
@@ -94,8 +101,10 @@ You delete users by going through the user manager.  The deleted user is no
 longer available through the user manager iterator.
 
     >>> user_manager.delete_user(user)
-    >>> sorted(user.real_name for user in user_manager.users)
-    [u'Ben Person', u'Claire Person', u'Dan Person']
+    >>> dump_list(user.real_name for user in user_manager.users)
+    Ben Person
+    Claire Person
+    Dan Person
 
 
 Finding users
@@ -107,7 +116,7 @@ that the ``.get_user()`` method takes a string email address, not an
 ``IAddress`` object.
 
     >>> address = list(user_4.addresses)[0]
-    >>> found_user = user_manager.get_user(address.address)
+    >>> found_user = user_manager.get_user(address.email)
     >>> found_user
     <User "Dan Person" at ...>
     >>> found_user is user_4
@@ -119,5 +128,5 @@ with it, you will get ``None`` back.
     >>> print user_manager.get_user('zperson@example.com')
     None
     >>> user_4.unlink(address)
-    >>> print user_manager.get_user(address.address)
+    >>> print user_manager.get_user(address.email)
     None

@@ -66,28 +66,28 @@ class User(Model):
             raise AddressNotLinkedError(address)
         address.user = None
 
-    def controls(self, address):
+    def controls(self, email):
         """See `IUser`."""
-        found = config.db.store.find(Address, address=address)
+        found = config.db.store.find(Address, email=email)
         if found.count() == 0:
             return False
         assert found.count() == 1, 'Unexpected count'
         return found[0].user is self
 
-    def register(self, address, real_name=None):
+    def register(self, email, real_name=None):
         """See `IUser`."""
         # First, see if the address already exists
-        addrobj = config.db.store.find(Address, address=address).one()
-        if addrobj is None:
+        address = config.db.store.find(Address, email=email).one()
+        if address is None:
             if real_name is None:
                 real_name = ''
-            addrobj = Address(address=address, real_name=real_name)
-            addrobj.preferences = Preferences()
+            address = Address(email=email, real_name=real_name)
+            address.preferences = Preferences()
         # Link the address to the user if it is not already linked.
-        if addrobj.user is not None:
-            raise AddressAlreadyLinkedError(addrobj)
-        addrobj.user = self
-        return addrobj
+        if address.user is not None:
+            raise AddressAlreadyLinkedError(address)
+        address.user = self
+        return address
 
     @property
     def memberships(self):

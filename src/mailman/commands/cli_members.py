@@ -156,21 +156,21 @@ class Members:
             if len(addresses) == 0:
                 print >> fp, mlist.fqdn_listname, 'has no members'
                 return
-            for address in sorted(addresses, key=attrgetter('address')):
+            for address in sorted(addresses, key=attrgetter('email')):
                 if args.regular:
-                    member = mlist.members.get_member(address.address)
+                    member = mlist.members.get_member(address.email)
                     if member.delivery_mode != DeliveryMode.regular:
                         continue
                 if args.digest is not None:
-                    member = mlist.members.get_member(address.address)
+                    member = mlist.members.get_member(address.email)
                     if member.delivery_mode not in digest_types:
                         continue
                 if args.nomail is not None:
-                    member = mlist.members.get_member(address.address)
+                    member = mlist.members.get_member(address.email)
                     if member.delivery_status not in status_types:
                         continue
                 print >> fp, formataddr(
-                    (address.real_name, address.original_address))
+                    (address.real_name, address.original_email))
         finally:
             if fp is not sys.stdout:
                 fp.close()

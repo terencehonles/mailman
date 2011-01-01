@@ -110,7 +110,7 @@ class Member(Model):
     @property
     def options_url(self):
         # XXX Um, this is definitely wrong
-        return 'http://example.com/' + self.address.address
+        return 'http://example.com/' + self.address.email
 
     def unsubscribe(self):
         config.db.store.remove(self.preferences)

@@ -35,28 +35,29 @@ from zope.interface import Interface
 
 
 class IRegistrar(Interface):
-    """Interface for registering and verifying addresses and users.
+    """Interface for registering and verifying email addresses and users.
 
-    This is a higher level interface to user registration, address
+    This is a higher level interface to user registration, email address
     confirmation, etc. than the IUserManager.  The latter does no validation,
     syntax checking, or confirmation, while this interface does.
     """
 
-    def register(mlist, address, real_name=None):
+    def register(mlist, email, real_name=None):
         """Register the email address, requesting verification.
 
-        No IAddress or IUser is created during this step, but after successful
-        confirmation, it is guaranteed that an IAddress with a linked IUser
-        will exist.  When a verified IAddress matching address already exists,
-        this method will do nothing, except link a new IUser to the IAddress
-        if one is not yet associated with the address.
+        No `IAddress` or `IUser` is created during this step, but after
+        successful confirmation, it is guaranteed that an `IAddress` with a
+        linked `IUser` will exist.  When a verified `IAddress` matching
+        `email` already exists, this method will do nothing, except link a new
+        `IUser` to the `IAddress` if one is not yet associated with the
+        email address.
 
         In all cases, the email address is sanity checked for validity first.
 
         :param mlist: The mailing list that is the focus of this registration.
         :type mlist: `IMailingList`
-        :param address: The email address to register.
-        :type address: str
+        :param email: The email address to register.
+        :type email: str
         :param real_name: The optional real name of the user.
         :type real_name: str
         :return: The confirmation token string.

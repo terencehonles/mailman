@@ -59,8 +59,9 @@ but not all of the recipients.
 
     >>> handler = config.handlers['calculate-recipients']
     >>> handler.process(mlist, msg, msgdata)
-    >>> sorted(msgdata['recipients'])
-    [u'qperson@example.com', u'zperson@example.com']
+    >>> dump_list(msgdata['recipients'])
+    qperson@example.com
+    zperson@example.com
 
 
 Regular delivery recipients
@@ -71,8 +72,10 @@ soon as they are posted.  In other words, these folks are not digest members.
 
     >>> msgdata = {}
     >>> handler.process(mlist, msg, msgdata)
-    >>> sorted(msgdata['recipients'])
-    [u'aperson@example.com', u'bperson@example.com', u'cperson@example.com']
+    >>> dump_list(msgdata['recipients'])
+    aperson@example.com
+    bperson@example.com
+    cperson@example.com
 
 Members can elect not to receive a list copy of their own postings.
 
@@ -84,8 +87,9 @@ Members can elect not to receive a list copy of their own postings.
     ... """)
     >>> msgdata = {}
     >>> handler.process(mlist, msg, msgdata)
-    >>> sorted(msgdata['recipients'])
-    [u'aperson@example.com', u'bperson@example.com']
+    >>> dump_list(msgdata['recipients'])
+    aperson@example.com
+    bperson@example.com
 
 Members can also elect not to receive a list copy of any message on which they
 are explicitly named as a recipient.  However, see the `avoid duplicates`_

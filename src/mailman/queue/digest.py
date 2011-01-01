@@ -337,7 +337,7 @@ class DigestRunner(Runner):
                 continue
             # Send the digest to the case-preserved address of the digest
             # members.
-            email_address = member.address.original_address
+            email_address = member.address.original_email
             if member.delivery_mode == DeliveryMode.plaintext_digests:
                 rfc1153_recipients.add(email_address)
             elif member.delivery_mode == DeliveryMode.mime_digests:
@@ -349,9 +349,9 @@ class DigestRunner(Runner):
         # Add also the folks who are receiving one last digest.
         for address, delivery_mode in mlist.last_digest_recipients:
             if delivery_mode == DeliveryMode.plaintext_digests:
-                rfc1153_recipients.add(address.original_address)
+                rfc1153_recipients.add(address.original_email)
             elif delivery_mode == DeliveryMode.mime_digests:
-                mime_recipients.add(address.original_address)
+                mime_recipients.add(address.original_email)
             else:
                 raise AssertionError(
                     'OLD recipient "{0}" unexpected delivery mode: {1}'.format(

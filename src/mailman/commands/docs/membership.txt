@@ -281,7 +281,7 @@ to unsubscribe Anne from the alpha mailing list.
     >>> print unicode(results)
     The results of your email command are provided below.
     <BLANKLINE>
-    Invalid or unverified address: anne.person@example.org
+    Invalid or unverified email address: anne.person@example.org
     <BLANKLINE>
 
     >>> print mlist.members.get_member('anne@example.com')

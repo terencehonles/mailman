@@ -53,15 +53,15 @@ class Registrar:
 
     implements(IRegistrar)
 
-    def register(self, mlist, address, real_name=None):
+    def register(self, mlist, email, real_name=None):
         """See `IUserRegistrar`."""
         # First, do validation on the email address.  If the address is
         # invalid, it will raise an exception, otherwise it just returns.
-        validate(address)
+        validate(email)
         # Create a pendable for the registration.
         pendable = PendableRegistration(
             type=PendableRegistration.PEND_KEY,
-            address=address,
+            email=email,
             real_name=real_name)
         pendable['list_name'] = mlist.fqdn_listname
         token = getUtility(IPendings).add(pendable)
@@ -74,12 +74,12 @@ class Registrar:
         confirm_address = mlist.confirm_address(token)
         # For i18n interpolation.
         confirm_url = mlist.domain.confirm_url(token)
-        email_address = address
+        email_address = email
         domain_name = mlist.domain.email_host
         contact_address = mlist.domain.contact_address
         # Send a verification email to the address.
         text = _(resource_string('mailman.templates.en', 'verify.txt'))
-        msg = UserNotification(address, confirm_address, subject, text)
+        msg = UserNotification(email, confirm_address, subject, text)
         msg.send(mlist)
         return token
 
@@ -90,7 +90,7 @@ class Registrar:
         if pendable is None:
             return False
         missing = object()
-        address = pendable.get('address', missing)
+        email = pendable.get('email', missing)
         real_name = pendable.get('real_name', missing)
         list_name = pendable.get('list_name', missing)
         if pendable.get('type') != PendableRegistration.PEND_KEY:
@@ -104,41 +104,41 @@ class Registrar:
         # and an IUser linked to this IAddress.  See if any of these objects
         # currently exist in our database.
         user_manager = getUtility(IUserManager)
-        addr = (user_manager.get_address(address)
-                if address is not missing else None)
-        user = (user_manager.get_user(address)
-                if address is not missing else None)
+        address = (user_manager.get_address(email)
+                   if email is not missing else None)
+        user = (user_manager.get_user(email)
+                if email is not missing else None)
         # If there is neither an address nor a user matching the confirmed
         # record, then create the user, which will in turn create the address
         # and link the two together
-        if addr is None:
+        if address is None:
             assert user is None, 'How did we get a user but not an address?'
-            user = user_manager.create_user(address, real_name)
+            user = user_manager.create_user(email, real_name)
             # Because the database changes haven't been flushed, we can't use
             # IUserManager.get_address() to find the IAddress just created
             # under the hood.  Instead, iterate through the IUser's addresses,
             # of which really there should be only one.
-            for addr in user.addresses:
-                if addr.address == address:
+            for address in user.addresses:
+                if address.email == email:
                     break
             else:
                 raise AssertionError('Could not find expected IAddress')
         elif user is None:
             user = user_manager.create_user()
             user.real_name = real_name
-            user.link(addr)
+            user.link(address)
         else:
             # The IAddress and linked IUser already exist, so all we need to
             # do is verify the address.
             pass
-        addr.verified_on = datetime.datetime.now()
+        address.verified_on = datetime.datetime.now()
         # If this registration is tied to a mailing list, subscribe the person
         # to the list right now.
         list_name = pendable.get('list_name')
         if list_name is not None:
             mlist = getUtility(IListManager).get(list_name)
             if mlist:
-                addr.subscribe(mlist, MemberRole.member)
+                address.subscribe(mlist, MemberRole.member)
         return True
 
     def discard(self, token):

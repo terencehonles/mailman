@@ -23,7 +23,7 @@ CREATE INDEX ix_acceptablealias_alias
 
 CREATE TABLE address (
         id INTEGER NOT NULL,
-        address TEXT,
+        email TEXT,
         _original TEXT,
         real_name TEXT,
         verified_on TIMESTAMP,

@@ -60,20 +60,20 @@ class InvalidEmailAddressError(AddressError):
 class IAddress(Interface):
     """Email address related information."""
 
-    address = Attribute(
+    email = Attribute(
         """Read-only text email address.""")
 
-    original_address = Attribute(
-        """Read-only original case-preserved address.
+    original_email = Attribute(
+        """Read-only original case-preserved email address.
 
-        For almost all intents and purposes, addresses in Mailman are case
-        insensitive, however because RFC 2821 allows for case sensitive local
-        parts, Mailman preserves the case of the original address when
-        emailing the user.
+        For almost all intents and purposes, email addresses in Mailman are
+        case insensitive, however because RFC 2821 allows for case sensitive
+        local parts, Mailman preserves the case of the original email address
+        when delivering a message to the user.
 
-        `original_address` will be the same as address if the original address
-        was all lower case.  Otherwise `original_address` will be the case
-        preserved address; `address` will always be lower case.
+        `original_email` will be the same as `email` if the original email
+        address was all lower case.  Otherwise `original_email` will be the
+        case preserved email address; `email` will always be lower case.
         """)
 
     real_name = Attribute(

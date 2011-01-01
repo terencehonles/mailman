@@ -85,7 +85,7 @@ Now, both Anne and Bart are list administrators.
     >>> from operator import attrgetter
     >>> def dump_members(roster):
     ...     all_addresses = list(member.address for member in roster)
-    ...     sorted_addresses = sorted(all_addresses, key=attrgetter('address'))
+    ...     sorted_addresses = sorted(all_addresses, key=attrgetter('email'))
     ...     dump_list(sorted_addresses)
 
     >>> dump_members(mlist.administrators.members)
@@ -121,7 +121,7 @@ It's easy to make the list administrators members of the mailing list too.
     >>> for address in mlist.administrators.addresses:
     ...     member = address.subscribe(mlist, MemberRole.member)
     ...     members.append(member)
-    >>> dump_list(members, key=attrgetter('address.address'))
+    >>> dump_list(members, key=attrgetter('address.email'))
     <Member: Anne Person <aperson@example.com> on
              test@example.com as MemberRole.member>
     <Member: Bart Person <bperson@example.com> on
@@ -211,9 +211,9 @@ There is also a roster containing all the subscribers of a mailing list,
 regardless of their role.
 
     >>> def sortkey(member):
-    ...     return (member.address.address, int(member.role))
+    ...     return (member.address.email, int(member.role))
     >>> for member in sorted(mlist.subscribers.members, key=sortkey):
-    ...     print member.address.address, member.role
+    ...     print member.address.email, member.role
     aperson@example.com MemberRole.member
     aperson@example.com MemberRole.owner
     bperson@example.com MemberRole.member
@@ -242,8 +242,8 @@ postings from that member are handled.  By default, owners and moderators are
 automatically accepted for posting to the mailing list.
 
     >>> for member in sorted(mlist.administrators.members,
-    ...                      key=attrgetter('address.address')):
-    ...     print member.address.address, member.role, member.moderation_action
+    ...                      key=attrgetter('address.email')):
+    ...     print member.address.email, member.role, member.moderation_action
     aperson@example.com MemberRole.owner     Action.accept
     bperson@example.com MemberRole.moderator Action.accept
 
@@ -251,8 +251,8 @@ By default, members have a *deferred* action which specifies that the posting
 should go through the normal moderation checks.
 
     >>> for member in sorted(mlist.members.members,
-    ...                      key=attrgetter('address.address')):
-    ...     print member.address.address, member.role, member.moderation_action
+    ...                      key=attrgetter('address.email')):
+    ...     print member.address.email, member.role, member.moderation_action
     aperson@example.com MemberRole.member Action.defer
     bperson@example.com MemberRole.member Action.defer
     cperson@example.com MemberRole.member Action.defer
@@ -260,5 +260,5 @@ should go through the normal moderation checks.
 Postings by nonmembers are held for moderator approval by default.
 
     >>> for member in mlist.nonmembers.members:
-    ...     print member.address.address, member.role, member.moderation_action
+    ...     print member.address.email, member.role, member.moderation_action
     fperson@example.com MemberRole.nonmember Action.hold

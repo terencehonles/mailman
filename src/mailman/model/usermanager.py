@@ -39,13 +39,12 @@ from mailman.model.user import User
 class UserManager:
     implements(IUserManager)
 
-    def create_user(self, address=None, real_name=None):
+    def create_user(self, email=None, real_name=None):
         user = User()
         user.real_name = ('' if real_name is None else real_name)
-        if address:
-            addrobj = Address(address, user.real_name)
-            addrobj.preferences = Preferences()
-            user.link(addrobj)
+        if email:
+            address = self.create_address(email, real_name)
+            user.link(address)
         user.preferences = Preferences()
         config.db.store.add(user)
         return user
@@ -53,13 +52,8 @@ class UserManager:
     def delete_user(self, user):
         config.db.store.remove(user)
 
-    @property
-    def users(self):
-        for user in config.db.store.find(User):
-            yield user
-
-    def get_user(self, address):
-        addresses = config.db.store.find(Address, address=address.lower())
+    def get_user(self, email):
+        addresses = config.db.store.find(Address, email=email.lower())
         if addresses.count() == 0:
             return None
         elif addresses.count() == 1:
@@ -67,17 +61,22 @@ class UserManager:
         else:
             raise AssertionError('Unexpected query count')
 
-    def create_address(self, address, real_name=None):
-        addresses = config.db.store.find(Address, address=address.lower())
+    @property
+    def users(self):
+        for user in config.db.store.find(User):
+            yield user
+
+    def create_address(self, email, real_name=None):
+        addresses = config.db.store.find(Address, email=email.lower())
         if addresses.count() == 1:
             found = addresses[0]
-            raise ExistingAddressError(found.original_address)
+            raise ExistingAddressError(found.original_email)
         assert addresses.count() == 0, 'Unexpected results'
         if real_name is None:
             real_name = ''
-        # It's okay not to lower case the 'address' argument because the
+        # It's okay not to lower case the 'email' argument because the
         # constructor will do the right thing.
-        address = Address(address, real_name)
+        address = Address(email, real_name)
         address.preferences = Preferences()
         config.db.store.add(address)
         return address
@@ -89,8 +88,8 @@ class UserManager:
             address.user.unlink(address)
         config.db.store.remove(address)
 
-    def get_address(self, address):
-        addresses = config.db.store.find(Address, address=address.lower())
+    def get_address(self, email):
+        addresses = config.db.store.find(Address, email=email.lower())
         if addresses.count() == 0:
             return None
         elif addresses.count() == 1:

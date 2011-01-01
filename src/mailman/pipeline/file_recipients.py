@@ -61,5 +61,5 @@ class FileRecipients:
         # recipients.
         member = mlist.members.get_member(msg.sender)
         if member is not None:
-            addrs.discard(member.address.address)
+            addrs.discard(member.address.email)
         msgdata['recipients'] = addrs

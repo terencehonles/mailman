@@ -33,29 +33,31 @@ class IUser(Interface):
     """A basic user."""
 
     real_name = Attribute(
-        """This user's Real Name.""")
+        """This user's real name.""")
 
     password = Attribute(
         """This user's password information.""")
 
     addresses = Attribute(
-        """An iterator over all the IAddresses controlled by this user.""")
+        """An iterator over all the `IAddresses` controlled by this user.""")
 
     memberships = Attribute(
         """A roster of this user's memberships.""")
 
-    def register(address, real_name=None):
+    def register(email, real_name=None):
         """Register the given email address and link it to this user.
 
-        In this case, 'address' is a text email address, not an IAddress
-        object.  If real_name is not given, the empty string is used.
-
-        Raises AddressAlreadyLinkedError if this IAddress is already linked to
-        another user.  If the corresponding IAddress already exists but is not
-        linked, then it is simply linked to the user, in which case
-        real_name is ignored.
-
-        Return the new IAddress object.
+        :param email: The text email address to register.
+        :type email: str
+        :param real_name: The user's real name.  If not given the empty string
+            is used.
+        :type real_name: str
+        :return: The address object linked to the user.  If the associated
+            address object already existed (unlinked to a user) then the
+            `real_name` parameter is ignored.
+        :rtype: `IAddress`
+        :raises AddressAlreadyLinkedError: if this `IAddress` is already
+            linked to another user.
         """
 
     def link(address):
@@ -73,11 +75,13 @@ class IUser(Interface):
         some other user.
         """
 
-    def controls(address):
+    def controls(email):
         """Determine whether this user controls the given email address.
 
-        'address' is a text email address.  This method returns true if the
-        user controls the given email address, otherwise false.
+        :param email: The text email address to register.
+        :type email: str
+        :return: True if the user controls the given email address.
+        :rtype: bool
         """
 
     preferences = Attribute(

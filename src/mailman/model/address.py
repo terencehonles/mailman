@@ -41,7 +41,7 @@ class Address(Model):
     implements(IAddress)
 
     id = Int(primary=True)
-    address = Unicode()
+    email = Unicode()
     _original = Unicode()
     real_name = Unicode()
     verified_on = DateTime()
@@ -52,15 +52,15 @@ class Address(Model):
     preferences_id = Int()
     preferences = Reference(preferences_id, 'Preferences.id')
 
-    def __init__(self, address, real_name):
+    def __init__(self, email, real_name):
         super(Address, self).__init__()
-        lower_case = address.lower()
-        self.address = lower_case
+        lower_case = email.lower()
+        self.email = lower_case
         self.real_name = real_name
-        self._original = (None if lower_case == address else address)
+        self._original = (None if lower_case == email else email)
 
     def __str__(self):
-        addr = (self.address if self._original is None else self._original)
+        addr = (self.email if self._original is None else self._original)
         return formataddr((self.real_name, addr))
 
     def __repr__(self):
@@ -71,7 +71,7 @@ class Address(Model):
                 address_str, verified, id(self))
         else:
             return '<Address: {0} [{1}] key: {2} at {3:#x}>'.format(
-                address_str, verified, self.address, id(self))
+                address_str, verified, self.email, id(self))
 
     def subscribe(self, mailing_list, role):
         # This member has no preferences by default.
@@ -83,7 +83,7 @@ class Address(Model):
             Member.address == self).one()
         if member:
             raise AlreadySubscribedError(
-                mailing_list.fqdn_listname, self.address, role)
+                mailing_list.fqdn_listname, self.email, role)
         member = Member(role=role,
                         mailing_list=mailing_list.fqdn_listname,
                         address=self)
@@ -92,5 +92,5 @@ class Address(Model):
         return member
 
     @property
-    def original_address(self):
-        return (self.address if self._original is None else self._original)
+    def original_email(self):
+        return (self.email if self._original is None else self._original)

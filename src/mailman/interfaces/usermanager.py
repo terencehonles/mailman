@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Interface describing a user manager service."""
+"""Interface describing the user management service."""
 
 from __future__ import absolute_import, unicode_literals
 
@@ -30,67 +30,74 @@ from zope.interface import Interface, Attribute
 
 
 class IUserManager(Interface):
-    """The interface of a global user manager service.
+    """The global user management service."""
 
-    Different user managers have different concepts of what a user is, and the
-    users managed by different IUserManagers are completely independent.  This
-    is how you can separate the user contexts for different domains, on a
-    multiple domain system.
+    def create_user(email=None, real_name=None):
+        """Create and return an `IUser`.
 
-    There is one special roster, the null roster ('') which contains all
-    IUsers in all IRosters.
-    """
-
-    def create_user(address=None, real_name=None):
-        """Create and return an IUser.
-
-        When address is given, an IAddress is also created and linked to the
-        new IUser object.  If the address already exists, an
-        `ExistingAddressError` is raised.  If the address exists but is
-        already linked to another user, an AddressAlreadyLinkedError is
-        raised.
-
-        When real_name is given, the IUser's real_name is set to this string.
-        If an IAddress is also created and linked, its real_name is set to the
-        same string.
+        :param email: The text email address for the user being created.
+        :type email: str
+        :param real_name: The real name of the user.
+        :type real_name: str
+        :return: The newly created user, with the given email address and real
+            name, if given.
+        :rtype: `IUser`
+        :raises ExistingAddressError: when the email address is already
+            registered.
         """
 
     def delete_user(user):
-        """Delete the given IUser."""
+        """Delete the given user.
 
-    def get_user(address):
+        :param user: The user to delete.
+        :type user: `IUser`.
+        """
+
+    def get_user(email):
         """Get the user that controls the given email address, or None.
 
-        'address' is a text email address.
+        :param email: The email address to look up.
+        :type email: str
+        :return: The user found or None.
+        :rtype: `IUser`.
         """
 
     users = Attribute(
-        """An iterator over all the IUsers managed by this user manager.""")
+        """An iterator over all the `IUsers` managed by this user manager.""")
 
-    def create_address(address, real_name=None):
-        """Create and return an unlinked IAddress object.
+    def create_address(email, real_name=None):
+        """Create and return an address unlinked to any user.
 
-        address is the text email address.  If real_name is not given, it
-        defaults to the empty string.  If the IAddress already exists an
-        ExistingAddressError is raised.
+        :param email: The text email address for the address being created.
+        :type email: str
+        :param real_name: The real name associated with the address.
+        :type real_name: str
+        :return: The newly created address object, with the given email
+            address and real name, if given.
+        :rtype: `IAddress`
+        :raises ExistingAddressError: when the email address is already
+            registered.
         """
 
     def delete_address(address):
-        """Delete the given IAddress object.
+        """Delete the given `IAddress` object.
 
-        If this IAddress linked to a user, it is first unlinked before it is
-        deleted.
+        If the `IAddress` is linked to a user, it is first unlinked before it
+        is deleted.
+
+        :param address: The address to delete.
+        :type address: `IAddress`.
         """
 
-    def get_address(address):
-        """Find and return the `IAddress` matching a text address.
+    def get_address(email):
+        """Find and return the `IAddress` matching an email address.
 
-        :param address: the text email address
-        :type address: string
+        :param email: The text email address.
+        :type email: str
         :return: The matching `IAddress` object, or None if no registered
-            `IAddress` matches the text address
+            `IAddress` matches the text address.
         :rtype: `IAddress` or None
         """
 
     addresses = Attribute(
-        """An iterator over all the IAddresses managed by this manager.""")
+        """An iterator over all the `IAddresses` managed by this manager.""")

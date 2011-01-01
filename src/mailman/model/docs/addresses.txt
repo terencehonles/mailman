@@ -18,42 +18,45 @@ Creating addresses
 Addresses are created directly through the user manager, which starts out with
 no addresses.
 
-    >>> sorted(address.address for address in user_manager.addresses)
-    []
+    >>> dump_list(address.email for address in user_manager.addresses)
+    *Empty*
 
 Creating an unlinked email address is straightforward.
 
     >>> address_1 = user_manager.create_address('aperson@example.com')
-    >>> sorted(address.address for address in user_manager.addresses)
-    [u'aperson@example.com']
+    >>> dump_list(address.email for address in user_manager.addresses)
+    aperson@example.com
 
 However, such addresses have no real name.
 
-    >>> address_1.real_name
-    u''
+    >>> print address_1.real_name
+    <BLANKLINE>
 
 You can also create an email address object with a real name.
 
     >>> address_2 = user_manager.create_address(
     ...     'bperson@example.com', 'Ben Person')
-    >>> sorted(address.address for address in user_manager.addresses)
-    [u'aperson@example.com', u'bperson@example.com']
-    >>> sorted(address.real_name for address in user_manager.addresses)
-    [u'', u'Ben Person']
+    >>> dump_list(address.email for address in user_manager.addresses)
+    aperson@example.com
+    bperson@example.com
+    >>> dump_list(address.real_name for address in user_manager.addresses)
+    <BLANKLINE>
+    Ben Person
 
 The ``str()`` of the address is the RFC 2822 preferred originator format,
 while the ``repr()`` carries more information.
 
-    >>> str(address_2)
-    'Ben Person <bperson@example.com>'
-    >>> repr(address_2)
-    '<Address: Ben Person <bperson@example.com> [not verified] at 0x...>'
+    >>> print str(address_2)
+    Ben Person <bperson@example.com>
+    >>> print repr(address_2)
+    <Address: Ben Person <bperson@example.com> [not verified] at 0x...>
 
 You can assign real names to existing addresses.
 
     >>> address_1.real_name = 'Anne Person'
-    >>> sorted(address.real_name for address in user_manager.addresses)
-    [u'Anne Person', u'Ben Person']
+    >>> dump_list(address.real_name for address in user_manager.addresses)
+    Anne Person
+    Ben Person
 
 These addresses are not linked to users, and can be seen by searching the user
 manager for an associated user.
@@ -68,12 +71,16 @@ interface.
 
     >>> user_1 = user_manager.create_user(
     ...     'cperson@example.com', u'Claire Person')
-    >>> sorted(address.address for address in user_1.addresses)
-    [u'cperson@example.com']
-    >>> sorted(address.address for address in user_manager.addresses)
-    [u'aperson@example.com', u'bperson@example.com', u'cperson@example.com']
-    >>> sorted(address.real_name for address in user_manager.addresses)
-    [u'Anne Person', u'Ben Person', u'Claire Person']
+    >>> dump_list(address.email for address in user_1.addresses)
+    cperson@example.com
+    >>> dump_list(address.email for address in user_manager.addresses)
+    aperson@example.com
+    bperson@example.com
+    cperson@example.com
+    >>> dump_list(address.real_name for address in user_manager.addresses)
+    Anne Person
+    Ben Person
+    Claire Person
 
 And now you can find the associated user.
 
@@ -91,26 +98,28 @@ Deleting addresses
 You can remove an unlinked address from the user manager.
 
     >>> user_manager.delete_address(address_1)
-    >>> sorted(address.address for address in user_manager.addresses)
-    [u'bperson@example.com', u'cperson@example.com']
-    >>> sorted(address.real_name for address in user_manager.addresses)
-    [u'Ben Person', u'Claire Person']
+    >>> dump_list(address.email for address in user_manager.addresses)
+    bperson@example.com
+    cperson@example.com
+    >>> dump_list(address.real_name for address in user_manager.addresses)
+    Ben Person
+    Claire Person
 
 Deleting a linked address does not delete the user, but it does unlink the
 address from the user.
 
-    >>> sorted(address.address for address in user_1.addresses)
-    [u'cperson@example.com']
+    >>> dump_list(address.email for address in user_1.addresses)
+    cperson@example.com
     >>> user_1.controls('cperson@example.com')
     True
     >>> address_3 = list(user_1.addresses)[0]
     >>> user_manager.delete_address(address_3)
-    >>> sorted(address.address for address in user_1.addresses)
-    []
+    >>> dump_list(address.email for address in user_1.addresses)
+    *Empty*
     >>> user_1.controls('cperson@example.com')
     False
-    >>> sorted(address.address for address in user_manager.addresses)
-    [u'bperson@example.com']
+    >>> dump_list(address.email for address in user_manager.addresses)
+    bperson@example.com
 
 
 Registration and validation
@@ -153,34 +162,36 @@ subscribed, a role is specified.
 
     >>> address_5 = user_manager.create_address(
     ...     'eperson@example.com', 'Elly Person')
-    >>> mlist = create_list('_xtext@example.com')
+    >>> mlist = create_list('test@example.com')
 
     >>> from mailman.interfaces.member import MemberRole
     >>> address_5.subscribe(mlist, MemberRole.owner)
     <Member: Elly Person <eperson@example.com> on
-             _xtext@example.com as MemberRole.owner>
+             test@example.com as MemberRole.owner>
     >>> address_5.subscribe(mlist, MemberRole.member)
     <Member: Elly Person <eperson@example.com> on
-             _xtext@example.com as MemberRole.member>
+             test@example.com as MemberRole.member>
 
 Now Elly is both an owner and a member of the mailing list.
 
-    >>> sorted(mlist.owners.members)
-    [<Member: Elly Person <eperson@example.com> on
-              _xtext@example.com as MemberRole.owner>]
-    >>> sorted(mlist.moderators.members)
-    []
-    >>> sorted(mlist.administrators.members)
-    [<Member: Elly Person <eperson@example.com> on
-              _xtext@example.com as MemberRole.owner>]
-    >>> sorted(mlist.members.members)
-    [<Member: Elly Person <eperson@example.com> on
-              _xtext@example.com as MemberRole.member>]
-    >>> sorted(mlist.regular_members.members)
-    [<Member: Elly Person <eperson@example.com> on
-              _xtext@example.com as MemberRole.member>]
-    >>> sorted(mlist.digest_members.members)
-    []
+    >>> def memberkey(member):
+    ...     return member.mailing_list, member.address.email, int(member.role)
+    >>> dump_list(mlist.owners.members, key=memberkey)
+    <Member: Elly Person <eperson@example.com> on
+             test@example.com as MemberRole.owner>
+    >>> dump_list(mlist.moderators.members, key=memberkey)
+    *Empty*
+    >>> dump_list(mlist.administrators.members, key=memberkey)
+    <Member: Elly Person <eperson@example.com> on
+             test@example.com as MemberRole.owner>
+    >>> dump_list(mlist.members.members, key=memberkey)
+    <Member: Elly Person <eperson@example.com> on
+             test@example.com as MemberRole.member>
+    >>> dump_list(mlist.regular_members.members, key=memberkey)
+    <Member: Elly Person <eperson@example.com> on
+             test@example.com as MemberRole.member>
+    >>> dump_list(mlist.digest_members.members, key=memberkey)
+    *Empty*
 
 
 Case-preserved addresses
@@ -198,18 +209,18 @@ The str() of such an address prints the RFC 2822 preferred originator format
 with the original case-preserved address.  The repr() contains all the gory
 details.
 
-    >>> str(address_6)
-    'Frank Person <FPERSON@example.com>'
-    >>> repr(address_6)
-    '<Address: Frank Person <FPERSON@example.com> [not verified]
-               key: fperson@example.com at 0x...>'
+    >>> print str(address_6)
+    Frank Person <FPERSON@example.com>
+    >>> print repr(address_6)
+    <Address: Frank Person <FPERSON@example.com> [not verified]
+              key: fperson@example.com at 0x...>
 
 Both the case-insensitive version of the address and the original
-case-preserved version are available on attributes of the IAddress object.
+case-preserved version are available on attributes of the `IAddress` object.
 
-    >>> print address_6.address
+    >>> print address_6.email
     fperson@example.com
-    >>> print address_6.original_address
+    >>> print address_6.original_email
     FPERSON@example.com
 
 Because addresses are case-insensitive for all other purposes, you cannot
@@ -231,7 +242,7 @@ create an address that differs only in case.
 You can get the address using either the lower cased version or case-preserved
 version.  In fact, searching for an address is case insensitive.
 
-    >>> print user_manager.get_address('fperson@example.com').address
+    >>> print user_manager.get_address('fperson@example.com').email
     fperson@example.com
-    >>> print user_manager.get_address('FPERSON@example.com').address
+    >>> print user_manager.get_address('FPERSON@example.com').email
     fperson@example.com

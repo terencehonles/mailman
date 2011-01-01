@@ -30,8 +30,8 @@ returns.
     <BLANKLINE>
     A message.
     <BLANKLINE>
-    >>> msgdata
-    {u'recipients': 7}
+    >>> dump_msgdata(msgdata)
+    recipients: 7
 
 
 Missing file
@@ -50,8 +50,8 @@ empty.
     No such file or directory: u'.../_xtest@example.com/members.txt'
     >>> msgdata = {}
     >>> handler.process(mlist, msg, msgdata)
-    >>> sorted(msgdata['recipients'])
-    []
+    >>> dump_list(msgdata['recipients'])
+    *Empty*
 
 
 Existing file
@@ -74,9 +74,13 @@ addresses are returned as the set of recipients.
 
     >>> msgdata = {}
     >>> handler.process(mlist, msg, msgdata)
-    >>> sorted(msgdata['recipients'])
-    ['bperson@example.com', 'cperson@example.com', 'dperson@example.com',
-     'eperson@example.com', 'fperson@example.com', 'gperson@example.com']
+    >>> dump_list(msgdata['recipients'])
+    bperson@example.com
+    cperson@example.com
+    dperson@example.com
+    eperson@example.com
+    fperson@example.com
+    gperson@example.com
 
 However, if the sender of the original message is a member of the list and
 their address is in the include file, the sender's address is *not* included
@@ -99,6 +103,9 @@ in the recipients list.
     ... """)
     >>> msgdata = {}
     >>> handler.process(mlist, msg, msgdata)
-    >>> sorted(msgdata['recipients'])
-    ['bperson@example.com', 'dperson@example.com',
-     'eperson@example.com', 'fperson@example.com', 'gperson@example.com']
+    >>> dump_list(msgdata['recipients'])
+    bperson@example.com
+    dperson@example.com
+    eperson@example.com
+    fperson@example.com
+    gperson@example.com

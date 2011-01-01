@@ -144,36 +144,36 @@ class Leave:
 
     def process(self, mlist, msg, msgdata, arguments, results):
         """See `IEmailCommand`."""
-        address = msg.sender
-        if not address:
+        email = msg.sender
+        if not email:
             print >> results, _(
-                '$self.name: No valid address found to unsubscribe')
+                '$self.name: No valid email address found to unsubscribe')
             return ContinueProcessing.no
         user_manager = getUtility(IUserManager)
-        user = user_manager.get_user(address)
+        user = user_manager.get_user(email)
         if user is None:
-            print >> results, _('No registered user for address: $address')
+            print >> results, _('No registered user for email address: $email')
             return ContinueProcessing.no
         # The address that the -leave command was sent from, must be verified.
         # Otherwise you could link a bogus address to anyone's account, and
         # then send a leave command from that address.
-        if user_manager.get_address(address).verified_on is None:
-            print >> results, _('Invalid or unverified address: $address')
+        if user_manager.get_address(email).verified_on is None:
+            print >> results, _('Invalid or unverified email address: $email')
             return ContinueProcessing.no
         for user_address in user.addresses:
             # Only recognize verified addresses.
             if user_address.verified_on is None:
                 continue
-            member = mlist.members.get_member(user_address.address)
+            member = mlist.members.get_member(user_address.email)
             if member is not None:
                 break
         else:
             # None of the user's addresses are subscribed to this mailing list.
             print >> results, _(
-                '$self.name: $address is not a member of $mlist.fqdn_listname')
+                '$self.name: $email is not a member of $mlist.fqdn_listname')
             return ContinueProcessing.no
         member.unsubscribe()
-        person = formataddr((user.real_name, address))
+        person = formataddr((user.real_name, email))
         print >> results, _('$person left $mlist.fqdn_listname')
         return ContinueProcessing.yes
 

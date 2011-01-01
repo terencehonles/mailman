@@ -71,7 +71,7 @@ not linked to a user and are unverified.
     ...     email = '{0}@example.com'.format(localpart)
     ...     address = user_manager.get_address(email)
     ...     print '{0}; verified? {1}; user? {2}'.format(
-    ...         address.address,
+    ...         address.email,
     ...         ('No' if address.verified_on is None else 'Yes'),
     ...         user_manager.get_user(email))
     xperson@example.com; verified? No; user? None

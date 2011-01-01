@@ -100,7 +100,7 @@ But this address is waiting for confirmation.
     >>> pendingdb = getUtility(IPendings)
 
     >>> dump_msgdata(pendingdb.confirm(token, expunge=False))
-    address  : aperson@example.com
+    email    : aperson@example.com
     list_name: alpha@example.com
     real_name: Anne Person
     type     : registration
@@ -178,8 +178,8 @@ token and uses that to confirm the pending registration.
     >>> registrar.confirm(token)
     True
 
-Now, there is an ``IAddress`` in the database matching the address, as well as
-an ``IUser`` linked to this address.  The ``IAddress`` is verified.
+Now, there is an `IAddress` in the database matching the address, as well as
+an `IUser` linked to this address.  The `IAddress` is verified.
 
     >>> found_address = user_manager.get_address('aperson@example.com')
     >>> found_address
@@ -187,7 +187,7 @@ an ``IUser`` linked to this address.  The ``IAddress`` is verified.
     >>> found_user = user_manager.get_user('aperson@example.com')
     >>> found_user
     <User "Anne Person" at ...>
-    >>> found_user.controls(found_address.address)
+    >>> found_user.controls(found_address.email)
     True
     >>> from datetime import datetime
     >>> isinstance(found_address.verified_on, datetime)
@@ -247,8 +247,7 @@ Discarding
 ==========
 
 A confirmation token can also be discarded, say if the user changes his or her
-mind about registering.  When discarded, no ``IAddress`` or ``IUser`` is
-created.
+mind about registering.  When discarded, no `IAddress` or `IUser` is created.
 ::
 
     >>> token = registrar.register(mlist, 'eperson@example.com', 'Elly Person')
@@ -282,8 +281,8 @@ can be used.
     >>> address.verified_on = datetime.now()
 
     >>> from operator import attrgetter
-    >>> sorted((addr for addr in dperson.addresses), key=attrgetter('address'))
-    [<Address: Dave Person <dperson@example.com> [verified] at ...>]
+    >>> dump_list(repr(address) for address in dperson.addresses)
+    <Address: Dave Person <dperson@example.com> [verified] at ...>
     >>> dperson.register('david.person@example.com', 'David Person')
     <Address: David Person <david.person@example.com> [not verified] at ...>
     >>> token = registrar.register(mlist, 'david.person@example.com')
@@ -299,9 +298,9 @@ can be used.
     True
     >>> user
     <User "Dave Person" at ...>
-    >>> sorted((addr for addr in user.addresses), key=attrgetter('address'))
-    [<Address: David Person <david.person@example.com> [verified] at ...>,
-     <Address: Dave Person <dperson@example.com> [verified] at ...>]
+    >>> dump_list(repr(address) for address in user.addresses)
+    <Address: Dave Person <dperson@example.com> [verified] at ...>
+    <Address: David Person <david.person@example.com> [verified] at ...>
 
 
 Corner cases
@@ -313,7 +312,7 @@ confirm method will just return False.
     >>> registrar.confirm(bytes('no token'))
     False
 
-Likewise, if you try to confirm, through the ``IUserRegistrar`` interface, a
+Likewise, if you try to confirm, through the `IUserRegistrar` interface, a
 token that doesn't match a registration event, you will get ``None``.
 However, the pending event matched with that token will still be removed.
 
