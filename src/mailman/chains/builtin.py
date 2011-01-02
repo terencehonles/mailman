@@ -52,7 +52,7 @@ class BuiltInChain:
         ('emergency', LinkAction.jump, 'hold'),
         ('loop', LinkAction.jump, 'discard'),
         # Determine whether the member or nonmember has an action shortcut.
-        ('moderation', LinkAction.jump, 'moderation'),
+        ('member-moderation', LinkAction.jump, 'moderation'),
         # Do all of the following before deciding whether to hold the message.
         ('administrivia', LinkAction.defer, None),
         ('implicit-dest', LinkAction.defer, None),
@@ -66,6 +66,8 @@ class BuiltInChain:
         # Take a detour through the header matching chain, which we'll create
         # later.
         ('truth', LinkAction.detour, 'header-match'),
+        # Check for nonmember moderation.
+        ('nonmember-moderation', LinkAction.jump, 'moderation'),
         # Finally, the builtin chain jumps to acceptance.
         ('truth', LinkAction.jump, 'accept'),
         )

@@ -73,6 +73,7 @@ class Approved:
                 break
             payload = part.get_payload(decode=True)
             if payload is not None:
+                line = ''
                 lines = payload.splitlines(True)
                 for lineno, line in enumerate(lines):
                     if line.strip() <> '':

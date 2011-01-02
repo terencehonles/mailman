@@ -26,9 +26,10 @@ names to rule objects.
     loop True
     max-recipients True
     max-size True
-    moderation True
+    member-moderation True
     news-moderation True
     no-subject True
+    nonmember-moderation True
     suspicious-header True
     truth True
 

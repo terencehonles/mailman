@@ -16,20 +16,16 @@ The Discard chain
 The `discard` chain simply throws the message away.
 ::
 
-    >>> from zope.interface.verify import verifyObject
-    >>> from mailman.interfaces.chain import IChain
     >>> chain = config.chains['discard']
-    >>> verifyObject(IChain, chain)
-    True
     >>> print chain.name
     discard
     >>> print chain.description
     Discard a message and stop processing.
 
-    >>> mlist = create_list('_xtest@example.com')
+    >>> mlist = create_list('test@example.com')
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
-    ... To: _xtest@example.com
+    ... To: test@example.com
     ... Subject: My first post
     ... Message-ID: <first>
     ...
@@ -56,8 +52,6 @@ this action.
 ::
 
     >>> chain = config.chains['reject']
-    >>> verifyObject(IChain, chain)
-    True
     >>> print chain.name
     reject
     >>> print chain.description
@@ -75,7 +69,7 @@ The bounce message is now sitting in the `virgin` queue.
     1
     >>> print qfiles[0].msg.as_string()
     Subject: My first post
-    From: _xtest-owner@example.com
+    From: test-owner@example.com
     To: aperson@example.com
     ...
     [No bounce details are available]
@@ -84,7 +78,7 @@ The bounce message is now sitting in the `virgin` queue.
     MIME-Version: 1.0
     <BLANKLINE>
     From: aperson@example.com
-    To: _xtest@example.com
+    To: test@example.com
     Subject: My first post
     Message-ID: <first>
     <BLANKLINE>
@@ -96,14 +90,11 @@ The bounce message is now sitting in the `virgin` queue.
 The Hold Chain
 ==============
 
-The `hold` chain places the message into the admin request database and
-depending on the list's settings, sends a notification to both the original
-sender and the list moderators.
-::
+The `hold` chain places the message into the administrative request database
+and depending on the list's settings, sends a notification to both the
+original sender and the list moderators.  ::
 
     >>> chain = config.chains['hold']
-    >>> verifyObject(IChain, chain)
-    True
     >>> print chain.name
     hold
     >>> print chain.description
@@ -113,32 +104,39 @@ sender and the list moderators.
     ...     process(mlist, msg, {}, 'hold')
     HOLD: <first>
 
-There are now two messages in the Virgin queue, one to the list moderators and
+There are now two messages in the virgin queue, one to the list moderators and
 one to the original author.
 
     >>> qfiles = get_queue_messages('virgin', sort_on='to')
     >>> len(qfiles)
     2
 
-This message is addressed to the mailing list moderators.
+One of the message is addressed to the mailing list moderators, and the other
+is addressed to the original sender.
 
-    >>> print qfiles[0].msg.as_string()
-    Subject: _xtest@example.com post from aperson@example.com requires approval
-    From: _xtest-owner@example.com
-    To: _xtest-owner@example.com
+    >>> from operator import itemgetter
+    >>> messages = sorted((item.msg for item in qfiles),
+    ...                   key=itemgetter('to'), reverse=True)
+
+This one is addressed to the list moderators.
+
+    >>> print messages[0].as_string()
+    Subject: test@example.com post from aperson@example.com requires approval
+    From: test-owner@example.com
+    To: test-owner@example.com
     MIME-Version: 1.0
     ...
     As list administrator, your authorization is requested for the
     following mailing list posting:
     <BLANKLINE>
-        List:    _xtest@example.com
+        List:    test@example.com
         From:    aperson@example.com
         Subject: My first post
         Reason:  XXX
     <BLANKLINE>
     At your convenience, visit:
     <BLANKLINE>
-        http://lists.example.com/admindb/_xtest@example.com
+        http://lists.example.com/admindb/test@example.com
     <BLANKLINE>
     to approve or deny the request.
     <BLANKLINE>
@@ -147,7 +145,7 @@ This message is addressed to the mailing list moderators.
     MIME-Version: 1.0
     <BLANKLINE>
     From: aperson@example.com
-    To: _xtest@example.com
+    To: test@example.com
     Subject: My first post
     Message-ID: <first>
     X-Message-ID-Hash: RXJU4JL6N2OUN3OYMXXPPSCR7P7JE2BW
@@ -162,7 +160,7 @@ This message is addressed to the mailing list moderators.
     MIME-Version: 1.0
     Content-Transfer-Encoding: 7bit
     Subject: confirm ...
-    From: _xtest-request@example.com
+    From: test-request@example.com
     ...
     <BLANKLINE>
     If you reply to this message, keeping the Subject: header intact,
@@ -175,15 +173,15 @@ This message is addressed to the mailing list moderators.
 
 This message is addressed to the sender of the message.
 
-    >>> print qfiles[1].msg.as_string()
+    >>> print messages[1].as_string()
     MIME-Version: 1.0
     Content-Type: text/plain; charset="us-ascii"
     Content-Transfer-Encoding: 7bit
-    Subject: Your message to _xtest@example.com awaits moderator approval
-    From: _xtest-bounces@example.com
+    Subject: Your message to test@example.com awaits moderator approval
+    From: test-bounces@example.com
     To: aperson@example.com
     ...
-    Your mail to '_xtest@example.com' with the subject
+    Your mail to 'test@example.com' with the subject
     <BLANKLINE>
         My first post
     <BLANKLINE>
@@ -197,7 +195,7 @@ This message is addressed to the sender of the message.
     notification of the moderator's decision.  If you would like to cancel
     this posting, please visit the following URL:
     <BLANKLINE>
-        http://lists.example.com/confirm/_xtest@example.com/...
+        http://lists.example.com/confirm/test@example.com/...
     <BLANKLINE>
     <BLANKLINE>
 
@@ -210,7 +208,7 @@ first item is a type code and the second item is a message id.
 
     >>> import re
     >>> cookie = None
-    >>> for line in qfiles[1].msg.get_payload().splitlines():
+    >>> for line in messages[1].get_payload().splitlines():
     ...     mo = re.search('confirm/[^/]+/(?P<cookie>.*)$', line)
     ...     if mo:
     ...         cookie = mo.group('cookie')
@@ -221,8 +219,9 @@ first item is a type code and the second item is a message id.
     >>> from zope.component import getUtility
 
     >>> data = getUtility(IPendings).confirm(cookie)
-    >>> sorted(data.items())
-    [(u'id', ...), (u'type', u'held message')]
+    >>> dump_msgdata(data)
+    id  : 1
+    type: held message
 
 The message itself is held in the message store.
 ::
@@ -238,7 +237,7 @@ The message itself is held in the message store.
 
     >>> print msg.as_string()
     From: aperson@example.com
-    To: _xtest@example.com
+    To: test@example.com
     Subject: My first post
     Message-ID: <first>
     X-Message-ID-Hash: RXJU4JL6N2OUN3OYMXXPPSCR7P7JE2BW
@@ -252,14 +251,14 @@ The Accept chain
 
 The `accept` chain sends the message on the `pipeline` queue, where it will be
 processed and sent on to the list membership.
+::
 
     >>> chain = config.chains['accept']
-    >>> verifyObject(IChain, chain)
-    True
     >>> print chain.name
     accept
     >>> print chain.description
     Accept a message.
+
     >>> with event_subscribers(print_msgid):
     ...     process(mlist, msg, {}, 'accept')
     ACCEPT: <first>
@@ -269,7 +268,7 @@ processed and sent on to the list membership.
     1
     >>> print qfiles[0].msg.as_string()
     From: aperson@example.com
-    To: _xtest@example.com
+    To: test@example.com
     Subject: My first post
     Message-ID: <first>
     X-Message-ID-Hash: RXJU4JL6N2OUN3OYMXXPPSCR7P7JE2BW
@@ -288,20 +287,21 @@ needed.  The jump names a chain which is jumped to if the rule matches.
 
 There is one built-in run-time chain, called appropriately `built-in`.  This
 is the default chain to use when no other input chain is defined for a mailing
-list.  It runs through the default rules, providing functionality similar to
-the Hold handler from previous versions of Mailman.
+list.  It runs through the default rules.
 
     >>> chain = config.chains['built-in']
-    >>> verifyObject(IChain, chain)
-    True
     >>> print chain.name
     built-in
     >>> print chain.description
     The built-in moderation chain.
 
-The previously created message is innocuous enough that it should pass through
-all default rules.  This message will end up in the `pipeline` queue.
+Once the sender is a member of the mailing list, the previously created
+message is innocuous enough that it should pass through all default rules.
+This message will end up in the `pipeline` queue.
 ::
+
+    >>> from mailman.testing.helpers import subscribe
+    >>> subscribe(mlist, 'Anne')
 
     >>> with event_subscribers(print_msgid):
     ...     process(mlist, msg, {})
@@ -312,13 +312,13 @@ all default rules.  This message will end up in the `pipeline` queue.
     1
     >>> print qfiles[0].msg.as_string()
     From: aperson@example.com
-    To: _xtest@example.com
+    To: test@example.com
     Subject: My first post
     Message-ID: <first>
     X-Message-ID-Hash: RXJU4JL6N2OUN3OYMXXPPSCR7P7JE2BW
-    X-Mailman-Rule-Misses: approved; emergency; loop; moderation;
+    X-Mailman-Rule-Misses: approved; emergency; loop; member-moderation;
         administrivia; implicit-dest; max-recipients; max-size;
-        news-moderation; no-subject; suspicious-header
+        news-moderation; no-subject; suspicious-header; nonmember-moderation
     <BLANKLINE>
     An important message.
     <BLANKLINE>
@@ -326,10 +326,9 @@ all default rules.  This message will end up in the `pipeline` queue.
 In addition, the message metadata now contains lists of all rules that have
 hit and all rules that have missed.
 
-    >>> sorted(qfiles[0].msgdata['rule_hits'])
-    []
-    >>> for rule_name in sorted(qfiles[0].msgdata['rule_misses']):
-    ...     print rule_name
+    >>> dump_list(qfiles[0].msgdata['rule_hits'])
+    *Empty*
+    >>> dump_list(qfiles[0].msgdata['rule_misses'])
     administrivia
     approved
     emergency
@@ -337,7 +336,8 @@ hit and all rules that have missed.
     loop
     max-recipients
     max-size
-    moderation
+    member-moderation
     news-moderation
     no-subject
+    nonmember-moderation
     suspicious-header

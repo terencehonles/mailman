@@ -252,19 +252,28 @@ def event_subscribers(*subscribers):
     """
     old_subscribers = event.subscribers[:]
     event.subscribers = list(subscribers)
-    yield
-    event.subscribers[:] = old_subscribers
+    try:
+        yield
+    finally:
+        event.subscribers[:] = old_subscribers
 
 
 
 def subscribe(mlist, first_name, role=MemberRole.member):
     """Helper for subscribing a sample person to a mailing list."""
     user_manager = getUtility(IUserManager)
-    address = '{0}person@example.com'.format(first_name[0].lower())
+    email = '{0}person@example.com'.format(first_name[0].lower())
     full_name = '{0} Person'.format(first_name)
-    person = user_manager.get_user(address)
+    person = user_manager.get_user(email)
     if person is None:
-        person = user_manager.create_user(address, full_name)
-    preferred_address = list(person.addresses)[0]
-    preferred_address.subscribe(mlist, role)
+        address = user_manager.get_address(email)
+        if address is None:
+            person = user_manager.create_user(email, full_name)
+            preferred_address = list(person.addresses)[0]
+            preferred_address.subscribe(mlist, role)
+        else:
+            address.subscribe(mlist, role)
+    else:
+        preferred_address = list(person.addresses)[0]
+        preferred_address.subscribe(mlist, role)
     config.db.commit()

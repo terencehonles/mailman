@@ -6,7 +6,7 @@ Mailman can do pattern based header matching during its normal rule
 processing.  There is a set of site-wide default header matches specified in
 the configuration file under the ``[spam.headers]`` section.
 
-    >>> mlist = create_list('_xtest@example.com')
+    >>> mlist = create_list('test@example.com')
 
 Because the default ``[spam.headers]`` section is empty, we'll just extend the
 current header matching chain with a pattern that matches 4 or more stars,
@@ -21,7 +21,7 @@ through the chain untouched (i.e. no disposition).
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
-    ... To: _xtest@example.com
+    ... To: test@example.com
     ... Subject: Not spam
     ... Message-ID: <one>
     ...

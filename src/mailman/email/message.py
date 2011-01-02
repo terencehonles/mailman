@@ -144,7 +144,8 @@ class Message(email.message.Message):
                 field_values = self.get_all(header, [])
                 senders.extend(address.lower() for (real_name, address)
                                in email.utils.getaddresses(field_values))
-        return senders
+        # Filter out None and the empty string.
+        return [sender for sender in senders if sender]
 
     def get_filename(self, failobj=None):
         """Some MUA have bugs in RFC2231 filename encoding and cause

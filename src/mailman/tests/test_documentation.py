@@ -99,6 +99,9 @@ def stop():
 
 def dump_msgdata(msgdata, *additional_skips):
     """Dump in a more readable way a message metadata dictionary."""
+    if len(msgdata) == 0:
+        print '*Empty*'
+        return
     skips = set(additional_skips)
     # Some stuff we always want to skip, because their values will always be
     # variable data.

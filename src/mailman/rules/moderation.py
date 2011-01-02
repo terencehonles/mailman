@@ -21,49 +21,85 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'Moderation',
+    'MemberModeration',
+    'NonmemberModeration',
     ]
 
 
+from zope.component import getUtility
 from zope.interface import implements
 
 from mailman.core.i18n import _
 from mailman.interfaces.action import Action
+from mailman.interfaces.member import MemberRole
 from mailman.interfaces.rules import IRule
+from mailman.interfaces.usermanager import IUserManager
 
 
 
-class Moderation:
+class MemberModeration:
     """The member moderation rule."""
     implements(IRule)
 
-    name = 'moderation'
-    description = _('Match messages sent by moderated members and nonmembers.')
+    name = 'member-moderation'
+    description = _('Match messages sent by moderated members.')
     record = True
 
     def check(self, mlist, msg, msgdata):
         """See `IRule`."""
         for sender in msg.senders:
             member = mlist.members.get_member(sender)
-            action = (Action.defer if member is None
+            action = (None if member is None
                       else member.moderation_action)
-            if action is not Action.defer:
+            if action is Action.defer:
+                # The regular moderation rules apply.
+                return False
+            elif action is not None:
                 # We must stringify the moderation action so that it can be
                 # stored in the pending request table.
                 msgdata['moderation_action'] = action.enumname
                 msgdata['moderation_sender'] = sender
                 return True
+        # The sender is not a member so this rule does not match.
+        return False
+
+
+
+class NonmemberModeration:
+    """The nonmember moderation rule."""
+    implements(IRule)
+
+    name = 'nonmember-moderation'
+    description = _('Match messages sent by nonmembers.')
+    record = True
+
+    def check(self, mlist, msg, msgdata):
+        """See `IRule`."""
+        user_manager = getUtility(IUserManager)
+        # First ensure that all senders are already either members or
+        # nonmembers.  If they are not subscribed in some role to the mailing
+        # list, make them nonmembers.
+        for sender in msg.senders:
+            if (mlist.members.get_member(sender) is None and
+                mlist.nonmembers.get_member(sender) is None):
+                # The address is neither a member nor nonmember.
+                address = user_manager.get_address(sender)
+                assert address is not None, (
+                    'Posting address is not registered: {0}'.format(sender))
+                address.subscribe(mlist, MemberRole.nonmember)
+        # Do nonmember moderation check.
         for sender in msg.senders:
             nonmember = mlist.nonmembers.get_member(sender)
-            action = (Action.defer if nonmember is None
+            action = (None if nonmember is None
                       else nonmember.moderation_action)
-            if action is not Action.defer:
+            if action is Action.defer:
+                # The regular moderation rules apply.
+                return False
+            elif action is not None:
                 # We must stringify the moderation action so that it can be
                 # stored in the pending request table.
                 msgdata['moderation_action'] = action.enumname
                 msgdata['moderation_sender'] = sender
                 return True
-        # XXX This is not correct.  If the sender is neither a member nor a
-        # nonmember, we need to register them as a nonmember and give them the
-        # default action.
+        # The sender must be a member, so this rule does not match.
         return False

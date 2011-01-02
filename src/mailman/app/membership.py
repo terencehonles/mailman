@@ -41,7 +41,7 @@ from mailman.interfaces.usermanager import IUserManager
 
 
 
-def add_member(mlist, address, realname, password, delivery_mode, language):
+def add_member(mlist, email, realname, password, delivery_mode, language):
     """Add a member right now.
 
     The member's subscription must be approved by whatever policy the list
@@ -49,16 +49,16 @@ def add_member(mlist, address, realname, password, delivery_mode, language):
 
     :param mlist: The mailing list to add the member to.
     :type mlist: `IMailingList`
-    :param address: The address to subscribe.
-    :type address: string
+    :param email: The email address to subscribe.
+    :type email: str
     :param realname: The subscriber's full name.
-    :type realname: string
+    :type realname: str
     :param password: The subscriber's password.
-    :type password: string
+    :type password: str
     :param delivery_mode: The delivery mode the subscriber has chosen.
     :type delivery_mode: DeliveryMode
     :param language: The language that the subscriber is going to use.
-    :type language: string
+    :type language: str
     :return: The just created member.
     :rtype: `IMember`
     :raises AlreadySubscribedError: if the user is already subscribed to
@@ -67,52 +67,51 @@ def add_member(mlist, address, realname, password, delivery_mode, language):
     :raises MembershipIsBannedError: if the membership is not allowed.
     """
     # Let's be extra cautious.
-    validate(address)
-    if mlist.members.get_member(address) is not None:
+    validate(email)
+    if mlist.members.get_member(email) is not None:
         raise AlreadySubscribedError(
-            mlist.fqdn_listname, address, MemberRole.member)
-    # Check for banned address here too for admin mass subscribes and
-    # confirmations.
-    pattern = Utils.get_pattern(address, mlist.ban_list)
+            mlist.fqdn_listname, email, MemberRole.member)
+    # Check for banned email addresses here too for administrative mass
+    # subscribes and confirmations.
+    pattern = Utils.get_pattern(email, mlist.ban_list)
     if pattern:
-        raise MembershipIsBannedError(mlist, address)
-    # Do the actual addition.  First, see if there's already a user linked
-    # with the given address.
+        raise MembershipIsBannedError(mlist, email)
+    # See if there's already a user linked with the given address.
     user_manager = getUtility(IUserManager)
-    user = user_manager.get_user(address)
+    user = user_manager.get_user(email)
     if user is None:
         # A user linked to this address does not yet exist.  Is the address
         # itself known but just not linked to a user?
-        address_obj = user_manager.get_address(address)
-        if address_obj is None:
+        address = user_manager.get_address(email)
+        if address is None:
             # Nope, we don't even know about this address, so create both the
             # user and address now.
-            user = user_manager.create_user(address, realname)
+            user = user_manager.create_user(email, realname)
             # Do it this way so we don't have to flush the previous change.
-            address_obj = list(user.addresses)[0]
+            address = list(user.addresses)[0]
         else:
             # The address object exists, but it's not linked to a user.
             # Create the user and link it now.
             user = user_manager.create_user()
-            user.real_name = (realname if realname else address_obj.real_name)
-            user.link(address_obj)
+            user.real_name = (realname if realname else address.real_name)
+            user.link(address)
         # Since created the user, then the member, and set preferences on the
         # appropriate object.
         user.password = password
         user.preferences.preferred_language = language
-        member = address_obj.subscribe(mlist, MemberRole.member)
+        member = address.subscribe(mlist, MemberRole.member)
         member.preferences.delivery_mode = delivery_mode
     else:
         # The user exists and is linked to the address.
-        for address_obj in user.addresses:
-            if address_obj.address == address:
+        for address in user.addresses:
+            if address.email == address:
                 break
         else:
             raise AssertionError(
                 'User should have had linked address: {0}'.format(address))
         # Create the member and set the appropriate preferences.
         # pylint: disable-msg=W0631
-        member = address_obj.subscribe(mlist, MemberRole.member)
+        member = address.subscribe(mlist, MemberRole.member)
         member.preferences.preferred_language = language
         member.preferences.delivery_mode = delivery_mode
     return member

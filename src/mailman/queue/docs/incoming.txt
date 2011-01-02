@@ -87,10 +87,12 @@ not linked to a user and are unverified.
 Accepted messages
 =================
 
-We have a message that is going to be sent to the mailing list.  This message
-is so perfectly fine for posting that it will be accepted and forward to the
-pipeline queue.
+We have a message that is going to be sent to the mailing list.  Once Anne is
+a member of the mailing list, this message is so perfectly fine for posting
+that it will be accepted and forward to the pipeline queue.
 
+    >>> from mailman.testing.helpers import subscribe
+    >>> subscribe(mlist, 'Anne')
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... To: test@example.com
@@ -120,9 +122,9 @@ Now the message is in the pipeline queue.
     Subject: My first post
     Message-ID: <first>
     Date: ...
-    X-Mailman-Rule-Misses: approved; emergency; loop; moderation;
+    X-Mailman-Rule-Misses: approved; emergency; loop; member-moderation;
         administrivia; implicit-dest; max-recipients; max-size;
-        news-moderation; no-subject; suspicious-header
+        news-moderation; no-subject; suspicious-header; nonmember-moderation
     <BLANKLINE>
     First post!
     <BLANKLINE>
@@ -149,12 +151,12 @@ pipeline queue.
     ...             event.msg['from'], event.msg['to'],
     ...             event.msg['message-id'])
 
-    >>> import zope.event
-    >>> zope.event.subscribers.append(on_chain)
-
     >>> mlist.emergency = True
-    >>> inject_message(mlist, msg)
-    >>> incoming.run()
+
+    >>> from mailman.testing.helpers import event_subscribers
+    >>> with event_subscribers(on_chain):
+    ...     inject_message(mlist, msg)
+    ...     incoming.run()
     <mailman.chains.hold.HoldNotification ...>
     <mailman.chains.hold.HoldChain ...>
     From: aperson@example.com
@@ -187,8 +189,9 @@ new chain and set it as the mailing list's start chain.
     >>> mlist.start_chain = test_chain.name
 
     >>> msg.replace_header('message-id', '<second>')
-    >>> inject_message(mlist, msg)
-    >>> incoming.run()
+    >>> with event_subscribers(on_chain):
+    ...     inject_message(mlist, msg)
+    ...     incoming.run()
     <mailman.chains.discard.DiscardNotification ...>
     <mailman.chains.discard.DiscardChain ...>
     From: aperson@example.com
@@ -216,8 +219,9 @@ just create a new chain that does.
     >>> mlist.start_chain = test_chain.name
 
     >>> msg.replace_header('message-id', '<third>')
-    >>> inject_message(mlist, msg)
-    >>> incoming.run()
+    >>> with event_subscribers(on_chain):
+    ...     inject_message(mlist, msg)
+    ...     incoming.run()
     <mailman.chains.reject.RejectNotification ...>
     <mailman.chains.reject.RejectChain ...>
     From: aperson@example.com
@@ -257,8 +261,3 @@ to the original sender.
     --===============...
 
     >>> del config.chains['always-reject']
-
-..
-    Clean up.
-
-    >>> zope.event.subscribers.remove(on_chain)

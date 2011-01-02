@@ -2,7 +2,7 @@
 Moderation
 ==========
 
-Posts by members and non-members are subject to moderation checks during
+Posts by members and nonmembers are subject to moderation checks during
 incoming processing.  Different situations can cause such posts to be held for
 moderator approval.
 
@@ -22,9 +22,6 @@ meaning that their messages are held for moderator approval for a while.
 Nonmembers almost always have a `hold` action, though some mailing lists may
 choose to set this default action to `discard`, meaning their posts would be
 immediately thrown away.
-
-XXX What about default nonmember actions when the poster has not been
-registered as a nonmember?
 
 
 Member moderation
@@ -61,9 +58,6 @@ to Zope events that are triggered on each case.
     ...         for miss in event.msgdata.get('rule_misses', []):
     ...             print '   ', miss
 
-    >>> import zope.event
-    >>> zope.event.subscribers.append(on_chain)
-
 Anne's post to the mailing list runs through the incoming runner's default
 built-in chain.  No rules hit and so the message is accepted.
 ::
@@ -77,7 +71,9 @@ built-in chain.  No rules hit and so the message is accepted.
     ... """)
 
     >>> from mailman.core.chains import process
-    >>> process(mlist, msg, {}, 'built-in')
+    >>> from mailman.testing.helpers import event_subscribers
+    >>> with event_subscribers(on_chain):
+    ...     process(mlist, msg, {}, 'built-in')
     <mailman.chains.accept.AcceptNotification ...>
     <mailman.chains.accept.AcceptChain ...>
     Subject: aardvark
@@ -86,7 +82,7 @@ built-in chain.  No rules hit and so the message is accepted.
         approved
         emergency
         loop
-        moderation
+        member-moderation
         administrivia
         implicit-dest
         max-recipients
@@ -94,6 +90,7 @@ built-in chain.  No rules hit and so the message is accepted.
         news-moderation
         no-subject
         suspicious-header
+        nonmember-moderation
 
 However, when Anne's moderation action is set to `hold`, her post is held for
 moderator approval.
@@ -110,12 +107,13 @@ moderator approval.
     ... This is a test.
     ... """)
 
-    >>> process(mlist, msg, {}, 'built-in')
+    >>> with event_subscribers(on_chain):
+    ...     process(mlist, msg, {}, 'built-in')
     <mailman.chains.hold.HoldNotification ...>
     <mailman.chains.hold.HoldChain ...>
     Subject: badger
     Hits:
-        moderation
+        member-moderation
     Misses:
         approved
         emergency
@@ -134,12 +132,13 @@ The list's member moderation action can also be set to `discard`...
     ... This is a test.
     ... """)
 
-    >>> process(mlist, msg, {}, 'built-in')
+    >>> with event_subscribers(on_chain):
+    ...     process(mlist, msg, {}, 'built-in')
     <mailman.chains.discard.DiscardNotification ...>
     <mailman.chains.discard.DiscardChain ...>
     Subject: cougar
     Hits:
-        moderation
+        member-moderation
     Misses:
         approved
         emergency
@@ -157,12 +156,13 @@ The list's member moderation action can also be set to `discard`...
     ... This is a test.
     ... """)
 
-    >>> process(mlist, msg, {}, 'built-in')
+    >>> with event_subscribers(on_chain):
+    ...     process(mlist, msg, {}, 'built-in')
     <mailman.chains.reject.RejectNotification ...>
     <mailman.chains.reject.RejectChain ...>
     Subject: dingo
     Hits:
-        moderation
+        member-moderation
     Misses:
         approved
         emergency
@@ -172,8 +172,51 @@ The list's member moderation action can also be set to `discard`...
 Nonmembers
 ==========
 
-XXX
+Registered nonmembers are handled very similarly to members, the main
+difference being that they usually have a default moderation action.  This is
+how the incoming queue runner adds sender addresses as nonmembers.
 
+    >>> from zope.component import getUtility
+    >>> from mailman.interfaces.usermanager import IUserManager
+    >>> user_manager = getUtility(IUserManager)
+    >>> address = user_manager.create_address('bart@example.com')
+    >>> address
+    <Address: bart@example.com [not verified] at ...>
 
-.. Clean up
-    >>> zope.event.subscribers.remove(on_chain)
+When the moderation rule runs on a message from this sender, this address will
+be registered as a nonmember of the mailing list, and it will be held for
+moderator approval.
+::
+
+    >>> msg = message_from_string("""\
+    ... From: bart@example.com
+    ... To: test@example.com
+    ... Subject: elephant
+    ...
+    ... """)
+
+    >>> with event_subscribers(on_chain):
+    ...     process(mlist, msg, {}, 'built-in')
+    <mailman.chains.hold.HoldNotification ...>
+    <mailman.chains.hold.HoldChain ...>
+    Subject: elephant
+    Hits:
+        nonmember-moderation
+    Misses:
+        approved
+        emergency
+        loop
+        member-moderation
+        administrivia
+        implicit-dest
+        max-recipients
+        max-size
+        news-moderation
+        no-subject
+        suspicious-header
+
+    >>> nonmember = mlist.nonmembers.get_member('bart@example.com')
+    >>> nonmember
+    <Member: bart@example.com on test@example.com as MemberRole.nonmember>
+    >>> print nonmember.moderation_action
+    Action.hold

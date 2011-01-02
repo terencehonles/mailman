@@ -46,6 +46,19 @@ class Link:
         self.chain = chain
         self.function = function
 
+    def __repr__(self):
+        message = '<Link "if {0.rule.name} then {0.action} '
+        if self.chain is None and self.function is not None:
+            message += '{0.function}()'
+        elif self.chain is not None and self.function is None:
+            message += '{0.chain.name}'
+        elif self.chain is None and self.function is None:
+            pass
+        else:
+            message += '{0.chain.name} {0.function}()'
+        message += '">'
+        return message.format(self)
+
 
 
 class TerminalChainBase:
