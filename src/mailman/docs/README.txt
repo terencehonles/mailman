@@ -108,6 +108,7 @@ Table of Contents
     ../pipeline/docs/*
     ../queue/docs/*
     ../rest/docs/*
+    ../chains/docs/*
     ../rules/docs/*
     ../archiving/docs/*
     ../mta/docs/*
