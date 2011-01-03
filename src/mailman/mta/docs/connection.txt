@@ -49,6 +49,56 @@ We can reset the connection count back to zero.
 
     >>> connection.quit()
 
+By providing an SMTP user name and password in the configuration file, Mailman
+will authenticate with the mail server after each new connection.
+::
+
+    >>> config.push('auth', """
+    ... [mta]
+    ... smtp_user: testuser
+    ... smtp_pass: testpass
+    ... """)
+
+    >>> connection = Connection(
+    ...     config.mta.smtp_host, int(config.mta.smtp_port), 0,
+    ...     config.mta.smtp_user, config.mta.smtp_pass)
+    >>> connection.sendmail('anne@example.com', ['bart@example.com'], """\
+    ... From: anne@example.com
+    ... To: bart@example.com
+    ... Subject: aardvarks
+    ...
+    ... """)
+    {}
+    >>> print smtpd.get_authentication_credentials()
+    PLAIN AHRlc3R1c2VyAHRlc3RwYXNz
+
+    >>> reset()
+    >>> config.pop('auth')
+
+However, a bad user name or password generates an error.
+
+    >>> config.push('auth', """
+    ... [mta]
+    ... smtp_user: baduser
+    ... smtp_pass: badpass
+    ... """)
+
+    >>> connection = Connection(
+    ...     config.mta.smtp_host, int(config.mta.smtp_port), 0,
+    ...     config.mta.smtp_user, config.mta.smtp_pass)
+    >>> connection.sendmail('anne@example.com', ['bart@example.com'], """\
+    ... From: anne@example.com
+    ... To: bart@example.com
+    ... Subject: aardvarks
+    ...
+    ... """)
+    Traceback (most recent call last):
+    ...
+    SMTPAuthenticationError: (571, 'Bad authentication')
+
+    >>> reset()
+    >>> config.pop('auth')
+
 
 Sessions per connection
 =======================

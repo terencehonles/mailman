@@ -59,10 +59,30 @@ class FakeMTA:
 class StatisticsChannel(Channel):
     """A channel that can answers to the fake STAT command."""
 
+    def smtp_EHLO(self, arg):
+        if not arg:
+            self.push(b'501 Syntax: HELO hostname')
+            return
+        if self._SMTPChannel__greeting:
+            self.push(b'503 Duplicate HELO/EHLO')
+        else:
+            self._SMTPChannel__greeting = arg
+            self.push(b'250-%s' % self._SMTPChannel__fqdn)
+            self.push(b'250 AUTH PLAIN')
+
     def smtp_STAT(self, arg):
         """Cause the server to send statistics to its controller."""
         self._server.send_statistics()
         self.push(b'250 Ok')
+
+    def smtp_AUTH(self, arg):
+        """Record that the AUTH occurred."""
+        if arg == 'PLAIN AHRlc3R1c2VyAHRlc3RwYXNz':
+            # testuser:testpass
+            self.push(b'235 Ok')
+            self._server.send_auth(arg)
+        else:
+            self.push(b'571 Bad authentication')
 
     def smtp_RCPT(self, arg):
         """For testing, sometimes cause a non-25x response."""
@@ -103,6 +123,7 @@ class ConnectionCountingServer(QueueServer):
         """
         QueueServer.__init__(self, host, port, queue)
         self._connection_count = 0
+        self.last_auth = None
         # The out-of-band queue is where the server sends statistics to the
         # controller upon request.
         self._oob_queue = oob_queue
@@ -152,6 +173,10 @@ class ConnectionCountingServer(QueueServer):
         self._connection_count -= 1
         self._oob_queue.put(self._connection_count)
 
+    def send_auth(self, arg):
+        """Echo back the authentication data."""
+        self._oob_queue.put(arg)
+
 
 
 class ConnectionCountingController(QueueController):
@@ -187,6 +212,10 @@ class ConnectionCountingController(QueueController):
         # seconds.  Let that propagate.
         return self.oob_queue.get(block=True, timeout=10)
 
+    def get_authentication_credentials(self):
+        """Retrieve the last authentication credentials."""
+        return self.oob_queue.get(block=True, timeout=10)
+
     @property
     def messages(self):
         """Return all the messages received by the SMTP server."""
@@ -196,3 +225,7 @@ class ConnectionCountingController(QueueController):
     def clear(self):
         """Clear all the messages from the queue."""
         list(self)
+
+    def reset(self):
+        smtpd = self._connect()
+        smtpd.docmd(b'RSET')

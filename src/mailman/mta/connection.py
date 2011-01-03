@@ -38,7 +38,8 @@ log = logging.getLogger('mailman.smtp')
 
 class Connection:
     """Manage a connection to the SMTP server."""
-    def __init__(self, host, port, sessions_per_connection):
+    def __init__(self, host, port, sessions_per_connection,
+                 smtp_user=None, smtp_pass=None):
         """Create a connection manager.
 
         :param host: The host name of the SMTP server to connect to.
@@ -51,10 +52,17 @@ class Connection:
             opened.  Set to zero for an unlimited number of sessions per
             connection (i.e. your MTA has no limit).
         :type sessions_per_connection: integer
+        :param smtp_user: Optional SMTP authentication user name.  If given,
+            `smtp_pass` must also be given.
+        :type smtp_user: str
+        :param smtp_pass: Optional SMTP authentication password.  If given,
+            `smtp_user` must also be given.
         """
         self._host = host
         self._port = port
         self._sessions_per_connection = sessions_per_connection
+        self._username = smtp_user
+        self._password = smtp_pass
         self._session_count = None
         self._connection = None
 
@@ -63,6 +71,9 @@ class Connection:
         self._connection = smtplib.SMTP()
         log.debug('Connecting to %s:%s', self._host, self._port)
         self._connection.connect(self._host, self._port)
+        if self._username is not None and self._password is not None:
+            log.debug('Logging in')
+            self._connection.login(self._username, self._password)
         self._session_count = self._sessions_per_connection
 
     def sendmail(self, envsender, recipients, msgtext):

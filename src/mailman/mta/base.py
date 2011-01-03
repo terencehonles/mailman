@@ -49,9 +49,12 @@ class BaseDelivery:
 
     def __init__(self):
         """Create a basic deliverer."""
+        username = (config.mta.smtp_user if config.mta.smtp_user else None)
+        password = (config.mta.smtp_pass if config.mta.smtp_pass else None)
         self._connection = Connection(
             config.mta.smtp_host, int(config.mta.smtp_port),
-            int(config.mta.max_sessions_per_connection))
+            int(config.mta.max_sessions_per_connection),
+            username, password)
 
     def _deliver_to_recipients(self, mlist, msg, msgdata, recipients):
         """Low-level delivery to a set of recipients.
