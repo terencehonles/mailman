@@ -12,17 +12,55 @@ Here is a history of user visible changes to Mailman.
 ========================
 (201X-XX-XX)
 
-Bugs fixed
-----------
- * Typo in scan_message() (LP: #645897)
+Architecture
+------------
+ * In all interfaces, "email" refers to the textual email address while
+   "address" refers to the `IAddress` object.
+ * mailman.chains.base.Chain no longer self registers.
+ * New member and nonmember moderation rules and chains.  This effectively
+   ports moderation rules from Mailman 2 and replaces attributes such as
+   member_moderation_action, default_member_moderation, and
+   generic_nonmember_action.  Now, nonmembers exist as subscriptions on a
+   mailing list and members have a moderation_action attribute which describes
+   the disposition for postings from that address.
+ * Member.is_moderated was removed because of the above change.
+ * default_member_action and default_nonmember_action were added to mailing
+   lists.
+ * All sender addresses are registered (unverified) with the user manager by
+   the incoming queue runner.  This way, nonmember moderation rules will
+   always have an IAddress that they can subscribe to the list (as
+   MemberRole.nonmember).
+ * Support for SMTP AUTH added via smtp_user and smtp_pass configuration
+   variables in the [mta] section.  (LP: #490044)
+
+Commands
+--------
+ * 'bin/mailman start' does a better job of producing an error when Mailman is
+   already running.
+ * 'bin/mailman status' added for providing command line status on the master
+   queue runner watcher process.
+ * 'bin/mailman info' now prints the REST root url and credentials.
 
 REST
 ----
- * Add Basic Auth support for REST API security.  (given by Jimmy Bergman)
+ * Add Basic Auth support for REST API security.  (Jimmy Bergman)
+ * Include the fqdn_listname and email address in the member JSON
+   representation.
+ * Added reply_goes_to_list, send_welcome_msg, welcome_msg,
+   default_member_moderation to the mailing list's writable attributes in the
+   REST service.  (Jimmy Bergman)
 
 Build
 -----
  * Support Python 2.7. (LP: #667472)
+ * Disable site-packages in buildout.cfg because of LP: #659231.
+ * Don't include eggs/ or parts/ in the source tarball. (LP: #656946)
+ * flufl.lock is now required instead of locknix.
+
+Bugs fixed
+----------
+ * Typo in scan_message(). (LP: #645897)
+ * Clean up many pyflakes problems.
 
 
 3.0 alpha 6 -- "Cut to the Chase"
