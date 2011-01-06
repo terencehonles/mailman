@@ -33,7 +33,7 @@ from zope.interface import implements
 
 from mailman.core.i18n import _
 from mailman.email.message import UserNotification
-from mailman.email.validate import validate
+from mailman.interfaces.address import IEmailValidator
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import MemberRole
 from mailman.interfaces.pending import IPendable, IPendings
@@ -57,7 +57,7 @@ class Registrar:
         """See `IUserRegistrar`."""
         # First, do validation on the email address.  If the address is
         # invalid, it will raise an exception, otherwise it just returns.
-        validate(email)
+        getUtility(IEmailValidator).validate(email)
         # Create a pendable for the registration.
         pendable = PendableRegistration(
             type=PendableRegistration.PEND_KEY,

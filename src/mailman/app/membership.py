@@ -33,7 +33,7 @@ from mailman import Utils
 from mailman.app.notifications import send_goodbye_message
 from mailman.core.i18n import _
 from mailman.email.message import OwnerNotification
-from mailman.email.validate import validate
+from mailman.interfaces.address import IEmailValidator
 from mailman.interfaces.member import (
     AlreadySubscribedError, MemberRole, MembershipIsBannedError,
     NotAMemberError)
@@ -67,7 +67,7 @@ def add_member(mlist, email, realname, password, delivery_mode, language):
     :raises MembershipIsBannedError: if the membership is not allowed.
     """
     # Let's be extra cautious.
-    validate(email)
+    getUtility(IEmailValidator).validate(email)
     if mlist.members.get_member(email) is not None:
         raise AlreadySubscribedError(
             mlist.fqdn_listname, email, MemberRole.member)

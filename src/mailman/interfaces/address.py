@@ -26,6 +26,7 @@ __all__ = [
     'AddressNotLinkedError',
     'ExistingAddressError',
     'IAddress',
+    'IEmailValidator',
     'InvalidEmailAddressError',
     ]
 
@@ -104,3 +105,25 @@ class IAddress(Interface):
 
     preferences = Attribute(
         """This address's preferences.""")
+
+
+
+class IEmailValidator(Interface):
+    """An email validator."""
+
+    def is_valid(email):
+        """Check if an email address if valid.
+
+        :param email: A text email address.
+        :type email: str
+        :return: A flag indicating whether the email address is okay or not.
+        :rtype: bool
+        """
+
+    def validate(email):
+        """Validate an email address.
+
+        :param email: A text email address.
+        :type email: str
+        :raise InvalidEmailAddressError: when `email` is deemed invalid.
+        """
