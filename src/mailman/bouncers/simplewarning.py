@@ -17,8 +17,6 @@
 
 """Recognizes simple heuristically delimited warnings."""
 
-from __future__ import absolute_import, unicode_literals
-
 __metaclass__ = type
 __all__ = [
     'SimpleWarning',
