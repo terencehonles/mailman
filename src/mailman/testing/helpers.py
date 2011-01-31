@@ -26,6 +26,7 @@ __all__ = [
     'get_lmtp_client',
     'get_queue_messages',
     'make_testable_runner',
+    'reset_the_world',
     'subscribe',
     'wait_for_webservice',
     ]
@@ -47,6 +48,7 @@ from zope.component import getUtility
 from mailman.bin.master import Loop as Master
 from mailman.config import config
 from mailman.interfaces.member import MemberRole
+from mailman.interfaces.messages import IMessageStore
 from mailman.interfaces.usermanager import IUserManager
 from mailman.utilities.mailbox import Mailbox
 
@@ -277,3 +279,31 @@ def subscribe(mlist, first_name, role=MemberRole.member):
         preferred_address = list(person.addresses)[0]
         preferred_address.subscribe(mlist, role)
     config.db.commit()
+
+
+
+def reset_the_world():
+    """Reset everything:
+
+    * Clear out the database
+    * Remove all residual queue files
+    * Clear the message store
+    * Reset the global style manager
+
+    This should be as thorough a reset of the system as necessary to keep
+    tests isolated.
+    """
+    # Reset the database between tests.
+    config.db._reset()
+    # Remove all residual queue files.
+    for dirpath, dirnames, filenames in os.walk(config.QUEUE_DIR):
+        for filename in filenames:
+            os.remove(os.path.join(dirpath, filename))
+    # Clear out messages in the message store.
+    message_store = getUtility(IMessageStore)
+    for message in message_store.messages:
+        message_store.delete_message(message['message-id'])
+    config.db.commit()
+    # Reset the global style manager.
+    config.style_manager.populate()
+    
