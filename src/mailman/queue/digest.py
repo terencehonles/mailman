@@ -38,7 +38,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import formatdate, getaddresses, make_msgid
 
-from mailman.Utils import maketext, oneline, wrap
+from mailman.Utils import maketext, wrap
 from mailman.config import config
 from mailman.core.errors import DiscardMessage
 from mailman.core.i18n import _
@@ -47,6 +47,7 @@ from mailman.pipeline.decorate import decorate
 from mailman.pipeline.scrubber import process as scrubber
 from mailman.queue import Runner
 from mailman.utilities.mailbox import Mailbox
+from mailman.utilities.string import oneline
 
 
 

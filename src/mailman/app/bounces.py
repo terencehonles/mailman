@@ -30,11 +30,11 @@ import logging
 from email.mime.message import MIMEMessage
 from email.mime.text import MIMEText
 
-from mailman.Utils import oneline
 from mailman.app.finder import find_components
 from mailman.core.i18n import _
 from mailman.email.message import UserNotification
 from mailman.interfaces.bounce import IBounceDetector
+from mailman.utilities.string import oneline
 
 log = logging.getLogger('mailman.config')
 

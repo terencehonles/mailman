@@ -21,12 +21,19 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'expand'
+    'expand',
+    'oneline',
     ]
 
 
 import logging
+
+from email.errors import HeaderParseError
+from email.header import decode_header, make_header
 from string import Template
+
+EMPTYSTRING = ''
+UEMPTYSTRING = u''
 
 log = logging.getLogger('mailman.error')
 
@@ -57,3 +64,31 @@ def expand(template, substitutions, template_class=Template):
     except (TypeError, ValueError):
         # The template is really screwed up.
         log.exception('broken template: %s', template)
+
+
+
+def oneline(s, cset='us-ascii', in_unicode=False):
+    """Decode a header string in one line and convert into specified charset.
+
+    :param s: The header string
+    :type s: string
+    :param cset: The character set (encoding) to use.
+    :type cset: string
+    :param in_unicode: Flag specifying whether to return the converted string
+        as a unicode (True) or an 8-bit string (False, the default).
+    :type in_unicode: bool
+    :return: The decoded header string.  If an error occurs while converting
+        the input string, return the string undecoded, as an 8-bit string.
+    :rtype: string
+    """
+    try:
+        h = make_header(decode_header(s))
+        ustr = h.__unicode__()
+        line = UEMPTYSTRING.join(ustr.splitlines())
+        if in_unicode:
+            return line
+        else:
+            return line.encode(cset, 'replace')
+    except (LookupError, UnicodeError, ValueError, HeaderParseError):
+        # possibly charset problem. return with undecoded string in one line.
+        return EMPTYSTRING.join(s.splitlines())

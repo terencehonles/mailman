@@ -36,8 +36,6 @@ import errno
 import logging
 
 # pylint: disable-msg=E0611,W0403
-from email.errors import HeaderParseError
-from email.header import decode_header, make_header
 from string import ascii_letters, digits, whitespace
 from zope.component import getUtility
 
@@ -337,18 +335,3 @@ def uquote(s):
             a.append(c)
     # Join characters together and coerce to byte string
     return str(EMPTYSTRING.join(a))
-
-
-def oneline(s, cset='us-ascii', in_unicode=False):
-    # Decode header string in one line and convert into specified charset
-    try:
-        h = make_header(decode_header(s))
-        ustr = h.__unicode__()
-        line = UEMPTYSTRING.join(ustr.splitlines())
-        if in_unicode:
-            return line
-        else:
-            return line.encode(cset, 'replace')
-    except (LookupError, UnicodeError, ValueError, HeaderParseError):
-        # possibly charset problem. return with undecoded string in one line.
-        return EMPTYSTRING.join(s.splitlines())

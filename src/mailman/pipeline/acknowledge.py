@@ -36,6 +36,7 @@ from mailman.core.i18n import _
 from mailman.email.message import UserNotification
 from mailman.interfaces.handler import IHandler
 from mailman.interfaces.languages import ILanguageManager
+from mailman.utilities.string import oneline
 
 
 
@@ -72,7 +73,7 @@ class Acknowledge:
         realname = mlist.real_name
         text = Utils.maketext(
             'postack.txt',
-            {'subject'     : Utils.oneline(original_subject, charset),
+            {'subject'     : oneline(original_subject, charset),
              'listname'    : realname,
              'listinfo_url': mlist.script_url('listinfo'),
              'optionsurl'  : member.options_url,
