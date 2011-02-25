@@ -34,6 +34,7 @@ from mailman.app.notifications import send_goodbye_message
 from mailman.core.i18n import _
 from mailman.email.message import OwnerNotification
 from mailman.interfaces.address import IEmailValidator
+from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.member import (
     AlreadySubscribedError, MemberRole, MembershipIsBannedError,
     NotAMemberError)
@@ -71,10 +72,8 @@ def add_member(mlist, email, realname, password, delivery_mode, language):
     if mlist.members.get_member(email) is not None:
         raise AlreadySubscribedError(
             mlist.fqdn_listname, email, MemberRole.member)
-    # Check for banned email addresses here too for administrative mass
-    # subscribes and confirmations.
-    pattern = Utils.get_pattern(email, mlist.ban_list)
-    if pattern:
+    # Check to see if the email address is banned.
+    if getUtility(IBanManager).is_banned(email, mlist.fqdn_listname):
         raise MembershipIsBannedError(mlist, email)
     # See if there's already a user linked with the given address.
     user_manager = getUtility(IUserManager)

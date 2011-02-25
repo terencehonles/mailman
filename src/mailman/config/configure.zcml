@@ -17,6 +17,11 @@
     />
 
   <utility
+    factory="mailman.model.bans.BanManager"
+    provides="mailman.interfaces.bans.IBanManager"
+    />
+
+  <utility
     factory="mailman.model.domain.DomainManager"
     provides="mailman.interfaces.domain.IDomainManager"
     />

@@ -32,7 +32,8 @@ from zope.component import getUtility
 from mailman.app.lifecycle import create_list
 from mailman.app.membership import add_member
 from mailman.core.constants import system_preferences
-from mailman.interfaces.member import DeliveryMode
+from mailman.interfaces.bans import IBanManager
+from mailman.interfaces.member import DeliveryMode, MembershipIsBannedError
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import reset_the_world
 from mailman.testing.layers import ConfigLayer
@@ -67,6 +68,60 @@ class AddMemberTest(unittest.TestCase):
                             system_preferences.preferred_language)
         self.assertEqual(member.address.email, 'aperson@example.com')
         self.assertEqual(member.mailing_list, 'test@example.com')
+
+    def test_add_member_banned(self):
+        # Test that members who are banned by specific address cannot
+        # subscribe to the mailing list.
+        getUtility(IBanManager).ban('anne@example.com', 'test@example.com')
+        self.assertRaises(
+            MembershipIsBannedError,
+            add_member, self._mlist, 'anne@example.com', 'Anne Person',
+            '123', DeliveryMode.regular, system_preferences.preferred_language)
+
+    def test_add_member_globally_banned(self):
+        # Test that members who are banned by specific address cannot
+        # subscribe to the mailing list.
+        getUtility(IBanManager).ban('anne@example.com')
+        self.assertRaises(
+            MembershipIsBannedError,
+            add_member, self._mlist, 'anne@example.com', 'Anne Person',
+            '123', DeliveryMode.regular, system_preferences.preferred_language)
+
+    def test_add_member_banned_from_different_list(self):
+        # Test that members who are banned by specific address cannot
+        # subscribe to the mailing list.
+        getUtility(IBanManager).ban('anne@example.com', 'sample@example.com')
+        member = add_member(self._mlist, 'anne@example.com',
+                            'Anne Person', '123', DeliveryMode.regular,
+                            system_preferences.preferred_language)
+        self.assertEqual(member.address.email, 'anne@example.com')
+
+    def test_add_member_banned_by_pattern(self):
+        # Test that members who are banned by specific address cannot
+        # subscribe to the mailing list.
+        getUtility(IBanManager).ban('^.*@example.com', 'test@example.com')
+        self.assertRaises(
+            MembershipIsBannedError,
+            add_member, self._mlist, 'anne@example.com', 'Anne Person',
+            '123', DeliveryMode.regular, system_preferences.preferred_language)
+
+    def test_add_member_globally_banned_by_pattern(self):
+        # Test that members who are banned by specific address cannot
+        # subscribe to the mailing list.
+        getUtility(IBanManager).ban('^.*@example.com')
+        self.assertRaises(
+            MembershipIsBannedError,
+            add_member, self._mlist, 'anne@example.com', 'Anne Person',
+            '123', DeliveryMode.regular, system_preferences.preferred_language)
+
+    def test_add_member_banned_from_different_list_by_pattern(self):
+        # Test that members who are banned by specific address cannot
+        # subscribe to the mailing list.
+        getUtility(IBanManager).ban('^.*@example.com', 'sample@example.com')
+        member = add_member(self._mlist, 'anne@example.com',
+                            'Anne Person', '123', DeliveryMode.regular,
+                            system_preferences.preferred_language)
+        self.assertEqual(member.address.email, 'anne@example.com')
 
 
 

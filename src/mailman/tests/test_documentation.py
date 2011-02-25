@@ -253,7 +253,7 @@ def test_suite():
                 layer = getattr(sys.modules[package_path], 'layer', SMTPLayer)
             for filename in os.listdir(docsdir):
                 base, extension = os.path.splitext(filename)
-                if os.path.splitext(filename)[1] == '.txt':
+                if os.path.splitext(filename)[1] in ('.txt', '.rst'):
                     module_path = package_path + '.' + base
                     doctest_files[module_path] = (
                         os.path.join(docsdir, filename), layer)
