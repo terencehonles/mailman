@@ -26,10 +26,10 @@ import email.Errors
 
 from email.Parser import Parser
 from flufl.lock import Lock, TimeOutError
+from lazr.config import as_host_port
 
 from mailman import MailList
 from mailman import Message
-from mailman import Utils
 from mailman import loginit
 from mailman.configuration import config
 from mailman.core.i18n import _
@@ -69,8 +69,8 @@ Poll the NNTP servers for messages to be gatewayed to mailing lists."""))
 _hostcache = {}
 
 def open_newsgroup(mlist):
-    # Split host:port if given
-    nntp_host, nntp_port = Utils.nntpsplit(mlist.nntp_host)
+    # Split host:port if given.
+    nntp_host, nntp_port = as_host_port(mlist.nntp_host, default_port=119)
     # Open up a "mode reader" connection to nntp server.  This will be shared
     # for all the gated lists having the same nntp_host.
     conn = _hostcache.get(mlist.nntp_host)

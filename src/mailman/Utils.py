@@ -147,17 +147,6 @@ def websafe(s):
     return cgi.escape(s, quote=True)
 
 
-def nntpsplit(s):
-    parts = s.split(':', 1)
-    if len(parts) == 2:
-        try:
-            return parts[0], int(parts[1])
-        except ValueError:
-            pass
-    # Use the defaults
-    return s, 119
-
-
 
 class OuterExit(Exception):
     pass
