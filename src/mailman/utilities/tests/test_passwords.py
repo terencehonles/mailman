@@ -27,8 +27,8 @@ __all__ = [
 
 import unittest
 
-from mailman import passwords
 from mailman.core import errors
+from mailman.utilities import passwords
 
 
 

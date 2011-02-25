@@ -33,20 +33,16 @@ import os
 import re
 import cgi
 import errno
-import base64
-import random
 import logging
 
 # pylint: disable-msg=E0611,W0403
 from email.errors import HeaderParseError
 from email.header import decode_header, make_header
-from lazr.config import as_boolean
 from string import ascii_letters, digits, whitespace
 from zope.component import getUtility
 
 import mailman.templates
 
-from mailman import passwords
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.languages import ILanguageManager
