@@ -23,9 +23,11 @@ __metaclass__ = type
 __all__ = [
     'expand',
     'oneline',
+    'websafe',
     ]
 
 
+import cgi
 import logging
 
 from email.errors import HeaderParseError
@@ -92,3 +94,8 @@ def oneline(s, cset='us-ascii', in_unicode=False):
     except (LookupError, UnicodeError, ValueError, HeaderParseError):
         # possibly charset problem. return with undecoded string in one line.
         return EMPTYSTRING.join(s.splitlines())
+
+
+
+def websafe(s):
+    return cgi.escape(s, quote=True)

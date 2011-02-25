@@ -50,6 +50,7 @@ from mailman.Archiver import pipermail
 from mailman.config import config
 from mailman.core.i18n import _, ctime
 from mailman.interfaces.listmanager import IListManager
+from mailman.utilities.string import websafe
 
 
 log = logging.getLogger('mailman.error')
@@ -119,9 +120,9 @@ html_charset = '<META http-equiv="Content-Type" ' \
 
 def CGIescape(arg, lang=None):
     if isinstance(arg, unicode):
-        s = Utils.websafe(arg)
+        s = websafe(arg)
     else:
-        s = Utils.websafe(str(arg))
+        s = websafe(str(arg))
     return Utils.uncanonstr(s.replace('"', '&quot;'), lang.code)
 
 # Parenthesized human name

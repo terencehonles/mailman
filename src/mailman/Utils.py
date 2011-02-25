@@ -31,7 +31,6 @@ __all__ = [
 
 import os
 import re
-import cgi
 import errno
 import logging
 
@@ -140,11 +139,6 @@ def wrap(text, column=70, honor_leading_ws=True):
         # end for text in lines
     # the last two newlines are bogus
     return wrapped[:-2]
-
-
-
-def websafe(s):
-    return cgi.escape(s, quote=True)
 
 
 
