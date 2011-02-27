@@ -23,6 +23,7 @@ __metaclass__ = type
 __all__ = [
     'expand',
     'oneline',
+    'uncanonstr',
     'websafe',
     ]
 
@@ -33,6 +34,10 @@ import logging
 from email.errors import HeaderParseError
 from email.header import decode_header, make_header
 from string import Template
+from zope.component import getUtility
+
+from mailman.interfaces.languages import ILanguageManager
+
 
 EMPTYSTRING = ''
 UEMPTYSTRING = u''
@@ -99,3 +104,37 @@ def oneline(s, cset='us-ascii', in_unicode=False):
 
 def websafe(s):
     return cgi.escape(s, quote=True)
+
+
+
+# The opposite of canonstr() -- sorta.  I.e. it attempts to encode s in the
+# charset of the given language, which is the character set that the page will
+# be rendered in, and failing that, replaces non-ASCII characters with their
+# html references.  It always returns a byte string.
+def uncanonstr(s, lang=None):
+    if s is None:
+        s = u''
+    if lang is None:
+        charset = 'us-ascii'
+    else:
+        charset = getUtility(ILanguageManager)[lang].charset
+    # See if the string contains characters only in the desired character
+    # set.  If so, return it unchanged, except for coercing it to a byte
+    # string.
+    try:
+        if isinstance(s, unicode):
+            return s.encode(charset)
+        else:
+            unicode(s, charset)
+            return s
+    except UnicodeError:
+        # Nope, it contains funny characters, so html-ref it
+        a = []
+        for c in s:
+            o = ord(c)
+            if o > 127:
+                a.append('&#%3d;' % o)
+            else:
+                a.append(c)
+        # Join characters together and coerce to byte string
+        return str(EMPTYSTRING.join(a))

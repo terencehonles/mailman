@@ -260,41 +260,3 @@ def findtext(templatefile, raw_dict=None, raw=False, lang=None, mlist=None):
 
 def maketext(templatefile, dict=None, raw=False, lang=None, mlist=None):
     return findtext(templatefile, dict, raw, lang, mlist)[0]
-
-
-
-# The opposite of canonstr() -- sorta.  I.e. it attempts to encode s in the
-# charset of the given language, which is the character set that the page will
-# be rendered in, and failing that, replaces non-ASCII characters with their
-# html references.  It always returns a byte string.
-def uncanonstr(s, lang=None):
-    if s is None:
-        s = u''
-    if lang is None:
-        charset = 'us-ascii'
-    else:
-        charset = getUtility(ILanguageManager)[lang].charset
-    # See if the string contains characters only in the desired character
-    # set.  If so, return it unchanged, except for coercing it to a byte
-    # string.
-    try:
-        if isinstance(s, unicode):
-            return s.encode(charset)
-        else:
-            unicode(s, charset)
-            return s
-    except UnicodeError:
-        # Nope, it contains funny characters, so html-ref it
-        return uquote(s)
-
-
-def uquote(s):
-    a = []
-    for c in s:
-        o = ord(c)
-        if o > 127:
-            a.append('&#%3d;' % o)
-        else:
-            a.append(c)
-    # Join characters together and coerce to byte string
-    return str(EMPTYSTRING.join(a))

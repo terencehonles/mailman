@@ -50,7 +50,7 @@ from mailman.Archiver import pipermail
 from mailman.config import config
 from mailman.core.i18n import _, ctime
 from mailman.interfaces.listmanager import IListManager
-from mailman.utilities.string import websafe
+from mailman.utilities.string import uncanonstr, websafe
 
 
 log = logging.getLogger('mailman.error')
@@ -86,7 +86,7 @@ def html_quote(s, langcode=None):
               ('"', '&quot;'))
     for thing, repl in repls:
         s = s.replace(thing, repl)
-    return Utils.uncanonstr(s, langcode)
+    return uncanonstr(s, langcode)
 
 
 def url_quote(s):
@@ -123,7 +123,7 @@ def CGIescape(arg, lang=None):
         s = websafe(arg)
     else:
         s = websafe(str(arg))
-    return Utils.uncanonstr(s.replace('"', '&quot;'), lang.code)
+    return uncanonstr(s.replace('"', '&quot;'), lang.code)
 
 # Parenthesized human name
 paren_name_pat = re.compile(r'([(].*[)])')
@@ -202,7 +202,7 @@ def quick_maketext(templatefile, dict=None, lang=None, mlist=None):
             pass
     # Make sure the text is in the given character set, or html-ify any bogus
     # characters.
-    return Utils.uncanonstr(text, lang.code)
+    return uncanonstr(text, lang.code)
 
 
 
