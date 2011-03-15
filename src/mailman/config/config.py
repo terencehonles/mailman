@@ -34,6 +34,8 @@ from string import Template
 from zope.component import getUtility
 from zope.interface import Interface, implements
 
+import mailman.templates
+
 from mailman import version
 from mailman.interfaces.languages import ILanguageManager
 from mailman.styles.manager import StyleManager
@@ -176,6 +178,10 @@ class Configuration:
             pipermail_public_dir    = category.pipermail_public_dir,
             queue_dir               = category.queue_dir,
             var_dir                 = var_dir,
+            template_dir            = (
+                os.path.dirname(mailman.templates.__file__)
+                if category.template_dir == ':source:'
+                else category.template_dir),
             # Files.
             creator_pw_file         = category.creator_pw_file,
             lock_file               = category.lock_file,

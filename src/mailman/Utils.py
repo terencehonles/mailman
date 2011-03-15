@@ -210,9 +210,9 @@ def findtext(templatefile, raw_dict=None, raw=False, lang=None, mlist=None):
     searchdirs = []
     if mlist is not None:
         searchdirs.append(mlist.data_path)
-        searchdirs.append(os.path.join(TEMPLATE_DIR, mlist.host_name))
-    searchdirs.append(os.path.join(TEMPLATE_DIR, 'site'))
-    searchdirs.append(TEMPLATE_DIR)
+        searchdirs.append(os.path.join(config.TEMPLATE_DIR, mlist.host_name))
+    searchdirs.append(os.path.join(config.TEMPLATE_DIR, 'site'))
+    searchdirs.append(config.TEMPLATE_DIR)
     # Start scanning
     fp = None
     try:
