@@ -31,9 +31,14 @@ import os
 import errno
 
 from itertools import product
+from zope.component import getUtility
 
 from mailman.config import config
 from mailman.core.constants import system_preferences
+from mailman.interfaces.languages import ILanguageManager
+from mailman.utilities.string import expand
+
+from mailman.Utils import wrap as wrap_text
 
 
 
@@ -155,5 +160,39 @@ def find(template_file, mailing_list=None, language=None):
     raise TemplateNotFoundError(template_file)
 
 
-def make():
-    pass
+def make(template_file, mailing_list=None, language=None, wrap=True, **kw):
+    """Locate and 'make' a template file.
+
+    The template file is located as with `find()`, and the resulting text is
+    optionally wrapped and interpolated with the keyword argument dictionary.
+
+    :param template_file: The name of the template file to search for.
+    :type template_file: string
+    :param mailing_list: Optional mailing list used as the context for
+        searching for the template file.  The list's preferred language will
+        influence the search, as will the list's data directory.
+    :type mailing_list: `IMailingList`
+    :param language: Optional language code, which influences the search.
+    :type language: string
+    :param wrap: When True, wrap the text.
+    :type wrap: bool
+    :param **kw: Keyword arguments for template interpolation.
+    :return: A tuple of the file system path to the first matching template,
+        and an open file object allowing reading of the file.
+    :rtype: (string, file)
+    :raises TemplateNotFoundError: when the template could not be found.
+    """
+    path, fp = find(template_file, mailing_list, language)
+    try:
+        raw_text = fp.read()
+    finally:
+        fp.close()
+    # The language is always the second to last path component.
+    parts = path.split(os.sep)
+    language_code = parts[-2]
+    charset = getUtility(ILanguageManager)[language_code].charset
+    template = unicode(raw_text, charset, 'replace')
+    text = expand(template, kw)
+    if wrap:
+        return wrap_text(text)
+    return text

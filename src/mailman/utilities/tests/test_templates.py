@@ -38,8 +38,6 @@ from mailman.interfaces.languages import ILanguageManager
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.i18n import TemplateNotFoundError, _search, find, make
 
-from mailman.Utils import findtext
-
 
 
 class TestSearchOrder(unittest.TestCase):
@@ -214,9 +212,81 @@ class TestFind(unittest.TestCase):
         else:
             raise AssertionError('TemplateNotFoundError expected')
 
+
+
+class TestMake(unittest.TestCase):
+    """Test template interpolation."""
+
+    layer = ConfigLayer
+
+    def setUp(self):
+        self.template_dir = tempfile.mkdtemp()
+        config.push('template config', """\
+        [paths.testing]
+        template_dir: {0}
+        """.format(self.template_dir))
+        # The following MUST happen AFTER the push() above since pushing a new
+        # config also clears out the language manager.
+        getUtility(ILanguageManager).add('xx', 'utf-8', 'Xlandia')
+        self.mlist = create_list('test@example.com')
+        self.mlist.preferred_language = 'xx'
+        # Populate the template directory with some samples.
+        self.xxdir = os.path.join(self.template_dir, 'xx')
+        os.mkdir(self.xxdir)
+        with open(os.path.join(self.xxdir, 'nosub.txt'), 'w') as fp:
+            print >> fp, """\
+This is a global template.
+It has no substitutions.
+It will be wrapped.
+"""
+        with open(os.path.join(self.xxdir, 'subs.txt'), 'w') as fp:
+            print >> fp, """\
+This is a $kind template.
+It has $howmany substitutions.
+It will be wrapped.
+"""
+        with open(os.path.join(self.xxdir, 'nowrap.txt'), 'w') as fp:
+            print >> fp, """\
+This is a $kind template.
+It has $howmany substitutions.
+It will not be wrapped.
+"""
+
+    def tearDown(self):
+        config.pop('template config')
+        shutil.rmtree(self.template_dir)
+
+    def test_no_substitutions(self):
+        self.assertEqual(make('nosub.txt', self.mlist), """\
+This is a global template. It has no substitutions. It will be
+wrapped.
+
+""")
+
+    def test_substitutions(self):
+        self.assertEqual(make('subs.txt', self.mlist,
+                              kind='very nice',
+                              howmany='a few'), """\
+This is a very nice template. It has a few substitutions. It will be
+wrapped.
+
+""")
+
+    def test_substitutions_no_wrap(self):
+        self.assertEqual(make('nowrap.txt', self.mlist, wrap=False,
+                              kind='very nice',
+                              howmany='a few'), """\
+This is a very nice template.
+It has a few substitutions.
+It will not be wrapped.
+
+""")
+
+
 
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestSearchOrder))
     suite.addTest(unittest.makeSuite(TestFind))
+    suite.addTest(unittest.makeSuite(TestMake))
     return suite
