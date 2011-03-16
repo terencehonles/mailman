@@ -185,7 +185,11 @@ def make(template_file, mailing_list=None, language=None, wrap=True, **kw):
     """
     path, fp = find(template_file, mailing_list, language)
     try:
-        # XXX BROKEN HACK
+        # XXX Removing the trailing newline is a hack carried over from
+        # Mailman 2.  The (stripped) template text is then passed through the
+        # translation catalog.  This ensures that the translated text is
+        # unicode, and also allows for volunteers to translate the templates
+        # into the language catalogs.
         template = _(fp.read()[:-1])
     finally:
         fp.close()
