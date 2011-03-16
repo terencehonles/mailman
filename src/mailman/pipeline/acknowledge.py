@@ -31,11 +31,11 @@ __all__ = [
 from zope.component import getUtility
 from zope.interface import implements
 
-from mailman import Utils
 from mailman.core.i18n import _
 from mailman.email.message import UserNotification
 from mailman.interfaces.handler import IHandler
 from mailman.interfaces.languages import ILanguageManager
+from mailman.utilities.i18n import make
 from mailman.utilities.string import oneline
 
 
@@ -71,13 +71,15 @@ class Acknowledge:
         charset = language_manager[language.code].charset
         # Now get the acknowledgement template.
         realname = mlist.real_name
-        text = Utils.maketext(
-            'postack.txt',
-            {'subject'     : oneline(original_subject, charset),
-             'listname'    : realname,
-             'listinfo_url': mlist.script_url('listinfo'),
-             'optionsurl'  : member.options_url,
-             }, lang=language.code, mlist=mlist, raw=True)
+        text = make('postack.txt',
+                    mailing_list=mlist,
+                    language=language.code,
+                    wrap=False,
+                    subject=oneline(original_subject, charset),
+                    listname=realname,
+                    listinfo_url=mlist.script_url('listinfo'),
+                    optionsurl=member.options_url,
+                    )
         # Craft the outgoing message, with all headers and attributes
         # necessary for general delivery.  Then enqueue it to the outgoing
         # queue.

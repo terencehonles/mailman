@@ -29,7 +29,6 @@ __all__ = [
 from email.utils import formataddr
 from zope.component import getUtility
 
-from mailman import Utils
 from mailman.app.notifications import send_goodbye_message
 from mailman.core.i18n import _
 from mailman.email.message import OwnerNotification
@@ -39,6 +38,7 @@ from mailman.interfaces.member import (
     AlreadySubscribedError, MemberRole, MembershipIsBannedError,
     NotAMemberError)
 from mailman.interfaces.usermanager import IUserManager
+from mailman.utilities.i18n import make
 
 
 
@@ -149,10 +149,10 @@ def delete_member(mlist, address, admin_notif=None, userack=None):
         user = getUtility(IUserManager).get_user(address)
         realname = user.real_name
         subject = _('$mlist.real_name unsubscription notification')
-        text = Utils.maketext(
-            'adminunsubscribeack.txt',
-            {'listname': mlist.real_name,
-             'member'  : formataddr((realname, address)),
-             }, mlist=mlist)
+        text = make('adminunsubscribeack.txt',
+                    mailing_list=mlist,
+                    listname=mlist.real_name,
+                    member=formataddr((realname, address)),
+                    )
         msg = OwnerNotification(mlist, subject, text)
         msg.send(mlist)

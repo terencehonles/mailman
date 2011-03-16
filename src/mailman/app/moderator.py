@@ -48,6 +48,7 @@ from mailman.interfaces.member import (
     AlreadySubscribedError, DeliveryMode, NotAMemberError)
 from mailman.interfaces.messages import IMessageStore
 from mailman.interfaces.requests import IRequests, RequestType
+from mailman.utilities.i18n import make
 
 
 NL = '\n'
@@ -209,12 +210,12 @@ def hold_subscription(mlist, address, realname, password, mode, language):
     if mlist.admin_immed_notify:
         subject = _(
             'New subscription request to list $mlist.real_name from $address')
-        text = Utils.maketext(
-            'subauth.txt',
-            {'username'   : address,
-             'listname'   : mlist.fqdn_listname,
-             'admindb_url': mlist.script_url('admindb'),
-             }, mlist=mlist)
+        text = make('subauth.txt',
+                    mailing_list=mlist,
+                    username=address,
+                    listname=mlist.fqdn_listname,
+                    admindb_url=mlist.script_url('admindb'),
+                    )
         # This message should appear to come from the <list>-owner so as
         # to avoid any useless bounce processing.
         msg = UserNotification(
@@ -281,12 +282,12 @@ def hold_unsubscription(mlist, address):
     if mlist.admin_immed_notify:
         subject = _(
             'New unsubscription request from $mlist.real_name by $address')
-        text = Utils.maketext(
-            'unsubauth.txt',
-            {'address'   : address,
-             'listname'   : mlist.fqdn_listname,
-             'admindb_url': mlist.script_url('admindb'),
-             }, mlist=mlist)
+        text = make('unsubauth.txt',
+                    mailing_list=mlist,
+                    address=address,
+                    listname=mlist.fqdn_listname,
+                    admindb_url=mlist.script_url('admindb'),
+                    )
         # This message should appear to come from the <list>-owner so as
         # to avoid any useless bounce processing.
         msg = UserNotification(
@@ -336,13 +337,14 @@ def _refuse(mlist, request, recip, comment, origmsg=None, lang=None):
         lang = (mlist.preferred_language
                 if member is None
                 else member.preferred_language)
-    text = Utils.maketext(
-        'refuse.txt',
-        {'listname' : mlist.fqdn_listname,
-         'request'  : request,
-         'reason'   : comment,
-         'adminaddr': mlist.owner_address,
-        }, lang=lang.code, mlist=mlist)
+    text = make('refuse.txt',
+                mailing_list=mlist,
+                language=lang.code,
+                listname=mlist.fqdn_listname,
+                request=request,
+                reason=comment,
+                adminaddr=mlist.owner_address,
+                )
     with _.using(lang.code):
         # add in original message, but not wrap/filled
         if origmsg:

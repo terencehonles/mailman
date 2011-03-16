@@ -50,6 +50,7 @@ from mailman.Archiver import pipermail
 from mailman.config import config
 from mailman.core.i18n import _, ctime
 from mailman.interfaces.listmanager import IListManager
+from mailman.utilities.i18n import find
 from mailman.utilities.string import uncanonstr, websafe
 
 
@@ -183,8 +184,8 @@ def quick_maketext(templatefile, dict=None, lang=None, mlist=None):
         template = _templatecache.get(filepath)
     if filepath is None or template is None:
         # Use the basic maketext, with defaults to get the raw template
-        template, filepath = Utils.findtext(templatefile, lang=lang.code,
-                                            raw=True, mlist=mlist)
+        template, filepath = find(templatefile, mailing_list=mlist,
+                                  language=lang.code)
         _templatefilepathcache[cachekey] = filepath
         _templatecache[filepath] = template
     # Copied from Utils.maketext()

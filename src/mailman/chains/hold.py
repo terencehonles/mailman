@@ -35,7 +35,7 @@ from zope.component import getUtility
 from zope.event import notify
 from zope.interface import implements
 
-from mailman.Utils import maketext, wrap
+from mailman.Utils import wrap
 from mailman.app.moderator import hold_message
 from mailman.app.replybot import can_acknowledge
 from mailman.chains.base import ChainNotification, TerminalChainBase
@@ -46,6 +46,7 @@ from mailman.interfaces.autorespond import IAutoResponseSet, Response
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.pending import IPendable, IPendings
 from mailman.interfaces.usermanager import IUserManager
+from mailman.utilities.i18n import make
 from mailman.utilities.string import oneline
 
 
@@ -103,14 +104,13 @@ def autorespond_to_sender(mlist, sender, lang=None):
         log.info('hold autoresponse limit hit: %s', sender)
         response_set.response_sent(address, Response.hold)
         # Send this notification message instead.
-        text = maketext(
-            'nomoretoday.txt',
-            {'sender' : sender,
-             'listname': mlist.fqdn_listname,
-             'num' : todays_count,
-             'owneremail': mlist.owner_address,
-             },
-            lang=lang)
+        text = make('nomoretoday.txt',
+                    language=lang,
+                    sender=sender,
+                    listname=mlist.fqdn_listname,
+                    num=todays_count,
+                    owneremail=mlist.owner_address,
+                    )
         with _.using(lang.code):
             msg = UserNotification(
                 sender, mlist.owner_address,
@@ -194,8 +194,10 @@ class HoldChain(TerminalChainBase):
             subject = _(
               'Your message to $mlist.fqdn_listname awaits moderator approval')
             send_language_code = msgdata.get('lang', language.code)
-            text = maketext('postheld.txt', substitutions,
-                            lang=send_language_code, mlist=mlist)
+            text = make('postheld.txt',
+                        mailing_list=mlist,
+                        language=send_language_code,
+                        **substitutions)
             adminaddr = mlist.bounces_address
             nmsg = UserNotification(
                 msg.sender, adminaddr, subject, text,
@@ -222,10 +224,11 @@ class HoldChain(TerminalChainBase):
                                         mlist.owner_address,
                                         subject, lang=language)
                 nmsg.set_type('multipart/mixed')
-                text = MIMEText(
-                    maketext('postauth.txt', substitutions,
-                             raw=True, mlist=mlist),
-                    _charset=charset)
+                text = MIMEText(make('postauth.txt',
+                                     mailing_list=mlist,
+                                     wrap=False,
+                                     **substitutions),
+                                _charset=charset)
                 dmsg = MIMEText(wrap(_("""\
 If you reply to this message, keeping the Subject: header intact, Mailman will
 discard the held message.  Do this if the message is spam.  If you reply to

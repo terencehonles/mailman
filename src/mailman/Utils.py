@@ -31,19 +31,12 @@ __all__ = [
 
 import os
 import re
-import errno
 import logging
 
 # pylint: disable-msg=E0611,W0403
 from string import ascii_letters, digits, whitespace
-from zope.component import getUtility
 
 import mailman.templates
-
-from mailman.config import config
-from mailman.core.i18n import _
-from mailman.interfaces.languages import ILanguageManager
-from mailman.utilities.string import expand
 
 
 AT = '@'
@@ -139,124 +132,3 @@ def wrap(text, column=70, honor_leading_ws=True):
         # end for text in lines
     # the last two newlines are bogus
     return wrapped[:-2]
-
-
-
-class OuterExit(Exception):
-    pass
-
-def findtext(templatefile, raw_dict=None, raw=False, lang=None, mlist=None):
-    # Make some text from a template file.  The order of searches depends on
-    # whether mlist and lang are provided.  Once the templatefile is found,
-    # string substitution is performed by interpolation in `dict'.  If `raw'
-    # is false, the resulting text is wrapped/filled by calling wrap().
-    #
-    # When looking for a template in a specific language, there are 4 places
-    # that are searched, in this order:
-    #
-    # 1. the list-specific language directory
-    #    lists/<listname>/<language>
-    #
-    # 2. the domain-specific language directory
-    #    templates/<list.host_name>/<language>
-    #
-    # 3. the site-wide language directory
-    #    templates/site/<language>
-    #
-    # 4. the global default language directory
-    #    templates/<language>
-    #
-    # The first match found stops the search.  In this way, you can specialize
-    # templates at the desired level, or, if you use only the default
-    # templates, you don't need to change anything.  You should never modify
-    # files in the templates/<language> subdirectory, since Mailman will
-    # overwrite these when you upgrade.  That's what the templates/site
-    # language directories are for.
-    #
-    # A further complication is that the language to search for is determined
-    # by both the `lang' and `mlist' arguments.  The search order there is
-    # that if lang is given, then the 4 locations above are searched,
-    # substituting lang for <language>.  If no match is found, and mlist is
-    # given, then the 4 locations are searched using the list's preferred
-    # language.  After that, the server default language is used for
-    # <language>.  If that still doesn't yield a template, then the standard
-    # distribution's English language template is used as an ultimate
-    # fallback, and when lang is not 'en', the resulting template is passed
-    # through the translation service.  If this template is missing you've got
-    # big problems. ;)
-    #
-    # A word on backwards compatibility: Mailman versions prior to 2.1 stored
-    # templates in templates/*.{html,txt} and lists/<listname>/*.{html,txt}.
-    # Those directories are no longer searched so if you've got customizations
-    # in those files, you should move them to the appropriate directory based
-    # on the above description.  Mailman's upgrade script cannot do this for
-    # you.
-    #
-    # The function has been revised and renamed as it now returns both the
-    # template text and the path from which it retrieved the template. The
-    # original function is now a wrapper which just returns the template text
-    # as before, by calling this renamed function and discarding the second
-    # item returned.
-    #
-    # Calculate the languages to scan
-    languages = set()
-    if lang is not None:
-        languages.add(lang)
-    if mlist is not None:
-        languages.add(mlist.preferred_language.code)
-    languages.add(config.mailman.default_language)
-    assert None not in languages, 'None in languages'
-    # Calculate the locations to scan
-    searchdirs = []
-    if mlist is not None:
-        searchdirs.append(mlist.data_path)
-        searchdirs.append(os.path.join(TEMPLATE_DIR, mlist.host_name))
-    searchdirs.append(os.path.join(TEMPLATE_DIR, 'site'))
-    searchdirs.append(TEMPLATE_DIR)
-    # Start scanning
-    fp = None
-    try:
-        for lang in languages:
-            for dir in searchdirs:
-                filename = os.path.join(dir, lang, templatefile)
-                try:
-                    fp = open(filename)
-                    raise OuterExit
-                except IOError, e:
-                    if e.errno != errno.ENOENT:
-                        raise
-                    # Okay, it doesn't exist, keep looping
-                    fp = None
-    except OuterExit:
-        pass
-    if fp is None:
-        # Try one last time with the distro English template, which, unless
-        # you've got a really broken installation, must be there.
-        try:
-            filename = os.path.join(TEMPLATE_DIR, 'en', templatefile)
-            fp = open(filename)
-        except IOError, e:
-            if e.errno != errno.ENOENT:
-                raise
-            # We never found the template.  BAD!
-            raise IOError(errno.ENOENT, 'No template file found', templatefile)
-        else:
-            # XXX BROKEN HACK
-            data = fp.read()[:-1]
-            template = _(data)
-            fp.close()
-    else:
-        template = fp.read()
-        fp.close()
-        charset = getUtility(ILanguageManager)[lang].charset
-        template = unicode(template, charset, 'replace')
-    text = template
-    if raw_dict is not None:
-        text = expand(template, raw_dict)
-    if raw:
-        return text, filename
-    return wrap(text), filename
-
-
-def maketext(templatefile, dict=None, raw=False, lang=None, mlist=None):
-    return findtext(templatefile, dict, raw, lang, mlist)[0]
