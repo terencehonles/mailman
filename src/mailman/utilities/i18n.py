@@ -35,6 +35,7 @@ from zope.component import getUtility
 
 from mailman.config import config
 from mailman.core.constants import system_preferences
+from mailman.core.i18n import _
 from mailman.interfaces.languages import ILanguageManager
 from mailman.utilities.string import expand
 
@@ -184,14 +185,11 @@ def make(template_file, mailing_list=None, language=None, wrap=True, **kw):
     """
     path, fp = find(template_file, mailing_list, language)
     try:
-        raw_text = fp.read()
+        # XXX BROKEN HACK
+        template = _(fp.read()[:-1])
     finally:
         fp.close()
-    # The language is always the second to last path component.
-    parts = path.split(os.sep)
-    language_code = parts[-2]
-    charset = getUtility(ILanguageManager)[language_code].charset
-    template = unicode(raw_text, charset, 'replace')
+    assert isinstance(template, unicode), 'Translated template is not unicode'
     text = expand(template, kw)
     if wrap:
         return wrap_text(text)

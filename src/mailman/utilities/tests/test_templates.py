@@ -260,7 +260,6 @@ It will not be wrapped.
         self.assertEqual(make('nosub.txt', self.mlist), """\
 This is a global template. It has no substitutions. It will be
 wrapped.
-
 """)
 
     def test_substitutions(self):
@@ -269,7 +268,6 @@ wrapped.
                               howmany='a few'), """\
 This is a very nice template. It has a few substitutions. It will be
 wrapped.
-
 """)
 
     def test_substitutions_no_wrap(self):
@@ -279,7 +277,6 @@ wrapped.
 This is a very nice template.
 It has a few substitutions.
 It will not be wrapped.
-
 """)
 
 

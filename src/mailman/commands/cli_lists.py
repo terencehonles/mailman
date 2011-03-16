@@ -30,7 +30,6 @@ __all__ = [
 from zope.component import getUtility
 from zope.interface import implements
 
-from mailman.Utils import maketext
 from mailman.app.lifecycle import create_list, remove_list
 from mailman.config import config
 from mailman.core.constants import system_preferences
@@ -42,6 +41,7 @@ from mailman.interfaces.domain import (
     BadDomainSpecificationError, IDomainManager)
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.listmanager import IListManager, ListAlreadyExistsError
+from mailman.utilities.i18n import make
 
 
 
@@ -213,7 +213,7 @@ class Create:
                 requestaddr     = mlist.request_address,
                 siteowner       = mlist.no_reply_address,
                 )
-            text = maketext('newlist.txt', d, mlist=mlist)
+            text = make('newlist.txt', mailing_list=mlist, **d)
             # Set the I18N language to the list's preferred language so the
             # header will match the template language.  Stashing and restoring
             # the old translation context is just (healthy? :) paranoia.
