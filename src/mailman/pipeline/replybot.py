@@ -30,7 +30,6 @@ import logging
 from zope.component import getUtility
 from zope.interface import implements
 
-from mailman import Utils
 from mailman.core.i18n import _
 from mailman.email.message import UserNotification
 from mailman.interfaces.autorespond import (
@@ -38,7 +37,7 @@ from mailman.interfaces.autorespond import (
 from mailman.interfaces.handler import IHandler
 from mailman.interfaces.usermanager import IUserManager
 from mailman.utilities.datetime import today
-from mailman.utilities.string import expand
+from mailman.utilities.string import expand, wrap
 
 
 log = logging.getLogger('mailman.error')
@@ -113,7 +112,7 @@ class Replybot:
                  owneremail     = mlist.owner_address,
                  )
         # Interpolation and Wrap the response text.
-        text = Utils.wrap(expand(response_text, d))
+        text = wrap(expand(response_text, d))
         outmsg = UserNotification(msg.sender, mlist.bounces_address,
                                   subject, text, mlist.preferred_language)
         outmsg['X-Mailer'] = _('The Mailman Replybot')

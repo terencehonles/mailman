@@ -20,7 +20,6 @@ import optparse
 
 from zope.component import getUtility
 
-from mailman import Message
 from mailman import Utils
 from mailman import passwords
 from mailman.app.membership import add_member

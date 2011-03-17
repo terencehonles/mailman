@@ -35,7 +35,6 @@ from zope.component import getUtility
 from zope.event import notify
 from zope.interface import implements
 
-from mailman.Utils import wrap
 from mailman.app.moderator import hold_message
 from mailman.app.replybot import can_acknowledge
 from mailman.chains.base import ChainNotification, TerminalChainBase
@@ -47,7 +46,7 @@ from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.pending import IPendable, IPendings
 from mailman.interfaces.usermanager import IUserManager
 from mailman.utilities.i18n import make
-from mailman.utilities.string import oneline
+from mailman.utilities.string import oneline, wrap
 
 
 log = logging.getLogger('mailman.vette')

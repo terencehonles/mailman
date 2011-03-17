@@ -31,15 +31,11 @@ import os
 import errno
 
 from itertools import product
-from zope.component import getUtility
 
 from mailman.config import config
 from mailman.core.constants import system_preferences
 from mailman.core.i18n import _
-from mailman.interfaces.languages import ILanguageManager
-from mailman.utilities.string import expand
-
-from mailman.Utils import wrap as wrap_text
+from mailman.utilities.string import expand, wrap as wrap_text
 
 
 
