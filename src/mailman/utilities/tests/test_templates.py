@@ -258,17 +258,15 @@ It will not be wrapped.
 
     def test_no_substitutions(self):
         self.assertEqual(make('nosub.txt', self.mlist), """\
-This is a global template. It has no substitutions. It will be
-wrapped.
-""")
+This is a global template.  It has no substitutions.  It will be
+wrapped.""")
 
     def test_substitutions(self):
         self.assertEqual(make('subs.txt', self.mlist,
                               kind='very nice',
                               howmany='a few'), """\
-This is a very nice template. It has a few substitutions. It will be
-wrapped.
-""")
+This is a very nice template.  It has a few substitutions.  It will be
+wrapped.""")
 
     def test_substitutions_no_wrap(self):
         self.assertEqual(make('nowrap.txt', self.mlist, wrap=False,

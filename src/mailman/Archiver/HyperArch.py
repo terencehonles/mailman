@@ -44,7 +44,6 @@ from lazr.config import as_boolean
 from string import Template
 from zope.component import getUtility
 
-from mailman import Utils
 from mailman.Archiver import HyperDatabase
 from mailman.Archiver import pipermail
 from mailman.config import config

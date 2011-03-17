@@ -35,7 +35,6 @@ from datetime import datetime
 from email.utils import formataddr, formatdate, getaddresses, make_msgid
 from zope.component import getUtility
 
-from mailman import Utils
 from mailman.app.membership import add_member, delete_member
 from mailman.app.notifications import (
     send_admin_subscription_notice, send_welcome_message)
