@@ -89,7 +89,7 @@ And now you can find the associated user.
     >>> print user_manager.get_user('bperson@example.com')
     None
     >>> user_manager.get_user('cperson@example.com')
-    <User "Claire Person" at ...>
+    <User "Claire Person" (...) at ...>
 
 
 Deleting addresses

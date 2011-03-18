@@ -185,7 +185,7 @@ Joining a second list
 Anne of course, is still registered.
 
     >>> print user_manager.get_user('anne@example.com')
-    <User "Anne Person" at ...>
+    <User "Anne Person" (...) at ...>
 
 But she is not a member of the mailing list.
 
@@ -363,7 +363,7 @@ a user of the system.
 Now Bart is a user...
 
     >>> print user_manager.get_user('bart@example.com')
-    <User "Bart Person" at ...>
+    <User "Bart Person" (...) at ...>
 
 ...and a member of the mailing list.
 

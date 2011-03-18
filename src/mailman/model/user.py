@@ -46,13 +46,20 @@ class User(Model):
     id = Int(primary=True)
     real_name = Unicode()
     password = Unicode()
+    _user_id = Unicode()
 
     addresses = ReferenceSet(id, 'Address.user_id')
     preferences_id = Int()
     preferences = Reference(preferences_id, 'Preferences.id')
 
     def __repr__(self):
-        return '<User "{0}" at {1:#x}>'.format(self.real_name, id(self))
+        return '<User "{0.real_name}" ({0.user_id}) at {1:#x}>'.format(
+            self, id(self))
+
+    @property
+    def user_id(self):
+        """See `IUser`."""
+        return self._user_id
 
     def link(self, address):
         """See `IUser`."""

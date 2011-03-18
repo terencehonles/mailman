@@ -38,6 +38,9 @@ class IUser(Interface):
     password = Attribute(
         """This user's password information.""")
 
+    user_id = Attribute(
+        """The user's unique, random, identifier (sha1 hex digest).""")
+
     addresses = Attribute(
         """An iterator over all the `IAddresses` controlled by this user.""")
 

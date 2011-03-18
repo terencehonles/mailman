@@ -25,6 +25,10 @@ __all__ = [
     ]
 
 
+import os
+import time
+import hashlib
+
 from zope.interface import implements
 
 from mailman.config import config
@@ -33,6 +37,7 @@ from mailman.interfaces.usermanager import IUserManager
 from mailman.model.address import Address
 from mailman.model.preferences import Preferences
 from mailman.model.user import User
+from mailman.utilities.passwords import SALT_LENGTH
 
 
 
@@ -46,6 +51,11 @@ class UserManager:
             address = self.create_address(email, real_name)
             user.link(address)
         user.preferences = Preferences()
+        # Generate a unique random SHA1 hash for the user id.
+        salt = os.urandom(SALT_LENGTH)
+        h = hashlib.sha1(repr(time.time()))
+        h.update(salt)
+        user._user_id = unicode(h.hexdigest(), 'us-ascii')
         config.db.store.add(user)
         return user
 
@@ -56,10 +66,13 @@ class UserManager:
         addresses = config.db.store.find(Address, email=email.lower())
         if addresses.count() == 0:
             return None
-        elif addresses.count() == 1:
-            return addresses[0].user
-        else:
-            raise AssertionError('Unexpected query count')
+        return addresses.one().user
+
+    def get_user_by_id(self, user_id):
+        users = config.db.store.find(User, _user_id=user_id)
+        if users.count() == 0:
+            return None
+        return users.one()
 
     @property
     def users(self):
@@ -92,10 +105,7 @@ class UserManager:
         addresses = config.db.store.find(Address, email=email.lower())
         if addresses.count() == 0:
             return None
-        elif addresses.count() == 1:
-            return addresses[0]
-        else:
-            raise AssertionError('Unexpected query count')
+        return addresses.one()
 
     @property
     def addresses(self):

@@ -44,7 +44,7 @@ in the user database yet.
     >>> user_manager = getUtility(IUserManager)
     >>> user_1 = user_manager.create_user('aperson@example.com', 'Anne Person')
     >>> print user_1
-    <User "Anne Person" at ...>
+    <User "Anne Person" (...) at ...>
 
 We can add Anne as an owner of the mailing list, by creating a member role for
 her.
@@ -71,7 +71,7 @@ Bart becomes a moderator of the list.
 
     >>> user_2 = user_manager.create_user('bperson@example.com', 'Bart Person')
     >>> print user_2
-    <User "Bart Person" at ...>
+    <User "Bart Person" (...) at ...>
     >>> address_2 = list(user_2.addresses)[0]
     >>> address_2.subscribe(mlist, MemberRole.moderator)
     <Member: Bart Person <bperson@example.com>
