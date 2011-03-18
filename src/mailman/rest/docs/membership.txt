@@ -229,7 +229,7 @@ Elly is now a member of the mailing list.
 
     >>> elly = user_manager.get_user('eperson@example.com')
     >>> elly
-    <User "Elly Person" at ...>
+    <User "Elly Person" (...) at ...>
 
     >>> set(member.mailing_list for member in elly.memberships.members)
     set([u'alpha@example.com'])

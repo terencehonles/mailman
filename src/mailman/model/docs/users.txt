@@ -36,6 +36,24 @@ The password and real name can be changed at any time.
     another password
 
 
+User id
+=======
+
+Although rarely visible to users, every user has a unique ID in Mailman, which
+never changes.  This ID is generated randomly at the time the user is
+created.
+
+    >>> print len(user_1.user_id)
+    40
+
+The user id cannot change.
+
+    >>> user_1.user_id = 'foo'
+    Traceback (most recent call last):
+    ...
+    AttributeError: can't set attribute
+
+
 Users addresses
 ===============
 

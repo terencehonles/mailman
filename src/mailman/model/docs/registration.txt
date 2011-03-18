@@ -186,7 +186,7 @@ an `IUser` linked to this address.  The `IAddress` is verified.
     <Address: Anne Person <aperson@example.com> [verified] at ...>
     >>> found_user = user_manager.get_user('aperson@example.com')
     >>> found_user
-    <User "Anne Person" at ...>
+    <User "Anne Person" (...) at ...>
     >>> found_user.controls(found_address.email)
     True
     >>> from datetime import datetime
@@ -231,7 +231,7 @@ confirmation step is completed.
     >>> registrar.confirm(sent_token)
     True
     >>> user_manager.get_user('cperson@example.com')
-    <User "Claire Person" at ...>
+    <User "Claire Person" (...) at ...>
     >>> user_manager.get_address('cperson@example.com')
     <Address: cperson@example.com [verified] at ...>
 
@@ -276,7 +276,7 @@ can be used.
     >>> dperson = user_manager.create_user(
     ...     'dperson@example.com', 'Dave Person')
     >>> dperson
-    <User "Dave Person" at ...>
+    <User "Dave Person" (...) at ...>
     >>> address = user_manager.get_address('dperson@example.com')
     >>> address.verified_on = datetime.now()
 
@@ -297,7 +297,7 @@ can be used.
     >>> user is dperson
     True
     >>> user
-    <User "Dave Person" at ...>
+    <User "Dave Person" (...) at ...>
     >>> dump_list(repr(address) for address in user.addresses)
     <Address: Dave Person <dperson@example.com> [verified] at ...>
     <Address: David Person <david.person@example.com> [verified] at ...>
