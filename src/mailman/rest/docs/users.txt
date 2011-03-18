@@ -1,0 +1,16 @@
+=====
+Users
+=====
+
+The REST API can be used to add and remove users, add and remove user
+addresses, and change their preferred address, passord, or name.  Users are
+different than members; the latter represents an email address subscribed to a
+specific mailing list.  Users are just people that Mailman knows about.
+
+There are no users yet.
+
+    >>> dump_json('http://localhost:9001/3.0/users')
+    http_etag: "..."
+    start: 0
+    total_size: 0
+    
