@@ -253,6 +253,7 @@ CREATE TABLE user (
         real_name TEXT,
         password TEXT,
         _user_id TEXT,
+        _created_on TIMESTAMP,
         preferences_id INTEGER,
         PRIMARY KEY (id),
             CONSTRAINT user_preferences_id_fk
