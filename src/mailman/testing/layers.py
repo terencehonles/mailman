@@ -48,7 +48,6 @@ from mailman.core.logging import get_handler
 from mailman.interfaces.domain import IDomainManager
 from mailman.testing.helpers import TestableMaster, reset_the_world
 from mailman.testing.mta import ConnectionCountingController
-from mailman.utilities.datetime import factory
 from mailman.utilities.string import expand
 
 
@@ -60,17 +59,20 @@ NL = '\n'
 class MockAndMonkeyLayer:
     """Layer for mocking and monkey patching for testing."""
 
-    @classmethod
-    def setUp(cls):
-        factory.testing_mode = True
+    # Set this to True to enable predictable datetimes, uids, etc.
+    testing_mode = False
 
-    @classmethod
-    def tearDown(cls):
-        factory.testing_mode = False
+    # A registration of all testing factories, for resetting between tests.
+    _resets = []
 
     @classmethod
     def testTearDown(cls):
-        factory.reset()
+        for reset in cls._resets:
+            reset()
+
+    @classmethod
+    def register_reset(cls, reset):
+        cls._resets.append(reset)
 
 
 

@@ -24,7 +24,7 @@ __all__ = [
     'User',
     ]
 
-from storm.locals import Int, Reference, ReferenceSet, Unicode
+from storm.locals import DateTime, Int, Reference, ReferenceSet, Unicode
 from zope.interface import implements
 
 from mailman.config import config
@@ -35,6 +35,8 @@ from mailman.interfaces.user import IUser
 from mailman.model.address import Address
 from mailman.model.preferences import Preferences
 from mailman.model.roster import Memberships
+from mailman.utilities.datetime import factory as date_factory
+from mailman.utilities.uid import factory as uid_factory
 
 
 
@@ -47,10 +49,19 @@ class User(Model):
     real_name = Unicode()
     password = Unicode()
     _user_id = Unicode()
+    _created_on = DateTime()
 
     addresses = ReferenceSet(id, 'Address.user_id')
     preferences_id = Int()
     preferences = Reference(preferences_id, 'Preferences.id')
+
+    def __init__(self, real_name=None, preferences=None):
+        super(User, self).__init__()
+        self._created_on = date_factory.now()
+        self._user_id = uid_factory.new_uid()
+        self.real_name = ('' if real_name is None else real_name)
+        self.preferences = preferences
+        config.db.store.add(self)
 
     def __repr__(self):
         return '<User "{0.real_name}" ({0.user_id}) at {1:#x}>'.format(
@@ -60,6 +71,11 @@ class User(Model):
     def user_id(self):
         """See `IUser`."""
         return self._user_id
+
+    @property
+    def created_on(self):
+        """See `IUser`."""
+        return self._created_on
 
     def link(self, address):
         """See `IUser`."""

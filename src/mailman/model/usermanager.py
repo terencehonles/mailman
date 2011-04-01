@@ -25,10 +25,6 @@ __all__ = [
     ]
 
 
-import os
-import time
-import hashlib
-
 from zope.interface import implements
 
 from mailman.config import config
@@ -37,7 +33,6 @@ from mailman.interfaces.usermanager import IUserManager
 from mailman.model.address import Address
 from mailman.model.preferences import Preferences
 from mailman.model.user import User
-from mailman.utilities.passwords import SALT_LENGTH
 
 
 
@@ -45,18 +40,10 @@ class UserManager:
     implements(IUserManager)
 
     def create_user(self, email=None, real_name=None):
-        user = User()
-        user.real_name = ('' if real_name is None else real_name)
+        user = User(real_name, Preferences())
         if email:
             address = self.create_address(email, real_name)
             user.link(address)
-        user.preferences = Preferences()
-        # Generate a unique random SHA1 hash for the user id.
-        salt = os.urandom(SALT_LENGTH)
-        h = hashlib.sha1(repr(time.time()))
-        h.update(salt)
-        user._user_id = unicode(h.hexdigest(), 'us-ascii')
-        config.db.store.add(user)
         return user
 
     def delete_user(self, user):

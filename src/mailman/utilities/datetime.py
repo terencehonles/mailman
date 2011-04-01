@@ -36,25 +36,27 @@ __all__ = [
 
 import datetime
 
+from mailman.testing.layers import MockAndMonkeyLayer
+
 
 
 class DateFactory:
     """A factory for today() and now() that works with testing."""
 
-    # Set to True to produce predictable dates and times.
-    testing_mode = False
     # The predictable time.
     predictable_now = None
     predictable_today = None
 
     def now(self, tz=None):
+        # We can't automatically fast-forward because some tests require us to
+        # stay on the same day for a while, e.g. autorespond.txt.
         return (self.predictable_now
-                if self.testing_mode
+                if MockAndMonkeyLayer.testing_mode
                 else datetime.datetime.now(tz))
 
     def today(self):
         return (self.predictable_today
-                if self.testing_mode
+                if MockAndMonkeyLayer.testing_mode
                 else datetime.date.today())
 
     @classmethod
@@ -72,3 +74,4 @@ factory = DateFactory()
 factory.reset()
 today = factory.today
 now = factory.now
+MockAndMonkeyLayer.register_reset(factory.reset)
