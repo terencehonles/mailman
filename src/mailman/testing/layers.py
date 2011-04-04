@@ -68,7 +68,6 @@ class MockAndMonkeyLayer:
 
     @classmethod
     def testTearDown(cls):
-        print >> sys.stderr, 'testTearDown'
         for reset in cls._resets:
             reset()
 
