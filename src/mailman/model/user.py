@@ -58,7 +58,10 @@ class User(Model):
     def __init__(self, real_name=None, preferences=None):
         super(User, self).__init__()
         self._created_on = date_factory.now()
-        self._user_id = uid_factory.new_uid()
+        user_id = uid_factory.new_uid()
+        assert config.db.store.find(User, _user_id=user_id).count() == 0, (
+            'Duplicate user id {0}'.format(user_id))
+        self._user_id = user_id
         self.real_name = ('' if real_name is None else real_name)
         self.preferences = preferences
         config.db.store.add(self)

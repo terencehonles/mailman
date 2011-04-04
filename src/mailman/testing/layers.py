@@ -25,6 +25,7 @@ __all__ = [
     'MockAndMonkeyLayer',
     'RESTLayer',
     'SMTPLayer',
+    'is_testing',
     ]
 
 
@@ -67,6 +68,7 @@ class MockAndMonkeyLayer:
 
     @classmethod
     def testTearDown(cls):
+        print >> sys.stderr, 'testTearDown'
         for reset in cls._resets:
             reset()
 
@@ -106,6 +108,8 @@ class ConfigLayer(MockAndMonkeyLayer):
         layout: testing
         [paths.testing]
         var_dir: %s
+        [devmode]
+        testing: yes
         """ % cls.var_dir)
         # Read the testing config and push it.
         test_config += resource_string('mailman.testing', 'testing.cfg')
@@ -288,3 +292,13 @@ class RESTLayer(SMTPLayer):
         assert cls.server is not None, 'Layer not set up'
         cls.server.stop()
         cls.server = None
+
+
+
+def is_testing():
+    """Return a 'testing' flag for use with the predictable factories.
+
+    :return: True when in testing mode.
+    :rtype: bool
+    """
+    return MockAndMonkeyLayer.testing_mode or config.devmode.testing

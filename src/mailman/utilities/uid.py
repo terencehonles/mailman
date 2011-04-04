@@ -32,9 +32,13 @@ __all__ = [
 
 import os
 import time
+import errno
 import hashlib
 
-from mailman.testing.layers import MockAndMonkeyLayer
+from flufl.lock import Lock
+
+from mailman.config import config
+from mailman.testing import layers
 from mailman.utilities.passwords import SALT_LENGTH
 
 
@@ -42,14 +46,31 @@ from mailman.utilities.passwords import SALT_LENGTH
 class UniqueIDFactory:
     """A factory for unique ids."""
 
-    # The predictable id.
-    predictable_id = None
+    def __init__(self):
+        # We can't call reset() when the factory is created below, because
+        # config.VAR_DIR will not be set at that time.  So initialize it at
+        # the first use.
+        self._uid_file = None
+        self._lock_file = None
+        self._lock = None
 
     def new_uid(self, bytes=None):
-        if MockAndMonkeyLayer.testing_mode:
-            uid = self.predictable_id
-            self.predictable_id += 1
-            return unicode(uid)
+        if layers.is_testing():
+            if self._lock is None:
+                # These will get automatically cleaned up by the test
+                # infrastructure.
+                self._uid_file = os.path.join(config.VAR_DIR, '.uid')
+                self._lock_file = self._uid_file + '.lock'
+                self._lock = Lock(self._lock_file)
+            # When in testing mode we want to produce predictable id, but we
+            # need to coordinate this among separate processes.  We could use
+            # the database, but I don't want to add schema just to handle this
+            # case, and besides transactions could get aborted, causing some
+            # ids to be recycled.  So we'll use a data file with a lock.  This
+            # may still not be ideal due to race conditions, but I think the
+            # tests will be serialized enough (and the ids reset between
+            # tests) that it will not be a problem.  Maybe.
+            return self._next_uid()
         salt = os.urandom(SALT_LENGTH)
         h = hashlib.sha1(repr(time.time()))
         h.update(salt)
@@ -57,11 +78,28 @@ class UniqueIDFactory:
             h.update(bytes)
         return unicode(h.hexdigest(), 'us-ascii')
 
+    def _next_uid(self):
+        with self._lock:
+            try:
+                with open(self._uid_file) as fp:
+                    uid = fp.read().strip()
+                    next_uid = int(uid) + 1
+                with open(self._uid_file, 'w') as fp:
+                    fp.write(str(next_uid))
+            except IOError as error:
+                if error.errno != errno.ENOENT:
+                    raise
+                with open(self._uid_file, 'w') as fp:
+                    fp.write('2')
+                return '1'
+        return unicode(uid, 'us-ascii')
+
     def reset(self):
-        self.predictable_id = 1
+        with self._lock:
+            with open(self._uid_file, 'w') as fp:
+                fp.write('1')
 
 
 
 factory = UniqueIDFactory()
-factory.reset()
-MockAndMonkeyLayer.register_reset(factory.reset)
+layers.MockAndMonkeyLayer.register_reset(factory.reset)

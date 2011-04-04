@@ -29,8 +29,10 @@ __all__ = [
 from restish import http, resource
 from zope.component import getUtility
 
+from mailman.interfaces.address import ExistingAddressError
 from mailman.interfaces.usermanager import IUserManager
-from mailman.rest.helpers import CollectionMixin, etag
+from mailman.rest.helpers import CollectionMixin, etag, path_to
+from mailman.rest.validator import Validator
 
 
 
@@ -46,6 +48,7 @@ class _UserBase(resource.Resource, CollectionMixin):
             real_name=user.real_name,
             password=user.password,
             user_id=user.user_id,
+            created_on=user.created_on,
             )
 
     def _get_collection(self, request):
@@ -62,6 +65,30 @@ class AllUsers(_UserBase):
         """/users"""
         resource = self._make_collection(request)
         return http.ok([], etag(resource))
+
+    @resource.POST()
+    def create(self, request):
+        """Create a new user."""
+        try:
+            validator = Validator(email=unicode,
+                                  real_name=unicode,
+                                  password=unicode,
+                                  _optional=('real_name', 'password'))
+            arguments = validator(request)
+        except ValueError as error:
+            return http.bad_request([], str(error))
+        # We can't pass the 'password' argument to the user creation method,
+        # so strip that out (if it exists), then create the user, adding the
+        # password after the fact if successful.
+        password = arguments.pop('password', None)
+        try:
+            user = getUtility(IUserManager).create_user(**arguments)
+        except ExistingAddressError as error:
+            return http.bad_request([], b'Address already exists {0}'.format(
+                error.email))
+        # XXX ignore password for now.
+        location = path_to('users/{0}'.format(user.user_id))
+        return http.created(location, [], None)
 
 
 

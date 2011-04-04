@@ -40,6 +40,12 @@ from mailman.interfaces.errors import MailmanError
 class AddressError(MailmanError):
     """A general address-related error occurred."""
 
+    def __init__(self, address):
+        self.address = address
+
+    def __str__(self):
+        return self.address
+
 
 class ExistingAddressError(AddressError):
     """The given email address already exists."""

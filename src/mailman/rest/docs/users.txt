@@ -14,3 +14,71 @@ There are no users yet.
     start: 0
     total_size: 0
     
+When there are users in the database, they can be retrieved as a collection.
+::
+
+    >>> from zope.component import getUtility
+    >>> from mailman.interfaces.usermanager import IUserManager
+    >>> user_manager = getUtility(IUserManager)
+    
+    >>> anne = user_manager.create_user('anne@example.com', 'Anne Person')
+    >>> transaction.commit()
+    >>> dump_json('http://localhost:9001/3.0/users')
+    entry 0:
+        created_on: 2005-08-01T07:49:23
+        http_etag: "..."
+        password: None
+        real_name: Anne Person
+        user_id: 1
+    http_etag: "..."
+    start: 0
+    total_size: 1
+
+The user ids match.
+
+    >>> json = call_http('http://localhost:9001/3.0/users')
+    >>> json['entries'][0]['user_id'] == anne.user_id
+    True
+
+
+Creating users via the API
+==========================
+
+New users can be created through the REST API.  To do so requires the initial
+email address for the user, and optionally the user's full name and password.
+::
+
+    >>> transaction.abort()
+    >>> dump_json('http://localhost:9001/3.0/users', {
+    ...           'email': 'bart@example.com',
+    ...           'real_name': 'Bart Person',
+    ...           'password': 'bbb',
+    ...           })
+    content-length: 0
+    date: ...
+    location: http://localhost:9001/3.0/users/2
+    server: ...
+    status: 201
+
+The user exists in the database.
+::
+
+    >>> user_manager.get_user('bart@example.com')
+    <User "Bart Person" (2) at ...>
+
+It is also available via the location given in the response.
+
+    >>> dump_json('http://localhost:9001/3.0/users/2')
+    created_on: 2005-08-01T07:49:23
+    http_etag: "..."
+    password: None
+    real_name: Bart Person
+    user_id: 2
+
+It is of course an error to access a non-existent user id.
+
+    >>> dump_json('http://localhost:9001/3.0/users/99')
+    Traceback (most recent call last):
+    ...
+    HTTPError: HTTP Error 404: 404 Not Found
+
