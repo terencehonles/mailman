@@ -95,8 +95,21 @@ class AllUsers(_UserBase):
 class AUser(_UserBase):
     """A user."""
 
-    def __init__(self, user_id):
-        self._user = getUtility(IUserManager).get_user_by_id(user_id)
+    def __init__(self, user_identifier):
+        """Get a user by various type of identifiers.
+
+        :param user_identifier: The identifier used to retrieve the user.  The
+            identifier may either be an integer user-id, or an email address
+            controlled by the user.  The type of identifier is auto-detected
+            by looking for an `@` symbol, in which case it's taken as an email
+            address, otherwise it's assumed to be an integer.
+        :type user_identifier: str
+        """
+        user_manager = getUtility(IUserManager)
+        if '@' in user_identifier:
+            self._user = user_manager.get_user(user_identifier)
+        else:
+            self._user = user_manager.get_user_by_id(user_identifier)
 
     @resource.GET()
     def user(self, request):

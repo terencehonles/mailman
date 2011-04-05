@@ -82,3 +82,12 @@ It is of course an error to access a non-existent user id.
     ...
     HTTPError: HTTP Error 404: 404 Not Found
 
+Because email addresses just have an ``@`` sign in then, there's no confusing
+them with user ids.  Thus, a user can be retrieved via its email address.
+
+    >>> dump_json('http://localhost:9001/3.0/users/bart@example.com')
+    created_on: 2005-08-01T07:49:23
+    http_etag: "..."
+    password: None
+    real_name: Bart Person
+    user_id: 2
