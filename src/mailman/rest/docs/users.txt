@@ -75,13 +75,6 @@ It is also available via the location given in the response.
     real_name: Bart Person
     user_id: 2
 
-It is of course an error to access a non-existent user id.
-
-    >>> dump_json('http://localhost:9001/3.0/users/99')
-    Traceback (most recent call last):
-    ...
-    HTTPError: HTTP Error 404: 404 Not Found
-
 Because email addresses just have an ``@`` sign in then, there's no confusing
 them with user ids.  Thus, a user can be retrieved via its email address.
 
@@ -91,3 +84,24 @@ them with user ids.  Thus, a user can be retrieved via its email address.
     password: None
     real_name: Bart Person
     user_id: 2
+
+
+Missing users
+=============
+
+It is of course an error to attempt to access a non-existent user, either by
+user id...
+::
+
+    >>> dump_json('http://localhost:9001/3.0/users/99')
+    Traceback (most recent call last):
+    ...
+    HTTPError: HTTP Error 404: 404 Not Found
+
+...or by email address.
+::
+
+    >>> dump_json('http://localhost:9001/3.0/users/zed@example.org')
+    Traceback (most recent call last):
+    ...
+    HTTPError: HTTP Error 404: 404 Not Found
