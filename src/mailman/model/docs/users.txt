@@ -3,8 +3,8 @@ Users
 =====
 
 Users are entities that represent people.  A user has a real name and a
-password.  Optionally a user may have some preferences and a set of addresses
-they control.  A user also knows which mailing lists they are subscribed to.
+optional encoded password.  A user may also have an optional preferences and a
+set of addresses they control.
 
 See `usermanager.txt`_ for examples of how to create, delete, and find users.
 
