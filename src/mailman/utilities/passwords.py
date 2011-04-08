@@ -27,23 +27,29 @@ __all__ = [
     'Schemes',
     'check_response',
     'make_secret',
+    'make_user_friendly_password',
     ]
 
 
 import os
 import re
 import hmac
+import random
 import hashlib
 
 from array import array
 from base64 import urlsafe_b64decode as decode
 from base64 import urlsafe_b64encode as encode
 from flufl.enum import Enum
+from itertools import chain, product
+from string import ascii_lowercase
 
+from mailman.config import config
 from mailman.core import errors
 
 SALT_LENGTH = 20 # bytes
 ITERATIONS  = 2000
+EMPTYSTRING = ''
 
 
 
@@ -315,3 +321,35 @@ def lookup_scheme(scheme_name):
     :rtype: `PasswordScheme`
     """
     return _SCHEMES_BY_TAG.get(scheme_name.lower())
+
+
+
+# Password generation.
+
+_vowels = tuple('aeiou')
+_consonants = tuple(c for c in ascii_lowercase if c not in _vowels)
+_syllables = tuple(x + y for (x, y) in
+                   chain(product(_vowels, _consonants),
+                         product(_consonants, _vowels)))
+
+
+def make_user_friendly_password(length=None):
+    """Make a random *user friendly* password.
+
+    Such passwords are nominally easier to pronounce and thus remember.  Their
+    security in relationship to purely random passwords has not been
+    determined.
+
+    :param length: Minimum length in characters for the resulting password.
+        The password will always be an even number of characters.  When
+        omitted, the system default length will be used.
+    :type length: int
+    :return: The user friendly password.
+    :rtype: unicode
+    """
+    if length is None:
+        length = int(config.passwords.password_length)
+    syllables = []
+    while len(syllables) * 2 < length:
+        syllables.append(random.choice(_syllables))
+    return EMPTYSTRING.join(syllables)[:length]

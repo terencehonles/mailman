@@ -27,7 +27,11 @@ __all__ = [
 
 import unittest
 
+from itertools import izip_longest
+
+from mailman.config import config
 from mailman.core import errors
+from mailman.testing.layers import ConfigLayer
 from mailman.utilities import passwords
 
 
@@ -138,6 +142,36 @@ class TestSchemeLookup(unittest.TestCase):
 
 
 
+# See itertools doc page examples.
+def _grouper(seq):
+    args = [iter(seq)] * 2
+    return list(izip_longest(*args))
+
+
+class TestPasswordGeneration(unittest.TestCase):
+    layer = ConfigLayer
+
+    def test_default_user_friendly_password_length(self):
+        self.assertEqual(len(passwords.make_user_friendly_password()),
+                         int(config.passwords.password_length))
+
+    def test_provided_user_friendly_password_length(self):
+        self.assertEqual(len(passwords.make_user_friendly_password(12)), 12)
+
+    def test_provided_odd_user_friendly_password_length(self):
+        self.assertEqual(len(passwords.make_user_friendly_password(15)), 15)
+
+    def test_user_friendly_password(self):
+        password = passwords.make_user_friendly_password()
+        for pair in _grouper(password):
+            # There will always be one vowel and one non-vowel.
+            vowel = (pair[0] if pair[0] in 'aeiou' else pair[1])
+            consonant = (pair[0] if pair[0] not in 'aeiou' else pair[1])
+            self.assertTrue(vowel in 'aeiou', vowel)
+            self.assertTrue(consonant not in 'aeiou', consonant)
+
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestBogusPasswords))
@@ -147,4 +181,5 @@ def test_suite():
     suite.addTest(unittest.makeSuite(TestSSHAPasswords))
     suite.addTest(unittest.makeSuite(TestPBKDF2Passwords))
     suite.addTest(unittest.makeSuite(TestSchemeLookup))
+    suite.addTest(unittest.makeSuite(TestPasswordGeneration))
     return suite
