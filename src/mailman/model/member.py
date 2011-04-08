@@ -35,6 +35,7 @@ from mailman.database.types import Enum
 from mailman.interfaces.action import Action
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import IMember, MemberRole
+from mailman.interfaces.usermanager import IUserManager
 
 
 
@@ -69,6 +70,10 @@ class Member(Model):
     def __repr__(self):
         return '<Member: {0} on {1} as {2}>'.format(
             self.address, self.mailing_list, self.role)
+
+    @property
+    def user(self):
+        return getUtility(IUserManager).get_user(self.address.email)
 
     def _lookup(self, preference):
         pref = getattr(self.preferences, preference)
