@@ -127,6 +127,9 @@ class IMember(Interface):
     address = Attribute(
         """The email address that's subscribed to the list.""")
 
+    user = Attribute(
+        """The user associated with this member.""")
+
     preferences = Attribute(
         """This member's preferences.""")
 
