@@ -52,16 +52,20 @@ class UniqueIDFactory:
         # the first use.
         self._uid_file = None
         self._lock_file = None
-        self._lock = None
+        self._lockobj = None
+
+    @property
+    def _lock(self):
+        if self._lockobj is None:
+            # These will get automatically cleaned up by the test
+            # infrastructure.
+            self._uid_file = os.path.join(config.VAR_DIR, '.uid')
+            self._lock_file = self._uid_file + '.lock'
+            self._lockobj = Lock(self._lock_file)
+        return self._lockobj
 
     def new_uid(self, bytes=None):
         if layers.is_testing():
-            if self._lock is None:
-                # These will get automatically cleaned up by the test
-                # infrastructure.
-                self._uid_file = os.path.join(config.VAR_DIR, '.uid')
-                self._lock_file = self._uid_file + '.lock'
-                self._lock = Lock(self._lock_file)
             # When in testing mode we want to produce predictable id, but we
             # need to coordinate this among separate processes.  We could use
             # the database, but I don't want to add schema just to handle this
