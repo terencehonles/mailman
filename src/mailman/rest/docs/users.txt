@@ -204,3 +204,10 @@ In fact, any of these addresses can be used to look up Bart's user record.
     password: {CLEARTEXT}bbb
     real_name: Bart Person
     user_id: 2
+
+    >>> dump_json('http://localhost:9001/3.0/users/Bart.Q.Person@example.com')
+    created_on: 2005-08-01T07:49:23
+    http_etag: "..."
+    password: {CLEARTEXT}bbb
+    real_name: Bart Person
+    user_id: 2
