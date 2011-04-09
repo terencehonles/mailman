@@ -71,7 +71,7 @@ It is also available via the location given in the response.
     >>> dump_json('http://localhost:9001/3.0/users/2')
     created_on: 2005-08-01T07:49:23
     http_etag: "..."
-    password: None
+    password: {CLEARTEXT}bbb
     real_name: Bart Person
     user_id: 2
 
@@ -81,9 +81,32 @@ them with user ids.  Thus, a user can be retrieved via its email address.
     >>> dump_json('http://localhost:9001/3.0/users/bart@example.com')
     created_on: 2005-08-01T07:49:23
     http_etag: "..."
-    password: None
+    password: {CLEARTEXT}bbb
     real_name: Bart Person
     user_id: 2
+
+Users can be created without a password.  A *user friendly* password will be
+assigned to them automatically, but this password will be encrypted and
+therefore cannot be retrieved.  It can be reset though.
+::
+
+    >>> transaction.abort()
+    >>> dump_json('http://localhost:9001/3.0/users', {
+    ...           'email': 'cris@example.com',
+    ...           'real_name': 'Cris Person',
+    ...           })
+    content-length: 0
+    date: ...
+    location: http://localhost:9001/3.0/users/3
+    server: ...
+    status: 201
+
+    >>> dump_json('http://localhost:9001/3.0/users/3')
+    created_on: 2005-08-01T07:49:23
+    http_etag: "..."
+    password: {CLEARTEXT}...
+    real_name: Cris Person
+    user_id: 3
 
 
 Missing users

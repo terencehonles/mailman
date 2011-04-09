@@ -33,6 +33,8 @@ from mailman.interfaces.address import ExistingAddressError
 from mailman.interfaces.usermanager import IUserManager
 from mailman.rest.helpers import CollectionMixin, etag, path_to
 from mailman.rest.validator import Validator
+from mailman.utilities.passwords import (
+    encrypt_password, make_user_friendly_password)
 
 
 
@@ -86,7 +88,10 @@ class AllUsers(_UserBase):
         except ExistingAddressError as error:
             return http.bad_request([], b'Address already exists {0}'.format(
                 error.email))
-        # XXX ignore password for now.
+        if password is None:
+            # This will have to be reset since it cannot be retrieved.
+            password = make_user_friendly_password()
+        user.password = encrypt_password(password)
         location = path_to('users/{0}'.format(user.user_id))
         return http.created(location, [], None)
 
