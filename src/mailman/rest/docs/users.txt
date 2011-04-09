@@ -63,7 +63,8 @@ email address for the user, and optionally the user's full name and password.
 The user exists in the database.
 ::
 
-    >>> user_manager.get_user('bart@example.com')
+    >>> bart = user_manager.get_user('bart@example.com')
+    >>> bart
     <User "Bart Person" (2) at ...>
 
 It is also available via the location given in the response.
@@ -128,3 +129,78 @@ user id...
     Traceback (most recent call last):
     ...
     HTTPError: HTTP Error 404: 404 Not Found
+
+
+User addresses
+==============
+
+Bart may have any number of email addresses associated with their user
+account.  We can find out all of these through the API.  The addresses are
+sorted in lexical order by original (i.e. case-preserved) email address.
+::
+
+    >>> bart.register('bperson@example.com')
+    <Address: bperson@example.com [not verified] at ...>
+    >>> bart.register('bart.person@example.com')
+    <Address: bart.person@example.com [not verified] at ...>
+    >>> bart.register('Bart.Q.Person@example.com')
+    <Address: Bart.Q.Person@example.com [not verified]
+              key: bart.q.person@example.com at ...>
+    >>> transaction.commit()
+
+    >>> dump_json('http://localhost:9001/3.0/users/2/addresses')
+     entry 0:
+         email: bart.q.person@example.com
+         http_etag: "..."
+         original_email: Bart.Q.Person@example.com
+         real_name:
+         registered_on: None
+         verified_on: None
+     entry 1:
+         email: bart.person@example.com
+         http_etag: "..."
+         original_email: bart.person@example.com
+         real_name:
+         registered_on: None
+         verified_on: None
+     entry 2:
+         email: bart@example.com
+         http_etag: "..."
+         original_email: bart@example.com
+         real_name: Bart Person
+         registered_on: None
+         verified_on: None
+     entry 3:
+         email: bperson@example.com
+         http_etag: "..."
+         original_email: bperson@example.com
+         real_name:
+         registered_on: None
+         verified_on: None
+     http_etag: "..."
+     start: 0
+     total_size: 4
+
+In fact, any of these addresses can be used to look up Bart's user record.
+::
+
+    >>> dump_json('http://localhost:9001/3.0/users/bart@example.com')
+    created_on: 2005-08-01T07:49:23
+    http_etag: "..."
+    password: {CLEARTEXT}bbb
+    real_name: Bart Person
+    user_id: 2
+
+    >>> dump_json('http://localhost:9001/3.0/users/bart.person@example.com')
+    created_on: 2005-08-01T07:49:23
+    http_etag: "..."
+    password: {CLEARTEXT}bbb
+    real_name: Bart Person
+    user_id: 2
+
+    >>> dump_json('http://localhost:9001/3.0/users/bperson@example.com')
+    created_on: 2005-08-01T07:49:23
+    http_etag: "..."
+    password: {CLEARTEXT}bbb
+    real_name: Bart Person
+    user_id: 2

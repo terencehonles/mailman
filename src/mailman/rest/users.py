@@ -26,6 +26,7 @@ __all__ = [
     ]
 
 
+from operator import attrgetter
 from restish import http, resource
 from zope.component import getUtility
 
@@ -122,3 +123,38 @@ class AUser(_UserBase):
         if self._user is None:
             return http.not_found()
         return http.ok([], self._resource_as_json(self._user))
+
+    @resource.child()
+    def addresses(self, request, segments):
+        """/users/<uid>/addresses"""
+        return _AllUserAddresses(self._user)
+
+
+
+class _AllUserAddresses(resource.Resource, CollectionMixin):
+    """All addresses that a user controls."""
+
+    def __init__(self, user):
+        self._user = user
+        super(_AllUserAddresses, self).__init__()
+
+    def _resource_as_dict(self, address):
+        """See `CollectionMixin`."""
+        return dict(
+            email=address.email,
+            original_email=address.original_email,
+            real_name=address.real_name,
+            registered_on=address.registered_on,
+            verified_on=address.verified_on,
+            )
+
+    def _get_collection(self, request):
+        """See `CollectionMixin`."""
+        return sorted(self._user.addresses,
+                      key=attrgetter('original_email'))
+
+    @resource.GET()
+    def collection(self, request):
+        """/addresses"""
+        resource = self._make_collection(request)
+        return http.ok([], etag(resource))
