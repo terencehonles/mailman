@@ -60,7 +60,6 @@ The File System Hierarchy layout is the same every by definition.
     ...
     File system paths:
         BIN_DIR                  = /sbin
-        CREATOR_PW_FILE          = /var/lib/mailman/data/creator.pw
         DATA_DIR                 = /var/lib/mailman/data
         ETC_DIR                  = /etc
         EXT_DIR                  = /etc/mailman.d
@@ -73,7 +72,6 @@ The File System Hierarchy layout is the same every by definition.
         PRIVATE_ARCHIVE_FILE_DIR = /var/lib/mailman/archives/private
         PUBLIC_ARCHIVE_FILE_DIR  = /var/lib/mailman/archives/public
         QUEUE_DIR                = /var/spool/mailman
-        SITE_PW_FILE             = /var/lib/mailman/data/adm.pw
         TEMPLATE_DIR             = .../mailman/templates
         VAR_DIR                  = /var/lib/mailman
 

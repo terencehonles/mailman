@@ -26,6 +26,7 @@ __metaclass__ = type
 __all__ = [
     'Schemes',
     'check_response',
+    'encrypt_password',
     'make_secret',
     'make_user_friendly_password',
     ]
@@ -50,6 +51,7 @@ from mailman.core import errors
 SALT_LENGTH = 20 # bytes
 ITERATIONS  = 2000
 EMPTYSTRING = ''
+SCHEME_RE = r'{(?P<scheme>[^}]+?)}(?P<rest>.*)'
 
 
 
@@ -294,8 +296,7 @@ def check_response(challenge, response):
     :return: True if the response matches the challenge.
     :rtype: bool
     """
-    mo = re.match(r'{(?P<scheme>[^}]+?)}(?P<rest>.*)',
-                  challenge, re.IGNORECASE)
+    mo = re.match(SCHEME_RE, challenge, re.IGNORECASE)
     if not mo:
         return False
     # See above for why we convert here.  However because we should have
@@ -321,6 +322,42 @@ def lookup_scheme(scheme_name):
     :rtype: `PasswordScheme`
     """
     return _SCHEMES_BY_TAG.get(scheme_name.lower())
+
+
+def encrypt_password(password, scheme=None):
+    """Return an encrypted password.
+
+    If the given password is already encrypted (i.e. it has a scheme prefix),
+    then the password is return unchanged.  Otherwise, it is encrypted with
+    the given scheme or the default scheme.
+
+    :param password: The plain text or encrypted password.
+    :type password: string
+    :param scheme: The scheme enum to use for encryption.  If not given, the
+        system default scheme is used.  This can be a `Schemes` enum item, or
+        the scheme name as a string.
+    :type scheme: `Schemes` enum, or string.
+    :return: The encrypted password.
+    :rtype: bytes
+    """
+    if not isinstance(password, (bytes, unicode)):
+        raise ValueError('Got {0}, expected unicode or bytes'.format(
+                         type(password)))
+    if re.match(SCHEME_RE, password, re.IGNORECASE):
+        # Just ensure we're getting bytes back.
+        if isinstance(password, unicode):
+            return password.encode('us-ascii')
+        assert isinstance(password, bytes), 'Expected bytes'
+        return password
+    if scheme is None:
+        password_scheme = lookup_scheme(config.passwords.password_scheme)
+    elif scheme in Schemes:
+        password_scheme = scheme
+    else:
+        password_scheme = lookup_scheme(scheme)
+    if password_scheme is None:
+        raise ValueError('Bad password scheme: {0}'.format(scheme))
+    return make_secret(password, password_scheme)
 
 
 

@@ -104,6 +104,8 @@ class ConfigLayer(MockAndMonkeyLayer):
         test_config = dedent("""
         [mailman]
         layout: testing
+        [passwords]
+        password_scheme: cleartext
         [paths.testing]
         var_dir: %s
         """ % cls.var_dir)

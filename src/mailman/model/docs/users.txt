@@ -19,7 +19,7 @@ User data
 Users may have a real name and a password.
 
     >>> user_1 = user_manager.create_user()
-    >>> user_1.password = 'my password'
+    >>> user_1.password = b'my password'
     >>> user_1.real_name = 'Zoe Person'
     >>> dump_list(user.real_name for user in user_manager.users)
     Zoe Person
@@ -29,7 +29,7 @@ Users may have a real name and a password.
 The password and real name can be changed at any time.
 
     >>> user_1.real_name = 'Zoe X. Person'
-    >>> user_1.password = 'another password'
+    >>> user_1.password = b'another password'
     >>> dump_list(user.real_name for user in user_manager.users)
     Zoe X. Person
     >>> dump_list(user.password for user in user_manager.users)

@@ -68,17 +68,17 @@ list.
     >>> user_manager = getUtility(IUserManager)
 
     >>> anne = user_manager.create_user('aperson@example.com', 'Anne Person')
-    >>> anne.password = 'AAA'
+    >>> anne.password = b'AAA'
     >>> list(anne.addresses)[0].subscribe(mlist, MemberRole.member)
     <Member: Anne Person <aperson@example.com> ...
 
     >>> bart = user_manager.create_user('bperson@example.com', 'Bart Person')
-    >>> bart.password = 'BBB'
+    >>> bart.password = b'BBB'
     >>> list(bart.addresses)[0].subscribe(mlist, MemberRole.member)
     <Member: Bart Person <bperson@example.com> ...
 
     >>> cris = user_manager.create_user('cperson@example.com', 'Cris Person')
-    >>> cris.password = 'CCC'
+    >>> cris.password = b'CCC'
     >>> list(cris.addresses)[0].subscribe(mlist, MemberRole.member)
     <Member: Cris Person <cperson@example.com> ...
 

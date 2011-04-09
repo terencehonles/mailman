@@ -30,7 +30,6 @@ from email.utils import formataddr
 from zope.component import getUtility
 
 from mailman.app.notifications import send_goodbye_message
-from mailman.config import config
 from mailman.core.i18n import _
 from mailman.email.message import OwnerNotification
 from mailman.interfaces.address import IEmailValidator
@@ -40,7 +39,7 @@ from mailman.interfaces.member import (
     NotAMemberError)
 from mailman.interfaces.usermanager import IUserManager
 from mailman.utilities.i18n import make
-from mailman.utilities.passwords import lookup_scheme, make_secret
+from mailman.utilities.passwords import encrypt_password
 
 
 
@@ -98,9 +97,7 @@ def add_member(mlist, email, realname, password, delivery_mode, language):
             user.link(address)
         # Encrypt the password using the currently selected scheme.  The
         # scheme is recorded in the hashed password string.
-        user.password = make_secret(
-            password,
-            lookup_scheme(config.passwords.password_scheme))
+        user.password = encrypt_password(password)
         user.preferences.preferred_language = language
         member = address.subscribe(mlist, MemberRole.member)
         member.preferences.delivery_mode = delivery_mode
