@@ -170,6 +170,40 @@ class TestPasswordGeneration(unittest.TestCase):
             self.assertTrue(vowel in 'aeiou', vowel)
             self.assertTrue(consonant not in 'aeiou', consonant)
 
+    def test_encrypt_password_plaintext_default_scheme(self):
+        # Test that a plain text password gets encrypted.
+        self.assertEqual(passwords.encrypt_password('abc'),
+                         '{CLEARTEXT}abc')
+
+    def test_encrypt_password_plaintext(self):
+        # Test that a plain text password gets encrypted with the given scheme.
+        scheme = passwords.Schemes.sha
+        self.assertEqual(passwords.encrypt_password('abc', scheme),
+                         '{SHA}qZk-NkcGgWq6PiVxeFDCbJzQ2J0=')
+
+    def test_encrypt_password_plaintext_by_scheme_name(self):
+        # Test that a plain text password gets encrypted with the given
+        # scheme, which is given by name.
+        self.assertEqual(passwords.encrypt_password('abc', 'cleartext'),
+                         '{CLEARTEXT}abc')
+
+    def test_encrypt_password_already_encrypted_default_scheme(self):
+        # Test that a password which is already encrypted is return unchanged.
+        self.assertEqual(passwords.encrypt_password('{SHA}abc'), '{SHA}abc')
+
+    def test_encrypt_password_already_encrypted(self):
+        # Test that a password which is already encrypted is return unchanged,
+        # ignoring any requested scheme.
+        scheme = passwords.Schemes.cleartext
+        self.assertEqual(passwords.encrypt_password('{SHA}abc', scheme),
+                         '{SHA}abc')
+
+    def test_encrypt_password_password_value_error(self):
+        self.assertRaises(ValueError, passwords.encrypt_password, 7)
+
+    def test_encrypt_password_scheme_value_error(self):
+        self.assertRaises(ValueError, passwords.encrypt_password, 'abc', 'foo')
+
 
 
 def test_suite():

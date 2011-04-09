@@ -36,6 +36,7 @@ from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.listmanager import IListManager, NoSuchListError
 from mailman.interfaces.member import DeliveryMode
 from mailman.interfaces.membership import ISubscriptionService
+from mailman.utilities.passwords import make_user_friendly_password
 
 
 
@@ -84,15 +85,12 @@ class SubscriptionService:
                 raise InvalidEmailAddressError(address)
         # Because we want to keep the REST API simple, there is no password or
         # language given to us.  We'll use the system's default language for
-        # the user's default language.  We'll set the password to None.  XXX
-        # Is that a good idea?  Maybe we should set it to something else,
-        # except that once we encode the password (as we must do to avoid
-        # cleartext passwords in the database) we'll never be able to retrieve
-        # it.
-        #
+        # the user's default language.  We'll set the password to a system
+        # default.  This will have to get reset since it can't be retrieved.
         # Note that none of these are used unless the address is completely
         # new to us.
-        return add_member(mlist, address, real_name, None, mode,
+        password = make_user_friendly_password()
+        return add_member(mlist, address, real_name, password, mode,
                           system_preferences.preferred_language)
 
     def leave(self, fqdn_listname, address):

@@ -183,10 +183,8 @@ class Configuration:
                 if category.template_dir == ':source:'
                 else category.template_dir),
             # Files.
-            creator_pw_file         = category.creator_pw_file,
             lock_file               = category.lock_file,
             pid_file                = category.pid_file,
-            site_pw_file            = category.site_pw_file,
             )
         # Now, perform substitutions recursively until there are no more
         # variables with $-vars in them, or until substitutions are not
