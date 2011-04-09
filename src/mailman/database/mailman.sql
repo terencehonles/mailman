@@ -251,7 +251,7 @@ CREATE TABLE preferences (
 CREATE TABLE user (
         id INTEGER NOT NULL,
         real_name TEXT,
-        password TEXT,
+        password BINARY,
         _user_id TEXT,
         _created_on TIMESTAMP,
         preferences_id INTEGER,

@@ -24,7 +24,8 @@ __all__ = [
     'User',
     ]
 
-from storm.locals import DateTime, Int, Reference, ReferenceSet, Unicode
+from storm.locals import (
+    DateTime, Int, RawStr, Reference, ReferenceSet, Unicode)
 from zope.interface import implements
 
 from mailman.config import config
@@ -47,7 +48,7 @@ class User(Model):
 
     id = Int(primary=True)
     real_name = Unicode()
-    password = Unicode()
+    password = RawStr()
     _user_id = Unicode()
     _created_on = DateTime()
 

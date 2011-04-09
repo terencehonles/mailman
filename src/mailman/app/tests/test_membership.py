@@ -31,6 +31,7 @@ from zope.component import getUtility
 
 from mailman.app.lifecycle import create_list
 from mailman.app.membership import add_member
+from mailman.config import config
 from mailman.core.constants import system_preferences
 from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.member import DeliveryMode, MembershipIsBannedError
@@ -125,7 +126,34 @@ class AddMemberTest(unittest.TestCase):
 
 
 
+class AddMemberPasswordTest(unittest.TestCase):
+    layer = ConfigLayer
+
+    def setUp(self):
+        self._mlist = create_list('test@example.com')
+        # The default ssha scheme introduces a random salt, which is
+        # inappropriate for unit tests.
+        config.push('password scheme', """
+        [passwords]
+        password_scheme: sha
+        """)
+
+    def tearDown(self):
+        config.pop('password scheme')
+        reset_the_world()
+
+    def test_add_member_password(self):
+        # Test that the password stored with the new user is encrypted.
+        member = add_member(self._mlist, 'anne@example.com',
+                            'Anne Person', 'abc', DeliveryMode.regular,
+                            system_preferences.preferred_language)
+        self.assertEqual(
+            member.user.password, '{SHA}qZk-NkcGgWq6PiVxeFDCbJzQ2J0=')
+
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(AddMemberTest))
+    suite.addTest(unittest.makeSuite(AddMemberPasswordTest))
     return suite
