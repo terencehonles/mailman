@@ -10,7 +10,7 @@ import mailbox
 import cPickle as pickle
 
 from cStringIO import StringIO
-from email.Utils import parseaddr, parsedate_tz, mktime_tz, formatdate
+from email.utils import parseaddr, parsedate_tz, mktime_tz, formatdate
 from string import lowercase
 
 __version__ = '0.11 (Mailman edition)'

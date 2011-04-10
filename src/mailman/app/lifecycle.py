@@ -33,7 +33,7 @@ import logging
 from zope.component import getUtility
 
 from mailman.config import config
-from mailman.email.validate import validate
+from mailman.interfaces.address import IEmailValidator
 from mailman.interfaces.domain import (
     BadDomainSpecificationError, IDomainManager)
 from mailman.interfaces.listmanager import IListManager
@@ -58,13 +58,15 @@ def create_list(fqdn_listname, owners=None):
     :type owners: list of string email addresses
     :return: The new mailing list.
     :rtype: `IMailingList`
-    :raises `BadDomainSpecificationError`: when the hostname part of
+    :raises BadDomainSpecificationError: when the hostname part of
         `fqdn_listname` does not exist.
-    :raises `ListAlreadyExistsError`: when the mailing list already exists.
+    :raises ListAlreadyExistsError: when the mailing list already exists.
+    :raises InvalidEmailAddressError: when the fqdn email address is invalid.
     """
     if owners is None:
         owners = []
-    validate(fqdn_listname)
+    # This raises I
+    getUtility(IEmailValidator).validate(fqdn_listname)
     # pylint: disable-msg=W0612
     listname, domain = fqdn_listname.split('@', 1)
     if domain not in getUtility(IDomainManager):

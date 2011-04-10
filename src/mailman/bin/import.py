@@ -18,7 +18,6 @@
 """Import the XML representation of a mailing list."""
 
 import sys
-import codecs
 import optparse
 import traceback
 
@@ -27,7 +26,6 @@ from xml.parsers.expat import ExpatError
 
 from mailman import Defaults
 from mailman import MemberAdaptor
-from mailman import Utils
 from mailman import passwords
 from mailman.MailList import MailList
 from mailman.core.i18n import _

@@ -131,8 +131,6 @@ ${listinfo_page}
         mlist.forward_auto_discards = True
         mlist.generic_nonmember_action = 1
         mlist.nonmember_rejection_notice = ''
-        # Ban lists
-        mlist.ban_list = []
         # Max autoresponses per day.  A mapping between addresses and a
         # 2-tuple of the date of the last autoresponse and the number of
         # autoresponses sent on that date.

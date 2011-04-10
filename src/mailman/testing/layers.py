@@ -46,8 +46,7 @@ from mailman.core import initialize
 from mailman.core.initialize import INHIBIT_CONFIG_FILE
 from mailman.core.logging import get_handler
 from mailman.interfaces.domain import IDomainManager
-from mailman.interfaces.messages import IMessageStore
-from mailman.testing.helpers import TestableMaster
+from mailman.testing.helpers import TestableMaster, reset_the_world
 from mailman.testing.mta import ConnectionCountingController
 from mailman.utilities.datetime import factory
 from mailman.utilities.string import expand
@@ -179,19 +178,7 @@ class ConfigLayer(MockAndMonkeyLayer):
 
     @classmethod
     def testTearDown(cls):
-        # Reset the database between tests.
-        config.db._reset()
-        # Remove all residual queue files.
-        for dirpath, dirnames, filenames in os.walk(config.QUEUE_DIR):
-            for filename in filenames:
-                os.remove(os.path.join(dirpath, filename))
-        # Clear out messages in the message store.
-        message_store = getUtility(IMessageStore)
-        for message in message_store.messages:
-            message_store.delete_message(message['message-id'])
-        config.db.commit()
-        # Reset the global style manager.
-        config.style_manager.populate()
+        reset_the_world()
 
     # Flag to indicate that loggers should propagate to the console.
     stderr = False

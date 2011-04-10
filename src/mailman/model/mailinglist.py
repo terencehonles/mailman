@@ -108,8 +108,7 @@ class MailingList(Model):
     filter_content = Bool()
     collapse_alternatives = Bool()
     convert_html_to_plaintext = Bool()
-    # Bounces and bans.
-    ban_list = Pickle() # XXX
+    # Bounces.
     bounce_info_stale_after = TimeDelta() # XXX
     bounce_matching_headers = Unicode() # XXX
     bounce_notify_owner_on_disable = Bool() # XXX

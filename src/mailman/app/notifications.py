@@ -30,11 +30,12 @@ __all__ = [
 from email.utils import formataddr
 from lazr.config import as_boolean
 
-from mailman import Utils
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.email.message import OwnerNotification, UserNotification
 from mailman.interfaces.member import DeliveryMode
+from mailman.utilities.i18n import make
+from mailman.utilities.string import wrap
 
 
 
@@ -54,7 +55,7 @@ def send_welcome_message(mlist, address, language, delivery_mode, text=''):
     :type delivery_mode: DeliveryMode
     """
     if mlist.welcome_msg:
-        welcome = Utils.wrap(mlist.welcome_msg) + '\n'
+        welcome = wrap(mlist.welcome_msg) + '\n'
     else:
         welcome = ''
     # Find the IMember object which is subscribed to the mailing list, because
@@ -62,15 +63,16 @@ def send_welcome_message(mlist, address, language, delivery_mode, text=''):
     member = mlist.members.get_member(address)
     options_url = member.options_url
     # Get the text from the template.
-    text += Utils.maketext(
-        'subscribeack.txt', {
-            'real_name'         : mlist.real_name,
-            'posting_address'   : mlist.fqdn_listname,
-            'listinfo_url'      : mlist.script_url('listinfo'),
-            'optionsurl'        : options_url,
-            'request_address'   : mlist.request_address,
-            'welcome'           : welcome,
-            }, lang=language.code, mlist=mlist)
+    text += make('subscribeack.txt',
+                 mailing_list=mlist,
+                 language=language.code,
+                 real_name=mlist.real_name,
+                 posting_address=mlist.fqdn_listname,
+                 listinfo_url=mlist.script_url('listinfo'),
+                 optionsurl=options_url,
+                 request_address=mlist.request_address,
+                 welcome=welcome,
+                 )
     if delivery_mode is not DeliveryMode.regular:
         digmode = _(' (Digest mode)')
     else:
@@ -98,7 +100,7 @@ def send_goodbye_message(mlist, address, language):
     :type language: string
     """
     if mlist.goodbye_msg:
-        goodbye = Utils.wrap(mlist.goodbye_msg) + '\n'
+        goodbye = wrap(mlist.goodbye_msg) + '\n'
     else:
         goodbye = ''
     msg = UserNotification(
@@ -124,10 +126,10 @@ def send_admin_subscription_notice(mlist, address, full_name, language):
     with _.using(mlist.preferred_language.code):
         subject = _('$mlist.real_name subscription notification')
     full_name = full_name.encode(language.charset, 'replace')
-    text = Utils.maketext(
-        'adminsubscribeack.txt',
-        {'listname' : mlist.real_name,
-         'member'   : formataddr((full_name, address)),
-         }, mlist=mlist)
+    text = make('adminsubscribeack.txt',
+                mailing_list=mlist,
+                listname=mlist.real_name,
+                member=formataddr((full_name, address)),
+                )
     msg = OwnerNotification(mlist, subject, text)
     msg.send(mlist)

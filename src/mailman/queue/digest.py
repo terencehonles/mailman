@@ -38,7 +38,6 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import formatdate, getaddresses, make_msgid
 
-from mailman.Utils import maketext, oneline, wrap
 from mailman.config import config
 from mailman.core.errors import DiscardMessage
 from mailman.core.i18n import _
@@ -46,7 +45,9 @@ from mailman.interfaces.member import DeliveryMode, DeliveryStatus
 from mailman.pipeline.decorate import decorate
 from mailman.pipeline.scrubber import process as scrubber
 from mailman.queue import Runner
+from mailman.utilities.i18n import make
 from mailman.utilities.mailbox import Mailbox
+from mailman.utilities.string import oneline, wrap
 
 
 
@@ -75,15 +76,14 @@ class Digester:
         # digest header are separate MIME subobjects.  In either case, it's
         # the first thing in the digest, and we can calculate it now, so go
         # ahead and add it now.
-        self._masthead = maketext(
-            'masthead.txt', dict(
-                real_name=mlist.real_name,
-                got_list_email=mlist.posting_address,
-                got_listinfo_url=mlist.script_url('listinfo'),
-                got_request_email=mlist.request_address,
-                got_owner_email=mlist.owner_address,
-                ),
-            mlist=mlist)
+        self._masthead = make('masthead.txt',
+                              mailing_list=mlist,
+                              real_name=mlist.real_name,
+                              got_list_email=mlist.posting_address,
+                              got_listinfo_url=mlist.script_url('listinfo'),
+                              got_request_email=mlist.request_address,
+                              got_owner_email=mlist.owner_address,
+                              )
         # Set things up for the table of contents.
         self._header = decorate(mlist, mlist.digest_header)
         self._toc = StringIO()

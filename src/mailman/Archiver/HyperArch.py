@@ -44,12 +44,13 @@ from lazr.config import as_boolean
 from string import Template
 from zope.component import getUtility
 
-from mailman import Utils
 from mailman.Archiver import HyperDatabase
 from mailman.Archiver import pipermail
 from mailman.config import config
 from mailman.core.i18n import _, ctime
 from mailman.interfaces.listmanager import IListManager
+from mailman.utilities.i18n import find
+from mailman.utilities.string import uncanonstr, websafe
 
 
 log = logging.getLogger('mailman.error')
@@ -85,7 +86,7 @@ def html_quote(s, langcode=None):
               ('"', '&quot;'))
     for thing, repl in repls:
         s = s.replace(thing, repl)
-    return Utils.uncanonstr(s, langcode)
+    return uncanonstr(s, langcode)
 
 
 def url_quote(s):
@@ -119,10 +120,10 @@ html_charset = '<META http-equiv="Content-Type" ' \
 
 def CGIescape(arg, lang=None):
     if isinstance(arg, unicode):
-        s = Utils.websafe(arg)
+        s = websafe(arg)
     else:
-        s = Utils.websafe(str(arg))
-    return Utils.uncanonstr(s.replace('"', '&quot;'), lang.code)
+        s = websafe(str(arg))
+    return uncanonstr(s.replace('"', '&quot;'), lang.code)
 
 # Parenthesized human name
 paren_name_pat = re.compile(r'([(].*[)])')
@@ -182,8 +183,8 @@ def quick_maketext(templatefile, dict=None, lang=None, mlist=None):
         template = _templatecache.get(filepath)
     if filepath is None or template is None:
         # Use the basic maketext, with defaults to get the raw template
-        template, filepath = Utils.findtext(templatefile, lang=lang.code,
-                                            raw=True, mlist=mlist)
+        template, filepath = find(templatefile, mailing_list=mlist,
+                                  language=lang.code)
         _templatefilepathcache[cachekey] = filepath
         _templatecache[filepath] = template
     # Copied from Utils.maketext()
@@ -201,7 +202,7 @@ def quick_maketext(templatefile, dict=None, lang=None, mlist=None):
             pass
     # Make sure the text is in the given character set, or html-ify any bogus
     # characters.
-    return Utils.uncanonstr(text, lang.code)
+    return uncanonstr(text, lang.code)
 
 
 

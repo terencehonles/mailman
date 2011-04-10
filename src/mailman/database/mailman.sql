@@ -116,8 +116,7 @@ CREATE TABLE mailinglist (
         autorespond_requests INTEGER,
         autoresponse_request_text TEXT,
         autoresponse_grace_period TEXT,
-        -- Bounce and ban.
-        ban_list BLOB,
+        -- Bounces.
         bounce_info_stale_after TEXT,
         bounce_matching_headers TEXT,
         bounce_notify_owner_on_disable BOOLEAN,
@@ -270,3 +269,10 @@ CREATE INDEX ix_member_address_id ON member (address_id);
 CREATE INDEX ix_member_preferences_id ON member (preferences_id);
 CREATE INDEX ix_pendedkeyvalue_pended_id ON pendedkeyvalue (pended_id);
 CREATE INDEX ix_user_preferences_id ON user (preferences_id);
+
+CREATE TABLE ban (
+    id INTEGER NOT NULL,
+    email TEXT,
+    mailing_list TEXT,
+    PRIMARY KEY (id)
+);

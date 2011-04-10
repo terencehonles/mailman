@@ -60,6 +60,7 @@ Build
 Bugs fixed
 ----------
  * Typo in scan_message(). (LP: #645897)
+ * Typo in add_member().  (LP: #710182) (Florian Fuchs)
  * Clean up many pyflakes problems.
 
 

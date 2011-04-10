@@ -23,7 +23,7 @@ import cPickle
 import logging
 import datetime
 
-from email.Utils import parseaddr
+from email.utils import parseaddr
 from lazr.config import as_timedelta
 
 from mailman.config import config

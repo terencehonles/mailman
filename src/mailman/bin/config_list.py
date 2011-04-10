@@ -22,10 +22,10 @@ import optparse
 
 from mailman import MailList
 from mailman import errors
-from mailman.Utils import wrap
 from mailman.configuration import config
 from mailman.core.i18n import _
 from mailman.initialize import initialize
+from mailman.utilities.string import wrap
 from mailman.version import MAILMAN_VERSION
 
 
@@ -140,7 +140,7 @@ def do_list_categories(mlist, k, subcat, outfp):
     # triple-quoted string nonsense in the source code.
     desc = NL.join([s.lstrip() for s in info[0].splitlines()])
     # Print out the category description
-    desc = Utils.wrap(desc)
+    desc = wrap(desc)
     for line in desc.splitlines():
         print >> outfp, '#', line
     print >> outfp
@@ -162,7 +162,7 @@ def do_list_categories(mlist, k, subcat, outfp):
         desc = re.sub('&lt;', '<', desc)
         desc = re.sub('&gt;', '>', desc)
         # Print out the variable description.
-        desc = Utils.wrap(desc)
+        desc = wrap(desc)
         for line in desc.split('\n'):
             print >> outfp, '#', line
         # munge the value based on its type
@@ -246,8 +246,8 @@ def do_input(listname, infile, checkonly, verbose, parser):
     # Open the specified list locked, unless checkonly is set
     try:
         mlist = MailList.MailList(listname, lock=not checkonly)
-    except errors.MMListError, e:
-        parser.error(_('No such list "$listname"\n$e'))
+    except errors.MMListError as error:
+        parser.error(_('No such list "$listname"\n$error'))
     savelist = False
     guibyprop = getPropertyMap(mlist)
     try:

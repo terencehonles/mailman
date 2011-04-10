@@ -28,11 +28,11 @@ __all__ = [
 import time
 import unittest
 
-from mailman import passwords
 from mailman.app.lifecycle import create_list, remove_list
 from mailman.config import config
 from mailman.interfaces.member import NotAMemberError
 from mailman.testing.layers import ConfigLayer
+from mailman.utilities import passwords
 
 
 

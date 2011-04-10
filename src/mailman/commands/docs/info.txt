@@ -74,6 +74,7 @@ The File System Hierarchy layout is the same every by definition.
         PUBLIC_ARCHIVE_FILE_DIR  = /var/lib/mailman/archives/public
         QUEUE_DIR                = /var/spool/mailman
         SITE_PW_FILE             = /var/lib/mailman/data/adm.pw
+        TEMPLATE_DIR             = .../mailman/templates
         VAR_DIR                  = /var/lib/mailman
 
 

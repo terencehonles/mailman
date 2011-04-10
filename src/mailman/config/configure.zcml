@@ -6,14 +6,19 @@
 
   <adapter
     for="mailman.interfaces.mailinglist.IMailingList"
-    provides="mailman.interfaces.autorespond.IAutoResponseSet"
     factory="mailman.model.autorespond.AutoResponseSet"
+    provides="mailman.interfaces.autorespond.IAutoResponseSet"
     />
 
   <adapter
     for="mailman.interfaces.mailinglist.IMailingList"
-    provides="mailman.interfaces.mailinglist.IAcceptableAliasSet"
     factory="mailman.model.mailinglist.AcceptableAliasSet"
+    provides="mailman.interfaces.mailinglist.IAcceptableAliasSet"
+    />
+
+  <utility
+    factory="mailman.model.bans.BanManager"
+    provides="mailman.interfaces.bans.IBanManager"
     />
 
   <utility
@@ -52,13 +57,18 @@
     />
 
   <utility
-    provides="mailman.interfaces.registrar.IRegistrar"
     factory="mailman.app.registrar.Registrar"
+    provides="mailman.interfaces.registrar.IRegistrar"
     />
 
   <utility
     factory="mailman.rest.adapters.SubscriptionService"
     provides="mailman.interfaces.membership.ISubscriptionService"
+    />
+
+  <utility
+    factory="mailman.email.validate.Validator"
+    provides="mailman.interfaces.address.IEmailValidator"
     />
 
 </configure>

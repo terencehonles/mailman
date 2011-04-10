@@ -462,6 +462,7 @@ class Runner:
 
     def _clean_up(self):
         """See `IRunner`."""
+        pass
 
     def _dispose(self, mlist, msg, msgdata):
         """See `IRunner`."""

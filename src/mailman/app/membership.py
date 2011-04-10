@@ -29,15 +29,16 @@ __all__ = [
 from email.utils import formataddr
 from zope.component import getUtility
 
-from mailman import Utils
 from mailman.app.notifications import send_goodbye_message
 from mailman.core.i18n import _
 from mailman.email.message import OwnerNotification
-from mailman.email.validate import validate
+from mailman.interfaces.address import IEmailValidator
+from mailman.interfaces.bans import IBanManager
 from mailman.interfaces.member import (
     AlreadySubscribedError, MemberRole, MembershipIsBannedError,
     NotAMemberError)
 from mailman.interfaces.usermanager import IUserManager
+from mailman.utilities.i18n import make
 
 
 
@@ -67,14 +68,12 @@ def add_member(mlist, email, realname, password, delivery_mode, language):
     :raises MembershipIsBannedError: if the membership is not allowed.
     """
     # Let's be extra cautious.
-    validate(email)
+    getUtility(IEmailValidator).validate(email)
     if mlist.members.get_member(email) is not None:
         raise AlreadySubscribedError(
             mlist.fqdn_listname, email, MemberRole.member)
-    # Check for banned email addresses here too for administrative mass
-    # subscribes and confirmations.
-    pattern = Utils.get_pattern(email, mlist.ban_list)
-    if pattern:
+    # Check to see if the email address is banned.
+    if getUtility(IBanManager).is_banned(email, mlist.fqdn_listname):
         raise MembershipIsBannedError(mlist, email)
     # See if there's already a user linked with the given address.
     user_manager = getUtility(IUserManager)
@@ -104,7 +103,7 @@ def add_member(mlist, email, realname, password, delivery_mode, language):
     else:
         # The user exists and is linked to the address.
         for address in user.addresses:
-            if address.email == address:
+            if address.email == email:
                 break
         else:
             raise AssertionError(
@@ -150,10 +149,10 @@ def delete_member(mlist, address, admin_notif=None, userack=None):
         user = getUtility(IUserManager).get_user(address)
         realname = user.real_name
         subject = _('$mlist.real_name unsubscription notification')
-        text = Utils.maketext(
-            'adminunsubscribeack.txt',
-            {'listname': mlist.real_name,
-             'member'  : formataddr((realname, address)),
-             }, mlist=mlist)
+        text = make('adminunsubscribeack.txt',
+                    mailing_list=mlist,
+                    listname=mlist.real_name,
+                    member=formataddr((realname, address)),
+                    )
         msg = OwnerNotification(mlist, subject, text)
         msg.send(mlist)

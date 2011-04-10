@@ -27,7 +27,7 @@ import os
 import logging
 
 from datetime import datetime
-from email.Utils import parsedate_tz, mktime_tz, formatdate
+from email.utils import parsedate_tz, mktime_tz, formatdate
 from flufl.lock import Lock
 from lazr.config import as_timedelta
 

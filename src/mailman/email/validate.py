@@ -21,15 +21,18 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'is_valid',
-    'validate',
+    'Validator',
     ]
 
 
 import re
 
+from zope.interface import implements
+
+
 from mailman.email.utils import split_email
-from mailman.interfaces.address import InvalidEmailAddressError
+from mailman.interfaces.address import (
+    IEmailValidator, InvalidEmailAddressError)
 
 
 # What other characters should be disallowed?
@@ -37,34 +40,31 @@ _badchars = re.compile(r'[][()<>|;^,\000-\037\177-\377]')
 
 
 
-def validate(address):
-    """Validate an email address.
+class Validator:
+    """An email address validator."""
 
-    :param address: An email address.
-    :type address: string
-    :raise InvalidEmailAddressError: when the address is deemed invalid.
-    """
-    if not is_valid(address):
-        raise InvalidEmailAddressError(repr(address))
+    implements(IEmailValidator)
 
+    def is_valid(self, email):
+        """See `IEmailValidator`."""
+        if not email or ' ' in email:
+            return False
+        if _badchars.search(email) or email[0] == '-':
+            return False
+        user, domain_parts = split_email(email)
+        # Local, unqualified addresses are not allowed.
+        if not domain_parts:
+            return False
+        if len(domain_parts) < 2:
+            return False
+        return True
 
-
-def is_valid(address):
-    """Check if an email address if valid.
+    def validate(self, email):
+        """Validate an email address.
 
-    :param address: An email address.
-    :type address: string
-    :return: A flag indicating whether the email address is okay or not.
-    :rtype: bool
-    """
-    if not address or ' ' in address:
-        return False
-    if _badchars.search(address) or address[0] == '-':
-        return False
-    user, domain_parts = split_email(address)
-    # Local, unqualified addresses are not allowed.
-    if not domain_parts:
-        return False
-    if len(domain_parts) < 2:
-        return False
-    return True
+        :param address: An email address.
+        :type address: string
+        :raise InvalidEmailAddressError: when the address is deemed invalid.
+        """
+        if not self.is_valid(email):
+            raise InvalidEmailAddressError(repr(email))

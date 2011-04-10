@@ -32,9 +32,9 @@ from cStringIO import StringIO
 from string import Template
 from zope.component import getUtility
 
-from mailman import Utils
 from mailman.config import config
 from mailman.interfaces.domain import IDomainManager
+from mailman.utilities.i18n import make
 
 log = logging.getLogger('mailman.error')
 
@@ -111,11 +111,11 @@ class Archiver:
                     fp = open(indexfile, 'w')
                 finally:
                     os.umask(omask)
-                fp.write(Utils.maketext(
-                    'emptyarchive.html',
-                    {'listname': self.real_name,
-                     'listinfo': self.GetScriptURL('listinfo'),
-                     }, mlist=self))
+                fp.write(make('emptyarchive.html',
+                              mailing_list=self,
+                              listname=self.real_name,
+                              listinfo=self.GetScriptURL('listinfo'),
+                              ))
             if fp:
                 fp.close()
         finally:

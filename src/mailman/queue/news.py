@@ -24,8 +24,8 @@ import logging
 import nntplib
 
 from cStringIO import StringIO
+from lazr.config import as_host_port
 
-from mailman import Utils
 from mailman.config import config
 from mailman.interfaces.nntp import NewsModeration
 from mailman.queue import Runner
@@ -61,7 +61,8 @@ class NewsRunner(Runner):
             conn = None
             try:
                 try:
-                    nntp_host, nntp_port = Utils.nntpsplit(mlist.nntp_host)
+                    nntp_host, nntp_port = as_host_port(
+                        mlist.nntp_host, default_port=119)
                     conn = nntplib.NNTP(nntp_host, nntp_port,
                                         readermode=True,
                                         user=config.nntp.username,
