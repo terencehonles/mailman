@@ -40,6 +40,7 @@ from mailman.interfaces.command import ICLISubCommand
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import (
     AlreadySubscribedError, DeliveryMode, DeliveryStatus)
+from mailman.utilities.passwords import make_user_friendly_password
 
 
 
@@ -196,8 +197,10 @@ class Members:
                 real_name, email = parseaddr(line)
                 real_name = real_name.decode(fp.encoding)
                 email = email.decode(fp.encoding)
+                # Give the user a default, user-friendly password.
+                password = make_user_friendly_password()
                 try:
-                    add_member(mlist, email, real_name, None,
+                    add_member(mlist, email, real_name, password,
                                DeliveryMode.regular,
                                mlist.preferred_language.code)
                 except AlreadySubscribedError:

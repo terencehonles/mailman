@@ -3,8 +3,8 @@ Users
 =====
 
 Users are entities that represent people.  A user has a real name and a
-password.  Optionally a user may have some preferences and a set of addresses
-they control.  A user also knows which mailing lists they are subscribed to.
+optional encoded password.  A user may also have an optional preferences and a
+set of addresses they control.
 
 See `usermanager.txt`_ for examples of how to create, delete, and find users.
 
@@ -19,7 +19,7 @@ User data
 Users may have a real name and a password.
 
     >>> user_1 = user_manager.create_user()
-    >>> user_1.password = 'my password'
+    >>> user_1.password = b'my password'
     >>> user_1.real_name = 'Zoe Person'
     >>> dump_list(user.real_name for user in user_manager.users)
     Zoe Person
@@ -29,11 +29,36 @@ Users may have a real name and a password.
 The password and real name can be changed at any time.
 
     >>> user_1.real_name = 'Zoe X. Person'
-    >>> user_1.password = 'another password'
+    >>> user_1.password = b'another password'
     >>> dump_list(user.real_name for user in user_manager.users)
     Zoe X. Person
     >>> dump_list(user.password for user in user_manager.users)
     another password
+
+
+Basic user identification
+=========================
+
+Although rarely visible to users, every user has a unique ID in Mailman, which
+never changes.  This ID is generated randomly at the time the user is
+created.
+
+    # The test suite uses a predictable user id.
+    >>> print user_1.user_id
+    1
+
+The user id cannot change.
+
+    >>> user_1.user_id = 'foo'
+    Traceback (most recent call last):
+    ...
+    AttributeError: can't set attribute
+
+User records also have a date on which they where created.
+
+    # The test suite uses a predictable timestamp.
+    >>> print user_1.created_on
+    2005-08-01 07:49:23
 
 
 Users addresses

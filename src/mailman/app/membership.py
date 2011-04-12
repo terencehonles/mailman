@@ -39,6 +39,7 @@ from mailman.interfaces.member import (
     NotAMemberError)
 from mailman.interfaces.usermanager import IUserManager
 from mailman.utilities.i18n import make
+from mailman.utilities.passwords import encrypt_password
 
 
 
@@ -94,9 +95,9 @@ def add_member(mlist, email, realname, password, delivery_mode, language):
             user = user_manager.create_user()
             user.real_name = (realname if realname else address.real_name)
             user.link(address)
-        # Since created the user, then the member, and set preferences on the
-        # appropriate object.
-        user.password = password
+        # Encrypt the password using the currently selected scheme.  The
+        # scheme is recorded in the hashed password string.
+        user.password = encrypt_password(password)
         user.preferences.preferred_language = language
         member = address.subscribe(mlist, MemberRole.member)
         member.preferences.delivery_mode = delivery_mode

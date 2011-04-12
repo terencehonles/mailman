@@ -44,7 +44,7 @@ A user can be assigned a real name.
 
 A user can be assigned a password.
 
-    >>> user.password = 'secret'
+    >>> user.password = b'secret'
     >>> dump_list(user.password for user in user_manager.users)
     secret
 
@@ -118,7 +118,7 @@ that the ``.get_user()`` method takes a string email address, not an
     >>> address = list(user_4.addresses)[0]
     >>> found_user = user_manager.get_user(address.email)
     >>> found_user
-    <User "Dan Person" at ...>
+    <User "Dan Person" (...) at ...>
     >>> found_user is user_4
     True
 
@@ -129,4 +129,19 @@ with it, you will get ``None`` back.
     None
     >>> user_4.unlink(address)
     >>> print user_manager.get_user(address.email)
+    None
+
+Users can also be found by their unique user id.
+
+    >>> found_user = user_manager.get_user_by_id(user_4.user_id)
+    >>> user_4
+    <User "Dan Person" (...) at ...>
+    >>> found_user
+    <User "Dan Person" (...) at ...>
+    >>> user_4.user_id == found_user.user_id
+    True
+
+If a non-existent user id is given, None is returned.
+
+    >>> print user_manager.get_user_by_id('missing')
     None

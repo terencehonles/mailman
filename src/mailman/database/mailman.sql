@@ -251,11 +251,17 @@ CREATE TABLE preferences (
 CREATE TABLE user (
         id INTEGER NOT NULL,
         real_name TEXT,
-        password TEXT,
+        password BINARY,
+        _user_id TEXT,
+        _created_on TIMESTAMP,
         preferences_id INTEGER,
         PRIMARY KEY (id),
-         CONSTRAINT user_preferences_id_fk FOREIGN KEY(preferences_id) REFERENCES preferences (id)
+            CONSTRAINT user_preferences_id_fk
+            FOREIGN KEY(preferences_id)
+            REFERENCES preferences (id)
 );
+CREATE INDEX ix_user_user_id ON user (_user_id);
+
 CREATE TABLE version (
         id INTEGER NOT NULL,
         component TEXT,

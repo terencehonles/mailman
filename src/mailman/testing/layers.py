@@ -25,6 +25,7 @@ __all__ = [
     'MockAndMonkeyLayer',
     'RESTLayer',
     'SMTPLayer',
+    'is_testing',
     ]
 
 
@@ -48,7 +49,6 @@ from mailman.core.logging import get_handler
 from mailman.interfaces.domain import IDomainManager
 from mailman.testing.helpers import TestableMaster, reset_the_world
 from mailman.testing.mta import ConnectionCountingController
-from mailman.utilities.datetime import factory
 from mailman.utilities.string import expand
 
 
@@ -60,17 +60,20 @@ NL = '\n'
 class MockAndMonkeyLayer:
     """Layer for mocking and monkey patching for testing."""
 
-    @classmethod
-    def setUp(cls):
-        factory.testing_mode = True
+    # Set this to True to enable predictable datetimes, uids, etc.
+    testing_mode = False
 
-    @classmethod
-    def tearDown(cls):
-        factory.testing_mode = False
+    # A registration of all testing factories, for resetting between tests.
+    _resets = []
 
     @classmethod
     def testTearDown(cls):
-        factory.reset()
+        for reset in cls._resets:
+            reset()
+
+    @classmethod
+    def register_reset(cls, reset):
+        cls._resets.append(reset)
 
 
 
@@ -102,8 +105,12 @@ class ConfigLayer(MockAndMonkeyLayer):
         test_config = dedent("""
         [mailman]
         layout: testing
+        [passwords]
+        password_scheme: cleartext
         [paths.testing]
         var_dir: %s
+        [devmode]
+        testing: yes
         """ % cls.var_dir)
         # Read the testing config and push it.
         test_config += resource_string('mailman.testing', 'testing.cfg')
@@ -286,3 +293,13 @@ class RESTLayer(SMTPLayer):
         assert cls.server is not None, 'Layer not set up'
         cls.server.stop()
         cls.server = None
+
+
+
+def is_testing():
+    """Return a 'testing' flag for use with the predictable factories.
+
+    :return: True when in testing mode.
+    :rtype: bool
+    """
+    return MockAndMonkeyLayer.testing_mode or config.devmode.testing

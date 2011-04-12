@@ -126,7 +126,7 @@ def dump_list(list_of_things, key=str):
 
 
 def call_http(url, data=None, method=None, username=None, password=None):
-    """'Call' a URL with a given HTTP method and return the resulting object.
+    """'Call a URL with a given HTTP method and return the resulting object.
 
     The object will have been JSON decoded.
 
@@ -142,6 +142,8 @@ def call_http(url, data=None, method=None, username=None, password=None):
     :param password: The HTTP Basic Auth password.  None means use the value
         from the configuration.
     :type username: str
+    :return: The decoded JSON data structure.
+    :raises HTTPError: when a non-2xx return code is received.
     """
     headers = {}
     if data is not None:

@@ -34,6 +34,7 @@ from mailman.rest.domains import ADomain, AllDomains
 from mailman.rest.helpers import etag, path_to
 from mailman.rest.lists import AList, AllLists
 from mailman.rest.members import AllMembers
+from mailman.rest.users import AUser, AllUsers
 
 
 
@@ -108,3 +109,12 @@ class TopLevel(resource.Resource):
         if len(segments) == 0:
             return AllMembers()
         return http.bad_request()
+
+    @resource.child()
+    def users(self, request, segments):
+        """/<api>/users"""
+        if len(segments) == 0:
+            return AllUsers()
+        else:
+            user_id = segments.pop(0)
+            return AUser(user_id), segments

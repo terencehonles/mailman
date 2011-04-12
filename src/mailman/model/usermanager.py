@@ -40,13 +40,10 @@ class UserManager:
     implements(IUserManager)
 
     def create_user(self, email=None, real_name=None):
-        user = User()
-        user.real_name = ('' if real_name is None else real_name)
+        user = User(real_name, Preferences())
         if email:
             address = self.create_address(email, real_name)
             user.link(address)
-        user.preferences = Preferences()
-        config.db.store.add(user)
         return user
 
     def delete_user(self, user):
@@ -56,10 +53,13 @@ class UserManager:
         addresses = config.db.store.find(Address, email=email.lower())
         if addresses.count() == 0:
             return None
-        elif addresses.count() == 1:
-            return addresses[0].user
-        else:
-            raise AssertionError('Unexpected query count')
+        return addresses.one().user
+
+    def get_user_by_id(self, user_id):
+        users = config.db.store.find(User, _user_id=user_id)
+        if users.count() == 0:
+            return None
+        return users.one()
 
     @property
     def users(self):
@@ -92,10 +92,7 @@ class UserManager:
         addresses = config.db.store.find(Address, email=email.lower())
         if addresses.count() == 0:
             return None
-        elif addresses.count() == 1:
-            return addresses[0]
-        else:
-            raise AssertionError('Unexpected query count')
+        return addresses.one()
 
     @property
     def addresses(self):
