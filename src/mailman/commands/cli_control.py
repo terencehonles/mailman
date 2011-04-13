@@ -187,7 +187,7 @@ class SignalCommand:
 
 
 class Stop(SignalCommand):
-    """Stop the Malman daemons."""
+    """Stop the Mailman daemons."""
 
     name = 'stop'
     message = _("Shutting down Mailman's master queue runner")
