@@ -4,7 +4,8 @@ Users
 
 Users are entities that represent people.  A user has a real name and a
 optional encoded password.  A user may also have an optional preferences and a
-set of addresses they control.
+set of addresses they control.  They can even have a *preferred address*,
+i.e. one that they use by default.
 
 See `usermanager.txt`_ for examples of how to create, delete, and find users.
 
@@ -140,6 +141,90 @@ But don't try to unlink the address from a user it's not linked to.
     Traceback (most recent call last):
     ...
     AddressNotLinkedError: zperson@example.net
+
+
+Preferred address
+=================
+
+Users can register a preferred address.  When subscribing to a mailing list,
+unless some other address is explicitly specified, the user will be subscribed
+with their preferred address.  This allows them to change their preferred
+address once, and have all their subscriptions automatically track this
+change.
+
+By default, a user has no preferred address.
+
+    >>> user_2 = user_manager.create_user()
+    >>> print user_2.preferred_address
+    None
+
+Even when a user registers an address, this address will not be set as the
+preferred address.
+
+    >>> anne = user_2.register('anne@example.com', 'Anne Person')
+    >>> print user_2.preferred_address
+    None
+
+The preferred address must be explicitly registered, however only verified
+address may be registered as preferred.
+
+    >>> anne
+    <Address: Anne Person <anne@example.com> [not verified] at ...>
+    >>> user_2.preferred_address = anne
+    Traceback (most recent call last):
+    ...
+    UnverifiedAddressError: Anne Person <anne@example.com>
+
+Once the address has been verified though, it can be set as the preferred
+address, but only if the address is either controlled by the user or
+uncontrolled.  In the latter case, setting it as the preferred address makes
+it controlled by the user.
+::
+
+    >>> from mailman.utilities.datetime import now
+    >>> anne.verified_on = now()
+    >>> anne
+    <Address: Anne Person <anne@example.com> [verified] at ...>
+    >>> user_2.controls(anne.email)
+    True
+    >>> user_2.preferred_address = anne
+    >>> user_2.preferred_address
+    <Address: Anne Person <anne@example.com> [verified] at ...>
+
+    >>> aperson = user_manager.create_address('aperson@example.com')
+    >>> user_2.controls(aperson.email)
+    False
+    >>> aperson.verified_on = now()
+    >>> user_2.preferred_address = aperson
+    >>> user_2.controls(aperson.email)
+    True
+
+    >>> zperson = list(user_1.addresses)[0]
+    >>> zperson.verified_on = now()
+    >>> user_2.controls(zperson.email)
+    False
+    >>> user_1.controls(zperson.email)
+    True
+    >>> user_2.preferred_address = zperson
+    Traceback (most recent call last):
+    ...
+    AddressAlreadyLinkedError: Zoe Person <zperson@example.com>
+
+A user can disavow their preferred address.
+
+    >>> user_2.preferred_address
+    <Address: aperson@example.com [verified] at ...>
+    >>> del user_2.preferred_address
+    >>> print user_2.preferred_address
+    None
+
+The preferred address always shows up in the set of addresses controlled by
+this user.
+
+    >>> for address in user_2.addresses:
+    ...     print address.email
+    anne@example.com
+    aperson@example.com
 
 
 Users and preferences

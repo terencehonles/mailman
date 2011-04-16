@@ -32,7 +32,7 @@ from mailman.config import config
 from mailman.database.model import Model
 from mailman.interfaces.address import (
     AddressAlreadyLinkedError, AddressNotLinkedError)
-from mailman.interfaces.user import IUser
+from mailman.interfaces.user import IUser, UnverifiedAddressError
 from mailman.model.address import Address
 from mailman.model.preferences import Preferences
 from mailman.model.roster import Memberships
@@ -53,6 +53,8 @@ class User(Model):
     _created_on = DateTime()
 
     addresses = ReferenceSet(id, 'Address.user_id')
+    _preferred_address_id = Int()
+    _preferred_address = Reference(_preferred_address_id, 'Address.id')
     preferences_id = Int()
     preferences = Reference(preferences_id, 'Preferences.id')
 
@@ -92,6 +94,30 @@ class User(Model):
         if address.user is None:
             raise AddressNotLinkedError(address)
         address.user = None
+
+    @property
+    def preferred_address(self):
+        """See `IUser`."""
+        return self._preferred_address
+
+    @preferred_address.setter
+    def preferred_address(self, address):
+        """See `IUser`."""
+        if address.verified_on is None:
+            raise UnverifiedAddressError(address)
+        if self.controls(address.email):
+            # This user already controls the email address.
+            pass
+        elif address.user is None:
+            self.link(address)
+        elif address.user != self:
+            raise AddressAlreadyLinkedError(address)
+        self._preferred_address = address
+
+    @preferred_address.deleter
+    def preferred_address(self):
+        """See `IUser`."""
+        self._preferred_address = None
 
     def controls(self, email):
         """See `IUser`."""

@@ -5,7 +5,8 @@ CREATE TABLE _request (
         data_hash TEXT,
         mailing_list_id INTEGER,
         PRIMARY KEY (id),
-         CONSTRAINT _request_mailing_list_id_fk FOREIGN KEY(mailing_list_id) REFERENCES mailinglist (id)
+        CONSTRAINT _request_mailing_list_id_fk
+            FOREIGN KEY (mailing_list_id) REFERENCES mailinglist (id)
 );
 
 CREATE TABLE acceptablealias (
@@ -14,7 +15,7 @@ CREATE TABLE acceptablealias (
     mailing_list_id INTEGER NOT NULL,
     PRIMARY KEY (id),
     CONSTRAINT acceptablealias_mailing_list_id_fk
-        FOREIGN KEY(mailing_list_id) REFERENCES mailinglist (id)
+        FOREIGN KEY (mailing_list_id) REFERENCES mailinglist (id)
     );
 CREATE INDEX ix_acceptablealias_mailing_list_id
     ON acceptablealias (mailing_list_id);
@@ -31,8 +32,10 @@ CREATE TABLE address (
         user_id INTEGER,
         preferences_id INTEGER,
         PRIMARY KEY (id),
-         CONSTRAINT address_user_id_fk FOREIGN KEY(user_id) REFERENCES user (id),
-         CONSTRAINT address_preferences_id_fk FOREIGN KEY(preferences_id) REFERENCES preferences (id)
+        CONSTRAINT address_user_id_fk
+            FOREIGN KEY (user_id) REFERENCES user (id),
+        CONSTRAINT address_preferences_id_fk
+            FOREIGN KEY (preferences_id) REFERENCES preferences (id)
 );
 
 CREATE TABLE autoresponserecord (
@@ -43,11 +46,9 @@ CREATE TABLE autoresponserecord (
         date_sent TIMESTAMP,
         PRIMARY KEY (id),
         CONSTRAINT autoresponserecord_address_id_fk
-            FOREIGN KEY (address_id)
-            REFERENCES address (id),
+            FOREIGN KEY (address_id) REFERENCES address (id),
         CONSTRAINT autoresponserecord_mailing_list_id
-            FOREIGN KEY (mailing_list_id)
-            REFERENCES mailinglist (id)
+            FOREIGN KEY (mailing_list_id) REFERENCES mailinglist (id)
         );
 CREATE INDEX ix_autoresponserecord_address_id
     ON autoresponserecord (address_id);
@@ -61,8 +62,7 @@ CREATE TABLE contentfilter (
     filter_type INTEGER,
     PRIMARY KEY (id),
     CONSTRAINT contentfilter_mailing_list_id
-        FOREIGN KEY (mailing_list_id)
-        REFERENCES mailinglist (id)
+        FOREIGN KEY (mailing_list_id) REFERENCES mailinglist (id)
     );
 CREATE INDEX ix_contentfilter_mailing_list_id
     ON contentfilter (mailing_list_id);
@@ -202,8 +202,10 @@ CREATE TABLE member (
         address_id INTEGER,
         preferences_id INTEGER,
         PRIMARY KEY (id),
-         CONSTRAINT member_address_id_fk FOREIGN KEY(address_id) REFERENCES address (id),
-         CONSTRAINT member_preferences_id_fk FOREIGN KEY(preferences_id) REFERENCES preferences (id)
+        CONSTRAINT member_address_id_fk
+            FOREIGN KEY (address_id) REFERENCES address (id),
+        CONSTRAINT member_preferences_id_fk
+            FOREIGN KEY (preferences_id) REFERENCES preferences (id)
 );
 CREATE TABLE message (
         id INTEGER NOT NULL,
@@ -219,9 +221,9 @@ CREATE TABLE onelastdigest (
     delivery_mode TEXT,
     PRIMARY KEY (id),
     CONSTRAINT onelastdigest_mailing_list_id_fk
-        FOREIGN KEY(mailing_list_id) REFERENCES mailinglist(id),
+        FOREIGN KEY (mailing_list_id) REFERENCES mailinglist(id),
     CONSTRAINT onelastdigest_address_id_fk
-        FOREIGN KEY(address_id) REFERENCES address(id)
+        FOREIGN KEY (address_id) REFERENCES address(id)
     );
 CREATE TABLE pended (
         id INTEGER NOT NULL,
@@ -235,7 +237,8 @@ CREATE TABLE pendedkeyvalue (
         value TEXT,
         pended_id INTEGER,
         PRIMARY KEY (id),
-         CONSTRAINT pendedkeyvalue_pended_id_fk FOREIGN KEY(pended_id) REFERENCES pended (id)
+        CONSTRAINT pendedkeyvalue_pended_id_fk
+            FOREIGN KEY (pended_id) REFERENCES pended (id)
 );
 CREATE TABLE preferences (
         id INTEGER NOT NULL,
@@ -254,11 +257,13 @@ CREATE TABLE user (
         password BINARY,
         _user_id TEXT,
         _created_on TIMESTAMP,
+        _preferred_address_id INTEGER,
         preferences_id INTEGER,
         PRIMARY KEY (id),
-            CONSTRAINT user_preferences_id_fk
-            FOREIGN KEY(preferences_id)
-            REFERENCES preferences (id)
+        CONSTRAINT user_preferences_id_fk
+            FOREIGN KEY (preferences_id) REFERENCES preferences (id),
+        CONSTRAINT _preferred_address_id_fk
+            FOREIGN KEY (_preferred_address_id) REFERENCES address (id)
 );
 CREATE INDEX ix_user_user_id ON user (_user_id);
 

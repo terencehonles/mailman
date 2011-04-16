@@ -41,6 +41,7 @@ class AddressError(MailmanError):
     """A general address-related error occurred."""
 
     def __init__(self, address):
+        super(AddressError, self).__init__()
         self.address = address
 
     def __str__(self):

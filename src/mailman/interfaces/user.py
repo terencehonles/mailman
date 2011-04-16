@@ -22,10 +22,25 @@ from __future__ import absolute_import, unicode_literals
 __metaclass__ = type
 __all__ = [
     'IUser',
+    'UnverifiedAddressError',
     ]
 
 
 from zope.interface import Interface, Attribute
+
+from mailman.interfaces.errors import MailmanError
+
+
+
+class UnverifiedAddressError(MailmanError):
+    """Unverified address cannot be used as a user's preferred address."""
+
+    def __init__(self, address):
+        super(UnverifiedAddressError, self).__init__()
+        self.address = address
+
+    def __str__(self):
+        return self.address
 
 
 
@@ -46,6 +61,9 @@ class IUser(Interface):
 
     addresses = Attribute(
         """An iterator over all the `IAddresses` controlled by this user.""")
+
+    preferred_address = Attribute(
+        """The user's preferred `IAddress`.  This must be validated.""")
 
     memberships = Attribute(
         """A roster of this user's memberships.""")
