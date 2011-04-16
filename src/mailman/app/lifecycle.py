@@ -80,11 +80,11 @@ def create_list(fqdn_listname, owners=None):
     # owners of the mailing list.
     user_manager = getUtility(IUserManager)
     for owner_address in owners:
-        addr = user_manager.get_address(owner_address)
-        if addr is None:
+        address = user_manager.get_address(owner_address)
+        if address is None:
             user = user_manager.create_user(owner_address)
-            addr = list(user.addresses)[0]
-        addr.subscribe(mlist, MemberRole.owner)
+            address = list(user.addresses)[0]
+        mlist.subscribe(address, MemberRole.owner)
     return mlist
 
 

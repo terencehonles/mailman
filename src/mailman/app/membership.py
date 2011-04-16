@@ -99,7 +99,7 @@ def add_member(mlist, email, realname, password, delivery_mode, language):
         # scheme is recorded in the hashed password string.
         user.password = encrypt_password(password)
         user.preferences.preferred_language = language
-        member = address.subscribe(mlist, MemberRole.member)
+        member = mlist.subscribe(address, MemberRole.member)
         member.preferences.delivery_mode = delivery_mode
     else:
         # The user exists and is linked to the address.
@@ -110,8 +110,7 @@ def add_member(mlist, email, realname, password, delivery_mode, language):
             raise AssertionError(
                 'User should have had linked address: {0}'.format(address))
         # Create the member and set the appropriate preferences.
-        # pylint: disable-msg=W0631
-        member = address.subscribe(mlist, MemberRole.member)
+        member = mlist.subscribe(address, MemberRole.member)
         member.preferences.preferred_language = language
         member.preferences.delivery_mode = delivery_mode
     return member

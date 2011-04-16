@@ -9,16 +9,16 @@ the system by its posting address, i.e. the email address you would send a
 message to in order to post a message to the mailing list.  This must be fully
 qualified.
 
-    >>> alpha = create_list('alpha@example.com')
-    >>> print alpha.fqdn_listname
-    alpha@example.com
+    >>> mlist = create_list('aardvark@example.com')
+    >>> print mlist.fqdn_listname
+    aardvark@example.com
 
 The mailing list also has convenient attributes for accessing the list's short
 name (i.e. local part) and host name.
 
-    >>> print alpha.list_name
-    alpha
-    >>> print alpha.host_name
+    >>> print mlist.list_name
+    aardvark
+    >>> print mlist.host_name
     example.com
 
 
@@ -29,46 +29,75 @@ Mailing list membership is represented by `rosters`.  Each mailing list has
 several rosters of members, representing the subscribers to the mailing list,
 the owners, the moderators, and so on.  The rosters are defined by a
 membership role.
+
+Addresses can be explicitly subscribed to a mailing list.  By default, a
+subscription puts the address in the `member` role, meaning that address will
+receive a copy of any message sent to the mailing list.
 ::
 
+    >>> from mailman.interfaces.usermanager import IUserManager
+    >>> from zope.component import getUtility
+    >>> user_manager = getUtility(IUserManager)
+
+    >>> aperson = user_manager.create_address('aperson@example.com')
+    >>> bperson = user_manager.create_address('bperson@example.com')
+    >>> mlist.subscribe(aperson)
+    <Member: aperson@example.com on aardvark@example.com as MemberRole.member>
+    >>> mlist.subscribe(bperson)
+    <Member: bperson@example.com on aardvark@example.com as MemberRole.member>
+
+Both addresses appear on the roster of members.
+
+    >>> for member in mlist.members.members:
+    ...     print member
+    <Member: aperson@example.com on aardvark@example.com as MemberRole.member>
+    <Member: bperson@example.com on aardvark@example.com as MemberRole.member>
+
+By explicitly specifying the role of the subscription, an address can be added
+to the owner and moderator rosters.
+
     >>> from mailman.interfaces.member import MemberRole
-    >>> from mailman.testing.helpers import subscribe
+    >>> mlist.subscribe(aperson, MemberRole.owner)
+    <Member: aperson@example.com on aardvark@example.com as MemberRole.owner>
+    >>> cperson = user_manager.create_address('cperson@example.com')
+    >>> mlist.subscribe(cperson, MemberRole.owner)
+    <Member: cperson@example.com on aardvark@example.com as MemberRole.owner>
+    >>> mlist.subscribe(cperson, MemberRole.moderator)
+    <Member: cperson@example.com on aardvark@example.com
+             as MemberRole.moderator>
 
-    >>> subscribe(alpha, 'Anne')
-    >>> subscribe(alpha, 'Bart')
-    >>> subscribe(alpha, 'Cris')
-    >>> subscribe(alpha, 'Anne', MemberRole.owner)
-    >>> subscribe(alpha, 'Dave', MemberRole.owner)
-    >>> subscribe(alpha, 'Elle', MemberRole.moderator)
+A Person is now both a member and an owner of the mailing list.  C Person is
+an owner and a moderator.
+::
 
-We can retrieve a roster directly...
+    >>> for member in mlist.owners.members:
+    ...     print member
+    <Member: aperson@example.com on aardvark@example.com as MemberRole.owner>
+    <Member: cperson@example.com on aardvark@example.com as MemberRole.owner>
 
-    >>> for member in alpha.members.members:
-    ...     print member.address
-    Anne Person <aperson@example.com>
-    Bart Person <bperson@example.com>
-    Cris Person <cperson@example.com>
+    >>> for member in mlist.moderators.members:
+    ...     print member
+    <Member: cperson@example.com on aardvark@example.com
+             as MemberRole.moderator>
 
-...or programmatically.
 
-    >>> roster = alpha.get_roster(MemberRole.member)
+All rosters can also be accessed indirectly.
+::
+
+    >>> roster = mlist.get_roster(MemberRole.member)
     >>> for member in roster.members:
-    ...     print member.address
-    Anne Person <aperson@example.com>
-    Bart Person <bperson@example.com>
-    Cris Person <cperson@example.com>
+    ...     print member
+    <Member: aperson@example.com on aardvark@example.com as MemberRole.member>
+    <Member: bperson@example.com on aardvark@example.com as MemberRole.member>
 
-This includes the roster of owners...
-
-    >>> roster = alpha.get_roster(MemberRole.owner)
+    >>> roster = mlist.get_roster(MemberRole.owner)
     >>> for member in roster.members:
-    ...     print member.address
-    Anne Person <aperson@example.com>
-    Dave Person <dperson@example.com>
+    ...     print member
+    <Member: aperson@example.com on aardvark@example.com as MemberRole.owner>
+    <Member: cperson@example.com on aardvark@example.com as MemberRole.owner>
 
-...and moderators.
-
-    >>> roster = alpha.get_roster(MemberRole.moderator)
+    >>> roster = mlist.get_roster(MemberRole.moderator)
     >>> for member in roster.members:
-    ...     print member.address
-    Elle Person <eperson@example.com>
+    ...     print member
+    <Member: cperson@example.com on aardvark@example.com
+             as MemberRole.moderator>

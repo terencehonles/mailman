@@ -69,17 +69,17 @@ list.
 
     >>> anne = user_manager.create_user('aperson@example.com', 'Anne Person')
     >>> anne.password = b'AAA'
-    >>> list(anne.addresses)[0].subscribe(mlist, MemberRole.member)
+    >>> mlist.subscribe(list(anne.addresses)[0], MemberRole.member)
     <Member: Anne Person <aperson@example.com> ...
 
     >>> bart = user_manager.create_user('bperson@example.com', 'Bart Person')
     >>> bart.password = b'BBB'
-    >>> list(bart.addresses)[0].subscribe(mlist, MemberRole.member)
+    >>> mlist.subscribe(list(bart.addresses)[0], MemberRole.member)
     <Member: Bart Person <bperson@example.com> ...
 
     >>> cris = user_manager.create_user('cperson@example.com', 'Cris Person')
     >>> cris.password = b'CCC'
-    >>> list(cris.addresses)[0].subscribe(mlist, MemberRole.member)
+    >>> mlist.subscribe(list(cris.addresses)[0], MemberRole.member)
     <Member: Cris Person <cperson@example.com> ...
 
 The decorations happen when the message is delivered.

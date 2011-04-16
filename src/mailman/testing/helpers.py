@@ -272,12 +272,12 @@ def subscribe(mlist, first_name, role=MemberRole.member):
         if address is None:
             person = user_manager.create_user(email, full_name)
             preferred_address = list(person.addresses)[0]
-            preferred_address.subscribe(mlist, role)
+            mlist.subscribe(preferred_address, role)
         else:
-            address.subscribe(mlist, role)
+            mlist.subscribe(address, role)
     else:
         preferred_address = list(person.addresses)[0]
-        preferred_address.subscribe(mlist, role)
+        mlist.subscribe(preferred_address, role)
     config.db.commit()
 
 

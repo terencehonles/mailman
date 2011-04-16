@@ -182,7 +182,7 @@ class IMailingList(Interface):
     def confirm_address(cookie=''):
         """The address used for various forms of email confirmation."""
 
-    # Rosters.
+    # Rosters and subscriptions.
 
     owners = Attribute(
         """The IUser owners of this mailing list.
@@ -230,6 +230,20 @@ class IMailingList(Interface):
         :type role: MemberRole
         :return: The requested roster.
         :rtype: Roster
+        """
+
+    def subscribe(address, role):
+        """Subscribe the given address to the mailing list.
+
+        :param address: The address to subscribe.
+        :type address: `IAddress`
+        :param role: The role being subscribed to (e.g. a member, owner, or
+            moderator of a mailing list.
+        :type role: `MemberRole`
+        :return: The member object representing the subscription.
+        :rtype: `IMember`
+        :raises AlreadySubscribedError: If the address is already subscribed
+            to the mailing list with the given role.
         """
 
     # Posting history.

@@ -26,12 +26,12 @@ start out with.  First, create a bunch of addresses...
 ...then subscribe these addresses to the mailing list as members...
 
     >>> from mailman.interfaces.member import MemberRole
-    >>> member_a = address_a.subscribe(mlist, MemberRole.member)
-    >>> member_b = address_b.subscribe(mlist, MemberRole.member)
-    >>> member_c = address_c.subscribe(mlist, MemberRole.member)
-    >>> member_d = address_d.subscribe(mlist, MemberRole.member)
-    >>> member_e = address_e.subscribe(mlist, MemberRole.member)
-    >>> member_f = address_f.subscribe(mlist, MemberRole.member)
+    >>> member_a = mlist.subscribe(address_a, MemberRole.member)
+    >>> member_b = mlist.subscribe(address_b, MemberRole.member)
+    >>> member_c = mlist.subscribe(address_c, MemberRole.member)
+    >>> member_d = mlist.subscribe(address_d, MemberRole.member)
+    >>> member_e = mlist.subscribe(address_e, MemberRole.member)
+    >>> member_f = mlist.subscribe(address_f, MemberRole.member)
 
 ...then make some of the members digest members.
 
