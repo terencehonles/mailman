@@ -138,7 +138,7 @@ class Registrar:
         if list_name is not None:
             mlist = getUtility(IListManager).get(list_name)
             if mlist:
-                address.subscribe(mlist, MemberRole.member)
+                mlist.subscribe(address, MemberRole.member)
         return True
 
     def discard(self, token):

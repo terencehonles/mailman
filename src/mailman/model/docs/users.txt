@@ -207,14 +207,14 @@ membership role.
     >>> mlist_3 = create_list('xtest_3@example.com')
     >>> from mailman.interfaces.member import MemberRole
 
-    >>> com.subscribe(mlist_1, MemberRole.member)
+    >>> mlist_1.subscribe(com, MemberRole.member)
     <Member: Zoe Person <zperson@example.com> on xtest_1@example.com as
         MemberRole.member>
-    >>> org.subscribe(mlist_2, MemberRole.member)
+    >>> mlist_2.subscribe(org, MemberRole.member)
     <Member: zperson@example.org on xtest_2@example.com as MemberRole.member>
-    >>> org.subscribe(mlist_2, MemberRole.owner)
+    >>> mlist_2.subscribe(org, MemberRole.owner)
     <Member: zperson@example.org on xtest_2@example.com as MemberRole.owner>
-    >>> net.subscribe(mlist_3, MemberRole.moderator)
+    >>> mlist_3.subscribe(net, MemberRole.moderator)
     <Member: zperson@example.net on xtest_3@example.com as
         MemberRole.moderator>
 

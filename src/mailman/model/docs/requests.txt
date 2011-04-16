@@ -716,12 +716,12 @@ notification.
     >>> from mailman.interfaces.member import MemberRole
     >>> user_1 = user_manager.create_user('gperson@example.com')
     >>> address_1 = list(user_1.addresses)[0]
-    >>> address_1.subscribe(mlist, MemberRole.member)
+    >>> mlist.subscribe(address_1, MemberRole.member)
     <Member: gperson@example.com on alist@example.com as MemberRole.member>
 
     >>> user_2 = user_manager.create_user('hperson@example.com')
     >>> address_2 = list(user_2.addresses)[0]
-    >>> address_2.subscribe(mlist, MemberRole.member)
+    >>> mlist.subscribe(address_2, MemberRole.member)
     <Member: hperson@example.com on alist@example.com as MemberRole.member>
 
     >>> id_5 = moderator.hold_unsubscription(mlist, 'gperson@example.com')

@@ -86,7 +86,7 @@ class NonmemberModeration:
                 address = user_manager.get_address(sender)
                 assert address is not None, (
                     'Posting address is not registered: {0}'.format(sender))
-                address.subscribe(mlist, MemberRole.nonmember)
+                mlist.subscribe(address, MemberRole.nonmember)
         # Do nonmember moderation check.
         for sender in msg.senders:
             nonmember = mlist.nonmembers.get_member(sender)

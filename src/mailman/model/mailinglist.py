@@ -42,11 +42,13 @@ from mailman.interfaces.domain import IDomainManager
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.mailinglist import (
     IAcceptableAlias, IAcceptableAliasSet, IMailingList, Personalization)
-from mailman.interfaces.member import MemberRole
+from mailman.interfaces.member import AlreadySubscribedError, MemberRole
 from mailman.interfaces.mime import FilterType
 from mailman.model import roster
 from mailman.model.digests import OneLastDigest
+from mailman.model.member import Member
 from mailman.model.mime import ContentFilter
+from mailman.model.preferences import Preferences
 from mailman.utilities.filesystem import makedirs
 from mailman.utilities.string import expand
 
@@ -440,6 +442,24 @@ class MailingList(Model):
         else:
             raise TypeError(
                 'Undefined MemberRole: {0}'.format(role))
+
+    def subscribe(self, address, role=MemberRole.member):
+        """See `IMailingList`."""
+        store = Store.of(self)
+        member = store.find(
+            Member,
+            Member.role == role,
+            Member.mailing_list == self.fqdn_listname,
+            Member.address == address).one()
+        if member:
+            raise AlreadySubscribedError(
+                self.fqdn_listname, address.email, role)
+        member = Member(role=role,
+                        mailing_list=self.fqdn_listname,
+                        address=address)
+        member.preferences = Preferences()
+        store.add(member)
+        return member
 
 
 

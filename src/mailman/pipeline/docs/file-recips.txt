@@ -93,7 +93,7 @@ in the recipients list.
     ...     'cperson@example.com')
 
     >>> from mailman.interfaces.member import MemberRole
-    >>> address_1.subscribe(mlist, MemberRole.member)
+    >>> mlist.subscribe(address_1, MemberRole.member)
     <Member: cperson@example.com on _xtest@example.com as MemberRole.member>
 
     >>> msg = message_from_string("""\
