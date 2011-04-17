@@ -259,9 +259,10 @@ class Memberships:
         """See `IRoster`."""
         results = config.db.store.find(
             Member,
-            Address.user_id == self._user.id,
-            Member.address_id == Address.id)
-        for member in results:
+            Or(Member.user_id == self._user.id,
+               And(Address.user_id == self._user.id,
+                   Member.address_id == Address.id)))
+        for member in results.config(distinct=True):
             yield member
 
     @property
