@@ -232,18 +232,20 @@ class IMailingList(Interface):
         :rtype: Roster
         """
 
-    def subscribe(address, role):
-        """Subscribe the given address to the mailing list.
+    def subscribe(subscriber, role):
+        """Subscribe the given address or user to the mailing list.
 
-        :param address: The address to subscribe.
-        :type address: `IAddress`
+        :param subscriber: The address or user to subscribe to the mailing
+            list.  The user's preferred address receives deliveries, if she
+            has one, otherwise no address for the user appears in the rosters.
+        :type subscriber: `IUser` or `IAddress`
         :param role: The role being subscribed to (e.g. a member, owner, or
             moderator of a mailing list.
         :type role: `MemberRole`
         :return: The member object representing the subscription.
         :rtype: `IMember`
-        :raises AlreadySubscribedError: If the address is already subscribed
-            to the mailing list with the given role.
+        :raises AlreadySubscribedError: If the address or user is already
+            subscribed to the mailing list with the given role.
         """
 
     # Posting history.

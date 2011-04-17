@@ -33,8 +33,10 @@ from mailman.core.constants import system_preferences
 from mailman.database.model import Model
 from mailman.database.types import Enum
 from mailman.interfaces.action import Action
+from mailman.interfaces.address import IAddress
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import IMember, MemberRole
+from mailman.interfaces.user import IUser
 from mailman.interfaces.usermanager import IUserManager
 
 
@@ -48,14 +50,25 @@ class Member(Model):
     moderation_action = Enum()
 
     address_id = Int()
-    address = Reference(address_id, 'Address.id')
+    _address = Reference(address_id, 'Address.id')
     preferences_id = Int()
     preferences = Reference(preferences_id, 'Preferences.id')
+    user_id = Int()
+    _user = Reference(user_id, 'User.id')
 
-    def __init__(self, role, mailing_list, address):
+    def __init__(self, role, mailing_list, subscriber):
         self.role = role
         self.mailing_list = mailing_list
-        self.address = address
+        if IAddress.providedBy(subscriber):
+            self._address = subscriber
+            # Look this up dynamically.
+            self._user = None
+        elif IUser.providedBy(subscriber):
+            self._user = subscriber
+            # Look this up dynamically.
+            self._address = None
+        else:
+            raise ValueError('subscriber must be a user or address')
         if role in (MemberRole.owner, MemberRole.moderator):
             self.moderation_action = Action.accept
         elif role is MemberRole.member:
@@ -72,8 +85,16 @@ class Member(Model):
             self.address, self.mailing_list, self.role)
 
     @property
+    def address(self):
+        return (self._user.preferred_address
+                if self._address is None
+                else self._address)
+
+    @property
     def user(self):
-        return getUtility(IUserManager).get_user(self.address.email)
+        return (self._user
+                if self._address is None
+                else getUtility(IUserManager).get_user(self._address.email))
 
     def _lookup(self, preference):
         pref = getattr(self.preferences, preference)

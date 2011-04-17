@@ -38,12 +38,14 @@ from zope.interface import implements
 from mailman.config import config
 from mailman.database.model import Model
 from mailman.database.types import Enum
+from mailman.interfaces.address import IAddress
 from mailman.interfaces.domain import IDomainManager
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.mailinglist import (
     IAcceptableAlias, IAcceptableAliasSet, IMailingList, Personalization)
 from mailman.interfaces.member import AlreadySubscribedError, MemberRole
 from mailman.interfaces.mime import FilterType
+from mailman.interfaces.user import IUser
 from mailman.model import roster
 from mailman.model.digests import OneLastDigest
 from mailman.model.member import Member
@@ -443,20 +445,32 @@ class MailingList(Model):
             raise TypeError(
                 'Undefined MemberRole: {0}'.format(role))
 
-    def subscribe(self, address, role=MemberRole.member):
+    def subscribe(self, subscriber, role=MemberRole.member):
         """See `IMailingList`."""
         store = Store.of(self)
-        member = store.find(
-            Member,
-            Member.role == role,
-            Member.mailing_list == self.fqdn_listname,
-            Member.address == address).one()
-        if member:
-            raise AlreadySubscribedError(
-                self.fqdn_listname, address.email, role)
+        if IAddress.providedBy(subscriber):
+            member = store.find(
+                Member,
+                Member.role == role,
+                Member.mailing_list == self.fqdn_listname,
+                Member._address == subscriber).one()
+            if member:
+                raise AlreadySubscribedError(
+                    self.fqdn_listname, subscriber.email, role)
+        elif IUser.providedBy(subscriber):
+            member = store.find(
+                Member,
+                Member.role == role,
+                Member.mailing_list == self.fqdn_listname,
+                Member._user == subscriber).one()
+            if member:
+                raise AlreadySubscribedError(
+                    self.fqdn_listname, subscriber, role)
+        else:
+            raise ValueError('subscriber must be an address or user')
         member = Member(role=role,
                         mailing_list=self.fqdn_listname,
-                        address=address)
+                        subscriber=subscriber)
         member.preferences = Preferences()
         store.add(member)
         return member
