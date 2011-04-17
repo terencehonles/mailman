@@ -26,14 +26,11 @@ __all__ = [
 
 
 from email.utils import formataddr
-from storm.locals import DateTime, Int, Reference, Store, Unicode
+from storm.locals import DateTime, Int, Reference, Unicode
 from zope.interface import implements
 
 from mailman.database.model import Model
-from mailman.interfaces.member import AlreadySubscribedError
 from mailman.interfaces.address import IAddress
-from mailman.model.member import Member
-from mailman.model.preferences import Preferences
 
 
 
@@ -72,24 +69,6 @@ class Address(Model):
         else:
             return '<Address: {0} [{1}] key: {2} at {3:#x}>'.format(
                 address_str, verified, self.email, id(self))
-
-    def subscribe(self, mailing_list, role):
-        # This member has no preferences by default.
-        store = Store.of(self)
-        member = store.find(
-            Member,
-            Member.role == role,
-            Member.mailing_list == mailing_list.fqdn_listname,
-            Member.address == self).one()
-        if member:
-            raise AlreadySubscribedError(
-                mailing_list.fqdn_listname, self.email, role)
-        member = Member(role=role,
-                        mailing_list=mailing_list.fqdn_listname,
-                        address=self)
-        member.preferences = Preferences()
-        store.add(member)
-        return member
 
     @property
     def original_email(self):

@@ -153,47 +153,6 @@ And of course, you can also set the validation date.
     2007-05-13 22:54:01
 
 
-Subscriptions
-=============
-
-Addresses get subscribed to mailing lists, not users.  When the address is
-subscribed, a role is specified.
-::
-
-    >>> address_5 = user_manager.create_address(
-    ...     'eperson@example.com', 'Elly Person')
-    >>> mlist = create_list('test@example.com')
-
-    >>> from mailman.interfaces.member import MemberRole
-    >>> address_5.subscribe(mlist, MemberRole.owner)
-    <Member: Elly Person <eperson@example.com> on
-             test@example.com as MemberRole.owner>
-    >>> address_5.subscribe(mlist, MemberRole.member)
-    <Member: Elly Person <eperson@example.com> on
-             test@example.com as MemberRole.member>
-
-Now Elly is both an owner and a member of the mailing list.
-
-    >>> def memberkey(member):
-    ...     return member.mailing_list, member.address.email, int(member.role)
-    >>> dump_list(mlist.owners.members, key=memberkey)
-    <Member: Elly Person <eperson@example.com> on
-             test@example.com as MemberRole.owner>
-    >>> dump_list(mlist.moderators.members, key=memberkey)
-    *Empty*
-    >>> dump_list(mlist.administrators.members, key=memberkey)
-    <Member: Elly Person <eperson@example.com> on
-             test@example.com as MemberRole.owner>
-    >>> dump_list(mlist.members.members, key=memberkey)
-    <Member: Elly Person <eperson@example.com> on
-             test@example.com as MemberRole.member>
-    >>> dump_list(mlist.regular_members.members, key=memberkey)
-    <Member: Elly Person <eperson@example.com> on
-             test@example.com as MemberRole.member>
-    >>> dump_list(mlist.digest_members.members, key=memberkey)
-    *Empty*
-
-
 Case-preserved addresses
 ========================
 

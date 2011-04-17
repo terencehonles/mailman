@@ -51,7 +51,7 @@ her.
 
     >>> from mailman.interfaces.member import MemberRole
     >>> address_1 = list(user_1.addresses)[0]
-    >>> address_1.subscribe(mlist, MemberRole.owner)
+    >>> mlist.subscribe(address_1, MemberRole.owner)
     <Member: Anne Person <aperson@example.com> on
              test@example.com as MemberRole.owner>
     >>> dump_list(member.address for member in mlist.owners.members)
@@ -73,7 +73,7 @@ Bart becomes a moderator of the list.
     >>> print user_2
     <User "Bart Person" (...) at ...>
     >>> address_2 = list(user_2.addresses)[0]
-    >>> address_2.subscribe(mlist, MemberRole.moderator)
+    >>> mlist.subscribe(address_2, MemberRole.moderator)
     <Member: Bart Person <bperson@example.com>
              on test@example.com as MemberRole.moderator>
     >>> dump_list(member.address for member in mlist.moderators.members)
@@ -102,7 +102,7 @@ role.
     >>> user_3 = user_manager.create_user(
     ...     'cperson@example.com', 'Cris Person')
     >>> address_3 = list(user_3.addresses)[0]
-    >>> member = address_3.subscribe(mlist, MemberRole.member)
+    >>> member = mlist.subscribe(address_3, MemberRole.member)
     >>> member
     <Member: Cris Person <cperson@example.com>
              on test@example.com as MemberRole.member>
@@ -125,7 +125,7 @@ It's easy to make the list administrators members of the mailing list too.
 
     >>> members = []
     >>> for address in mlist.administrators.addresses:
-    ...     member = address.subscribe(mlist, MemberRole.member)
+    ...     member = mlist.subscribe(address, MemberRole.member)
     ...     members.append(member)
     >>> dump_list(members, key=attrgetter('address.email'))
     <Member: Anne Person <aperson@example.com> on
@@ -157,7 +157,7 @@ role.
 
     >>> user_6 = user_manager.create_user('fperson@example.com', 'Fred Person')
     >>> address_6 = list(user_6.addresses)[0]
-    >>> member_6 = address_6.subscribe(mlist, MemberRole.nonmember)
+    >>> member_6 = mlist.subscribe(address_6, MemberRole.nonmember)
     >>> member_6
     <Member: Fred Person <fperson@example.com> on test@example.com
              as MemberRole.nonmember>
@@ -233,7 +233,7 @@ Double subscriptions
 
 It is an error to subscribe someone to a list with the same role twice.
 
-    >>> address_1.subscribe(mlist, MemberRole.owner)
+    >>> mlist.subscribe(address_1, MemberRole.owner)
     Traceback (most recent call last):
     ...
     AlreadySubscribedError: aperson@example.com is already a MemberRole.owner

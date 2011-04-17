@@ -496,7 +496,7 @@ digests, or MIME digests.
     >>> from mailman.interfaces.member import DeliveryMode, MemberRole
     >>> def subscribe(email, mode):
     ...     address = user_manager.create_address(email)
-    ...     member = address.subscribe(mlist, MemberRole.member)
+    ...     member = mlist.subscribe(address, MemberRole.member)
     ...     member.preferences.delivery_mode = mode
     ...     return member
 

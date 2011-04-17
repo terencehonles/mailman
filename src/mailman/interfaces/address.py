@@ -41,6 +41,7 @@ class AddressError(MailmanError):
     """A general address-related error occurred."""
 
     def __init__(self, address):
+        super(AddressError, self).__init__()
         self.address = address
 
     def __str__(self):
@@ -98,16 +99,6 @@ class IAddress(Interface):
         """The date and time at which this email address was validated, or
         None if the email address has not yet been validated.  The specific
         method of validation is not defined here.""")
-
-    def subscribe(mailing_list, role):
-        """Subscribe the address to the given mailing list with the given role.
-
-        :param mailing_list: The IMailingList being subscribed to.
-        :param role: A MemberRole enum value.
-        :return: The IMember representing this subscription.
-        :raises AlreadySubscribedError: If the address is already subscribed
-            to the mailing list with the given role.
-        """
 
     preferences = Attribute(
         """This address's preferences.""")
