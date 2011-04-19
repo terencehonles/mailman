@@ -31,7 +31,7 @@ from zope.component import getUtility
 
 from mailman.interfaces.domain import (
     BadDomainSpecificationError, IDomainManager)
-from mailman.rest.helpers import CollectionMixin, etag, path_to
+from mailman.rest.helpers import CollectionMixin, etag, no_content, path_to
 from mailman.rest.validator import Validator
 
 
@@ -68,6 +68,16 @@ class ADomain(_DomainBase):
         if domain is None:
             return http.not_found()
         return http.ok([], self._resource_as_json(domain))
+
+    @resource.DELETE()
+    def delete(self, request):
+        """Delete the domain."""
+        try:
+            getUtility(IDomainManager).remove(self._domain)
+        except KeyError:
+            # The domain does not exist.
+            return http.not_found()
+        return no_content()
 
 
 class AllDomains(_DomainBase):
