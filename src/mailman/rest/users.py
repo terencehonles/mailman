@@ -26,12 +26,12 @@ __all__ = [
     ]
 
 
-from operator import attrgetter
 from restish import http, resource
 from zope.component import getUtility
 
 from mailman.interfaces.address import ExistingAddressError
 from mailman.interfaces.usermanager import IUserManager
+from mailman.rest.addresses import UserAddresses
 from mailman.rest.helpers import CollectionMixin, etag, path_to
 from mailman.rest.validator import Validator
 from mailman.utilities.passwords import (
@@ -44,16 +44,21 @@ class _UserBase(resource.Resource, CollectionMixin):
 
     def _resource_as_dict(self, user):
         """See `CollectionMixin`."""
-        # The canonical URL for a user is their preferred email address,
-        # although we can always look up a user based on any registered and
-        # validated email address associated with their account.
-        return dict(
-            real_name=user.real_name,
-            password=user.password,
+        # The canonical URL for a user is their unique user id, although we
+        # can always look up a user based on any registered and validated
+        # email address associated with their account.
+        resource = dict(
             user_id=user.user_id,
             created_on=user.created_on,
             self_link=path_to('users/{0}'.format(user.user_id)),
             )
+        # Add the password attribute, only if the user has a password.  Same
+        # with the real name.  These could be None or the empty string.
+        if user.password:
+            resource['password'] = user.password
+        if user.real_name:
+            resource['real_name'] = user.real_name
+        return resource
 
     def _get_collection(self, request):
         """See `CollectionMixin`."""
@@ -128,35 +133,4 @@ class AUser(_UserBase):
     @resource.child()
     def addresses(self, request, segments):
         """/users/<uid>/addresses"""
-        return _AllUserAddresses(self._user)
-
-
-
-class _AllUserAddresses(resource.Resource, CollectionMixin):
-    """All addresses that a user controls."""
-
-    def __init__(self, user):
-        self._user = user
-        super(_AllUserAddresses, self).__init__()
-
-    def _resource_as_dict(self, address):
-        """See `CollectionMixin`."""
-        return dict(
-            email=address.email,
-            original_email=address.original_email,
-            real_name=address.real_name,
-            registered_on=address.registered_on,
-            self_link=path_to('addresses/{0}'.format(address.original_email)),
-            verified_on=address.verified_on,
-            )
-
-    def _get_collection(self, request):
-        """See `CollectionMixin`."""
-        return sorted(self._user.addresses,
-                      key=attrgetter('original_email'))
-
-    @resource.GET()
-    def collection(self, request):
-        """/addresses"""
-        resource = self._make_collection(request)
-        return http.ok([], etag(resource))
+        return UserAddresses(self._user)

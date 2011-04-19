@@ -126,31 +126,28 @@ Registration and validation
 ===========================
 
 Addresses have two dates, the date the address was registered on and the date
-the address was validated on.  Neither date is set by default.
+the address was validated on.  The former is set when the address is created,
+but the latter must be set explicitly.
 
     >>> address_4 = user_manager.create_address(
     ...     'dperson@example.com', 'Dan Person')
     >>> print address_4.registered_on
-    None
+    2005-08-01 07:49:23
     >>> print address_4.verified_on
     None
 
-The registered date takes a Python datetime object.
+The verification date records when the user has completed a mail-back
+verification procedure.  It takes a datetime object.
 
-    >>> from datetime import datetime
-    >>> address_4.registered_on = datetime(2007, 5, 8, 22, 54, 1)
-    >>> print address_4.registered_on
-    2007-05-08 22:54:01
+    >>> from mailman.utilities.datetime import now
+    >>> address_4.verified_on = now()
     >>> print address_4.verified_on
-    None
+    2005-08-01 07:49:23
 
-And of course, you can also set the validation date.
+The address shows the verified status in its repr.
 
-    >>> address_4.verified_on = datetime(2007, 5, 13, 22, 54, 1)
-    >>> print address_4.registered_on
-    2007-05-08 22:54:01
-    >>> print address_4.verified_on
-    2007-05-13 22:54:01
+    >>> address_4
+    <Address: Dan Person <dperson@example.com> [verified] at ...>
 
 
 Case-preserved addresses

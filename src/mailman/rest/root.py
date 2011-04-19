@@ -30,6 +30,7 @@ from restish import guard, http, resource
 
 from mailman.config import config
 from mailman.core.system import system
+from mailman.rest.addresses import AllAddresses, AnAddress
 from mailman.rest.domains import ADomain, AllDomains
 from mailman.rest.helpers import etag, path_to
 from mailman.rest.lists import AList, AllLists
@@ -78,6 +79,18 @@ class TopLevel(resource.Resource):
             self_link=path_to('system'),
             )
         return http.ok([], etag(resource))
+
+    @resource.child()
+    def addresses(self, request, segments):
+        """/<api>/addresses
+           /<api>/addresses/<email>
+        """
+        if len(segments) == 0:
+            return AllAddresses()
+        elif len(segments) == 1:
+            return AnAddress(segments[0]), []
+        else:
+            return http.bad_request()
 
     @resource.child()
     def domains(self, request, segments):

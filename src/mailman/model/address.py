@@ -31,6 +31,7 @@ from zope.interface import implements
 
 from mailman.database.model import Model
 from mailman.interfaces.address import IAddress
+from mailman.utilities.datetime import now
 
 
 
@@ -55,6 +56,7 @@ class Address(Model):
         self.email = lower_case
         self.real_name = real_name
         self._original = (None if lower_case == email else email)
+        self.registered_on = now()
 
     def __str__(self):
         addr = (self.email if self._original is None else self._original)
