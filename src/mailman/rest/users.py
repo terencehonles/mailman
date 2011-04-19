@@ -52,6 +52,7 @@ class _UserBase(resource.Resource, CollectionMixin):
             password=user.password,
             user_id=user.user_id,
             created_on=user.created_on,
+            self_link=path_to('users/{0}'.format(user.user_id)),
             )
 
     def _get_collection(self, request):
@@ -145,6 +146,7 @@ class _AllUserAddresses(resource.Resource, CollectionMixin):
             original_email=address.original_email,
             real_name=address.real_name,
             registered_on=address.registered_on,
+            self_link=path_to('addresses/{0}'.format(address.original_email)),
             verified_on=address.verified_on,
             )
 

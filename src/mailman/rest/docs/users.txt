@@ -29,6 +29,7 @@ When there are users in the database, they can be retrieved as a collection.
         http_etag: "..."
         password: None
         real_name: Anne Person
+        self_link: http://localhost:9001/3.0/users/1
         user_id: 1
     http_etag: "..."
     start: 0
@@ -74,6 +75,7 @@ It is also available via the location given in the response.
     http_etag: "..."
     password: {CLEARTEXT}bbb
     real_name: Bart Person
+    self_link: http://localhost:9001/3.0/users/2
     user_id: 2
 
 Because email addresses just have an ``@`` sign in then, there's no confusing
@@ -84,6 +86,7 @@ them with user ids.  Thus, a user can be retrieved via its email address.
     http_etag: "..."
     password: {CLEARTEXT}bbb
     real_name: Bart Person
+    self_link: http://localhost:9001/3.0/users/2
     user_id: 2
 
 Users can be created without a password.  A *user friendly* password will be
@@ -107,6 +110,7 @@ therefore cannot be retrieved.  It can be reset though.
     http_etag: "..."
     password: {CLEARTEXT}...
     real_name: Cris Person
+    self_link: http://localhost:9001/3.0/users/3
     user_id: 3
 
 
@@ -149,37 +153,42 @@ sorted in lexical order by original (i.e. case-preserved) email address.
     >>> transaction.commit()
 
     >>> dump_json('http://localhost:9001/3.0/users/2/addresses')
-     entry 0:
-         email: bart.q.person@example.com
-         http_etag: "..."
-         original_email: Bart.Q.Person@example.com
-         real_name:
-         registered_on: None
-         verified_on: None
-     entry 1:
-         email: bart.person@example.com
-         http_etag: "..."
-         original_email: bart.person@example.com
-         real_name:
-         registered_on: None
-         verified_on: None
-     entry 2:
-         email: bart@example.com
-         http_etag: "..."
-         original_email: bart@example.com
-         real_name: Bart Person
-         registered_on: None
-         verified_on: None
-     entry 3:
-         email: bperson@example.com
-         http_etag: "..."
-         original_email: bperson@example.com
-         real_name:
-         registered_on: None
-         verified_on: None
-     http_etag: "..."
-     start: 0
-     total_size: 4
+    entry 0:
+        email: bart.q.person@example.com
+        http_etag: "..."
+        original_email: Bart.Q.Person@example.com
+        real_name:
+        registered_on: None
+        self_link:
+            http://localhost:9001/3.0/addresses/Bart.Q.Person@example.com
+        verified_on: None
+    entry 1:
+        email: bart.person@example.com
+        http_etag: "..."
+        original_email: bart.person@example.com
+        real_name:
+        registered_on: None
+        self_link: http://localhost:9001/3.0/addresses/bart.person@example.com
+        verified_on: None
+    entry 2:
+        email: bart@example.com
+        http_etag: "..."
+        original_email: bart@example.com
+        real_name: Bart Person
+        registered_on: None
+        self_link: http://localhost:9001/3.0/addresses/bart@example.com
+        verified_on: None
+    entry 3:
+        email: bperson@example.com
+        http_etag: "..."
+        original_email: bperson@example.com
+        real_name:
+        registered_on: None
+        self_link: http://localhost:9001/3.0/addresses/bperson@example.com
+        verified_on: None
+    http_etag: "..."
+    start: 0
+    total_size: 4
 
 In fact, any of these addresses can be used to look up Bart's user record.
 ::
@@ -189,6 +198,7 @@ In fact, any of these addresses can be used to look up Bart's user record.
     http_etag: "..."
     password: {CLEARTEXT}bbb
     real_name: Bart Person
+    self_link: http://localhost:9001/3.0/users/2
     user_id: 2
 
     >>> dump_json('http://localhost:9001/3.0/users/bart.person@example.com')
@@ -196,6 +206,7 @@ In fact, any of these addresses can be used to look up Bart's user record.
     http_etag: "..."
     password: {CLEARTEXT}bbb
     real_name: Bart Person
+    self_link: http://localhost:9001/3.0/users/2
     user_id: 2
 
     >>> dump_json('http://localhost:9001/3.0/users/bperson@example.com')
@@ -203,6 +214,7 @@ In fact, any of these addresses can be used to look up Bart's user record.
     http_etag: "..."
     password: {CLEARTEXT}bbb
     real_name: Bart Person
+    self_link: http://localhost:9001/3.0/users/2
     user_id: 2
 
     >>> dump_json('http://localhost:9001/3.0/users/Bart.Q.Person@example.com')
@@ -210,4 +222,5 @@ In fact, any of these addresses can be used to look up Bart's user record.
     http_etag: "..."
     password: {CLEARTEXT}bbb
     real_name: Bart Person
+    self_link: http://localhost:9001/3.0/users/2
     user_id: 2
