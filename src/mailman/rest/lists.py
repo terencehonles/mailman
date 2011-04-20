@@ -146,6 +146,8 @@ class AList(_ListBase):
     @resource.child(member_matcher)
     def member(self, request, segments, role, address):
         """Return a single member representation."""
+        if self._mlist is None:
+            return http.not_found()
         return AMember(self._mlist, role, address)
 
     @resource.child(roster_matcher)

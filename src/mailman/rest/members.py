@@ -36,7 +36,7 @@ from mailman.app.membership import delete_member
 from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.listmanager import NoSuchListError
 from mailman.interfaces.member import (
-    AlreadySubscribedError, DeliveryMode, MemberRole)
+    AlreadySubscribedError, DeliveryMode, MemberRole, NotAMemberError)
 from mailman.interfaces.membership import ISubscriptionService
 from mailman.rest.helpers import CollectionMixin, etag, path_to
 from mailman.rest.validator import Validator, enum_validator
@@ -83,7 +83,10 @@ class AMember(_MemberBase):
         # owner.  Handle the former case first.  For now too, we will not send
         # an admin or user notification.
         if self._role is MemberRole.member:
-            delete_member(self._mlist, self._address, False, False)
+            try:
+                delete_member(self._mlist, self._address, False, False)
+            except NotAMemberError:
+                return http.not_found()
         else:
             self._member.unsubscribe()
         return http.ok([], '')

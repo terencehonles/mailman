@@ -21,6 +21,7 @@ from __future__ import absolute_import, unicode_literals
 __metaclass__ = type
 __all__ = [
     'TestableMaster',
+    'call_api',
     'digest_mbox',
     'event_subscribers',
     'get_lmtp_client',
@@ -33,6 +34,7 @@ __all__ = [
 
 
 import os
+import json
 import time
 import errno
 import signal
@@ -41,7 +43,11 @@ import smtplib
 import datetime
 import threading
 
+from base64 import b64encode
 from contextlib import contextmanager
+from httplib2 import Http
+from urllib import urlencode
+from urllib2 import HTTPError
 from zope import event
 from zope.component import getUtility
 
@@ -241,6 +247,53 @@ def wait_for_webservice():
             time.sleep(0.1)
         else:
             break
+
+
+def call_api(url, data=None, method=None, username=None, password=None):
+    """'Call a URL with a given HTTP method and return the resulting object.
+
+    The object will have been JSON decoded.
+
+    :param url: The url to open, read, and print.
+    :type url: string
+    :param data: Data to use to POST to a URL.
+    :type data: dict
+    :param method: Alternative HTTP method to use.
+    :type method: str
+    :param username: The HTTP Basic Auth user name.  None means use the value
+        from the configuration.
+    :type username: str
+    :param password: The HTTP Basic Auth password.  None means use the value
+        from the configuration.
+    :type username: str
+    :return: The response object and the JSON decoded content, if there is
+        any.  If not, the second tuple item will be None.
+    :raises HTTPError: when a non-2xx return code is received.
+    """
+    headers = {}
+    if data is not None:
+        data = urlencode(data, doseq=True)
+        headers['Content-Type'] = 'application/x-www-form-urlencoded'
+    if method is None:
+        if data is None:
+            method = 'GET'
+        else:
+            method = 'POST'
+    method = method.upper()
+    basic_auth = '{0}:{1}'.format(
+        (config.webservice.admin_user if username is None else username),
+        (config.webservice.admin_pass if password is None else password))
+    headers['Authorization'] = 'Basic ' + b64encode(basic_auth)
+    response, content = Http().request(url, method, data, headers)
+    # If we did not get a 2xx status code, make this look like a urllib2
+    # exception, for backward compatibility with existing doctests.
+    if response.status // 100 != 2:
+        raise HTTPError(url, response.status, content, response, None)
+    if len(content) == 0:
+        return None, response
+    # XXX Workaround http://bugs.python.org/issue10038
+    content = unicode(content)
+    return json.loads(content), response
 
 
 

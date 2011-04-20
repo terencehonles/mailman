@@ -31,21 +31,17 @@ __all__ = [
 
 import os
 import sys
-import json
 import doctest
 import unittest
 
-from base64 import b64encode
 from email import message_from_string
-from httplib2 import Http
-from urllib import urlencode
-from urllib2 import HTTPError
 
 import mailman
 
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.email.message import Message
+from mailman.testing.helpers import call_api
 from mailman.testing.layers import SMTPLayer
 
 
@@ -145,32 +141,12 @@ def call_http(url, data=None, method=None, username=None, password=None):
     :return: The decoded JSON data structure.
     :raises HTTPError: when a non-2xx return code is received.
     """
-    headers = {}
-    if data is not None:
-        data = urlencode(data, doseq=True)
-        headers['Content-Type'] = 'application/x-www-form-urlencoded'
-    if method is None:
-        if data is None:
-            method = 'GET'
-        else:
-            method = 'POST'
-    method = method.upper()
-    basic_auth = '{0}:{1}'.format(
-        (config.webservice.admin_user if username is None else username),
-        (config.webservice.admin_pass if password is None else password))
-    headers['Authorization'] = 'Basic ' + b64encode(basic_auth)
-    response, content = Http().request(url, method, data, headers)
-    # If we did not get a 2xx status code, make this look like a urllib2
-    # exception, for backward compatibility with existing doctests.
-    if response.status // 100 != 2:
-        raise HTTPError(url, response.status, content, response, None)
-    if len(content) == 0:
+    content, response = call_api(url, data, method, username, password)
+    if content is None:
         for header in sorted(response):
             print '{0}: {1}'.format(header, response[header])
         return None
-    # XXX Workaround http://bugs.python.org/issue10038
-    content = unicode(content)
-    return json.loads(content)
+    return content
 
 
 def dump_json(url, data=None, method=None, username=None, password=None):

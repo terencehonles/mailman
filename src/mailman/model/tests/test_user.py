@@ -79,4 +79,3 @@ def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestUser))
     return suite
-

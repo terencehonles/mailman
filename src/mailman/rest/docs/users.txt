@@ -237,3 +237,9 @@ In fact, any of these addresses can be used to look up Bart's user record.
     real_name: Bart Person
     self_link: http://localhost:9001/3.0/users/3
     user_id: 3
+
+
+Memberships
+===========
+
+Users subscribed to 
