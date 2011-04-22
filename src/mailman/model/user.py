@@ -37,7 +37,10 @@ from mailman.model.address import Address
 from mailman.model.preferences import Preferences
 from mailman.model.roster import Memberships
 from mailman.utilities.datetime import factory as date_factory
-from mailman.utilities.uid import factory as uid_factory
+from mailman.utilities.uid import UniqueIDFactory
+
+
+uid_factory = UniqueIDFactory(context='users')
 
 
 

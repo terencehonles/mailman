@@ -38,6 +38,10 @@ from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import IMember, MemberRole
 from mailman.interfaces.user import IUser
 from mailman.interfaces.usermanager import IUserManager
+from mailman.utilities.uid import UniqueIDFactory
+
+
+uid_factory = UniqueIDFactory(context='members')
 
 
 
@@ -45,6 +49,7 @@ class Member(Model):
     implements(IMember)
 
     id = Int(primary=True)
+    _member_id = Unicode()
     role = Enum()
     mailing_list = Unicode()
     moderation_action = Enum()
@@ -57,6 +62,7 @@ class Member(Model):
     _user = Reference(user_id, 'User.id')
 
     def __init__(self, role, mailing_list, subscriber):
+        self._member_id = uid_factory.new_uid()
         self.role = role
         self.mailing_list = mailing_list
         if IAddress.providedBy(subscriber):
@@ -85,13 +91,20 @@ class Member(Model):
             self.address, self.mailing_list, self.role)
 
     @property
+    def member_id(self):
+        """See `IMember`."""
+        return self._member_id
+
+    @property
     def address(self):
+        """See `IMember`."""
         return (self._user.preferred_address
                 if self._address is None
                 else self._address)
 
     @property
     def user(self):
+        """See `IMember`."""
         return (self._user
                 if self._address is None
                 else getUtility(IUserManager).get_user(self._address.email))
@@ -111,33 +124,41 @@ class Member(Model):
 
     @property
     def acknowledge_posts(self):
+        """See `IMember`."""
         return self._lookup('acknowledge_posts')
 
     @property
     def preferred_language(self):
+        """See `IMember`."""
         return self._lookup('preferred_language')
 
     @property
     def receive_list_copy(self):
+        """See `IMember`."""
         return self._lookup('receive_list_copy')
 
     @property
     def receive_own_postings(self):
+        """See `IMember`."""
         return self._lookup('receive_own_postings')
 
     @property
     def delivery_mode(self):
+        """See `IMember`."""
         return self._lookup('delivery_mode')
 
     @property
     def delivery_status(self):
+        """See `IMember`."""
         return self._lookup('delivery_status')
 
     @property
     def options_url(self):
+        """See `IMember`."""
         # XXX Um, this is definitely wrong
         return 'http://example.com/' + self.address.email
 
     def unsubscribe(self):
+        """See `IMember`."""
         config.db.store.remove(self.preferences)
         config.db.store.remove(self)

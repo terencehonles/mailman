@@ -121,6 +121,9 @@ class NotAMemberError(MembershipError):
 class IMember(Interface):
     """A member of a mailing list."""
 
+    member_id = Attribute(
+        """The member's unique, random identifier (sha1 hex digest).""")
+
     mailing_list = Attribute(
         """The mailing list subscribed to.""")
 

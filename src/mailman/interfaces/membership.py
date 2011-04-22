@@ -45,6 +45,15 @@ class ISubscriptionService(Interface):
         :rtype: list of `IMember`
         """
 
+    def get_member(member_id):
+        """Return a member record matching the member id.
+
+        :param member_id: A member id.
+        :type member_id: unicode
+        :return: The matching member, or None if no matching member is found.
+        :rtype: `IMember`
+        """
+
     def __iter__():
         """See `get_members()`."""
 

@@ -19,8 +19,7 @@ CREATE TABLE acceptablealias (
     );
 CREATE INDEX ix_acceptablealias_mailing_list_id
     ON acceptablealias (mailing_list_id);
-CREATE INDEX ix_acceptablealias_alias
-    ON acceptablealias ("alias");
+CREATE INDEX ix_acceptablealias_alias ON acceptablealias ("alias");
 
 CREATE TABLE address (
     id INTEGER NOT NULL,
@@ -197,6 +196,7 @@ CREATE TABLE mailinglist (
 
 CREATE TABLE member (
     id INTEGER NOT NULL,
+    _member_id TEXT,
     role TEXT,
     mailing_list TEXT,
     moderation_action INTEGER,
@@ -211,6 +211,9 @@ CREATE TABLE member (
     CONSTRAINT member_user_id_fk
         FOREIGN KEY (user_id) REFERENCES user (id)
     );
+CREATE INDEX ix_member__member_id ON member (_member_id);
+CREATE INDEX ix_member_address_id ON member (address_id);
+CREATE INDEX ix_member_preferences_id ON member (preferences_id);
 
 CREATE TABLE message (
     id INTEGER NOT NULL,
@@ -287,8 +290,6 @@ CREATE TABLE version (
 CREATE INDEX ix__request_mailing_list_id ON _request (mailing_list_id);
 CREATE INDEX ix_address_preferences_id ON address (preferences_id);
 CREATE INDEX ix_address_user_id ON address (user_id);
-CREATE INDEX ix_member_address_id ON member (address_id);
-CREATE INDEX ix_member_preferences_id ON member (preferences_id);
 CREATE INDEX ix_pendedkeyvalue_pended_id ON pendedkeyvalue (pended_id);
 CREATE INDEX ix_user_preferences_id ON user (preferences_id);
 
@@ -298,3 +299,11 @@ CREATE TABLE ban (
     mailing_list TEXT,
     PRIMARY KEY (id)
     );
+
+CREATE TABLE uid (
+    -- Keep track of all assigned unique ids to prevent re-use.
+    id INTEGER NOT NULL,
+    uid TEXT,
+    PRIMARY KEY (id)
+    );
+CREATE INDEX ix_uid_uid ON uid (uid);

@@ -35,6 +35,7 @@ from mailman.config import config
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import call_api
 from mailman.testing.layers import RESTLayer
+from mailman.utilities.datetime import now
 
 
 
@@ -77,9 +78,7 @@ class TestMembership(unittest.TestCase):
         # Try to leave a mailing list using an invalid membership address.
         try:
             # For Python 2.6.
-            call_api('http://localhost:9001/3.0/lists/test@example.com'
-                     '/member/nobody',
-                     method='DELETE')
+            call_api('http://localhost:9001/3.0/members/1', method='DELETE')
         except HTTPError as exc:
             self.assertEqual(exc.code, 404)
             self.assertEqual(exc.msg, '404 Not Found')
@@ -90,8 +89,7 @@ class TestMembership(unittest.TestCase):
         anne = self._usermanager.create_address('anne@example.com')
         self._mlist.subscribe(anne)
         config.db.commit()
-        url = ('http://localhost:9001/3.0/lists/test@example.com'
-               '/member/anne@example.com')
+        url = 'http://localhost:9001/3.0/members/1'
         content, response = call_api(url, method='DELETE')
         # For a successful DELETE, the response code is 200 and there is no
         # content.
@@ -146,13 +144,20 @@ class TestMembership(unittest.TestCase):
         self.assertEqual(content, None)
         self.assertEqual(response.status, 201)
         self.assertEqual(response['location'],
-                         'http://localhost:9001/3.0/lists/test@example.com'
-                         '/member/hugh%2Fperson@example.com')
+                         'http://localhost:9001/3.0/members/1')
         # Reset any current transaction.
         config.db.abort()
         members = list(self._mlist.members.members)
         self.assertEqual(len(members), 1)
         self.assertEqual(members[0].address.email, 'hugh/person@example.com')
+
+    ## def test_join_as_user_with_preferred_address(self):
+    ##     anne = self._usermanager.create_user('anne@example.com')
+    ##     list(anne.addresses)[0].verified_on = now()
+    ##     self._mlist.subscribe(anne)
+    ##     config.db.commit()
+    ##     content, response = call_api('http://localhost:9001/3.0/members')
+    ##     raise AssertionError('incomplete test')
 
 
 

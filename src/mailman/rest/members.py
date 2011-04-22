@@ -29,12 +29,11 @@ __all__ = [
 
 from operator import attrgetter
 from restish import http, resource
-from urllib import quote
 from zope.component import getUtility
 
 from mailman.app.membership import delete_member
 from mailman.interfaces.address import InvalidEmailAddressError
-from mailman.interfaces.listmanager import NoSuchListError
+from mailman.interfaces.listmanager import IListManager, NoSuchListError
 from mailman.interfaces.member import (
     AlreadySubscribedError, DeliveryMode, MemberRole, NotAMemberError)
 from mailman.interfaces.membership import ISubscriptionService
@@ -52,8 +51,9 @@ class _MemberBase(resource.Resource, CollectionMixin):
         return dict(
             fqdn_listname=member.mailing_list,
             address=member.address.email,
-            self_link=path_to('lists/{0}/{1}/{2}'.format(
-                member.mailing_list, role, member.address.email)),
+            role=role,
+            user=path_to('users/{0}'.format(member.user.user_id)),
+            self_link=path_to('members/{0}'.format(member.member_id)),
             )
 
     def _get_collection(self, request):
@@ -64,12 +64,9 @@ class _MemberBase(resource.Resource, CollectionMixin):
 class AMember(_MemberBase):
     """A member."""
 
-    def __init__(self, mailing_list, role, address):
-        self._mlist = mailing_list
-        self._role = role
-        self._address = address
-        roster = self._mlist.get_roster(role)
-        self._member = roster.get_member(self._address)
+    def __init__(self, member_id):
+        self._member_id = member_id
+        self._member = getUtility(ISubscriptionService).get_member(member_id)
 
     @resource.GET()
     def member(self, request):
@@ -82,9 +79,12 @@ class AMember(_MemberBase):
         # Leaving a list is a bit different than deleting a moderator or
         # owner.  Handle the former case first.  For now too, we will not send
         # an admin or user notification.
-        if self._role is MemberRole.member:
+        if self._member is None:
+            return http.not_found()
+        mlist = getUtility(IListManager).get(self._member.mailing_list)
+        if self._member.role is MemberRole.member:
             try:
-                delete_member(self._mlist, self._address, False, False)
+                delete_member(mlist, self._member.address.email, False, False)
             except NotAMemberError:
                 return http.not_found()
         else:
@@ -92,6 +92,7 @@ class AMember(_MemberBase):
         return http.ok([], '')
 
 
+
 class AllMembers(_MemberBase):
     """The members."""
 
@@ -114,12 +115,7 @@ class AllMembers(_MemberBase):
             return http.bad_request([], b'Invalid email address')
         except ValueError as error:
             return http.bad_request([], str(error))
-        # wsgiref wants headers to be bytes, not unicodes.  Also, we have to
-        # quote any unsafe characters in the address.  Specifically, we need
-        # to quote forward slashes, but not @-signs.
-        quoted_address = quote(member.address.email, safe=b'@')
-        location = path_to('lists/{0}/member/{1}'.format(
-            member.mailing_list, quoted_address))
+        location = path_to('members/{0}'.format(member.member_id))
         # Include no extra headers or body.
         return http.created(location, [], None)
 

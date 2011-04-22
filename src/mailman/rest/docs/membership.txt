@@ -44,10 +44,22 @@ the REST interface.
         address: bperson@example.com
         fqdn_listname: test-one@example.com
         http_etag: ...
-        self_link: http://localhost:9001/3.0/lists/test-one@example.com/member/bperson@example.com
+        role: member
+        self_link: http://localhost:9001/3.0/members/1
+        user: http://localhost:9001/3.0/users/1
     http_etag: "..."
     start: 0
     total_size: 1
+
+Bart's specific membership can be accessed directly:
+
+    >>> dump_json('http://localhost:9001/3.0/members/1')
+    address: bperson@example.com
+    fqdn_listname: test-one@example.com
+    http_etag: ...
+    role: member
+    self_link: http://localhost:9001/3.0/members/1
+    user: http://localhost:9001/3.0/users/1
 
 When Cris also joins the mailing list, her subscription is also available via
 the REST interface.
@@ -58,12 +70,16 @@ the REST interface.
         address: bperson@example.com
         fqdn_listname: test-one@example.com
         http_etag: ...
-        self_link: http://localhost:9001/3.0/lists/test-one@example.com/member/bperson@example.com
+        role: member
+        self_link: http://localhost:9001/3.0/members/1
+        user: http://localhost:9001/3.0/users/1
     entry 1:
         address: cperson@example.com
         fqdn_listname: test-one@example.com
         http_etag: ...
-        self_link: http://localhost:9001/3.0/lists/test-one@example.com/member/cperson@example.com
+        role: member
+        self_link: http://localhost:9001/3.0/members/2
+        user: http://localhost:9001/3.0/users/2
     http_etag: "..."
     start: 0
     total_size: 2
@@ -79,17 +95,23 @@ subscribes, she is returned first.
         address: aperson@example.com
         fqdn_listname: test-one@example.com
         http_etag: ...
-        self_link: http://localhost:9001/3.0/lists/test-one@example.com/member/aperson@example.com
+        role: member
+        self_link: http://localhost:9001/3.0/members/3
+        user: http://localhost:9001/3.0/users/3
     entry 1:
         address: bperson@example.com
         fqdn_listname: test-one@example.com
         http_etag: ...
-        self_link: http://localhost:9001/3.0/lists/test-one@example.com/member/bperson@example.com
+        role: member
+        self_link: http://localhost:9001/3.0/members/1
+        user: http://localhost:9001/3.0/users/1
     entry 2:
         address: cperson@example.com
         fqdn_listname: test-one@example.com
         http_etag: ...
-        self_link: http://localhost:9001/3.0/lists/test-one@example.com/member/cperson@example.com
+        role: member
+        self_link: http://localhost:9001/3.0/members/2
+        user: http://localhost:9001/3.0/users/2
     http_etag: "..."
     start: 0
     total_size: 3
@@ -102,32 +124,44 @@ address.  Anna and Cris subscribe to this new mailing list.
     >>> subscribe(mlist_two, 'Anna')
     >>> subscribe(mlist_two, 'Cris')
 
+User ids are different than member ids.
+
     >>> dump_json('http://localhost:9001/3.0/members')
     entry 0:
         address: aperson@example.com
         fqdn_listname: alpha@example.com
         http_etag: ...
-        self_link: http://localhost:9001/3.0/lists/alpha@example.com/member/aperson@example.com
+        role: member
+        self_link: http://localhost:9001/3.0/members/4
+        user: http://localhost:9001/3.0/users/3
     entry 1:
         address: cperson@example.com
         fqdn_listname: alpha@example.com
         http_etag: ...
-        self_link: http://localhost:9001/3.0/lists/alpha@example.com/member/cperson@example.com
+        role: member
+        self_link: http://localhost:9001/3.0/members/5
+        user: http://localhost:9001/3.0/users/2
     entry 2:
         address: aperson@example.com
         fqdn_listname: test-one@example.com
         http_etag: ...
-        self_link: http://localhost:9001/3.0/lists/test-one@example.com/member/aperson@example.com
+        role: member
+        self_link: http://localhost:9001/3.0/members/3
+        user: http://localhost:9001/3.0/users/3
     entry 3:
         address: bperson@example.com
         fqdn_listname: test-one@example.com
         http_etag: ...
-        self_link: http://localhost:9001/3.0/lists/test-one@example.com/member/bperson@example.com
+        role: member
+        self_link: http://localhost:9001/3.0/members/1
+        user: http://localhost:9001/3.0/users/1
     entry 4:
         address: cperson@example.com
         fqdn_listname: test-one@example.com
         http_etag: ...
-        self_link: http://localhost:9001/3.0/lists/test-one@example.com/member/cperson@example.com
+        role: member
+        self_link: http://localhost:9001/3.0/members/2
+        user: http://localhost:9001/3.0/users/2
     http_etag: "..."
     start: 0
     total_size: 5
@@ -140,12 +174,16 @@ We can also get just the members of a single mailing list.
         address: aperson@example.com
         fqdn_listname: alpha@example.com
         http_etag: ...
-        self_link: http://localhost:9001/3.0/lists/alpha@example.com/member/aperson@example.com
+        role: member
+        self_link: http://localhost:9001/3.0/members/4
+        user: http://localhost:9001/3.0/users/3
     entry 1:
         address: cperson@example.com
         fqdn_listname: alpha@example.com
         http_etag: ...
-        self_link: http://localhost:9001/3.0/lists/alpha@example.com/member/cperson@example.com
+        role: member
+        self_link: http://localhost:9001/3.0/members/5
+        user: http://localhost:9001/3.0/users/2
     http_etag: ...
     start: 0
     total_size: 2
@@ -167,37 +205,51 @@ test-one mailing list.
         address: dperson@example.com
         fqdn_listname: alpha@example.com
         http_etag: ...
-        self_link: http://localhost:9001/3.0/lists/alpha@example.com/moderator/dperson@example.com
+        role: moderator
+        self_link: http://localhost:9001/3.0/members/7
+        user: http://localhost:9001/3.0/users/4
     entry 1:
         address: aperson@example.com
         fqdn_listname: alpha@example.com
         http_etag: ...
-        self_link: http://localhost:9001/3.0/lists/alpha@example.com/member/aperson@example.com
+        role: member
+        self_link: http://localhost:9001/3.0/members/4
+        user: http://localhost:9001/3.0/users/3
     entry 2:
         address: cperson@example.com
         fqdn_listname: alpha@example.com
         http_etag: ...
-        self_link: http://localhost:9001/3.0/lists/alpha@example.com/member/cperson@example.com
+        role: member
+        self_link: http://localhost:9001/3.0/members/5
+        user: http://localhost:9001/3.0/users/2
     entry 3:
         address: cperson@example.com
         fqdn_listname: test-one@example.com
         http_etag: ...
-        self_link: http://localhost:9001/3.0/lists/test-one@example.com/owner/cperson@example.com
+        role: owner
+        self_link: http://localhost:9001/3.0/members/6
+        user: http://localhost:9001/3.0/users/2
     entry 4:
         address: aperson@example.com
         fqdn_listname: test-one@example.com
         http_etag: ...
-        self_link: http://localhost:9001/3.0/lists/test-one@example.com/member/aperson@example.com
+        role: member
+        self_link: http://localhost:9001/3.0/members/3
+        user: http://localhost:9001/3.0/users/3
     entry 5:
         address: bperson@example.com
         fqdn_listname: test-one@example.com
         http_etag: ...
-        self_link: http://localhost:9001/3.0/lists/test-one@example.com/member/bperson@example.com
+        role: member
+        self_link: http://localhost:9001/3.0/members/1
+        user: http://localhost:9001/3.0/users/1
     entry 6:
         address: cperson@example.com
         fqdn_listname: test-one@example.com
         http_etag: ...
-        self_link: http://localhost:9001/3.0/lists/test-one@example.com/member/cperson@example.com
+        role: member
+        self_link: http://localhost:9001/3.0/members/2
+        user: http://localhost:9001/3.0/users/2
     http_etag: "..."
     start: 0
     total_size: 7
@@ -206,9 +258,9 @@ test-one mailing list.
 Joining a mailing list
 ======================
 
-A user can be subscribed to a mailing list via the REST API.  Actually,
-addresses not users are subscribed to mailing lists, but addresses are always
-tied to users.  A subscribed user is called a member.
+A user can be subscribed to a mailing list via the REST API, either by a
+specific address, or more generally by their preferred address.  A subscribed
+user is called a member.
 
 Elly subscribes to the alpha mailing list.  By default, get gets a regular
 delivery.  Since Elly's email address is not yet known to Mailman, a user is
@@ -221,8 +273,9 @@ created for her.
     ...           })
     content-length: 0
     date: ...
-    location: http://localhost:9001/3.0/lists/alpha@example.com/member/eperson@example.com
-    ...
+    location: http://localhost:9001/3.0/members/8
+    server: ...
+    status: 201
 
 Elly is now a member of the mailing list.
 ::
@@ -241,7 +294,9 @@ Elly is now a member of the mailing list.
         address: eperson@example.com
         fqdn_listname: alpha@example.com
         http_etag: ...
-        self_link: http://localhost:9001/3.0/lists/alpha@example.com/member/eperson@example.com
+        role: member
+        self_link: http://localhost:9001/3.0/members/8
+        user: http://localhost:9001/3.0/users/5
     ...
 
 
@@ -254,8 +309,7 @@ so she leaves from the mailing list.
 
     # Ensure our previous reads don't keep the database lock.
     >>> transaction.abort()
-    >>> dump_json('http://localhost:9001/3.0/lists/alpha@example.com'
-    ...           '/member/eperson@example.com',
+    >>> dump_json('http://localhost:9001/3.0/members/8',
     ...           method='DELETE')
     content-length: 0
     ...
@@ -281,9 +335,9 @@ Fred joins the alpha mailing list but wants MIME digest delivery.
     ...           'delivery_mode': 'mime_digests',
     ...           })
     content-length: 0
-    ...
-    location: http://localhost:9001/3.0/lists/alpha@example.com/member/fperson@example.com
-    ...
+    date: ...
+    location: http://localhost:9001/3.0/members/9
+    server: ...
     status: 201
 
     >>> fred = user_manager.get_user('fperson@example.com')

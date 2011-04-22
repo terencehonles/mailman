@@ -31,11 +31,13 @@ from zope.component import getUtility
 from zope.interface import implements
 
 from mailman.app.membership import add_member, delete_member
+from mailman.config import config
 from mailman.core.constants import system_preferences
 from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.listmanager import IListManager, NoSuchListError
 from mailman.interfaces.member import DeliveryMode
 from mailman.interfaces.membership import ISubscriptionService
+from mailman.model.member import Member
 from mailman.utilities.passwords import make_user_friendly_password
 
 
@@ -63,6 +65,17 @@ class SubscriptionService:
             members.extend(
                 sorted(mailing_list.members.members, key=address_of_member))
         return members
+
+    def get_member(self, member_id):
+        """See `ISubscriptionService`."""
+        members = config.db.store.find(
+            Member,
+            Member._member_id == member_id)
+        if members.count() == 0:
+            return None
+        else:
+            assert members.count() == 1, 'Too many matching members'
+            return members[0]
 
     def __iter__(self):
         for member in self.get_members():

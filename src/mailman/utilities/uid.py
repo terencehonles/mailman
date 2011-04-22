@@ -38,6 +38,7 @@ import hashlib
 from flufl.lock import Lock
 
 from mailman.config import config
+from mailman.model.uid import UID
 from mailman.testing import layers
 from mailman.utilities.passwords import SALT_LENGTH
 
@@ -46,13 +47,15 @@ from mailman.utilities.passwords import SALT_LENGTH
 class UniqueIDFactory:
     """A factory for unique ids."""
 
-    def __init__(self):
+    def __init__(self, context=None):
         # We can't call reset() when the factory is created below, because
         # config.VAR_DIR will not be set at that time.  So initialize it at
         # the first use.
         self._uid_file = None
         self._lock_file = None
         self._lockobj = None
+        self._context = context
+        layers.MockAndMonkeyLayer.register_reset(self.reset)
 
     @property
     def _lock(self):
@@ -60,6 +63,8 @@ class UniqueIDFactory:
             # These will get automatically cleaned up by the test
             # infrastructure.
             self._uid_file = os.path.join(config.VAR_DIR, '.uid')
+            if self._context:
+                self._uid_file += '.' + self._context
             self._lock_file = self._uid_file + '.lock'
             self._lockobj = Lock(self._lock_file)
         return self._lockobj
@@ -76,11 +81,18 @@ class UniqueIDFactory:
             # tests) that it will not be a problem.  Maybe.
             return self._next_uid()
         salt = os.urandom(SALT_LENGTH)
-        h = hashlib.sha1(repr(time.time()))
-        h.update(salt)
-        if bytes is not None:
-            h.update(bytes)
-        return unicode(h.hexdigest(), 'us-ascii')
+        while True:
+            h = hashlib.sha1(repr(time.time()))
+            h.update(salt)
+            if bytes is not None:
+                h.update(bytes)
+                uid = unicode(h.hexdigest(), 'us-ascii')
+                try:
+                    UID.record(uid)
+                except ValueError:
+                    pass
+                else:
+                    return uid
 
     def _next_uid(self):
         with self._lock:
@@ -106,4 +118,3 @@ class UniqueIDFactory:
 
 
 factory = UniqueIDFactory()
-layers.MockAndMonkeyLayer.register_reset(factory.reset)
