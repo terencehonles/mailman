@@ -152,3 +152,14 @@ this address is their preferred address.
     >>> mlist.subscribe(user.preferred_address)
     <Member: dave.person@example.com
              on aardvark@example.com as MemberRole.member>
+
+A user cannot subscribe to a mailing list without a preferred address.
+
+    >>> user = user_manager.create_user('eperson@example.com', 'Elly Person')
+    >>> address = list(user.addresses)[0]
+    >>> address.verified_on = now()
+    >>> mlist.subscribe(user)
+    Traceback (most recent call last):
+    ...
+    MissingPreferredAddressError: User must have a preferred address:
+    <User "Elly Person" (2) at ...>

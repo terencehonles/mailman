@@ -28,6 +28,7 @@ __all__ = [
     'MemberRole',
     'MembershipError',
     'MembershipIsBannedError',
+    'MissingPreferredAddressError',
     'NotAMemberError',
     ]
 
@@ -102,6 +103,17 @@ class MembershipIsBannedError(MembershipError):
     def __str__(self):
         return '{0} is not allowed to subscribe to {1.fqdn_listname}'.format(
             self._address, self._mlist)
+
+
+class MissingPreferredAddressError(MembershipError):
+    """A user without a preferred address attempted to subscribe."""
+
+    def __init__(self, user):
+        super(MissingPreferredAddressError, self).__init__()
+        self._user = user
+
+    def __str__(self):
+        return 'User must have a preferred address: {0}'.format(self._user)
 
 
 class NotAMemberError(MembershipError):

@@ -43,7 +43,8 @@ from mailman.interfaces.domain import IDomainManager
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.mailinglist import (
     IAcceptableAlias, IAcceptableAliasSet, IMailingList, Personalization)
-from mailman.interfaces.member import AlreadySubscribedError, MemberRole
+from mailman.interfaces.member import (
+    AlreadySubscribedError, MemberRole, MissingPreferredAddressError)
 from mailman.interfaces.mime import FilterType
 from mailman.interfaces.user import IUser
 from mailman.model import roster
@@ -458,6 +459,8 @@ class MailingList(Model):
                 raise AlreadySubscribedError(
                     self.fqdn_listname, subscriber.email, role)
         elif IUser.providedBy(subscriber):
+            if subscriber.preferred_address is None:
+                raise MissingPreferredAddressError(subscriber)
             member = store.find(
                 Member,
                 Member.role == role,

@@ -73,7 +73,7 @@ class TestMembership(unittest.TestCase):
             self.assertEqual(exc.msg, '404 Not Found')
         else:
             raise AssertionError('Expected HTTPError')
-        
+
     def test_try_to_leave_list_with_bogus_address(self):
         # Try to leave a mailing list using an invalid membership address.
         try:
@@ -151,13 +151,47 @@ class TestMembership(unittest.TestCase):
         self.assertEqual(len(members), 1)
         self.assertEqual(members[0].address.email, 'hugh/person@example.com')
 
-    ## def test_join_as_user_with_preferred_address(self):
-    ##     anne = self._usermanager.create_user('anne@example.com')
-    ##     list(anne.addresses)[0].verified_on = now()
-    ##     self._mlist.subscribe(anne)
-    ##     config.db.commit()
-    ##     content, response = call_api('http://localhost:9001/3.0/members')
-    ##     raise AssertionError('incomplete test')
+    def test_join_as_user_with_preferred_address(self):
+        anne = self._usermanager.create_user('anne@example.com')
+        preferred = list(anne.addresses)[0]
+        preferred.verified_on = now()
+        anne.preferred_address = preferred
+        self._mlist.subscribe(anne)
+        config.db.commit()
+        content, response = call_api('http://localhost:9001/3.0/members')
+        self.assertEqual(response.status, 200)
+        self.assertEqual(int(content['total_size']), 1)
+        entry_0 = content['entries'][0]
+        self.assertEqual(entry_0['self_link'],
+                         'http://localhost:9001/3.0/members/1')
+        self.assertEqual(entry_0['role'], 'member')
+        self.assertEqual(entry_0['user'], 'http://localhost:9001/3.0/users/1')
+        self.assertEqual(entry_0['address'], 'anne@example.com')
+        self.assertEqual(entry_0['fqdn_listname'], 'test@example.com')
+
+    def test_member_changes_preferred_address(self):
+        anne = self._usermanager.create_user('anne@example.com')
+        preferred = list(anne.addresses)[0]
+        preferred.verified_on = now()
+        anne.preferred_address = preferred
+        self._mlist.subscribe(anne)
+        config.db.commit()
+        # Take a look at Anne's current membership.
+        content, response = call_api('http://localhost:9001/3.0/members')
+        self.assertEqual(int(content['total_size']), 1)
+        entry_0 = content['entries'][0]
+        self.assertEqual(entry_0['address'], 'anne@example.com')
+        # Anne registers a new address and makes it her preferred address.
+        # There are no changes to her membership.
+        new_preferred = anne.register('aperson@example.com')
+        new_preferred.verified_on = now()
+        anne.preferred_address = new_preferred
+        config.db.commit()
+        # Take another look at Anne's current membership.
+        content, response = call_api('http://localhost:9001/3.0/members')
+        self.assertEqual(int(content['total_size']), 1)
+        entry_0 = content['entries'][0]
+        self.assertEqual(entry_0['address'], 'aperson@example.com')
 
 
 
