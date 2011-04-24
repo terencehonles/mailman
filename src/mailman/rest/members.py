@@ -102,10 +102,10 @@ class AllMembers(_MemberBase):
         service = getUtility(ISubscriptionService)
         try:
             validator = Validator(fqdn_listname=unicode,
-                                  address=unicode,
+                                  subscriber=unicode,
                                   real_name=unicode,
                                   delivery_mode=enum_validator(DeliveryMode),
-                                  _optional=('real_name', 'delivery_mode'))
+                                  _optional=('delivery_mode', 'real_name'))
             member = service.join(**validator(request))
         except AlreadySubscribedError:
             return http.conflict([], b'Member already subscribed')

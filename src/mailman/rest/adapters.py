@@ -36,7 +36,9 @@ from mailman.core.constants import system_preferences
 from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.listmanager import IListManager, NoSuchListError
 from mailman.interfaces.member import DeliveryMode
-from mailman.interfaces.membership import ISubscriptionService
+from mailman.interfaces.membership import (
+    ISubscriptionService, MissingUserError)
+from mailman.interfaces.usermanager import IUserManager
 from mailman.model.member import Member
 from mailman.utilities.passwords import make_user_friendly_password
 
@@ -81,7 +83,7 @@ class SubscriptionService:
         for member in self.get_members():
             yield member
 
-    def join(self, fqdn_listname, address,
+    def join(self, fqdn_listname, subscriber,
              real_name= None, delivery_mode=None):
         """See `ISubscriptionService`."""
         mlist = getUtility(IListManager).get(fqdn_listname)
@@ -91,20 +93,29 @@ class SubscriptionService:
         mode = (DeliveryMode.regular
                 if delivery_mode is None
                 else delivery_mode)
-        if real_name is None:
-            real_name, at, domain = address.partition('@')
-            if len(at) == 0:
-                # It can't possibly be a valid email address.
-                raise InvalidEmailAddressError(address)
-        # Because we want to keep the REST API simple, there is no password or
-        # language given to us.  We'll use the system's default language for
-        # the user's default language.  We'll set the password to a system
-        # default.  This will have to get reset since it can't be retrieved.
-        # Note that none of these are used unless the address is completely
-        # new to us.
-        password = make_user_friendly_password()
-        return add_member(mlist, address, real_name, password, mode,
-                          system_preferences.preferred_language)
+        # Is the subscriber a user or email address?
+        if '@' in subscriber:
+            # It's an email address, so we'll want a real name.
+            if real_name is None:
+                real_name, at, domain = subscriber.partition('@')
+                if len(at) == 0:
+                    # It can't possibly be a valid email address.
+                    raise InvalidEmailAddressError(subscriber)
+            # Because we want to keep the REST API simple, there is no
+            # password or language given to us.  We'll use the system's
+            # default language for the user's default language.  We'll set the
+            # password to a system default.  This will have to get reset since
+            # it can't be retrieved.  Note that none of these are used unless
+            # the address is completely new to us.
+            password = make_user_friendly_password()
+            return add_member(mlist, subscriber, real_name, password, mode,
+                              system_preferences.preferred_language)
+        else:
+            # We have to assume it's a user id.
+            user = getUtility(IUserManager).get_user_by_id(subscriber)
+            if user is None:
+                raise MissingUserError(subscriber)
+            return mlist.subscribe(user)
 
     def leave(self, fqdn_listname, address):
         """See `ISubscriptionService`."""

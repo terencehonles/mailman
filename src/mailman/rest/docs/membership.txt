@@ -262,13 +262,13 @@ A user can be subscribed to a mailing list via the REST API, either by a
 specific address, or more generally by their preferred address.  A subscribed
 user is called a member.
 
-Elly subscribes to the alpha mailing list.  By default, get gets a regular
-delivery.  Since Elly's email address is not yet known to Mailman, a user is
-created for her.
+Elly wants to subscribes to the alpha mailing list.  Since Elly's email
+address is not yet known to Mailman, a user is created for her.  By default,
+get gets a regular delivery.
 
     >>> dump_json('http://localhost:9001/3.0/members', {
     ...           'fqdn_listname': 'alpha@example.com',
-    ...           'address': 'eperson@example.com',
+    ...           'subscriber': 'eperson@example.com',
     ...           'real_name': 'Elly Person',
     ...           })
     content-length: 0
@@ -277,7 +277,7 @@ created for her.
     server: ...
     status: 201
 
-Elly is now a member of the mailing list.
+Elly is now a known user, and a member of the mailing list.
 ::
 
     >>> elly = user_manager.get_user('eperson@example.com')
@@ -298,6 +298,66 @@ Elly is now a member of the mailing list.
         self_link: http://localhost:9001/3.0/members/8
         user: http://localhost:9001/3.0/users/5
     ...
+
+Gwen is a user with a preferred address.  She subscribes to the alpha mailing
+list with her preferred address.
+
+    >>> from mailman.utilities.datetime import now
+    >>> gwen = user_manager.create_user('gwen@example.com', 'Gwen Person')
+    >>> preferred = list(gwen.addresses)[0]
+    >>> preferred.verified_on = now()
+    >>> gwen.preferred_address = preferred
+
+    # Note that we must extract the user id before we commit the transaction.
+    # This is because accessing the .user_id attribute will lock the database
+    # in the testing process, breaking the REST queue process.
+    >>> user_id = gwen.user_id
+    >>> transaction.commit()
+
+    >>> dump_json('http://localhost:9001/3.0/members', {
+    ...     'fqdn_listname': 'alpha@example.com',
+    ...     'subscriber': user_id,
+    ...     })
+    content-length: 0
+    date: ...
+    location: http://localhost:9001/3.0/members/9
+    server: ...
+    status: 201
+
+    >>> dump_json('http://localhost:9001/3.0/members')
+    entry 0:
+    ...
+    entry 4:
+        address: gwen@example.com
+        fqdn_listname: alpha@example.com
+        http_etag: "..."
+        role: member
+        self_link: http://localhost:9001/3.0/members/9
+        user: http://localhost:9001/3.0/users/6
+    ...
+    total_size: 9
+
+When Gwen changes her preferred address, her subscription automatically tracks
+the new address.
+::
+
+    >>> new_preferred = gwen.register('gwen.person@example.com')
+    >>> new_preferred.verified_on = now()
+    >>> gwen.preferred_address = new_preferred
+    >>> transaction.commit()
+
+    >>> dump_json('http://localhost:9001/3.0/members')
+    entry 0:
+    ...
+    entry 4:
+        address: gwen.person@example.com
+        fqdn_listname: alpha@example.com
+        http_etag: "..."
+        role: member
+        self_link: http://localhost:9001/3.0/members/9
+        user: http://localhost:9001/3.0/users/6
+    ...
+    total_size: 9
 
 
 Leaving a mailing list
@@ -330,13 +390,13 @@ Fred joins the alpha mailing list but wants MIME digest delivery.
     >>> transaction.abort()
     >>> dump_json('http://localhost:9001/3.0/members', {
     ...           'fqdn_listname': 'alpha@example.com',
-    ...           'address': 'fperson@example.com',
+    ...           'subscriber': 'fperson@example.com',
     ...           'real_name': 'Fred Person',
     ...           'delivery_mode': 'mime_digests',
     ...           })
     content-length: 0
     date: ...
-    location: http://localhost:9001/3.0/members/9
+    location: http://localhost:9001/3.0/members/10
     server: ...
     status: 201
 

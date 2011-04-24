@@ -53,7 +53,7 @@ class TestMembership(unittest.TestCase):
             # For Python 2.6.
             call_api('http://localhost:9001/3.0/members', {
                 'fqdn_listname': 'missing@example.com',
-                'address': 'nobody@example.com',
+                'subscriber': 'nobody@example.com',
                 })
         except HTTPError as exc:
             self.assertEqual(exc.code, 400)
@@ -112,7 +112,7 @@ class TestMembership(unittest.TestCase):
             # For Python 2.6.
             call_api('http://localhost:9001/3.0/members', {
                 'fqdn_listname': 'test@example.com',
-                'address': 'anne@example.com',
+                'subscriber': 'anne@example.com',
                 })
         except HTTPError as exc:
             self.assertEqual(exc.code, 409)
@@ -124,7 +124,7 @@ class TestMembership(unittest.TestCase):
         try:
             call_api('http://localhost:9001/3.0/members', {
                 'fqdn_listname': 'test@example.com',
-                'address': 'anne@example.com',
+                'subscriber': 'anne@example.com',
                 'real_name': 'Anne Person',
                 'delivery_mode': 'invalid-mode',
                 })
@@ -138,7 +138,7 @@ class TestMembership(unittest.TestCase):
     def test_join_email_contains_slash(self):
         content, response = call_api('http://localhost:9001/3.0/members', {
             'fqdn_listname': 'test@example.com',
-            'address': 'hugh/person@example.com',
+            'subscriber': 'hugh/person@example.com',
             'real_name': 'Hugh Person',
             })
         self.assertEqual(content, None)

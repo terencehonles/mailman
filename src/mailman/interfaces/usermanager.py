@@ -62,6 +62,15 @@ class IUserManager(Interface):
         :rtype: `IUser`.
         """
 
+    def get_user_by_id(user_id):
+        """Get the user associated with the given id.
+
+        :param user_id: The user id.
+        :type user_id: unicode
+        :return: The user found or None.
+        :rtype: `IUser`.
+        """
+
     users = Attribute(
         """An iterator over all the `IUsers` managed by this user manager.""")
 

@@ -27,6 +27,20 @@ __all__ = [
 
 from zope.interface import Interface
 
+from mailman.interfaces.errors import MailmanError
+
+
+
+class MissingUserError(MailmanError):
+    """A an invalid user id was given."""
+
+    def __init__(self, user_id):
+        super(MissingUserError, self).__init__()
+        self.user_id = user_id
+
+    def __str__(self):
+        return self.user_id
+
 
 
 class ISubscriptionService(Interface):
@@ -57,7 +71,7 @@ class ISubscriptionService(Interface):
     def __iter__():
         """See `get_members()`."""
 
-    def join(fqdn_listname, address, real_name=None, delivery_mode=None):
+    def join(fqdn_listname, subscriber, real_name=None, delivery_mode=None):
         """Subscribe to a mailing list.
 
         A user for the address is created if it is not yet known to Mailman,
@@ -85,6 +99,7 @@ class ISubscriptionService(Interface):
             the mailing list.
         :raises InvalidEmailAddressError: if the email address is not valid.
         :raises MembershipIsBannedError: if the membership is not allowed.
+        :raises MissingUserError: when a bogus user id is given.
         :raises NoSuchListError: if the named mailing list does not exist.
         :raises ValueError: when `delivery_mode` is invalid.
         """
@@ -102,4 +117,3 @@ class ISubscriptionService(Interface):
         :raises NotAMemberError: if the given address is not a member of the
             mailing list.
         """
-        
