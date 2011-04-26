@@ -71,6 +71,31 @@ class TestMember(unittest.TestCase):
         self.assertRaises(UnverifiedAddressError,
                           setattr, member, 'address', new_address)
 
+    def test_cannot_change_to_address_uncontrolled_address(self):
+        # A user tries to change their subscription to an address they do not
+        # control.
+        anne = self._usermanager.create_user('anne@example.com')
+        address = list(anne.addresses)[0]
+        member = self._mlist.subscribe(address)
+        new_address = self._usermanager.create_address('nobody@example.com')
+        new_address.verified_on = now()
+        # The new address is not verified.
+        self.assertRaises(MembershipError,
+                          setattr, member, 'address', new_address)
+
+    def test_cannot_change_to_address_controlled_by_other_user(self):
+        # A user tries to change their subscription to an address some other
+        # user controls.
+        anne = self._usermanager.create_user('anne@example.com')
+        anne_address = list(anne.addresses)[0]
+        bart = self._usermanager.create_user('bart@example.com')
+        bart_address = list(bart.addresses)[0]
+        bart_address.verified_on = now()
+        member = self._mlist.subscribe(anne_address)
+        # The new address is not verified.
+        self.assertRaises(MembershipError,
+                          setattr, member, 'address', bart_address)
+
 
 
 def test_suite():

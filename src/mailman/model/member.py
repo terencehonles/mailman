@@ -114,6 +114,9 @@ class Member(Model):
             # A member cannot change their subscription address to an
             # unverified address.
             raise UnverifiedAddressError(new_address)
+        user = getUtility(IUserManager).get_user(new_address.email)
+        if user is None or user != self.user:
+            raise MembershipError('Address is not controlled by user')
         self._address = new_address
 
     @property
