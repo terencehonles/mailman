@@ -18,7 +18,7 @@ store mailing list data in a different database than user data.
 When we create a mailing list, it starts out with no members, owners,
 moderators, administrators, or nonmembers.
 
-    >>> mlist = create_list('test@example.com')
+    >>> mlist = create_list('ant@example.com')
     >>> dump_list(mlist.members.members)
     *Empty*
     >>> dump_list(mlist.owners.members)
@@ -53,7 +53,7 @@ her.
     >>> address_1 = list(user_1.addresses)[0]
     >>> mlist.subscribe(address_1, MemberRole.owner)
     <Member: Anne Person <aperson@example.com> on
-             test@example.com as MemberRole.owner>
+             ant@example.com as MemberRole.owner>
     >>> dump_list(member.address for member in mlist.owners.members)
     Anne Person <aperson@example.com>
 
@@ -75,7 +75,7 @@ Bart becomes a moderator of the list.
     >>> address_2 = list(user_2.addresses)[0]
     >>> mlist.subscribe(address_2, MemberRole.moderator)
     <Member: Bart Person <bperson@example.com>
-             on test@example.com as MemberRole.moderator>
+             on ant@example.com as MemberRole.moderator>
     >>> dump_list(member.address for member in mlist.moderators.members)
     Bart Person <bperson@example.com>
 
@@ -105,7 +105,7 @@ role.
     >>> member = mlist.subscribe(address_3, MemberRole.member)
     >>> member
     <Member: Cris Person <cperson@example.com>
-             on test@example.com as MemberRole.member>
+             on ant@example.com as MemberRole.member>
 
 Cris's user record can also be retrieved from her member record.
 
@@ -129,9 +129,9 @@ It's easy to make the list administrators members of the mailing list too.
     ...     members.append(member)
     >>> dump_list(members, key=attrgetter('address.email'))
     <Member: Anne Person <aperson@example.com> on
-             test@example.com as MemberRole.member>
+             ant@example.com as MemberRole.member>
     <Member: Bart Person <bperson@example.com> on
-             test@example.com as MemberRole.member>
+             ant@example.com as MemberRole.member>
     >>> dump_members(mlist.members.members)
     Anne Person <aperson@example.com>
     Bart Person <bperson@example.com>
@@ -159,7 +159,7 @@ role.
     >>> address_6 = list(user_6.addresses)[0]
     >>> member_6 = mlist.subscribe(address_6, MemberRole.nonmember)
     >>> member_6
-    <Member: Fred Person <fperson@example.com> on test@example.com
+    <Member: Fred Person <fperson@example.com> on ant@example.com
              as MemberRole.nonmember>
     >>> dump_members(mlist.nonmembers.members)
     Fred Person <fperson@example.com>
@@ -186,16 +186,16 @@ text email address by using the ``IRoster.get_member()`` method.
 
     >>> mlist.owners.get_member('aperson@example.com')
     <Member: Anne Person <aperson@example.com> on
-             test@example.com as MemberRole.owner>
+             ant@example.com as MemberRole.owner>
     >>> mlist.administrators.get_member('aperson@example.com')
     <Member: Anne Person <aperson@example.com> on
-             test@example.com as MemberRole.owner>
+             ant@example.com as MemberRole.owner>
     >>> mlist.members.get_member('aperson@example.com')
     <Member: Anne Person <aperson@example.com> on
-             test@example.com as MemberRole.member>
+             ant@example.com as MemberRole.member>
     >>> mlist.nonmembers.get_member('fperson@example.com')
     <Member: Fred Person <fperson@example.com> on
-             test@example.com as MemberRole.nonmember>
+             ant@example.com as MemberRole.nonmember>
 
 However, if the address is not subscribed with the appropriate role, then None
 is returned.
@@ -237,7 +237,7 @@ It is an error to subscribe someone to a list with the same role twice.
     Traceback (most recent call last):
     ...
     AlreadySubscribedError: aperson@example.com is already a MemberRole.owner
-    of mailing list test@example.com
+    of mailing list ant@example.com
 
 
 Moderation actions
@@ -268,3 +268,50 @@ Postings by nonmembers are held for moderator approval by default.
     >>> for member in mlist.nonmembers.members:
     ...     print member.address.email, member.role, member.moderation_action
     fperson@example.com MemberRole.nonmember Action.hold
+
+
+Changing subscriptions
+======================
+
+When a user is subscribed to a mailing list via a specific address they
+control (as opposed to being subscribed with their preferred address), they
+can change their delivery address by setting the appropriate parameter.  Note
+though that the address their changing to must be verified.
+
+    >>> bee = create_list('bee@example.com')
+    >>> gwen = user_manager.create_user('gwen@example.com')
+    >>> gwen_address = list(gwen.addresses)[0]
+    >>> gwen_member = bee.subscribe(gwen_address)
+    >>> for member in bee.members.members:
+    ...     print member.member_id, member.mailing_list, member.address.email
+    7 bee@example.com gwen@example.com
+
+Gwen gets a email address.
+
+    >>> new_address = gwen.register('gperson@example.com')
+
+She wants to change her membership in the `test` mailing list to use her new
+address, but the address is not yet verified.
+
+    >>> gwen_member.address = new_address
+    Traceback (most recent call last):
+    ...
+    UnverifiedAddressError: gperson@example.com
+
+Her membership has not changed.
+
+    >>> for member in bee.members.members:
+    ...     print member.member_id, member.mailing_list, member.address.email
+    7 bee@example.com gwen@example.com
+
+Gwen verifies her email address, and updates her membership.
+
+    >>> from mailman.utilities.datetime import now
+    >>> new_address.verified_on = now()
+    >>> gwen_member.address = new_address
+
+Now her membership reflects the new address.
+
+    >>> for member in bee.members.members:
+    ...     print member.member_id, member.mailing_list, member.address.email
+    7 bee@example.com gperson@example.com

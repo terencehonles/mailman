@@ -23,11 +23,10 @@ __metaclass__ = type
 __all__ = [
     'AMember',
     'AllMembers',
-    'MembersOfList',
+    'MemberCollection',
     ]
 
 
-from operator import attrgetter
 from restish import http, resource
 from zope.component import getUtility
 
@@ -35,9 +34,13 @@ from mailman.app.membership import delete_member
 from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.listmanager import IListManager, NoSuchListError
 from mailman.interfaces.member import (
-    AlreadySubscribedError, DeliveryMode, MemberRole, NotAMemberError)
+    AlreadySubscribedError, DeliveryMode, MemberRole, MembershipError,
+    NotAMemberError)
 from mailman.interfaces.membership import ISubscriptionService
-from mailman.rest.helpers import CollectionMixin, etag, path_to
+from mailman.interfaces.user import UnverifiedAddressError
+from mailman.interfaces.usermanager import IUserManager
+from mailman.rest.helpers import (
+    CollectionMixin, PATCH, etag, no_content, path_to)
 from mailman.rest.validator import Validator, enum_validator
 
 
@@ -61,6 +64,7 @@ class _MemberBase(resource.Resource, CollectionMixin):
         return list(getUtility(ISubscriptionService))
 
 
+
 class AMember(_MemberBase):
     """A member."""
 
@@ -89,7 +93,26 @@ class AMember(_MemberBase):
                 return http.not_found()
         else:
             self._member.unsubscribe()
-        return http.ok([], '')
+        return no_content()
+
+    @PATCH()
+    def patch_membership(self, request):
+        """Patch the membership.
+
+        This is how subscription changes are done.
+        """
+        # Currently, only the `address` parameter can be patched.
+        values = Validator(address=unicode)(request)
+        assert len(values) == 1, 'Unexpected values'
+        email = values['address']
+        address = getUtility(IUserManager).get_address(email)
+        if address is None:
+            return http.bad_request([], b'Address not registered')
+        try:
+            self._member.address = address
+        except (MembershipError, UnverifiedAddressError) as error:
+            return http.bad_request([], str(error))
+        return no_content()
 
 
 
@@ -127,20 +150,16 @@ class AllMembers(_MemberBase):
 
 
 
-class MembersOfList(_MemberBase):
-    """The members of a mailing list."""
+class MemberCollection(_MemberBase):
+    """Abstract class for supporting submemberships.
 
-    def __init__(self, mailing_list, role):
-        self._mlist = mailing_list
-        self._role = role
-
+    This is used for example to return a resource representing all the
+    memberships of a mailing list, or all memberships for a specific email
+    address.
+    """
     def _get_collection(self, request):
         """See `CollectionMixin`."""
-        # Overrides _MemberBase._get_collection() because we only want to
-        # return the members from the requested roster.
-        roster = self._mlist.get_roster(self._role)
-        address_of_member = attrgetter('address.email')
-        return list(sorted(roster.members, key=address_of_member))
+        raise NotImplementedError
 
     @resource.GET()
     def container(self, request):

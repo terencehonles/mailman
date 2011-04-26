@@ -35,8 +35,8 @@ from mailman.database.types import Enum
 from mailman.interfaces.action import Action
 from mailman.interfaces.address import IAddress
 from mailman.interfaces.listmanager import IListManager
-from mailman.interfaces.member import IMember, MemberRole
-from mailman.interfaces.user import IUser
+from mailman.interfaces.member import IMember, MemberRole, MembershipError
+from mailman.interfaces.user import IUser, UnverifiedAddressError
 from mailman.interfaces.usermanager import IUserManager
 from mailman.utilities.uid import UniqueIDFactory
 
@@ -101,6 +101,20 @@ class Member(Model):
         return (self._user.preferred_address
                 if self._address is None
                 else self._address)
+
+    @address.setter
+    def address(self, new_address):
+        """See `IMember`."""
+        if self._address is None:
+            # XXX Either we need a better exception here, or we should allow
+            # changing a subscription from preferred address to explicit
+            # address (and vice versa via del'ing the .address attribute.
+            raise MembershipError('Membership is via preferred address')
+        if new_address.verified_on is None:
+            # A member cannot change their subscription address to an
+            # unverified address.
+            raise UnverifiedAddressError(new_address)
+        self._address = new_address
 
     @property
     def user(self):

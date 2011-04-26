@@ -32,6 +32,7 @@ from restish import http, resource
 from zope.component import getUtility
 
 from mailman.rest.helpers import CollectionMixin, etag, path_to
+from mailman.rest.members import MemberCollection
 from mailman.interfaces.usermanager import IUserManager
 
 
@@ -92,6 +93,13 @@ class AnAddress(_AddressBase):
             return http.not_found()
         return http.ok([], self._resource_as_json(self._address))
 
+    @resource.child()
+    def memberships(self, request, segments):
+        """/addresses/<email>/memberships"""
+        if len(segments) != 0:
+            return http.bad_request()
+        return AddressMemberships(self._address)
+
 
 
 class UserAddresses(_AddressBase):
@@ -111,3 +119,28 @@ class UserAddresses(_AddressBase):
         """/addresses"""
         resource = self._make_collection(request)
         return http.ok([], etag(resource))
+
+
+
+class AddressMemberships(MemberCollection):
+    """All the memberships of a particular email address."""
+
+    def __init__(self, address):
+        super(AddressMemberships, self).__init__()
+        self._address = address
+
+    def _get_collection(self, request):
+        """See `CollectionMixin`."""
+        # XXX Improve this by implementing a .memberships attribute on
+        # IAddress, similar to the way IUser does it.
+        #
+        # Start by getting the IUser that controls this address.  For now, if
+        # the address is not controlled by a user, return the empty set.
+        # Later when we address the XXX comment, it will return some
+        # memberships.  But really, it should not be legal to subscribe an
+        # address to a mailing list that isn't controlled by a user -- maybe!
+        user = getUtility(IUserManager).get_user(self._address.email)
+        if user is None:
+            return []
+        return [member for member in user.memberships.members
+                if member.address == self._address]

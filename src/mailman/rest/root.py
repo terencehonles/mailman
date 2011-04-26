@@ -87,10 +87,9 @@ class TopLevel(resource.Resource):
         """
         if len(segments) == 0:
             return AllAddresses()
-        elif len(segments) == 1:
-            return AnAddress(segments[0]), []
         else:
-            return http.bad_request()
+            email = segments.pop(0)
+            return AnAddress(email), segments
 
     @resource.child()
     def domains(self, request, segments):

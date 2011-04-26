@@ -91,10 +91,10 @@ class TestMembership(unittest.TestCase):
         config.db.commit()
         url = 'http://localhost:9001/3.0/members/1'
         content, response = call_api(url, method='DELETE')
-        # For a successful DELETE, the response code is 200 and there is no
+        # For a successful DELETE, the response code is 204 and there is no
         # content.
         self.assertEqual(content, None)
-        self.assertEqual(response.status, 200)
+        self.assertEqual(response.status, 204)
         try:
             # For Python 2.6.
             call_api(url, method='DELETE')

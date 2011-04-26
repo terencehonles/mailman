@@ -132,3 +132,103 @@ addresses live in the /addresses namespace.
     real_name: Dave Person
     registered_on: 2005-08-01T07:49:23
     self_link: http://localhost:9001/3.0/addresses/dave@example.com
+
+
+Memberships
+===========
+
+Addresses can be subscribed to mailing lists.  When they are, all the
+membership records for that address are easily accessible via the REST API.
+
+Elle registers several email addresses.
+
+    >>> elle = user_manager.create_user('elle@example.com', 'Elle Person')
+    >>> subscriber = list(elle.addresses)[0]
+    >>> elle.register('eperson@example.com')
+    <Address: eperson@example.com [not verified] at ...>
+    >>> elle.register('elle.person@example.com')
+    <Address: elle.person@example.com [not verified] at ...>
+
+Elle subscribes to two mailing lists with one of her addresses.
+::
+
+    >>> ant = create_list('ant@example.com')
+    >>> bee = create_list('bee@example.com')
+    >>> ant.subscribe(subscriber)
+    <Member: Elle Person <elle@example.com> on ant@example.com
+             as MemberRole.member>
+    >>> bee.subscribe(subscriber)
+    <Member: Elle Person <elle@example.com> on bee@example.com
+             as MemberRole.member>
+    >>> transaction.commit()
+
+Elle can get her memberships for each of her email addresses.
+::
+
+    >>> dump_json('http://localhost:9001/3.0/addresses/'
+    ...           'elle@example.com/memberships')
+    entry 0:
+        address: elle@example.com
+        fqdn_listname: ant@example.com
+        http_etag: "..."
+        role: member
+        self_link: http://localhost:9001/3.0/members/1
+        user: http://localhost:9001/3.0/users/2
+    entry 1:
+        address: elle@example.com
+        fqdn_listname: bee@example.com
+        http_etag: "..."
+        role: member
+        self_link: http://localhost:9001/3.0/members/2
+        user: http://localhost:9001/3.0/users/2
+    http_etag: "..."
+    start: 0
+    total_size: 2
+
+    >>> dump_json('http://localhost:9001/3.0/addresses/'
+    ...           'eperson@example.com/memberships')
+    http_etag: "..."
+    start: 0
+    total_size: 0
+
+When Elle subscribes to the `bee` list again with a different address, this
+does not show up in the list of memberships for his other address.
+::
+
+    >>> subscriber = user_manager.get_address('eperson@example.com')
+    >>> bee.subscribe(subscriber)
+    <Member: eperson@example.com on bee@example.com as MemberRole.member>
+    >>> transaction.commit()
+
+    >>> dump_json('http://localhost:9001/3.0/addresses/'
+    ...           'elle@example.com/memberships')
+    entry 0:
+        address: elle@example.com
+        fqdn_listname: ant@example.com
+        http_etag: "..."
+        role: member
+        self_link: http://localhost:9001/3.0/members/1
+        user: http://localhost:9001/3.0/users/2
+    entry 1:
+        address: elle@example.com
+        fqdn_listname: bee@example.com
+        http_etag: "..."
+        role: member
+        self_link: http://localhost:9001/3.0/members/2
+        user: http://localhost:9001/3.0/users/2
+    http_etag: "..."
+    start: 0
+    total_size: 2
+
+    >>> dump_json('http://localhost:9001/3.0/addresses/'
+    ...           'eperson@example.com/memberships')
+    entry 0:
+        address: eperson@example.com
+        fqdn_listname: bee@example.com
+        http_etag: "..."
+        role: member
+        self_link: http://localhost:9001/3.0/members/3
+        user: http://localhost:9001/3.0/users/2
+    http_etag: "..."
+    start: 0
+    total_size: 1

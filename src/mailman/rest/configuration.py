@@ -32,7 +32,7 @@ from mailman.config import config
 from mailman.interfaces.action import Action
 from mailman.interfaces.autorespond import ResponseAction
 from mailman.interfaces.mailinglist import IAcceptableAliasSet, ReplyToMunging
-from mailman.rest.helpers import PATCH, etag
+from mailman.rest.helpers import PATCH, etag, no_content
 from mailman.rest.validator import Validator, enum_validator
 
 
@@ -274,7 +274,7 @@ class ListConfiguration(resource.Resource):
                 self._set_writable_attributes(validator, request)
             except ValueError as error:
                 return http.bad_request([], str(error))
-        return http.ok([], '')
+        return no_content()
 
     @PATCH()
     def patch_configuration(self, request):
@@ -295,4 +295,4 @@ class ListConfiguration(resource.Resource):
             self._set_writable_attributes(validator, request)
         except ValueError as error:
             return http.bad_request([], str(error))
-        return http.ok([], '')
+        return no_content()

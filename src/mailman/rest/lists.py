@@ -27,6 +27,7 @@ __all__ = [
     ]
 
 
+from operator import attrgetter
 from restish import http, resource
 from zope.component import getUtility
 
@@ -38,7 +39,7 @@ from mailman.interfaces.member import MemberRole
 from mailman.rest.configuration import ListConfiguration
 from mailman.rest.helpers import (
     CollectionMixin, etag, no_content, path_to, restish_matcher)
-from mailman.rest.members import AMember, MembersOfList
+from mailman.rest.members import AMember, MemberCollection
 from mailman.rest.validator import Validator
 
 
@@ -188,3 +189,22 @@ class AllLists(_ListBase):
         """/lists"""
         resource = self._make_collection(request)
         return http.ok([], etag(resource))
+
+
+
+class MembersOfList(MemberCollection):
+    """The members of a mailing list."""
+
+    def __init__(self, mailing_list, role):
+        super(MembersOfList, self).__init__()
+        self._mlist = mailing_list
+        self._role = role
+
+    def _get_collection(self, request):
+        """See `CollectionMixin`."""
+        # Overrides _MemberBase._get_collection() because we only want to
+        # return the members from the requested roster.
+        roster = self._mlist.get_roster(self._role)
+        address_of_member = attrgetter('address.email')
+        return list(sorted(roster.members, key=address_of_member))
+    

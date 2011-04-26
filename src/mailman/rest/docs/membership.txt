@@ -16,7 +16,7 @@ There are no mailing lists and no members yet.
 We create a mailing list, which starts out with no members.
 ::
 
-    >>> mlist_one = create_list('test-one@example.com')
+    >>> bee = create_list('bee@example.com')
     >>> transaction.commit()
 
     >>> dump_json('http://localhost:9001/3.0/members')
@@ -38,11 +38,11 @@ the REST interface.
     >>> user_manager = getUtility(IUserManager)
 
     >>> from mailman.testing.helpers import subscribe
-    >>> subscribe(mlist_one, 'Bart')
+    >>> subscribe(bee, 'Bart')
     >>> dump_json('http://localhost:9001/3.0/members')
     entry 0:
         address: bperson@example.com
-        fqdn_listname: test-one@example.com
+        fqdn_listname: bee@example.com
         http_etag: ...
         role: member
         self_link: http://localhost:9001/3.0/members/1
@@ -55,7 +55,7 @@ Bart's specific membership can be accessed directly:
 
     >>> dump_json('http://localhost:9001/3.0/members/1')
     address: bperson@example.com
-    fqdn_listname: test-one@example.com
+    fqdn_listname: bee@example.com
     http_etag: ...
     role: member
     self_link: http://localhost:9001/3.0/members/1
@@ -64,18 +64,18 @@ Bart's specific membership can be accessed directly:
 When Cris also joins the mailing list, her subscription is also available via
 the REST interface.
 
-    >>> subscribe(mlist_one, 'Cris')
+    >>> subscribe(bee, 'Cris')
     >>> dump_json('http://localhost:9001/3.0/members')
     entry 0:
         address: bperson@example.com
-        fqdn_listname: test-one@example.com
+        fqdn_listname: bee@example.com
         http_etag: ...
         role: member
         self_link: http://localhost:9001/3.0/members/1
         user: http://localhost:9001/3.0/users/1
     entry 1:
         address: cperson@example.com
-        fqdn_listname: test-one@example.com
+        fqdn_listname: bee@example.com
         http_etag: ...
         role: member
         self_link: http://localhost:9001/3.0/members/2
@@ -88,26 +88,26 @@ The subscribed members are returned in alphabetical order, so when Anna
 subscribes, she is returned first.
 ::
 
-    >>> subscribe(mlist_one, 'Anna')
+    >>> subscribe(bee, 'Anna')
 
     >>> dump_json('http://localhost:9001/3.0/members')
     entry 0:
         address: aperson@example.com
-        fqdn_listname: test-one@example.com
+        fqdn_listname: bee@example.com
         http_etag: ...
         role: member
         self_link: http://localhost:9001/3.0/members/3
         user: http://localhost:9001/3.0/users/3
     entry 1:
         address: bperson@example.com
-        fqdn_listname: test-one@example.com
+        fqdn_listname: bee@example.com
         http_etag: ...
         role: member
         self_link: http://localhost:9001/3.0/members/1
         user: http://localhost:9001/3.0/users/1
     entry 2:
         address: cperson@example.com
-        fqdn_listname: test-one@example.com
+        fqdn_listname: bee@example.com
         http_etag: ...
         role: member
         self_link: http://localhost:9001/3.0/members/2
@@ -120,44 +120,44 @@ Subscriptions are also returned alphabetically by mailing list posting
 address.  Anna and Cris subscribe to this new mailing list.
 ::
 
-    >>> mlist_two = create_list('alpha@example.com')
-    >>> subscribe(mlist_two, 'Anna')
-    >>> subscribe(mlist_two, 'Cris')
+    >>> ant = create_list('ant@example.com')
+    >>> subscribe(ant, 'Anna')
+    >>> subscribe(ant, 'Cris')
 
 User ids are different than member ids.
 
     >>> dump_json('http://localhost:9001/3.0/members')
     entry 0:
         address: aperson@example.com
-        fqdn_listname: alpha@example.com
+        fqdn_listname: ant@example.com
         http_etag: ...
         role: member
         self_link: http://localhost:9001/3.0/members/4
         user: http://localhost:9001/3.0/users/3
     entry 1:
         address: cperson@example.com
-        fqdn_listname: alpha@example.com
+        fqdn_listname: ant@example.com
         http_etag: ...
         role: member
         self_link: http://localhost:9001/3.0/members/5
         user: http://localhost:9001/3.0/users/2
     entry 2:
         address: aperson@example.com
-        fqdn_listname: test-one@example.com
+        fqdn_listname: bee@example.com
         http_etag: ...
         role: member
         self_link: http://localhost:9001/3.0/members/3
         user: http://localhost:9001/3.0/users/3
     entry 3:
         address: bperson@example.com
-        fqdn_listname: test-one@example.com
+        fqdn_listname: bee@example.com
         http_etag: ...
         role: member
         self_link: http://localhost:9001/3.0/members/1
         user: http://localhost:9001/3.0/users/1
     entry 4:
         address: cperson@example.com
-        fqdn_listname: test-one@example.com
+        fqdn_listname: bee@example.com
         http_etag: ...
         role: member
         self_link: http://localhost:9001/3.0/members/2
@@ -169,17 +169,17 @@ User ids are different than member ids.
 We can also get just the members of a single mailing list.
 
     >>> dump_json(
-    ...     'http://localhost:9001/3.0/lists/alpha@example.com/roster/members')
+    ...     'http://localhost:9001/3.0/lists/ant@example.com/roster/members')
     entry 0:
         address: aperson@example.com
-        fqdn_listname: alpha@example.com
+        fqdn_listname: ant@example.com
         http_etag: ...
         role: member
         self_link: http://localhost:9001/3.0/members/4
         user: http://localhost:9001/3.0/users/3
     entry 1:
         address: cperson@example.com
-        fqdn_listname: alpha@example.com
+        fqdn_listname: ant@example.com
         http_etag: ...
         role: member
         self_link: http://localhost:9001/3.0/members/5
@@ -193,59 +193,59 @@ Owners and moderators
 =====================
 
 Mailing list owners and moderators also show up in the REST API.  Cris becomes
-an owner of the alpha mailing list and Dave becomes a moderator of the
-test-one mailing list.
+an owner of the `ant` mailing list and Dave becomes a moderator of the `bee`
+mailing list.
 ::
 
-    >>> subscribe(mlist_one, 'Cris', MemberRole.owner)
-    >>> subscribe(mlist_two, 'Dave', MemberRole.moderator)
+    >>> subscribe(ant, 'Dave', MemberRole.moderator)
+    >>> subscribe(bee, 'Cris', MemberRole.owner)
 
     >>> dump_json('http://localhost:9001/3.0/members')
     entry 0:
         address: dperson@example.com
-        fqdn_listname: alpha@example.com
+        fqdn_listname: ant@example.com
         http_etag: ...
         role: moderator
-        self_link: http://localhost:9001/3.0/members/7
+        self_link: http://localhost:9001/3.0/members/6
         user: http://localhost:9001/3.0/users/4
     entry 1:
         address: aperson@example.com
-        fqdn_listname: alpha@example.com
+        fqdn_listname: ant@example.com
         http_etag: ...
         role: member
         self_link: http://localhost:9001/3.0/members/4
         user: http://localhost:9001/3.0/users/3
     entry 2:
         address: cperson@example.com
-        fqdn_listname: alpha@example.com
+        fqdn_listname: ant@example.com
         http_etag: ...
         role: member
         self_link: http://localhost:9001/3.0/members/5
         user: http://localhost:9001/3.0/users/2
     entry 3:
         address: cperson@example.com
-        fqdn_listname: test-one@example.com
+        fqdn_listname: bee@example.com
         http_etag: ...
         role: owner
-        self_link: http://localhost:9001/3.0/members/6
+        self_link: http://localhost:9001/3.0/members/7
         user: http://localhost:9001/3.0/users/2
     entry 4:
         address: aperson@example.com
-        fqdn_listname: test-one@example.com
+        fqdn_listname: bee@example.com
         http_etag: ...
         role: member
         self_link: http://localhost:9001/3.0/members/3
         user: http://localhost:9001/3.0/users/3
     entry 5:
         address: bperson@example.com
-        fqdn_listname: test-one@example.com
+        fqdn_listname: bee@example.com
         http_etag: ...
         role: member
         self_link: http://localhost:9001/3.0/members/1
         user: http://localhost:9001/3.0/users/1
     entry 6:
         address: cperson@example.com
-        fqdn_listname: test-one@example.com
+        fqdn_listname: bee@example.com
         http_etag: ...
         role: member
         self_link: http://localhost:9001/3.0/members/2
@@ -262,12 +262,12 @@ A user can be subscribed to a mailing list via the REST API, either by a
 specific address, or more generally by their preferred address.  A subscribed
 user is called a member.
 
-Elly wants to subscribes to the alpha mailing list.  Since Elly's email
+Elly wants to subscribes to the `ant` mailing list.  Since Elly's email
 address is not yet known to Mailman, a user is created for her.  By default,
 get gets a regular delivery.
 
     >>> dump_json('http://localhost:9001/3.0/members', {
-    ...           'fqdn_listname': 'alpha@example.com',
+    ...           'fqdn_listname': 'ant@example.com',
     ...           'subscriber': 'eperson@example.com',
     ...           'real_name': 'Elly Person',
     ...           })
@@ -285,21 +285,21 @@ Elly is now a known user, and a member of the mailing list.
     <User "Elly Person" (...) at ...>
 
     >>> set(member.mailing_list for member in elly.memberships.members)
-    set([u'alpha@example.com'])
+    set([u'ant@example.com'])
 
     >>> dump_json('http://localhost:9001/3.0/members')
     entry 0:
     ...
     entry 3:
         address: eperson@example.com
-        fqdn_listname: alpha@example.com
+        fqdn_listname: ant@example.com
         http_etag: ...
         role: member
         self_link: http://localhost:9001/3.0/members/8
         user: http://localhost:9001/3.0/users/5
     ...
 
-Gwen is a user with a preferred address.  She subscribes to the alpha mailing
+Gwen is a user with a preferred address.  She subscribes to the `ant` mailing
 list with her preferred address.
 
     >>> from mailman.utilities.datetime import now
@@ -315,7 +315,7 @@ list with her preferred address.
     >>> transaction.commit()
 
     >>> dump_json('http://localhost:9001/3.0/members', {
-    ...     'fqdn_listname': 'alpha@example.com',
+    ...     'fqdn_listname': 'ant@example.com',
     ...     'subscriber': user_id,
     ...     })
     content-length: 0
@@ -329,7 +329,7 @@ list with her preferred address.
     ...
     entry 4:
         address: gwen@example.com
-        fqdn_listname: alpha@example.com
+        fqdn_listname: ant@example.com
         http_etag: "..."
         role: member
         self_link: http://localhost:9001/3.0/members/9
@@ -351,7 +351,7 @@ the new address.
     ...
     entry 4:
         address: gwen.person@example.com
-        fqdn_listname: alpha@example.com
+        fqdn_listname: ant@example.com
         http_etag: "..."
         role: member
         self_link: http://localhost:9001/3.0/members/9
@@ -373,7 +373,7 @@ so she leaves from the mailing list.
     ...           method='DELETE')
     content-length: 0
     ...
-    status: 200
+    status: 204
 
 Elly is no longer a member of the mailing list.
 
@@ -384,12 +384,12 @@ Elly is no longer a member of the mailing list.
 Digest delivery
 ===============
 
-Fred joins the alpha mailing list but wants MIME digest delivery.
+Fred joins the `ant` mailing list but wants MIME digest delivery.
 ::
 
     >>> transaction.abort()
     >>> dump_json('http://localhost:9001/3.0/members', {
-    ...           'fqdn_listname': 'alpha@example.com',
+    ...           'fqdn_listname': 'ant@example.com',
     ...           'subscriber': 'fperson@example.com',
     ...           'real_name': 'Fred Person',
     ...           'delivery_mode': 'mime_digests',
@@ -406,4 +406,118 @@ Fred joins the alpha mailing list but wants MIME digest delivery.
     1
     >>> memberships[0]
     <Member: Fred Person <fperson@example.com>
-             on alpha@example.com as MemberRole.member>
+             on ant@example.com as MemberRole.member>
+
+
+Changing delivery address
+=========================
+
+As shown above, Gwen is subscribed to a mailing list with her preferred email
+address.  If she changes her preferred address, this automatically changes the
+address she will receive deliveries at for all such memberships.
+
+However, when Herb subscribes to a couple of mailing lists with explicit
+addresses, he must change each subscription explicitly.
+
+Herb controls multiple email addresses.  All of these addresses are verified.
+
+    >>> herb = user_manager.create_user('herb@example.com', 'Herb Person')
+    >>> herb_1 = list(herb.addresses)[0]
+    >>> herb_2 = herb.register('hperson@example.com')
+    >>> herb_3 = herb.register('herb.person@example.com')
+    >>> for address in herb.addresses:
+    ...     address.verified_on = now()
+
+Herb subscribes to both the `ant` and `bee` mailing lists with one of his
+addresses.
+
+    >>> ant.subscribe(herb_1)
+    <Member: Herb Person <herb@example.com> on
+             ant@example.com as MemberRole.member>
+    >>> bee.subscribe(herb_1)
+    <Member: Herb Person <herb@example.com> on
+             bee@example.com as MemberRole.member>
+    >>> transaction.commit()
+    >>> dump_json('http://localhost:9001/3.0/members')
+    entry 0:
+    ...
+    entry 5:
+        address: herb@example.com
+        fqdn_listname: ant@example.com
+        http_etag: "..."
+        role: member
+        self_link: http://localhost:9001/3.0/members/11
+        user: http://localhost:9001/3.0/users/8
+    ...
+    entry 10:
+        address: herb@example.com
+        fqdn_listname: bee@example.com
+        http_etag: "..."
+        role: member
+        self_link: http://localhost:9001/3.0/members/12
+        user: http://localhost:9001/3.0/users/8
+    http_etag: "..."
+    start: 0
+    total_size: 11
+
+In order to change all of his subscriptions to use a different email address,
+Herb must iterate through his memberships explicitly.
+
+    >>> from mailman.testing.helpers import call_api
+    >>> content, response = call_api('http://localhost:9001/3.0/addresses/'
+    ...                              'herb@example.com/memberships')
+    >>> memberships = [entry['self_link'] for entry in content['entries']]
+    >>> for url in sorted(memberships):
+    ...     print url
+    http://localhost:9001/3.0/members/11
+    http://localhost:9001/3.0/members/12
+
+For each membership resource, the subscription address is changed by PATCH'ing
+the `address` attribute.
+
+    >>> dump_json('http://localhost:9001/3.0/members/11', {
+    ...           'address': 'hperson@example.com',
+    ...           }, method='PATCH')
+    content-length: 0
+    date: ...
+    server: ...
+    status: 204
+
+    >>> dump_json('http://localhost:9001/3.0/members/12', {
+    ...           'address': 'hperson@example.com',
+    ...           }, method='PATCH')
+    content-length: 0
+    date: ...
+    server: ...
+    status: 204
+
+Herb's memberships with the old address are gone.
+
+    >>> dump_json('http://localhost:9001/3.0/addresses/'
+    ...           'herb@example.com/memberships')
+    http_etag: "..."
+    start: 0
+    total_size: 0
+
+Herb's memberships have been updated with his new email address.  Of course,
+his membership ids have not changed.
+
+    >>> dump_json('http://localhost:9001/3.0/addresses/'
+    ...           'hperson@example.com/memberships')
+    entry 0:
+        address: hperson@example.com
+        fqdn_listname: ant@example.com
+        http_etag: "..."
+        role: member
+        self_link: http://localhost:9001/3.0/members/11
+        user: http://localhost:9001/3.0/users/8
+    entry 1:
+        address: hperson@example.com
+        fqdn_listname: bee@example.com
+        http_etag: "..."
+        role: member
+        self_link: http://localhost:9001/3.0/members/12
+        user: http://localhost:9001/3.0/users/8
+    http_etag: "..."
+    start: 0
+    total_size: 2

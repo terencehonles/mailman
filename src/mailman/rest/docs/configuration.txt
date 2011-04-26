@@ -109,7 +109,7 @@ all the writable attributes in one request.
     content-length: 0
     date: ...
     server: WSGIServer/...
-    status: 200
+    status: 204
 
 These values are changed permanently.
 
@@ -335,7 +335,7 @@ Using ``PATCH``, you can change just one attribute.
     content-length: 0
     date: ...
     server: ...
-    status: 200
+    status: 204
 
 These values are changed permanently.
 
@@ -378,7 +378,7 @@ dictionary are ignored.
     content-length: 0
     date: ...
     server: WSGIServer/...
-    status: 200
+    status: 204
 
 Aliases are returned as a list on the ``aliases`` key.
 
