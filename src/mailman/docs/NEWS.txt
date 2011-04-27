@@ -14,6 +14,15 @@ Here is a history of user visible changes to Mailman.
 
 Architecture
 ------------
+ * Significant updates to the subscription model.  Members can now subscribe
+   with a preferred address, and changes to that will be immediately reflected
+   in mailing list subscriptions.  Users who subscribe with an explicit
+   address can easily change to a different address, as long as that address
+   is verified.  (LP: #643949)
+ * IUsers and IMembers are now assigned a unique, random, immutable id.
+ * IUsers now have created_on and .preferred_address properties.
+ * IMembers now have a .user attribute for easy access to the subscribed user.
+ * When created with add_member(), passwords are always stored encrypted.
  * In all interfaces, "email" refers to the textual email address while
    "address" refers to the `IAddress` object.
  * mailman.chains.base.Chain no longer self registers.
@@ -32,6 +41,16 @@ Architecture
    MemberRole.nonmember).
  * Support for SMTP AUTH added via smtp_user and smtp_pass configuration
    variables in the [mta] section.  (LP: #490044)
+ * IEmailValidator interface for pluggable validation of email addresses.
+ * .subscribe() is moved from the IAddress to the IMailingList
+ * IAddresses get their registered_on attribute set when the object is created.
+
+Configuration
+-------------
+ * [devmode] section gets a new 'testing' variable.
+ * Added password_scheme and password_length settings  for defining the
+   default password encryption scheme.
+ * creator_pw_file and site_pw_file are removed.
 
 Commands
 --------
@@ -40,6 +59,7 @@ Commands
  * 'bin/mailman status' added for providing command line status on the master
    queue runner watcher process.
  * 'bin/mailman info' now prints the REST root url and credentials.
+ * mmsitepass removed; there is no more site password.
 
 REST
 ----
@@ -49,6 +69,16 @@ REST
  * Added reply_goes_to_list, send_welcome_msg, welcome_msg,
    default_member_moderation to the mailing list's writable attributes in the
    REST service.  (Jimmy Bergman)
+ * Expose the new membership model to the REST API.  Canonical member resource
+   URLs are now much shorter and live in their own top-level namespace instead
+   of within the mailing list's namespace.
+ * /addresses/<email>/memberships gets all the memberships for a given email
+   address.
+ * /users is a new top-level URL under which user information can be
+   accessed.  Posting to this creates new users.
+ * Users can subscribe to mailing lists through the REST API.
+ * Domains can be deleted via the REST API.
+ * PUT and PATCH to a list configuration now returns a 204 (No Content).
 
 Build
 -----
@@ -61,7 +91,7 @@ Bugs fixed
 ----------
  * Typo in scan_message(). (LP: #645897)
  * Typo in add_member().  (LP: #710182) (Florian Fuchs)
- * Clean up many pyflakes problems.
+ * Clean up many pyflakes problems; ditching pylint.
 
 
 3.0 alpha 6 -- "Cut to the Chase"
