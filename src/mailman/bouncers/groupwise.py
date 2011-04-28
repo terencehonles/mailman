@@ -65,12 +65,12 @@ class GroupWise:
     def process(self, msg):
         """See `IBounceDetector`."""
         if msg.get_content_type() != 'multipart/mixed' or not msg['x-mailer']:
-            return None
+            return set()
         addresses = set()
         # Find the first text/plain part in the message.
         text_plain = find_textplain(msg)
         if text_plain is None:
-            return None
+            return set()
         body = StringIO(text_plain.get_payload())
         for line in body:
             mo = acre.search(line)
@@ -84,4 +84,4 @@ class GroupWise:
                     addresses.add(line)
                 else:
                     addresses.add(line[:i])
-        return list(addresses)
+        return set(addresses)

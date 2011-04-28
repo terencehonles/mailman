@@ -70,12 +70,12 @@ class SMTP32:
     def process(self, msg):
         mailer = msg.get('x-mailer', '')
         if not mailer.startswith('<SMTP32 v'):
-            return None
-        addrs = set()
+            return set()
+        addresses = set()
         for line in body_line_iterator(msg):
             if ecre.search(line):
                 break
             mo = acre.search(line)
             if mo:
-                addrs.add(mo.group('addr'))
-        return list(addrs)
+                addresses.add(mo.group('addr'))
+        return addresses

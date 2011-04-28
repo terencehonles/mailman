@@ -93,4 +93,4 @@ class Qmail:
             else:
                 # We're not looking at anything in particular.
                 pass
-        return list(addresses)
+        return addresses

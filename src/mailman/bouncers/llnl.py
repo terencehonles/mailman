@@ -48,5 +48,5 @@ class LLNL:
         for line in body_line_iterator(msg):
             mo = acre.search(line)
             if mo:
-                return [mo.group('addr')]
-        return []
+                return set(mo.group('addr'))
+        return set()

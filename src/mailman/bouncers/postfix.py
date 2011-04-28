@@ -96,7 +96,7 @@ class Postfix:
     def process(self, msg):
         """See `IBounceDetector`."""
         if msg.get_content_type() not in REPORT_TYPES:
-            return None
+            return set()
         # We're looking for the plain/text subpart with a Content-Description:
         # of 'notification'.
         leaves = []
@@ -106,4 +106,4 @@ class Postfix:
             content_desc = subpart.get('content-description', '').lower()
             if content_type == 'text/plain' and content_desc == 'notification':
                 return set(findaddr(subpart))
-        return None
+        return set()

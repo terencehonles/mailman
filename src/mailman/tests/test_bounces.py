@@ -35,7 +35,7 @@ from mailman.app.finder import find_components
 from mailman.bouncers.caiwireless import Caiwireless
 from mailman.bouncers.microsoft import Microsoft
 from mailman.bouncers.smtp32 import SMTP32
-from mailman.interfaces.bounce import IBounceDetector, NonFatal
+from mailman.interfaces.bounce import BounceStatus, IBounceDetector
 
 
 
@@ -82,9 +82,9 @@ class BounceTest(unittest.TestCase):
         ('SimpleMatch', 'bounce_02.txt', ['acinsp1@midsouth.rr.com']),
         ('SimpleMatch', 'bounce_03.txt', ['james@jeborall.demon.co.uk']),
         # SimpleWarning
-        ('SimpleWarning', 'simple_03.txt', NonFatal),
-        ('SimpleWarning', 'simple_21.txt', NonFatal),
-        ('SimpleWarning', 'simple_22.txt', NonFatal),
+        ('SimpleWarning', 'simple_03.txt', BounceStatus.non_fatal),
+        ('SimpleWarning', 'simple_21.txt', BounceStatus.non_fatal),
+        ('SimpleWarning', 'simple_22.txt', BounceStatus.non_fatal),
         # GroupWise
         ('GroupWise', 'groupwise_01.txt', ['thoff@MAINEX1.ASU.EDU']),
         # This one really sucks 'cause it's text/html.  Just make sure it
@@ -101,10 +101,10 @@ class BounceTest(unittest.TestCase):
         ('DSN', 'dsn_02.txt', ['zzzzz@zeus.hud.ac.uk']),
         ('DSN', 'dsn_03.txt', ['ddd.kkk@advalvas.be']),
         ('DSN', 'dsn_04.txt', ['max.haas@unibas.ch']),
-        ('DSN', 'dsn_05.txt', NonFatal),
-        ('DSN', 'dsn_06.txt', NonFatal),
-        ('DSN', 'dsn_07.txt', NonFatal),
-        ('DSN', 'dsn_08.txt', NonFatal),
+        ('DSN', 'dsn_05.txt', BounceStatus.non_fatal),
+        ('DSN', 'dsn_06.txt', BounceStatus.non_fatal),
+        ('DSN', 'dsn_07.txt', BounceStatus.non_fatal),
+        ('DSN', 'dsn_08.txt', BounceStatus.non_fatal),
         ('DSN', 'dsn_09.txt', ['pr@allen-heath.com']),
         ('DSN', 'dsn_10.txt', ['anne.person@dom.ain']),
         ('DSN', 'dsn_11.txt', ['joem@example.com']),
@@ -183,9 +183,9 @@ class BounceTest(unittest.TestCase):
             # Some modules return None instead of the empty sequence.
             if found_addresses is None:
                 found_addresses = set()
-            elif found_addresses is not NonFatal:
+            elif found_addresses is not BounceStatus.non_fatal:
                 found_addresses = set(found_addresses)
-            if expected_addresses is not NonFatal:
+            if expected_addresses is not BounceStatus.non_fatal:
                 expected_addresses = set(expected_addresses)
             self.assertEqual(found_addresses, expected_addresses)
 
@@ -205,7 +205,7 @@ Content-Type: multipart/report; boundary=BOUNDARY
 --BOUNDARY--
 
 """)
-        self.assertEqual(None, Caiwireless().process(msg))
+        self.assertEqual(len(Caiwireless().process(msg)), 0)
 
     def test_microsoft(self):
         # BAW: similarly as above, I lost the samples. :(
@@ -217,7 +217,7 @@ Content-Type: multipart/report; boundary=BOUNDARY
 --BOUNDARY--
 
 """)
-        self.assertEqual(None, Microsoft().process(msg))
+        self.assertEqual(len(Microsoft().process(msg)), 0)
 
 
 

@@ -61,21 +61,21 @@ class Yale:
     def process(self, msg):
         """See `IBounceDetector`."""
         if msg.is_multipart():
-            return None
+            return set()
         try:
             whofrom = getaddresses([msg.get('from', '')])[0][1]
             if not whofrom:
-                return None
+                return set()
             username, domain = whofrom.split('@', 1)
         except (IndexError, ValueError):
-            return None
+            return set()
         if username.lower() != 'mailer-daemon':
-            return None
+            return set()
         parts = domain.split('.')
         parts.reverse()
         for part1, part2 in zip(parts, ('edu', 'yale')):
             if part1 != part2:
-                return None
+                return set()
         # Okay, we've established that the bounce came from the mailer-daemon
         # at yale.edu.  Let's look for a name, and then guess the relevant
         # domains.
@@ -93,8 +93,8 @@ class Yale:
                     names.add(mo.group('addr'))
         # Now we have a bunch of names, these are either @yale.edu or
         # @cs.yale.edu.  Add them both.
-        addresses = []
+        addresses = set()
         for name in names:
-            addresses.append(name + '@yale.edu')
-            addresses.append(name + '@cs.yale.edu')
+            addresses.add(name + '@yale.edu')
+            addresses.add(name + '@cs.yale.edu')
         return addresses

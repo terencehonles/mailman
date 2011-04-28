@@ -33,7 +33,7 @@ from email.iterators import typed_subpart_iterator
 from email.utils import parseaddr
 from zope.interface import implements
 
-from mailman.interfaces.bounce import IBounceDetector, NonFatal
+from mailman.interfaces.bounce import BounceStatus, IBounceDetector
 
 
 
@@ -57,7 +57,7 @@ def check(msg):
             action = msgblock.get('action', '').lower()
             # Some MTAs have been observed that put comments on the action.
             if action.startswith('delayed'):
-                return NonFatal
+                return BounceStatus.non_fatal
             if not action.startswith('fail'):
                 # Some non-permanent failure, so ignore this block.
                 continue
@@ -104,5 +104,5 @@ class DSN:
         # that some DSN generating MTAs don't include this on the
         # Content-Type: header, so let's relax the test a bit.
         if not msg.is_multipart() or msg.get_content_subtype() <> 'report':
-            return None
+            return set()
         return check(msg)

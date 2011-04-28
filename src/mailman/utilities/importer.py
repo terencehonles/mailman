@@ -28,7 +28,6 @@ __all__ = [
 import sys
 import datetime
 
-from mailman.interfaces.action import Action
 from mailman.interfaces.autorespond import ResponseAction
 from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.mailinglist import Personalization, ReplyToMunging

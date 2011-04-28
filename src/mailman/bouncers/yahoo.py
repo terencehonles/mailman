@@ -57,7 +57,7 @@ class Yahoo:
         # called an x-uidl: header, the value of which seems unimportant.
         sender = parseaddr(msg.get('from', '').lower())[1] or ''
         if not sender.startswith('mailer-daemon@yahoo'):
-            return None
+            return set()
         addresses = set()
         state = ParseState.start
         for line in email.Iterators.body_line_iterator(msg):
@@ -73,4 +73,4 @@ class Yahoo:
                 if mo:
                     # We're at the end of the error response.
                     break
-        return list(addresses)
+        return addresses

@@ -17,8 +17,6 @@
 
 """Recognizes simple heuristically delimited warnings."""
 
-from __future__ import absolute_import, unicode_literals
-
 __metaclass__ = type
 __all__ = [
     'SimpleWarning',
@@ -27,7 +25,7 @@ __all__ = [
 
 from mailman.bouncers.simplematch import _c
 from mailman.bouncers.simplematch import SimpleMatch
-from mailman.interfaces.bounce import NonFatal
+from mailman.interfaces.bounce import BounceStatus
 
 
 
@@ -71,6 +69,6 @@ class SimpleWarning(SimpleMatch):
         """See `SimpleMatch`."""
         if super(SimpleWarning, self).process(msg):
             # It's a recognized warning so stop now.
-            return NonFatal
+            return BounceStatus.non_fatal
         else:
-            return None
+            return set()
