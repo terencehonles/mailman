@@ -21,8 +21,8 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'BounceStatus',
     'IBounceDetector',
+    'Stop',
     ]
 
 
@@ -31,18 +31,11 @@ from zope.interface import Interface
 
 
 
-class BounceStatus(Enum):
-    """Special bounce statuses."""
-
-    # Matching addresses were found, but they were determined to be non-fatal.
-    # In this case, processing is halted but no bounces are registered.
-    non_fatal = 1
-
-    # If a bounce detector returns Stop, that means to just discard the
-    # message.  An example is warning messages for temporary delivery
-    # problems.  These shouldn't trigger a bounce notification, but we also
-    # don't want to send them on to the list administrator.
-    stop = 2
+# If a bounce detector returns Stop, that means to just discard the
+# message.  An example is warning messages for temporary delivery
+# problems.  These shouldn't trigger a bounce notification, but we also
+# don't want to send them on to the list administrator.
+Stop = object()
 
 
 
@@ -55,9 +48,7 @@ class IBounceDetector(Interface):
         :param msg: An email message.
         :type msg: `Message`
         :return: The detected bouncing addresses.  When bouncing addresses are
-            found but are determined to be non-fatal, the enum
-            `BounceStatus.non_fatal` can be returned to halt any bounce
-            processing pipeline.  When bounce processing should stop, a
-            `BounceStatus.stop` is returned.
-        :rtype: A set strings, or a `BounceStatus`
+            found but are determined to be non-fatal, the value `Stop` is
+            returned to halt any bounce processing pipeline.
+        :rtype: A set strings, or `Stop`
         """

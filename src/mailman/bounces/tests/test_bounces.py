@@ -36,7 +36,7 @@ from mailman.app.finder import scan_module
 from mailman.bouncers.caiwireless import Caiwireless
 from mailman.bouncers.microsoft import Microsoft
 from mailman.bouncers.smtp32 import SMTP32
-from mailman.interfaces.bounce import BounceStatus, IBounceDetector
+from mailman.interfaces.bounce import IBounceDetector, Stop
 
 
 COMMASPACE = ', '
@@ -51,8 +51,7 @@ class BounceTestCase(unittest.TestCase):
         unittest.TestCase.__init__(self)
         self.bounce_module = bounce_module
         self.sample_file = sample_file
-        self.expected = (expected if expected in BounceStatus
-                         else set(expected))
+        self.expected = (expected if expected is Stop else set(expected))
 
     def setUp(self):
         """See `unittest.TestCase`."""
@@ -65,10 +64,8 @@ class BounceTestCase(unittest.TestCase):
 
     def shortDescription(self):
         """See `unittest.TestCase`."""
-        if self.expected is BounceStatus.stop:
+        if self.expected is Stop:
             expected = 'Stop'
-        elif self.expected is BounceStatus.non_fatal:
-            expected = 'NonFatal'
         else:
             expected = COMMASPACE.join(sorted(self.expected))
         return '{0}: detecting {1} in {2}'.format(
@@ -83,8 +80,9 @@ class BounceTestCase(unittest.TestCase):
 
     def runTest(self):
         """Test one bounce detection."""
-        for component in scan_module(self.module, IBounceDetector):
-            found_expected = component().process(self.message)
+        for component_class in scan_module(self.module, IBounceDetector):
+            component = component_class()
+            found_expected = component.process(self.message)
             self.assertEqual(found_expected, self.expected)
 
 
@@ -189,11 +187,11 @@ DATA = (
     ('simplematch', 'bounce_02.txt', ['acinsp1@midsouth.rr.com']),
     ('simplematch', 'bounce_03.txt', ['james@jeborall.demon.co.uk']),
     # SimpleWarning
-    ('simplewarning', 'simple_03.txt', BounceStatus.stop),
-    ('simplewarning', 'simple_21.txt', BounceStatus.stop),
-    ('simplewarning', 'simple_22.txt', BounceStatus.stop),
-    ('simplewarning', 'simple_28.txt', BounceStatus.stop),
-    ('simplewarning', 'simple_35.txt', BounceStatus.stop),
+    ('simplewarning', 'simple_03.txt', Stop),
+    ('simplewarning', 'simple_21.txt', Stop),
+    ('simplewarning', 'simple_22.txt', Stop),
+    ('simplewarning', 'simple_28.txt', Stop),
+    ('simplewarning', 'simple_35.txt', Stop),
     # GroupWise
     ('groupwise', 'groupwise_01.txt', ['thoff@MAINEX1.ASU.EDU']),
     # This one really sucks 'cause it's text/html.  Just make sure it
@@ -210,10 +208,10 @@ DATA = (
     ('dsn', 'dsn_02.txt', ['zzzzz@zeus.hud.ac.uk']),
     ('dsn', 'dsn_03.txt', ['ddd.kkk@advalvas.be']),
     ('dsn', 'dsn_04.txt', ['max.haas@unibas.ch']),
-    ('dsn', 'dsn_05.txt', BounceStatus.stop),
-    ('dsn', 'dsn_06.txt', BounceStatus.stop),
-    ('dsn', 'dsn_07.txt', BounceStatus.stop),
-    ('dsn', 'dsn_08.txt', BounceStatus.stop),
+    ('dsn', 'dsn_05.txt', Stop),
+    ('dsn', 'dsn_06.txt', Stop),
+    ('dsn', 'dsn_07.txt', Stop),
+    ('dsn', 'dsn_08.txt', Stop),
     ('dsn', 'dsn_09.txt', ['pr@allen-heath.com']),
     ('dsn', 'dsn_10.txt', ['anne.person@dom.ain']),
     ('dsn', 'dsn_11.txt', ['joem@example.com']),
@@ -222,7 +220,7 @@ DATA = (
     ('dsn', 'dsn_14.txt', ['artboardregistration@home.dk']),
     ('dsn', 'dsn_15.txt', ['horu@ccc-ces.com']),
     ('dsn', 'dsn_16.txt', ['hishealinghand@pastors.com']),
-    ('dsn', 'dsn_17.txt', BounceStatus.stop),
+    ('dsn', 'dsn_17.txt', Stop),
     # Microsoft Exchange
     ('exchange', 'microsoft_01.txt', ['DJBENNETT@IKON.COM']),
     ('exchange', 'microsoft_02.txt', ['MDMOORE@BALL.COM']),

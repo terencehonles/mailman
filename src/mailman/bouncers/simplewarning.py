@@ -25,7 +25,7 @@ __all__ = [
 
 from mailman.bouncers.simplematch import _c
 from mailman.bouncers.simplematch import SimpleMatch
-from mailman.interfaces.bounce import BounceStatus
+from mailman.interfaces.bounce import Stop
 
 
 
@@ -55,6 +55,14 @@ PATTERNS = [
     (_c('Delivery attempts will continue to be made'),
      _c('.+'),
      _c('(?P<addr>.+)')),
+    # googlemail.com warning
+    (_c('Delivery to the following recipient has been delayed'),
+     _c('.+'),
+     _c('\s*(?P<addr>.+)')),
+    # Exchange warning message.
+    (_c('This is an advisory-only email'),
+     _c('has been postponed'),
+     _c('"(?P<addr>[^"]+)"')),
     # Next one goes here...
     ]
 
@@ -69,6 +77,6 @@ class SimpleWarning(SimpleMatch):
         """See `SimpleMatch`."""
         if super(SimpleWarning, self).process(msg):
             # It's a recognized warning so stop now.
-            return BounceStatus.non_fatal
+            return Stop
         else:
             return set()
