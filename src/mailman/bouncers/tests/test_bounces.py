@@ -58,7 +58,7 @@ class BounceTestCase(unittest.TestCase):
         module_name = 'mailman.bouncers.' + self.bounce_module
         __import__(module_name)
         self.module = sys.modules[module_name]
-        with closing(resource_stream('mailman.bounces.tests.data',
+        with closing(resource_stream('mailman.bouncers.tests.data',
                                      self.sample_file)) as fp:
             self.message = message_from_file(fp)
 
@@ -96,7 +96,7 @@ def make_test_cases():
 class OtherBounceTests(unittest.TestCase):
     def test_SMTP32_failure(self):
         # This file has no X-Mailer: header
-        with closing(resource_stream('mailman.bounces.tests.data',
+        with closing(resource_stream('mailman.bouncers.tests.data',
                                      'postfix_01.txt')) as fp:
             msg = message_from_file(fp)
         self.failIf(msg['x-mailer'] is not None)
