@@ -50,17 +50,17 @@ class Microsoft:
 
     def process(self, msg):
         if msg.get_content_type() != 'multipart/mixed':
-            return None
+            return set()
         # Find the first subpart, which has no MIME type.
         try:
             subpart = msg.get_payload(0)
         except IndexError:
             # The message *looked* like a multipart but wasn't.
-            return None
+            return set()
         data = subpart.get_payload()
         if isinstance(data, list):
             # The message is a multi-multipart, so not a matching bounce.
-            return None
+            return set()
         body = StringIO(data)
         state = ParseState.start
         addresses = set()
@@ -71,4 +71,4 @@ class Microsoft:
             elif state is ParseState.tag_seen:
                 if '@' in line:
                     addresses.add(line.strip())
-        return list(addresses)
+        return set(addresses)

@@ -45,9 +45,9 @@ class Sina:
     def process(self, msg):
         """See `IBounceDetector`."""
         if msg.get('from', '').lower() != 'mailer-daemon@sina.com':
-            return []
+            return set()
         if not msg.is_multipart():
-            return []
+            return set()
         # The interesting bits are in the first text/plain multipart.
         part = None
         try:
@@ -55,10 +55,10 @@ class Sina:
         except IndexError:
             pass
         if not part:
-            return []
+            return set()
         addresses = set()
         for line in body_line_iterator(part):
             mo = acre.match(line)
             if mo:
                 addresses.add(mo.group('addr'))
-        return list(addresses)
+        return addresses

@@ -75,7 +75,7 @@ class Netscape:
         # and some show
         #     multipart/mixed;
         if not msg.is_multipart():
-            return None
+            return set()
         # We're looking for a text/plain subpart occuring before a
         # message/delivery-status subpart.
         plainmsg = None
@@ -86,7 +86,7 @@ class Netscape:
                 plainmsg = subpart
                 break
         if not plainmsg:
-            return None
+            return set()
         # Total guesswork, based on captured examples...
         body = StringIO(plainmsg.get_payload())
         addresses = set()
@@ -100,4 +100,4 @@ class Netscape:
                     mo = acre.search(line)
                     if mo and not mo.group('reply'):
                         addresses.add(mo.group('addr'))
-        return list(addresses)
+        return addresses

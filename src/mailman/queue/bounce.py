@@ -29,7 +29,7 @@ from lazr.config import as_timedelta
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.email.utils import split_email
-from mailman.interfaces.bounce import NonFatal
+from mailman.interfaces.bounce import Stop
 from mailman.queue import Runner
 
 
@@ -192,7 +192,7 @@ class BounceRunner(Runner, BounceMixin):
         addrs = verp_bounce(mlist, msg)
         if addrs:
             # We have an address, but check if the message is non-fatal.
-            if scan_messages(mlist, msg) is NonFatal:
+            if scan_messages(mlist, msg) is Stop:
                 return
         else:
             # See if this was a probe message.
@@ -203,7 +203,7 @@ class BounceRunner(Runner, BounceMixin):
             # That didn't give us anything useful, so try the old fashion
             # bounce matching modules.
             addrs = scan_messages(mlist, msg)
-            if addrs is NonFatal:
+            if addrs is Stop:
                 # This is a recognized, non-fatal notice. Ignore it.
                 return
         # If that still didn't return us any useful addresses, then send it on

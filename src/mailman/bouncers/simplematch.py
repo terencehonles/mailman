@@ -28,6 +28,7 @@ __all__ = [
 import re
 
 from email.iterators import body_line_iterator
+from email.quoprimime import unquote
 from flufl.enum import Enum
 from zope.interface import implements
 
@@ -37,6 +38,20 @@ from mailman.interfaces.bounce import IBounceDetector
 class ParseState(Enum):
     start = 0
     tag_seen = 1
+
+
+
+def _unquote_match(match):
+    return unquote(match.group(0))
+
+
+def _quopri_decode(address):
+    # Some addresses come back with quopri encoded spaces.  This will decode
+    # them and strip the spaces.  We can't use the undocumebted
+    # email.quoprimime.header_decode() because that also turns underscores
+    # into spaces, which is not good for us.  Instead we'll use the
+    # undocumented email.quoprimime.unquote().
+    return re.sub('=[a-fA-F0-9]{2}', _unquote_match, address).strip()
 
 
 
@@ -118,13 +133,15 @@ PATTERNS = [
     (_c('A message that you sent could not be delivered'),
      _c('^---'),
      _c('^(?P<addr>[^\s@]+@[^\s@:]+):')),
-    # thehartford.com
-    (_c('Delivery to the following recipients failed'),
+    # thehartford.com / songbird
+    (_c('Del(i|e)very to the following recipients (failed|was aborted)'),
      # this one may or may not have the original message, but there's nothing
      # unique to stop on, so stop on the first line of at least 3 characters
      # that doesn't start with 'D' (to not stop immediately) and has no '@'.
+     # Also note that simple_30.txt contains an apparent misspelling in the
+     # MTA's DSN section.
      _c('^[^D][^@]{2,}$'),
-     _c('^\s*(?P<addr>[^\s@]+@[^\s@]+)\s*$')),
+     _c('^[\s*]*(?P<addr>[^\s@]+@[^\s@]+)\s*$')),
     # and another thehartfod.com/hartfordlife.com
     (_c('^Your message\s*$'),
      _c('^because:'),
@@ -185,6 +202,22 @@ PATTERNS = [
     (_c('- no such user here'),
      _c('There is no user'),
      _c('^(?P<addr>[^\s@]+@[^\s@]+)\s')),
+    # mxlogic.net
+    (_c('The following address failed:'),
+     _c('Included is a copy of the message header'),
+     _c('<(?P<addr>[^>]+)>')),
+    # fastdnsservers.com
+    (_c('The following recipient\(s\) could not be reached'),
+     _c('\s*Error Type'),
+     _c('^(?P<addr>[^\s@]+@[^\s@<>]+)')),
+    # xxx.com (simple_36.txt)
+    (_c('Could not deliver message to the following recipient'),
+     _c('\s*-- The header'),
+     _c('Failed Recipient: (?P<addr>[^\s@]+@[^\s@<>]+)')),
+    # mta1.service.uci.edu
+    (_c('Message not delivered to the following addresses'),
+     _c('Error detail'),
+     _c('\s*(?P<addr>[^\s@]+@[^\s@)]+)')),
     # Next one goes here...
     ]
 
@@ -218,9 +251,9 @@ class SimpleMatch:
                     if mo:
                         address = mo.group('addr')
                         if address:
-                            addresses.add(address)
+                            addresses.add(_quopri_decode(address))
                     elif ecre.search(line):
                         break
             if len(addresses) > 0:
                 break
-        return list(addresses)
+        return addresses

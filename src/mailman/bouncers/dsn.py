@@ -33,13 +33,14 @@ from email.iterators import typed_subpart_iterator
 from email.utils import parseaddr
 from zope.interface import implements
 
-from mailman.interfaces.bounce import IBounceDetector, NonFatal
+from mailman.interfaces.bounce import IBounceDetector, Stop
 
 
 
 def check(msg):
     # Iterate over each message/delivery-status subpart.
-    addresses = []
+    failed_addresses = []
+    delayed_addresses = []
     for part in typed_subpart_iterator(msg, 'message', 'delivery-status'):
         if not part.is_multipart():
             # Huh?
@@ -47,6 +48,7 @@ def check(msg):
         # Each message/delivery-status contains a list of Message objects
         # which are the header blocks.  Iterate over those too.
         for msgblock in part.get_payload():
+            address_set = None
             # We try to dig out the Original-Recipient (which is optional) and
             # Final-Recipient (which is mandatory, but may not exactly match
             # an address on our list).  Some MTA's also use X-Actual-Recipient
@@ -57,8 +59,10 @@ def check(msg):
             action = msgblock.get('action', '').lower()
             # Some MTAs have been observed that put comments on the action.
             if action.startswith('delayed'):
-                return NonFatal
-            if not action.startswith('fail'):
+                address_set = delayed_addresses
+            elif action.startswith('fail'):
+                address_set = failed_addresses
+            else:
                 # Some non-permanent failure, so ignore this block.
                 continue
             params = []
@@ -71,7 +75,7 @@ def check(msg):
                         params.append(k)
                 if foundp:
                     # Note that params should already be unquoted.
-                    addresses.extend(params)
+                    address_set.extend(params)
                     break
                 else:
                     # MAS: This is a kludge, but SMTP-GATEWAY01.intra.home.dk
@@ -79,8 +83,15 @@ def check(msg):
                     # address-type parameter at all. Non-compliant, but ...
                     for param in params:
                         if param.startswith('<') and param.endswith('>'):
-                            addresses.append(param[1:-1])
-    return set(parseaddr(address)[1] for address in addresses
+                            address_set.append(param[1:-1])
+    # There may be both delayed and failed addresses.  If there are any failed
+    # addresses, return those, otherwise just stop processing.
+    if len(failed_addresses) == 0:
+        if len(delayed_addresses) == 0:
+            return set()
+        else:
+            return Stop
+    return set(parseaddr(address)[1] for address in failed_addresses
                if address is not None)
 
 
@@ -91,18 +102,19 @@ class DSN:
     implements(IBounceDetector)
 
     def process(self, msg):
-        # A DSN has been seen wrapped with a "legal disclaimer" by an outgoing
-        # MTA in a multipart/mixed outer part.
-        if msg.is_multipart() and msg.get_content_subtype() == 'mixed':
-            msg = msg.get_payload()[0]
-        # The above will suffice if the original message 'parts' were wrapped
-        # with the disclaimer added, but the original DSN can be wrapped as a
-        # message/rfc822 part.  We need to test that too.
-        if msg.is_multipart() and msg.get_content_type() == 'message/rfc822':
-            msg = msg.get_payload()[0]
-        # The report-type parameter should be "delivery-status", but it seems
-        # that some DSN generating MTAs don't include this on the
-        # Content-Type: header, so let's relax the test a bit.
-        if not msg.is_multipart() or msg.get_content_subtype() <> 'report':
-            return None
         return check(msg)
+        ## # A DSN has been seen wrapped with a "legal disclaimer" by an outgoing
+        ## # MTA in a multipart/mixed outer part.
+        ## if msg.is_multipart() and msg.get_content_subtype() == 'mixed':
+        ##     msg = msg.get_payload()[0]
+        ## # The above will suffice if the original message 'parts' were wrapped
+        ## # with the disclaimer added, but the original DSN can be wrapped as a
+        ## # message/rfc822 part.  We need to test that too.
+        ## if msg.is_multipart() and msg.get_content_type() == 'message/rfc822':
+        ##     msg = msg.get_payload()[0]
+        ## # The report-type parameter should be "delivery-status", but it seems
+        ## # that some DSN generating MTAs don't include this on the
+        ## # Content-Type: header, so let's relax the test a bit.
+        ## if not msg.is_multipart() or msg.get_content_subtype() <> 'report':
+        ##     return set()
+        ## return check(msg)

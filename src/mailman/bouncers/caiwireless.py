@@ -52,7 +52,7 @@ class Caiwireless:
 
     def process(self, msg):
         if msg.get_content_type() != 'multipart/mixed':
-            return None
+            return set()
         state = ParseState.start
         # This format thinks it's a MIME, but it really isn't.
         for line in body_line_iterator(msg):
@@ -62,5 +62,5 @@ class Caiwireless:
             elif state is ParseState.tag_seen and line:
                 mo = acre.match(line)
                 if not mo:
-                    return None
-                return [mo.group('addr')]
+                    return set()
+                return set(mo.group('addr'))

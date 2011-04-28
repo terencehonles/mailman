@@ -45,4 +45,4 @@ class Exim:
     def process(self, msg):
         """See `IBounceDetector`."""
         all = msg.get_all('x-failed-recipients', [])
-        return [address for name, address in getaddresses(all)]
+        return set(address for name, address in getaddresses(all))

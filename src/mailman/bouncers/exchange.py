@@ -54,7 +54,7 @@ class Exchange:
             if scre.search(line):
                 break
         else:
-            return []
+            return set()
         # Search each line until we hit the end line.
         for line in it:
             if ecre.search(line):
@@ -64,4 +64,4 @@ class Exchange:
                 mo = a2cre.search(line)
             if mo:
                 addresses.add(mo.group('addr'))
-        return list(addresses)
+        return set(addresses)

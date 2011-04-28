@@ -45,11 +45,12 @@ from mailman.interfaces.bounce import IBounceDetector
 
 # Other (non-standard?) intros have been observed in the wild.
 introtags = [
-    'Hi. This is the',
     "We're sorry. There's a problem",
     'Check your send e-mail address.',
+    'Hi. The MTA program at',
+    'Hi. This is the',
     'This is the mail delivery agent at',
-    'Unfortunately, your mail was not delivered'
+    'Unfortunately, your mail was not delivered',
     ]
 acre = re.compile(r'<(?P<addr>[^>]*)>:')
 
@@ -93,4 +94,4 @@ class Qmail:
             else:
                 # We're not looking at anything in particular.
                 pass
-        return list(addresses)
+        return addresses
