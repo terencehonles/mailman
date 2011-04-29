@@ -22,39 +22,52 @@ Using the Alpha
 
 Python 2.6 is required.  It can either be the default 'python' on your $PATH
 or it can be accessible via the 'python2.6' binary.  See http://www.python.org
-for details on getting Python 2.6.
+for details on getting Python 2.6.  Mailman works just fine with Python 2.7,
+but Python 3 is not yet supported.
 
 Mailman 3 is now based on the `zc.buildout`_ infrastructure, which greatly
 simplifies building and testing Mailman.
 
-You do not need anything other than Python 2.6 and an internet connection
-to get all the other Mailman 3 dependencies.  Here are the commands to
-build everything::
+You do not need anything other than Python and an internet connection to get
+all the other Mailman 3 dependencies.  Here are the commands to build
+everything::
 
-    % python2.6 bootstrap.py
+    % python bootstrap.py
     % bin/buildout
 
 Now you can run the test suite via::
 
-    % bin/test
+    % bin/test -vv
 
 You should see no failures.
 
-At this point you can read the doctests by looking in all the 'doc'
-directories under the 'mailman' package.  Doctests are documentation
-first, so they should give you a pretty good idea how various components
-of Mailman 3 works.
+Build the online docs by running::
+
+    % bin/docs
+
+(You will get warnings which you can safely ignore.)  Then visit
+
+    parts/docs/mailman/build/mailman/docs/README.html
+
+in your browser to start reading the documentation.  Or you can just read the
+doctests by looking in all the 'doc' directories under the 'mailman' package.
+Doctests are documentation first, so they should give you a pretty good idea
+how various components of Mailman 3 works.
 
 What, you actually want to *run* Mailman 3?  Oh well, if you insist.  You
 will need to set up a configuration file to override the defaults and set
 things up for your environment.  Mailman is configured via the `lazr.config`_
 package which is really just a fancy ini-style configuration system.
 
-For now though, start by looking through ``src/mailman/config/schema.cfg``.
-Create a file for your overrides; it can be called anything and can live
-anywhere, but I like to call it ``mailman.cfg``.  For any value in
-``schema.cfg`` you want to override, just add a section header (the
-square-bracketed names) and then the key/value pair you want to override.
+``src/mailman/config/schema.cfg`` defines the ini-file schema and contains
+documentation for every section and configuration variable.  Sections that end
+in `.template` or `.master` are templates that must be overridden in actual
+configuration files.  There is a default configuration file that defines these
+basic overrides in ``src/mailman/config/mailman.cfg``.  Your own configuration
+file will override those.
+
+By default, all runtime files are put under a `var` directory in the current
+working directory.
 
 Mailman searches for its configuration file using the following search path.
 The first existing file found wins.
@@ -74,8 +87,10 @@ Try ``bin/mailman --help`` for more details.  You can use the commands
 ``bin/mailman start`` to start the queue runner daemons, and of course
 ``bin/mailman stop`` to stop them.
 
-There is no web u/i right now.  Contributions are welcome!
+The `web ui`_ is being developed as a separate, Django-based project.  For
+now, all configuration happens via the command line and REST API.
 
 
 .. _`zc.buildout`: http://pypi.python.org/pypi/zc.buildout
 .. _`lazr.config`: http://pypi.python.org/pypi/lazr.config
+.. _`web ui`: https://launchpad.net/mailmanweb

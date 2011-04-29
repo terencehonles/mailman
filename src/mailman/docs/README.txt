@@ -53,8 +53,8 @@ Warsaw, Ken Manheimer, Scott Cotton, Harald Meland, and John Viega.  Version
 1.0 and beyond have been primarily maintained by Barry Warsaw with
 contributions from many; see the ACKNOWLEDGMENTS file for details.  Jeremy
 Hylton helped considerably with the Pipermail code in Mailman 2.0.  Mailman
-2.1 is now being primarily maintained by Mark Sapiro and Tokio Kikuchi.  Barry
-Warsaw is the lead developer on Mailman 3.
+2.1 is primarily maintained by Mark Sapiro and Tokio Kikuchi.  Barry Warsaw is
+the lead developer on Mailman 3.
 
 
 Help
@@ -90,8 +90,7 @@ Mailman 3.0 requires `Python 2.6`_ or newer.
 .. _`Getting Started`: START.html
 .. _Python: http://www.python.org
 .. _FAQ: http://wiki.list.org/display/DOC/Frequently+Asked+Questions
-.. _`Python 2.6`: http://www.python.org/download/releases/2.6.2/
-.. _`ALPHA.txt`: ALPHA.html
+.. _`Python 2.6`: http://www.python.org/download/releases/2.6.6/
 
 
 Table of Contents
@@ -100,7 +99,11 @@ Table of Contents
 .. toctree::
     :glob:
 
-    *
+    START
+    MTA
+    NEWS
+    STYLEGUIDE
+    ACKNOWLEDGMENTS
     ../bin/docs/*
     ../commands/docs/*
     ../model/docs/*

@@ -2,7 +2,7 @@
 Mailman - The GNU Mailing List Management System
 ================================================
 
-Copyright (C) 1998-2010 by the Free Software Foundation, Inc.
+Copyright (C) 1998-2011 by the Free Software Foundation, Inc.
 
 This is GNU Mailman, a mailing list management system distributed under the
 terms of the GNU General Public License (GPL) version 3 or later.  The name of
@@ -11,9 +11,9 @@ case second `m'.  Any other spelling is incorrect.
 
 Mailman is written in Python which is available for all platforms that Mailman
 is supported on, including GNU/Linux and most other Unix-like operating
-systems (e.g. Solaris, *BSD, MacOSX, etc.).  It does not run on Windows,
-although web and mail clients on any platform should be able to interact with
-Mailman just fine.
+systems (e.g. Solaris, *BSD, MacOSX, etc.).  Mailman is not supported on
+Windows, although web and mail clients on any platform should be able to
+interact with Mailman just fine.
 
 The Mailman home page is:
 
