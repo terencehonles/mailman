@@ -12,3 +12,4 @@ prune src/web
 prune eggs
 prune parts
 include MANIFEST.in
+include src/mailman/testing/config.pck
