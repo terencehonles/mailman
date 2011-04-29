@@ -10,7 +10,7 @@ Here is a history of user visible changes to Mailman.
 
 3.0 alpha 7 -- "Mission"
 ========================
-(201X-XX-XX)
+(2011-04-29)
 
 Architecture
 ------------
