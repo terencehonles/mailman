@@ -14,14 +14,14 @@ http://barry.warsaw.us/software/STYLEGUIDE.txt
 
 This document contains a style guide for Python programming, as used in GNU
 Mailman.  `PEP 8`_ is the basis for this style guide so it's recommendations
-should be followed except for the differences outlined here.
+should be followed except for the differences outlined here.  This document
+assumes the use of Python 2.6 or 2.7, but not (yet) Python 3.
 
 * After file comments (e.g. license block), add a ``__metaclass__`` definition
-  so that (in Python 2.x) all classes will be new-style.  Following that, add
-  an ``__all__`` section that names, one-per-line, all the public names
-  exported by this module.  For Python 2.6 code, you should enable absolute
-  imports and unicode literals.  See the `GNU Mailman Python template`_ as an
-  example.
+  so that all classes will be new-style.  Following that, add an ``__all__``
+  section that names, one-per-line, all the public names exported by this
+  module.  You should enable absolute imports and unicode literals.  See the
+  `GNU Mailman Python template`_ as an example.
 
 * Imports are always put at the top of the file, just after any module
   comments and docstrings, and before module globals and constants, but after
@@ -56,13 +56,13 @@ should be followed except for the differences outlined here.
   Comments should always be complete sentences, with proper capitalization and
   full stops at the end.
 
-* Major sections of code in a module should be separated by line feed
+* Major sections of code in a module should be separated by form feed
   characters (e.g. ``^L`` -- that's a single character control-L not two
   characters).  This helps with Emacs navigation.
 
-  Always put a ``^L`` before module-level functions, before class definitions,
-  before big blocks of constants which follow imports, and any place else that
-  would be convenient to jump to.  Always put two blank lines before a ``^L``.
+  Put a ``^L`` before module-level functions, before class definitions, before
+  big blocks of constants which follow imports, and any place else that would
+  be convenient to jump to.  Always put two blank lines before a ``^L``.
 
 * Put two blank lines between any top level construct or block of code
   (e.g. after import blocks).  Put only one blank line between methods in a
@@ -93,17 +93,12 @@ should be followed except for the differences outlined here.
 * PEP 257 describes good docstrings conventions.  Note that most importantly,
   the """ that ends a multiline docstring should be on a line by itself, e.g.::
 
-  """Return a foobang
+    """Return a foobang
 
-  Optional plotz says to frobnicate the bizbaz first.
-  """
+    Optional plotz says to frobnicate the bizbaz first.
+    """
 
 * For one liner docstrings, keep the closing """ on the same line.
-
-* While ``<>`` is strongly preferred over ``!=``, Guido has pronounced that
-  the latter is the standard spelling.  We could invoke
-  ``from __future__ import barry_as_FLUFL`` but we'll suck it up and begin the
-  switch to the finger twister.
 
 * ``fill-column`` for docstrings should be 78.
 
