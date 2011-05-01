@@ -28,9 +28,9 @@ from lazr.config import as_timedelta
 
 from mailman.config import config
 from mailman.core.i18n import _
-from mailman.email.utils import split_email
 from mailman.interfaces.bounce import Stop
 from mailman.queue import Runner
+from mailman.utilities.email import split_email
 
 
 COMMASPACE = ', '
