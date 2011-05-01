@@ -34,14 +34,11 @@ import sys
 import doctest
 import unittest
 
-from email import message_from_string
-
 import mailman
 
 from mailman.app.lifecycle import create_list
 from mailman.config import config
-from mailman.email.message import Message
-from mailman.testing.helpers import call_api
+from mailman.testing.helpers import call_api, specialized_message_from_string
 from mailman.testing.layers import SMTPLayer
 
 
@@ -66,25 +63,6 @@ class chdir:
 
 
 
-def specialized_message_from_string(unicode_text):
-    """Parse text into a message object.
-
-    This is specialized in the sense that an instance of Mailman's own Message
-    object is returned, and this message object has an attribute
-    `original_size` which is the pre-calculated size in bytes of the message's
-    text representation.
-
-    Also, the text must be ASCII-only unicode.
-    """
-    # This mimic what Switchboard.dequeue() does when parsing a message from
-    # text into a Message instance.
-    text = unicode_text.encode('ascii')
-    original_size = len(text)
-    message = message_from_string(text, Message)
-    message.original_size = original_size
-    return message
-
-
 def stop():
     """Call into pdb.set_trace()"""
     # Do the import here so that you get the wacky special hacked pdb instead

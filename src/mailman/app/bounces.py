@@ -22,21 +22,28 @@ from __future__ import absolute_import, unicode_literals
 __metaclass__ = type
 __all__ = [
     'bounce_message',
+    'get_verp',
     'scan_message',
     ]
 
+
+import re
 import logging
 
 from email.mime.message import MIMEMessage
 from email.mime.text import MIMEText
+from email.utils import parseaddr
 
 from mailman.app.finder import find_components
+from mailman.config import config
 from mailman.core.i18n import _
 from mailman.email.message import UserNotification
 from mailman.interfaces.bounce import IBounceDetector
+from mailman.utilities.email import split_email
 from mailman.utilities.string import oneline
 
 log = logging.getLogger('mailman.config')
+elog = logging.getLogger('mailman.error')
 
 
 
@@ -93,3 +100,49 @@ def scan_message(mlist, msg):
         if addresses:
             return set(addresses)
     return set()
+
+
+
+def get_verp(mlist, msg):
+    """Extract a set of VERP bounce addresses.
+
+    Sadly not every MTA bounces VERP messages correctly, or consistently.
+    First, the To: header is checked, then Delivered-To: (Postfix),
+    Envelope-To: (Exim) and Apparently-To:.  Note that there can be multiple
+    Delivered-To: headers so we need to search them all (and we don't worry
+    about false positives for forwarded email, because only one should match
+    `verp_regexp`).
+
+    :param mlist: The mailing list being checked.
+    :type mlist: `IMailingList`
+    :param msg: The message being parsed.
+    :type msg: `email.message.Message`
+    :return: The set of addresses extracted from the VERP headers.
+    :rtype: set of strings
+    """
+    cre = re.compile(config.mta.verp_regexp, re.IGNORECASE)
+    blocal, bdomain = split_email(mlist.bounces_address)
+    values = set()
+    verp_matches = set()
+    for header in ('to', 'delivered-to', 'envelope-to', 'apparently-to'):
+        values.update(msg.get_all(header, []))
+    for field in values:
+        address = parseaddr(field)[1]
+        if not address:
+            # This header was empty.
+            continue
+        mo = cre.search(address)
+        if not mo:
+            # This did not match the VERP regexp.
+            continue
+        try:
+            if blocal != mo.group('bounces'):
+                # This was not a bounce to our mailing list.
+                continue
+            original_address = '{0}@{1}'.format(*mo.group('local', 'domain'))
+        except IndexError:
+            elog.error("verp_regexp doesn't yield the right match groups")
+            return set()
+        else:
+            verp_matches.add(original_address)
+    return verp_matches

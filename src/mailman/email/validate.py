@@ -29,10 +29,9 @@ import re
 
 from zope.interface import implements
 
-
-from mailman.email.utils import split_email
 from mailman.interfaces.address import (
     IEmailValidator, InvalidEmailAddressError)
+from mailman.utilities.email import split_email
 
 
 # What other characters should be disallowed?

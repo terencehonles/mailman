@@ -45,6 +45,7 @@ import threading
 
 from base64 import b64encode
 from contextlib import contextmanager
+from email import message_from_string
 from httplib2 import Http
 from urllib import urlencode
 from urllib2 import HTTPError
@@ -53,6 +54,7 @@ from zope.component import getUtility
 
 from mailman.bin.master import Loop as Master
 from mailman.config import config
+from mailman.email.message import Message
 from mailman.interfaces.member import MemberRole
 from mailman.interfaces.messages import IMessageStore
 from mailman.interfaces.usermanager import IUserManager
@@ -360,3 +362,22 @@ def reset_the_world():
     # Reset the global style manager.
     config.style_manager.populate()
     
+
+
+def specialized_message_from_string(unicode_text):
+    """Parse text into a message object.
+
+    This is specialized in the sense that an instance of Mailman's own Message
+    object is returned, and this message object has an attribute
+    `original_size` which is the pre-calculated size in bytes of the message's
+    text representation.
+
+    Also, the text must be ASCII-only unicode.
+    """
+    # This mimic what Switchboard.dequeue() does when parsing a message from
+    # text into a Message instance.
+    text = unicode_text.encode('ascii')
+    original_size = len(text)
+    message = message_from_string(text, Message)
+    message.original_size = original_size
+    return message

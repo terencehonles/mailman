@@ -29,8 +29,8 @@ __all__ = [
 import logging
 
 from mailman.config import config
-from mailman.email.utils import split_email
 from mailman.mta.base import IndividualDelivery
+from mailman.utilities.email import split_email
 from mailman.utilities.string import expand
 
 
