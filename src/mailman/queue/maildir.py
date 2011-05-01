@@ -132,8 +132,8 @@ class MaildirRunner(Runner):
                 finally:
                     fp.close()
                 # Now we need to figure out which queue of which list this
-                # message was destined for.  See verp_bounce() in
-                # BounceRunner.py for why we do things this way.
+                # message was destined for.  See get_verp() in
+                # mailman.app.bounces for why we do things this way.
                 vals = []
                 for header in ('delivered-to', 'envelope-to', 'apparently-to'):
                     vals.extend(msg.get_all(header, []))
