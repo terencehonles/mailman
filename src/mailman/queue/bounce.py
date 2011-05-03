@@ -26,7 +26,7 @@ import datetime
 from email.utils import parseaddr
 from lazr.config import as_timedelta
 
-from mailman.app.bounces import get_verp
+from mailman.app.bounces import StandardVERP
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.bounce import Stop
@@ -190,7 +190,7 @@ class BounceRunner(Runner, BounceMixin):
         if not mlist.bounce_processing:
             return
         # Try VERP detection first, since it's quick and easy
-        addrs = get_verp(mlist, msg)
+        addrs = StandardVERP().get_verp(mlist, msg)
         if addrs:
             # We have an address, but check if the message is non-fatal.
             if scan_messages(mlist, msg) is Stop:

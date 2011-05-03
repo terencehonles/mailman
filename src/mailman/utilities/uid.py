@@ -31,16 +31,14 @@ __all__ = [
 
 
 import os
-import time
 import errno
-import hashlib
 
 from flufl.lock import Lock
+from uuid import uuid4
 
 from mailman.config import config
 from mailman.model.uid import UID
 from mailman.testing import layers
-from mailman.utilities.passwords import SALT_LENGTH
 
 
 
@@ -69,7 +67,12 @@ class UniqueIDFactory:
             self._lockobj = Lock(self._lock_file)
         return self._lockobj
 
-    def new_uid(self, bytes=None):
+    def new_uid(self):
+        """Return a new UID.
+
+        :return: The new uid
+        :rtype: unicode
+        """
         if layers.is_testing():
             # When in testing mode we want to produce predictable id, but we
             # need to coordinate this among separate processes.  We could use
@@ -80,19 +83,14 @@ class UniqueIDFactory:
             # tests will be serialized enough (and the ids reset between
             # tests) that it will not be a problem.  Maybe.
             return self._next_uid()
-        salt = os.urandom(SALT_LENGTH)
         while True:
-            h = hashlib.sha1(repr(time.time()))
-            h.update(salt)
-            if bytes is not None:
-                h.update(bytes)
-                uid = unicode(h.hexdigest(), 'us-ascii')
-                try:
-                    UID.record(uid)
-                except ValueError:
-                    pass
-                else:
-                    return uid
+            uid = unicode(uuid4().hex, 'us-ascii')
+            try:
+                UID.record(uid)
+            except ValueError:
+                pass
+            else:
+                return uid
 
     def _next_uid(self):
         with self._lock:

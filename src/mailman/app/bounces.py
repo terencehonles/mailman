@@ -21,8 +21,8 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
+    'StandardVERP',
     'bounce_message',
-    'get_verp',
     'scan_message',
     ]
 
@@ -39,6 +39,7 @@ from mailman.config import config
 from mailman.core.i18n import _
 from mailman.email.message import UserNotification
 from mailman.interfaces.bounce import IBounceDetector
+from mailman.interfaces.pending import IPendings
 from mailman.utilities.email import split_email
 from mailman.utilities.string import oneline
 
@@ -103,46 +104,75 @@ def scan_message(mlist, msg):
 
 
 
-def get_verp(mlist, msg):
-    """Extract a set of VERP bounce addresses.
+class _BaseVERPParser:
+    """Base class for parsing VERP messages.
 
     Sadly not every MTA bounces VERP messages correctly, or consistently.
     First, the To: header is checked, then Delivered-To: (Postfix),
     Envelope-To: (Exim) and Apparently-To:.  Note that there can be multiple
-    Delivered-To: headers so we need to search them all (and we don't worry
-    about false positives for forwarded email, because only one should match
-    `verp_regexp`).
-
-    :param mlist: The mailing list being checked.
-    :type mlist: `IMailingList`
-    :param msg: The message being parsed.
-    :type msg: `email.message.Message`
-    :return: The set of addresses extracted from the VERP headers.
-    :rtype: set of strings
+    headers so we need to search them all
     """
-    cre = re.compile(config.mta.verp_regexp, re.IGNORECASE)
-    blocal, bdomain = split_email(mlist.bounces_address)
-    values = set()
-    verp_matches = set()
-    for header in ('to', 'delivered-to', 'envelope-to', 'apparently-to'):
-        values.update(msg.get_all(header, []))
-    for field in values:
-        address = parseaddr(field)[1]
-        if not address:
-            # This header was empty.
-            continue
-        mo = cre.search(address)
-        if not mo:
-            # This did not match the VERP regexp.
-            continue
-        try:
-            if blocal != mo.group('bounces'):
-                # This was not a bounce to our mailing list.
+
+    def __init__(self, pattern):
+        self._pattern = pattern
+        self._cre = re.compile(pattern, re.IGNORECASE)
+
+    def _get_addresses(self, match_object):
+        raise NotImplementedError
+
+    def get_verp(self, mlist, msg):
+        """Extract a set of VERP bounce addresses.
+
+
+        :param mlist: The mailing list being checked.
+        :type mlist: `IMailingList`
+        :param msg: The message being parsed.
+        :type msg: `email.message.Message`
+        :return: The set of addresses extracted from the VERP headers.
+        :rtype: set of strings
+        """
+        blocal, bdomain = split_email(mlist.bounces_address)
+        values = set()
+        verp_matches = set()
+        for header in ('to', 'delivered-to', 'envelope-to', 'apparently-to'):
+            values.update(msg.get_all(header, []))
+        for field in values:
+            address = parseaddr(field)[1]
+            if not address:
+                # This header was empty.
                 continue
-            original_address = '{0}@{1}'.format(*mo.group('local', 'domain'))
-        except IndexError:
-            elog.error("verp_regexp doesn't yield the right match groups")
-            return set()
-        else:
-            verp_matches.add(original_address)
-    return verp_matches
+            mo = self._cre.search(address)
+            if not mo:
+                # This did not match the VERP regexp.
+                continue
+            try:
+                if blocal != mo.group('bounces'):
+                    # This was not a bounce to our mailing list.
+                    continue
+                original_address = self._get_address(mo)
+            except IndexError:
+                elog.error('Bad VERP pattern: {0}'.format(self._pattern))
+                return set()
+            else:
+                verp_matches.add(original_address)
+        return verp_matches
+
+
+
+class StandardVERP(_BaseVERPParser):
+    def __init__(self):
+        super(StandardVERP, self).__init__(config.mta.verp_regexp)
+
+    def _get_address(self, match_object):
+        return '{0}@{1}'.format(*match_object.group('local', 'domain'))
+
+
+class ProbeVERP(_BaseVERPParser):
+    def __init__(self):
+        super(ProbeVERP, self).__init__(config.mta.verp_probe_regexp)
+
+    def _get_address(self, match_object):
+        # Extract the token and get the matching address.
+        token = match_object.group('token')
+        op, address, bmsg = getUtility(IPendings).confirm(token)
+        return address
