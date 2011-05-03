@@ -32,7 +32,7 @@ if sys.hexversion < 0x20600f0:
 # Calculate the version number without importing the mailman package.
 with open('src/mailman/version.py') as fp:
     for line in fp:
-        mo = re.match('VERSION = "(?P<version>[^"]+?)"', line)
+        mo = re.match("VERSION = '(?P<version>[^']+?)'", line)
         if mo:
             __version__ = mo.group('version')
             break
