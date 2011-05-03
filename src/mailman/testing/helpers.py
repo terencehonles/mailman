@@ -47,6 +47,7 @@ from base64 import b64encode
 from contextlib import contextmanager
 from email import message_from_string
 from httplib2 import Http
+from lazr.config import as_timedelta
 from urllib import urlencode
 from urllib2 import HTTPError
 from zope import event
@@ -59,9 +60,6 @@ from mailman.interfaces.member import MemberRole
 from mailman.interfaces.messages import IMessageStore
 from mailman.interfaces.usermanager import IUserManager
 from mailman.utilities.mailbox import Mailbox
-
-
-STARTUP_WAIT = datetime.timedelta(seconds=5)
 
 
 
@@ -221,16 +219,16 @@ def get_lmtp_client():
     # It's possible the process has started but is not yet accepting
     # connections.  Wait a little while.
     lmtp = LMTP()
-    until = datetime.datetime.now() + STARTUP_WAIT
+    until = datetime.datetime.now() + as_timedelta(config.devmode.wait)
     while datetime.datetime.now() < until:
         try:
             response = lmtp.connect(
                 config.mta.lmtp_host, int(config.mta.lmtp_port))
             print response
             return lmtp
-        except socket.error, error:
+        except socket.error as error:
             if error[0] == errno.ECONNREFUSED:
-                time.sleep(0.5)
+                time.sleep(0.1)
             else:
                 raise
     else:
@@ -240,15 +238,20 @@ def get_lmtp_client():
 
 def wait_for_webservice():
     """Wait for the REST server to start serving requests."""
-    # Time out after approximately 3 seconds.
-    for count in range(30):
+    until = datetime.datetime.now() + as_timedelta(config.devmode.wait)
+    while datetime.datetime.now() < until:
         try:
             socket.socket().connect((config.webservice.hostname,
-                                     int(config.webservice.port)))
-        except socket.error:
-            time.sleep(0.1)
+                                    int(config.webservice.port)))
+        except socket.error as error:
+            if error[0] == errno.ECONNREFUSED:
+                time.sleep(0.1)
+            else:
+                raise
         else:
             break
+    else:
+        raise RuntimeError('Connection refused')
 
 
 def call_api(url, data=None, method=None, username=None, password=None):

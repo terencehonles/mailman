@@ -37,6 +37,7 @@ import datetime
 import tempfile
 
 from base64 import b64encode
+from lazr.config import as_timedelta
 from pkg_resources import resource_string
 from textwrap import dedent
 from urllib2 import Request, URLError, urlopen
@@ -265,7 +266,7 @@ class RESTLayer(SMTPLayer):
 
     @staticmethod
     def _wait_for_rest_server():
-        until = datetime.datetime.now() + TEST_TIMEOUT
+        until = datetime.datetime.now() + as_timedelta(config.devmode.wait)
         while datetime.datetime.now() < until:
             try:
                 request = Request('http://localhost:9001/3.0/system')
