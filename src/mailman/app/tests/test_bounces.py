@@ -27,7 +27,7 @@ __all__ = [
 
 import unittest
 
-from mailman.app.bounces import StandardVERP
+from mailman.app.bounces import StandardVERP, send_probe
 from mailman.app.lifecycle import create_list
 from mailman.testing.helpers import (
     specialized_message_from_string as message_from_string)
@@ -167,6 +167,11 @@ Apparently-To: test-bounces+bart=example.org@example.com
 """)
         self.assertEqual(self._verper.get_verp(self._mlist, msg),
                          set(['anne@example.org', 'bart@example.org']))
+
+
+
+class TestSendProbe(unittest.TestCase):
+    
 
 
 

@@ -21,9 +21,11 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
+    'ProbeVERP',
     'StandardVERP',
     'bounce_message',
     'scan_message',
+    'send_probe',
     ]
 
 
@@ -33,18 +35,24 @@ import logging
 from email.mime.message import MIMEMessage
 from email.mime.text import MIMEText
 from email.utils import parseaddr
+from zope.component import getUtility
+from zope.interface import implements
 
 from mailman.app.finder import find_components
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.email.message import UserNotification
 from mailman.interfaces.bounce import IBounceDetector
-from mailman.interfaces.pending import IPendings
+from mailman.interfaces.listmanager import IListManager
+from mailman.interfaces.pending import IPendable, IPendings
 from mailman.utilities.email import split_email
+from mailman.utilities.i18n import make
 from mailman.utilities.string import oneline
 
 log = logging.getLogger('mailman.config')
 elog = logging.getLogger('mailman.error')
+
+DOT = '.'
 
 
 
@@ -176,3 +184,54 @@ class ProbeVERP(_BaseVERPParser):
         token = match_object.group('token')
         op, address, bmsg = getUtility(IPendings).confirm(token)
         return address
+
+
+
+class _ProbePendable(dict):
+    """The pendable dictionary for probe messages."""
+    implements(IPendable)
+
+
+def send_probe(member, msg):
+    """Send a VERP probe to the member.
+
+    :param member: The member to send the probe to.  From this object, both
+        the user and the mailing list can be determined.
+    :type member: IMember
+    :param msg: The bouncing message that caused the probe to be sent.
+    :type msg:
+    :return: The token representing this probe in the pendings database.
+    :rtype: string
+    """
+    mlist = getUtility(IListManager).get(member.mailing_list)
+    text = make('probe.txt', mlist, member.preferred_language, {
+        'listname': mlist.fqdn_listname,
+        'address': member.address.email,
+        'optionsurl': member.options_url,
+        'owneraddr': mlist.owner_address,
+        })
+    pendable = _ProbePendable(
+        member_id=member.member_id,
+        message_id=msg['message-id'],
+        )
+    token = getUtility(IPendings).add(pendable)
+    mailbox, domain_parts = split_email(mlist.bounces_address)
+    probe_recipient = config.mta.verp_probe_format.format(
+        bounces=mailbox,
+        token=token,
+        domain=DOT.join(domain_parts),
+        )
+    # Calculate the Subject header, in the member's preferred language.
+    with _.using(member.preferred_language):
+        subject = _('$mlist.real_name mailing list probe message')
+    # Craft the probe message.  This will be a multipart where the first part
+    # is the probe text and the second part is the message that caused this
+    # probe to be sent.
+    probe = UserNotification(probe_recipient, mlist.owner_address, subject,
+                             lang=member.preferred_language)
+    probe.set_type('multipart/mixed')
+    notice = MIMEText(text, _charset=mlist.preferred_language.charset)
+    probe.attach(notice)
+    probe.attach(MIMEMessage(msg))
+    probe.send(mlist, envsender=probe_recipient, verp=False, probe_token=token)
+    return token

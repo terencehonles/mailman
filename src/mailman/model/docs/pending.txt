@@ -7,11 +7,7 @@ are stored.  These can include email address registration events, held
 messages (but only for user confirmation), auto-approvals, and probe bounces.
 This is not where messages held for administrator approval are kept.
 
-    >>> from zope.interface import implements
-    >>> from zope.interface.verify import verifyObject
-
-In order to pend an event, you first need a pending database, which is
-available by adapting the list manager.
+In order to pend an event, you first need a pending database.
 
     >>> from mailman.interfaces.pending import IPendings
     >>> from zope.component import getUtility
@@ -20,6 +16,7 @@ available by adapting the list manager.
 The pending database can add any ``IPendable`` to the database, returning a
 token that can be used in urls and such.
 
+    >>> from zope.interface import implements
     >>> from mailman.interfaces.pending import IPendable
     >>> class SimplePendable(dict):
     ...     implements(IPendable)
@@ -35,24 +32,23 @@ token that can be used in urls and such.
 
 There's not much you can do with tokens except to `confirm` them, which
 basically means returning the ``IPendable`` structure (as a dictionary) from
-the database that matches the token.  If the token isn't in the database,
-``None`` is returned.
+the database that matches the token.  If the token isn't in the database, None
+is returned.
 
     >>> pendable = pendingdb.confirm(bytes('missing'))
     >>> print pendable
     None
     >>> pendable = pendingdb.confirm(token)
-    >>> sorted(pendable.items())
-    [(u'address', u'aperson@example.com'),
-     (u'language', u'en'),
-     (u'password', u'xyz'),
-     (u'realname', u'Anne Person'),
-     (u'type', u'subscription')]
+    >>> dump_msgdata(pendable)
+    address : aperson@example.com
+    language: en
+    password: xyz
+    realname: Anne Person
+    type    : subscription
 
 After confirmation, the token is no longer in the database.
 
-    >>> pendable = pendingdb.confirm(token)
-    >>> print pendable
+    >>> print pendingdb.confirm(token)
     None
 
 There are a few other things you can do with the pending database.  When you
@@ -66,13 +62,12 @@ expunge it.
     >>> event_3 = SimplePendable(type='three')
     >>> token_3 = pendingdb.add(event_3)
     >>> pendable = pendingdb.confirm(token_1, expunge=False)
-    >>> pendable.items()
-    [(u'type', u'one')]
+    >>> dump_msgdata(pendable)
+    type: one
     >>> pendable = pendingdb.confirm(token_1, expunge=True)
-    >>> pendable.items()
-    [(u'type', u'one')]
-    >>> pendable = pendingdb.confirm(token_1)
-    >>> print pendable
+    >>> dump_msgdata(pendable)
+    type: one
+    >>> print pendingdb.confirm(token_1)
     None
 
 An event can be given a lifetime when it is pended, otherwise it just uses a
@@ -86,9 +81,8 @@ default lifetime.
 Every once in a while the pending database is cleared of old records.
 
     >>> pendingdb.evict()
-    >>> pendable = pendingdb.confirm(token_4)
-    >>> print pendable
+    >>> print pendingdb.confirm(token_4)
     None
     >>> pendable = pendingdb.confirm(token_2)
-    >>> pendable.items()
-    [(u'type', u'two')]
+    >>> dump_msgdata(pendable)
+    type: two
