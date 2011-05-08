@@ -27,19 +27,28 @@ __all__ = [
 
 import unittest
 
-from mailman.app.bounces import get_verp
+from zope.component import getUtility
+
+from mailman.app.bounces import StandardVERP, send_probe
 from mailman.app.lifecycle import create_list
+from mailman.app.membership import add_member
+from mailman.interfaces.member import DeliveryMode
+from mailman.interfaces.pending import IPendings
 from mailman.testing.helpers import (
+    get_queue_messages,
     specialized_message_from_string as message_from_string)
 from mailman.testing.layers import ConfigLayer
 
 
 
 class TestVERP(unittest.TestCase):
+    """Test header VERP detection."""
+
     layer = ConfigLayer
 
     def setUp(self):
         self._mlist = create_list('test@example.com')
+        self._verper = StandardVERP()
 
     def test_no_verp(self):
         # The empty set is returned when there is no VERP headers.
@@ -48,7 +57,7 @@ From: postmaster@example.com
 To: mailman-bounces@example.com
 
 """)
-        self.assertEqual(get_verp(self._mlist, msg), set())
+        self.assertEqual(self._verper.get_verp(self._mlist, msg), set())
 
     def test_verp_in_to(self):
         # A VERP address is found in the To header.
@@ -57,7 +66,8 @@ From: postmaster@example.com
 To: test-bounces+anne=example.org@example.com
 
 """)
-        self.assertEqual(get_verp(self._mlist, msg), set(['anne@example.org']))
+        self.assertEqual(self._verper.get_verp(self._mlist, msg),
+                         set(['anne@example.org']))
 
     def test_verp_in_delivered_to(self):
         # A VERP address is found in the Delivered-To header.
@@ -66,7 +76,8 @@ From: postmaster@example.com
 Delivered-To: test-bounces+anne=example.org@example.com
 
 """)
-        self.assertEqual(get_verp(self._mlist, msg), set(['anne@example.org']))
+        self.assertEqual(self._verper.get_verp(self._mlist, msg),
+                         set(['anne@example.org']))
 
     def test_verp_in_envelope_to(self):
         # A VERP address is found in the Envelope-To header.
@@ -75,7 +86,8 @@ From: postmaster@example.com
 Envelope-To: test-bounces+anne=example.org@example.com
 
 """)
-        self.assertEqual(get_verp(self._mlist, msg), set(['anne@example.org']))
+        self.assertEqual(self._verper.get_verp(self._mlist, msg),
+                         set(['anne@example.org']))
 
     def test_verp_in_apparently_to(self):
         # A VERP address is found in the Apparently-To header.
@@ -84,7 +96,8 @@ From: postmaster@example.com
 Apparently-To: test-bounces+anne=example.org@example.com
 
 """)
-        self.assertEqual(get_verp(self._mlist, msg), set(['anne@example.org']))
+        self.assertEqual(self._verper.get_verp(self._mlist, msg),
+                         set(['anne@example.org']))
 
     def test_verp_with_empty_header(self):
         # A VERP address is found, but there's an empty header.
@@ -94,7 +107,8 @@ To: test-bounces+anne=example.org@example.com
 To:
 
 """)
-        self.assertEqual(get_verp(self._mlist, msg), set(['anne@example.org']))
+        self.assertEqual(self._verper.get_verp(self._mlist, msg),
+                         set(['anne@example.org']))
 
     def test_no_verp_with_empty_header(self):
         # There's an empty header, and no VERP address is found.
@@ -103,7 +117,7 @@ From: postmaster@example.com
 To:
 
 """)
-        self.assertEqual(get_verp(self._mlist, msg), set())
+        self.assertEqual(self._verper.get_verp(self._mlist, msg), set())
 
     def test_verp_with_non_match(self):
         # A VERP address is found, but a header had a non-matching pattern.
@@ -113,7 +127,8 @@ To: test-bounces+anne=example.org@example.com
 To: test-bounces@example.com
 
 """)
-        self.assertEqual(get_verp(self._mlist, msg), set(['anne@example.org']))
+        self.assertEqual(self._verper.get_verp(self._mlist, msg),
+                         set(['anne@example.org']))
 
     def test_no_verp_with_non_match(self):
         # No VERP address is found, and a header had a non-matching pattern.
@@ -122,7 +137,7 @@ From: postmaster@example.com
 To: test-bounces@example.com
 
 """)
-        self.assertEqual(get_verp(self._mlist, msg), set())
+        self.assertEqual(self._verper.get_verp(self._mlist, msg), set())
 
     def test_multiple_verps(self):
         # More than one VERP address was found in the same header.
@@ -132,7 +147,8 @@ To: test-bounces+anne=example.org@example.com
 To: test-bounces+anne=example.org@example.com
 
 """)
-        self.assertEqual(get_verp(self._mlist, msg), set(['anne@example.org']))
+        self.assertEqual(self._verper.get_verp(self._mlist, msg),
+                         set(['anne@example.org']))
 
     def test_multiple_verps_different_values(self):
         # More than one VERP address was found in the same header with
@@ -143,7 +159,7 @@ To: test-bounces+anne=example.org@example.com
 To: test-bounces+bart=example.org@example.com
 
 """)
-        self.assertEqual(get_verp(self._mlist, msg),
+        self.assertEqual(self._verper.get_verp(self._mlist, msg),
                          set(['anne@example.org', 'bart@example.org']))
 
     def test_multiple_verps_different_values_different_headers(self):
@@ -155,12 +171,110 @@ To: test-bounces+anne=example.org@example.com
 Apparently-To: test-bounces+bart=example.org@example.com
 
 """)
-        self.assertEqual(get_verp(self._mlist, msg),
+        self.assertEqual(self._verper.get_verp(self._mlist, msg),
                          set(['anne@example.org', 'bart@example.org']))
+
+
+
+class TestSendProbe(unittest.TestCase):
+    """Test sending of the probe message."""
+
+    layer = ConfigLayer
+
+    def setUp(self):
+        self._mlist = create_list('test@example.com')
+        self._member = add_member(self._mlist, 'anne@example.com',
+                                  'Anne Person', 'xxx',
+                                  DeliveryMode.regular, 'en')
+        self._msg = message_from_string("""\
+From: bouncer@example.com
+To: anne@example.com
+Subject: You bounced
+Message-ID: <first>
+
+""")
+
+    def test_token(self):
+        # Show that send_probe() returns a proper token, and that the token
+        # corresponds to a record in the pending database.
+        token = send_probe(self._member, self._msg)
+        pendable = getUtility(IPendings).confirm(token)
+        self.assertEqual(len(pendable.items()), 2)
+        self.assertEqual(set(pendable.keys()),
+                         set(['member_id', 'message_id']))
+        self.assertEqual(pendable['member_id'], self._member.member_id)
+        self.assertEqual(pendable['message_id'], '<first>')
+
+    def test_probe_is_multipart(self):
+        # The probe is a multipart/mixed with two subparts.
+        send_probe(self._member, self._msg)
+        message = get_queue_messages('virgin')[0].msg
+        self.assertEqual(message.get_content_type(), 'multipart/mixed')
+        self.assertTrue(message.is_multipart())
+        self.assertEqual(len(message.get_payload()), 2)
+
+    def test_probe_sends_one_message(self):
+        # send_probe() places one message in the virgin queue.
+        items = get_queue_messages('virgin')
+        self.assertEqual(len(items), 0)
+        send_probe(self._member, self._msg)
+        items = get_queue_messages('virgin')
+        self.assertEqual(len(items), 1)
+
+    def test_probe_contains_original(self):
+        # Show that send_probe() places a properly formatted message in the
+        # virgin queue.
+        send_probe(self._member, self._msg)
+        message = get_queue_messages('virgin')[0].msg
+        rfc822 = message.get_payload(1)
+        self.assertEqual(rfc822.get_content_type(), 'message/rfc822')
+        self.assertTrue(rfc822.is_multipart())
+        self.assertEqual(len(rfc822.get_payload()), 1)
+        self.assertEqual(rfc822.get_payload(0).as_string(),
+                         self._msg.as_string())
+
+    def test_notice(self):
+        # Test that the notice in the first subpart is correct.
+        send_probe(self._member, self._msg)
+        message = get_queue_messages('virgin')[0].msg
+        notice = message.get_payload(0)
+        self.assertEqual(notice.get_content_type(), 'text/plain')
+        # The interesting bits are the parts that have been interpolated into
+        # the message.  For now the best we can do is know that the
+        # interpolation values appear in the message.  When Python 2.7 is our
+        # minimum requirement, we can use assertRegexpMatches().
+        body = notice.get_payload()
+        self.assertTrue('test@example.com' in body)
+        self.assertTrue('anne@example.com' in body)
+        self.assertTrue('http://example.com/anne@example.com' in body)
+        self.assertTrue('test-owner@example.com' in body)
+
+    def test_headers(self):
+        # Check the headers of the outer message.
+        token = send_probe(self._member, self._msg)
+        message = get_queue_messages('virgin')[0].msg
+        self.assertEqual(message['From'],
+                         'test-bounces+{0}@example.com'.format(token))
+        self.assertEqual(message['To'], 'anne@example.com')
+        self.assertEqual(message['Subject'], 'Test mailing list probe message')
+
+
+
+class TestProbe(unittest.TestCase):
+    """Test VERP probing."""
+
+    layer = ConfigLayer
+
+    def setUp(self):
+        self._mlist = create_list('test@example.com')
+
+    
 
 
 
 def test_suite():
     suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(TestProbe))
+    suite.addTest(unittest.makeSuite(TestSendProbe))
     suite.addTest(unittest.makeSuite(TestVERP))
     return suite

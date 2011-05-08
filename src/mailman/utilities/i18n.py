@@ -174,9 +174,8 @@ def make(template_file, mailing_list=None, language=None, wrap=True, **kw):
     :param wrap: When True, wrap the text.
     :type wrap: bool
     :param **kw: Keyword arguments for template interpolation.
-    :return: A tuple of the file system path to the first matching template,
-        and an open file object allowing reading of the file.
-    :rtype: (string, file)
+    :return: The interpolated text.
+    :rtype: string
     :raises TemplateNotFoundError: when the template could not be found.
     """
     path, fp = find(template_file, mailing_list, language)
