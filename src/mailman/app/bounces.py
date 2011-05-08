@@ -206,11 +206,11 @@ def send_probe(member, msg):
     """
     mlist = getUtility(IListManager).get(member.mailing_list)
     text = make('probe.txt', mlist, member.preferred_language.code,
-        listname=mlist.fqdn_listname,
-        address= member.address.email,
-        optionsurl=member.options_url,
-        owneraddr=mlist.owner_address,
-        )
+                listname=mlist.fqdn_listname,
+                address= member.address.email,
+                optionsurl=member.options_url,
+                owneraddr=mlist.owner_address,
+                )
     pendable = _ProbePendable(
         member_id=member.member_id,
         message_id=msg['message-id'],

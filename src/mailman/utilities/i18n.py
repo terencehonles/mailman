@@ -28,22 +28,27 @@ __all__ = [
 
 
 import os
+import sys
 import errno
 
 from itertools import product
 
 from mailman.config import config
 from mailman.core.constants import system_preferences
+from mailman.core.errors import MailmanException
 from mailman.core.i18n import _
 from mailman.utilities.string import expand, wrap as wrap_text
 
 
 
-class TemplateNotFoundError(Exception):
+class TemplateNotFoundError(MailmanException):
     """The named template was not found."""
 
     def __init__(self, template_file):
         self.template_file = template_file
+
+    def __str__(self):
+        return self.template_file
 
 
 
@@ -70,7 +75,7 @@ def _search(template_file, mailing_list=None, language=None):
 
 
 
-def find(template_file, mailing_list=None, language=None):
+def find(template_file, mailing_list=None, language=None, _trace=False):
     """Locate an i18n template file.
 
     When something in Mailman needs a template file, it always asks for the
@@ -140,6 +145,9 @@ def find(template_file, mailing_list=None, language=None):
     :type mailing_list: `IMailingList`
     :param language: Optional language code, which influences the search.
     :type language: string
+    :param _trace: Enable printing of debugging information during
+        template search.
+    :type _trace: bool
     :return: A tuple of the file system path to the first matching template,
         and an open file object allowing reading of the file.
     :rtype: (string, file)
@@ -148,16 +156,24 @@ def find(template_file, mailing_list=None, language=None):
     raw_search_order = _search(template_file, mailing_list, language)
     for path in raw_search_order:
         try:
+            if _trace:
+                print >> sys.stderr, '@@@', path,
             fp = open(path)
         except IOError as error:
-            if error.errno != errno.ENOENT:
+            if error.errno == errno.ENOENT:
+                if _trace:
+                    print >> sys.stderr, 'MISSING'
+            else:
                 raise
         else:
+            if _trace:
+                print >> sys.stderr, 'FOUND:', path
             return path, fp
     raise TemplateNotFoundError(template_file)
 
 
-def make(template_file, mailing_list=None, language=None, wrap=True, **kw):
+def make(template_file, mailing_list=None, language=None, wrap=True,
+         _trace=False, **kw):
     """Locate and 'make' a template file.
 
     The template file is located as with `find()`, and the resulting text is
@@ -173,12 +189,15 @@ def make(template_file, mailing_list=None, language=None, wrap=True, **kw):
     :type language: string
     :param wrap: When True, wrap the text.
     :type wrap: bool
+    :param _trace: Passed through to ``find()``, this enables printing of
+        debugging information during template search.
+    :type _trace: bool
     :param **kw: Keyword arguments for template interpolation.
     :return: The interpolated text.
     :rtype: string
     :raises TemplateNotFoundError: when the template could not be found.
     """
-    path, fp = find(template_file, mailing_list, language)
+    path, fp = find(template_file, mailing_list, language, _trace)
     try:
         # XXX Removing the trailing newline is a hack carried over from
         # Mailman 2.  The (stripped) template text is then passed through the

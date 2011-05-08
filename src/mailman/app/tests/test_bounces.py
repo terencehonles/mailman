@@ -25,6 +25,9 @@ __all__ = [
     ]
 
 
+import os
+import shutil
+import tempfile
 import unittest
 
 from zope.component import getUtility
@@ -32,6 +35,8 @@ from zope.component import getUtility
 from mailman.app.bounces import StandardVERP, send_probe
 from mailman.app.lifecycle import create_list
 from mailman.app.membership import add_member
+from mailman.config import config
+from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.member import DeliveryMode
 from mailman.interfaces.pending import IPendings
 from mailman.testing.helpers import (
@@ -260,6 +265,70 @@ Message-ID: <first>
 
 
 
+class TestSendProbeNonEnglish(unittest.TestCase):
+    """Test sending of the probe message to a non-English speaker."""
+
+    layer = ConfigLayer
+
+    def setUp(self):
+        self._mlist = create_list('test@example.com')
+        self._member = add_member(self._mlist, 'anne@example.com',
+                                  'Anne Person', 'xxx',
+                                  DeliveryMode.regular, 'en')
+        self._msg = message_from_string("""\
+From: bouncer@example.com
+To: anne@example.com
+Subject: You bounced
+Message-ID: <first>
+
+""")
+        # Set up the translation context.
+        self._template_dir = tempfile.mkdtemp()
+        xx_template_path = os.path.join(
+            self._template_dir, 't', 'xx', 'probe.txt')
+        os.makedirs(os.path.dirname(xx_template_path))
+        config.push('xx template dir', """\
+        [paths.testing]
+        template_dir: {0}/t
+        var_dir: {0}/v
+        """.format(self._template_dir))
+        language_manager = getUtility(ILanguageManager)
+        language_manager.add('xx', 'utf-8', 'Freedonia')
+        self._member.preferences.preferred_language = 'xx'
+        with open(xx_template_path, 'w') as fp:
+            print >> fp, """\
+blah blah blah
+$listname
+$address
+$optionsurl
+$owneraddr
+"""
+
+    def tearDown(self):
+        config.pop('xx template dir')
+        shutil.rmtree(self._template_dir)
+
+    def test_subject_with_member_nonenglish(self):
+        # Test that members with non-English preferred language get a Subject
+        # header in the expected language.
+        send_probe(self._member, self._msg)
+        message = get_queue_messages('virgin')[0].msg
+        self.assertEqual(
+            message['Subject'],
+            '=?utf-8?q?ailing-may_ist-lay_Test_obe-pray_essage-may?=')
+
+    def test_probe_notice_with_member_nonenglish(self):
+        # Test that a member with non-English preferred language gets the
+        # probe message in their language.
+        send_probe(self._member, self._msg)
+        message = get_queue_messages('virgin')[0].msg
+        notice = message.get_payload(0).get_payload()
+        self.assertEqual(notice, """\
+blah blah blah test@example.com anne@example.com
+http://example.com/anne@example.com test-owner@example.com""")
+
+
+
 class TestProbe(unittest.TestCase):
     """Test VERP probing."""
 
@@ -268,7 +337,7 @@ class TestProbe(unittest.TestCase):
     def setUp(self):
         self._mlist = create_list('test@example.com')
 
-    
+
 
 
 
@@ -276,5 +345,6 @@ def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestProbe))
     suite.addTest(unittest.makeSuite(TestSendProbe))
+    suite.addTest(unittest.makeSuite(TestSendProbeNonEnglish))
     suite.addTest(unittest.makeSuite(TestVERP))
     return suite
