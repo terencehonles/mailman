@@ -32,7 +32,7 @@ import unittest
 
 from zope.component import getUtility
 
-from mailman.app.bounces import StandardVERP, send_probe
+from mailman.app.bounces import StandardVERP, ProbeVERP, send_probe
 from mailman.app.lifecycle import create_list
 from mailman.app.membership import add_member
 from mailman.config import config
@@ -330,14 +330,38 @@ http://example.com/anne@example.com test-owner@example.com""")
 
 
 class TestProbe(unittest.TestCase):
-    """Test VERP probing."""
+    """Test VERP probe parsing."""
 
     layer = ConfigLayer
 
     def setUp(self):
         self._mlist = create_list('test@example.com')
+        self._member = add_member(self._mlist, 'anne@example.com',
+                                  'Anne Person', 'xxx',
+                                  DeliveryMode.regular, 'en')
+        self._msg = message_from_string("""\
+From: bouncer@example.com
+To: anne@example.com
+Subject: You bounced
+Message-ID: <first>
 
+""")
 
+    def test_get_addresses(self):
+        # Be able to extract the probed address from the pending database
+        # based on the token in a probe bounce.
+        token = send_probe(self._member, self._msg)
+        # Simulate a bounce of the message in the virgin queue.
+        message = get_queue_messages('virgin')[0].msg
+        bounce = message_from_string("""\
+To: {0}
+From: mail-daemon@example.com
+
+""".format(message['From']))
+        addresses = ProbeVERP().get_verp(self._mlist, bounce)
+        self.assertEqual(addresses, set(['anne@example.com']))
+        # The pendable is no longer in the database.
+        self.assertEqual(getUtility(IPendings).confirm(token), None)
 
 
 

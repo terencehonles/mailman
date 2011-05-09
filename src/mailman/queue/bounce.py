@@ -18,12 +18,10 @@
 """Bounce queue runner."""
 
 import os
-import re
 import cPickle
 import logging
 import datetime
 
-from email.utils import parseaddr
 from lazr.config import as_timedelta
 
 from mailman.app.bounces import StandardVERP
@@ -31,7 +29,6 @@ from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.bounce import Stop
 from mailman.queue import Runner
-from mailman.utilities.email import split_email
 
 
 COMMASPACE = ', '
@@ -225,40 +222,6 @@ class BounceRunner(Runner, BounceMixin):
     def _clean_up(self):
         BounceMixin._clean_up(self)
         Runner._clean_up(self)
-
-
-
-def verp_probe(mlist, msg):
-    bmailbox, bdomain = split_email(mlist.GetBouncesEmail())
-    # Sadly not every MTA bounces VERP messages correctly, or consistently.
-    # Fall back to Delivered-To: (Postfix), Envelope-To: (Exim) and
-    # Apparently-To:, and then short-circuit if we still don't have anything
-    # to work with.  Note that there can be multiple Delivered-To: headers so
-    # we need to search them all (and we don't worry about false positives for
-    # forwarded email, because only one should match VERP_REGEXP).
-    vals = []
-    for header in ('to', 'delivered-to', 'envelope-to', 'apparently-to'):
-        vals.extend(msg.get_all(header, []))
-    for field in vals:
-        to = parseaddr(field)[1]
-        if not to:
-            continue                          # empty header
-        mo = re.search(config.mta.verp_probe_regexp, to)
-        if not mo:
-            continue                          # no match of regexp
-        try:
-            if bmailbox <> mo.group('bounces'):
-                continue                      # not a bounce to our list
-            # Extract the token and see if there's an entry
-            token = mo.group('token')
-            data = mlist.pend_confirm(token, expunge=False)
-            if data is not None:
-                return token
-        except IndexError:
-            elog.error(
-                "verp_probe_regexp doesn't yield the right match groups: %s",
-                config.mta.verp_probe_regexp)
-    return None
 
 
 

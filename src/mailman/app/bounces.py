@@ -45,6 +45,7 @@ from mailman.core.i18n import _
 from mailman.email.message import UserNotification
 from mailman.interfaces.bounce import IBounceDetector
 from mailman.interfaces.listmanager import IListManager
+from mailman.interfaces.membership import ISubscriptionService
 from mailman.interfaces.pending import IPendable, IPendings
 from mailman.utilities.email import split_email
 from mailman.utilities.i18n import make
@@ -132,7 +133,6 @@ class _BaseVERPParser:
     def get_verp(self, mlist, msg):
         """Extract a set of VERP bounce addresses.
 
-
         :param mlist: The mailing list being checked.
         :type mlist: `IMailingList`
         :param msg: The message being parsed.
@@ -163,7 +163,8 @@ class _BaseVERPParser:
                 elog.error('Bad VERP pattern: {0}'.format(self._pattern))
                 return set()
             else:
-                verp_matches.add(original_address)
+                if original_address is not None:
+                    verp_matches.add(original_address)
         return verp_matches
 
 
@@ -183,8 +184,16 @@ class ProbeVERP(_BaseVERPParser):
     def _get_address(self, match_object):
         # Extract the token and get the matching address.
         token = match_object.group('token')
-        op, address, bmsg = getUtility(IPendings).confirm(token)
-        return address
+        pendable = getUtility(IPendings).confirm(token)
+        if pendable is None:
+            # The token must have already been confirmed, or it may have been
+            # evicted from the database already.
+            return None
+        member_id = pendable['member_id']
+        member = getUtility(ISubscriptionService).get_member(member_id)
+        if member is None:
+            return None
+        return member.address.email
 
 
 
