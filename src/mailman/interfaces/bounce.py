@@ -21,6 +21,7 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
+    'BounceContext',
     'IBounceDetector',
     'IBounceEvent',
     'IBounceProcessor',
@@ -28,6 +29,7 @@ __all__ = [
     ]
 
 
+from flufl.enum import Enum
 from zope.interface import Attribute, Interface
 
 
@@ -37,6 +39,19 @@ from zope.interface import Attribute, Interface
 # problems.  These shouldn't trigger a bounce notification, but we also
 # don't want to send them on to the list administrator.
 Stop = object()
+
+
+
+class BounceContext(Enum):
+    """The context in which the bounce was detected."""
+
+    # This is a normal bounce detection.  IOW, Mailman received a bounce in
+    # response to a mailing list post.
+    normal = 1
+
+    # A probe email bounced.  This can be considered a bit more serious, since
+    # it occurred in response to a specific message to a specific user.
+    probe = 2
 
 
 
@@ -71,7 +86,7 @@ class IBounceEvent(Interface):
     message_id = Attribute(
         """The Message-ID of the bounce message.""")
 
-    where = Attribute(
+    context = Attribute(
         """Where was the bounce detected?""")
 
     processed = Attribute(
@@ -82,7 +97,7 @@ class IBounceEvent(Interface):
 class IBounceProcessor(Interface):
     """Manager/processor of bounce events."""
 
-    def register(mlist, email, msg, where=None):
+    def register(mlist, email, msg, context=None):
         """Register a bounce event.
 
         :param mlist: The mailing list that the bounce occurred on.
@@ -91,8 +106,10 @@ class IBounceProcessor(Interface):
         :type email: str
         :param msg: The bounce message.
         :type msg: email.message.Message
-        :param where: A description of where the bounce was detected.
-        :type where: str
+        :param context: In what context was the bounce detected?  The default
+            is 'normal' context (i.e. we received a normal bounce for the
+            address).
+        :type context: BounceContext
         :return: The registered bounce event.
         :rtype: IBounceEvent
         """

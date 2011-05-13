@@ -29,8 +29,10 @@ __all__ = [
 from storm.locals import Bool, Int, DateTime, Unicode
 from zope.interface import implements
 
-from mailman.interfaces.bounce import IBounceEvent, IBounceProcessor
+from mailman.interfaces.bounce import (
+    BounceContext, IBounceEvent, IBounceProcessor)
 from mailman.database.model import Model
+from mailman.database.types import Enum
 from mailman.utilities.datetime import now
 
 
@@ -43,15 +45,15 @@ class BounceEvent(Model):
     email = Unicode()
     timestamp = DateTime()
     message_id = Unicode()
-    where = Unicode()
+    context = Enum()
     processed = Bool()
 
-    def __init__(self, list_name, email, msg, where):
+    def __init__(self, list_name, email, msg, context=None):
         self.list_name = list_name
         self.email = email
         self.timestamp = now()
         self.message_id = msg['message-id']
-        self.where = where
+        self.context = (BounceContext.normal if context is None else context)
         self.processed = False
 
 

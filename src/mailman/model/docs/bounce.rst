@@ -56,21 +56,29 @@ Bounce events have a flag indicating whether they've been processed or not.
     >>> event.processed
     False
 
-When a bounce is registered, you can also include an informative string which
-indicates where the bounce was detected.  This is essentially a semantics-free
-field.
-::
+When a bounce is registered, you can indicate the bounce context.
 
     >>> msg = message_from_string("""\
     ... From: mail-daemon@example.org
     ... To: test-bounces@example.com
     ... Message-ID: <second>
-    ... 
+    ...
     ... """)
 
-    >>> event = processor.register(
-    ...     mlist, 'bart@example.com', msg, 'Some place')
+If no context is given, then a default one is used.
+
+    >>> event = processor.register(mlist, 'bart@example.com', msg)
     >>> print event.message_id
     <second>
-    >>> print event.where
-    Some place
+    >>> print event.context
+    BounceContext.normal
+
+A probe bounce carries more weight than just a normal bounce.
+
+    >>> from mailman.interfaces.bounce import BounceContext
+    >>> event = processor.register(
+    ...     mlist, 'bart@example.com', msg, BounceContext.probe)
+    >>> print event.message_id
+    <second>
+    >>> print event.context
+    BounceContext.probe
