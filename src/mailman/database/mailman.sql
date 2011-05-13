@@ -60,7 +60,7 @@ CREATE TABLE bounceevent (
     email TEXT,
     'timestamp' TIMESTAMP,
     message_id TEXT,
-    'where' TEXT,
+    context TEXT,
     processed BOOLEAN,
     PRIMARY KEY (id)
     );
