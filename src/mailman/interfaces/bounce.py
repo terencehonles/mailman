@@ -22,12 +22,13 @@ from __future__ import absolute_import, unicode_literals
 __metaclass__ = type
 __all__ = [
     'IBounceDetector',
+    'IBounceEvent',
+    'IBounceProcessor',
     'Stop',
     ]
 
 
-from flufl.enum import Enum
-from zope.interface import Interface
+from zope.interface import Attribute, Interface
 
 
 
@@ -51,4 +52,47 @@ class IBounceDetector(Interface):
             found but are determined to be non-fatal, the value `Stop` is
             returned to halt any bounce processing pipeline.
         :rtype: A set strings, or `Stop`
+        """
+
+
+
+class IBounceEvent(Interface):
+    """Registration record for a single bounce event."""
+
+    list_name = Attribute(
+        """The name of the mailing list that received this bounce.""")
+
+    email = Attribute(
+        """The email address that bounced.""")
+
+    timestamp = Attribute(
+        """The timestamp for when the bounce was received.""")
+
+    message_id = Attribute(
+        """The Message-ID of the bounce message.""")
+
+    where = Attribute(
+        """Where was the bounce detected?""")
+
+    processed = Attribute(
+        """Has this bounce event been processed?""")
+
+
+
+class IBounceProcessor(Interface):
+    """Manager/processor of bounce events."""
+
+    def register(mlist, email, msg, where=None):
+        """Register a bounce event.
+
+        :param mlist: The mailing list that the bounce occurred on.
+        :type mlist: IMailingList
+        :param email: The email address that is bouncing.
+        :type email: str
+        :param msg: The bounce message.
+        :type msg: email.message.Message
+        :param where: A description of where the bounce was detected.
+        :type where: str
+        :return: The registered bounce event.
+        :rtype: IBounceEvent
         """
