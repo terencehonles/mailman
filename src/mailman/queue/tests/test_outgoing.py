@@ -188,7 +188,29 @@ Message-Id: <first>
         self._mlist.personalize = Personalization.full
         self._outq.enqueue(self._msg, msgdata, listname='test@example.com')
         self._runner.run()
-        self.assertTrue('verp' not in captured_msgdata)
+        self.assertFalse('verp' in captured_msgdata)
+
+    def test_verp_never(self):
+        # Never VERP when the interval is zero.
+        msgdata = {}
+        self._outq.enqueue(self._msg, msgdata, listname='test@example.com')
+        with temporary_config('personalize', """
+        [mta]
+        verp_delivery_interval: 0
+        """):
+            self._runner.run()
+        self.assertEqual(captured_msgdata['verp'], False)
+
+    def test_verp_always(self):
+        # Always VERP when the interval is one.
+        msgdata = {}
+        self._outq.enqueue(self._msg, msgdata, listname='test@example.com')
+        with temporary_config('personalize', """
+        [mta]
+        verp_delivery_interval: 1
+        """):
+            self._runner.run()
+        self.assertEqual(captured_msgdata['verp'], True)
 
 
 
