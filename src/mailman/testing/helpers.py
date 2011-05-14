@@ -48,6 +48,7 @@ from contextlib import contextmanager
 from email import message_from_string
 from httplib2 import Http
 from lazr.config import as_timedelta
+from operator import itemgetter
 from urllib import urlencode
 from urllib2 import HTTPError
 from zope import event
@@ -63,7 +64,7 @@ from mailman.utilities.mailbox import Mailbox
 
 
 
-def make_testable_runner(runner_class, name=None):
+def make_testable_runner(runner_class, name=None, predicate=None):
     """Create a queue runner that runs until its queue is empty.
 
     :param runner_class: The queue runner's class.
@@ -71,6 +72,10 @@ def make_testable_runner(runner_class, name=None):
     :param name: Optional queue name; if not given, it is calculated from the
         class name.
     :type name: string or None
+    :param predicate: Optional alternative predicate for deciding when to stop
+        the queue runner.  When None (the default) it stops when the queue is
+        empty.
+    :type predicate: callable that gets one argument, the queue runner.
     :return: A runner instance.
     """
 
@@ -90,7 +95,10 @@ def make_testable_runner(runner_class, name=None):
 
         def _do_periodic(self):
             """Stop when the queue is empty."""
-            self._stop = (len(self.switchboard.files) == 0)
+            if predicate is None:
+                self._stop = (len(self.switchboard.files) == 0)
+            else:
+                self._stop = predicate(self)
 
     return EmptyingRunner(name)
 
@@ -118,7 +126,7 @@ def get_queue_messages(queue_name, sort_on=None):
         messages.append(_Bag(msg=msg, msgdata=msgdata))
         queue.finish(filebase)
     if sort_on is not None:
-        messages.sort(key=lambda item: item.msg[sort_on])
+        messages.sort(key=itemgetter(sort_on))
     return messages
 
 
