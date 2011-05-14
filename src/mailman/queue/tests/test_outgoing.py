@@ -212,6 +212,30 @@ Message-Id: <first>
             self._runner.run()
         self.assertEqual(captured_msgdata['verp'], True)
 
+    def test_verp_on_interval_match(self):
+        # VERP every so often, when the post_id matches.
+        self._mlist.post_id = 5
+        msgdata = {}
+        self._outq.enqueue(self._msg, msgdata, listname='test@example.com')
+        with temporary_config('personalize', """
+        [mta]
+        verp_delivery_interval: 5
+        """):
+            self._runner.run()
+        self.assertEqual(captured_msgdata['verp'], True)
+
+    def test_no_verp_on_interval_miss(self):
+        # VERP every so often, when the post_id matches.
+        self._mlist.post_id = 4
+        msgdata = {}
+        self._outq.enqueue(self._msg, msgdata, listname='test@example.com')
+        with temporary_config('personalize', """
+        [mta]
+        verp_delivery_interval: 5
+        """):
+            self._runner.run()
+        self.assertEqual(captured_msgdata['verp'], False)
+
 
 
 def test_suite():
