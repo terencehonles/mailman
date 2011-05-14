@@ -181,6 +181,15 @@ Message-Id: <first>
             self._runner.run()
         self.assertTrue(captured_msgdata['verp'])
 
+    def test_personalized_deliveries_no_verp(self):
+        # When deliveries are personalized, but the configuration setting
+        # does not indicate, messages will not be VERP'd.
+        msgdata = {}
+        self._mlist.personalize = Personalization.full
+        self._outq.enqueue(self._msg, msgdata, listname='test@example.com')
+        self._runner.run()
+        self.assertTrue('verp' not in captured_msgdata)
+
 
 
 def test_suite():
