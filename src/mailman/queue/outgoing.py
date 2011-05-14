@@ -70,7 +70,7 @@ class OutgoingRunner(Runner, BounceMixin):
         # Also, if personalization is /not/ enabled, but
         # verp_delivery_interval is set (and we've hit this interval), then
         # again, this message should be VERP'd. Otherwise, no.
-        elif mlist.personalize <> Personalization.none:
+        elif mlist.personalize != Personalization.none:
             if as_boolean(config.mta.verp_personalized_deliveries):
                 msgdata['verp'] = True
         elif interval == 0:
