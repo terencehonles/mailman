@@ -155,7 +155,7 @@ Message-Id: <first>
         self._runner.run()
         self.assertEqual(captured_msgdata['verp'], marker)
 
-    def test_personalized_deliveries_verp(self):
+    def test_personalized_individual_deliveries_verp(self):
         # When deliveries are personalized, and the configuration setting
         # indicates, messages will be VERP'd.
         msgdata = {}
@@ -166,7 +166,11 @@ Message-Id: <first>
         verp_personalized_deliveries: yes
         """):
             self._runner.run()
-        ## self.assertTrue(msgdata['verp'])
+        self.assertTrue(captured_msgdata['verp'])
+
+    def test_personalized_full_deliveries_verp(self):
+        # When deliveries are personalized, and the configuration setting
+        # indicates, messages will be VERP'd.
         msgdata = {}
         self._mlist.personalize = Personalization.full
         self._outq.enqueue(self._msg, msgdata, listname='test@example.com')
@@ -175,7 +179,7 @@ Message-Id: <first>
         verp_personalized_deliveries: yes
         """):
             self._runner.run()
-        ## self.assertTrue(msgdata['verp'])
+        self.assertTrue(captured_msgdata['verp'])
 
 
 

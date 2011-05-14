@@ -195,7 +195,7 @@ class MailingList(Model):
         # For the pending database
         self.next_request_id = 1
         self._restore()
-        self.personalization = Personalization.none
+        self.personalize = Personalization.none
         self.real_name = string.capwords(
             SPACE.join(listname.split(UNDERSCORE)))
         makedirs(self.data_path)
