@@ -48,7 +48,6 @@ from contextlib import contextmanager
 from email import message_from_string
 from httplib2 import Http
 from lazr.config import as_timedelta
-from operator import itemgetter
 from urllib import urlencode
 from urllib2 import HTTPError
 from zope import event
@@ -126,7 +125,7 @@ def get_queue_messages(queue_name, sort_on=None):
         messages.append(_Bag(msg=msg, msgdata=msgdata))
         queue.finish(filebase)
     if sort_on is not None:
-        messages.sort(key=itemgetter(sort_on))
+        messages.sort(key=lambda item: item.msg[sort_on])
     return messages
 
 
