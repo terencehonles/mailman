@@ -34,7 +34,10 @@ from mailman.utilities.modules import find_name
 
 
 class _EnumVariable(Variable):
-    """Storm variable."""
+    """Storm variable.
+
+    To use this, make the database column a TEXT.
+    """
 
     def parse_set(self, value, from_db):
         if value is None:

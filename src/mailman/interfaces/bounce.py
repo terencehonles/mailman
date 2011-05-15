@@ -21,13 +21,16 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
+    'BounceContext',
     'IBounceDetector',
+    'IBounceEvent',
+    'IBounceProcessor',
     'Stop',
     ]
 
 
 from flufl.enum import Enum
-from zope.interface import Interface
+from zope.interface import Attribute, Interface
 
 
 
@@ -36,6 +39,19 @@ from zope.interface import Interface
 # problems.  These shouldn't trigger a bounce notification, but we also
 # don't want to send them on to the list administrator.
 Stop = object()
+
+
+
+class BounceContext(Enum):
+    """The context in which the bounce was detected."""
+
+    # This is a normal bounce detection.  IOW, Mailman received a bounce in
+    # response to a mailing list post.
+    normal = 1
+
+    # A probe email bounced.  This can be considered a bit more serious, since
+    # it occurred in response to a specific message to a specific user.
+    probe = 2
 
 
 
@@ -51,4 +67,49 @@ class IBounceDetector(Interface):
             found but are determined to be non-fatal, the value `Stop` is
             returned to halt any bounce processing pipeline.
         :rtype: A set strings, or `Stop`
+        """
+
+
+
+class IBounceEvent(Interface):
+    """Registration record for a single bounce event."""
+
+    list_name = Attribute(
+        """The name of the mailing list that received this bounce.""")
+
+    email = Attribute(
+        """The email address that bounced.""")
+
+    timestamp = Attribute(
+        """The timestamp for when the bounce was received.""")
+
+    message_id = Attribute(
+        """The Message-ID of the bounce message.""")
+
+    context = Attribute(
+        """Where was the bounce detected?""")
+
+    processed = Attribute(
+        """Has this bounce event been processed?""")
+
+
+
+class IBounceProcessor(Interface):
+    """Manager/processor of bounce events."""
+
+    def register(mlist, email, msg, context=None):
+        """Register a bounce event.
+
+        :param mlist: The mailing list that the bounce occurred on.
+        :type mlist: IMailingList
+        :param email: The email address that is bouncing.
+        :type email: str
+        :param msg: The bounce message.
+        :type msg: email.message.Message
+        :param context: In what context was the bounce detected?  The default
+            is 'normal' context (i.e. we received a normal bounce for the
+            address).
+        :type context: BounceContext
+        :return: The registered bounce event.
+        :rtype: IBounceEvent
         """

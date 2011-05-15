@@ -54,6 +54,17 @@ CREATE INDEX ix_autoresponserecord_address_id
 CREATE INDEX ix_autoresponserecord_mailing_list_id
     ON autoresponserecord (mailing_list_id);
 
+CREATE TABLE bounceevent (
+    id INTEGER NOT NULL,
+    list_name TEXT,
+    email TEXT,
+    'timestamp' TIMESTAMP,
+    message_id TEXT,
+    context TEXT,
+    processed BOOLEAN,
+    PRIMARY KEY (id)
+    );
+
 CREATE TABLE contentfilter (
     id INTEGER NOT NULL,
     mailing_list_id INTEGER,

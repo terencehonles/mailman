@@ -22,6 +22,11 @@
     />
 
   <utility
+    factory="mailman.model.bounce.BounceProcessor"
+    provides="mailman.interfaces.bounce.IBounceProcessor"
+    />
+
+  <utility
     factory="mailman.model.domain.DomainManager"
     provides="mailman.interfaces.domain.IDomainManager"
     />
@@ -37,11 +42,6 @@
     />
 
   <utility
-    factory="mailman.model.usermanager.UserManager"
-    provides="mailman.interfaces.usermanager.IUserManager"
-    />
-
-  <utility
     factory="mailman.model.messagestore.MessageStore"
     provides="mailman.interfaces.messages.IMessageStore"
     />
@@ -52,18 +52,23 @@
     />
 
   <utility
-    factory="mailman.model.requests.Requests"
-    provides="mailman.interfaces.requests.IRequests"
-    />
-
-  <utility
     factory="mailman.app.registrar.Registrar"
     provides="mailman.interfaces.registrar.IRegistrar"
     />
 
   <utility
+    factory="mailman.model.requests.Requests"
+    provides="mailman.interfaces.requests.IRequests"
+    />
+
+  <utility
     factory="mailman.rest.adapters.SubscriptionService"
     provides="mailman.interfaces.membership.ISubscriptionService"
+    />
+
+  <utility
+    factory="mailman.model.usermanager.UserManager"
+    provides="mailman.interfaces.usermanager.IUserManager"
     />
 
   <utility

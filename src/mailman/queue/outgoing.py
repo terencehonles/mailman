@@ -28,6 +28,7 @@ from mailman.interfaces.mailinglist import Personalization
 from mailman.interfaces.mta import SomeRecipientsFailed
 from mailman.queue import Runner
 from mailman.queue.bounce import BounceMixin
+from mailman.utilities.datetime import now
 from mailman.utilities.modules import find_name
 
 
@@ -56,7 +57,7 @@ class OutgoingRunner(Runner, BounceMixin):
     def _dispose(self, mlist, msg, msgdata):
         # See if we should retry delivery of this message again.
         deliver_after = msgdata.get('deliver_after', datetime.fromtimestamp(0))
-        if datetime.now() < deliver_after:
+        if now() < deliver_after:
             return True
         # Calculate whether we should VERP this message or not.  The results of
         # this set the 'verp' key in the message metadata.
@@ -69,7 +70,7 @@ class OutgoingRunner(Runner, BounceMixin):
         # Also, if personalization is /not/ enabled, but
         # verp_delivery_interval is set (and we've hit this interval), then
         # again, this message should be VERP'd. Otherwise, no.
-        elif mlist.personalize <> Personalization.none:
+        elif mlist.personalize != Personalization.none:
             if as_boolean(config.mta.verp_personalized_deliveries):
                 msgdata['verp'] = True
         elif interval == 0:
@@ -118,15 +119,15 @@ class OutgoingRunner(Runner, BounceMixin):
                 # occasionally move them back here for another shot at
                 # delivery.
                 if error.temporary_failures:
-                    now = datetime.now()
+                    current_time = now()
                     recips = error.temporary_failures
                     last_recip_count = msgdata.get('last_recip_count', 0)
-                    deliver_until = msgdata.get('deliver_until', now)
+                    deliver_until = msgdata.get('deliver_until', current_time)
                     if len(recips) == last_recip_count:
                         # We didn't make any progress, so don't attempt
                         # delivery any longer.  BAW: is this the best
                         # disposition?
-                        if now > deliver_until:
+                        if current_time > deliver_until:
                             return False
                     else:
                         # Keep trying to delivery this message for a while
