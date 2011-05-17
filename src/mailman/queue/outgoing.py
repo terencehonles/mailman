@@ -102,6 +102,12 @@ class OutgoingRunner(Runner, BounceMixin):
                 self._logged = True
             return True
         except SomeRecipientsFailed as error:
+            processor = getUtility(IBounceProcessor)
+            # BAW: msg is the original message that failed delivery, not a
+            # bounce message.  This may be confusing if this is what's sent to
+            # the user in the probe message.  Maybe we should craft a
+            # bounce-like message containing information about the permanent
+            # SMTP failure?
             if 'probe_token' in msgdata:
                 # This is a failure of our local MTA to deliver to a probe
                 # message recipient.  Register the bounce event for permanent
@@ -116,7 +122,6 @@ class OutgoingRunner(Runner, BounceMixin):
                     if pended is not None:
                         member = getUtility(ISubscriptionService).get_member(
                             pended['member_id'])
-                        processor = getUtility(IBounceProcessor)
                         processor.register(
                             mlist, member.address.email, msg,
                             BounceContext.probe)
@@ -124,24 +129,17 @@ class OutgoingRunner(Runner, BounceMixin):
                 # Delivery failed at SMTP time for some or all of the
                 # recipients.  Permanent failures are registered as bounces,
                 # but temporary failures are retried for later.
-                #
-                # BAW: msg is going to be the original message that failed
-                # delivery, not a bounce message.  This may be confusing if
-                # this is what's sent to the user in the probe message.  Maybe
-                # we should craft a bounce-like message containing information
-                # about the permanent SMTP failure?
-                if error.permanent_failures:
-                    self._queue_bounces(
-                        mlist.fqdn_listname, error.permanent_failures, msg)
+                for email in error.permanent_failures:
+                    processor.register(mlist, email, msg, BounceContext.normal)
                 # Move temporary failures to the qfiles/retry queue which will
                 # occasionally move them back here for another shot at
                 # delivery.
                 if error.temporary_failures:
                     current_time = now()
-                    recips = error.temporary_failures
+                    recipients = error.temporary_failures
                     last_recip_count = msgdata.get('last_recip_count', 0)
                     deliver_until = msgdata.get('deliver_until', current_time)
-                    if len(recips) == last_recip_count:
+                    if len(recipients) == last_recip_count:
                         # We didn't make any progress, so don't attempt
                         # delivery any longer.  BAW: is this the best
                         # disposition?
@@ -149,11 +147,11 @@ class OutgoingRunner(Runner, BounceMixin):
                             return False
                     else:
                         # Keep trying to delivery this message for a while
-                        deliver_until = now + as_timedelta(
+                        deliver_until = current_time + as_timedelta(
                             config.mta.delivery_retry_period)
-                    msgdata['last_recip_count'] = len(recips)
+                    msgdata['last_recip_count'] = len(recipients)
                     msgdata['deliver_until'] = deliver_until
-                    msgdata['recipients'] = recips
+                    msgdata['recipients'] = recipients
                     self._retryq.enqueue(msg, msgdata)
         # We've successfully completed handling of this message
         return False

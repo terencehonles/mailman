@@ -32,6 +32,7 @@ import unittest
 
 from contextlib import contextmanager
 from datetime import datetime, timedelta
+from lazr.config import as_timedelta
 from zope.component import getUtility
 
 from mailman.app.bounces import send_probe
@@ -343,6 +344,7 @@ class TestSomeRecipientsFailed(unittest.TestCase):
         global temporary_failures, permanent_failures
         del temporary_failures[:]
         del permanent_failures[:]
+        self._processor = getUtility(IBounceProcessor)
         # Push a config where actual delivery is handled by a dummy function.
         # We generally don't care what this does, since we're just testing the
         # setting of the 'verp' key in the metadata.
@@ -373,7 +375,7 @@ Message-Id: <first>
         permanent_failures.append('anne@example.com')
         self._outq.enqueue(self._msg, msgdata, listname='test@example.com')
         self._runner.run()
-        events = list(getUtility(IBounceProcessor).unprocessed)
+        events = list(self._processor.unprocessed)
         self.assertEqual(len(events), 1)
         event = events[0]
         self.assertEqual(event.list_name, 'test@example.com')
@@ -394,7 +396,7 @@ Message-Id: <first>
         permanent_failures.append('anne@example.com')
         self._outq.enqueue(self._msg, msgdata, listname='test@example.com')
         self._runner.run()
-        events = list(getUtility(IBounceProcessor).unprocessed)
+        events = list(self._processor.unprocessed)
         self.assertEqual(len(events), 0)
 
     def test_probe_temporary_failure(self):
@@ -408,8 +410,90 @@ Message-Id: <first>
         temporary_failures.append('anne@example.com')
         self._outq.enqueue(self._msg, msgdata, listname='test@example.com')
         self._runner.run()
-        events = list(getUtility(IBounceProcessor).unprocessed)
+        events = list(self._processor.unprocessed)
         self.assertEqual(len(events), 0)
+
+    def test_one_permanent_failure(self):
+        # Normal (i.e. non-probe) permanent failures just get registered.
+        permanent_failures.append('anne@example.com')
+        self._outq.enqueue(self._msg, {}, listname='test@example.com')
+        self._runner.run()
+        events = list(self._processor.unprocessed)
+        self.assertEqual(len(events), 1)
+        self.assertEqual(events[0].email, 'anne@example.com')
+        self.assertEqual(events[0].context, BounceContext.normal)
+
+    def test_two_permanent_failures(self):
+        # Two normal (i.e. non-probe) permanent failures just get registered.
+        permanent_failures.append('anne@example.com')
+        permanent_failures.append('bart@example.com')
+        self._outq.enqueue(self._msg, {}, listname='test@example.com')
+        self._runner.run()
+        events = list(self._processor.unprocessed)
+        self.assertEqual(len(events), 2)
+        self.assertEqual(events[0].email, 'anne@example.com')
+        self.assertEqual(events[0].context, BounceContext.normal)
+        self.assertEqual(events[1].email, 'bart@example.com')
+        self.assertEqual(events[1].context, BounceContext.normal)
+
+    def test_one_temporary_failure(self):
+        # The first time there are temporary failures, the message just gets
+        # put in the retry queue, but with some metadata to prevent infinite
+        # retries.
+        temporary_failures.append('cris@example.com')
+        self._outq.enqueue(self._msg, {}, listname='test@example.com')
+        self._runner.run()
+        events = list(self._processor.unprocessed)
+        self.assertEqual(len(events), 0)
+        items = get_queue_messages('retry')
+        self.assertEqual(len(items), 1)
+        self.assertEqual(self._msg.as_string(), items[0].msg.as_string())
+        # The metadata has three keys which are used two decide whether the
+        # next temporary failure should be retried.
+        self.assertEqual(items[0].msgdata['last_recip_count'], 1)
+        deliver_until = (datetime(2005, 8, 1, 7, 49, 23) +
+                         as_timedelta(config.mta.delivery_retry_period))
+        self.assertEqual(items[0].msgdata['deliver_until'], deliver_until)
+        self.assertEqual(items[0].msgdata['recipients'], ['cris@example.com'])
+
+    def test_two_temporary_failures(self):
+        # The first time there are temporary failures, the message just gets
+        # put in the retry queue, but with some metadata to prevent infinite
+        # retries.
+        temporary_failures.append('cris@example.com')
+        temporary_failures.append('dave@example.com')
+        self._outq.enqueue(self._msg, {}, listname='test@example.com')
+        self._runner.run()
+        events = list(self._processor.unprocessed)
+        self.assertEqual(len(events), 0)
+        items = get_queue_messages('retry')
+        # There's still only one item in the retry queue, but the metadata
+        # contains both temporary failures.
+        self.assertEqual(len(items), 1)
+        self.assertEqual(items[0].msgdata['last_recip_count'], 2)
+        self.assertEqual(items[0].msgdata['recipients'],
+                         ['cris@example.com', 'dave@example.com'])
+
+    def test_mixed_failures(self):
+        # Some temporary and some permanent failures.
+        permanent_failures.append('elle@example.com')
+        permanent_failures.append('fred@example.com')
+        temporary_failures.append('gwen@example.com')
+        temporary_failures.append('herb@example.com')
+        self._outq.enqueue(self._msg, {}, listname='test@example.com')
+        self._runner.run()
+        # Let's look at the permanent failures.
+        events = list(self._processor.unprocessed)
+        self.assertEqual(len(events), 2)
+        self.assertEqual(events[0].email, 'elle@example.com')
+        self.assertEqual(events[0].context, BounceContext.normal)
+        self.assertEqual(events[1].email, 'fred@example.com')
+        self.assertEqual(events[1].context, BounceContext.normal)
+        # Let's look at the temporary failures.
+        items = get_queue_messages('retry')
+        self.assertEqual(len(items), 1)
+        self.assertEqual(items[0].msgdata['recipients'],
+                         ['gwen@example.com', 'herb@example.com'])
 
 
 
