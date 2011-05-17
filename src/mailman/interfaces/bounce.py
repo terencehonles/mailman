@@ -113,3 +113,9 @@ class IBounceProcessor(Interface):
         :return: The registered bounce event.
         :rtype: IBounceEvent
         """
+
+    events = Attribute(
+        """An iterator over all events.""")
+
+    unprocessed = Attribute(
+        """An iterator over all unprocessed bounce events.""")

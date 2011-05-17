@@ -29,10 +29,11 @@ __all__ = [
 from storm.locals import Bool, Int, DateTime, Unicode
 from zope.interface import implements
 
-from mailman.interfaces.bounce import (
-    BounceContext, IBounceEvent, IBounceProcessor)
+from mailman.config import config
 from mailman.database.model import Model
 from mailman.database.types import Enum
+from mailman.interfaces.bounce import (
+    BounceContext, IBounceEvent, IBounceProcessor)
 from mailman.utilities.datetime import now
 
 
@@ -63,4 +64,19 @@ class BounceProcessor:
 
     def register(self, mlist, email, msg, where=None):
         """See `IBounceProcessor`."""
-        return BounceEvent(mlist.fqdn_listname, email, msg, where)
+        event = BounceEvent(mlist.fqdn_listname, email, msg, where)
+        config.db.store.add(event)
+        return event
+
+    @property
+    def events(self):
+        """See `IBounceProcessor`."""
+        for event in config.db.store.find(BounceEvent):
+            yield event
+
+    @property
+    def unprocessed(self):
+        """See `IBounceProcessor`."""
+        for event in config.db.store.find(BounceEvent,
+                                          BounceEvent.processed == False):
+            yield event

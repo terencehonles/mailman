@@ -22,10 +22,14 @@ import logging
 
 from datetime import datetime
 from lazr.config import as_boolean, as_timedelta
+from zope.component import getUtility
 
 from mailman.config import config
+from mailman.interfaces.bounce import BounceContext, IBounceProcessor
 from mailman.interfaces.mailinglist import Personalization
+from mailman.interfaces.membership import ISubscriptionService
 from mailman.interfaces.mta import SomeRecipientsFailed
+from mailman.interfaces.pending import IPendings
 from mailman.queue import Runner
 from mailman.queue.bounce import BounceMixin
 from mailman.utilities.datetime import now
@@ -98,9 +102,24 @@ class OutgoingRunner(Runner, BounceMixin):
                 self._logged = True
             return True
         except SomeRecipientsFailed as error:
-            # Handle local rejects of probe messages differently.
-            if msgdata.get('probe_token') and error.permanent_failures:
-                self._probe_bounce(mlist, msgdata['probe_token'])
+            if 'probe_token' in msgdata:
+                # This is a failure of our local MTA to deliver to a probe
+                # message recipient.  Register the bounce event for permanent
+                # failures.  Start by grabbing and confirming (i.e. removing)
+                # the pendable record associated with this bounce token,
+                # regardless of what address was actually failing.
+                if len(error.permanent_failures) > 0:
+                    pended = getUtility(IPendings).confirm(
+                        msgdata['probe_token'])
+                    # It's possible the token has been confirmed out of the
+                    # database.  Just ignore that.
+                    if pended is not None:
+                        member = getUtility(ISubscriptionService).get_member(
+                            pended['member_id'])
+                        processor = getUtility(IBounceProcessor)
+                        processor.register(
+                            mlist, member.address.email, msg,
+                            BounceContext.probe)
             else:
                 # Delivery failed at SMTP time for some or all of the
                 # recipients.  Permanent failures are registered as bounces,
