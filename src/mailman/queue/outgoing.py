@@ -89,13 +89,12 @@ class OutgoingRunner(Runner, BounceMixin):
             # There was a problem connecting to the SMTP server.  Log this
             # once, but crank up our sleep time so we don't fill the error
             # log.
-            port = int(config.mta.port)
+            port = int(config.mta.smtp_port)
             if port == 0:
-                port = 'smtp'
-            # Log this just once.
+                port = 'smtp'            # Log this just once.
             if not self._logged:
                 log.error('Cannot connect to SMTP server %s on port %s',
-                          config.mta.host, port)
+                          config.mta.smtp_host, port)
                 self._logged = True
             return True
         except SomeRecipientsFailed as error:

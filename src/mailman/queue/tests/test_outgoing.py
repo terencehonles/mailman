@@ -25,6 +25,9 @@ __all__ = [
     ]
 
 
+import os
+import socket
+import logging
 import unittest
 
 from contextlib import contextmanager
@@ -230,11 +233,89 @@ Message-Id: <first>
         msgdata = {}
         self._outq.enqueue(self._msg, msgdata, listname='test@example.com')
         with temporary_config('personalize', """
-        [mta]
-        verp_delivery_interval: 5
-        """):
+            [mta]
+            verp_delivery_interval: 5
+            """):
             self._runner.run()
         self.assertEqual(captured_msgdata['verp'], False)
+
+
+
+def raise_socket_error(mlist, msg, msgdata):
+    raise socket.error
+
+
+class TestSocketError(unittest.TestCase):
+    """Test socket.error occurring in the delivery function."""
+
+    layer = ConfigLayer
+
+    def setUp(self):
+        # Push a config where actual delivery is handled by a dummy function.
+        # We generally don't care what this does, since we're just testing the
+        # setting of the 'verp' key in the metadata.
+        config.push('fake outgoing', """
+        [mta]
+        outgoing: mailman.queue.tests.test_outgoing.raise_socket_error
+        """)
+        self._mlist = create_list('test@example.com')
+        self._outq = config.switchboards['out']
+        self._runner = make_testable_runner(OutgoingRunner, 'out', run_once)
+        self._msg = message_from_string("""\
+From: anne@example.com
+To: test@example.com
+Message-Id: <first>
+
+""")
+
+    def tearDown(self):
+        config.pop('fake outgoing')
+
+    def test_error_with_port_0(self):
+        # Test the code path where a socket.error is raised in the delivery
+        # function, and the MTA port is set to zero.  The only real effect of
+        # that is a log message.  Start by opening the error log and reading
+        # the current file position.
+        error_log = logging.getLogger('mailman.error')
+        filename = error_log.handlers[0].filename
+        filepos = os.stat(filename).st_size
+        self._outq.enqueue(self._msg, {}, listname='test@example.com')
+        with temporary_config('port 0', """
+            [mta]
+            smtp_port: 0
+            """):
+            self._runner.run()
+        with open(filename) as fp:
+            fp.seek(filepos)
+            line = fp.readline()
+        # The log line will contain a variable timestamp, the PID, and a
+        # trailing newline.  Ignore these.
+        self.assertEqual(
+            line[-53:-1],
+            'Cannot connect to SMTP server localhost on port smtp')
+
+    def test_error_with_numeric_port(self):
+        # Test the code path where a socket.error is raised in the delivery
+        # function, and the MTA port is set to zero.  The only real effect of
+        # that is a log message.  Start by opening the error log and reading
+        # the current file position.
+        error_log = logging.getLogger('mailman.error')
+        filename = error_log.handlers[0].filename
+        filepos = os.stat(filename).st_size
+        self._outq.enqueue(self._msg, {}, listname='test@example.com')
+        with temporary_config('port 0', """
+            [mta]
+            smtp_port: 2112
+            """):
+            self._runner.run()
+        with open(filename) as fp:
+            fp.seek(filepos)
+            line = fp.readline()
+        # The log line will contain a variable timestamp, the PID, and a
+        # trailing newline.  Ignore these.
+        self.assertEqual(
+            line[-53:-1],
+            'Cannot connect to SMTP server localhost on port 2112')
 
 
 
@@ -242,4 +323,5 @@ def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestOnce))
     suite.addTest(unittest.makeSuite(TestVERPSettings))
+    suite.addTest(unittest.makeSuite(TestSocketError))
     return suite
