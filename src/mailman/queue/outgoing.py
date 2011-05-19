@@ -41,6 +41,7 @@ from mailman.utilities.modules import find_name
 DEAL_WITH_PERMFAILURES_EVERY = 10
 
 log = logging.getLogger('mailman.error')
+smtp_log = logging.getLogger('mailman.smtp')
 
 
 
@@ -140,13 +141,17 @@ class OutgoingRunner(Runner, BounceMixin):
                     last_recip_count = msgdata.get('last_recip_count', 0)
                     deliver_until = msgdata.get('deliver_until', current_time)
                     if len(recipients) == last_recip_count:
-                        # We didn't make any progress, so don't attempt
-                        # delivery any longer.  BAW: is this the best
-                        # disposition?
+                        # We didn't make any progress.  If we've exceeded the
+                        # configured retry period, log this failure and
+                        # discard the message.
                         if current_time > deliver_until:
+                            smtp_log.error('Discarding message with '
+                                           'persistent temporary failures: '
+                                           '{0}'.format(msg['message-id']))
                             return False
                     else:
-                        # Keep trying to delivery this message for a while
+                        # We made some progress, so keep trying to delivery
+                        # this message for a while longer.
                         deliver_until = current_time + as_timedelta(
                             config.mta.delivery_retry_period)
                     msgdata['last_recip_count'] = len(recipients)

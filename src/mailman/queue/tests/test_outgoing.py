@@ -50,7 +50,20 @@ from mailman.testing.helpers import (
     make_testable_runner,
     specialized_message_from_string as message_from_string)
 from mailman.testing.layers import ConfigLayer, SMTPLayer
-from mailman.utilities.datetime import now
+from mailman.utilities.datetime import factory, now
+
+
+
+class LogFileMark:
+    def __init__(self, log_name):
+        self._log = logging.getLogger(log_name)
+        self._filename = self._log.handlers[0].filename
+        self._filepos = os.stat(self._filename).st_size
+
+    def readline(self):
+        with open(self._filename) as fp:
+            fp.seek(self._filepos)
+            return fp.readline()
 
 
 
@@ -307,18 +320,14 @@ Message-Id: <first>
         # function, and the MTA port is set to zero.  The only real effect of
         # that is a log message.  Start by opening the error log and reading
         # the current file position.
-        error_log = logging.getLogger('mailman.error')
-        filename = error_log.handlers[0].filename
-        filepos = os.stat(filename).st_size
+        mark = LogFileMark('mailman.error')
         self._outq.enqueue(self._msg, {}, listname='test@example.com')
         with temporary_config('port 0', """
             [mta]
             smtp_port: 2112
             """):
             self._runner.run()
-        with open(filename) as fp:
-            fp.seek(filepos)
-            line = fp.readline()
+        line = mark.readline()
         # The log line will contain a variable timestamp, the PID, and a
         # trailing newline.  Ignore these.
         self.assertEqual(
@@ -494,6 +503,52 @@ Message-Id: <first>
         self.assertEqual(len(items), 1)
         self.assertEqual(items[0].msgdata['recipients'],
                          ['gwen@example.com', 'herb@example.com'])
+
+    def test_no_progress_on_retries_within_retry_period(self):
+        # Temporary failures cause queuing for a retry later on, unless no
+        # progress is being made on the retries and we've tried for the
+        # specified delivery retry period.  This test ensures that even if no
+        # progress is made, if the retry period hasn't expired, the message
+        # will be requeued.
+        temporary_failures.append('iona@example.com')
+        temporary_failures.append('jeff@example.com')
+        deliver_until = (datetime(2005, 8, 1, 7, 49, 23) +
+                         as_timedelta(config.mta.delivery_retry_period))
+        msgdata = dict(last_recip_count=2,
+                       deliver_until=deliver_until)
+        self._outq.enqueue(self._msg, msgdata, listname='test@example.com')
+        self._runner.run()
+        # The retry queue should have our message waiting to be retried.
+        items = get_queue_messages('retry')
+        self.assertEqual(len(items), 1)
+        self.assertEqual(items[0].msgdata['deliver_until'], deliver_until)
+        self.assertEqual(items[0].msgdata['recipients'],
+                         ['iona@example.com', 'jeff@example.com'])
+
+    def test_no_progress_on_retries_with_expired_retry_period(self):
+        # We've had temporary failures with no progress, and the retry period
+        # has expired.  In that case, a log entry is written and message is
+        # discarded.  There's nothing more that can be done.
+        temporary_failures.append('kira@example.com')
+        temporary_failures.append('lonn@example.com')
+        retry_period = as_timedelta(config.mta.delivery_retry_period)
+        deliver_until = datetime(2005, 8, 1, 7, 49, 23) + retry_period
+        msgdata = dict(last_recip_count=2,
+                       deliver_until=deliver_until)
+        self._outq.enqueue(self._msg, msgdata, listname='test@example.com')
+        # Before the queue runner runs, several days pass.
+        factory.fast_forward(retry_period.days + 1)
+        mark = LogFileMark('mailman.smtp')
+        self._runner.run()
+        # There should be no message in the retry or outgoing queues.
+        self.assertEqual(len(get_queue_messages('retry')), 0)
+        self.assertEqual(len(get_queue_messages('out')), 0)
+        # There should be a log message in the smtp log indicating that the
+        # message has been discarded.
+        line = mark.readline()
+        self.assertEqual(
+            line[-63:-1],
+            'Discarding message with persistent temporary failures: <first>')
 
 
 
