@@ -31,7 +31,6 @@ from mailman.interfaces.membership import ISubscriptionService
 from mailman.interfaces.mta import SomeRecipientsFailed
 from mailman.interfaces.pending import IPendings
 from mailman.queue import Runner
-from mailman.queue.bounce import BounceMixin
 from mailman.utilities.datetime import now
 from mailman.utilities.modules import find_name
 
@@ -45,12 +44,11 @@ smtp_log = logging.getLogger('mailman.smtp')
 
 
 
-class OutgoingRunner(Runner, BounceMixin):
+class OutgoingRunner(Runner):
     """The outgoing queue runner."""
 
     def __init__(self, slice=None, numslices=1):
-        Runner.__init__(self, slice, numslices)
-        BounceMixin.__init__(self)
+        super(OutgoingRunner, self).__init__(slice, numslices)
         # We look this function up only at startup time.
         self._func = find_name(config.mta.outgoing)
         # This prevents smtp server connection problems from filling up the
@@ -160,9 +158,3 @@ class OutgoingRunner(Runner, BounceMixin):
                     self._retryq.enqueue(msg, msgdata)
         # We've successfully completed handling of this message
         return False
-
-    _do_periodic = BounceMixin._do_periodic
-
-    def _clean_up(self):
-        BounceMixin._clean_up(self)
-        Runner._clean_up(self)
