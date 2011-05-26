@@ -20,6 +20,7 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
+    'LogFileMark',
     'TestableMaster',
     'call_api',
     'digest_mbox',
@@ -39,6 +40,7 @@ import time
 import errno
 import signal
 import socket
+import logging
 import smtplib
 import datetime
 import threading
@@ -371,7 +373,7 @@ def reset_the_world():
     config.db.commit()
     # Reset the global style manager.
     config.style_manager.populate()
-    
+
 
 
 def specialized_message_from_string(unicode_text):
@@ -391,3 +393,16 @@ def specialized_message_from_string(unicode_text):
     message = message_from_string(text, Message)
     message.original_size = original_size
     return message
+
+
+
+class LogFileMark:
+    def __init__(self, log_name):
+        self._log = logging.getLogger(log_name)
+        self._filename = self._log.handlers[0].filename
+        self._filepos = os.stat(self._filename).st_size
+
+    def readline(self):
+        with open(self._filename) as fp:
+            fp.seek(self._filepos)
+            return fp.readline()

@@ -156,5 +156,5 @@ class OutgoingRunner(Runner):
                     msgdata['deliver_until'] = deliver_until
                     msgdata['recipients'] = recipients
                     self._retryq.enqueue(msg, msgdata)
-        # We've successfully completed handling of this message
+        # We've successfully completed handling of this message.
         return False

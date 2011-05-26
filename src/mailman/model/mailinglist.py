@@ -120,9 +120,10 @@ class MailingList(Model):
     bounce_notify_owner_on_removal = Bool() # XXX
     bounce_processing = Bool() # XXX
     bounce_score_threshold = Int() # XXX
-    bounce_unrecognized_goes_to_list_owner = Bool() # XXX
     bounce_you_are_disabled_warnings = Int() # XXX
     bounce_you_are_disabled_warnings_interval = TimeDelta() # XXX
+    forward_unrecognized_bounces_to = Enum()
+    # Miscellaneous
     default_member_action = Enum()
     default_nonmember_action = Enum()
     description = Unicode()

@@ -32,14 +32,18 @@ import unittest
 
 from zope.component import getUtility
 
-from mailman.app.bounces import StandardVERP, ProbeVERP, send_probe
+from mailman.app.bounces import (
+    ProbeVERP, StandardVERP, maybe_forward, send_probe)
 from mailman.app.lifecycle import create_list
 from mailman.app.membership import add_member
 from mailman.config import config
+from mailman.interfaces.bounce import UnrecognizedBounceDisposition
 from mailman.interfaces.languages import ILanguageManager
-from mailman.interfaces.member import DeliveryMode
+from mailman.interfaces.member import DeliveryMode, MemberRole
 from mailman.interfaces.pending import IPendings
+from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
+    LogFileMark,
     get_queue_messages,
     specialized_message_from_string as message_from_string)
 from mailman.testing.layers import ConfigLayer
@@ -365,8 +369,139 @@ From: mail-daemon@example.com
 
 
 
+class TestMaybeForward(unittest.TestCase):
+    """Test forwarding of unrecognized bounces."""
+
+    layer = ConfigLayer
+
+    def setUp(self):
+        config.push('test config', """
+        [mailman]
+        site_owner: postmaster@example.com
+        """)
+        self._mlist = create_list('test@example.com')
+        self._msg = message_from_string("""\
+From: bouncer@example.com
+To: test-bounces@example.com
+Subject: You bounced
+Message-ID: <first>
+
+""")
+
+    def tearDown(self):
+        config.pop('test config')
+
+    def test_maybe_forward_discard(self):
+        # When forward_unrecognized_bounces_to is set to discard, no bounce
+        # messages are forwarded.
+        self._mlist.forward_unrecognized_bounces_to = (
+            UnrecognizedBounceDisposition.discard)
+        # The only artifact of this call is a log file entry.
+        mark = LogFileMark('mailman.bounce')
+        maybe_forward(self._mlist, self._msg)
+        items = get_queue_messages('virgin')
+        self.assertEqual(len(items), 0)
+        line = mark.readline()
+        self.assertEqual(
+            line[-40:-1],
+            'Discarding unrecognized bounce: <first>')
+
+    def test_maybe_forward_list_owner(self):
+        # Set up some owner and moderator addresses.
+        user_manager = getUtility(IUserManager)
+        anne = user_manager.create_address('anne@example.com')
+        bart = user_manager.create_address('bart@example.com')
+        cris = user_manager.create_address('cris@example.com')
+        dave = user_manager.create_address('dave@example.com')
+        # Regular members.
+        elle = user_manager.create_address('elle@example.com')
+        fred = user_manager.create_address('fred@example.com')
+        self._mlist.subscribe(anne, MemberRole.owner)
+        self._mlist.subscribe(bart, MemberRole.owner)
+        self._mlist.subscribe(cris, MemberRole.moderator)
+        self._mlist.subscribe(dave, MemberRole.moderator)
+        self._mlist.subscribe(elle, MemberRole.member)
+        self._mlist.subscribe(fred, MemberRole.member)
+        # When forward_unrecognized_bounces_to is set to owners, the
+        # bounce is forwarded to the list owners and moderators.
+        self._mlist.forward_unrecognized_bounces_to = (
+            UnrecognizedBounceDisposition.administrators)
+        maybe_forward(self._mlist, self._msg)
+        items = get_queue_messages('virgin')
+        self.assertEqual(len(items), 1)
+        msg = items[0].msg
+        self.assertEqual(msg['subject'], 'Uncaught bounce notification')
+        self.assertEqual(msg['from'], 'postmaster@example.com')
+        self.assertEqual(msg['to'], 'test-owner@example.com')
+        # The first attachment is a notification message with a url.
+        payload = msg.get_payload(0)
+        self.assertEqual(payload.get_content_type(), 'text/plain')
+        body = payload.get_payload()
+        self.assertEqual(
+            body.splitlines()[-1],
+            'http://lists.example.com/admin/test@example.com/bounce')
+        # The second attachment should be a message/rfc822 containing the
+        # original bounce message.
+        payload = msg.get_payload(1)
+        self.assertEqual(payload.get_content_type(), 'message/rfc822')
+        bounce = payload.get_payload(0)
+        self.assertEqual(bounce.as_string(), self._msg.as_string())
+        # All of the owners and moderators, but none of the members, should be
+        # recipients of this message.
+        self.assertEqual(items[0].msgdata['recipients'],
+                         set(['anne@example.com', 'bart@example.com',
+                              'cris@example.com', 'dave@example.com']))
+
+    def test_maybe_forward_site_owner(self):
+        # Set up some owner and moderator addresses.
+        user_manager = getUtility(IUserManager)
+        anne = user_manager.create_address('anne@example.com')
+        bart = user_manager.create_address('bart@example.com')
+        cris = user_manager.create_address('cris@example.com')
+        dave = user_manager.create_address('dave@example.com')
+        # Regular members.
+        elle = user_manager.create_address('elle@example.com')
+        fred = user_manager.create_address('fred@example.com')
+        self._mlist.subscribe(anne, MemberRole.owner)
+        self._mlist.subscribe(bart, MemberRole.owner)
+        self._mlist.subscribe(cris, MemberRole.moderator)
+        self._mlist.subscribe(dave, MemberRole.moderator)
+        self._mlist.subscribe(elle, MemberRole.member)
+        self._mlist.subscribe(fred, MemberRole.member)
+        # When forward_unrecognized_bounces_to is set to owners, the
+        # bounce is forwarded to the list owners and moderators.
+        self._mlist.forward_unrecognized_bounces_to = (
+            UnrecognizedBounceDisposition.site_owner)
+        maybe_forward(self._mlist, self._msg)
+        items = get_queue_messages('virgin')
+        self.assertEqual(len(items), 1)
+        msg = items[0].msg
+        self.assertEqual(msg['subject'], 'Uncaught bounce notification')
+        self.assertEqual(msg['from'], 'postmaster@example.com')
+        self.assertEqual(msg['to'], 'postmaster@example.com')
+        # The first attachment is a notification message with a url.
+        payload = msg.get_payload(0)
+        self.assertEqual(payload.get_content_type(), 'text/plain')
+        body = payload.get_payload()
+        self.assertEqual(
+            body.splitlines()[-1],
+            'http://lists.example.com/admin/test@example.com/bounce')
+        # The second attachment should be a message/rfc822 containing the
+        # original bounce message.
+        payload = msg.get_payload(1)
+        self.assertEqual(payload.get_content_type(), 'message/rfc822')
+        bounce = payload.get_payload(0)
+        self.assertEqual(bounce.as_string(), self._msg.as_string())
+        # All of the owners and moderators, but none of the members, should be
+        # recipients of this message.
+        self.assertEqual(items[0].msgdata['recipients'],
+                         set(['postmaster@example.com',]))
+
+
+
 def test_suite():
     suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(TestMaybeForward))
     suite.addTest(unittest.makeSuite(TestProbe))
     suite.addTest(unittest.makeSuite(TestSendProbe))
     suite.addTest(unittest.makeSuite(TestSendProbeNonEnglish))

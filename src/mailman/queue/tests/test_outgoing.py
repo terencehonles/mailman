@@ -46,24 +46,12 @@ from mailman.interfaces.pending import IPendings
 from mailman.interfaces.usermanager import IUserManager
 from mailman.queue.outgoing import OutgoingRunner
 from mailman.testing.helpers import (
+    LogFileMark,
     get_queue_messages,
     make_testable_runner,
     specialized_message_from_string as message_from_string)
 from mailman.testing.layers import ConfigLayer, SMTPLayer
 from mailman.utilities.datetime import factory, now
-
-
-
-class LogFileMark:
-    def __init__(self, log_name):
-        self._log = logging.getLogger(log_name)
-        self._filename = self._log.handlers[0].filename
-        self._filepos = os.stat(self._filename).st_size
-
-    def readline(self):
-        with open(self._filename) as fp:
-            fp.seek(self._filepos)
-            return fp.readline()
 
 
 

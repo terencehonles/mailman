@@ -26,6 +26,7 @@ __all__ = [
     'IBounceEvent',
     'IBounceProcessor',
     'Stop',
+    'UnrecognizedBounceDisposition',
     ]
 
 
@@ -52,6 +53,17 @@ class BounceContext(Enum):
     # A probe email bounced.  This can be considered a bit more serious, since
     # it occurred in response to a specific message to a specific user.
     probe = 2
+
+
+
+class UnrecognizedBounceDisposition(Enum):
+    # Just throw the message away.
+    discard = 0
+    # Forward the message to the list administrators, which includes both the
+    # owners and the moderators.
+    administrators = 1
+    # Forward the message to the site owner.
+    site_owner = 2
 
 
 

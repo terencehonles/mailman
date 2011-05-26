@@ -162,7 +162,7 @@ class Message(email.message.Message):
 class UserNotification(Message):
     """Class for internally crafted messages."""
 
-    def __init__(self, recip, sender, subject=None, text=None, lang=None):
+    def __init__(self, recipients, sender, subject=None, text=None, lang=None):
         Message.__init__(self)
         charset = (lang.charset if lang is not None else 'us-ascii')
         subject = ('(no subject)' if subject is None else subject)
@@ -171,12 +171,12 @@ class UserNotification(Message):
         self['Subject'] = Header(subject.encode(charset), charset,
                                  header_name='Subject', errors='replace')
         self['From'] = sender
-        if isinstance(recip, list):
-            self['To'] = COMMASPACE.join(recip)
-            self.recips = recip
+        if isinstance(recipients, (list, set, tuple)):
+            self['To'] = COMMASPACE.join(recipients)
+            self.recipients = recipients
         else:
-            self['To'] = recip
-            self.recips = [recip]
+            self['To'] = recipients
+            self.recipients = set([recipients])
 
     def send(self, mlist, **_kws):
         """Sends the message by enqueuing it to the 'virgin' queue.
@@ -202,7 +202,7 @@ class UserNotification(Message):
         virginq = config.switchboards['virgin']
         # The message metadata better have a 'recip' attribute.
         enqueue_kws = dict(
-            recipients=self.recips,
+            recipients=self.recipients,
             nodecorate=True,
             reduced_list_headers=True,
             )
@@ -218,20 +218,21 @@ class UserNotification(Message):
 
 
 class OwnerNotification(UserNotification):
-    """Like user notifications, but this message goes to the list owners."""
+    """Like user notifications, but this message goes to some owners."""
 
-    def __init__(self, mlist, subject=None, text=None, tomoderators=True):
-        if tomoderators:
-            roster = mlist.moderators
+    def __init__(self, mlist, subject=None, text=None, roster=None):
+        if roster is None:
+            recipients = set([config.mailman.site_owner])
+            to = config.mailman.site_owner
         else:
-            roster = mlist.owners
-        recips = [address.address for address in roster.addresses]
+            recipients = set(address.email for address in roster.addresses)
+            to = mlist.owner_address
         sender = config.mailman.site_owner
-        UserNotification.__init__(self, recips, sender, subject,
+        UserNotification.__init__(self, recipients, sender, subject,
                                   text, mlist.preferred_language)
         # Hack the To header to look like it's going to the -owner address
         del self['to']
-        self['To'] = mlist.owner_address
+        self['To'] = to
         self._sender = sender
 
     def _enqueue(self, mlist, **_kws):
@@ -240,7 +241,7 @@ class OwnerNotification(UserNotification):
         # The message metadata better have a `recip' attribute
         virginq.enqueue(self,
                         listname=mlist.fqdn_listname,
-                        recipients=self.recips,
+                        recipients=self.recipients,
                         nodecorate=True,
                         reduced_list_headers=True,
                         envsender=self._sender,
