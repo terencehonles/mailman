@@ -505,6 +505,9 @@ class IMailingList(Interface):
         forwarded to the site owner.
         """)
 
+    process_bounces = Attribute(
+        """Whether or not the mailing list processes bounces.""")
+
 
 
 class IAcceptableAlias(Interface):
