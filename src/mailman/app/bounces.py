@@ -24,6 +24,7 @@ __all__ = [
     'ProbeVERP',
     'StandardVERP',
     'bounce_message',
+    'maybe_forward',
     'scan_message',
     'send_probe',
     ]
@@ -42,8 +43,9 @@ from zope.interface import implements
 from mailman.app.finder import find_components
 from mailman.config import config
 from mailman.core.i18n import _
-from mailman.email.message import UserNotification
-from mailman.interfaces.bounce import IBounceDetector
+from mailman.email.message import OwnerNotification, UserNotification
+from mailman.interfaces.bounce import (
+    IBounceDetector, Stop, UnrecognizedBounceDisposition)
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.membership import ISubscriptionService
 from mailman.interfaces.pending import IPendable, IPendings
@@ -53,6 +55,7 @@ from mailman.utilities.string import oneline
 
 log = logging.getLogger('mailman.config')
 elog = logging.getLogger('mailman.error')
+blog = logging.getLogger('mailman.bounce')
 
 DOT = '.'
 
@@ -104,13 +107,15 @@ def scan_message(mlist, msg):
         set will be empty if no addresses were found.
     :rtype: set
     """
+    fatal_addresses = set()
     for detector_class in find_components('mailman.bouncers', IBounceDetector):
         addresses = detector_class().process(msg)
-        # Detectors may return None or an empty sequence to signify that no
-        # addresses have been found.
-        if addresses:
-            return set(addresses)
-    return set()
+        # Detectors may return Stop to signify that no fatal errors were
+        # found, or a sequence of addresses.
+        if addresses is Stop:
+            return Stop
+        fatal_addresses.update(addresses)
+    return fatal_addresses
 
 
 
@@ -245,3 +250,43 @@ def send_probe(member, msg):
     probe.attach(MIMEMessage(msg))
     probe.send(mlist, envsender=probe_sender, verp=False, probe_token=token)
     return token
+
+
+
+def maybe_forward(mlist, msg):
+    """Possibly forward bounce messages with no recognizable addresses.
+
+    :param mlist: The mailing list.
+    :type mlist: `IMailingList`
+    :param msg: The bounce message to scan.
+    :type msg: `Message`
+    """
+    message_id = msg['message-id']
+    if (mlist.forward_unrecognized_bounces_to
+        == UnrecognizedBounceDisposition.discard):
+        blog.error('Discarding unrecognized bounce: {0}'.format(message_id))
+        return
+    # The notification is either going to go to the list's administrators
+    # (owners and moderators), or to the site administrators.  Most of the
+    # notification is exactly the same in either case.
+    adminurl = mlist.script_url('admin') + '/bounce'
+    subject=_('Uncaught bounce notification')
+    text = MIMEText(
+        make('unrecognized.txt', mlist, adminurl=adminurl),
+        _charset=mlist.preferred_language.charset)
+    attachment = MIMEMessage(msg)
+    if (mlist.forward_unrecognized_bounces_to
+        == UnrecognizedBounceDisposition.administrators):
+        keywords = dict(roster=mlist.administrators)
+    elif (mlist.forward_unrecognized_bounces_to
+        == UnrecognizedBounceDisposition.site_owner):
+        keywords = {}
+    else:
+        raise AssertionError('Invalid forwarding disposition: {0}'.format(
+                             mlist.forward_unrecognized_bounces_to))
+    # Create the notification and send it.
+    notice = OwnerNotification(mlist, subject, **keywords)
+    notice.set_type('multipart/mixed')
+    notice.attach(text)
+    notice.attach(attachment)
+    notice.send(mlist)

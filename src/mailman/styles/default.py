@@ -24,6 +24,7 @@ __all__ = [
     'DefaultStyle',
     ]
 
+
 # XXX Styles need to be reconciled with lazr.config.
 
 import datetime
@@ -32,6 +33,7 @@ from zope.interface import implements
 
 from mailman.core.i18n import _
 from mailman.interfaces.action import Action
+from mailman.interfaces.bounce import UnrecognizedBounceDisposition
 from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.autorespond import ResponseAction
 from mailman.interfaces.mailinglist import Personalization, ReplyToMunging
@@ -161,13 +163,14 @@ ${listinfo_page}
         mlist.autoresponse_request_text = ''
         mlist.autoresponse_grace_period = datetime.timedelta(days=90)
         # Bounces
+        mlist.forward_unrecognized_bounces_to = (
+            UnrecognizedBounceDisposition.administrators)
         mlist.bounce_processing = True
         mlist.bounce_score_threshold = 5.0
         mlist.bounce_info_stale_after = datetime.timedelta(days=7)
         mlist.bounce_you_are_disabled_warnings = 3
         mlist.bounce_you_are_disabled_warnings_interval = (
             datetime.timedelta(days=7))
-        mlist.bounce_unrecognized_goes_to_list_owner = True
         mlist.bounce_notify_owner_on_disable = True
         mlist.bounce_notify_owner_on_removal = True
         # This holds legacy member related information.  It's keyed by the

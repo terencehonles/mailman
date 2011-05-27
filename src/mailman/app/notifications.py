@@ -131,5 +131,5 @@ def send_admin_subscription_notice(mlist, address, full_name, language):
                 listname=mlist.real_name,
                 member=formataddr((full_name, address)),
                 )
-    msg = OwnerNotification(mlist, subject, text)
+    msg = OwnerNotification(mlist, subject, text, roster=mlist.administrators)
     msg.send(mlist)

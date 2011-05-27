@@ -7,7 +7,7 @@ receive acknowledgments of their postings, Mailman will sent them such an
 acknowledgment.
 ::
 
-    >>> mlist = create_list('_xtest@example.com')
+    >>> mlist = create_list('test@example.com')
     >>> mlist.real_name = 'XTest'
     >>> mlist.preferred_language = 'en'
     >>> # XXX This will almost certainly change once we've worked out the web
@@ -30,7 +30,7 @@ Subscribe a user to the mailing list.
     >>> user_1 = user_manager.create_user('aperson@example.com')
     >>> address_1 = list(user_1.addresses)[0]
     >>> mlist.subscribe(address_1, MemberRole.member)
-    <Member: aperson@example.com on _xtest@example.com as MemberRole.member>
+    <Member: aperson@example.com on test@example.com as MemberRole.member>
 
 
 Non-member posts
@@ -83,7 +83,7 @@ will be sent.
     >>> user_2 = user_manager.create_user('dperson@example.com')
     >>> address_2 = list(user_2.addresses)[0]
     >>> mlist.subscribe(address_2, MemberRole.member)
-    <Member: dperson@example.com on _xtest@example.com as MemberRole.member>
+    <Member: dperson@example.com on test@example.com as MemberRole.member>
 
     >>> handler.process(mlist, msg,
     ...     dict(original_sender='dperson@example.com'))
@@ -112,14 +112,19 @@ The receipt will include the original message's subject in the response body,
     >>> qmsg, qdata = virginq.dequeue(virginq.files[0])
     >>> virginq.files
     []
-    >>> sorted(qdata.items())
-    [..., ('recipients', [u'aperson@example.com']), ...]
+    >>> dump_msgdata(qdata)
+    _parsemsg           : False
+    listname            : test@example.com
+    nodecorate          : True
+    recipients          : set([u'aperson@example.com'])
+    reduced_list_headers: True
+    ...
     >>> print qmsg.as_string()
     ...
     MIME-Version: 1.0
     ...
     Subject: XTest post acknowledgment
-    From: _xtest-bounces@example.com
+    From: test-bounces@example.com
     To: aperson@example.com
     ...
     Precedence: bulk
@@ -130,7 +135,7 @@ The receipt will include the original message's subject in the response body,
     <BLANKLINE>
     was successfully received by the XTest mailing list.
     <BLANKLINE>
-    List info page: http://lists.example.com/listinfo/_xtest@example.com
+    List info page: http://lists.example.com/listinfo/test@example.com
     Your preferences: http://example.com/aperson@example.com
     <BLANKLINE>
 
@@ -146,13 +151,18 @@ If there is no subject, then the receipt will use a generic message.
     >>> qmsg, qdata = virginq.dequeue(virginq.files[0])
     >>> virginq.files
     []
-    >>> sorted(qdata.items())
-    [..., ('recipients', [u'aperson@example.com']), ...]
+    >>> dump_msgdata(qdata)
+    _parsemsg           : False
+    listname            : test@example.com
+    nodecorate          : True
+    recipients          : set([u'aperson@example.com'])
+    reduced_list_headers: True
+    ...
     >>> print qmsg.as_string()
     MIME-Version: 1.0
     ...
     Subject: XTest post acknowledgment
-    From: _xtest-bounces@example.com
+    From: test-bounces@example.com
     To: aperson@example.com
     ...
     Precedence: bulk
@@ -163,6 +173,6 @@ If there is no subject, then the receipt will use a generic message.
     <BLANKLINE>
     was successfully received by the XTest mailing list.
     <BLANKLINE>
-    List info page: http://lists.example.com/listinfo/_xtest@example.com
+    List info page: http://lists.example.com/listinfo/test@example.com
     Your preferences: http://example.com/aperson@example.com
     <BLANKLINE>

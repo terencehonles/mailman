@@ -51,7 +51,7 @@ response.
     _parsemsg           : False
     listname            : _xtest@example.com
     nodecorate          : True
-    recipients          : [u'aperson@example.com']
+    recipients          : set([u'aperson@example.com'])
     reduced_list_headers: True
     version             : 3
 
@@ -143,7 +143,7 @@ Unless the ``X-Ack:`` header has a value of ``yes``, in which case, the
     _parsemsg           : False
     listname            : _xtest@example.com
     nodecorate          : True
-    recipients          : [u'asystem@example.com']
+    recipients          : set([u'asystem@example.com'])
     reduced_list_headers: True
     version             : 3
 

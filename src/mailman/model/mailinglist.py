@@ -118,11 +118,12 @@ class MailingList(Model):
     bounce_matching_headers = Unicode() # XXX
     bounce_notify_owner_on_disable = Bool() # XXX
     bounce_notify_owner_on_removal = Bool() # XXX
-    bounce_processing = Bool() # XXX
     bounce_score_threshold = Int() # XXX
-    bounce_unrecognized_goes_to_list_owner = Bool() # XXX
     bounce_you_are_disabled_warnings = Int() # XXX
     bounce_you_are_disabled_warnings_interval = TimeDelta() # XXX
+    forward_unrecognized_bounces_to = Enum()
+    process_bounces = Bool()
+    # Miscellaneous
     default_member_action = Enum()
     default_nonmember_action = Enum()
     description = Unicode()
@@ -195,7 +196,7 @@ class MailingList(Model):
         # For the pending database
         self.next_request_id = 1
         self._restore()
-        self.personalization = Personalization.none
+        self.personalize = Personalization.none
         self.real_name = string.capwords(
             SPACE.join(listname.split(UNDERSCORE)))
         makedirs(self.data_path)

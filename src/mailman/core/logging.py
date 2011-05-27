@@ -57,11 +57,11 @@ class ReopenableFileHandler(logging.Handler):
     def __init__(self, name, filename):
         logging.Handler.__init__(self)
         self.name = name
-        self._filename = filename
+        self.filename = filename
         self._stream = self._open()
 
     def _open(self):
-        return codecs.open(self._filename, 'a', 'utf-8')
+        return codecs.open(self.filename, 'a', 'utf-8')
 
     def flush(self):
         if self._stream:
@@ -98,7 +98,7 @@ class ReopenableFileHandler(logging.Handler):
         :type filename: string
         """
         if filename is not None:
-            self._filename = filename
+            self.filename = filename
         self._stream.close()
         self._stream = self._open()
 

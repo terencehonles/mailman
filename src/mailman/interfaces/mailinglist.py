@@ -495,6 +495,19 @@ class IMailingList(Interface):
         without any other checks.
         """)
 
+    # Bounces.
+
+    forward_unrecognized_bounces_to = Attribute(
+        """What to do when a bounce contains no recognizable addresses.
+
+        This is an enumeration which specifies what to do with such bounce
+        messages.  They can be discarded, forward to the list owner, or
+        forwarded to the site owner.
+        """)
+
+    process_bounces = Attribute(
+        """Whether or not the mailing list processes bounces.""")
+
 
 
 class IAcceptableAlias(Interface):

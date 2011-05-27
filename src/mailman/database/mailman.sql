@@ -54,6 +54,17 @@ CREATE INDEX ix_autoresponserecord_address_id
 CREATE INDEX ix_autoresponserecord_mailing_list_id
     ON autoresponserecord (mailing_list_id);
 
+CREATE TABLE bounceevent (
+    id INTEGER NOT NULL,
+    list_name TEXT,
+    email TEXT,
+    'timestamp' TIMESTAMP,
+    message_id TEXT,
+    context TEXT,
+    processed BOOLEAN,
+    PRIMARY KEY (id)
+    );
+
 CREATE TABLE contentfilter (
     id INTEGER NOT NULL,
     mailing_list_id INTEGER,
@@ -116,13 +127,13 @@ CREATE TABLE mailinglist (
     autoresponse_request_text TEXT,
     autoresponse_grace_period TEXT,
     -- Bounces.
+    forward_unrecognized_bounces_to TEXT,
+    process_bounces BOOLEAN,
     bounce_info_stale_after TEXT,
     bounce_matching_headers TEXT,
     bounce_notify_owner_on_disable BOOLEAN,
     bounce_notify_owner_on_removal BOOLEAN,
-    bounce_processing BOOLEAN,
     bounce_score_threshold INTEGER,
-    bounce_unrecognized_goes_to_list_owner BOOLEAN,
     bounce_you_are_disabled_warnings INTEGER,
     bounce_you_are_disabled_warnings_interval TEXT,
     -- Content filtering.

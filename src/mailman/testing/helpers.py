@@ -20,6 +20,7 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
+    'LogFileMark',
     'TestableMaster',
     'call_api',
     'digest_mbox',
@@ -39,6 +40,7 @@ import time
 import errno
 import signal
 import socket
+import logging
 import smtplib
 import datetime
 import threading
@@ -63,7 +65,7 @@ from mailman.utilities.mailbox import Mailbox
 
 
 
-def make_testable_runner(runner_class, name=None):
+def make_testable_runner(runner_class, name=None, predicate=None):
     """Create a queue runner that runs until its queue is empty.
 
     :param runner_class: The queue runner's class.
@@ -71,6 +73,10 @@ def make_testable_runner(runner_class, name=None):
     :param name: Optional queue name; if not given, it is calculated from the
         class name.
     :type name: string or None
+    :param predicate: Optional alternative predicate for deciding when to stop
+        the queue runner.  When None (the default) it stops when the queue is
+        empty.
+    :type predicate: callable that gets one argument, the queue runner.
     :return: A runner instance.
     """
 
@@ -90,7 +96,10 @@ def make_testable_runner(runner_class, name=None):
 
         def _do_periodic(self):
             """Stop when the queue is empty."""
-            self._stop = (len(self.switchboard.files) == 0)
+            if predicate is None:
+                self._stop = (len(self.switchboard.files) == 0)
+            else:
+                self._stop = predicate(self)
 
     return EmptyingRunner(name)
 
@@ -364,7 +373,7 @@ def reset_the_world():
     config.db.commit()
     # Reset the global style manager.
     config.style_manager.populate()
-    
+
 
 
 def specialized_message_from_string(unicode_text):
@@ -384,3 +393,16 @@ def specialized_message_from_string(unicode_text):
     message = message_from_string(text, Message)
     message.original_size = original_size
     return message
+
+
+
+class LogFileMark:
+    def __init__(self, log_name):
+        self._log = logging.getLogger(log_name)
+        self._filename = self._log.handlers[0].filename
+        self._filepos = os.stat(self._filename).st_size
+
+    def readline(self):
+        with open(self._filename) as fp:
+            fp.seek(self._filepos)
+            return fp.readline()

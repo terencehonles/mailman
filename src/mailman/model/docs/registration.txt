@@ -149,7 +149,7 @@ message is sent to the user in order to verify the registered address.
     _parsemsg           : False
     listname            : alpha@example.com
     nodecorate          : True
-    recipients          : [u'aperson@example.com']
+    recipients          : set([u'aperson@example.com'])
     reduced_list_headers: True
     version             : 3
 

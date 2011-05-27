@@ -154,5 +154,6 @@ def delete_member(mlist, address, admin_notif=None, userack=None):
                     listname=mlist.real_name,
                     member=formataddr((realname, address)),
                     )
-        msg = OwnerNotification(mlist, subject, text)
+        msg = OwnerNotification(mlist, subject, text,
+                                roster=mlist.administrators)
         msg.send(mlist)
