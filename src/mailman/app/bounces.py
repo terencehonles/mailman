@@ -45,7 +45,7 @@ from mailman.config import config
 from mailman.core.i18n import _
 from mailman.email.message import OwnerNotification, UserNotification
 from mailman.interfaces.bounce import (
-    IBounceDetector, UnrecognizedBounceDisposition)
+    IBounceDetector, Stop, UnrecognizedBounceDisposition)
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.membership import ISubscriptionService
 from mailman.interfaces.pending import IPendable, IPendings
@@ -107,13 +107,15 @@ def scan_message(mlist, msg):
         set will be empty if no addresses were found.
     :rtype: set
     """
+    fatal_addresses = set()
     for detector_class in find_components('mailman.bouncers', IBounceDetector):
         addresses = detector_class().process(msg)
-        # Detectors may return None or an empty sequence to signify that no
-        # addresses have been found.
-        if addresses:
-            return set(addresses)
-    return set()
+        # Detectors may return Stop to signify that no fatal errors were
+        # found, or a sequence of addresses.
+        if addresses is Stop:
+            return Stop
+        fatal_addresses.update(addresses)
+    return fatal_addresses
 
 
 

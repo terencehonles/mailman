@@ -19,9 +19,11 @@
 
 import logging
 
-from mailman.app.bounces import StandardVERP
-from mailman.config import config
-from mailman.interfaces.bounce import Stop
+from zope.component import getUtility
+
+from mailman.app.bounces import (
+    ProbeVERP, StandardVERP, maybe_forward, scan_message)
+from mailman.interfaces.bounce import BounceContext, IBounceProcessor, Stop
 from mailman.queue import Runner
 
 
@@ -35,37 +37,44 @@ elog = logging.getLogger('mailman.error')
 class BounceRunner(Runner):
     """The bounce runner."""
 
+    def __init__(self, name, slice=None):
+        super(BounceRunner, self).__init__(name, slice)
+        self._processor = getUtility(IBounceProcessor)
+
     def _dispose(self, mlist, msg, msgdata):
         # List isn't doing bounce processing?
         if not mlist.bounce_processing:
             return False
         # Try VERP detection first, since it's quick and easy
-        addrs = StandardVERP().get_verp(mlist, msg)
-        if addrs:
-            # We have an address, but check if the message is non-fatal.
-            if scan_messages(mlist, msg) is Stop:
-                return
+        context = BounceContext.normal
+        addresses = StandardVERP().get_verp(mlist, msg)
+        if addresses:
+            # We have an address, but check if the message is non-fatal.  It
+            # will be non-fatal if the bounce scanner returns Stop.  It will
+            # return a set of addresses when the bounce is fatal, but we don't
+            # care about those addresses, since we got it out of the VERP.
+            if scan_message(mlist, msg) is Stop:
+                return False
         else:
             # See if this was a probe message.
-            token = verp_probe(mlist, msg)
-            if token:
-                self._probe_bounce(mlist, token)
-                return
-            # That didn't give us anything useful, so try the old fashion
-            # bounce matching modules.
-            addrs = scan_messages(mlist, msg)
-            if addrs is Stop:
-                # This is a recognized, non-fatal notice. Ignore it.
-                return
+            addresses = ProbeVERP().get_verp(mlist, msg)
+            if addresses:
+                context = BounceContext.probe
+            else:
+                # That didn't give us anything useful, so try the old fashion
+                # bounce matching modules.
+                addresses = scan_message(mlist, msg)
+                if addresses is Stop:
+                    # This is a recognized, non-fatal notice. Ignore it.
+                    return False
         # If that still didn't return us any useful addresses, then send it on
         # or discard it.
-        if not addrs:
-            log.info('bounce message w/no discernable addresses: %s',
-                     msg.get('message-id'))
+        if len(addresses) > 0:
+            for address in addresses:
+                self._processor.register(mlist, address, msg, context)
+        else:
+            log.info('Bounce message w/no discernable addresses: %s',
+                     msg.get('message-id', 'n/a'))
             maybe_forward(mlist, msg)
-            return
-        # BAW: It's possible that there are None's in the list of addresses,
-        # although I'm unsure how that could happen.  Possibly scan_messages()
-        # can let None's sneak through.  In any event, this will kill them.
-        addrs = filter(None, addrs)
-        self._queue_bounces(mlist.fqdn_listname, addrs, msg)
+        # Dequeue this message.
+        return False
