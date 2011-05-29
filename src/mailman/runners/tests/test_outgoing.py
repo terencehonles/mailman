@@ -44,7 +44,7 @@ from mailman.interfaces.member import MemberRole
 from mailman.interfaces.mta import SomeRecipientsFailed
 from mailman.interfaces.pending import IPendings
 from mailman.interfaces.usermanager import IUserManager
-from mailman.queue.outgoing import OutgoingRunner
+from mailman.runners.outgoing import OutgoingRunner
 from mailman.testing.helpers import (
     LogFileMark,
     get_queue_messages,
@@ -129,7 +129,7 @@ class TestVERPSettings(unittest.TestCase):
         # setting of the 'verp' key in the metadata.
         config.push('fake outgoing', """
         [mta]
-        outgoing: mailman.queue.tests.test_outgoing.capture
+        outgoing: mailman.runners.tests.test_outgoing.capture
         """)
         # Reset the captured data.
         captured_mlist = None
@@ -265,7 +265,7 @@ class TestSocketError(unittest.TestCase):
         # setting of the 'verp' key in the metadata.
         config.push('fake outgoing', """
         [mta]
-        outgoing: mailman.queue.tests.test_outgoing.raise_socket_error
+        outgoing: mailman.runners.tests.test_outgoing.raise_socket_error
         """)
         self._mlist = create_list('test@example.com')
         self._outq = config.switchboards['out']
@@ -346,8 +346,8 @@ class TestSomeRecipientsFailed(unittest.TestCase):
         # We generally don't care what this does, since we're just testing the
         # setting of the 'verp' key in the metadata.
         config.push('fake outgoing', """
-        [mta]
-        outgoing: mailman.queue.tests.test_outgoing.raise_SomeRecipientsFailed
+       [mta]
+       outgoing: mailman.runners.tests.test_outgoing.raise_SomeRecipientsFailed
         """)
         self._mlist = create_list('test@example.com')
         self._outq = config.switchboards['out']

@@ -28,7 +28,7 @@ configuration section for the test runner.
     ... max_restarts: 1
     ... """)
 
-    >>> from mailman.queue import Runner
+    >>> from mailman.core.runner import Runner
     >>> class TestableRunner(Runner):
     ...     def _dispose(self, mlist, msg, msgdata):
     ...         self.msg = msg

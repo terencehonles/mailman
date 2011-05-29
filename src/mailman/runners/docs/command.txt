@@ -27,14 +27,14 @@ the sender.  The command can be in the ``Subject`` header.
 
     >>> from mailman.inject import inject_message
     >>> inject_message(mlist, msg, switchboard='command')
-    >>> from mailman.queue.command import CommandRunner
+    >>> from mailman.runners.command import CommandRunner
     >>> from mailman.testing.helpers import make_testable_runner
     >>> command = make_testable_runner(CommandRunner)
     >>> command.run()
 
 And now the response is in the ``virgin`` queue.
 
-    >>> from mailman.queue import Switchboard
+    >>> from mailman.core.switchboard import Switchboard
     >>> virgin_queue = config.switchboards['virgin']
     >>> len(virgin_queue.files)
     1

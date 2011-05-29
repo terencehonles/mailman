@@ -21,7 +21,7 @@ Mailman can archive to any number of archivers that adhere to the
     >>> archiver_queue = config.switchboards['archive']
     >>> ignore = archiver_queue.enqueue(msg, {}, listname=mlist.fqdn_listname)
 
-    >>> from mailman.queue.archive import ArchiveRunner
+    >>> from mailman.runners.archive import ArchiveRunner
     >>> from mailman.testing.helpers import make_testable_runner
     >>> runner = make_testable_runner(ArchiveRunner)
     >>> runner.run()

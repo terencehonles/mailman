@@ -32,7 +32,7 @@ from flufl.lock import Lock
 from lazr.config import as_timedelta
 
 from mailman.config import config
-from mailman.queue import Runner
+from mailman.core.runner import Runner
 
 log = logging.getLogger('mailman.error')
 

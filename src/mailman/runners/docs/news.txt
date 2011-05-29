@@ -34,7 +34,7 @@ prohibited headers.
     ... """)
     >>> msgdata = {}
 
-    >>> from mailman.queue.news import prepare_message
+    >>> from mailman.runners.news import prepare_message
     >>> prepare_message(mlist, msg, msgdata)
     >>> msgdata['prepped']
     True

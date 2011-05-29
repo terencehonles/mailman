@@ -41,10 +41,10 @@ from email.utils import formatdate, getaddresses, make_msgid
 from mailman.config import config
 from mailman.core.errors import DiscardMessage
 from mailman.core.i18n import _
+from mailman.core.runner import Runner
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus
 from mailman.pipeline.decorate import decorate
 from mailman.pipeline.scrubber import process as scrubber
-from mailman.queue import Runner
 from mailman.utilities.i18n import make
 from mailman.utilities.mailbox import Mailbox
 from mailman.utilities.string import oneline, wrap

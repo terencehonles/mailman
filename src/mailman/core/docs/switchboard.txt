@@ -15,7 +15,7 @@ Create a switchboard by giving its queue name and directory.
 
     >>> import os
     >>> queue_directory = os.path.join(config.QUEUE_DIR, 'test')
-    >>> from mailman.queue import Switchboard
+    >>> from mailman.core.switchboard import Switchboard
     >>> switchboard = Switchboard('test', queue_directory)
     >>> print switchboard.name
     test

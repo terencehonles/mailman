@@ -59,7 +59,7 @@ mail server normally would.
 
 The incoming queue runner runs until it is empty.
 
-    >>> from mailman.queue.incoming import IncomingRunner
+    >>> from mailman.runners.incoming import IncomingRunner
     >>> from mailman.testing.helpers import make_testable_runner
     >>> incoming = make_testable_runner(IncomingRunner, 'in')
     >>> incoming.run()

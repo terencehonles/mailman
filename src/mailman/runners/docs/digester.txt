@@ -72,7 +72,7 @@ There are 4 messages in the digest.
 When the queue runner runs, it processes the digest mailbox, crafting both the
 plain text (RFC 1153) digest and the MIME digest.
 
-    >>> from mailman.queue.digest import DigestRunner
+    >>> from mailman.runners.digest import DigestRunner
     >>> from mailman.testing.helpers import make_testable_runner
     >>> runner = make_testable_runner(DigestRunner)
     >>> runner.run()

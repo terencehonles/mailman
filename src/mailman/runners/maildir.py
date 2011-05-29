@@ -57,8 +57,9 @@ from email.parser import Parser
 from email.utils import parseaddr
 
 from mailman.config import config
+from mailman.core.runner import Runner
+from mailman.core.switchboard import Switchboard
 from mailman.message import Message
-from mailman.queue import Runner, Switchboard
 
 
 log = logging.getLogger('mailman.error')

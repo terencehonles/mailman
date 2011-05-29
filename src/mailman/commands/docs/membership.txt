@@ -41,7 +41,7 @@ When no address argument is given, the message's From address will be used.
 If that's missing though, then an error is returned.
 ::
 
-    >>> from mailman.queue.command import Results
+    >>> from mailman.runners.command import Results
     >>> results = Results()
 
     >>> from mailman.email.message import Message

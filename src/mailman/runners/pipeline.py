@@ -23,7 +23,7 @@ headers, calculates message recipients, and more.
 """
 
 from mailman.core.pipelines import process
-from mailman.queue import Runner
+from mailman.core.runner import Runner
 
 
 

@@ -17,7 +17,7 @@ The original message is ignored, but the results receive the echoed command.
 
     >>> mlist = create_list('test@example.com')
 
-    >>> from mailman.queue.command import Results
+    >>> from mailman.runners.command import Results
     >>> results = Results()
 
     >>> from mailman.email.message import Message

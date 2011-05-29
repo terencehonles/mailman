@@ -88,7 +88,7 @@ address at The Mail Archive.  The message gets no header or footer decoration.
 
     >>> archiver.archive_message(mlist, msg)
 
-    >>> from mailman.queue.outgoing import OutgoingRunner
+    >>> from mailman.runners.outgoing import OutgoingRunner
     >>> from mailman.testing.helpers import make_testable_runner
     >>> outgoing = make_testable_runner(OutgoingRunner, 'out')
     >>> outgoing.run()

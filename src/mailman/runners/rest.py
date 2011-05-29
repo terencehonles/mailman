@@ -31,7 +31,7 @@ import select
 import signal
 import logging
 
-from mailman.queue import Runner
+from mailman.core.runner import Runner
 from mailman.rest.wsgiapp import make_server
 
 

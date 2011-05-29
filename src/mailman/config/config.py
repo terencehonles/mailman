@@ -120,8 +120,8 @@ class Configuration:
         """Perform post-processing after loading the configuration files."""
         # Expand and set up all directories.
         self._expand_paths()
-        # Set up the switchboards.
-        from mailman.queue import Switchboard
+        # Set up the switchboards.  Import this here to avoid circular imports.
+        from mailman.core.switchboard import Switchboard
         Switchboard.initialize()
         # Set up all the languages.
         languages = self._config.getByCategory('language', [])

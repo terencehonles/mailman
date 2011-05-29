@@ -33,7 +33,7 @@ from mailman import Message
 from mailman import loginit
 from mailman.configuration import config
 from mailman.core.i18n import _
-from mailman.queue import Switchboard
+from mailman.core.switchboard import Switchboard
 from mailman.version import MAILMAN_VERSION
 
 # Work around known problems with some RedHat cron daemons
