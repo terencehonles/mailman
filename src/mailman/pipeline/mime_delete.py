@@ -44,8 +44,8 @@ from zope.interface import implements
 from mailman.config import config
 from mailman.core import errors
 from mailman.core.i18n import _
+from mailman.core.switchboard import Switchboard
 from mailman.interfaces.handler import IHandler
-from mailman.queue import Switchboard
 from mailman.utilities.string import oneline
 from mailman.version import VERSION
 

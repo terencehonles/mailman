@@ -28,7 +28,7 @@ __all__ = [
 import time
 
 from mailman.config import config
-from mailman.queue import Runner
+from mailman.core.runner import Runner
 
 
 

@@ -40,10 +40,10 @@ from email.utils import parseaddr
 from zope.component import getUtility
 
 from mailman.config import config
+from mailman.core.runner import Runner
 from mailman.database.transaction import txn
 from mailman.email.message import Message
 from mailman.interfaces.listmanager import IListManager
-from mailman.queue import Runner
 
 elog = logging.getLogger('mailman.error')
 qlog = logging.getLogger('mailman.qrunner')

@@ -25,12 +25,12 @@ from lazr.config import as_boolean, as_timedelta
 from zope.component import getUtility
 
 from mailman.config import config
+from mailman.core.runner import Runner
 from mailman.interfaces.bounce import BounceContext, IBounceProcessor
 from mailman.interfaces.mailinglist import Personalization
 from mailman.interfaces.membership import ISubscriptionService
 from mailman.interfaces.mta import SomeRecipientsFailed
 from mailman.interfaces.pending import IPendings
-from mailman.queue import Runner
 from mailman.utilities.datetime import now
 from mailman.utilities.modules import find_name
 

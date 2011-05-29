@@ -38,9 +38,9 @@ from zope.component import getUtility
 
 from mailman.config import config
 from mailman.core.chains import process
+from mailman.core.runner import Runner
 from mailman.interfaces.address import ExistingAddressError
 from mailman.interfaces.usermanager import IUserManager
-from mailman.queue import Runner
 
 
 

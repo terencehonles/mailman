@@ -27,8 +27,8 @@ from cStringIO import StringIO
 from lazr.config import as_host_port
 
 from mailman.config import config
+from mailman.core.runner import Runner
 from mailman.interfaces.nntp import NewsModeration
-from mailman.queue import Runner
 
 COMMASPACE = ', '
 log = logging.getLogger('mailman.error')

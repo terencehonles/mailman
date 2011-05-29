@@ -62,7 +62,7 @@ destination mailing list name.  Simulate that here too.
 Running the outgoing queue runner processes the message, delivering it to the
 upstream SMTP.
 
-    >>> from mailman.queue.outgoing import OutgoingRunner
+    >>> from mailman.runners.outgoing import OutgoingRunner
     >>> from mailman.testing.helpers import make_testable_runner
     >>> outgoing = make_testable_runner(OutgoingRunner, 'out')
     >>> outgoing.run()

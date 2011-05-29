@@ -36,7 +36,7 @@ from mailman.interfaces.bounce import (
     BounceContext, IBounceProcessor, UnrecognizedBounceDisposition)
 from mailman.interfaces.member import MemberRole
 from mailman.interfaces.usermanager import IUserManager
-from mailman.queue.bounce import BounceRunner
+from mailman.runners.bounce import BounceRunner
 from mailman.testing.helpers import (
     LogFileMark,
     get_queue_messages,

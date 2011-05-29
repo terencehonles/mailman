@@ -23,8 +23,8 @@ from zope.component import getUtility
 
 from mailman.app.bounces import (
     ProbeVERP, StandardVERP, maybe_forward, scan_message)
+from mailman.core.runner import Runner
 from mailman.interfaces.bounce import BounceContext, IBounceProcessor, Stop
-from mailman.queue import Runner
 
 
 COMMASPACE = ', '

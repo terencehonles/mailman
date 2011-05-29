@@ -143,7 +143,7 @@ def make_qrunner(name, slice, range, once=False):
         # It was a shortcut name.
         class_path = qrunner_config['class']
     elif name.startswith('.'):
-        class_path = 'mailman.queue' + name
+        class_path = 'mailman.runners' + name
     else:
         class_path = name
     try:
