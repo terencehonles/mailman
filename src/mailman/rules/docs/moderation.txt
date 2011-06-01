@@ -101,9 +101,9 @@ case the rule does not match.
 Unregistered nonmembers
 =======================
 
-The incoming queue runner ensures that all sender addresses are registered in
-the system, but it is the moderation rule that subscribes nonmember addresses
-to the mailing list if they are not already subscribed.
+The incoming runner ensures that all sender addresses are registered in the
+system, but it is the moderation rule that subscribes nonmember addresses to
+the mailing list if they are not already subscribed.
 ::
 
     >>> from mailman.interfaces.usermanager import IUserManager
@@ -132,7 +132,7 @@ cperson is neither a member, nor a nonmember of the mailing list.
     >>> dump_list(mlist.nonmembers.members, key=memberkey)
     <Member: Bart Person <bperson@example.com>
              on test@example.com as MemberRole.nonmember>
-    
+
 However, when the nonmember moderation rule runs, it adds the cperson as a
 nonmember of the list.  The rule also matches.
 

@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Outgoing queue runner."""
+"""Outgoing runner."""
 
 import socket
 import logging
@@ -45,7 +45,7 @@ smtp_log = logging.getLogger('mailman.smtp')
 
 
 class OutgoingRunner(Runner):
-    """The outgoing queue runner."""
+    """The outgoing runner."""
 
     def __init__(self, slice=None, numslices=1):
         super(OutgoingRunner, self).__init__(slice, numslices)

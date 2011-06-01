@@ -1,6 +1,6 @@
-=========================
-The incoming queue runner
-=========================
+===================
+The incoming runner
+===================
 
 This runner's sole purpose in life is to decide the disposition of the
 message.  It can either be accepted for delivery, rejected (i.e. bounced),
@@ -20,7 +20,7 @@ above.
 Sender addresses
 ================
 
-The incoming queue runner ensures that the sender addresses on the message are
+The incoming runner ensures that the sender addresses on the message are
 registered with the system.  This is used for determining nonmember posting
 privileges.  The addresses will not be linked to a user and will be
 unverified, so if the real user comes along later and claims the address, it
@@ -57,7 +57,7 @@ mail server normally would.
     >>> from mailman.inject import inject_message
     >>> inject_message(mlist, msg)
 
-The incoming queue runner runs until it is empty.
+The incoming runner runs until it is empty.
 
     >>> from mailman.runners.incoming import IncomingRunner
     >>> from mailman.testing.helpers import make_testable_runner

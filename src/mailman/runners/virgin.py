@@ -15,10 +15,10 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Virgin message queue runner.
+"""Virgin runner.
 
-This qrunner handles messages that the Mailman system gives virgin birth to.
-E.g. acknowledgement responses to user posts or Replybot messages.  They need
+This runner handles messages that the Mailman system gives virgin birth to.
+E.g. acknowledgment responses to user posts or replybot messages.  They need
 to go through some minimal processing before they can be sent out to the
 recipient.
 """

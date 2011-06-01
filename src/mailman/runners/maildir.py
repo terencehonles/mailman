@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Maildir pre-queue runner.
+"""Maildir runner.
 
 Most MTAs can be configured to deliver messages to a `Maildir'[1].  This
 runner will read messages from a maildir's new/ directory and inject them into
@@ -47,7 +47,8 @@ See the variable USE_MAILDIR in Defaults.py.in for enabling this delivery
 mechanism.
 """
 
-# NOTE: Maildir delivery is experimental in Mailman 2.1.
+# NOTE: Maildir delivery is experimental in Mailman 2.1, and untested in
+# Mailman 3.  Instead, use LMTP delivery for Mailman 3.
 
 import os
 import errno

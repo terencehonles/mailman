@@ -65,10 +65,10 @@ The File System Hierarchy layout is the same every by definition.
         EXT_DIR                  = /etc/mailman.d
         LIST_DATA_DIR            = /var/lib/mailman/lists
         LOCK_DIR                 = /var/lock/mailman
-        LOCK_FILE                = /var/lock/mailman/master-qrunner.lck
+        LOCK_FILE                = /var/lock/mailman/master.lck
         LOG_DIR                  = /var/log/mailman
         MESSAGES_DIR             = /var/lib/mailman/messages
-        PID_FILE                 = /var/run/mailman/master-qrunner.pid
+        PID_FILE                 = /var/run/mailman/master.pid
         PRIVATE_ARCHIVE_FILE_DIR = /var/lib/mailman/archives/private
         PUBLIC_ARCHIVE_FILE_DIR  = /var/lib/mailman/archives/public
         QUEUE_DIR                = /var/spool/mailman

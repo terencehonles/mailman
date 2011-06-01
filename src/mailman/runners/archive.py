@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Archive queue runner."""
+"""Archive runner."""
 
 __metaclass__ = type
 __all__ = [

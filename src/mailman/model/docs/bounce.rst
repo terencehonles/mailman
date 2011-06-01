@@ -34,8 +34,8 @@ recorded.
 
 There is a suite of bounce detectors that are used to heuristically extract
 the bouncing email addresses.  Various techniques are employed including VERP,
-DSN, and magic.  It is the bounce queue's responsibility to extract the set of
-bouncing email addrsses.  These are passed one-by-one to the registration
+DSN, and magic.  It is the bounce runner's responsibility to extract the set
+of bouncing email addresses.  These are passed one-by-one to the registration
 interface.
 
     >>> event = processor.register(mlist, 'anne@example.com', msg)

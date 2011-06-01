@@ -141,9 +141,9 @@ def handle_message(mlist, id, action,
         # delivery errors will cause duplicates.
         if 'filebase' in msgdata:
             del msgdata['filebase']
-        # Queue the file for delivery by qrunner.  Trying to deliver the
-        # message directly here can lead to a huge delay in web turnaround.
-        # Log the moderation and add a header.
+        # Queue the file for delivery.  Trying to deliver the message directly
+        # here can lead to a huge delay in web turnaround.  Log the moderation
+        # and add a header.
         msg['X-Mailman-Approved-At'] = formatdate(localtime=True)
         vlog.info('held message approved, message-id: %s',
                   msg.get('message-id', 'n/a'))

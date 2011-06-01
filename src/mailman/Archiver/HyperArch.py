@@ -62,7 +62,7 @@ NL = '\n'
 # regular expressions.  We see this as crashes in the Python test suite when
 # running test_re.py and test_sre.py.  The fix is to set the stack limit to
 # 2048; the general recommendation is to do in the shell before running the
-# test suite.  But that's inconvenient for a daemon like the qrunner.
+# test suite.  But that's inconvenient for a daemon like the runner.
 #
 # AFAIK, this problem only affects the archiver, so we're adding this work
 # around to this file (it'll get imported by the bundled pipermail or by the

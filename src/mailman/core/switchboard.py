@@ -69,10 +69,10 @@ class Switchboard:
     @staticmethod
     def initialize():
         """Initialize the global switchboards for input/output."""
-        for conf in config.qrunner_configs:
+        for conf in config.runner_configs:
             name = conf.name.split('.')[-1]
             assert name not in config.switchboards, (
-                'Duplicate qrunner name: {0}'.format(name))
+                'Duplicate runner name: {0}'.format(name))
             substitutions = config.paths
             substitutions['name'] = name
             path = expand(conf.path, substitutions)
@@ -118,7 +118,7 @@ class Switchboard:
             _metadata = {}
         # Calculate the SHA hexdigest of the message to get a unique base
         # filename.  We're also going to use the digest as a hash into the set
-        # of parallel qrunner processes.
+        # of parallel runner processes.
         data = _metadata.copy()
         data.update(_kws)
         listname = data.get('listname', '--nolist--')

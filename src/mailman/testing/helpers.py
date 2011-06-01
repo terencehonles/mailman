@@ -66,20 +66,18 @@ from mailman.utilities.mailbox import Mailbox
 
 
 def make_testable_runner(runner_class, name=None, predicate=None):
-    """Create a queue runner that runs until its queue is empty.
+    """Create a runner that runs until its queue is empty.
 
-    :param runner_class: The queue runner's class.
+    :param runner_class: The runner class.
     :type runner_class: class
     :param name: Optional queue name; if not given, it is calculated from the
         class name.
     :type name: string or None
     :param predicate: Optional alternative predicate for deciding when to stop
-        the queue runner.  When None (the default) it stops when the queue is
-        empty.
+        the runner.  When None (the default) it stops when the queue is empty.
     :type predicate: callable that gets one argument, the queue runner.
     :return: A runner instance.
     """
-
     if name is None:
         assert runner_class.__name__.endswith('Runner'), (
             'Unparseable runner class name: %s' % runner_class.__name__)
@@ -169,22 +167,22 @@ class TestableMaster(Master):
         # which would mean the signal.pause() never exits.
         pass
 
-    def start(self, *qrunners):
+    def start(self, *runners):
         """Start the master."""
-        self.start_qrunners(qrunners)
+        self.start_runners(runners)
         self.thread.start()
         # Wait until all the children are definitely started.
         self.event.wait()
 
     def stop(self):
         """Stop the master by killing all the children."""
-        for pid in self.qrunner_pids:
+        for pid in self.runner_pids:
             os.kill(pid, signal.SIGTERM)
         self.cleanup()
         self.thread.join()
 
     def loop(self):
-        """Wait until all the qrunners are actually running before looping."""
+        """Wait until all the runners are actually running before looping."""
         starting_kids = set(self._kids)
         while starting_kids:
             for pid in self._kids:
@@ -207,8 +205,8 @@ class TestableMaster(Master):
         super(TestableMaster, self).loop()
 
     @property
-    def qrunner_pids(self):
-        """The pids of all the child qrunner processes."""
+    def runner_pids(self):
+        """The pids of all the child runner processes."""
         for pid in self._started_kids:
             yield pid
 

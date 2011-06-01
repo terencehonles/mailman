@@ -18,7 +18,7 @@
 """Mailman LMTP runner (server).
 
 Most mail servers can be configured to deliver local messages via 'LMTP'[1].
-This module is actually an LMTP server rather than a standard queue runner.
+This module is actually an LMTP server rather than a standard runner.
 
 The LMTP runner opens a local TCP port and waits for the mail server to
 connect to it.  The messages it receives over LMTP are very minimally parsed
@@ -46,7 +46,7 @@ from mailman.email.message import Message
 from mailman.interfaces.listmanager import IListManager
 
 elog = logging.getLogger('mailman.error')
-qlog = logging.getLogger('mailman.qrunner')
+qlog = logging.getLogger('mailman.runner')
 
 
 # We only care about the listname and the sub-addresses as in listname@ or
@@ -83,7 +83,7 @@ ERR_502 = '502 Error: command HELO not implemented'
 ERR_550 = '550 Requested action not taken: mailbox unavailable'
 
 # XXX Blech
-smtpd.__version__ = 'Python LMTP queue runner 1.0'
+smtpd.__version__ = 'Python LMTP runner 1.0'
 
 
 
@@ -185,7 +185,7 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
                     continue
                 # The recipient is a valid mailing list.  Find the subaddress
                 # if there is one, and set things up to enqueue to the proper
-                # queue runner.
+                # queue.
                 queue = None
                 msgdata = dict(listname=listname,
                                original_size=msg.original_size)

@@ -1,11 +1,11 @@
-========================
-The command queue runner
-========================
+==================
+The command runner
+==================
 
-This queue runner's purpose is to process and respond to email commands.
-Commands are extensible using the Mailman plug-in system, but Mailman comes
-with a number of email commands out of the box.  These are processed when a
-message is sent to the list's ``-request`` address.
+This runner's purpose is to process and respond to email commands.  Commands
+are extensible using the Mailman plug-in system, but Mailman comes with a
+number of email commands out of the box.  These are processed when a message
+is sent to the list's ``-request`` address.
 
     >>> mlist = create_list('test@example.com')
 

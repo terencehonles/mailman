@@ -64,7 +64,7 @@ class TestMasterLock(unittest.TestCase):
         state, lock = master.master_state(self.lock_file)
         self.assertEqual(state, master.WatcherState.none)
         # Acquire the lock as if another process had already started the
-        # master qrunner.
+        # master.
         my_lock.lock()
         try:
             state, lock = master.master_state(self.lock_file)

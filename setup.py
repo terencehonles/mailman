@@ -67,7 +67,7 @@ with open('src/mailman/version.py') as fp:
 template = Template('$script = mailman.bin.$script:main')
 scripts = set(
     template.substitute(script=script)
-    for script in ('mailman', 'qrunner', 'master', 'onebounce')
+    for script in ('mailman', 'runner', 'master', 'onebounce')
     )
 
 

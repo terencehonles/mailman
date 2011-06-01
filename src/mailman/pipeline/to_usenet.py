@@ -65,6 +65,6 @@ class ToUsenet:
             log.error('NNTP gateway improperly configured: %s',
                       COMMASPACE.join(error))
             return
-        # Put the message in the news runner's queue
+        # Put the message in the news runner's queue.
         config.switchboards['news'].enqueue(
             msg, msgdata, listname=mlist.fqdn_listname)

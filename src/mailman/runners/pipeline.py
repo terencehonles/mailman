@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""The pipeline queue runner.
+"""The pipeline runner.
 
 This runner's purpose is to take messages that have been approved for posting
 through the 'preparation pipeline'.  This pipeline adds, deletes and modifies

@@ -42,7 +42,7 @@ from mailman.core.i18n import _
 from mailman.interfaces.command import ICLISubCommand
 
 
-qlog = logging.getLogger('mailman.qrunner')
+qlog = logging.getLogger('mailman.runner')
 
 
 
@@ -111,7 +111,7 @@ class Start:
         pid = os.fork()
         if pid:
             # parent
-            log(_("Starting Mailman's master queue runner"))
+            log(_("Starting Mailman's master runner"))
             return
         # child: Create a new session and become the session leader, but since
         # we won't be opening any terminal devices, don't do the
@@ -190,7 +190,7 @@ class Stop(SignalCommand):
     """Stop the Mailman daemons."""
 
     name = 'stop'
-    message = _("Shutting down Mailman's master queue runner")
+    message = _("Shutting down Mailman's master runner")
     signal = signal.SIGTERM
 
 
@@ -198,7 +198,7 @@ class Reopen(SignalCommand):
     """Reopen the Mailman daemons."""
 
     name = 'reopen'
-    message = _('Reopening the Mailman queue runners')
+    message = _('Reopening the Mailman runners')
     signal = signal.SIGHUP
 
 
@@ -208,5 +208,5 @@ class Restart(SignalCommand):
     implements(ICLISubCommand)
 
     name = 'restart'
-    message = _('Restarting the Mailman queue runners')
+    message = _('Restarting the Mailman runners')
     signal = signal.SIGUSR1

@@ -2,8 +2,8 @@
 Digesting
 =========
 
-Mailman crafts and sends digests by a separate digest queue runner process.
-This starts by a number of messages being posted to the mailing list.
+Mailman crafts and sends digests by a separate digest runner process.  This
+starts by a number of messages being posted to the mailing list.
 ::
 
     >>> mlist = create_list('test@example.com')
@@ -33,8 +33,8 @@ This starts by a number of messages being posted to the mailing list.
 
     >>> fill_digest()
 
-The queue runner gets kicked off when a marker message gets dropped into the
-digest queue.  The message metadata points to the mailbox file containing the
+The runner gets kicked off when a marker message gets dropped into the digest
+queue.  The message metadata points to the mailbox file containing the
 messages to put in the digest.
 ::
 
@@ -69,8 +69,8 @@ There are 4 messages in the digest.
     >>> sum(1 for item in Mailbox(entry.msgdata['digest_path']))
     4
 
-When the queue runner runs, it processes the digest mailbox, crafting both the
-plain text (RFC 1153) digest and the MIME digest.
+When the runner runs, it processes the digest mailbox, crafting both the plain
+text (RFC 1153) digest and the MIME digest.
 
     >>> from mailman.runners.digest import DigestRunner
     >>> from mailman.testing.helpers import make_testable_runner
@@ -327,9 +327,7 @@ The marker message is sitting in the digest queue.
     version      : 3
     volume       : 1
 
-The digest queue runner runs a loop, placing the two digests into the virgin
-queue.
-::
+The digest runner runs a loop, placing the two digests into the virgin queue.
 
     # Put the messages back in the queue for the runner to handle.
     >>> filebase = digestq.enqueue(entry.msg, entry.msgdata)

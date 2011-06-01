@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Incoming queue runner.
+"""Incoming runner.
 
 This runner's sole purpose in life is to decide the disposition of the
 message.  It can either be accepted for delivery, rejected (i.e. bounced),
@@ -45,7 +45,7 @@ from mailman.interfaces.usermanager import IUserManager
 
 
 class IncomingRunner(Runner):
-    """The incoming queue runner."""
+    """The incoming runner."""
 
     def _dispose(self, mlist, msg, msgdata):
         """See `IRunner`."""

@@ -99,7 +99,7 @@ class ConfigLayer(MockAndMonkeyLayer):
         # We need a test configuration both for the foreground process and any
         # child processes that get spawned.  lazr.config would allow us to do
         # it all in a string that gets pushed, and we'll do that for the
-        # foreground, but because we may be spawning processes (such as queue
+        # foreground, but because we may be spawning processes (such as
         # runners) we'll need a file that we can specify to the with the -C
         # option.  Craft the full test configuration string here, push it, and
         # also write it out to a temp file for -C.

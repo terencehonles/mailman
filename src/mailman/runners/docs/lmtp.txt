@@ -9,7 +9,7 @@ with your mail server.
 Our LMTP server is fairly simple though; all it does is make sure that the
 message is destined for a valid endpoint, e.g. ``mylist-join@example.com``.
 
-Let's start a testable LMTP queue runner.
+Let's start a testable LMTP runner.
 
     >>> from mailman.testing import helpers
     >>> master = helpers.TestableMaster()
@@ -18,7 +18,7 @@ Let's start a testable LMTP queue runner.
 It also helps to have a nice LMTP client.
 
     >>> lmtp = helpers.get_lmtp_client()
-    (220, '... Python LMTP queue runner 1.0')
+    (220, '... Python LMTP runner 1.0')
     >>> lmtp.lhlo('remote.example.org')
     (250, ...)
 

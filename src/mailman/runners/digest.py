@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Digest queue runner."""
+"""Digest runner."""
 
 from __future__ import absolute_import, unicode_literals
 
@@ -291,7 +291,7 @@ class RFC1153Digester(Digester):
 
 
 class DigestRunner(Runner):
-    """The digest queue runner."""
+    """The digest runner."""
 
     def _dispose(self, mlist, msg, msgdata):
         """See `IRunner`."""

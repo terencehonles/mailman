@@ -160,8 +160,8 @@ class Configuration:
         # environment is not set.  Because the var_dir setting in the config
         # file could be a relative path, and because 'bin/mailman start'
         # chdirs to $VAR_DIR, without this subprocesses bin/master and
-        # bin/qrunner will create $VAR_DIR hierarchies under $VAR_DIR when
-        # that path is relative.
+        # bin/runner will create $VAR_DIR hierarchies under $VAR_DIR when that
+        # path is relative.
         var_dir = os.environ.get('MAILMAN_VAR_DIR', category.var_dir)
         substitutions = dict(
             argv                    = bin_dir,
@@ -237,9 +237,9 @@ class Configuration:
                 makedirs(directory)
 
     @property
-    def qrunner_configs(self):
-        """Iterate over all the qrunner configuration sections."""
-        for section in self._config.getByCategory('qrunner', []):
+    def runner_configs(self):
+        """Iterate over all the runner configuration sections."""
+        for section in self._config.getByCategory('runner', []):
             yield section
 
     @property

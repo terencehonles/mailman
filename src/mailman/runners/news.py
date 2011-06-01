@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""NNTP queue runner."""
+"""NNTP runner."""
 
 import re
 import email

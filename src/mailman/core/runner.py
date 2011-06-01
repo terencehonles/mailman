@@ -54,15 +54,16 @@ class Runner:
     intercept_signals = True
 
     def __init__(self, name, slice=None):
-        """Create a queue runner.
+        """Create a runner.
 
-        :param slice: The slice number for this queue runner.  This is passed
-            directly to the underlying `ISwitchboard` object.
+        :param slice: The slice number for this runner.  This is passed
+            directly to the underlying `ISwitchboard` object.  This is ignored
+            for runners that don't manage a queue.
         :type slice: int or None
         """
         # Grab the configuration section.
         self.name = name
-        section = getattr(config, 'qrunner.' + name)
+        section = getattr(config, 'runner.' + name)
         substitutions = config.paths
         substitutions['name'] = name
         self.queue_directory = expand(section.path, substitutions)
@@ -87,7 +88,7 @@ class Runner:
 
     def run(self):
         """See `IRunner`."""
-        # Start the main loop for this queue runner.
+        # Start the main loop for this runner.
         try:
             while True:
                 # Once through the loop that processes all the files in the

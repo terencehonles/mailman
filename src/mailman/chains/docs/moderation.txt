@@ -174,7 +174,7 @@ Nonmembers
 
 Registered nonmembers are handled very similarly to members, the main
 difference being that they usually have a default moderation action.  This is
-how the incoming queue runner adds sender addresses as nonmembers.
+how the incoming runner adds sender addresses as nonmembers.
 
     >>> from zope.component import getUtility
     >>> from mailman.interfaces.usermanager import IUserManager

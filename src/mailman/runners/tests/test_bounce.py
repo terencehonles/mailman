@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Test the bounce queue runner."""
+"""Test the bounce runner."""
 
 from __future__ import absolute_import, unicode_literals
 
@@ -46,8 +46,8 @@ from mailman.testing.layers import ConfigLayer
 
 
 
-class TestBounceQueue(unittest.TestCase):
-    """Test the bounce queue runner."""
+class TestBounceRunner(unittest.TestCase):
+    """Test the bounce runner."""
 
     layer = ConfigLayer
 
@@ -232,5 +232,5 @@ Message-Id: <third>
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestBounceQueue))
+    suite.addTest(unittest.makeSuite(TestBounceRunner))
     return suite

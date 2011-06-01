@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Test the outgoing queue runner."""
+"""Test the outgoing runner."""
 
 from __future__ import absolute_import, unicode_literals
 
@@ -55,10 +55,10 @@ from mailman.utilities.datetime import factory, now
 
 
 
-def run_once(qrunner):
+def run_once(runner):
     """Predicate for make_testable_runner().
 
-    Ensures that the queue runner only runs once.
+    Ensures that the runner only runs once.
     """
     return True
 
@@ -92,8 +92,8 @@ Message-Id: <first>
         self._msgdata = {}
 
     def test_deliver_after(self):
-        # When the metadata has a deliver_after key in the future, the queue
-        # runner will re-enqueue the message rather than delivering it.
+        # When the metadata has a deliver_after key in the future, the runner
+        # will re-enqueue the message rather than delivering it.
         deliver_after = now() + timedelta(days=10)
         self._msgdata['deliver_after'] = deliver_after
         self._outq.enqueue(self._msg, self._msgdata,
@@ -524,7 +524,7 @@ Message-Id: <first>
         msgdata = dict(last_recip_count=2,
                        deliver_until=deliver_until)
         self._outq.enqueue(self._msg, msgdata, listname='test@example.com')
-        # Before the queue runner runs, several days pass.
+        # Before the runner runs, several days pass.
         factory.fast_forward(retry_period.days + 1)
         mark = LogFileMark('mailman.smtp')
         self._runner.run()

@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""The queue runner."""
+"""The runner process."""
 
 from __future__ import absolute_import, unicode_literals
 
@@ -38,7 +38,6 @@ from mailman.options import Options
 from mailman.utilities.modules import find_name
 
 
-COMMASPACE = ', '
 log = None
 
 
@@ -69,15 +68,20 @@ def r_callback(option, opt, value, parser):
 
 
 class ScriptOptions(Options):
-    """Options for bin/qrunner."""
+    """Options for bin/runner."""
     usage = _("""\
-Run one or more queue runners, once or repeatedly.
+Start one or more runners.
 
-Each named runner class is run in round-robin fashion.  In other words, the
-first named runner is run to consume all the files currently in its directory.
-When that qrunner is done, the next one is run to consume all the files in
-/its/ directory, and so on.  The number of total iterations can be given on
-the command line.
+The runner named on the command line is started, and it can either run through
+its main loop once (for those runners that support this) or continuously.  The
+latter is how the master runner starts all its subprocesses.
+
+When more than one runner is specified on the command line, they are each run
+in round-robin fashion.  All runners must support running its main loop once.
+In other words, the first named runner is run once.  When that runner is done,
+the next one is run to consume all the files in *its* directory, and so on.
+The number of total iterations can be given on the command line.  This mode of
+operation is primarily for debugging purposes.
 
 Usage: %prog [options]
 
@@ -98,27 +102,32 @@ subtly changes some error handling behavior.
             type='string', default=[],
             action='callback', callback=r_callback,
             help=_("""\
-Run the named queue runner, which must be one of the strings returned by the
--l option.  Optional slice:range if given, is used to assign multiple qrunner
-processes to a queue.  range is the total number of qrunners for this queue
-while slice is the number of this qrunner from [0..range).
+Start the named runner, which must be one of the strings returned by the -l
+option.
 
-When using the slice:range form, you must ensure that each qrunner for the
+For runners that manage a queue directory, optional slice:range if given, is
+used to assign multiple runner processes to that queue.  range is the total
+number of runners for the queue while slice is the number of this runner from
+[0..range).  For runners that do not manage a queue, slice and range are
+ignored.
+
+When using the slice:range form, you must ensure that each runner for the
 queue is given the same range value.  If slice:runner is not given, then 1:1
 is used.
 
-Multiple -r options may be given, in which case each qrunner will run once in
-round-robin fashion.  The special runner 'All' is shorthand for a qrunner for
-each listed by the -l option."""))
+Multiple -r options may be given, in which case each runner will run once in
+round-robin fashion.  The special runner 'All' is shorthand for running all
+named runners listed by the -l option."""))
         self.parser.add_option(
             '-o', '--once',
             default=False, action='store_true', help=_("""\
-Run each named queue runner exactly once through its main loop.  Otherwise,
-each queue runner runs indefinitely, until the process receives signal."""))
+Run each named runner exactly once through its main loop.  Otherwise, each
+runner runs indefinitely, until the process receives signal.  This is not
+compatible with runners that cannot be run once."""))
         self.parser.add_option(
             '-l', '--list',
             default=False, action='store_true',
-            help=_('List the available queue runner names and exit.'))
+            help=_('List the available runner names and exit.'))
         self.parser.add_option(
             '-v', '--verbose',
             default=0, action='count', help=_("""\
@@ -133,21 +142,21 @@ Display more debugging information to the log file."""))
 
 
 
-def make_qrunner(name, slice, range, once=False):
+def make_runner(name, slice, range, once=False):
     # Several conventions for specifying the runner name are supported.  It
     # could be one of the shortcut names.  If the name is a full module path,
     # use it explicitly.  If the name starts with a dot, it's a class name
-    # relative to the Mailman.queue package.
-    qrunner_config = getattr(config, 'qrunner.' + name, None)
-    if qrunner_config is not None:
+    # relative to the Mailman.runner package.
+    runner_config = getattr(config, 'runner.' + name, None)
+    if runner_config is not None:
         # It was a shortcut name.
-        class_path = qrunner_config['class']
+        class_path = runner_config['class']
     elif name.startswith('.'):
         class_path = 'mailman.runners' + name
     else:
         class_path = name
     try:
-        qrclass = find_name(class_path)
+        runner_class = find_name(class_path)
     except ImportError:
         if os.environ.get('MAILMAN_UNDER_MASTER_CONTROL') is not None:
             # Exit with SIGTERM exit code so the master watcher won't try to
@@ -159,13 +168,11 @@ def make_qrunner(name, slice, range, once=False):
             raise
     if once:
         # Subclass to hack in the setting of the stop flag in _do_periodic()
-        class Once(qrclass):
+        class Once(runner_class):
             def _do_periodic(self):
                 self.stop()
-        qrunner = Once(name, slice)
-    else:
-        qrunner = qrclass(name, slice)
-    return qrunner
+        return Once(name, slice)
+    return runner_class(name, slice)
 
 
 
@@ -174,34 +181,35 @@ def set_signals(loop):
 
     Signals caught are: SIGTERM, SIGINT, SIGUSR1 and SIGHUP.  The latter is
     used to re-open the log files.  SIGTERM and SIGINT are treated exactly the
-    same -- they cause qrunner to exit with no restart from the master.
-    SIGUSR1 also causes qrunner to exit, but the master watcher will restart
-    it in that case.
+    same -- they cause the runner to exit with no restart from the master.
+    SIGUSR1 also causes the runner to exit, but the master watcher will
+    restart it in that case.
 
-    :param loop: A loop queue runner instance.
+    :param loop: A runner instance.
+    :type loop: `IRunner`
     """
     def sigterm_handler(signum, frame):
-        # Exit the qrunner cleanly
+        # Exit the runner cleanly
         loop.stop()
         loop.status = signal.SIGTERM
-        log.info('%s qrunner caught SIGTERM.  Stopping.', loop.name())
+        log.info('%s runner caught SIGTERM.  Stopping.', loop.name())
     signal.signal(signal.SIGTERM, sigterm_handler)
     def sigint_handler(signum, frame):
-        # Exit the qrunner cleanly
+        # Exit the runner cleanly
         loop.stop()
         loop.status = signal.SIGINT
-        log.info('%s qrunner caught SIGINT.  Stopping.', loop.name())
+        log.info('%s runner caught SIGINT.  Stopping.', loop.name())
     signal.signal(signal.SIGINT, sigint_handler)
     def sigusr1_handler(signum, frame):
-        # Exit the qrunner cleanly
+        # Exit the runner cleanly
         loop.stop()
         loop.status = signal.SIGUSR1
-        log.info('%s qrunner caught SIGUSR1.  Stopping.', loop.name())
+        log.info('%s runner caught SIGUSR1.  Stopping.', loop.name())
     signal.signal(signal.SIGUSR1, sigusr1_handler)
     # SIGHUP just tells us to rotate our log files.
     def sighup_handler(signum, frame):
         reopen()
-        log.info('%s qrunner caught SIGHUP.  Reopening logs.', loop.name())
+        log.info('%s runner caught SIGHUP.  Reopening logs.', loop.name())
     signal.signal(signal.SIGHUP, sighup_handler)
 
 
@@ -214,7 +222,7 @@ def main():
 
     if options.options.list:
         descriptions = {}
-        for section in config.qrunner_configs:
+        for section in config.runner_configs:
             ignore, dot, shortname = section.name.rpartition('.')
             ignore, dot, classname = getattr(section, 'class').rpartition('.')
             descriptions[shortname] = classname
@@ -227,30 +235,30 @@ def main():
 
     # Fast track for one infinite runner.
     if len(options.options.runners) == 1 and not options.options.once:
-        qrunner = make_qrunner(*options.options.runners[0])
+        runner = make_runner(*options.options.runners[0])
         class Loop:
             status = 0
-            def __init__(self, qrunner):
-                self._qrunner = qrunner
+            def __init__(self, runner):
+                self._runner = runner
             def name(self):
-                return self._qrunner.__class__.__name__
+                return self._runner.__class__.__name__
             def stop(self):
-                self._qrunner.stop()
-        loop = Loop(qrunner)
-        if qrunner.intercept_signals:
+                self._runner.stop()
+        loop = Loop(runner)
+        if runner.intercept_signals:
             set_signals(loop)
         # Now start up the main loop
-        log = logging.getLogger('mailman.qrunner')
-        log.info('%s qrunner started.', loop.name())
-        qrunner.run()
-        log.info('%s qrunner exiting.', loop.name())
+        log = logging.getLogger('mailman.runner')
+        log.info('%s runner started.', loop.name())
+        runner.run()
+        log.info('%s runner exiting.', loop.name())
     else:
         # Anything else we have to handle a bit more specially.
-        qrunners = []
+        runners = []
         for runner, rslice, rrange in options.options.runners:
-            qrunner = make_qrunner(runner, rslice, rrange, once=True)
-            qrunners.append(qrunner)
-        # This class is used to manage the main loop
+            runner = make_runner(runner, rslice, rrange, once=True)
+            runners.append(runner)
+        # This class is used to manage the main loop.
         class Loop:
             status = 0
             def __init__(self):
@@ -262,20 +270,20 @@ def main():
             def isdone(self):
                 return self._isdone
         loop = Loop()
-        if qrunner.intercept_signals:
+        if runner.intercept_signals:
             set_signals(loop)
-        log.info('Main qrunner loop started.')
+        log.info('Main runner loop started.')
         while not loop.isdone():
-            for qrunner in qrunners:
-                # In case the SIGTERM came in the middle of this iteration
+            for runner in runners:
+                # In case the SIGTERM came in the middle of this iteration.
                 if loop.isdone():
                     break
                 if options.options.verbose:
-                    log.info('Now doing a %s qrunner iteration',
-                             qrunner.__class__.__bases__[0].__name__)
-                qrunner.run()
+                    log.info('Now doing a %s runner iteration',
+                             runner.__class__.__bases__[0].__name__)
+                runner.run()
             if options.options.once:
                 break
-        log.info('Main qrunner loop exiting.')
+        log.info('Main runner loop exiting.')
     # All done
     sys.exit(loop.status)

@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Master sub-process watcher."""
+"""Master subprocess watcher."""
 
 from __future__ import absolute_import, unicode_literals
 
@@ -56,25 +56,25 @@ class ScriptOptions(Options):
     usage = _("""\
 %prog [options]
 
-Master sub-process watcher.
+Master subprocess watcher.
 
-Start and watch the configured queue runners and ensure that they stay alive
-and kicking.  Each are fork and exec'd in turn, with the master waiting on
-their process ids.  When it detects a child queue runner has exited, it may
-restart it.
+Start and watch the configured runners and ensure that they stay alive and
+kicking.  Each runner is forked and exec'd in turn, with the master waiting on
+their process ids.  When it detects a child runner has exited, it may restart
+it.
 
-The queue runners respond to SIGINT, SIGTERM, SIGUSR1 and SIGHUP.  SIGINT,
-SIGTERM and SIGUSR1 all cause the qrunners to exit cleanly.  The master will
-restart qrunners that have exited due to a SIGUSR1 or some kind of other exit
-condition (say because of an exception).  SIGHUP causes the master and the
-qrunners to close their log files, and reopen then upon the next printed
+The runners respond to SIGINT, SIGTERM, SIGUSR1 and SIGHUP.  SIGINT, SIGTERM
+and SIGUSR1 all cause a runner to exit cleanly.  The master will restart
+runners that have exited due to a SIGUSR1 or some kind of other exit condition
+(say because of an uncaught exception).  SIGHUP causes the master and the
+runners to close their log files, and reopen then upon the next printed
 message.
 
 The master also responds to SIGINT, SIGTERM, SIGUSR1 and SIGHUP, which it
-simply passes on to the qrunners.  Note that the master will close and reopen
+simply passes on to the runners.  Note that the master will close and reopen
 its own log files on receipt of a SIGHUP.  The master also leaves its own
-process id in the file `data/master-qrunner.pid` but you normally don't need
-to use this pid directly.""")
+process id in the file `data/master.pid` but you normally don't need to use
+this pid directly.""")
 
     def add_options(self):
         """See `Options`."""
@@ -82,7 +82,7 @@ to use this pid directly.""")
             '-n', '--no-restart',
             dest='restartable', default=True, action='store_false',
             help=_("""\
-Don't restart the qrunners when they exit because of an error or a SIGUSR1.
+Don't restart the runners when they exit because of an error or a SIGUSR1.
 Use this only for debugging."""))
         self.parser.add_option(
             '-f', '--force',
@@ -98,9 +98,9 @@ apparently stale lock and make another attempt to claim the master lock."""))
             '-r', '--runner',
             dest='runners', action='append', default=[],
             help=_("""\
-Override the default set of queue runners that the master watch will invoke
-instead of the default set.  Multiple -r options may be given.  The values for
--r are passed straight through to bin/qrunner."""))
+Override the default set of runners that the master will invoke, which is
+typically defined in the configuration file.  Multiple -r options may be
+given.  The values for -r are passed straight through to bin/runner."""))
 
     def sanity_check(self):
         """See `Options`."""
@@ -152,13 +152,13 @@ def master_state(lock_file=None):
 
 
 def acquire_lock_1(force, lock_file=None):
-    """Try to acquire the master queue runner lock.
+    """Try to acquire the master lock.
 
     :param force: Flag that controls whether to force acquisition of the lock.
     :type force: bool
     :param lock_file: Path to the lock file, otherwise `config.LOCK_FILE`.
     :type lock_file: str
-    :return: The master queue runner lock.
+    :return: The master lock.
     :raises: `TimeOutError` if the lock could not be acquired.
     """
     if lock_file is None:
@@ -179,11 +179,12 @@ def acquire_lock_1(force, lock_file=None):
 
 
 def acquire_lock(force):
-    """Acquire the master queue runner lock.
+    """Acquire the master lock.
 
-    :return: The master queue runner lock or None if the lock couldn't be
-        acquired.  In that case, an error messages is also printed to standard
-        error.
+    :param force: Flag that controls whether to force acquisition of the lock.
+    :type force: bool
+    :return: The master runner lock or None if the lock couldn't be acquired.
+        In that case, an error messages is also printed to standard error.
     """
     try:
         lock = acquire_lock_1(force)
@@ -193,23 +194,21 @@ def acquire_lock(force):
         if status is WatcherState.conflict:
             # Hostname matches and process exists.
             message = _("""\
-The master queue runner lock could not be acquired
-because it appears as though another master is already running.""")
+The master lock could not be acquired because it appears as though another
+master is already running.""")
         elif status is WatcherState.stale_lock:
             # Hostname matches but the process does not exist.
             program = sys.argv[0]
             message = _("""\
-The master queue runner lock could not be acquired.
-It appears as though there is a stale master lock.  Try re-running
-$program with the --force flag.""")
+The master lock could not be acquired.  It appears as though there is a stale
+master lock.  Try re-running $program with the --force flag.""")
         elif status is WatcherState.host_mismatch:
             # Hostname doesn't even match.
             hostname, pid, tempfile = lock.details
             message = _("""\
-The master qrunner lock could not be acquired, because it
-appears as if some process on some other host may have acquired it.  We can't
-test for stale locks across host boundaries, so you'll have to clean this up
-manually.
+The master lock could not be acquired, because it appears as if some process
+on some other host may have acquired it.  We can't test for stale locks across
+host boundaries, so you'll have to clean this up manually.
 
 Lock file: $config.LOCK_FILE
 Lock host: $hostname
@@ -217,10 +216,10 @@ Lock host: $hostname
 Exiting.""")
         else:
             assert status is WatcherState.none, (
-                'Invalid enum value: %s' % status)
+                'Invalid enum value: ${0}'.format(status))
             hostname, pid, tempfile = lock.details
             message = _("""\
-For unknown reasons, the master qrunner lock could not be acquired.
+For unknown reasons, the master lock could not be acquired.
 
 
 Lock file: $config.LOCK_FILE
@@ -253,7 +252,7 @@ class PIDWatcher:
         :type pid: int
         :param info: The process information.
         :type info: 4-tuple consisting of
-            (queue-runner-name, slice-number, slice-count, restart-count)
+            (runner-name, slice-number, slice-count, restart-count)
         """
         old_info = self._pids.get(pid)
         assert old_info is None, (
@@ -269,7 +268,7 @@ class PIDWatcher:
         :type pid: int
         :return: The process information.
         :rtype: 4-tuple consisting of
-            (queue-runner-name, slice-number, slice-count, restart-count)
+            (runner-name, slice-number, slice-count, restart-count)
         :raise KeyError: if the process id is not being tracked.
         """
         return self._pids.pop(pid)
@@ -285,7 +284,7 @@ class PIDWatcher:
         :return: The process information, or None if the process id is not
             being tracked.
         :rtype: 4-tuple consisting of
-            (queue-runner-name, slice-number, slice-count, restart-count)
+            (runner-name, slice-number, slice-count, restart-count)
         """
         return self._pids.pop(pid, None)
 
@@ -302,7 +301,7 @@ class Loop:
 
     def install_signal_handlers(self):
         """Install various signals handlers for control from the master."""
-        log = logging.getLogger('mailman.qrunner')
+        log = logging.getLogger('mailman.runner')
         # Set up our signal handlers.  Also set up a SIGALRM handler to
         # refresh the lock once per day.  The lock lifetime is 1 day + 6 hours
         # so this should be plenty.
@@ -311,7 +310,7 @@ class Loop:
             signal.alarm(SECONDS_IN_A_DAY)
         signal.signal(signal.SIGALRM, sigalrm_handler)
         signal.alarm(SECONDS_IN_A_DAY)
-        # SIGHUP tells the qrunners to close and reopen their log files.
+        # SIGHUP tells the runners to close and reopen their log files.
         def sighup_handler(signum, frame):
             reopen()
             for pid in self._kids:
@@ -339,14 +338,14 @@ class Loop:
         signal.signal(signal.SIGINT, sigint_handler)
 
     def _start_runner(self, spec):
-        """Start a queue runner.
+        """Start a runner.
 
-        All arguments are passed to the qrunner process.
+        All arguments are passed to the process.
 
-        :param spec: A queue runner spec, in a format acceptable to
-            bin/qrunner's --runner argument, e.g. name:slice:count
+        :param spec: A runner spec, in a format acceptable to
+            bin/runner's --runner argument, e.g. name:slice:count
         :type spec: string
-        :return: The process id of the child queue runner.
+        :return: The process id of the child runner.
         :rtype: int
         """
         pid = os.fork()
@@ -355,77 +354,77 @@ class Loop:
             return pid
         # Child.
         #
-        # Set the environment variable which tells the qrunner that it's
+        # Set the environment variable which tells the runner that it's
         # running under bin/master control.  This subtly changes the error
-        # behavior of bin/qrunner.
+        # behavior of bin/runner.
         os.environ['MAILMAN_UNDER_MASTER_CONTROL'] = '1'
         # Craft the command line arguments for the exec() call.
         rswitch = '--runner=' + spec
-        # Wherever master lives, so too must live the qrunner script.
-        exe = os.path.join(config.BIN_DIR, 'qrunner')
+        # Wherever master lives, so too must live the runner script.
+        exe = os.path.join(config.BIN_DIR, 'runner')
         # config.PYTHON, which is the absolute path to the Python interpreter,
         # must be given as argv[0] due to Python's library search algorithm.
         args = [sys.executable, sys.executable, exe, rswitch]
         if self._config_file is not None:
             args.extend(['-C', self._config_file])
-        log = logging.getLogger('mailman.qrunner')
+        log = logging.getLogger('mailman.runner')
         log.debug('starting: %s', args)
         os.execl(*args)
         # We should never get here.
         raise RuntimeError('os.execl() failed')
 
-    def start_qrunners(self, qrunner_names=None):
-        """Start all the configured qrunners.
+    def start_runners(self, runner_names=None):
+        """Start all the configured runners.
 
-        :param qrunners: If given, a sequence of queue runner names to start.
-            If not given, this sequence is taken from the configuration file.
-        :type qrunners: a sequence of strings
+        :param runners: If given, a sequence of runner names to start.  If not
+            given, this sequence is taken from the configuration file.
+        :type runners: a sequence of strings
         """
-        if not qrunner_names:
-            qrunner_names = []
-            for qrunner_config in config.qrunner_configs:
-                # Strip off the 'qrunner.' prefix.
-                assert qrunner_config.name.startswith('qrunner.'), (
-                    'Unexpected qrunner configuration section name: %s',
-                    qrunner_config.name)
-                qrunner_names.append(qrunner_config.name[8:])
-        # For each qrunner we want to start, find their config section, which
+        if not runner_names:
+            runner_names = []
+            for runner_config in config.runner_configs:
+                # Strip off the 'runner.' prefix.
+                assert runner_config.name.startswith('runner.'), (
+                    'Unexpected runner configuration section name: {0}'.format(
+                    runner_config.name))
+                runner_names.append(runner_config.name[7:])
+        # For each runner we want to start, find their config section, which
         # will tell us the name of the class to instantiate, along with the
         # number of hash space slices to manage.
-        for name in qrunner_names:
-            section_name = 'qrunner.' + name
+        for name in runner_names:
+            section_name = 'runner.' + name
             # Let AttributeError propagate.
-            qrunner_config = getattr(config, section_name)
-            if not as_boolean(qrunner_config.start):
+            runner_config = getattr(config, section_name)
+            if not as_boolean(runner_config.start):
                 continue
-            # Find out how many qrunners to instantiate.  This must be a power
+            # Find out how many runners to instantiate.  This must be a power
             # of 2.
-            count = int(qrunner_config.instances)
+            count = int(runner_config.instances)
             assert (count & (count - 1)) == 0, (
-                'Queue runner "%s", not a power of 2: %s', name, count)
+                'Runner "{0}", not a power of 2: {1}'.format(name, count))
             for slice_number in range(count):
-                # qrunner name, slice #, # of slices, restart count
+                # runner name, slice #, # of slices, restart count
                 info = (name, slice_number, count, 0)
-                spec = '%s:%d:%d' % (name, slice_number, count)
+                spec = '{0}:{1:d}:{2:d}'.format(name, slice_number, count)
                 pid = self._start_runner(spec)
-                log = logging.getLogger('mailman.qrunner')
-                log.debug('[%d] %s', pid, spec)
+                log = logging.getLogger('mailman.runner')
+                log.debug('[{0:d}] {1}'.format(pid, spec))
                 self._kids.add(pid, info)
 
     def _pause(self):
         """Sleep until a signal is received."""
         # Sleep until a signal is received.  This prevents the master from
-        # existing immediately even if there are no qrunners (as happens in
-        # the test suite).
+        # exiting immediately even if there are no runners (as happens in the
+        # test suite).
         signal.pause()
 
     def loop(self):
         """Main loop.
 
-        Wait until all the qrunners have exited, restarting them if necessary
-        and configured to do so.
+        Wait until all the runner subprocesses have exited, restarting them if
+        necessary and configured to do so.
         """
-        log = logging.getLogger('mailman.qrunner')
+        log = logging.getLogger('mailman.runner')
         self._pause()
         while True:
             try:
@@ -451,8 +450,8 @@ class Loop:
             # because of a failure (i.e. no exit signal), and the no-restart
             # command line switch was not given.  This lets us better handle
             # runaway restarts (e.g.  if the subprocess had a syntax error!)
-            qrname, slice_number, count, restarts = self._kids.pop(pid)
-            config_name = 'qrunner.' + qrname
+            rname, slice_number, count, restarts = self._kids.pop(pid)
+            config_name = 'runner.' + rname
             restart = False
             if why == signal.SIGUSR1 and self._restartable:
                 restart = True
@@ -464,25 +463,25 @@ class Loop:
             # Are we permanently non-restartable?
             log.debug("""\
 Master detected subprocess exit
-(pid: %d, why: %s, class: %s, slice: %d/%d) %s""",
-                     pid, why, qrname, slice_number + 1, count,
+(pid: {0:d}, why: {1}, class: {2}, slice: {3:d}/{4:d}) {5}""",
+                     pid, why, rname, slice_number + 1, count,
                      ('[restarting]' if restart else ''))
-            # See if we've reached the maximum number of allowable restarts
+            # See if we've reached the maximum number of allowable restarts.
             if restarts > max_restarts:
                 log.info("""\
-qrunner %s reached maximum restart limit of %d, not restarting.""",
-                         qrname, max_restarts)
+Runner {0} reached maximum restart limit of {1:d}, not restarting.""",
+                         rname, max_restarts)
             # Now perhaps restart the process unless it exited with a
             # SIGTERM or we aren't restarting.
             if restart:
-                spec = '%s:%d:%d' % (qrname, slice_number, count)
+                spec = '{0}:{1:d}:{2:d}'.format(rname, slice_number, count)
                 new_pid = self._start_runner(spec)
-                new_info = (qrname, slice_number, count, restarts)
+                new_info = (rname, slice_number, count, restarts)
                 self._kids.add(new_pid, new_info)
 
     def cleanup(self):
         """Ensure that all children have exited."""
-        log = logging.getLogger('mailman.qrunner')
+        log = logging.getLogger('mailman.runner')
         # Send SIGTERMs to all the child processes and wait for them all to
         # exit.
         for pid in self._kids:
@@ -511,10 +510,9 @@ def main():
 
     options = ScriptOptions()
     options.initialize()
-
-    # Acquire the master lock, exiting if we can't acquire it.  We'll let the
-    # caller handle any clean up or lock breaking.  No with statement here
-    # because Lock's constructor doesn't support a timeout.
+    # Acquire the master lock, exiting if we can't.  We'll let the caller
+    # handle any clean up or lock breaking.  No `with` statement here because
+    # Lock's constructor doesn't support a timeout.
     lock = acquire_lock(options.options.force)
     try:
         with open(config.PID_FILE, 'w') as fp:
@@ -522,7 +520,7 @@ def main():
         loop = Loop(lock, options.options.restartable, options.options.config)
         loop.install_signal_handlers()
         try:
-            loop.start_qrunners(options.options.runners)
+            loop.start_runners(options.options.runners)
             loop.loop()
         finally:
             loop.cleanup()

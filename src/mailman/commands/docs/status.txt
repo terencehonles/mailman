@@ -18,18 +18,18 @@ The status is printed to stdout and a status code is returned.
     GNU Mailman is not running
     0
 
-We can simulate the master queue runner starting up by acquiring its lock.
+We can simulate the master starting up by acquiring its lock.
 
     >>> from flufl.lock import Lock
     >>> lock = Lock(config.LOCK_FILE)
     >>> lock.lock()
 
-Getting the status confirms that the master queue runner is running.
+Getting the status confirms that the master is running.
 
     >>> status.process(FakeArgs)
     GNU Mailman is running (master pid: ...
 
-We shutdown the master queue runner, and confirm the status.
+We shut down the master and confirm the status.
 
     >>> lock.unlock()
     >>> status.process(FakeArgs)

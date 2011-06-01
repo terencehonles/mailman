@@ -10,38 +10,38 @@ Set up
 ======
 
 All we care about is the master process; normally it starts a bunch of
-qrunners, but we don't care about any of them, so write a test configuration
-file for the master that disables all the qrunners.
+runners, but we don't care about any of them, so write a test configuration
+file for the master that disables all the runners.
 
     >>> import shutil
     >>> from os.path import dirname, join
-    >>> config_file = join(dirname(config.filename), 'no-qrunners.cfg')
+    >>> config_file = join(dirname(config.filename), 'no-runners.cfg')
     >>> shutil.copyfile(config.filename, config_file)
     >>> with open(config_file, 'a') as fp:
     ...     print >> fp, """\
-    ... [qrunner.archive]
+    ... [runner.archive]
     ... start: no
-    ... [qrunner.bounces]
+    ... [runner.bounces]
     ... start: no
-    ... [qrunner.command]
+    ... [runner.command]
     ... start: no
-    ... [qrunner.in]
+    ... [runner.in]
     ... start: no
-    ... [qrunner.lmtp]
+    ... [runner.lmtp]
     ... start: no
-    ... [qrunner.news]
+    ... [runner.news]
     ... start: no
-    ... [qrunner.out]
+    ... [runner.out]
     ... start: no
-    ... [qrunner.pipeline]
+    ... [runner.pipeline]
     ... start: no
-    ... [qrunner.rest]
+    ... [runner.rest]
     ... start: no
-    ... [qrunner.retry]
+    ... [runner.retry]
     ... start: no
-    ... [qrunner.virgin]
+    ... [runner.virgin]
     ... start: no
-    ... [qrunner.digest]
+    ... [runner.digest]
     ... start: no
     ... """
 
@@ -59,11 +59,11 @@ Starting
     ...     config = config_file
     >>> args = FakeArgs()
 
-Starting the daemons prints a useful message and starts the master qrunner
-watcher process in the background.
+Starting the daemons prints a useful message and starts the master watcher
+process in the background.
 
     >>> start.process(args)
-    Starting Mailman's master queue runner
+    Starting Mailman's master runner
 
     >>> import errno, os, time
     >>> from datetime import timedelta, datetime
@@ -104,7 +104,7 @@ stops all the child processes too.
     >>> from mailman.commands.cli_control import Stop
     >>> stop = Stop()
     >>> stop.process(args)
-    Shutting down Mailman's master queue runner
+    Shutting down Mailman's master runner
 
     >>> def bury_master():
     ...     until = timedelta(seconds=10) + datetime.now()

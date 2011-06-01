@@ -84,7 +84,7 @@ this, Mailman will also create any necessary run-time directories and log
 files.
 
 Try ``bin/mailman --help`` for more details.  You can use the commands
-``bin/mailman start`` to start the queue runner daemons, and of course
+``bin/mailman start`` to start the runner subprocess daemons, and of course
 ``bin/mailman stop`` to stop them.
 
 The `web ui`_ is being developed as a separate, Django-based project.  For

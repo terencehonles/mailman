@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Interface for queue runners."""
+"""Interface for runners."""
 
 from __future__ import absolute_import, unicode_literals
 
@@ -30,29 +30,28 @@ from zope.interface import Interface, Attribute
 
 
 class IRunner(Interface):
-    """The queue runner."""
+    """The runner."""
 
     def run():
-        """Start the queue runner."""
+        """Start the runner."""
 
     def stop():
-        """Stop the queue runner on the next iteration through the loop."""
+        """Stop the runner on the next iteration through the loop."""
 
     queue_directory = Attribute(
         'The queue directory.  Overridden in subclasses.')
 
     sleep_time = Attribute("""\
-        The number of seconds this queue runner will sleep between iterations
-        through the main loop.  If given, overrides
-        `config.QRUNNER_SLEEP_TIME`
+        The number of seconds this runner will sleep between iterations
+        through the main loop.
         """)
 
     intercept_signals = Attribute("""\
-        Should the qrunner mechanism intercept signals?
+        Should the runner mechanism intercept signals?
 
-        In general, the qrunner catches SIGINT, SIGTERM, SIGUSR1, and SIGHUP
-        to manage the process.  Some qrunners need to manage their own
-        signals, and set this attribute to False.
+        In general, the runner catches SIGINT, SIGTERM, SIGUSR1, and SIGHUP to
+        manage the process.  Some runners need to manage their own signals,
+        and set this attribute to False.
         """)
 
     def _one_iteration():
@@ -76,15 +75,15 @@ class IRunner(Interface):
     def _clean_up():
         """Clean up upon exit from the main processing loop.
 
-        Called when the queue runner's main loop is stopped, this should
-        perform any necessary resource deallocation.
+        Called when the runner's main loop is stopped, this should perform any
+        necessary resource deallocation.
         """
 
     def _dispose(mlist, msg, msgdata):
         """Dispose of a single message destined for a mailing list.
 
-        Called for each message that the queue runner is responsible for, this
-        is the primary overridable method for processing each message.
+        Called for each message that the runner is responsible for, this is
+        the primary overridable method for processing each message.
         Subclasses, must provide implementation for this method.
 
         :param mlist: The mailing list this message is destined for.
@@ -93,16 +92,16 @@ class IRunner(Interface):
         :type msg: `email.message.Message`
         :param msgdata: The message metadata.
         :type msgdata: dict
-        :return: True if the message should continue to be queue, False if the
-            message should be deleted automatically.
+        :return: True if the message should continue to be queued, False if
+            the message should be deleted automatically.
         :rtype: bool
         """
 
     def _do_periodic():
         """Do some arbitrary periodic processing.
 
-        Called every once in a while both from the queue runner's main loop,
-        and from the runner's hash slice processing loop.  You can do whatever
+        Called every once in a while both from the runner's main loop, and
+        from the runner's hash slice processing loop.  You can do whatever
         special periodic processing you want here.
         """
 
@@ -110,9 +109,9 @@ class IRunner(Interface):
         """Sleep for a little while.
 
         :param filecnt: The number of messages in the queue the last time
-            through.   Queue runners can decide to continue to do work, or
-            sleep for a while based on this value.  By default, the base queue
-            runner only snoozes when there was nothing to do last time around.
+            through.  Runners can decide to continue to do work, or sleep for
+            a while based on this value.  By default, the base runner only
+            snoozes when there was nothing to do last time around.
         :type filecnt: int
         """
 

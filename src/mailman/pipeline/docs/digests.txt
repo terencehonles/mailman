@@ -110,4 +110,4 @@ The digest has been moved to a unique file.
     Test message 8
     Test message 9
 
-Digests are actually crafted and sent by a separate digest queue runner.
+Digests are actually crafted and sent by a separate digest runner.
