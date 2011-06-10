@@ -23,6 +23,7 @@ __metaclass__ = type
 __all__ = [
     'IMailTransportAgentAliases',
     'IMailTransportAgentDelivery',
+    'IMailTransportAgentLifecycle',
     ]
 
 
@@ -42,7 +43,26 @@ class SomeRecipientsFailed(MailmanError):
 
 
 class IMailTransportAgentAliases(Interface):
-    """Interface to the MTA aliases generator."""
+    """Interface to the MTA utility for generating all the aliases."""
+
+    def aliases(mlist):
+        """Generate all the aliases for the mailing list.
+
+        This method is a generator.  The posting address will be returned
+        first, followed by the rest of the aliases in alphabetical order.
+        """
+
+    def destinations(mlist):
+        """Generate just the local parts for the mailing list aliases.
+
+        This method is a generator.  The posting address will be returned
+        first, followed by the rest of the aliases in alphabetical order.
+        """
+
+
+
+class IMailTransportAgentLifecycle(Interface):
+    """Interface to the MTA for creating and deleting a mailing list."""
 
     def create(mlist):
         """Tell the MTA that the mailing list was created."""
