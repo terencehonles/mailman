@@ -196,8 +196,8 @@ class Create:
         # owners.  I suppose we could subclass that exception though.
         if args.owners:
             validator = getUtility(IEmailValidator)
-            invalid_owners = (owner for owner in args.owners
-                              if not validator.is_valid(owner))
+            invalid_owners = [owner for owner in args.owners
+                              if not validator.is_valid(owner)]
             if invalid_owners:
                 invalid = COMMASPACE.join(sorted(invalid_owners))
                 self.parser.error(_('Illegal owner addresses: $invalid'))

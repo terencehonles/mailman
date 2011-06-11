@@ -37,7 +37,7 @@ import datetime
 import tempfile
 
 from base64 import b64encode
-from lazr.config import as_timedelta
+from lazr.config import as_boolean, as_timedelta
 from pkg_resources import resource_string
 from textwrap import dedent
 from urllib2 import Request, URLError, urlopen
@@ -303,4 +303,5 @@ def is_testing():
     :return: True when in testing mode.
     :rtype: bool
     """
-    return MockAndMonkeyLayer.testing_mode or config.devmode.testing
+    return (MockAndMonkeyLayer.testing_mode or
+            as_boolean(config.devmode.testing))
