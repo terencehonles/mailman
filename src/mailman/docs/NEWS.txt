@@ -12,9 +12,27 @@ Here is a history of user visible changes to Mailman.
 ==================================
 (201X-XX-XX)
 
+Architecture
+------------
+ * Port bounce detection to the Mailman 3 architecture.
+ * Unrecognized bounces can now also be forwarded to the site owner.
+ * mailman.qrunner log is renamed to mailman.runner
+ * master-qrunner.lck -> master.lck
+ * master-qrunner.pid -> master.pid
+
+Commands
+--------
+ * bin/qrunner is renamed to bin/runner.
+ * `bin/mailman aliases` gains -f and -s options.
+ * `bin/mailman create` no longer allows a list to be created with bogus owner
+   addresses.  (LP: #778687)
+
 Documentation
 -------------
  * Update the COPYING file to contain the GPLv3.  (LP: #790994)
+ * Major terminology change: ban the terms "queue runners" and "qrunners" since
+   not all runners manage queue directories.  Just call them "runners".  Also,
+   the master is now just called "the master runner".
 
 Testing
 -------
