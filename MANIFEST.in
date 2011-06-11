@@ -1,5 +1,5 @@
 include *.py *.rc
-include gnu-COPYING-GPL
+include COPYING
 recursive-include .buildout *
 recursive-include contrib *
 recursive-include cron *

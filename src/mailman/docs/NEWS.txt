@@ -12,6 +12,10 @@ Here is a history of user visible changes to Mailman.
 ==================================
 (201X-XX-XX)
 
+Documentation
+-------------
+ * Update the COPYING file to contain the GPLv3.  (LP: #790994)
+
 Testing
 -------
  * New configuration variable in [devmode] section, called `wait` which sets
