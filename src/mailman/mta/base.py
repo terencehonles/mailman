@@ -21,7 +21,6 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'BaseAliases',
     'BaseDelivery',
     'IndividualDelivery',
     ]
@@ -169,10 +168,3 @@ class IndividualDelivery(BaseDelivery):
                 mlist, message_copy, msgdata_copy, [recipient])
             refused.update(status)
         return refused
-
-
-
-class BaseAliases:
-    """Common alias generation; use as a mixin."""
-
-    

@@ -120,12 +120,8 @@ class LMTP:
             for mlist in sorted(by_domain[domain], key=sort_key):
                 utility = getUtility(IMailTransportAgentAliases)
                 aliases = list(utility.aliases(mlist))
-                longest = max(len(alias) for alias in aliases)
-                print >> fp, ALIASTMPL.format(
-                    aliases.pop(0), config,
-                    # Add 1 because the bare list name has no dash.
-                    longest + 3)
+                width = max(len(alias) for alias in aliases) + 3
+                print >> fp, ALIASTMPL.format(aliases.pop(0), config, width)
             for alias in aliases:
-                print >> fp, ALIASTMPL.format(
-                    alias, config, longest + 3)
+                print >> fp, ALIASTMPL.format(alias, config, width)
             print >> fp

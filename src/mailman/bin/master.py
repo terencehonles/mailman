@@ -463,9 +463,9 @@ class Loop:
             # Are we permanently non-restartable?
             log.debug("""\
 Master detected subprocess exit
-(pid: {0:d}, why: {1}, class: {2}, slice: {3:d}/{4:d}) {5}""",
+(pid: {0:d}, why: {1}, class: {2}, slice: {3:d}/{4:d}) {5}""".format(
                      pid, why, rname, slice_number + 1, count,
-                     ('[restarting]' if restart else ''))
+                     ('[restarting]' if restart else '')))
             # See if we've reached the maximum number of allowable restarts.
             if restarts > max_restarts:
                 log.info("""\
