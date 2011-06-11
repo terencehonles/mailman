@@ -35,13 +35,17 @@ from mailman.config import config
 from mailman.core.constants import system_preferences
 from mailman.core.i18n import _
 from mailman.email.message import UserNotification
-from mailman.interfaces.address import InvalidEmailAddressError
+from mailman.interfaces.address import (
+    IEmailValidator, InvalidEmailAddressError)
 from mailman.interfaces.command import ICLISubCommand
 from mailman.interfaces.domain import (
     BadDomainSpecificationError, IDomainManager)
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.listmanager import IListManager, ListAlreadyExistsError
 from mailman.utilities.i18n import make
+
+
+COMMASPACE = ', '
 
 
 
@@ -186,6 +190,18 @@ class Create:
         domain_manager = getUtility(IDomainManager)
         if domain_manager.get(domain) is None and args.domain:
             domain_manager.add(domain)
+        # Validate the owner email addresses.  The problem with doing this
+        # check in create_list() is that you wouldn't be able to distinguish
+        # between an InvalidEmailAddressError for the list name or the
+        # owners.  I suppose we could subclass that exception though.
+        if args.owners:
+            validator = getUtility(IEmailValidator)
+            invalid_owners = (owner for owner in args.owners
+                              if not validator.is_valid(owner))
+            if invalid_owners:
+                invalid = COMMASPACE.join(sorted(invalid_owners))
+                self.parser.error(_('Illegal owner addresses: $invalid'))
+                return
         try:
             mlist = create_list(fqdn_listname, args.owners)
         except InvalidEmailAddressError:

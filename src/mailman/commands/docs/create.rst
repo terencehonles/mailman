@@ -11,9 +11,8 @@ A system administrator can create mailing lists by the command line.
     ...     domain = None
     ...     listname = None
     ...     notify = False
-    >>> args = FakeArgs()
 
-You cannot create a mailing list in an unknown domain...
+You cannot create a mailing list in an unknown domain.
 
     >>> from mailman.commands.cli_lists import Create
     >>> command = Create()
@@ -23,15 +22,15 @@ You cannot create a mailing list in an unknown domain...
     ...         print message
     >>> command.parser = FakeParser()
 
-    >>> args.listname = ['test@example.xx']
-    >>> command.process(args)
+    >>> FakeArgs.listname = ['test@example.xx']
+    >>> command.process(FakeArgs)
     Undefined domain: example.xx
 
-...although you can tell Mailman to auto-register the domain.  In that case,
-the mailing list and domain will be created.
+The ``-d`` or ``--domain`` option is used to tell Mailman to auto-register the
+domain.  Both the mailing list and domain will be created.
 
-    >>> args.domain = True
-    >>> command.process(args)
+    >>> FakeArgs.domain = True
+    >>> command.process(FakeArgs)
     Created mailing list: test@example.xx
 
 Now both the domain and the mailing list exist in the database.
@@ -52,9 +51,9 @@ You can also create mailing lists in existing domains without the
 auto-creation flag.
 ::
 
-    >>> args.domain = False
-    >>> args.listname = ['test1@example.com']
-    >>> command.process(args)
+    >>> FakeArgs.domain = False
+    >>> FakeArgs.listname = ['test1@example.com']
+    >>> command.process(FakeArgs)
     Created mailing list: test1@example.com
 
     >>> list_manager.get('test1@example.com')
@@ -63,9 +62,9 @@ auto-creation flag.
 The command can also operate quietly.
 ::
 
-    >>> args.quiet = True
-    >>> args.listname = ['test2@example.com']
-    >>> command.process(args)
+    >>> FakeArgs.quiet = True
+    >>> FakeArgs.listname = ['test2@example.com']
+    >>> command.process(FakeArgs)
 
     >>> mlist = list_manager.get('test2@example.com')
     >>> mlist
@@ -84,10 +83,10 @@ But you can specify an owner address on the command line when you create the
 mailing list.
 ::
 
-    >>> args.quiet = False
-    >>> args.listname = ['test4@example.com']
-    >>> args.owners = ['foo@example.org']
-    >>> command.process(args)
+    >>> FakeArgs.quiet = False
+    >>> FakeArgs.listname = ['test4@example.com']
+    >>> FakeArgs.owners = ['foo@example.org']
+    >>> command.process(FakeArgs)
     Created mailing list: test4@example.com
 
     >>> mlist = list_manager.get('test4@example.com')
@@ -97,9 +96,11 @@ mailing list.
 You can even specify more than one address for the owners.
 ::
 
-    >>> args.owners = ['foo@example.net', 'bar@example.net', 'baz@example.net']
-    >>> args.listname = ['test5@example.com']
-    >>> command.process(args)
+    >>> FakeArgs.owners = ['foo@example.net',
+    ...                    'bar@example.net',
+    ...                    'baz@example.net']
+    >>> FakeArgs.listname = ['test5@example.com']
+    >>> command.process(FakeArgs)
     Created mailing list: test5@example.com
 
     >>> mlist = list_manager.get('test5@example.com')
@@ -117,24 +118,24 @@ You can set the default language for the new mailing list when you create it.
 The language must be known to Mailman.
 ::
 
-    >>> args.listname = ['test3@example.com']
-    >>> args.language = 'ee'
-    >>> command.process(args)
+    >>> FakeArgs.listname = ['test3@example.com']
+    >>> FakeArgs.language = 'ee'
+    >>> command.process(FakeArgs)
     Invalid language code: ee
 
     >>> from mailman.interfaces.languages import ILanguageManager
     >>> getUtility(ILanguageManager).add('ee', 'iso-8859-1', 'Freedonian')
 
-    >>> args.quiet = False
-    >>> args.listname = ['test3@example.com']
-    >>> args.language = 'fr'
-    >>> command.process(args)
+    >>> FakeArgs.quiet = False
+    >>> FakeArgs.listname = ['test3@example.com']
+    >>> FakeArgs.language = 'fr'
+    >>> command.process(FakeArgs)
     Created mailing list: test3@example.com
 
     >>> mlist = list_manager.get('test3@example.com')
     >>> print mlist.preferred_language
     <Language [fr] French>
-    >>> args.language = None
+    >>> FakeArgs.language = None
 
 
 Notifications
@@ -142,9 +143,9 @@ Notifications
 
 When told to, Mailman will notify the list owners of their new mailing list.
 
-    >>> args.listname = ['test6@example.com']
-    >>> args.notify = True
-    >>> command.process(args)
+    >>> FakeArgs.listname = ['test6@example.com']
+    >>> FakeArgs.notify = True
+    >>> command.process(FakeArgs)
     Created mailing list: test6@example.com
 
 The notification message is in the virgin queue.
@@ -183,18 +184,3 @@ The notification message is in the virgin queue.
     <BLANKLINE>
     Please address all questions to noreply@example.com.
     <BLANKLINE>
-
-
-Errors
-======
-
-You cannot create a mailing list that already exists.
-
-    >>> command.process(args)
-    List already exists: test6@example.com
-
-The posting address of the mailing list must be valid.
-
-    >>> args.listname = ['foo']
-    >>> command.process(args)
-    Illegal list name: foo
