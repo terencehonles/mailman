@@ -20,10 +20,14 @@ mailman-developers@python.org mailing list.
 Using the Alpha
 ===============
 
-Python 2.6 is required.  It can either be the default 'python' on your $PATH
-or it can be accessible via the 'python2.6' binary.  See http://www.python.org
-for details on getting Python 2.6.  Mailman works just fine with Python 2.7,
-but Python 3 is not yet supported.
+Python 2.6 or 2.7 is required.  It can either be the default 'python' on your
+$PATH or it can be accessible via the ``python2.6`` or ``python2.7`` binary.
+If your operating system does not include Python, see http://www.python.org
+downloading and installing it from source.  Python 3 is not yet supported.
+
+
+Building Mailman 3
+==================
 
 Mailman 3 is now based on the `zc.buildout`_ infrastructure, which greatly
 simplifies building and testing Mailman.
@@ -35,6 +39,9 @@ everything::
     % python bootstrap.py
     % bin/buildout
 
+Sit back and have some Kombucha while you wait for everything to download and
+install.
+
 Now you can run the test suite via::
 
     % bin/test -vv
@@ -45,7 +52,7 @@ Build the online docs by running::
 
     % bin/docs
 
-(You will get warnings which you can safely ignore.)  Then visit
+(You might get warnings which you can safely ignore.)  Then visit
 
     parts/docs/mailman/build/mailman/docs/README.html
 
@@ -53,6 +60,10 @@ in your browser to start reading the documentation.  Or you can just read the
 doctests by looking in all the 'doc' directories under the 'mailman' package.
 Doctests are documentation first, so they should give you a pretty good idea
 how various components of Mailman 3 works.
+
+
+Running Mailman 3
+=================
 
 What, you actually want to *run* Mailman 3?  Oh well, if you insist.  You
 will need to set up a configuration file to override the defaults and set

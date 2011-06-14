@@ -220,6 +220,8 @@ def main():
     options = ScriptOptions()
     options.initialize()
 
+    log = logging.getLogger('mailman.runner')
+
     if options.options.list:
         descriptions = {}
         for section in config.runner_configs:
@@ -248,7 +250,6 @@ def main():
         if runner.intercept_signals:
             set_signals(loop)
         # Now start up the main loop
-        log = logging.getLogger('mailman.runner')
         log.info('%s runner started.', loop.name())
         runner.run()
         log.info('%s runner exiting.', loop.name())
