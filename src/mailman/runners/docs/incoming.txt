@@ -54,7 +54,7 @@ While configurable, the *sender addresses* by default are those named in the
 Inject the message into the incoming queue, similar to the way the upstream
 mail server normally would.
 
-    >>> from mailman.inject import inject_message
+    >>> from mailman.app.inject import inject_message
     >>> inject_message(mlist, msg)
 
 The incoming runner runs until it is empty.

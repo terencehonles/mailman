@@ -25,7 +25,7 @@ the sender.  The command can be in the ``Subject`` header.
     ...
     ... """)
 
-    >>> from mailman.inject import inject_message
+    >>> from mailman.app.inject import inject_message
     >>> inject_message(mlist, msg, switchboard='command')
     >>> from mailman.runners.command import CommandRunner
     >>> from mailman.testing.helpers import make_testable_runner

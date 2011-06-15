@@ -26,8 +26,6 @@ __all__ = [
     ]
 
 
-# pylint doesn't understand absolute_import
-# pylint: disable-msg=E0611,W0403
 from email import message_from_string
 from email.utils import formatdate, make_msgid
 
@@ -36,16 +34,16 @@ from mailman.email.message import Message
 
 
 
-def inject_message(mlist, msg, recips=None, switchboard=None, **kws):
+def inject_message(mlist, msg, recipients=None, switchboard=None, **kws):
     """Inject a message into a queue.
 
     :param mlist: The mailing list this message is destined for.
     :type mlist: IMailingList
     :param msg: The Message object to inject.
     :type msg: a Message object
-    :param recips: Optional set of recipients to put into the message's
+    :param recipients: Optional set of recipients to put into the message's
         metadata.
-    :type recips: sequence of strings
+    :type recipients: sequence of strings
     :param switchboard: Optional name of switchboard to inject this message
         into.  If not given, the 'in' switchboard is used.
     :type switchboard: string
@@ -66,27 +64,29 @@ def inject_message(mlist, msg, recips=None, switchboard=None, **kws):
         original_size=getattr(msg, 'original_size', len(msg.as_string())),
         )
     msgdata.update(kws)
-    if recips is not None:
-        msgdata['recipients'] = recips
+    if recipients is not None:
+        msgdata['recipients'] = recipients
     config.switchboards[switchboard].enqueue(msg, **msgdata)
 
 
 
-def inject_text(mlist, text, recips=None, switchboard=None):
-    """Inject a message into a queue.
+def inject_text(mlist, text, recipients=None, switchboard=None, **kws):
+    """Turn text into a message and inject that into a queue.
 
     :param mlist: The mailing list this message is destined for.
     :type mlist: IMailingList
     :param text: The text of the message to inject.  This will be parsed into
         a Message object.
-    :type text: string
-    :param recips: Optional set of recipients to put into the message's
+    :type text: byte string
+    :param recipients: Optional set of recipients to put into the message's
         metadata.
-    :type recips: sequence of strings
+    :type recipients: sequence of strings
     :param switchboard: Optional name of switchboard to inject this message
         into.  If not given, the 'in' switchboard is used.
     :type switchboard: string
+    :param kws: Additional values for the message metadata.
+    :type kws: dictionary
     """
     message = message_from_string(text, Message)
     message.original_size = len(text)
-    inject_message(mlist, message, recips, switchboard)
+    inject_message(mlist, message, recipients, switchboard, **kws)

@@ -30,9 +30,9 @@ import sys
 from zope.component import getUtility
 from zope.interface import implements
 
+from mailman.app.inject import inject_text
 from mailman.config import config
 from mailman.core.i18n import _
-from mailman.inject import inject_text
 from mailman.interfaces.command import ICLISubCommand
 from mailman.interfaces.listmanager import IListManager
 
