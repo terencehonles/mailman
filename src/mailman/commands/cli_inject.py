@@ -50,7 +50,7 @@ class Inject:
         self.parser = parser
         command_parser.add_argument(
             '-q', '--queue',
-            type=unicode, help=_("""\
+            type=unicode, help=_("""
             The name of the queue to inject the message to.  QUEUE must be one
             of the directories inside the qfiles directory.  If omitted, the
             incoming queue is used."""))
@@ -66,9 +66,16 @@ class Inject:
         # Required positional argument.
         command_parser.add_argument(
             'listname', metavar='LISTNAME', nargs=1,
-            help=_("""\
+            help=_("""
             The 'fully qualified list name', i.e. the posting address of the
             mailing list to inject the message into."""))
+        command_parser.add_argument(
+            '-m', '--metadata',
+            dest='keywords', action='append', default=[], metavar='KEY=VALUE',
+            help=_("""
+            Additional metadata key/value pairs to add to the message metadata
+            dictionary.  Use the format key=value.  Multiple -m options are
+            allowed."""))
 
     def process(self, args):
         """See `ICLISubCommand`."""
@@ -104,4 +111,8 @@ class Inject:
         else:
             with open(args.filename) as fp:
                 message_text = fp.read()
-        inject_text(mlist, message_text, switchboard=queue)
+        keywords = {}
+        for keyvalue in args.keywords:
+            key, equals, value = keyvalue.partition('=')
+            keywords[key] = value
+        inject_text(mlist, message_text, switchboard=queue, **keywords)

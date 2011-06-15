@@ -14,6 +14,7 @@ line.
     ...     show = False
     ...     filename = None
     ...     listname = None
+    ...     keywords = []
     >>> args = FakeArgs()
 
     >>> class FakeParser:
@@ -130,9 +131,6 @@ But a different queue can be specified on the command line.
     original_size: 90
     version      : 3
 
-    # Clean up the tempfile.
-    >>> os.remove(filename)
-
 
 Standard input
 ==============
@@ -182,6 +180,30 @@ The message text can also be provided on standard input.
     >>> args.filename = filename
 
 
+Metadata
+========
+
+Additional metadata keys can be provided on the command line.  These key/value
+pairs get added to the message metadata dictionary when the message is
+injected.
+::
+
+    >>> args = FakeArgs()
+    >>> args.filename = filename
+    >>> args.listname = ['test@example.com']
+    >>> args.keywords = ['foo=one', 'bar=two']
+    >>> command.process(args)
+
+    >>> items = get_queue_messages('in')
+    >>> dump_msgdata(items[0].msgdata)
+    _parsemsg    : False
+    bar          : two
+    foo          : one
+    listname     : test@example.com
+    original_size: 90
+    version      : 3
+
+
 Errors
 ======
 
@@ -197,3 +219,8 @@ It is also an error to specify a mailing list that doesn't exist.
     >>> args.listname = ['bogus']
     >>> command.process(args)
     No such list: bogus
+
+
+..
+    # Clean up the tempfile.
+    >>> os.remove(filename)
