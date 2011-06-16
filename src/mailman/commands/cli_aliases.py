@@ -126,7 +126,7 @@ class Dummy:
         # First, sort mailing lists by domain.
         by_domain = {}
         for mlist in getUtility(IListManager).mailing_lists:
-            by_domain.setdefault(mlist.host_name, []).append(mlist)
+            by_domain.setdefault(mlist.mail_host, []).append(mlist)
         sort_key = attrgetter('list_name')
         for domain in sorted(by_domain):
             for mlist in sorted(by_domain[domain], key=sort_key):

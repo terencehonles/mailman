@@ -71,7 +71,7 @@ class MailingList(Model):
 
     # List identity
     list_name = Unicode()
-    host_name = Unicode()
+    mail_host = Unicode()
     list_id = Unicode()
     include_list_post_header = Bool()
     include_rfc2369_headers = Bool()
@@ -192,7 +192,7 @@ class MailingList(Model):
         listname, at, hostname = fqdn_listname.partition('@')
         assert hostname, 'Bad list name: {0}'.format(fqdn_listname)
         self.list_name = listname
-        self.host_name = hostname
+        self.mail_host = hostname
         # For the pending database
         self.next_request_id = 1
         self._restore()
@@ -219,12 +219,12 @@ class MailingList(Model):
     @property
     def fqdn_listname(self):
         """See `IMailingList`."""
-        return '{0}@{1}'.format(self.list_name, self.host_name)
+        return '{0}@{1}'.format(self.list_name, self.mail_host)
 
     @property
     def domain(self):
         """See `IMailingList`."""
-        return getUtility(IDomainManager)[self.host_name]
+        return getUtility(IDomainManager)[self.mail_host]
 
     @property
     def scheme(self):
@@ -257,49 +257,49 @@ class MailingList(Model):
     @property
     def no_reply_address(self):
         """See `IMailingList`."""
-        return '{0}@{1}'.format(config.mailman.noreply_address, self.host_name)
+        return '{0}@{1}'.format(config.mailman.noreply_address, self.mail_host)
 
     @property
     def owner_address(self):
         """See `IMailingList`."""
-        return '{0}-owner@{1}'.format(self.list_name, self.host_name)
+        return '{0}-owner@{1}'.format(self.list_name, self.mail_host)
 
     @property
     def request_address(self):
         """See `IMailingList`."""
-        return '{0}-request@{1}'.format(self.list_name, self.host_name)
+        return '{0}-request@{1}'.format(self.list_name, self.mail_host)
 
     @property
     def bounces_address(self):
         """See `IMailingList`."""
-        return '{0}-bounces@{1}'.format(self.list_name, self.host_name)
+        return '{0}-bounces@{1}'.format(self.list_name, self.mail_host)
 
     @property
     def join_address(self):
         """See `IMailingList`."""
-        return '{0}-join@{1}'.format(self.list_name, self.host_name)
+        return '{0}-join@{1}'.format(self.list_name, self.mail_host)
 
     @property
     def leave_address(self):
         """See `IMailingList`."""
-        return '{0}-leave@{1}'.format(self.list_name, self.host_name)
+        return '{0}-leave@{1}'.format(self.list_name, self.mail_host)
 
     @property
     def subscribe_address(self):
         """See `IMailingList`."""
-        return '{0}-subscribe@{1}'.format(self.list_name, self.host_name)
+        return '{0}-subscribe@{1}'.format(self.list_name, self.mail_host)
 
     @property
     def unsubscribe_address(self):
         """See `IMailingList`."""
-        return '{0}-unsubscribe@{1}'.format(self.list_name, self.host_name)
+        return '{0}-unsubscribe@{1}'.format(self.list_name, self.mail_host)
 
     def confirm_address(self, cookie):
         """See `IMailingList`."""
         local_part = expand(config.mta.verp_confirm_format, dict(
             address = '{0}-confirm'.format(self.list_name),
             cookie  = cookie))
-        return '{0}@{1}'.format(local_part, self.host_name)
+        return '{0}@{1}'.format(local_part, self.mail_host)
 
     @property
     def preferred_language(self):

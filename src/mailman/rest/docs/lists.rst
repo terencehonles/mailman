@@ -21,9 +21,9 @@ Create a mailing list in a domain and it's accessible via the API.
     >>> dump_json('http://localhost:9001/3.0/lists')
     entry 0:
         fqdn_listname: test-one@example.com
-        host_name: example.com
         http_etag: "..."
         list_name: test-one
+        mail_host: example.com
         real_name: Test-one
         self_link: http://localhost:9001/3.0/lists/test-one@example.com
     http_etag: "..."
@@ -63,9 +63,9 @@ It is also available via the location given in the response.
 
     >>> dump_json('http://localhost:9001/3.0/lists/test-two@example.com')
     fqdn_listname: test-two@example.com
-    host_name: example.com
     http_etag: "..."
     list_name: test-two
+    mail_host: example.com
     real_name: Test-two
     self_link: http://localhost:9001/3.0/lists/test-two@example.com
 

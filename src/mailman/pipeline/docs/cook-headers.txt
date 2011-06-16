@@ -199,7 +199,7 @@ set the ``List-ID`` header.  Start by creating a new domain.
     >>> from mailman.interfaces.domain import IDomainManager
     >>> from zope.component import getUtility
     >>> domain = getUtility(IDomainManager).add('mail.example.net')
-    >>> mlist.host_name = 'mail.example.net'
+    >>> mlist.mail_host = 'mail.example.net'
 
     >>> process(mlist, msg, {})
     >>> print msg['list-id']
@@ -210,7 +210,7 @@ set the ``List-ID`` header.  Start by creating a new domain.
     >>> print msg['list-id']
     My test mailing list <_xtest.mail.example.net>
 
-    >>> mlist.host_name = 'example.com'
+    >>> mlist.mail_host = 'example.com'
     >>> mlist.list_id = '_xtest.example.com'
 
 Any existing ``List-ID`` headers are removed from the original message.

@@ -40,7 +40,6 @@ All readable attributes for a list are available on a sub-resource.
     filter_content: False
     fqdn_listname: test-one@example.com
     generic_nonmember_action: 1
-    host_name: example.com
     http_etag: "..."
     include_list_post_header: True
     include_rfc2369_headers: True
@@ -49,6 +48,7 @@ All readable attributes for a list are available on a sub-resource.
     leave_address: test-one-leave@example.com
     list_id: test-one.example.com
     list_name: test-one
+    mail_host: example.com
     next_digest_number: 1
     no_reply_address: noreply@example.com
     owner_address: test-one-owner@example.com

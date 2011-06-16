@@ -92,7 +92,7 @@ class Lists:
             if args.advertised and not mlist.advertised:
                 continue
             domains = getattr(args, 'domains', None)
-            if domains and mlist.host_name not in domains:
+            if domains and mlist.mail_host not in domains:
                 continue
             mailing_lists.append(mlist)
         # Maybe no mailing lists matched.

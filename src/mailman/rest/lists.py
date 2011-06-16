@@ -109,7 +109,7 @@ class _ListBase(resource.Resource, CollectionMixin):
         """See `CollectionMixin`."""
         return dict(
             fqdn_listname=mlist.fqdn_listname,
-            host_name=mlist.host_name,
+            mail_host=mlist.mail_host,
             list_name=mlist.list_name,
             real_name=mlist.real_name,
             self_link=path_to('lists/{0}'.format(mlist.fqdn_listname)),

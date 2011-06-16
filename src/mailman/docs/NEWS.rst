@@ -20,6 +20,12 @@ Architecture
  * master-qrunner.lck -> master.lck
  * master-qrunner.pid -> master.pid
 
+REST
+----
+ * The IMailingList attribute ``host_name`` has been renamed to ``mail_host``
+   for consistency.  This changes the REST API for mailing list
+   resources. (LP: #787599)
+
 Commands
 --------
  * bin/qrunner is renamed to bin/runner.

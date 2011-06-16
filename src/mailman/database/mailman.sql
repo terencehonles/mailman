@@ -96,7 +96,7 @@ CREATE TABLE mailinglist (
     id INTEGER NOT NULL,
     -- List identity
     list_name TEXT,
-    host_name TEXT,
+    mail_host TEXT,
     list_id TEXT,
     include_list_post_header BOOLEAN,
     include_rfc2369_headers BOOLEAN,

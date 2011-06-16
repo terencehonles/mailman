@@ -39,6 +39,7 @@ def seconds_to_delta(value):
     return datetime.timedelta(seconds=value)
 
 
+# Attributes in Mailman 2 which have a different type in Mailman 3.
 TYPES = dict(
     autorespond_owner=ResponseAction,
     autorespond_postings=ResponseAction,
@@ -52,6 +53,12 @@ TYPES = dict(
     )
 
 
+# Attribute names in Mailman 2 which are renamed in Mailman 3.
+NAME_MAPPINGS = dict(
+    host_name='mail_host',
+    )
+
+
 
 def import_config_pck(mlist, config_dict):
     """Apply a config.pck configuration dictionary to a mailing list.
@@ -62,6 +69,8 @@ def import_config_pck(mlist, config_dict):
     :type config_dict: dict
     """
     for key, value in config_dict.items():
+        # Some attributes from Mailman 2 were renamed in Mailman 3.
+        key = NAME_MAPPINGS.get(key, key)
         # Handle the simple case where the key is an attribute of the
         # IMailingList and the types are the same (modulo 8-bit/unicode
         # strings).

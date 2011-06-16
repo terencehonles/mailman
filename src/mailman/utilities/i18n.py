@@ -66,7 +66,7 @@ def _search(template_file, mailing_list=None, language=None):
              os.path.join(config.TEMPLATE_DIR, 'site')]
     if mailing_list is not None:
         paths.append(os.path.join(config.TEMPLATE_DIR,
-                                  mailing_list.host_name))
+                                  mailing_list.mail_host))
         paths.append(os.path.join(config.LIST_DATA_DIR,
                                   mailing_list.fqdn_listname))
     paths.reverse()

@@ -50,7 +50,7 @@ class ListManager:
         mlist = config.db.store.find(
             MailingList,
             MailingList.list_name == listname,
-            MailingList.host_name == hostname).one()
+            MailingList.mail_host == hostname).one()
         if mlist:
             raise ListAlreadyExistsError(fqdn_listname)
         mlist = MailingList(fqdn_listname)
@@ -63,7 +63,7 @@ class ListManager:
         listname, at, hostname = fqdn_listname.partition('@')
         mlist = config.db.store.find(MailingList,
                                      list_name=listname,
-                                     host_name=hostname).one()
+                                     mail_host=hostname).one()
         if mlist is not None:
             # XXX Fixme
             mlist._restore()
@@ -88,7 +88,7 @@ class ListManager:
     def names(self):
         """See `IListManager`."""
         for mlist in config.db.store.find(MailingList):
-            yield '{0}@{1}'.format(mlist.list_name, mlist.host_name)
+            yield '{0}@{1}'.format(mlist.list_name, mlist.mail_host)
 
     # XXX 2010-02-24 barry Get rid of this.
     def get_mailing_lists(self):

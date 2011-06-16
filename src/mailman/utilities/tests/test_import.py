@@ -56,11 +56,11 @@ class TestBasicImport(unittest.TestCase):
         self._import()
         self.assertEqual(self._mlist.real_name, 'Test')
 
-    def test_host_name(self):
-        # The mlist.host_name gets set.
-        self.assertEqual(self._mlist.host_name, 'example.com')
+    def test_mail_host(self):
+        # The mlist.mail_host gets set.
+        self.assertEqual(self._mlist.mail_host, 'example.com')
         self._import()
-        self.assertEqual(self._mlist.host_name, 'heresy.example.org')
+        self.assertEqual(self._mlist.mail_host, 'heresy.example.org')
 
     def test_rfc2369_headers(self):
         self._mlist.include_list_post_header = False

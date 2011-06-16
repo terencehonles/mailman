@@ -71,19 +71,19 @@ class IMailingList(Interface):
         posted to mylist@example.com, then the list_name is 'mylist'.
         """)
 
-    host_name = Attribute("""\
+    mail_host = Attribute("""\
         The read-only domain name 'hosting' this mailing list.  This is always
         the domain name part of the posting email address, and it may bear no
         relationship to the web url used to access this mailing list.  For
         example, if messages are posted to mylist@example.com, then the
-        host_name is 'example.com'.
+        mail_host is 'example.com'.
         """)
 
     fqdn_listname = Attribute("""\
         The read-only fully qualified name of the mailing list.  This is the
         guaranteed unique id for the mailing list, and it is always the
         address to which messages are posted, e.g. mylist@example.com.  It is
-        always comprised of the list_name + '@' + host_name.
+        always comprised of the list_name + '@' + mail_host.
         """)
 
     domain = Attribute(

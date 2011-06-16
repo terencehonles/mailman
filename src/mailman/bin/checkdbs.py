@@ -186,7 +186,7 @@ def main():
                     text += Utils.maketext(
                         'checkdbs.txt',
                         {'count'    : count,
-                         'host_name': mlist.host_name,
+                         'mail_host': mlist.mail_host,
                          'adminDB'  : mlist.GetScriptURL('admindb',
                                                          absolute=1),
                          'real_name': realname,

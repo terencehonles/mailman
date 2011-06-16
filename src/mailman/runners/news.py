@@ -43,7 +43,7 @@ mcre = re.compile(r"""
     \d+.                                          # pid
     (?P<listname>[^@]+)                           # list's internal_name()
     @                                             # localpart@dom.ain
-    (?P<hostname>[^>]+)                           # list's host_name
+    (?P<hostname>[^>]+)                           # list's mail_host
     >                                             # trailer
     """, re.VERBOSE)
 
@@ -134,7 +134,7 @@ def prepare_message(mlist, msg, msgdata):
         mo = mcre.search(msgid)
         if mo:
             lname, hname = mo.group('listname', 'hostname')
-            if lname == mlist.internal_name() and hname == mlist.host_name:
+            if lname == mlist.internal_name() and hname == mlist.mail_host:
                 hackmsgid = False
     if hackmsgid:
         del msg['message-id']

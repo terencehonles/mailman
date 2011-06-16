@@ -26,7 +26,7 @@ list to the system.
 
     >>> print mlist.list_name
     _xtest
-    >>> print mlist.host_name
+    >>> print mlist.mail_host
     example.com
     >>> print mlist.fqdn_listname
     _xtest@example.com

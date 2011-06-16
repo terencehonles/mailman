@@ -130,8 +130,8 @@ class Archiver:
         if self.archive_private:
             url = self.GetScriptURL('private') + '/index.html'
         else:
-            domain = getUtility(IDomainManager).get(self.host_name)
-            web_host = (self.host_name if domain is None else domain.url_host)
+            domain = getUtility(IDomainManager).get(self.mail_host)
+            web_host = (self.mail_host if domain is None else domain.url_host)
             url = Template(config.PUBLIC_ARCHIVE_URL).safe_substitute(
                 listname=self.fqdn_listname,
                 hostname=web_host,
@@ -165,7 +165,7 @@ class Archiver:
     def ExternalArchive(self, ar, txt):
         cmd = Template(ar).safe_substitute(
             listname=self.fqdn_listname,
-            hostname=self.host_name)
+            hostname=self.mail_host)
         extarch = os.popen(cmd, 'w')
         extarch.write(txt)
         status = extarch.close()
