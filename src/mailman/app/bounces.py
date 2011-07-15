@@ -25,7 +25,6 @@ __all__ = [
     'StandardVERP',
     'bounce_message',
     'maybe_forward',
-    'scan_message',
     'send_probe',
     ]
 
@@ -40,12 +39,10 @@ from string import Template
 from zope.component import getUtility
 from zope.interface import implements
 
-from mailman.app.finder import find_components
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.email.message import OwnerNotification, UserNotification
-from mailman.interfaces.bounce import (
-    IBounceDetector, Stop, UnrecognizedBounceDisposition)
+from mailman.interfaces.bounce import UnrecognizedBounceDisposition
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.membership import ISubscriptionService
 from mailman.interfaces.pending import IPendable, IPendings
@@ -93,29 +90,6 @@ def bounce_message(mlist, msg, e=None):
     bmsg.attach(txt)
     bmsg.attach(MIMEMessage(msg))
     bmsg.send(mlist)
-
-
-
-def scan_message(mlist, msg):
-    """Scan all the message for heuristically determined bounce addresses.
-
-    :param mlist: The mailing list.
-    :type mlist: `IMailingList`
-    :param msg: The bounce message to scan.
-    :type msg: `Message`
-    :return: The set of bouncing addresses found in the scanned message.  The
-        set will be empty if no addresses were found.
-    :rtype: set
-    """
-    fatal_addresses = set()
-    for detector_class in find_components('mailman.bouncers', IBounceDetector):
-        addresses = detector_class().process(msg)
-        # Detectors may return Stop to signify that no fatal errors were
-        # found, or a sequence of addresses.
-        if addresses is Stop:
-            return Stop
-        fatal_addresses.update(addresses)
-    return fatal_addresses
 
 
 

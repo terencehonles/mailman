@@ -94,6 +94,7 @@ case second `m'.  Any other spelling is incorrect.""",
         },
     install_requires = [
         'argparse',
+        'flufl.bounce',
         'flufl.enum',
         'flufl.i18n',
         'flufl.lock',

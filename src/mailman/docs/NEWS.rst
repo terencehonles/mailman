@@ -14,7 +14,7 @@ Here is a history of user visible changes to Mailman.
 
 Architecture
 ------------
- * Port bounce detection to the Mailman 3 architecture.
+ * Factor out bounce detection to `flufl.bounce`.
  * Unrecognized bounces can now also be forwarded to the site owner.
  * mailman.qrunner log is renamed to mailman.runner
  * master-qrunner.lck -> master.lck
