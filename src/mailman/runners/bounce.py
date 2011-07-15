@@ -19,12 +19,12 @@
 
 import logging
 
+from flufl.bounce import all_failures, scan_message
 from zope.component import getUtility
 
-from mailman.app.bounces import (
-    ProbeVERP, StandardVERP, maybe_forward, scan_message)
+from mailman.app.bounces import ProbeVERP, StandardVERP, maybe_forward
 from mailman.core.runner import Runner
-from mailman.interfaces.bounce import BounceContext, IBounceProcessor, Stop
+from mailman.interfaces.bounce import BounceContext, IBounceProcessor
 
 
 COMMASPACE = ', '
@@ -48,25 +48,27 @@ class BounceRunner(Runner):
         # Try VERP detection first, since it's quick and easy
         context = BounceContext.normal
         addresses = StandardVERP().get_verp(mlist, msg)
-        if addresses:
-            # We have an address, but check if the message is non-fatal.  It
-            # will be non-fatal if the bounce scanner returns Stop.  It will
-            # return a set of addresses when the bounce is fatal, but we don't
-            # care about those addresses, since we got it out of the VERP.
-            if scan_message(mlist, msg) is Stop:
+        if len(addresses) > 0:
+            # Scan the message to see if it contained permanent or temporary
+            # failures.  We'll ignore temporary failures, but even if there
+            # are no permanent failures, we'll assume VERP bounces are
+            # permanent.
+            temporary, permanent = all_failures(msg)
+            if len(temporary) > 0:
+                # This was a temporary failure, so just ignore it.
                 return False
         else:
             # See if this was a probe message.
             addresses = ProbeVERP().get_verp(mlist, msg)
-            if addresses:
+            if len(addresses) > 0:
                 context = BounceContext.probe
             else:
                 # That didn't give us anything useful, so try the old fashion
-                # bounce matching modules.
-                addresses = scan_message(mlist, msg)
-                if addresses is Stop:
-                    # This is a recognized, non-fatal notice. Ignore it.
-                    return False
+                # bounce matching modules.  This returns only the permanently
+                # failing addresses.  Since Mailman currently doesn't score
+                # temporary failures, if we get no permanent failures, we're
+                # done.s
+                addresses = scan_message(msg)
         # If that still didn't return us any useful addresses, then send it on
         # or discard it.
         if len(addresses) > 0:
