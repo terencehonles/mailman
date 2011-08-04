@@ -42,7 +42,6 @@ log = None
 
 
 
-# pylint: disable-msg=W0613
 def r_callback(option, opt, value, parser):
     """Callback for -r/--runner option."""
     dest = getattr(parser.values, option.dest)

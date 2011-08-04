@@ -39,7 +39,6 @@ from mailman.utilities.mailbox import Mailbox
 
 
 
-# pylint: disable-msg=W0232,R0201
 class ToDigest:
     """Add the message to the digest, possibly sending it."""
 

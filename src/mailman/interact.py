@@ -48,7 +48,6 @@ def interact(upframe=True, banner=DEFAULT_BANNER, overrides=None):
     # Populate the console's with the locals of the frame that called this
     # function (i.e. one up from here).
     if upframe:
-        # pylint: disable-msg=W0212
         frame = sys._getframe(1)
         namespace.update(frame.f_globals)
         namespace.update(frame.f_locals)
@@ -57,7 +56,6 @@ def interact(upframe=True, banner=DEFAULT_BANNER, overrides=None):
     interp = code.InteractiveConsole(namespace)
     # Try to import the readline module, but don't worry if it's unavailable.
     try:
-        # pylint: disable-msg=W0612
         import readline
     except ImportError:
         pass
@@ -66,7 +64,6 @@ def interact(upframe=True, banner=DEFAULT_BANNER, overrides=None):
     # than once, this could cause a problem.
     startup = os.environ.get('PYTHONSTARTUP')
     if startup:
-        # pylint: disable-msg=W0702
         try:
             execfile(startup, namespace)
         except:

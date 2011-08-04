@@ -65,7 +65,6 @@ def process(mlist, msg, msgdata):
     # of interest from the message match the regexp.  If so, the message gets
     # added to the specific topics bucket.
     hits = {}
-    # pylint: disable-msg=W0612
     for name, pattern, desc, emptyflag in mlist.topics:
         pattern = OR.join(pattern.splitlines())
         cre = re.compile(pattern, re.IGNORECASE)

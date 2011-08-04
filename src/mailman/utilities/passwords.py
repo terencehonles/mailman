@@ -55,7 +55,6 @@ SCHEME_RE = r'{(?P<scheme>[^}]+?)}(?P<rest>.*)'
 
 
 
-# pylint: disable-msg=W0232
 class PasswordScheme:
     """Password scheme base class."""
     TAG = b''
@@ -99,7 +98,6 @@ class NoPasswordScheme(PasswordScheme):
         """See `PasswordScheme`."""
         return b''
 
-    # pylint: disable-msg=W0613
     @staticmethod
     def check_response(challenge, response):
         """See `PasswordScheme`."""
@@ -211,7 +209,6 @@ class PBKDF2PasswordScheme(PasswordScheme):
         derived_key = encode(digest + salt)
         return derived_key
 
-    # pylint: disable-msg=W0221
     @staticmethod
     def check_response(challenge, response, prf, iterations):
         """See `PasswordScheme`."""

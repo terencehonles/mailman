@@ -40,7 +40,6 @@ from mailman.version import MAILMAN_VERSION
 
 
 
-# pylint: disable-msg=W0613
 def check_unicode(option, opt, value):
     """Check that the value is a unicode string."""
     if isinstance(value, unicode):
@@ -52,7 +51,6 @@ def check_unicode(option, opt, value):
             'option {0}: Cannot decode: {1}'.format(opt, value))
 
 
-# pylint: disable-msg=W0613
 def check_yesno(option, opt, value):
     """Check that the value is 'yes' or 'no'."""
     value = value.lower()

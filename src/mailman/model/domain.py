@@ -78,8 +78,6 @@ class Domain(Model):
     @property
     def url_host(self):
         """See `IDomain`."""
-        # pylint: disable-msg=E1101
-        # no netloc member; yes it does
         return urlparse(self.base_url).netloc
 
     @property

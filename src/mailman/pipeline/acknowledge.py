@@ -40,7 +40,6 @@ from mailman.utilities.string import oneline
 
 
 
-# pylint: disable-msg=W0232,R0201
 class Acknowledge:
     """Send an acknowledgment."""
     implements(IHandler)

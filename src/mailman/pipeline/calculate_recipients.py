@@ -41,7 +41,6 @@ from mailman.utilities.string import wrap
 
 
 
-# pylint: disable-msg=W0232,R0201
 class CalculateRecipients:
     """Calculate the regular (i.e. non-digest) recipients of the message."""
 
@@ -83,7 +82,6 @@ class CalculateRecipients:
                 # Bad Urgent: password, so reject it instead of passing it on.
                 # I think it's better that the sender know they screwed up
                 # than to deliver it normally.
-                # pylint: disable-msg=W0612
                 realname = mlist.real_name
                 text = _("""\
 Your urgent message to the $realname mailing list was not authorized for
