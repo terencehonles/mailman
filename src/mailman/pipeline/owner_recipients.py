@@ -26,7 +26,6 @@ __all__ = [
 
 
 
-# pylint: disable-msg=W0613
 def process(mlist, msg, msgdata):
     """Add owner recipients."""
     # The recipients are the owner and the moderator

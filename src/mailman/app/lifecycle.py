@@ -67,7 +67,6 @@ def create_list(fqdn_listname, owners=None):
         owners = []
     # This raises I
     getUtility(IEmailValidator).validate(fqdn_listname)
-    # pylint: disable-msg=W0612
     listname, domain = fqdn_listname.split('@', 1)
     if domain not in getUtility(IDomainManager):
         raise BadDomainSpecificationError(domain)

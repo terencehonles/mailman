@@ -41,7 +41,6 @@ class ListManager:
 
     implements(IListManager)
 
-    # pylint: disable-msg=R0201
     def create(self, fqdn_listname):
         """See `IListManager`."""
         listname, at, hostname = fqdn_listname.partition('@')

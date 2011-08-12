@@ -42,7 +42,6 @@ COMMASPACE = ', '
 
 
 
-# pylint: disable-msg=W0232,R0201
 class AvoidDuplicates:
     """If the user wishes it, do not send duplicates of the same message."""
 

@@ -73,7 +73,6 @@ def ctime(date):
         _('Jul'), _('Aug'), _('Sep'), _('Oct'), _('Nov'), _('Dec')
         ]
 
-    # pylint: disable-msg=W0612
     tzname = _('Server Local Time')
     if isinstance(date, str):
         try:
@@ -107,7 +106,6 @@ def ctime(date):
                         mon = i
                         break
     else:
-        # pylint: disable-msg=W0612
         year, mon, day, hh, mm, ss, wday, yday, dst = time.localtime(date)
         if dst in (0, 1):
             tzname = time.tzname[dst]

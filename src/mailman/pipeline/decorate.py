@@ -217,7 +217,6 @@ def decorate(mlist, template, extradict=None):
 
 
 
-# pylint: disable-msg=W0232,R0201
 class Decorate:
     """Decorate a message with headers and footers."""
 

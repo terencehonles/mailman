@@ -39,7 +39,6 @@ log = logging.getLogger('mailman.error')
 
 
 
-# pylint: disable-msg=W0232,R0201
 class ToUsenet:
     """Move the message to the outgoing news queue."""
 

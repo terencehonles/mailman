@@ -44,7 +44,6 @@ log = logging.getLogger('mailman.error')
 
 
 
-# pylint: disable-msg=W0232,R0201,R0911
 class Replybot:
     """Send automatic responses."""
 

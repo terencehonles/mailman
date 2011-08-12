@@ -38,7 +38,6 @@ from mailman.interfaces.handler import IHandler
 
 
 
-# pylint: disable-msg=W0203,R0201
 class ToOutgoing:
     """Send the message to the outgoing queue."""
 
