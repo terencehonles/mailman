@@ -23,10 +23,12 @@ __metaclass__ = type
 __all__ = [
     'AMember',
     'AllMembers',
+    'FindMembers',
     'MemberCollection',
     ]
 
 
+from operator import attrgetter
 from restish import http, resource
 from zope.component import getUtility
 
@@ -36,7 +38,7 @@ from mailman.interfaces.listmanager import IListManager, NoSuchListError
 from mailman.interfaces.member import (
     AlreadySubscribedError, DeliveryMode, MemberRole, MembershipError,
     NotAMemberError)
-from mailman.interfaces.membership import ISubscriptionService
+from mailman.interfaces.subscriptions import ISubscriptionService
 from mailman.interfaces.user import UnverifiedAddressError
 from mailman.interfaces.usermanager import IUserManager
 from mailman.rest.helpers import (
@@ -62,6 +64,25 @@ class _MemberBase(resource.Resource, CollectionMixin):
     def _get_collection(self, request):
         """See `CollectionMixin`."""
         return list(getUtility(ISubscriptionService))
+
+
+
+class MemberCollection(_MemberBase):
+    """Abstract class for supporting submemberships.
+
+    This is used for example to return a resource representing all the
+    memberships of a mailing list, or all memberships for a specific email
+    address.
+    """
+    def _get_collection(self, request):
+        """See `CollectionMixin`."""
+        raise NotImplementedError
+
+    @resource.GET()
+    def container(self, request):
+        """roster/[members|owners|moderators]"""
+        resource = self._make_collection(request)
+        return http.ok([], etag(resource))
 
 
 
@@ -150,19 +171,34 @@ class AllMembers(_MemberBase):
 
 
 
-class MemberCollection(_MemberBase):
-    """Abstract class for supporting submemberships.
+class _FoundMembers(MemberCollection):
+    """The found members collection."""
 
-    This is used for example to return a resource representing all the
-    memberships of a mailing list, or all memberships for a specific email
-    address.
-    """
+    def __init__(self, members):
+        super(_FoundMembers, self).__init__()
+        self._members = members
+
     def _get_collection(self, request):
         """See `CollectionMixin`."""
-        raise NotImplementedError
+        address_of_member = attrgetter('address.email')
+        return list(sorted(self._members, key=address_of_member))
 
-    @resource.GET()
-    def container(self, request):
-        """roster/[members|owners|moderators]"""
-        resource = self._make_collection(request)
+
+class FindMembers(_MemberBase):
+    """/members/find"""
+
+    @resource.POST()
+    def find(self, request):
+        """Find a member"""
+        service = getUtility(ISubscriptionService)
+        validator = Validator(fqdn_listname=unicode,
+                              subscriber=unicode,
+                              role=enum_validator(MemberRole),
+                              _optional=('fqdn_listname', 'role'))
+        members = service.find_members(**validator(request))
+        # We can't just return the _FoundMembers instance, because
+        # CollectionMixins have only a GET method, which is incompatible with
+        # this POSTed resource.  IOW, without doing this here, restish would
+        # throw a 405 Method Not Allowed.
+        resource = _FoundMembers(members)._make_collection(request)
         return http.ok([], etag(resource))

@@ -44,8 +44,8 @@ from mailman.core.i18n import _
 from mailman.email.message import OwnerNotification, UserNotification
 from mailman.interfaces.bounce import UnrecognizedBounceDisposition
 from mailman.interfaces.listmanager import IListManager
-from mailman.interfaces.membership import ISubscriptionService
 from mailman.interfaces.pending import IPendable, IPendings
+from mailman.interfaces.subscriptions import ISubscriptionService
 from mailman.utilities.email import split_email
 from mailman.utilities.i18n import make
 from mailman.utilities.string import oneline

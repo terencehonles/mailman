@@ -44,7 +44,7 @@ class MissingUserError(MailmanError):
 
 
 class ISubscriptionService(Interface):
-    """Subscription services for the REST API."""
+    """General Subscription services."""
 
     def get_members():
         """Return a sequence of all members of all mailing lists.
@@ -63,9 +63,29 @@ class ISubscriptionService(Interface):
         """Return a member record matching the member id.
 
         :param member_id: A member id.
-        :type member_id: unicode
+        :type member_id: int
         :return: The matching member, or None if no matching member is found.
         :rtype: `IMember`
+        """
+
+    def find_members(subscriber, fqdn_listname=None, role=None):
+        """Search for and return a specific member.
+
+        The members are sorted first by fully-qualified mailing list name,
+        then by subscribed email address, then by role.  Because the user may
+        be a member of the list under multiple roles (e.g. as an owner and as
+        a digest member), the member can appear multiple times in this list.
+
+        :param subscriber: The email address or user id of the user getting
+            subscribed.
+        :type subscriber: string or int
+        :param fqdn_listname: The posting address of the mailing list to
+            search for the subscriber's memberships on.
+        :type fqdn_listname: string
+        :param role: The member role.
+        :type role: `MemberRole`
+        :return: The list of all memberships, which may be empty.
+        :rtype: list of `IMember`
         """
 
     def __iter__():
@@ -83,8 +103,9 @@ class ISubscriptionService(Interface):
         :param fqdn_listname: The posting address of the mailing list to
             subscribe the user to.
         :type fqdn_listname: string
-        :param address: The address of the user getting subscribed.
-        :type address: string
+        :param subscriber: The email address or user id of the user getting
+            subscribed.
+        :type subscriber: string
         :param real_name: The name of the user.  This is only used if a new
             user is created, and it defaults to the local part of the email
             address if not given.

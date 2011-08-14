@@ -255,6 +255,101 @@ mailing list.
     total_size: 7
 
 
+Finding members
+===============
+
+You can find a specific member based on several different criteria.  For
+example, we can search for all the memberships of a particular address.
+
+    >>> dump_json('http://localhost:9001/3.0/members/find', {
+    ...           'subscriber': 'aperson@example.com',
+    ...           })
+    entry 0:
+        address: aperson@example.com
+        fqdn_listname: ant@example.com
+        http_etag: ...
+        role: member
+        self_link: http://localhost:9001/3.0/members/4
+        user: http://localhost:9001/3.0/users/3
+    entry 1:
+        address: aperson@example.com
+        fqdn_listname: bee@example.com
+        http_etag: ...
+        role: member
+        self_link: http://localhost:9001/3.0/members/3
+        user: http://localhost:9001/3.0/users/3
+    http_etag: ...
+    start: 0
+    total_size: 2
+
+Or, we can find all the memberships for an address on a particular mailing
+list.
+
+    >>> dump_json('http://localhost:9001/3.0/members/find', {
+    ...           'subscriber': 'cperson@example.com',
+    ...           'fqdn_listname': 'bee@example.com',     
+    ...           })
+    entry 0:
+        address: cperson@example.com
+        fqdn_listname: bee@example.com
+        http_etag: ...
+        role: member
+        self_link: http://localhost:9001/3.0/members/2
+        user: http://localhost:9001/3.0/users/2
+    entry 1:
+        address: cperson@example.com
+        fqdn_listname: bee@example.com
+        http_etag: ...
+        role: owner
+        self_link: http://localhost:9001/3.0/members/7
+        user: http://localhost:9001/3.0/users/2
+    http_etag: ...
+    start: 0
+    total_size: 2
+
+Or, we can find all the memberships for an address with a specific role.
+
+    >>> dump_json('http://localhost:9001/3.0/members/find', {
+    ...           'subscriber': 'cperson@example.com',
+    ...           'role': 'member',
+    ...           })
+    entry 0:
+        address: cperson@example.com
+        fqdn_listname: ant@example.com
+        http_etag: ...
+        role: member
+        self_link: http://localhost:9001/3.0/members/5
+        user: http://localhost:9001/3.0/users/2
+    entry 1:
+        address: cperson@example.com
+        fqdn_listname: bee@example.com
+        http_etag: ...
+        role: member
+        self_link: http://localhost:9001/3.0/members/2
+        user: http://localhost:9001/3.0/users/2
+    http_etag: ...
+    start: 0
+    total_size: 2
+
+Finally, we can search for a specific member given all three criteria.
+
+    >>> dump_json('http://localhost:9001/3.0/members/find', {
+    ...           'subscriber': 'cperson@example.com',
+    ...           'fqdn_listname': 'bee@example.com',
+    ...           'role': 'member',
+    ...           })
+    entry 0:
+        address: cperson@example.com
+        fqdn_listname: bee@example.com
+        http_etag: ...
+        role: member
+        self_link: http://localhost:9001/3.0/members/2
+        user: http://localhost:9001/3.0/users/2
+    http_etag: ...
+    start: 0
+    total_size: 1
+
+
 Joining a mailing list
 ======================
 

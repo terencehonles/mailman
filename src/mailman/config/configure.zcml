@@ -67,8 +67,8 @@
     />
 
   <utility
-    factory="mailman.rest.adapters.SubscriptionService"
-    provides="mailman.interfaces.membership.ISubscriptionService"
+    factory="mailman.app.subscriptions.SubscriptionService"
+    provides="mailman.interfaces.subscriptions.ISubscriptionService"
     />
 
   <utility

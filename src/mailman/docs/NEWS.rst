@@ -25,6 +25,10 @@ REST
  * The IMailingList attribute ``host_name`` has been renamed to ``mail_host``
    for consistency.  This changes the REST API for mailing list
    resources. (LP: #787599)
+ * New REST resource http://.../members/find can be POSTed to in order to find
+   member records.  Arguments are `subscriber` (email address to search for -
+   required), `fqdn_listname` (optional), and `role` (i.e. MemberRole -
+   optional).  (LP: #799612)
 
 Commands
 --------

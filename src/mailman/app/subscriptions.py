@@ -26,7 +26,7 @@ __all__ = [
 
 
 from operator import attrgetter
-
+from storm.expr import And, Or
 from zope.component import getUtility
 from zope.interface import implements
 
@@ -36,11 +36,25 @@ from mailman.core.constants import system_preferences
 from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.listmanager import IListManager, NoSuchListError
 from mailman.interfaces.member import DeliveryMode
-from mailman.interfaces.membership import (
+from mailman.interfaces.subscriptions import (
     ISubscriptionService, MissingUserError)
 from mailman.interfaces.usermanager import IUserManager
 from mailman.model.member import Member
 from mailman.utilities.passwords import make_user_friendly_password
+
+
+
+def _membership_sort_key(member):
+    """Sort function for get_memberships().
+
+    The members are sorted first by fully-qualified mailing list name,
+    then by subscribed email address, then by role.
+    """
+    # member.mailing_list is already the fqdn_listname, not the IMailingList
+    # object.
+    return (member.mailing_list,
+            member.address.email,
+            int(member.role))
 
 
 
@@ -72,12 +86,51 @@ class SubscriptionService:
         """See `ISubscriptionService`."""
         members = config.db.store.find(
             Member,
-            Member._member_id == member_id)
+            Member._member_id == unicode(member_id))
         if members.count() == 0:
             return None
         else:
             assert members.count() == 1, 'Too many matching members'
             return members[0]
+
+    def find_members(self, subscriber, fqdn_listname=None, role=None):
+        """See `ISubscriptionService`."""
+        # If `subscriber` is a user id, then we'll search for all addresses
+        # which are controlled by the user, otherwise we'll just search for
+        # the given address.
+        user_manager = getUtility(IUserManager)
+        query = None
+        if isinstance(subscriber, basestring):
+            # subscriber is an email address.
+            address = user_manager.get_address(subscriber)
+            user = user_manager.get_user(subscriber)
+            # This probably could be made more efficient.
+            if address is None or user is None:
+                return []
+            or_clause = Or(Member.address_id == address.id,
+                           Member.user_id == user.id)
+        else:
+            # subscriber is a user id.
+            user = user_manager.get_user_by_id(unicode(subscriber))
+            address_ids = list(address.id for address in user.addresses
+                               if address.id is not None)
+            if len(address_ids) == 0 or user is None:
+                return []
+            or_clause = Or(Member.user_id == user.id,
+                           Member.address_id.is_in(address_ids))
+        # The rest is the same, based on the given criteria.
+        if fqdn_listname is None and role is None:
+            query = or_clause
+        elif fqdn_listname is None:
+            query = And(Member.role == role, or_clause)
+        elif role is None:
+            query = And(Member.mailing_list == fqdn_listname, or_clause)
+        else:
+            query = And(Member.mailing_list == fqdn_listname,
+                        Member.role == role,
+                        or_clause)
+        results = config.db.store.find(Member, query)
+        return sorted(results, key=_membership_sort_key)
 
     def __iter__(self):
         for member in self.get_members():
@@ -124,4 +177,3 @@ class SubscriptionService:
             raise NoSuchListError(fqdn_listname)
         # XXX for now, no notification or user acknowledgement.
         delete_member(mlist, address, False, False)
-        return ''
