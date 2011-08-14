@@ -68,18 +68,12 @@ def member_matcher(request, segments):
 def roster_matcher(request, segments):
     """A matcher of all members URLs inside mailing lists.
 
-    e.g. /roster/members
-         /roster/owners
-         /roster/moderators
-
-    The URL roles are the plural form of the MemberRole enum, because the
-    former reads better.
+    e.g. /roster/<role>
     """
     if len(segments) != 2 or segments[0] != 'roster':
         return None
-    role = segments[1][:-1]
     try:
-        return (), dict(role=MemberRole[role]), ()
+        return (), dict(role=MemberRole[segments[1]]), ()
     except ValueError:
         # Not a valid role.
         return None

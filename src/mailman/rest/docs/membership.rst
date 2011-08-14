@@ -169,7 +169,7 @@ User ids are different than member ids.
 We can also get just the members of a single mailing list.
 
     >>> dump_json(
-    ...     'http://localhost:9001/3.0/lists/ant@example.com/roster/members')
+    ...     'http://localhost:9001/3.0/lists/ant@example.com/roster/member')
     entry 0:
         address: aperson@example.com
         fqdn_listname: ant@example.com
@@ -254,6 +254,21 @@ mailing list.
     start: 0
     total_size: 7
 
+We can access all the owners of a list.
+
+    >>> dump_json(
+    ...     'http://localhost:9001/3.0/lists/bee@example.com/roster/owner')
+    entry 0:
+        address: cperson@example.com
+        fqdn_listname: bee@example.com
+        http_etag: ...
+        role: owner
+        self_link: http://localhost:9001/3.0/members/7
+        user: http://localhost:9001/3.0/users/2
+    http_etag: ...
+    start: 0
+    total_size: 1
+
 
 Finding members
 ===============
@@ -298,7 +313,7 @@ list.
 
     >>> dump_json('http://localhost:9001/3.0/members/find', {
     ...           'subscriber': 'cperson@example.com',
-    ...           'fqdn_listname': 'bee@example.com',     
+    ...           'fqdn_listname': 'bee@example.com',
     ...           })
     entry 0:
         address: cperson@example.com

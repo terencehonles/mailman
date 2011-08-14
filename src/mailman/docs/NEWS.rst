@@ -30,6 +30,7 @@ REST
    required), `fqdn_listname` (optional), and `role` (i.e. MemberRole -
    optional).  (LP: #799612)
  * Fixed /lists/<fqdn_listname>/<role>/<email> (LP: #825570)
+ * Remove role plurals from /lists/<fqdn_listname/rosters/<role>
 
 Commands
 --------
