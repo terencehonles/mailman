@@ -36,6 +36,7 @@ from mailman.interfaces.domain import BadDomainSpecificationError
 from mailman.interfaces.listmanager import (
     IListManager, ListAlreadyExistsError)
 from mailman.interfaces.member import MemberRole
+from mailman.interfaces.subscriptions import ISubscriptionService
 from mailman.rest.configuration import ListConfiguration
 from mailman.rest.helpers import (
     CollectionMixin, etag, no_content, path_to, restish_matcher)
@@ -48,7 +49,7 @@ from mailman.rest.validator import Validator
 def member_matcher(request, segments):
     """A matcher of member URLs inside mailing lists.
 
-    e.g. /member/aperson@example.org
+    e.g. /<role>/aperson@example.org
     """
     if len(segments) != 2:
         return None
@@ -60,7 +61,7 @@ def member_matcher(request, segments):
     # No more segments.
     # XXX 2010-02-25 barry Matchers are undocumented in restish; they return a
     # 3-tuple of (match_args, match_kws, segments).
-    return (), dict(role=role, address=segments[1]), ()
+    return (), dict(role=role, email=segments[1]), ()
 
 
 @restish_matcher
@@ -145,11 +146,16 @@ class AList(_ListBase):
         return no_content()
 
     @resource.child(member_matcher)
-    def member(self, request, segments, role, address):
+    def member(self, request, segments, role, email):
         """Return a single member representation."""
         if self._mlist is None:
             return http.not_found()
-        return AMember(self._mlist, role, address)
+        members = getUtility(ISubscriptionService).find_members(
+            email, self._mlist.fqdn_listname, role)
+        if len(members) == 0:
+            return http.not_found()
+        assert len(members) == 1, 'Too many matches'
+        return AMember(members[0].member_id)
 
     @resource.child(roster_matcher)
     def roster(self, request, segments, role):

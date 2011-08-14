@@ -258,6 +258,17 @@ mailing list.
 Finding members
 ===============
 
+A specific member can always be referenced by their role and address.
+
+    >>> dump_json('http://localhost:9001/3.0/lists/'
+    ...           'bee@example.com/owner/cperson@example.com')
+    address: cperson@example.com
+    fqdn_listname: bee@example.com
+    http_etag: ...
+    role: owner
+    self_link: http://localhost:9001/3.0/members/7
+    user: http://localhost:9001/3.0/users/2
+
 You can find a specific member based on several different criteria.  For
 example, we can search for all the memberships of a particular address.
 
