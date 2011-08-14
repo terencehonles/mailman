@@ -96,6 +96,8 @@ class AMember(_MemberBase):
     @resource.GET()
     def member(self, request):
         """Return a single member end-point."""
+        if self._member is None:
+            return http.not_found()
         return http.ok([], self._resource_as_json(self._member))
 
     @resource.DELETE()

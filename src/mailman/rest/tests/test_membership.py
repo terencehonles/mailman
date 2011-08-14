@@ -193,6 +193,16 @@ class TestMembership(unittest.TestCase):
         entry_0 = content['entries'][0]
         self.assertEqual(entry_0['address'], 'aperson@example.com')
 
+    def test_get_nonexistent_member(self):
+        # /members/<bogus> returns 404
+        try:
+            # For Python 2.6
+            call_api('http://localhost:9001/3.0/members/bogus')
+        except HTTPError as exc:
+            self.assertEqual(exc.code, 404)
+        else:
+            raise AssertionError('Expected HTTPError')
+
 
 
 def test_suite():

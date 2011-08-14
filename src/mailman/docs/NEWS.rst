@@ -31,6 +31,8 @@ REST
    optional).  (LP: #799612)
  * Fixed /lists/<fqdn_listname>/<role>/<email> (LP: #825570)
  * Remove role plurals from /lists/<fqdn_listname/rosters/<role>
+ * Fixed incorrect error code for /members/<bogus> (LP: #821020).  Given by
+   Stephen A. Goss.
 
 Commands
 --------
