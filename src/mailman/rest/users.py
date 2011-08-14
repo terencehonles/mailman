@@ -32,7 +32,7 @@ from zope.component import getUtility
 from mailman.interfaces.address import ExistingAddressError
 from mailman.interfaces.usermanager import IUserManager
 from mailman.rest.addresses import UserAddresses
-from mailman.rest.helpers import CollectionMixin, etag, path_to
+from mailman.rest.helpers import CollectionMixin, etag, no_content, path_to
 from mailman.rest.validator import Validator
 from mailman.utilities.passwords import (
     encrypt_password, make_user_friendly_password)
@@ -134,3 +134,11 @@ class AUser(_UserBase):
     def addresses(self, request, segments):
         """/users/<uid>/addresses"""
         return UserAddresses(self._user)
+
+    @resource.DELETE()
+    def delete_user(self, request):
+        """Delete the named user."""
+        if self._user is None:
+            return http.not_found()
+        getUtility(IUserManager).delete_user(self._user)
+        return no_content()

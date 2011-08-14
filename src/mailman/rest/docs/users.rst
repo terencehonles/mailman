@@ -13,14 +13,14 @@ There are no users yet.
     http_etag: "..."
     start: 0
     total_size: 0
-    
+
 When there are users in the database, they can be retrieved as a collection.
 ::
 
     >>> from zope.component import getUtility
     >>> from mailman.interfaces.usermanager import IUserManager
     >>> user_manager = getUtility(IUserManager)
-    
+
     >>> anne = user_manager.create_user('anne@example.com', 'Anne Person')
     >>> transaction.commit()
     >>> dump_json('http://localhost:9001/3.0/users')
@@ -44,7 +44,7 @@ A user might not have a real name, in which case, the attribute will not be
 returned in the REST API.
 
     >>> dave = user_manager.create_user('dave@example.com')
-    >>> transaction.commit()    
+    >>> transaction.commit()
     >>> dump_json('http://localhost:9001/3.0/users')
     entry 0:
         created_on: 2005-08-01T07:49:23
@@ -132,6 +132,23 @@ therefore cannot be retrieved.  It can be reset though.
     real_name: Cris Person
     self_link: http://localhost:9001/3.0/users/4
     user_id: 4
+
+
+Deleting users via the API
+==========================
+
+Users can also be deleted via the API.
+
+    >>> dump_json('http://localhost:9001/3.0/users/cris@example.com',
+    ...           method='DELETE')
+    content-length: 0
+    date: ...
+    server: ...
+    status: 204
+    >>> dump_json('http://localhost:9001/3.0/users/cris@example.com')
+    Traceback (most recent call last):
+    ...
+    HTTPError: HTTP Error 404: 404 Not Found
 
 
 Missing users

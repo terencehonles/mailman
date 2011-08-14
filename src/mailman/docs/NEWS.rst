@@ -33,6 +33,7 @@ REST
  * Remove role plurals from /lists/<fqdn_listname/rosters/<role>
  * Fixed incorrect error code for /members/<bogus> (LP: #821020).  Given by
    Stephen A. Goss.
+ * DELETE users via the REST API.  (LP: #820660)
 
 Commands
 --------
