@@ -23,6 +23,8 @@ __metaclass__ = type
 __all__ = [
     'IListManager',
     'ListAlreadyExistsError',
+    'ListCreatedEvent',
+    'ListDeletedEvent',
     'NoSuchListError',
     ]
 
@@ -49,6 +51,20 @@ class NoSuchListError(MailmanError):
 
     def __str__(self):
         return 'No such mailing list: {0.fqdn_listname}'.format(self)
+
+
+class ListCreatedEvent:
+    """A mailing list was created."""
+
+    def __init__(self, mlist):
+        self.mailing_list = mlist
+
+
+class ListDeletedEvent:
+    """A mailing list was deleted."""
+
+    def __init__(self, fqdn_listname):
+        self.fqdn_listname = fqdn_listname
 
 
 
