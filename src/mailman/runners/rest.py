@@ -44,15 +44,20 @@ class RESTRunner(Runner):
 
     def run(self):
         log.info('Starting REST server')
+        # Handle SIGTERM the same way as SIGINT.
+        def stop_server(signum, frame):
+            log.info('REST server shutdown')
+            sys.exit(signal.SIGTERM)
+        signal.signal(signal.SIGTERM, stop_server)
         try:
             make_server().serve_forever()
         except KeyboardInterrupt:
             log.info('REST server interrupted')
-            sys.exit(signal.SIGTERM)
+            sys.exit(signal.SIGINT)
         except select.error as (errcode, message):
             if errcode == errno.EINTR:
                 log.info('REST server exiting')
-                sys.exit(signal.SIGTERM)
+                sys.exit(errno.EINTR)
             raise
         except:
             raise

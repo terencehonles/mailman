@@ -53,6 +53,8 @@ Testing
 -------
  * New configuration variable in [devmode] section, called `wait` which sets
    the timeout value used in the test suite for starting up subprocesses.
+ * Handle SIGTERM in the REST server so that the test suite always shuts down
+   correctly.  (LP: #770328)
 
 
 3.0 alpha 7 -- "Mission"
