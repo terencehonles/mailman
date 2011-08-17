@@ -28,7 +28,9 @@ __all__ = [
 import unittest
 
 from mailman.app.lifecycle import create_list
+from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import MembershipError
+from mailman.interfaces.subscriptions import ISubscriptionService
 from mailman.interfaces.user import UnverifiedAddressError
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.layers import ConfigLayer
@@ -98,7 +100,38 @@ class TestMember(unittest.TestCase):
 
 
 
+class TestMembership(unittest.TestCase):
+    layer = ConfigLayer
+
+    def setUp(self):
+        self._ant = create_list('ant@example.com')
+        self._bee = create_list('bee@example.com')
+        self._usermanager = getUtility(IUserManager)
+
+    def test_members_are_deleted_when_mailing_list_is_deleted(self):
+        # When a mailing list with members is deleted, all the Member records
+        # are also deleted.
+        anne = self._usermanager.create_address('anne@example.com')
+        bart = self._usermanager.create_address('bart@example.com')
+        anne_ant = self._ant.subscribe(anne)
+        anne_bee = self._bee.subscribe(anne)
+        bart_ant = self._ant.subscribe(bart)
+        anne_ant_id = anne_ant.member_id
+        anne_bee_id = anne_bee.member_id
+        bart_ant_id = bart_ant.member_id
+        getUtility(IListManager).delete(self._ant)
+        service = getUtility(ISubscriptionService)
+        # We deleted the ant@example.com mailing list.  Anne's and Bart's
+        # membership in this list should now be removed, but Anne's membership
+        # in bee@example.com should still exist.
+        self.assertEqual(service.get_member(anne_ant_id), None)
+        self.assertEqual(service.get_member(bart_ant_id), None)
+        self.assertEqual(service.get_member(anne_bee_id), anne_bee)
+
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestMember))
+    suite.addTest(unittest.makeSuite(TestMembership))
     return suite

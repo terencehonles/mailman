@@ -79,7 +79,7 @@ If you know the member id for a specific member, you can get that member.
     <Member: anne <anne@example.com> on test@example.com as MemberRole.owner>
 
 If you know the member's address, you can find all their memberships, based on
-specific search criteria.  At a minimum, you need the member's email address.
+specific search criteria.
 ::
 
     >>> mlist2 = create_list('foo@example.com')
@@ -120,6 +120,17 @@ Memberships can also be searched for by user id.
               as MemberRole.owner>,
      <Member: anne <anne@example.com> on test@example.com
               as MemberRole.moderator>]
+
+You can find all the memberships for a specific mailing list.
+
+    >>> service.find_members(fqdn_listname='test@example.com')
+    [<Member: anne <anne@example.com> on test@example.com
+              as MemberRole.member>,
+     <Member: anne <anne@example.com> on test@example.com as MemberRole.owner>,
+     <Member: anne <anne@example.com> on test@example.com
+              as MemberRole.moderator>,
+     <Member: Bart Person <bart@example.com> on test@example.com
+              as MemberRole.member>]
 
 You can find all the memberships for an address on a specific mailing list.
 

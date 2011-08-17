@@ -193,10 +193,11 @@ class FindMembers(_MemberBase):
     def find(self, request):
         """Find a member"""
         service = getUtility(ISubscriptionService)
-        validator = Validator(fqdn_listname=unicode,
-                              subscriber=unicode,
-                              role=enum_validator(MemberRole),
-                              _optional=('fqdn_listname', 'role'))
+        validator = Validator(
+            fqdn_listname=unicode,
+            subscriber=unicode,
+            role=enum_validator(MemberRole),
+            _optional=('fqdn_listname', 'subscriber', 'role'))
         members = service.find_members(**validator(request))
         # We can't just return the _FoundMembers instance, because
         # CollectionMixins have only a GET method, which is incompatible with

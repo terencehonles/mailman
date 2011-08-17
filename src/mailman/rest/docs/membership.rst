@@ -308,6 +308,43 @@ example, we can search for all the memberships of a particular address.
     start: 0
     total_size: 2
 
+Or, we can find all the memberships for a particular mailing list.
+
+    >>> dump_json('http://localhost:9001/3.0/members/find', {
+    ...           'fqdn_listname': 'bee@example.com',
+    ...           })
+    entry 0:
+        address: aperson@example.com
+        fqdn_listname: bee@example.com
+        http_etag: ...
+        role: member
+        self_link: http://localhost:9001/3.0/members/3
+        user: http://localhost:9001/3.0/users/3
+    entry 1:
+        address: bperson@example.com
+        fqdn_listname: bee@example.com
+        http_etag: ...
+        role: member
+        self_link: http://localhost:9001/3.0/members/1
+        user: http://localhost:9001/3.0/users/1
+    entry 2:
+        address: cperson@example.com
+        fqdn_listname: bee@example.com
+        http_etag: ...
+        role: member
+        self_link: http://localhost:9001/3.0/members/2
+        user: http://localhost:9001/3.0/users/2
+    entry 3:
+        address: cperson@example.com
+        fqdn_listname: bee@example.com
+        http_etag: ...
+        role: owner
+        self_link: http://localhost:9001/3.0/members/7
+        user: http://localhost:9001/3.0/users/2
+    http_etag: "66836d0f23bed36fa9e0cda1e5dec7e5b0797743"
+    start: 0
+    total_size: 4
+
 Or, we can find all the memberships for an address on a particular mailing
 list.
 
