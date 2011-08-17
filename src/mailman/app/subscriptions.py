@@ -182,7 +182,7 @@ class SubscriptionService:
 
 
 
-def handle_ListDeleteEvent(event):
+def handle_ListDeletedEvent(event):
     """Delete a mailing list's members when the list is deleted."""
 
     if not isinstance(event, ListDeletedEvent):
