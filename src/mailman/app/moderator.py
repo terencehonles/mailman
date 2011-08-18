@@ -21,6 +21,7 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
+    'handle_ListDeletingEvent',
     'handle_message',
     'handle_subscription',
     'handle_unsubscription',
@@ -43,6 +44,7 @@ from mailman.core.i18n import _
 from mailman.email.message import UserNotification
 from mailman.interfaces.action import Action
 from mailman.interfaces.languages import ILanguageManager
+from mailman.interfaces.listmanager import ListDeletingEvent
 from mailman.interfaces.member import (
     AlreadySubscribedError, DeliveryMode, NotAMemberError)
 from mailman.interfaces.messages import IMessageStore
@@ -355,3 +357,14 @@ def _refuse(mlist, request, recip, comment, origmsg=None, lang=None):
         subject = _('Request to mailing list "$realname" rejected')
     msg = UserNotification(recip, mlist.bounces_address, subject, text, lang)
     msg.send(mlist)
+
+
+
+def handle_ListDeletingEvent(event):
+    if not isinstance(event, ListDeletingEvent):
+        return
+    # Get the held requests database for the mailing list.  Since the mailing
+    # list is about to get deleted, we can delete all associated requests.
+    requestsdb = getUtility(IRequests).get_list_requests(event.mailing_list)
+    for request in requestsdb.held_requests:
+        requestsdb.delete_request(request.id)

@@ -68,7 +68,7 @@ class ISubscriptionService(Interface):
         :rtype: `IMember`
         """
 
-    def find_members(subscriber, fqdn_listname=None, role=None):
+    def find_members(subscriber=None, fqdn_listname=None, role=None):
         """Search for and return a specific member.
 
         The members are sorted first by fully-qualified mailing list name,

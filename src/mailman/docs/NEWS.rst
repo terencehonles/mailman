@@ -19,6 +19,15 @@ Architecture
  * mailman.qrunner log is renamed to mailman.runner
  * master-qrunner.lck -> master.lck
  * master-qrunner.pid -> master.pid
+ * Four new events are created, and notifications are sent during mailing list
+   lifecycle changes:
+   - ListCreatingEvent - sent before the mailing list is created
+   - ListCreatedEvent  - sent after the mailing list is created
+   - ListDeletingEvent - sent before the mailing list is deleted
+   - ListDeletedEvent  - sent after the mailing list is deleted
+ * Using the above events, when a mailing list is deleted, all its members are
+   deleted, as well as all held message requests (but not the held messages
+   themselves).  (LP: 827036)
 
 REST
 ----
@@ -26,9 +35,8 @@ REST
    for consistency.  This changes the REST API for mailing list
    resources. (LP: #787599)
  * New REST resource http://.../members/find can be POSTed to in order to find
-   member records.  Arguments are `subscriber` (email address to search for -
-   required), `fqdn_listname` (optional), and `role` (i.e. MemberRole -
-   optional).  (LP: #799612)
+   member records.  Optional arguments are `subscriber` (email address to
+   search for), `fqdn_listname`, and `role` (i.e. MemberRole).  (LP: #799612)
  * Fixed /lists/<fqdn_listname>/<role>/<email> (LP: #825570)
  * Remove role plurals from /lists/<fqdn_listname/rosters/<role>
  * Fixed incorrect error code for /members/<bogus> (LP: #821020).  Given by

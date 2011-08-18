@@ -27,11 +27,14 @@ __all__ = [
 
 import datetime
 
+from zope.event import notify
 from zope.interface import implements
 
 from mailman.config import config
 from mailman.interfaces.address import InvalidEmailAddressError
-from mailman.interfaces.listmanager import IListManager, ListAlreadyExistsError
+from mailman.interfaces.listmanager import (
+    IListManager, ListAlreadyExistsError, ListCreatedEvent, ListCreatingEvent,
+    ListDeletedEvent, ListDeletingEvent)
 from mailman.model.mailinglist import MailingList
 
 
@@ -46,6 +49,7 @@ class ListManager:
         listname, at, hostname = fqdn_listname.partition('@')
         if len(hostname) == 0:
             raise InvalidEmailAddressError(fqdn_listname)
+        notify(ListCreatingEvent(fqdn_listname))
         mlist = config.db.store.find(
             MailingList,
             MailingList.list_name == listname,
@@ -55,6 +59,7 @@ class ListManager:
         mlist = MailingList(fqdn_listname)
         mlist.created_at = datetime.datetime.now()
         config.db.store.add(mlist)
+        notify(ListCreatedEvent(mlist))
         return mlist
 
     def get(self, fqdn_listname):
@@ -70,7 +75,10 @@ class ListManager:
 
     def delete(self, mlist):
         """See `IListManager`."""
+        fqdn_listname = mlist.fqdn_listname
+        notify(ListDeletingEvent(mlist))
         config.db.store.remove(mlist)
+        notify(ListDeletedEvent(fqdn_listname))
 
     @property
     def mailing_lists(self):

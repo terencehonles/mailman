@@ -27,12 +27,12 @@ __all__ = [
 
 import unittest
 
+from zope.component import getUtility
+
 from mailman.app.lifecycle import create_list
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.datetime import now
-
-from zope.component import getUtility
 
 
 
