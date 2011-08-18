@@ -27,12 +27,13 @@ __all__ = [
 
 from zope import event
 
-from mailman.app import subscriptions
+from mailman.app import moderator, subscriptions
 
 
 
 def initialize():
     """Initialize global event subscribers."""
     event.subscribers.extend([
+        moderator.handle_ListDeletingEvent,
         subscriptions.handle_ListDeletedEvent,
         ])

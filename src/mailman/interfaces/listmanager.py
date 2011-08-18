@@ -24,7 +24,9 @@ __all__ = [
     'IListManager',
     'ListAlreadyExistsError',
     'ListCreatedEvent',
+    'ListCreatingEvent',
     'ListDeletedEvent',
+    'ListDeletingEvent',
     'NoSuchListError',
     ]
 
@@ -53,11 +55,25 @@ class NoSuchListError(MailmanError):
         return 'No such mailing list: {0.fqdn_listname}'.format(self)
 
 
+class ListCreatingEvent:
+    """A mailing list is about to be created."""
+
+    def __init__(self, fqdn_listname):
+        self.fqdn_listname = fqdn_listname
+
+
 class ListCreatedEvent:
     """A mailing list was created."""
 
     def __init__(self, mlist):
         self.mailing_list = mlist
+
+
+class ListDeletingEvent:
+    """A mailing list is about to be deleted."""
+
+    def __init__(self, mailing_list):
+        self.mailing_list = mailing_list
 
 
 class ListDeletedEvent:

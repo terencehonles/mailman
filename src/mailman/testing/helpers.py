@@ -29,6 +29,7 @@ __all__ = [
     'get_queue_messages',
     'make_testable_runner',
     'reset_the_world',
+    'specialized_message_from_string',
     'subscribe',
     'wait_for_webservice',
     ]
