@@ -102,3 +102,8 @@ class ListManager:
         """See `IListManager`."""
         # lazr.restful will not allow this to be a generator.
         return list(self.mailing_lists)
+
+    def get_lists_for_domain(self, domain):
+        """See `IListManager`."""
+        return list(config.db.store.find(MailingList, MailingList.mail_host == domain))
+

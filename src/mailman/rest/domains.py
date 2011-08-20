@@ -33,6 +33,7 @@ from mailman.interfaces.domain import (
     BadDomainSpecificationError, IDomainManager)
 from mailman.rest.helpers import CollectionMixin, etag, no_content, path_to
 from mailman.rest.validator import Validator
+from mailman.rest.lists import ListsForDomain
 
 
 
@@ -78,6 +79,14 @@ class ADomain(_DomainBase):
             # The domain does not exist.
             return http.not_found()
         return no_content()
+
+    @resource.child()
+    def lists(self, request, segments):
+        """/<api>/domains/<domain>/lists"""
+        if len(segments) == 0:
+            return ListsForDomain(self._domain)
+        else:
+            return http.bad_request()
 
 
 class AllDomains(_DomainBase):

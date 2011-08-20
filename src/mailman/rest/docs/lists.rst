@@ -30,6 +30,24 @@ Create a mailing list in a domain and it's accessible via the API.
     start: 0
     total_size: 1
 
+You can also query for lists from a particular domain.
+
+    >>> dump_json('http://localhost:9001/3.0/domains/example.com/lists')
+    entry 0:
+        fqdn_listname: test-one@example.com
+        http_etag: "..."
+        list_name: test-one
+        mail_host: example.com
+        real_name: Test-one
+        self_link: http://localhost:9001/3.0/lists/test-one@example.com
+    http_etag: "..."
+    start: 0
+    total_size: 1
+
+    >>> dump_json('http://localhost:9001/3.0/domains/other.com/lists')
+    http_etag: "..."
+    start: 0
+    total_size: 0
 
 Creating lists via the API
 ==========================

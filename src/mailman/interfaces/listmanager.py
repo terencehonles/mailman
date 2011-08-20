@@ -140,3 +140,10 @@ class IListManager(Interface):
         :return: The list of all known mailing lists.
         :rtype: list of `IMailingList`
         """
+
+    def get_lists_for_domain():
+        """The list of all mailing lists for a particular domain.
+
+        :return: The mailing lists for a particular domain.
+        :rtype: list of `IMailingList`
+        """
