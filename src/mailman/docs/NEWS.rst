@@ -64,6 +64,10 @@ Testing
  * Handle SIGTERM in the REST server so that the test suite always shuts down
    correctly.  (LP: #770328)
 
+Other bugs
+----------
+ * Moderating a message with Action.accept now sends the message. (LP: #827697)
+
 
 3.0 alpha 7 -- "Mission"
 ========================

@@ -26,6 +26,8 @@ __all__ = [
     ]
 
 
+import logging
+
 from zope.interface import implements
 from zope.interface.verify import verifyObject
 
@@ -34,6 +36,8 @@ from mailman.config import config
 from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
 from mailman.interfaces.pipeline import IPipeline
+
+log = logging.getLogger('mailman.debug')
 
 
 
@@ -45,8 +49,11 @@ def process(mlist, msg, msgdata, pipeline_name='built-in'):
     :param msgdata: The message metadata dictionary.
     :param pipeline_name: The name of the pipeline to process through.
     """
+    message_id = msg.get('message-id', 'n/a')
     pipeline = config.pipelines[pipeline_name]
     for handler in pipeline:
+        log.debug('[pipeline] processing {0}: {1}'.format(
+            handler.name, message_id))
         handler.process(mlist, msg, msgdata)
 
 
