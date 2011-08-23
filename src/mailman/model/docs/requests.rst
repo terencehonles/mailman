@@ -312,7 +312,7 @@ indicates that the message has been approved.
 
     >>> id_3 = moderator.hold_message(mlist, msg, msgdata, 'Needs approval')
     >>> moderator.handle_message(mlist, id_3, Action.accept)
-    >>> inq = config.switchboards['in']
+    >>> inq = config.switchboards['pipeline']
     >>> qmsg, qdata = dequeue(inq)
     >>> print qmsg.as_string()
     From: aperson@example.org

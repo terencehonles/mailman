@@ -38,8 +38,8 @@ Once a domain is added, it is accessible through the API.
         base_url: http://lists.example.com
         contact_address: postmaster@example.com
         description: An example domain
-        email_host: example.com
         http_etag: "..."
+        mail_host: example.com
         self_link: http://localhost:9001/3.0/domains/example.com
         url_host: lists.example.com
     http_etag: "..."
@@ -70,24 +70,24 @@ At the top level, all domains are returned as separate entries.
         base_url: http://lists.example.com
         contact_address: postmaster@example.com
         description: An example domain
-        email_host: example.com
         http_etag: "..."
+        mail_host: example.com
         self_link: http://localhost:9001/3.0/domains/example.com
         url_host: lists.example.com
     entry 1:
         base_url: http://mail.example.org
         contact_address: listmaster@example.org
         description: None
-        email_host: example.org
         http_etag: "..."
+        mail_host: example.org
         self_link: http://localhost:9001/3.0/domains/example.org
         url_host: mail.example.org
     entry 2:
         base_url: http://example.net
         contact_address: porkmaster@example.net
         description: Porkmasters
-        email_host: lists.example.net
         http_etag: "..."
+        mail_host: lists.example.net
         self_link: http://localhost:9001/3.0/domains/lists.example.net
         url_host: example.net
     http_etag: "..."
@@ -105,8 +105,8 @@ The information for a single domain is available by following one of the
     base_url: http://example.net
     contact_address: porkmaster@example.net
     description: Porkmasters
-    email_host: lists.example.net
     http_etag: "..."
+    mail_host: lists.example.net
     self_link: http://localhost:9001/3.0/domains/lists.example.net
     url_host: example.net
 
@@ -167,7 +167,7 @@ Creating new domains
 New domains can be created by posting to the ``domains`` url.
 
     >>> dump_json('http://localhost:9001/3.0/domains', {
-    ...           'email_host': 'lists.example.com',
+    ...           'mail_host': 'lists.example.com',
     ...           })
     content-length: 0
     date: ...
@@ -180,8 +180,8 @@ Now the web service knows about our new domain.
     base_url: http://lists.example.com
     contact_address: postmaster@lists.example.com
     description: None
-    email_host: lists.example.com
     http_etag: "..."
+    mail_host: lists.example.com
     self_link: http://localhost:9001/3.0/domains/lists.example.com
     url_host: lists.example.com
 
@@ -201,7 +201,7 @@ address.
 ::
 
     >>> dump_json('http://localhost:9001/3.0/domains', {
-    ...           'email_host': 'my.example.com',
+    ...           'mail_host': 'my.example.com',
     ...           'description': 'My new domain',
     ...           'base_url': 'http://allmy.example.com',
     ...           'contact_address': 'helpme@example.com'
@@ -215,8 +215,8 @@ address.
     base_url: http://allmy.example.com
     contact_address: helpme@example.com
     description: My new domain
-    email_host: my.example.com
     http_etag: "..."
+    mail_host: my.example.com
     self_link: http://localhost:9001/3.0/domains/my.example.com
     url_host: allmy.example.com
 

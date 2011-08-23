@@ -75,7 +75,7 @@ class Registrar:
         # For i18n interpolation.
         confirm_url = mlist.domain.confirm_url(token)
         email_address = email
-        domain_name = mlist.domain.email_host
+        domain_name = mlist.domain.mail_host
         contact_address = mlist.domain.contact_address
         # Send a verification email to the address.
         text = _(resource_string('mailman.templates.en', 'verify.txt'))

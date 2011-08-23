@@ -71,7 +71,7 @@ class ModerationChain:
         # moderation.py rule for details.  This is stored in the metadata as a
         # string so that it can be stored in the pending table.
         action = Action[msgdata.get('moderation_action')]
-        # defer and accept are not valid moderation actions.
+        # defer is not a valid moderation action.
         jump_chain = {
             Action.accept: 'accept',
             Action.discard: 'discard',

@@ -46,8 +46,8 @@ class _DomainBase(resource.Resource, CollectionMixin):
             base_url=domain.base_url,
             contact_address=domain.contact_address,
             description=domain.description,
-            email_host=domain.email_host,
-            self_link=path_to('domains/{0}'.format(domain.email_host)),
+            mail_host=domain.mail_host,
+            self_link=path_to('domains/{0}'.format(domain.mail_host)),
             url_host=domain.url_host,
             )
 
@@ -100,7 +100,7 @@ class AllDomains(_DomainBase):
         """Create a new domain."""
         domain_manager = getUtility(IDomainManager)
         try:
-            validator = Validator(email_host=unicode,
+            validator = Validator(mail_host=unicode,
                                   description=unicode,
                                   base_url=unicode,
                                   contact_address=unicode,
@@ -111,7 +111,7 @@ class AllDomains(_DomainBase):
             return http.bad_request([], b'Domain exists')
         except ValueError as error:
             return http.bad_request([], str(error))
-        location = path_to('domains/{0}'.format(domain.email_host))
+        location = path_to('domains/{0}'.format(domain.mail_host))
         # Include no extra headers or body.
         return http.created(location, [], None)
 

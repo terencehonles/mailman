@@ -27,6 +27,9 @@ def do_file(path, owner):
                 start = (mo.group('end')
                          if mo.group('start') is None
                          else mo.group('start'))
+                if int(start) == this_year:
+                    out_file.write(line)
+                    continue
                 print('# Copyright (C) {}-{} {}'.format(
                       start, this_year, owner), file=out_file)
                 for line in in_file:

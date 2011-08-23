@@ -41,6 +41,7 @@ DEAL_WITH_PERMFAILURES_EVERY = 10
 
 log = logging.getLogger('mailman.error')
 smtp_log = logging.getLogger('mailman.smtp')
+debug_log = logging.getLogger('mailman.debug')
 
 
 
@@ -86,6 +87,8 @@ class OutgoingRunner(Runner):
             # VERP every 'interval' number of times.
             msgdata['verp'] = (mlist.post_id % interval == 0)
         try:
+            debug_log.debug('[outgoing] {0}: {1}'.format(
+                self._func, msg.get('message-id', 'n/a')))
             self._func(mlist, msg, msgdata)
             self._logged = False
         except socket.error:

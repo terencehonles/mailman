@@ -30,9 +30,10 @@ __all__ = [
     'hold_unsubscription',
     ]
 
+
+import time
 import logging
 
-from datetime import datetime
 from email.utils import formataddr, formatdate, getaddresses, make_msgid
 from zope.component import getUtility
 
@@ -49,6 +50,7 @@ from mailman.interfaces.member import (
     AlreadySubscribedError, DeliveryMode, NotAMemberError)
 from mailman.interfaces.messages import IMessageStore
 from mailman.interfaces.requests import IRequests, RequestType
+from mailman.utilities.datetime import now
 from mailman.utilities.i18n import make
 
 
@@ -96,7 +98,7 @@ def hold_message(mlist, msg, msgdata=None, reason=None):
     msgdata['_mod_sender'] = msg.sender
     msgdata['_mod_subject'] = msg.get('subject', _('(no subject)'))
     msgdata['_mod_reason'] = reason
-    msgdata['_mod_hold_date'] = datetime.now().isoformat()
+    msgdata['_mod_hold_date'] = now().isoformat()
     # Now hold this request.  We'll use the message_id as the key.
     requestsdb = getUtility(IRequests).get_list_requests(mlist)
     request_id = requestsdb.hold_request(
@@ -146,12 +148,13 @@ def handle_message(mlist, id, action,
         # Queue the file for delivery.  Trying to deliver the message directly
         # here can lead to a huge delay in web turnaround.  Log the moderation
         # and add a header.
-        msg['X-Mailman-Approved-At'] = formatdate(localtime=True)
+        msg['X-Mailman-Approved-At'] = formatdate(
+            time.mktime(now().timetuple()), localtime=True)
         vlog.info('held message approved, message-id: %s',
                   msg.get('message-id', 'n/a'))
         # Stick the message back in the incoming queue for further
         # processing.
-        config.switchboards['in'].enqueue(msg, _metadata=msgdata)
+        config.switchboards['pipeline'].enqueue(msg, _metadata=msgdata)
     else:
         raise AssertionError('Unexpected action: {0}'.format(action))
     # Forward the message.
@@ -195,7 +198,7 @@ def handle_message(mlist, id, action,
 
 
 def hold_subscription(mlist, address, realname, password, mode, language):
-    data = dict(when=datetime.now().isoformat(),
+    data = dict(when=now().isoformat(),
                 address=address,
                 realname=realname,
                 password=password,

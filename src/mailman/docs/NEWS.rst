@@ -28,6 +28,7 @@ Architecture
  * Using the above events, when a mailing list is deleted, all its members are
    deleted, as well as all held message requests (but not the held messages
    themselves).  (LP: 827036)
+ * IDomain.email_host -> .mail_host (LP: #831660)
 
 REST
 ----
@@ -63,6 +64,10 @@ Testing
    the timeout value used in the test suite for starting up subprocesses.
  * Handle SIGTERM in the REST server so that the test suite always shuts down
    correctly.  (LP: #770328)
+
+Other bugs
+----------
+ * Moderating a message with Action.accept now sends the message. (LP: #827697)
 
 
 3.0 alpha 7 -- "Mission"
