@@ -90,7 +90,7 @@ class Domain(Model):
     def mailing_lists(self):
         """See `IDomain`."""
         mlist_iter = config.db.store.find(MailingList,
-                MailingList.mail_host == self.email_host)
+                MailingList.mail_host == self.mail_host)
         for mlist in mlist_iter:
             yield mlist
 
