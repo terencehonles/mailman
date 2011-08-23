@@ -18,7 +18,7 @@ Domains are how Mailman interacts with email host names and web host names.
     ...     if len(manager) == 0:
     ...         print 'no domains'
     ...         return
-    ...     for domain in sorted(manager, key=attrgetter('email_host')):
+    ...     for domain in sorted(manager, key=attrgetter('mail_host')):
     ...         print domain
 
     >>> show_domains()
@@ -74,8 +74,8 @@ Domains can have explicit descriptions and contact addresses.
 In the global domain manager, domains are indexed by their email host name.
 ::
 
-    >>> for domain in sorted(manager, key=attrgetter('email_host')):
-    ...     print domain.email_host
+    >>> for domain in sorted(manager, key=attrgetter('mail_host')):
+    ...     print domain.mail_host
     example.com
     example.net
 

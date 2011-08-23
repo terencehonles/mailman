@@ -43,37 +43,37 @@ class Domain(Model):
 
     id = Int(primary=True)
 
-    email_host = Unicode()
+    mail_host = Unicode()
     base_url = Unicode()
     description = Unicode()
     contact_address = Unicode()
 
-    def __init__(self, email_host,
+    def __init__(self, mail_host,
                  description=None,
                  base_url=None,
                  contact_address=None):
         """Create and register a domain.
 
-        :param email_host: The host name for the email interface.
-        :type email_host: string
+        :param mail_host: The host name for the email interface.
+        :type mail_host: string
         :param description: An optional description of the domain.
         :type description: string
         :param base_url: The optional base url for the domain, including
             scheme.  If not given, it will be constructed from the
-            `email_host` using the http protocol.
+            `mail_host` using the http protocol.
         :type base_url: string
         :param contact_address: The email address to contact a human for this
-            domain.  If not given, postmaster@`email_host` will be used.
+            domain.  If not given, postmaster@`mail_host` will be used.
         :type contact_address: string
         """
-        self.email_host = email_host
+        self.mail_host = mail_host
         self.base_url = (base_url
                          if base_url is not None
-                         else 'http://' + email_host)
+                         else 'http://' + mail_host)
         self.description = description
         self.contact_address = (contact_address
                                 if contact_address is not None
-                                else 'postmaster@' + email_host)
+                                else 'postmaster@' + mail_host)
 
     @property
     def url_host(self):
@@ -92,10 +92,10 @@ class Domain(Model):
     def __repr__(self):
         """repr(a_domain)"""
         if self.description is None:
-            return ('<Domain {0.email_host}, base_url: {0.base_url}, '
+            return ('<Domain {0.mail_host}, base_url: {0.base_url}, '
                     'contact_address: {0.contact_address}>').format(self)
         else:
-            return ('<Domain {0.email_host}, {0.description}, '
+            return ('<Domain {0.mail_host}, {0.description}, '
                     'base_url: {0.base_url}, '
                     'contact_address: {0.contact_address}>').format(self)
 
@@ -106,40 +106,40 @@ class DomainManager:
 
     implements(IDomainManager)
 
-    def add(self, email_host,
+    def add(self, mail_host,
             description=None,
             base_url=None,
             contact_address=None):
         """See `IDomainManager`."""
-        # Be sure the email_host is not already registered.  This is probably
+        # Be sure the mail_host is not already registered.  This is probably
         # a constraint that should (also) be maintained in the database.
-        if self.get(email_host) is not None:
+        if self.get(mail_host) is not None:
             raise BadDomainSpecificationError(
-                'Duplicate email host: %s' % email_host)
-        domain = Domain(email_host, description, base_url, contact_address)
+                'Duplicate email host: %s' % mail_host)
+        domain = Domain(mail_host, description, base_url, contact_address)
         config.db.store.add(domain)
         return domain
 
-    def remove(self, email_host):
-        domain = self[email_host]
+    def remove(self, mail_host):
+        domain = self[mail_host]
         config.db.store.remove(domain)
         return domain
 
-    def get(self, email_host, default=None):
+    def get(self, mail_host, default=None):
         """See `IDomainManager`."""
-        domains = config.db.store.find(Domain, email_host=email_host)
+        domains = config.db.store.find(Domain, mail_host=mail_host)
         if domains.count() < 1:
             return default
         assert domains.count() == 1, (
-            'Too many matching domains: %s' % email_host)
+            'Too many matching domains: %s' % mail_host)
         return domains.one()
 
-    def __getitem__(self, email_host):
+    def __getitem__(self, mail_host):
         """See `IDomainManager`."""
         missing = object()
-        domain = self.get(email_host, missing)
+        domain = self.get(mail_host, missing)
         if domain is missing:
-            raise KeyError(email_host)
+            raise KeyError(mail_host)
         return domain
 
     def __len__(self):
@@ -150,6 +150,6 @@ class DomainManager:
         for domain in config.db.store.find(Domain):
             yield domain
 
-    def __contains__(self, email_host):
+    def __contains__(self, mail_host):
         """See `IDomainManager`."""
-        return config.db.store.find(Domain, email_host=email_host).count() > 0
+        return config.db.store.find(Domain, mail_host=mail_host).count() > 0

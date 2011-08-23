@@ -28,6 +28,7 @@ Architecture
  * Using the above events, when a mailing list is deleted, all its members are
    deleted, as well as all held message requests (but not the held messages
    themselves).  (LP: 827036)
+ * IDomain.email_host -> .mail_host (LP: #831660)
 
 REST
 ----

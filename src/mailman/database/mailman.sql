@@ -79,7 +79,7 @@ CREATE INDEX ix_contentfilter_mailing_list_id
 
 CREATE TABLE domain (
     id INTEGER NOT NULL,
-    email_host TEXT,
+    mail_host TEXT,
     base_url TEXT,
     description TEXT,
     contact_address TEXT,
