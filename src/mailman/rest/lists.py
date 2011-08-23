@@ -224,5 +224,5 @@ class ListsForDomain(_ListBase):
 
     def _get_collection(self, request):
         """See `CollectionMixin`."""
-        return getUtility(IListManager).get_lists_for_domain(self._domain)
+        return list(self._domain.mailing_lists)
 

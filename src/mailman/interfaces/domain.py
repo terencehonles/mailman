@@ -64,6 +64,8 @@ class IDomain(Interface):
     The contact address for the human at this domain.
     E.g. postmaster@example.com""")
 
+    mailing_lists = Attribute("""All mailing lists for this domain.""");
+
     def confirm_url(token=''):
         """The url used for various forms of confirmation.
 

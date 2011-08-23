@@ -33,6 +33,7 @@ from mailman.config import config
 from mailman.database.model import Model
 from mailman.interfaces.domain import (
     BadDomainSpecificationError, IDomain, IDomainManager)
+from mailman.model.mailinglist import MailingList
 
 
 
@@ -84,6 +85,14 @@ class Domain(Model):
     def scheme(self):
         """See `IDomain`."""
         return urlparse(self.base_url).scheme
+
+    @property
+    def mailing_lists(self):
+        """See `IDomain`."""
+        mlist_iter = config.db.store.find(MailingList,
+                MailingList.mail_host == self.email_host)
+        for mlist in mlist_iter:
+            yield mlist
 
     def confirm_url(self, token=''):
         """See `IDomain`."""

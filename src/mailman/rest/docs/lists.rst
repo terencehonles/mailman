@@ -31,6 +31,7 @@ Create a mailing list in a domain and it's accessible via the API.
     total_size: 1
 
 You can also query for lists from a particular domain.
+::
 
     >>> dump_json('http://localhost:9001/3.0/domains/example.com/lists')
     entry 0:
@@ -44,10 +45,10 @@ You can also query for lists from a particular domain.
     start: 0
     total_size: 1
 
-    >>> dump_json('http://localhost:9001/3.0/domains/other.com/lists')
-    http_etag: "..."
-    start: 0
-    total_size: 0
+    >>> dump_json('http://localhost:9001/3.0/domains/no.example.org/lists')
+    Traceback (most recent call last):
+    ...
+    HTTPError: HTTP Error 404: 404 Not Found
 
 Creating lists via the API
 ==========================

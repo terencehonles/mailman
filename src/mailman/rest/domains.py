@@ -32,8 +32,8 @@ from zope.component import getUtility
 from mailman.interfaces.domain import (
     BadDomainSpecificationError, IDomainManager)
 from mailman.rest.helpers import CollectionMixin, etag, no_content, path_to
-from mailman.rest.validator import Validator
 from mailman.rest.lists import ListsForDomain
+from mailman.rest.validator import Validator
 
 
 
@@ -84,7 +84,10 @@ class ADomain(_DomainBase):
     def lists(self, request, segments):
         """/<api>/domains/<domain>/lists"""
         if len(segments) == 0:
-            return ListsForDomain(self._domain)
+            domain = getUtility(IDomainManager).get(self._domain)
+            if domain is None:
+                return http.not_found()
+            return ListsForDomain(domain)
         else:
             return http.bad_request()
 
