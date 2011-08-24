@@ -68,6 +68,8 @@ Testing
 Other bugs
 ----------
  * Moderating a message with Action.accept now sends the message. (LP: #827697)
+ * Fix AttributeError triggered by i18n call in autorespond_to_sender()
+   (LP: #827060)
 
 
 3.0 alpha 7 -- "Mission"

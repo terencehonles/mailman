@@ -64,22 +64,22 @@ class HoldNotification(ChainNotification):
 
 
 
-def autorespond_to_sender(mlist, sender, lang=None):
+def autorespond_to_sender(mlist, sender, language=None):
     """Should Mailman automatically respond to this sender?
 
     :param mlist: The mailing list.
     :type mlist: `IMailingList`.
     :param sender: The sender's email address.
     :type sender: string
-    :param lang: Optional language.
-    :type lang: `ILanguage` or None
+    :param language: Optional language.
+    :type language: `ILanguage` or None
     :return: True if an automatic response should be sent, otherwise False.
         If an automatic response is not sent, a message is sent indicating
         that, er no more will be sent today.
     :rtype: bool
     """
-    if lang is None:
-        lang = mlist.preferred_language
+    if language is None:
+        language = mlist.preferred_language
     max_autoresponses_per_day = int(config.mta.max_autoresponses_per_day)
     if max_autoresponses_per_day == 0:
         # Unlimited.
@@ -104,17 +104,17 @@ def autorespond_to_sender(mlist, sender, lang=None):
         response_set.response_sent(address, Response.hold)
         # Send this notification message instead.
         text = make('nomoretoday.txt',
-                    language=lang,
+                    language=language.code,
                     sender=sender,
                     listname=mlist.fqdn_listname,
-                    num=todays_count,
+                    count=todays_count,
                     owneremail=mlist.owner_address,
                     )
-        with _.using(lang.code):
+        with _.using(language.code):
             msg = UserNotification(
                 sender, mlist.owner_address,
                 _('Last autoresponse notification for today'),
-                text, lang=lang)
+                text, lang=language)
         msg.send(mlist)
         return False
     else:
