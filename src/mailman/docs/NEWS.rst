@@ -70,6 +70,7 @@ Other bugs
  * Moderating a message with Action.accept now sends the message. (LP: #827697)
  * Fix AttributeError triggered by i18n call in autorespond_to_sender()
    (LP: #827060)
+ * Local timezone in X-Mailman-Approved-At caused test failure. (LP: #832404)
 
 
 3.0 alpha 7 -- "Mission"

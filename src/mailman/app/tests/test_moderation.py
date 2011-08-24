@@ -56,6 +56,10 @@ Message-ID: <alpha>
         self._in = make_testable_runner(IncomingRunner, 'in')
         self._pipeline = make_testable_runner(PipelineRunner, 'pipeline')
         self._out = make_testable_runner(OutgoingRunner, 'out')
+        # Python 2.7 has assertMultiLineEqual
+        self.maxDiff = None
+        self.eq = getattr(self, 'assertMultiLineEqual',
+                          getattr(self, 'assertEqual'))
 
     def test_accepted_message_gets_posted(self):
         # A message that is accepted by the moderator should get posted to the
@@ -75,11 +79,15 @@ Message-ID: <alpha>
         del message['x-mailman-version']
         self.assertTrue('x-peer' in message)
         del message['x-peer']
-        self.assertEqual(message.as_string(), """\
+        # The X-Mailman-Approved-At header has local timezone information in
+        # it, so test that separately.
+        self.assertEqual(message['x-mailman-approved-at'][:-4],
+                         'Mon, 01 Aug 2005 07:49:23 -')
+        del message['x-mailman-approved-at']
+        self.eq(message.as_string(), """\
 From: anne@example.com
 To: test@example.com
 Message-ID: <alpha>
-X-Mailman-Approved-At: Mon, 01 Aug 2005 07:49:23 -0400
 Subject: [Test] hold me
 X-BeenThere: test@example.com
 Precedence: list
@@ -87,10 +95,10 @@ List-Id: <test.example.com>
 X-Message-ID-Hash: XZ3DGG4V37BZTTLXNUX4NABB4DNQHTCP
 List-Post: <mailto:test@example.com>
 List-Subscribe: <http://lists.example.com/listinfo/test@example.com>,
-	<mailto:test-join@example.com>
+ <mailto:test-join@example.com>
 Archived-At: http://lists.example.com/archives/XZ3DGG4V37BZTTLXNUX4NABB4DNQHTCP
 List-Unsubscribe: <http://lists.example.com/listinfo/test@example.com>,
-	<mailto:test-leave@example.com>
+ <mailto:test-leave@example.com>
 List-Archive: <http://lists.example.com/archives/test@example.com>
 List-Help: <mailto:test-request@example.com?subject=help>
 X-MailFrom: test-bounces@example.com

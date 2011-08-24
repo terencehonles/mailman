@@ -46,6 +46,10 @@ class TestAutorespond(unittest.TestCase):
 
     def setUp(self):
         self._mlist = create_list('test@example.com')
+        # Python 2.7 has assertMultiLineEqual
+        self.maxDiff = None
+        self.eq = getattr(self, 'assertMultiLineEqual',
+                          getattr(self, 'assertEqual'))
 
     def test_max_autoresponses_per_day(self):
         # The last one we sent was the last one we should send today.  Instead
@@ -73,7 +77,7 @@ class TestAutorespond(unittest.TestCase):
         del message['message-id']
         self.assertTrue('date' in message)
         del message['date']
-        self.assertEqual(messages[0].msg.as_string(), """\
+        self.eq(messages[0].msg.as_string(), """\
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
