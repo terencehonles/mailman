@@ -28,6 +28,7 @@ __all__ = [
 from zope.interface import Interface
 
 from mailman.interfaces.errors import MailmanError
+from mailman.interfaces.member import DeliveryMode, MemberRole
 
 
 
@@ -91,7 +92,8 @@ class ISubscriptionService(Interface):
     def __iter__():
         """See `get_members()`."""
 
-    def join(fqdn_listname, subscriber, real_name=None, delivery_mode=None):
+    def join(fqdn_listname, subscriber, real_name=None, 
+            delivery_mode=DeliveryMode.regular, role=MemberRole.member):
         """Subscribe to a mailing list.
 
         A user for the address is created if it is not yet known to Mailman,

@@ -151,7 +151,8 @@ class AllMembers(_MemberBase):
                                   subscriber=unicode,
                                   real_name=unicode,
                                   delivery_mode=enum_validator(DeliveryMode),
-                                  _optional=('delivery_mode', 'real_name'))
+                                  role=enum_validator(MemberRole),
+                                  _optional=('delivery_mode', 'real_name', 'role'))
             member = service.join(**validator(request))
         except AlreadySubscribedError:
             return http.conflict([], b'Member already subscribed')

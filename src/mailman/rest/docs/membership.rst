@@ -197,8 +197,27 @@ an owner of the `ant` mailing list and Dave becomes a moderator of the `bee`
 mailing list.
 ::
 
-    >>> subscribe(ant, 'Dave', MemberRole.moderator)
-    >>> subscribe(bee, 'Cris', MemberRole.owner)
+    >>> dump_json('http://localhost:9001/3.0/members', {
+    ...           'fqdn_listname': 'ant@example.com',
+    ...           'subscriber': 'dperson@example.com',
+    ...           'role': 'moderator',
+    ...           })
+    content-length: 0
+    date: ...
+    location: http://localhost:9001/3.0/members/6
+    server: ...
+    status: 201
+
+    >>> dump_json('http://localhost:9001/3.0/members', {
+    ...           'fqdn_listname': 'bee@example.com',
+    ...           'subscriber': 'cperson@example.com',
+    ...           'role': 'owner',
+    ...           })
+    content-length: 0
+    date: ...
+    location: http://localhost:9001/3.0/members/7
+    server: ...
+    status: 201
 
     >>> dump_json('http://localhost:9001/3.0/members')
     entry 0:

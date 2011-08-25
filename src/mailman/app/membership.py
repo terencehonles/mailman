@@ -43,7 +43,8 @@ from mailman.utilities.passwords import encrypt_password
 
 
 
-def add_member(mlist, email, realname, password, delivery_mode, language):
+def add_member(mlist, email, realname, password, delivery_mode, language, 
+        role=MemberRole.member):
     """Add a member right now.
 
     The member's subscription must be approved by whatever policy the list
@@ -70,9 +71,6 @@ def add_member(mlist, email, realname, password, delivery_mode, language):
     """
     # Let's be extra cautious.
     getUtility(IEmailValidator).validate(email)
-    if mlist.members.get_member(email) is not None:
-        raise AlreadySubscribedError(
-            mlist.fqdn_listname, email, MemberRole.member)
     # Check to see if the email address is banned.
     if getUtility(IBanManager).is_banned(email, mlist.fqdn_listname):
         raise MembershipIsBannedError(mlist, email)
@@ -99,7 +97,7 @@ def add_member(mlist, email, realname, password, delivery_mode, language):
         # scheme is recorded in the hashed password string.
         user.password = encrypt_password(password)
         user.preferences.preferred_language = language
-        member = mlist.subscribe(address, MemberRole.member)
+        member = mlist.subscribe(address, role)
         member.preferences.delivery_mode = delivery_mode
     else:
         # The user exists and is linked to the address.
@@ -110,7 +108,7 @@ def add_member(mlist, email, realname, password, delivery_mode, language):
             raise AssertionError(
                 'User should have had linked address: {0}'.format(address))
         # Create the member and set the appropriate preferences.
-        member = mlist.subscribe(address, MemberRole.member)
+        member = mlist.subscribe(address, role)
         member.preferences.preferred_language = language
         member.preferences.delivery_mode = delivery_mode
     return member

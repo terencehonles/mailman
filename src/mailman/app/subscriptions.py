@@ -37,7 +37,7 @@ from mailman.core.constants import system_preferences
 from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.listmanager import (
     IListManager, ListDeletedEvent, NoSuchListError)
-from mailman.interfaces.member import DeliveryMode
+from mailman.interfaces.member import DeliveryMode, MemberRole
 from mailman.interfaces.subscriptions import (
     ISubscriptionService, MissingUserError)
 from mailman.interfaces.usermanager import IUserManager
@@ -138,16 +138,12 @@ class SubscriptionService:
         for member in self.get_members():
             yield member
 
-    def join(self, fqdn_listname, subscriber,
-             real_name= None, delivery_mode=None):
+    def join(self, fqdn_listname, subscriber, real_name= None, 
+            delivery_mode=DeliveryMode.regular, role=MemberRole.member):
         """See `ISubscriptionService`."""
         mlist = getUtility(IListManager).get(fqdn_listname)
         if mlist is None:
             raise NoSuchListError(fqdn_listname)
-        # Convert from string to enum.
-        mode = (DeliveryMode.regular
-                if delivery_mode is None
-                else delivery_mode)
         # Is the subscriber a user or email address?
         if '@' in subscriber:
             # It's an email address, so we'll want a real name.
@@ -163,14 +159,15 @@ class SubscriptionService:
             # it can't be retrieved.  Note that none of these are used unless
             # the address is completely new to us.
             password = make_user_friendly_password()
-            return add_member(mlist, subscriber, real_name, password, mode,
-                              system_preferences.preferred_language)
+            return add_member(mlist, subscriber, real_name, password, 
+                              delivery_mode, 
+                              system_preferences.preferred_language, role)
         else:
             # We have to assume it's a user id.
             user = getUtility(IUserManager).get_user_by_id(subscriber)
             if user is None:
                 raise MissingUserError(subscriber)
-            return mlist.subscribe(user)
+            return mlist.subscribe(user, role)
 
     def leave(self, fqdn_listname, address):
         """See `ISubscriptionService`."""

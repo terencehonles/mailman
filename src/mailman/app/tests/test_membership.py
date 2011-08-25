@@ -34,7 +34,8 @@ from mailman.app.membership import add_member
 from mailman.config import config
 from mailman.core.constants import system_preferences
 from mailman.interfaces.bans import IBanManager
-from mailman.interfaces.member import DeliveryMode, MembershipIsBannedError
+from mailman.interfaces.member import (DeliveryMode, MembershipIsBannedError,
+    MemberRole)
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import reset_the_world
 from mailman.testing.layers import ConfigLayer
@@ -58,6 +59,7 @@ class AddMemberTest(unittest.TestCase):
                             system_preferences.preferred_language)
         self.assertEqual(member.address.email, 'aperson@example.com')
         self.assertEqual(member.mailing_list, 'test@example.com')
+        self.assertEqual(member.role, MemberRole.member)
 
     def test_add_member_existing_user(self):
         # Test subscribing a user to a mailing list when the email address has
@@ -123,6 +125,16 @@ class AddMemberTest(unittest.TestCase):
                             'Anne Person', '123', DeliveryMode.regular,
                             system_preferences.preferred_language)
         self.assertEqual(member.address.email, 'anne@example.com')
+
+    def test_add_member_moderator(self):
+        # Test adding a moderator to a mailing list
+        member = add_member(self._mlist, 'aperson@example.com',
+                            'Anne Person', '123', DeliveryMode.regular,
+                            system_preferences.preferred_language,
+                            MemberRole.moderator)
+        self.assertEqual(member.address.email, 'aperson@example.com')
+        self.assertEqual(member.mailing_list, 'test@example.com')
+        self.assertEqual(member.role, MemberRole.moderator)
 
 
 
