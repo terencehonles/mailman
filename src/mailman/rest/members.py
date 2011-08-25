@@ -59,6 +59,7 @@ class _MemberBase(resource.Resource, CollectionMixin):
             role=role,
             user=path_to('users/{0}'.format(member.user.user_id)),
             self_link=path_to('members/{0}'.format(member.member_id)),
+            delivery_mode=member.delivery_mode,
             )
 
     def _get_collection(self, request):
@@ -124,17 +125,28 @@ class AMember(_MemberBase):
 
         This is how subscription changes are done.
         """
-        # Currently, only the `address` parameter can be patched.
-        values = Validator(address=unicode)(request)
-        assert len(values) == 1, 'Unexpected values'
-        email = values['address']
-        address = getUtility(IUserManager).get_address(email)
-        if address is None:
-            return http.bad_request([], b'Address not registered')
+        # Currently, only the `address` or `delivery_mode` parameters can be patched.
+        if self._member is None:
+            return http.not_found()
         try:
-            self._member.address = address
-        except (MembershipError, UnverifiedAddressError) as error:
+            values = Validator(address=unicode, 
+                    delivery_mode=enum_validator(DeliveryMode),
+                    _optional=('delivery_mode', 'address'))(request)
+        except ValueError as error:
             return http.bad_request([], str(error))
+        if len(values) == 0:
+            return http.bad_request()
+        if 'address' in values:
+            email = values['address']
+            address = getUtility(IUserManager).get_address(email)
+            if address is None:
+                return http.bad_request([], b'Address not registered')
+            try:
+                self._member.address = address
+            except (MembershipError, UnverifiedAddressError) as error:
+                return http.bad_request([], str(error))
+        if 'delivery_mode' in values:
+            self._member.preferences.delivery_mode = values['delivery_mode']
         return no_content()
 
 
