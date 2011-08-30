@@ -28,6 +28,7 @@ __all__ = [
     ]
 
 
+from uuid import UUID
 from operator import attrgetter
 from restish import http, resource
 from zope.component import getUtility
@@ -43,7 +44,8 @@ from mailman.interfaces.user import UnverifiedAddressError
 from mailman.interfaces.usermanager import IUserManager
 from mailman.rest.helpers import (
     CollectionMixin, PATCH, etag, no_content, path_to)
-from mailman.rest.validator import Validator, enum_validator
+from mailman.rest.validator import (
+    Validator, enum_validator, subscriber_validator)
 
 
 
@@ -53,12 +55,16 @@ class _MemberBase(resource.Resource, CollectionMixin):
     def _resource_as_dict(self, member):
         """See `CollectionMixin`."""
         enum, dot, role = str(member.role).partition('.')
+        # Both the user_id and the member_id are UUIDs.  We need to use the
+        # integer equivalent in the URL.
+        user_id = member.user.user_id.int
+        member_id = member.member_id.int
         return dict(
             fqdn_listname=member.mailing_list,
             address=member.address.email,
             role=role,
-            user=path_to('users/{0}'.format(member.user.user_id)),
-            self_link=path_to('members/{0}'.format(member.member_id)),
+            user=path_to('users/{0}'.format(user_id)),
+            self_link=path_to('members/{0}'.format(member_id)),
             )
 
     def _get_collection(self, request):
@@ -89,9 +95,17 @@ class MemberCollection(_MemberBase):
 class AMember(_MemberBase):
     """A member."""
 
-    def __init__(self, member_id):
-        self._member_id = member_id
-        self._member = getUtility(ISubscriptionService).get_member(member_id)
+    def __init__(self, member_id_string):
+        # REST gives us the member id as the string of an int; we have to
+        # convert it to a UUID.
+        try:
+            member_id = UUID(int=int(member_id_string))
+        except ValueError:
+            # The string argument could not be converted to an integer.
+            self._member = None
+        else:
+            service = getUtility(ISubscriptionService)
+            self._member = service.get_member(member_id)
 
     @resource.GET()
     def member(self, request):
@@ -124,6 +138,8 @@ class AMember(_MemberBase):
 
         This is how subscription changes are done.
         """
+        if self._member is None:
+            return http.not_found()
         # Currently, only the `address` parameter can be patched.
         values = Validator(address=unicode)(request)
         assert len(values) == 1, 'Unexpected values'
@@ -147,11 +163,13 @@ class AllMembers(_MemberBase):
         """Create a new member."""
         service = getUtility(ISubscriptionService)
         try:
-            validator = Validator(fqdn_listname=unicode,
-                                  subscriber=unicode,
-                                  real_name=unicode,
-                                  delivery_mode=enum_validator(DeliveryMode),
-                                  _optional=('delivery_mode', 'real_name'))
+            validator = Validator(
+                fqdn_listname=unicode,
+                subscriber=subscriber_validator,
+                real_name=unicode,
+                delivery_mode=enum_validator(DeliveryMode),
+                role=enum_validator(MemberRole),
+                _optional=('delivery_mode', 'real_name', 'role'))
             member = service.join(**validator(request))
         except AlreadySubscribedError:
             return http.conflict([], b'Member already subscribed')
@@ -161,7 +179,10 @@ class AllMembers(_MemberBase):
             return http.bad_request([], b'Invalid email address')
         except ValueError as error:
             return http.bad_request([], str(error))
-        location = path_to('members/{0}'.format(member.member_id))
+        # The member_id are UUIDs.  We need to use the integer equivalent in
+        # the URL.
+        member_id = member.member_id.int
+        location = path_to('members/{0}'.format(member_id))
         # Include no extra headers or body.
         return http.created(location, [], None)
 

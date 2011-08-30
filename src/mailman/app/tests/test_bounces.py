@@ -26,6 +26,7 @@ __all__ = [
 
 
 import os
+import uuid
 import shutil
 import tempfile
 import unittest
@@ -211,7 +212,9 @@ Message-ID: <first>
         self.assertEqual(len(pendable.items()), 2)
         self.assertEqual(set(pendable.keys()),
                          set(['member_id', 'message_id']))
-        self.assertEqual(pendable['member_id'], self._member.member_id)
+        # member_ids are pended as unicodes.
+        self.assertEqual(uuid.UUID(hex=pendable['member_id']), 
+                         self._member.member_id)
         self.assertEqual(pendable['message_id'], '<first>')
 
     def test_probe_is_multipart(self):

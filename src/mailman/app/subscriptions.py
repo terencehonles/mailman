@@ -22,22 +22,23 @@ from __future__ import absolute_import, unicode_literals
 __metaclass__ = type
 __all__ = [
     'SubscriptionService',
-    'handle_ListDeleteEvent',
+    'handle_ListDeletedEvent',
     ]
 
 
 from operator import attrgetter
 from storm.expr import And, Or
+from uuid import UUID
 from zope.component import getUtility
 from zope.interface import implements
 
 from mailman.app.membership import add_member, delete_member
 from mailman.config import config
 from mailman.core.constants import system_preferences
-from mailman.interfaces.address import InvalidEmailAddressError
+from mailman.interfaces.address import IEmailValidator
 from mailman.interfaces.listmanager import (
     IListManager, ListDeletedEvent, NoSuchListError)
-from mailman.interfaces.member import DeliveryMode
+from mailman.interfaces.member import DeliveryMode, MemberRole
 from mailman.interfaces.subscriptions import (
     ISubscriptionService, MissingUserError)
 from mailman.interfaces.usermanager import IUserManager
@@ -88,7 +89,7 @@ class SubscriptionService:
         """See `ISubscriptionService`."""
         members = config.db.store.find(
             Member,
-            Member._member_id == unicode(member_id))
+            Member._member_id == member_id)
         if members.count() == 0:
             return None
         else:
@@ -118,7 +119,7 @@ class SubscriptionService:
                                 Member.user_id == user.id))
             else:
                 # subscriber is a user id.
-                user = user_manager.get_user_by_id(unicode(subscriber))
+                user = user_manager.get_user_by_id(subscriber)
                 address_ids = list(address.id for address in user.addresses
                                    if address.id is not None)
                 if len(address_ids) == 0 or user is None:
@@ -139,23 +140,21 @@ class SubscriptionService:
             yield member
 
     def join(self, fqdn_listname, subscriber,
-             real_name= None, delivery_mode=None):
+             real_name=None,
+             delivery_mode=DeliveryMode.regular,
+             role=MemberRole.member):
         """See `ISubscriptionService`."""
         mlist = getUtility(IListManager).get(fqdn_listname)
         if mlist is None:
             raise NoSuchListError(fqdn_listname)
-        # Convert from string to enum.
-        mode = (DeliveryMode.regular
-                if delivery_mode is None
-                else delivery_mode)
-        # Is the subscriber a user or email address?
-        if '@' in subscriber:
-            # It's an email address, so we'll want a real name.
+        # Is the subscriber an email address or user id?
+        if isinstance(subscriber, basestring):
+            # It's an email address, so we'll want a real name.  Make sure
+            # it's a valid email address, and let InvalidEmailAddressError
+            # propagate up.
+            getUtility(IEmailValidator).validate(subscriber)
             if real_name is None:
                 real_name, at, domain = subscriber.partition('@')
-                if len(at) == 0:
-                    # It can't possibly be a valid email address.
-                    raise InvalidEmailAddressError(subscriber)
             # Because we want to keep the REST API simple, there is no
             # password or language given to us.  We'll use the system's
             # default language for the user's default language.  We'll set the
@@ -163,22 +162,24 @@ class SubscriptionService:
             # it can't be retrieved.  Note that none of these are used unless
             # the address is completely new to us.
             password = make_user_friendly_password()
-            return add_member(mlist, subscriber, real_name, password, mode,
-                              system_preferences.preferred_language)
+            return add_member(mlist, subscriber, real_name, password,
+                              delivery_mode,
+                              system_preferences.preferred_language, role)
         else:
-            # We have to assume it's a user id.
+            # We have to assume it's a UUID.
+            assert isinstance(subscriber, UUID), 'Not a UUID'
             user = getUtility(IUserManager).get_user_by_id(subscriber)
             if user is None:
                 raise MissingUserError(subscriber)
-            return mlist.subscribe(user)
+            return mlist.subscribe(user, role)
 
-    def leave(self, fqdn_listname, address):
+    def leave(self, fqdn_listname, email):
         """See `ISubscriptionService`."""
         mlist = getUtility(IListManager).get(fqdn_listname)
         if mlist is None:
             raise NoSuchListError(fqdn_listname)
-        # XXX for now, no notification or user acknowledgement.
-        delete_member(mlist, address, False, False)
+        # XXX for now, no notification or user acknowledgment.
+        delete_member(mlist, email, False, False)
 
 
 

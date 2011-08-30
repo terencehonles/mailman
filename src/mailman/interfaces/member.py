@@ -81,15 +81,15 @@ class MembershipError(MailmanError):
 class AlreadySubscribedError(MembershipError):
     """The member is already subscribed to the mailing list with this role."""
 
-    def __init__(self, fqdn_listname, address, role):
+    def __init__(self, fqdn_listname, email, role):
         super(AlreadySubscribedError, self).__init__()
-        self._fqdn_listname = fqdn_listname
-        self._address = address
-        self._role = role
+        self.fqdn_listname = fqdn_listname
+        self.email = email
+        self.role = role
 
     def __str__(self):
         return '{0} is already a {1} of mailing list {2}'.format(
-            self._address, self._role, self._fqdn_listname)
+            self.email, self.role, self.fqdn_listname)
 
 
 class MembershipIsBannedError(MembershipError):
@@ -134,7 +134,7 @@ class IMember(Interface):
     """A member of a mailing list."""
 
     member_id = Attribute(
-        """The member's unique, random identifier (sha1 hex digest).""")
+        """The member's unique, random identifier as a UUID.""")
 
     mailing_list = Attribute(
         """The mailing list subscribed to.""")

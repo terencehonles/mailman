@@ -66,7 +66,7 @@ class IUserManager(Interface):
         """Get the user associated with the given id.
 
         :param user_id: The user id.
-        :type user_id: unicode
+        :type user_id: `uuid.UUID`
         :return: The user found or None.
         :rtype: `IUser`.
         """

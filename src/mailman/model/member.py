@@ -25,6 +25,7 @@ __all__ = [
     ]
 
 from storm.locals import Int, Reference, Unicode
+from storm.properties import UUID
 from zope.component import getUtility
 from zope.interface import implements
 
@@ -49,7 +50,7 @@ class Member(Model):
     implements(IMember)
 
     id = Int(primary=True)
-    _member_id = Unicode()
+    _member_id = UUID()
     role = Enum()
     mailing_list = Unicode()
     moderation_action = Enum()

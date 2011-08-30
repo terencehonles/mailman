@@ -66,4 +66,4 @@ class Validator:
         :raise InvalidEmailAddressError: when the address is deemed invalid.
         """
         if not self.is_valid(email):
-            raise InvalidEmailAddressError(repr(email))
+            raise InvalidEmailAddressError(email)

@@ -49,27 +49,27 @@ addresses are rejected outright.
     >>> registrar.register(mlist, '')
     Traceback (most recent call last):
     ...
-    InvalidEmailAddressError: u''
+    InvalidEmailAddressError
     >>> registrar.register(mlist, 'some name@example.com')
     Traceback (most recent call last):
     ...
-    InvalidEmailAddressError: u'some name@example.com'
+    InvalidEmailAddressError: some name@example.com
     >>> registrar.register(mlist, '<script>@example.com')
     Traceback (most recent call last):
     ...
-    InvalidEmailAddressError: u'<script>@example.com'
+    InvalidEmailAddressError: <script>@example.com
     >>> registrar.register(mlist, '\xa0@example.com')
     Traceback (most recent call last):
     ...
-    InvalidEmailAddressError: u'\xa0@example.com'
+    InvalidEmailAddressError: \xa0@example.com
     >>> registrar.register(mlist, 'noatsign')
     Traceback (most recent call last):
     ...
-    InvalidEmailAddressError: u'noatsign'
+    InvalidEmailAddressError: noatsign
     >>> registrar.register(mlist, 'nodom@ain')
     Traceback (most recent call last):
     ...
-    InvalidEmailAddressError: u'nodom@ain'
+    InvalidEmailAddressError: nodom@ain
 
 
 Register an email address

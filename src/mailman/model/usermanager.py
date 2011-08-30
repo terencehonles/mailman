@@ -40,6 +40,7 @@ class UserManager:
     implements(IUserManager)
 
     def create_user(self, email=None, real_name=None):
+        """See `IUserManager`."""
         user = User(real_name, Preferences())
         if email:
             address = self.create_address(email, real_name)
@@ -47,15 +48,18 @@ class UserManager:
         return user
 
     def delete_user(self, user):
+        """See `IUserManager`."""
         config.db.store.remove(user)
 
     def get_user(self, email):
+        """See `IUserManager`."""
         addresses = config.db.store.find(Address, email=email.lower())
         if addresses.count() == 0:
             return None
         return addresses.one().user
 
     def get_user_by_id(self, user_id):
+        """See `IUserManager`."""
         users = config.db.store.find(User, _user_id=user_id)
         if users.count() == 0:
             return None
@@ -63,10 +67,12 @@ class UserManager:
 
     @property
     def users(self):
+        """See `IUserManager`."""
         for user in config.db.store.find(User):
             yield user
 
     def create_address(self, email, real_name=None):
+        """See `IUserManager`."""
         addresses = config.db.store.find(Address, email=email.lower())
         if addresses.count() == 1:
             found = addresses[0]
@@ -82,6 +88,7 @@ class UserManager:
         return address
 
     def delete_address(self, address):
+        """See `IUserManager`."""
         # If there's a user controlling this address, it has to first be
         # unlinked before the address can be deleted.
         if address.user:
@@ -89,6 +96,7 @@ class UserManager:
         config.db.store.remove(address)
 
     def get_address(self, email):
+        """See `IUserManager`."""
         addresses = config.db.store.find(Address, email=email.lower())
         if addresses.count() == 0:
             return None
@@ -96,5 +104,6 @@ class UserManager:
 
     @property
     def addresses(self):
+        """See `IUserManager`."""
         for address in config.db.store.find(Address):
             yield address

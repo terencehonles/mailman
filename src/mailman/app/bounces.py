@@ -30,6 +30,7 @@ __all__ = [
 
 
 import re
+import uuid
 import logging
 
 from email.mime.message import MIMEMessage
@@ -168,7 +169,8 @@ class ProbeVERP(_BaseVERPParser):
             # The token must have already been confirmed, or it may have been
             # evicted from the database already.
             return None
-        member_id = pendable['member_id']
+        # We had to pend the uuid as a unicode.
+        member_id = uuid.UUID(hex=pendable['member_id'])
         member = getUtility(ISubscriptionService).get_member(member_id)
         if member is None:
             return None
@@ -200,7 +202,8 @@ def send_probe(member, msg):
                 owneraddr=mlist.owner_address,
                 )
     pendable = _ProbePendable(
-        member_id=member.member_id,
+        # We can only pend unicodes.
+        member_id=member.member_id.hex,
         message_id=msg['message-id'],
         )
     token = getUtility(IPendings).add(pendable)

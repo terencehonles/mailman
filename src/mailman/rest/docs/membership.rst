@@ -197,8 +197,27 @@ an owner of the `ant` mailing list and Dave becomes a moderator of the `bee`
 mailing list.
 ::
 
-    >>> subscribe(ant, 'Dave', MemberRole.moderator)
-    >>> subscribe(bee, 'Cris', MemberRole.owner)
+    >>> dump_json('http://localhost:9001/3.0/members', {
+    ...           'fqdn_listname': 'ant@example.com',
+    ...           'subscriber': 'dperson@example.com',
+    ...           'role': 'moderator',
+    ...           })
+    content-length: 0
+    date: ...
+    location: http://localhost:9001/3.0/members/6
+    server: ...
+    status: 201
+
+    >>> dump_json('http://localhost:9001/3.0/members', {
+    ...           'fqdn_listname': 'bee@example.com',
+    ...           'subscriber': 'cperson@example.com',
+    ...           'role': 'owner',
+    ...           })
+    content-length: 0
+    date: ...
+    location: http://localhost:9001/3.0/members/7
+    server: ...
+    status: 201
 
     >>> dump_json('http://localhost:9001/3.0/members')
     entry 0:
@@ -459,6 +478,7 @@ Elly is now a known user, and a member of the mailing list.
 
 Gwen is a user with a preferred address.  She subscribes to the `ant` mailing
 list with her preferred address.
+::
 
     >>> from mailman.utilities.datetime import now
     >>> gwen = user_manager.create_user('gwen@example.com', 'Gwen Person')
@@ -468,8 +488,10 @@ list with her preferred address.
 
     # Note that we must extract the user id before we commit the transaction.
     # This is because accessing the .user_id attribute will lock the database
-    # in the testing process, breaking the REST queue process.
-    >>> user_id = gwen.user_id
+    # in the testing process, breaking the REST queue process.  Also, the
+    # user_id is a UUID internally, but an integer (represented as a string)
+    # is required by the REST API.
+    >>> user_id = gwen.user_id.int
     >>> transaction.commit()
 
     >>> dump_json('http://localhost:9001/3.0/members', {

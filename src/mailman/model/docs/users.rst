@@ -41,12 +41,11 @@ Basic user identification
 =========================
 
 Although rarely visible to users, every user has a unique ID in Mailman, which
-never changes.  This ID is generated randomly at the time the user is
-created.
+never changes.  This ID is generated randomly at the time the user is created,
+and is represented by a UUID.
 
-    # The test suite uses a predictable user id.
     >>> print user_1.user_id
-    1
+    00000000-0000-0000-0000-000000000001
 
 The user id cannot change.
 

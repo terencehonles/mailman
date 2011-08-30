@@ -31,10 +31,10 @@ __all__ = [
 
 
 import os
+import uuid
 import errno
 
 from flufl.lock import Lock
-from uuid import uuid4
 
 from mailman.config import config
 from mailman.model.uid import UID
@@ -71,7 +71,7 @@ class UniqueIDFactory:
         """Return a new UID.
 
         :return: The new uid
-        :rtype: unicode
+        :rtype: int
         """
         if layers.is_testing():
             # When in testing mode we want to produce predictable id, but we
@@ -84,7 +84,7 @@ class UniqueIDFactory:
             # tests) that it will not be a problem.  Maybe.
             return self._next_uid()
         while True:
-            uid = unicode(uuid4().hex, 'us-ascii')
+            uid = uuid.uuid4()
             try:
                 UID.record(uid)
             except ValueError:
@@ -96,17 +96,17 @@ class UniqueIDFactory:
         with self._lock:
             try:
                 with open(self._uid_file) as fp:
-                    uid = fp.read().strip()
-                    next_uid = int(uid) + 1
+                    uid = int(fp.read().strip())
+                    next_uid = uid + 1
                 with open(self._uid_file, 'w') as fp:
                     fp.write(str(next_uid))
+                return uuid.UUID(int=uid)
             except IOError as error:
                 if error.errno != errno.ENOENT:
                     raise
                 with open(self._uid_file, 'w') as fp:
                     fp.write('2')
-                return '1'
-        return unicode(uid, 'us-ascii')
+                return uuid.UUID(int=1)
 
     def reset(self):
         with self._lock:

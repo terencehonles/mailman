@@ -54,7 +54,7 @@ class IUser(Interface):
         """This user's password information.""")
 
     user_id = Attribute(
-        """The user's unique, random identifier (sha1 hex digest).""")
+        """The user's unique, random identifier as a UUID.""")
 
     created_on = Attribute(
         """The date and time at which this user was created.""")

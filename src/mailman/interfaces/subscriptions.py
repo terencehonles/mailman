@@ -28,6 +28,7 @@ __all__ = [
 from zope.interface import Interface
 
 from mailman.interfaces.errors import MailmanError
+from mailman.interfaces.member import DeliveryMode, MemberRole
 
 
 
@@ -91,7 +92,9 @@ class ISubscriptionService(Interface):
     def __iter__():
         """See `get_members()`."""
 
-    def join(fqdn_listname, subscriber, real_name=None, delivery_mode=None):
+    def join(fqdn_listname, subscriber, real_name=None,
+             delivery_mode=DeliveryMode.regular, 
+             role=MemberRole.member):
         """Subscribe to a mailing list.
 
         A user for the address is created if it is not yet known to Mailman,
@@ -105,7 +108,7 @@ class ISubscriptionService(Interface):
         :type fqdn_listname: string
         :param subscriber: The email address or user id of the user getting
             subscribed.
-        :type subscriber: string
+        :type subscriber: string or int
         :param real_name: The name of the user.  This is only used if a new
             user is created, and it defaults to the local part of the email
             address if not given.
@@ -114,6 +117,8 @@ class ISubscriptionService(Interface):
             can be one of the enum values of `DeliveryMode`.  If not given,
             regular delivery is assumed.
         :type delivery_mode: string
+        :param role: The membership role for this subscription.
+        :type role: `MemberRole`
         :return: The just created member.
         :rtype: `IMember`
         :raises AlreadySubscribedError: if the user is already subscribed to
@@ -125,14 +130,14 @@ class ISubscriptionService(Interface):
         :raises ValueError: when `delivery_mode` is invalid.
         """
 
-    def leave(fqdn_listname, address):
+    def leave(fqdn_listname, email):
         """Unsubscribe from a mailing list.
 
         :param fqdn_listname: The posting address of the mailing list to
-            subscribe the user to.
+            unsubscribe the user from.
         :type fqdn_listname: string
-        :param address: The address of the user getting subscribed.
-        :type address: string
+        :param email: The email address of the user getting unsubscribed.
+        :type email: string
         :raises InvalidEmailAddressError: if the email address is not valid.
         :raises NoSuchListError: if the named mailing list does not exist.
         :raises NotAMemberError: if the given address is not a member of the

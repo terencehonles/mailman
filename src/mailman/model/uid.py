@@ -25,7 +25,8 @@ __all__ = [
     ]
 
 
-from storm.locals import Int, Unicode
+from storm.locals import Int
+from storm.properties import UUID
 
 from mailman.config import config
 from mailman.database.model import Model
@@ -43,12 +44,9 @@ class UID(Model):
 
     There is no interface for this class, because it's purely an internal
     implementation detail.
-
-    Since it's a hash, it's overwhelmingly more common for a uid to be
-    unique.
     """
     id = Int(primary=True)
-    uid = Unicode()
+    uid = UUID()
 
     def __init__(self, uid):
         super(UID, self).__init__()

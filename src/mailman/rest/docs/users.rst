@@ -37,7 +37,7 @@ When there are users in the database, they can be retrieved as a collection.
 The user ids match.
 
     >>> json = call_http('http://localhost:9001/3.0/users')
-    >>> json['entries'][0]['user_id'] == anne.user_id
+    >>> json['entries'][0]['user_id'] == anne.user_id.int
     True
 
 A user might not have a real name, in which case, the attribute will not be

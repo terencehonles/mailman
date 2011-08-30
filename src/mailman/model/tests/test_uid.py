@@ -25,6 +25,7 @@ __all__ = [
     ]
 
 
+import uuid
 import unittest
 
 from mailman.model.uid import UID
@@ -36,9 +37,16 @@ class TestUID(unittest.TestCase):
     layer = ConfigLayer
 
     def test_record(self):
-        UID.record('abc')
-        UID.record('def')
-        self.assertRaises(ValueError, UID.record, 'abc')
+        # Test that the .record() method works.
+        UID.record(uuid.UUID(int=11))
+        UID.record(uuid.UUID(int=99))
+        self.assertRaises(ValueError, UID.record, uuid.UUID(int=11))
+
+    def test_longs(self):
+        # In a non-test environment, the uuid will be a long int.
+        my_uuid = uuid.uuid4()
+        UID.record(my_uuid)
+        self.assertRaises(ValueError, UID.record, my_uuid)
 
 
 

@@ -22,6 +22,7 @@ import logging
 
 from datetime import datetime
 from lazr.config import as_boolean, as_timedelta
+from uuid import UUID
 from zope.component import getUtility
 
 from mailman.config import config
@@ -122,8 +123,9 @@ class OutgoingRunner(Runner):
                     # It's possible the token has been confirmed out of the
                     # database.  Just ignore that.
                     if pended is not None:
+                        # The UUID had to be pended as a unicode.
                         member = getUtility(ISubscriptionService).get_member(
-                            pended['member_id'])
+                            UUID(hex=pended['member_id']))
                         processor.register(
                             mlist, member.address.email, msg,
                             BounceContext.probe)

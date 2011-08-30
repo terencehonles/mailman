@@ -143,5 +143,6 @@ Users can also be found by their unique user id.
 
 If a non-existent user id is given, None is returned.
 
-    >>> print user_manager.get_user_by_id('missing')
+    >>> from uuid import UUID
+    >>> print user_manager.get_user_by_id(UUID(int=801))
     None

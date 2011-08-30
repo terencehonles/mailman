@@ -29,6 +29,7 @@ Architecture
    deleted, as well as all held message requests (but not the held messages
    themselves).  (LP: 827036)
  * IDomain.email_host -> .mail_host (LP: #831660)
+ * User and Member ids are now proper UUIDs.
 
 REST
 ----
@@ -43,6 +44,8 @@ REST
  * Fixed incorrect error code for /members/<bogus> (LP: #821020).  Given by
    Stephen A. Goss.
  * DELETE users via the REST API.  (LP: #820660)
+ * Moderators and owners can be added via REST (LP: #834130).  Given by
+   Stephen A. Goss.
 
 Commands
 --------
@@ -65,12 +68,13 @@ Testing
  * Handle SIGTERM in the REST server so that the test suite always shuts down
    correctly.  (LP: #770328)
 
-Other bugs
-----------
+Other bugs and changes
+----------------------
  * Moderating a message with Action.accept now sends the message. (LP: #827697)
  * Fix AttributeError triggered by i18n call in autorespond_to_sender()
    (LP: #827060)
  * Local timezone in X-Mailman-Approved-At caused test failure. (LP: #832404)
+ * InvalidEmailAddressError no longer repr()'s its value.
 
 
 3.0 alpha 7 -- "Mission"

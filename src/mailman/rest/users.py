@@ -27,6 +27,7 @@ __all__ = [
 
 
 from restish import http, resource
+from uuid import UUID
 from zope.component import getUtility
 
 from mailman.interfaces.address import ExistingAddressError
@@ -46,11 +47,13 @@ class _UserBase(resource.Resource, CollectionMixin):
         """See `CollectionMixin`."""
         # The canonical URL for a user is their unique user id, although we
         # can always look up a user based on any registered and validated
-        # email address associated with their account.
+        # email address associated with their account.  The user id is a UUID,
+        # but we serialize its integer equivalent.
+        user_id = user.user_id.int
         resource = dict(
-            user_id=user.user_id,
+            user_id=user_id,
             created_on=user.created_on,
-            self_link=path_to('users/{0}'.format(user.user_id)),
+            self_link=path_to('users/{0}'.format(user_id)),
             )
         # Add the password attribute, only if the user has a password.  Same
         # with the real name.  These could be None or the empty string.
@@ -99,7 +102,7 @@ class AllUsers(_UserBase):
             # This will have to be reset since it cannot be retrieved.
             password = make_user_friendly_password()
         user.password = encrypt_password(password)
-        location = path_to('users/{0}'.format(user.user_id))
+        location = path_to('users/{0}'.format(user.user_id.int))
         return http.created(location, [], None)
 
 
@@ -115,13 +118,20 @@ class AUser(_UserBase):
             controlled by the user.  The type of identifier is auto-detected
             by looking for an `@` symbol, in which case it's taken as an email
             address, otherwise it's assumed to be an integer.
-        :type user_identifier: str
+        :type user_identifier: string
         """
         user_manager = getUtility(IUserManager)
         if '@' in user_identifier:
             self._user = user_manager.get_user(user_identifier)
         else:
-            self._user = user_manager.get_user_by_id(user_identifier)
+            # The identifier is the string representation of an integer that
+            # must be converted to a UUID.
+            try:
+                user_id = UUID(int=int(user_identifier))
+            except ValueError:
+                self._user = None
+            else:
+                self._user = user_manager.get_user_by_id(user_id)
 
     @resource.GET()
     def user(self, request):

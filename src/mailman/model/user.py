@@ -26,6 +26,7 @@ __all__ = [
 
 from storm.locals import (
     DateTime, Int, RawStr, Reference, ReferenceSet, Unicode)
+from storm.properties import UUID
 from zope.interface import implements
 
 from mailman.config import config
@@ -52,7 +53,7 @@ class User(Model):
     id = Int(primary=True)
     real_name = Unicode()
     password = RawStr()
-    _user_id = Unicode()
+    _user_id = UUID()
     _created_on = DateTime()
 
     addresses = ReferenceSet(id, 'Address.user_id')
@@ -73,8 +74,9 @@ class User(Model):
         config.db.store.add(self)
 
     def __repr__(self):
-        return '<User "{0.real_name}" ({0.user_id}) at {1:#x}>'.format(
-            self, id(self))
+        short_user_id = self.user_id.int
+        return '<User "{0.real_name}" ({2}) at {1:#x}>'.format(
+            self, id(self), short_user_id)
 
     @property
     def user_id(self):

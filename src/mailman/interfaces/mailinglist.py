@@ -245,7 +245,10 @@ class IMailingList(Interface):
         :return: The member object representing the subscription.
         :rtype: `IMember`
         :raises AlreadySubscribedError: If the address or user is already
-            subscribed to the mailing list with the given role.
+            subscribed to the mailing list with the given role.  Note however
+            that it is possible to subscribe an address to a mailing list with
+            a particular role, and also subscribe a user with a matching
+            preferred address that is explicitly subscribed with the same role.
         """
 
     # Posting history.

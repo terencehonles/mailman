@@ -23,7 +23,11 @@ __metaclass__ = type
 __all__ = [
     'Validator',
     'enum_validator',
+    'subscriber_validator',
     ]
+
+
+from uuid import UUID
 
 
 COMMASPACE = ', '
@@ -42,6 +46,17 @@ class enum_validator:
         return self._enum_class[enum_value]
 
 
+
+    
+def subscriber_validator(subscriber):
+    """Convert an email-or-int to an email-or-UUID."""
+    try:
+        return UUID(int=int(subscriber))
+    except ValueError:
+        return subscriber
+
+
+
 class Validator:
     """A validator of parameter input."""
 
