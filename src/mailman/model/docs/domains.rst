@@ -71,6 +71,30 @@ Domains can have explicit descriptions and contact addresses.
             base_url: http://lists.example.net,
             contact_address: postmaster@example.com>
 
+Domains can list all associated mailing lists with the mailing_lists property.
+::
+
+    >>> def show_lists(domain):
+    ...     mlists = list(domain.mailing_lists)
+    ...     for mlist in mlists:
+    ...         print mlist
+    ...     if len(mlists) == 0:
+    ...         print 'no lists'
+
+    >>> net_domain = manager['example.net']
+    >>> com_domain = manager['example.com']
+    >>> show_lists(net_domain)
+    no lists
+
+    >>> create_list('test@example.net')
+    <mailing list "test@example.net" at ...>
+    >>> transaction.commit()
+    >>> show_lists(net_domain)
+    <mailing list "test@example.net" at ...>
+
+    >>> show_lists(com_domain)
+    no lists
+
 In the global domain manager, domains are indexed by their email host name.
 ::
 

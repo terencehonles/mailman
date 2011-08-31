@@ -24,6 +24,7 @@ __all__ = [
     'AList',
     'AllLists',
     'ListConfiguration',
+    'ListsForDomain',
     ]
 
 
@@ -207,4 +208,20 @@ class MembersOfList(MemberCollection):
         roster = self._mlist.get_roster(self._role)
         address_of_member = attrgetter('address.email')
         return list(sorted(roster.members, key=address_of_member))
-    
+
+
+class ListsForDomain(_ListBase):
+    """The mailing lists for a particular domain."""
+
+    def __init__(self, domain):
+        self._domain = domain
+
+    @resource.GET()
+    def collection(self, request):
+        """/domains/<domain>/lists"""
+        resource = self._make_collection(request)
+        return http.ok([], etag(resource))
+
+    def _get_collection(self, request):
+        """See `CollectionMixin`."""
+        return list(self._domain.mailing_lists)

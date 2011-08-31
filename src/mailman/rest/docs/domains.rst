@@ -117,6 +117,40 @@ But we get a 404 for a non-existent domain.
     ...
     HTTPError: HTTP Error 404: 404 Not Found
 
+You can also list all the mailing lists for a given domain.  At first, the
+example.com domain does not contain any mailing lists.
+::
+
+    >>> dump_json('http://localhost:9001/3.0/domains/example.com/lists')
+    http_etag: "..."
+    start: 0
+    total_size: 0
+
+    >>> dump_json('http://localhost:9001/3.0/lists', {
+    ...           'fqdn_listname': 'test-domains@example.com',
+    ...           })
+    content-length: 0
+    date: ...
+    location: http://localhost:9001/3.0/lists/test-domains@example.com
+    ...
+
+    >>> dump_json('http://localhost:9001/3.0/domains/example.com/lists')
+    entry 0:
+        fqdn_listname: test-domains@example.com
+        http_etag: "..."
+        ...
+        self_link: http://localhost:9001/3.0/lists/test-domains@example.com
+    http_etag: "..."
+    start: 0
+    total_size: 1
+
+Other domains continue to contain no mailing lists.
+
+    >>> dump_json('http://localhost:9001/3.0/domains/lists.example.net/lists')
+    http_etag: "..."
+    start: 0
+    total_size: 0
+
 
 Creating new domains
 ====================

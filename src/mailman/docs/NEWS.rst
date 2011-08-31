@@ -39,6 +39,9 @@ REST
  * New REST resource http://.../members/find can be POSTed to in order to find
    member records.  Optional arguments are `subscriber` (email address to
    search for), `fqdn_listname`, and `role` (i.e. MemberRole).  (LP: #799612)
+ * New REST resource http://.../<domain>/lists can be GETed in order to find
+   all the mailing lists in a specific domain (LP: #829765).  Given by
+   Stephen A. Goss.
  * Fixed /lists/<fqdn_listname>/<role>/<email> (LP: #825570)
  * Remove role plurals from /lists/<fqdn_listname/rosters/<role>
  * Fixed incorrect error code for /members/<bogus> (LP: #821020).  Given by

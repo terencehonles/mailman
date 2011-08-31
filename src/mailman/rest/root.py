@@ -98,10 +98,9 @@ class TopLevel(resource.Resource):
         """
         if len(segments) == 0:
             return AllDomains()
-        elif len(segments) == 1:
-            return ADomain(segments[0]), []
         else:
-            return http.bad_request()
+            domain = segments.pop(0)
+            return ADomain(domain), segments
 
     @resource.child()
     def lists(self, request, segments):
