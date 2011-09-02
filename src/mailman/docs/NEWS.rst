@@ -49,6 +49,8 @@ REST
  * DELETE users via the REST API.  (LP: #820660)
  * Moderators and owners can be added via REST (LP: #834130).  Given by
    Stephen A. Goss.
+ * Getting the roster or configuration of a nonexistent list did not give a
+   404 error (LP: #837676).  Given by Stephen A. Goss.
 
 Commands
 --------

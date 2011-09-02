@@ -155,11 +155,15 @@ class AList(_ListBase):
     @resource.child(roster_matcher)
     def roster(self, request, segments, role):
         """Return the collection of all a mailing list's members."""
+        if self._mlist is None:
+            return http.not_found()
         return MembersOfList(self._mlist, role)
 
     @resource.child(config_matcher)
     def config(self, request, segments, attribute=None):
         """Return a mailing list configuration object."""
+        if self._mlist is None:
+            return http.not_found()
         return ListConfiguration(self._mlist, attribute)
 
 
