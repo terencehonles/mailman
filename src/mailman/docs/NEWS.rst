@@ -51,6 +51,8 @@ REST
    Stephen A. Goss.
  * Getting the roster or configuration of a nonexistent list did not give a
    404 error (LP: #837676).  Given by Stephen A. Goss.
+ * PATCHing an invalid attribute on a member did not give a 400 error
+   (LP: #833376).  Given by Stephen A. Goss.
 
 Commands
 --------

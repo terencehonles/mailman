@@ -203,6 +203,22 @@ class TestMembership(unittest.TestCase):
         else:
             raise AssertionError('Expected HTTPError')
 
+    def test_patch_bogus_member_attribute_400(self):
+        # /members/<id> PATCH 'bogus' returns 400
+        anne = self._usermanager.create_address('anne@example.com')
+        self._mlist.subscribe(anne)
+        config.db.commit()
+        try:
+            # For Python 2.6
+            call_api('http://localhost:9001/3.0/members/1', {
+                     'powers': 'super',
+                     }, method='PATCH')
+        except HTTPError as exc:
+            self.assertEqual(exc.code, 400)
+            self.assertEqual(exc.msg, 'Unexpected parameters: powers')
+        else:
+            raise AssertionError('Expected HTTPError')
+
 
 
 def test_suite():

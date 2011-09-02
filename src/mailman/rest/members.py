@@ -140,8 +140,10 @@ class AMember(_MemberBase):
         """
         if self._member is None:
             return http.not_found()
-        # Currently, only the `address` parameter can be patched.
-        values = Validator(address=unicode)(request)
+        try:
+            values = Validator(address=unicode)(request)
+        except ValueError as error:
+            return http.bad_request([], str(error))
         assert len(values) == 1, 'Unexpected values'
         email = values['address']
         address = getUtility(IUserManager).get_address(email)
