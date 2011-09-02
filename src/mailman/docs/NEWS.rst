@@ -39,6 +39,8 @@ REST
  * New REST resource http://.../members/find can be POSTed to in order to find
    member records.  Optional arguments are `subscriber` (email address to
    search for), `fqdn_listname`, and `role` (i.e. MemberRole).  (LP: #799612)
+ * You can now query or change a member's `delivery_mode` attribute through
+   the REST API (LP: #833132).  Given by Stephen A. Goss.
  * New REST resource http://.../<domain>/lists can be GETed in order to find
    all the mailing lists in a specific domain (LP: #829765).  Given by
    Stephen A. Goss.

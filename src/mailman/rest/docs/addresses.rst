@@ -169,6 +169,7 @@ Elle can get her memberships for each of her email addresses.
     ...           'elle@example.com/memberships')
     entry 0:
         address: elle@example.com
+        delivery_mode: regular
         fqdn_listname: ant@example.com
         http_etag: "..."
         role: member
@@ -176,6 +177,7 @@ Elle can get her memberships for each of her email addresses.
         user: http://localhost:9001/3.0/users/2
     entry 1:
         address: elle@example.com
+        delivery_mode: regular
         fqdn_listname: bee@example.com
         http_etag: "..."
         role: member
@@ -204,6 +206,7 @@ does not show up in the list of memberships for his other address.
     ...           'elle@example.com/memberships')
     entry 0:
         address: elle@example.com
+        delivery_mode: regular
         fqdn_listname: ant@example.com
         http_etag: "..."
         role: member
@@ -211,6 +214,7 @@ does not show up in the list of memberships for his other address.
         user: http://localhost:9001/3.0/users/2
     entry 1:
         address: elle@example.com
+        delivery_mode: regular
         fqdn_listname: bee@example.com
         http_etag: "..."
         role: member
@@ -224,6 +228,7 @@ does not show up in the list of memberships for his other address.
     ...           'eperson@example.com/memberships')
     entry 0:
         address: eperson@example.com
+        delivery_mode: regular
         fqdn_listname: bee@example.com
         http_etag: "..."
         role: member

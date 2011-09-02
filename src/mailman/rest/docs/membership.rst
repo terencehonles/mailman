@@ -42,6 +42,7 @@ the REST interface.
     >>> dump_json('http://localhost:9001/3.0/members')
     entry 0:
         address: bperson@example.com
+        delivery_mode: regular
         fqdn_listname: bee@example.com
         http_etag: ...
         role: member
@@ -55,6 +56,7 @@ Bart's specific membership can be accessed directly:
 
     >>> dump_json('http://localhost:9001/3.0/members/1')
     address: bperson@example.com
+    delivery_mode: regular
     fqdn_listname: bee@example.com
     http_etag: ...
     role: member
@@ -68,6 +70,7 @@ the REST interface.
     >>> dump_json('http://localhost:9001/3.0/members')
     entry 0:
         address: bperson@example.com
+        delivery_mode: regular
         fqdn_listname: bee@example.com
         http_etag: ...
         role: member
@@ -75,6 +78,7 @@ the REST interface.
         user: http://localhost:9001/3.0/users/1
     entry 1:
         address: cperson@example.com
+        delivery_mode: regular
         fqdn_listname: bee@example.com
         http_etag: ...
         role: member
@@ -93,6 +97,7 @@ subscribes, she is returned first.
     >>> dump_json('http://localhost:9001/3.0/members')
     entry 0:
         address: aperson@example.com
+        delivery_mode: regular
         fqdn_listname: bee@example.com
         http_etag: ...
         role: member
@@ -100,6 +105,7 @@ subscribes, she is returned first.
         user: http://localhost:9001/3.0/users/3
     entry 1:
         address: bperson@example.com
+        delivery_mode: regular
         fqdn_listname: bee@example.com
         http_etag: ...
         role: member
@@ -107,6 +113,7 @@ subscribes, she is returned first.
         user: http://localhost:9001/3.0/users/1
     entry 2:
         address: cperson@example.com
+        delivery_mode: regular
         fqdn_listname: bee@example.com
         http_etag: ...
         role: member
@@ -129,6 +136,7 @@ User ids are different than member ids.
     >>> dump_json('http://localhost:9001/3.0/members')
     entry 0:
         address: aperson@example.com
+        delivery_mode: regular
         fqdn_listname: ant@example.com
         http_etag: ...
         role: member
@@ -136,6 +144,7 @@ User ids are different than member ids.
         user: http://localhost:9001/3.0/users/3
     entry 1:
         address: cperson@example.com
+        delivery_mode: regular
         fqdn_listname: ant@example.com
         http_etag: ...
         role: member
@@ -143,6 +152,7 @@ User ids are different than member ids.
         user: http://localhost:9001/3.0/users/2
     entry 2:
         address: aperson@example.com
+        delivery_mode: regular
         fqdn_listname: bee@example.com
         http_etag: ...
         role: member
@@ -150,6 +160,7 @@ User ids are different than member ids.
         user: http://localhost:9001/3.0/users/3
     entry 3:
         address: bperson@example.com
+        delivery_mode: regular
         fqdn_listname: bee@example.com
         http_etag: ...
         role: member
@@ -157,6 +168,7 @@ User ids are different than member ids.
         user: http://localhost:9001/3.0/users/1
     entry 4:
         address: cperson@example.com
+        delivery_mode: regular
         fqdn_listname: bee@example.com
         http_etag: ...
         role: member
@@ -172,6 +184,7 @@ We can also get just the members of a single mailing list.
     ...     'http://localhost:9001/3.0/lists/ant@example.com/roster/member')
     entry 0:
         address: aperson@example.com
+        delivery_mode: regular
         fqdn_listname: ant@example.com
         http_etag: ...
         role: member
@@ -179,6 +192,7 @@ We can also get just the members of a single mailing list.
         user: http://localhost:9001/3.0/users/3
     entry 1:
         address: cperson@example.com
+        delivery_mode: regular
         fqdn_listname: ant@example.com
         http_etag: ...
         role: member
@@ -222,6 +236,7 @@ mailing list.
     >>> dump_json('http://localhost:9001/3.0/members')
     entry 0:
         address: dperson@example.com
+        delivery_mode: regular
         fqdn_listname: ant@example.com
         http_etag: ...
         role: moderator
@@ -229,6 +244,7 @@ mailing list.
         user: http://localhost:9001/3.0/users/4
     entry 1:
         address: aperson@example.com
+        delivery_mode: regular
         fqdn_listname: ant@example.com
         http_etag: ...
         role: member
@@ -236,6 +252,7 @@ mailing list.
         user: http://localhost:9001/3.0/users/3
     entry 2:
         address: cperson@example.com
+        delivery_mode: regular
         fqdn_listname: ant@example.com
         http_etag: ...
         role: member
@@ -243,6 +260,7 @@ mailing list.
         user: http://localhost:9001/3.0/users/2
     entry 3:
         address: cperson@example.com
+        delivery_mode: regular
         fqdn_listname: bee@example.com
         http_etag: ...
         role: owner
@@ -250,6 +268,7 @@ mailing list.
         user: http://localhost:9001/3.0/users/2
     entry 4:
         address: aperson@example.com
+        delivery_mode: regular
         fqdn_listname: bee@example.com
         http_etag: ...
         role: member
@@ -257,6 +276,7 @@ mailing list.
         user: http://localhost:9001/3.0/users/3
     entry 5:
         address: bperson@example.com
+        delivery_mode: regular
         fqdn_listname: bee@example.com
         http_etag: ...
         role: member
@@ -264,6 +284,7 @@ mailing list.
         user: http://localhost:9001/3.0/users/1
     entry 6:
         address: cperson@example.com
+        delivery_mode: regular
         fqdn_listname: bee@example.com
         http_etag: ...
         role: member
@@ -279,6 +300,7 @@ We can access all the owners of a list.
     ...     'http://localhost:9001/3.0/lists/bee@example.com/roster/owner')
     entry 0:
         address: cperson@example.com
+        delivery_mode: regular
         fqdn_listname: bee@example.com
         http_etag: ...
         role: owner
@@ -297,6 +319,7 @@ A specific member can always be referenced by their role and address.
     >>> dump_json('http://localhost:9001/3.0/lists/'
     ...           'bee@example.com/owner/cperson@example.com')
     address: cperson@example.com
+    delivery_mode: regular
     fqdn_listname: bee@example.com
     http_etag: ...
     role: owner
@@ -311,6 +334,7 @@ example, we can search for all the memberships of a particular address.
     ...           })
     entry 0:
         address: aperson@example.com
+        delivery_mode: regular
         fqdn_listname: ant@example.com
         http_etag: ...
         role: member
@@ -318,6 +342,7 @@ example, we can search for all the memberships of a particular address.
         user: http://localhost:9001/3.0/users/3
     entry 1:
         address: aperson@example.com
+        delivery_mode: regular
         fqdn_listname: bee@example.com
         http_etag: ...
         role: member
@@ -334,6 +359,7 @@ Or, we can find all the memberships for a particular mailing list.
     ...           })
     entry 0:
         address: aperson@example.com
+        delivery_mode: regular
         fqdn_listname: bee@example.com
         http_etag: ...
         role: member
@@ -341,6 +367,7 @@ Or, we can find all the memberships for a particular mailing list.
         user: http://localhost:9001/3.0/users/3
     entry 1:
         address: bperson@example.com
+        delivery_mode: regular
         fqdn_listname: bee@example.com
         http_etag: ...
         role: member
@@ -348,6 +375,7 @@ Or, we can find all the memberships for a particular mailing list.
         user: http://localhost:9001/3.0/users/1
     entry 2:
         address: cperson@example.com
+        delivery_mode: regular
         fqdn_listname: bee@example.com
         http_etag: ...
         role: member
@@ -355,12 +383,13 @@ Or, we can find all the memberships for a particular mailing list.
         user: http://localhost:9001/3.0/users/2
     entry 3:
         address: cperson@example.com
+        delivery_mode: regular
         fqdn_listname: bee@example.com
         http_etag: ...
         role: owner
         self_link: http://localhost:9001/3.0/members/7
         user: http://localhost:9001/3.0/users/2
-    http_etag: "66836d0f23bed36fa9e0cda1e5dec7e5b0797743"
+    http_etag: "..."
     start: 0
     total_size: 4
 
@@ -373,6 +402,7 @@ list.
     ...           })
     entry 0:
         address: cperson@example.com
+        delivery_mode: regular
         fqdn_listname: bee@example.com
         http_etag: ...
         role: member
@@ -380,6 +410,7 @@ list.
         user: http://localhost:9001/3.0/users/2
     entry 1:
         address: cperson@example.com
+        delivery_mode: regular
         fqdn_listname: bee@example.com
         http_etag: ...
         role: owner
@@ -397,6 +428,7 @@ Or, we can find all the memberships for an address with a specific role.
     ...           })
     entry 0:
         address: cperson@example.com
+        delivery_mode: regular
         fqdn_listname: ant@example.com
         http_etag: ...
         role: member
@@ -404,6 +436,7 @@ Or, we can find all the memberships for an address with a specific role.
         user: http://localhost:9001/3.0/users/2
     entry 1:
         address: cperson@example.com
+        delivery_mode: regular
         fqdn_listname: bee@example.com
         http_etag: ...
         role: member
@@ -422,6 +455,7 @@ Finally, we can search for a specific member given all three criteria.
     ...           })
     entry 0:
         address: cperson@example.com
+        delivery_mode: regular
         fqdn_listname: bee@example.com
         http_etag: ...
         role: member
@@ -469,6 +503,7 @@ Elly is now a known user, and a member of the mailing list.
     ...
     entry 3:
         address: eperson@example.com
+        delivery_mode: regular
         fqdn_listname: ant@example.com
         http_etag: ...
         role: member
@@ -509,6 +544,7 @@ list with her preferred address.
     ...
     entry 4:
         address: gwen@example.com
+        delivery_mode: regular
         fqdn_listname: ant@example.com
         http_etag: "..."
         role: member
@@ -531,6 +567,7 @@ the new address.
     ...
     entry 4:
         address: gwen.person@example.com
+        delivery_mode: regular
         fqdn_listname: ant@example.com
         http_etag: "..."
         role: member
@@ -584,9 +621,63 @@ Fred joins the `ant` mailing list but wants MIME digest delivery.
     >>> memberships = list(fred.memberships.members)
     >>> len(memberships)
     1
+
+Fred is getting MIME deliveries.
+
     >>> memberships[0]
     <Member: Fred Person <fperson@example.com>
              on ant@example.com as MemberRole.member>
+    >>> print memberships[0].delivery_mode
+    DeliveryMode.mime_digests
+
+    >>> dump_json('http://localhost:9001/3.0/members/10')
+    address: fperson@example.com
+    delivery_mode: mime_digests
+    fqdn_listname: ant@example.com
+    http_etag: "..."
+    role: member
+    self_link: http://localhost:9001/3.0/members/10
+    user: http://localhost:9001/3.0/users/7
+
+Fred wants to change his delivery from MIME digest back to regular delivery.
+This can be done by PATCH'ing his member with the `delivery_mode` parameter.
+::
+
+    >>> transaction.abort()
+    >>> dump_json('http://localhost:9001/3.0/members/10', {
+    ...           'delivery_mode': 'regular',
+    ...           }, method='PATCH')
+    content-length: 0
+    date: ...
+    server: ...
+    status: 204
+
+    >>> dump_json('http://localhost:9001/3.0/members/10')
+    address: fperson@example.com
+    delivery_mode: regular
+    fqdn_listname: ant@example.com
+    http_etag: "..."
+    role: member
+    self_link: http://localhost:9001/3.0/members/10
+    user: http://localhost:9001/3.0/users/7
+
+If a PATCH request changes no attributes, nothing happens.
+::
+
+    >>> dump_json('http://localhost:9001/3.0/members/10', method='PATCH')
+    content-length: 0
+    date: ...
+    server: ...
+    status: 204
+
+    >>> dump_json('http://localhost:9001/3.0/members/10')
+    address: fperson@example.com
+    delivery_mode: regular
+    fqdn_listname: ant@example.com
+    http_etag: "..."
+    role: member
+    self_link: http://localhost:9001/3.0/members/10
+    user: http://localhost:9001/3.0/users/7
 
 
 Changing delivery address
@@ -623,6 +714,7 @@ addresses.
     ...
     entry 5:
         address: herb@example.com
+        delivery_mode: regular
         fqdn_listname: ant@example.com
         http_etag: "..."
         role: member
@@ -631,6 +723,7 @@ addresses.
     ...
     entry 10:
         address: herb@example.com
+        delivery_mode: regular
         fqdn_listname: bee@example.com
         http_etag: "..."
         role: member
@@ -686,6 +779,7 @@ his membership ids have not changed.
     ...           'hperson@example.com/memberships')
     entry 0:
         address: hperson@example.com
+        delivery_mode: regular
         fqdn_listname: ant@example.com
         http_etag: "..."
         role: member
@@ -693,6 +787,7 @@ his membership ids have not changed.
         user: http://localhost:9001/3.0/users/8
     entry 1:
         address: hperson@example.com
+        delivery_mode: regular
         fqdn_listname: bee@example.com
         http_etag: "..."
         role: member

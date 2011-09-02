@@ -203,7 +203,17 @@ class TestMembership(unittest.TestCase):
         else:
             raise AssertionError('Expected HTTPError')
 
-    def test_patch_bogus_member_attribute_400(self):
+    def test_patch_nonexistent_member(self):
+        # /members/<missing> PATCH returns 404
+        try:
+            # For Python 2.6
+            call_api('http://localhost:9001/3.0/members/801', method='PATCH')
+        except HTTPError as exc:
+            self.assertEqual(exc.code, 404)
+        else:
+            raise AssertionError('Expected HTTPError')
+
+    def test_patch_member_bogus_attribute(self):
         # /members/<id> PATCH 'bogus' returns 400
         anne = self._usermanager.create_address('anne@example.com')
         self._mlist.subscribe(anne)
