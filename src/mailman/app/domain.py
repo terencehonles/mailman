@@ -15,26 +15,28 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Global events."""
+"""Application level domain support."""
 
 from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'initialize',
+    'handle_DomainDeletingEvent',
     ]
 
 
-from zope import event
+from zope.component import getUtility
 
-from mailman.app import domain, moderator, subscriptions
+from mailman.interfaces.domain import DomainDeletingEvent
+from mailman.interfaces.listmanager import IListManager
 
 
 
-def initialize():
-    """Initialize global event subscribers."""
-    event.subscribers.extend([
-        moderator.handle_ListDeletingEvent,
-        subscriptions.handle_ListDeletedEvent,
-        domain.handle_DomainDeletingEvent,
-        ])
+def handle_DomainDeletingEvent(event):
+    """Delete all mailing lists in a domain when the domain is deleted."""
+
+    if not isinstance(event, DomainDeletingEvent):
+        return
+    list_manager = getUtility(IListManager)
+    for mailing_list in event.domain.mailing_lists:
+        list_manager.delete(mailing_list)

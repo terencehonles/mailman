@@ -28,9 +28,11 @@ __all__ = [
 import unittest
 
 from urllib2 import HTTPError
+from zope.component import getUtility
 
 from mailman.app.lifecycle import create_list
 from mailman.config import config
+from mailman.interfaces.listmanager import IListManager
 from mailman.testing.helpers import call_api
 from mailman.testing.layers import RESTLayer
 
@@ -63,6 +65,15 @@ class TestDomains(unittest.TestCase):
             self.assertEqual(exc.code, 404)
         else:
             raise AssertionError('Expected HTTPError')
+
+    def test_lists_are_deleted_when_domain_is_deleted(self):
+        # /domains/<domain> DELETE removes all associated mailing lists.
+        create_list('ant@example.com')
+        config.db.commit()
+        content, response = call_api(
+            'http://localhost:9001/3.0/domains/example.com', method='DELETE')
+        self.assertEqual(response.status, 204)
+        self.assertEqual(getUtility(IListManager).get('ant@example.com'), None)
 
 
 

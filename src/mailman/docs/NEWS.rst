@@ -25,9 +25,14 @@ Architecture
    - ListCreatedEvent  - sent after the mailing list is created
    - ListDeletingEvent - sent before the mailing list is deleted
    - ListDeletedEvent  - sent after the mailing list is deleted
- * Using the above events, when a mailing list is deleted, all its members are
-   deleted, as well as all held message requests (but not the held messages
-   themselves).  (LP: 827036)
+ * Four new events are created, and notifications are sent during domain
+   lifecycle changes:
+   - DomainCreatingEvent - sent before the domain is created
+   - DomainCreatedEvent  - sent after the domain is created
+   - DomainDeletingEvent - sent before the domain is deleted
+   - DomainDeletedEvent  - sent after the domain is deleted
+ * Using the above events, when a domain is deleted, associated mailing lists
+   are deleted.  (LP: #837526)
  * IDomain.email_host -> .mail_host (LP: #831660)
  * User and Member ids are now proper UUIDs.
 

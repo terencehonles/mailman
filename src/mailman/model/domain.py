@@ -25,14 +25,17 @@ __all__ = [
     'DomainManager',
     ]
 
+
 from urlparse import urljoin, urlparse
 from storm.locals import Int, Unicode
+from zope.event import notify
 from zope.interface import implements
 
 from mailman.config import config
 from mailman.database.model import Model
 from mailman.interfaces.domain import (
-    BadDomainSpecificationError, IDomain, IDomainManager)
+    BadDomainSpecificationError, DomainCreatedEvent, DomainCreatingEvent,
+    DomainDeletedEvent, DomainDeletingEvent, IDomain, IDomainManager)
 from mailman.model.mailinglist import MailingList
 
 
@@ -126,13 +129,17 @@ class DomainManager:
         if self.get(mail_host) is not None:
             raise BadDomainSpecificationError(
                 'Duplicate email host: %s' % mail_host)
+        notify(DomainCreatingEvent(mail_host))
         domain = Domain(mail_host, description, base_url, contact_address)
         config.db.store.add(domain)
+        notify(DomainCreatedEvent(domain))
         return domain
 
     def remove(self, mail_host):
         domain = self[mail_host]
+        notify(DomainDeletingEvent(domain))
         config.db.store.remove(domain)
+        notify(DomainDeletedEvent(mail_host))
         return domain
 
     def get(self, mail_host, default=None):

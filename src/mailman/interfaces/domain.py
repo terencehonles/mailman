@@ -22,6 +22,10 @@ from __future__ import absolute_import, unicode_literals
 __metaclass__ = type
 __all__ = [
     'BadDomainSpecificationError',
+    'DomainCreatedEvent',
+    'DomainCreatingEvent',
+    'DomainDeletedEvent',
+    'DomainDeletingEvent',
     'IDomain',
     'IDomainManager',
     ]
@@ -39,6 +43,34 @@ class BadDomainSpecificationError(MailmanError):
     def __init__(self, domain):
         super(BadDomainSpecificationError, self).__init__(domain)
         self.domain = domain
+
+
+class DomainCreatingEvent:
+    """A domain is about to be created."""
+
+    def __init__(self, mail_host):
+        self.mail_host = mail_host
+
+
+class DomainCreatedEvent:
+    """A domain was created."""
+
+    def __init__(self, domain):
+        self.domain = domain
+
+
+class DomainDeletingEvent:
+    """A domain is about to be deleted."""
+
+    def __init__(self, domain):
+        self.domain = domain
+
+
+class DomainDeletedEvent:
+    """A domain was deleted."""
+
+    def __init__(self, mail_host):
+        self.mail_host = mail_host
 
 
 
