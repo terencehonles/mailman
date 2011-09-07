@@ -89,6 +89,7 @@ Other bugs and changes
    (LP: #827060)
  * Local timezone in X-Mailman-Approved-At caused test failure. (LP: #832404)
  * InvalidEmailAddressError no longer repr()'s its value.
+ * Rewrote a test for compatibility between Python 2.6 and 2.7. (LP: #833208)
 
 
 3.0 alpha 7 -- "Mission"

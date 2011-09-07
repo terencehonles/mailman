@@ -74,37 +74,28 @@ Message-ID: <alpha>
         messages = list(SMTPLayer.smtpd.messages)
         self.assertEqual(len(messages), 1)
         message = messages[0]
-        # Delete variable headers which can't be compared.
+        # We don't need to test the entire posted message, just the bits that
+        # prove it got sent out.
         self.assertTrue('x-mailman-version' in message)
-        del message['x-mailman-version']
         self.assertTrue('x-peer' in message)
-        del message['x-peer']
         # The X-Mailman-Approved-At header has local timezone information in
         # it, so test that separately.
         self.assertEqual(message['x-mailman-approved-at'][:-4],
                          'Mon, 01 Aug 2005 07:49:23 -')
         del message['x-mailman-approved-at']
-        self.eq(message.as_string(), """\
-From: anne@example.com
-To: test@example.com
-Message-ID: <alpha>
-Subject: [Test] hold me
-X-BeenThere: test@example.com
-Precedence: list
-List-Id: <test.example.com>
-X-Message-ID-Hash: XZ3DGG4V37BZTTLXNUX4NABB4DNQHTCP
-List-Post: <mailto:test@example.com>
-List-Subscribe: <http://lists.example.com/listinfo/test@example.com>,
- <mailto:test-join@example.com>
-Archived-At: http://lists.example.com/archives/XZ3DGG4V37BZTTLXNUX4NABB4DNQHTCP
-List-Unsubscribe: <http://lists.example.com/listinfo/test@example.com>,
- <mailto:test-leave@example.com>
-List-Archive: <http://lists.example.com/archives/test@example.com>
-List-Help: <mailto:test-request@example.com?subject=help>
-X-MailFrom: test-bounces@example.com
-X-RcptTo: bart@example.com
-
-""")        
+        # The Message-ID matches the original.
+        self.assertEqual(message['message-id'], '<alpha>')
+        # Anne sent the message and the mailing list received it.
+        self.assertEqual(message['from'], 'anne@example.com')
+        self.assertEqual(message['to'], 'test@example.com')
+        # The Subject header has the list's prefix.
+        self.assertEqual(message['subject'], '[Test] hold me')
+        # The list's -bounce address is the actual sender, and Bart is the
+        # only actual recipient.  These headers are added by the testing
+        # framework and don't show up in production.  They match the RFC 5321
+        # envelope.
+        self.assertEqual(message['x-mailfrom'], 'test-bounces@example.com')
+        self.assertEqual(message['x-rcptto'], 'bart@example.com')
 
 
 
