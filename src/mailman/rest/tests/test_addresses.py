@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""REST user tests."""
+"""REST address tests."""
 
 from __future__ import absolute_import, unicode_literals
 
@@ -36,18 +36,19 @@ from mailman.testing.layers import RESTLayer
 
 
 
-class TestUsers(unittest.TestCase):
+class TestAddresses(unittest.TestCase):
     layer = RESTLayer
 
     def setUp(self):
         self._mlist = create_list('test@example.com')
         config.db.commit()
 
-    def test_delete_bogus_user(self):
-        # Try to delete a user that does not exist.
+    def test_membership_of_missing_address(self):
+        # Try to get the memberships of a missing address.
         try:
             # For Python 2.6.
-            call_api('http://localhost:9001/3.0/users/99', method='DELETE')
+            call_api('http://localhost:9001/3.0/addresses/'
+                     'nobody@example.com/memberships')
         except HTTPError as exc:
             self.assertEqual(exc.code, 404)
         else:
@@ -57,5 +58,5 @@ class TestUsers(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestUsers))
+    suite.addTest(unittest.makeSuite(TestAddresses))
     return suite

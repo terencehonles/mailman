@@ -98,6 +98,8 @@ class AnAddress(_AddressBase):
         """/addresses/<email>/memberships"""
         if len(segments) != 0:
             return http.bad_request()
+        if self._address is None:
+            return http.not_found()
         return AddressMemberships(self._address)
 
 

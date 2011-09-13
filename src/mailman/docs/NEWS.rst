@@ -60,6 +60,8 @@ REST
    404 error (LP: #837676).  Given by Stephen A. Goss.
  * PATCHing an invalid attribute on a member did not give a 400 error
    (LP: #833376).  Given by Stephen A. Goss.
+ * Getting the memberships for a non-existent address did not give a 404 error
+   (LP: #848103).  Given by Stephen A. Goss.
 
 Commands
 --------
