@@ -44,6 +44,7 @@ from mailman.interfaces.user import UnverifiedAddressError
 from mailman.interfaces.usermanager import IUserManager
 from mailman.rest.helpers import (
     CollectionMixin, PATCH, etag, no_content, path_to)
+from mailman.rest.preferences import Preferences, ReadOnlyPreferences
 from mailman.rest.validator import (
     Validator, enum_validator, subscriber_validator)
 
@@ -114,6 +115,30 @@ class AMember(_MemberBase):
         if self._member is None:
             return http.not_found()
         return http.ok([], self._resource_as_json(self._member))
+
+    @resource.child()
+    def preferences(self, request, segments):
+        """/members/<id>/preferences"""
+        if len(segments) != 0:
+            return http.bad_request()
+        if self._member is None:
+            return http.not_found()
+        child = Preferences(
+            self._member.preferences,
+            'members/{0}'.format(self._member.member_id.int))
+        return child, []
+
+    @resource.child()
+    def all(self, request, segments):
+        """/members/<id>/all/preferences"""
+        if len(segments) == 0:
+            return http.not_found()
+        if self._member is None:
+            return http.not_found()
+        child = ReadOnlyPreferences(
+            self._member,
+            'members/{0}/all'.format(self._member.member_id.int))
+        return child, []
 
     @resource.DELETE()
     def delete(self, request):

@@ -34,6 +34,7 @@ from mailman.interfaces.address import ExistingAddressError
 from mailman.interfaces.usermanager import IUserManager
 from mailman.rest.addresses import UserAddresses
 from mailman.rest.helpers import CollectionMixin, etag, no_content, path_to
+from mailman.rest.preferences import Preferences
 from mailman.rest.validator import Validator
 from mailman.utilities.passwords import (
     encrypt_password, make_user_friendly_password)
@@ -152,3 +153,15 @@ class AUser(_UserBase):
             return http.not_found()
         getUtility(IUserManager).delete_user(self._user)
         return no_content()
+
+    @resource.child()
+    def preferences(self, request, segments):
+        """/addresses/<email>/preferences"""
+        if len(segments) != 0:
+            return http.bad_request()
+        if self._user is None:
+            return http.not_found()
+        child = Preferences(
+            self._user.preferences,
+            'users/{0}'.format(self._user.user_id.int))
+        return child, []

@@ -32,6 +32,8 @@ __all__ = [
 from flufl.enum import Enum
 from zope.interface import Interface, Attribute
 
+from mailman.interfaces.member import MemberRole
+
 
 
 class Personalization(Enum):
@@ -232,7 +234,7 @@ class IMailingList(Interface):
         :rtype: Roster
         """
 
-    def subscribe(subscriber, role):
+    def subscribe(subscriber, role=MemberRole.member):
         """Subscribe the given address or user to the mailing list.
 
         :param subscriber: The address or user to subscribe to the mailing

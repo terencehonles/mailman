@@ -38,6 +38,10 @@ Architecture
 
 REST
 ----
+ * Preferences for addresses, users, and members can be accessed, changed, and
+   deleted through the REST interface.  Hierarchical, combined preferences for
+   members, and system preferences can be read through the REST interface.
+   (LP: #821438)
  * The IMailingList attribute ``host_name`` has been renamed to ``mail_host``
    for consistency.  This changes the REST API for mailing list
    resources. (LP: #787599)

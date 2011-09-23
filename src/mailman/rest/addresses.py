@@ -33,6 +33,7 @@ from zope.component import getUtility
 
 from mailman.rest.helpers import CollectionMixin, etag, path_to
 from mailman.rest.members import MemberCollection
+from mailman.rest.preferences import Preferences
 from mailman.interfaces.usermanager import IUserManager
 
 
@@ -101,6 +102,18 @@ class AnAddress(_AddressBase):
         if self._address is None:
             return http.not_found()
         return AddressMemberships(self._address)
+
+    @resource.child()
+    def preferences(self, request, segments):
+        """/addresses/<email>/preferences"""
+        if len(segments) != 0:
+            return http.bad_request()
+        if self._address is None:
+            return http.not_found()
+        child = Preferences(
+            self._address.preferences,
+            'addresses/{0}'.format(self._address.email))
+        return child, []
 
 
 

@@ -229,6 +229,17 @@ class TestMembership(unittest.TestCase):
         else:
             raise AssertionError('Expected HTTPError')
 
+    def test_member_all_without_preferences(self):
+        # /members/<id>/all should return a 404 when it isn't trailed by
+        # `preferences`
+        try:
+            # For Python 2.6
+            call_api('http://localhost:9001/3.0/members/1/all')
+        except HTTPError as exc:
+            self.assertEqual(exc.code, 404)
+        else:
+            raise AssertionError('Expected HTTPError')
+
 
 
 def test_suite():

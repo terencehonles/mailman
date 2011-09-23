@@ -184,7 +184,7 @@ class IMember(Interface):
     receive_list_copy = Attribute(
         """Should an explicit recipient receive a list copy?
 
-        Unlike going through the preferences, this attribute return the
+        Unlike going through `preferences`, this attribute returns the
         preference value based on the following lookup order:
 
         1. The member
@@ -196,7 +196,7 @@ class IMember(Interface):
     receive_own_postings = Attribute(
         """Should the poster get a list copy of their own messages?
 
-        Unlike going through the preferences, this attribute return the
+        Unlike going through `preferences`, this attribute returns the
         preference value based on the following lookup order:
 
         1. The member
@@ -208,7 +208,7 @@ class IMember(Interface):
     delivery_mode = Attribute(
         """The preferred delivery mode.
 
-        Unlike going through the preferences, this attribute return the
+        Unlike going through `preferences`, this attribute returns the
         preference value based on the following lookup order:
 
         1. The member
@@ -220,7 +220,7 @@ class IMember(Interface):
     delivery_status = Attribute(
         """The delivery status.
 
-        Unlike going through the preferences, this attribute return the
+        Unlike going through `preferences`, this attribute returns the
         preference value based on the following lookup order:
 
         1. The member

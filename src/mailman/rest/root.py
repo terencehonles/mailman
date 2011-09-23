@@ -29,12 +29,14 @@ from base64 import b64decode
 from restish import guard, http, resource
 
 from mailman.config import config
+from mailman.core.constants import system_preferences
 from mailman.core.system import system
 from mailman.rest.addresses import AllAddresses, AnAddress
 from mailman.rest.domains import ADomain, AllDomains
 from mailman.rest.helpers import etag, path_to
 from mailman.rest.lists import AList, AllLists
 from mailman.rest.members import AMember, AllMembers, FindMembers
+from mailman.rest.preferences import ReadOnlyPreferences
 from mailman.rest.users import AUser, AllUsers
 
 
@@ -73,11 +75,18 @@ class TopLevel(resource.Resource):
     @resource.child()
     def system(self, request, segments):
         """/<api>/system"""
-        resource = dict(
-            mailman_version=system.mailman_version,
-            python_version=system.python_version,
-            self_link=path_to('system'),
-            )
+        if len(segments) == 0:
+            resource = dict(
+                mailman_version=system.mailman_version,
+                python_version=system.python_version,
+                self_link=path_to('system'),
+                )
+        elif len(segments) > 1:
+            return http.bad_request()
+        elif segments[0] == 'preferences':
+            return ReadOnlyPreferences(system_preferences, 'system'), []
+        else:
+            return http.bad_request()
         return http.ok([], etag(resource))
 
     @resource.child()
