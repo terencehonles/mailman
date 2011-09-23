@@ -253,7 +253,7 @@ class IMailingList(Interface):
             preferred address that is explicitly subscribed with the same role.
         """
 
-    # Posting history.
+    # Delivery.
 
     last_post_at = Attribute(
         """The date and time a message was last posted to the mailing list.""")
@@ -261,6 +261,12 @@ class IMailingList(Interface):
     post_id = Attribute(
         """A monotonically increasing integer sequentially assigned to each
         list posting.""")
+
+    personalize = Attribute(
+        """The type of personalization that is applied to postings.""")
+
+    reply_goes_to_list = Attribute(
+        """Reply-To: header munging policy.""")
 
     # Digests.
 

@@ -51,9 +51,9 @@ class Member(Model):
 
     id = Int(primary=True)
     _member_id = UUID()
-    role = Enum()
+    role = Enum(MemberRole)
     mailing_list = Unicode()
-    moderation_action = Enum()
+    moderation_action = Enum(Action)
 
     address_id = Int()
     _address = Reference(address_id, 'Address.id')

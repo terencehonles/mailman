@@ -33,7 +33,7 @@ from mailman.config import config
 from mailman.database.model import Model
 from mailman.database.types import Enum
 from mailman.interfaces.autorespond import (
-    IAutoResponseRecord, IAutoResponseSet)
+    IAutoResponseRecord, IAutoResponseSet, Response)
 from mailman.utilities.datetime import today
 
 
@@ -49,7 +49,7 @@ class AutoResponseRecord(Model):
     mailing_list_id = Int()
     mailing_list = Reference(mailing_list_id, 'MailingList.id')
 
-    response_type = Enum()
+    response_type = Enum(Response)
     date_sent = Date()
 
     def __init__(self, mailing_list, address, response_type):

@@ -30,7 +30,7 @@ from zope.interface import implements
 
 from mailman.database.model import Model
 from mailman.database.types import Enum
-from mailman.interfaces.mime import IContentFilter
+from mailman.interfaces.mime import IContentFilter, FilterType
 
 
 
@@ -43,7 +43,7 @@ class ContentFilter(Model):
     mailing_list_id = Int()
     mailing_list = Reference(mailing_list_id, 'MailingList.id')
 
-    filter_type = Enum()
+    filter_type = Enum(FilterType)
     filter_pattern = Unicode()
 
     def __init__(self, mailing_list, filter_pattern, filter_type):

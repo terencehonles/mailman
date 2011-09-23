@@ -32,6 +32,7 @@ from zope.interface import implements
 from mailman.database.model import Model
 from mailman.database.types import Enum
 from mailman.interfaces.languages import ILanguageManager
+from mailman.interfaces.member import DeliveryMode, DeliveryStatus
 from mailman.interfaces.preferences import IPreferences
 
 
@@ -45,8 +46,8 @@ class Preferences(Model):
     _preferred_language = Unicode(name='preferred_language')
     receive_list_copy = Bool()
     receive_own_postings = Bool()
-    delivery_mode = Enum()
-    delivery_status = Enum()
+    delivery_mode = Enum(DeliveryMode)
+    delivery_status = Enum(DeliveryStatus)
 
     def __repr__(self):
         return '<Preferences object at {0:#x}>'.format(id(self))

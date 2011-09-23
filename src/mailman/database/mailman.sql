@@ -1,7 +1,7 @@
 CREATE TABLE _request (
     id INTEGER NOT NULL,
     "key" TEXT,
-    request_type TEXT,
+    request_type INTEGER,
     data_hash TEXT,
     mailing_list_id INTEGER,
     PRIMARY KEY (id),
@@ -60,7 +60,7 @@ CREATE TABLE bounceevent (
     email TEXT,
     'timestamp' TIMESTAMP,
     message_id TEXT,
-    context TEXT,
+    context INTEGER,
     processed BOOLEAN,
     PRIMARY KEY (id)
     );
@@ -127,7 +127,7 @@ CREATE TABLE mailinglist (
     autoresponse_request_text TEXT,
     autoresponse_grace_period TEXT,
     -- Bounces.
-    forward_unrecognized_bounces_to TEXT,
+    forward_unrecognized_bounces_to INTEGER,
     process_bounces BOOLEAN,
     bounce_info_stale_after TEXT,
     bounce_matching_headers TEXT,
@@ -148,7 +148,7 @@ CREATE TABLE mailinglist (
     digest_is_default BOOLEAN,
     digest_send_periodic BOOLEAN,
     digest_size_threshold INTEGER,
-    digest_volume_frequency TEXT,
+    digest_volume_frequency INTEGER,
     digestable BOOLEAN,
     discard_these_nonmembers BLOB,
     emergency BOOLEAN,
@@ -172,20 +172,20 @@ CREATE TABLE mailinglist (
     msg_footer TEXT,
     msg_header TEXT,
     new_member_options INTEGER,
-    news_moderation TEXT,
+    news_moderation INTEGER,
     news_prefix_subject_too BOOLEAN,
     nntp_host TEXT,
     nondigestable BOOLEAN,
     nonmember_rejection_notice TEXT,
     obscure_addresses BOOLEAN,
-    personalize TEXT,
+    personalize INTEGER,
     pipeline TEXT,
     post_id INTEGER,
     preferred_language TEXT,
     private_roster BOOLEAN,
     real_name TEXT,
     reject_these_nonmembers BLOB,
-    reply_goes_to_list TEXT,
+    reply_goes_to_list INTEGER,
     reply_to_address TEXT,
     require_explicit_destination BOOLEAN,
     respond_to_post_requests BOOLEAN,
@@ -208,7 +208,7 @@ CREATE TABLE mailinglist (
 CREATE TABLE member (
     id INTEGER NOT NULL,
     _member_id TEXT,
-    role TEXT,
+    role INTEGER,
     mailing_list TEXT,
     moderation_action INTEGER,
     address_id INTEGER,
@@ -238,7 +238,7 @@ CREATE TABLE onelastdigest (
     id INTEGER NOT NULL,
     mailing_list_id INTEGER,
     address_id INTEGER,
-    delivery_mode TEXT,
+    delivery_mode INTEGER,
     PRIMARY KEY (id),
     CONSTRAINT onelastdigest_mailing_list_id_fk
         FOREIGN KEY (mailing_list_id) REFERENCES mailinglist(id),
@@ -270,8 +270,8 @@ CREATE TABLE preferences (
     preferred_language TEXT,
     receive_list_copy BOOLEAN,
     receive_own_postings BOOLEAN,
-    delivery_mode TEXT,
-    delivery_status TEXT,
+    delivery_mode INTEGER,
+    delivery_status INTEGER,
     PRIMARY KEY (id)
     );
 

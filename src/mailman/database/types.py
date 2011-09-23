@@ -29,37 +29,37 @@ __all__ = [
 from storm.properties import SimpleProperty
 from storm.variables import Variable
 
-from mailman.utilities.modules import find_name
-
 
 
 class _EnumVariable(Variable):
-    """Storm variable.
+    """Storm variable for supporting flufl.enum.Enum types.
 
-    To use this, make the database column a TEXT.
+    To use this, make the database column a INTEGER.
     """
+
+    def __init__(self, *args, **kws):
+        self._enum = kws.pop('enum')
+        super(_EnumVariable, self).__init__(*args, **kws)
 
     def parse_set(self, value, from_db):
         if value is None:
             return None
         if not from_db:
             return value
-        path, colon, intvalue = value.rpartition(':')
-        class_ = find_name(path)
-        return class_[int(intvalue)]
+        return self._enum[value]
 
     def parse_get(self, value, to_db):
         if value is None:
             return None
         if not to_db:
             return value
-        return '{0}.{1}:{2}'.format(
-            value.enumclass.__module__,
-            value.enumclass.__name__,
-            int(value))
+        return int(value)
 
 
 class Enum(SimpleProperty):
-    """Custom Enum type for Storm."""
+    """Custom Enum type for Storm supporting flufl.enum.Enums."""
 
     variable_class = _EnumVariable
+
+    def __init__(self, enum=None):
+        super(Enum, self).__init__(enum=enum)

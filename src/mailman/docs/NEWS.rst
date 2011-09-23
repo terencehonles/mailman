@@ -35,6 +35,8 @@ Architecture
    are deleted.  (LP: #837526)
  * IDomain.email_host -> .mail_host (LP: #831660)
  * User and Member ids are now proper UUIDs.
+ * Improved the way enums are stored in the database, so that they are more
+   explicitly expressed in the code, and more database efficient.
 
 REST
 ----

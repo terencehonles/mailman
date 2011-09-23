@@ -46,7 +46,7 @@ class BounceEvent(Model):
     email = Unicode()
     timestamp = DateTime()
     message_id = Unicode()
-    context = Enum()
+    context = Enum(BounceContext)
     processed = Bool()
 
     def __init__(self, list_name, email, msg, context=None):

@@ -38,14 +38,20 @@ from zope.interface import implements
 from mailman.config import config
 from mailman.database.model import Model
 from mailman.database.types import Enum
+from mailman.interfaces.action import Action
 from mailman.interfaces.address import IAddress
+from mailman.interfaces.autorespond import ResponseAction
+from mailman.interfaces.bounce import UnrecognizedBounceDisposition
+from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.domain import IDomainManager
 from mailman.interfaces.languages import ILanguageManager
 from mailman.interfaces.mailinglist import (
-    IAcceptableAlias, IAcceptableAliasSet, IMailingList, Personalization)
+    IAcceptableAlias, IAcceptableAliasSet, IMailingList, Personalization,
+    ReplyToMunging)
 from mailman.interfaces.member import (
     AlreadySubscribedError, MemberRole, MissingPreferredAddressError)
 from mailman.interfaces.mime import FilterType
+from mailman.interfaces.nntp import NewsModeration
 from mailman.interfaces.user import IUser
 from mailman.model import roster
 from mailman.model.digests import OneLastDigest
@@ -103,11 +109,11 @@ class MailingList(Model):
     archive_volume_frequency = Int() # XXX
     # Automatic responses.
     autoresponse_grace_period = TimeDelta()
-    autorespond_owner = Enum()
+    autorespond_owner = Enum(ResponseAction)
     autoresponse_owner_text = Unicode()
-    autorespond_postings = Enum()
+    autorespond_postings = Enum(ResponseAction)
     autoresponse_postings_text = Unicode()
-    autorespond_requests = Enum()
+    autorespond_requests = Enum(ResponseAction)
     autoresponse_request_text = Unicode()
     # Content filters.
     filter_content = Bool()
@@ -121,18 +127,18 @@ class MailingList(Model):
     bounce_score_threshold = Int() # XXX
     bounce_you_are_disabled_warnings = Int() # XXX
     bounce_you_are_disabled_warnings_interval = TimeDelta() # XXX
-    forward_unrecognized_bounces_to = Enum()
+    forward_unrecognized_bounces_to = Enum(UnrecognizedBounceDisposition)
     process_bounces = Bool()
     # Miscellaneous
-    default_member_action = Enum()
-    default_nonmember_action = Enum()
+    default_member_action = Enum(Action)
+    default_nonmember_action = Enum(Action)
     description = Unicode()
     digest_footer = Unicode()
     digest_header = Unicode()
     digest_is_default = Bool()
     digest_send_periodic = Bool()
     digest_size_threshold = Float()
-    digest_volume_frequency = Enum()
+    digest_volume_frequency = Enum(DigestFrequency)
     digestable = Bool()
     discard_these_nonmembers = Pickle()
     emergency = Bool()
@@ -156,20 +162,20 @@ class MailingList(Model):
     msg_footer = Unicode()
     msg_header = Unicode()
     new_member_options = Int()
-    news_moderation = Enum()
+    news_moderation = Enum(NewsModeration)
     news_prefix_subject_too = Bool()
     nntp_host = Unicode()
     nondigestable = Bool()
     nonmember_rejection_notice = Unicode()
     obscure_addresses = Bool()
-    personalize = Enum()
+    personalize = Enum(Personalization)
     pipeline = Unicode()
     post_id = Int()
     _preferred_language = Unicode(name='preferred_language')
     private_roster = Bool()
     real_name = Unicode()
     reject_these_nonmembers = Pickle()
-    reply_goes_to_list = Enum()
+    reply_goes_to_list = Enum(ReplyToMunging)
     reply_to_address = Unicode()
     require_explicit_destination = Bool()
     respond_to_post_requests = Bool()

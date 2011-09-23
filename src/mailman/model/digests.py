@@ -31,6 +31,7 @@ from zope.interface import implements
 from mailman.database.model import Model
 from mailman.database.types import Enum
 from mailman.interfaces.digests import IOneLastDigest
+from mailman.interfaces.member import DeliveryMode
 
 
 
@@ -45,7 +46,7 @@ class OneLastDigest(Model):
     address_id = Int()
     address = Reference(address_id, 'Address.id')
 
-    delivery_mode = Enum()
+    delivery_mode = Enum(DeliveryMode)
 
     def __init__(self, mailing_list, address, delivery_mode):
         self.mailing_list = mailing_list

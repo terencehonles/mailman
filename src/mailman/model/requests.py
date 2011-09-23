@@ -126,7 +126,7 @@ class _Request(Model):
 
     id = Int(primary=True, default=AutoReload)
     key = Unicode()
-    request_type = Enum()
+    request_type = Enum(RequestType)
     data_hash = RawStr()
 
     mailing_list_id = Int()
