@@ -10,7 +10,7 @@ Here is a history of user visible changes to Mailman.
 
 3.0 alpha 8 -- "Where's My Thing?"
 ==================================
-(201X-XX-XX)
+(2011-09-23)
 
 Architecture
 ------------
