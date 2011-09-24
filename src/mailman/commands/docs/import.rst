@@ -38,7 +38,7 @@ from.
 
     >>> FakeArgs.pickle_file = [__file__]
     >>> command.process(FakeArgs)
-    Not a Mailman 2.1 configuration file: .../import.txt
+    Not a Mailman 2.1 configuration file: .../import.rst
 
 Now we can import the test pickle file.  As a simple illustration of the
 import, the mailing list's 'real name' has changed.
