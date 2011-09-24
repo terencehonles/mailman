@@ -37,20 +37,34 @@ Here is the list of other contributors who have donated large bits of
 code, and have assigned copyright for contributions to the FSF:
 
 * Juan Carlos Rey Anaya
+* Andrija Arsic
 * Richard Barrett
+* Jimmy Bergman
 * Stephan Berndts
 * Norbert Bollow
+* Joe Dugan
+* Ethan Mindlace Fremen
+* Florian Fuchs
 * Ben Gertzfield
 * Victoriano Giralt
+* Stephen Goss
 * Mads Kiilerich
+* Cedric Knight
+* Patrick Ben Koetter
 * The Dragon De Monsyne
 * Les Niles
+* Reed O'Brien
 * Terri Oda
 * Simone Piunno
+* Claudia Schmidt
+* Andreas Schosser
+* Richard Wackerbarth
 
 
-Other Thanks
-============
+Special Thanks
+==============
+
+Very special thanks to Andrija Arsic for his winning new GNU Mailman logos.
 
 Thanks also go to the following people for their important contributions in
 other aspects of the Mailman project:
@@ -59,7 +73,7 @@ other aspects of the Mailman project:
 * JC Dill
 * Clytie Siddall
 
-Thanks also to Dragon for his winning Mailman logo contribution, and to Terri
+Thanks also to Dragon for his original Mailman logo contribution, and to Terri
 Oda for the neat shortcut icon and the member documentation.
 
 Control.com sponsored development of several Mailman 2.1 features, including
@@ -68,7 +82,7 @@ support.  My thanks especially to Dan Pierson and Ken Crater from Control.com.
 
 Here is the list of other people who have contributed useful ideas,
 suggestions, bug fixes, testing, etc., or who have been very helpful in
-answering questions on mailman-users.  Please let me know if anybody's been
+answering questions on mailman-users.  Please let me know if you have been
 left off the list!
 
 * David Abrahams

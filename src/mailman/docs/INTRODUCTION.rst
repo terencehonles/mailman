@@ -91,27 +91,3 @@ Mailman 3.0 requires `Python 2.6`_ or newer.
 .. _Python: http://www.python.org
 .. _FAQ: http://wiki.list.org/display/DOC/Frequently+Asked+Questions
 .. _`Python 2.6`: http://www.python.org/download/releases/2.6.6/
-
-
-Table of Contents
-=================
-
-.. toctree::
-    :glob:
-
-    START
-    MTA
-    NEWS
-    STYLEGUIDE
-    ACKNOWLEDGMENTS
-    ../bin/docs/*
-    ../commands/docs/*
-    ../model/docs/*
-    ../app/docs/*
-    ../pipeline/docs/*
-    ../queue/docs/*
-    ../rest/docs/*
-    ../chains/docs/*
-    ../rules/docs/*
-    ../archiving/docs/*
-    ../mta/docs/*

@@ -41,8 +41,11 @@ except ImportError:
 # however, we'll initialize it differently for tests.  We have to do it this
 # early so that module contents is set up before anything that needs it is
 # imported.
-if sys.argv[0].split(os.sep)[-1] == 'test':
-    from mailman.testing.i18n import initialize
-else:
-    from mailman.core.i18n import initialize
-initialize()
+#
+# Do *not* do this if we're building the documentation.
+if 'build_sphinx' not in sys.argv:
+    if sys.argv[0].split(os.sep)[-1] == 'test':
+        from mailman.testing.i18n import initialize
+    else:
+        from mailman.core.i18n import initialize
+    initialize()
