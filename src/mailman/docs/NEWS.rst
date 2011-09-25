@@ -8,6 +8,11 @@ Copyright (C) 1998-2011 by the Free Software Foundation, Inc.
 Here is a history of user visible changes to Mailman.
 
 
+3.0 beta 1 -- "The Twilight Zone"
+=================================
+(20XX-XX-XX)
+
+
 3.0 alpha 8 -- "Where's My Thing?"
 ==================================
 (2011-09-23)
