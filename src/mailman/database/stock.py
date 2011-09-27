@@ -97,18 +97,29 @@ class StockDatabase:
         store = Store(database, GenerationalCache())
         database.DEBUG = (as_boolean(config.database.debug)
                           if debug is None else debug)
-        # Check the sqlite master database to see if the version file exists.
+        # Check the master / schema database to see if the version table exists.
         # If so, then we assume the database schema is correctly initialized.
         # Storm does not currently have schema creation.  This is not an ideal
         # way to handle creating the database, but it's cheap and easy for
         # now.
+        parts = urlparse(url)
+        if parts.scheme == 'sqlite':
+            table_query = 'select tbl_name from sqlite_master;'
+            schema_file = 'mailman.sql'
+        elif parts.scheme == 'postgres':
+            table_query = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'"
+            schema_file = 'mailman_pg.sql'
+        else:
+            raise Exception("Database not supported yet: " + parts.scheme)
+
         table_names = [item[0] for item in 
-                       store.execute('select tbl_name from sqlite_master;')]
+                       store.execute(table_query)]
         if 'version' not in table_names:
             # Initialize the database.
-            sql = resource_string('mailman.database', 'mailman.sql')
+            sql = resource_string('mailman.database', schema_file)
             for statement in sql.split(';'):
-                store.execute(statement + ';')
+                if statement.strip() != '':
+                    store.execute(statement + ';')
         # Validate schema version.
         v = store.find(Version, component='schema').one()
         if not v:
