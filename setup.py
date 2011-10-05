@@ -109,7 +109,4 @@ case second `m'.  Any other spelling is incorrect.""",
         'zope.interface',
         'zope.testing<4',
         ],
-    extras_require=dict(
-        docs=['Sphinx', 'z3c.recipe.sphinxdoc'],
-        )
     )

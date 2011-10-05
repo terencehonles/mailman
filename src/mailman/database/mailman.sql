@@ -1,3 +1,5 @@
+PRAGMA foreign_keys = ON;
+
 CREATE TABLE _request (
     id INTEGER NOT NULL,
     "key" TEXT,
