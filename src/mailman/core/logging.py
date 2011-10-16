@@ -119,28 +119,32 @@ def initialize(propagate=None):
                         datefmt=config.logging.root.datefmt,
                         level=as_log_level(config.logging.root.level),
                         stream=sys.stderr)
-    # Create the subloggers.
+    # Create the sub-loggers.  Note that we'll redirect flufl.lock to
+    # mailman.locks.
     for logger_config in config.logger_configs:
         sub_name = logger_config.name.split('.')[-1]
         if sub_name == 'root':
             continue
-        logger_name = 'mailman.' + sub_name
-        log = logging.getLogger(logger_name)
+        if sub_name == 'locks':
+            log = logging.getLogger('flufl.lock')
+        else:
+            logger_name = 'mailman.' + sub_name
+            log = logging.getLogger(logger_name)
         # Get settings from log configuration file (or defaults).
-        log_format      = logger_config.format
-        log_datefmt     = logger_config.datefmt
+        log_format = logger_config.format
+        log_datefmt = logger_config.datefmt
         # Propagation to the root logger is how we handle logging to stderr
         # when the runners are not run as a subprocess of 'bin/mailman start'.
-        log.propagate   = (as_boolean(logger_config.propagate)
-                           if propagate is None else propagate)
+        log.propagate = (as_boolean(logger_config.propagate)
+                         if propagate is None else propagate)
         # Set the logger's level.
         log.setLevel(as_log_level(logger_config.level))
         # Create a formatter for this logger, then a handler, and link the
         # formatter to the handler.
         formatter = logging.Formatter(fmt=log_format, datefmt=log_datefmt)
-        path_str  = logger_config.path
-        path_abs  = os.path.normpath(os.path.join(config.LOG_DIR, path_str))
-        handler   = ReopenableFileHandler(sub_name, path_abs)
+        path_str = logger_config.path
+        path_abs = os.path.normpath(os.path.join(config.LOG_DIR, path_str))
+        handler = ReopenableFileHandler(sub_name, path_abs)
         _handlers[sub_name] = handler
         handler.setFormatter(formatter)
         log.addHandler(handler)

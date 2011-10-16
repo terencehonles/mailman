@@ -101,8 +101,10 @@ class Start:
         if status is WatcherState.conflict:
             self.parser.error(_('GNU Mailman is already running'))
         elif status in (WatcherState.stale_lock, WatcherState.host_mismatch):
-            self.parser.error(_('A previous run of GNU Mailman did not exit '
-                                'cleanly.  Try using --force.'))
+            if args.force is None:
+                self.parser.error(
+                    _('A previous run of GNU Mailman did not exit '
+                      'cleanly.  Try using --force.'))
         def log(message):
             if not args.quiet:
                 print message

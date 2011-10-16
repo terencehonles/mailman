@@ -76,10 +76,11 @@ REST
 
 Commands
 --------
- * bin/qrunner is renamed to bin/runner.
- * `bin/mailman aliases` gains -f and -s options.
+ * `bin/qrunner` is renamed to `bin/runner`.
+ * `bin/mailman aliases` gains `-f` and `-s` options.
  * `bin/mailman create` no longer allows a list to be created with bogus owner
    addresses.  (LP: #778687)
+ * `bin/mailman start --force` option is fixed.  (LP: #869317)
 
 Documentation
 -------------

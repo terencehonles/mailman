@@ -25,6 +25,7 @@ __all__ = [
     ]
 
 
+import sys
 import unittest
 
 from mailman.app.lifecycle import create_list
@@ -48,6 +49,7 @@ class FakeParser:
 
     def error(self, message):
         self.message = message
+        sys.exit(1)
 
 
 
@@ -65,14 +67,20 @@ class TestCreate(unittest.TestCase):
         # Cannot create a mailing list if it already exists.
         create_list('test@example.com')
         self.args.listname = ['test@example.com']
-        self.command.process(self.args)
+        try:
+            self.command.process(self.args)
+        except SystemExit:
+            pass
         self.assertEqual(self.command.parser.message,
                          'List already exists: test@example.com')
 
     def test_invalid_posting_address(self):
         # Cannot create a mailing list with an invalid posting address.
         self.args.listname = ['foo']
-        self.command.process(self.args)
+        try:
+            self.command.process(self.args)
+        except SystemExit:
+            pass
         self.assertEqual(self.command.parser.message,
                          'Illegal list name: foo')
 
@@ -81,7 +89,10 @@ class TestCreate(unittest.TestCase):
         self.args.listname = ['test@example.com']
         self.args.domain = True
         self.args.owners = ['main=True']
-        self.command.process(self.args)
+        try:
+            self.command.process(self.args)
+        except SystemExit:
+            pass
         self.assertEqual(self.command.parser.message,
                          'Illegal owner addresses: main=True')
 

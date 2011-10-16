@@ -175,7 +175,6 @@ def acquire_lock_1(force, lock_file=None):
         lock.disown()
         hostname, pid, tempfile = lock.details
         os.unlink(lock_file)
-        os.unlink(tempfile)
         return acquire_lock_1(force=False)
 
 

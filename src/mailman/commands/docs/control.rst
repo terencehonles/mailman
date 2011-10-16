@@ -13,37 +13,7 @@ All we care about is the master process; normally it starts a bunch of
 runners, but we don't care about any of them, so write a test configuration
 file for the master that disables all the runners.
 
-    >>> import shutil
-    >>> from os.path import dirname, join
-    >>> config_file = join(dirname(config.filename), 'no-runners.cfg')
-    >>> shutil.copyfile(config.filename, config_file)
-    >>> with open(config_file, 'a') as fp:
-    ...     print >> fp, """\
-    ... [runner.archive]
-    ... start: no
-    ... [runner.bounces]
-    ... start: no
-    ... [runner.command]
-    ... start: no
-    ... [runner.in]
-    ... start: no
-    ... [runner.lmtp]
-    ... start: no
-    ... [runner.news]
-    ... start: no
-    ... [runner.out]
-    ... start: no
-    ... [runner.pipeline]
-    ... start: no
-    ... [runner.rest]
-    ... start: no
-    ... [runner.retry]
-    ... start: no
-    ... [runner.virgin]
-    ... start: no
-    ... [runner.digest]
-    ... start: no
-    ... """
+    >>> from mailman.commands.tests.test_control import make_config
 
 
 Starting
@@ -56,7 +26,7 @@ Starting
     ...     force = False
     ...     run_as_user = True
     ...     quiet = False
-    ...     config = config_file
+    ...     config = make_config()
     >>> args = FakeArgs()
 
 Starting the daemons prints a useful message and starts the master watcher
@@ -65,34 +35,13 @@ process in the background.
     >>> start.process(args)
     Starting Mailman's master runner
 
-    >>> import errno, os, time
-    >>> from datetime import timedelta, datetime
-    >>> def find_master():
-    ...     until = timedelta(seconds=10) + datetime.now()
-    ...     while datetime.now() < until:
-    ...         time.sleep(0.1)
-    ...         try:
-    ...             with open(config.PID_FILE) as fp:
-    ...                 pid = int(fp.read().strip())
-    ...             os.kill(pid, 0)
-    ...         except IOError as error:
-    ...             if error.errno != errno.ENOENT:
-    ...                 raise
-    ...         except ValueError:
-    ...             pass
-    ...         except OSError as error:
-    ...             if error.errno != errno.ESRCH:
-    ...                 raise
-    ...         else:
-    ...             print 'Master process found'
-    ...             return pid
-    ...     else:
-    ...         raise AssertionError('No master process')
+    >>> from mailman.commands.tests.test_control import find_master
 
 The process exists, and its pid is available in a run time file.
 
     >>> pid = find_master()
-    Master process found
+    >>> pid is not None
+    True
 
 
 Stopping
@@ -100,18 +49,22 @@ Stopping
 
 You can also stop the master watcher process from the command line, which
 stops all the child processes too.
+::
 
     >>> from mailman.commands.cli_control import Stop
     >>> stop = Stop()
     >>> stop.process(args)
     Shutting down Mailman's master runner
 
+    >>> from datetime import datetime, timedelta
+    >>> import os
+    >>> import time
+    >>> import errno
     >>> def bury_master():
-    ...     until = timedelta(seconds=10) + datetime.now()
+    ...     until = timedelta(seconds=2) + datetime.now()
     ...     while datetime.now() < until:
     ...         time.sleep(0.1)
     ...         try:
-    ...             import sys
     ...             os.kill(pid, 0)
     ...             os.waitpid(pid, os.WNOHANG)
     ...         except OSError as error:
