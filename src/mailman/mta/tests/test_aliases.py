@@ -31,7 +31,6 @@ from cStringIO import StringIO
 from zope.component import getUtility
 
 from mailman.app.lifecycle import create_list
-from mailman.config import config
 from mailman.interfaces.mta import IMailTransportAgentAliases
 from mailman.mta.postfix import LMTP
 from mailman.testing.layers import ConfigLayer
@@ -89,6 +88,8 @@ class TestPostfix(unittest.TestCase):
     """Test the Postfix LMTP alias generator."""
 
     layer = ConfigLayer
+    # For Python 2.7's assertMultiLineEqual
+    maxDiff = None
 
     def setUp(self):
         self.utility = getUtility(IMailTransportAgentAliases)
@@ -118,6 +119,40 @@ test-request@example.com       lmtp:[127.0.0.1]:9024
 test-subscribe@example.com     lmtp:[127.0.0.1]:9024
 test-unsubscribe@example.com   lmtp:[127.0.0.1]:9024
 """)
+
+    def test_two_lists(self):
+        # Both lists need to show up in the aliases file.  LP: #874929.
+        # Create a second list.
+        create_list('other@example.com')
+        # Python 2.7 has assertMultiLineEqual but Python 2.6 does not.
+        eq = getattr(self, 'assertMultiLineEqual', self.assertEqual)
+        self.postfix.regenerate(self.output)
+        # Strip out the variable and unimportant bits of the output.
+        lines = self.output.getvalue().splitlines()
+        output = NL.join(lines[7:])
+        eq(output, """\
+# Aliases which are visible only in the @example.com domain.
+other@example.com               lmtp:[127.0.0.1]:9024
+other-bounces@example.com       lmtp:[127.0.0.1]:9024
+other-confirm@example.com       lmtp:[127.0.0.1]:9024
+other-join@example.com          lmtp:[127.0.0.1]:9024
+other-leave@example.com         lmtp:[127.0.0.1]:9024
+other-owner@example.com         lmtp:[127.0.0.1]:9024
+other-request@example.com       lmtp:[127.0.0.1]:9024
+other-subscribe@example.com     lmtp:[127.0.0.1]:9024
+other-unsubscribe@example.com   lmtp:[127.0.0.1]:9024
+
+test@example.com               lmtp:[127.0.0.1]:9024
+test-bounces@example.com       lmtp:[127.0.0.1]:9024
+test-confirm@example.com       lmtp:[127.0.0.1]:9024
+test-join@example.com          lmtp:[127.0.0.1]:9024
+test-leave@example.com         lmtp:[127.0.0.1]:9024
+test-owner@example.com         lmtp:[127.0.0.1]:9024
+test-request@example.com       lmtp:[127.0.0.1]:9024
+test-subscribe@example.com     lmtp:[127.0.0.1]:9024
+test-unsubscribe@example.com   lmtp:[127.0.0.1]:9024
+""")
+        
 
 
 

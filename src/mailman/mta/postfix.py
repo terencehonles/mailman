@@ -122,6 +122,6 @@ class LMTP:
                 aliases = list(utility.aliases(mlist))
                 width = max(len(alias) for alias in aliases) + 3
                 print >> fp, ALIASTMPL.format(aliases.pop(0), config, width)
-            for alias in aliases:
-                print >> fp, ALIASTMPL.format(alias, config, width)
-            print >> fp
+                for alias in aliases:
+                    print >> fp, ALIASTMPL.format(alias, config, width)
+                print >> fp
