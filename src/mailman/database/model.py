@@ -24,6 +24,9 @@ __all__ = [
     'Model',
     ]
 
+
+from operator import attrgetter
+
 from storm.properties import PropertyPublisherMeta
 
 
@@ -46,7 +49,10 @@ class ModelMeta(PropertyPublisherMeta):
 
     @staticmethod
     def _reset(store):
-        for model_class in ModelMeta._class_registry:
+        # Make sure this is deterministic, by sorting on the storm table name.
+        classes = sorted(ModelMeta._class_registry,
+                         key=attrgetter('__storm_table__'))
+        for model_class in classes:
             store.find(model_class).remove()
 
 

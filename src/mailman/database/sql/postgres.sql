@@ -118,18 +118,22 @@ CREATE TABLE _request (
     request_type INTEGER,
     data_hash BYTEA,
     mailing_list_id INTEGER,
-    PRIMARY KEY (id),
-    CONSTRAINT _request_mailing_list_id_fk
-        FOREIGN KEY (mailing_list_id) REFERENCES mailinglist (id)
+    PRIMARY KEY (id)
+    -- XXX: config.db_reset() triggers IntegrityError
+    -- ,
+    -- CONSTRAINT _request_mailing_list_id_fk
+    --    FOREIGN KEY (mailing_list_id) REFERENCES mailinglist (id)
     );
 
 CREATE TABLE acceptablealias (
     id SERIAL NOT NULL,
     "alias" TEXT NOT NULL,
     mailing_list_id INTEGER NOT NULL,
-    PRIMARY KEY (id),
-    CONSTRAINT acceptablealias_mailing_list_id_fk
-        FOREIGN KEY (mailing_list_id) REFERENCES mailinglist (id)
+    PRIMARY KEY (id)
+    -- XXX: config.db_reset() triggers IntegrityError
+    -- ,
+    -- CONSTRAINT acceptablealias_mailing_list_id_fk
+    --    FOREIGN KEY (mailing_list_id) REFERENCES mailinglist (id)
     );
 CREATE INDEX ix_acceptablealias_mailing_list_id
     ON acceptablealias (mailing_list_id);
@@ -156,9 +160,11 @@ CREATE TABLE address (
     registered_on TIMESTAMP,
     user_id INTEGER,
     preferences_id INTEGER,
-    PRIMARY KEY (id),
-    CONSTRAINT address_preferences_id_fk
-        FOREIGN KEY (preferences_id) REFERENCES preferences (id)
+    PRIMARY KEY (id)
+    -- XXX: config.db_reset() triggers IntegrityError
+    -- ,
+    -- CONSTRAINT address_preferences_id_fk
+    --    FOREIGN KEY (preferences_id) REFERENCES preferences (id)
     );
 
 CREATE TABLE "user" (
@@ -169,11 +175,14 @@ CREATE TABLE "user" (
     _created_on TIMESTAMP,
     _preferred_address_id INTEGER,
     preferences_id INTEGER,
-    PRIMARY KEY (id),
-    CONSTRAINT user_preferences_id_fk
-        FOREIGN KEY (preferences_id) REFERENCES preferences (id),
-    CONSTRAINT _preferred_address_id_fk
-        FOREIGN KEY (_preferred_address_id) REFERENCES address (id)
+    PRIMARY KEY (id)
+    -- XXX: config.db_reset() triggers IntegrityError
+    -- ,
+    -- CONSTRAINT user_preferences_id_fk
+    --    FOREIGN KEY (preferences_id) REFERENCES preferences (id),
+    -- XXX: config.db_reset() triggers IntegrityError
+    -- CONSTRAINT _preferred_address_id_fk
+    --    FOREIGN KEY (_preferred_address_id) REFERENCES address (id)
     );
 CREATE INDEX ix_user_user_id ON "user" (_user_id);
 
@@ -190,10 +199,12 @@ CREATE TABLE autoresponserecord (
     mailing_list_id INTEGER,
     response_type INTEGER,
     date_sent TIMESTAMP,
-    PRIMARY KEY (id),
-    CONSTRAINT autoresponserecord_address_id_fk
-        FOREIGN KEY (address_id) REFERENCES address (id)
-    -- TODO: figure why this FK is broken
+    PRIMARY KEY (id)
+    -- XXX: config.db_reset() triggers IntegrityError
+    -- ,
+    -- CONSTRAINT autoresponserecord_address_id_fk
+    --    FOREIGN KEY (address_id) REFERENCES address (id)
+    -- XXX: config.db_reset() triggers IntegrityError
     --     ,
     -- CONSTRAINT autoresponserecord_mailing_list_id
     --     FOREIGN KEY (mailing_list_id) REFERENCES mailinglist (id)
@@ -250,14 +261,16 @@ CREATE TABLE member (
     address_id INTEGER,
     preferences_id INTEGER,
     user_id INTEGER,
-    PRIMARY KEY (id),
-    CONSTRAINT member_address_id_fk
-        FOREIGN KEY (address_id) REFERENCES address (id),
-    -- TODO: figure out where this is violated
+    PRIMARY KEY (id)
+    -- XXX: config.db_reset() triggers IntegrityError
+    -- ,
+    -- CONSTRAINT member_address_id_fk
+    --     FOREIGN KEY (address_id) REFERENCES address (id),
+    -- XXX: config.db_reset() triggers IntegrityError
     -- CONSTRAINT member_preferences_id_fk
     --     FOREIGN KEY (preferences_id) REFERENCES preferences (id),
-    CONSTRAINT member_user_id_fk
-        FOREIGN KEY (user_id) REFERENCES "user" (id)
+    -- CONSTRAINT member_user_id_fk
+    --    FOREIGN KEY (user_id) REFERENCES "user" (id)
     );
 CREATE INDEX ix_member__member_id ON member (_member_id);
 CREATE INDEX ix_member_address_id ON member (address_id);
@@ -295,9 +308,11 @@ CREATE TABLE pendedkeyvalue (
     "key" TEXT,
     value TEXT,
     pended_id INTEGER,
-    PRIMARY KEY (id),
-    CONSTRAINT pendedkeyvalue_pended_id_fk
-        FOREIGN KEY (pended_id) REFERENCES pended (id)
+    PRIMARY KEY (id)
+    -- ,
+    -- XXX: config.db_reset() triggers IntegrityError
+    -- CONSTRAINT pendedkeyvalue_pended_id_fk
+    --    FOREIGN KEY (pended_id) REFERENCES pended (id)
     );
 
 CREATE TABLE version (
