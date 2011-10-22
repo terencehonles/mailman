@@ -42,6 +42,8 @@ from mailman.utilities.string import expand
 
 log = logging.getLogger('mailman.config')
 
+NL = '\n'
+
 
 
 class StormBaseDatabase:
@@ -123,8 +125,13 @@ class StormBaseDatabase:
         # exists.  If so, then we assume the database schema is correctly
         # initialized.  Storm does not currently provide schema creation.
         if not self._database_exists(store):
-            # Initialize the database.
-            for statement in self._get_schema().split(';'):
+            # Initialize the database.  Start by getting the schema and
+            # discarding all blank and comment lines.
+            lines = self._get_schema().splitlines()
+            lines = (line for line in lines
+                     if line.strip() != '' and line.strip()[:2] != '--')
+            sql = NL.join(lines)
+            for statement in sql.split(';'):
                 if statement.strip() != '':
                     store.execute(statement + ';')
         # Validate schema version.

@@ -189,9 +189,11 @@ CREATE INDEX ix_user_user_id ON "user" (_user_id);
 -- since user and address have circular foreign key refs, the
 -- constraint on the address table has to be added after
 -- the user table is created
-ALTER TABLE address ADD
-    CONSTRAINT address_user_id_fk
-      FOREIGN KEY (user_id) REFERENCES "user" (id);
+--
+-- XXX: users.rst triggers an IntegrityError
+-- ALTER TABLE address ADD
+--     CONSTRAINT address_user_id_fk
+--       FOREIGN KEY (user_id) REFERENCES "user" (id);
 
 CREATE TABLE autoresponserecord (
     id SERIAL NOT NULL,
