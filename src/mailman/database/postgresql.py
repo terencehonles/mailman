@@ -25,6 +25,7 @@ __all__ = [
     ]
 
 
+from operator import attrgetter
 from pkg_resources import resource_string
 
 from mailman.database.base import StormBaseDatabase
@@ -38,10 +39,29 @@ class PostgreSQLDatabase(StormBaseDatabase):
         """See `BaseDatabase`."""
         table_query = ('SELECT table_name FROM information_schema.tables '
                        "WHERE table_schema = 'public'")
-        table_names = set(item[0] for item in 
+        table_names = set(item[0] for item in
                           store.execute(table_query))
         return 'version' in table_names
 
     def _get_schema(self):
         """See `BaseDatabase`."""
         return resource_string('mailman.database.sql', 'postgres.sql')
+
+    def _post_reset(self, store):
+        """PostgreSQL-specific test suite cleanup.
+
+        Reset the <tablename>_id_seq.last_value so that primary key ids
+        restart from zero for new tests.
+        """
+        from mailman.database.model import ModelMeta
+        classes = sorted(ModelMeta._class_registry,
+                         key=attrgetter('__storm_table__'))
+        # Recipe adapted from
+        # http://stackoverflow.com/questions/544791/
+        # django-postgresql-how-to-reset-primary-key
+        for model_class in classes:
+            store.execute("""\
+                SELECT setval('"{0}_id_seq"', coalesce(max("id"), 1),
+                              max("id") IS NOT null)
+                       FROM "{0}";
+                """.format(model_class.__storm_table__))

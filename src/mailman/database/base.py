@@ -97,6 +97,24 @@ class StormBaseDatabase:
         """
         raise NotImplementedError
 
+    def _pre_reset(self, store):
+        """Clean up method for testing.
+
+        This method is called during the test suite just before all the model
+        tables are removed.  Override this to perform any database-specific
+        pre-removal cleanup.
+        """
+        pass
+
+    def _post_reset(self, store):
+        """Clean up method for testing.
+
+        This method is called during the test suite just after all the model
+        tables have been removed.  Override this to perform any
+        database-specific post-removal cleanup.
+        """
+        pass
+
     def _create(self, debug):
         # Calculate the engine url.
         url = expand(config.database.url, config.paths)
