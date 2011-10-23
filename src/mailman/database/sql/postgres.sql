@@ -53,7 +53,7 @@ CREATE TABLE mailinglist (
     digest_header TEXT,
     digest_is_default BOOLEAN,
     digest_send_periodic BOOLEAN,
-    digest_size_threshold INTEGER,
+    digest_size_threshold REAL,
     digest_volume_frequency INTEGER,
     digestable BOOLEAN,
     discard_these_nonmembers BYTEA,
