@@ -198,7 +198,7 @@ it controlled by the user.
     >>> user_2.controls(aperson.email)
     True
 
-    >>> zperson = list(user_1.addresses)[0]
+    >>> zperson = user_manager.get_address('zperson@example.com')
     >>> zperson.verified_on = now()
     >>> user_2.controls(zperson.email)
     False
@@ -220,7 +220,8 @@ A user can disavow their preferred address.
 The preferred address always shows up in the set of addresses controlled by
 this user.
 
-    >>> for address in user_2.addresses:
+    >>> from operator import attrgetter
+    >>> for address in sorted(user_2.addresses, key=attrgetter('email')):
     ...     print address.email
     anne@example.com
     aperson@example.com
