@@ -24,6 +24,9 @@ __all__ = [
     'Model',
     ]
 
+
+from operator import attrgetter
+
 from storm.properties import PropertyPublisherMeta
 
 
@@ -46,8 +49,14 @@ class ModelMeta(PropertyPublisherMeta):
 
     @staticmethod
     def _reset(store):
-        for model_class in ModelMeta._class_registry:
+        from mailman.config import config
+        config.db._pre_reset(store)
+        # Make sure this is deterministic, by sorting on the storm table name.
+        classes = sorted(ModelMeta._class_registry,
+                         key=attrgetter('__storm_table__'))
+        for model_class in classes:
             store.find(model_class).remove()
+        config.db._post_reset(store)
 
 
 

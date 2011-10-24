@@ -19,15 +19,15 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'StockDatabase',
+    'StormBaseDatabase',
     ]
+
 
 import os
 import logging
 
 from flufl.lock import Lock
 from lazr.config import as_boolean
-from pkg_resources import resource_string
 from storm.cache import GenerationalCache
 from storm.locals import create_database, Store
 from urlparse import urlparse
@@ -42,10 +42,15 @@ from mailman.utilities.string import expand
 
 log = logging.getLogger('mailman.config')
 
+NL = '\n'
+
 
 
-class StockDatabase:
-    """The standard database, using Storm on top of SQLite."""
+class StormBaseDatabase:
+    """The database base class for use with the Storm ORM.
+
+    Use this as a base class for your DB-specific derived classes.
+    """
 
     implements(IDatabase)
 
@@ -73,6 +78,43 @@ class StockDatabase:
         """See `IDatabase`."""
         self.store.rollback()
 
+    def _database_exists(self):
+        """Return True if the database exists and is initialized.
+
+        Return False when Mailman needs to create and initialize the
+        underlying database schema.
+
+        Base classes *must* override this.
+        """
+        raise NotImplementedError
+
+    def _get_schema(self):
+        """Return the database schema as a string.
+
+        This will be loaded into the database when it is first created.
+
+        Base classes *must* override this.
+        """
+        raise NotImplementedError
+
+    def _pre_reset(self, store):
+        """Clean up method for testing.
+
+        This method is called during the test suite just before all the model
+        tables are removed.  Override this to perform any database-specific
+        pre-removal cleanup.
+        """
+        pass
+
+    def _post_reset(self, store):
+        """Clean up method for testing.
+
+        This method is called during the test suite just after all the model
+        tables have been removed.  Override this to perform any
+        database-specific post-removal cleanup.
+        """
+        pass
+
     def _create(self, debug):
         # Calculate the engine url.
         url = expand(config.database.url, config.paths)
@@ -97,18 +139,19 @@ class StockDatabase:
         store = Store(database, GenerationalCache())
         database.DEBUG = (as_boolean(config.database.debug)
                           if debug is None else debug)
-        # Check the sqlite master database to see if the version file exists.
-        # If so, then we assume the database schema is correctly initialized.
-        # Storm does not currently have schema creation.  This is not an ideal
-        # way to handle creating the database, but it's cheap and easy for
-        # now.
-        table_names = [item[0] for item in 
-                       store.execute('select tbl_name from sqlite_master;')]
-        if 'version' not in table_names:
-            # Initialize the database.
-            sql = resource_string('mailman.database', 'mailman.sql')
+        # Check the master / schema database to see if the version table
+        # exists.  If so, then we assume the database schema is correctly
+        # initialized.  Storm does not currently provide schema creation.
+        if not self._database_exists(store):
+            # Initialize the database.  Start by getting the schema and
+            # discarding all blank and comment lines.
+            lines = self._get_schema().splitlines()
+            lines = (line for line in lines
+                     if line.strip() != '' and line.strip()[:2] != '--')
+            sql = NL.join(lines)
             for statement in sql.split(';'):
-                store.execute(statement + ';')
+                if statement.strip() != '':
+                    store.execute(statement + ';')
         # Validate schema version.
         v = store.find(Version, component='schema').one()
         if not v:

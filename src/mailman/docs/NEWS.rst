@@ -12,6 +12,10 @@ Here is a history of user visible changes to Mailman.
 =================================
 (20XX-XX-XX)
 
+Features
+--------
+ * PostgreSQL support contributed by Stephen A. Goss. (LP: #860159)
+
 
 3.0 alpha 8 -- "Where's My Thing?"
 ==================================

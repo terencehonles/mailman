@@ -35,6 +35,7 @@ Table of Contents
 
     src/mailman/docs/INTRODUCTION
     src/mailman/docs/START
+    src/mailman/docs/DATABASE
     src/mailman/docs/MTA
     src/mailman/bin/docs/*
     src/mailman/commands/docs/*
