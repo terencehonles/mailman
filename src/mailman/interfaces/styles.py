@@ -54,7 +54,7 @@ class IStyle(Interface):
         """
 
     def match(mailing_list, styles):
-        """Give this list a chance to match the mailing list.
+        """Give this style a chance to match the mailing list.
 
         If the style's internal matching rules match the `mailing_list`, then
         the style may append itself to the `styles` list.  This list will be

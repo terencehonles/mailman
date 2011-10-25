@@ -12,14 +12,18 @@ Here is a history of user visible changes to Mailman.
 =================================
 (20XX-XX-XX)
 
-Features
---------
+Architecture
+------------
+ * Implement the style manager as a utility instead of an attribute hanging
+   off the `mailman.config.config` object.
  * PostgreSQL support contributed by Stephen A. Goss. (LP: #860159)
 
 Bug fixes
 ---------
  * Fixed KeyError in retry runner, contributed by Stephen A. Goss.
    (LP: #872391)
+ * Fixed bogus use of `bounce_processing` attribute (should have been
+   `process_bounces`, with thanks to Vincent Fretin.  (LP: #876774)
 
 
 3.0 alpha 8 -- "Where's My Thing?"

@@ -38,6 +38,7 @@ from mailman.interfaces.domain import (
     BadDomainSpecificationError, IDomainManager)
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import MemberRole
+from mailman.interfaces.styles import IStyleManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.utilities.modules import call_name
 
@@ -71,7 +72,7 @@ def create_list(fqdn_listname, owners=None):
     if domain not in getUtility(IDomainManager):
         raise BadDomainSpecificationError(domain)
     mlist = getUtility(IListManager).create(fqdn_listname)
-    for style in config.style_manager.lookup(mlist):
+    for style in getUtility(IStyleManager).lookup(mlist):
         style.apply(mlist)
     # Coordinate with the MTA, as defined in the configuration file.
     call_name(config.mta.incoming).create(mlist)

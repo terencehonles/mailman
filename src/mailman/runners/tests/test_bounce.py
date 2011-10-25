@@ -21,13 +21,13 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'test_suite',
     ]
 
 
 import unittest
 
 from zope.component import getUtility
+from zope.interface import implements
 
 from mailman.app.bounces import send_probe
 from mailman.app.lifecycle import create_list
@@ -35,6 +35,7 @@ from mailman.config import config
 from mailman.interfaces.bounce import (
     BounceContext, IBounceProcessor, UnrecognizedBounceDisposition)
 from mailman.interfaces.member import MemberRole
+from mailman.interfaces.styles import IStyle, IStyleManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.runners.bounce import BounceRunner
 from mailman.testing.helpers import (
@@ -77,7 +78,7 @@ Message-Id: <first>
     def test_does_no_processing(self):
         # If the mailing list does no bounce processing, the messages are
         # simply discarded.
-        self._mlist.bounce_processing = False
+        self._mlist.process_bounces = False
         self._bounceq.enqueue(self._msg, self._msgdata)
         self._runner.run()
         self.assertEqual(len(get_queue_messages('bounces')), 0)
@@ -230,7 +231,60 @@ Message-Id: <third>
 
 
 
-def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestBounceRunner))
-    return suite
+# Create a style for the mailing list which sets the absolute minimum
+# attributes.  In particular, this will not set the bogus `bounce_processing`
+# attribute which the default style set (before LP: #876774 was fixed).
+
+class TestStyle:
+    implements(IStyle)
+
+    name = 'test'
+    priority = 10
+
+    def apply(self, mailing_list):
+        """See `IStyle`."""
+        mailing_list.preferred_language = 'en'
+
+    def match(self, mailing_list, styles):
+        styles.append(self)
+
+
+class TestBounceRunnerBug876774(unittest.TestCase):
+    """Test LP: #876774.
+
+    Quoting:
+
+    It seems that bounce_processing is defined in src/mailman/styles/default.py
+    The style are applied at mailing-list creation, but bounce_processing
+    attribute is not persisted, the src/mailman/database/mailman.sql file
+    doesn't define it.
+    """
+    layer = ConfigLayer
+
+    def setUp(self):
+        self._style = TestStyle()
+        self._style_manager = getUtility(IStyleManager)
+        self._style_manager.register(self._style)
+        # Now we can create the mailing list.
+        self._mlist = create_list('test@example.com')
+        self._bounceq = config.switchboards['bounces']
+        self._processor = getUtility(IBounceProcessor)
+        self._runner = make_testable_runner(BounceRunner, 'bounces')
+
+    def tearDown(self):
+        self._style_manager.unregister(self._style)
+
+    def test_bug876774(self):
+        # LP: #876774, see above.
+        bounce = message_from_string("""\
+From: mail-daemon@example.com
+To: test-bounces+anne=example.com@example.com
+Message-Id: <first>
+
+""")
+        self._bounceq.enqueue(bounce, dict(listname='test@example.com'))
+        self.assertEqual(len(self._bounceq.files), 1)
+        self._runner.run()
+        self.assertEqual(len(get_queue_messages('bounces')), 0)
+        events = list(self._processor.events)
+        self.assertEqual(len(events), 0)

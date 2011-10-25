@@ -67,6 +67,11 @@
     />
 
   <utility
+   factory="mailman.styles.manager.StyleManager"
+   provides="mailman.interfaces.styles.IStyleManager"
+   />
+
+  <utility
     factory="mailman.app.subscriptions.SubscriptionService"
     provides="mailman.interfaces.subscriptions.ISubscriptionService"
     />

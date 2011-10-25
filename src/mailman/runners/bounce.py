@@ -43,7 +43,7 @@ class BounceRunner(Runner):
 
     def _dispose(self, mlist, msg, msgdata):
         # List isn't doing bounce processing?
-        if not mlist.bounce_processing:
+        if not mlist.process_bounces:
             return False
         # Try VERP detection first, since it's quick and easy
         context = BounceContext.normal

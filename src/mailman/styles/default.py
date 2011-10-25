@@ -165,7 +165,7 @@ ${listinfo_page}
         # Bounces
         mlist.forward_unrecognized_bounces_to = (
             UnrecognizedBounceDisposition.administrators)
-        mlist.bounce_processing = True
+        mlist.process_bounces = True
         mlist.bounce_score_threshold = 5.0
         mlist.bounce_info_stale_after = datetime.timedelta(days=7)
         mlist.bounce_you_are_disabled_warnings = 3

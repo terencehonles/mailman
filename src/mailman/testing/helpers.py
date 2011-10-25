@@ -61,6 +61,7 @@ from mailman.config import config
 from mailman.email.message import Message
 from mailman.interfaces.member import MemberRole
 from mailman.interfaces.messages import IMessageStore
+from mailman.interfaces.styles import IStyleManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.utilities.mailbox import Mailbox
 
@@ -371,7 +372,7 @@ def reset_the_world():
         message_store.delete_message(message['message-id'])
     config.db.commit()
     # Reset the global style manager.
-    config.style_manager.populate()
+    getUtility(IStyleManager).populate()
 
 
 

@@ -58,7 +58,9 @@ Start by registering a test style.
     ...         if 'test' in mailing_list.fqdn_listname:
     ...             styles.append(self)
 
-    >>> config.style_manager.register(TestStyle())
+    >>> from zope.component import getUtility
+    >>> from mailman.interfaces.styles import IStyleManager
+    >>> getUtility(IStyleManager).register(TestStyle())
 
 Using the higher level interface for creating a list, applies all matching
 list styles.
@@ -111,7 +113,6 @@ the system, they won't be created again.
 ::
 
     >>> from mailman.interfaces.usermanager import IUserManager
-    >>> from zope.component import getUtility
     >>> user_manager = getUtility(IUserManager)
 
     >>> user_a = user_manager.get_user('aperson@example.com')

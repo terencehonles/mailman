@@ -38,7 +38,7 @@ import mailman.templates
 
 from mailman import version
 from mailman.interfaces.languages import ILanguageManager
-from mailman.styles.manager import StyleManager
+from mailman.interfaces.styles import IStyleManager
 from mailman.utilities.filesystem import makedirs
 from mailman.utilities.modules import call_name
 
@@ -59,7 +59,6 @@ class Configuration:
 
     def __init__(self):
         self.switchboards = {}
-        self.style_manager = StyleManager()
         self.QFILE_SCHEMA_VERSION = version.QFILE_SCHEMA_VERSION
         self._config = None
         self.filename = None
@@ -136,7 +135,7 @@ class Configuration:
             'System default language code not defined: %s' %
             self._config.mailman.default_language)
         self.ensure_directories_exist()
-        self.style_manager.populate()
+        getUtility(IStyleManager).populate()
         # Set the default system language.
         from mailman.core.i18n import _
         _.default = self.mailman.default_language
