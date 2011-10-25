@@ -16,6 +16,11 @@ Features
 --------
  * PostgreSQL support contributed by Stephen A. Goss. (LP: #860159)
 
+Bug fixes
+---------
+ * Fixed KeyError in retry runner, contributed by Stephen A. Goss.
+   (LP: #872391)
+
 
 3.0 alpha 8 -- "Where's My Thing?"
 ==================================

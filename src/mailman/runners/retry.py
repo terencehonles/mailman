@@ -37,7 +37,7 @@ class RetryRunner(Runner):
 
     def _dispose(self, mlist, msg, msgdata):
         # Move the message to the out queue for another try.
-        config.switchboards['outgoing'].enqueue(msg, msgdata)
+        config.switchboards['out'].enqueue(msg, msgdata)
         return False
 
     def _snooze(self, filecnt):
