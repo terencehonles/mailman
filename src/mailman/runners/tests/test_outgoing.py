@@ -21,7 +21,6 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'test_suite',
     ]
 
 
@@ -537,13 +536,3 @@ Message-Id: <first>
         self.assertEqual(
             line[-63:-1],
             'Discarding message with persistent temporary failures: <first>')
-
-
-
-def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestOnce))
-    suite.addTest(unittest.makeSuite(TestVERPSettings))
-    suite.addTest(unittest.makeSuite(TestSocketError))
-    suite.addTest(unittest.makeSuite(TestSomeRecipientsFailed))
-    return suite

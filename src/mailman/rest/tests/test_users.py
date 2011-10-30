@@ -21,7 +21,6 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'test_suite',
     ]
 
 
@@ -52,10 +51,3 @@ class TestUsers(unittest.TestCase):
             self.assertEqual(exc.code, 404)
         else:
             raise AssertionError('Expected HTTPError')
-
-
-
-def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestUsers))
-    return suite

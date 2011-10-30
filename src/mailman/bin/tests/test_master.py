@@ -21,7 +21,6 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'test_suite',
     ]
 
 
@@ -72,10 +71,3 @@ class TestMasterLock(unittest.TestCase):
             my_lock.unlock()
         self.assertEqual(state, master.WatcherState.conflict)
         # XXX test stale_lock and host_mismatch states.
-
-
-
-def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestMasterLock))
-    return suite

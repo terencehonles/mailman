@@ -21,7 +21,6 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'test_suite',
     ]
 
 
@@ -95,10 +94,3 @@ class TestCreate(unittest.TestCase):
             pass
         self.assertEqual(self.command.parser.message,
                          'Illegal owner addresses: main=True')
-
-
-
-def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestCreate))
-    return suite

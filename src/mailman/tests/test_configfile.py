@@ -21,7 +21,6 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'test_suite',
     ]
 
 
@@ -180,11 +179,3 @@ class TestConfigFileSearchWithChroot(TestConfigFileBase):
             with open(os.path.join(fake_testdir, 'mailman.cfg'), 'w') as fp:
                 print >> fp, '# Fake mailman.cfg file'
             self.assertEqual(search_for_configuration_file(), config_file)
-
-
-
-def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestConfigFileSearch))
-    suite.addTest(unittest.makeSuite(TestConfigFileSearchWithChroot))
-    return suite

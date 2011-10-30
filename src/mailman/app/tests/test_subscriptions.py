@@ -21,7 +21,6 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'test_suite',
     ]
 
 
@@ -67,10 +66,3 @@ class TestJoin(unittest.TestCase):
             self.assertEqual(exc.address, 'bogus')
         else:
             raise AssertionError('InvalidEmailAddressError expected')
-
-
-
-def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestJoin))
-    return suite

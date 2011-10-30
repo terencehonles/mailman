@@ -21,7 +21,6 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'test_suite',
     ]
 
 
@@ -142,10 +141,3 @@ This is a single paragraph that consists of one sentence.
     And another one that breaks
     because it is indented.
 Followed by one more paragraph.""")
-
-
-
-def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestWrap))
-    return suite

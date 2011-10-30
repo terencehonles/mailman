@@ -21,7 +21,6 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'test_suite',
     ]
 
 
@@ -72,10 +71,3 @@ class TestUser(unittest.TestCase):
         self.assertEqual(len(emails), 2)
         self.assertEqual(emails,
                          set(['anne@example.com', 'aperson@example.com']))
-
-
-
-def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestUser))
-    return suite

@@ -21,7 +21,6 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'test_suite',
     ]
 
 
@@ -95,10 +94,3 @@ class TestMember(unittest.TestCase):
         # The new address is not verified.
         self.assertRaises(MembershipError,
                           setattr, member, 'address', bart_address)
-
-
-
-def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestMember))
-    return suite

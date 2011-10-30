@@ -21,7 +21,6 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'test_suite',
     ]
 
 
@@ -499,14 +498,3 @@ Message-ID: <first>
         # recipients of this message.
         self.assertEqual(items[0].msgdata['recipients'],
                          set(['postmaster@example.com',]))
-
-
-
-def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestMaybeForward))
-    suite.addTest(unittest.makeSuite(TestProbe))
-    suite.addTest(unittest.makeSuite(TestSendProbe))
-    suite.addTest(unittest.makeSuite(TestSendProbeNonEnglish))
-    suite.addTest(unittest.makeSuite(TestVERP))
-    return suite

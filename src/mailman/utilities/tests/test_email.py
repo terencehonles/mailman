@@ -21,7 +21,6 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'test_suite',
     ]
 
 
@@ -40,10 +39,3 @@ class TestEmail(unittest.TestCase):
 
     def test_no_at_split(self):
         self.assertEqual(split_email('anne'), ('anne', None))
-
-
-
-def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestEmail))
-    return suite

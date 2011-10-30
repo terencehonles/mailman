@@ -21,7 +21,6 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'test_suite',
     ]
 
 
@@ -36,7 +35,7 @@ from mailman.utilities import passwords
 
 
 
-class TestPasswordsBase(unittest.TestCase):
+class PasswordsTestBase:
     scheme = None
 
     def setUp(self):
@@ -72,7 +71,7 @@ class TestPasswordsBase(unittest.TestCase):
 
 
 
-class TestBogusPasswords(TestPasswordsBase):
+class TestBogusPasswords(PasswordsTestBase, unittest.TestCase):
     scheme = -1
 
     def test_passwords(self):
@@ -89,7 +88,7 @@ class TestBogusPasswords(TestPasswordsBase):
 
 
 
-class TestNonePasswords(TestPasswordsBase):
+class TestNonePasswords(PasswordsTestBase, unittest.TestCase):
     scheme = passwords.Schemes.no_scheme
 
     def test_passwords(self):
@@ -112,19 +111,19 @@ class TestNonePasswords(TestPasswordsBase):
 
 
 
-class TestCleartextPasswords(TestPasswordsBase):
+class TestCleartextPasswords(PasswordsTestBase, unittest.TestCase):
     scheme = passwords.Schemes.cleartext
 
 
-class TestSHAPasswords(TestPasswordsBase):
+class TestSHAPasswords(PasswordsTestBase, unittest.TestCase):
     scheme = passwords.Schemes.sha
 
 
-class TestSSHAPasswords(TestPasswordsBase):
+class TestSSHAPasswords(PasswordsTestBase, unittest.TestCase):
     scheme = passwords.Schemes.ssha
 
 
-class TestPBKDF2Passwords(TestPasswordsBase):
+class TestPBKDF2Passwords(PasswordsTestBase, unittest.TestCase):
     scheme = passwords.Schemes.pbkdf2
 
 
@@ -203,17 +202,3 @@ class TestPasswordGeneration(unittest.TestCase):
 
     def test_encrypt_password_scheme_value_error(self):
         self.assertRaises(ValueError, passwords.encrypt_password, 'abc', 'foo')
-
-
-
-def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestBogusPasswords))
-    suite.addTest(unittest.makeSuite(TestNonePasswords))
-    suite.addTest(unittest.makeSuite(TestCleartextPasswords))
-    suite.addTest(unittest.makeSuite(TestSHAPasswords))
-    suite.addTest(unittest.makeSuite(TestSSHAPasswords))
-    suite.addTest(unittest.makeSuite(TestPBKDF2Passwords))
-    suite.addTest(unittest.makeSuite(TestSchemeLookup))
-    suite.addTest(unittest.makeSuite(TestPasswordGeneration))
-    return suite

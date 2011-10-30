@@ -21,7 +21,6 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'test_suite',
     ]
 
 
@@ -96,10 +95,3 @@ Message-ID: <alpha>
         # envelope.
         self.assertEqual(message['x-mailfrom'], 'test-bounces@example.com')
         self.assertEqual(message['x-rcptto'], 'bart@example.com')
-
-
-
-def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestModeration))
-    return suite

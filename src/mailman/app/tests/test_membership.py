@@ -21,7 +21,6 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'test_suite',
     ]
 
 
@@ -197,11 +196,3 @@ class AddMemberPasswordTest(unittest.TestCase):
                             system_preferences.preferred_language)
         self.assertEqual(
             member.user.password, '{SHA}qZk-NkcGgWq6PiVxeFDCbJzQ2J0=')
-
-
-
-def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(AddMemberTest))
-    suite.addTest(unittest.makeSuite(AddMemberPasswordTest))
-    return suite

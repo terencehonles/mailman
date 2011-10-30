@@ -23,7 +23,6 @@ __metaclass__ = type
 __all__ = [
     'find_master',
     'make_config',
-    'test_suite',
     ]
 
 
@@ -162,10 +161,3 @@ class TestStart(unittest.TestCase):
         self.command.process(self.args)
         pid = find_master()
         self.assertNotEqual(pid, None)
-
-
-
-def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestStart))
-    return suite

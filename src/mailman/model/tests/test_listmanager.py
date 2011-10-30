@@ -21,7 +21,6 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'test_suite',
     ]
 
 
@@ -126,11 +125,3 @@ Message-ID: <argon>
         self.assertEqual(request, None)
         saved_message = getUtility(IMessageStore).get_message_by_id('<argon>')
         self.assertEqual(saved_message.as_string(), msg.as_string())
-
-
-
-def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestListManager))
-    suite.addTest(unittest.makeSuite(TestListLifecycleEvents))
-    return suite

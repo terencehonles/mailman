@@ -21,7 +21,6 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'test_suite',
     ]
 
 
@@ -96,10 +95,3 @@ further responses today.  Please try again tomorrow.
 
 If you believe this message is in error, or if you have any questions,
 please contact the list owner at test-owner@example.com.""")
-
-
-
-def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestAutorespond))
-    return suite

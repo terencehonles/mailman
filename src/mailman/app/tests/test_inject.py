@@ -21,7 +21,6 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'test_suite',
     ]
 
 
@@ -209,11 +208,3 @@ Nothing.
         items = get_queue_messages('in')
         self.assertEqual(items[0].msgdata['foo'], 'yes')
         self.assertEqual(items[0].msgdata['bar'], 'no')
-
-
-
-def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestInjectMessage))
-    suite.addTest(unittest.makeSuite(TestInjectText))
-    return suite

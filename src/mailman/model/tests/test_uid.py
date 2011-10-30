@@ -21,7 +21,6 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'test_suite',
     ]
 
 
@@ -47,10 +46,3 @@ class TestUID(unittest.TestCase):
         my_uuid = uuid.uuid4()
         UID.record(my_uuid)
         self.assertRaises(ValueError, UID.record, my_uuid)
-
-
-
-def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestUID))
-    return suite

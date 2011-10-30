@@ -21,7 +21,6 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'test_suite',
     ]
 
 
@@ -74,10 +73,3 @@ class TestDomains(unittest.TestCase):
             'http://localhost:9001/3.0/domains/example.com', method='DELETE')
         self.assertEqual(response.status, 204)
         self.assertEqual(getUtility(IListManager).get('ant@example.com'), None)
-
-
-
-def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestDomains))
-    return suite

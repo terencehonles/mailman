@@ -21,7 +21,6 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'test_suite',
     ]
 
 
@@ -68,10 +67,3 @@ class TestBasicImport(unittest.TestCase):
         self._import()
         self.assertTrue(self._mlist.include_list_post_header)
         self.assertTrue(self._mlist.include_rfc2369_headers)
-
-
-
-def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestBasicImport))
-    return suite

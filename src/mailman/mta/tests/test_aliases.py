@@ -21,7 +21,6 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'test_suite',
     ]
 
 
@@ -152,12 +151,3 @@ test-request@example.com       lmtp:[127.0.0.1]:9024
 test-subscribe@example.com     lmtp:[127.0.0.1]:9024
 test-unsubscribe@example.com   lmtp:[127.0.0.1]:9024
 """)
-        
-
-
-
-def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestAliases))
-    suite.addTest(unittest.makeSuite(TestPostfix))
-    return suite

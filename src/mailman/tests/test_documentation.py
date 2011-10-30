@@ -182,6 +182,10 @@ def setup(testobj):
 
 
 def test_suite():
+    """Create test suites for all .rst documentation tests.
+
+    .txt files are also tested, but .rst is highly preferred.
+    """
     suite = unittest.TestSuite()
     topdir = os.path.dirname(mailman.__file__)
     packages = []

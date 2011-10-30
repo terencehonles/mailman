@@ -21,7 +21,6 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'test_suite',
     ]
 
 
@@ -103,11 +102,3 @@ class TestDomainLifecycleEvents(unittest.TestCase):
         self.assertEqual(listmanager.get('dog@example.org'), None)
         self.assertEqual(listmanager.get('ewe@example.com'), ewe)
         self.assertEqual(listmanager.get('fly@example.com'), fly)
-
-
-
-def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestDomainManager))
-    suite.addTest(unittest.makeSuite(TestDomainLifecycleEvents))
-    return suite

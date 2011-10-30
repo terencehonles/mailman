@@ -21,7 +21,6 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'test_suite',
     ]
 
 
@@ -96,10 +95,3 @@ Message-Id: <first>
         # Now there will be no unprocessed events.
         unprocessed = list(self._processor.unprocessed)
         self.assertEqual(len(unprocessed), 0)
-
-
-
-def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestBounceEvents))
-    return suite

@@ -21,7 +21,6 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'test_suite',
     ]
 
 
@@ -276,12 +275,3 @@ This is a very nice template.
 It has a few substitutions.
 It will not be wrapped.
 """)
-
-
-
-def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestSearchOrder))
-    suite.addTest(unittest.makeSuite(TestFind))
-    suite.addTest(unittest.makeSuite(TestMake))
-    return suite
