@@ -61,7 +61,7 @@ def can_acknowledge(msg):
             return False
     if msg.get('x-ack', '').lower() == 'no':
         return False
-    if msg.get('auto-submitted', 'no').lower() <> 'no':
+    if msg.get('auto-submitted', 'no').lower() != 'no':
         return False
     if msg.get('return-path') == '<>':
         return False

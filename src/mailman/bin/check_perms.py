@@ -84,9 +84,9 @@ def checkwalk(arg, dirname, names):
         try:
             mode, gid = statgidmode(path)
         except OSError, e:
-            if e.errno <> errno.ENOENT: raise
+            if e.errno != errno.ENOENT: raise
             continue
-        if gid <> MAILMAN_GID:
+        if gid != MAILMAN_GID:
             try:
                 groupname = getgrgid(gid)[0]
             except KeyError:
@@ -119,7 +119,7 @@ def checkwalk(arg, dirname, names):
         else:
             targetperms = DIRPERMS
         octperms = oct(targetperms)
-        if S_ISDIR(mode) and (mode & targetperms) <> targetperms:
+        if S_ISDIR(mode) and (mode & targetperms) != targetperms:
             arg.ERRORS += 1
             print _('directory permissions must be $octperms: $path'),
             if STATE.FIX:
@@ -129,7 +129,7 @@ def checkwalk(arg, dirname, names):
                 print
         elif os.path.splitext(path)[1] in ('.py', '.pyc', '.pyo'):
             octperms = oct(PYFILEPERMS)
-            if mode & PYFILEPERMS <> PYFILEPERMS:
+            if mode & PYFILEPERMS != PYFILEPERMS:
                 print _('source perms must be $octperms: $path'),
                 arg.ERRORS += 1
                 if STATE.FIX:
@@ -140,7 +140,7 @@ def checkwalk(arg, dirname, names):
         elif path.endswith('-article'):
             # Article files must be group writeable
             octperms = oct(ARTICLEFILEPERMS)
-            if mode & ARTICLEFILEPERMS <> ARTICLEFILEPERMS:
+            if mode & ARTICLEFILEPERMS != ARTICLEFILEPERMS:
                 print _('article db files must be $octperms: $path'),
                 arg.ERRORS += 1
                 if STATE.FIX:
@@ -164,10 +164,10 @@ def checkall():
         try:
             mode = statmode(d)
         except OSError, e:
-            if e.errno <> errno.ENOENT: raise
+            if e.errno != errno.ENOENT: raise
             print _('WARNING: directory does not exist: $d')
             continue
-        if (mode & DIRPERMS) <> DIRPERMS:
+        if (mode & DIRPERMS) != DIRPERMS:
             STATE.ERRORS += 1
             print _('directory must be at least 02775: $d'),
             if STATE.FIX:
@@ -212,7 +212,7 @@ def checkmboxfile(mboxdir):
             continue
         mboxfile = os.path.join(absdir, f)
         mode = statmode(mboxfile)
-        if (mode & MBOXPERMS) <> MBOXPERMS:
+        if (mode & MBOXPERMS) != MBOXPERMS:
             STATE.ERRORS = STATE.ERRORS + 1
             print _('mbox file must be at least 0660:'), mboxfile
             if STATE.FIX:
@@ -292,10 +292,10 @@ def checkadminpw():
         try:
             mode = statmode(pwfile)
         except OSError, e:
-            if e.errno <> errno.ENOENT:
+            if e.errno != errno.ENOENT:
                 raise
             return
-        if mode <> targetmode:
+        if mode != targetmode:
             STATE.ERRORS += 1
             octmode = oct(mode)
             print _('$pwfile permissions must be exactly 0640 (got $octmode)'),
@@ -334,10 +334,10 @@ def checkdata():
             try:
                 mode = statmode(path)
             except OSError, e:
-                if e.errno <> errno.ENOENT:
+                if e.errno != errno.ENOENT:
                     raise
                 continue
-            if (mode & targetmode) <> targetmode:
+            if (mode & targetmode) != targetmode:
                 STATE.ERRORS += 1
                 print _('file permissions must be at least 660: $path'),
                 if STATE.FIX:

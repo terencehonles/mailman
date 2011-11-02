@@ -177,7 +177,7 @@ def do_list_categories(mlist, k, subcat, outfp):
             if not lines:
                 print >> outfp, "''"
             elif len(lines) == 1:
-                if charset <> 'us-ascii' and nonasciipat.search(lines[0]):
+                if charset != 'us-ascii' and nonasciipat.search(lines[0]):
                     # This is more readable for non-english list.
                     print >> outfp, '"' + lines[0].replace('"', '\\"') + '"'
                 else:

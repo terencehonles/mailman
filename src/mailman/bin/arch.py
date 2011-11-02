@@ -135,7 +135,7 @@ def main():
                     os.rename(atchdir, savedir)
                     saved = True
                 except OSError, e:
-                    if e.errno <> errno.ENOENT:
+                    if e.errno != errno.ENOENT:
                         raise
             shutil.rmtree(mlist.archive_dir())
             if mlist.scrub_nondigest and saved:

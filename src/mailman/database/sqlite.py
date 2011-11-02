@@ -25,7 +25,10 @@ __all__ = [
     ]
 
 
+import os
+
 from pkg_resources import resource_string
+from urlparse import urlparse
 
 from mailman.database.base import StormBaseDatabase
 
@@ -40,6 +43,16 @@ class SQLiteDatabase(StormBaseDatabase):
         table_names = set(item[0] for item in 
                           store.execute(table_query))
         return 'version' in table_names
+
+    def _prepare(self, url):
+        parts = urlparse(url)
+        assert parts.scheme == 'sqlite', (
+            'Database url mismatch (expected sqlite prefix): {0}'.format(url))
+        path = os.path.normpath(parts.path)
+        fd = os.open(path, os.O_WRONLY |  os.O_NONBLOCK | os.O_CREAT, 0666)
+        # Ignore errors
+        if fd > 0:
+            os.close(fd)
 
     def _get_schema(self):
         """See `BaseDatabase`."""

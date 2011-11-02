@@ -66,7 +66,7 @@ def makedirs(path, mode=02775):
             os.makedirs(path, mode)
     except OSError as error:
         # Ignore the exceptions if the directory already exists.
-        if error.errno <> errno.EEXIST:
+        if error.errno != errno.EEXIST:
             raise
     # Some systems such as FreeBSD ignore mkdir's mode, so walk the just
     # created directories and try to set the mode, ignoring any OSErrors that

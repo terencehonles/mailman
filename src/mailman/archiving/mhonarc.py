@@ -89,7 +89,7 @@ class MHonArc:
             command, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
             shell=True)
         stdout, stderr = proc.communicate(msg.as_string())
-        if proc.returncode <> 0:
+        if proc.returncode != 0:
             log.error('%s: mhonarc subprocess had non-zero exit code: %s' %
                       (msg['message-id'], proc.returncode))
         log.info(stdout)

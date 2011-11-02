@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Queing and dequeuing message/metadata pickle files.
+"""Queuing and dequeuing message/metadata pickle files.
 
 Messages are represented as email.message.Message objects (or an instance ofa
 subclass).  Metadata is represented as a Python dictionary.  For every
@@ -49,7 +49,7 @@ from mailman.utilities.filesystem import makedirs
 from mailman.utilities.string import expand
 
 
-# 20 bytes of all bits set, maximum hashlib.sha.digest() value
+# 20 bytes of all bits set, maximum hashlib.sha.digest() value.
 shamax = 0xffffffffffffffffffffffffffffffffffffffffL
 # Small increment to add to time in case two entries have the same time.  This
 # prevents skipping one of two entries with the same time until the next pass.

@@ -30,7 +30,6 @@ from flufl.lock import Lock
 from lazr.config import as_boolean
 from storm.cache import GenerationalCache
 from storm.locals import create_database, Store
-from urlparse import urlparse
 from zope.interface import implements
 
 import mailman.version
@@ -115,6 +114,15 @@ class StormBaseDatabase:
         """
         pass
 
+    def _prepare(self, url):
+        """Prepare the database for creation.
+
+        Some database backends need to do so me prep work before letting Storm
+        create the database.  For example, we have to touch the SQLite .db
+        file first so that it has the proper file modes.
+        """
+        pass
+
     def _create(self, debug):
         # Calculate the engine url.
         url = expand(config.database.url, config.paths)
@@ -134,7 +142,7 @@ class StormBaseDatabase:
         # engines, and yes, we could have chmod'd the file after the fact, but
         # half dozen and all...
         self.url = url
-        touch(url)
+        self._prepare(url)
         database = create_database(url)
         store = Store(database, GenerationalCache())
         database.DEBUG = (as_boolean(config.database.debug)
@@ -170,15 +178,3 @@ class StormBaseDatabase:
         from mailman.database.model import ModelMeta
         self.store.rollback()
         ModelMeta._reset(self.store)
-
-
-
-def touch(url):
-    parts = urlparse(url)
-    if parts.scheme <> 'sqlite':
-        return
-    path = os.path.normpath(parts.path)
-    fd = os.open(path, os.O_WRONLY |  os.O_NONBLOCK | os.O_CREAT, 0666)
-    # Ignore errors
-    if fd > 0:
-        os.close(fd)
