@@ -236,8 +236,7 @@ class Switchboard:
         for filebase in self.get_files('.bak'):
             src = os.path.join(self.queue_directory, filebase + '.bak')
             dst = os.path.join(self.queue_directory, filebase + '.pck')
-            fp = open(src, 'rb+')
-            try:
+            with open(src, 'rb+') as fp:
                 try:
                     msg = cPickle.load(fp)
                     data_pos = fp.tell()
@@ -265,5 +264,3 @@ class Switchboard:
                         self.finish(filebase, preserve=True)
                     else:
                         os.rename(src, dst)
-            finally:
-                fp.close()

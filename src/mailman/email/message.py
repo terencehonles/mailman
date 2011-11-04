@@ -90,7 +90,7 @@ class Message(email.message.Message):
         # The pickled instance should have an __version__ string, but it may
         # not if it's an email package message.
         version = values.get('__version__', (0, 0, 0))
-        values['__version__'] = VERSION
+        values['__version__'] = version
         # There's really nothing to check; there's nothing newer than email
         # 4.0.1 at the moment.
 
