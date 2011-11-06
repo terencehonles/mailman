@@ -17,6 +17,9 @@ Architecture
  * Implement the style manager as a utility instead of an attribute hanging
    off the `mailman.config.config` object.
  * PostgreSQL support contributed by Stephen A. Goss. (LP: #860159)
+ * Separate out the RFC 2369 header adding handler.
+ * Dynamically calculate the `List-Id` header instead of storing it in the
+   database.  This means it cannot be changed.
 
 Bug fixes
 ---------

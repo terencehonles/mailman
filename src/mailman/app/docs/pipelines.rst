@@ -9,7 +9,7 @@ consist of a sequence of handlers, each of which is applied in turn.  Unlike
 rules and chains, there is no way to stop a pipeline from processing the
 message once it's started.
 
-    >>> mlist = create_list('xtest@example.com')
+    >>> mlist = create_list('test@example.com')
     >>> print mlist.pipeline
     built-in
     >>> from mailman.core.pipelines import process
@@ -22,7 +22,7 @@ Messages hit the pipeline after they've been accepted for posting.
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
-    ... To: xtest@example.com
+    ... To: test@example.com
     ... Subject: My first post
     ... Message-ID: <first>
     ...
@@ -36,25 +36,11 @@ etc.
 
     >>> print msg.as_string()
     From: aperson@example.com
-    To: xtest@example.com
+    To: test@example.com
     Message-ID: <first>
-    Subject: [Xtest] My first post
-    X-BeenThere: xtest@example.com
+    Subject: [Test] My first post
     X-Mailman-Version: ...
     Precedence: list
-    List-Id: <xtest.example.com>
-    X-Message-ID-Hash: 4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
-    List-Post: <mailto:xtest@example.com>
-    List-Subscribe:
-        <http://lists.example.com/listinfo/xtest@example.com>,
-        <mailto:xtest-join@example.com>
-    Archived-At:
-        http://lists.example.com/archives/4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
-    List-Unsubscribe:
-        <http://lists.example.com/listinfo/xtest@example.com>,
-        <mailto:xtest-leave@example.com>
-    List-Archive: <http://lists.example.com/archives/xtest@example.com>
-    List-Help: <mailto:xtest-request@example.com?subject=help>
     <BLANKLINE>
     First post!
     <BLANKLINE>
@@ -76,25 +62,11 @@ And the message is now sitting in various other processing queues.
     1
     >>> print messages[0].msg.as_string()
     From: aperson@example.com
-    To: xtest@example.com
+    To: test@example.com
     Message-ID: <first>
-    Subject: [Xtest] My first post
-    X-BeenThere: xtest@example.com
+    Subject: [Test] My first post
     X-Mailman-Version: ...
     Precedence: list
-    List-Id: <xtest.example.com>
-    X-Message-ID-Hash: 4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
-    List-Post: <mailto:xtest@example.com>
-    List-Subscribe:
-        <http://lists.example.com/listinfo/xtest@example.com>,
-        <mailto:xtest-join@example.com>
-    Archived-At:
-        http://lists.example.com/archives/4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
-    List-Unsubscribe:
-        <http://lists.example.com/listinfo/xtest@example.com>,
-        <mailto:xtest-leave@example.com>
-    List-Archive: <http://lists.example.com/archives/xtest@example.com>
-    List-Help: <mailto:xtest-request@example.com?subject=help>
     <BLANKLINE>
     First post!
     <BLANKLINE>
@@ -120,31 +92,17 @@ This is the message that will actually get delivered to end recipients.
     1
     >>> print messages[0].msg.as_string()
     From: aperson@example.com
-    To: xtest@example.com
+    To: test@example.com
     Message-ID: <first>
-    Subject: [Xtest] My first post
-    X-BeenThere: xtest@example.com
+    Subject: [Test] My first post
     X-Mailman-Version: ...
     Precedence: list
-    List-Id: <xtest.example.com>
-    X-Message-ID-Hash: 4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
-    List-Post: <mailto:xtest@example.com>
-    List-Subscribe:
-        <http://lists.example.com/listinfo/xtest@example.com>,
-        <mailto:xtest-join@example.com>
-    Archived-At:
-        http://lists.example.com/archives/4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
-    List-Unsubscribe:
-        <http://lists.example.com/listinfo/xtest@example.com>,
-        <mailto:xtest-leave@example.com>
-    List-Archive: <http://lists.example.com/archives/xtest@example.com>
-    List-Help: <mailto:xtest-request@example.com?subject=help>
     <BLANKLINE>
     First post!
     <BLANKLINE>
     >>> dump_msgdata(messages[0].msgdata)
     _parsemsg       : False
-    listname        : xtest@example.com
+    listname        : test@example.com
     original_sender : aperson@example.com
     origsubj        : My first post
     recipients      : set([])
@@ -159,28 +117,13 @@ There's now one message in the digest mailbox, getting ready to be sent.
     1
     >>> print list(digest)[0].as_string()
     From: aperson@example.com
-    To: xtest@example.com
+    To: test@example.com
     Message-ID: <first>
-    Subject: [Xtest] My first post
-    X-BeenThere: xtest@example.com
+    Subject: [Test] My first post
     X-Mailman-Version: ...
     Precedence: list
-    List-Id: <xtest.example.com>
-    X-Message-ID-Hash: 4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
-    List-Post: <mailto:xtest@example.com>
-    List-Subscribe:
-        <http://lists.example.com/listinfo/xtest@example.com>,
-        <mailto:xtest-join@example.com>
-    Archived-At:
-        http://lists.example.com/archives/4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
-    List-Unsubscribe:
-        <http://lists.example.com/listinfo/xtest@example.com>,
-        <mailto:xtest-leave@example.com>
-    List-Archive: <http://lists.example.com/archives/xtest@example.com>
-    List-Help: <mailto:xtest-request@example.com?subject=help>
     <BLANKLINE>
     First post!
-    <BLANKLINE>
     <BLANKLINE>
 
 

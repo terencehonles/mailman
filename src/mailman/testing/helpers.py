@@ -353,7 +353,7 @@ def reset_the_world():
     """Reset everything:
 
     * Clear out the database
-    * Remove all residual queue files
+    * Remove all residual queue and digest files
     * Clear the message store
     * Reset the global style manager
 
@@ -362,6 +362,11 @@ def reset_the_world():
     """
     # Reset the database between tests.
     config.db._reset()
+    # Remove any digest files.
+    for dirpath, dirnames, filenames in os.walk(config.LIST_DATA_DIR):
+        for filename in filenames:
+            if filename.endswith('.mmdf'):
+                os.remove(os.path.join(dirpath, filename))
     # Remove all residual queue files.
     for dirpath, dirnames, filenames in os.walk(config.QUEUE_DIR):
         for filename in filenames:

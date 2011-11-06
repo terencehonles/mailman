@@ -46,7 +46,6 @@ All readable attributes for a list are available on a sub-resource.
     join_address: test-one-join@example.com
     last_post_at: None
     leave_address: test-one-leave@example.com
-    list_id: test-one.example.com
     list_name: test-one
     mail_host: example.com
     next_digest_number: 1

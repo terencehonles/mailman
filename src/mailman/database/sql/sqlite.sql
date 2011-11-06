@@ -99,7 +99,6 @@ CREATE TABLE mailinglist (
     -- List identity
     list_name TEXT,
     mail_host TEXT,
-    list_id TEXT,
     include_list_post_header BOOLEAN,
     include_rfc2369_headers BOOLEAN,
     -- Attributes not directly modifiable via the web u/i

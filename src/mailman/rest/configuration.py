@@ -188,7 +188,6 @@ ATTRIBUTES = dict(
     join_address=GetterSetter(None),
     last_post_at=GetterSetter(None),
     leave_address=GetterSetter(None),
-    list_id=GetterSetter(None),
     list_name=GetterSetter(None),
     next_digest_number=GetterSetter(None),
     no_reply_address=GetterSetter(None),

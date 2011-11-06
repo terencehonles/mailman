@@ -105,9 +105,6 @@ class IMailingList(Interface):
         mailing lists, or in headers, and so forth.  It should be as succinct
         as you can get it, while still identifying what the list is.""")
 
-    list_id = Attribute(
-        """The RFC 2919 List-ID header value.""")
-
     include_list_post_header = Attribute(
         """Flag specifying whether to include the RFC 2369 List-Post header.
         This is usually set to True, except for announce-only lists.""")
