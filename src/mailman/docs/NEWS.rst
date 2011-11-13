@@ -21,6 +21,10 @@ Architecture
  * Dynamically calculate the `List-Id` header instead of storing it in the
    database.  This means it cannot be changed.
 
+Commands
+--------
+ * `bin/mailman shell` is an alias for `withlist`.
+
 Bug fixes
 ---------
  * Fixed KeyError in retry runner, contributed by Stephen A. Goss.

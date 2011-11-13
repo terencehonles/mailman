@@ -21,6 +21,7 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
+    'Shell',
     'Withlist',
     ]
 
@@ -212,3 +213,10 @@ mailing list.  You could put the following function in a file called
 and run this from the command line:
 
     % bin/mailman withlist -r change mylist@example.com 'My List'""")
+
+        
+
+class Shell(Withlist):
+    """An alias for `withlist`."""
+    
+    name = 'shell'
