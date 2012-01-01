@@ -544,7 +544,7 @@ mailing list.
     >>> mlist.send_welcome_msg = True
     >>> id_4 = moderator.hold_subscription(mlist,
     ...     'fperson@example.org', 'Frank Person',
-    ...     '{NONE}abcxyz', DeliveryMode.regular, 'en')
+    ...     'abcxyz', DeliveryMode.regular, 'en')
 
 A message will be sent to the moderators telling them about the held
 subscription and the fact that they may need to approve it.
@@ -695,7 +695,7 @@ Frank Person is now a member of the mailing list.
     >>> print member.user.real_name
     Frank Person
     >>> print member.user.password
-    {NONE}abcxyz
+    {CLEARTEXT}abcxyz
 
 
 Holding unsubscription requests

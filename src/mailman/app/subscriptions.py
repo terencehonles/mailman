@@ -26,6 +26,7 @@ __all__ = [
     ]
 
 
+from flufl.password import generate
 from operator import attrgetter
 from storm.expr import And, Or
 from uuid import UUID
@@ -43,7 +44,6 @@ from mailman.interfaces.subscriptions import (
     ISubscriptionService, MissingUserError)
 from mailman.interfaces.usermanager import IUserManager
 from mailman.model.member import Member
-from mailman.utilities.passwords import make_user_friendly_password
 
 
 
@@ -161,7 +161,7 @@ class SubscriptionService:
             # password to a system default.  This will have to get reset since
             # it can't be retrieved.  Note that none of these are used unless
             # the address is completely new to us.
-            password = make_user_friendly_password()
+            password = generate(int(config.passwords.password_length))
             return add_member(mlist, subscriber, real_name, password,
                               delivery_mode,
                               system_preferences.preferred_language, role)
