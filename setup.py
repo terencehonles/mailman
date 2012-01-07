@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2011 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2012 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -98,6 +98,7 @@ case second `m'.  Any other spelling is incorrect.""",
         'flufl.enum',
         'flufl.i18n',
         'flufl.lock',
+        'flufl.password',
         'httplib2',
         'lazr.config',
         'lazr.smtptest',

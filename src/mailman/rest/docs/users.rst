@@ -66,7 +66,7 @@ Creating users via the API
 ==========================
 
 New users can be created through the REST API.  To do so requires the initial
-email address for the user, and optionally the user's full name and password.
+email address for the user, a password, and optionally the user's full name.
 ::
 
     >>> transaction.abort()

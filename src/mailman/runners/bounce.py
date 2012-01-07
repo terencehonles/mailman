@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2011 by the Free Software Foundation, Inc.
+# Copyright (C) 2001-2012 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -70,9 +70,18 @@ class BounceRunner(Runner):
                 # done.s
                 addresses = scan_message(msg)
         # If that still didn't return us any useful addresses, then send it on
-        # or discard it.
+        # or discard it.  The addresses will come back from flufl.bounce as
+        # bytes/8-bit strings, but we must store them as unicodes in the
+        # database.  Assume utf-8 encoding, but be cautious.
         if len(addresses) > 0:
             for address in addresses:
+                if isinstance(address, bytes):
+                    try:
+                        address = address.decode('utf-8')
+                    except UnicodeError:
+                        log.exception('Ignoring non-UTF-8 encoded '
+                                      'address: {0}'.format(address))
+                        continue
                 self._processor.register(mlist, address, msg, context)
         else:
             log.info('Bounce message w/no discernable addresses: %s',

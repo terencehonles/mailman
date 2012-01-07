@@ -1,4 +1,4 @@
-# Copyright (C) 2009-2011 by the Free Software Foundation, Inc.
+# Copyright (C) 2009-2012 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -29,6 +29,7 @@ import sys
 import codecs
 
 from email.utils import formataddr, parseaddr
+from flufl.password import generate
 from operator import attrgetter
 from zope.component import getUtility
 from zope.interface import implements
@@ -40,7 +41,6 @@ from mailman.interfaces.command import ICLISubCommand
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import (
     AlreadySubscribedError, DeliveryMode, DeliveryStatus)
-from mailman.utilities.passwords import make_user_friendly_password
 
 
 
@@ -198,7 +198,7 @@ class Members:
                 real_name = real_name.decode(fp.encoding)
                 email = email.decode(fp.encoding)
                 # Give the user a default, user-friendly password.
-                password = make_user_friendly_password()
+                password = generate(int(config.passwords.password_length))
                 try:
                     add_member(mlist, email, real_name, password,
                                DeliveryMode.regular,

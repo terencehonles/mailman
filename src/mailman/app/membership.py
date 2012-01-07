@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2011 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2012 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -27,9 +27,11 @@ __all__ = [
 
 
 from email.utils import formataddr
+from flufl.password import lookup, make_secret
 from zope.component import getUtility
 
 from mailman.app.notifications import send_goodbye_message
+from mailman.config import config
 from mailman.core.i18n import _
 from mailman.email.message import OwnerNotification
 from mailman.interfaces.address import IEmailValidator
@@ -38,7 +40,6 @@ from mailman.interfaces.member import (
     MemberRole, MembershipIsBannedError, NotAMemberError)
 from mailman.interfaces.usermanager import IUserManager
 from mailman.utilities.i18n import make
-from mailman.utilities.passwords import encrypt_password
 
 
 
@@ -55,7 +56,7 @@ def add_member(mlist, email, realname, password, delivery_mode, language,
     :type email: str
     :param realname: The subscriber's full name.
     :type realname: str
-    :param password: The subscriber's password.
+    :param password: The subscriber's plain text password.
     :type password: str
     :param delivery_mode: The delivery mode the subscriber has chosen.
     :type delivery_mode: DeliveryMode
@@ -96,7 +97,8 @@ def add_member(mlist, email, realname, password, delivery_mode, language,
             user.link(address)
         # Encrypt the password using the currently selected scheme.  The
         # scheme is recorded in the hashed password string.
-        user.password = encrypt_password(password)
+        scheme = lookup(config.passwords.password_scheme.upper())
+        user.password = make_secret(password, scheme)
         user.preferences.preferred_language = language
         member = mlist.subscribe(address, role)
         member.preferences.delivery_mode = delivery_mode

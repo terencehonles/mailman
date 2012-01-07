@@ -1,4 +1,4 @@
-# Copyright (C) 2011 by the Free Software Foundation, Inc.
+# Copyright (C) 2011-2012 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -26,18 +26,18 @@ __all__ = [
     ]
 
 
+from flufl.password import lookup, make_secret, generate
 from restish import http, resource
 from uuid import UUID
 from zope.component import getUtility
 
+from mailman.config import config
 from mailman.interfaces.address import ExistingAddressError
 from mailman.interfaces.usermanager import IUserManager
 from mailman.rest.addresses import UserAddresses
 from mailman.rest.helpers import CollectionMixin, etag, no_content, path_to
 from mailman.rest.preferences import Preferences
 from mailman.rest.validator import Validator
-from mailman.utilities.passwords import (
-    encrypt_password, make_user_friendly_password)
 
 
 
@@ -101,8 +101,9 @@ class AllUsers(_UserBase):
                 error.email))
         if password is None:
             # This will have to be reset since it cannot be retrieved.
-            password = make_user_friendly_password()
-        user.password = encrypt_password(password)
+            password = generate(int(config.passwords.password_length))
+        scheme = lookup(config.passwords.password_scheme.upper())
+        user.password = make_secret(password, scheme)
         location = path_to('users/{0}'.format(user.user_id.int))
         return http.created(location, [], None)
 
