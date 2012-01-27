@@ -65,13 +65,9 @@ class ListManager:
     def get(self, fqdn_listname):
         """See `IListManager`."""
         listname, at, hostname = fqdn_listname.partition('@')
-        mlist = config.db.store.find(MailingList,
-                                     list_name=listname,
-                                     mail_host=hostname).one()
-        if mlist is not None:
-            # XXX Fixme
-            mlist._restore()
-        return mlist
+        return config.db.store.find(MailingList,
+                                    list_name=listname,
+                                    mail_host=hostname).one()
 
     def delete(self, mlist):
         """See `IListManager`."""

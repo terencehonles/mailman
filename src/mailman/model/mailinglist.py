@@ -200,14 +200,17 @@ class MailingList(Model):
         self.mail_host = hostname
         # For the pending database
         self.next_request_id = 1
-        self._restore()
+        # We need to set up the rosters.  Normally, this method will get
+        # called when the MailingList object is loaded from the database, but
+        # that's not the case when the constructor is called.  So, set up the
+        # rosters explicitly.
+        self.__storm_loaded__()
         self.personalize = Personalization.none
         self.real_name = string.capwords(
             SPACE.join(listname.split(UNDERSCORE)))
         makedirs(self.data_path)
 
-    # XXX FIXME
-    def _restore(self):
+    def __storm_loaded__(self):
         self.owners = roster.OwnerRoster(self)
         self.moderators = roster.ModeratorRoster(self)
         self.administrators = roster.AdministratorRoster(self)
