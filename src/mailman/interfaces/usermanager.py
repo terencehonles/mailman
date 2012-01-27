@@ -110,3 +110,6 @@ class IUserManager(Interface):
 
     addresses = Attribute(
         """An iterator over all the `IAddresses` managed by this manager.""")
+
+    members = Attribute(
+        """An iterator of all the `IMembers` in the database.""")

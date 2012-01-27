@@ -31,6 +31,7 @@ from mailman.config import config
 from mailman.interfaces.address import ExistingAddressError
 from mailman.interfaces.usermanager import IUserManager
 from mailman.model.address import Address
+from mailman.model.member import Member
 from mailman.model.preferences import Preferences
 from mailman.model.user import User
 
@@ -107,3 +108,9 @@ class UserManager:
         """See `IUserManager`."""
         for address in config.db.store.find(Address):
             yield address
+
+    @property
+    def members(self):
+        """See `IUserManager."""
+        for member in config.db.store.find(Member):
+                yield member

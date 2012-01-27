@@ -146,3 +146,35 @@ If a non-existent user id is given, None is returned.
     >>> from uuid import UUID
     >>> print user_manager.get_user_by_id(UUID(int=801))
     None
+
+
+Finding all members
+===================
+
+The user manager can return all the members known to the system.
+
+    >>> mlist = create_list('test@example.com')
+    >>> mlist.subscribe(list(user_2.addresses)[0])
+    <Member: bperson@example.com on test@example.com as MemberRole.member>
+    >>> mlist.subscribe(user_manager.create_address('eperson@example.com'))
+    <Member: eperson@example.com on test@example.com as MemberRole.member>
+    >>> mlist.subscribe(user_manager.create_address('fperson@example.com'))
+    <Member: fperson@example.com on test@example.com as MemberRole.member>
+
+Bart is also the owner of the mailing list.
+
+    >>> from mailman.interfaces.member import MemberRole
+    >>> mlist.subscribe(list(user_2.addresses)[0], MemberRole.owner)
+    <Member: bperson@example.com on test@example.com as MemberRole.owner>
+
+There are now four members in the system.  Sort them by address then role.
+
+    >>> def sort_key(member):
+    ...     return (member.address.email, member.role.name)
+    >>> members = sorted(user_manager.members, key=sort_key)
+    >>> for member in members:
+    ...     print member.mailing_list, member.address.email, member.role
+    test@example.com bperson@example.com MemberRole.member
+    test@example.com bperson@example.com MemberRole.owner
+    test@example.com eperson@example.com MemberRole.member
+    test@example.com fperson@example.com MemberRole.member

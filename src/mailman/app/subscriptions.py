@@ -48,7 +48,7 @@ from mailman.model.member import Member
 
 
 def _membership_sort_key(member):
-    """Sort function for get_memberships().
+    """Sort function for get_members().
 
     The members are sorted first by fully-qualified mailing list name,
     then by subscribed email address, then by role.
