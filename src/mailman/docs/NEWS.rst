@@ -21,6 +21,10 @@ Architecture
  * Dynamically calculate the `List-Id` header instead of storing it in the
    database.  This means it cannot be changed.
 
+Interfaces
+----------
+ * Add property `IUserManager.members` to return all `IMembers` in the system.
+
 Commands
 --------
  * `bin/mailman shell` is an alias for `withlist`.

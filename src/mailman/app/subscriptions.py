@@ -70,20 +70,25 @@ class SubscriptionService:
 
     def get_members(self):
         """See `ISubscriptionService`."""
-        # XXX 2010-02-24 barry Clean this up.
-        # lazr.restful requires the return value to be a concrete list.
-        members = []
+        # {fqdn_listname -> {role -> [members]}}
+        by_list = {}
+        user_manager = getUtility(IUserManager)
+        for member in user_manager.members:
+            by_role = by_list.setdefault(member.mailing_list, {})
+            members = by_role.setdefault(member.role.name, [])
+            members.append(member)
+        # Flatten into single list sorted as per the interface.
+        all_members = []
         address_of_member = attrgetter('address.email')
-        list_manager = getUtility(IListManager)
-        for fqdn_listname in sorted(list_manager.names):
-            mailing_list = list_manager.get(fqdn_listname)
-            members.extend(
-                sorted(mailing_list.owners.members, key=address_of_member))
-            members.extend(
-                sorted(mailing_list.moderators.members, key=address_of_member))
-            members.extend(
-                sorted(mailing_list.members.members, key=address_of_member))
-        return members
+        for fqdn_listname in sorted(by_list):
+            by_role = by_list[fqdn_listname]
+            all_members.extend(
+                sorted(by_role.get('owner', []), key=address_of_member))
+            all_members.extend(
+                sorted(by_role.get('moderator', []), key=address_of_member))
+            all_members.extend(
+                sorted(by_role.get('member', []), key=address_of_member))
+        return all_members
 
     def get_member(self, member_id):
         """See `ISubscriptionService`."""
