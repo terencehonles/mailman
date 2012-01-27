@@ -137,10 +137,3 @@ class IListManager(Interface):
     name_components = Attribute(
         """An iterator over the 2-tuple of (list_name, mail_host) for all
         mailing lists managed by this list manager.""")
-
-    def get_mailing_lists():
-        """The list of all mailing lists.
-
-        :return: The list of all known mailing lists.
-        :rtype: list of `IMailingList`
-        """

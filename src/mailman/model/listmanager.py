@@ -102,9 +102,3 @@ class ListManager:
         for mail_host, list_name in result_set.values(MailingList.mail_host, 
                                                       MailingList.list_name):
             yield list_name, mail_host
-
-    # XXX 2010-02-24 barry Get rid of this.
-    def get_mailing_lists(self):
-        """See `IListManager`."""
-        # lazr.restful will not allow this to be a generator.
-        return list(self.mailing_lists)

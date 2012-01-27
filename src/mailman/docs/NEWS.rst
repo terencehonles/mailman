@@ -26,6 +26,7 @@ Interfaces
  * Add property `IUserManager.members` to return all `IMembers` in the system.
  * Add property `IListmanager.name_compoments` which returns 2-tuples for
    every mailing list as (list_name, mail_host).
+ * Remove previously deprecated `IListManager.get_mailing_lists()`.
 
 Commands
 --------
