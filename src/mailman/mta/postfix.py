@@ -100,7 +100,7 @@ class LMTP:
 
     def _do_write_file(self, fp):
         """Do the actual file writes for list creation."""
-        # Sort all existing mailing list names first by domain, then my local
+        # Sort all existing mailing list names first by domain, then by local
         # part.  For postfix we need a dummy entry for the domain.
         by_domain = {}
         for mlist in getUtility(IListManager).mailing_lists:

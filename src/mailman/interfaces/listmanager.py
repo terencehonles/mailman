@@ -134,6 +134,10 @@ class IListManager(Interface):
         """An iterator over the fully qualified list names of all mailing
         lists managed by this list manager.""")
 
+    name_components = Attribute(
+        """An iterator over the 2-tuple of (list_name, mail_host) for all
+        mailing lists managed by this list manager.""")
+
     def get_mailing_lists():
         """The list of all mailing lists.
 

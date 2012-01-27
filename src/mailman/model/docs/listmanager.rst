@@ -89,11 +89,29 @@ Iterating over all mailing lists
 ================================
 
 Once you've created a bunch of mailing lists, you can use the list manager to
-iterate over either the list objects, or the list names.
+iterate over the mailing list objects, the list posting addresses, or the list
+address components.
+::
 
     >>> mlist_3 = list_manager.create('_xtest_3@example.com')
     >>> mlist_4 = list_manager.create('_xtest_4@example.com')
-    >>> sorted(list_manager.names)
-    [u'_xtest@example.com', u'_xtest_3@example.com', u'_xtest_4@example.com']
-    >>> sorted(m.fqdn_listname for m in list_manager.mailing_lists)
-    [u'_xtest@example.com', u'_xtest_3@example.com', u'_xtest_4@example.com']
+
+    >>> for name in sorted(list_manager.names):
+    ...     print name
+    _xtest@example.com
+    _xtest_3@example.com
+    _xtest_4@example.com
+
+    >>> for fqdn_listname in sorted(m.fqdn_listname
+    ...                             for m in list_manager.mailing_lists):
+    ...     print fqdn_listname
+    _xtest@example.com
+    _xtest_3@example.com
+    _xtest_4@example.com
+
+    >>> for list_name, mail_host in sorted(list_manager.name_components,
+    ...                                    key=lambda (name, host): name):
+    ...     print list_name, '@', mail_host
+    _xtest   @ example.com
+    _xtest_3 @ example.com
+    _xtest_4 @ example.com

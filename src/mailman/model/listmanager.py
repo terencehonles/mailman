@@ -95,6 +95,14 @@ class ListManager:
                                                       MailingList.list_name):
             yield '{0}@{1}'.format(list_name, mail_host)
 
+    @property
+    def name_components(self):
+        """See `IListManager`."""
+        result_set = config.db.store.find(MailingList)
+        for mail_host, list_name in result_set.values(MailingList.mail_host, 
+                                                      MailingList.list_name):
+            yield list_name, mail_host
+
     # XXX 2010-02-24 barry Get rid of this.
     def get_mailing_lists(self):
         """See `IListManager`."""
