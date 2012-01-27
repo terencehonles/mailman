@@ -50,6 +50,13 @@ class IMailTransportAgentAliases(Interface):
 
         This method is a generator.  The posting address will be returned
         first, followed by the rest of the aliases in alphabetical order.
+
+        :param mlist: The mailing list.
+        :type mlist: An `IMailingList` or an object with `list_name`,
+            `mail_host`, and `posting_address` attributes.
+        :return: The set of fully qualified common aliases for the mailing
+            list.
+        :rtype: string
         """
 
     def destinations(mlist):
@@ -57,6 +64,13 @@ class IMailTransportAgentAliases(Interface):
 
         This method is a generator.  The posting address will be returned
         first, followed by the rest of the aliases in alphabetical order.
+
+        :param mlist: The mailing list.
+        :type mlist: An `IMailingList` or an object with a `list_name`
+            attribute.
+        :return: The set of short (i.e. without the @dom.ain part) common
+            aliases for the mailing list.
+        :rtype: string
         """
 
 

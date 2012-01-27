@@ -81,6 +81,46 @@ class TestAliases(unittest.TestCase):
             'test-unsubscribe',
             ])
 
+    def test_duck_typed_aliases(self):
+        # Test the .aliases() method with duck typed arguments.
+        class Duck:
+            def __init__(self, list_name, mail_host):
+                self.list_name = list_name
+                self.mail_host = mail_host
+                self.posting_address = '{0}@{1}'.format(list_name, mail_host)
+        duck_list = Duck('sample', 'example.net')
+        aliases = list(self.utility.aliases(duck_list))
+        self.assertEqual(aliases, [
+            'sample@example.net',
+            'sample-bounces@example.net',
+            'sample-confirm@example.net',
+            'sample-join@example.net',
+            'sample-leave@example.net',
+            'sample-owner@example.net',
+            'sample-request@example.net',
+            'sample-subscribe@example.net',
+            'sample-unsubscribe@example.net',
+            ])
+
+    def test_duck_typed_destinations(self):
+        # Test the .destinations() method with duck typed arguments.
+        class Duck:
+            def __init__(self, list_name):
+                self.list_name = list_name
+        duck_list = Duck('sample')
+        destinations = list(self.utility.destinations(duck_list))
+        self.assertEqual(destinations, [
+            'sample',
+            'sample-bounces',
+            'sample-confirm',
+            'sample-join',
+            'sample-leave',
+            'sample-owner',
+            'sample-request',
+            'sample-subscribe',
+            'sample-unsubscribe',
+            ])
+
 
 
 class TestPostfix(unittest.TestCase):
