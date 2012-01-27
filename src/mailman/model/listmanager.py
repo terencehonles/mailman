@@ -79,19 +79,21 @@ class ListManager:
     @property
     def mailing_lists(self):
         """See `IListManager`."""
-        for fqdn_listname in self.names:
-            yield self.get(fqdn_listname)
+        for mlist in config.db.store.find(MailingList):
+            yield mlist
 
     def __iter__(self):
         """See `IListManager`."""
-        for fqdn_listname in self.names:
-            yield self.get(fqdn_listname)
+        for mlist in config.db.store.find(MailingList):
+            yield mlist
 
     @property
     def names(self):
         """See `IListManager`."""
-        for mlist in config.db.store.find(MailingList):
-            yield '{0}@{1}'.format(mlist.list_name, mlist.mail_host)
+        result_set = config.db.store.find(MailingList)
+        for mail_host, list_name in result_set.values(MailingList.mail_host, 
+                                                      MailingList.list_name):
+            yield '{0}@{1}'.format(list_name, mail_host)
 
     # XXX 2010-02-24 barry Get rid of this.
     def get_mailing_lists(self):
