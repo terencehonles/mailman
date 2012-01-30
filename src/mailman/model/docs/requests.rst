@@ -37,12 +37,11 @@ A set of requests are always related to a particular mailing list, so given a
 mailing list you need to get its requests object.
 ::
 
-    >>> from mailman.interfaces.requests import IListRequests, IRequests
-    >>> from zope.component import getUtility
+    >>> from mailman.interfaces.requests import IListRequests
     >>> from zope.interface.verify import verifyObject
 
     >>> mlist = create_list('test@example.com')
-    >>> requests = getUtility(IRequests).get_list_requests(mlist)
+    >>> requests = IListRequests(mlist)
     >>> verifyObject(IListRequests, requests)
     True
     >>> requests.mailing_list

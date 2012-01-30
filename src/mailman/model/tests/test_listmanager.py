@@ -34,7 +34,7 @@ from mailman.interfaces.listmanager import (
     IListManager, ListCreatedEvent, ListCreatingEvent, ListDeletedEvent,
     ListDeletingEvent)
 from mailman.interfaces.messages import IMessageStore
-from mailman.interfaces.requests import IRequests
+from mailman.interfaces.requests import IListRequests
 from mailman.interfaces.subscriptions import ISubscriptionService
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
@@ -120,7 +120,7 @@ Message-ID: <argon>
         getUtility(IListManager).delete(self._ant)
         # This is a hack.  ListRequests don't access self._mailinglist in
         # their get_request() method.
-        requestsdb = getUtility(IRequests).get_list_requests(None)
+        requestsdb = IListRequests(self._bee)
         request = requestsdb.get_request(request_id)
         self.assertEqual(request, None)
         saved_message = getUtility(IMessageStore).get_message_by_id('<argon>')

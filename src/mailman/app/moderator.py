@@ -49,7 +49,7 @@ from mailman.interfaces.listmanager import ListDeletingEvent
 from mailman.interfaces.member import (
     AlreadySubscribedError, DeliveryMode, NotAMemberError)
 from mailman.interfaces.messages import IMessageStore
-from mailman.interfaces.requests import IRequests, RequestType
+from mailman.interfaces.requests import IListRequests, RequestType
 from mailman.utilities.datetime import now
 from mailman.utilities.i18n import make
 
@@ -100,7 +100,7 @@ def hold_message(mlist, msg, msgdata=None, reason=None):
     msgdata['_mod_reason'] = reason
     msgdata['_mod_hold_date'] = now().isoformat()
     # Now hold this request.  We'll use the message_id as the key.
-    requestsdb = getUtility(IRequests).get_list_requests(mlist)
+    requestsdb = IListRequests(mlist)
     request_id = requestsdb.hold_request(
         RequestType.held_message, message_id, msgdata)
     return request_id
@@ -110,14 +110,14 @@ def hold_message(mlist, msg, msgdata=None, reason=None):
 def handle_message(mlist, id, action,
                    comment=None, preserve=False, forward=None):
     message_store = getUtility(IMessageStore)
-    requestdb = getUtility(IRequests).get_list_requests(mlist)
+    requestdb = IListRequests(mlist)
     key, msgdata = requestdb.get_request(id)
     # Handle the action.
     rejection = None
     message_id = msgdata['_mod_message_id']
     sender = msgdata['_mod_sender']
     subject = msgdata['_mod_subject']
-    if action is Action.defer:
+    if action in (Action.defer, Action.hold):
         # Nothing to do, but preserve the message for later.
         preserve = True
     elif action is Action.discard:
@@ -205,7 +205,7 @@ def hold_subscription(mlist, address, realname, password, mode, language):
                 delivery_mode=str(mode),
                 language=language)
     # Now hold this request.  We'll use the address as the key.
-    requestsdb = getUtility(IRequests).get_list_requests(mlist)
+    requestsdb = IListRequests(mlist)
     request_id = requestsdb.hold_request(
         RequestType.subscription, address, data)
     vlog.info('%s: held subscription request from %s',
@@ -231,7 +231,7 @@ def hold_subscription(mlist, address, realname, password, mode, language):
 
 
 def handle_subscription(mlist, id, action, comment=None):
-    requestdb = getUtility(IRequests).get_list_requests(mlist)
+    requestdb = IListRequests(mlist)
     if action is Action.defer:
         # Nothing to do.
         return
@@ -277,7 +277,7 @@ def handle_subscription(mlist, id, action, comment=None):
 
 def hold_unsubscription(mlist, address):
     data = dict(address=address)
-    requestsdb = getUtility(IRequests).get_list_requests(mlist)
+    requestsdb = IListRequests(mlist)
     request_id = requestsdb.hold_request(
         RequestType.unsubscription, address, data)
     vlog.info('%s: held unsubscription request from %s',
@@ -303,7 +303,7 @@ def hold_unsubscription(mlist, address):
 
 
 def handle_unsubscription(mlist, id, action, comment=None):
-    requestdb = getUtility(IRequests).get_list_requests(mlist)
+    requestdb = IListRequests(mlist)
     key, data = requestdb.get_request(id)
     address = data['address']
     if action is Action.defer:
@@ -368,6 +368,6 @@ def handle_ListDeletingEvent(event):
         return
     # Get the held requests database for the mailing list.  Since the mailing
     # list is about to get deleted, we can delete all associated requests.
-    requestsdb = getUtility(IRequests).get_list_requests(event.mailing_list)
+    requestsdb = IListRequests(event.mailing_list)
     for request in requestsdb.held_requests:
         requestsdb.delete_request(request.id)

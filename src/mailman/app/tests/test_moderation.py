@@ -29,6 +29,7 @@ import unittest
 from mailman.app.lifecycle import create_list
 from mailman.app.moderator import handle_message, hold_message
 from mailman.interfaces.action import Action
+from mailman.interfaces.requests import IListRequests
 from mailman.runners.incoming import IncomingRunner
 from mailman.runners.outgoing import OutgoingRunner
 from mailman.runners.pipeline import PipelineRunner
@@ -95,3 +96,16 @@ Message-ID: <alpha>
         # envelope.
         self.assertEqual(message['x-mailfrom'], 'test-bounces@example.com')
         self.assertEqual(message['x-rcptto'], 'bart@example.com')
+
+    def test_hold_action_alias_for_defer(self):
+        # In handle_message(), the 'hold' action is the same as 'defer' for
+        # purposes of this API.
+        request_id = hold_message(self._mlist, self._msg)
+        handle_message(self._mlist, request_id, Action.defer)
+        # The message is still in the pending requests.
+        requests_db = IListRequests(self._mlist)
+        key, data = requests_db.get_request(request_id)
+        self.assertEqual(key, '<alpha>')
+        handle_message(self._mlist, request_id, Action.hold)
+        key, data = requests_db.get_request(request_id)
+        self.assertEqual(key, '<alpha>')

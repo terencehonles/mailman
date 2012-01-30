@@ -26,7 +26,6 @@ from __future__ import absolute_import, unicode_literals
 __metaclass__ = type
 __all__ = [
     'IListRequests',
-    'IRequests',
     'RequestType',
     ]
 
@@ -87,10 +86,14 @@ class IListRequests(Interface):
          Only items with a matching `type' are returned.
          """
 
-    def get_request(request_id):
+    def get_request(request_id, request_type):
         """Get the data associated with the request id, or None.
 
         :param request_id: The unique id for the request.
+        :type request_id: int
+        :param request_type: Optional request type that the requested id must
+            match, otherwise no match is returned.
+        :type request_type: `RequestType`
         :return: A 2-tuple of the key and data originally held, or None if the
             `request_id` is not in the database.
         """
@@ -100,16 +103,4 @@ class IListRequests(Interface):
 
         :param request_id: The unique id for the request.
         :raises KeyError: If `request_id` is not in the database.
-        """
-
-
-
-class IRequests(Interface):
-    """The requests database."""
-
-    def get_list_requests(mailing_list):
-        """Return the `IListRequests` object for the given mailing list.
-
-        :param mailing_list: An `IMailingList`.
-        :return: An `IListRequests` object for the mailing list.
         """

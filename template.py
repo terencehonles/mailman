@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2012 by the Free Software Foundation, Inc.
+# Copyright (C) 2012 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -17,7 +17,7 @@
 
 """Module stuff."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [

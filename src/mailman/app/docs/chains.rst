@@ -226,8 +226,8 @@ first item is a type code and the second item is a message id.
 The message itself is held in the message store.
 ::
 
-    >>> from mailman.interfaces.requests import IRequests
-    >>> list_requests = getUtility(IRequests).get_list_requests(mlist)
+    >>> from mailman.interfaces.requests import IListRequests
+    >>> list_requests = IListRequests(mlist)
     >>> rkey, rdata = list_requests.get_request(data['id'])
 
     >>> from mailman.interfaces.messages import IMessageStore

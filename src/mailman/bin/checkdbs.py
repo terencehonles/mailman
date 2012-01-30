@@ -20,7 +20,6 @@ import time
 import optparse
 
 from email.Charset import Charset
-from zope.component import getUtility
 
 from mailman import MailList
 from mailman import Utils
@@ -29,7 +28,7 @@ from mailman.configuration import config
 from mailman.core.i18n import _
 from mailman.email.message import UserNotification
 from mailman.initialize import initialize
-from mailman.interfaces.requests import IRequests
+from mailman.interfaces.requests import IListRequests, RequestType
 from mailman.version import MAILMAN_VERSION
 
 # Work around known problems with some RedHat cron daemons
@@ -63,7 +62,7 @@ def pending_requests(mlist):
     lcset = mlist.preferred_language.charset
     pending = []
     first = True
-    requestsdb = config.db.get_list_requests(mlist)
+    requestsdb = IListRequests(mlist)
     for request in requestsdb.of_type(RequestType.subscription):
         if first:
             pending.append(_('Pending subscriptions:'))
@@ -128,7 +127,7 @@ def auto_discard(mlist):
     # Discard old held messages
     discard_count = 0
     expire = config.days(mlist.max_days_to_hold)
-    requestsdb = config.db.get_list_requests(mlist)
+    requestsdb = IListRequests(mlist)
     heldmsgs = list(requestsdb.of_type(RequestType.held_message))
     if expire and heldmsgs:
         for request in heldmsgs:
@@ -158,7 +157,7 @@ def main():
         # The list must be locked in order to open the requests database
         mlist = MailList.MailList(name)
         try:
-            count = getUtility(IRequests).get_list_requests(mlist).count
+            count = IListRequests(mlist).count
             # While we're at it, let's evict yesterday's autoresponse data
             midnight_today = midnight()
             evictions = []

@@ -21,6 +21,13 @@ Architecture
  * Dynamically calculate the `List-Id` header instead of storing it in the
    database.  This means it cannot be changed.
 
+REST
+----
+ * Held messages can now be moderated through the REST API.  Mailing list
+   resources now accept a `held` path component.  GETing this returns all held
+   messages for the mailing list.  POSTing to a specific request id under this
+   url can dispose of the message using `Action` enums.
+
 Interfaces
 ----------
  * Add property `IUserManager.members` to return all `IMembers` in the system.
@@ -28,6 +35,12 @@ Interfaces
    every mailing list as (list_name, mail_host).
  * Remove previously deprecated `IListManager.get_mailing_lists()`.
  * `IMailTransportAgentAliases` now explicitly accepts duck-typed arguments.
+ * `IRequests` interface is removed.  Now just use adaptation from
+   `IListRequests` directly (which takes an `IMailingList` object).
+ * `handle_message()` now allows for `Action.hold` which is synonymous with
+   `Action.defer` (since the message is already being held).
+ * `IListRequests.get_request()` now takes an optional `request_type`
+   argument to narrow the search for the given request.
 
 Commands
 --------

@@ -15,13 +15,12 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Implementations of the IRequests and IListRequests interfaces."""
+"""Implementations of the pending requests interfaces."""
 
 from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'Requests',
     ]
 
 
@@ -34,7 +33,7 @@ from mailman.config import config
 from mailman.database.model import Model
 from mailman.database.types import Enum
 from mailman.interfaces.pending import IPendable, IPendings
-from mailman.interfaces.requests import IListRequests, IRequests, RequestType
+from mailman.interfaces.requests import IListRequests, RequestType
 
 
 
@@ -91,9 +90,11 @@ class ListRequests:
         config.db.store.add(request)
         return request.id
 
-    def get_request(self, request_id):
+    def get_request(self, request_id, request_type=None):
         result = config.db.store.get(_Request, request_id)
         if result is None:
+            return None
+        if request_type is not None and result.request_type != request_type:
             return None
         if result.data_hash is None:
             return result.key, result.data_hash
@@ -110,14 +111,6 @@ class ListRequests:
         # Throw away the pended data.
         getUtility(IPendings).confirm(request.data_hash)
         config.db.store.remove(request)
-
-
-
-class Requests:
-    implements(IRequests)
-
-    def get_list_requests(self, mailing_list):
-        return ListRequests(mailing_list)
 
 
 
