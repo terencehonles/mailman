@@ -30,7 +30,7 @@ And another helper for displaying messages in the virgin queue.
     ...     return qmsg, qdata
 
 
-Mailing list centric
+Mailing list-centric
 ====================
 
 A set of requests are always related to a particular mailing list, so given a

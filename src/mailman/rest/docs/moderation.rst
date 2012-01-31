@@ -38,7 +38,7 @@ When a message gets held for moderator approval, it shows up in this list.
                u'_mod_reason': u'Because',
                u'_mod_sender': u'anne@example.com'}
         http_etag: "..."
-        id: 1
+        id: ...
         key: <alpha>
     http_etag: "..."
     start: 0
@@ -46,8 +46,13 @@ When a message gets held for moderator approval, it shows up in this list.
 
 You can get an individual held message by providing the *request id* for that
 message.  This will include the text of the message.
+::
 
-    >>> dump_json('http://localhost:9001/3.0/lists/ant@example.com/held/1')
+    >>> def url(request_id):
+    ...     return ('http://localhost:9001/3.0/lists/'
+    ...             'ant@example.com/held/{0}'.format(request_id))
+
+    >>> dump_json(url(request_id))
     data: {u'_mod_subject': u'Something',
            u'_mod_message_id': u'<alpha>',
            u'extra': 7,
@@ -79,7 +84,7 @@ following:
 
 Let's see what happens when the above message is deferred.
 
-    >>> dump_json('http://localhost:9001/3.0/lists/ant@example.com/held/1', {
+    >>> dump_json(url(request_id), {
     ...     'action': 'defer',
     ...     })
     content-length: 0
@@ -89,7 +94,7 @@ Let's see what happens when the above message is deferred.
 
 The message is still in the moderation queue.
 
-    >>> dump_json('http://localhost:9001/3.0/lists/ant@example.com/held/1')
+    >>> dump_json(url(request_id))
     data: {u'_mod_subject': u'Something',
            u'_mod_message_id': u'<alpha>',
            u'extra': 7,
@@ -111,7 +116,7 @@ The message is still in the moderation queue.
 
 The held message can be discarded.
 
-    >>> dump_json('http://localhost:9001/3.0/lists/ant@example.com/held/1', {
+    >>> dump_json(url(request_id), {
     ...     'action': 'discard',
     ...     })
     content-length: 0
@@ -121,11 +126,63 @@ The held message can be discarded.
 
 After which, the message is gone from the moderation queue.
 
-    >>> dump_json('http://localhost:9001/3.0/lists/ant@example.com/held/1')
+    >>> dump_json(url(request_id))
     Traceback (most recent call last):
     ...
     HTTPError: HTTP Error 404: 404 Not Found
 
-- Hold another message
-- Show accept
-- Show reject? - probably not as we're just into testing app.moderator
+Messages can also be accepted via the REST API.  Let's hold a new message for
+moderation.
+::
+
+    >>> del msg['message-id']
+    >>> msg['Message-ID'] = '<bravo>'
+    >>> request_id = hold_message(ant, msg)
+    >>> transaction.commit()
+
+    >>> results = call_http(url(request_id))
+    >>> print results['key']
+    <bravo>
+
+    >>> dump_json(url(request_id), {
+    ...     'action': 'accept',
+    ...     })
+    content-length: 0
+    date: ...
+    server: ...
+    status: 204
+
+    >>> from mailman.testing.helpers import get_queue_messages
+    >>> messages = get_queue_messages('pipeline')
+    >>> len(messages)
+    1
+    >>> print messages[0].msg['message-id']
+    <bravo>
+
+Messages can be rejected via the REST API too.  These bounce the message back
+to the original author.
+::
+
+    >>> del msg['message-id']
+    >>> msg['Message-ID'] = '<charlie>'
+    >>> request_id = hold_message(ant, msg)
+    >>> transaction.commit()
+
+    >>> results = call_http(url(request_id))
+    >>> print results['key']
+    <charlie>
+
+    >>> dump_json(url(request_id), {
+    ...     'action': 'reject',
+    ...     })
+    content-length: 0
+    date: ...
+    server: ...
+    status: 204
+
+    >>> from mailman.testing.helpers import get_queue_messages
+    >>> messages = get_queue_messages('virgin')
+    >>> len(messages)
+    1
+    >>> print messages[0].msg['subject']
+    Request to mailing list "Ant" rejected
