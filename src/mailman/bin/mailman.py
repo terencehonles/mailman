@@ -44,7 +44,7 @@ def main():
     parser = argparse.ArgumentParser(
         description=_("""\
         The GNU Mailman mailing list management system
-        Copyright 1998-2011 by the Free Software Foundation, Inc.
+        Copyright 1998-2012 by the Free Software Foundation, Inc.
         http://www.list.org
         """),
         formatter_class=argparse.RawDescriptionHelpFormatter)

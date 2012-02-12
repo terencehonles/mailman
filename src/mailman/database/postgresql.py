@@ -26,7 +26,6 @@ __all__ = [
 
 
 from operator import attrgetter
-from pkg_resources import resource_string
 
 from mailman.database.base import StormBaseDatabase
 
@@ -34,6 +33,8 @@ from mailman.database.base import StormBaseDatabase
 
 class PostgreSQLDatabase(StormBaseDatabase):
     """Database class for PostgreSQL."""
+
+    TAG = 'postgres'
 
     def _database_exists(self, store):
         """See `BaseDatabase`."""
@@ -43,16 +44,13 @@ class PostgreSQLDatabase(StormBaseDatabase):
                           store.execute(table_query))
         return 'version' in table_names
 
-    def _get_schema(self):
-        """See `BaseDatabase`."""
-        return resource_string('mailman.database.sql', 'postgres.sql')
-
     def _post_reset(self, store):
         """PostgreSQL-specific test suite cleanup.
 
         Reset the <tablename>_id_seq.last_value so that primary key ids
         restart from zero for new tests.
         """
+        super(PostgreSQLDatabase, self)._post_reset(store)
         from mailman.database.model import ModelMeta
         classes = sorted(ModelMeta._class_registry,
                          key=attrgetter('__storm_table__'))

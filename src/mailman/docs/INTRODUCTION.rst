@@ -18,7 +18,7 @@ Learn more about GNU Mailman in the `Getting Started`_ documentation.
 Copyright
 =========
 
-Copyright 1998-2011 by the Free Software Foundation, Inc.
+Copyright 1998-2012 by the Free Software Foundation, Inc.
 
 This file is part of GNU Mailman.
 

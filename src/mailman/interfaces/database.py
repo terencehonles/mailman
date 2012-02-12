@@ -23,32 +23,17 @@ __metaclass__ = type
 __all__ = [
     'DatabaseError',
     'IDatabase',
-    'SchemaVersionMismatchError',
     ]
 
 
 from zope.interface import Interface
 
 from mailman.interfaces.errors import MailmanError
-from mailman.version import DATABASE_SCHEMA_VERSION
 
 
 
 class DatabaseError(MailmanError):
     """A problem with the database occurred."""
-
-
-class SchemaVersionMismatchError(DatabaseError):
-    """The database schema version number did not match what was expected."""
-
-    def __init__(self, got):
-        super(SchemaVersionMismatchError, self).__init__()
-        self._got = got
-
-    def __str__(self):
-        return ('Incompatible database schema version '
-                '(got: {0}, expected: {1})'.format(
-                    self._got, DATABASE_SCHEMA_VERSION))
 
 
 

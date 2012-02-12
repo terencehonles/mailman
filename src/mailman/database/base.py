@@ -24,18 +24,18 @@ __all__ = [
 
 
 import os
+import sys
 import logging
 
 from flufl.lock import Lock
 from lazr.config import as_boolean
+from pkg_resources import resource_listdir, resource_string
 from storm.cache import GenerationalCache
 from storm.locals import create_database, Store
 from zope.interface import implements
 
-import mailman.version
-
 from mailman.config import config
-from mailman.interfaces.database import IDatabase, SchemaVersionMismatchError
+from mailman.interfaces.database import IDatabase
 from mailman.model.version import Version
 from mailman.utilities.string import expand
 
@@ -50,6 +50,10 @@ class StormBaseDatabase:
 
     Use this as a base class for your DB-specific derived classes.
     """
+
+    # Tag used to distinguish the database being used.  Override this in base
+    # classes.
+    TAG = ''
 
     implements(IDatabase)
 
@@ -82,15 +86,6 @@ class StormBaseDatabase:
 
         Return False when Mailman needs to create and initialize the
         underlying database schema.
-
-        Base classes *must* override this.
-        """
-        raise NotImplementedError
-
-    def _get_schema(self):
-        """Return the database schema as a string.
-
-        This will be loaded into the database when it is first created.
 
         Base classes *must* override this.
         """
@@ -147,34 +142,80 @@ class StormBaseDatabase:
         store = Store(database, GenerationalCache())
         database.DEBUG = (as_boolean(config.database.debug)
                           if debug is None else debug)
-        # Check the master / schema database to see if the version table
-        # exists.  If so, then we assume the database schema is correctly
-        # initialized.  Storm does not currently provide schema creation.
-        if not self._database_exists(store):
-            # Initialize the database.  Start by getting the schema and
-            # discarding all blank and comment lines.
-            lines = self._get_schema().splitlines()
-            lines = (line for line in lines
+        self.store = store
+        self.load_migrations()
+        store.commit()
+
+    def load_migrations(self):
+        """Load all not-yet loaded migrations."""
+        migrations_path = config.database.migrations_path
+        if '.' in migrations_path:
+            parent, dot, child = migrations_path.rpartition('.')
+        else:
+            parent = migrations_path
+            child =''
+        # If the database does not yet exist, load the base schema.
+        filenames = sorted(resource_listdir(parent, child))
+        # Find out which schema migrations have already been loaded.
+        if self._database_exists(self.store):
+            versions = set(version.version for version in
+                           self.store.find(Version, component='schema'))
+        else:
+            versions = set()
+        for filename in filenames:
+            module_fn, extension = os.path.splitext(filename)
+            if extension != '.py':
+                continue
+            parts = module_fn.split('_')
+            if len(parts) < 2:
+                continue
+            version = parts[1]
+            if version in versions:
+                # This one is already loaded.
+                continue
+            module_path = migrations_path + '.' + module_fn
+            __import__(module_path)
+            upgrade = getattr(sys.modules[module_path], 'upgrade', None)
+            if upgrade is None:
+                continue
+            upgrade(self, self.store, version, module_path)
+
+    def load_schema(self, store, version, filename, module_path):
+        """Load the schema from a file.
+
+        This is a helper method for migration classes to call.
+
+        :param store: The Storm store to load the schema into.
+        :type store: storm.locals.Store`
+        :param version: The schema version identifier of the form 
+            YYYYMMDDHHMMSS.
+        :type version: string
+        :param filename: The file name containing the schema to load.  Pass
+            `None` if there is no schema file to load.
+        :type filename: string
+        :param module_path: The fully qualified Python module path to the
+            migration module being loaded.  This is used to record information
+            for use by the test suite.
+        :type module_path: string
+        """
+        if filename is not None:
+            contents = resource_string('mailman.database.schema', filename)
+            # Discard all blank and comment lines.
+            lines = (line for line in contents.splitlines()
                      if line.strip() != '' and line.strip()[:2] != '--')
             sql = NL.join(lines)
             for statement in sql.split(';'):
                 if statement.strip() != '':
                     store.execute(statement + ';')
-        # Validate schema version.
-        v = store.find(Version, component='schema').one()
-        if not v:
-            # Database has not yet been initialized
-            v = Version(component='schema',
-                        version=mailman.version.DATABASE_SCHEMA_VERSION)
-            store.add(v)
-        elif v.version <> mailman.version.DATABASE_SCHEMA_VERSION:
-            # XXX Update schema
-            raise SchemaVersionMismatchError(v.version)
-        self.store = store
-        store.commit()
+        # Add a marker that indicates the migration version being applied.
+        store.add(Version(component='schema', version=version))
+        # Add a marker so that the module name can be found later.  This is
+        # used by the test suite to reset the database between tests.
+        store.add(Version(component=version, version=module_path))
 
     def _reset(self):
         """See `IDatabase`."""
         from mailman.database.model import ModelMeta
         self.store.rollback()
         ModelMeta._reset(self.store)
+        self.store.commit()

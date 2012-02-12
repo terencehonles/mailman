@@ -32,7 +32,7 @@ from mailman.database.model import Model
 class Version(Model):
     id = Int(primary=True)
     component = Unicode()
-    version = Int()
+    version = Unicode()
 
     def __init__(self, component, version):
         super(Version, self).__init__()

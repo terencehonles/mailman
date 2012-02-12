@@ -27,7 +27,6 @@ __all__ = [
 
 import os
 
-from pkg_resources import resource_string
 from urlparse import urlparse
 
 from mailman.database.base import StormBaseDatabase
@@ -36,6 +35,8 @@ from mailman.database.base import StormBaseDatabase
 
 class SQLiteDatabase(StormBaseDatabase):
     """Database class for SQLite."""
+
+    TAG = 'sqlite'
 
     def _database_exists(self, store):
         """See `BaseDatabase`."""
@@ -53,7 +54,3 @@ class SQLiteDatabase(StormBaseDatabase):
         # Ignore errors
         if fd > 0:
             os.close(fd)
-
-    def _get_schema(self):
-        """See `BaseDatabase`."""
-        return resource_string('mailman.database.sql', 'sqlite.sql')

@@ -295,7 +295,7 @@ CREATE INDEX ix_user_user_id ON user (_user_id);
 CREATE TABLE version (
     id INTEGER NOT NULL,
     component TEXT,
-    version INTEGER,
+    version TEXT,
     PRIMARY KEY (id)
     );
 

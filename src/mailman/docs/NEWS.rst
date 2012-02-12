@@ -2,7 +2,7 @@
 Mailman - The GNU Mailing List Management System
 ================================================
 
-Copyright (C) 1998-2011 by the Free Software Foundation, Inc.
+Copyright (C) 1998-2012 by the Free Software Foundation, Inc.
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 
 Here is a history of user visible changes to Mailman.
@@ -14,6 +14,7 @@ Here is a history of user visible changes to Mailman.
 
 Architecture
 ------------
+ * Schema migrations have been implemented.
  * Implement the style manager as a utility instead of an attribute hanging
    off the `mailman.config.config` object.
  * PostgreSQL support contributed by Stephen A. Goss. (LP: #860159)

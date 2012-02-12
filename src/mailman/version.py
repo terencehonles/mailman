@@ -40,9 +40,6 @@ HEX_VERSION = ((MAJOR_REV << 24) | (MINOR_REV << 16) | (MICRO_REV << 8) |
                (REL_LEVEL << 4)  | (REL_SERIAL << 0))
 
 
-# SQL database schema version
-DATABASE_SCHEMA_VERSION = 1
-
 # qfile/*.db schema version number
 QFILE_SCHEMA_VERSION = 3
 

@@ -2,7 +2,7 @@
 Mailman - The GNU Mailing List Management System
 ================================================
 
-Copyright (C) 1998-2011 by the Free Software Foundation, Inc.
+Copyright (C) 1998-2012 by the Free Software Foundation, Inc.
 
 This is GNU Mailman, a mailing list management system distributed under the
 terms of the GNU General Public License (GPL) version 3 or later.  The name of

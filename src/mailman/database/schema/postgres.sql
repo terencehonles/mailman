@@ -319,7 +319,7 @@ CREATE TABLE pendedkeyvalue (
 CREATE TABLE version (
     id SERIAL NOT NULL,
     component TEXT,
-    version INTEGER,
+    version TEXT,
     PRIMARY KEY (id)
     );
 
