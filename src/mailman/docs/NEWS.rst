@@ -46,6 +46,8 @@ Interfaces
 Commands
 --------
  * `bin/mailman shell` is an alias for `withlist`.
+ * The `confirm` email command now properly handles `Re:`-like prefixes, even
+   if they contain non-ASCII characters.  (LP: #685261)
 
 Bug fixes
 ---------

@@ -78,9 +78,13 @@ class CommandFinder:
             # Mail commands must be ASCII.
             self.command_lines.append(subject.encode('us-ascii'))
         except (HeaderParseError, UnicodeError, LookupError):
-            # The Subject header was unparseable or not ASCII, so just ignore
-            # it.
-            pass
+            # The Subject header was unparseable or not ASCII.  If the raw
+            # subject is a unicode object, convert it to ASCII ignoring all
+            # bogus characters.  Otherwise, there's nothing in the subject
+            # that we can use.
+            if isinstance(raw_subject, unicode):
+                safe_subject = raw_subject.encode('us-ascii', errors='ignore')
+                self.command_lines.append(safe_subject)
         # Find the first text/plain part of the message.
         part = None
         for part in typed_subpart_iterator(msg, 'text', 'plain'):
@@ -102,19 +106,14 @@ class CommandFinder:
         self.ignored_lines.extend(lines[max_lines:])
 
     def __iter__(self):
-        """Return each command line, split into commands and arguments.
-
-        :return: 2-tuples where the first element is the command and the
-            second element is a tuple of the arguments.
-        """
+        """Return each command line, split into space separated arguments."""
         while self.command_lines:
             line = self.command_lines.pop(0)
             self.processed_lines.append(line)
             parts = line.strip().split()
             if len(parts) == 0:
                 continue
-            command = parts.pop(0)
-            yield command, tuple(parts)
+            yield parts
 
 
 
@@ -174,13 +173,20 @@ class CommandRunner(Runner):
         print >> results, _('    Message-ID: $message_id')
         print >> results, _('\n- Results:')
         finder = CommandFinder(msg, msgdata, results)
-        for command_name, arguments in finder:
+        for parts in finder:
+            # Try to find a command on this line.  There may be a Re: prefix
+            # (possibly internationalized) so try with the first and second
+            # words on the line.
+            command_name = parts.pop(0)
             command = config.commands.get(command_name)
+            if command is None:
+                command_name = parts.pop(0)
+                command = config.commands.get(command_name)
             if command is None:
                 print >> results, _('No such command: $command_name')
             else:
                 status = command.process(
-                    mlist, msg, msgdata, arguments, results)
+                    mlist, msg, msgdata, parts, results)
                 assert status in ContinueProcessing, (
                     'Invalid status: %s' % status)
                 if status == ContinueProcessing.no:

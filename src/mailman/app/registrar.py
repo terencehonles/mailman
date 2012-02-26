@@ -25,8 +25,6 @@ __all__ = [
     ]
 
 
-import datetime
-
 from pkg_resources import resource_string
 from zope.component import getUtility
 from zope.interface import implements
@@ -39,6 +37,7 @@ from mailman.interfaces.member import MemberRole
 from mailman.interfaces.pending import IPendable, IPendings
 from mailman.interfaces.registrar import IRegistrar
 from mailman.interfaces.usermanager import IUserManager
+from mailman.utilities.datetime import now
 
 
 
@@ -131,7 +130,7 @@ class Registrar:
             # The IAddress and linked IUser already exist, so all we need to
             # do is verify the address.
             pass
-        address.verified_on = datetime.datetime.now()
+        address.verified_on = now()
         # If this registration is tied to a mailing list, subscribe the person
         # to the list right now.
         list_name = pendable.get('list_name')

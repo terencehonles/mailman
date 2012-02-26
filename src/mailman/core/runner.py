@@ -169,12 +169,12 @@ class Runner:
             # Other work we want to do each time through the loop.
             dlog.debug('[%s] doing periodic', me)
             self._do_periodic()
+            dlog.debug('[%s] committing transaction', me)
+            config.db.commit()
             dlog.debug('[%s] checking short circuit', me)
             if self._short_circuit():
                 dlog.debug('[%s] short circuiting', me)
                 break
-            dlog.debug('[%s] commiting', me)
-            config.db.commit()
         dlog.debug('[%s] ending oneloop: %s', me, len(files))
         return len(files)
 
