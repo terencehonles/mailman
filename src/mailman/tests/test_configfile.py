@@ -25,6 +25,7 @@ __all__ = [
 
 
 import os
+import sys
 import shutil
 import tempfile
 import unittest
@@ -40,8 +41,10 @@ from mailman.core.initialize import search_for_configuration_file
 def fakedirs(path):
     """Create and clean up a directory hierarchy."""
     os.makedirs(path)
-    yield
-    shutil.rmtree(path)
+    try:
+        yield
+    finally:
+        shutil.rmtree(path)
 
 
 @contextmanager
@@ -67,6 +70,17 @@ def chdir(new_cwd):
         yield
     finally:
         os.chdir(old_cwd)
+
+
+@contextmanager
+def argv0(new_argv0):
+    """Change argv0, then back again."""
+    old_argv0 = sys.argv[0]
+    sys.argv[0] = new_argv0
+    try:
+        yield
+    finally:
+        sys.argv[0] = old_argv0
 
 
 
@@ -179,3 +193,19 @@ class TestConfigFileSearchWithChroot(TestConfigFileBase):
             with open(os.path.join(fake_testdir, 'mailman.cfg'), 'w') as fp:
                 print >> fp, '# Fake mailman.cfg file'
             self.assertEqual(search_for_configuration_file(), config_file)
+
+    def test_sibling_directory(self):
+        # Test $argv0/../../etc/mailman.cfg
+        fake_root = '/usr/local/mm3'
+        fake_testdir = self._make_fake(fake_root)
+        config_file = os.path.join(fake_testdir, 'etc', 'mailman.cfg')
+        fake_config_file = os.path.join(fake_root, 'etc', 'mailman.cfg')
+        fake_argv0 = os.path.join(fake_root, 'bin', 'mailman')
+        with fakedirs(fake_testdir):
+            with argv0(fake_argv0):
+                os.mkdir(os.path.dirname(config_file))
+                # Write a mostly empty configuration file.
+                with open(config_file, 'w') as fp:
+                    print >> fp, '# Fake mailman.cfg file'
+                self.assertEqual(search_for_configuration_file(), 
+                                 fake_config_file)

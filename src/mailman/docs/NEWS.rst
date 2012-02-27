@@ -45,6 +45,8 @@ Interfaces
 
 Commands
 --------
+ * The `mailman.cfg` configuration file will now automatically be detected if
+   it exists in an `etc` directory which is a sibling of argv0.
  * `bin/mailman shell` is an alias for `withlist`.
  * The `confirm` email command now properly handles `Re:`-like prefixes, even
    if they contain non-ASCII characters.  (LP: #685261)

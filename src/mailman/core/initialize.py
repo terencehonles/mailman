@@ -37,6 +37,7 @@ __all__ = [
 
 
 import os
+import sys
 
 from pkg_resources import resource_string
 from zope.configuration import xmlconfig
@@ -63,19 +64,25 @@ def search_for_configuration_file():
     config_path = os.getenv('MAILMAN_CONFIG_FILE')
     # Both None and the empty string are considered "missing".
     if config_path and os.path.exists(config_path):
-        return config_path
+        return os.path.abspath(config_path)
     # ./mailman.cfg
     config_path = os.path.abspath('mailman.cfg')
     if os.path.exists(config_path):
-        return config_path
+        return os.path.abspath(config_path)
     # ~/.mailman.cfg
     config_path = os.path.join(os.getenv('HOME'), '.mailman.cfg')
     if os.path.exists(config_path):
-        return config_path
+        return os.path.abspath(config_path)
     # /etc/mailman.cfg
     config_path = '/etc/mailman.cfg'
     if os.path.exists(config_path):
-        return config_path
+        return os.path.abspath(config_path)
+    # $argv0/../../etc/mailman.cfg
+    bindir = os.path.dirname(sys.argv[0])
+    parent = os.path.dirname(bindir)
+    config_path = os.path.join(parent, 'etc', 'mailman.cfg')
+    if os.path.exists(config_path):
+        return os.path.abspath(config_path)
     # Are there any others we should search by default?
     return None
 
