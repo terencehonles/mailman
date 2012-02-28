@@ -113,6 +113,12 @@ class CommandFinder:
             parts = line.strip().split()
             if len(parts) == 0:
                 continue
+            # Ensure that all the parts are unicodes.  Since we only accept
+            # ASCII commands and arguments, ignore anything else.
+            parts = [(part 
+                      if isinstance(part, unicode)
+                      else part.decode('ascii', errors='ignore'))
+                     for part in parts]
             yield parts
 
 
@@ -122,13 +128,16 @@ class Results:
 
     implements(IEmailResults)
 
-    def __init__(self):
+    def __init__(self, charset='us-ascii'):
         self._output = StringIO()
+        self.charset = charset
         print >> self._output, _("""\
 The results of your email command are provided below.
 """)
 
     def write(self, text):
+        if not isinstance(text, unicode):
+            text = text.decode(self.charset, errors='ignore')
         self._output.write(text)
 
     def __unicode__(self):
@@ -160,7 +169,10 @@ class CommandRunner(Runner):
             log.info('%s -request message replied and discard', message_id)
             return False
         # Now craft the response and process the command lines.
-        results = Results()
+        charset = msg.get_param('charset')
+        if charset is None:
+            charset = 'us-ascii'
+        results = Results(charset)
         # Include just a few key pieces of information from the original: the
         # sender, date, and message id.
         print >> results, _('- Original message details:')
@@ -174,12 +186,14 @@ class CommandRunner(Runner):
         print >> results, _('\n- Results:')
         finder = CommandFinder(msg, msgdata, results)
         for parts in finder:
+            command = None
             # Try to find a command on this line.  There may be a Re: prefix
             # (possibly internationalized) so try with the first and second
             # words on the line.
-            command_name = parts.pop(0)
-            command = config.commands.get(command_name)
-            if command is None:
+            if len(parts) > 0:
+                command_name = parts.pop(0)
+                command = config.commands.get(command_name)
+            if command is None and len(parts) > 0:
                 command_name = parts.pop(0)
                 command = config.commands.get(command_name)
             if command is None:
@@ -210,10 +224,14 @@ class CommandRunner(Runner):
         reply = UserNotification(msg.sender, mlist.bounces_address,
                                  _('The results of your email commands'),
                                  lang=language)
-        # Find a charset for the response body.  Try ascii first, then
-        # latin-1 and finally falling back to utf-8.
+        cte = msg.get('content-transfer-encoding')
+        if cte is not None:
+            reply['Content-Transfer-Encoding'] = cte
+        # Find a charset for the response body.  Try the original message's
+        # charset first, then ascii, then latin-1 and finally falling back to
+        # utf-8.
         reply_body = unicode(results)
-        for charset in ('us-ascii', 'latin-1'):
+        for charset in (results.charset, 'us-ascii', 'latin-1'):
             try:
                 reply_body.encode(charset)
                 break

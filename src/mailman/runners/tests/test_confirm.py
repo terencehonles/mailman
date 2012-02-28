@@ -35,6 +35,7 @@ from mailman.interfaces.registrar import IRegistrar
 from mailman.interfaces.usermanager import IUserManager
 from mailman.runners.command import CommandRunner
 from mailman.testing.helpers import (
+    get_queue_messages,
     make_testable_runner,
     specialized_message_from_string as mfs)
 from mailman.testing.layers import ConfigLayer
@@ -94,3 +95,94 @@ To: test-confirm@example.com
         self.assertEqual(address.verified_on, datetime(2005, 8, 1, 7, 49, 23))
         address = manager.get_address('anne@example.org')
         self.assertEqual(address.email, 'anne@example.org')
+
+    def test_confirm_with_utf8_body(self):
+        # Clear out the virgin queue so that the test below only sees the
+        # reply to the confirmation message.
+        get_queue_messages('virgin')
+        subject = 'Re: confirm {0}'.format(self._token)
+        to = 'test-confirm+{0}@example.com'.format(self._token)
+        msg = mfs("""\
+From: Anne Person <anne@example.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+* test-confirm+90bf6ef335d92cfbbe540a5c9ebfecb107a48e48@example.com <=
+test-confirm+90bf6ef335d92cfbbe540a5c9ebfecb107a48e48@example.com>:
+> Email Address Registration Confirmation
+>=20
+> Hello, this is the GNU Mailman server at example.com.
+>=20
+> We have received a registration request for the email address
+>=20
+>     anne@example.org
+>=20
+> Before you can start using GNU Mailman at this site, you must first con=
+firm
+> that this is your email address.  You can do this by replying to this m=
+essage,
+> keeping the Subject header intact.  Or you can visit this web page
+>=20
+>     http://example.com/confirm/90bf6ef335d92cfbbe540a5c9ebfecb107a48e48
+>=20
+> If you do not wish to register this email address simply disregard this
+> message.  If you think you are being maliciously subscribed to the list=
+, or
+> have any other questions, you may contact
+>=20
+>     postmaster@example.com
+
+--=20
+
+Franziskanerstra=C3=9Fe
+""")
+        msg['Subject'] = subject
+        msg['To'] = to
+        self._commandq.enqueue(msg, dict(listname='test@example.com'))
+        self._runner.run()
+        # Anne is now a confirmed member so her user record and email address
+        # should exist in the database.
+        manager = getUtility(IUserManager)
+        user = manager.get_user('anne@example.org')
+        address = list(user.addresses)[0]
+        self.assertEqual(address.email, 'anne@example.org')
+        self.assertEqual(address.verified_on, datetime(2005, 8, 1, 7, 49, 23))
+        address = manager.get_address('anne@example.org')
+        self.assertEqual(address.email, 'anne@example.org')
+        messages = get_queue_messages('virgin')
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(messages[0].msgdata['recipients'], 
+                         set(['anne@example.org']))
+
+    def test_confirm_with_no_command_in_utf8_body(self):
+        get_queue_messages('virgin')
+        subject = 'Re: confirm {0}'.format(self._token)
+        to = 'test-confirm+{0}@example.com'.format(self._token)
+        msg = mfs("""\
+From: Anne Person <anne@example.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Franziskanerstra=C3=9Fe
+""")
+        msg['Subject'] = subject
+        msg['To'] = to
+        self._commandq.enqueue(msg, dict(listname='test@example.com'))
+        self._runner.run()
+        # Anne is now a confirmed member so her user record and email address
+        # should exist in the database.
+        manager = getUtility(IUserManager)
+        user = manager.get_user('anne@example.org')
+        address = list(user.addresses)[0]
+        self.assertEqual(address.email, 'anne@example.org')
+        self.assertEqual(address.verified_on, datetime(2005, 8, 1, 7, 49, 23))
+        address = manager.get_address('anne@example.org')
+        self.assertEqual(address.email, 'anne@example.org')
+        messages = get_queue_messages('virgin')
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(messages[0].msgdata['recipients'], 
+                         set(['anne@example.org']))
