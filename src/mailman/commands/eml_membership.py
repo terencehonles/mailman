@@ -73,6 +73,14 @@ example:
             print >> results, _(
                 '$self.name: No valid address found to subscribe')
             return ContinueProcessing.no
+        # Have we already seen one join request from this user during the
+        # processing of this email?
+        joins = getattr(results, 'joins', set())
+        if address in joins:
+            # Do not register this join.
+            return ContinueProcessing.yes
+        joins.add(address)
+        results.joins = joins
         getUtility(IRegistrar).register(mlist, address, real_name)
         person = formataddr((real_name, address))
         print >> results, _('Confirmation email sent to $person')
