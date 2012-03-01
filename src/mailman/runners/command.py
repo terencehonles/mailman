@@ -17,6 +17,8 @@
 
 """-request robot command runner."""
 
+from __future__ import absolute_import, print_function, unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'CommandRunner',
@@ -92,7 +94,7 @@ class CommandFinder:
         if part is None or part is not msg:
             # Either there was no text/plain part or we ignored some
             # non-text/plain parts.
-            print >> results, _('Ignoring non-text/plain MIME parts')
+            print(_('Ignoring non-text/plain MIME parts'), file=results)
         if part is None:
             # There was no text/plain part to be found.
             return
@@ -131,9 +133,9 @@ class Results:
     def __init__(self, charset='us-ascii'):
         self._output = StringIO()
         self.charset = charset
-        print >> self._output, _("""\
+        print(_("""\
 The results of your email command are provided below.
-""")
+"""), file=self._output)
 
     def write(self, text):
         if not isinstance(text, unicode):
@@ -175,15 +177,15 @@ class CommandRunner(Runner):
         results = Results(charset)
         # Include just a few key pieces of information from the original: the
         # sender, date, and message id.
-        print >> results, _('- Original message details:')
+        print(_('- Original message details:'), file=results)
         subject = msg.get('subject', 'n/a')
         date = msg.get('date', 'n/a')
         from_ = msg.get('from', 'n/a')
-        print >> results, _('    From: $from_')
-        print >> results, _('    Subject: $subject')
-        print >> results, _('    Date: $date')
-        print >> results, _('    Message-ID: $message_id')
-        print >> results, _('\n- Results:')
+        print(_('    From: $from_'), file=results)
+        print(_('    Subject: $subject'), file=results)
+        print(_('    Date: $date'), file=results)
+        print(_('    Message-ID: $message_id'), file=results)
+        print(_('\n- Results:'), file=results)
         finder = CommandFinder(msg, msgdata, results)
         for parts in finder:
             command = None
@@ -197,7 +199,7 @@ class CommandRunner(Runner):
                 command_name = parts.pop(0)
                 command = config.commands.get(command_name)
             if command is None:
-                print >> results, _('No such command: $command_name')
+                print(_('No such command: $command_name'), file=results)
             else:
                 status = command.process(
                     mlist, msg, msgdata, parts, results)
@@ -208,15 +210,15 @@ class CommandRunner(Runner):
         # All done.  Strip blank lines and send the response.
         lines = filter(None, (line.strip() for line in finder.command_lines))
         if len(lines) > 0:
-            print >> results, _('\n- Unprocessed:')
+            print(_('\n- Unprocessed:'), file=results)
             for line in lines:
-                print >> results, line
+                print(line, file=results)
         lines = filter(None, (line.strip() for line in finder.ignored_lines))
         if len(lines) > 0:
-            print >> results, _('\n- Ignored:')
+            print(_('\n- Ignored:'), file=results)
             for line in lines:
-                print >> results, line
-        print >> results, _('\n- Done.')
+                print(line, file=results)
+        print(_('\n- Done.'), file=results)
         # Send a reply, but do not attach the original message.  This is a
         # compromise because the original message is often helpful in tracking
         # down problems, but it's also a vector for backscatter spam.
