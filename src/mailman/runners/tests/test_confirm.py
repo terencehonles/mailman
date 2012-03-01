@@ -186,6 +186,3 @@ Franziskanerstra=C3=9Fe
         self.assertEqual(len(messages), 1)
         self.assertEqual(messages[0].msgdata['recipients'], 
                          set(['anne@example.org']))
-
-    def XXX_confirm_or_join_when_already_a_member(self):
-        pass
