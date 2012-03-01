@@ -27,6 +27,7 @@ __all__ = [
 import unittest
 
 from datetime import datetime
+from email.iterators import body_line_iterator
 from zope.component import getUtility
 
 from mailman.app.lifecycle import create_list
@@ -103,7 +104,7 @@ To: test-confirm@example.com
         subject = 'Re: confirm {0}'.format(self._token)
         to = 'test-confirm+{0}@example.com'.format(self._token)
         msg = mfs("""\
-From: Anne Person <anne@example.org
+From: Anne Person <anne@example.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
@@ -157,11 +158,13 @@ Franziskanerstra=C3=9Fe
                          set(['anne@example.org']))
 
     def test_confirm_with_no_command_in_utf8_body(self):
+        # Clear out the virgin queue so that the test below only sees the
+        # reply to the confirmation message.
         get_queue_messages('virgin')
         subject = 'Re: confirm {0}'.format(self._token)
         to = 'test-confirm+{0}@example.com'.format(self._token)
         msg = mfs("""\
-From: Anne Person <anne@example.org
+From: Anne Person <anne@example.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
@@ -186,3 +189,45 @@ Franziskanerstra=C3=9Fe
         self.assertEqual(len(messages), 1)
         self.assertEqual(messages[0].msgdata['recipients'], 
                          set(['anne@example.org']))
+
+    def test_double_confirmation(self):
+        # 'confirm' in the Subject and in the To header should not try to
+        # confirm the token twice.
+        #
+        # Clear out the virgin queue so that the test below only sees the
+        # reply to the confirmation message.
+        get_queue_messages('virgin')
+        subject = 'Re: confirm {0}'.format(self._token)
+        to = 'test-confirm+{0}@example.com'.format(self._token)
+        msg = mfs("""\
+From: Anne Person <anne@example.org>
+
+""")
+        msg['Subject'] = subject
+        msg['To'] = to
+        self._commandq.enqueue(msg, dict(listname='test@example.com',
+                                         subaddress='confirm'))
+        self._runner.run()
+        # Anne is now a confirmed member so her user record and email address
+        # should exist in the database.
+        manager = getUtility(IUserManager)
+        user = manager.get_user('anne@example.org')
+        self.assertEqual(list(user.addresses)[0].email, 'anne@example.org')
+        # Make sure that the confirmation was not attempted twice.
+        messages = get_queue_messages('virgin')
+        self.assertEqual(len(messages), 1)
+        # Search the contents of the results message.  There should be just
+        # one 'Confirmation email' line.
+        confirmation_lines = []
+        in_results = False
+        for line in body_line_iterator(messages[0].msg, decode=True):
+            line = line.strip()
+            if in_results:
+                if line.startswith('- Done'):
+                    break
+                if len(line) > 0:
+                    confirmation_lines.append(line)
+            if line.strip() == '- Results:':
+                in_results = True
+        self.assertEqual(len(confirmation_lines), 1)
+        self.assertFalse('did not match' in confirmation_lines[0])

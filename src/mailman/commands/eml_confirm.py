@@ -49,7 +49,15 @@ class Confirm:
         if len(arguments) == 0:
             print >> results, _('No confirmation token found')
             return ContinueProcessing.no
-        succeeded = getUtility(IRegistrar).confirm(arguments[0])
+        # Make sure we don't try to confirm the same token more than once.
+        token = arguments[0]
+        tokens = getattr(results, 'confirms', set())
+        if token in tokens:
+            # Do not try to confirm this one again.
+            return ContinueProcessing.yes
+        tokens.add(token)
+        results.confirms = tokens
+        succeeded = getUtility(IRegistrar).confirm(token)
         if succeeded:
             print >> results, _('Confirmed')
             return ContinueProcessing.yes
