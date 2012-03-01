@@ -27,9 +27,11 @@ __all__ = [
 import unittest
 
 from email.iterators import body_line_iterator
+from zope.component import getUtility
 
 from mailman.app.lifecycle import create_list
 from mailman.config import config
+from mailman.interfaces.usermanager import IUserManager
 from mailman.runners.command import CommandRunner
 from mailman.testing.helpers import (
     get_queue_messages,
@@ -79,6 +81,44 @@ subscribe
         confirmation_lines = []
         in_results = False
         for line in body_line_iterator(messages[1].msg, decode=True):
+            line = line.strip()
+            if in_results:
+                if line.startswith('- Done'):
+                    break
+                if len(line) > 0:
+                    confirmation_lines.append(line)
+            if line.strip() == '- Results:':
+                in_results = True
+        # There should be exactly one confirmation line.
+        self.assertEqual(len(confirmation_lines), 1)
+        # And the confirmation line should name Anne's email address.
+        self.assertTrue('anne@example.org' in confirmation_lines[0])
+
+    def test_join_when_already_a_member(self):
+        anne = getUtility(IUserManager).create_user('anne@example.org')
+        self._mlist.subscribe(list(anne.addresses)[0])
+        # When someone tries to join by email and they are already a member,
+        # ignore the request.
+        msg = mfs("""\
+From: anne@example.org
+To: test-join@example.com
+Subject: join
+
+""")
+        self._commandq.enqueue(msg, dict(listname='test@example.com'))
+        self._runner.run()
+        # There will be one message in the queue - a reply to Anne notifying
+        # her of the status of her command email.  Because Anne is already
+        # subscribed to the list, she gets and needs no confirmation.
+        messages = get_queue_messages('virgin')
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(messages[0].msg['subject'],
+                         'The results of your email commands')
+        # Search the contents of the results message.  There should be just
+        # one 'Confirmation email' line.
+        confirmation_lines = []
+        in_results = False
+        for line in body_line_iterator(messages[0].msg, decode=True):
             line = line.strip()
             if in_results:
                 if line.startswith('- Done'):

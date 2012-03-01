@@ -34,8 +34,9 @@ from zope.interface import implements
 
 from mailman.core.i18n import _
 from mailman.interfaces.command import ContinueProcessing, IEmailCommand
-from mailman.interfaces.member import DeliveryMode
+from mailman.interfaces.member import DeliveryMode, MemberRole
 from mailman.interfaces.registrar import IRegistrar
+from mailman.interfaces.subscriptions import ISubscriptionService
 from mailman.interfaces.usermanager import IUserManager
 
 
@@ -81,9 +82,14 @@ example:
             return ContinueProcessing.yes
         joins.add(address)
         results.joins = joins
-        getUtility(IRegistrar).register(mlist, address, real_name)
+        members = getUtility(ISubscriptionService).find_members(address)
         person = formataddr((real_name, address))
-        print >> results, _('Confirmation email sent to $person')
+        if len(members) > 0 and members[0].role is MemberRole.member:
+            assert(members[0].address.email == address)
+            print >> results, _('$person is already a member')
+        else:
+            getUtility(IRegistrar).register(mlist, address, real_name)
+            print >> results, _('Confirmation email sent to $person')
         return ContinueProcessing.yes
 
     def _parse_arguments(self, arguments):
