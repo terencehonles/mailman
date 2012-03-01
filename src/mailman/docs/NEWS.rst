@@ -50,6 +50,9 @@ Commands
  * `bin/mailman shell` is an alias for `withlist`.
  * The `confirm` email command now properly handles `Re:`-like prefixes, even
    if they contain non-ASCII characters.  (LP: #685261)
+ * The `join` email command no longer accepts an `address=` argument.  Its
+   `digest=` argument now accepts the following values: `no` (for regular
+   delivery), `mime`, or `plain`
 
 Bug fixes
 ---------

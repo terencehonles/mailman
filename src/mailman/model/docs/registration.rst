@@ -100,10 +100,11 @@ But this address is waiting for confirmation.
     >>> pendingdb = getUtility(IPendings)
 
     >>> dump_msgdata(pendingdb.confirm(token, expunge=False))
-    email    : aperson@example.com
-    list_name: alpha@example.com
-    real_name: Anne Person
-    type     : registration
+    delivery_mode: regular
+    email        : aperson@example.com
+    list_name    : alpha@example.com
+    real_name    : Anne Person
+    type         : registration
 
 
 Verification by email

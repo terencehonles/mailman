@@ -17,7 +17,7 @@
 
 """The email commands 'join' and 'subscribe'."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -47,7 +47,8 @@ class Join:
     implements(IEmailCommand)
 
     name = 'join'
-    argument_description = '[digest=<yes|no>] [address=<address>]'
+    # XXX 2012-02-29 BAW: DeliveryMode.summary is not yet supported.
+    argument_description = '[digest=<no|mime|plain>]'
     description = _("""\
 Join this mailing list.  You will be asked to confirm your subscription
 request and you may be issued a provisional password.
@@ -63,16 +64,16 @@ example:
     def process(self, mlist, msg, msgdata, arguments, results):
         """See `IEmailCommand`."""
         # Parse the arguments.
-        address, delivery_mode = self._parse_arguments(arguments)
-        # address could be None or the empty string.
-        if not address:
-            real_name, address = parseaddr(msg['from'])
+        delivery_mode = self._parse_arguments(arguments, results)
+        if delivery_mode is ContinueProcessing.no:
+            return ContinueProcessing.no
+        real_name, address = parseaddr(msg['from'])
         # Address could be None or the empty string.
         if not address:
             address = msg.sender
         if not address:
-            print >> results, _(
-                '$self.name: No valid address found to subscribe')
+            print(_('$self.name: No valid address found to subscribe'),
+                  file=results)
             return ContinueProcessing.no
         # Have we already seen one join request from this user during the
         # processing of this email?
@@ -82,60 +83,44 @@ example:
             return ContinueProcessing.yes
         joins.add(address)
         results.joins = joins
-        members = getUtility(ISubscriptionService).find_members(address)
         person = formataddr((real_name, address))
-        if len(members) > 0 and members[0].role is MemberRole.member:
-            assert(members[0].address.email == address)
-            print >> results, _('$person is already a member')
+        # Is this person already a member of the list?  Search for all
+        # matching memberships.
+        members = getUtility(ISubscriptionService).find_members(
+            address, mlist.fqdn_listname, MemberRole.member)
+        if len(members) > 0:
+            print(_('$person is already a member'), file=results)
         else:
-            getUtility(IRegistrar).register(mlist, address, real_name)
-            print >> results, _('Confirmation email sent to $person')
+            getUtility(IRegistrar).register(mlist, address, 
+                                            real_name, delivery_mode)
+            print(_('Confirmation email sent to $person'), file=results)
         return ContinueProcessing.yes
 
-    def _parse_arguments(self, arguments):
+    def _parse_arguments(self, arguments, results):
         """Parse command arguments.
 
         :param arguments: The sequences of arguments as given to the
             `process()` method.
-        :return: address, delivery_mode
+        :param results: The results object.
+        :return: The delivery mode, None, or ContinueProcessing.no on error.
         """
-        address = None
-        delivery_mode = None
+        mode = DeliveryMode.regular
         for argument in arguments:
             parts = argument.split('=', 1)
-            if parts[0].lower() == 'digest':
-                if digest is not None:
-                    print >> results, self.name, \
-                          _('duplicate argument: $argument')
-                    return ContinueProcessing.no
-                if len(parts) == 0:
-                    # We treat just plain 'digest' as 'digest=yes'.  We don't
-                    # yet support the other types of digest delivery.
-                    delivery_mode = DeliveryMode.mime_digests
-                else:
-                    if parts[1].lower() == 'yes':
-                        delivery_mode = DeliveryMode.mime_digests
-                    elif parts[1].lower() == 'no':
-                        delivery_mode = DeliveryMode.regular
-                    else:
-                        print >> results, self.name, \
-                              _('bad argument: $argument')
-                        return ContinueProcessing.no
-            elif parts[0].lower() == 'address':
-                if address is not None:
-                    print >> results, self.name, \
-                          _('duplicate argument $argument')
-                    return ContinueProcessing.no
-                if len(parts) == 0:
-                    print >> results, self.name, \
-                          _('missing argument value: $argument')
-                    return ContinueProcessing.no
-                if len(parts) > 1:
-                    print >> results, self.name, \
-                          _('too many argument values: $argument')
-                    return ContinueProcessing.no
-                address = parts[1]
-        return address, delivery_mode
+            if len(parts) != 2 or parts[0] != 'digest':
+                print(self.name, _('bad argument: $argument'),
+                      file=results)
+                return ContinueProcessing.no
+            mode = {
+                'no': DeliveryMode.regular,
+                'plain': DeliveryMode.plaintext_digests,
+                'mime': DeliveryMode.mime_digests,
+                }.get(parts[1])
+            if mode is None:
+                print(self.name, _('bad argument: $argument'),
+                      file=results)
+                return ContinueProcessing.no
+        return mode
 
 
 
@@ -160,19 +145,21 @@ class Leave:
         """See `IEmailCommand`."""
         email = msg.sender
         if not email:
-            print >> results, _(
-                '$self.name: No valid email address found to unsubscribe')
+            print(_('$self.name: No valid email address found to unsubscribe'),
+                  file=results)
             return ContinueProcessing.no
         user_manager = getUtility(IUserManager)
         user = user_manager.get_user(email)
         if user is None:
-            print >> results, _('No registered user for email address: $email')
+            print(_('No registered user for email address: $email'),
+                  file=results)
             return ContinueProcessing.no
         # The address that the -leave command was sent from, must be verified.
         # Otherwise you could link a bogus address to anyone's account, and
         # then send a leave command from that address.
         if user_manager.get_address(email).verified_on is None:
-            print >> results, _('Invalid or unverified email address: $email')
+            print(_('Invalid or unverified email address: $email'),
+                  file=results)
             return ContinueProcessing.no
         for user_address in user.addresses:
             # Only recognize verified addresses.
@@ -183,12 +170,13 @@ class Leave:
                 break
         else:
             # None of the user's addresses are subscribed to this mailing list.
-            print >> results, _(
-                '$self.name: $email is not a member of $mlist.fqdn_listname')
+            print(_(
+                '$self.name: $email is not a member of $mlist.fqdn_listname'),
+                file=results)
             return ContinueProcessing.no
         member.unsubscribe()
         person = formataddr((user.real_name, email))
-        print >> results, _('$person left $mlist.fqdn_listname')
+        print(_('$person left $mlist.fqdn_listname'), file=results)
         return ContinueProcessing.yes
 
 

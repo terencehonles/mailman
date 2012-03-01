@@ -127,7 +127,7 @@ def get_queue_messages(queue_name, sort_on=None):
         messages.append(_Bag(msg=msg, msgdata=msgdata))
         queue.finish(filebase)
     if sort_on is not None:
-        messages.sort(key=lambda item: item.msg[sort_on])
+        messages.sort(key=lambda item: str(item.msg[sort_on]))
     return messages
 
 

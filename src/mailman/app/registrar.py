@@ -25,6 +25,8 @@ __all__ = [
     ]
 
 
+import logging
+
 from pkg_resources import resource_string
 from zope.component import getUtility
 from zope.interface import implements
@@ -33,11 +35,14 @@ from mailman.core.i18n import _
 from mailman.email.message import UserNotification
 from mailman.interfaces.address import IEmailValidator
 from mailman.interfaces.listmanager import IListManager
-from mailman.interfaces.member import MemberRole
+from mailman.interfaces.member import DeliveryMode, MemberRole
 from mailman.interfaces.pending import IPendable, IPendings
 from mailman.interfaces.registrar import IRegistrar
 from mailman.interfaces.usermanager import IUserManager
 from mailman.utilities.datetime import now
+
+
+log = logging.getLogger('mailman.error')
 
 
 
@@ -52,8 +57,10 @@ class Registrar:
 
     implements(IRegistrar)
 
-    def register(self, mlist, email, real_name=None):
+    def register(self, mlist, email, real_name=None, delivery_mode=None):
         """See `IUserRegistrar`."""
+        if delivery_mode is None:
+            delivery_mode = DeliveryMode.regular
         # First, do validation on the email address.  If the address is
         # invalid, it will raise an exception, otherwise it just returns.
         getUtility(IEmailValidator).validate(email)
@@ -61,7 +68,8 @@ class Registrar:
         pendable = PendableRegistration(
             type=PendableRegistration.PEND_KEY,
             email=email,
-            real_name=real_name)
+            real_name=real_name,
+            delivery_mode=delivery_mode.name)
         pendable['list_name'] = mlist.fqdn_listname
         token = getUtility(IPendings).add(pendable)
         # There are three ways for a user to confirm their subscription.  They
@@ -92,6 +100,13 @@ class Registrar:
         email = pendable.get('email', missing)
         real_name = pendable.get('real_name', missing)
         list_name = pendable.get('list_name', missing)
+        pended_delivery_mode = pendable.get('delivery_mode', 'regular')
+        try:
+            delivery_mode = DeliveryMode[pended_delivery_mode]
+        except ValueError:
+            log.error('Invalid pended delivery_mode for {0}: {1}',
+                      email, pended_delivery_mode)
+            delivery_mode = DeliveryMode.regular
         if pendable.get('type') != PendableRegistration.PEND_KEY:
             # It seems like it would be very difficult to accurately guess
             # tokens, or brute force an attack on the SHA1 hash, so we'll just
@@ -137,7 +152,8 @@ class Registrar:
         if list_name is not None:
             mlist = getUtility(IListManager).get(list_name)
             if mlist:
-                mlist.subscribe(address, MemberRole.member)
+                member = mlist.subscribe(address, MemberRole.member)
+                member.preferences.delivery_mode = delivery_mode
         return True
 
     def discard(self, token):

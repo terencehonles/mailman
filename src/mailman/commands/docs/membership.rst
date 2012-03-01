@@ -29,7 +29,7 @@ The mail command ``join`` subscribes an email address to the mailing list.
         join address=myotheraddress@example.com
     <BLANKLINE>
     >>> print join.argument_description
-    [digest=<yes|no>] [address=<address>]
+    [digest=<no|mime|plain>]
 
 
 No address to join

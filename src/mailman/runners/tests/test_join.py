@@ -31,11 +31,15 @@ from zope.component import getUtility
 
 from mailman.app.lifecycle import create_list
 from mailman.config import config
+from mailman.interfaces.member import DeliveryMode
+from mailman.interfaces.registrar import IRegistrar
+from mailman.interfaces.subscriptions import ISubscriptionService
 from mailman.interfaces.usermanager import IUserManager
 from mailman.runners.command import CommandRunner
 from mailman.testing.helpers import (
     get_queue_messages,
     make_testable_runner,
+    reset_the_world,
     specialized_message_from_string as mfs)
 from mailman.testing.layers import ConfigLayer
 
@@ -50,6 +54,9 @@ class TestJoin(unittest.TestCase):
         self._mlist = create_list('test@example.com')
         self._commandq = config.switchboards['command']
         self._runner = make_testable_runner(CommandRunner, 'command')
+
+    def tearDown(self):
+        reset_the_world()
 
     def test_double_confirmation(self):
         # A join request comes in using both the -join address and the word
@@ -72,15 +79,14 @@ subscribe
         # second one is the confirmation message of her join request.
         messages = get_queue_messages('virgin', sort_on='subject')
         self.assertEqual(len(messages), 2)
-        # 'The' comes before 'confirm'
-        self.assertTrue(str(messages[0].msg['subject']).startswith('confirm'))
-        self.assertEqual(messages[1].msg['subject'],
+        self.assertTrue(str(messages[1].msg['subject']).startswith('confirm'))
+        self.assertEqual(messages[0].msg['subject'],
                          'The results of your email commands')
         # Search the contents of the results message.  There should be just
         # one 'Confirmation email' line.
         confirmation_lines = []
         in_results = False
-        for line in body_line_iterator(messages[1].msg, decode=True):
+        for line in body_line_iterator(messages[0].msg, decode=True):
             line = line.strip()
             if in_results:
                 if line.startswith('- Done'):
@@ -131,3 +137,93 @@ Subject: join
         self.assertEqual(len(confirmation_lines), 1)
         # And the confirmation line should name Anne's email address.
         self.assertTrue('anne@example.org' in confirmation_lines[0])
+
+
+
+class TestJoinWithDigests(unittest.TestCase):
+    """Test mailing list joins with the digests=<no|mime|plain> argument."""
+
+    layer = ConfigLayer
+
+    def setUp(self):
+        self._mlist = create_list('test@example.com')
+        self._commandq = config.switchboards['command']
+        self._runner = make_testable_runner(CommandRunner, 'command')
+
+    def tearDown(self):
+        reset_the_world()
+
+    def _confirm(self):
+        # There will be two messages in the queue - the confirmation messages,
+        # and a reply to Anne notifying her of the status of her command
+        # email.  We need to dig the confirmation token out of the Subject
+        # header of the latter so that we can confirm the subscription.
+        messages = get_queue_messages('virgin', sort_on='subject')
+        self.assertEqual(len(messages), 2)
+        subject_words = str(messages[1].msg['subject']).split()
+        self.assertEqual(subject_words[0], 'confirm')
+        token = subject_words[1]
+        status = getUtility(IRegistrar).confirm(token)
+        self.assertTrue(status, 'Confirmation failed')
+        # Now, make sure that Anne is a member of the list and is receiving
+        # digest deliveries.
+        members = getUtility(ISubscriptionService).find_members(
+            'anne@example.org')
+        self.assertEqual(len(members), 1)
+        return members[0]
+
+    def test_join_with_implicit_no_digests(self):
+        # Test the digest=mime argument to the join command.
+        msg = mfs("""\
+From: anne@example.org
+To: test-request@example.com
+
+join
+""")
+        self._commandq.enqueue(msg, dict(listname='test@example.com'))
+        self._runner.run()
+        anne = self._confirm()
+        self.assertEqual(anne.address.email, 'anne@example.org')
+        self.assertEqual(anne.delivery_mode, DeliveryMode.regular)
+
+    def test_join_with_explicit_no_digests(self):
+        # Test the digest=mime argument to the join command.
+        msg = mfs("""\
+From: anne@example.org
+To: test-request@example.com
+
+join digest=no
+""")
+        self._commandq.enqueue(msg, dict(listname='test@example.com'))
+        self._runner.run()
+        anne = self._confirm()
+        self.assertEqual(anne.address.email, 'anne@example.org')
+        self.assertEqual(anne.delivery_mode, DeliveryMode.regular)
+
+    def test_join_with_mime_digests(self):
+        # Test the digest=mime argument to the join command.
+        msg = mfs("""\
+From: anne@example.org
+To: test-request@example.com
+
+join digest=mime
+""")
+        self._commandq.enqueue(msg, dict(listname='test@example.com'))
+        self._runner.run()
+        anne = self._confirm()
+        self.assertEqual(anne.address.email, 'anne@example.org')
+        self.assertEqual(anne.delivery_mode, DeliveryMode.mime_digests)
+
+    def test_join_with_plain_digests(self):
+        # Test the digest=mime argument to the join command.
+        msg = mfs("""\
+From: anne@example.org
+To: test-request@example.com
+
+join digest=plain
+""")
+        self._commandq.enqueue(msg, dict(listname='test@example.com'))
+        self._runner.run()
+        anne = self._confirm()
+        self.assertEqual(anne.address.email, 'anne@example.org')
+        self.assertEqual(anne.delivery_mode, DeliveryMode.plaintext_digests)
