@@ -91,6 +91,7 @@ class BuiltInPipeline(BasePipeline):
         'cleanse',
         'cleanse-dkim',
         'cook-headers',
+        'rfc-2369',
         'to-digest',
         'to-archive',
         'to-usenet',

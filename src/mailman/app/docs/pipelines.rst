@@ -2,12 +2,11 @@
 Pipelines
 =========
 
-This runner's purpose in life is to process messages that have been accepted
-for posting, applying any modifications and also sending copies of the message
-to the archives, digests, nntp, and outgoing queues.  Pipelines are named and
-consist of a sequence of handlers, each of which is applied in turn.  Unlike
-rules and chains, there is no way to stop a pipeline from processing the
-message once it's started.
+Pipelines process messages that have been accepted for posting, applying any
+modifications and also sending copies of the message to the archives, digests,
+NNTP, and outgoing queues.  Pipelines are named and consist of a sequence of
+handlers, each of which is applied in turn.  Unlike rules and chains, there is
+no way to stop a pipeline from processing the message once it's started.
 
     >>> mlist = create_list('test@example.com')
     >>> print mlist.pipeline
@@ -41,11 +40,21 @@ etc.
     Subject: [Test] My first post
     X-Mailman-Version: ...
     Precedence: list
+    List-Id: <test.example.com>
+    X-Message-ID-Hash: 4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
+    List-Post: <mailto:test@example.com>
+    List-Subscribe: <http://lists.example.com/listinfo/test@example.com>,
+     <mailto:test-join@example.com>
+    Archived-At: http://lists.example.com/archives/4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
+    List-Unsubscribe: <http://lists.example.com/listinfo/test@example.com>,
+     <mailto:test-leave@example.com>
+    List-Archive: <http://lists.example.com/archives/test@example.com>
+    List-Help: <mailto:test-request@example.com?subject=help>
     <BLANKLINE>
     First post!
     <BLANKLINE>
 
-And the message metadata has information about recipients and other stuff.
+The message metadata has information about recipients and other stuff.
 However there are currently no recipients for this message.
 
     >>> dump_msgdata(msgdata)
@@ -54,7 +63,8 @@ However there are currently no recipients for this message.
     recipients      : set([])
     stripped_subject: My first post
 
-And the message is now sitting in various other processing queues.
+After pipeline processing, the message is now sitting in various other
+processing queues.
 
     >>> from mailman.testing.helpers import get_queue_messages
     >>> messages = get_queue_messages('archive')
@@ -67,6 +77,8 @@ And the message is now sitting in various other processing queues.
     Subject: [Test] My first post
     X-Mailman-Version: ...
     Precedence: list
+    List-Id: <test.example.com>
+    ...
     <BLANKLINE>
     First post!
     <BLANKLINE>
@@ -97,6 +109,8 @@ This is the message that will actually get delivered to end recipients.
     Subject: [Test] My first post
     X-Mailman-Version: ...
     Precedence: list
+    List-Id: <test.example.com>
+    ...
     <BLANKLINE>
     First post!
     <BLANKLINE>
@@ -122,6 +136,8 @@ There's now one message in the digest mailbox, getting ready to be sent.
     Subject: [Test] My first post
     X-Mailman-Version: ...
     Precedence: list
+    List-Id: <test.example.com>
+    ...
     <BLANKLINE>
     First post!
     <BLANKLINE>

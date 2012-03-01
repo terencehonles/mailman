@@ -21,13 +21,16 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'process',
+    'RFC2369',
     ]
 
 
 from email.utils import formataddr
+from zope.interface import implements
 
 from mailman.config import config
+from mailman.core.i18n import _
+from mailman.interfaces.handler import IHandler
 from mailman.pipeline.cook_headers import uheader
 
 CONTINUATION = ',\n\t'
@@ -93,3 +96,17 @@ def process(mlist, msg, msgdata):
         if len(h) + 2 + len(v) > 78:
             v = CONTINUATION.join(v.split(', '))
         msg[h] = v
+
+
+
+class RFC2369:
+    """Add the RFC 2369 List-* headers."""
+
+    implements(IHandler)
+
+    name = 'rfc-2369'
+    description = _('Add the RFC 2369 List-* headers.')
+
+    def process(self, mlist, msg, msgdata):
+        """See `IHandler`."""
+        process(mlist, msg, msgdata)
