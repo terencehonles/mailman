@@ -14,20 +14,17 @@ The mail command ``join`` subscribes an email address to the mailing list.
 ``subscribe`` is an alias for ``join``.
 
     >>> from mailman.commands.eml_membership import Join
+    >>> from mailman.utilities.string import wrap
     >>> join = Join()
     >>> print join.name
     join
-    >>> print join.description
-    Join this mailing list.  You will be asked to confirm your subscription
-    request and you may be issued a provisional password.
+    >>> print wrap(join.description)
+    You will be asked to confirm your subscription request and you may be
+    issued a provisional password.
     <BLANKLINE>
     By using the 'digest' option, you can specify whether you want digest
-    delivery or not.  If not specified, the mailing list's default will be
-    used.  You can also subscribe an alternative address by using the
-    'address' option.  For example:
-    <BLANKLINE>
-        join address=myotheraddress@example.com
-    <BLANKLINE>
+    delivery or not.  If not specified, the mailing list's default
+    delivery mode will be used.
     >>> print join.argument_description
     [digest=<no|mime|plain>]
 
@@ -232,7 +229,9 @@ list.  ``unsubscribe`` is an alias for ``leave``.
     >>> print leave.name
     leave
     >>> print leave.description
-    Leave this mailing list.  You will be asked to confirm your request.
+    Leave this mailing list.
+    <BLANKLINE>
+    You may be asked to confirm your request.
 
 Anne is a member of the ``baker@example.com`` mailing list, when she decides
 to leave it.  She sends a message to the ``-leave`` address for the list and

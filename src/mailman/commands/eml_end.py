@@ -38,6 +38,7 @@ class End:
     name = 'end'
     argument_description = ''
     description = _('Stop processing commands.')
+    short_description = description
 
     def process(self, mlist, msg, msgdata, arguments, results):
         """See `IEmailCommand`."""
@@ -49,3 +50,5 @@ class Stop(End):
     """The email 'stop' command (an alias for 'end')."""
 
     name = 'stop'
+    description = _("An alias for 'end'.")
+    short_description = description

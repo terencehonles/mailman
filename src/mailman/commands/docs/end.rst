@@ -1,3 +1,4 @@
+=================
 The 'end' command
 =================
 
@@ -5,8 +6,8 @@ The mail command processor recognized an 'end' command which tells it to stop
 processing email messages.
 
     >>> command = config.commands['end']
-    >>> command.name
-    'end'
+    >>> print command.name
+    end
     >>> print command.description
     Stop processing commands.
 
@@ -29,7 +30,7 @@ The 'stop' command is a synonym for 'end'.
     >>> print command.name
     stop
     >>> print command.description
-    Stop processing commands.
+    An alias for 'end'.
     >>> command.argument_description
     ''
     >>> print command.process(mlist, Message(), {}, (), None)

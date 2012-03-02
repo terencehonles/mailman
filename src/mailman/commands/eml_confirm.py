@@ -40,8 +40,9 @@ class Confirm:
     implements(IEmailCommand)
 
     name = 'confirm'
-    argument_description = ''
-    description = ''
+    argument_description = 'token'
+    description = _('Confirm a subscription request.')
+    short_description = description
 
     def process(self, mlist, msg, msgdata, arguments, results):
         """See `IEmailCommand`."""

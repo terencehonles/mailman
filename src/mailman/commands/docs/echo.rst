@@ -1,3 +1,4 @@
+==================
 The 'echo' command
 ==================
 
@@ -5,12 +6,12 @@ The mail command 'echo' simply replies with the original command and arguments
 to the sender.
 
     >>> command = config.commands['echo']
-    >>> command.name
-    'echo'
-    >>> command.argument_description
-    '[args]'
+    >>> print command.name
+    echo
+    >>> print command.argument_description
+    [args]
     >>> print command.description
-    Echo an acknowledgement.  Arguments are return unchanged.
+    Echo back your arguments.
 
 The original message is ignored, but the results receive the echoed command.
 ::

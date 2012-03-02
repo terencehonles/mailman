@@ -50,16 +50,14 @@ class Join:
     # XXX 2012-02-29 BAW: DeliveryMode.summary is not yet supported.
     argument_description = '[digest=<no|mime|plain>]'
     description = _("""\
-Join this mailing list.  You will be asked to confirm your subscription
-request and you may be issued a provisional password.
+You will be asked to confirm your subscription request and you may be issued a
+provisional password.
 
 By using the 'digest' option, you can specify whether you want digest delivery
-or not.  If not specified, the mailing list's default will be used.  You can
-also subscribe an alternative address by using the 'address' option.  For
-example:
-
-    join address=myotheraddress@example.com
+or not.  If not specified, the mailing list's default delivery mode will be
+used.
 """)
+    short_description = _('Join this mailing list.')
 
     def process(self, mlist, msg, msgdata, arguments, results):
         """See `IEmailCommand`."""
@@ -128,6 +126,8 @@ class Subscribe(Join):
     """The email 'subscribe' command (an alias for 'join')."""
 
     name = 'subscribe'
+    description = _("An alias for 'join'.")
+    short_description = description
 
 
 
@@ -138,8 +138,10 @@ class Leave:
 
     name = 'leave'
     argument_description = ''
-    description = _(
-        'Leave this mailing list.  You will be asked to confirm your request.')
+    description = _("""Leave this mailing list.  
+
+You may be asked to confirm your request.""")
+    short_description = _('Leave this mailing list.')
 
     def process(self, mlist, msg, msgdata, arguments, results):
         """See `IEmailCommand`."""
@@ -184,3 +186,5 @@ class Unsubscribe(Leave):
     """The email 'unsubscribe' command (an alias for 'leave')."""
 
     name = 'unsubscribe'
+    description = _("An alias for 'leave'.")
+    short_description = description

@@ -17,6 +17,8 @@
 
 """The email command 'echo'."""
 
+from __future__ import absolute_import, print_function, unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'Echo',
@@ -39,10 +41,10 @@ class Echo:
 
     name = 'echo'
     argument_description = '[args]'
-    description = _(
-        'Echo an acknowledgement.  Arguments are return unchanged.')
+    description = _('Echo back your arguments.')
+    short_description = description
 
     def process(self, mlist, msg, msgdata, arguments, results):
         """See `IEmailCommand`."""
-        print >> results, 'echo', SPACE.join(arguments)
+        print('echo', SPACE.join(arguments), file=results)
         return ContinueProcessing.yes

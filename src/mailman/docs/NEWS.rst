@@ -53,6 +53,7 @@ Commands
  * The `join` email command no longer accepts an `address=` argument.  Its
    `digest=` argument now accepts the following values: `no` (for regular
    delivery), `mime`, or `plain`.
+ * Added a `help` email command.
 
 Bug fixes
 ---------
