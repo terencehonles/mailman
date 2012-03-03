@@ -17,7 +17,7 @@
 
 """Configuration file loading and management."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -152,7 +152,7 @@ class Configuration:
             if category.name == layout:
                 break
         else:
-            print >> sys.stderr, 'No path configuration found:', layout
+            print('No path configuration found:', layout, file=sys.stderr)
             sys.exit(1)
         # First, collect all variables in a substitution dictionary.  $VAR_DIR
         # is taken from the environment or from the configuration file if the
@@ -202,7 +202,7 @@ class Configuration:
             if dollar_count == 0:
                 break
             if dollar_count == last_dollar_count:
-                print >> sys.stderr, 'Path expansion infloop detected'
+                print('Path expansion infloop detected', file=sys.stderr)
                 sys.exit(1)
             last_dollar_count = dollar_count
         # Ensure that all paths are normalized and made absolute.  Handle the

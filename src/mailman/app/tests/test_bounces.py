@@ -17,7 +17,7 @@
 
 """Testing app.bounces functions."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -289,30 +289,29 @@ Message-ID: <first>
 
 """)
         # Set up the translation context.
-        self._template_dir = tempfile.mkdtemp()
+        self._var_dir = tempfile.mkdtemp()
         xx_template_path = os.path.join(
-            self._template_dir, 't', 'xx', 'probe.txt')
+            self._var_dir, 'templates', 'site', 'xx', 'probe.txt')
         os.makedirs(os.path.dirname(xx_template_path))
         config.push('xx template dir', """\
         [paths.testing]
-        template_dir: {0}/t
-        var_dir: {0}/v
-        """.format(self._template_dir))
+        var_dir: {0}
+        """.format(self._var_dir))
         language_manager = getUtility(ILanguageManager)
         language_manager.add('xx', 'utf-8', 'Freedonia')
         self._member.preferences.preferred_language = 'xx'
         with open(xx_template_path, 'w') as fp:
-            print >> fp, """\
+            print("""\
 blah blah blah
 $listname
 $address
 $optionsurl
 $owneraddr
-"""
+""", file=fp)
 
     def tearDown(self):
         config.pop('xx template dir')
-        shutil.rmtree(self._template_dir)
+        shutil.rmtree(self._var_dir)
 
     def test_subject_with_member_nonenglish(self):
         # Test that members with non-English preferred language get a Subject
@@ -329,7 +328,12 @@ $owneraddr
         send_probe(self._member, self._msg)
         message = get_queue_messages('virgin')[0].msg
         notice = message.get_payload(0).get_payload()
-        self.assertEqual(notice, """\
+        try:
+            # Python 2.7
+            eq = self.assertMultiLineEqual
+        except AttributeError:
+            eq = self.assertEqual
+        eq(notice, """\
 blah blah blah test@example.com anne@example.com
 http://example.com/anne@example.com test-owner@example.com""")
 

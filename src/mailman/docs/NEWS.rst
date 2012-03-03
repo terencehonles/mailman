@@ -21,6 +21,10 @@ Architecture
  * Separate out the RFC 2369 header adding handler.
  * Dynamically calculate the `List-Id` header instead of storing it in the
    database.  This means it cannot be changed.
+ * Major redesign of the template search system, fixing LP: #788309.  $var_dir
+   is now used when search for all template overrides, site, domain, or
+   mailing list.  The in-tree English templates are used only as a last
+   fallback.
 
 REST
 ----

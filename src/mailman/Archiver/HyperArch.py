@@ -183,7 +183,7 @@ def quick_maketext(templatefile, dict=None, lang=None, mlist=None):
         template = _templatecache.get(filepath)
     if filepath is None or template is None:
         # Use the basic maketext, with defaults to get the raw template
-        template, filepath = find(templatefile, mailing_list=mlist,
+        template, filepath = find(templatefile, mlist=mlist, 
                                   language=lang.code)
         _templatefilepathcache[cachekey] = filepath
         _templatecache[filepath] = template

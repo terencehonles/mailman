@@ -27,16 +27,19 @@ __all__ = [
 
 from base64 import b64decode
 from restish import guard, http, resource
+from zope.component import getUtility
 
 from mailman.config import config
 from mailman.core.constants import system_preferences
 from mailman.core.system import system
+from mailman.interfaces.listmanager import IListManager
 from mailman.rest.addresses import AllAddresses, AnAddress
 from mailman.rest.domains import ADomain, AllDomains
 from mailman.rest.helpers import etag, path_to
 from mailman.rest.lists import AList, AllLists
 from mailman.rest.members import AMember, AllMembers, FindMembers
 from mailman.rest.preferences import ReadOnlyPreferences
+from mailman.rest.templates import TemplateFinder
 from mailman.rest.users import AUser, AllUsers
 
 
@@ -144,3 +147,24 @@ class TopLevel(resource.Resource):
         else:
             user_id = segments.pop(0)
             return AUser(user_id), segments
+
+    @resource.child()
+    def templates(self, request, segments):
+        """/<api>/templates/<fqdn_listname>/<template>/[<language>]
+
+        Use content negotiation to request language and suffix (content-type).
+        """
+        if len(segments) == 3:
+            fqdn_listname, template, language = segments
+        elif len(segments) == 2:
+            fqdn_listname, template = segments
+            language = 'en'
+        else:
+            return http.bad_request()
+        mlist = getUtility(IListManager).get(fqdn_listname)
+        if mlist is None:
+            return http.not_found()
+        # XXX dig out content-type from request
+        content_type = None
+        return TemplateFinder(
+            fqdn_listname, template, language, content_type)

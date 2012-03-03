@@ -17,7 +17,7 @@
 
 """Testing i18n template search and interpolation."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -29,13 +29,14 @@ import shutil
 import tempfile
 import unittest
 
+from pkg_resources import resource_filename
 from zope.component import getUtility
 
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.interfaces.languages import ILanguageManager
 from mailman.testing.layers import ConfigLayer
-from mailman.utilities.i18n import TemplateNotFoundError, _search, find, make
+from mailman.utilities.i18n import TemplateNotFoundError, find, make, search
 
 
 
@@ -45,14 +46,13 @@ class TestSearchOrder(unittest.TestCase):
     layer = ConfigLayer
 
     def setUp(self):
-        self.template_dir = tempfile.mkdtemp()
+        self.var_dir = tempfile.mkdtemp()
         config.push('no template dir', """\
         [mailman]
         default_language: fr
         [paths.testing]
-        template_dir: {0}/t
-        var_dir: {0}/v
-        """.format(self.template_dir))
+        var_dir: {0}
+        """.format(self.var_dir))
         language_manager = getUtility(ILanguageManager)
         language_manager.add('de', 'utf-8', 'German')
         language_manager.add('it', 'utf-8', 'Italian')
@@ -61,82 +61,110 @@ class TestSearchOrder(unittest.TestCase):
 
     def tearDown(self):
         config.pop('no template dir')
-        shutil.rmtree(self.template_dir)
+        shutil.rmtree(self.var_dir)
 
     def _stripped_search_order(self, template_file,
                                mailing_list=None, language=None):
-        raw_search_order = _search(template_file, mailing_list, language)
+        # Return the search path order for a given template, possibly using
+        # the mailing list and the language as context.  Note that this only
+        # returns the search path, and does not check for whether the paths
+        # exist or not.
+        #
+        # Replace the tempdir prefix with a placeholder for more readable and
+        # reproducible tests.  Essentially the paths below are rooted at
+        # $var_dir, except those files that live within Mailman's source
+        # tree.  The former will use /v/ as the root and the latter will use
+        # /m/ as the root.
+        in_tree = os.path.dirname(resource_filename('mailman', 'templates'))
+        raw_search_order = search(template_file, mailing_list, language)
         for path in raw_search_order:
-            yield path[len(self.template_dir):]
+            if path.startswith(self.var_dir):
+                path = '/v' + path[len(self.var_dir):]
+            elif path.startswith(in_tree):
+                path = '/m' + path[len(in_tree):]
+            else:
+                # This will cause tests to fail, so keep the full bogus
+                # pathname for better debugging.
+                pass
+            yield path
 
     def test_fully_specified_search_order(self):
         search_order = self._stripped_search_order('foo.txt', self.mlist, 'it')
-        # language argument
-        self.assertEqual(next(search_order),
-                         '/v/lists/l@example.com/it/foo.txt')
-        self.assertEqual(next(search_order), '/t/example.com/it/foo.txt')
-        self.assertEqual(next(search_order), '/t/site/it/foo.txt')
-        self.assertEqual(next(search_order), '/t/it/foo.txt')
-        # mlist.preferred_language
-        self.assertEqual(next(search_order),
-                         '/v/lists/l@example.com/de/foo.txt')
-        self.assertEqual(next(search_order), '/t/example.com/de/foo.txt')
-        self.assertEqual(next(search_order), '/t/site/de/foo.txt')
-        self.assertEqual(next(search_order), '/t/de/foo.txt')
-        # site's default language
-        self.assertEqual(next(search_order),
-                         '/v/lists/l@example.com/fr/foo.txt')
-        self.assertEqual(next(search_order), '/t/example.com/fr/foo.txt')
-        self.assertEqual(next(search_order), '/t/site/fr/foo.txt')
-        self.assertEqual(next(search_order), '/t/fr/foo.txt')
-        # English
-        self.assertEqual(next(search_order),
-                         '/v/lists/l@example.com/en/foo.txt')
-        self.assertEqual(next(search_order), '/t/example.com/en/foo.txt')
-        self.assertEqual(next(search_order), '/t/site/en/foo.txt')
-        self.assertEqual(next(search_order), '/t/en/foo.txt')
+        # For convenience.
+        def nexteq(path):
+            self.assertEqual(next(search_order), path)
+        # 1: Use the given language argument
+        nexteq('/v/templates/lists/l@example.com/it/foo.txt')
+        nexteq('/v/templates/domains/example.com/it/foo.txt')
+        nexteq('/v/templates/site/it/foo.txt')
+        # 2: Use mlist.preferred_language
+        nexteq('/v/templates/lists/l@example.com/de/foo.txt')
+        nexteq('/v/templates/domains/example.com/de/foo.txt')
+        nexteq('/v/templates/site/de/foo.txt')
+        # 3: Use the site's default language
+        nexteq('/v/templates/lists/l@example.com/fr/foo.txt')
+        nexteq('/v/templates/domains/example.com/fr/foo.txt')
+        nexteq('/v/templates/site/fr/foo.txt')
+        # 4: English
+        nexteq('/v/templates/lists/l@example.com/en/foo.txt')
+        nexteq('/v/templates/domains/example.com/en/foo.txt')
+        nexteq('/v/templates/site/en/foo.txt')
+        # 5: After all the site-admin override paths have been searched, the
+        # Mailman in-tree paths are searched.  Note that Mailman only ships
+        # one set of English templates.
+        nexteq('/m/templates/en/foo.txt')
 
     def test_no_language_argument_search_order(self):
         search_order = self._stripped_search_order('foo.txt', self.mlist)
-        # mlist.preferred_language
-        self.assertEqual(next(search_order),
-                         '/v/lists/l@example.com/de/foo.txt')
-        self.assertEqual(next(search_order), '/t/example.com/de/foo.txt')
-        self.assertEqual(next(search_order), '/t/site/de/foo.txt')
-        self.assertEqual(next(search_order), '/t/de/foo.txt')
-        # site's default language
-        self.assertEqual(next(search_order),
-                         '/v/lists/l@example.com/fr/foo.txt')
-        self.assertEqual(next(search_order), '/t/example.com/fr/foo.txt')
-        self.assertEqual(next(search_order), '/t/site/fr/foo.txt')
-        self.assertEqual(next(search_order), '/t/fr/foo.txt')
-        # English
-        self.assertEqual(next(search_order),
-                         '/v/lists/l@example.com/en/foo.txt')
-        self.assertEqual(next(search_order), '/t/example.com/en/foo.txt')
-        self.assertEqual(next(search_order), '/t/site/en/foo.txt')
-        self.assertEqual(next(search_order), '/t/en/foo.txt')
+        # For convenience.
+        def nexteq(path):
+            self.assertEqual(next(search_order), path)
+        # 1: Use mlist.preferred_language
+        nexteq('/v/templates/lists/l@example.com/de/foo.txt')
+        nexteq('/v/templates/domains/example.com/de/foo.txt')
+        nexteq('/v/templates/site/de/foo.txt')
+        # 2: Use the site's default language
+        nexteq('/v/templates/lists/l@example.com/fr/foo.txt')
+        nexteq('/v/templates/domains/example.com/fr/foo.txt')
+        nexteq('/v/templates/site/fr/foo.txt')
+        # 3: English
+        nexteq('/v/templates/lists/l@example.com/en/foo.txt')
+        nexteq('/v/templates/domains/example.com/en/foo.txt')
+        nexteq('/v/templates/site/en/foo.txt')
+        # 4: After all the site-admin override paths have been searched, the
+        # Mailman in-tree paths are searched.  Note that Mailman only ships
+        # one set of English templates.
+        nexteq('/m/templates/en/foo.txt')
 
     def test_no_mailing_list_argument_search_order(self):
         search_order = self._stripped_search_order('foo.txt', language='it')
-        # language argument
-        self.assertEqual(next(search_order), '/t/site/it/foo.txt')
-        self.assertEqual(next(search_order), '/t/it/foo.txt')
-        # site's default language
-        self.assertEqual(next(search_order), '/t/site/fr/foo.txt')
-        self.assertEqual(next(search_order), '/t/fr/foo.txt')
-        # English
-        self.assertEqual(next(search_order), '/t/site/en/foo.txt')
-        self.assertEqual(next(search_order), '/t/en/foo.txt')
+        # For convenience.
+        def nexteq(path):
+            self.assertEqual(next(search_order), path)
+        # 1: Use the given language argument
+        nexteq('/v/templates/site/it/foo.txt')
+        # 2: Use the site's default language
+        nexteq('/v/templates/site/fr/foo.txt')
+        # 3: English
+        nexteq('/v/templates/site/en/foo.txt')
+        # 4: After all the site-admin override paths have been searched, the
+        # Mailman in-tree paths are searched.  Note that Mailman only ships
+        # one set of English templates.
+        nexteq('/m/templates/en/foo.txt')
 
     def test_no_optional_arguments_search_order(self):
         search_order = self._stripped_search_order('foo.txt')
-        # site's default language
-        self.assertEqual(next(search_order), '/t/site/fr/foo.txt')
-        self.assertEqual(next(search_order), '/t/fr/foo.txt')
-        # English
-        self.assertEqual(next(search_order), '/t/site/en/foo.txt')
-        self.assertEqual(next(search_order), '/t/en/foo.txt')
+        # For convenience.
+        def nexteq(path):
+            self.assertEqual(next(search_order), path)
+        # 1: Use the site's default language
+        nexteq('/v/templates/site/fr/foo.txt')
+        # 2: English
+        nexteq('/v/templates/site/en/foo.txt')
+        # 3: After all the site-admin override paths have been searched, the
+        # Mailman in-tree paths are searched.  Note that Mailman only ships
+        # one set of English templates.
+        nexteq('/m/templates/en/foo.txt')
 
 
 
@@ -146,60 +174,53 @@ class TestFind(unittest.TestCase):
     layer = ConfigLayer
 
     def setUp(self):
-        self.template_dir = tempfile.mkdtemp()
+        self.var_dir = tempfile.mkdtemp()
         config.push('template config', """\
         [paths.testing]
-        template_dir: {0}
-        """.format(self.template_dir))
+        var_dir: {0}
+        """.format(self.var_dir))
         # The following MUST happen AFTER the push() above since pushing a new
         # config also clears out the language manager.
         getUtility(ILanguageManager).add('xx', 'utf-8', 'Xlandia')
         self.mlist = create_list('test@example.com')
         self.mlist.preferred_language = 'xx'
         self.fp = None
-        # Populate global tempdir with a few fake templates.
-        self.xxdir = os.path.join(self.template_dir, 'xx')
-        os.mkdir(self.xxdir)
-        with open(os.path.join(self.xxdir, 'global.txt'), 'w') as fp:
-            fp.write('Global template')
-        self.sitedir = os.path.join(self.template_dir, 'site', 'xx')
-        os.makedirs(self.sitedir)
-        with open(os.path.join(self.sitedir, 'site.txt'), 'w') as fp:
-            fp.write('Site template')
-        self.domaindir = os.path.join(self.template_dir, 'example.com', 'xx')
-        os.makedirs(self.domaindir)
-        with open(os.path.join(self.domaindir, 'domain.txt'), 'w') as fp:
-            fp.write('Domain template')
-        self.listdir = os.path.join(self.mlist.data_path, 'xx')
-        os.makedirs(self.listdir)
-        with open(os.path.join(self.listdir, 'list.txt'), 'w') as fp:
-            fp.write('List template')
+        # Populate the template directories with a few fake templates.
+        def write(text, path):
+            os.makedirs(os.path.dirname(path))
+            with open(path, 'w') as fp:
+                fp.write(text)
+        self.xxsite = os.path.join(
+            self.var_dir, 'templates', 'site', 'xx', 'site.txt') 
+        write('Site template', self.xxsite)
+        self.xxdomain = os.path.join(        
+              self.var_dir, 'templates', 
+              'domains', 'example.com', 'xx', 'domain.txt')
+        write('Domain template', self.xxdomain)
+        self.xxlist = os.path.join(
+              self.var_dir, 'templates', 
+              'lists', 'test@example.com', 'xx', 'list.txt')
+        write('List template', self.xxlist)
 
     def tearDown(self):
         if self.fp is not None:
             self.fp.close()
         config.pop('template config')
-        shutil.rmtree(self.template_dir)
-        shutil.rmtree(self.listdir)
-
-    def test_find_global_template(self):
-        filename, self.fp = find('global.txt', language='xx')
-        self.assertEqual(filename, os.path.join(self.xxdir, 'global.txt'))
-        self.assertEqual(self.fp.read(), 'Global template')
+        shutil.rmtree(self.var_dir)
 
     def test_find_site_template(self):
         filename, self.fp = find('site.txt', language='xx')
-        self.assertEqual(filename, os.path.join(self.sitedir, 'site.txt'))
+        self.assertEqual(filename, self.xxsite)
         self.assertEqual(self.fp.read(), 'Site template')
 
     def test_find_domain_template(self):
         filename, self.fp = find('domain.txt', self.mlist)
-        self.assertEqual(filename, os.path.join(self.domaindir, 'domain.txt'))
+        self.assertEqual(filename, self.xxdomain)
         self.assertEqual(self.fp.read(), 'Domain template')
 
     def test_find_list_template(self):
         filename, self.fp = find('list.txt', self.mlist)
-        self.assertEqual(filename, os.path.join(self.listdir, 'list.txt'))
+        self.assertEqual(filename, self.xxlist)
         self.assertEqual(self.fp.read(), 'List template')
 
     def test_template_not_found(self):
@@ -219,41 +240,41 @@ class TestMake(unittest.TestCase):
     layer = ConfigLayer
 
     def setUp(self):
-        self.template_dir = tempfile.mkdtemp()
+        self.var_dir = tempfile.mkdtemp()
         config.push('template config', """\
         [paths.testing]
-        template_dir: {0}
-        """.format(self.template_dir))
+        var_dir: {0}
+        """.format(self.var_dir))
         # The following MUST happen AFTER the push() above since pushing a new
         # config also clears out the language manager.
         getUtility(ILanguageManager).add('xx', 'utf-8', 'Xlandia')
         self.mlist = create_list('test@example.com')
         self.mlist.preferred_language = 'xx'
-        # Populate the template directory with some samples.
-        self.xxdir = os.path.join(self.template_dir, 'xx')
-        os.mkdir(self.xxdir)
-        with open(os.path.join(self.xxdir, 'nosub.txt'), 'w') as fp:
-            print >> fp, """\
+        # Populate the template directories with a few fake templates.
+        path = os.path.join(self.var_dir, 'templates', 'site', 'xx')
+        os.makedirs(path)
+        with open(os.path.join(path, 'nosub.txt'), 'w') as fp:
+            print("""\
 This is a global template.
 It has no substitutions.
 It will be wrapped.
-"""
-        with open(os.path.join(self.xxdir, 'subs.txt'), 'w') as fp:
-            print >> fp, """\
+""", file=fp)
+        with open(os.path.join(path, 'subs.txt'), 'w') as fp:
+            print("""\
 This is a $kind template.
 It has $howmany substitutions.
 It will be wrapped.
-"""
-        with open(os.path.join(self.xxdir, 'nowrap.txt'), 'w') as fp:
-            print >> fp, """\
+""", file=fp)
+        with open(os.path.join(path, 'nowrap.txt'), 'w') as fp:
+            print("""\
 This is a $kind template.
 It has $howmany substitutions.
 It will not be wrapped.
-"""
+""", file=fp)
 
     def tearDown(self):
         config.pop('template config')
-        shutil.rmtree(self.template_dir)
+        shutil.rmtree(self.var_dir)
 
     def test_no_substitutions(self):
         self.assertEqual(make('nosub.txt', self.mlist), """\

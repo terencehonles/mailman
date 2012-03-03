@@ -17,13 +17,14 @@
 
 """i18n template search and interpolation."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
     'TemplateNotFoundError',
     'find',
     'make',
+    'search',
     ]
 
 
@@ -32,6 +33,7 @@ import sys
 import errno
 
 from itertools import product
+from pkg_resources import resource_filename
 
 from mailman.config import config
 from mailman.core.constants import system_preferences
@@ -52,62 +54,29 @@ class TemplateNotFoundError(MailmanException):
 
 
 
-def _search(template_file, mailing_list=None, language=None):
-    """Generator that provides file system search order."""
+def search(template_file, mlist=None, language=None):
+    """Generator that provides file system search order.
 
-    languages = ['en', system_preferences.preferred_language.code]
-    if mailing_list is not None:
-        languages.append(mailing_list.preferred_language.code)
-    if language is not None:
-        languages.append(language)
-    languages.reverse()
-    # File system locations to search.
-    paths = [config.TEMPLATE_DIR,
-             os.path.join(config.TEMPLATE_DIR, 'site')]
-    if mailing_list is not None:
-        paths.append(os.path.join(config.TEMPLATE_DIR,
-                                  mailing_list.mail_host))
-        paths.append(os.path.join(config.LIST_DATA_DIR,
-                                  mailing_list.fqdn_listname))
-    paths.reverse()
-    for language, path in product(languages, paths):
-        yield os.path.join(path, language, template_file)
+    This is Mailman's internal template search algorithm.  The first locations
+    searched are within the $var_dir/templates directory, allowing a site to
+    override a template for a specific mailing list, all the mailing lists in
+    a domain, or site-wide.
 
-
-
-def find(template_file, mailing_list=None, language=None, _trace=False):
-    """Locate an i18n template file.
-
-    When something in Mailman needs a template file, it always asks for the
-    file through this interface.  The results of the search is path to the
-    'matching' template, with the search order depending on whether
-    `mailing_list` and `language` are provided.
-
-    When looking for a template in a specific language, there are 4 locations
-    that are searched, in this order:
+    The <language> path component is variable, and described below.
 
     * The list-specific language directory
-      <var_dir>/lists/<fqdn_listname>/<language>
+      <var_dir>/templates/lists/<mlist.fqdn_listname>/<language>
 
     * The domain-specific language directory
-      <template_dir>/<list-host-name>/<language>
+      <var_dir>/templates/domains/<mlist.mail_host>/<language>
 
     * The site-wide language directory
-      <template_dir>/site/<language>
-
-    * The global default language directory
-      <template_dir>/<language>
-
-    The first match stops the search.  In this way, you can specialize
-    templates at the desired level, or if you only use the default templates,
-    you don't need to change anything.  NEVER modify files in
-    <template_dir>/<language> since Mailman will overwrite these when you
-    upgrade.  Instead you can use <template_dir>/site.
+      <var_dir>/templates/site/<language>
 
     The <language> path component is calculated as follows, in this order:
 
     * The `language` parameter if given
-    * `mailing_list.preferred_language` if given
+    * `mlist.preferred_language` if given
     * The server's default language
     * English ('en')
 
@@ -117,32 +86,59 @@ def find(template_file, mailing_list=None, language=None, _trace=False):
     is 'de' and the `language` parameter is 'it', these locations are searched
     in order:
 
-    * <var_dir>/lists/test@example.com/it/foo.txt
-    * <template_dir>/example.com/it/foo.txt
-    * <template_dir>/site/it/foo.txt
-    * <template_dir>/it/foo.txt
+    * <var_dir>/templates/lists/test@example.com/it/foo.txt
+    * <var_dir>/templates/domains/example.com/it/foo.txt
+    * <var_dir>/templates/site/it/foo.txt
 
-    * <var_dir>/lists/test@example.com/de/foo.txt
-    * <template_dir>/example.com/de/foo.txt
-    * <template_dir>/site/de/foo.txt
-    * <template_dir>/de/foo.txt
+    * <var_dir>/templates/lists/test@example.com/de/foo.txt
+    * <var_dir>/templates/domains/example.com/de/foo.txt
+    * <var_dir>/templates/site/de/foo.txt
 
-    * <var_dir>/lists/test@example.com/fr/foo.txt
-    * <template_dir>/example.com/fr/foo.txt
-    * <template_dir>/site/fr/foo.txt
-    * <template_dir>/fr/foo.txt
+    * <var_dir>/templates/lists/test@example.com/fr/foo.txt
+    * <var_dir>/templates/domains/example.com/fr/foo.txt
+    * <var_dir>/templates/site/fr/foo.txt
 
-    * <var_dir>/lists/test@example.com/en/foo.txt
-    * <template_dir>/example.com/en/foo.txt
-    * <template_dir>/site/en/foo.txt
-    * <template_dir>/en/foo.txt
+    * <var_dir>/templates/lists/test@example.com/en/foo.txt
+    * <var_dir>/templates/domains/example.com/en/foo.txt
+    * <var_dir>/templates/site/en/foo.txt
+
+    After all those paths are searched, the final fallback is the English
+    template within the Mailman source tree.
+
+    * <source_dir>/templates/en/foo.txt
+    """
+    # The languages in search order.
+    languages = ['en', system_preferences.preferred_language.code]
+    if mlist is not None:
+        languages.append(mlist.preferred_language.code)
+    if language is not None:
+        languages.append(language)
+    languages.reverse()
+    # The non-language qualified $var_dir paths in search order.
+    paths = [os.path.join(config.VAR_DIR, 'templates', 'site')]
+    if mlist is not None:
+        paths.append(os.path.join(
+            config.VAR_DIR, 'templates', 'domains', mlist.mail_host))
+        paths.append(os.path.join(
+            config.VAR_DIR, 'templates', 'lists', mlist.fqdn_listname))
+    paths.reverse()
+    for language, path in product(languages, paths):
+        yield os.path.join(path, language, template_file)
+    # Finally, fallback to the in-tree English template.
+    templates_dir = resource_filename('mailman', 'templates')
+    yield os.path.join(templates_dir, 'en', template_file)
+
+
+
+def find(template_file, mlist=None, language=None, _trace=False):
+    """Use Mailman's internal template search order to find a template.
 
     :param template_file: The name of the template file to search for.
     :type template_file: string
-    :param mailing_list: Optional mailing list used as the context for
+    :param mlist: Optional mailing list used as the context for
         searching for the template file.  The list's preferred language will
         influence the search, as will the list's data directory.
-    :type mailing_list: `IMailingList`
+    :type mlist: `IMailingList`
     :param language: Optional language code, which influences the search.
     :type language: string
     :param _trace: Enable printing of debugging information during
@@ -153,26 +149,26 @@ def find(template_file, mailing_list=None, language=None, _trace=False):
     :rtype: (string, file)
     :raises TemplateNotFoundError: when the template could not be found.
     """
-    raw_search_order = _search(template_file, mailing_list, language)
+    raw_search_order = search(template_file, mlist, language)
     for path in raw_search_order:
         try:
             if _trace:
-                print >> sys.stderr, '@@@', path,
+                print('@@@', path, end='', file=sys.stderr)
             fp = open(path)
         except IOError as error:
             if error.errno == errno.ENOENT:
                 if _trace:
-                    print >> sys.stderr, 'MISSING'
+                    print('MISSING', file=sys.stderr)
             else:
                 raise
         else:
             if _trace:
-                print >> sys.stderr, 'FOUND:', path
+                print('FOUND:', path, file=sys.stderr)
             return path, fp
     raise TemplateNotFoundError(template_file)
 
 
-def make(template_file, mailing_list=None, language=None, wrap=True,
+def make(template_file, mlist=None, language=None, wrap=True,
          _trace=False, **kw):
     """Locate and 'make' a template file.
 
@@ -181,10 +177,10 @@ def make(template_file, mailing_list=None, language=None, wrap=True,
 
     :param template_file: The name of the template file to search for.
     :type template_file: string
-    :param mailing_list: Optional mailing list used as the context for
+    :param mlist: Optional mailing list used as the context for
         searching for the template file.  The list's preferred language will
         influence the search, as will the list's data directory.
-    :type mailing_list: `IMailingList`
+    :type mlist: `IMailingList`
     :param language: Optional language code, which influences the search.
     :type language: string
     :param wrap: When True, wrap the text.
@@ -197,7 +193,7 @@ def make(template_file, mailing_list=None, language=None, wrap=True,
     :rtype: string
     :raises TemplateNotFoundError: when the template could not be found.
     """
-    path, fp = find(template_file, mailing_list, language, _trace)
+    path, fp = find(template_file, mlist, language, _trace)
     try:
         # XXX Removing the trailing newline is a hack carried over from
         # Mailman 2.  The (stripped) template text is then passed through the
