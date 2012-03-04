@@ -1,7 +1,0 @@
-
-Notes de traduction :
-
-La version francophone de Mailman 2.2 est actuellement coordonnée par Frédéric Lehobey.
-Vous pouvez vous aussi contribuer à la traduction de Mailman sur la liste francophone de Mailman : mailman-fr@rezo.net (inscription à l'URL http://listes.rezo.net/mailman/listinfo/mailman-fr)
-
-Novembre 2006
