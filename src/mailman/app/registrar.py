@@ -39,6 +39,7 @@ from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import DeliveryMode, MemberRole
 from mailman.interfaces.pending import IPendable, IPendings
 from mailman.interfaces.registrar import IRegistrar
+from mailman.interfaces.templates import ITemplateLoader
 from mailman.interfaces.usermanager import IUserManager
 from mailman.utilities.datetime import now
 
@@ -86,9 +87,12 @@ class Registrar:
         domain_name = mlist.domain.mail_host
         contact_address = mlist.domain.contact_address
         # Send a verification email to the address.
-        text = _(resource_string('mailman.templates.en', 'verify.txt'))
+        template = getUtility(ITemplateLoader).get(
+            'mailman:///{0}/{1}/confirm.txt'.format(
+                mlist.fqdn_listname,
+                mlist.preferred_language.code))
+        text = _(template)
         msg = UserNotification(email, confirm_address, subject, text)
-        msg['X-Mailman-Template'] = 'verify.txt'
         msg.send(mlist)
         return token
 
