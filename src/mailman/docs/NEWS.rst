@@ -58,6 +58,7 @@ Interfaces
  * `IListRequests.get_request()` now takes an optional `request_type`
    argument to narrow the search for the given request.
  * New `ITemplateLoader` utility.
+ * `ILanguageManager.add()` returns the `ILanguage` object just created.
 
 Commands
 --------

@@ -255,6 +255,7 @@ Some of these preferences are booleans and they can be set to ``True`` or
 
     >>> from mailman.interfaces.languages import ILanguageManager
     >>> getUtility(ILanguageManager).add('it', 'iso-8859-1', 'Italian')
+    <Language [it] Italian>
 
     >>> from mailman.core.constants import DeliveryMode
     >>> prefs = user_1.preferences

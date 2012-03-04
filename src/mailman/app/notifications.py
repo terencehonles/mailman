@@ -64,8 +64,11 @@ def send_welcome_message(mlist, address, language, delivery_mode, text=''):
     """
     if mlist.welcome_message_uri:
         try:
-            welcome_message = getUtility(ITemplateLoader).get(
-                mlist.welcome_message_uri)
+            uri = expand(mlist.welcome_message_uri, dict(
+                listname=mlist.fqdn_listname,
+                language=language.code,
+                ))
+            welcome_message = getUtility(ITemplateLoader).get(uri)
         except URLError:
             log.exception('Welcome message URI not found ({0}): {1}'.format(
                 mlist.fqdn_listname, mlist.welcome_message_uri))
@@ -94,7 +97,7 @@ def send_welcome_message(mlist, address, language, delivery_mode, text=''):
     else:
         digmode = ''
     msg = UserNotification(
-        formataddr((user_name, address)), 
+        formataddr((user_name, address)),
         mlist.request_address,
         _('Welcome to the "$mlist.real_name" mailing list${digmode}'),
         text, language)

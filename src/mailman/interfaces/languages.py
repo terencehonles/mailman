@@ -60,6 +60,8 @@ class ILanguageManager(Interface):
         :param description: The English description of the language,
             e.g. 'English' or 'French'.
         :type description: string
+        :return: The language object just added.
+        :rtype: ILanguage
         """
 
     codes = Attribute('An iterator over all known codes.')

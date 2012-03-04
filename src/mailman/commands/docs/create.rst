@@ -125,6 +125,7 @@ The language must be known to Mailman.
 
     >>> from mailman.interfaces.languages import ILanguageManager
     >>> getUtility(ILanguageManager).add('ee', 'iso-8859-1', 'Freedonian')
+    <Language [ee] Freedonian>
 
     >>> FakeArgs.quiet = False
     >>> FakeArgs.listname = ['test3@example.com']

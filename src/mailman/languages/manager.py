@@ -46,6 +46,7 @@ class LanguageManager:
             raise ValueError('Language code already registered: ' + code)
         language = Language(code, charset, description)
         self._languages[code] = language
+        return language
 
     @property
     def codes(self):

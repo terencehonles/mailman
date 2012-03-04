@@ -31,10 +31,12 @@ Adding languages
 
 Adding a new language requires three pieces of information, the 2-character
 language code, the English description of the language, and the character set
-used by the language.
+used by the language.  The language object is returned.
 
     >>> mgr.add('en', 'us-ascii', 'English')
+    <Language [en] English>
     >>> mgr.add('it', 'iso-8859-1', 'Italian')
+    <Language [it] Italian>
 
 And you can get information for all known languages.
 
@@ -54,6 +56,7 @@ Other iterations
 You can iterate over all the known language codes.
 
     >>> mgr.add('pl', 'iso-8859-2', 'Polish')
+    <Language [pl] Polish>
     >>> sorted(mgr.codes)
     [u'en', u'it', u'pl']
 

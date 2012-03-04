@@ -68,6 +68,12 @@ Welcome to the $list_name mailing list.
     Your name: $user_name
     Your address: $user_address
     Your options: $user_options_uri""", file=fp)
+        # Write a list-specific welcome message.
+        path = os.path.join(self.var_dir, 'templates', 'lists',
+                            'test@example.com', 'xx')
+        os.makedirs(path)
+        with open(os.path.join(path, 'welcome.txt'), 'w') as fp:
+            print('You just joined the $list_name mailing list!', file=fp)
 
     def tearDown(self):
         config.pop('template config')
@@ -99,3 +105,24 @@ Welcome to the Test List mailing list.
     Your address: anne@example.com
     Your options: http://example.com/anne@example.com
 """)
+
+    def test_more_specific_welcome_message_nonenglish(self):
+        # mlist.welcome_message_uri can contain placeholders for the fqdn list
+        # name and language.
+        self._mlist.welcome_message_uri = (
+            'mailman:///$listname/$language/welcome.txt')
+        # Add the xx language and subscribe Anne using it.
+        manager = getUtility(ILanguageManager)
+        xx = manager.add('xx', 'us-ascii', 'Xlandia')
+        add_member(self._mlist, 'anne@example.com', 'Anne Person',
+                   'password', DeliveryMode.regular, 'xx')
+        send_welcome_message(self._mlist, 'anne@example.com', xx,
+                             DeliveryMode.regular)
+        # Now there's one message in the virgin queue.
+        messages = get_queue_messages('virgin')
+        self.assertEqual(len(messages), 1)
+        message = messages[0].msg
+        self.assertEqual(str(message['subject']),
+                         'Welcome to the "Test List" mailing list')
+        self.assertEqual(message.get_payload(),
+                         'You just joined the Test List mailing list!')
