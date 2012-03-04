@@ -26,16 +26,21 @@ Architecture
    mailing list.  The in-tree English templates are used only as a last
    fallback.
  * Support downloading templates by URI, including mailman:// URIs.  This is
-   used in welcome and goodbye messages, and supports both language and
-   mailing list specifications.  E.g. mailman:///test@example.com/it/welc.txt
+   used in welcome and goodbye messages, as well as regular and digest headers
+   and footers, and supports both language and mailing list specifications.
+   E.g. mailman:///test@example.com/it/welcome.txt
 
 Database
 --------
  * Schema changes:
-   - welcome_msg -> welcome_message_uri
-   - goodbye_msg -> goodbye_message_uri
+   - welcome_msg      -> welcome_message_uri
+   - goodbye_msg      -> goodbye_message_uri
    - send_welcome_msg -> send_welcome_message
    - send_goodbye_msg -> send_goodbye_message
+   - msg_header       -> header_uri
+   - msg_footer       -> footer_uri
+   - digest_header    -> digest_header_uri
+   - digest_footer    -> digest_footer_uri
 
 REST
 ----
@@ -59,6 +64,7 @@ Interfaces
    argument to narrow the search for the given request.
  * New `ITemplateLoader` utility.
  * `ILanguageManager.add()` returns the `ILanguage` object just created.
+ * `IMailinglist.decorators` removed; it was unused
 
 Commands
 --------

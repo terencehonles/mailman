@@ -306,11 +306,6 @@ class IMailingList(Interface):
         digest recipients are cleared.
         """)
 
-    decorators = Attribute(
-        """An iterator over all the IDecorators associated with this digest.
-        When a digest is being sent, each decorator may modify the final
-        digest text.""")
-
     # Web access.
 
     scheme = Attribute(
@@ -333,24 +328,6 @@ class IMailingList(Interface):
         object, and the returned url will be relative to that object's
         'location' attribute.
         """
-
-    # Notifications.
-
-    admin_immed_notify = Attribute(
-        """Flag controlling immediate notification of requests.
-
-        List moderators normally get daily notices about pending
-        administrative requests.  This flag controls whether moderators also
-        receive immediate notification of such pending requests.
-        """)
-
-    admin_notify_mchanges = Attribute(
-        """Flag controlling notification of joins and leaves.
-
-        List moderators can receive notifications for every member that joins
-        or leaves their mailing lists.  This flag controls those
-        notifications.
-        """)
 
     # Autoresponses.
 
@@ -518,13 +495,29 @@ class IMailingList(Interface):
 
     # Notifications.
 
+    admin_immed_notify = Attribute(
+        """Flag controlling immediate notification of requests.
+
+        List moderators normally get daily notices about pending
+        administrative requests.  This flag controls whether moderators also
+        receive immediate notification of such pending requests.
+        """)
+
+    admin_notify_mchanges = Attribute(
+        """Flag controlling notification of joins and leaves.
+
+        List moderators can receive notifications for every member that joins
+        or leaves their mailing lists.  This flag controls those
+        notifications.
+        """)
+
     send_welcome_message = Attribute(
         """Flag indicating whether a welcome message should be sent.""")
 
     welcome_message_uri = Attribute(
         """URI for the list's welcome message.
 
-        This can be any URI supported by `httplib2` with the addition of
+        This can be any URI supported by `urllib2` with the addition of
         `mailman:` URIs, which reference internal default resources.  This is
         a template which can include the following placeholders:
 
@@ -551,14 +544,14 @@ class IMailingList(Interface):
     goodbye_message_uri = Attribute(
         """URI for the list's goodbye message.
 
-        This can be any URI supported by `httplib2` with the addition of
+        This can be any URI supported by `urllib2` with the addition of
         `mailman:` URIs, which reference internal default resources.  This is
         a template which can include the following placeholders:
 
         $listname - the FQDN list name for this mailing list.
         $language - the language code, usually the list's preferred language.
 
-        The resource will be downloaded and cached whenever the welcome
+        The resource will be downloaded and cached whenever the goodbye
         message is sent.  The resource at this URI can contain the following
         placeholders, which are also filled in through values on the mailing
         list:
@@ -571,6 +564,132 @@ class IMailingList(Interface):
         $user_address     - the email address of the subscribing user.
         $user_options_uri - the URI to this member's options page.
         """)
+
+    # Decorators.
+
+    header_uri = Attribute(
+        """URI for the header decorator on regular delivery messages.
+
+        This can be any URI supported by `urllib2` with the addition of
+        `mailman:` URIs, which reference internal default resources.  This is
+        a template which can include the following placeholders:
+
+        $listname - the FQDN list name for this mailing list.
+        $language - the language code, usually the list's preferred language.
+
+        The resource will be downloaded and cached whenever the decorator is
+        needed.  The resource at this URI can contain the following
+        placeholders, which are also filled in through values on the mailing
+        list:
+
+        $fqdn_listname    - the FQDN list name for this mailing list.
+        $list_name        - the human readable name for the mailing list.
+        $host_name        - the mailing list's host name
+        $listinfo_uri     - the URI to the list's information page.
+        $list_requests    - the address to the list's `-request` address.
+        $description      - the mailing list's description
+        $info             - additional mailing list's information
+
+        Personalized messages will also have these placeholders available:
+
+        $user_name        - the name of the subscribing user.
+        $user_address     - the email address of the subscribing user.
+        $user_options_uri - the URI to this member's options page.
+        """
+        )
+
+    footer_uri = Attribute(
+        """URI for the footer decorator on regular delivery messages.
+
+        This can be any URI supported by `urllib2` with the addition of
+        `mailman:` URIs, which reference internal default resources.  This is
+        a template which can include the following placeholders:
+
+        $listname - the FQDN list name for this mailing list.
+        $language - the language code, usually the list's preferred language.
+
+        The resource will be downloaded and cached whenever the decorator is
+        needed.  The resource at this URI can contain the following
+        placeholders, which are also filled in through values on the mailing
+        list:
+
+        $fqdn_listname    - the FQDN list name for this mailing list.
+        $list_name        - the human readable name for the mailing list.
+        $host_name        - the mailing list's host name
+        $listinfo_uri     - the URI to the list's information page.
+        $list_requests    - the address to the list's `-request` address.
+        $description      - the mailing list's description
+        $info             - additional mailing list's information
+
+        Personalized messages will also have these placeholders available:
+
+        $user_name        - the name of the subscribing user.
+        $user_address     - the email address of the subscribing user.
+        $user_options_uri - the URI to this member's options page.
+        """
+        )
+
+    digest_header_uri = Attribute(
+        """URI for the header decorator on digest messages.
+
+        This can be any URI supported by `urllib2` with the addition of
+        `mailman:` URIs, which reference internal default resources.  This is
+        a template which can include the following placeholders:
+
+        $listname - the FQDN list name for this mailing list.
+        $language - the language code, usually the list's preferred language.
+
+        The resource will be downloaded and cached whenever the decorator is
+        needed.  The resource at this URI can contain the following
+        placeholders, which are also filled in through values on the mailing
+        list:
+
+        $fqdn_listname    - the FQDN list name for this mailing list.
+        $list_name        - the human readable name for the mailing list.
+        $host_name        - the mailing list's host name
+        $listinfo_uri     - the URI to the list's information page.
+        $list_requests    - the address to the list's `-request` address.
+        $description      - the mailing list's description
+        $info             - additional mailing list's information
+
+        Personalized messages will also have these placeholders available:
+
+        $user_name        - the name of the subscribing user.
+        $user_address     - the email address of the subscribing user.
+        $user_options_uri - the URI to this member's options page.
+        """
+        )
+
+    digest_footer_uri = Attribute(
+        """URI for the footer decorator on digest messages.
+
+        This can be any URI supported by `urllib2` with the addition of
+        `mailman:` URIs, which reference internal default resources.  This is
+        a template which can include the following placeholders:
+
+        $listname - the FQDN list name for this mailing list.
+        $language - the language code, usually the list's preferred language.
+
+        The resource will be downloaded and cached whenever the decorator is
+        needed.  The resource at this URI can contain the following
+        placeholders, which are also filled in through values on the mailing
+        list:
+
+        $fqdn_listname    - the FQDN list name for this mailing list.
+        $list_name        - the human readable name for the mailing list.
+        $host_name        - the mailing list's host name
+        $listinfo_uri     - the URI to the list's information page.
+        $list_requests    - the address to the list's `-request` address.
+        $description      - the mailing list's description
+        $info             - additional mailing list's information
+
+        Personalized messages will also have these placeholders available:
+
+        $user_name        - the name of the subscribing user.
+        $user_address     - the email address of the subscribing user.
+        $user_options_uri - the URI to this member's options page.
+        """
+        )
 
 
 

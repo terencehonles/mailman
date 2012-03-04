@@ -26,6 +26,7 @@ __all__ = [
 
 
 import re
+import logging
 
 # cStringIO doesn't support unicode.
 from StringIO import StringIO
@@ -37,6 +38,7 @@ from email.mime.message import MIMEMessage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import formatdate, getaddresses, make_msgid
+from urllib2 import URLError
 
 from mailman.config import config
 from mailman.core.errors import DiscardMessage
@@ -48,6 +50,9 @@ from mailman.pipeline.scrubber import process as scrubber
 from mailman.utilities.i18n import make
 from mailman.utilities.mailbox import Mailbox
 from mailman.utilities.string import oneline, wrap
+
+
+log = logging.getLogger('mailman.error')
 
 
 
@@ -85,7 +90,14 @@ class Digester:
                               got_owner_email=mlist.owner_address,
                               )
         # Set things up for the table of contents.
-        self._header = decorate(mlist, mlist.digest_header)
+        if mlist.digest_header_uri is not None:
+            try:
+                self._header = decorate(mlist, mlist.digest_header_uri)
+            except URLError:
+                log.exception(
+                    'Digest header decorator URI not found ({0}): {1}'.format(
+                        mlist.fqdn_listname, mlist.digest_header_uri))
+                self._header = ''
         self._toc = StringIO()
         print >> self._toc, _("Today's Topics:\n")
 
@@ -144,6 +156,7 @@ class Digester:
 
 
 
+
 class MIMEDigester(Digester):
     """A MIME digester."""
 
@@ -154,7 +167,7 @@ class MIMEDigester(Digester):
         masthead['Content-Description'] = self._subject
         self._message.attach(masthead)
         # Add the optional digest header.
-        if mlist.digest_header:
+        if mlist.digest_header_uri is not None:
             header = MIMEText(self._header.encode(self._charset),
                               _charset=self._charset)
             header['Content-Description'] = _('Digest Header')
@@ -184,8 +197,16 @@ class MIMEDigester(Digester):
 
     def finish(self):
         """Finish up the digest, producing the email-ready copy."""
-        if self._mlist.digest_footer:
-            footer_text = decorate(self._mlist, self._mlist.digest_footer)
+        if self._mlist.digest_footer_uri is not None:
+            try:
+                footer_text = decorate(
+                    self._mlist, self._mlist.digest_footer_uri)
+            except URLError:
+                log.exception(
+                    'Digest footer decorator URI not found ({0}): {1}'.format(
+                        self._mlist.fqdn_listname, 
+                        self._mlist.digest_footer_uri))
+                footer_text = ''
             footer = MIMEText(footer_text.encode(self._charset),
                               _charset=self._charset)
             footer['Content-Description'] = _('Digest Footer')
@@ -211,7 +232,7 @@ class RFC1153Digester(Digester):
         print >> self._text, self._masthead
         print >> self._text
         # Add the optional digest header.
-        if mlist.digest_header:
+        if mlist.digest_header_uri is not None:
             print >> self._text, self._header
             print >> self._text
         # Calculate the set of headers we're to keep in the RFC1153 digest.
@@ -262,8 +283,16 @@ class RFC1153Digester(Digester):
 
     def finish(self):
         """Finish up the digest, producing the email-ready copy."""
-        if self._mlist.digest_footer:
-            footer_text = decorate(self._mlist, self._mlist.digest_footer)
+        if self._mlist.digest_footer_uri is not None:
+            try:
+                footer_text = decorate(
+                    self._mlist, self._mlist.digest_footer_uri)
+            except URLError:
+                log.exception(
+                    'Digest footer decorator URI not found ({0}): {1}'.format(
+                        self._mlist.fqdn_listname, 
+                        self._mlist.digest_footer_uri))
+                footer_text = ''                
             # This is not strictly conformant RFC 1153.  The trailer is only
             # supposed to contain two lines, i.e. the "End of ... Digest" line
             # and the row of asterisks.  If this screws up MUAs, the solution

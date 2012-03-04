@@ -29,12 +29,14 @@ import re
 import logging
 
 from email.mime.text import MIMEText
+from urllib2 import URLError
 from zope.component import getUtility
 from zope.interface import implements
 
 from mailman.core.i18n import _
 from mailman.email.message import Message
 from mailman.interfaces.handler import IHandler
+from mailman.interfaces.templates import ITemplateLoader
 from mailman.interfaces.usermanager import IUserManager
 from mailman.utilities.string import expand
 
@@ -66,8 +68,16 @@ def process(mlist, msg, msgdata):
             d['user_optionsurl'] = member.options_url
     # These strings are descriptive for the log file and shouldn't be i18n'd
     d.update(msgdata.get('decoration-data', {}))
-    header = decorate(mlist, mlist.msg_header, d)
-    footer = decorate(mlist, mlist.msg_footer, d)
+    try:
+        header = decorate(mlist, mlist.header_uri, d)
+    except URLError:
+        log.exception('Header decorator URI not found ({0}): {1}'.format(
+            mlist.fqdn_listname, mlist.header_uri))
+    try:
+        footer = decorate(mlist, mlist.footer_uri, d)
+    except URLError:
+        log.exception('Footer decorator URI not found ({0}): {1}'.format(
+            mlist.fqdn_listname, mlist.footer_uri))
     # Escape hatch if both the footer and header are empty
     if not header and not footer:
         return
@@ -195,19 +205,28 @@ def process(mlist, msg, msgdata):
 
 
 
-def decorate(mlist, template, extradict=None):
+def decorate(mlist, uri, extradict=None):
     """Expand the decoration template."""
+    if uri is None:
+        return ''
+    # Get the decorator template.
+    loader = getUtility(ITemplateLoader)
+    template_uri = expand(uri, dict(
+        listname=mlist.fqdn_listname,
+        language=mlist.preferred_language.code,
+        ))
+    template = loader.get(template_uri)
     # Create a dictionary which includes the default set of interpolation
     # variables allowed in headers and footers.  These will be augmented by
     # any key/value pairs in the extradict.
     substitutions = dict(
-        real_name       = mlist.real_name,
-        list_name       = mlist.list_name,
-        fqdn_listname   = mlist.fqdn_listname,
-        host_name       = mlist.mail_host,
-        listinfo_page   = mlist.script_url('listinfo'),
-        description     = mlist.description,
-        info            = mlist.info,
+        fqdn_listname = mlist.fqdn_listname,
+        list_name     = mlist.real_name,
+        host_name     = mlist.mail_host,
+        listinfo_uri  = mlist.script_url('listinfo'),
+        list_requests = mlist.request_address,
+        description   = mlist.description,
+        info          = mlist.info,
         )
     if extradict is not None:
         substitutions.update(extradict)

@@ -21,20 +21,39 @@ Decorations
 
 Decorations are added when the mailing list had a header and/or footer
 defined, and the decoration handler is told to do personalized decorations.
+We start by writing the site-global header and footer template.
 ::
 
-    >>> mlist = create_list('test@example.com')
-    >>> mlist.msg_header = """\
+    >>> import os, tempfile
+    >>> template_dir = tempfile.mkdtemp()
+    >>> site_dir = os.path.join(template_dir, 'site', 'en')
+    >>> os.makedirs(site_dir)
+    >>> config.push('templates', """
+    ... [paths.testing]
+    ... template_dir: {0}
+    ... """.format(template_dir))
+
+    >>> myheader_path = os.path.join(site_dir, 'myheader.txt')
+    >>> with open(myheader_path, 'w') as fp:
+    ...     print >> fp, """\
     ... Delivery address: $user_address
     ... Subscribed address: $user_delivered_to
     ... """
-
-    >>> mlist.msg_footer = """\
+    >>> myfooter_path = os.path.join(site_dir, 'myfooter.txt')
+    >>> with open(myfooter_path, 'w') as fp:
+    ...     print >> fp, """\
     ... User name: $user_name
     ... Password: $user_password
     ... Language: $user_language
     ... Options: $user_optionsurl
     ... """
+
+Then create a mailing list which will use this header and footer.  Because
+these are site-global templates, we can use a shorted URL.
+
+    >>> mlist = create_list('test@example.com')
+    >>> mlist.header_uri = 'mailman:///myheader.txt'
+    >>> mlist.footer_uri = 'mailman:///myfooter.txt'
     
     >>> transaction.commit()
 
@@ -201,3 +220,9 @@ into the message metadata.
     <BLANKLINE>
     This is a test.
     ----------
+
+.. Clean up
+
+    >>> config.pop('templates')
+    >>> import shutil
+    >>> shutil.rmtree(template_dir)

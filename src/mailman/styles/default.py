@@ -106,13 +106,9 @@ from: .*@uplinkpro.com
         mlist.mime_is_default_digest = False
         mlist.digest_size_threshold = 30 # KB
         mlist.digest_send_periodic = True
-        mlist.digest_header = ''
-        mlist.digest_footer = """\
-_______________________________________________
-$real_name mailing list
-$fqdn_listname
-${listinfo_page}
-"""
+        mlist.digest_header_uri = None
+        mlist.digest_footer_uri = (
+            'mailman:///$listname/$language/footer-generic.txt')
         mlist.digest_volume_frequency = DigestFrequency.monthly
         mlist.next_digest_number = 1
         mlist.nondigestable = True
@@ -137,13 +133,8 @@ ${listinfo_page}
         # 2-tuple of the date of the last autoresponse and the number of
         # autoresponses sent on that date.
         mlist.subject_prefix = _('[$mlist.real_name] ')
-        mlist.msg_header = ''
-        mlist.msg_footer = """\
-_______________________________________________
-$real_name mailing list
-$fqdn_listname
-${listinfo_page}
-"""
+        mlist.header_uri = None
+        mlist.footer_uri = 'mailman:///$listname/$language/footer-generic.txt'
         # Set this to Never if the list's preferred language uses us-ascii,
         # otherwise set it to As Needed.
         if mlist.preferred_language.charset == 'us-ascii':
