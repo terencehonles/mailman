@@ -8,6 +8,7 @@ number of email commands out of the box.  These are processed when a message
 is sent to the list's ``-request`` address.
 
     >>> mlist = create_list('test@example.com')
+    >>> mlist.send_welcome_messages = False
 
 
 A command in the Subject
@@ -33,14 +34,14 @@ the sender.  The command can be in the ``Subject`` header.
     >>> command.run()
 
 And now the response is in the ``virgin`` queue.
+::
 
-    >>> from mailman.core.switchboard import Switchboard
-    >>> virgin_queue = config.switchboards['virgin']
-    >>> len(virgin_queue.files)
-    1
     >>> from mailman.testing.helpers import get_queue_messages
-    >>> item = get_queue_messages('virgin')[0]
-    >>> print item.msg.as_string()
+    >>> messages = get_queue_messages('virgin')
+    >>> len(messages)
+    1
+
+    >>> print messages[0].msg.as_string()
     Subject: The results of your email commands
     From: test-bounces@example.com
     To: aperson@example.com
@@ -59,7 +60,8 @@ And now the response is in the ``virgin`` queue.
     <BLANKLINE>
     - Done.
     <BLANKLINE>
-    >>> dump_msgdata(item.msgdata)
+
+    >>> dump_msgdata(messages[0].msgdata)
     _parsemsg           : False
     listname            : test@example.com
     nodecorate          : True
@@ -85,10 +87,11 @@ message is plain text.
 
     >>> inject_message(mlist, msg, switchboard='command')
     >>> command.run()
-    >>> len(virgin_queue.files)
+    >>> messages = get_queue_messages('virgin')
+    >>> len(messages)
     1
-    >>> item = get_queue_messages('virgin')[0]
-    >>> print item.msg.as_string()
+
+    >>> print messages[0].msg.as_string()
     Subject: The results of your email commands
     From: test-bounces@example.com
     To: bperson@example.com
@@ -132,12 +135,9 @@ address, and the other is the results of his email command.
 
     >>> inject_message(mlist, msg, switchboard='command', subaddress='join')
     >>> command.run()
-    >>> len(virgin_queue.files)
+    >>> messages = get_queue_messages('virgin', sort_on='subject')
+    >>> len(messages)
     2
-
-    >>> def sortkey(item):
-    ...     return str(item.msg['subject'])
-    >>> messages = sorted(get_queue_messages('virgin'), key=sortkey)
 
     >>> from mailman.interfaces.registrar import IRegistrar
     >>> from zope.component import getUtility
@@ -152,6 +152,9 @@ address, and the other is the results of his email command.
     Subject: The results of your email commands
     Subject: confirm ...
 
+.. Clear the queue
+    >>> ignore = get_queue_messages('virgin')
+
 Similarly, to leave a mailing list, the user need only email the ``-leave`` or
 ``-unsubscribe`` address (the latter is deprecated).
 ::
@@ -164,10 +167,11 @@ Similarly, to leave a mailing list, the user need only email the ``-leave`` or
 
     >>> inject_message(mlist, msg, switchboard='command', subaddress='leave')
     >>> command.run()
-    >>> len(virgin_queue.files)
+    >>> messages = get_queue_messages('virgin')
+    >>> len(messages)
     1
-    >>> item = get_queue_messages('virgin')[0]
-    >>> print item.msg.as_string()
+
+    >>> print messages[0].msg.as_string()
     Subject: The results of your email commands
     From: test-bounces@example.com
     To: dperson@example.com
@@ -198,10 +202,11 @@ The ``-confirm`` address is also available as an implicit command.
 
     >>> inject_message(mlist, msg, switchboard='command', subaddress='confirm')
     >>> command.run()
-    >>> len(virgin_queue.files)
+    >>> messages = get_queue_messages('virgin')
+    >>> len(messages)
     1
-    >>> item = get_queue_messages('virgin')[0]
-    >>> print item.msg.as_string()
+
+    >>> print messages[0].msg.as_string()
     Subject: The results of your email commands
     From: test-bounces@example.com
     To: dperson@example.com
@@ -241,10 +246,11 @@ looked at by the command queue.
 
     >>> inject_message(mlist, msg, switchboard='command')
     >>> command.run()
-    >>> len(virgin_queue.files)
+    >>> messages = get_queue_messages('virgin')
+    >>> len(messages)
     1
-    >>> item = get_queue_messages('virgin')[0]
-    >>> print item.msg.as_string()
+
+    >>> print messages[0].msg.as_string()
     Subject: The results of your email commands
     ...
     <BLANKLINE>
@@ -272,10 +278,11 @@ The ``stop`` command is an alias for ``end``.
 
     >>> inject_message(mlist, msg, switchboard='command')
     >>> command.run()
-    >>> len(virgin_queue.files)
+    >>> messages = get_queue_messages('virgin')
+    >>> len(messages)
     1
-    >>> item = get_queue_messages('virgin')[0]
-    >>> print item.msg.as_string()
+
+    >>> print messages[0].msg.as_string()
     Subject: The results of your email commands
     ...
     <BLANKLINE>

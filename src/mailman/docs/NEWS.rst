@@ -70,6 +70,8 @@ Commands
    `digest=` argument now accepts the following values: `no` (for regular
    delivery), `mime`, or `plain`.
  * Added a `help` email command.
+ * A welcome message is sent when the user confirms their subscription via
+   email.
 
 Bug fixes
 ---------

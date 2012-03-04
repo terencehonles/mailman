@@ -33,6 +33,7 @@ No address to join
 ------------------
 
     >>> mlist = create_list('alpha@example.com')
+    >>> mlist.send_welcome_message = False
 
 When no address argument is given, the message's From address will be used.
 If that's missing though, then an error is returned.

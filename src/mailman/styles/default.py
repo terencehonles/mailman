@@ -87,7 +87,7 @@ from: .*@uplinkpro.com
         mlist.anonymous_list = False
         mlist.description = ''
         mlist.info = ''
-        mlist.welcome_message_uri = ''
+        mlist.welcome_message_uri = 'mailman:///welcome.txt'
         mlist.goodbye_message_uri = ''
         mlist.subscribe_policy = 1
         mlist.subscribe_auto_approval = []

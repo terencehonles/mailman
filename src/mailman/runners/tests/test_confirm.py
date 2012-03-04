@@ -52,6 +52,7 @@ class TestConfirm(unittest.TestCase):
         # Register a subscription requiring confirmation.
         registrar = getUtility(IRegistrar)
         self._mlist = create_list('test@example.com')
+        self._mlist.send_welcome_message = False
         self._token = registrar.register(self._mlist, 'anne@example.org')
         self._commandq = config.switchboards['command']
         self._runner = make_testable_runner(CommandRunner, 'command')
@@ -231,3 +232,32 @@ From: Anne Person <anne@example.org>
                 in_results = True
         self.assertEqual(len(confirmation_lines), 1)
         self.assertFalse('did not match' in confirmation_lines[0])
+
+    def test_welcome_message_after_confirmation(self):
+        # Confirmations with a welcome message set.
+        self._mlist.send_welcome_message = True
+        self._mlist.welcome_message_uri = 'mailman:///welcome.txt'
+        # 'confirm' in the Subject and in the To header should not try to
+        # confirm the token twice.
+        #
+        # Clear out the virgin queue so that the test below only sees the
+        # reply to the confirmation message.
+        get_queue_messages('virgin')
+        subject = 'Re: confirm {0}'.format(self._token)
+        to = 'test-confirm+{0}@example.com'.format(self._token)
+        msg = mfs("""\
+From: Anne Person <anne@example.org>
+
+""")
+        msg['Subject'] = subject
+        msg['To'] = to
+        self._commandq.enqueue(msg, dict(listname='test@example.com',
+                                         subaddress='confirm'))
+        self._runner.run()
+        # Now there's a email command notification and a welcome message.  All
+        # we care about for this test is the welcome message.
+        messages = get_queue_messages('virgin', sort_on='subject')
+        self.assertEqual(len(messages), 2)
+        message = messages[1].msg
+        self.assertEqual(str(message['subject']), 
+                         'Welcome to the "Test" mailing list')

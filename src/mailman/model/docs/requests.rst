@@ -6,7 +6,7 @@ Various actions will be held for moderator approval, such as subscriptions to
 closed lists, or postings by non-members.  The requests database is the low
 level interface to these actions requiring approval.
 
-Here is a helper function for printing out held requests.
+.. Here is a helper function for printing out held requests.
 
     >>> def show_holds(requests):
     ...     for request in requests.held_requests:
@@ -15,19 +15,6 @@ Here is a helper function for printing out held requests.
     ...         if data is not None:
     ...             for key in sorted(data):
     ...                 print '    {0}: {1}'.format(key, data[key])
-
-And another helper for displaying messages in the virgin queue.
-
-    >>> virginq = config.switchboards['virgin']
-    >>> def dequeue(whichq=None, expected_count=1):
-    ...     if whichq is None:
-    ...         whichq = virginq
-    ...     assert len(whichq.files) == expected_count, (
-    ...         'Unexpected file count: %d' % len(whichq.files))
-    ...     filebase = whichq.files[0]
-    ...     qmsg, qdata = whichq.dequeue(filebase)
-    ...     whichq.finish(filebase)
-    ...     return qmsg, qdata
 
 
 Mailing list-centric
@@ -263,7 +250,8 @@ Bye bye message!
     >>> moderator.handle_message(mlist, id_1, Action.discard)
     >>> print requests.get_request(id_1)
     None
-    >>> virginq.files
+    >>> from mailman.testing.helpers import get_queue_messages
+    >>> get_queue_messages('virgin')
     []
 
 The message can be rejected, meaning it is bounced back to the sender.
@@ -271,8 +259,10 @@ The message can be rejected, meaning it is bounced back to the sender.
     >>> moderator.handle_message(mlist, id_2, Action.reject, 'Off topic')
     >>> print requests.get_request(id_2)
     None
-    >>> qmsg, qdata = dequeue()
-    >>> print qmsg.as_string()
+    >>> messages = get_queue_messages('virgin')
+    >>> len(messages)
+    1
+    >>> print messages[0].msg.as_string()
     MIME-Version: 1.0
     Content-Type: text/plain; charset="us-ascii"
     Content-Transfer-Encoding: 7bit
@@ -297,7 +287,7 @@ The message can be rejected, meaning it is bounced back to the sender.
     <BLANKLINE>
         alist-owner@example.com
     <BLANKLINE>
-    >>> dump_msgdata(qdata)
+    >>> dump_msgdata(messages[0].msgdata)
     _parsemsg           : False
     listname            : alist@example.com
     nodecorate          : True
@@ -311,9 +301,10 @@ indicates that the message has been approved.
 
     >>> id_3 = moderator.hold_message(mlist, msg, msgdata, 'Needs approval')
     >>> moderator.handle_message(mlist, id_3, Action.accept)
-    >>> inq = config.switchboards['pipeline']
-    >>> qmsg, qdata = dequeue(inq)
-    >>> print qmsg.as_string()
+    >>> messages = get_queue_messages('pipeline')
+    >>> len(messages)
+    1
+    >>> print messages[0].msg.as_string()
     From: aperson@example.org
     To: alist@example.com
     Subject: Something important
@@ -323,7 +314,7 @@ indicates that the message has been approved.
     <BLANKLINE>
     Here's something important about our mailing list.
     <BLANKLINE>
-    >>> dump_msgdata(qdata)
+    >>> dump_msgdata(messages[0].msgdata)
     _parsemsg         : False
     approved          : True
     moderator_approved: True
@@ -385,8 +376,11 @@ moderators.
     >>> id_4 = moderator.hold_message(mlist, msg, {}, 'Needs approval')
     >>> moderator.handle_message(mlist, id_4, Action.discard,
     ...                          forward=['zperson@example.com'])
-    >>> qmsg, qdata = dequeue()
-    >>> print qmsg.as_string()
+
+    >>> messages = get_queue_messages('virgin')
+    >>> len(messages)
+    1
+    >>> print messages[0].msg.as_string()
     Subject: Forward of moderated message
     From: alist-bounces@example.com
     To: zperson@example.com
@@ -404,7 +398,8 @@ moderators.
     <BLANKLINE>
     Here's something important about our mailing list.
     <BLANKLINE>
-    >>> dump_msgdata(qdata)
+
+    >>> dump_msgdata(messages[0].msgdata)
     _parsemsg           : False
     listname            : alist@example.com
     nodecorate          : True
@@ -434,12 +429,13 @@ In the above case the mailing list was not configured to send the list
 moderators a notice about the hold, so no email message is in the virgin
 queue.
 
-    >>> virginq.files
+    >>> get_queue_messages('virgin')
     []
 
 But if we set the list up to notify the list moderators immediately when a
 message is held for approval, there will be a message placed in the virgin
 queue when the message is held.
+::
 
     >>> mlist.admin_immed_notify = True
     >>> # XXX This will almost certainly change once we've worked out the web
@@ -449,8 +445,11 @@ queue when the message is held.
     ...     '{NONE}zyxcba', DeliveryMode.regular, 'en')
     >>> requests.get_request(id_4) is not None
     True
-    >>> qmsg, qdata = dequeue()
-    >>> print qmsg.as_string()
+    >>> messages = get_queue_messages('virgin')
+    >>> len(messages)
+    1
+
+    >>> print messages[0].msg.as_string()
     MIME-Version: 1.0
     Content-Type: text/plain; charset="us-ascii"
     Content-Transfer-Encoding: 7bit
@@ -474,7 +473,8 @@ queue when the message is held.
     <BLANKLINE>
     to process the request.
     <BLANKLINE>
-    >>> dump_msgdata(qdata)
+
+    >>> dump_msgdata(messages[0].msgdata)
     _parsemsg           : False
     listname            : alist@example.com
     nodecorate          : True
@@ -498,13 +498,17 @@ The held subscription can also be discarded.
 
 The request can be rejected, in which case a message is sent to the
 subscriber.
+::
 
     >>> moderator.handle_subscription(mlist, id_4, Action.reject,
     ...     'This is a closed list')
     >>> print requests.get_request(id_4)
     None
-    >>> qmsg, qdata = dequeue()
-    >>> print qmsg.as_string()
+    >>> messages = get_queue_messages('virgin')
+    >>> len(messages)
+    1
+
+    >>> print messages[0].msg.as_string()
     MIME-Version: 1.0
     Content-Type: text/plain; charset="us-ascii"
     Content-Transfer-Encoding: 7bit
@@ -529,7 +533,8 @@ subscriber.
     <BLANKLINE>
         alist-owner@example.com
     <BLANKLINE>
-    >>> dump_msgdata(qdata)
+
+    >>> dump_msgdata(messages[0].msgdata)
     _parsemsg           : False
     listname            : alist@example.com
     nodecorate          : True
@@ -548,9 +553,13 @@ mailing list.
 
 A message will be sent to the moderators telling them about the held
 subscription and the fact that they may need to approve it.
+::
 
-    >>> qmsg, qdata = dequeue()
-    >>> print qmsg.as_string()
+    >>> messages = get_queue_messages('virgin')
+    >>> len(messages)
+    1
+
+    >>> print messages[0].msg.as_string()
     MIME-Version: 1.0
     Content-Type: text/plain; charset="us-ascii"
     Content-Transfer-Encoding: 7bit
@@ -574,7 +583,8 @@ subscription and the fact that they may need to approve it.
     <BLANKLINE>
     to process the request.
     <BLANKLINE>
-    >>> dump_msgdata(qdata)
+
+    >>> dump_msgdata(messages[0].msgdata)
     _parsemsg           : False
     listname            : alist@example.com
     nodecorate          : True
@@ -593,29 +603,20 @@ being sent to the user and the other is a subscription notification that is
 sent to the moderators.  The only good way to tell which is which is to look
 at the recipient list.
 
-    >>> qmsg_1, qdata_1 = dequeue(expected_count=2)
-    >>> qmsg_2, qdata_2 = dequeue()
-    >>> if 'fperson@example.org' in qdata_1['recipients']:
-    ...     # The first message is the welcome message
-    ...     welcome_qmsg = qmsg_1
-    ...     welcome_qdata = qdata_1
-    ...     admin_qmsg = qmsg_2
-    ...     admin_qdata = qdata_2
-    ... else:
-    ...     welcome_qmsg = qmsg_2
-    ...     welcome_qdata = qdata_2
-    ...     admin_qmsg = qmsg_1
-    ...     admin_qdata = qdata_1
+    >>> messages = get_queue_messages('virgin', sort_on='subject')
+    >>> len(messages)
+    2
 
 The welcome message is sent to the person who just subscribed.
+::
 
-    >>> print welcome_qmsg.as_string()
+    >>> print messages[1].msg.as_string()
     MIME-Version: 1.0
     Content-Type: text/plain; charset="us-ascii"
     Content-Transfer-Encoding: 7bit
     Subject: Welcome to the "A Test List" mailing list
     From: alist-request@example.com
-    To: fperson@example.org
+    To: Frank Person <fperson@example.org>
     X-No-Archive: yes
     Message-ID: ...
     Date: ...
@@ -647,18 +648,20 @@ The welcome message is sent to the person who just subscribed.
     this email is not included here.  There is also a button on your
     options page that will send your current password to you.
     <BLANKLINE>
-    >>> dump_msgdata(welcome_qdata)
+
+    >>> dump_msgdata(messages[1].msgdata)
     _parsemsg           : False
     listname            : alist@example.com
     nodecorate          : True
-    recipients          : set([u'fperson@example.org'])
+    recipients          : set([u'Frank Person <fperson@example.org>'])
     reduced_list_headers: True
     verp                : False
     version             : 3
 
 The admin message is sent to the moderators.
+::
 
-    >>> print admin_qmsg.as_string()
+    >>> print messages[0].msg.as_string()
     MIME-Version: 1.0
     Content-Type: text/plain; charset="us-ascii"
     Content-Transfer-Encoding: 7bit
@@ -672,7 +675,8 @@ The admin message is sent to the moderators.
     Frank Person <fperson@example.org> has been successfully subscribed to
     A Test List.
     <BLANKLINE>
-    >>> dump_msgdata(admin_qdata)
+
+    >>> dump_msgdata(messages[0].msgdata)
     _parsemsg           : False
     envsender           : changeme@example.com
     listname            : alist@example.com
@@ -727,12 +731,15 @@ notification.
     >>> id_5 = moderator.hold_unsubscription(mlist, 'gperson@example.com')
     >>> requests.get_request(id_5) is not None
     True
-    >>> virginq.files
+    >>> get_queue_messages('virgin')
     []
     >>> mlist.admin_immed_notify = True
     >>> id_6 = moderator.hold_unsubscription(mlist, 'hperson@example.com')
-    >>> qmsg, qdata = dequeue()
-    >>> print qmsg.as_string()
+
+    >>> messages = get_queue_messages('virgin')
+    >>> len(messages)
+    1
+    >>> print messages[0].msg.as_string()
     MIME-Version: 1.0
     Content-Type: text/plain; charset="us-ascii"
     Content-Transfer-Encoding: 7bit
@@ -755,7 +762,8 @@ notification.
     <BLANKLINE>
     to process the request.
     <BLANKLINE>
-    >>> dump_msgdata(qdata)
+
+    >>> dump_msgdata(messages[0].msgdata)
     _parsemsg           : False
     listname            : alist@example.com
     nodecorate          : True
@@ -788,8 +796,11 @@ and the person remains a member of the mailing list.
     ...     'This list is a prison.')
     >>> print requests.get_request(id_6)
     None
-    >>> qmsg, qdata = dequeue()
-    >>> print qmsg.as_string()
+    >>> messages = get_queue_messages('virgin')
+    >>> len(messages)
+    1
+
+    >>> print messages[0].msg.as_string()
     MIME-Version: 1.0
     Content-Type: text/plain; charset="us-ascii"
     Content-Transfer-Encoding: 7bit
@@ -814,7 +825,8 @@ and the person remains a member of the mailing list.
     <BLANKLINE>
         alist-owner@example.com
     <BLANKLINE>
-    >>> dump_msgdata(qdata)
+
+    >>> dump_msgdata(messages[0].msgdata)
     _parsemsg           : False
     listname            : alist@example.com
     nodecorate          : True
@@ -840,23 +852,14 @@ There are now two messages in the virgin queue, one to the member who was just
 unsubscribed and another to the moderators informing them of this membership
 change.
 
-    >>> qmsg_1, qdata_1 = dequeue(expected_count=2)
-    >>> qmsg_2, qdata_2 = dequeue()
-    >>> if 'gperson@example.com' in qdata_1['recipients']:
-    ...     # The first message is the goodbye message
-    ...     goodbye_qmsg = qmsg_1
-    ...     goodbye_qdata = qdata_1
-    ...     admin_qmsg = qmsg_2
-    ...     admin_qdata = qdata_2
-    ... else:
-    ...     goodbye_qmsg = qmsg_2
-    ...     goodbye_qdata = qdata_2
-    ...     admin_qmsg = qmsg_1
-    ...     admin_qdata = qdata_1
+    >>> messages = get_queue_messages('virgin')
+    >>> len(messages)
+    2
 
 The goodbye message...
+::
 
-    >>> print goodbye_qmsg.as_string()
+    >>> print messages[0].msg.as_string()
     MIME-Version: 1.0
     Content-Type: text/plain; charset="us-ascii"
     Content-Transfer-Encoding: 7bit
@@ -869,7 +872,8 @@ The goodbye message...
     <BLANKLINE>
     So long!
     <BLANKLINE>
-    >>> dump_msgdata(goodbye_qdata)
+
+    >>> dump_msgdata(messages[0].msgdata)
     _parsemsg           : False
     listname            : alist@example.com
     nodecorate          : True
@@ -879,8 +883,9 @@ The goodbye message...
     version             : 3
 
 ...and the admin message.
+::
 
-    >>> print admin_qmsg.as_string()
+    >>> print messages[1].msg.as_string()
     MIME-Version: 1.0
     Content-Type: text/plain; charset="us-ascii"
     Content-Transfer-Encoding: 7bit
@@ -893,7 +898,8 @@ The goodbye message...
     <BLANKLINE>
     gperson@example.com has been removed from A Test List.
     <BLANKLINE>
-    >>> dump_msgdata(admin_qdata)
+
+    >>> dump_msgdata(messages[1].msgdata)
     _parsemsg           : False
     envsender           : changeme@example.com
     listname            : alist@example.com

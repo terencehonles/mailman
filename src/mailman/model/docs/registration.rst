@@ -41,6 +41,7 @@ confirmation emails can come from some place.  You also need the email
 address of the user who is registering.
 
     >>> mlist = create_list('alpha@example.com')
+    >>> mlist.send_welcome_message = False
 
 Some amount of sanity checks are performed on the email address, although
 honestly, not as much as probably should be done.  Still, some patently bad

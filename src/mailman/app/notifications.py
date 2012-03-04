@@ -77,6 +77,7 @@ def send_welcome_message(mlist, address, language, delivery_mode, text=''):
     # Find the IMember object which is subscribed to the mailing list, because
     # from there, we can get the member's options url.
     member = mlist.members.get_member(address)
+    user_name = member.user.real_name
     options_url = member.options_url
     # Get the text from the template.
     text = expand(welcome, dict(
@@ -84,7 +85,7 @@ def send_welcome_message(mlist, address, language, delivery_mode, text=''):
         list_name=mlist.real_name,
         listinfo_uri=mlist.script_url('listinfo'),
         list_requests=mlist.request_address,
-        user_name=member.user.real_name,
+        user_name=user_name,
         user_address=address,
         user_options_uri=options_url,
         ))
@@ -93,7 +94,8 @@ def send_welcome_message(mlist, address, language, delivery_mode, text=''):
     else:
         digmode = ''
     msg = UserNotification(
-        address, mlist.request_address,
+        formataddr((user_name, address)), 
+        mlist.request_address,
         _('Welcome to the "$mlist.real_name" mailing list${digmode}'),
         text, language)
     msg['X-No-Archive'] = 'yes'

@@ -31,6 +31,7 @@ from pkg_resources import resource_string
 from zope.component import getUtility
 from zope.interface import implements
 
+from mailman.app.notifications import send_welcome_message
 from mailman.core.i18n import _
 from mailman.email.message import UserNotification
 from mailman.interfaces.address import IEmailValidator
@@ -148,13 +149,18 @@ class Registrar:
             pass
         address.verified_on = now()
         # If this registration is tied to a mailing list, subscribe the person
-        # to the list right now.
+        # to the list right now, and possibly send a welcome message.
         list_name = pendable.get('list_name')
         if list_name is not None:
             mlist = getUtility(IListManager).get(list_name)
             if mlist:
                 member = mlist.subscribe(address, MemberRole.member)
                 member.preferences.delivery_mode = delivery_mode
+                if mlist.send_welcome_message:
+                    send_welcome_message(mlist,
+                                         address.email,
+                                         mlist.preferred_language,
+                                         delivery_mode)
         return True
 
     def discard(self, token):

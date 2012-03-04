@@ -61,7 +61,7 @@ All readable attributes for a list are available on a sub-resource.
     send_welcome_message: True
     volume: 1
     web_host: lists.example.com
-    welcome_message_uri:
+    welcome_message_uri: mailman:///welcome.txt
 
 
 Changing the full configuration
