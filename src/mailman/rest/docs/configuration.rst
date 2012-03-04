@@ -99,7 +99,7 @@ all the writable attributes in one request.
     ...             collapse_alternatives=False,
     ...             reply_goes_to_list='point_to_list',
     ...             send_welcome_message=False,
-    ...             welcome_message_uri='Welcome!',
+    ...             welcome_message_uri='mailman:///welcome.txt',
     ...             default_member_action='hold',
     ...             default_nonmember_action='discard',
     ...             generic_nonmember_action=2,
@@ -148,7 +148,7 @@ These values are changed permanently.
     ...
     send_welcome_message: False
     ...
-    welcome_message_uri: Welcome!
+    welcome_message_uri: mailman:///welcome.txt
 
 If you use ``PUT`` to change a list's configuration, all writable attributes
 must be included.  It is an error to leave one or more out...

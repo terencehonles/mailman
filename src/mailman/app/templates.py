@@ -52,7 +52,7 @@ class MailmanHandler(urllib2.BaseHandler):
         # Parse the full requested URL and be sure it's something we handle.
         original_url = req.get_full_url()
         parsed = urlparse(original_url)
-        assert(parsed.scheme == 'mailman')
+        assert parsed.scheme == 'mailman'
         # The path can contain one, two, or three components.  Since no empty
         # path components are legal, filter them out.
         parts = filter(None, parsed.path.split('/'))

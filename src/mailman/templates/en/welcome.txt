@@ -1,22 +1,22 @@
-Welcome to the "$real_name" mailing list!
-$welcome
+Welcome to the "$list_name" mailing list!
+
 To post to this list, send your email to:
 
-  $posting_address
+  $fqdn_listname
 
 General information about the mailing list is at:
 
-  $listinfo_url
+  $listinfo_uri
 
 If you ever want to unsubscribe or change your options (eg, switch to or
 from digest mode, change your password, etc.), visit your subscription
 page at:
 
-  $optionsurl
+  $user_options_uri
 
 You can also make such adjustments via email by sending a message to:
 
-  $request_address
+  $list_requests
 
 with the word 'help' in the subject or body (don't include the quotes), and
 you will get back a message with instructions.  You will need your password to

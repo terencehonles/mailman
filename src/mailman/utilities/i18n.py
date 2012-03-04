@@ -58,20 +58,20 @@ def search(template_file, mlist=None, language=None):
     """Generator that provides file system search order.
 
     This is Mailman's internal template search algorithm.  The first locations
-    searched are within the $var_dir/templates directory, allowing a site to
+    searched are within the $template_dir directory, allowing a site to
     override a template for a specific mailing list, all the mailing lists in
     a domain, or site-wide.
 
     The <language> path component is variable, and described below.
 
     * The list-specific language directory
-      <var_dir>/templates/lists/<mlist.fqdn_listname>/<language>
+      $template_dir/lists/<mlist.fqdn_listname>/<language>
 
     * The domain-specific language directory
-      <var_dir>/templates/domains/<mlist.mail_host>/<language>
+      $template_dir/domains/<mlist.mail_host>/<language>
 
     * The site-wide language directory
-      <var_dir>/templates/site/<language>
+      $template_dir/site/<language>
 
     The <language> path component is calculated as follows, in this order:
 
@@ -86,21 +86,21 @@ def search(template_file, mlist=None, language=None):
     is 'de' and the `language` parameter is 'it', these locations are searched
     in order:
 
-    * <var_dir>/templates/lists/test@example.com/it/foo.txt
-    * <var_dir>/templates/domains/example.com/it/foo.txt
-    * <var_dir>/templates/site/it/foo.txt
+    * $template_dir/lists/test@example.com/it/foo.txt
+    * $template_dir/domains/example.com/it/foo.txt
+    * $template_dir/site/it/foo.txt
 
-    * <var_dir>/templates/lists/test@example.com/de/foo.txt
-    * <var_dir>/templates/domains/example.com/de/foo.txt
-    * <var_dir>/templates/site/de/foo.txt
+    * $template_dir/lists/test@example.com/de/foo.txt
+    * $template_dir/domains/example.com/de/foo.txt
+    * $template_dir/site/de/foo.txt
 
-    * <var_dir>/templates/lists/test@example.com/fr/foo.txt
-    * <var_dir>/templates/domains/example.com/fr/foo.txt
-    * <var_dir>/templates/site/fr/foo.txt
+    * $template_dir/lists/test@example.com/fr/foo.txt
+    * $template_dir/domains/example.com/fr/foo.txt
+    * $template_dir/site/fr/foo.txt
 
-    * <var_dir>/templates/lists/test@example.com/en/foo.txt
-    * <var_dir>/templates/domains/example.com/en/foo.txt
-    * <var_dir>/templates/site/en/foo.txt
+    * $template_dir/lists/test@example.com/en/foo.txt
+    * $template_dir/domains/example.com/en/foo.txt
+    * $template_dir/site/en/foo.txt
 
     After all those paths are searched, the final fallback is the English
     template within the Mailman source tree.
@@ -114,13 +114,13 @@ def search(template_file, mlist=None, language=None):
     if language is not None:
         languages.append(language)
     languages.reverse()
-    # The non-language qualified $var_dir paths in search order.
-    paths = [os.path.join(config.VAR_DIR, 'templates', 'site')]
+    # The non-language qualified $template_dir paths in search order.
+    paths = [os.path.join(config.TEMPLATE_DIR, 'site')]
     if mlist is not None:
         paths.append(os.path.join(
-            config.VAR_DIR, 'templates', 'domains', mlist.mail_host))
+            config.TEMPLATE_DIR, 'domains', mlist.mail_host))
         paths.append(os.path.join(
-            config.VAR_DIR, 'templates', 'lists', mlist.fqdn_listname))
+            config.TEMPLATE_DIR, 'lists', mlist.fqdn_listname))
     paths.reverse()
     for language, path in product(languages, paths):
         yield os.path.join(path, language, template_file)

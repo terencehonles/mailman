@@ -27,15 +27,23 @@ __all__ = [
     ]
 
 
+import logging
+
 from email.utils import formataddr
 from lazr.config import as_boolean
+from urllib2 import URLError
+from zope.component import getUtility
 
 from mailman.config import config
 from mailman.core.i18n import _
 from mailman.email.message import OwnerNotification, UserNotification
 from mailman.interfaces.member import DeliveryMode
+from mailman.interfaces.templates import ITemplateLoader
 from mailman.utilities.i18n import make
-from mailman.utilities.string import wrap
+from mailman.utilities.string import expand, wrap
+
+
+log = logging.getLogger('mailman.error')
 
 
 
@@ -50,12 +58,20 @@ def send_welcome_message(mlist, address, language, delivery_mode, text=''):
     :param address: The address to respond to
     :type address: string
     :param language: the language of the response
-    :type language: string
+    :type language: ILanguage
     :param delivery_mode: the type of delivery the subscriber is getting
     :type delivery_mode: DeliveryMode
     """
     if mlist.welcome_message_uri:
-        welcome = wrap(mlist.welcome_message_uri) + '\n'
+        try:
+            welcome_message = getUtility(ITemplateLoader).get(
+                mlist.welcome_message_uri)
+        except URLError:
+            log.exception('Welcome message URI not found ({0}): {1}'.format(
+                mlist.fqdn_listname, mlist.welcome_message_uri))
+            welcome = ''
+        else:
+            welcome = wrap(welcome_message)
     else:
         welcome = ''
     # Find the IMember object which is subscribed to the mailing list, because
@@ -63,16 +79,15 @@ def send_welcome_message(mlist, address, language, delivery_mode, text=''):
     member = mlist.members.get_member(address)
     options_url = member.options_url
     # Get the text from the template.
-    text += make('subscribeack.txt',
-                 mailing_list=mlist,
-                 language=language.code,
-                 real_name=mlist.real_name,
-                 posting_address=mlist.fqdn_listname,
-                 listinfo_url=mlist.script_url('listinfo'),
-                 optionsurl=options_url,
-                 request_address=mlist.request_address,
-                 welcome=welcome,
-                 )
+    text = expand(welcome, dict(
+        fqdn_listname=mlist.fqdn_listname,
+        list_name=mlist.real_name,
+        listinfo_uri=mlist.script_url('listinfo'),
+        list_requests=mlist.request_address,
+        user_name=member.user.real_name,
+        user_address=address,
+        user_options_uri=options_url,
+        ))
     if delivery_mode is not DeliveryMode.regular:
         digmode = _(' (Digest mode)')
     else:

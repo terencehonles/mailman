@@ -197,7 +197,7 @@ def wrap(text, column=70, honor_leading_ws=True):
             add_paragraph_break = False
         paragraph_text = EMPTYSTRING.join(paragraph)
         # Just copy the blank lines to the final set of paragraphs.
-        if paragraph == NL:
+        if len(paragraph) == 0 or paragraph == NL:
             wrapped_paragraphs.append(NL)
         # Choose the wrapper based on whether the paragraph is indented or
         # not.  Also, do not wrap indented paragraphs if honor_leading_ws is
