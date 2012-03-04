@@ -159,7 +159,7 @@ CREATE TABLE mailinglist (
     gateway_to_mail BOOLEAN,
     gateway_to_news BOOLEAN,
     generic_nonmember_action INTEGER,
-    goodbye_msg TEXT,
+    goodbye_message_uri TEXT,
     header_matches BLOB,
     hold_these_nonmembers BLOB,
     info TEXT,
@@ -191,9 +191,9 @@ CREATE TABLE mailinglist (
     require_explicit_destination BOOLEAN,
     respond_to_post_requests BOOLEAN,
     scrub_nondigest BOOLEAN,
-    send_goodbye_msg BOOLEAN,
+    send_goodbye_message BOOLEAN,
     send_reminders BOOLEAN,
-    send_welcome_msg BOOLEAN,
+    send_welcome_message BOOLEAN,
     start_chain TEXT,
     subject_prefix TEXT,
     subscribe_auto_approval BLOB,
@@ -202,7 +202,7 @@ CREATE TABLE mailinglist (
     topics_bodylines_limit INTEGER,
     topics_enabled BOOLEAN,
     unsubscribe_policy INTEGER,
-    welcome_msg TEXT,
+    welcome_message_uri TEXT,
     PRIMARY KEY (id)
     );
 

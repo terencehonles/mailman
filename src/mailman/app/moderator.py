@@ -260,7 +260,7 @@ def handle_subscription(mlist, id, action, comment=None):
             # request was made and accepted.
             pass
         else:
-            if mlist.send_welcome_msg:
+            if mlist.send_welcome_message:
                 send_welcome_message(mlist, address, language, delivery_mode)
             if mlist.admin_notify_mchanges:
                 send_admin_subscription_notice(

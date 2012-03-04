@@ -540,7 +540,7 @@ subscriber.
 The subscription can also be accepted.  This subscribes the address to the
 mailing list.
 
-    >>> mlist.send_welcome_msg = True
+    >>> mlist.send_welcome_message = True
     >>> id_4 = moderator.hold_subscription(mlist,
     ...     'fperson@example.org', 'Frank Person',
     ...     'abcxyz', DeliveryMode.regular, 'en')

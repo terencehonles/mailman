@@ -25,6 +25,17 @@ Architecture
    is now used when search for all template overrides, site, domain, or
    mailing list.  The in-tree English templates are used only as a last
    fallback.
+ * Support downloading templates by URI, including mailman:// URIs.  This is
+   used in welcome and goodbye messages, and supports both language and
+   mailing list specifications.  E.g. mailman:///test@example.com/it/welc.txt
+
+Database
+--------
+ * Schema changes:
+   - welcome_msg -> welcome_message_uri
+   - goodbye_msg -> goodbye_message_uri
+   - send_welcome_msg -> send_welcome_message
+   - send_goodbye_msg -> send_goodbye_message
 
 REST
 ----
@@ -46,6 +57,7 @@ Interfaces
    `Action.defer` (since the message is already being held).
  * `IListRequests.get_request()` now takes an optional `request_type`
    argument to narrow the search for the given request.
+ * New `ITemplateLoader` utility.
 
 Commands
 --------

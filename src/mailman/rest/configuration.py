@@ -199,10 +199,10 @@ ATTRIBUTES = dict(
     reply_goes_to_list=GetterSetter(enum_validator(ReplyToMunging)),
     request_address=GetterSetter(None),
     scheme=GetterSetter(None),
-    send_welcome_msg=GetterSetter(as_boolean),
+    send_welcome_message=GetterSetter(as_boolean),
     volume=GetterSetter(None),
     web_host=GetterSetter(None),
-    welcome_msg=GetterSetter(unicode),
+    welcome_message_uri=GetterSetter(unicode),
     )
 
 

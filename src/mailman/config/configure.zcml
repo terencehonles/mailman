@@ -23,68 +23,73 @@
     />
 
   <utility
-    factory="mailman.model.bans.BanManager"
     provides="mailman.interfaces.bans.IBanManager"
+    factory="mailman.model.bans.BanManager"
     />
 
   <utility
-    factory="mailman.model.bounce.BounceProcessor"
     provides="mailman.interfaces.bounce.IBounceProcessor"
+    factory="mailman.model.bounce.BounceProcessor"
     />
 
   <utility
-    factory="mailman.model.domain.DomainManager"
     provides="mailman.interfaces.domain.IDomainManager"
+    factory="mailman.model.domain.DomainManager"
     />
 
   <utility
-    factory="mailman.languages.manager.LanguageManager"
     provides="mailman.interfaces.languages.ILanguageManager"
+    factory="mailman.languages.manager.LanguageManager"
     />
 
   <utility
-    factory="mailman.model.listmanager.ListManager"
     provides="mailman.interfaces.listmanager.IListManager"
+    factory="mailman.model.listmanager.ListManager"
     />
 
   <utility
-    factory="mailman.mta.aliases.MailTransportAgentAliases"
     provides="mailman.interfaces.mta.IMailTransportAgentAliases"
+    factory="mailman.mta.aliases.MailTransportAgentAliases"
     />
 
   <utility
-    factory="mailman.model.messagestore.MessageStore"
     provides="mailman.interfaces.messages.IMessageStore"
+    factory="mailman.model.messagestore.MessageStore"
     />
 
   <utility
-    factory="mailman.model.pending.Pendings"
     provides="mailman.interfaces.pending.IPendings"
+    factory="mailman.model.pending.Pendings"
     />
 
   <utility
-    factory="mailman.app.registrar.Registrar"
     provides="mailman.interfaces.registrar.IRegistrar"
+    factory="mailman.app.registrar.Registrar"
     />
 
   <utility
-   factory="mailman.styles.manager.StyleManager"
    provides="mailman.interfaces.styles.IStyleManager"
+   factory="mailman.styles.manager.StyleManager"
    />
 
   <utility
-    factory="mailman.app.subscriptions.SubscriptionService"
     provides="mailman.interfaces.subscriptions.ISubscriptionService"
+    factory="mailman.app.subscriptions.SubscriptionService"
     />
 
   <utility
-    factory="mailman.model.usermanager.UserManager"
     provides="mailman.interfaces.usermanager.IUserManager"
+    factory="mailman.model.usermanager.UserManager"
     />
 
   <utility
-    factory="mailman.email.validate.Validator"
     provides="mailman.interfaces.address.IEmailValidator"
+    factory="mailman.email.validate.Validator"
     />
+
+  <utility
+   provides="mailman.interfaces.templates.ITemplateLoader"
+   factory="mailman.app.templates.TemplateLoader"
+   />
 
 </configure>

@@ -516,6 +516,62 @@ class IMailingList(Interface):
     process_bounces = Attribute(
         """Whether or not the mailing list processes bounces.""")
 
+    # Notifications.
+
+    send_welcome_message = Attribute(
+        """Flag indicating whether a welcome message should be sent.""")
+
+    welcome_message_uri = Attribute(
+        """URI for the list's welcome message.
+
+        This can be any URI supported by `httplib2` with the addition of
+        `mailman:` URIs, which reference internal default resources.  This is
+        a template which can include the following placeholders:
+
+        $listname - the FQDN list name for this mailing list.
+        $language - the language code, usually the list's preferred language.
+
+        The resource will be downloaded and cached whenever the welcome
+        message is sent.  The resource at this URI can contain the following
+        placeholders, which are also filled in through values on the mailing
+        list:
+
+        $fqdn_listname    - the FQDN list name for this mailing list.
+        $list_name        - the human readable name for the mailing list.
+        $listinfo_uri     - the URI to the list's information page.
+        $list_requests    - the address to the list's `-request` address.
+        $user_name        - the name of the subscribing user.
+        $user_address     - the email address of the subscribing user.
+        $user_options_uri - the URI to this member's options page.
+        """)
+
+    send_goodbye_message = Attribute(
+        """Flag indicating whether a goodbye message should be sent.""")
+
+    goodbye_message_uri = Attribute(
+        """URI for the list's goodbye message.
+
+        This can be any URI supported by `httplib2` with the addition of
+        `mailman:` URIs, which reference internal default resources.  This is
+        a template which can include the following placeholders:
+
+        $listname - the FQDN list name for this mailing list.
+        $language - the language code, usually the list's preferred language.
+
+        The resource will be downloaded and cached whenever the welcome
+        message is sent.  The resource at this URI can contain the following
+        placeholders, which are also filled in through values on the mailing
+        list:
+
+        $fqdn_listname    - the FQDN list name for this mailing list.
+        $list_name        - the human readable name for the mailing list.
+        $listinfo_uri     - the URI to the list's information page.
+        $list_requests    - the address to the list's `-request` address.
+        $user_name        - the name of the subscribing user.
+        $user_address     - the email address of the subscribing user.
+        $user_options_uri - the URI to this member's options page.
+        """)
+
 
 
 class IAcceptableAlias(Interface):

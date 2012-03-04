@@ -74,8 +74,8 @@ class DefaultStyle:
         mlist.admin_notify_mchanges = False
         mlist.require_explicit_destination = True
         mlist.send_reminders = True
-        mlist.send_welcome_msg = True
-        mlist.send_goodbye_msg = True
+        mlist.send_welcome_message = True
+        mlist.send_goodbye_message = True
         mlist.bounce_matching_headers = """
 # Lines that *start* with a '#' are comments.
 to: friend@public.com
@@ -87,8 +87,8 @@ from: .*@uplinkpro.com
         mlist.anonymous_list = False
         mlist.description = ''
         mlist.info = ''
-        mlist.welcome_msg = ''
-        mlist.goodbye_msg = ''
+        mlist.welcome_message_uri = ''
+        mlist.goodbye_message_uri = ''
         mlist.subscribe_policy = 1
         mlist.subscribe_auto_approval = []
         mlist.unsubscribe_policy = 0

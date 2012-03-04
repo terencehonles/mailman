@@ -58,10 +58,10 @@ All readable attributes for a list are available on a sub-resource.
     reply_goes_to_list: no_munging
     request_address: test-one-request@example.com
     scheme: http
-    send_welcome_msg: True
+    send_welcome_message: True
     volume: 1
     web_host: lists.example.com
-    welcome_msg:
+    welcome_message_uri:
 
 
 Changing the full configuration
@@ -98,8 +98,8 @@ all the writable attributes in one request.
     ...             convert_html_to_plaintext=True,
     ...             collapse_alternatives=False,
     ...             reply_goes_to_list='point_to_list',
-    ...             send_welcome_msg=False,
-    ...             welcome_msg='Welcome!',
+    ...             send_welcome_message=False,
+    ...             welcome_message_uri='Welcome!',
     ...             default_member_action='hold',
     ...             default_nonmember_action='discard',
     ...             generic_nonmember_action=2,
@@ -146,9 +146,9 @@ These values are changed permanently.
     real_name: Fnords
     reply_goes_to_list: point_to_list
     ...
-    send_welcome_msg: False
+    send_welcome_message: False
     ...
-    welcome_msg: Welcome!
+    welcome_message_uri: Welcome!
 
 If you use ``PUT`` to change a list's configuration, all writable attributes
 must be included.  It is an error to leave one or more out...
@@ -179,8 +179,8 @@ must be included.  It is an error to leave one or more out...
     ...             convert_html_to_plaintext=True,
     ...             collapse_alternatives=False,
     ...             reply_goes_to_list='point_to_list',
-    ...             send_welcome_msg=True,
-    ...             welcome_msg='welcome message',
+    ...             send_welcome_message=True,
+    ...             welcome_message_uri='welcome message',
     ...             default_member_action='accept',
     ...             default_nonmember_action='accept',
     ...             generic_nonmember_action=2,

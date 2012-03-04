@@ -54,8 +54,8 @@ def send_welcome_message(mlist, address, language, delivery_mode, text=''):
     :param delivery_mode: the type of delivery the subscriber is getting
     :type delivery_mode: DeliveryMode
     """
-    if mlist.welcome_msg:
-        welcome = wrap(mlist.welcome_msg) + '\n'
+    if mlist.welcome_message_uri:
+        welcome = wrap(mlist.welcome_message_uri) + '\n'
     else:
         welcome = ''
     # Find the IMember object which is subscribed to the mailing list, because
