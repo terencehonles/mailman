@@ -66,7 +66,7 @@ log = logging.getLogger('mailman.error')
 
 def guess_extension(ctype, ext):
     """Find the extension mapped to the given content-type.
-    
+
     mimetypes maps multiple extensions to the same type, e.g. .doc, .dot, and
     .wiz are all mapped to application/msword.  This sucks for finding the
     best reverse mapping.  If the extension is one of the giving mappings,
@@ -75,7 +75,7 @@ def guess_extension(ctype, ext):
     all_extensions = guess_all_extensions(ctype, strict=False)
     if ext in all_extensions:
         return ext
-    return (all_extensions[0] if len(all) > 0 else [])
+    return (all_extensions[0] if len(all_extensions) > 0 else None)
 
 
 
@@ -89,7 +89,7 @@ def safe_strftime(fmt, t):
 
 def calculate_attachments_dir(msg, msgdata):
     """Calculate the directory for attachements.
-    
+
     Calculate the directory that attachments for this message will go under.
     To avoid inode limitations, the scheme will be:
     archives/private/<listname>/attachments/YYYYMMDD/<msgid-hash>/<files>
