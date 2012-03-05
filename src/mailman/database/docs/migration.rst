@@ -8,12 +8,13 @@ features.  This is supported via schema migration.
 Migrations are embodied in individual Python classes, which themselves may
 load SQL into the database.  The naming scheme for migration files is:
 
-    s_YYYYMMDDHHMMSS_comment.py
+    mm_YYYYMMDDHHMMSS_comment.py
 
 where `YYYYMMDDHHMMSS` is a required numeric year, month, day, hour, minute,
 and second specifier providing unique ordering for processing.  Only this
-component of the file name is used to determine the ordering.  (The `s_`
-prefix is required due to Python module naming requirements).
+component of the file name is used to determine the ordering.  The prefix is
+required due to Python module naming requirements, but it is actually
+ignored.  `mm_` is reserved for Mailman's own use.
 
 The optional `comment` part of the file name can be used as a short
 description for the migration, although comments and docstrings in the
@@ -68,7 +69,7 @@ This migration module just adds a marker to the `version` table.
 
     >>> with open(os.path.join(path, '__init__.py'), 'w') as fp:
     ...     pass
-    >>> with open(os.path.join(path, 's_20120211000000.py'), 'w') as fp:
+    >>> with open(os.path.join(path, 'mm_20120211000000.py'), 'w') as fp:
     ...     print >> fp, """
     ... from __future__ import unicode_literals
     ... from mailman.model.version import Version
@@ -92,7 +93,7 @@ This will load the new migration, since it hasn't been loaded before.
 
 Migrations will only be loaded once.
 
-    >>> with open(os.path.join(path, 's_20120211000001.py'), 'w') as fp:
+    >>> with open(os.path.join(path, 'mm_20120211000001.py'), 'w') as fp:
     ...     print >> fp, """
     ... from __future__ import unicode_literals
     ... from mailman.model.version import Version
