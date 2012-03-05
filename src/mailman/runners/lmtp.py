@@ -47,6 +47,7 @@ from mailman.interfaces.listmanager import IListManager
 
 elog = logging.getLogger('mailman.error')
 qlog = logging.getLogger('mailman.runner')
+slog = logging.getLogger('mailman.smtp')
 
 
 # We only care about the listname and the sub-addresses as in listname@ or
@@ -147,7 +148,7 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
     def handle_accept(self):
         conn, addr = self.accept()
         Channel(self, conn, addr)
-        qlog.debug('LMTP accept from %s', addr)
+        slog.debug('LMTP accept from %s', addr)
 
     @txn
     def process_message(self, peer, mailfrom, rcpttos, data):
@@ -156,7 +157,7 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
             # since the set of mailing lists could have changed.
             listnames = set(getUtility(IListManager).names)
             # Parse the message data.  If there are any defects in the
-            # message, reject it right away; it's probably spam. 
+            # message, reject it right away; it's probably spam.
             msg = email.message_from_string(data, Message)
             msg.original_size = len(data)
             if msg.defects:
@@ -177,7 +178,7 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
             try:
                 to = parseaddr(to)[1].lower()
                 listname, subaddress, domain = split_recipient(to)
-                qlog.debug('%s to: %s, list: %s, sub: %s, dom: %s',
+                slog.debug('%s to: %s, list: %s, sub: %s, dom: %s',
                            message_id, to, listname, subaddress, domain)
                 listname += '@' + domain
                 if listname not in listnames:
@@ -197,7 +198,7 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
                     queue = 'in'
                 elif canonical_subaddress is None:
                     # The subaddress was bogus.
-                    elog.error('%s unknown sub-address: %s',
+                    slog.error('%s unknown sub-address: %s',
                                message_id, subaddress)
                     status.append(ERR_550)
                     continue
@@ -214,11 +215,11 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
                 # a success status for this recipient.
                 if queue is not None:
                     config.switchboards[queue].enqueue(msg, msgdata)
-                    qlog.debug('%s subaddress: %s, queue: %s',
+                    slog.debug('%s subaddress: %s, queue: %s',
                                message_id, canonical_subaddress, queue)
                     status.append('250 Ok')
             except Exception:
-                elog.exception('Queue detection: %s', msg['message-id'])
+                slog.exception('Queue detection: %s', msg['message-id'])
                 config.db.abort()
                 status.append(ERR_550)
         # All done; returning this big status string should give the expected

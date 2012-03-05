@@ -43,7 +43,6 @@ We start by writing the site-global header and footer template.
     >>> with open(myfooter_path, 'w') as fp:
     ...     print >> fp, """\
     ... User name: $user_name
-    ... Password: $user_password
     ... Language: $user_language
     ... Options: $user_optionsurl
     ... """
@@ -54,7 +53,7 @@ these are site-global templates, we can use a shorted URL.
     >>> mlist = create_list('test@example.com')
     >>> mlist.header_uri = 'mailman:///myheader.txt'
     >>> mlist.footer_uri = 'mailman:///myfooter.txt'
-    
+
     >>> transaction.commit()
 
     >>> msg = message_from_string("""\
@@ -87,17 +86,14 @@ list.
     >>> user_manager = getUtility(IUserManager)
 
     >>> anne = user_manager.create_user('aperson@example.com', 'Anne Person')
-    >>> anne.password = b'AAA'
     >>> mlist.subscribe(list(anne.addresses)[0], MemberRole.member)
     <Member: Anne Person <aperson@example.com> ...
 
     >>> bart = user_manager.create_user('bperson@example.com', 'Bart Person')
-    >>> bart.password = b'BBB'
     >>> mlist.subscribe(list(bart.addresses)[0], MemberRole.member)
     <Member: Bart Person <bperson@example.com> ...
 
     >>> cris = user_manager.create_user('cperson@example.com', 'Cris Person')
-    >>> cris.password = b'CCC'
     >>> mlist.subscribe(list(cris.addresses)[0], MemberRole.member)
     <Member: Cris Person <cperson@example.com> ...
 
@@ -129,7 +125,6 @@ The decorations happen when the message is delivered.
     Subscribed address: aperson@example.com
     This is a test.
     User name: Anne Person
-    Password: AAA
     Language: English (USA)
     Options: http://example.com/aperson@example.com
     ----------
@@ -148,7 +143,6 @@ The decorations happen when the message is delivered.
     Subscribed address: bperson@example.com
     This is a test.
     User name: Bart Person
-    Password: BBB
     Language: English (USA)
     Options: http://example.com/bperson@example.com
     ----------
@@ -167,7 +161,6 @@ The decorations happen when the message is delivered.
     Subscribed address: cperson@example.com
     This is a test.
     User name: Cris Person
-    Password: CCC
     Language: English (USA)
     Options: http://example.com/cperson@example.com
     ----------

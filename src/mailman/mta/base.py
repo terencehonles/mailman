@@ -139,7 +139,7 @@ class IndividualDelivery(BaseDelivery):
 
     def __init__(self):
         """See `BaseDelivery`."""
-        # 
+        #
         super(IndividualDelivery, self).__init__()
         self.callbacks = []
 
@@ -162,6 +162,12 @@ class IndividualDelivery(BaseDelivery):
             # That way the subclass's _get_sender() override can encode the
             # recipient address in the sender, e.g. for VERP.
             msgdata_copy['recipient'] = recipient
+            # See if the recipient is a member of the mailing list, and if so,
+            # squirrel this information away for use by other modules, such as
+            # the header/footer decorator.  XXX 2012-03-05 this is probably
+            # highly inefficient on the database.
+            member = mlist.members.get_member(recipient)
+            msgdata_copy['member'] = member
             for callback in self.callbacks:
                 callback(mlist, message_copy, msgdata_copy)
             status = self._deliver_to_recipients(

@@ -51,21 +51,16 @@ def process(mlist, msg, msgdata):
     if msgdata.get('isdigest') or msgdata.get('nodecorate'):
         return
     d = {}
-    if msgdata.get('personalize'):
-        # Calculate the extra personalization dictionary.  Note that the
-        # length of the recips list better be exactly 1.
-        recipient = msgdata['recipient']
-        user = getUtility(IUserManager).get_user(recipient)
-        member = mlist.members.get_member(recipient)
+    member = msgdata.get('member')
+    if member is not None:
+        # Calculate the extra personalization dictionary.
+        recipient = msgdata.get('recipient', member.address.original_email)
         d['user_address'] = recipient
-        if user is not None and member is not None:
-            d['user_delivered_to'] = member.address.original_email
-            # BAW: Hmm, should we allow this?
-            d['user_password'] = user.password
-            d['user_language'] = member.preferred_language.description
-            d['user_name'] = (user.real_name if user.real_name
-                              else member.address.original_email)
-            d['user_optionsurl'] = member.options_url
+        d['user_delivered_to'] = member.address.original_email
+        d['user_language'] = member.preferred_language.description
+        d['user_name'] = (member.user.real_name if member.user.real_name
+                          else member.address.original_email)
+        d['user_optionsurl'] = member.options_url
     # These strings are descriptive for the log file and shouldn't be i18n'd
     d.update(msgdata.get('decoration-data', {}))
     try:
