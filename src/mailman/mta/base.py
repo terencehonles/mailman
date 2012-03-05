@@ -139,7 +139,6 @@ class IndividualDelivery(BaseDelivery):
 
     def __init__(self):
         """See `BaseDelivery`."""
-        #
         super(IndividualDelivery, self).__init__()
         self.callbacks = []
 

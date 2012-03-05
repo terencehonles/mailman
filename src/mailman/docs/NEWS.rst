@@ -29,6 +29,8 @@ Architecture
    used in welcome and goodbye messages, as well as regular and digest headers
    and footers, and supports both language and mailing list specifications.
    E.g. mailman:///test@example.com/it/welcome.txt
+ * $user_password is no longer supported as a placeholder in headers and
+   footers.
 
 Database
 --------
