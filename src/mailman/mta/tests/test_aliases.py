@@ -127,26 +127,23 @@ class TestPostfix(unittest.TestCase):
     """Test the Postfix LMTP alias generator."""
 
     layer = ConfigLayer
-    # For Python 2.7's assertMultiLineEqual
-    maxDiff = None
 
     def setUp(self):
         self.utility = getUtility(IMailTransportAgentAliases)
         self.mlist = create_list('test@example.com')
         self.output = StringIO()
         self.postfix = LMTP()
-        # For Python 2.7's unittest.
+        # Python 2.7 has assertMultiLineEqual.  Let this work without bounds.
         self.maxDiff = None
+        self.eq = getattr(self, 'assertMultiLineEqual', self.assertEqual)
 
     def test_aliases(self):
         # Test the format of the Postfix alias generator.
         self.postfix.regenerate(self.output)
-        # Python 2.7 has assertMultiLineEqual but Python 2.6 does not.
-        eq = getattr(self, 'assertMultiLineEqual', self.assertEqual)
         # Strip out the variable and unimportant bits of the output.
         lines = self.output.getvalue().splitlines()
         output = NL.join(lines[7:])
-        eq(output, """\
+        self.eq(output, """\
 # Aliases which are visible only in the @example.com domain.
 test@example.com               lmtp:[127.0.0.1]:9024
 test-bounces@example.com       lmtp:[127.0.0.1]:9024
@@ -163,13 +160,11 @@ test-unsubscribe@example.com   lmtp:[127.0.0.1]:9024
         # Both lists need to show up in the aliases file.  LP: #874929.
         # Create a second list.
         create_list('other@example.com')
-        # Python 2.7 has assertMultiLineEqual but Python 2.6 does not.
-        eq = getattr(self, 'assertMultiLineEqual', self.assertEqual)
         self.postfix.regenerate(self.output)
         # Strip out the variable and unimportant bits of the output.
         lines = self.output.getvalue().splitlines()
         output = NL.join(lines[7:])
-        eq(output, """\
+        self.eq(output, """\
 # Aliases which are visible only in the @example.com domain.
 other@example.com               lmtp:[127.0.0.1]:9024
 other-bounces@example.com       lmtp:[127.0.0.1]:9024

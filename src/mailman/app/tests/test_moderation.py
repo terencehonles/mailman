@@ -56,10 +56,9 @@ Message-ID: <alpha>
         self._in = make_testable_runner(IncomingRunner, 'in')
         self._pipeline = make_testable_runner(PipelineRunner, 'pipeline')
         self._out = make_testable_runner(OutgoingRunner, 'out')
-        # Python 2.7 has assertMultiLineEqual
+        # Python 2.7 has assertMultiLineEqual.  Let this work without bounds.
         self.maxDiff = None
-        self.eq = getattr(self, 'assertMultiLineEqual',
-                          getattr(self, 'assertEqual'))
+        self.eq = getattr(self, 'assertMultiLineEqual', self.assertEqual)
 
     def test_accepted_message_gets_posted(self):
         # A message that is accepted by the moderator should get posted to the

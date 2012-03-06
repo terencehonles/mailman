@@ -95,6 +95,9 @@ options  : $user_optionsurl
         template_dir: {0}
         """.format(self._template_dir))
         self._mlist.footer_uri = 'mailman:///member-footer.txt'
+        # Python 2.7 has assertMultiLineEqual.  Let this work without bounds.
+        self.maxDiff = None
+        self.eq = getattr(self, 'assertMultiLineEqual', self.assertEqual)
 
     def tearDown(self):
         # Free references.
@@ -121,12 +124,7 @@ options  : $user_optionsurl
         self.assertEqual(len(refused), 0)
         self.assertEqual(len(_deliveries), 1)
         _mlist, _msg, _msgdata, _recipients = _deliveries[0]
-        try:
-            eq = self.assertMultiLineEqual
-        except AttributeError:
-            # Python 2.6
-            eq = self.assertEqual
-        eq(_msg.as_string(), """\
+        self.eq(_msg.as_string(), """\
 From: anne@example.org
 To: test@example.com
 Subject: test

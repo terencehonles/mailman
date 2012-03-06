@@ -45,8 +45,6 @@ class TestInjectMessage(unittest.TestCase):
     layer = ConfigLayer
 
     def setUp(self):
-        # Python 2.7 has a better equality tester for message texts.
-        self.eq = getattr(self, 'assertMultiLineEqual', self.assertEqual)
         self.mlist = create_list('test@example.com')
         self.msg = message_from_string("""\
 From: anne@example.com
@@ -57,8 +55,9 @@ Date: Tue, 14 Jun 2011 21:12:00 -0400
 
 Nothing.
 """)
-        # For Python 2.7.
+        # Python 2.7 has assertMultiLineEqual.  Let this work without bounds.
         self.maxDiff = None
+        self.eq = getattr(self, 'assertMultiLineEqual', self.assertEqual)
 
     def test_inject_message(self):
         # Test basic inject_message() call.
@@ -132,8 +131,6 @@ class TestInjectText(unittest.TestCase):
     layer = ConfigLayer
 
     def setUp(self):
-        # Python 2.7 has a better equality tester for message texts.
-        self.eq = getattr(self, 'assertMultiLineEqual', self.assertEqual)
         self.mlist = create_list('test@example.com')
         self.text = b"""\
 From: bart@example.com
@@ -144,8 +141,9 @@ Date: Tue, 14 Jun 2011 21:12:00 -0400
 
 Nothing.
 """
-        # For Python 2.7.
+        # Python 2.7 has a better equality tester for message texts.
         self.maxDiff = None
+        self.eq = getattr(self, 'assertMultiLineEqual', self.assertEqual)
 
     def _remove_line(self, header):
         return NL.join(line for line in self.text.splitlines()

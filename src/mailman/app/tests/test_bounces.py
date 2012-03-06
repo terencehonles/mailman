@@ -308,6 +308,9 @@ $address
 $optionsurl
 $owneraddr
 """, file=fp)
+        # Python 2.7 has assertMultiLineEqual.  Let this work without bounds.
+        self.maxDiff = None
+        self.eq = getattr(self, 'assertMultiLineEqual', self.assertEqual)
 
     def tearDown(self):
         config.pop('xx template dir')
@@ -328,12 +331,7 @@ $owneraddr
         send_probe(self._member, self._msg)
         message = get_queue_messages('virgin')[0].msg
         notice = message.get_payload(0).get_payload()
-        try:
-            # Python 2.7
-            eq = self.assertMultiLineEqual
-        except AttributeError:
-            eq = self.assertEqual
-        eq(notice, """\
+        self.eq(notice, """\
 blah blah blah test@example.com anne@example.com
 http://example.com/anne@example.com test-owner@example.com""")
 
