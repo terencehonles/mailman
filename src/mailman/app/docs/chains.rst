@@ -2,9 +2,9 @@
 Chains
 ======
 
-When a new message comes into the system, Mailman uses a set of rule chains to
-decide whether the message gets posted to the list, rejected, discarded, or
-held for moderator approval.
+When a new message is posted to a mailing list, Mailman uses a set of rule
+chains to decide whether the message gets accepted for posting, rejected,
+discarded, or held for moderator approval.
 
 There are a number of built-in chains available that act as end-points in the
 processing of messages.
@@ -285,13 +285,13 @@ Run-time chains are made up of links where each link associates both a rule
 and a `jump`.  The rule is really a rule name, which is looked up when
 needed.  The jump names a chain which is jumped to if the rule matches.
 
-There is one built-in run-time chain, called appropriately `built-in`.  This
-is the default chain to use when no other input chain is defined for a mailing
-list.  It runs through the default rules.
+There is one built-in posting chain.  This is the default chain to use when no
+other input chain is defined for a mailing list.  It runs through the default
+rules.
 
-    >>> chain = config.chains['built-in']
+    >>> chain = config.chains['default-posting-chain']
     >>> print chain.name
-    built-in
+    default-posting-chain
     >>> print chain.description
     The built-in moderation chain.
 

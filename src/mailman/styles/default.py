@@ -211,11 +211,12 @@ from: .*@uplinkpro.com
         # is that they will get all messages, and they will not have an entry
         # in this dictionary.
         mlist.topics_userinterest = {}
-        # The processing chain that messages coming into this list get
+        # The processing chain that messages posted to this mailing list get
         # processed by.
-        mlist.start_chain = 'built-in'
-        # The default pipeline to send accepted messages through.
-        mlist.pipeline = 'built-in'
+        mlist.posting_chain = 'default-posting-chain'
+        # The default pipeline to send accepted messages through to the
+        # mailing list's members.
+        mlist.posting_pipeline = 'default-posting-pipeline'
 
     def match(self, mailing_list, styles):
         """See `IStyle`."""

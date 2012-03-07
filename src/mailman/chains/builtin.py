@@ -44,7 +44,7 @@ class BuiltInChain:
 
     implements(IChain)
 
-    name = 'built-in'
+    name = 'default-posting-chain'
     description = _('The built-in moderation chain.')
 
     _link_descriptions = (

@@ -7,14 +7,13 @@ message.  It can either be accepted for delivery, rejected (i.e. bounced),
 held for moderator approval, or discarded.
 
 The runner operates by processing chains on a message/metadata pair in the
-context of a mailing list.  Each mailing list may have a 'start chain' where
-processing begins, with a global default.  This chain is processed with the
-message eventually ending up in one of the four disposition states described
-above.
+context of a mailing list.  Each mailing list has a default chain for messages
+posted to the mailing list.  This chain is processed with the message
+eventually ending up in one of the four disposition states described above.
 
     >>> mlist = create_list('test@example.com')
-    >>> print mlist.start_chain
-    built-in
+    >>> print mlist.posting_chain
+    default-posting-chain
 
 
 Sender addresses
@@ -107,16 +106,17 @@ Inject the message into the incoming queue and run until the queue is empty.
     >>> inject_message(mlist, msg)
     >>> incoming.run()
 
+There are no messages left in the incoming queue.
+
+    >>> get_queue_messages('in')
+    []
+
 Now the message is in the pipeline queue.
 
-    >>> pipeline_queue = config.switchboards['pipeline']
-    >>> len(pipeline_queue.files)
+    >>> messages = get_queue_messages('pipeline')
+    >>> len(messages)
     1
-    >>> incoming_queue = config.switchboards['in']
-    >>> len(incoming_queue.files)
-    0
-    >>> item = get_queue_messages('pipeline')[0]
-    >>> print item.msg.as_string()
+    >>> print messages[0].msg.as_string()
     From: aperson@example.com
     To: test@example.com
     Subject: My first post
@@ -128,7 +128,7 @@ Now the message is in the pipeline queue.
     <BLANKLINE>
     First post!
     <BLANKLINE>
-    >>> dump_msgdata(item.msgdata)
+    >>> dump_msgdata(messages[0].msgdata)
     _parsemsg    : False
     envsender    : noreply@example.com
     ...
@@ -186,7 +186,7 @@ new chain and set it as the mailing list's start chain.
     ...     return test_chain
 
     >>> test_chain = make_chain('always-discard', 'discard')
-    >>> mlist.start_chain = test_chain.name
+    >>> mlist.posting_chain = test_chain.name
 
     >>> msg.replace_header('message-id', '<second>')
     >>> with event_subscribers(on_chain):
@@ -204,7 +204,6 @@ new chain and set it as the mailing list's start chain.
     The virgin queue needs to be cleared out due to artifacts from the
     previous tests above.
 
-    >>> virgin_queue = config.switchboards['virgin']
     >>> ignore = get_queue_messages('virgin')
 
 
@@ -216,7 +215,7 @@ the original sender.  Again, the built-in chain doesn't support this so we'll
 just create a new chain that does.
 
     >>> test_chain = make_chain('always-reject', 'reject')
-    >>> mlist.start_chain = test_chain.name
+    >>> mlist.posting_chain = test_chain.name
 
     >>> msg.replace_header('message-id', '<third>')
     >>> with event_subscribers(on_chain):
@@ -231,10 +230,10 @@ just create a new chain that does.
 The rejection message is sitting in the virgin queue waiting to be delivered
 to the original sender.
 
-    >>> len(virgin_queue.files)
+    >>> messages = get_queue_messages('virgin')
+    >>> len(messages)
     1
-    >>> item = get_queue_messages('virgin')[0]
-    >>> print item.msg.as_string()
+    >>> print messages[0].msg.as_string()
     Subject: My first post
     From: test-owner@example.com
     To: aperson@example.com

@@ -73,7 +73,7 @@ built-in chain.  No rules hit and so the message is accepted.
     >>> from mailman.core.chains import process
     >>> from mailman.testing.helpers import event_subscribers
     >>> with event_subscribers(on_chain):
-    ...     process(mlist, msg, {}, 'built-in')
+    ...     process(mlist, msg, {}, 'default-posting-chain')
     <mailman.chains.accept.AcceptNotification ...>
     <mailman.chains.accept.AcceptChain ...>
     Subject: aardvark
@@ -108,7 +108,7 @@ moderator approval.
     ... """)
 
     >>> with event_subscribers(on_chain):
-    ...     process(mlist, msg, {}, 'built-in')
+    ...     process(mlist, msg, {}, 'default-posting-chain')
     <mailman.chains.hold.HoldNotification ...>
     <mailman.chains.hold.HoldChain ...>
     Subject: badger
@@ -133,7 +133,7 @@ The list's member moderation action can also be set to `discard`...
     ... """)
 
     >>> with event_subscribers(on_chain):
-    ...     process(mlist, msg, {}, 'built-in')
+    ...     process(mlist, msg, {}, 'default-posting-chain')
     <mailman.chains.discard.DiscardNotification ...>
     <mailman.chains.discard.DiscardChain ...>
     Subject: cougar
@@ -157,7 +157,7 @@ The list's member moderation action can also be set to `discard`...
     ... """)
 
     >>> with event_subscribers(on_chain):
-    ...     process(mlist, msg, {}, 'built-in')
+    ...     process(mlist, msg, {}, 'default-posting-chain')
     <mailman.chains.reject.RejectNotification ...>
     <mailman.chains.reject.RejectChain ...>
     Subject: dingo
@@ -196,7 +196,7 @@ moderator approval.
     ... """)
 
     >>> with event_subscribers(on_chain):
-    ...     process(mlist, msg, {}, 'built-in')
+    ...     process(mlist, msg, {}, 'default-posting-chain')
     <mailman.chains.hold.HoldNotification ...>
     <mailman.chains.hold.HoldChain ...>
     Subject: elephant

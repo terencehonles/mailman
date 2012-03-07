@@ -79,7 +79,7 @@ class BasePipeline:
 class BuiltInPipeline(BasePipeline):
     """The built-in pipeline."""
 
-    name = 'built-in'
+    name = 'default-posting-pipeline'
     description = _('The built-in pipeline.')
 
     _default_handlers = (

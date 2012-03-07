@@ -31,6 +31,11 @@ Architecture
    E.g. mailman:///test@example.com/it/welcome.txt
  * $user_password is no longer supported as a placeholder in headers and
    footers.
+ * Mailing lists get multiple chains and pipelines.  For example, normal
+   postings go through the `posting_chain` while messages to owners to through
+   `owners_chain`.  The default `built-in` chain is renamed to
+   `default-posting-chain` while the `built-in` pipeline is renamed
+   `default-posting-pipeline`.
 
 Database
 --------
@@ -43,6 +48,8 @@ Database
    - msg_footer       -> footer_uri
    - digest_header    -> digest_header_uri
    - digest_footer    -> digest_footer_uri
+   - start_chain      -> posting_chain
+   - pipeline         -> posting_pipeline
 
 REST
 ----

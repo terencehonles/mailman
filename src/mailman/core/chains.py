@@ -35,7 +35,7 @@ from mailman.interfaces.chain import LinkAction, IChain
 
 
 
-def process(mlist, msg, msgdata, start_chain='built-in'):
+def process(mlist, msg, msgdata, start_chain='default-posting-chain'):
     """Process the message through a chain.
 
     :param mlist: the IMailingList for this message.

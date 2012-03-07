@@ -51,9 +51,9 @@ All readable attributes for a list are available on a sub-resource.
     next_digest_number: 1
     no_reply_address: noreply@example.com
     owner_address: test-one-owner@example.com
-    pipeline: built-in
     post_id: 1
     posting_address: test-one@example.com
+    posting_pipeline: default-posting-pipeline
     real_name: Test-one
     reply_goes_to_list: no_munging
     request_address: test-one-request@example.com
@@ -93,7 +93,7 @@ all the writable attributes in one request.
     ...             include_rfc2369_headers=False,
     ...             include_list_post_header=False,
     ...             digest_size_threshold=10.5,
-    ...             pipeline='virgin',
+    ...             posting_pipeline='virgin',
     ...             filter_content=True,
     ...             convert_html_to_plaintext=True,
     ...             collapse_alternatives=False,
@@ -141,8 +141,7 @@ These values are changed permanently.
     include_list_post_header: False
     include_rfc2369_headers: False
     ...
-    pipeline: virgin
-    ...
+    posting_pipeline: virgin
     real_name: Fnords
     reply_goes_to_list: point_to_list
     ...
@@ -174,7 +173,7 @@ must be included.  It is an error to leave one or more out...
     ...             include_rfc2369_headers=False,
     ...             include_list_post_header=False,
     ...             digest_size_threshold=10.5,
-    ...             pipeline='virgin',
+    ...             posting_pipeline='virgin',
     ...             filter_content=True,
     ...             convert_html_to_plaintext=True,
     ...             collapse_alternatives=False,
@@ -214,7 +213,7 @@ must be included.  It is an error to leave one or more out...
     ...             include_rfc2369_headers=False,
     ...             include_list_post_header=False,
     ...             digest_size_threshold=10.5,
-    ...             pipeline='virgin',
+    ...             posting_pipeline='virgin',
     ...             filter_content=True,
     ...             convert_html_to_plaintext=True,
     ...             collapse_alternatives=False,
@@ -247,7 +246,7 @@ It is also an error to spell an attribute value incorrectly...
     ...             include_rfc2369_headers=False,
     ...             include_list_post_header=False,
     ...             digest_size_threshold=10.5,
-    ...             pipeline='virgin',
+    ...             posting_pipeline='virgin',
     ...             filter_content=True,
     ...             convert_html_to_plaintext=True,
     ...             collapse_alternatives=False,
@@ -279,7 +278,7 @@ It is also an error to spell an attribute value incorrectly...
     ...             include_rfc2369_headers=False,
     ...             include_list_post_header=False,
     ...             digest_size_threshold=10.5,
-    ...             pipeline='dummy',
+    ...             posting_pipeline='dummy',
     ...             filter_content=True,
     ...             convert_html_to_plaintext=True,
     ...             collapse_alternatives=False,
@@ -287,7 +286,7 @@ It is also an error to spell an attribute value incorrectly...
     ...           'PUT')
     Traceback (most recent call last):
     ...
-    HTTPError: HTTP Error 400: Cannot convert parameters: pipeline
+    HTTPError: HTTP Error 400: Cannot convert parameters: posting_pipeline
 
 ...or to name an invalid auto-response enumeration value.
 
@@ -311,7 +310,7 @@ It is also an error to spell an attribute value incorrectly...
     ...             include_rfc2369_headers=False,
     ...             include_list_post_header=False,
     ...             digest_size_threshold=10.5,
-    ...             pipeline='virgin',
+    ...             posting_pipeline='virgin',
     ...             filter_content=True,
     ...             convert_html_to_plaintext=True,
     ...             collapse_alternatives=False,

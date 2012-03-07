@@ -9,8 +9,8 @@ handlers, each of which is applied in turn.  Unlike rules and chains, there is
 no way to stop a pipeline from processing the message once it's started.
 
     >>> mlist = create_list('test@example.com')
-    >>> print mlist.pipeline
-    built-in
+    >>> print mlist.posting_pipeline
+    default-posting-pipeline
     >>> from mailman.core.pipelines import process
 
 
@@ -28,7 +28,7 @@ Messages hit the pipeline after they've been accepted for posting.
     ... First post!
     ... """)
     >>> msgdata = {}
-    >>> process(mlist, msg, msgdata, mlist.pipeline)
+    >>> process(mlist, msg, msgdata, mlist.posting_pipeline)
 
 The message has been modified with additional headers, footer decorations,
 etc.

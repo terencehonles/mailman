@@ -30,6 +30,6 @@ from mailman.core.runner import Runner
 class PipelineRunner(Runner):
     def _dispose(self, mlist, msg, msgdata):
         # Process the message through the mailing list's pipeline.
-        process(mlist, msg, msgdata, mlist.pipeline)
+        process(mlist, msg, msgdata, mlist.posting_pipeline)
         # Do not keep this message queued.
         return False

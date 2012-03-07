@@ -37,7 +37,7 @@ from mailman.testing.layers import ConfigLayer
 
 
 class TestBuiltinPipeline(unittest.TestCase):
-    """Test various aspects of the built-in pipeline."""
+    """Test various aspects of the built-in postings pipeline."""
 
     layer = ConfigLayer
 
@@ -57,6 +57,7 @@ Subject: a test
 testing
 """)
         msgdata = {}
-        process(self._mlist, msg, msgdata, pipeline_name='built-in')
+        process(self._mlist, msg, msgdata,
+                pipeline_name='default-posting-pipeline')
         self.assertEqual(msg['list-id'], '<test.example.com>')
         self.assertEqual(msg['list-post'], '<mailto:test@example.com>')
