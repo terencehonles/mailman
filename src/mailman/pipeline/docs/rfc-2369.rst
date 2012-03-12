@@ -10,8 +10,7 @@ headers generally start with the `List-` prefix.
     >>> mlist.archive = False
 
 ..
-This is a helper function for the following section.
-
+    This is a helper function for the following section.
     >>> def list_headers(msg, only=None):
     ...     if isinstance(only, basestring):
     ...         only = (only.lower(),)

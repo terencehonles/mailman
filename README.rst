@@ -39,6 +39,7 @@ Table of Contents
     src/mailman/docs/MTA
     src/mailman/bin/docs/*
     src/mailman/commands/docs/*
+    src/mailman/database/docs/*
     src/mailman/model/docs/*
     src/mailman/core/docs/*
     src/mailman/app/docs/*
