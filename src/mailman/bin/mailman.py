@@ -28,8 +28,6 @@ __all__ = [
 import os
 import argparse
 
-from os.path import abspath, expanduser
-
 from zope.interface.verify import verifyObject
 
 from mailman.app.finder import find_components
@@ -37,12 +35,6 @@ from mailman.core.i18n import _
 from mailman.core.initialize import initialize
 from mailman.interfaces.command import ICLISubCommand
 from mailman.version import MAILMAN_VERSION_FULL
-
-
-def _absolute_path(path):
-    """Return the absolute after the user expansion.
-    """
-    return abspath(expanduser(path))
 
 
 
@@ -103,7 +95,7 @@ def main():
     config_file = os.getenv('MAILMAN_CONFIG_FILE')
     if config_file is None:
         if args.config is not None:
-            config_file = _absolute_path(args.config)
+            config_file = os.path.abspath(os.path.expanduser(args.config))
 
     initialize(config_file)
     # Perform the subcommand option.
