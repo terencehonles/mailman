@@ -98,7 +98,7 @@ Bug fixes
    (LP: #872391)
  * Fixed bogus use of `bounce_processing` attribute (should have been
    `process_bounces`, with thanks to Vincent Fretin.  (LP: #876774)
- * Fix `test_moderation` for timezones East of UTC+0000, given by blacktav.
+ * Fix `test_moderation` for timezones east of UTC+0000, given by blacktav.
    (LP: #890675)
 
 
