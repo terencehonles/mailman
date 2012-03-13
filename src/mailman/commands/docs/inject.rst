@@ -35,7 +35,6 @@ It's easy to find out which queues are available.
         digest
         in
         lmtp
-        maildir
         news
         out
         pipeline

@@ -43,6 +43,7 @@ Table of Contents
     src/mailman/model/docs/*
     src/mailman/core/docs/*
     src/mailman/app/docs/*
+    src/mailman/styles/docs/*
     src/mailman/runners/docs/*
     src/mailman/pipeline/docs/*
     src/mailman/rest/docs/*
