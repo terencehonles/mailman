@@ -28,7 +28,7 @@ import os
 import sys
 import code
 
-DEFAULT_BANNER = object()
+DEFAULT_BANNER = ""
 
 
 
@@ -69,7 +69,7 @@ def interact(upframe=True, banner=DEFAULT_BANNER, overrides=None):
         except:
             pass
     # We don't want the funky console object in parentheses in the banner.
-    if banner is DEFAULT_BANNER:
+    if banner == DEFAULT_BANNER:
         banner = '''\
 Python %s on %s
 Type "help", "copyright", "credits" or "license" for more information.''' % (
