@@ -28,7 +28,7 @@ import os
 import sys
 import code
 
-DEFAULT_BANNER = ""
+DEFAULT_BANNER = ''
 
 
 

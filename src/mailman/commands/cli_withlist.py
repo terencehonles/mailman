@@ -27,9 +27,9 @@ __all__ = [
 
 
 import re
+import sys
 
 from lazr.config import as_boolean
-
 from zope.component import getUtility
 from zope.interface import implements
 
@@ -150,25 +150,24 @@ class Withlist:
                 commit=config.db.commit,
                 abort=config.db.abort,
                 config=config,
-            )
-            banner = '\n'.join([unicode(config.shell.banner), banner])
+                )
+            
+            banner = config.shell.banner + '\n' + banner
             if as_boolean(config.shell.use_ipython):
-                self._start_ipython(overrides, banner) #config.shell.banner)
+                self._start_ipython(overrides, banner)
             else:
-                self._start_python(overrides, banner) #config.shell.banner)
+                self._start_python(overrides, banner)
 
     def _start_ipython(self, overrides, banner):
         try:
             from IPython.frontend.terminal.embed import InteractiveShellEmbed
-            ipshell = InteractiveShellEmbed(banner1=banner,
-                                            user_ns=overrides)
+            ipshell = InteractiveShellEmbed(banner1=banner, user_ns=overrides)
             ipshell()
         except ImportError:
-            print _("ipython is not available, set use_ipython to no")
+            print _('ipython is not available, set use_ipython to no')
 
     def _start_python(self, overrides, banner):
         # set the tab completion
-        import sys
         try:
             import readline, rlcompleter
             readline.parse_and_bind('tab: complete')
@@ -176,8 +175,7 @@ class Withlist:
             pass
         else:
             sys.ps1 = config.shell.ps1 + ' '
-        interact(upframe=False, banner=config.shell.banner,
-                 overrides=overrides)
+        interact(upframe=False, banner=banner, overrides=overrides)
 
     def _details(self):
         """Print detailed usage."""
