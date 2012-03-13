@@ -88,7 +88,7 @@ class Prototype:
         archive_dir = os.path.join(config.ARCHIVE_DIR, 'prototype')
         try:
             os.makedirs(archive_dir, 0775)
-        except OSError, e:
+        except OSError as e:
             # If this already exists, then we're fine
             if e.errno != errno.EEXIST:
                 raise
