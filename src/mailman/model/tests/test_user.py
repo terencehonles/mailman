@@ -21,6 +21,7 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
+    'TestUser',
     ]
 
 
@@ -36,6 +37,8 @@ from mailman.utilities.datetime import now
 
 
 class TestUser(unittest.TestCase):
+    """Test users."""
+
     layer = ConfigLayer
 
     def setUp(self):
