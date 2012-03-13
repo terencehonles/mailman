@@ -28,11 +28,20 @@ __all__ = [
 import hashlib
 
 from base64 import b32encode
+from datetime import timedelta
+import errno
+import logging
+from mailbox import Maildir
+import os
 from urlparse import urljoin
 from zope.interface import implements
 
+from flufl.lock import Lock, TimeOutError
+
+from mailman.config import config
 from mailman.interfaces.archiver import IArchiver
 
+elog = logging.getLogger('mailman.error')
 
 
 class Prototype:
@@ -72,5 +81,36 @@ class Prototype:
 
     @staticmethod
     def archive_message(mlist, message):
-        """See `IArchiver`."""
-        raise NotImplementedError
+        """See `IArchiver`.
+        
+        This sample archiver saves nmessages into a maildir
+        """
+        archive_dir = os.path.join(config.ARCHIVES_DIR, 'prototype')
+        try:
+            os.makedirs(archive_dir, 0775)
+        except OSError, e:
+            # If this already exists, then we're fine
+            if e.errno != errno.EEXIST:
+                raise
+
+        # Maildir will throw an error if the directories are partially created
+        # (for instance the toplevel exists but cur, new, or tmp do not)
+        # therefore we don't create the toplevel as we did above
+        list_dir = os.path.join(archive_dir, mlist.fqdn_listname)
+        mail_box = Maildir(list_dir, create=True, factory=None)
+
+        # Lock the maildir as Maildir.add() is not threadsafe
+        lock = Lock(os.path.join(config.LOCK_DIR, '%s-maildir.lock' % mlist.fqdn_listname))
+        try:
+            lock.lock(timeout=timedelta(seconds=1))
+            # Add the message to the Maildir
+            # Message_key could be used to construct the file path if
+            # necessary:
+            # os.path.join(archive_dir,mlist.fqdn_listname,'new',message_key)
+            message_key = mail_box.add(message)
+        except TimeOutError:
+            # log the error and go on
+            elog.error('Unable to lock archive for %s, discarded message: %s' % (mlist.fqdn_listname, message.get('message-id', '<unknown>')))
+        finally:
+            # unlock the maildir
+            lock.unlock(unconditionally=1)
