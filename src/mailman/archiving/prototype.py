@@ -85,7 +85,7 @@ class Prototype:
         
         This sample archiver saves nmessages into a maildir
         """
-        archive_dir = os.path.join(config.ARCHIVES_DIR, 'prototype')
+        archive_dir = os.path.join(config.ARCHIVE_DIR, 'prototype')
         try:
             os.makedirs(archive_dir, 0775)
         except OSError, e:
