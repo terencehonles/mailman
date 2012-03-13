@@ -27,7 +27,9 @@ __all__ = [
 
 
 import re
+import sys
 
+from lazr.config import as_boolean
 from zope.component import getUtility
 from zope.interface import implements
 
@@ -149,7 +151,30 @@ class Withlist:
                 abort=config.db.abort,
                 config=config,
                 )
-            interact(upframe=False, banner=banner, overrides=overrides)
+            banner = config.shell.banner + '\n' + banner
+            if as_boolean(config.shell.use_ipython):
+                self._start_ipython(overrides, banner)
+            else:
+                self._start_python(overrides, banner)
+
+    def _start_ipython(self, overrides, banner):
+        try:
+            from IPython.frontend.terminal.embed import InteractiveShellEmbed
+            ipshell = InteractiveShellEmbed(banner1=banner, user_ns=overrides)
+            ipshell()
+        except ImportError:
+            print _('ipython is not available, set use_ipython to no')
+
+    def _start_python(self, overrides, banner):
+        # Set the tab completion.
+        try:
+            import readline, rlcompleter
+            readline.parse_and_bind('tab: complete')
+        except ImportError:
+            pass
+        else:
+            sys.ps1 = config.shell.prompt + ' '
+        interact(upframe=False, banner=banner, overrides=overrides)
 
     def _details(self):
         """Print detailed usage."""
@@ -214,9 +239,9 @@ and run this from the command line:
 
     % bin/mailman withlist -r change mylist@example.com 'My List'""")
 
-        
+
 
 class Shell(Withlist):
     """An alias for `withlist`."""
-    
+
     name = 'shell'

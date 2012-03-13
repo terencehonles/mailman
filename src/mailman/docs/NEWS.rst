@@ -78,6 +78,8 @@ Interfaces
 
 Commands
 --------
+ * IPython support in `bin/mailman shell` contributed by Andrea Crotti.
+   (LP: #949926).
  * The `mailman.cfg` configuration file will now automatically be detected if
    it exists in an `etc` directory which is a sibling of argv0.
  * `bin/mailman shell` is an alias for `withlist`.
