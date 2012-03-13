@@ -36,6 +36,7 @@ Architecture
    `owners_chain`.  The default `built-in` chain is renamed to
    `default-posting-chain` while the `built-in` pipeline is renamed
    `default-posting-pipeline`.
+ * The experimental `maildir` runner is removed.  Use LMTP.
 
 Database
 --------
