@@ -61,13 +61,17 @@ The archiver is also able to archive the message.
     >>> os.path.exists(pckpath)
     True
 
-Note however that the prototype archiver can't archive messages.
+The prototype archiver is available to simplistically archive messages.
+::
 
     >>> archivers['prototype'].archive_message(mlist, msg)
-    Traceback (most recent call last):
-    ...
-    NotImplementedError
 
+    >>> import os
+    >>> from mailman import config
+    >>> archivepath = os.path.join(config.ARCHIVE_DIR, 'prototype',
+    ...     mlist.fqdn_listname, 'new')
+    >>> len (os.listdir(archivepath)) >= 1
+    True
 
 The Mail-Archive.com
 ====================
