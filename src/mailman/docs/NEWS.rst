@@ -91,6 +91,8 @@ Commands
  * Added a `help` email command.
  * A welcome message is sent when the user confirms their subscription via
    email.
+ * Global ``-C`` option now accepts an absolute path to the configuration
+   file.  Given by Andrea Crotti.  (LP: #953707)
 
 Bug fixes
 ---------
