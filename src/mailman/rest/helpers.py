@@ -77,10 +77,10 @@ class ExtendedEncoder(json.JSONEncoder):
                 seconds = obj.seconds + obj.microseconds / 1000000.0
                 return '{0}d{1}s'.format(obj.days, seconds)
             return '{0}d'.format(obj.days)
-        elif hasattr(obj, 'enumclass') and issubclass(obj.enumclass, Enum):
+        elif hasattr(obj, 'enum') and issubclass(obj.enum, Enum):
             # It's up to the decoding validator to associate this name with
             # the right Enum class.
-            return obj.enumname
+            return obj.name
         return json.JSONEncoder.default(self, obj)
 
 
