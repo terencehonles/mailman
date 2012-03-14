@@ -27,10 +27,8 @@ __all__ = [
 
 import os
 import errno
-import hashlib
 import logging
 
-from base64 import b32encode
 from datetime import timedelta
 from mailbox import Maildir
 from urlparse import urljoin
@@ -41,7 +39,8 @@ from zope.interface import implements
 from mailman.config import config
 from mailman.interfaces.archiver import IArchiver
 
-elog = logging.getLogger('mailman.error')
+log = logging.getLogger('mailman.error')
+
 
 
 class Prototype:
@@ -74,38 +73,48 @@ class Prototype:
     @staticmethod
     def archive_message(mlist, message):
         """See `IArchiver`.
-        
-        This sample archiver saves nmessages into a maildir
+
+        This archiver saves messages into a maildir.
         """
         archive_dir = os.path.join(config.ARCHIVE_DIR, 'prototype')
         try:
             os.makedirs(archive_dir, 0775)
-        except OSError as e:
+        except OSError as error:
             # If this already exists, then we're fine
-            if e.errno != errno.EEXIST:
+            if error.errno != errno.EEXIST:
                 raise
 
         # Maildir will throw an error if the directories are partially created
         # (for instance the toplevel exists but cur, new, or tmp do not)
-        # therefore we don't create the toplevel as we did above
+        # therefore we don't create the toplevel as we did above.
         list_dir = os.path.join(archive_dir, mlist.fqdn_listname)
-        mail_box = Maildir(list_dir, create=True, factory=None)
+        mailbox = Maildir(list_dir, create=True, factory=None)
+        lock_file = os.path.join(
+            config.LOCK_DIR, '{0}-maildir.lock'.format(mlist.fqdn_listname))
 
-        # Lock the maildir as Maildir.add() is not threadsafe
-        lock = Lock(os.path.join(config.LOCK_DIR, '%s-maildir.lock'
-            % mlist.fqdn_listname))
+        # Lock the maildir as Maildir.add() is not threadsafe.  Don't use the
+        # context manager because it's not an error if we can't acquire the
+        # archiver lock.  We'll just log the problem and continue.
+        #
+        # XXX 2012-03-14 BAW: When we extend the chain/pipeline architecture
+        # to other runners, e.g. the archive runner, it would be better to let
+        # any TimeOutError propagate up.  That would cause the message to be
+        # re-queued and tried again later, rather than being discarded as
+        # happens now below.
+        lock = Lock(lock_file)
         try:
             lock.lock(timeout=timedelta(seconds=1))
-            # Add the message to the Maildir
-            # Message_key could be used to construct the file path if
-            # necessary::
-            #   os.path.join(archive_dir, mlist.fqdn_listname, 'new',
-            #           message_key)
-            message_key = mail_box.add(message)
+            # Add the message to the maildir.  The return value could be used
+            # to construct the file path if necessary.  E.g.
+            #
+            # os.path.join(archive_dir, mlist.fqdn_listname, 'new',
+            #              message_key)
+            mailbox.add(message)
         except TimeOutError:
-            # log the error and go on
-            elog.error('Unable to lock archive for %s, discarded'
-                    ' message: %s' % (mlist.fqdn_listname, 
-                        message.get('message-id', '<unknown>')))
+            # Log the error and go on.
+            log.error('Unable to acquire prototype archiver lock for {0}, '
+                      'discarding: {1}'.format(
+                          mlist.fqdn_listname,
+                          message.get('message-id', 'n/a')))
         finally:
             lock.unlock(unconditionally=True)

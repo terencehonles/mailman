@@ -46,6 +46,8 @@ Architecture
    attribute on the message object, instead of trusting a possibly incorrect
    value if it's already set.  The individual `IArchiver` implementations no
    longer set the `X-Message-ID-Hash` header.
+ * The Prototype archiver now stores its files in maildir format inside of
+   `$var_dir/archives/prototype`, given by Toshio Kuratomi.
 
 Database
 --------
