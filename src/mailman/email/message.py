@@ -178,7 +178,7 @@ class UserNotification(Message):
             self['To'] = recipients
             self.recipients = set([recipients])
 
-    def send(self, mlist, **_kws):
+    def send(self, mlist, noprecedence=False, **_kws):
         """Sends the message by enqueuing it to the 'virgin' queue.
 
         This is used for all internally crafted messages.
@@ -193,7 +193,7 @@ class UserNotification(Message):
         # UserNotifications are typically for admin messages, and for messages
         # other than list explosions.  Send these out as Precedence: bulk, but
         # don't override an existing Precedence: header.
-        if 'precedence' not in self:
+        if 'precedence' not in self or not noprecedence:
             self['Precedence'] = 'bulk'
         self._enqueue(mlist, **_kws)
 

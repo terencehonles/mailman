@@ -105,6 +105,8 @@ Commands
 
 Bug fixes
 ---------
+ * Subscription disabled warnings are now sent without a Precedence:
+   header.  (LP: #808821)
  * Fixed KeyError in retry runner, contributed by Stephen A. Goss.
    (LP: #872391)
  * Fixed bogus use of `bounce_processing` attribute (should have been
