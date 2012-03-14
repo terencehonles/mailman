@@ -25,9 +25,6 @@ __all__ = [
     ]
 
 
-import hashlib
-
-from base64 import b32encode
 from urlparse import urljoin
 from zope.interface import implements
 
@@ -54,20 +51,12 @@ class Prototype:
     @staticmethod
     def permalink(mlist, msg):
         """See `IArchiver`."""
-        message_id = msg.get('message-id')
-        # It is not the archiver's job to ensure the message has a Message-ID.
-        # If this header is missing, there is no permalink.
-        if message_id is None:
+        # It is the LMTP server's responsibility to ensure that the message
+        # has a X-Message-ID-Hash header.  If it doesn't then there's no
+        # permalink.
+        message_id_hash = msg.get('x-message-id-hash')
+        if message_id_hash is None:
             return None
-        # The angle brackets are not part of the Message-ID.  See RFC 2822.
-        if message_id.startswith('<') and message_id.endswith('>'):
-            message_id = message_id[1:-1]
-        else:
-            message_id = message_id.strip()
-        digest = hashlib.sha1(message_id).digest()
-        message_id_hash = b32encode(digest)
-        del msg['x-message-id-hash']
-        msg['X-Message-ID-Hash'] = message_id_hash
         return urljoin(Prototype.list_url(mlist), message_id_hash)
 
     @staticmethod

@@ -37,6 +37,15 @@ Architecture
    `default-posting-chain` while the `built-in` pipeline is renamed
    `default-posting-pipeline`.
  * The experimental `maildir` runner is removed.  Use LMTP.
+ * The LMTP server now requires that the incoming message have a `Message-ID`,
+   otherwise it rejects the message with a 550 error.  Also, the LMTP server
+   adds the `X-Message-ID-Hash` header automatically.  The `inject` cli
+   command will also add the `X-Message-ID-Hash` header, but it will craft a
+   `Message-ID` header first if one is missing from the injected text.  Also,
+   `inject` will always set the correct value for the `original_size`
+   attribute on the message object, instead of trusting a possibly incorrect
+   value if it's already set.  The individual `IArchiver` implementations no
+   longer set the `X-Message-ID-Hash` header.
 
 Database
 --------

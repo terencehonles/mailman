@@ -17,7 +17,7 @@
 
 """Decorate a message by sticking the header and footer around it."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -37,7 +37,6 @@ from mailman.core.i18n import _
 from mailman.email.message import Message
 from mailman.interfaces.handler import IHandler
 from mailman.interfaces.templates import ITemplateLoader
-from mailman.interfaces.usermanager import IUserManager
 from mailman.utilities.string import expand
 
 
