@@ -93,7 +93,7 @@ next rule in the filter chain.
 .. graphviz::
 
    digraph chains {
-     rankdir=TB;
+     rankdir=LR;
      approved [shape=record, label="<f0> approved | {<f1> | <f2>}"];
      emergency [shape=record, label="<f0> emergency | {<f1> | <f2>}"];
      loop [shape=record, label="<f0> loop | {<f1> | <f2>}"];
@@ -102,11 +102,11 @@ next rule in the filter chain.
      maxsize [shape=record, label="<f0> max\ size | {<f1> | <f2>}"];
      any [shape=record, label="<f0> any | {<f1> | <f2>}"];
      truth [shape=record, label="<f0> truth | <f1>"];
-     IN [shape=box, color=lightblue, style=filled];
+     IN [shape=box, color=lightblue, style=filled, rank=source];
      IN -> approved;
-     subgraph clusterbar {
-       rank=same;
-       subgraph clusterfubar {
+     subgraph fubar {
+       subgraph bar {
+         /* rankdir=TB; */
          rank=same;
          approved:f2 -> emergency;
          emergency:f2 -> loop;
@@ -116,9 +116,8 @@ next rule in the filter chain.
          maxsize:f2 -> any;
          any:f2 -> truth;
        };
-       clusterfoo [shape=none];
-       subgraph clusterfoo {
-         rankdir=LR;
+       subgraph foo {
+         /* rankdir=TB; */
          rank=same;
          APPROVED [shape=box, color=lightblue, style=filled];
          POSTING [shape=box, color=lightblue, style=filled];
