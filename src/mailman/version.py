@@ -17,15 +17,15 @@
 
 """Mailman version strings."""
 
-# Mailman version
+# Mailman version.
 VERSION = '3.0.0a8+'
 CODENAME = "The Twilight Zone"
 
-# And as a hex number in the manner of PY_VERSION_HEX
+# And as a hex number in the manner of PY_VERSION_HEX.
 ALPHA = 0xa
 BETA  = 0xb
 GAMMA = 0xc
-# release candidates
+# Release candidates.
 RC    = GAMMA
 FINAL = 0xf
 
@@ -33,16 +33,16 @@ MAJOR_REV = 3
 MINOR_REV = 0
 MICRO_REV = 0
 REL_LEVEL = BETA
-# at most 15 beta releases!
+# At most 15 beta releases!
 REL_SERIAL = 1
 
 HEX_VERSION = ((MAJOR_REV << 24) | (MINOR_REV << 16) | (MICRO_REV << 8) |
                (REL_LEVEL << 4)  | (REL_SERIAL << 0))
 
 
-# qfile/*.db schema version number
+# queue/*.pck schema version number.
 QFILE_SCHEMA_VERSION = 3
 
-# Printable version string used by command line scripts
+# Printable version string used by command line scripts.
 MAILMAN_VERSION = 'GNU Mailman ' + VERSION
 MAILMAN_VERSION_FULL = MAILMAN_VERSION + ' (' + CODENAME + ')'

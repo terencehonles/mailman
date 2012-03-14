@@ -17,7 +17,7 @@
 
 """Testing app.inject functions."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -108,20 +108,32 @@ Nothing.
         self.assertTrue('date' in items[0].msg)
         self.assertEqual(items[0].msg['date'], self.msg['date'])
 
-    def test_inject_message_trusts_original_size_attribute(self):
-        # If the message object has an `original_size` attribute, this is
-        # copied into the metadata. 
-        self.msg.original_size = 3
-        inject_message(self.mlist, self.msg)
-        items = get_queue_messages('in')
-        self.assertEqual(items[0].msgdata['original_size'], 3)
-
     def test_inject_message_with_keywords(self):
         # Keyword arguments are copied into the metadata.
         inject_message(self.mlist, self.msg, foo='yes', bar='no')
         items = get_queue_messages('in')
         self.assertEqual(items[0].msgdata['foo'], 'yes')
         self.assertEqual(items[0].msgdata['bar'], 'no')
+
+    def test_inject_message_id_hash(self):
+        # When the injected message has a Message-ID header, the injected
+        # message will also get an X-Message-ID-Hash header.
+        inject_message(self.mlist, self.msg)
+        items = get_queue_messages('in')
+        self.assertEqual(items[0].msg['x-message-id-hash'],
+                         '4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB')
+
+    def test_inject_message_id_hash_without_message_id(self):
+        # When the injected message does not have a Message-ID header, a
+        # Message-ID header will be added, and the injected message will also
+        # get an X-Message-ID-Hash header.
+        del self.msg['message-id']
+        self.assertFalse('message-id' in self.msg)
+        self.assertFalse('x-message-id-hash' in self.msg)
+        inject_message(self.mlist, self.msg)
+        items = get_queue_messages('in')
+        self.assertTrue('message-id' in items[0].msg)
+        self.assertTrue('x-message-id-hash' in items[0].msg)
 
 
 
@@ -155,9 +167,18 @@ Nothing.
         items = get_queue_messages('in')
         self.assertEqual(len(items), 1)
         self.assertTrue(isinstance(items[0].msg, Message))
+        self.assertEqual(items[0].msg['x-message-id-hash'],
+                         'GUXXQKNCHBFQAHGBFMGCME6HKZCUUH3K')
+        # Delete that header because it is not in the original text.
+        del items[0].msg['x-message-id-hash']
         self.eq(items[0].msg.as_string(), self.text)
         self.assertEqual(items[0].msgdata['listname'], 'test@example.com')
-        self.assertEqual(items[0].msgdata['original_size'], len(self.text))
+        self.assertEqual(items[0].msgdata['original_size'],
+                         # Add back the X-Message-ID-Header which was in the
+                         # message contributing to the original_size, but
+                         # wasn't in the original text.  Don't forget the
+                         # newline!
+                         len(self.text) + 52)
 
     def test_inject_text_with_recipients(self):
         # Explicit recipients end up in the metadata.
@@ -173,9 +194,16 @@ Nothing.
         self.assertEqual(len(items), 0)
         items = get_queue_messages('virgin')
         self.assertEqual(len(items), 1)
+        # Remove the X-Message-ID-Hash header which isn't in the original text.
+        del items[0].msg['x-message-id-hash']
         self.eq(items[0].msg.as_string(), self.text)
         self.assertEqual(items[0].msgdata['listname'], 'test@example.com')
-        self.assertEqual(items[0].msgdata['original_size'], len(self.text))
+        self.assertEqual(items[0].msgdata['original_size'],
+                         # Add back the X-Message-ID-Header which was in the
+                         # message contributing to the original_size, but
+                         # wasn't in the original text.  Don't forget the
+                         # newline!
+                         len(self.text) + 52)
 
     def test_inject_text_without_message_id(self):
         # inject_text() adds a Message-ID header if it's missing.
@@ -198,7 +226,12 @@ Nothing.
         # the injected text.
         inject_text(self.mlist, self.text)
         items = get_queue_messages('in')
-        self.assertEqual(items[0].msgdata['original_size'], len(self.text))
+        self.assertEqual(items[0].msgdata['original_size'],
+                         # Add back the X-Message-ID-Header which was in the
+                         # message contributing to the original_size, but
+                         # wasn't in the original text.  Don't forget the
+                         # newline!
+                         len(self.text) + 52)
 
     def test_inject_text_with_keywords(self):
         # Keyword arguments are copied into the metadata.
@@ -206,3 +239,23 @@ Nothing.
         items = get_queue_messages('in')
         self.assertEqual(items[0].msgdata['foo'], 'yes')
         self.assertEqual(items[0].msgdata['bar'], 'no')
+
+    def test_inject_message_id_hash(self):
+        # When the injected message has a Message-ID header, the injected
+        # message will also get an X-Message-ID-Hash header.
+        inject_text(self.mlist, self.text)
+        items = get_queue_messages('in')
+        self.assertEqual(items[0].msg['x-message-id-hash'],
+                         'GUXXQKNCHBFQAHGBFMGCME6HKZCUUH3K')
+
+    def test_inject_message_id_hash_without_message_id(self):
+        # When the injected message does not have a Message-ID header, a
+        # Message-ID header will be added, and the injected message will also
+        # get an X-Message-ID-Hash header.
+        filtered = self._remove_line('message-id')
+        self.assertFalse('Message-ID' in filtered)
+        self.assertFalse('X-Message-ID-Hash' in filtered)
+        inject_text(self.mlist, filtered)
+        items = get_queue_messages('in')
+        self.assertTrue('message-id' in items[0].msg)
+        self.assertTrue('x-message-id-hash' in items[0].msg)

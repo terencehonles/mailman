@@ -17,7 +17,7 @@
 
 """Inject a message into a queue."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -31,11 +31,15 @@ from email.utils import formatdate, make_msgid
 
 from mailman.config import config
 from mailman.email.message import Message
+from mailman.utilities.email import add_message_hash
 
 
 
 def inject_message(mlist, msg, recipients=None, switchboard=None, **kws):
     """Inject a message into a queue.
+
+    If the message does not have a Message-ID header, one is added.  An
+    X-Message-Id-Hash header is also always added.
 
     :param mlist: The mailing list this message is destined for.
     :type mlist: IMailingList
@@ -56,12 +60,14 @@ def inject_message(mlist, msg, recipients=None, switchboard=None, **kws):
     # message has a Message-ID.
     if 'message-id' not in msg:
         msg['Message-ID'] = make_msgid()
+    add_message_hash(msg)
     # Ditto for Date: as required by RFC 2822.
     if 'date' not in msg:
         msg['Date'] = formatdate(localtime=True)
+    msg.original_size = len(msg.as_string())
     msgdata = dict(
         listname=mlist.fqdn_listname,
-        original_size=getattr(msg, 'original_size', len(msg.as_string())),
+        original_size=msg.original_size,
         )
     msgdata.update(kws)
     if recipients is not None:
@@ -72,6 +78,9 @@ def inject_message(mlist, msg, recipients=None, switchboard=None, **kws):
 
 def inject_text(mlist, text, recipients=None, switchboard=None, **kws):
     """Turn text into a message and inject that into a queue.
+
+    If the text does not have a Message-ID header, one is added.  An
+    X-Message-Id-Hash header is also always added.
 
     :param mlist: The mailing list this message is destined for.
     :type mlist: IMailingList
@@ -88,5 +97,4 @@ def inject_text(mlist, text, recipients=None, switchboard=None, **kws):
     :type kws: dictionary
     """
     message = message_from_string(text, Message)
-    message.original_size = len(text)
     inject_message(mlist, message, recipients, switchboard, **kws)

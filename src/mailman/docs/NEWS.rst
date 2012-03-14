@@ -37,6 +37,15 @@ Architecture
    `default-posting-chain` while the `built-in` pipeline is renamed
    `default-posting-pipeline`.
  * The experimental `maildir` runner is removed.  Use LMTP.
+ * The LMTP server now requires that the incoming message have a `Message-ID`,
+   otherwise it rejects the message with a 550 error.  Also, the LMTP server
+   adds the `X-Message-ID-Hash` header automatically.  The `inject` cli
+   command will also add the `X-Message-ID-Hash` header, but it will craft a
+   `Message-ID` header first if one is missing from the injected text.  Also,
+   `inject` will always set the correct value for the `original_size`
+   attribute on the message object, instead of trusting a possibly incorrect
+   value if it's already set.  The individual `IArchiver` implementations no
+   longer set the `X-Message-ID-Hash` header.
 
 Database
 --------
@@ -78,6 +87,8 @@ Interfaces
 
 Commands
 --------
+ * IPython support in `bin/mailman shell` contributed by Andrea Crotti.
+   (LP: #949926).
  * The `mailman.cfg` configuration file will now automatically be detected if
    it exists in an `etc` directory which is a sibling of argv0.
  * `bin/mailman shell` is an alias for `withlist`.
@@ -89,6 +100,8 @@ Commands
  * Added a `help` email command.
  * A welcome message is sent when the user confirms their subscription via
    email.
+ * Global ``-C`` option now accepts an absolute path to the configuration
+   file.  Given by Andrea Crotti.  (LP: #953707)
 
 Bug fixes
 ---------
@@ -96,6 +109,8 @@ Bug fixes
    (LP: #872391)
  * Fixed bogus use of `bounce_processing` attribute (should have been
    `process_bounces`, with thanks to Vincent Fretin.  (LP: #876774)
+ * Fix `test_moderation` for timezones east of UTC+0000, given by blacktav.
+   (LP: #890675)
 
 
 3.0 alpha 8 -- "Where's My Thing?"

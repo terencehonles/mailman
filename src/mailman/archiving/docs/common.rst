@@ -11,6 +11,7 @@ archivers.
     ... To: test@example.com
     ... Subject: An archived message
     ... Message-ID: <12345>
+    ... X-Message-ID-Hash: RSZCG7IGPHFIRW3EMTVMMDNJMNCVCOLE
     ...
     ... Here is an archived message.
     ... """)
@@ -33,7 +34,7 @@ interoperate.
     ...     archivers[archiver.name] = archiver
     mail-archive
         http://go.mail-archive.dev/test%40example.com
-        http://go.mail-archive.dev/ZaXPPxRMM9_hFZL4vTRlQlBx8pc=
+        http://go.mail-archive.dev/RSZCG7IGPHFIRW3EMTVMMDNJMNCVCOLE
     mhonarc
         http://lists.example.com/.../test@example.com
         http://lists.example.com/.../RSZCG7IGPHFIRW3EMTVMMDNJMNCVCOLE
@@ -84,7 +85,7 @@ messages to public lists will get sent there automatically.
     >>> print archiver.list_url(mlist)
     http://go.mail-archive.dev/test%40example.com
     >>> print archiver.permalink(mlist, msg)
-    http://go.mail-archive.dev/ZaXPPxRMM9_hFZL4vTRlQlBx8pc=
+    http://go.mail-archive.dev/RSZCG7IGPHFIRW3EMTVMMDNJMNCVCOLE
 
 To archive the message, the archiver actually mails the message to a special
 address at The Mail Archive.  The message gets no header or footer decoration.
@@ -107,7 +108,7 @@ address at The Mail Archive.  The message gets no header or footer decoration.
     To: test@example.com
     Subject: An archived message
     Message-ID: <12345>
-    X-Message-ID-Hash: ZaXPPxRMM9_hFZL4vTRlQlBx8pc=
+    X-Message-ID-Hash: RSZCG7IGPHFIRW3EMTVMMDNJMNCVCOLE
     X-Peer: 127.0.0.1:...
     X-MailFrom: test-bounces@example.com
     X-RcptTo: archive@mail-archive.dev
@@ -131,26 +132,36 @@ at this service.
 Additionally, this archiver can handle malformed ``Message-IDs``.
 ::
 
+    >>> from mailman.utilities.email import add_message_hash
     >>> mlist.archive_private = False
     >>> del msg['message-id']
+    >>> del msg['x-message-id-hash']
     >>> msg['Message-ID'] = '12345>'
+    >>> add_message_hash(msg)
     >>> print archiver.permalink(mlist, msg)
-    http://go.mail-archive.dev/bXvG32YzcDEIVDaDLaUSVQekfo8=
+    http://go.mail-archive.dev/YJIGBYRWZFG5LZEBQ7NR25B5HBR2BVD6
 
     >>> del msg['message-id']
+    >>> del msg['x-message-id-hash']
     >>> msg['Message-ID'] = '<12345'
+    >>> add_message_hash(msg)
     >>> print archiver.permalink(mlist, msg)
-    http://go.mail-archive.dev/9rockPrT1Mm-jOsLWS6_hseR_OY=
+    http://go.mail-archive.dev/XUFFJNJ2P2WC4NDPQRZFDJMV24POP64B
 
     >>> del msg['message-id']
+    >>> del msg['x-message-id-hash']
     >>> msg['Message-ID'] = '12345'
+    >>> add_message_hash(msg)
     >>> print archiver.permalink(mlist, msg)
-    http://go.mail-archive.dev/ZaXPPxRMM9_hFZL4vTRlQlBx8pc=
+    http://go.mail-archive.dev/RSZCG7IGPHFIRW3EMTVMMDNJMNCVCOLE
 
     >>> del msg['message-id']
+    >>> del msg['x-message-id-hash']
+    >>> add_message_hash(msg)
     >>> msg['Message-ID'] = '    12345    '
+    >>> add_message_hash(msg)
     >>> print archiver.permalink(mlist, msg)
-    http://go.mail-archive.dev/ZaXPPxRMM9_hFZL4vTRlQlBx8pc=
+    http://go.mail-archive.dev/RSZCG7IGPHFIRW3EMTVMMDNJMNCVCOLE
 
 
 MHonArc

@@ -44,6 +44,7 @@ from mailman.core.runner import Runner
 from mailman.database.transaction import txn
 from mailman.email.message import Message
 from mailman.interfaces.listmanager import IListManager
+from mailman.utilities.email import add_message_hash
 
 elog = logging.getLogger('mailman.error')
 qlog = logging.getLogger('mailman.runner')
@@ -82,6 +83,7 @@ ERR_451 = '451 Requested action aborted: error in processing'
 ERR_501 = '501 Message has defects'
 ERR_502 = '502 Error: command HELO not implemented'
 ERR_550 = '550 Requested action not taken: mailbox unavailable'
+ERR_550_MID = '550 No Message-ID header provided'
 
 # XXX Blech
 smtpd.__version__ = 'Python LMTP runner 1.0'
@@ -159,15 +161,20 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
             # Parse the message data.  If there are any defects in the
             # message, reject it right away; it's probably spam.
             msg = email.message_from_string(data, Message)
-            msg.original_size = len(data)
-            if msg.defects:
-                return ERR_501
-            msg['X-MailFrom'] = mailfrom
-            message_id = msg['message-id']
         except Exception:
             elog.exception('LMTP message parsing')
             config.db.abort()
             return CRLF.join(ERR_451 for to in rcpttos)
+        # Do basic post-processing of the message, checking it for defects or
+        # other missing information.
+        message_id = msg.get('message-id')
+        if message_id is None:
+            return ERR_550_MID
+        if msg.defects:
+            return ERR_501
+        msg.original_size = len(data)
+        add_message_hash(msg)
+        msg['X-MailFrom'] = mailfrom
         # RFC 2033 requires us to return a status code for every recipient.
         status = []
         # Now for each address in the recipients, parse the address to first

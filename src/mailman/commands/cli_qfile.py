@@ -31,8 +31,8 @@ from pprint import PrettyPrinter
 from zope.interface import implements
 
 from mailman.core.i18n import _
-from mailman.interact import interact
 from mailman.interfaces.command import ICLISubCommand
+from mailman.utilities.interact import interact
 
 
 m = []

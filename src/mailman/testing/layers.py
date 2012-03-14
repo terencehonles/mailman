@@ -22,6 +22,7 @@ from __future__ import absolute_import, unicode_literals
 __metaclass__ = type
 __all__ = [
     'ConfigLayer',
+    'LMTPLayer',
     'MockAndMonkeyLayer',
     'RESTLayer',
     'SMTPLayer',
@@ -48,7 +49,8 @@ from mailman.core import initialize
 from mailman.core.initialize import INHIBIT_CONFIG_FILE
 from mailman.core.logging import get_handler
 from mailman.interfaces.domain import IDomainManager
-from mailman.testing.helpers import TestableMaster, reset_the_world
+from mailman.testing.helpers import (
+    TestableMaster, get_lmtp_client, reset_the_world)
 from mailman.testing.mta import ConnectionCountingController
 from mailman.utilities.string import expand
 
@@ -250,12 +252,43 @@ class SMTPLayer(ConfigLayer):
 
     @classmethod
     def testSetUp(cls):
+        # Make sure we don't call our superclass's testSetUp(), otherwise the
+        # example.com domain will get added twice.
         pass
 
     @classmethod
     def testTearDown(cls):
         cls.smtpd.reset()
         cls.smtpd.clear()
+
+
+
+class LMTPLayer(ConfigLayer):
+    """Layer for starting, stopping, and accessing a test LMTP server."""
+
+    lmtpd = None
+
+    @staticmethod
+    def _wait_for_lmtp_server():
+        get_lmtp_client(quiet=True)
+
+    @classmethod
+    def setUp(cls):
+        assert cls.lmtpd is None, 'Layer already set up'
+        cls.lmtpd = TestableMaster(cls._wait_for_lmtp_server)
+        cls.lmtpd.start('lmtp')
+
+    @classmethod
+    def tearDown(cls):
+        assert cls.lmtpd is not None, 'Layer not set up'
+        cls.lmtpd.stop()
+        cls.lmtpd = None
+
+    @classmethod
+    def testSetUp(cls):
+        # Make sure we don't call our superclass's testSetUp(), otherwise the
+        # example.com domain will get added twice.
+        pass
 
 
 

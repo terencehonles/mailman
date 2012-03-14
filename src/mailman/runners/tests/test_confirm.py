@@ -155,7 +155,7 @@ Franziskanerstra=C3=9Fe
         self.assertEqual(address.email, 'anne@example.org')
         messages = get_queue_messages('virgin')
         self.assertEqual(len(messages), 1)
-        self.assertEqual(messages[0].msgdata['recipients'], 
+        self.assertEqual(messages[0].msgdata['recipients'],
                          set(['anne@example.org']))
 
     def test_confirm_with_no_command_in_utf8_body(self):
@@ -188,7 +188,7 @@ Franziskanerstra=C3=9Fe
         self.assertEqual(address.email, 'anne@example.org')
         messages = get_queue_messages('virgin')
         self.assertEqual(len(messages), 1)
-        self.assertEqual(messages[0].msgdata['recipients'], 
+        self.assertEqual(messages[0].msgdata['recipients'],
                          set(['anne@example.org']))
 
     def test_double_confirmation(self):
@@ -259,5 +259,5 @@ From: Anne Person <anne@example.org>
         messages = get_queue_messages('virgin', sort_on='subject')
         self.assertEqual(len(messages), 2)
         message = messages[1].msg
-        self.assertEqual(str(message['subject']), 
+        self.assertEqual(str(message['subject']),
                          'Welcome to the "Test" mailing list')
