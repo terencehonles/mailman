@@ -81,7 +81,7 @@ class Administrivia:
             lineno = 0
             for line in lines:
                 line = line.strip()
-                if line == '':
+                if len(line) == 0:
                     continue
                 lineno += 1
                 if lineno > config.mailman.email_commands_max_lines:

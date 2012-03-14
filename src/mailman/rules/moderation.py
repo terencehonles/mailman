@@ -57,7 +57,7 @@ class MemberModeration:
             elif action is not None:
                 # We must stringify the moderation action so that it can be
                 # stored in the pending request table.
-                msgdata['moderation_action'] = action.enumname
+                msgdata['moderation_action'] = action.name
                 msgdata['moderation_sender'] = sender
                 return True
         # The sender is not a member so this rule does not match.
@@ -98,7 +98,7 @@ class NonmemberModeration:
             elif action is not None:
                 # We must stringify the moderation action so that it can be
                 # stored in the pending request table.
-                msgdata['moderation_action'] = action.enumname
+                msgdata['moderation_action'] = action.name
                 msgdata['moderation_sender'] = sender
                 return True
         # The sender must be a member, so this rule does not match.

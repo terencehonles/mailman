@@ -85,7 +85,7 @@ class CommandFinder:
             # bogus characters.  Otherwise, there's nothing in the subject
             # that we can use.
             if isinstance(raw_subject, unicode):
-                safe_subject = raw_subject.encode('us-ascii', errors='ignore')
+                safe_subject = raw_subject.encode('us-ascii', 'ignore')
                 self.command_lines.append(safe_subject)
         # Find the first text/plain part of the message.
         part = None
@@ -119,7 +119,7 @@ class CommandFinder:
             # ASCII commands and arguments, ignore anything else.
             parts = [(part 
                       if isinstance(part, unicode)
-                      else part.decode('ascii', errors='ignore'))
+                      else part.decode('ascii', 'ignore'))
                      for part in parts]
             yield parts
 
@@ -139,7 +139,7 @@ The results of your email command are provided below.
 
     def write(self, text):
         if not isinstance(text, unicode):
-            text = text.decode(self.charset, errors='ignore')
+            text = text.decode(self.charset, 'ignore')
         self._output.write(text)
 
     def __unicode__(self):
