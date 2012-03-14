@@ -173,6 +173,7 @@ class Configuration:
             lock_dir                = category.lock_dir,
             log_dir                 = category.log_dir,
             messages_dir            = category.messages_dir,
+            archive_dir             = category.archive_dir,
             pipermail_private_dir   = category.pipermail_private_dir,
             pipermail_public_dir    = category.pipermail_public_dir,
             queue_dir               = category.queue_dir,

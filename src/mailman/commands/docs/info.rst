@@ -59,6 +59,7 @@ The File System Hierarchy layout is the same every by definition.
     Python ...
     ...
     File system paths:
+        ARCHIVE_DIR              = /var/lib/mailman/archives
         BIN_DIR                  = /sbin
         DATA_DIR                 = /var/lib/mailman/data
         ETC_DIR                  = /etc
