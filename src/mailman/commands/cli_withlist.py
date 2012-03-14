@@ -35,9 +35,9 @@ from zope.interface import implements
 
 from mailman.config import config
 from mailman.core.i18n import _
-from mailman.interact import DEFAULT_BANNER, interact
 from mailman.interfaces.command import ICLISubCommand
 from mailman.interfaces.listmanager import IListManager
+from mailman.utilities.interact import DEFAULT_BANNER, interact
 from mailman.utilities.modules import call_name
 
 # Global holding onto the open mailing list.
