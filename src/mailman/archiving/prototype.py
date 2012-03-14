@@ -102,17 +102,18 @@ class Prototype:
         # Lock the maildir as Maildir.add() is not threadsafe
         lock = Lock(os.path.join(config.LOCK_DIR, '%s-maildir.lock'
             % mlist.fqdn_listname))
-        with lock:
-            try:
-                lock.lock(timeout=timedelta(seconds=1))
-                # Add the message to the Maildir
-                # Message_key could be used to construct the file path if
-                # necessary::
-                #   os.path.join(archive_dir, mlist.fqdn_listname, 'new',
-                #           message_key)
-                message_key = mail_box.add(message)
-            except TimeOutError:
-                # log the error and go on
-                elog.error('Unable to lock archive for %s, discarded'
-                        ' message: %s' % (mlist.fqdn_listname, 
-                            message.get('message-id', '<unknown>')))
+        try:
+            lock.lock(timeout=timedelta(seconds=1))
+            # Add the message to the Maildir
+            # Message_key could be used to construct the file path if
+            # necessary::
+            #   os.path.join(archive_dir, mlist.fqdn_listname, 'new',
+            #           message_key)
+            message_key = mail_box.add(message)
+        except TimeOutError:
+            # log the error and go on
+            elog.error('Unable to lock archive for %s, discarded'
+                    ' message: %s' % (mlist.fqdn_listname, 
+                        message.get('message-id', '<unknown>')))
+        finally:
+            lock.unlock(unconditionally=True)
