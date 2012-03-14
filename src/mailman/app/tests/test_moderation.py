@@ -17,10 +17,11 @@
 
 """Moderation tests."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
+    'TestModeration',
     ]
 
 
@@ -79,8 +80,8 @@ Message-ID: <alpha>
         self.assertTrue('x-peer' in message)
         # The X-Mailman-Approved-At header has local timezone information in
         # it, so test that separately.
-        self.assertEqual(message['x-mailman-approved-at'][:-4],
-                         'Mon, 01 Aug 2005 07:49:23 -')
+        self.assertEqual(message['x-mailman-approved-at'][:-5],
+                         'Mon, 01 Aug 2005 07:49:23 ')
         del message['x-mailman-approved-at']
         # The Message-ID matches the original.
         self.assertEqual(message['message-id'], '<alpha>')

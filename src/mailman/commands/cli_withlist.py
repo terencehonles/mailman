@@ -35,9 +35,9 @@ from zope.interface import implements
 
 from mailman.config import config
 from mailman.core.i18n import _
-from mailman.interact import DEFAULT_BANNER, interact
 from mailman.interfaces.command import ICLISubCommand
 from mailman.interfaces.listmanager import IListManager
+from mailman.utilities.interact import DEFAULT_BANNER, interact
 from mailman.utilities.modules import call_name
 
 # Global holding onto the open mailing list.
@@ -151,7 +151,6 @@ class Withlist:
                 abort=config.db.abort,
                 config=config,
                 )
-            
             banner = config.shell.banner + '\n' + banner
             if as_boolean(config.shell.use_ipython):
                 self._start_ipython(overrides, banner)
@@ -167,14 +166,14 @@ class Withlist:
             print _('ipython is not available, set use_ipython to no')
 
     def _start_python(self, overrides, banner):
-        # set the tab completion
+        # Set the tab completion.
         try:
             import readline, rlcompleter
             readline.parse_and_bind('tab: complete')
         except ImportError:
             pass
         else:
-            sys.ps1 = config.shell.ps1 + ' '
+            sys.ps1 = config.shell.prompt + ' '
         interact(upframe=False, banner=banner, overrides=overrides)
 
     def _details(self):
@@ -240,9 +239,9 @@ and run this from the command line:
 
     % bin/mailman withlist -r change mylist@example.com 'My List'""")
 
-        
+
 
 class Shell(Withlist):
     """An alias for `withlist`."""
-    
+
     name = 'shell'

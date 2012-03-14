@@ -24,6 +24,7 @@ Messages hit the pipeline after they've been accepted for posting.
     ... To: test@example.com
     ... Subject: My first post
     ... Message-ID: <first>
+    ... X-Message-ID-Hash: 4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
     ...
     ... First post!
     ... """)
@@ -37,15 +38,15 @@ etc.
     From: aperson@example.com
     To: test@example.com
     Message-ID: <first>
+    X-Message-ID-Hash: 4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
     Subject: [Test] My first post
     X-Mailman-Version: ...
     Precedence: list
     List-Id: <test.example.com>
-    X-Message-ID-Hash: 4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
     List-Post: <mailto:test@example.com>
     List-Subscribe: <http://lists.example.com/listinfo/test@example.com>,
      <mailto:test-join@example.com>
-    Archived-At: http://lists.example.com/archives/4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
+    Archived-At: http://lists.example.com/.../4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
     List-Unsubscribe: <http://lists.example.com/listinfo/test@example.com>,
      <mailto:test-leave@example.com>
     List-Archive: <http://lists.example.com/archives/test@example.com>
@@ -65,15 +66,18 @@ However there are currently no recipients for this message.
 
 After pipeline processing, the message is now sitting in various other
 processing queues.
+::
 
     >>> from mailman.testing.helpers import get_queue_messages
     >>> messages = get_queue_messages('archive')
     >>> len(messages)
     1
+
     >>> print messages[0].msg.as_string()
     From: aperson@example.com
     To: test@example.com
     Message-ID: <first>
+    X-Message-ID-Hash: 4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
     Subject: [Test] My first post
     X-Mailman-Version: ...
     Precedence: list
@@ -82,6 +86,7 @@ processing queues.
     <BLANKLINE>
     First post!
     <BLANKLINE>
+
     >>> dump_msgdata(messages[0].msgdata)
     _parsemsg       : False
     original_sender : aperson@example.com
@@ -97,15 +102,19 @@ the outgoing nntp queue.
     >>> len(messages)
     0
 
-This is the message that will actually get delivered to end recipients.
+The outgoing queue will hold the copy of the message that will actually get
+delivered to end recipients.
+::
 
     >>> messages = get_queue_messages('out')
     >>> len(messages)
     1
+
     >>> print messages[0].msg.as_string()
     From: aperson@example.com
     To: test@example.com
     Message-ID: <first>
+    X-Message-ID-Hash: 4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
     Subject: [Test] My first post
     X-Mailman-Version: ...
     Precedence: list
@@ -114,6 +123,7 @@ This is the message that will actually get delivered to end recipients.
     <BLANKLINE>
     First post!
     <BLANKLINE>
+
     >>> dump_msgdata(messages[0].msgdata)
     _parsemsg       : False
     listname        : test@example.com
@@ -124,15 +134,18 @@ This is the message that will actually get delivered to end recipients.
     version         : 3
 
 There's now one message in the digest mailbox, getting ready to be sent.
+::
 
     >>> from mailman.testing.helpers import digest_mbox
     >>> digest = digest_mbox(mlist)
     >>> sum(1 for mboxmsg in digest)
     1
+
     >>> print list(digest)[0].as_string()
     From: aperson@example.com
     To: test@example.com
     Message-ID: <first>
+    X-Message-ID-Hash: 4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
     Subject: [Test] My first post
     X-Mailman-Version: ...
     Precedence: list
@@ -143,10 +156,8 @@ There's now one message in the digest mailbox, getting ready to be sent.
     <BLANKLINE>
 
 
-Clean up the digests
-====================
-
-    >>> digest.clear()
-    >>> digest.flush()
-    >>> sum(1 for msg in digest_mbox(mlist))
-    0
+.. Clean up the digests
+   >>> digest.clear()
+   >>> digest.flush()
+   >>> sum(1 for msg in digest_mbox(mlist))
+   0

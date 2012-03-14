@@ -7,7 +7,9 @@ support LMTP local delivery, so this is a very portable way to connect Mailman
 with your mail server.
 
 Our LMTP server is fairly simple though; all it does is make sure that the
-message is destined for a valid endpoint, e.g. ``mylist-join@example.com``.
+message is destined for a valid endpoint, e.g. ``mylist-join@example.com``,
+that the message bytes can be parsed into a message object, and that the
+message has a `Message-ID` header.
 
 Let's start a testable LMTP runner.
 
@@ -62,6 +64,9 @@ Once the mailing list is created, the posting address is valid.
     ... """)
     {}
 
+Since the message itself is valid, it gets parsed and lands in the incoming
+queue.
+
     >>> from mailman.testing.helpers import get_queue_messages
     >>> messages = get_queue_messages('in')
     >>> len(messages)
@@ -71,6 +76,7 @@ Once the mailing list is created, the posting address is valid.
     To: mylist@example.com
     Subject: An interesting message
     Message-ID: <badger>
+    X-Message-ID-Hash: JYMZWSQ4IC2JPKK7ZUONRFRVC4ZYJGKJ
     X-MailFrom: anne.person@example.com
     <BLANKLINE>
     This is an interesting message.
@@ -85,8 +91,8 @@ Once the mailing list is created, the posting address is valid.
 Sub-addresses
 =============
 
-The LMTP server understands each of the list's sub-addreses, such as -join,
--leave, -request and so on.  If the message is posted to an invalid
+The LMTP server understands each of the list's sub-addreses, such as `-join`,
+`-leave`, `-request` and so on.  If the message is posted to an invalid
 sub-address though, it is rejected.
 
     >>> lmtp.sendmail(
@@ -122,8 +128,8 @@ Request subaddress
 ------------------
 
 Depending on the subaddress, there is a message in the appropriate queue for
-later processing.  For example, all -request messages are put into the command
-queue for processing.
+later processing.  For example, all `-request` messages are put into the
+command queue for processing.
 
     >>> messages = get_queue_messages('command')
     >>> len(messages)
@@ -133,6 +139,7 @@ queue for processing.
     To: mylist-request@example.com
     Subject: Help
     Message-ID: <dog>
+    X-Message-ID-Hash: 4SKREUSPI62BHDMFBSOZ3BMXFETSQHNA
     X-MailFrom: anne.person@example.com
     <BLANKLINE>
     Please help me.
@@ -147,7 +154,7 @@ queue for processing.
 Bounce processor
 ----------------
 
-A message to the -bounces address goes to the bounce processor.
+A message to the `-bounces` address goes to the bounce processor.
 
     >>> lmtp.sendmail(
     ...     'mail-daemon@example.com',
@@ -283,7 +290,7 @@ Confirmation messages go to the command processor...
 Incoming processor
 ------------------
 
-Messages to the -owner address go to the incoming processor.
+Messages to the `-owner` address also go to the incoming processor.
 
     >>> lmtp.sendmail(
     ...     'anne.person@example.com',
@@ -307,7 +314,5 @@ Messages to the -owner address go to the incoming processor.
     version      : ...
 
 
-Clean up
-========
-
-    >>> master.stop()
+.. Clean up
+   >>> master.stop()

@@ -17,7 +17,7 @@
 
 """The 'mailman' command dispatcher."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -94,7 +94,9 @@ def main():
     # Mailman system, and in particular, we must read the configuration file.
     config_file = os.getenv('MAILMAN_CONFIG_FILE')
     if config_file is None:
-        config_file = args.config
+        if args.config is not None:
+            config_file = os.path.abspath(os.path.expanduser(args.config))
+
     initialize(config_file)
     # Perform the subcommand option.
     args.func(args)

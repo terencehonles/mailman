@@ -223,7 +223,7 @@ class LMTP(smtplib.SMTP):
         return code, msg
 
 
-def get_lmtp_client():
+def get_lmtp_client(quiet=False):
     """Return a connected LMTP client."""
     # It's possible the process has started but is not yet accepting
     # connections.  Wait a little while.
@@ -233,7 +233,8 @@ def get_lmtp_client():
         try:
             response = lmtp.connect(
                 config.mta.lmtp_host, int(config.mta.lmtp_port))
-            print response
+            if not quiet:
+                print response
             return lmtp
         except socket.error as error:
             if error[0] == errno.ECONNREFUSED:

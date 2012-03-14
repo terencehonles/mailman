@@ -119,7 +119,20 @@ You also get an error if no mailing list is named.
     --run requires a mailing list name
 
 
-Clean up
-========
+IPython
+=======
 
-    >>> sys.path = old_path
+You can use `IPython`_ as the interactive shell by changing certain
+configuration variables in the `[shell]` section of your `mailman.cfg` file.
+Set `use_ipython` to "yes" to switch to IPython, which must be installed on
+your system.
+
+Other configuration variables in the `[shell]` section can be used to
+configure other aspects of the interactive shell.  You can change both the
+prompt and the banner.
+
+
+.. Clean up
+   >>> sys.path = old_path
+
+.. _`IPython`: http://ipython.org/

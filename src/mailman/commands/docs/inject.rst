@@ -35,7 +35,6 @@ It's easy to find out which queues are available.
         digest
         in
         lmtp
-        maildir
         news
         out
         pipeline
@@ -55,6 +54,7 @@ Usually, the text of the message to inject is in a file.
     ... From: aperson@example.com
     ... To: test@example.com
     ... Subject: testing
+    ... Message-ID: <aardvark>
     ...
     ... This is a test message.
     ... """
@@ -70,22 +70,20 @@ Let's provide a list name and try again.
 
     >>> mlist = create_list('test@example.com')
     >>> transaction.commit()
+    >>> from mailman.testing.helpers import get_queue_messages
 
-    >>> in_queue = config.switchboards['in']
-    >>> len(in_queue.files)
-    0
+    >>> get_queue_messages('in')
+    []
     >>> args.listname = ['test@example.com']
     >>> command.process(args)
 
 By default, the incoming queue is used.
 ::
 
-    >>> len(in_queue.files)
+    >>> items = get_queue_messages('in')
+    >>> len(items)
     1
-
-    >>> from mailman.testing.helpers import get_queue_messages
-    >>> item = get_queue_messages('in')[0]
-    >>> print item.msg.as_string()
+    >>> print items[0].msg.as_string()
     From: aperson@example.com
     To: test@example.com
     Subject: testing
@@ -96,10 +94,10 @@ By default, the incoming queue is used.
     <BLANKLINE>
     <BLANKLINE>
 
-    >>> dump_msgdata(item.msgdata)
+    >>> dump_msgdata(items[0].msgdata)
     _parsemsg    : False
     listname     : test@example.com
-    original_size: 90
+    original_size: 203
     version      : 3
 
 But a different queue can be specified on the command line.
@@ -108,13 +106,12 @@ But a different queue can be specified on the command line.
     >>> args.queue = 'virgin'
     >>> command.process(args)
 
-    >>> len(in_queue.files)
-    0
-    >>> virgin_queue = config.switchboards['virgin']
-    >>> len(virgin_queue.files)
+    >>> get_queue_messages('in')
+    []
+    >>> items = get_queue_messages('virgin')
+    >>> len(items)
     1
-    >>> item = get_queue_messages('virgin')[0]
-    >>> print item.msg.as_string()
+    >>> print items[0].msg.as_string()
     From: aperson@example.com
     To: test@example.com
     Subject: testing
@@ -125,10 +122,10 @@ But a different queue can be specified on the command line.
     <BLANKLINE>
     <BLANKLINE>
 
-    >>> dump_msgdata(item.msgdata)
+    >>> dump_msgdata(items[0].msgdata)
     _parsemsg    : False
     listname     : test@example.com
-    original_size: 90
+    original_size: 203
     version      : 3
 
 
@@ -145,6 +142,7 @@ The message text can also be provided on standard input.
     ... From: bperson@example.com
     ... To: test@example.com
     ... Subject: another test
+    ... Message-ID: <badger>
     ...
     ... This is another test message.
     ... """))
@@ -155,10 +153,10 @@ The message text can also be provided on standard input.
     >>> args.queue = None
 
     >>> command.process(args)
-    >>> len(in_queue.files)
+    >>> items = get_queue_messages('in')
+    >>> len(items)
     1
-    >>> item = get_queue_messages('in')[0]
-    >>> print item.msg.as_string()
+    >>> print items[0].msg.as_string()
     From: bperson@example.com
     To: test@example.com
     Subject: another test
@@ -169,15 +167,15 @@ The message text can also be provided on standard input.
     <BLANKLINE>
     <BLANKLINE>
 
-    >>> dump_msgdata(item.msgdata)
+    >>> dump_msgdata(items[0].msgdata)
     _parsemsg    : False
     listname     : test@example.com
-    original_size: 100
+    original_size: 211
     version      : 3
 
-    # Clean up.
-    >>> sys.stdin = sys.__stdin__
-    >>> args.filename = filename
+.. Clean up.
+   >>> sys.stdin = sys.__stdin__
+   >>> args.filename = filename
 
 
 Metadata
@@ -200,7 +198,7 @@ injected.
     bar          : two
     foo          : one
     listname     : test@example.com
-    original_size: 90
+    original_size: 203
     version      : 3
 
 

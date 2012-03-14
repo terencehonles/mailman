@@ -193,6 +193,7 @@ The *prototype* archiver can calculate this archive url given a `Message-ID`.
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ... Message-ID: <first>
+    ... X-Message-ID-Hash: 4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB
     ...
     ... """)
     >>> process(mlist, msg, {})
