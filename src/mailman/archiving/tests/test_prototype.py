@@ -106,8 +106,11 @@ but the water deserves to be swum.
         # Check that the directory structure has been created and we have one
         # more file (the archived message) than expected directories.
         archived_messages = all_filenames - self._expected_dir_structure
-        self.assertEqual(self._expected_dir_structure,
-                         all_filenames - archived_messages)
+        self.assertEqual(len(archived_messages), 1)
+        self.assertTrue(
+            archived_messages.pop().startswith(
+                os.path.join(config.ARCHIVE_DIR, 'prototype',
+                             self._mlist.fqdn_listname, 'new')))
 
     def test_archive_maildir_existence_does_not_raise(self):
         # Archiving a second message does not cause an EEXIST to be raised
