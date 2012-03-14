@@ -37,6 +37,7 @@ Table of Contents
     src/mailman/docs/START
     src/mailman/docs/DATABASE
     src/mailman/docs/MTA
+    src/mailman/docs/8-miles-high
     src/mailman/bin/docs/*
     src/mailman/commands/docs/*
     src/mailman/database/docs/*
