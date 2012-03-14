@@ -29,8 +29,20 @@ due to lack of Message-Id as strongly recommended by RFC 2822 and RFC
 and the resulting *message pickle* added to one of the IN, COMMAND, or
 BOUNCE processing queues.
 
-.. image:: msg-flow.png
-   :scale: 75
+.. graphviz::
+
+   digraph msgflow {
+     rankdir = LR;
+     node [shape=box, color=lightblue, style=filled];
+     msg [shape=ellipse, color=black, fillcolor=white];
+     lmtpd [label="LMTP\nSERVER"];
+     msg -> MTA [label="SMTP"];
+     MTA -> lmtpd [label="LMTP"];
+     lmtpd -> MTA [label="reject"];
+     lmtpd -> IN -> POSTING [label=".pck"];
+     lmtpd -> BOUNCES [label=".pck"];
+     lmtpd -> COMMAND [label=".pck"];
+   }
 
 The IN queue is processed by *filter chains* (explained below) to
 determine whether the post (or administrative request) will be
@@ -52,6 +64,11 @@ The VIRGIN queue is a special queue for messages created by Mailman.
 .. image:: pipeline.png
    :scale: 67
 
+.. graphviz::
+
+   digraph pipeline {
+   }
+
 
 Message Filtering
 -----------------
@@ -66,6 +83,57 @@ next rule in the filter chain.
 
 .. image:: chains.png
    :scale: 67
+
+..   builtin chain [shape=none]
+     accept chain [shape=none]
+     hold chain [shape=none]
+     discard chain [shape=none]
+     moderation chain [shape=none]
+
+.. graphviz::
+
+   digraph chains {
+     rankdir=TB;
+     approved [shape=record, label="<f0> approved | {<f1> | <f2>}"];
+     emergency [shape=record, label="<f0> emergency | {<f1> | <f2>}"];
+     loop [shape=record, label="<f0> loop | {<f1> | <f2>}"];
+     modmember [shape=record, label="<f0> moderate\nmember | {<f1> | <f2>}"];
+     administrivia [shape=record, label="<f0> administrivia | <f1>"];
+     maxsize [shape=record, label="<f0> max\ size | {<f1> | <f2>}"];
+     any [shape=record, label="<f0> any | {<f1> | <f2>}"];
+     truth [shape=record, label="<f0> truth | <f1>"];
+     IN [shape=box, color=lightblue, style=filled];
+     IN -> approved;
+     subgraph clusterbar {
+       rank=same;
+       subgraph clusterfubar {
+         rank=same;
+         approved:f2 -> emergency;
+         emergency:f2 -> loop;
+         loop:f2 -> modmember;
+         modmember:f2 -> administrivia;
+         administrivia:f2 -> maxsize;
+         maxsize:f2 -> any;
+         any:f2 -> truth;
+       };
+       clusterfoo [shape=none];
+       subgraph clusterfoo {
+         rankdir=LR;
+         rank=same;
+         APPROVED [shape=box, color=lightblue, style=filled];
+         POSTING [shape=box, color=lightblue, style=filled];
+         MODERATION [shape=box, color=lightblue, style=filled];
+         DISCARD [shape=trapezoidium, color=lightblue, style=filled];
+       };
+     };
+     approved:f1 -> POSTING;
+     emergency:f1 -> MODERATION;
+     loop:f1 -> DISCARD;
+     modmember:f1 -> MODERATION;
+     maxsize:f1 -> MODERATION;
+     any:f1 -> MODERATION;
+     truth -> POSTING;
+   }
 
 
 Configuration
@@ -107,7 +175,7 @@ of preferences, and a *role* such as "owner" or "moderator".  Roles
 are used to determine what kinds of mail the user receives via that
 membership.  *Owners* will receive mail to *list*-owner, but not posts
 and moderation traffic, for example.  A user with multiple roles on a
-single list will therefore have multiple memberships in that list, one
+single list will theref1re have multiple memberships in that list, one
 for each role.
 
 Roles are implemented by "magical, invisible" *rosters*.
