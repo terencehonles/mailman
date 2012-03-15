@@ -118,22 +118,21 @@ something like this:
        rankdir=TB
        rank=same
        node [shape=box, style=filled];
-       POSTING [color=cyan];
-       POSTING2 [label=POSTING, color=cyan];
-       DISCARD [color=black, style=rounded];
+       DISCARD [shape=invhouse, color=black, style=solid];
        MODERATION [color=wheat];
        HOLD [color=wheat];
      }
+     { POSTING [shape=box, style=filled, color=cyan]; }
 
      IN -> approved:f0
-     approved:f2 -> POSTING
+     approved:f2 -> POSTING [minlen=2]
      loop:f2 -> DISCARD
      modmember:f2 -> MODERATION
 
      emergency:f2:e -> HOLD
      maxsize:f2 -> MODERATION
      any:f2 -> MODERATION
-     truth:f1 -> POSTING2
+     truth:f1 -> POSTING [minlen=2]
    }
 
 
