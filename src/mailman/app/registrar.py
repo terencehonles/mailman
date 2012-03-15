@@ -59,7 +59,7 @@ class Registrar:
 
     implements(IRegistrar)
 
-    def register(self, mlist, email, real_name=None, delivery_mode=None):
+    def register(self, mlist, email, display_name=None, delivery_mode=None):
         """See `IUserRegistrar`."""
         if delivery_mode is None:
             delivery_mode = DeliveryMode.regular
@@ -70,7 +70,7 @@ class Registrar:
         pendable = PendableRegistration(
             type=PendableRegistration.PEND_KEY,
             email=email,
-            real_name=real_name,
+            display_name=display_name,
             delivery_mode=delivery_mode.name)
         pendable['list_name'] = mlist.fqdn_listname
         token = getUtility(IPendings).add(pendable)
@@ -104,7 +104,7 @@ class Registrar:
             return False
         missing = object()
         email = pendable.get('email', missing)
-        real_name = pendable.get('real_name', missing)
+        display_name = pendable.get('display_name', missing)
         list_name = pendable.get('list_name', missing)
         pended_delivery_mode = pendable.get('delivery_mode', 'regular')
         try:
@@ -133,7 +133,7 @@ class Registrar:
         # and link the two together
         if address is None:
             assert user is None, 'How did we get a user but not an address?'
-            user = user_manager.create_user(email, real_name)
+            user = user_manager.create_user(email, display_name)
             # Because the database changes haven't been flushed, we can't use
             # IUserManager.get_address() to find the IAddress just created
             # under the hood.  Instead, iterate through the IUser's addresses,
@@ -145,7 +145,7 @@ class Registrar:
                 raise AssertionError('Could not find expected IAddress')
         elif user is None:
             user = user_manager.create_user()
-            user.real_name = real_name
+            user.display_name = display_name
             user.link(address)
         else:
             # The IAddress and linked IUser already exist, so all we need to

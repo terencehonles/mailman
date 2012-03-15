@@ -27,7 +27,7 @@ CREATE TABLE address (
     id INTEGER NOT NULL,
     email TEXT,
     _original TEXT,
-    real_name TEXT,
+    display_name TEXT,
     verified_on TIMESTAMP,
     registered_on TIMESTAMP,
     user_id INTEGER,
@@ -185,7 +185,7 @@ CREATE TABLE mailinglist (
     posting_pipeline TEXT,
     preferred_language TEXT,
     private_roster BOOLEAN,
-    real_name TEXT,
+    display_name TEXT,
     reject_these_nonmembers BLOB,
     reply_goes_to_list INTEGER,
     reply_to_address TEXT,
@@ -278,7 +278,7 @@ CREATE TABLE preferences (
 
 CREATE TABLE user (
     id INTEGER NOT NULL,
-    real_name TEXT,
+    display_name TEXT,
     password BINARY,
     _user_id TEXT,
     _created_on TIMESTAMP,

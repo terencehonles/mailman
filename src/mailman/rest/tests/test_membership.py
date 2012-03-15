@@ -124,7 +124,7 @@ class TestMembership(unittest.TestCase):
             call_api('http://localhost:9001/3.0/members', {
                 'fqdn_listname': 'test@example.com',
                 'subscriber': 'anne@example.com',
-                'real_name': 'Anne Person',
+                'display_name': 'Anne Person',
                 'delivery_mode': 'invalid-mode',
                 })
         except HTTPError as exc:
@@ -138,7 +138,7 @@ class TestMembership(unittest.TestCase):
         content, response = call_api('http://localhost:9001/3.0/members', {
             'fqdn_listname': 'test@example.com',
             'subscriber': 'hugh/person@example.com',
-            'real_name': 'Hugh Person',
+            'display_name': 'Hugh Person',
             })
         self.assertEqual(content, None)
         self.assertEqual(response.status, 201)

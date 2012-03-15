@@ -60,8 +60,8 @@ class _UserBase(resource.Resource, CollectionMixin):
         # with the real name.  These could be None or the empty string.
         if user.password:
             resource['password'] = user.password
-        if user.real_name:
-            resource['real_name'] = user.real_name
+        if user.display_name:
+            resource['display_name'] = user.display_name
         return resource
 
     def _get_collection(self, request):
@@ -84,9 +84,9 @@ class AllUsers(_UserBase):
         """Create a new user."""
         try:
             validator = Validator(email=unicode,
-                                  real_name=unicode,
+                                  display_name=unicode,
                                   password=unicode,
-                                  _optional=('real_name', 'password'))
+                                  _optional=('display_name', 'password'))
             arguments = validator(request)
         except ValueError as error:
             return http.bad_request([], str(error))

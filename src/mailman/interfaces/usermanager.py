@@ -32,13 +32,13 @@ from zope.interface import Interface, Attribute
 class IUserManager(Interface):
     """The global user management service."""
 
-    def create_user(email=None, real_name=None):
+    def create_user(email=None, display_name=None):
         """Create and return an `IUser`.
 
         :param email: The text email address for the user being created.
         :type email: str
-        :param real_name: The real name of the user.
-        :type real_name: str
+        :param display_name: The display name of the user.
+        :type display_name: str
         :return: The newly created user, with the given email address and real
             name, if given.
         :rtype: `IUser`
@@ -74,15 +74,15 @@ class IUserManager(Interface):
     users = Attribute(
         """An iterator over all the `IUsers` managed by this user manager.""")
 
-    def create_address(email, real_name=None):
+    def create_address(email, display_name=None):
         """Create and return an address unlinked to any user.
 
         :param email: The text email address for the address being created.
         :type email: str
-        :param real_name: The real name associated with the address.
-        :type real_name: str
+        :param display_name: The display name associated with the address.
+        :type display_name: str
         :return: The newly created address object, with the given email
-            address and real name, if given.
+            address and display name, if given.
         :rtype: `IAddress`
         :raises ExistingAddressError: when the email address is already
             registered.

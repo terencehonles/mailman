@@ -119,13 +119,13 @@ the system, they won't be created again.
     >>> user_b = user_manager.get_user('bperson@example.com')
     >>> user_c = user_manager.get_user('cperson@example.com')
     >>> user_d = user_manager.get_user('dperson@example.com')
-    >>> user_a.real_name = 'Anne Person'
-    >>> user_b.real_name = 'Bart Person'
-    >>> user_c.real_name = 'Caty Person'
-    >>> user_d.real_name = 'Dirk Person'
+    >>> user_a.display_name = 'Anne Person'
+    >>> user_b.display_name = 'Bart Person'
+    >>> user_c.display_name = 'Caty Person'
+    >>> user_d.display_name = 'Dirk Person'
 
     >>> mlist_3 = create_list('test_3@example.com', owners)
-    >>> dump_list(user.real_name for user in mlist_3.owners.users)
+    >>> dump_list(user.display_name for user in mlist_3.owners.users)
     Anne Person
     Bart Person
     Caty Person

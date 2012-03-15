@@ -136,6 +136,7 @@ example.com domain does not contain any mailing lists.
 
     >>> dump_json('http://localhost:9001/3.0/domains/example.com/lists')
     entry 0:
+        display_name: Test-domains
         fqdn_listname: test-domains@example.com
         http_etag: "..."
         ...

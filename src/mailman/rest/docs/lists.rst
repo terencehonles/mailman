@@ -20,11 +20,11 @@ Create a mailing list in a domain and it's accessible via the API.
 
     >>> dump_json('http://localhost:9001/3.0/lists')
     entry 0:
+        display_name: Test-one
         fqdn_listname: test-one@example.com
         http_etag: "..."
         list_name: test-one
         mail_host: example.com
-        real_name: Test-one
         self_link: http://localhost:9001/3.0/lists/test-one@example.com
     http_etag: "..."
     start: 0
@@ -35,11 +35,11 @@ You can also query for lists from a particular domain.
 
     >>> dump_json('http://localhost:9001/3.0/domains/example.com/lists')
     entry 0:
+        display_name: Test-one
         fqdn_listname: test-one@example.com
         http_etag: "..."
         list_name: test-one
         mail_host: example.com
-        real_name: Test-one
         self_link: http://localhost:9001/3.0/lists/test-one@example.com
     http_etag: "..."
     start: 0
@@ -82,11 +82,11 @@ The mailing list exists in the database.
 It is also available via the location given in the response.
 
     >>> dump_json('http://localhost:9001/3.0/lists/test-two@example.com')
+    display_name: Test-two
     fqdn_listname: test-two@example.com
     http_etag: "..."
     list_name: test-two
     mail_host: example.com
-    real_name: Test-two
     self_link: http://localhost:9001/3.0/lists/test-two@example.com
 
 However, you are not allowed to create a mailing list in a domain that does

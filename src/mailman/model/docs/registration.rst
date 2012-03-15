@@ -102,9 +102,9 @@ But this address is waiting for confirmation.
 
     >>> dump_msgdata(pendingdb.confirm(token, expunge=False))
     delivery_mode: regular
+    display_name : Anne Person
     email        : aperson@example.com
     list_name    : alpha@example.com
-    real_name    : Anne Person
     type         : registration
 
 

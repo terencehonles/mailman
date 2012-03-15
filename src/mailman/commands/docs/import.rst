@@ -48,9 +48,9 @@ import, the mailing list's 'real name' has changed.
     >>> FakeArgs.pickle_file = [
     ...     resource_filename('mailman.testing', 'config.pck')]
 
-    >>> print mlist.real_name
+    >>> print mlist.display_name
     Import
 
     >>> command.process(FakeArgs)
-    >>> print mlist.real_name
+    >>> print mlist.display_name
     Test

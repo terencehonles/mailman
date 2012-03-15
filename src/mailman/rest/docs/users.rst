@@ -26,8 +26,8 @@ When there are users in the database, they can be retrieved as a collection.
     >>> dump_json('http://localhost:9001/3.0/users')
     entry 0:
         created_on: 2005-08-01T07:49:23
+        display_name: Anne Person
         http_etag: "..."
-        real_name: Anne Person
         self_link: http://localhost:9001/3.0/users/1
         user_id: 1
     http_etag: "..."
@@ -48,8 +48,8 @@ returned in the REST API.
     >>> dump_json('http://localhost:9001/3.0/users')
     entry 0:
         created_on: 2005-08-01T07:49:23
+        display_name: Anne Person
         http_etag: "..."
-        real_name: Anne Person
         self_link: http://localhost:9001/3.0/users/1
         user_id: 1
     entry 1:
@@ -72,7 +72,7 @@ email address for the user, a password, and optionally the user's full name.
     >>> transaction.abort()
     >>> dump_json('http://localhost:9001/3.0/users', {
     ...           'email': 'bart@example.com',
-    ...           'real_name': 'Bart Person',
+    ...           'display_name': 'Bart Person',
     ...           'password': 'bbb',
     ...           })
     content-length: 0
@@ -92,9 +92,9 @@ It is also available via the location given in the response.
 
     >>> dump_json('http://localhost:9001/3.0/users/3')
     created_on: 2005-08-01T07:49:23
+    display_name: Bart Person
     http_etag: "..."
     password: {CLEARTEXT}bbb
-    real_name: Bart Person
     self_link: http://localhost:9001/3.0/users/3
     user_id: 3
 
@@ -103,9 +103,9 @@ them with user ids.  Thus, a user can be retrieved via its email address.
 
     >>> dump_json('http://localhost:9001/3.0/users/bart@example.com')
     created_on: 2005-08-01T07:49:23
+    display_name: Bart Person
     http_etag: "..."
     password: {CLEARTEXT}bbb
-    real_name: Bart Person
     self_link: http://localhost:9001/3.0/users/3
     user_id: 3
 
@@ -117,7 +117,7 @@ therefore cannot be retrieved.  It can be reset though.
     >>> transaction.abort()
     >>> dump_json('http://localhost:9001/3.0/users', {
     ...           'email': 'cris@example.com',
-    ...           'real_name': 'Cris Person',
+    ...           'display_name': 'Cris Person',
     ...           })
     content-length: 0
     date: ...
@@ -127,9 +127,9 @@ therefore cannot be retrieved.  It can be reset though.
 
     >>> dump_json('http://localhost:9001/3.0/users/4')
     created_on: 2005-08-01T07:49:23
+    display_name: Cris Person
     http_etag: "..."
     password: {CLEARTEXT}...
-    real_name: Cris Person
     self_link: http://localhost:9001/3.0/users/4
     user_id: 4
 
@@ -204,10 +204,10 @@ sorted in lexical order by original (i.e. case-preserved) email address.
         registered_on: 2005-08-01T07:49:23
         self_link: http://localhost:9001/3.0/addresses/bart.person@example.com
     entry 2:
+        display_name: Bart Person
         email: bart@example.com
         http_etag: "..."
         original_email: bart@example.com
-        real_name: Bart Person
         registered_on: 2005-08-01T07:49:23
         self_link: http://localhost:9001/3.0/addresses/bart@example.com
     entry 3:
@@ -225,32 +225,32 @@ In fact, any of these addresses can be used to look up Bart's user record.
 
     >>> dump_json('http://localhost:9001/3.0/users/bart@example.com')
     created_on: 2005-08-01T07:49:23
+    display_name: Bart Person
     http_etag: "..."
     password: {CLEARTEXT}bbb
-    real_name: Bart Person
     self_link: http://localhost:9001/3.0/users/3
     user_id: 3
 
     >>> dump_json('http://localhost:9001/3.0/users/bart.person@example.com')
     created_on: 2005-08-01T07:49:23
+    display_name: Bart Person
     http_etag: "..."
     password: {CLEARTEXT}bbb
-    real_name: Bart Person
     self_link: http://localhost:9001/3.0/users/3
     user_id: 3
 
     >>> dump_json('http://localhost:9001/3.0/users/bperson@example.com')
     created_on: 2005-08-01T07:49:23
+    display_name: Bart Person
     http_etag: "..."
     password: {CLEARTEXT}bbb
-    real_name: Bart Person
     self_link: http://localhost:9001/3.0/users/3
     user_id: 3
 
     >>> dump_json('http://localhost:9001/3.0/users/Bart.Q.Person@example.com')
     created_on: 2005-08-01T07:49:23
+    display_name: Bart Person
     http_etag: "..."
     password: {CLEARTEXT}bbb
-    real_name: Bart Person
     self_link: http://localhost:9001/3.0/users/3
     user_id: 3

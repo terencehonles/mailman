@@ -55,7 +55,7 @@ class DefaultStyle:
         # For cut-n-paste convenience.
         mlist = mailing_list
         # List identity.
-        mlist.real_name = mlist.list_name.capitalize()
+        mlist.display_name = mlist.list_name.capitalize()
         mlist.list_id = '{0.list_name}.{0.mail_host}'.format(mlist)
         mlist.include_rfc2369_headers = True
         mlist.include_list_post_header = True
@@ -132,7 +132,7 @@ from: .*@uplinkpro.com
         # Max autoresponses per day.  A mapping between addresses and a
         # 2-tuple of the date of the last autoresponse and the number of
         # autoresponses sent on that date.
-        mlist.subject_prefix = _('[$mlist.real_name] ')
+        mlist.subject_prefix = _('[$mlist.display_name] ')
         mlist.header_uri = None
         mlist.footer_uri = 'mailman:///$listname/$language/footer-generic.txt'
         # Set this to Never if the list's preferred language uses us-ascii,

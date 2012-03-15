@@ -63,9 +63,8 @@ class Digester:
         self._mlist = mlist
         self._charset = mlist.preferred_language.charset
         # This will be used in the Subject, so use $-strings.
-        realname = mlist.real_name
-        issue = digest_number
-        self._digest_id = _('$realname Digest, Vol $volume, Issue $issue')
+        self._digest_id = _(
+            '$mlist.display_name Digest, Vol $volume, Issue $digest_number')
         self._subject = Header(self._digest_id,
                                self._charset,
                                header_name='Subject')
@@ -83,7 +82,7 @@ class Digester:
         # ahead and add it now.
         self._masthead = make('masthead.txt',
                               mailing_list=mlist,
-                              real_name=mlist.real_name,
+                              display_name=mlist.display_name,
                               got_list_email=mlist.posting_address,
                               got_listinfo_url=mlist.script_url('listinfo'),
                               got_request_email=mlist.request_address,

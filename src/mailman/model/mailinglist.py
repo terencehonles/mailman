@@ -173,7 +173,7 @@ class MailingList(Model):
     posting_pipeline = Unicode()
     _preferred_language = Unicode(name='preferred_language')
     private_roster = Bool()
-    real_name = Unicode()
+    display_name = Unicode()
     reject_these_nonmembers = Pickle()
     reply_goes_to_list = Enum(ReplyToMunging)
     reply_to_address = Unicode()
@@ -206,7 +206,7 @@ class MailingList(Model):
         # rosters explicitly.
         self.__storm_loaded__()
         self.personalize = Personalization.none
-        self.real_name = string.capwords(
+        self.display_name = string.capwords(
             SPACE.join(listname.split(UNDERSCORE)))
         makedirs(self.data_path)
 

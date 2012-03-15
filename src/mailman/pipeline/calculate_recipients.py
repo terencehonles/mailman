@@ -82,9 +82,9 @@ class CalculateRecipients:
                 # Bad Urgent: password, so reject it instead of passing it on.
                 # I think it's better that the sender know they screwed up
                 # than to deliver it normally.
-                realname = mlist.real_name
+                listname = mlist.display_name
                 text = _("""\
-Your urgent message to the $realname mailing list was not authorized for
+Your urgent message to the $listname mailing list was not authorized for
 delivery.  The original message as received by Mailman is attached.
 """)
                 raise errors.RejectMessage(wrap(text))

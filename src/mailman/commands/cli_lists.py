@@ -109,7 +109,7 @@ class Lists:
         for mlist in mailing_lists:
             if args.names:
                 identifier = '{0} [{1}]'.format(
-                    mlist.fqdn_listname, mlist.real_name)
+                    mlist.fqdn_listname, mlist.display_name)
             else:
                 identifier = mlist.fqdn_listname
             longest = max(len(identifier), longest)

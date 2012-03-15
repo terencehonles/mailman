@@ -142,7 +142,7 @@ class Message(email.message.Message):
                                else '')
             else:
                 field_values = self.get_all(header, [])
-                senders.extend(address.lower() for (real_name, address)
+                senders.extend(address.lower() for (display_name, address)
                                in email.utils.getaddresses(field_values))
         # Filter out None and the empty string.
         return [sender for sender in senders if sender]

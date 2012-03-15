@@ -91,11 +91,9 @@ class IMailingList(Interface):
     domain = Attribute(
         """The `IDomain` that this mailing list is defined in.""")
 
-    real_name = Attribute("""\
-        The short human-readable descriptive name for the mailing list.  By
-        default, this is the capitalized `list_name`, but it can be changed to
-        anything.  This is used in locations such as the message footers and
-        Subject prefix.
+    display_name = Attribute("""\
+        The short human-readable descriptive name for the mailing list.  This
+        is used in locations such as the message footers and Subject prefix.
         """)
 
     description = Attribute("""\

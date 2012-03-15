@@ -8,7 +8,7 @@ responses are subject to various conditions, such as headers in the original
 message or the amount of time since the last auto-response.
 
     >>> mlist = create_list('_xtest@example.com')
-    >>> mlist.real_name = 'XTest'
+    >>> mlist.display_name = 'XTest'
 
 
 Basic automatic responding
