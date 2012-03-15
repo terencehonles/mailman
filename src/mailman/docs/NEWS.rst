@@ -70,6 +70,8 @@ REST
    resources now accept a `held` path component.  GETing this returns all held
    messages for the mailing list.  POSTing to a specific request id under this
    url can dispose of the message using `Action` enums.
+ * Mailing list resources now have a `member_count` attribute which gives the
+   number of subscribed members.  Given by Toshio Kuratomi.
 
 Interfaces
 ----------

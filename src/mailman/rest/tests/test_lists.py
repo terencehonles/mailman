@@ -17,23 +17,31 @@
 
 """REST list tests."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
+    'TestLists',
+    'TestListsMissing',
     ]
 
 
 import unittest
 
 from urllib2 import HTTPError
+from zope.component import getUtility
 
+from mailman.app.lifecycle import create_list
+from mailman.config import config
+from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import call_api
 from mailman.testing.layers import RESTLayer
 
 
 
-class TestLists(unittest.TestCase):
+class TestListsMissing(unittest.TestCase):
+    """Test expected failures."""
+
     layer = RESTLayer
 
     def test_missing_list_roster_member_404(self):
@@ -79,3 +87,44 @@ class TestLists(unittest.TestCase):
             self.assertEqual(exc.code, 404)
         else:
             raise AssertionError('Expected HTTPError')
+
+
+
+class TestLists(unittest.TestCase):
+    """Test various aspects of mailing list resources."""
+
+    layer = RESTLayer
+
+    def setUp(self):
+        self._mlist = create_list('test@example.com')
+        config.db.commit()
+        self._usermanager = getUtility(IUserManager)
+
+    def test_member_count_with_no_members(self):
+        # The list initially has 0 members.
+        resource, response = call_api(
+            'http://localhost:9001/3.0/lists/test@example.com')
+        self.assertEqual(response.status, 200)
+        self.assertEqual(resource['member_count'], 0)
+
+    def test_member_count_with_one_member(self):
+        # Add a member to a list and check that the resource reflects this.
+        anne = self._usermanager.create_address('anne@example.com')
+        self._mlist.subscribe(anne)
+        config.db.commit()
+        resource, response = call_api(
+            'http://localhost:9001/3.0/lists/test@example.com')
+        self.assertEqual(response.status, 200)
+        self.assertEqual(resource['member_count'], 1)
+
+    def test_member_count_with_two_members(self):
+        # Add two members to a list and check that the resource reflects this.
+        anne = self._usermanager.create_address('anne@example.com')
+        self._mlist.subscribe(anne)
+        bart = self._usermanager.create_address('bar@example.com')
+        self._mlist.subscribe(bart)
+        config.db.commit()
+        resource, response = call_api(
+            'http://localhost:9001/3.0/lists/test@example.com')
+        self.assertEqual(response.status, 200)
+        self.assertEqual(resource['member_count'], 2)

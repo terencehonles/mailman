@@ -140,7 +140,9 @@ example.com domain does not contain any mailing lists.
         fqdn_listname: test-domains@example.com
         http_etag: "..."
         ...
+        member_count: 0
         self_link: http://localhost:9001/3.0/lists/test-domains@example.com
+        volume: 1
     http_etag: "..."
     start: 0
     total_size: 1

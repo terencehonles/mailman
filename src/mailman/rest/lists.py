@@ -105,10 +105,12 @@ class _ListBase(resource.Resource, CollectionMixin):
     def _resource_as_dict(self, mlist):
         """See `CollectionMixin`."""
         return dict(
-            fqdn_listname=mlist.fqdn_listname,
-            mail_host=mlist.mail_host,
-            list_name=mlist.list_name,
             display_name=mlist.display_name,
+            fqdn_listname=mlist.fqdn_listname,
+            list_name=mlist.list_name,
+            mail_host=mlist.mail_host,
+            member_count=len(tuple(mlist.members.members)),
+            volume=mlist.volume,
             self_link=path_to('lists/{0}'.format(mlist.fqdn_listname)),
             )
 
