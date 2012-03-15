@@ -24,8 +24,10 @@ Create a mailing list in a domain and it's accessible via the API.
         http_etag: "..."
         list_name: test-one
         mail_host: example.com
+        member_count: 0
         real_name: Test-one
         self_link: http://localhost:9001/3.0/lists/test-one@example.com
+        volume: 1
     http_etag: "..."
     start: 0
     total_size: 1
@@ -39,8 +41,10 @@ You can also query for lists from a particular domain.
         http_etag: "..."
         list_name: test-one
         mail_host: example.com
+        member_count: 0
         real_name: Test-one
         self_link: http://localhost:9001/3.0/lists/test-one@example.com
+        volume: 1
     http_etag: "..."
     start: 0
     total_size: 1
@@ -86,8 +90,10 @@ It is also available via the location given in the response.
     http_etag: "..."
     list_name: test-two
     mail_host: example.com
+    member_count: 0
     real_name: Test-two
     self_link: http://localhost:9001/3.0/lists/test-two@example.com
+    volume: 1
 
 However, you are not allowed to create a mailing list in a domain that does
 not exist.
