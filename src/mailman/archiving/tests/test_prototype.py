@@ -92,10 +92,10 @@ but the water deserves to be swum.
                 dirpath = unicode(dirpath)
             all_filenames.add(dirpath)
             for filename in filenames:
-                new_filename = os.path.join(dirpath, filename)
-                if not isinstance(new_filename, unicode):
-                    new_filename = unicode(new_filename)
-                all_filenames.add(new_filename)
+                new_filename = filename
+                if not isinstance(filename, unicode):
+                    new_filename = unicode(filename)
+                all_filenames.add(os.path.join(dirpath, new_filename))
         return all_filenames
 
     def test_archive_maildir_created(self):
@@ -141,7 +141,7 @@ but the water deserves to be swum.
             config.LOCK_DIR, '{0}-maildir.lock'.format(
                 self._mlist.fqdn_listname))
         with Lock(lock_file):
-            # Acquire the archiver lock, Hen make sure the archiver logs the
+            # Acquire the archiver lock, then make sure the archiver logs the
             # fact that it could not acquire the lock.
             archive_thread = threading.Thread(
                 target=Prototype.archive_message,
