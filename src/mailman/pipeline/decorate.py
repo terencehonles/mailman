@@ -57,7 +57,8 @@ def process(mlist, msg, msgdata):
         d['user_address'] = recipient
         d['user_delivered_to'] = member.address.original_email
         d['user_language'] = member.preferred_language.description
-        d['user_name'] = (member.user.real_name if member.user.real_name
+        d['user_name'] = (member.user.display_name 
+                          if member.user.display_name
                           else member.address.original_email)
         d['user_optionsurl'] = member.options_url
     # These strings are descriptive for the log file and shouldn't be i18n'd
@@ -215,8 +216,9 @@ def decorate(mlist, uri, extradict=None):
     # any key/value pairs in the extradict.
     substitutions = dict(
         fqdn_listname = mlist.fqdn_listname,
-        list_name     = mlist.real_name,
+        list_name     = mlist.list_name,
         host_name     = mlist.mail_host,
+        display_name  = mlist.display_name,
         listinfo_uri  = mlist.script_url('listinfo'),
         list_requests = mlist.request_address,
         description   = mlist.description,

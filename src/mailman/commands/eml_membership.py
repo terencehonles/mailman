@@ -65,7 +65,7 @@ used.
         delivery_mode = self._parse_arguments(arguments, results)
         if delivery_mode is ContinueProcessing.no:
             return ContinueProcessing.no
-        real_name, address = parseaddr(msg['from'])
+        display_name, address = parseaddr(msg['from'])
         # Address could be None or the empty string.
         if not address:
             address = msg.sender
@@ -81,7 +81,7 @@ used.
             return ContinueProcessing.yes
         joins.add(address)
         results.joins = joins
-        person = formataddr((real_name, address))
+        person = formataddr((display_name, address))
         # Is this person already a member of the list?  Search for all
         # matching memberships.
         members = getUtility(ISubscriptionService).find_members(
@@ -90,7 +90,7 @@ used.
             print(_('$person is already a member'), file=results)
         else:
             getUtility(IRegistrar).register(mlist, address, 
-                                            real_name, delivery_mode)
+                                            display_name, delivery_mode)
             print(_('Confirmation email sent to $person'), file=results)
         return ContinueProcessing.yes
 
@@ -177,7 +177,7 @@ You may be asked to confirm your request.""")
                 file=results)
             return ContinueProcessing.no
         member.unsubscribe()
-        person = formataddr((user.real_name, email))
+        person = formataddr((user.display_name, email))
         print(_('$person left $mlist.fqdn_listname'), file=results)
         return ContinueProcessing.yes
 

@@ -41,7 +41,7 @@ class Address(Model):
     id = Int(primary=True)
     email = Unicode()
     _original = Unicode()
-    real_name = Unicode()
+    display_name = Unicode()
     verified_on = DateTime()
     registered_on = DateTime()
 
@@ -50,17 +50,17 @@ class Address(Model):
     preferences_id = Int()
     preferences = Reference(preferences_id, 'Preferences.id')
 
-    def __init__(self, email, real_name):
+    def __init__(self, email, display_name):
         super(Address, self).__init__()
         lower_case = email.lower()
         self.email = lower_case
-        self.real_name = real_name
+        self.display_name = display_name
         self._original = (None if lower_case == email else email)
         self.registered_on = now()
 
     def __str__(self):
         addr = (self.email if self._original is None else self._original)
-        return formataddr((self.real_name, addr))
+        return formataddr((self.display_name, addr))
 
     def __repr__(self):
         verified = ('verified' if self.verified_on else 'not verified')

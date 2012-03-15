@@ -47,8 +47,8 @@ class UnverifiedAddressError(MailmanError):
 class IUser(Interface):
     """A basic user."""
 
-    real_name = Attribute(
-        """This user's real name.""")
+    display_name = Attribute(
+        """This user's display name.""")
 
     password = Attribute(
         """This user's password information.""")
@@ -68,17 +68,17 @@ class IUser(Interface):
     memberships = Attribute(
         """A roster of this user's memberships.""")
 
-    def register(email, real_name=None):
+    def register(email, display_name=None):
         """Register the given email address and link it to this user.
 
         :param email: The text email address to register.
         :type email: str
-        :param real_name: The user's real name.  If not given the empty string
-            is used.
-        :type real_name: str
+        :param display_name: The user's display name.  If not given the empty
+            string is used.
+        :type display_name: str
         :return: The address object linked to the user.  If the associated
             address object already existed (unlinked to a user) then the
-            `real_name` parameter is ignored.
+            `display_name` parameter is ignored.
         :rtype: `IAddress`
         :raises AddressAlreadyLinkedError: if this `IAddress` is already
             linked to another user.

@@ -230,8 +230,8 @@ As another example, say you wanted to change the display name for a particular
 mailing list.  You could put the following function in a file called
 'change.pw':
 
-    def change(mlist, real_name):
-        mlist.real_name = real_name
+    def change(mlist, display_name):
+        mlist.display_name = display_name
         # Required to save changes to the database.
         commit()
 

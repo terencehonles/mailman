@@ -63,7 +63,7 @@ class PersonalizedMixin:
             # Convert the unicode name to an email-safe representation.
             # Create a Header instance for the name so that it's properly
             # encoded for email transport.
-            name = Header(user.real_name).encode()
+            name = Header(user.display_name).encode()
             msg.replace_header('To', formataddr((name, recipient)))
 
 

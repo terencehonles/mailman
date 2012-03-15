@@ -17,7 +17,7 @@
 
 """The 'members' subcommand."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -155,7 +155,7 @@ class Members:
         try:
             addresses = list(mlist.members.addresses)
             if len(addresses) == 0:
-                print >> fp, mlist.fqdn_listname, 'has no members'
+                print(mlist.fqdn_listname, 'has no members', file=fp)
                 return
             for address in sorted(addresses, key=attrgetter('email')):
                 if args.regular:
@@ -170,8 +170,9 @@ class Members:
                     member = mlist.members.get_member(address.email)
                     if member.delivery_status not in status_types:
                         continue
-                print >> fp, formataddr(
-                    (address.real_name, address.original_email))
+                print(
+                    formataddr((address.display_name, address.original_email)),
+                    file=fp)
         finally:
             if fp is not sys.stdout:
                 fp.close()
@@ -194,19 +195,20 @@ class Members:
                 if line.startswith('#') or len(line.strip()) == 0:
                     continue
                 # Parse the line and ensure that the values are unicodes.
-                real_name, email = parseaddr(line)
-                real_name = real_name.decode(fp.encoding)
+                display_name, email = parseaddr(line)
+                display_name = display_name.decode(fp.encoding)
                 email = email.decode(fp.encoding)
                 # Give the user a default, user-friendly password.
                 password = generate(int(config.passwords.password_length))
                 try:
-                    add_member(mlist, email, real_name, password,
+                    add_member(mlist, email, display_name, password,
                                DeliveryMode.regular,
                                mlist.preferred_language.code)
                 except AlreadySubscribedError:
                     # It's okay if the address is already subscribed, just
                     # print a warning and continue.
-                    print 'Already subscribed (skipping):', email, real_name
+                    print('Already subscribed (skipping):', 
+                          email, display_name)
         finally:
             if fp is not sys.stdin:
                 fp.close()

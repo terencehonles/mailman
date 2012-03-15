@@ -37,6 +37,7 @@ All readable attributes for a list are available on a sub-resource.
     description:
     digest_last_sent_at: None
     digest_size_threshold: 30.0
+    display_name: Test-one
     filter_content: False
     fqdn_listname: test-one@example.com
     generic_nonmember_action: 1
@@ -54,7 +55,6 @@ All readable attributes for a list are available on a sub-resource.
     post_id: 1
     posting_address: test-one@example.com
     posting_pipeline: default-posting-pipeline
-    real_name: Test-one
     reply_goes_to_list: no_munging
     request_address: test-one-request@example.com
     scheme: http
@@ -88,7 +88,7 @@ all the writable attributes in one request.
     ...             autoresponse_owner_text='the owner',
     ...             autoresponse_postings_text='the mailing list',
     ...             autoresponse_request_text='the robot',
-    ...             real_name='Fnords',
+    ...             display_name='Fnords',
     ...             description='This is my mailing list',
     ...             include_rfc2369_headers=False,
     ...             include_list_post_header=False,
@@ -136,13 +136,13 @@ These values are changed permanently.
     description: This is my mailing list
     ...
     digest_size_threshold: 10.5
+    display_name: Fnords
     filter_content: True
     ...
     include_list_post_header: False
     include_rfc2369_headers: False
     ...
     posting_pipeline: virgin
-    real_name: Fnords
     reply_goes_to_list: point_to_list
     ...
     send_welcome_message: False
@@ -168,7 +168,7 @@ must be included.  It is an error to leave one or more out...
     ...             autoresponse_owner_text='the owner',
     ...             autoresponse_postings_text='the mailing list',
     ...             autoresponse_request_text='the robot',
-    ...             real_name='Fnords',
+    ...             display_name='Fnords',
     ...             description='This is my mailing list',
     ...             include_rfc2369_headers=False,
     ...             include_list_post_header=False,
@@ -208,7 +208,7 @@ must be included.  It is an error to leave one or more out...
     ...             autoresponse_owner_text='the owner',
     ...             autoresponse_postings_text='the mailing list',
     ...             autoresponse_request_text='the robot',
-    ...             real_name='Fnords',
+    ...             display_name='Fnords',
     ...             description='This is my mailing list',
     ...             include_rfc2369_headers=False,
     ...             include_list_post_header=False,
@@ -241,7 +241,7 @@ It is also an error to spell an attribute value incorrectly...
     ...             autoresponse_owner_text='the owner',
     ...             autoresponse_postings_text='the mailing list',
     ...             autoresponse_request_text='the robot',
-    ...             real_name='Fnords',
+    ...             display_name='Fnords',
     ...             description='This is my mailing list',
     ...             include_rfc2369_headers=False,
     ...             include_list_post_header=False,
@@ -273,7 +273,7 @@ It is also an error to spell an attribute value incorrectly...
     ...             autoresponse_owner_text='the owner',
     ...             autoresponse_postings_text='the mailing list',
     ...             autoresponse_request_text='the robot',
-    ...             real_name='Fnords',
+    ...             display_name='Fnords',
     ...             description='This is my mailing list',
     ...             include_rfc2369_headers=False,
     ...             include_list_post_header=False,
@@ -305,7 +305,7 @@ It is also an error to spell an attribute value incorrectly...
     ...             autoresponse_owner_text='the owner',
     ...             autoresponse_postings_text='the mailing list',
     ...             autoresponse_request_text='the robot',
-    ...             real_name='Fnords',
+    ...             display_name='Fnords',
     ...             description='This is my mailing list',
     ...             include_rfc2369_headers=False,
     ...             include_list_post_header=False,
@@ -328,7 +328,7 @@ Using ``PATCH``, you can change just one attribute.
 
     >>> dump_json('http://localhost:9001/3.0/lists/'
     ...           'test-one@example.com/config',
-    ...           dict(real_name='My List'),
+    ...           dict(display_name='My List'),
     ...           'PATCH')
     content-length: 0
     date: ...
@@ -337,7 +337,7 @@ Using ``PATCH``, you can change just one attribute.
 
 These values are changed permanently.
 
-    >>> print mlist.real_name
+    >>> print mlist.display_name
     My List
 
 

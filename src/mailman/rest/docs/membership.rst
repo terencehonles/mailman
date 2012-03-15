@@ -480,7 +480,7 @@ get gets a regular delivery.
     >>> dump_json('http://localhost:9001/3.0/members', {
     ...           'fqdn_listname': 'ant@example.com',
     ...           'subscriber': 'eperson@example.com',
-    ...           'real_name': 'Elly Person',
+    ...           'display_name': 'Elly Person',
     ...           })
     content-length: 0
     date: ...
@@ -608,7 +608,7 @@ Fred joins the `ant` mailing list but wants MIME digest delivery.
     >>> dump_json('http://localhost:9001/3.0/members', {
     ...           'fqdn_listname': 'ant@example.com',
     ...           'subscriber': 'fperson@example.com',
-    ...           'real_name': 'Fred Person',
+    ...           'display_name': 'Fred Person',
     ...           'delivery_mode': 'mime_digests',
     ...           })
     content-length: 0

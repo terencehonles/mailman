@@ -101,14 +101,16 @@ class Replybot:
                 return
         # Okay, we know we're going to respond to this sender, craft the
         # message, send it, and update the database.
-        realname = mlist.real_name
+        display_name = mlist.display_name
         subject = _(
-            'Auto-response for your message to the "$realname" mailing list')
+            'Auto-response for your message to the "$display_name" '
+            'mailing list')
         # Do string interpolation into the autoresponse text
-        d = dict(listname       = realname,
-                 listurl        = mlist.script_url('listinfo'),
-                 requestemail   = mlist.request_address,
-                 owneremail     = mlist.owner_address,
+        d = dict(list_name = mlist.list_name,
+                 display_name = display_name,
+                 listurl = mlist.script_url('listinfo'),
+                 requestemail = mlist.request_address,
+                 owneremail = mlist.owner_address,
                  )
         # Interpolation and Wrap the response text.
         text = wrap(expand(response_text, d))

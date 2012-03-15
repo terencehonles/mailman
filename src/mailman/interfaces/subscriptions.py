@@ -92,7 +92,7 @@ class ISubscriptionService(Interface):
     def __iter__():
         """See `get_members()`."""
 
-    def join(fqdn_listname, subscriber, real_name=None,
+    def join(fqdn_listname, subscriber, display_name=None,
              delivery_mode=DeliveryMode.regular, 
              role=MemberRole.member):
         """Subscribe to a mailing list.
@@ -109,10 +109,10 @@ class ISubscriptionService(Interface):
         :param subscriber: The email address or user id of the user getting
             subscribed.
         :type subscriber: string or int
-        :param real_name: The name of the user.  This is only used if a new
+        :param display_name: The name of the user.  This is only used if a new
             user is created, and it defaults to the local part of the email
             address if not given.
-        :type real_name: string
+        :type display_name: string
         :param delivery_mode: The delivery mode for this subscription.  This
             can be one of the enum values of `DeliveryMode`.  If not given,
             regular delivery is assumed.

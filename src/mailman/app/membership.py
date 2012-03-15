@@ -43,7 +43,7 @@ from mailman.utilities.i18n import make
 
 
 
-def add_member(mlist, email, realname, password, delivery_mode, language,
+def add_member(mlist, email, display_name, password, delivery_mode, language,
                role=MemberRole.member):
     """Add a member right now.
 
@@ -54,8 +54,8 @@ def add_member(mlist, email, realname, password, delivery_mode, language,
     :type mlist: `IMailingList`
     :param email: The email address to subscribe.
     :type email: str
-    :param realname: The subscriber's full name.
-    :type realname: str
+    :param display_name: The subscriber's full name.
+    :type display_name: str
     :param password: The subscriber's plain text password.
     :type password: str
     :param delivery_mode: The delivery mode the subscriber has chosen.
@@ -86,14 +86,15 @@ def add_member(mlist, email, realname, password, delivery_mode, language,
         if address is None:
             # Nope, we don't even know about this address, so create both the
             # user and address now.
-            user = user_manager.create_user(email, realname)
+            user = user_manager.create_user(email, display_name)
             # Do it this way so we don't have to flush the previous change.
             address = list(user.addresses)[0]
         else:
             # The address object exists, but it's not linked to a user.
             # Create the user and link it now.
             user = user_manager.create_user()
-            user.real_name = (realname if realname else address.real_name)
+            user.display_name = (
+                display_name if display_name else address.display_name)
             user.link(address)
         # Encrypt the password using the currently selected scheme.  The
         # scheme is recorded in the hashed password string.
@@ -148,12 +149,12 @@ def delete_member(mlist, email, admin_notif=None, userack=None):
     # ...and to the administrator.
     if admin_notif:
         user = getUtility(IUserManager).get_user(email)
-        realname = user.real_name
-        subject = _('$mlist.real_name unsubscription notification')
+        display_name = user.display_name
+        subject = _('$mlist.display_name unsubscription notification')
         text = make('adminunsubscribeack.txt',
                     mailing_list=mlist,
-                    listname=mlist.real_name,
-                    member=formataddr((realname, email)),
+                    listname=mlist.display_name,
+                    member=formataddr((display_name, email)),
                     )
         msg = OwnerNotification(mlist, subject, text,
                                 roster=mlist.administrators)

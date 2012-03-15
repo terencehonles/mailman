@@ -205,7 +205,7 @@ For this section, we need a mailing list and at least one message.
 
     >>> mlist = create_list('alist@example.com')
     >>> mlist.preferred_language = 'en'
-    >>> mlist.real_name = 'A Test List'
+    >>> mlist.display_name = 'A Test List'
     >>> msg = message_from_string("""\
     ... From: aperson@example.org
     ... To: alist@example.com
@@ -453,8 +453,7 @@ queue when the message is held.
     MIME-Version: 1.0
     Content-Type: text/plain; charset="us-ascii"
     Content-Transfer-Encoding: 7bit
-    Subject: New subscription request to list A Test List from
-     cperson@example.org
+    Subject: New subscription request to A Test List from cperson@example.org
     From: alist-owner@example.com
     To: alist-owner@example.com
     Message-ID: ...
@@ -563,8 +562,7 @@ subscription and the fact that they may need to approve it.
     MIME-Version: 1.0
     Content-Type: text/plain; charset="us-ascii"
     Content-Transfer-Encoding: 7bit
-    Subject: New subscription request to list A Test List from
-     fperson@example.org
+    Subject: New subscription request to A Test List from fperson@example.org
     From: alist-owner@example.com
     To: alist-owner@example.com
     Message-ID: ...
@@ -696,7 +694,7 @@ Frank Person is now a member of the mailing list.
     <Language [en] English (USA)>
     >>> print member.delivery_mode
     DeliveryMode.regular
-    >>> print member.user.real_name
+    >>> print member.user.display_name
     Frank Person
     >>> print member.user.password
     {CLEARTEXT}abcxyz

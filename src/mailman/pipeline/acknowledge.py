@@ -69,20 +69,21 @@ class Acknowledge:
                     else member.preferred_language)
         charset = language_manager[language.code].charset
         # Now get the acknowledgement template.
-        realname = mlist.real_name
+        display_name = mlist.display_name
         text = make('postack.txt',
                     mailing_list=mlist,
                     language=language.code,
                     wrap=False,
                     subject=oneline(original_subject, charset),
-                    listname=realname,
+                    list_name=mlist.list_name,
+                    display_name=display_name,
                     listinfo_url=mlist.script_url('listinfo'),
                     optionsurl=member.options_url,
                     )
         # Craft the outgoing message, with all headers and attributes
         # necessary for general delivery.  Then enqueue it to the outgoing
         # queue.
-        subject = _('$realname post acknowledgment')
+        subject = _('$display_name post acknowledgment')
         usermsg = UserNotification(sender, mlist.bounces_address,
                                    subject, text, language)
         usermsg.send(mlist)

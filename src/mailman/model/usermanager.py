@@ -40,11 +40,11 @@ from mailman.model.user import User
 class UserManager:
     implements(IUserManager)
 
-    def create_user(self, email=None, real_name=None):
+    def create_user(self, email=None, display_name=None):
         """See `IUserManager`."""
-        user = User(real_name, Preferences())
+        user = User(display_name, Preferences())
         if email:
-            address = self.create_address(email, real_name)
+            address = self.create_address(email, display_name)
             user.link(address)
         return user
 
@@ -72,18 +72,18 @@ class UserManager:
         for user in config.db.store.find(User):
             yield user
 
-    def create_address(self, email, real_name=None):
+    def create_address(self, email, display_name=None):
         """See `IUserManager`."""
         addresses = config.db.store.find(Address, email=email.lower())
         if addresses.count() == 1:
             found = addresses[0]
             raise ExistingAddressError(found.original_email)
         assert addresses.count() == 0, 'Unexpected results'
-        if real_name is None:
-            real_name = ''
+        if display_name is None:
+            display_name = ''
         # It's okay not to lower case the 'email' argument because the
         # constructor will do the right thing.
-        address = Address(email, real_name)
+        address = Address(email, display_name)
         address.preferences = Preferences()
         config.db.store.add(address)
         return address

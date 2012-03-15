@@ -49,11 +49,11 @@ class TestBasicImport(unittest.TestCase):
     def _import(self):
         import_config_pck(self._mlist, self._pckdict)
 
-    def test_real_name(self):
-        # The mlist.real_name gets set.
-        self.assertEqual(self._mlist.real_name, 'Blank')
+    def test_display_name(self):
+        # The mlist.display_name gets set from the old list's real_name.
+        self.assertEqual(self._mlist.display_name, 'Blank')
         self._import()
-        self.assertEqual(self._mlist.real_name, 'Test')
+        self.assertEqual(self._mlist.display_name, 'Test')
 
     def test_mail_host(self):
         # The mlist.mail_host gets set.

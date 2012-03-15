@@ -346,7 +346,7 @@ You can see that the digests contain a mix of French and Japanese.
     Content-Type: multipart/mixed; boundary="===============...=="
     MIME-Version: 1.0
     From: test-request@example.com
-    Subject: Groupe Test, Vol. 1, Parution 2
+    Subject: Groupe Test, Vol 1, Parution 2
     To: test@example.com
     Reply-To: test@example.com
     Date: ...
@@ -356,7 +356,7 @@ You can see that the digests contain a mix of French and Japanese.
     Content-Type: text/plain; charset="iso-8859-1"
     MIME-Version: 1.0
     Content-Transfer-Encoding: quoted-printable
-    Content-Description: Groupe Test, Vol. 1, Parution 2
+    Content-Description: Groupe Test, Vol 1, Parution 2
     <BLANKLINE>
     Envoyez vos messages pour la liste Test =E0
         test@example.com
@@ -413,7 +413,7 @@ French and Japanese characters.
 
     >>> print rfc1153.msg.as_string()
     From: test-request@example.com
-    Subject: Groupe Test, Vol. 1, Parution 2
+    Subject: Groupe Test, Vol 1, Parution 2
     To: test@example.com
     Reply-To: test@example.com
     Date: ...
@@ -471,8 +471,8 @@ The content can be decoded to see the actual digest text.
     "'http://lists.example.com/listinfo/test@example.com'",
     "''",
     "''",
-    "'Fin de Groupe Test, Vol. 1, Parution 2'",
-    "'**************************************'"]
+    "'Fin de Groupe Test, Vol 1, Parution 2'",
+    "'*************************************'"]
 
      >>> config.pop('french')
 

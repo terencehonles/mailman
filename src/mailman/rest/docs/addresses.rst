@@ -77,10 +77,10 @@ the REST API.
     >>> cris = user_manager.create_address('cris@example.com', 'Cris Person')
     >>> transaction.commit()
     >>> dump_json('http://localhost:9001/3.0/addresses/cris@example.com')
+    display_name: Cris Person
     email: cris@example.com
     http_etag: "..."
     original_email: cris@example.com
-    real_name: Cris Person
     registered_on: 2005-08-01T07:49:23
     self_link: http://localhost:9001/3.0/addresses/cris@example.com
 
@@ -115,10 +115,10 @@ addresses live in the /addresses namespace.
     >>> transaction.commit()
     >>> dump_json('http://localhost:9001/3.0/users/dave@example.com/addresses')
     entry 0:
+        display_name: Dave Person
         email: dave@example.com
         http_etag: "..."
         original_email: dave@example.com
-        real_name: Dave Person
         registered_on: 2005-08-01T07:49:23
         self_link: http://localhost:9001/3.0/addresses/dave@example.com
     http_etag: "..."
@@ -126,10 +126,10 @@ addresses live in the /addresses namespace.
     total_size: 1
 
     >>> dump_json('http://localhost:9001/3.0/addresses/dave@example.com')
+    display_name: Dave Person
     email: dave@example.com
     http_etag: "..."
     original_email: dave@example.com
-    real_name: Dave Person
     registered_on: 2005-08-01T07:49:23
     self_link: http://localhost:9001/3.0/addresses/dave@example.com
 

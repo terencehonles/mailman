@@ -53,8 +53,8 @@ class _AddressBase(resource.Resource, CollectionMixin):
             self_link=path_to('addresses/{0}'.format(address.email)),
             )
         # Add optional attributes.  These can be None or the empty string.
-        if address.real_name:
-            representation['real_name'] = address.real_name
+        if address.display_name:
+            representation['display_name'] = address.display_name
         if address.verified_on:
             representation['verified_on'] = address.verified_on
         return representation

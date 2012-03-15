@@ -415,7 +415,7 @@ class Article(pipermail.Article):
             d["datestr_html"] = self.quote(ctime(int(self.date)))
             d["body"] = self._get_body()
             d['listurl'] = self._mlist.script_url('listinfo')
-            d['listname'] = self._mlist.real_name
+            d['listname'] = self._mlist.display_name
             d['encoding'] = ''
         charset = self._lang.charset
         d["encoding"] = html_charset % charset
@@ -639,7 +639,7 @@ class HyperArchive(pipermail.T):
             return html_quote(ctime(s), self.lang.code)
         # Avoid i18n side-effects
         with _.using(mlist.preferred_language.code):
-            d = {"listname": html_quote(mlist.real_name, self.lang.code),
+            d = {"listname": html_quote(mlist.display_name, self.lang.code),
                  "archtype": self.type,
                  "archive":  self.volNameToDesc(self.archive),
                  "listinfo": mlist.script_url('listinfo'),
@@ -672,7 +672,7 @@ class HyperArchive(pipermail.T):
         mlist = self.maillist
         listname = mlist.fqdn_listname
         mbox = os.path.join(mlist.archive_dir()+'.mbox', listname+'.mbox')
-        d = {"listname": mlist.real_name,
+        d = {"listname": mlist.display_name,
              "listinfo": mlist.script_url('listinfo'),
              "fullarch": '../%s.mbox/%s.mbox' % (listname, listname),
              "size": sizeof(mbox, mlist.preferred_language),

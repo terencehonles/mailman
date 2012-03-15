@@ -8,15 +8,15 @@ acknowledgment.
 ::
 
     >>> mlist = create_list('test@example.com')
-    >>> mlist.real_name = 'XTest'
+    >>> mlist.display_name = 'Test'
     >>> mlist.preferred_language = 'en'
     >>> # XXX This will almost certainly change once we've worked out the web
     >>> # space layout for mailing lists now.
 
     >>> # Ensure that the virgin queue is empty, since we'll be checking this
     >>> # for new auto-response messages.
-    >>> virginq = config.switchboards['virgin']
-    >>> virginq.files
+    >>> from mailman.testing.helpers import get_queue_messages
+    >>> get_queue_messages('virgin')
     []
 
 Subscribe a user to the mailing list.
@@ -46,7 +46,7 @@ Non-members can't get acknowledgments of their posts to the mailing list.
 
     >>> handler = config.handlers['acknowledge']
     >>> handler.process(mlist, msg, {})
-    >>> virginq.files
+    >>> get_queue_messages('virgin')
     []
 
 We can also specify the original sender in the message's metadata.  If that
@@ -58,7 +58,7 @@ person is also not a member, no acknowledgment will be sent either.
     ... """)
     >>> handler.process(mlist, msg,
     ...     dict(original_sender='cperson@example.com'))
-    >>> virginq.files
+    >>> get_queue_messages('virgin')
     []
 
 
@@ -72,7 +72,7 @@ Unless the user has requested acknowledgments, they will not get one.
     ...
     ... """)
     >>> handler.process(mlist, msg, {})
-    >>> virginq.files
+    >>> get_queue_messages('virgin')
     []
 
 Similarly if the original sender is specified in the message metadata, and
@@ -87,7 +87,7 @@ will be sent.
 
     >>> handler.process(mlist, msg,
     ...     dict(original_sender='dperson@example.com'))
-    >>> virginq.files
+    >>> get_queue_messages('virgin')
     []
 
 
@@ -107,23 +107,21 @@ The receipt will include the original message's subject in the response body,
     ...
     ... """)
     >>> handler.process(mlist, msg, {})
-    >>> len(virginq.files)
+    >>> messages = get_queue_messages('virgin')
+    >>> len(messages)
     1
-    >>> qmsg, qdata = virginq.dequeue(virginq.files[0])
-    >>> virginq.files
-    []
-    >>> dump_msgdata(qdata)
+    >>> dump_msgdata(messages[0].msgdata)
     _parsemsg           : False
     listname            : test@example.com
     nodecorate          : True
     recipients          : set([u'aperson@example.com'])
     reduced_list_headers: True
     ...
-    >>> print qmsg.as_string()
+    >>> print messages[0].msg.as_string()
     ...
     MIME-Version: 1.0
     ...
-    Subject: XTest post acknowledgment
+    Subject: Test post acknowledgment
     From: test-bounces@example.com
     To: aperson@example.com
     ...
@@ -133,7 +131,7 @@ The receipt will include the original message's subject in the response body,
     <BLANKLINE>
         Something witty and insightful
     <BLANKLINE>
-    was successfully received by the XTest mailing list.
+    was successfully received by the Test mailing list.
     <BLANKLINE>
     List info page: http://lists.example.com/listinfo/test@example.com
     Your preferences: http://example.com/aperson@example.com
@@ -146,22 +144,20 @@ If there is no subject, then the receipt will use a generic message.
     ...
     ... """)
     >>> handler.process(mlist, msg, {})
-    >>> len(virginq.files)
+    >>> messages = get_queue_messages('virgin')
+    >>> len(messages)
     1
-    >>> qmsg, qdata = virginq.dequeue(virginq.files[0])
-    >>> virginq.files
-    []
-    >>> dump_msgdata(qdata)
+    >>> dump_msgdata(messages[0].msgdata)
     _parsemsg           : False
     listname            : test@example.com
     nodecorate          : True
     recipients          : set([u'aperson@example.com'])
     reduced_list_headers: True
     ...
-    >>> print qmsg.as_string()
+    >>> print messages[0].msg.as_string()
     MIME-Version: 1.0
     ...
-    Subject: XTest post acknowledgment
+    Subject: Test post acknowledgment
     From: test-bounces@example.com
     To: aperson@example.com
     ...
@@ -171,7 +167,7 @@ If there is no subject, then the receipt will use a generic message.
     <BLANKLINE>
         (no subject)
     <BLANKLINE>
-    was successfully received by the XTest mailing list.
+    was successfully received by the Test mailing list.
     <BLANKLINE>
     List info page: http://lists.example.com/listinfo/test@example.com
     Your preferences: http://example.com/aperson@example.com

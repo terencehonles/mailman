@@ -13,5 +13,5 @@ msgstr ""
 "Generated-By: pygettext.py 1.3\n"
 
 #: src/mailman/app/bounces.py:227
-msgid "$mlist.real_name mailing list probe message"
-msgstr "ailing-may ist-lay $mlist.real_name obe-pray essage-may"
+msgid "$mlist.display_name mailing list probe message"
+msgstr "ailing-may ist-lay $mlist.display_name obe-pray essage-may"

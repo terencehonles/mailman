@@ -54,8 +54,8 @@ single argument, the mailing list.
     ... def showme(mailing_list):
     ...     print "The list's name is", mailing_list.fqdn_listname
     ...
-    ... def realname(mailing_list):
-    ...     print "The list's real name is", mailing_list.real_name
+    ... def displayname(mailing_list):
+    ...     print "The list's display name is", mailing_list.display_name
     ... """
 
 If the name of the function is the same as the module, then you only need to
@@ -71,9 +71,9 @@ name the function once.
 The function's name can also be different than the modules name.  In that
 case, just give the full module path name to the function you want to call.
 
-    >>> args.run = 'showme.realname'
+    >>> args.run = 'showme.displayname'
     >>> command.process(args)
-    The list's real name is Aardvark
+    The list's display name is Aardvark
 
 
 Multiple lists
@@ -89,14 +89,14 @@ must start with a caret.
 
     >>> args.listname = '^.*example.com'
     >>> command.process(args)
-    The list's real name is Aardvark
-    The list's real name is Badger
-    The list's real name is Badboys
+    The list's display name is Aardvark
+    The list's display name is Badger
+    The list's display name is Badboys
 
     >>> args.listname = '^bad.*'
     >>> command.process(args)
-    The list's real name is Badger
-    The list's real name is Badboys
+    The list's display name is Badger
+    The list's display name is Badboys
 
     >>> args.listname = '^foo'
     >>> command.process(args)

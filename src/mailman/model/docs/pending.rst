@@ -23,7 +23,7 @@ token that can be used in urls and such.
     >>> subscription = SimplePendable(
     ...     type='subscription',
     ...     address='aperson@example.com',
-    ...     realname='Anne Person',
+    ...     display_name='Anne Person',
     ...     language='en',
     ...     password='xyz')
     >>> token = pendingdb.add(subscription)
@@ -40,11 +40,11 @@ is returned.
     None
     >>> pendable = pendingdb.confirm(token)
     >>> dump_msgdata(pendable)
-    address : aperson@example.com
-    language: en
-    password: xyz
-    realname: Anne Person
-    type    : subscription
+    address     : aperson@example.com
+    display_name: Anne Person
+    language    : en
+    password    : xyz
+    type        : subscription
 
 After confirmation, the token is no longer in the database.
 

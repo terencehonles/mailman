@@ -84,8 +84,8 @@ class IAddress(Interface):
         case preserved email address; `email` will always be lower case.
         """)
 
-    real_name = Attribute(
-        """Optional real name associated with the email address.""")
+    display_name = Attribute(
+        """Optional display name associated with the email address.""")
 
     registered_on = Attribute(
         """The date and time at which this email address was registered.

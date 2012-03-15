@@ -26,7 +26,7 @@ have a password.
 
     >>> dump_list(address.email for address in user.addresses)
     *Empty*
-    >>> print user.real_name
+    >>> print user.display_name
     <BLANKLINE>
     >>> print user.password
     None
@@ -38,8 +38,8 @@ The user has preferences, but none of them will be specified.
 
 A user can be assigned a real name.
 
-    >>> user.real_name = 'Anne Person'
-    >>> dump_list(user.real_name for user in user_manager.users)
+    >>> user.display_name = 'Anne Person'
+    >>> dump_list(user.display_name for user in user_manager.users)
     Anne Person
 
 A user can be assigned a password.
@@ -55,25 +55,25 @@ You can also create a user with an address to start out with.
     True
     >>> dump_list(address.email for address in user_2.addresses)
     bperson@example.com
-    >>> dump_list(user.real_name for user in user_manager.users)
+    >>> dump_list(user.display_name for user in user_manager.users)
     <BLANKLINE>
     Anne Person
 
 As above, you can assign a real name to such users.
 
-    >>> user_2.real_name = 'Ben Person'
-    >>> dump_list(user.real_name for user in user_manager.users)
+    >>> user_2.display_name = 'Ben Person'
+    >>> dump_list(user.display_name for user in user_manager.users)
     Anne Person
     Ben Person
 
 You can also create a user with just a real name.
 
-    >>> user_3 = user_manager.create_user(real_name='Claire Person')
+    >>> user_3 = user_manager.create_user(display_name='Claire Person')
     >>> verifyObject(IUser, user_3)
     True
     >>> dump_list(address.email for address in user.addresses)
     *Empty*
-    >>> dump_list(user.real_name for user in user_manager.users)
+    >>> dump_list(user.display_name for user in user_manager.users)
     Anne Person
     Ben Person
     Claire Person
@@ -85,9 +85,9 @@ Finally, you can create a user with both an address and a real name.
     True
     >>> dump_list(address.email for address in user_4.addresses)
     dperson@example.com
-    >>> dump_list(address.real_name for address in user_4.addresses)
+    >>> dump_list(address.display_name for address in user_4.addresses)
     Dan Person
-    >>> dump_list(user.real_name for user in user_manager.users)
+    >>> dump_list(user.display_name for user in user_manager.users)
     Anne Person
     Ben Person
     Claire Person
@@ -101,7 +101,7 @@ You delete users by going through the user manager.  The deleted user is no
 longer available through the user manager iterator.
 
     >>> user_manager.delete_user(user)
-    >>> dump_list(user.real_name for user in user_manager.users)
+    >>> dump_list(user.display_name for user in user_manager.users)
     Ben Person
     Claire Person
     Dan Person

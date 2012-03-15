@@ -62,6 +62,7 @@ Database
    - digest_footer    -> digest_footer_uri
    - start_chain      -> posting_chain
    - pipeline         -> posting_pipeline
+   - real_name        -> display_name (mailinglist, user, address)
 
 REST
 ----
@@ -86,6 +87,9 @@ Interfaces
  * New `ITemplateLoader` utility.
  * `ILanguageManager.add()` returns the `ILanguage` object just created.
  * `IMailinglist.decorators` removed; it was unused
+ * `IMailingList.real_name` -> `IMailingList.display_name`
+ * `IUser.real_name` -> `IUser.display_name`
+ * `IAddress.real_name` -> `IAddress.display_name`
 
 Commands
 --------

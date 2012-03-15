@@ -17,7 +17,7 @@
 
 """Sending notifications."""
 
-from __future__ import unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -80,12 +80,12 @@ def send_welcome_message(mlist, address, language, delivery_mode, text=''):
     # Find the IMember object which is subscribed to the mailing list, because
     # from there, we can get the member's options url.
     member = mlist.members.get_member(address)
-    user_name = member.user.real_name
+    user_name = member.user.display_name
     options_url = member.options_url
     # Get the text from the template.
     text = expand(welcome, dict(
         fqdn_listname=mlist.fqdn_listname,
-        list_name=mlist.real_name,
+        list_name=mlist.display_name,
         listinfo_uri=mlist.script_url('listinfo'),
         list_requests=mlist.request_address,
         user_name=user_name,
@@ -99,7 +99,7 @@ def send_welcome_message(mlist, address, language, delivery_mode, text=''):
     msg = UserNotification(
         formataddr((user_name, address)),
         mlist.request_address,
-        _('Welcome to the "$mlist.real_name" mailing list${digmode}'),
+        _('Welcome to the "$mlist.display_name" mailing list${digmode}'),
         text, language)
     msg['X-No-Archive'] = 'yes'
     msg.send(mlist, verp=as_boolean(config.mta.verp_personalized_deliveries))
@@ -125,31 +125,32 @@ def send_goodbye_message(mlist, address, language):
         goodbye = ''
     msg = UserNotification(
         address, mlist.bounces_address,
-        _('You have been unsubscribed from the $mlist.real_name mailing list'),
+        _('You have been unsubscribed from the $mlist.display_name '
+          'mailing list'),
         goodbye, language)
     msg.send(mlist, verp=as_boolean(config.mta.verp_personalized_deliveries))
 
 
 
-def send_admin_subscription_notice(mlist, address, full_name, language):
+def send_admin_subscription_notice(mlist, address, display_name, language):
     """Send the list administrators a subscription notice.
 
-    :param mlist: the mailing list
+    :param mlist: The mailing list.
     :type mlist: IMailingList
-    :param address: the address being subscribed
+    :param address: The address being subscribed.
     :type address: string
-    :param full_name: the name of the subscriber
-    :type full_name: string
-    :param language: the language of the address's realname
+    :param display_name: The name of the subscriber.
+    :type display_name: string
+    :param language: The language of the address's display name.
     :type language: string
     """
     with _.using(mlist.preferred_language.code):
-        subject = _('$mlist.real_name subscription notification')
-    full_name = full_name.encode(language.charset, 'replace')
+        subject = _('$mlist.display_name subscription notification')
+    display_name = display_name.encode(language.charset, 'replace')
     text = make('adminsubscribeack.txt',
                 mailing_list=mlist,
-                listname=mlist.real_name,
-                member=formataddr((full_name, address)),
+                listname=mlist.display_name,
+                member=formataddr((display_name, address)),
                 )
     msg = OwnerNotification(mlist, subject, text, roster=mlist.administrators)
     msg.send(mlist)

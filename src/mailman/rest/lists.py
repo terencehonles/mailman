@@ -108,7 +108,7 @@ class _ListBase(resource.Resource, CollectionMixin):
             fqdn_listname=mlist.fqdn_listname,
             mail_host=mlist.mail_host,
             list_name=mlist.list_name,
-            real_name=mlist.real_name,
+            display_name=mlist.display_name,
             self_link=path_to('lists/{0}'.format(mlist.fqdn_listname)),
             )
 

@@ -145,7 +145,7 @@ class SubscriptionService:
             yield member
 
     def join(self, fqdn_listname, subscriber,
-             real_name=None,
+             display_name=None,
              delivery_mode=DeliveryMode.regular,
              role=MemberRole.member):
         """See `ISubscriptionService`."""
@@ -158,8 +158,8 @@ class SubscriptionService:
             # it's a valid email address, and let InvalidEmailAddressError
             # propagate up.
             getUtility(IEmailValidator).validate(subscriber)
-            if real_name is None:
-                real_name, at, domain = subscriber.partition('@')
+            if display_name is None:
+                display_name, at, domain = subscriber.partition('@')
             # Because we want to keep the REST API simple, there is no
             # password or language given to us.  We'll use the system's
             # default language for the user's default language.  We'll set the
@@ -167,7 +167,7 @@ class SubscriptionService:
             # it can't be retrieved.  Note that none of these are used unless
             # the address is completely new to us.
             password = generate(int(config.passwords.password_length))
-            return add_member(mlist, subscriber, real_name, password,
+            return add_member(mlist, subscriber, display_name, password,
                               delivery_mode,
                               system_preferences.preferred_language, role)
         else:

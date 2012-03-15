@@ -89,12 +89,12 @@ short descriptive name for the mailing list).
 ::
 
     >>> with open(myheader_path, 'w') as fp:
-    ...     print >> fp, '$list_name header'
+    ...     print >> fp, '$display_name header'
     >>> with open(myfooter_path, 'w') as fp:
-    ...     print >> fp, '$list_name footer'
+    ...     print >> fp, '$display_name footer'
 
     >>> msg = message_from_string(msg_text)
-    >>> mlist.real_name = 'XTest'
+    >>> mlist.display_name = 'XTest'
     >>> process(mlist, msg, {})
     >>> print msg.as_string()
     From: aperson@example.org

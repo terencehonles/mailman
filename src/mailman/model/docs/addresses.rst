@@ -29,7 +29,7 @@ Creating an unlinked email address is straightforward.
 
 However, such addresses have no real name.
 
-    >>> print address_1.real_name
+    >>> print address_1.display_name
     <BLANKLINE>
 
 You can also create an email address object with a real name.
@@ -39,7 +39,7 @@ You can also create an email address object with a real name.
     >>> dump_list(address.email for address in user_manager.addresses)
     aperson@example.com
     bperson@example.com
-    >>> dump_list(address.real_name for address in user_manager.addresses)
+    >>> dump_list(address.display_name for address in user_manager.addresses)
     <BLANKLINE>
     Ben Person
 
@@ -53,8 +53,8 @@ while the ``repr()`` carries more information.
 
 You can assign real names to existing addresses.
 
-    >>> address_1.real_name = 'Anne Person'
-    >>> dump_list(address.real_name for address in user_manager.addresses)
+    >>> address_1.display_name = 'Anne Person'
+    >>> dump_list(address.display_name for address in user_manager.addresses)
     Anne Person
     Ben Person
 
@@ -77,7 +77,7 @@ interface.
     aperson@example.com
     bperson@example.com
     cperson@example.com
-    >>> dump_list(address.real_name for address in user_manager.addresses)
+    >>> dump_list(address.display_name for address in user_manager.addresses)
     Anne Person
     Ben Person
     Claire Person
@@ -101,7 +101,7 @@ You can remove an unlinked address from the user manager.
     >>> dump_list(address.email for address in user_manager.addresses)
     bperson@example.com
     cperson@example.com
-    >>> dump_list(address.real_name for address in user_manager.addresses)
+    >>> dump_list(address.display_name for address in user_manager.addresses)
     Ben Person
     Claire Person
 

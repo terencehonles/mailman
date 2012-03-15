@@ -50,7 +50,7 @@ class TestNotifications(unittest.TestCase):
     def setUp(self):
         self._mlist = create_list('test@example.com')
         self._mlist.welcome_message_uri = 'mailman:///welcome.txt'
-        self._mlist.real_name = 'Test List'
+        self._mlist.display_name = 'Test List'
         self.var_dir = tempfile.mkdtemp()
         config.push('template config', """\
         [paths.testing]

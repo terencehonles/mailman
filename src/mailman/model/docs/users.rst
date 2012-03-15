@@ -21,17 +21,17 @@ Users may have a real name and a password.
 
     >>> user_1 = user_manager.create_user()
     >>> user_1.password = b'my password'
-    >>> user_1.real_name = 'Zoe Person'
-    >>> dump_list(user.real_name for user in user_manager.users)
+    >>> user_1.display_name = 'Zoe Person'
+    >>> dump_list(user.display_name for user in user_manager.users)
     Zoe Person
     >>> dump_list(user.password for user in user_manager.users)
     my password
 
 The password and real name can be changed at any time.
 
-    >>> user_1.real_name = 'Zoe X. Person'
+    >>> user_1.display_name = 'Zoe X. Person'
     >>> user_1.password = b'another password'
-    >>> dump_list(user.real_name for user in user_manager.users)
+    >>> dump_list(user.display_name for user in user_manager.users)
     Zoe X. Person
     >>> dump_list(user.password for user in user_manager.users)
     another password
@@ -78,7 +78,7 @@ address on a user object.
     >>> dump_list(address.email for address in user_1.addresses)
     zperson@example.com
     zperson@example.org
-    >>> dump_list(address.real_name for address in user_1.addresses)
+    >>> dump_list(address.display_name for address in user_1.addresses)
     <BLANKLINE>
     Zoe Person
 
@@ -90,7 +90,7 @@ You can also create the address separately and then link it to the user.
     zperson@example.com
     zperson@example.net
     zperson@example.org
-    >>> dump_list(address.real_name for address in user_1.addresses)
+    >>> dump_list(address.display_name for address in user_1.addresses)
     <BLANKLINE>
     <BLANKLINE>
     Zoe Person

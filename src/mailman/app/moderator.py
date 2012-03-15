@@ -162,7 +162,7 @@ def handle_message(mlist, id, action,
         # Get a copy of the original message from the message store.
         msg = message_store.get_message_by_id(message_id)
         # It's possible the forwarding address list is a comma separated list
-        # of realname/address pairs.
+        # of display_name/address pairs.
         addresses = [addr[1] for addr in getaddresses(forward)]
         language = mlist.preferred_language
         if len(addresses) == 1:
@@ -197,10 +197,10 @@ def handle_message(mlist, id, action,
 
 
 
-def hold_subscription(mlist, address, realname, password, mode, language):
+def hold_subscription(mlist, address, display_name, password, mode, language):
     data = dict(when=now().isoformat(),
                 address=address,
-                realname=realname,
+                display_name=display_name,
                 password=password,
                 delivery_mode=str(mode),
                 language=language)
@@ -213,7 +213,7 @@ def hold_subscription(mlist, address, realname, password, mode, language):
     # Possibly notify the administrator in default list language
     if mlist.admin_immed_notify:
         subject = _(
-            'New subscription request to list $mlist.real_name from $address')
+            'New subscription request to $mlist.display_name from $address')
         text = make('subauth.txt',
                     mailing_list=mlist,
                     username=address,
@@ -249,11 +249,11 @@ def handle_subscription(mlist, id, action, comment=None):
         enum_value = data['delivery_mode'].split('.')[-1]
         delivery_mode = DeliveryMode(enum_value)
         address = data['address']
-        realname = data['realname']
+        display_name = data['display_name']
         language = getUtility(ILanguageManager)[data['language']]
         password = data['password']
         try:
-            add_member(mlist, address, realname, password,
+            add_member(mlist, address, display_name, password,
                        delivery_mode, language)
         except AlreadySubscribedError:
             # The address got subscribed in some other way after the original
@@ -264,9 +264,9 @@ def handle_subscription(mlist, id, action, comment=None):
                 send_welcome_message(mlist, address, language, delivery_mode)
             if mlist.admin_notify_mchanges:
                 send_admin_subscription_notice(
-                    mlist, address, realname, language)
+                    mlist, address, display_name, language)
         slog.info('%s: new %s, %s %s', mlist.fqdn_listname,
-                  delivery_mode, formataddr((realname, address)),
+                  delivery_mode, formataddr((display_name, address)),
                   'via admin approval')
     else:
         raise AssertionError('Unexpected action: {0}'.format(action))
@@ -285,7 +285,7 @@ def hold_unsubscription(mlist, address):
     # Possibly notify the administrator of the hold
     if mlist.admin_immed_notify:
         subject = _(
-            'New unsubscription request from $mlist.real_name by $address')
+            'New unsubscription request from $mlist.display_name by $address')
         text = make('unsubauth.txt',
                     mailing_list=mlist,
                     address=address,
@@ -335,7 +335,7 @@ def _refuse(mlist, request, recip, comment, origmsg=None, lang=None):
     # As this message is going to the requester, try to set the language to
     # his/her language choice, if they are a member.  Otherwise use the list's
     # preferred language.
-    realname = mlist.real_name
+    display_name = mlist.display_name
     if lang is None:
         member = mlist.members.get_member(recip)
         lang = (mlist.preferred_language
@@ -357,7 +357,7 @@ def _refuse(mlist, request, recip, comment, origmsg=None, lang=None):
                  '---------- ' + _('Original Message') + ' ----------',
                  str(origmsg)
                  ])
-        subject = _('Request to mailing list "$realname" rejected')
+        subject = _('Request to mailing list "$display_name" rejected')
     msg = UserNotification(recip, mlist.bounces_address, subject, text, lang)
     msg.send(mlist)
 

@@ -215,7 +215,7 @@ def send_probe(member, msg):
         )
     # Calculate the Subject header, in the member's preferred language.
     with _.using(member.preferred_language.code):
-        subject = _('$mlist.real_name mailing list probe message')
+        subject = _('$mlist.display_name mailing list probe message')
     # Craft the probe message.  This will be a multipart where the first part
     # is the probe text and the second part is the message that caused this
     # probe to be sent.

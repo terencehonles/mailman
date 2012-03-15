@@ -157,7 +157,7 @@ list.
     <BLANKLINE>
 
     >>> user = user_manager.get_user('anne@example.com')
-    >>> print user.real_name
+    >>> print user.display_name
     Anne Person
     >>> list(user.addresses)
     [<Address: Anne Person <anne@example.com> [verified] at ...>]
