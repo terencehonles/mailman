@@ -178,10 +178,20 @@ class UserNotification(Message):
             self['To'] = recipients
             self.recipients = set([recipients])
 
-    def send(self, mlist, **_kws):
+    def send(self, mlist, add_precedence=True, **_kws):
         """Sends the message by enqueuing it to the 'virgin' queue.
 
         This is used for all internally crafted messages.
+
+        :param mlist: The mailing list to send the message to.
+        :type mlist: `IMailingList`
+        :param add_precedence: Flag indicating whether a `Precedence: bulk` 
+            header should be added to the message or not.
+        :type add_precedence: bool
+
+        This function also accepts arbitrary keyword arguments.  The key/value
+        pairs for **kws is added to the metadata dictionary associated with
+        the enqueued message.
         """
         # Since we're crafting the message from whole cloth, let's make sure
         # this message has a Message-ID.
@@ -193,7 +203,7 @@ class UserNotification(Message):
         # UserNotifications are typically for admin messages, and for messages
         # other than list explosions.  Send these out as Precedence: bulk, but
         # don't override an existing Precedence: header.
-        if 'precedence' not in self:
+        if 'precedence' not in self and add_precedence:
             self['Precedence'] = 'bulk'
         self._enqueue(mlist, **_kws)
 
