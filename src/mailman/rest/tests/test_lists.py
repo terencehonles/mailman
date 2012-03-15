@@ -28,12 +28,17 @@ import unittest
 
 from urllib2 import HTTPError
 
+from zope.component import getUtility
+
+from mailman.app.lifecycle import create_list
+from mailman.config import config
+from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import call_api
 from mailman.testing.layers import RESTLayer
 
 
 
-class TestLists(unittest.TestCase):
+class TestListsMissing(unittest.TestCase):
     layer = RESTLayer
 
     def test_missing_list_roster_member_404(self):
@@ -79,3 +84,40 @@ class TestLists(unittest.TestCase):
             self.assertEqual(exc.code, 404)
         else:
             raise AssertionError('Expected HTTPError')
+
+class TestLists(unittest.TestCase):
+    layer = RESTLayer
+
+    def setUp(self):
+        self._mlist = create_list('test@example.com')
+        config.db.commit()
+        self._usermanager = getUtility(IUserManager)
+
+    def test_list_members_count(self):
+        # The list initially has 0 members
+        list_info, response = call_api('http://localhost:9001/3.0/lists/test@example.com')
+        if response.status != 200:
+            raise AssertionError('Got an error from rest server: {0}'.format(response.status))
+        self.assertEqual(list_info['member_count'], 0)
+
+        # Add a member to a list
+        alice = self._usermanager.create_address('alice@example.com')
+        self._mlist.subscribe(alice)
+        config.db.commit()
+
+        # Make sure that the api returns one member now
+        list_info, response = call_api('http://localhost:9001/3.0/lists/test@example.com')
+        if response.status != 200:
+            raise AssertionError('Got an error from rest server: {0}'.format(response.status))
+        self.assertEqual(list_info['member_count'], 1)
+
+        # Add a second member to it
+        bob = self._usermanager.create_address('bob@example.com')
+        self._mlist.subscribe(bob)
+        config.db.commit()
+
+        # Make sure that the api returns two members now
+        list_info, response = call_api('http://localhost:9001/3.0/lists/test@example.com')
+        if response.status != 200:
+            raise AssertionError('Got an error from rest server: {0}'.format(response.status))
+        self.assertEqual(list_info['member_count'], 2)
