@@ -93,49 +93,47 @@ next rule in the filter chain.
 .. graphviz::
 
    digraph chain_rules {
-     rankdir=LR;
-     { rank=same; IN; approved; POSTING; }
-     { rank=same; loop; DISCARD; }
-     { rank=same; modmember; MODERATION; }
-     subgraph source {
-       IN [shape=box, color=lightblue, style=filled];
-       IN -> approved;
+     rankdir=LR    /* This gives the right orientation of the columns. */
+     rank=same
+     subgraph in { IN [shape=box, color=lightblue, style=filled] }
+     subgraph rules {
+       rankdir=TB
+       rank=same
+       node [shape=record]
+       approved [group=0, label="<f0> approved | {<f1> | <f2>}"]
+       emergency [group=0, label="<f0> emergency | {<f1> | <f2>}"]
+       loop [group=0, label="<f0> loop | {<f1> | <f2>}"]
+       modmember [group=0, label="<f0> member\nmoderated | {<f1> | <f2>}"]
+       administrivia [group=0, label="<f0> administrivia | <f1>"]
+       maxsize [group=0, label="<f0> max\ size | {<f1> | <f2>}"]
+       any [group=0, label="<f0> any | {<f1> | <f2>}"]
+       truth [label="<f0> truth | <f1>"]
+       approved:f1 -> emergency:f0 [weight=100]
+       emergency:f1 -> loop:f0 
+       loop:f1 -> modmember:f0 
+       modmember:f1 -> administrivia:f0 
+       administrivia:f1 -> maxsize:f0 
+       maxsize:f1 -> any:f0 
+       any:f1 -> truth:f0 
      }
-     subgraph chains {
-       rank=same;
-       rankdir=TB;
-       approved [shape=record, label="<f0> approved | {<f1> | <f2>}"];
-       emergency [shape=record, label="<f0> emergency | {<f1> | <f2>}"];
-       loop [shape=record, label="<f0> loop | {<f1> | <f2>}"];
-       modmember [shape=record, label="<f0> moderate\nmember | {<f1> | <f2>}"];
-       administrivia [shape=record, label="<f0> administrivia | <f1>"];
-       maxsize [shape=record, label="<f0> max\ size | {<f1> | <f2>}"];
-       any [shape=record, label="<f0> any | {<f1> | <f2>}"];
-       truth [shape=record, label="<f0> truth | <f1>"];
-       approved:f1 -> emergency [weight=10];
-       emergency:f1 -> loop [weight=10];
-       loop:f1 -> modmember [weight=10];
-       modmember:f1 -> administrivia [weight=10];
-       administrivia:f1 -> maxsize [weight=10];
-       maxsize:f1 -> any [weight=10];
-       any:f1 -> truth [weight=10];
+     subgraph queues {
+       rankdir=TB
+       rank=same
+       node [shape=box, color=lightblue, style=filled];
+       POSTING;
+       DISCARD;
+       MODERATION;
      }
-     subgraph sinks {
-       rankdir=TB;
-       /* APPROVED [shape=box, color=lightblue, style=filled]; */
-       POSTING [shape=box, color=lightblue, style=filled];
-       MODERATION [shape=box, color=lightblue, style=filled];
-       DISCARD [shape=trapezoidium, color=lightblue, style=filled];
-     }
-     /*
-     approved:f2 -> POSTING [weight=0];
-     emergency:f2 -> MODERATION [weight=0];
-     loop:f2 -> DISCARD [weight=0];
-     modmember:f2 -> MODERATION [weight=0];
-     maxsize:f2 -> MODERATION [weight=0];
-     any:f2 -> MODERATION [weight=0];
-     truth -> POSTING [weight=0];
-     */
+
+     IN -> approved:f0
+     approved:f2 -> POSTING
+     /* loop:f2 -> DISCARD */
+     modmember:f2 -> MODERATION
+
+     emergency:f2:e -> MODERATION [weight=0]
+     maxsize:f2 -> MODERATION [weight=0]
+     any:f2 -> MODERATION [weight=0]
+     truth:f1 -> POSTING [weight=0]
    }
 
 
