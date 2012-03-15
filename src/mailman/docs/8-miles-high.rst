@@ -92,46 +92,50 @@ next rule in the filter chain.
 
 .. graphviz::
 
-   digraph chains {
+   digraph chain_rules {
      rankdir=LR;
-     approved [shape=record, label="<f0> approved | {<f1> | <f2>}"];
-     emergency [shape=record, label="<f0> emergency | {<f1> | <f2>}"];
-     loop [shape=record, label="<f0> loop | {<f1> | <f2>}"];
-     modmember [shape=record, label="<f0> moderate\nmember | {<f1> | <f2>}"];
-     administrivia [shape=record, label="<f0> administrivia | <f1>"];
-     maxsize [shape=record, label="<f0> max\ size | {<f1> | <f2>}"];
-     any [shape=record, label="<f0> any | {<f1> | <f2>}"];
-     truth [shape=record, label="<f0> truth | <f1>"];
-     IN [shape=box, color=lightblue, style=filled, rank=source];
-     IN -> approved;
-     subgraph fubar {
-       subgraph bar {
-         /* rankdir=TB; */
-         rank=same;
-         approved:f2 -> emergency;
-         emergency:f2 -> loop;
-         loop:f2 -> modmember;
-         modmember:f2 -> administrivia;
-         administrivia:f2 -> maxsize;
-         maxsize:f2 -> any;
-         any:f2 -> truth;
-       };
-       subgraph foo {
-         /* rankdir=TB; */
-         rank=same;
-         APPROVED [shape=box, color=lightblue, style=filled];
-         POSTING [shape=box, color=lightblue, style=filled];
-         MODERATION [shape=box, color=lightblue, style=filled];
-         DISCARD [shape=trapezoidium, color=lightblue, style=filled];
-       };
-     };
-     approved:f1 -> POSTING;
-     emergency:f1 -> MODERATION;
-     loop:f1 -> DISCARD;
-     modmember:f1 -> MODERATION;
-     maxsize:f1 -> MODERATION;
-     any:f1 -> MODERATION;
-     truth -> POSTING;
+     { rank=same; IN; approved; POSTING; }
+     { rank=same; loop; DISCARD; }
+     { rank=same; modmember; MODERATION; }
+     subgraph source {
+       IN [shape=box, color=lightblue, style=filled];
+       IN -> approved;
+     }
+     subgraph chains {
+       rank=same;
+       rankdir=TB;
+       approved [shape=record, label="<f0> approved | {<f1> | <f2>}"];
+       emergency [shape=record, label="<f0> emergency | {<f1> | <f2>}"];
+       loop [shape=record, label="<f0> loop | {<f1> | <f2>}"];
+       modmember [shape=record, label="<f0> moderate\nmember | {<f1> | <f2>}"];
+       administrivia [shape=record, label="<f0> administrivia | <f1>"];
+       maxsize [shape=record, label="<f0> max\ size | {<f1> | <f2>}"];
+       any [shape=record, label="<f0> any | {<f1> | <f2>}"];
+       truth [shape=record, label="<f0> truth | <f1>"];
+       approved:f1 -> emergency [weight=10];
+       emergency:f1 -> loop [weight=10];
+       loop:f1 -> modmember [weight=10];
+       modmember:f1 -> administrivia [weight=10];
+       administrivia:f1 -> maxsize [weight=10];
+       maxsize:f1 -> any [weight=10];
+       any:f1 -> truth [weight=10];
+     }
+     subgraph sinks {
+       rankdir=TB;
+       /* APPROVED [shape=box, color=lightblue, style=filled]; */
+       POSTING [shape=box, color=lightblue, style=filled];
+       MODERATION [shape=box, color=lightblue, style=filled];
+       DISCARD [shape=trapezoidium, color=lightblue, style=filled];
+     }
+     /*
+     approved:f2 -> POSTING [weight=0];
+     emergency:f2 -> MODERATION [weight=0];
+     loop:f2 -> DISCARD [weight=0];
+     modmember:f2 -> MODERATION [weight=0];
+     maxsize:f2 -> MODERATION [weight=0];
+     any:f2 -> MODERATION [weight=0];
+     truth -> POSTING [weight=0];
+     */
    }
 
 
@@ -174,7 +178,7 @@ of preferences, and a *role* such as "owner" or "moderator".  Roles
 are used to determine what kinds of mail the user receives via that
 membership.  *Owners* will receive mail to *list*-owner, but not posts
 and moderation traffic, for example.  A user with multiple roles on a
-single list will theref1re have multiple memberships in that list, one
+single list will therefore have multiple memberships in that list, one
 for each role.
 
 Roles are implemented by "magical, invisible" *rosters*.
