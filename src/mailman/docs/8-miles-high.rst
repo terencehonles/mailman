@@ -61,12 +61,18 @@ injection into the MTA.
 
 The VIRGIN queue is a special queue for messages created by Mailman.
 
-.. image:: pipeline.png
-   :scale: 67
-
 .. graphviz::
 
    digraph pipeline {
+   node [shape=box, style=rounded, group=0]
+   { "MIME\ndelete" -> "cleanse headers" -> "add headers" -> \
+     "calculate\nrecipients" -> "to digest" -> "to archive" -> \
+     "to outgoing" }
+   node [shape=box, color=lightblue, style=filled, group=1]
+   { rank=same; POSTING -> "MIME\ndelete" }
+   { rank=same; "to digest" -> DIGEST }
+   { rank=same; "to archive" -> ARCHIVE }
+   { rank=same; "to outgoing" -> OUT }
    }
 
 
@@ -79,16 +85,8 @@ acted on.  Rules include things like "if the message's sender is a
 non-member, hold it for moderation", or "if the message contains an
 Approved field with a valid password, distribute it".  A rule may also
 make no decision, in which case the message pickle is passed on to the
-next rule in the filter chain.
-
-.. image:: chains.png
-   :scale: 67
-
-..   builtin chain [shape=none]
-     accept chain [shape=none]
-     hold chain [shape=none]
-     discard chain [shape=none]
-     moderation chain [shape=none]
+next rule in the filter chain.  The default set of rules looks
+something like this:
 
 .. graphviz::
 
@@ -119,21 +117,23 @@ next rule in the filter chain.
      subgraph queues {
        rankdir=TB
        rank=same
-       node [shape=box, color=lightblue, style=filled];
-       POSTING;
-       DISCARD;
-       MODERATION;
+       node [shape=box, style=filled];
+       POSTING [color=cyan];
+       POSTING2 [label=POSTING, color=cyan];
+       DISCARD [color=black, style=rounded];
+       MODERATION [color=wheat];
+       HOLD [color=wheat];
      }
 
      IN -> approved:f0
      approved:f2 -> POSTING
-     /* loop:f2 -> DISCARD */
+     loop:f2 -> DISCARD
      modmember:f2 -> MODERATION
 
-     emergency:f2:e -> MODERATION [weight=0]
-     maxsize:f2 -> MODERATION [weight=0]
-     any:f2 -> MODERATION [weight=0]
-     truth:f1 -> POSTING [weight=0]
+     emergency:f2:e -> HOLD
+     maxsize:f2 -> MODERATION
+     any:f2 -> MODERATION
+     truth:f1 -> POSTING2
    }
 
 
