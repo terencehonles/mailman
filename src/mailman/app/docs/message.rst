@@ -46,3 +46,41 @@ The message will end up in the `virgin` queue.
     Precedence: bulk
     <BLANKLINE>
     I needed to tell you this.
+
+The message above got a Precedence: bulk header added by default.  If the
+message we're sending already has a Precedence: header, it shouldn't be
+changed.
+
+    >>> del msg['precedence']
+    >>> msg['Precedence'] = 'list'
+    >>> msg.send(mlist)
+
+Again, the message will end up in the `virgin` queue but with our Precedence:
+header.
+
+    >>> switchboard = config.switchboards['virgin']
+    >>> len(switchboard.files)
+    1
+    >>> filebase = switchboard.files[0]
+    >>> qmsg, qmsgdata = switchboard.dequeue(filebase)
+    >>> switchboard.finish(filebase)
+    >>> qmsg['precedence'] == 'list'
+    True
+
+Sometimes we want to send the message without a Precedence: header such as
+when we send a probe message.
+
+    >>> del msg['precedence']
+    >>> msg.send(mlist, noprecedence=True)
+
+Again, the message will end up in the `virgin` queue but without the
+Precedence: header.
+
+    >>> switchboard = config.switchboards['virgin']
+    >>> len(switchboard.files)
+    1
+    >>> filebase = switchboard.files[0]
+    >>> qmsg, qmsgdata = switchboard.dequeue(filebase)
+    >>> switchboard.finish(filebase)
+    >>> 'precedence' in qmsg
+    False

@@ -193,7 +193,7 @@ class UserNotification(Message):
         # UserNotifications are typically for admin messages, and for messages
         # other than list explosions.  Send these out as Precedence: bulk, but
         # don't override an existing Precedence: header.
-        if 'precedence' not in self or not noprecedence:
+        if 'precedence' not in self and not noprecedence:
             self['Precedence'] = 'bulk'
         self._enqueue(mlist, **_kws)
 
