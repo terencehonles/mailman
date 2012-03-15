@@ -150,13 +150,13 @@ but the water deserves to be swum.
             archive_thread.run()
             # Test that the archiver output the correct error.
             line = mark.readline()
-            self.assertEqual(
-                # Strip out the timestamp.
-                line[28:-1],
+            # XXX 2012-03-15 BAW: we really should remove timestamp prefixes
+            # from the loggers when under test.
+            self.assertTrue(line.endswith(
                 'Unable to acquire prototype archiver lock for {0}, '
-                'discarding: {1}'.format(
+                'discarding: {1}\n'.format(
                     self._mlist.fqdn_listname,
-                    self._msg.get('message-id')))
+                    self._msg.get('message-id'))))
         # Check that the message didn't get archived.
         created_files = self._find(config.ARCHIVE_DIR)
         self.assertEqual(self._expected_dir_structure, created_files)
