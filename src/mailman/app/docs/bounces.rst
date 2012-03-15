@@ -12,12 +12,12 @@ Mailman can bounce messages back to the original sender.  This is essentially
 equivalent to rejecting the message with notification.  Mailing lists can
 bounce a message with an optional error message.
 
-    >>> mlist = create_list('_xtest@example.com')
+    >>> mlist = create_list('text@example.com')
 
 Any message can be bounced.
 
     >>> msg = message_from_string("""\
-    ... To: _xtest@example.com
+    ... To: text@example.com
     ... From: aperson@example.com
     ... Subject: Something important
     ...
@@ -36,7 +36,7 @@ to the original message author.
     1
     >>> print items[0].msg.as_string()
     Subject: Something important
-    From: _xtest-owner@example.com
+    From: text-owner@example.com
     To: aperson@example.com
     MIME-Version: 1.0
     Content-Type: multipart/mixed; boundary="..."
@@ -54,7 +54,7 @@ to the original message author.
     Content-Type: message/rfc822
     MIME-Version: 1.0
     <BLANKLINE>
-    To: _xtest@example.com
+    To: text@example.com
     From: aperson@example.com
     Subject: Something important
     <BLANKLINE>
@@ -74,7 +74,7 @@ passed in as an instance of a ``RejectMessage`` exception.
     1
     >>> print items[0].msg.as_string()
     Subject: Something important
-    From: _xtest-owner@example.com
+    From: text-owner@example.com
     To: aperson@example.com
     MIME-Version: 1.0
     Content-Type: multipart/mixed; boundary="..."
@@ -92,7 +92,7 @@ passed in as an instance of a ``RejectMessage`` exception.
     Content-Type: message/rfc822
     MIME-Version: 1.0
     <BLANKLINE>
-    To: _xtest@example.com
+    To: text@example.com
     From: aperson@example.com
     Subject: Something important
     <BLANKLINE>

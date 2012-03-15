@@ -225,7 +225,9 @@ def send_probe(member, msg):
     notice = MIMEText(text, _charset=mlist.preferred_language.charset)
     probe.attach(notice)
     probe.attach(MIMEMessage(msg))
-    probe.send(mlist, envsender=probe_sender, verp=False, probe_token=token)
+    # Probes should not have the Precedence: bulk header.
+    probe.send(mlist, envsender=probe_sender, verp=False, probe_token=token,
+               add_precedence=False)
     return token
 
 

@@ -21,6 +21,11 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
+    'TestMaybeForward',
+    'TestProbe',
+    'TestSendProbe',
+    'TestSendProbeNonEnglish',
+    'TestVERP',
     ]
 
 
@@ -212,7 +217,7 @@ Message-ID: <first>
         self.assertEqual(set(pendable.keys()),
                          set(['member_id', 'message_id']))
         # member_ids are pended as unicodes.
-        self.assertEqual(uuid.UUID(hex=pendable['member_id']), 
+        self.assertEqual(uuid.UUID(hex=pendable['member_id']),
                          self._member.member_id)
         self.assertEqual(pendable['message_id'], '<first>')
 
@@ -264,10 +269,16 @@ Message-ID: <first>
         # Check the headers of the outer message.
         token = send_probe(self._member, self._msg)
         message = get_queue_messages('virgin')[0].msg
-        self.assertEqual(message['From'],
+        self.assertEqual(message['from'],
                          'test-bounces+{0}@example.com'.format(token))
-        self.assertEqual(message['To'], 'anne@example.com')
-        self.assertEqual(message['Subject'], 'Test mailing list probe message')
+        self.assertEqual(message['to'], 'anne@example.com')
+        self.assertEqual(message['subject'], 'Test mailing list probe message')
+
+    def test_no_precedence_header(self):
+        # Probe messages should not have a Precedence header (LP: #808821).
+        send_probe(self._member, self._msg)
+        message = get_queue_messages('virgin')[0].msg
+        self.assertEqual(message['precedence'], None)
 
 
 
