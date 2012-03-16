@@ -26,13 +26,55 @@ __all__ = [
 
 import unittest
 
+from zope.interface import implements
 
 from mailman.app.lifecycle import create_list
+from mailman.config import config
+from mailman.core.errors import DiscardMessage, RejectMessage
 from mailman.core.pipelines import process
+from mailman.interfaces.handler import IHandler
+from mailman.interfaces.pipeline import IPipeline
 from mailman.testing.helpers import (
+    LogFileMark,
+    get_queue_messages,
     reset_the_world,
     specialized_message_from_string as mfs)
 from mailman.testing.layers import ConfigLayer
+
+
+
+class DiscardingHandler:
+    implements(IHandler)
+    name = 'discarding'
+
+    def process(self, mlist, msg, msgdata):
+        raise DiscardMessage('by test handler')
+
+
+class RejectHandler:
+    implements(IHandler)
+    name = 'rejecting'
+
+    def process(self, mlist, msg, msgdata):
+        raise RejectMessage('by test handler')
+
+
+class DiscardingPipeline:
+    implements(IPipeline)
+    name = 'test-discarding'
+    description = 'Discarding test pipeline'
+
+    def __iter__(self):
+        yield DiscardingHandler()
+
+
+class RejectingPipeline:
+    implements(IPipeline)
+    name = 'test-rejecting'
+    description = 'Rejectinging test pipeline'
+
+    def __iter__(self):
+        yield RejectHandler()
 
 
 
@@ -43,21 +85,51 @@ class TestBuiltinPipeline(unittest.TestCase):
 
     def setUp(self):
         self._mlist = create_list('test@example.com')
-
-    def tearDown(self):
-        reset_the_world()
-
-    def test_rfc2369_headers(self):
-        # Ensure that RFC 2369 List-* headers are added.
-        msg = mfs("""\
+        config.pipelines['test-discarding'] = DiscardingPipeline()
+        config.pipelines['test-rejecting'] = RejectingPipeline()
+        self._msg = mfs("""\
 From: Anne Person <anne@example.org>
 To: test@example.com
 Subject: a test
+Message-ID: <ant>
 
 testing
 """)
+
+    def tearDown(self):
+        reset_the_world()
+        del config.pipelines['test-discarding']
+        del config.pipelines['test-rejecting']
+
+    def test_rfc2369_headers(self):
+        # Ensure that RFC 2369 List-* headers are added.
         msgdata = {}
-        process(self._mlist, msg, msgdata,
+        process(self._mlist, self._msg, msgdata,
                 pipeline_name='default-posting-pipeline')
-        self.assertEqual(msg['list-id'], '<test.example.com>')
-        self.assertEqual(msg['list-post'], '<mailto:test@example.com>')
+        self.assertEqual(self._msg['list-id'], '<test.example.com>')
+        self.assertEqual(self._msg['list-post'], '<mailto:test@example.com>')
+
+    def test_discarding_pipeline(self):
+        # If a handler in the pipeline raises DiscardMessage, the message will
+        # be thrown away, but with a log message.
+        mark = LogFileMark('mailman.vette')
+        process(self._mlist, self._msg, {}, 'test-discarding')
+        line = mark.readline()[:-1]
+        self.assertTrue(line.endswith(
+            '<ant> discarded by "test-discarding" pipeline handler '
+            '"discarding": by test handler'))
+
+    def test_rejecting_pipeline(self):
+        # If a handler in the pipeline raises DiscardMessage, the message will
+        # be thrown away, but with a log message.
+        mark = LogFileMark('mailman.vette')
+        process(self._mlist, self._msg, {}, 'test-rejecting')
+        line = mark.readline()[:-1]
+        self.assertTrue(line.endswith(
+            '<ant> rejected by "test-rejecting" pipeline handler '
+            '"rejecting": by test handler'))
+        # In the rejection case, the original message will also be in the
+        # virgin queue.
+        messages = get_queue_messages('virgin')
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(str(messages[0].msg['subject']), 'a test')

@@ -46,7 +46,6 @@ from mailman.core.i18n import _
 from mailman.core.runner import Runner
 from mailman.interfaces.member import DeliveryMode, DeliveryStatus
 from mailman.pipeline.decorate import decorate
-from mailman.pipeline.scrubber import process as scrubber
 from mailman.utilities.i18n import make
 from mailman.utilities.mailbox import Mailbox
 from mailman.utilities.string import oneline, wrap
@@ -253,12 +252,6 @@ class RFC1153Digester(Digester):
         if count > 1:
             print >> self._text, self._separator30
             print >> self._text
-        # Scrub attachements.
-        try:
-            msg = scrubber(self._mlist, msg)
-        except DiscardMessage:
-            print >> self._text, _('[Message discarded by content filter]')
-            return
         # Each message section contains a few headers.
         for header in config.digests.plain_digest_keep_headers.split():
             if header in msg:

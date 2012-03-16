@@ -31,13 +31,16 @@ import logging
 from zope.interface import implements
 from zope.interface.verify import verifyObject
 
+from mailman.app.bounces import bounce_message
 from mailman.app.finder import find_components
 from mailman.config import config
+from mailman.core import errors
 from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
 from mailman.interfaces.pipeline import IPipeline
 
-log = logging.getLogger('mailman.debug')
+dlog = logging.getLogger('mailman.debug')
+vlog = logging.getLogger('mailman.vette')
 
 
 
@@ -52,9 +55,19 @@ def process(mlist, msg, msgdata, pipeline_name='built-in'):
     message_id = msg.get('message-id', 'n/a')
     pipeline = config.pipelines[pipeline_name]
     for handler in pipeline:
-        log.debug('[pipeline] processing {0}: {1}'.format(
-            handler.name, message_id))
-        handler.process(mlist, msg, msgdata)
+        dlog.debug('{0} pipeline {1} processing: {2}'.format(
+            message_id, pipeline_name, handler.name))
+        try:
+            handler.process(mlist, msg, msgdata)
+        except errors.DiscardMessage as error:
+            vlog.info(
+                '{0} discarded by "{1}" pipeline handler "{2}": {3}'.format(
+                    message_id, pipeline_name, handler.name, error.message))
+        except errors.RejectMessage as error:
+            vlog.info(
+                '{0} rejected by "{1}" pipeline handler "{2}": {3}'.format(
+                    message_id, pipeline_name, handler.name, error.message))
+            bounce_message(mlist, msg, error)
 
 
 
@@ -84,7 +97,6 @@ class BuiltInPipeline(BasePipeline):
 
     _default_handlers = (
         'mime-delete',
-        'scrubber',
         'tagger',
         'calculate-recipients',
         'avoid-duplicates',
@@ -92,8 +104,8 @@ class BuiltInPipeline(BasePipeline):
         'cleanse-dkim',
         'cook-headers',
         'rfc-2369',
-        'to-digest',
         'to-archive',
+        'to-digest',
         'to-usenet',
         'after-delivery',
         'acknowledge',

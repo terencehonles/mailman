@@ -42,6 +42,7 @@ CREATE TABLE mailinglist (
     bounce_you_are_disabled_warnings INTEGER,
     bounce_you_are_disabled_warnings_interval TEXT,
     -- Content filtering.
+    filter_action INTEGER,
     filter_content BOOLEAN,
     collapse_alternatives BOOLEAN,
     convert_html_to_plaintext BOOLEAN,

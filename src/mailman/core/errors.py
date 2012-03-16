@@ -110,17 +110,6 @@ class DiscardMessage(HandlerError):
 
 class RejectMessage(HandlerError):
     """The message will be bounced back to the sender"""
-    def __init__(self, notice=None):
-        super(RejectMessage, self).__init__()
-        if notice is None:
-            notice = _('Your message was rejected')
-        if notice.endswith('\n\n'):
-            pass
-        elif notice.endswith('\n'):
-            notice += '\n'
-        else:
-            notice += '\n\n'
-        self.notice = notice
 
 
 

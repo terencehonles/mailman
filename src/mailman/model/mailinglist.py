@@ -38,7 +38,7 @@ from zope.interface import implements
 from mailman.config import config
 from mailman.database.model import Model
 from mailman.database.types import Enum
-from mailman.interfaces.action import Action
+from mailman.interfaces.action import Action, FilterAction
 from mailman.interfaces.address import IAddress
 from mailman.interfaces.autorespond import ResponseAction
 from mailman.interfaces.bounce import UnrecognizedBounceDisposition
@@ -115,6 +115,7 @@ class MailingList(Model):
     autorespond_requests = Enum(ResponseAction)
     autoresponse_request_text = Unicode()
     # Content filters.
+    filter_action = Enum(FilterAction)
     filter_content = Bool()
     collapse_alternatives = Bool()
     convert_html_to_plaintext = Bool()

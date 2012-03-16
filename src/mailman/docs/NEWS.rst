@@ -46,6 +46,13 @@ Architecture
    attribute on the message object, instead of trusting a possibly incorrect
    value if it's already set.  The individual `IArchiver` implementations no
    longer set the `X-Message-ID-Hash` header.
+ * Pipermail has been eradicated.
+ * Configuration variable `[mailman]filtered_messages_are_preservable`
+   controls whether messages which have their top-level `Content-Type`
+   filtered out can be preserved in the `bad` queue by list owners.
+ * Configuration section `[scrubber]` removed, as is the scrubber handler.
+   This handler was essentially incompatible with Mailman 3 since it required
+   coordination with Pipermail to store attachments on disk.
 
 Database
 --------
@@ -60,6 +67,8 @@ Database
    - digest_footer    -> digest_footer_uri
    - start_chain      -> posting_chain
    - pipeline         -> posting_pipeline
+ * Schema additions:
+   - mailinglist.filter_action
 
 REST
 ----

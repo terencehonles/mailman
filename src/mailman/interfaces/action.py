@@ -20,6 +20,7 @@
 __metaclass__ = type
 __all__ = [
     'Action',
+    'FilterAction',
     ]
 
 
@@ -33,3 +34,8 @@ class Action(Enum):
     discard = 2
     accept  = 3
     defer   = 4
+
+
+class FilterAction(Action):
+    forward = 5
+    preserve = 6
