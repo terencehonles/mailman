@@ -148,35 +148,11 @@ header will be added.
 
     >>> mlist.archive = True
 
-    >>> from mailman.config import config
-    >>> config.push('pipermail', """
-    ... [archiver.prototype]
-    ... enable: no
-    ... [archiver.mail_archive]
-    ... enable: no
-    ... [archiver.mhonarc]
-    ... enable: no
-    ... [archiver.pipermail]
-    ... enable: yes
-    ... """)
-
-    >>> msg = message_from_string("""\
-    ... From: aperson@example.com
-    ...
-    ... """)
-    >>> process(mlist, msg, {})
-    >>> list_headers(msg, only='list-archive')
-    ---start---
-    list-archive: <http://www.example.com/pipermail/test@example.com>
-    ---end---
-
 `RFC 5064`_ defines the `Archived-At` header which contains the url to the
 individual message in the archives.  Archivers which don't support
-pre-calculation of the archive url cannot add the `Archived-At` header, as is
-the case with Pipermail (see above).  However, other archivers can calculate
-the url, and do add this header.
+pre-calculation of the archive url cannot add the `Archived-At` header.
+However, other archivers can calculate the url, and do add this header.
 
-    >>> config.pop('pipermail')
     >>> config.push('prototype', """
     ... [archiver.prototype]
     ... enable: yes

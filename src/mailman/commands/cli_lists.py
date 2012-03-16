@@ -252,12 +252,6 @@ class Remove:
     def add(self, parser, command_parser):
         """See `ICLISubCommand`."""
         command_parser.add_argument(
-            '-a', '--archives',
-            default=False, action='store_true',
-            help=_("""\
-Remove the list's archives too, or if the list has already been deleted,
-remove any residual archives."""))
-        command_parser.add_argument(
             '-q', '--quiet',
             default=False, action='store_true',
             help=_('Suppress status messages'))
@@ -278,15 +272,9 @@ remove any residual archives."""))
         fqdn_listname = args.listname[0]
         mlist = getUtility(IListManager).get(fqdn_listname)
         if mlist is None:
-            if args.archives:
-                log(_('No such list: $fqdn_listname; '
-                      'removing residual archives.'))
-            else:
-                log(_('No such list: $fqdn_listname'))
-                return
+            log(_('No such list: $fqdn_listname'))
+            return
         else:
             log(_('Removed list: $fqdn_listname'))
-        if not args.archives:
-            log(_('Not removing archives.  Reinvoke with -a to remove them.'))
-        remove_list(fqdn_listname, mlist, args.archives)
+        remove_list(fqdn_listname, mlist)
         config.db.commit()

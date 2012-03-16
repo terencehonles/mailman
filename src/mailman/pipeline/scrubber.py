@@ -175,8 +175,7 @@ def process(mlist, msg, msgdata=None):
             #
             # Also get the RFC 3676 stuff from this part. This seems to
             # work okay for scrub_nondigest.  It will also work as far as
-            # scrubbing messages for the archive is concerned, but Pipermail
-            # doesn't pay any attention to the RFC 3676 parameters.  The plain
+            # scrubbing messages for the archive is concerned.  The plain
             # format digest is going to be a disaster in any case as some of
             # messages will be format="flowed" and some not.  ToDigest creates
             # its own Content-Type: header for the plain digest which won't
@@ -209,7 +208,9 @@ URL: $url
                                  # sets content-type to text/plain
                                  lcset)
             elif sanitize == 2:
-                # By leaving it alone, Pipermail will automatically escape it
+                # By leaving it alone, Pipermail will automatically escape it.
+                # XXX 2012-03-13 BAW: Now that Pipermail has been removed, do
+                # we even need this?
                 pass
             elif sanitize == 3:
                 # Pull it out as an attachment but leave it unescaped.  This
@@ -259,8 +260,7 @@ Size: $size
 URL: $url
 """), lcset)
         # If the message isn't a multipart, then we'll strip it out as an
-        # attachment that would have to be separately downloaded.  Pipermail
-        # will transform the url into a hyperlink.
+        # attachment that would have to be separately downloaded.
         elif part._payload and not part.is_multipart():
             payload = part.get_payload(decode=True)
             ctype = part.get_content_type()
@@ -290,6 +290,9 @@ URL: $url
     # We still have to sanitize multipart messages to flat text because
     # Pipermail can't handle messages with list payloads.  This is a kludge;
     # def (n) clever hack ;).
+    #
+    # XXX 2012-03-13 BAW: Now that Pipermail has been removed, do we even need
+    # this code?
     if msg.is_multipart() and sanitize != 2:
         # By default we take the charset of the first text/plain part in the
         # message, but if there was none, we'll use the list's preferred

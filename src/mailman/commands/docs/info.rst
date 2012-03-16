@@ -69,8 +69,6 @@ The File System Hierarchy layout is the same every by definition.
         LOG_DIR                  = /var/log/mailman
         MESSAGES_DIR             = /var/lib/mailman/messages
         PID_FILE                 = /var/run/mailman/master.pid
-        PRIVATE_ARCHIVE_FILE_DIR = /var/lib/mailman/archives/private
-        PUBLIC_ARCHIVE_FILE_DIR  = /var/lib/mailman/archives/public
         QUEUE_DIR                = /var/spool/mailman
         TEMPLATE_DIR             = .../mailman/templates
         VAR_DIR                  = /var/lib/mailman

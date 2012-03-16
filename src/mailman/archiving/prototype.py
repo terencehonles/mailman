@@ -60,6 +60,6 @@ class Prototype:
         return urljoin(Prototype.list_url(mlist), message_id_hash)
 
     @staticmethod
-    def archive_message(mlist, message):
+    def archive_message(mlist, msg):
         """See `IArchiver`."""
         raise NotImplementedError

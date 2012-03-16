@@ -108,9 +108,7 @@ def initialize_1(config_path=None):
     # By default, set the umask so that only owner and group can read and
     # write our files.  Specifically we must have g+rw and we probably want
     # o-rwx although I think in most cases it doesn't hurt if other can read
-    # or write the files.  Note that the Pipermail archive has more
-    # restrictive permissions in order to handle private archives, but it
-    # handles that correctly.
+    # or write the files.
     os.umask(007)
     # config_path will be set if the command line argument -C is given.  That
     # case overrides all others.  When not given on the command line, the

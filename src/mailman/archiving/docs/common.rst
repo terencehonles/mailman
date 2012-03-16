@@ -21,7 +21,6 @@ header, and one that provides a *permalink* to the specific message object in
 the archive.  This latter is appropriate for the message footer or for the RFC
 5064 ``Archived-At:`` header.
 
-Pipermail does not support a permalink, so that interface returns ``None``.
 Mailman defines a draft spec for how list servers and archivers can
 interoperate.
 
@@ -38,9 +37,6 @@ interoperate.
     mhonarc
         http://lists.example.com/.../test@example.com
         http://lists.example.com/.../RSZCG7IGPHFIRW3EMTVMMDNJMNCVCOLE
-    pipermail
-        http://www.example.com/pipermail/test@example.com
-        None
     prototype
         http://lists.example.com
         http://lists.example.com/RSZCG7IGPHFIRW3EMTVMMDNJMNCVCOLE
@@ -49,20 +45,8 @@ interoperate.
 Sending the message to the archiver
 ===================================
 
-The archiver is also able to archive the message.
-::
-
-    >>> archivers['pipermail'].archive_message(mlist, msg)
-
-    >>> import os
-    >>> from mailman.interfaces.archiver import IPipermailMailingList
-    >>> pckpath = os.path.join(
-    ...     IPipermailMailingList(mlist).archive_dir(),
-    ...     'pipermail.pck')
-    >>> os.path.exists(pckpath)
-    True
-
-Note however that the prototype archiver can't archive messages.
+The archiver is also able to archive the message.  Note however that the
+prototype archiver can't archive messages.
 
     >>> archivers['prototype'].archive_message(mlist, msg)
     Traceback (most recent call last):
@@ -172,20 +156,17 @@ A MHonArc_ archiver is also available.
 Messages sent to a local MHonArc instance are added to its archive via a
 subprocess call.
 
+    >>> from mailman.testing.helpers import LogFileMark
+    >>> mark = LogFileMark('mailman.archiver')
     >>> archiver.archive_message(mlist, msg)
-    >>> archive_log = open(os.path.join(config.LOG_DIR, 'archiver'))
-    >>> try:
-    ...     contents = archive_log.read()
-    ... finally:
-    ...     archive_log.close()
-    >>> print 'LOG:', contents
-    LOG: ... /usr/bin/mhonarc -add
-        -dbfile /.../private/test@example.com.mbox/mhonarc.db
-        -outdir /.../mhonarc/test@example.com
-        -stderr /.../logs/mhonarc
-        -stdout /.../logs/mhonarc
-        -spammode -umask 022
-        ...
+    >>> print 'LOG:', mark.readline()
+    LOG: ... /usr/bin/mhonarc
+         -add
+         -dbfile .../test@example.com.mbox/mhonarc.db
+         -outdir .../mhonarc/test@example.com
+         -stderr .../logs/mhonarc
+         -stdout .../logs/mhonarc -spammode -umask 022
+
 
 .. _`The Mail Archive`: http://www.mail-archive.com
 .. _MHonArc: http://www.mhonarc.org

@@ -173,8 +173,6 @@ class Configuration:
             lock_dir                = category.lock_dir,
             log_dir                 = category.log_dir,
             messages_dir            = category.messages_dir,
-            pipermail_private_dir   = category.pipermail_private_dir,
-            pipermail_public_dir    = category.pipermail_public_dir,
             queue_dir               = category.queue_dir,
             var_dir                 = var_dir,
             template_dir            = (
@@ -208,10 +206,6 @@ class Configuration:
         # Ensure that all paths are normalized and made absolute.  Handle the
         # few special cases first.  Most of these are due to backward
         # compatibility.
-        self.PUBLIC_ARCHIVE_FILE_DIR = os.path.abspath(
-            substitutions.pop('pipermail_public_dir'))
-        self.PRIVATE_ARCHIVE_FILE_DIR = os.path.abspath(
-            substitutions.pop('pipermail_private_dir'))
         self.PID_FILE = os.path.abspath(substitutions.pop('pid_file'))
         for key in substitutions:
             attribute = key.upper()
