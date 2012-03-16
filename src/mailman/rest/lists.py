@@ -109,7 +109,7 @@ class _ListBase(resource.Resource, CollectionMixin):
             fqdn_listname=mlist.fqdn_listname,
             list_name=mlist.list_name,
             mail_host=mlist.mail_host,
-            member_count=len(tuple(mlist.members.members)),
+            member_count=mlist.members.member_count,
             volume=mlist.volume,
             self_link=path_to('lists/{0}'.format(mlist.fqdn_listname)),
             )

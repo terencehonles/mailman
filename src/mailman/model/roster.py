@@ -64,14 +64,22 @@ class AbstractRoster:
     def __init__(self, mlist):
         self._mlist = mlist
 
+    def _query(self):
+        return config.db.store.find(
+            Member,
+            mailing_list=self._mlist.fqdn_listname,
+            role=self.role)
+
     @property
     def members(self):
         """See `IRoster`."""
-        for member in config.db.store.find(
-                Member,
-                mailing_list=self._mlist.fqdn_listname,
-                role=self.role):
+        for member in self._query():
             yield member
+
+    @property
+    def member_count(self):
+        """See `IRoster`."""
+        return self._query().count()
 
     @property
     def users(self):
@@ -149,18 +157,12 @@ class AdministratorRoster(AbstractRoster):
 
     name = 'administrator'
 
-    @property
-    def members(self):
-        """See `IRoster`."""
-        # Administrators are defined as the union of the owners and the
-        # moderators.
-        members = config.db.store.find(
-                Member,
-                Member.mailing_list == self._mlist.fqdn_listname,
-                Or(Member.role == MemberRole.owner,
-                   Member.role == MemberRole.moderator))
-        for member in members:
-            yield member
+    def _query(self):
+        return config.db.store.find(
+            Member,
+            Member.mailing_list == self._mlist.fqdn_listname,
+            Or(Member.role == MemberRole.owner,
+               Member.role == MemberRole.moderator))
 
     def get_member(self, address):
         """See `IRoster`."""
@@ -183,6 +185,14 @@ class AdministratorRoster(AbstractRoster):
 
 class DeliveryMemberRoster(AbstractRoster):
     """Return all the members having a particular kind of delivery."""
+
+    @property
+    def member_count(self):
+        """See `IRoster`."""
+        # XXX 2012-03-15 BAW: It would be nice to make this more efficient.
+        # The problem is that you'd have to change the loop in _get_members()
+        # checking the delivery mode to a query parameter.
+        return len(tuple(self.members))
 
     def _get_members(self, *delivery_modes):
         """The set of members for a mailing list, filter by delivery mode.
@@ -234,13 +244,10 @@ class Subscribers(AbstractRoster):
 
     name = 'subscribers'
 
-    @property
-    def members(self):
-        """See `IRoster`."""
-        for member in config.db.store.find(
-                Member,
-                mailing_list=self._mlist.fqdn_listname):
-            yield member
+    def _query(self):
+        return config.db.store.find(
+            Member,
+            mailing_list=self._mlist.fqdn_listname)
 
 
 
@@ -254,15 +261,23 @@ class Memberships:
     def __init__(self, user):
         self._user = user
 
-    @property
-    def members(self):
-        """See `IRoster`."""
+    def _query(self):
         results = config.db.store.find(
             Member,
             Or(Member.user_id == self._user.id,
                And(Address.user_id == self._user.id,
                    Member.address_id == Address.id)))
-        for member in results.config(distinct=True):
+        return results.config(distinct=True)
+
+    @property
+    def member_count(self):
+        """See `IRoster`."""
+        return self._query().count()
+
+    @property
+    def members(self):
+        """See `IRoster`."""
+        for member in self._query():
             yield member
 
     @property

@@ -40,6 +40,9 @@ class IRoster(Interface):
     members = Attribute(
         """An iterator over all the IMembers managed by this roster.""")
 
+    member_count = Attribute(
+        """The number of members managed by this roster.""")
+
     users = Attribute(
         """An iterator over all the IUsers reachable by this roster.
 

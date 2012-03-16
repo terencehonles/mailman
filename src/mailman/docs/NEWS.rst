@@ -92,6 +92,7 @@ Interfaces
  * `IMailingList.real_name` -> `IMailingList.display_name`
  * `IUser.real_name` -> `IUser.display_name`
  * `IAddress.real_name` -> `IAddress.display_name`
+ * Add property `IRoster.member_count`.
 
 Commands
 --------
