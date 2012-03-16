@@ -48,6 +48,9 @@ Architecture
    longer set the `X-Message-ID-Hash` header.
  * The Prototype archiver now stores its files in maildir format inside of
    `$var_dir/archives/prototype`, given by Toshio Kuratomi.
+ * Improved "8 mile high" document distilled by Stephen Turnbull from the
+   Pycon 2012 Mailman 3 sprint.  Also improvements to the Sphinx build given
+   by Andrea Crotti.
 
 Database
 --------
