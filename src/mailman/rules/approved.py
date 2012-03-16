@@ -73,10 +73,12 @@ class Approved:
                 break
             payload = part.get_payload(decode=True)
             if payload is not None:
+                cset = part.get_content_charset() or 'us-ascii'
+                payload = payload.decode(cset, 'replace')
                 line = ''
                 lines = payload.splitlines(True)
                 for lineno, line in enumerate(lines):
-                    if line.strip() <> '':
+                    if line.strip() != '':
                         break
                 if ':' in line:
                     header, value = line.split(':', 1)
