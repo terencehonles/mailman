@@ -45,7 +45,7 @@ content type matches the filter, the entire message will be discarded.
     >>> process(mlist, msg, {})
     Traceback (most recent call last):
     ...
-    DiscardMessage
+    DiscardMessage: The message's content type was explicitly disallowed
 
 However, if we turn off content filtering altogether, then the handler
 short-circuits.

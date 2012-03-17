@@ -223,7 +223,6 @@ The RFC 1153 contains the digest in a single plain text message.
     When replying, please edit your Subject line so it is more specific
     than "Re: Contents of Test digest..."
     <BLANKLINE>
-    <BLANKLINE>
     Today's Topics:
     <BLANKLINE>
        1. Test message 1 (aperson@example.com)
@@ -237,7 +236,6 @@ The RFC 1153 contains the digest in a single plain text message.
     From: aperson@example.com
     Subject: Test message 1
     To: xtest@example.com
-    Message-ID: ...
     <BLANKLINE>
     Here is message 1
     <BLANKLINE>
@@ -246,7 +244,6 @@ The RFC 1153 contains the digest in a single plain text message.
     From: aperson@example.com
     Subject: Test message 2
     To: xtest@example.com
-    Message-ID: ...
     <BLANKLINE>
     Here is message 2
     <BLANKLINE>
@@ -255,7 +252,6 @@ The RFC 1153 contains the digest in a single plain text message.
     From: aperson@example.com
     Subject: Test message 3
     To: xtest@example.com
-    Message-ID: ...
     <BLANKLINE>
     Here is message 3
     <BLANKLINE>
@@ -264,7 +260,6 @@ The RFC 1153 contains the digest in a single plain text message.
     From: aperson@example.com
     Subject: Test message 4
     To: xtest@example.com
-    Message-ID: ...
     <BLANKLINE>
     Here is message 4
     <BLANKLINE>
@@ -458,7 +453,6 @@ The content can be decoded to see the actual digest text.
     "'From: aperson@example.org'",
     "'Subject: \\xe4\\xb8\\x80\\xe7\\x95\\xaa'",
     "'To: test@example.com'",
-    "'Message-ID: ...
     "'Content-Type: text/plain; charset=iso-2022-jp'",
     "''",
     "'\\xe4\\xb8\\x80\\xe7\\x95\\xaa'",

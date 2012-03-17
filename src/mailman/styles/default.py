@@ -32,7 +32,7 @@ import datetime
 from zope.interface import implements
 
 from mailman.core.i18n import _
-from mailman.interfaces.action import Action
+from mailman.interfaces.action import Action, FilterAction
 from mailman.interfaces.bounce import UnrecognizedBounceDisposition
 from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.autorespond import ResponseAction
@@ -99,6 +99,7 @@ from: .*@uplinkpro.com
         mlist.preferred_language = 'en'
         mlist.collapse_alternatives = True
         mlist.convert_html_to_plaintext = False
+        mlist.filter_action = FilterAction.discard
         mlist.filter_content = False
         # Digest related variables
         mlist.digestable = True
