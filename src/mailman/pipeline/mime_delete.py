@@ -64,9 +64,8 @@ def dispose(mlist, msg, msgdata, why):
         raise errors.RejectMessage(why)
     elif mlist.filter_action is FilterAction.forward:
         # Forward it on to the list moderators.
-        # FIXME 2012-03-16 BAW: Trunk uses .display_name
         text=_("""\
-The attached message matched the $mlist.real_name mailing list's content
+The attached message matched the $mlist.display_name mailing list's content
 filtering rules and was prevented from being forwarded on to the list
 membership.  You are receiving the only remaining copy of the discarded
 message.

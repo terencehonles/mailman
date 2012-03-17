@@ -45,21 +45,9 @@ interoperate.
 Sending the message to the archiver
 ===================================
 
-The archiver is also able to archive the message.
-::
-
-    >>> archivers['pipermail'].archive_message(mlist, msg)
-
-    >>> import os
-    >>> from mailman.interfaces.archiver import IPipermailMailingList
-    >>> pckpath = os.path.join(
-    ...     IPipermailMailingList(mlist).archive_dir(),
-    ...     'pipermail.pck')
-    >>> os.path.exists(pckpath)
-    True
-
 The `prototype` archiver archives messages to a maildir.
 
+    >>> import os
     >>> archivers['prototype'].archive_message(mlist, msg)
     >>> archive_path = os.path.join(
     ...     config.ARCHIVE_DIR, 'prototype', mlist.fqdn_listname, 'new')
