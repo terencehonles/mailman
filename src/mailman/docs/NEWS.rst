@@ -48,6 +48,16 @@ Architecture
    longer set the `X-Message-ID-Hash` header.
  * The Prototype archiver now stores its files in maildir format inside of
    `$var_dir/archives/prototype`, given by Toshio Kuratomi.
+ * Improved "8 mile high" document distilled by Stephen J Turnbull from the
+   Pycon 2012 Mailman 3 sprint.  Also improvements to the Sphinx build given
+   by Andrea Crotti.
+ * Pipermail has been eradicated.
+ * Configuration variable `[mailman]filtered_messages_are_preservable`
+   controls whether messages which have their top-level `Content-Type`
+   filtered out can be preserved in the `bad` queue by list owners.
+ * Configuration section `[scrubber]` removed, as is the scrubber handler.
+   This handler was essentially incompatible with Mailman 3 since it required
+   coordination with Pipermail to store attachments on disk.
 
 Database
 --------
@@ -63,6 +73,8 @@ Database
    - start_chain      -> posting_chain
    - pipeline         -> posting_pipeline
    - real_name        -> display_name (mailinglist, user, address)
+ * Schema additions:
+   - mailinglist.filter_action
 
 REST
 ----

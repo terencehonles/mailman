@@ -37,20 +37,61 @@ import errno
 import logging
 import tempfile
 
-from email.Iterators import typed_subpart_iterator
+from email.iterators import typed_subpart_iterator
+from email.mime.message import MIMEMessage
+from email.mime.text import MIMEText
+from lazr.config import as_boolean
 from os.path import splitext
 from zope.interface import implements
 
 from mailman.config import config
 from mailman.core import errors
 from mailman.core.i18n import _
-from mailman.core.switchboard import Switchboard
+from mailman.email.message import OwnerNotification
+from mailman.interfaces.action import FilterAction
 from mailman.interfaces.handler import IHandler
 from mailman.utilities.string import oneline
 from mailman.version import VERSION
 
 
 log = logging.getLogger('mailman.error')
+
+
+
+def dispose(mlist, msg, msgdata, why):
+    if mlist.filter_action is FilterAction.reject:
+        # Bounce the message to the original author.
+        raise errors.RejectMessage(why)
+    elif mlist.filter_action is FilterAction.forward:
+        # Forward it on to the list moderators.
+        text=_("""\
+The attached message matched the $mlist.display_name mailing list's content
+filtering rules and was prevented from being forwarded on to the list
+membership.  You are receiving the only remaining copy of the discarded
+message.
+
+""")
+        subject=_('Content filter message notification')
+        notice = OwnerNotification(mlist, subject, roster=mlist.moderators)
+        notice.set_type('multipart/mixed')
+        notice.attach(MIMEText(text))
+        notice.attach(MIMEMessage(msg))
+        notice.send(mlist)
+        # Let this fall through so the original message gets discarded.
+    elif mlist.filter_action is FilterAction.preserve:
+        if as_boolean(config.mailman.filtered_messages_are_preservable):
+            # This is just like discarding the message except that a copy is
+            # placed in the 'bad' queue should the site administrator want to
+            # inspect the message.
+            filebase = config.switchboards['bad'].enqueue(msg, msgdata)
+            log.info('{0} preserved in file base {1}'.format(
+                msg.get('message-id', 'n/a'), filebase))
+    else:
+        log.error(
+            '{1} invalid FilterAction: {0}.  Treating as discard'.format(
+                mlist.fqdn_listname, mlist.filter_action.name))
+    # Most cases also discard the message
+    raise errors.DiscardMessage(why)
 
 
 
@@ -227,31 +268,6 @@ def to_plaintext(msg):
 
 
 
-def dispose(mlist, msg, msgdata, why):
-    # filter_action == 0 just discards, see below
-    if mlist.filter_action == 1:
-        # Bounce the message to the original author
-        raise errors.RejectMessage, why
-    if mlist.filter_action == 2:
-        # Forward it on to the list owner
-        listname = mlist.internal_name()
-        mlist.ForwardMessage(
-            msg,
-            text=_("""\
-The attached message matched the $listname mailing list's content filtering
-rules and was prevented from being forwarded on to the list membership.  You
-are receiving the only remaining copy of the discarded message.
-
-"""),
-            subject=_('Content filtered message notification'))
-    if mlist.filter_action == 3 and \
-           config.OWNERS_CAN_PRESERVE_FILTERED_MESSAGES:
-        badq = Switchboard('bad', config.BADQUEUE_DIR)
-        badq.enqueue(msg, msgdata)
-    # Most cases also discard the message
-    raise errors.DiscardMessage
-
-
 def get_file_ext(m):
     """
     Get filename extension. Caution: some virus don't put filename

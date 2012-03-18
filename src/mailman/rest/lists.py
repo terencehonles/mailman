@@ -137,10 +137,7 @@ class AList(_ListBase):
         """Delete the named mailing list."""
         if self._mlist is None:
             return http.not_found()
-        remove_list(self._mlist.fqdn_listname, self._mlist,
-                    # XXX 2010-07-06 barry we need a way to remove the list
-                    # archives either with the mailing list or afterward.
-                    archives=False)
+        remove_list(self._mlist.fqdn_listname, self._mlist)
         return no_content()
 
     @resource.child(member_matcher)

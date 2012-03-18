@@ -89,7 +89,7 @@ def create_list(fqdn_listname, owners=None):
 
 
 
-def remove_list(fqdn_listname, mailing_list=None, archives=True):
+def remove_list(fqdn_listname, mailing_list=None):
     """Remove the list and all associated artifacts and subscriptions."""
     removeables = []
     # mailing_list will be None when only residual archives are being removed.
@@ -108,15 +108,6 @@ def remove_list(fqdn_listname, mailing_list=None, archives=True):
         fn_listname = filename.split('.')[0]
         if fn_listname == fqdn_listname:
             removeables.append(os.path.join(config.LOCK_DIR, filename))
-    if archives:
-        private_dir = config.PRIVATE_ARCHIVE_FILE_DIR
-        public_dir  = config.PUBLIC_ARCHIVE_FILE_DIR
-        removeables.extend([
-            os.path.join(private_dir, fqdn_listname),
-            os.path.join(private_dir, fqdn_listname + '.mbox'),
-            os.path.join(public_dir, fqdn_listname),
-            os.path.join(public_dir, fqdn_listname + '.mbox'),
-            ])
     # Now that we know what files and directories to delete, delete them.
     for target in removeables:
         if not os.path.exists(target):

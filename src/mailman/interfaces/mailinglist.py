@@ -421,6 +421,12 @@ class IMailingList(Interface):
         Filtering is performed on MIME type and file name extension.
         """)
 
+    filter_action = Attribute(
+        """Action to take when the top-level content-type is filtered.
+
+        The value is a `FilterAction` enum.
+        """)
+
     convert_html_to_plaintext = Attribute(
         """Flag specifying whether text/html parts should be converted.
 

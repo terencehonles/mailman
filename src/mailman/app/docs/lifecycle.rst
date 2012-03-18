@@ -140,7 +140,7 @@ artifacts.
 ::
 
     >>> from mailman.app.lifecycle import remove_list
-    >>> remove_list(mlist_2.fqdn_listname, mlist_2, True)
+    >>> remove_list(mlist_2.fqdn_listname, mlist_2)
 
     >>> from mailman.interfaces.listmanager import IListManager
     >>> from zope.component import getUtility

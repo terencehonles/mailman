@@ -59,15 +59,16 @@ DOT = '.'
 
 
 
-def bounce_message(mlist, msg, e=None):
+def bounce_message(mlist, msg, error=None):
     """Bounce the message back to the original author.
 
     :param mlist: The mailing list that the message was posted to.
     :type mlist: `IMailingList`
     :param msg: The original message.
     :type msg: `email.message.Message`
-    :param e: Optional exception causing the bounce.
-    :type e: Exception
+    :param error: Optional exception causing the bounce.  The exception
+        instance must have a `.message` attribute.
+    :type error: Exception
     """
     # Bounce a message back to the sender, with an error message if provided
     # in the exception argument.
@@ -77,10 +78,10 @@ def bounce_message(mlist, msg, e=None):
         return
     subject = msg.get('subject', _('(no subject)'))
     subject = oneline(subject, mlist.preferred_language.charset)
-    if e is None:
+    if error is None:
         notice = _('[No bounce details are available]')
     else:
-        notice = _(e.notice)
+        notice = _(error.message)
     # Currently we always craft bounces as MIME messages.
     bmsg = UserNotification(msg.sender, mlist.owner_address, subject,
                             lang=mlist.preferred_language)
