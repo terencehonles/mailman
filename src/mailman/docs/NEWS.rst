@@ -126,6 +126,8 @@ Commands
 
 Bug fixes
 ---------
+ * Fixed a UnicodeError with non-ascii message bodies in rules/approved.py
+   (LP: #949924)
  * Subscription disabled probe warning notification messages are now sent
    without a `Precedence:` header.  Given by Mark Sapiro. (LP: #808821)
  * Fixed KeyError in retry runner, contributed by Stephen A. Goss.
