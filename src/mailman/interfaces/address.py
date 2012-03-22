@@ -17,13 +17,14 @@
 
 """Interface for email address related information."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
     'AddressAlreadyLinkedError',
     'AddressError',
     'AddressNotLinkedError',
+    'EmailError',
     'ExistingAddressError',
     'IAddress',
     'IEmailValidator',
@@ -37,15 +38,30 @@ from mailman.interfaces.errors import MailmanError
 
 
 
+class EmailError(MailmanError):
+    """A generic text email address-related error occurred."""
+
+    def __init__(self, email):
+        super(EmailError, self).__init__()
+        self.email = email
+
+    def __str__(self):
+        # This is a workaround for Python 2.6 support.  When self.email
+        # contains non-ascii characters, this will cause unprintable output in
+        # doctests.  Python 2.7 can handle it but we haven't dropped support
+        # for 2.6 yet.
+        return self.email.encode('us-ascii', 'backslashreplace')
+
+
 class AddressError(MailmanError):
-    """A general address-related error occurred."""
+    """A generic IAddress-related error occurred."""
 
     def __init__(self, address):
         super(AddressError, self).__init__()
         self.address = address
 
     def __str__(self):
-        return self.address
+        return str(self.address)
 
 
 class ExistingAddressError(AddressError):
@@ -60,7 +76,7 @@ class AddressNotLinkedError(AddressError):
     """The address is not linked to the user."""
 
 
-class InvalidEmailAddressError(AddressError):
+class InvalidEmailAddressError(EmailError):
     """Email address is invalid."""
 
 

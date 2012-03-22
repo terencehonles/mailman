@@ -17,10 +17,11 @@
 
 """Tests for the subscription service."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
+    'TestJoin'
     ]
 
 
@@ -63,6 +64,6 @@ class TestJoin(unittest.TestCase):
         try:
             self._service.join('test@example.com', 'bogus')
         except InvalidEmailAddressError as exc:
-            self.assertEqual(exc.address, 'bogus')
+            self.assertEqual(exc.email, 'bogus')
         else:
             raise AssertionError('InvalidEmailAddressError expected')

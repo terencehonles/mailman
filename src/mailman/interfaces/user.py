@@ -17,7 +17,7 @@
 
 """Interface describing the basics of a user."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -28,19 +28,12 @@ __all__ = [
 
 from zope.interface import Interface, Attribute
 
-from mailman.interfaces.errors import MailmanError
+from mailman.interfaces.address import AddressError
 
 
 
-class UnverifiedAddressError(MailmanError):
+class UnverifiedAddressError(AddressError):
     """Unverified address cannot be used as a user's preferred address."""
-
-    def __init__(self, address):
-        super(UnverifiedAddressError, self).__init__()
-        self.address = address
-
-    def __str__(self):
-        return self.address
 
 
 

@@ -1,3 +1,4 @@
+# Copyright (C) 2008-2012 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -22,6 +23,7 @@ __metaclass__ = type
 __all__ = [
     'LogFileMark',
     'TestableMaster',
+    'body_line_iterator',
     'call_api',
     'digest_mbox',
     'event_subscribers',
@@ -412,3 +414,19 @@ class LogFileMark:
         with open(self._filename) as fp:
             fp.seek(self._filepos)
             return fp.readline()
+
+
+
+# In Python 2.6, body_line_iterator() uses a cStringIO.StringIO() which cannot
+# handle unicode.  In Python 2.7 this works fine.  I hate version checks but
+# this is the easiest way to handle it.  OTOH, we could just use the manual
+# way for all Python versions instead.
+import sys
+if sys.hexversion >= 0x2070000:
+    from email.iterators import body_line_iterator
+else:
+    def body_line_iterator(msg, decode=False):
+        payload = msg.get_payload(decode=decode)
+        bytes_payload = payload.encode('utf-8')
+        for line in bytes_payload.splitlines():
+            yield line

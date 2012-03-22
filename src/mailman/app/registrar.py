@@ -17,7 +17,7 @@
 
 """Implementation of the IUserRegistrar interface."""
 
-from __future__ import unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -27,7 +27,6 @@ __all__ = [
 
 import logging
 
-from pkg_resources import resource_string
 from zope.component import getUtility
 from zope.interface import implements
 

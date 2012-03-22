@@ -21,12 +21,13 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
+    'TestJoin',
+    'TestJoinWithDigests',
     ]
 
 
 import unittest
 
-from email.iterators import body_line_iterator
 from zope.component import getUtility
 
 from mailman.app.lifecycle import create_list
@@ -37,6 +38,7 @@ from mailman.interfaces.subscriptions import ISubscriptionService
 from mailman.interfaces.usermanager import IUserManager
 from mailman.runners.command import CommandRunner
 from mailman.testing.helpers import (
+    body_line_iterator,
     get_queue_messages,
     make_testable_runner,
     reset_the_world,
