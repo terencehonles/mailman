@@ -86,7 +86,7 @@ class TestEmailToOwner(unittest.TestCase):
         def wait():
             get_lmtp_client(quiet=True)
         lmtpd = TestableMaster(wait)
-        lmtpd.start()
+        lmtpd.start('lmtp')
         # Post a message to the list's -owner address, and all the owners will
         # get a copy of the message.
         lmtp = get_lmtp_client(quiet=True)
