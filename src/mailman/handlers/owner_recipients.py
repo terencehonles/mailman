@@ -17,19 +17,48 @@
 
 """Calculate the list owner recipients (includes moderators)."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'process',
+    'OwnerRecipients',
     ]
 
 
+from zope.interface import implements
+
+from mailman.config import config
+from mailman.core.i18n import _
+from mailman.interfaces.handler import IHandler
+from mailman.interfaces.member import DeliveryStatus
+
+
 
-def process(mlist, msg, msgdata):
-    """Add owner recipients."""
-    # The recipients are the owner and the moderator
-    msgdata['recipients'] = mlist.owner + mlist.moderator
-    # Don't decorate these messages with the header/footers
-    msgdata['nodecorate'] = True
-    msgdata['personalize'] = False
+class OwnerRecipients:
+    """Calculate the owner (and moderator) recipients for -owner postings."""
+
+    implements(IHandler)
+
+    name = 'owner-recipients'
+    description = _('Calculate the owner and moderator recipients.')
+
+    def process(self, mlist, msg, msgdata):
+        """See `IHandler`."""
+        # Short circuit if we've already calculated the recipients list,
+        # regardless of whether the list is empty or not.
+        if 'recipients' in msgdata:
+            return
+        # -owner messages go to both the owners and moderators, which is most
+        # conveniently accessed via the administrators roster.
+        recipients = set(admin.address.email
+                         for admin in mlist.administrators.members
+                         if admin.delivery_status == DeliveryStatus.enabled)
+        # To prevent -owner messages from going into a black hole, if there
+        # are no administrators available, the message goes to the site owner.
+        if len(recipients) == 0:
+            msgdata['recipients'] = set((config.mailman.site_owner,))
+        else:
+            msgdata['recipients'] = recipients
+        # Don't decorate these messages with the header/footers.  Eventually
+        # we should support unique decorations for owner emails.
+        msgdata['nodecorate'] = True

@@ -664,7 +664,7 @@ The admin message is sent to the moderators.
     Content-Type: text/plain; charset="us-ascii"
     Content-Transfer-Encoding: 7bit
     Subject: A Test List subscription notification
-    From: changeme@example.com
+    From: noreply@example.com
     To: alist-owner@example.com
     Message-ID: ...
     Date: ...
@@ -676,7 +676,7 @@ The admin message is sent to the moderators.
 
     >>> dump_msgdata(messages[0].msgdata)
     _parsemsg           : False
-    envsender           : changeme@example.com
+    envsender           : noreply@example.com
     listname            : alist@example.com
     nodecorate          : True
     recipients          : set([])
@@ -888,7 +888,7 @@ The goodbye message...
     Content-Type: text/plain; charset="us-ascii"
     Content-Transfer-Encoding: 7bit
     Subject: A Test List unsubscription notification
-    From: changeme@example.com
+    From: noreply@example.com
     To: alist-owner@example.com
     Message-ID: ...
     Date: ...
@@ -899,7 +899,7 @@ The goodbye message...
 
     >>> dump_msgdata(messages[1].msgdata)
     _parsemsg           : False
-    envsender           : changeme@example.com
+    envsender           : noreply@example.com
     listname            : alist@example.com
     nodecorate          : True
     recipients          : set([])
