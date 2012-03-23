@@ -10,7 +10,7 @@ Here is a history of user visible changes to Mailman.
 
 3.0 beta 1 -- "The Twilight Zone"
 =================================
-(20XX-XX-XX)
+(2012-03-23)
 
 Architecture
 ------------

@@ -18,7 +18,7 @@
 """Mailman version strings."""
 
 # Mailman version.
-VERSION = '3.0.0a8+'
+VERSION = '3.0.0b1'
 CODENAME = "The Twilight Zone"
 
 # And as a hex number in the manner of PY_VERSION_HEX.
