@@ -21,7 +21,7 @@ added.
     ... A message of great import.
     ... """)
 
-    >>> from mailman.pipeline.cook_headers import process
+    >>> from mailman.handlers.cook_headers import process
     >>> process(mlist, msg, dict(noack=True))
     >>> print msg.as_string()
     From: aperson@example.com

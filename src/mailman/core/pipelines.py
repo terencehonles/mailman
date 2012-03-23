@@ -131,7 +131,7 @@ class VirginPipeline(BasePipeline):
 def initialize():
     """Initialize the pipelines."""
     # Find all handlers in the registered plugins.
-    for handler_class in find_components('mailman.pipeline', IHandler):
+    for handler_class in find_components('mailman.handlers', IHandler):
         handler = handler_class()
         verifyObject(IHandler, handler)
         assert handler.name not in config.handlers, (

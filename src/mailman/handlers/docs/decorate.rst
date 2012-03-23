@@ -22,7 +22,7 @@ Digest messages get decorated during the digest creation phase so no extra
 decorations are added for digest messages.
 ::
 
-    >>> from mailman.pipeline.decorate import process
+    >>> from mailman.handlers.decorate import process
     >>> process(mlist, msg, dict(isdigest=True))
     >>> print msg.as_string()
     From: aperson@example.org

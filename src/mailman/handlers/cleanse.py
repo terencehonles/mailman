@@ -31,8 +31,8 @@ from email.utils import formataddr
 from zope.interface import implements
 
 from mailman.core.i18n import _
+from mailman.handlers.cook_headers import uheader
 from mailman.interfaces.handler import IHandler
-from mailman.pipeline.cook_headers import uheader
 
 
 log = logging.getLogger('mailman.post')

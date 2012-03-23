@@ -29,7 +29,7 @@ subject munging, a mailing list must have a preferred language.
     ... """)
     >>> msgdata = {}
 
-    >>> from mailman.pipeline.cook_headers import process
+    >>> from mailman.handlers.cook_headers import process
     >>> process(mlist, msg, msgdata)
 
 The original subject header is stored in the message metadata.  We must print

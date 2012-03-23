@@ -26,7 +26,7 @@ will place the sender in the message metadata for safe keeping.
     ... """)
     >>> msgdata = {}
 
-    >>> from mailman.pipeline.cook_headers import process
+    >>> from mailman.handlers.cook_headers import process
     >>> process(mlist, msg, msgdata)
     >>> print msgdata['original_sender']
     aperson@example.com
