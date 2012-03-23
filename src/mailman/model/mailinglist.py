@@ -168,6 +168,8 @@ class MailingList(Model):
     nondigestable = Bool()
     nonmember_rejection_notice = Unicode()
     obscure_addresses = Bool()
+    owner_chain = Unicode()
+    owner_pipeline = Unicode()
     personalize = Enum(Personalization)
     post_id = Int()
     posting_chain = Unicode()

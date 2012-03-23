@@ -32,10 +32,10 @@ from zope.component import getUtility
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.core import errors
+from mailman.handlers import mime_delete
 from mailman.interfaces.action import FilterAction
 from mailman.interfaces.member import MemberRole
 from mailman.interfaces.usermanager import IUserManager
-from mailman.pipeline import mime_delete
 from mailman.testing.helpers import (
     LogFileMark,
     get_queue_messages,

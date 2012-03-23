@@ -26,7 +26,7 @@ are defined.
     ... """)
     >>> msgdata = {}
 
-    >>> from mailman.pipeline.tagger import process
+    >>> from mailman.handlers.tagger import process
     >>> process(mlist, msg, msgdata)
     >>> print msg.as_string()
     Subject: foobar

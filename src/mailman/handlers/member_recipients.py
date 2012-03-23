@@ -23,12 +23,13 @@ on the `recipients' attribute of the message.  This attribute is used by the
 SendmailDeliver and BulkDeliver modules.
 """
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'CalculateRecipients',
+    'MemberRecipients',
     ]
+
 
 from zope.interface import implements
 
@@ -41,12 +42,12 @@ from mailman.utilities.string import wrap
 
 
 
-class CalculateRecipients:
+class MemberRecipients:
     """Calculate the regular (i.e. non-digest) recipients of the message."""
 
     implements(IHandler)
 
-    name = 'calculate-recipients'
+    name = 'member-recipients'
     description = _('Calculate the regular recipients of the message.')
 
     def process(self, mlist, msg, msgdata):
@@ -82,10 +83,9 @@ class CalculateRecipients:
                 # Bad Urgent: password, so reject it instead of passing it on.
                 # I think it's better that the sender know they screwed up
                 # than to deliver it normally.
-                listname = mlist.display_name
                 text = _("""\
-Your urgent message to the $listname mailing list was not authorized for
-delivery.  The original message as received by Mailman is attached.
+Your urgent message to the $mlist.display_name mailing list was not authorized
+for delivery.  The original message as received by Mailman is attached.
 """)
                 raise errors.RejectMessage(wrap(text))
         # Calculate the regular recipients of the message

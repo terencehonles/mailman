@@ -75,6 +75,8 @@ Database
    - real_name        -> display_name (mailinglist, user, address)
  * Schema additions:
    - mailinglist.filter_action
+   - mailinglist.owner_chain
+   - mailinglist.owner_pipeline
 
 REST
 ----

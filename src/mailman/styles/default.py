@@ -218,6 +218,11 @@ from: .*@uplinkpro.com
         # The default pipeline to send accepted messages through to the
         # mailing list's members.
         mlist.posting_pipeline = 'default-posting-pipeline'
+        # The processing chain that messages posted to this mailing list's
+        # -owner address gets processed by.
+        mlist.owner_chain = 'default-owner-chain'
+        # The default pipeline to send -owner email through.
+        mlist.owner_pipeline = 'default-owner-pipeline'
 
     def match(self, mailing_list, styles):
         """See `IStyle`."""

@@ -17,6 +17,14 @@
 
 """Mailman test layers."""
 
+# XXX 2012-03-23 BAW: Layers really really suck.  For example, the
+# test_owners_get_email() test requires that both the SMTPLayer and LMTPLayer
+# be set up, but there's apparently no way to do that and make zope.testing
+# happy.  This causes no tests failures, but it does cause errors at the end
+# of the full test run.  For now, I'll ignore that, but I do want to
+# eventually get rid of the zope.test* dependencies and use something like
+# testresources or some such.
+
 from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type

@@ -28,7 +28,7 @@ headers generally start with the `List-` prefix.
 
 The `rfc-2369` handler adds the `List-` headers.  `List-Id` is always added.
 
-    >>> from mailman.pipeline.rfc_2369 import process
+    >>> from mailman.handlers.rfc_2369 import process
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...

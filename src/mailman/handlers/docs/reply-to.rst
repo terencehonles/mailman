@@ -46,7 +46,7 @@ original message, the list's posting address simply gets inserted.
     ...
     ... """)
 
-    >>> from mailman.pipeline.cook_headers import process
+    >>> from mailman.handlers.cook_headers import process
     >>> process(mlist, msg, {})
     >>> len(msg.get_all('reply-to'))
     1

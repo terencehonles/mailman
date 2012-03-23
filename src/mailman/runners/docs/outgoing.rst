@@ -33,7 +33,7 @@ move messages to the 'retry queue' for handling delivery failures.
 Normally, messages would show up in the outgoing queue after the message has
 been processed by the rule set and pipeline.  But we can simulate that here by
 injecting a message directly into the outgoing queue.  First though, we must
-call the ``calculate-recipients`` handler so that the message metadata will be
+call the ``member-recipients`` handler so that the message metadata will be
 populated with the list of addresses to deliver the message to.
 ::
 
@@ -47,7 +47,7 @@ populated with the list of addresses to deliver the message to.
     ... """)
 
     >>> msgdata = {}
-    >>> handler = config.handlers['calculate-recipients']
+    >>> handler = config.handlers['member-recipients']
     >>> handler.process(mlist, msg, msgdata)
     >>> outgoing_queue = config.switchboards['out']
 

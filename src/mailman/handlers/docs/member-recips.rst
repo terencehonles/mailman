@@ -6,10 +6,10 @@ Every message that makes it through to the list membership gets sent to a set
 of recipient addresses.  These addresses are calculated by one of the handler
 modules and depends on a host of factors.
 
-    >>> mlist = create_list('_xtest@example.com')
+    >>> mlist = create_list('test@example.com')
 
-Recipients are calculate from the list members, so add a bunch of members to
-start out with.  First, create a bunch of addresses...
+Recipients are calculate from the list membership, so first some people
+subscribe to the mailing list...
 ::
 
     >>> from mailman.interfaces.usermanager import IUserManager
@@ -35,33 +35,10 @@ start out with.  First, create a bunch of addresses...
 
 ...then make some of the members digest members.
 
-    >>> from mailman.core.constants import DeliveryMode
+    >>> from mailman.interfaces.member import DeliveryMode
     >>> member_d.preferences.delivery_mode = DeliveryMode.plaintext_digests
     >>> member_e.preferences.delivery_mode = DeliveryMode.mime_digests
     >>> member_f.preferences.delivery_mode = DeliveryMode.summary_digests
-
-
-Short-circuiting
-================
-
-Sometimes, the list of recipients already exists in the message metadata.
-This can happen for example, when a message was previously delivered to some
-but not all of the recipients.
-::
-
-    >>> msg = message_from_string("""\
-    ... From: Xavier Person <xperson@example.com>
-    ...
-    ... Something of great import.
-    ... """)
-    >>> recipients = set(('qperson@example.com', 'zperson@example.com'))
-    >>> msgdata = dict(recipients=recipients)
-
-    >>> handler = config.handlers['calculate-recipients']
-    >>> handler.process(mlist, msg, msgdata)
-    >>> dump_list(msgdata['recipients'])
-    qperson@example.com
-    zperson@example.com
 
 
 Regular delivery recipients
@@ -70,7 +47,13 @@ Regular delivery recipients
 Regular delivery recipients are those people who get messages from the list as
 soon as they are posted.  In other words, these folks are not digest members.
 
+    >>> msg = message_from_string("""\
+    ... From: Xavier Person <xperson@example.com>
+    ...
+    ... Something of great import.
+    ... """)
     >>> msgdata = {}
+    >>> handler = config.handlers['member-recipients']
     >>> handler.process(mlist, msg, msgdata)
     >>> dump_list(msgdata['recipients'])
     aperson@example.com
