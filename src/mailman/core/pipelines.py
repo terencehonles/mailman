@@ -15,12 +15,16 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Pipeline processor."""
+"""Built-in pipelines."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
+    'BasePipeline',
+    'OwnerPipeline',
+    'PostingPipeline',
+    'VirginPipeline',
     'initialize',
     'process',
     ]
@@ -89,11 +93,24 @@ class BasePipeline:
             yield handler
 
 
-class BuiltInPipeline(BasePipeline):
-    """The built-in pipeline."""
+
+class OwnerPipeline(BasePipeline):
+    """The built-in owner pipeline."""
+
+    name = 'default-owner-pipeline'
+    description = _('The built-in owner pipeline.')
+
+    _default_handlers = (
+        'owner-recipients',
+        'to-outgoing',
+        )
+
+
+class PostingPipeline(BasePipeline):
+    """The built-in posting pipeline."""
 
     name = 'default-posting-pipeline'
-    description = _('The built-in pipeline.')
+    description = _('The built-in posting pipeline.')
 
     _default_handlers = (
         'mime-delete',
@@ -139,6 +156,6 @@ def initialize():
                 handler.name, handler_class))
         config.handlers[handler.name] = handler
     # Set up some pipelines.
-    for pipeline_class in (BuiltInPipeline, VirginPipeline):
+    for pipeline_class in (OwnerPipeline, PostingPipeline, VirginPipeline):
         pipeline = pipeline_class()
         config.pipelines[pipeline.name] = pipeline

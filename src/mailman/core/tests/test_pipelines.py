@@ -21,11 +21,14 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
+    'TestOwnerPipeline',
+    'TestPostingPipeline',
     ]
 
 
 import unittest
 
+from zope.component import getUtility
 from zope.interface import implements
 
 from mailman.app.lifecycle import create_list
@@ -33,7 +36,9 @@ from mailman.config import config
 from mailman.core.errors import DiscardMessage, RejectMessage
 from mailman.core.pipelines import process
 from mailman.interfaces.handler import IHandler
+from mailman.interfaces.member import MemberRole
 from mailman.interfaces.pipeline import IPipeline
+from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
     LogFileMark,
     get_queue_messages,
@@ -78,7 +83,7 @@ class RejectingPipeline:
 
 
 
-class TestBuiltinPipeline(unittest.TestCase):
+class TestPostingPipeline(unittest.TestCase):
     """Test various aspects of the built-in postings pipeline."""
 
     layer = ConfigLayer
@@ -133,3 +138,42 @@ testing
         messages = get_queue_messages('virgin')
         self.assertEqual(len(messages), 1)
         self.assertEqual(str(messages[0].msg['subject']), 'a test')
+
+
+
+class TestOwnerPipeline(unittest.TestCase):
+    """Test various aspects of the built-in owner pipeline."""
+
+    layer = ConfigLayer
+
+    def setUp(self):
+        self._mlist = create_list('test@example.com')
+        user_manager = getUtility(IUserManager)
+        anne = user_manager.create_address('anne@example.com')
+        bart = user_manager.create_address('bart@example.com')
+        self._mlist.subscribe(anne, MemberRole.owner)
+        self._mlist.subscribe(bart, MemberRole.moderator)
+        self._msg = mfs("""\
+From: Anne Person <anne@example.org>
+To: test-owner@example.com
+
+""")
+
+    def test_calculate_recipients(self):
+        # Recipients are the administrators of the mailing list.
+        msgdata = dict(listname='test@example.com',
+                       to_owner=True)
+        process(self._mlist, self._msg, msgdata,
+                pipeline_name='default-owner-pipeline')
+        self.assertEqual(msgdata['recipients'], set(('anne@example.com',
+                                                     'bart@example.com')))
+
+    def test_to_outgoing(self):
+        # The message, with the calculated recipients, gets put in the
+        # outgoing queue.
+        process(self._mlist, self._msg, {},
+                pipeline_name='default-owner-pipeline')
+        messages = get_queue_messages('out', sort_on='to')
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(messages[0].msgdata['recipients'], 
+                         set(('anne@example.com', 'bart@example.com')))
