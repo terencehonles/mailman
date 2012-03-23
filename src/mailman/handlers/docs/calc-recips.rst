@@ -57,7 +57,7 @@ but not all of the recipients.
     >>> recipients = set(('qperson@example.com', 'zperson@example.com'))
     >>> msgdata = dict(recipients=recipients)
 
-    >>> handler = config.handlers['calculate-recipients']
+    >>> handler = config.handlers['member-recipients']
     >>> handler.process(mlist, msg, msgdata)
     >>> dump_list(msgdata['recipients'])
     qperson@example.com

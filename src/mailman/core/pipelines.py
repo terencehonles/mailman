@@ -98,7 +98,7 @@ class BuiltInPipeline(BasePipeline):
     _default_handlers = (
         'mime-delete',
         'tagger',
-        'calculate-recipients',
+        'member-recipients',
         'avoid-duplicates',
         'cleanse',
         'cleanse-dkim',

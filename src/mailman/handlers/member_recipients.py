@@ -27,7 +27,7 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
-    'CalculateRecipients',
+    'MemberRecipients',
     ]
 
 from zope.interface import implements
@@ -41,12 +41,12 @@ from mailman.utilities.string import wrap
 
 
 
-class CalculateRecipients:
+class MemberRecipients:
     """Calculate the regular (i.e. non-digest) recipients of the message."""
 
     implements(IHandler)
 
-    name = 'calculate-recipients'
+    name = 'member-recipients'
     description = _('Calculate the regular recipients of the message.')
 
     def process(self, mlist, msg, msgdata):
