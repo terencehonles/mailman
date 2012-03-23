@@ -180,6 +180,8 @@ CREATE TABLE mailinglist (
     nondigestable BOOLEAN,
     nonmember_rejection_notice TEXT,
     obscure_addresses BOOLEAN,
+    owner_chain TEXT,
+    owner_pipeline TEXT,
     personalize INTEGER,
     post_id INTEGER,
     posting_chain TEXT,

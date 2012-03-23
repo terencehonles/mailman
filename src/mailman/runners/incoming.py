@@ -61,6 +61,9 @@ class IncomingRunner(Runner):
                 pass
         config.db.commit()
         # Process the message through the mailing list's start chain.
-        process(mlist, msg, msgdata, mlist.posting_chain)
+        start_chain = (mlist.owner_chain
+                       if msgdata.get('to_owner', False)
+                       else mlist.posting_chain)
+        process(mlist, msg, msgdata, start_chain)
         # Do not keep this message queued.
         return False

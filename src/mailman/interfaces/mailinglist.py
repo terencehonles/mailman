@@ -382,7 +382,7 @@ class IMailingList(Interface):
     # Processing.
 
     posting_chain = Attribute(
-        """This mailing list's moderation chain.
+        """This mailing list's posting moderation chain.
 
         When messages are posted to a mailing list, it first goes through a
         moderation chain to determine whether the message will be accepted.
@@ -395,6 +395,24 @@ class IMailingList(Interface):
         Every mailing list has a processing pipeline that messages flow
         through once they've been accepted for posting to the mailing list.
         This attribute names a pipeline for postings, which must exist.
+        """)
+
+    owner_chain = Attribute(
+        """This mailing list's owner moderation chain.
+
+        When messages are posted to the owners of a mailing list, it first
+        goes through a moderation chain to determine whether the message will
+        be accepted.  This attribute names a chain for postings, which must
+        exist.
+        """)
+
+    owner_pipeline = Attribute(
+        """This mailing list's owner posting pipeline.
+
+        Every mailing list has a processing pipeline that messages flow
+        through once they've been accepted for posting to the owners of a
+        mailing list.  This attribute names a pipeline for postings, which
+        must exist.
         """)
 
     data_path = Attribute(
