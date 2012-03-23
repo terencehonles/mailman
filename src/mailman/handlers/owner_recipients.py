@@ -62,3 +62,6 @@ class OwnerRecipients:
         # Don't decorate these messages with the header/footers.  Eventually
         # we should support unique decorations for owner emails.
         msgdata['nodecorate'] = True
+        # We should probably always VERP deliveries to the owners.  We
+        # *really* want to know if they are bouncing.
+        msgdata['verp'] = True
