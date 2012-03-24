@@ -85,6 +85,7 @@ class TestArchiveRunner(unittest.TestCase):
         [archiver.mail_archive]
         enable: no
         """)
+        self._archiveq = config.switchboards['archive']
         self._msg = mfs("""\
 From: aperson@example.com
 To: test@example.com
@@ -101,7 +102,20 @@ First post!
 
     def test_archive_runner(self):
         # Ensure that the archive runner ends up archiving the message.
-        config.switchboards['archive'].enqueue(
+        self._archiveq.enqueue(
+            self._msg, {}, listname=self._mlist.fqdn_listname)
+        self._runner.run()
+        # There should now be a copy of the message in the file system.
+        filename = os.path.join(
+            config.MESSAGES_DIR, '4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB')
+        with open(filename) as fp:
+            archived = message_from_file(fp)
+        self.assertEqual(archived['message-id'], '<first>')
+
+    def test_archive_runner_with_dated_message(self):
+        # LP: #963612 FIXME
+        self._msg['Date'] = 'Sat, 11 Mar 2011 03:19:38 -0500'
+        self._archiveq.enqueue(
             self._msg, {}, listname=self._mlist.fqdn_listname)
         self._runner.run()
         # There should now be a copy of the message in the file system.

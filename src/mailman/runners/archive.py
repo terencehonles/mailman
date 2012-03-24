@@ -50,34 +50,35 @@ class ArchiveRunner(Runner):
         clobber = False
         original_date = msg.get('date')
         received_time = formatdate(msgdata['received_time'])
-        if not original_date:
-            clobber = True
-        elif int(config.archiver.pipermail.clobber_date_policy) == 1:
-            clobber = True
-        elif int(config.archiver.pipermail.clobber_date_policy) == 2:
-            # What's the timestamp on the original message?
-            timetup = parsedate_tz(original_date)
-            now = datetime.now()
-            try:
-                if not timetup:
-                    clobber = True
-                else:
-                    utc_timestamp = datetime.fromtimestamp(mktime_tz(timetup))
-                    date_skew = as_timedelta(
-                        config.archiver.pipermail.allowable_sane_date_skew)
-                    clobber = (abs(now - utc_timestamp) > date_skew)
-            except (ValueError, OverflowError):
-                # The likely cause of this is that the year in the Date: field
-                # is horribly incorrect, e.g. (from SF bug # 571634):
-                # Date: Tue, 18 Jun 0102 05:12:09 +0500
-                # Obviously clobber such dates.
-                clobber = True
-        if clobber:
-            del msg['date']
-            del msg['x-original-date']
-            msg['Date'] = received_time
-            if original_date:
-                msg['X-Original-Date'] = original_date
+        # FIXME 2012-03-23 BAW: LP: #963612
+        ## if not original_date:
+        ##     clobber = True
+        ## elif int(config.archiver.pipermail.clobber_date_policy) == 1:
+        ##     clobber = True
+        ## elif int(config.archiver.pipermail.clobber_date_policy) == 2:
+        ##     # What's the timestamp on the original message?
+        ##     timetup = parsedate_tz(original_date)
+        ##     now = datetime.now()
+        ##     try:
+        ##         if not timetup:
+        ##             clobber = True
+        ##         else:
+        ##             utc_timestamp = datetime.fromtimestamp(mktime_tz(timetup))
+        ##             date_skew = as_timedelta(
+        ##                 config.archiver.pipermail.allowable_sane_date_skew)
+        ##             clobber = (abs(now - utc_timestamp) > date_skew)
+        ##     except (ValueError, OverflowError):
+        ##         # The likely cause of this is that the year in the Date: field
+        ##         # is horribly incorrect, e.g. (from SF bug # 571634):
+        ##         # Date: Tue, 18 Jun 0102 05:12:09 +0500
+        ##         # Obviously clobber such dates.
+        ##         clobber = True
+        ## if clobber:
+        ##     del msg['date']
+        ##     del msg['x-original-date']
+        ##     msg['Date'] = received_time
+        ##     if original_date:
+        ##         msg['X-Original-Date'] = original_date
         # Always put an indication of when we received the message.
         msg['X-List-Received-Date'] = received_time
         # While a list archiving lock is acquired, archive the message.
