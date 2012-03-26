@@ -8,7 +8,7 @@ Copyright (C) 1998-2012 by the Free Software Foundation, Inc.
 Here is a history of user visible changes to Mailman.
 
 
-3.0 beta 1 -- "Freeze"
+3.0 beta 2 -- "Freeze"
 ======================
 (20XX-XX-XX)
 
