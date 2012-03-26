@@ -28,7 +28,7 @@ Configuration
  * New configuration variables `clobber_date` and `clobber_skew` supported in
    every `[archiver.<name>]` section.  These are used to determine under what
    circumstances a message destined for a specific archiver should have its
-   `Date:` header clobbered.
+   `Date:` header clobbered.  (LP: #963612)
 
 
 3.0 beta 1 -- "The Twilight Zone"
