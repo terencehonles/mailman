@@ -2,39 +2,62 @@
 Getting started with GNU Mailman
 ================================
 
-Copyright (C) 2008-2011 by the Free Software Foundation, Inc.
+Copyright (C) 2008-2012 by the Free Software Foundation, Inc.
 
 
-Alpha Release
-=============
+Beta Release
+============
 
-The Mailman 3 alpha releases are being provided to give developers and other
-interested people an early look at the next major version.  As such, some
-things may not work yet.  Your participation is encouraged.  Your feedback and
-contributions are welcome.  Please submit bug reports on the Mailman bug
+This is a beta release.  The developers believe has sufficient functionality
+to provide full services to a mailing list, but it is not ready for
+production yet.  Interfaces and administration may differ substantially from
+the alpha series, but changes should be incremental going forward from beta
+1.  Changes from the alpha series will be described in notes to the main
+text.
+
+The Mailman 3 beta releases are being provided to give developers and other
+interested people an early look at the next major version, and site
+administrators a chance to prepare for an eventual upgrade.  The core list
+management and post distribution functionality is now complete.  However,
+unlike Mailman 2 whose web interface and archives were tightly integrated
+with the core, Mailman 3 exposes a RESTful adminstrative interface to the
+web, communicates with archivers via LMTP (or SMTP), and leaves summary,
+search, and retrieval of archived messages to a separate application (a
+simple implementation is provided).  As of beta 1 the web interface and
+archiver are still at an early stage of development.  As such, some things
+may not work.
+
+Contributions are welcome.  Please submit bug reports on the Mailman bug
 tracker at https://bugs.launchpad.net/mailman though you will currently need
 to have a login on Launchpad to do so.  You can also send email to the
 mailman-developers@python.org mailing list.
 
 
-Using the Alpha
-===============
+Requirements
+============
 
 Python 2.6 or 2.7 is required.  It can either be the default 'python' on your
 $PATH or it can be accessible via the ``python2.6`` or ``python2.7`` binary.
 If your operating system does not include Python, see http://www.python.org
 downloading and installing it from source.  Python 3 is not yet supported.
 
-
-Building Mailman 3
-==================
+In this documentation, a bare ``python`` refers to the python used to invoke
+``bootstrap.py``, which might be ``python2.6`` or ``python2.7``, as well as
+the system ``python`` or an absolute path.
 
 Mailman 3 is now based on the `zc.buildout`_ infrastructure, which greatly
 simplifies building and testing Mailman.
 
 You do not need anything other than Python and an internet connection to get
-all the other Mailman 3 dependencies.  Here are the commands to build
-everything::
+all the other Mailman 3 dependencies.  (N.B. In early betas this is something
+of a lie, as the `web UI`_ and `archive UI`_ are distributed and installed
+separately.)
+
+
+Building Mailman 3
+==================
+
+Here are the commands to build everything in core Mailman::
 
     % python bootstrap.py
     % bin/buildout
@@ -50,16 +73,18 @@ You should see no failures.
 
 Build the online docs by running::
 
-    % bin/docs
+    % python setup.py build_sphinx
 
+[In the alphas we used ``bin/docs``, but this does not exist now.]
 (You might get warnings which you can safely ignore.)  Then visit
 
-    parts/docs/mailman/build/mailman/docs/README.html
+    build/sphinx/html/README.html
 
-in your browser to start reading the documentation.  Or you can just read the
+in your browser to start reading the documentation.  [In the alphas this was
+parts/docs/mailman/build/mailman/docs/README.html.]  Or you can just read the
 doctests by looking in all the 'doc' directories under the 'mailman' package.
 Doctests are documentation first, so they should give you a pretty good idea
-how various components of Mailman 3 works.
+how various components of Mailman 3 work.
 
 
 Running Mailman 3
@@ -102,6 +127,54 @@ The `web ui`_ is being developed as a separate, Django-based project.  For
 now, all configuration happens via the command line and REST API.
 
 
+Mailman Web UI
+--------------
+
+The Mailman 3 web UI is somewhat coupled to core Mailman via the "RESTful"
+client API.  It is expected that this architecture will make it possible for
+users with special needs to adapt the web UI, or even replace it entirely,
+with a reasonable amount of effort.  However, as a core feature of Mailman,
+the web UI will emphasize usability over modularity at first, so most users
+should use the web UI described here.  It may not be trivial to use a
+different web UI.
+
+The Mailman web UI was prototyped at the PyCon 2012 sprint, so it is "very
+very alpha" as of Mailman 3 beta 1, and comes in several components.  In
+particular, it requires a `Django`_ installation, and Bazaar checkouts of the
+`REST client module`_ and the `web ui`_ itself.  Building it is fairly
+straightforward, however, given Florian Fuchs' `Five Minute Guide` from his
+`blog post`_ on the Mailman wiki.  (Check the `blog post`_ for the most
+recent version!)
+
+
+The List Archiver
+-----------------
+
+Experience with Mailman 2's "pipermail" archiver has demonstrated that it is
+unnecessary for the archiver to be tightly coupled to core Mailman, and that
+it is useful to provide a simple, standard interface for third-party
+archiving tools and services.  For this reason, Mailman 3 uses the standard
+mail transport protocols LMTP and SMTP to forward posts to archivers after
+processing for list distribution.  Summary, search, and retrieval of archived
+posts are handled by a separate application.
+
+A new `archive UI`_ called Hyperkitty, based on the `notmuch mail indexer`_
+and `Django`_, was prototyped at the PyCon 2012 sprint by Toshio Kuratomi,
+and like the web UI it is "very very alpha" as of Mailman 3 beta 1.  Unlike
+the web UI (and Mailman 2's default "pipermail" archiver), the "hyperkitty"
+archiver is very loosely coupled to Mailman 3 core.  In fact, any email
+application that speaks LMTP or SMTP will be able to use hyperkitty, and
+Mailman 3 can use any archiver that accepts posts via LMTP or SMTP.
+
+A `five minute guide to hyperkitty`_ is based on Toshio Kuratomi's README.
+
 .. _`zc.buildout`: http://pypi.python.org/pypi/zc.buildout
 .. _`lazr.config`: http://pypi.python.org/pypi/lazr.config
 .. _`web ui`: https://launchpad.net/mailmanweb
+.. _`archive UI`: https://launchpad.net/hyperkitty
+.. _`Django`: http://djangoproject.org/
+.. _`REST client module`: https://launchpad.net/mailman.client
+.. _`Five Minute Guide the Web UI`: WebUIin5.html
+.. _`blog post`: http://wiki.list.org/display/DEV/A+5+minute+guide+to+get+the+Mailman+web+UI+running
+.. _`notmuch mail indexer`: http://notmuchmail.org
+.. _`five minute guide to hyperkitty`: ArchiveUIin5.html
