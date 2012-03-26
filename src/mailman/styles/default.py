@@ -27,8 +27,7 @@ __all__ = [
 
 # XXX Styles need to be reconciled with lazr.config.
 
-import datetime
-
+from datetime import timedelta
 from zope.interface import implements
 
 from mailman.core.i18n import _
@@ -153,16 +152,15 @@ from: .*@uplinkpro.com
         mlist.autoresponse_postings_text = ''
         mlist.autorespond_requests = ResponseAction.none
         mlist.autoresponse_request_text = ''
-        mlist.autoresponse_grace_period = datetime.timedelta(days=90)
+        mlist.autoresponse_grace_period = timedelta(days=90)
         # Bounces
         mlist.forward_unrecognized_bounces_to = (
             UnrecognizedBounceDisposition.administrators)
         mlist.process_bounces = True
         mlist.bounce_score_threshold = 5.0
-        mlist.bounce_info_stale_after = datetime.timedelta(days=7)
+        mlist.bounce_info_stale_after = timedelta(days=7)
         mlist.bounce_you_are_disabled_warnings = 3
-        mlist.bounce_you_are_disabled_warnings_interval = (
-            datetime.timedelta(days=7))
+        mlist.bounce_you_are_disabled_warnings_interval = timedelta(days=7)
         mlist.bounce_notify_owner_on_disable = True
         mlist.bounce_notify_owner_on_removal = True
         # This holds legacy member related information.  It's keyed by the

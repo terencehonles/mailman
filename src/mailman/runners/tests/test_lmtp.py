@@ -28,6 +28,8 @@ __all__ = [
 import smtplib
 import unittest
 
+from datetime import datetime
+
 from mailman.app.lifecycle import create_list
 from mailman.config import config
 from mailman.testing.helpers import get_lmtp_client, get_queue_messages
@@ -96,3 +98,17 @@ Subject: This has a Message-ID but no X-Message-ID-Hash
         self.assertEqual(len(all_headers), 1)
         self.assertEqual(messages[0].msg['x-message-id-hash'],
                          'MS6QLWERIJLGCRF44J7USBFDELMNT2BW')
+
+    def test_received_time(self):
+        # The LMTP runner adds a `received_time` key to the metadata.
+        self._lmtp.sendmail('anne@example.com', ['test@example.com'], """\
+From: anne@example.com
+To: test@example.com
+Subject: This has no Message-ID header
+Message-ID: <ant>
+
+""")
+        messages = get_queue_messages('in')
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(messages[0].msgdata['received_time'],
+                         datetime(2005, 8, 1, 7, 49, 23))

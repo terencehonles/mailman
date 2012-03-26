@@ -25,8 +25,6 @@ __all__ = [
     ]
 
 
-import datetime
-
 from zope.event import notify
 from zope.interface import implements
 
@@ -36,6 +34,7 @@ from mailman.interfaces.listmanager import (
     IListManager, ListAlreadyExistsError, ListCreatedEvent, ListCreatingEvent,
     ListDeletedEvent, ListDeletingEvent)
 from mailman.model.mailinglist import MailingList
+from mailman.utilities.datetime import now
 
 
 
@@ -57,7 +56,7 @@ class ListManager:
         if mlist:
             raise ListAlreadyExistsError(fqdn_listname)
         mlist = MailingList(fqdn_listname)
-        mlist.created_at = datetime.datetime.now()
+        mlist.created_at = now()
         config.db.store.add(mlist)
         notify(ListCreatedEvent(mlist))
         return mlist

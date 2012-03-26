@@ -6,9 +6,10 @@ After a message is delivered, or more correctly, after it has been processed
 by the rest of the handlers in the incoming queue pipeline, a couple of
 bookkeeping pieces of information are updated.
 
-    >>> import datetime
+    >>> from datetime import timedelta
+    >>> from mailman.utilities.datetime import now
     >>> mlist = create_list('_xtest@example.com')
-    >>> post_time = datetime.datetime.now() - datetime.timedelta(minutes=10)
+    >>> post_time = now() - timedelta(minutes=10)
     >>> mlist.last_post_time = post_time
     >>> mlist.post_id = 10
 

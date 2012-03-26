@@ -26,7 +26,6 @@ __all__ = [
 
 
 import os
-import datetime
 
 from zope.interface import implements
 
@@ -35,6 +34,7 @@ from mailman.core.i18n import _
 from mailman.email.message import Message
 from mailman.interfaces.digests import DigestFrequency
 from mailman.interfaces.handler import IHandler
+from mailman.utilities.datetime import now as right_now
 from mailman.utilities.mailbox import Mailbox
 
 
@@ -85,7 +85,7 @@ class ToDigest:
 
 def bump_digest_number_and_volume(mlist):
     """Bump the digest number and volume."""
-    now = datetime.datetime.now()
+    now = right_now()
     if mlist.digest_last_sent_at is None:
         # There has been no previous digest.
         bump = False

@@ -21,11 +21,20 @@ from __future__ import absolute_import, unicode_literals
 
 __metaclass__ = type
 __all__ = [
+    'ClobberDate',
     'IArchiver',
     ]
 
 
+from flufl.enum import Enum
 from zope.interface import Interface, Attribute
+
+
+
+class ClobberDate(Enum):
+    never = 1
+    maybe = 2
+    always = 3
 
 
 

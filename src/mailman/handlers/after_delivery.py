@@ -25,12 +25,11 @@ __all__ = [
     ]
 
 
-import datetime
-
 from zope.interface import implements
 
 from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
+from mailman.utilities.datetime import now
 
 
 
@@ -44,5 +43,5 @@ class AfterDelivery:
 
     def process(self, mlist, msg, msgdata):
         """See `IHander`."""
-        mlist.last_post_time = datetime.datetime.now()
+        mlist.last_post_time = now()
         mlist.post_id += 1

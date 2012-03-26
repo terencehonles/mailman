@@ -230,8 +230,7 @@ We can also hold a message with some additional metadata.
     # collisions in the message storage.
     >>> del msg['message-id']
     >>> msgdata = dict(sender='aperson@example.com',
-    ...                approved=True,
-    ...                received_time=123.45)
+    ...                approved=True)
     >>> id_2 = moderator.hold_message(mlist, msg, msgdata, 'Feeling ornery')
     >>> requests.get_request(id_2) is not None
     True

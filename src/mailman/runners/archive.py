@@ -25,18 +25,63 @@ __all__ = [
     ]
 
 
-import os
+import copy
 import logging
 
+from email.utils import parsedate_tz, mktime_tz
 from datetime import datetime
-from email.utils import parsedate_tz, mktime_tz, formatdate
-from flufl.lock import Lock
 from lazr.config import as_timedelta
 
 from mailman.config import config
 from mailman.core.runner import Runner
+from mailman.interfaces.archiver import ClobberDate
+from mailman.utilities.datetime import RFC822_DATE_FMT, now
+
 
 log = logging.getLogger('mailman.error')
+
+
+
+def _should_clobber(msg, msgdata, archiver):
+    """Should the Date header in the original message get clobbered?"""
+    # Calculate the Date header of the message as a datetime.  What if there
+    # are multiple Date headers, even in violation of the RFC?  For now, take
+    # the first one.  If there are no Date headers, then definitely clobber.
+    original_date = msg.get('date')
+    if original_date is None:
+        return True
+    section = getattr(config.archiver, archiver, None)
+    if section is None:
+        log.error('No archiver config section found: {0}'.format(archiver))
+        return False
+    try:
+        clobber = ClobberDate[section.clobber_date]
+    except ValueError:
+        log.error('Invalid clobber_date for "{0}": {1}'.format(
+            archiver, section.clobber_date))
+        return False
+    if clobber is ClobberDate.always:
+        return True
+    elif clobber is ClobberDate.never:
+        return False
+    # Maybe we'll clobber the date.  Let's see if it's farther off from now
+    # than the skew period.
+    skew = as_timedelta(section.clobber_skew)
+    try:
+        time_tuple = parsedate_tz(original_date)
+    except (ValueError, OverflowError):
+        # The likely cause of this is that the year in the Date: field is
+        # horribly incorrect, e.g. (from SF bug # 571634):
+        #
+        # Date: Tue, 18 Jun 0102 05:12:09 +0500
+        #
+        # Obviously clobber such dates.
+        return True
+    if time_tuple is None:
+        # There was some other bogosity in the Date header.
+        return True
+    claimed_date = datetime.fromtimestamp(mktime_tz(time_tuple))
+    return (abs(now() - claimed_date) > skew)
 
 
 
@@ -44,49 +89,19 @@ class ArchiveRunner(Runner):
     """The archive runner."""
 
     def _dispose(self, mlist, msg, msgdata):
-        # Support clobber_date, i.e. setting the date in the archive to the
-        # received date, not the (potentially bogus) Date: header of the
-        # original message.
-        clobber = False
-        original_date = msg.get('date')
-        received_time = formatdate(msgdata['received_time'])
-        # FIXME 2012-03-23 BAW: LP: #963612
-        ## if not original_date:
-        ##     clobber = True
-        ## elif int(config.archiver.pipermail.clobber_date_policy) == 1:
-        ##     clobber = True
-        ## elif int(config.archiver.pipermail.clobber_date_policy) == 2:
-        ##     # What's the timestamp on the original message?
-        ##     timetup = parsedate_tz(original_date)
-        ##     now = datetime.now()
-        ##     try:
-        ##         if not timetup:
-        ##             clobber = True
-        ##         else:
-        ##             utc_timestamp = datetime.fromtimestamp(mktime_tz(timetup))
-        ##             date_skew = as_timedelta(
-        ##                 config.archiver.pipermail.allowable_sane_date_skew)
-        ##             clobber = (abs(now - utc_timestamp) > date_skew)
-        ##     except (ValueError, OverflowError):
-        ##         # The likely cause of this is that the year in the Date: field
-        ##         # is horribly incorrect, e.g. (from SF bug # 571634):
-        ##         # Date: Tue, 18 Jun 0102 05:12:09 +0500
-        ##         # Obviously clobber such dates.
-        ##         clobber = True
-        ## if clobber:
-        ##     del msg['date']
-        ##     del msg['x-original-date']
-        ##     msg['Date'] = received_time
-        ##     if original_date:
-        ##         msg['X-Original-Date'] = original_date
-        # Always put an indication of when we received the message.
-        msg['X-List-Received-Date'] = received_time
-        # While a list archiving lock is acquired, archive the message.
-        with Lock(os.path.join(mlist.data_path, 'archive.lck')):
-            for archiver in config.archivers:
-                # A problem in one archiver should not prevent other archivers
-                # from running.
-                try:
-                    archiver.archive_message(mlist, msg)
-                except Exception:
-                    log.exception('Broken archiver: %s' % archiver.name)
+        received_time = msgdata.get('received_time', now(strip_tzinfo=False))
+        for archiver in config.archivers:
+            msg_copy = copy.deepcopy(msg)
+            if _should_clobber(msg, msgdata, archiver.name):
+                original_date = msg_copy['date']
+                del msg_copy['date']
+                del msg_copy['x-original-date']
+                msg_copy['Date'] = received_time.strftime(RFC822_DATE_FMT)
+                if original_date:
+                    msg_copy['X-Original-Date'] = original_date
+            # A problem in one archiver should not prevent other archivers
+            # from running.
+            try:
+                archiver.archive_message(mlist, msg_copy)
+            except Exception:
+                log.exception('Broken archiver: %s' % archiver.name)

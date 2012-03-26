@@ -39,6 +39,31 @@ from mailman.testing.helpers import (
     make_testable_runner,
     specialized_message_from_string as mfs)
 from mailman.testing.layers import ConfigLayer
+from mailman.utilities.datetime import RFC822_DATE_FMT, factory, now
+
+
+
+# This helper will set up a specific archiver as appropriate for a specific
+# test.  It assumes the setUp() will just disable all archivers.
+def archiver(name, enable=False, clobber=None, skew=None):
+    def decorator(func):
+        def wrapper(*args, **kws):
+            config_name = 'archiver {0}'.format(name)
+            section = """
+            [archiver.{0}]
+            enable: {1}
+            clobber_date: {2}
+            clobber_skew: {3}
+            """.format(name,
+                       'yes' if enable else 'no',
+                       clobber, skew)
+            config.push(config_name, section)
+            try:
+                return func(*args, **kws)
+            finally:
+                config.pop(config_name)
+        return wrapper
+    return decorator
 
 
 
@@ -54,7 +79,7 @@ class DummyArchiver:
     def permalink(mlist, msg):
         filename = msg['x-message-id-hash']
         return 'http://archive.example.com/' + filename
-    
+
     @staticmethod
     def archive_message(mlist, msg):
         filename = msg['x-message-id-hash']
@@ -73,11 +98,12 @@ class TestArchiveRunner(unittest.TestCase):
 
     def setUp(self):
         self._mlist = create_list('test@example.com')
+        self._now = now()
         # Enable just the dummy archiver.
         config.push('dummy', """
         [archiver.dummy]
         class: mailman.runners.tests.test_archiver.DummyArchiver
-        enable: yes
+        enable: no
         [archiver.prototype]
         enable: no
         [archiver.mhonarc]
@@ -100,10 +126,13 @@ First post!
     def tearDown(self):
         config.pop('dummy')
 
+    @archiver('dummy', enable=True)
     def test_archive_runner(self):
         # Ensure that the archive runner ends up archiving the message.
         self._archiveq.enqueue(
-            self._msg, {}, listname=self._mlist.fqdn_listname)
+            self._msg, {},
+            listname=self._mlist.fqdn_listname,
+            received_time=now())
         self._runner.run()
         # There should now be a copy of the message in the file system.
         filename = os.path.join(
@@ -112,11 +141,14 @@ First post!
             archived = message_from_file(fp)
         self.assertEqual(archived['message-id'], '<first>')
 
+    @archiver('dummy', enable=True)
     def test_archive_runner_with_dated_message(self):
-        # LP: #963612 FIXME
-        self._msg['Date'] = 'Sat, 11 Mar 2011 03:19:38 -0500'
+        # Date headers don't throw off the archiver runner.
+        self._msg['Date'] = now(strip_tzinfo=False).strftime(RFC822_DATE_FMT)
         self._archiveq.enqueue(
-            self._msg, {}, listname=self._mlist.fqdn_listname)
+            self._msg, {},
+            listname=self._mlist.fqdn_listname,
+            received_time=now())
         self._runner.run()
         # There should now be a copy of the message in the file system.
         filename = os.path.join(
@@ -124,3 +156,105 @@ First post!
         with open(filename) as fp:
             archived = message_from_file(fp)
         self.assertEqual(archived['message-id'], '<first>')
+        self.assertEqual(archived['date'], 'Mon, 01 Aug 2005 07:49:23 +0000')
+
+    @archiver('dummy', enable=True, clobber='never')
+    def test_clobber_date_never(self):
+        # Even if the Date header is insanely off from the received time of
+        # the message, if clobber_date is 'never', the header is not clobbered.
+        self._msg['Date'] = now(strip_tzinfo=False).strftime(RFC822_DATE_FMT)
+        self._archiveq.enqueue(
+            self._msg, {},
+            listname=self._mlist.fqdn_listname,
+            received_time=now())
+        self._runner.run()
+        # There should now be a copy of the message in the file system.
+        filename = os.path.join(
+            config.MESSAGES_DIR, '4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB')
+        with open(filename) as fp:
+            archived = message_from_file(fp)
+        self.assertEqual(archived['message-id'], '<first>')
+        self.assertEqual(archived['date'], 'Mon, 01 Aug 2005 07:49:23 +0000')
+
+    @archiver('dummy', enable=True)
+    def test_clobber_dateless(self):
+        # A message with no Date header will always get clobbered.
+        self.assertEqual(self._msg['date'], None)
+        # Now, before enqueuing the message (well, really, calling 'now()'
+        # again), fast forward a few days.
+        self._archiveq.enqueue(
+            self._msg, {},
+            listname=self._mlist.fqdn_listname,
+            received_time=now(strip_tzinfo=False))
+        self._runner.run()
+        # There should now be a copy of the message in the file system.
+        filename = os.path.join(
+            config.MESSAGES_DIR, '4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB')
+        with open(filename) as fp:
+            archived = message_from_file(fp)
+        self.assertEqual(archived['message-id'], '<first>')
+        self.assertEqual(archived['date'], 'Mon, 01 Aug 2005 07:49:23 +0000')
+
+    @archiver('dummy', enable=True, clobber='always')
+    def test_clobber_date_always(self):
+        # The date always gets clobbered with the current received time.
+        self._msg['Date'] = now(strip_tzinfo=False).strftime(RFC822_DATE_FMT)
+        # Now, before enqueuing the message (well, really, calling 'now()'
+        # again as will happen in the runner), fast forward a few days.
+        self._archiveq.enqueue(
+            self._msg, {},
+            listname=self._mlist.fqdn_listname)
+        factory.fast_forward(days=4)
+        self._runner.run()
+        # There should now be a copy of the message in the file system.
+        filename = os.path.join(
+            config.MESSAGES_DIR, '4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB')
+        with open(filename) as fp:
+            archived = message_from_file(fp)
+        self.assertEqual(archived['message-id'], '<first>')
+        self.assertEqual(archived['date'], 'Fri, 05 Aug 2005 07:49:23 +0000')
+        self.assertEqual(archived['x-original-date'],
+                         'Mon, 01 Aug 2005 07:49:23 +0000')
+
+    @archiver('dummy', enable=True, clobber='maybe', skew='1d')
+    def test_clobber_date_maybe_when_insane(self):
+        # The date is clobbered if it's farther off from now than its skew
+        # period.
+        self._msg['Date'] = now(strip_tzinfo=False).strftime(RFC822_DATE_FMT)
+        # Now, before enqueuing the message (well, really, calling 'now()'
+        # again as will happen in the runner), fast forward a few days.
+        self._archiveq.enqueue(
+            self._msg, {},
+            listname=self._mlist.fqdn_listname)
+        factory.fast_forward(days=4)
+        self._runner.run()
+        # There should now be a copy of the message in the file system.
+        filename = os.path.join(
+            config.MESSAGES_DIR, '4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB')
+        with open(filename) as fp:
+            archived = message_from_file(fp)
+        self.assertEqual(archived['message-id'], '<first>')
+        self.assertEqual(archived['date'], 'Fri, 05 Aug 2005 07:49:23 +0000')
+        self.assertEqual(archived['x-original-date'],
+                         'Mon, 01 Aug 2005 07:49:23 +0000')
+
+    @archiver('dummy', enable=True, clobber='maybe', skew='10d')
+    def test_clobber_date_maybe_when_sane(self):
+        # The date is not clobbered if it's nearer to now than its skew
+        # period.
+        self._msg['Date'] = now(strip_tzinfo=False).strftime(RFC822_DATE_FMT)
+        # Now, before enqueuing the message (well, really, calling 'now()'
+        # again as will happen in the runner), fast forward a few days.
+        self._archiveq.enqueue(
+            self._msg, {},
+            listname=self._mlist.fqdn_listname)
+        factory.fast_forward(days=4)
+        self._runner.run()
+        # There should now be a copy of the message in the file system.
+        filename = os.path.join(
+            config.MESSAGES_DIR, '4CMWUN6BHVCMHMDAOSJZ2Q72G5M32MWB')
+        with open(filename) as fp:
+            archived = message_from_file(fp)
+        self.assertEqual(archived['message-id'], '<first>')
+        self.assertEqual(archived['date'], 'Mon, 01 Aug 2005 07:49:23 +0000')
+        self.assertEqual(archived['x-original-date'], None)

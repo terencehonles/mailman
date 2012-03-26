@@ -8,6 +8,29 @@ Copyright (C) 1998-2012 by the Free Software Foundation, Inc.
 Here is a history of user visible changes to Mailman.
 
 
+3.0 beta 1 -- "Freeze"
+======================
+(20XX-XX-XX)
+
+Architecture
+------------
+ * Internally, all datetimes are kept in the UTC timezone, however because of
+   LP: #280708, they are stored in the database in naive format.
+ * `received_time` is now added to the message metadata by the LMTP runner
+   instead of by `Switchboard.enqueue()`.  This latter no longer depends on
+   `received_time` in the metadata.
+ * The `ArchiveRunner` no longer acquires a lock before it calls the
+   individual archiver implementations, since not all of them need a lock.  If
+   they do, the implementations must acquire said lock themselves.
+
+Configuration
+-------------
+ * New configuration variables `clobber_date` and `clobber_skew` supported in
+   every `[archiver.<name>]` section.  These are used to determine under what
+   circumstances a message destined for a specific archiver should have its
+   `Date:` header clobbered.
+
+
 3.0 beta 1 -- "The Twilight Zone"
 =================================
 (2012-03-23)

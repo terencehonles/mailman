@@ -44,7 +44,9 @@ from mailman.core.runner import Runner
 from mailman.database.transaction import txn
 from mailman.email.message import Message
 from mailman.interfaces.listmanager import IListManager
+from mailman.utilities.datetime import now
 from mailman.utilities.email import add_message_hash
+
 
 elog = logging.getLogger('mailman.error')
 qlog = logging.getLogger('mailman.runner')
@@ -181,6 +183,7 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
         # see if it's destined for a valid mailing list.  If so, then queue
         # the message to the appropriate place and record a 250 status for
         # that recipient.  If not, record a failure status for that recipient.
+        received_time = now()
         for to in rcpttos:
             try:
                 to = parseaddr(to)[1].lower()
@@ -196,7 +199,8 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
                 # queue.
                 queue = None
                 msgdata = dict(listname=listname,
-                               original_size=msg.original_size)
+                               original_size=msg.original_size,
+                               received_time=received_time)
                 canonical_subaddress = SUBADDRESS_NAMES.get(subaddress)
                 queue = SUBADDRESS_QUEUES.get(canonical_subaddress)
                 if subaddress is None:

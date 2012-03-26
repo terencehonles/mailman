@@ -275,12 +275,13 @@ different except that the new address will still need to be verified before it
 can be used.
 ::
 
+    >>> from mailman.utilities.datetime import now
     >>> dperson = user_manager.create_user(
     ...     'dperson@example.com', 'Dave Person')
     >>> dperson
     <User "Dave Person" (...) at ...>
     >>> address = user_manager.get_address('dperson@example.com')
-    >>> address.verified_on = datetime.now()
+    >>> address.verified_on = now()
 
     >>> from operator import attrgetter
     >>> dump_list(repr(address) for address in dperson.addresses)

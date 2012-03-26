@@ -137,8 +137,7 @@ class Switchboard:
         # file name consists of two parts separated by a '+': the received
         # time for this message (i.e. when it first showed up on this system)
         # and the sha hex digest.
-        rcvtime = data.setdefault('received_time', now)
-        filebase = repr(rcvtime) + '+' + hashlib.sha1(hashfood).hexdigest()
+        filebase = repr(now) + '+' + hashlib.sha1(hashfood).hexdigest()
         filename = os.path.join(self.queue_directory, filebase + '.pck')
         tmpfile = filename + '.tmp'
         # Always add the metadata schema version number

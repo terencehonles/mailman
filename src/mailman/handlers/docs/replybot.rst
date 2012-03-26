@@ -21,11 +21,11 @@ automatic response grace period which specifies how much time must pass before
 a second response will be sent, with 0 meaning "there is no grace period".
 ::
 
-    >>> import datetime
+    >>> from datetime import timedelta
     >>> from mailman.interfaces.autorespond import ResponseAction
 
     >>> mlist.autorespond_owner = ResponseAction.respond_and_continue
-    >>> mlist.autoresponse_grace_period = datetime.timedelta()
+    >>> mlist.autoresponse_grace_period = timedelta()
     >>> mlist.autoresponse_owner_text = 'owner autoresponse text'
 
     >>> msg = message_from_string("""\
@@ -242,7 +242,7 @@ Automatic responses have a grace period, during which no additional responses
 will be sent.  This is so as not to bombard the sender with responses.  The
 grace period is measured in days.
 
-    >>> mlist.autoresponse_grace_period = datetime.timedelta(days=10)
+    >>> mlist.autoresponse_grace_period = timedelta(days=10)
 
 When a response is sent to a person via any of the owner, request, or postings
 addresses, the response date is recorded.  The grace period is usually

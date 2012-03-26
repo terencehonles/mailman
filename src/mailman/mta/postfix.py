@@ -27,7 +27,6 @@ __all__ = [
 
 import os
 import logging
-import datetime
 
 from flufl.lock import Lock
 from operator import attrgetter
@@ -38,6 +37,7 @@ from mailman.config import config
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.mta import (
     IMailTransportAgentAliases, IMailTransportAgentLifecycle)
+from mailman.utilities.datetime import now
 
 
 log = logging.getLogger('mailman.error')
@@ -124,7 +124,7 @@ class LMTP:
 # file.  YOU SHOULD NOT MANUALLY EDIT THIS FILE unless you know what you're
 # doing, and can keep the two files properly in sync.  If you screw it up,
 # you're on your own.
-""".format(datetime.datetime.now().replace(microsecond=0))
+""".format(now().replace(microsecond=0))
         sort_key = attrgetter('list_name')
         for domain in sorted(by_domain):
             print >> fp, """\

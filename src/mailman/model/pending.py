@@ -29,7 +29,6 @@ __all__ = [
 import time
 import random
 import hashlib
-import datetime
 
 from lazr.config import as_timedelta
 from storm.locals import DateTime, Int, RawStr, ReferenceSet, Unicode
@@ -40,6 +39,7 @@ from mailman.config import config
 from mailman.database.model import Model
 from mailman.interfaces.pending import (
     IPendable, IPended, IPendedKeyValue, IPendings)
+from mailman.utilities.datetime import now
 from mailman.utilities.modules import call_name
 
 
@@ -98,8 +98,8 @@ class Pendings:
         # does the hash calculation.  The integral parts of the time values
         # are discarded because they're the most predictable bits.
         for attempts in range(3):
-            now = time.time()
-            x = random.random() + now % 1.0 + time.clock() % 1.0
+            right_now = time.time()
+            x = random.random() + right_now % 1.0 + time.clock() % 1.0
             # Use sha1 because it produces shorter strings.
             token = hashlib.sha1(repr(x)).hexdigest()
             # In practice, we'll never get a duplicate, but we'll be anal
@@ -111,7 +111,7 @@ class Pendings:
         # Create the record, and then the individual key/value pairs.
         pending = Pended(
             token=token,
-            expiration_date=datetime.datetime.now() + lifetime)
+            expiration_date=now() + lifetime)
         for key, value in pendable.items():
             if isinstance(key, str):
                 key = unicode(key, 'utf-8')
@@ -160,9 +160,9 @@ class Pendings:
 
     def evict(self):
         store = config.db.store
-        now = datetime.datetime.now()
+        right_now = now()
         for pending in store.find(Pended):
-            if pending.expiration_date < now:
+            if pending.expiration_date < right_now:
                 # Find all PendedKeyValue entries that are associated with the
                 # pending object's ID.
                 q = store.find(PendedKeyValue,

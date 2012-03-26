@@ -292,8 +292,8 @@ Once Anne has verified her alternative address though, it can be used to
 unsubscribe her from the list.
 ::
 
-    >>> from datetime import datetime
-    >>> address.verified_on = datetime.now()
+    >>> from mailman.utilities.datetime import now
+    >>> address.verified_on = now()
 
     >>> results = Results()
     >>> print leave.process(mlist, msg, {}, (), results)

@@ -59,7 +59,6 @@ Once we've figured out the file name of the shunted message, we can print it.
         'bad': u'yes',
         'bar': u'baz',
         'foo': 7,
-        u'received_time': ...
         u'version': 3}
     [----- end pickle -----]
 
