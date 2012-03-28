@@ -30,6 +30,11 @@ Configuration
    circumstances a message destined for a specific archiver should have its
    `Date:` header clobbered.  (LP: #963612)
 
+Documentation
+-------------
+ * Some additional documentation on related components such as Postorius and
+   hyperkitty have been added, given by Stephen J Turnbull.
+
 
 3.0 beta 1 -- "The Twilight Zone"
 =================================

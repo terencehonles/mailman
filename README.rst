@@ -38,6 +38,18 @@ Table of Contents
     src/mailman/docs/DATABASE
     src/mailman/docs/MTA
     src/mailman/docs/8-miles-high
+    src/mailman/docs/WebUIin5
+    src/mailman/docs/ArchiveUIin5
+
+
+Mailman modules
+---------------
+
+These documents are generated from the doctest suite.
+
+.. toctree::
+    :glob:
+
     src/mailman/bin/docs/*
     src/mailman/commands/docs/*
     src/mailman/database/docs/*
