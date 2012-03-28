@@ -54,7 +54,7 @@ def who_callback(option, opt, value, parser):
         dest.discard(MemberAdaptor.BYBOUNCE)
     elif opt in ('-a', '--all'):
         dest.update(ALL)
-
+x5o
 
 def parseargs():
     parser = optparse.OptionParser(version=MAILMAN_VERSION,
