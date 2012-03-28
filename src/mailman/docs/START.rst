@@ -49,8 +49,8 @@ simplifies building and testing Mailman.
 
 During the beta program, you may need some additional dependencies, such as a
 C compiler and the Python development headers and libraries.  You will need an
-internet connection.  Also the `web UI`_ and `archive UI`_ are distributed and
-installed separately.
+internet connection.  Also `Postorius`_ (the web UI) and the `archive UI`_ are
+distributed and installed separately.
 
 
 Building Mailman 3
@@ -121,8 +121,8 @@ Try ``bin/mailman --help`` for more details.  You can use the commands
 ``bin/mailman start`` to start the runner subprocess daemons, and of course
 ``bin/mailman stop`` to stop them.
 
-The `web ui`_ is being developed as a separate, Django-based project.  For
-now, all configuration happens via the command line and REST API.
+Postorius is being developed as a separate, Django-based project.  For now,
+all configuration happens via the command line and REST API.
 
 
 Mailman Web UI

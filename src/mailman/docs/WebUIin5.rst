@@ -43,7 +43,7 @@ fine as long as you only want to work on the components related to the REST
 client or the web ui.
 
 
-mailman.client (the Python bindings for Mailman's ReST API)
+mailman.client (the Python bindings for Mailman's REST API)
 ===========================================================
 
 Download from Launchpad::
