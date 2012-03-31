@@ -22,6 +22,8 @@ Architecture
  * The `ArchiveRunner` no longer acquires a lock before it calls the
    individual archiver implementations, since not all of them need a lock.  If
    they do, the implementations must acquire said lock themselves.
+ * The `news` runner and queue has been renamed to the more accurate `nntp`.
+   Beta testers can can safely remove `$var_dir/queue/news`.
 
 Configuration
 -------------

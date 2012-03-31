@@ -1,23 +1,20 @@
 ===============
-The news runner
+The NNTP runner
 ===============
 
-The news runner gateways mailing list messages to an NNTP newsgroup.  One of
-the most important things this runner does is prepare the message for Usenet
-(yes, I know that NNTP is not Usenet, but this runner was originally written
-to gate to Usenet, which has its own rules).
+The NNTP runner gateways mailing list messages to an NNTP newsgroup.
 
-    >>> mlist = create_list('_xtest@example.com')
+    >>> mlist = create_list('test@example.com')
     >>> mlist.linked_newsgroup = 'comp.lang.python'
 
 Some NNTP servers such as INN reject messages containing a set of prohibited
-headers, so one of the things that the news runner does is remove these
-prohibited headers.
+headers, so one of the things that this runner does is remove these prohibited
+headers.
 ::
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
-    ... To: _xtest@example.com
+    ... To: test@example.com
     ... NNTP-Posting-Host: news.example.com
     ... NNTP-Posting-Date: today
     ... X-Trace: blah blah
@@ -34,13 +31,13 @@ prohibited headers.
     ... """)
     >>> msgdata = {}
 
-    >>> from mailman.runners.news import prepare_message
+    >>> from mailman.runners.nntp import prepare_message
     >>> prepare_message(mlist, msg, msgdata)
     >>> msgdata['prepped']
     True
     >>> print msg.as_string()
     From: aperson@example.com
-    To: _xtest@example.com
+    To: test@example.com
     Newsgroups: comp.lang.python
     Message-ID: ...
     Lines: 1
@@ -54,7 +51,7 @@ so the news runner must collapse or move these duplicate headers to an
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
-    ... To: _xtest@example.com
+    ... To: test@example.com
     ... To: two@example.com
     ... Cc: three@example.com
     ... Cc: four@example.com
@@ -74,7 +71,7 @@ so the news runner must collapse or move these duplicate headers to an
     Newsgroups: comp.lang.python
     Message-ID: ...
     Lines: 1
-    To: _xtest@example.com
+    To: test@example.com
     X-Original-To: two@example.com
     CC: three@example.com
     X-Original-CC: four@example.com
@@ -91,7 +88,7 @@ the message.
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
-    ... To: _xtest@example.com
+    ... To: test@example.com
     ... Cc: someother@example.com
     ... Content-Transfer-Encoding: yes
     ...
@@ -103,7 +100,7 @@ the message.
     True
     >>> print msg.as_string()
     From: aperson@example.com
-    To: _xtest@example.com
+    To: test@example.com
     Cc: someother@example.com
     Content-Transfer-Encoding: yes
     Newsgroups: comp.lang.python
@@ -125,31 +122,31 @@ posting address is added for the benefit of the Usenet system.
     >>> mlist.news_moderation = NewsModeration.open_moderated
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
-    ... To: _xtest@example.com
+    ... To: test@example.com
     ... Approved: this gets deleted
     ...
     ... """)
     >>> prepare_message(mlist, msg, {})
     >>> print msg['approved']
-    _xtest@example.com
+    test@example.com
 
     >>> mlist.news_moderation = NewsModeration.moderated
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
-    ... To: _xtest@example.com
+    ... To: test@example.com
     ... Approved: this gets deleted
     ...
     ... """)
     >>> prepare_message(mlist, msg, {})
     >>> print msg['approved']
-    _xtest@example.com
+    test@example.com
 
 But if the newsgroup is not moderated, the ``Approved:`` header is not changed.
 
     >>> mlist.news_moderation = NewsModeration.none
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
-    ... To: _xtest@example.com
+    ... To: test@example.com
     ... Approved: this doesn't get deleted
     ...
     ... """)

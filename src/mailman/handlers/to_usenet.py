@@ -17,7 +17,7 @@
 
 """Move the message to the mail->news queue."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -50,11 +50,12 @@ class ToUsenet:
     def process(self, mlist, msg, msgdata):
         """See `IHandler`."""
         # Short circuits.
-        if not mlist.gateway_to_news or \
-               msgdata.get('isdigest') or \
-               msgdata.get('fromusenet'):
+        if (not mlist.gateway_to_news or
+            msgdata.get('isdigest') or
+            msgdata.get('fromusenet')):
+            # Short-circuit.
             return
-        # sanity checks
+        # Sanity checks.
         error = []
         if not mlist.linked_newsgroup:
             error.append('no newsgroup')
@@ -65,5 +66,5 @@ class ToUsenet:
                       COMMASPACE.join(error))
             return
         # Put the message in the news runner's queue.
-        config.switchboards['news'].enqueue(
+        config.switchboards['nntp'].enqueue(
             msg, msgdata, listname=mlist.fqdn_listname)

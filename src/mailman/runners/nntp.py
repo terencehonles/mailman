@@ -99,8 +99,8 @@ def prepare_message(mlist, msg, msgdata):
     # messages? TK: We use stripped_subject (prefix stripped) which was
     # crafted in CookHeaders.py to ensure prefix was stripped from the subject
     # came from mailing list user.
-    stripped_subject = msgdata.get('stripped_subject') \
-                       or msgdata.get('origsubj')
+    stripped_subject = msgdata.get('stripped_subject',
+                                   msgdata.get('original_subject'))
     if not mlist.news_prefix_subject_too and stripped_subject is not None:
         del msg['subject']
         msg['subject'] = stripped_subject
