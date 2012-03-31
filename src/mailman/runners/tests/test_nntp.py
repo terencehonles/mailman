@@ -43,6 +43,7 @@ class TestNNTP(unittest.TestCase):
 
     def setUp(self):
         self._mlist = create_list('test@example.com')
+        self._mlist.linked_newsgroup = 'example.test'
         self._msg = mfs("""\
 From: anne@example.com
 To: test@example.com
@@ -139,3 +140,29 @@ Testing
         headers = self._msg.get_all('subject')
         self.assertEqual(len(headers), 1)
         self.assertEqual(headers[0], 'Re: Your test')
+
+    def test_add_newsgroups_header(self):
+        # Prepared messages get a Newsgroups header.
+        msgdata = dict(original_subject='Your test')
+        nntp.prepare_message(self._mlist, self._msg, msgdata)
+        self.assertEqual(self._msg['newsgroups'], 'example.test')
+
+    def test_add_newsgroups_header_to_existing(self):
+        # If the message already has a Newsgroups header, the linked newsgroup
+        # gets appended to that value, using comma-space separated lists.
+        self._msg['Newsgroups'] = 'foo.test, bar.test'
+        msgdata = dict(original_subject='Your test')
+        nntp.prepare_message(self._mlist, self._msg, msgdata)
+        headers = self._msg.get_all('newsgroups')
+        self.assertEqual(len(headers), 1)
+        self.assertEqual(headers[0], 'foo.test, bar.test, example.test')
+
+    def test_add_lines_header(self):
+        # A Lines: header seems useful.
+        nntp.prepare_message(self._mlist, self._msg, {})
+        self.assertEqual(self._msg['lines'], '1')
+
+    def test_the_message_has_been_prepared(self):
+        msgdata = {}
+        nntp.prepare_message(self._mlist, self._msg, msgdata)
+        self.assertTrue(msgdata.get('prepped'))

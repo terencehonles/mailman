@@ -23,7 +23,8 @@ Architecture
    individual archiver implementations, since not all of them need a lock.  If
    they do, the implementations must acquire said lock themselves.
  * The `news` runner and queue has been renamed to the more accurate `nntp`.
-   Beta testers can can safely remove `$var_dir/queue/news`.
+   The runner has also been ported to Mailman 3 (LP: #967409).  Beta testers
+   can can safely remove `$var_dir/queue/news`.
 
 Configuration
 -------------
