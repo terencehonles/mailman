@@ -32,6 +32,9 @@ Configuration
    every `[archiver.<name>]` section.  These are used to determine under what
    circumstances a message destined for a specific archiver should have its
    `Date:` header clobbered.  (LP: #963612)
+ * Configuration schema variable changes:
+   [nntp]username -> [nntp]user
+   [nntp]port (added)
 
 Documentation
 -------------

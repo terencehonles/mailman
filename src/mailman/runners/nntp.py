@@ -17,6 +17,14 @@
 
 """NNTP runner."""
 
+from __future__ import absolute_import, print_function, unicode_literals
+
+__metaclass__ = type
+__all__ = [
+    'NNTPRunner',
+    ]
+
+
 import re
 import email
 import socket
@@ -24,7 +32,6 @@ import logging
 import nntplib
 
 from cStringIO import StringIO
-from lazr.config import as_host_port
 
 from mailman.config import config
 from mailman.core.runner import Runner
@@ -50,39 +57,46 @@ mcre = re.compile(r"""
 
 
 
-class NewsRunner(Runner):
+class NNTPRunner(Runner):
     def _dispose(self, mlist, msg, msgdata):
+        # Get NNTP server connection information.
+        host = config.nntp.host.strip()
+        port = config.nntp.port.strip()
+        if len(port) == 0:
+            port = 119
+        else:
+            try:
+                port = int(port)
+            except (TypeError, ValueError):
+                log.exception('Bad [nntp]port value: {0}'.format(port))
+                port = 119
         # Make sure we have the most up-to-date state
-        mlist.Load()
         if not msgdata.get('prepped'):
             prepare_message(mlist, msg, msgdata)
+        # Flatten the message object, sticking it in a StringIO object
+        fp = StringIO(msg.as_string())
+        conn = None
         try:
-            # Flatten the message object, sticking it in a StringIO object
-            fp = StringIO(msg.as_string())
-            conn = None
-            try:
-                try:
-                    nntp_host, nntp_port = as_host_port(
-                        mlist.nntp_host, default_port=119)
-                    conn = nntplib.NNTP(nntp_host, nntp_port,
-                                        readermode=True,
-                                        user=config.nntp.username,
-                                        password=config.nntp.password)
-                    conn.post(fp)
-                except nntplib.error_temp, e:
-                    log.error('(NNTPDirect) NNTP error for list "%s": %s',
-                              mlist.internal_name(), e)
-                except socket.error, e:
-                    log.error('(NNTPDirect) socket error for list "%s": %s',
-                              mlist.internal_name(), e)
-            finally:
-                if conn:
-                    conn.quit()
-        except Exception, e:
+            conn = nntplib.NNTP(host, port,
+                                readermode=True,
+                                user=config.nntp.user,
+                                password=config.nntp.password)
+            conn.post(fp)
+        except nntplib.error_temp:
+            log.exception('{0} NNTP error for {1}'.format(
+                msg.get('message-id', 'n/a'), mlist.fqdn_listname))
+        except socket.error:
+            log.exception('{0} NNTP socket error for {1}'.format(
+                msg.get('message-id', 'n/a'), mlist.fqdn_listname))
+        except Exception:
             # Some other exception occurred, which we definitely did not
             # expect, so set this message up for requeuing.
-            self._log(e)
+            log.exception('{0} NNTP unexpected exception for {1}'.format(
+                msg.get('message-id', 'n/a'), mlist.fqdn_listname))
             return True
+        finally:
+            if conn:
+                conn.quit()
         return False
 
 
