@@ -35,7 +35,7 @@ It's easy to find out which queues are available.
         digest
         in
         lmtp
-        news
+        nntp
         out
         pipeline
         rest

@@ -190,7 +190,7 @@ def prefix_subject(mlist, msg, msgdata):
     ws = '\t'
     if len(lines) > 1 and lines[1] and lines[1][0] in ' \t':
         ws = lines[1][0]
-    msgdata['origsubj'] = subject
+    msgdata['original_subject'] = subject
     # The subject may be multilingual but we take the first charset as major
     # one and try to decode.  If it is decodable, returned subject is in one
     # line and cset is properly set.  If fail, subject is mime-encoded and

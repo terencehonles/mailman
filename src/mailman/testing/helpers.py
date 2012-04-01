@@ -25,6 +25,7 @@ __all__ = [
     'TestableMaster',
     'body_line_iterator',
     'call_api',
+    'configuration',
     'digest_mbox',
     'event_subscribers',
     'get_lmtp_client',
@@ -40,6 +41,7 @@ __all__ = [
 import os
 import json
 import time
+import uuid
 import errno
 import signal
 import socket
@@ -66,6 +68,9 @@ from mailman.interfaces.messages import IMessageStore
 from mailman.interfaces.styles import IStyleManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.utilities.mailbox import Mailbox
+
+
+NL = '\n'
 
 
 
@@ -328,6 +333,42 @@ def event_subscribers(*subscribers):
         yield
     finally:
         event.subscribers[:] = old_subscribers
+
+
+
+class configuration:
+    """A decorator/context manager for temporarily setting configurations."""
+
+    def __init__(self, section, **kws):
+        self._section = section
+        self._values = kws.copy()
+        self._uuid = uuid.uuid4().hex
+
+    def _apply(self):
+        lines = ['[{0}]'.format(self._section)]
+        for key, value in self._values.items():
+            lines.append('{0}: {1}'.format(key, value))
+        config.push(self._uuid, NL.join(lines))
+
+    def _remove(self):
+        config.pop(self._uuid)
+
+    def __enter__(self):
+        self._apply()
+
+    def __exit__(self, *exc_info):
+        self._remove()
+        # Do not suppress exceptions.
+        return False
+
+    def __call__(self, func):
+        def wrapper(*args, **kws):
+            self._apply()
+            try:
+                return func(*args, **kws)
+            finally:
+                self._remove()
+        return wrapper
 
 
 

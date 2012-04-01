@@ -22,6 +22,9 @@ Architecture
  * The `ArchiveRunner` no longer acquires a lock before it calls the
    individual archiver implementations, since not all of them need a lock.  If
    they do, the implementations must acquire said lock themselves.
+ * The `news` runner and queue has been renamed to the more accurate `nntp`.
+   The runner has also been ported to Mailman 3 (LP: #967409).  Beta testers
+   can can safely remove `$var_dir/queue/news`.
 
 Configuration
 -------------
@@ -29,6 +32,9 @@ Configuration
    every `[archiver.<name>]` section.  These are used to determine under what
    circumstances a message destined for a specific archiver should have its
    `Date:` header clobbered.  (LP: #963612)
+ * Configuration schema variable changes:
+   [nntp]username -> [nntp]user
+   [nntp]port (added)
 
 Documentation
 -------------

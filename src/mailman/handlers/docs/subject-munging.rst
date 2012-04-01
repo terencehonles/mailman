@@ -8,7 +8,7 @@ transformations.  Some headers get added, others get changed.  Some of these
 changes depend on mailing list settings and others depend on how the message
 is getting sent through the system.  We'll take things one-by-one.
 
-    >>> mlist = create_list('_xtest@example.com')
+    >>> mlist = create_list('test@example.com')
 
 
 Inserting a prefix
@@ -32,11 +32,9 @@ subject munging, a mailing list must have a preferred language.
     >>> from mailman.handlers.cook_headers import process
     >>> process(mlist, msg, msgdata)
 
-The original subject header is stored in the message metadata.  We must print
-the new ``Subject`` header because it gets converted from a string to an
-``email.header.Header`` instance which has an unhelpful ``repr``.
+The original subject header is stored in the message metadata.
 
-    >>> msgdata['origsubj']
+    >>> msgdata['original_subject']
     u''
     >>> print msg['subject']
     [XTest] (no subject)
@@ -52,7 +50,7 @@ at the beginning of the header's value.
     ... """)
     >>> msgdata = {}
     >>> process(mlist, msg, msgdata)
-    >>> print msgdata['origsubj']
+    >>> print msgdata['original_subject']
     Something important
     >>> print msg['subject']
     [XTest] Something important

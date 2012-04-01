@@ -26,9 +26,9 @@ from flufl.enum import Enum
 
 
 class NewsModeration(Enum):
-    # The newsgroup is not moderated
+    # The newsgroup is not moderated.
     none = 0
     # The newsgroup is moderated, but allows for an open posting policy.
     open_moderated = 1
-    # The newsgroup is moderated
+    # The newsgroup is moderated.
     moderated = 2

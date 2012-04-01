@@ -60,7 +60,7 @@ However there are currently no recipients for this message.
 
     >>> dump_msgdata(msgdata)
     original_sender : aperson@example.com
-    origsubj        : My first post
+    original_subject: My first post
     recipients      : set([])
     stripped_subject: My first post
 
@@ -90,7 +90,7 @@ processing queues.
     >>> dump_msgdata(messages[0].msgdata)
     _parsemsg       : False
     original_sender : aperson@example.com
-    origsubj        : My first post
+    original_subject: My first post
     recipients      : set([])
     stripped_subject: My first post
     version         : 3
@@ -98,7 +98,7 @@ processing queues.
 This mailing list is not linked to an NNTP newsgroup, so there's nothing in
 the outgoing nntp queue.
 
-    >>> messages = get_queue_messages('news')
+    >>> messages = get_queue_messages('nntp')
     >>> len(messages)
     0
 
@@ -128,7 +128,7 @@ delivered to end recipients.
     _parsemsg       : False
     listname        : test@example.com
     original_sender : aperson@example.com
-    origsubj        : My first post
+    original_subject: My first post
     recipients      : set([])
     stripped_subject: My first post
     version         : 3

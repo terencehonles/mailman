@@ -36,34 +36,11 @@ from mailman.config import config
 from mailman.interfaces.archiver import IArchiver
 from mailman.runners.archive import ArchiveRunner
 from mailman.testing.helpers import (
+    configuration,
     make_testable_runner,
     specialized_message_from_string as mfs)
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.datetime import RFC822_DATE_FMT, factory, now
-
-
-
-# This helper will set up a specific archiver as appropriate for a specific
-# test.  It assumes the setUp() will just disable all archivers.
-def archiver(name, enable=False, clobber=None, skew=None):
-    def decorator(func):
-        def wrapper(*args, **kws):
-            config_name = 'archiver {0}'.format(name)
-            section = """
-            [archiver.{0}]
-            enable: {1}
-            clobber_date: {2}
-            clobber_skew: {3}
-            """.format(name,
-                       'yes' if enable else 'no',
-                       clobber, skew)
-            config.push(config_name, section)
-            try:
-                return func(*args, **kws)
-            finally:
-                config.pop(config_name)
-        return wrapper
-    return decorator
 
 
 
@@ -126,7 +103,7 @@ First post!
     def tearDown(self):
         config.pop('dummy')
 
-    @archiver('dummy', enable=True)
+    @configuration('archiver.dummy', enable='yes')
     def test_archive_runner(self):
         # Ensure that the archive runner ends up archiving the message.
         self._archiveq.enqueue(
@@ -141,7 +118,7 @@ First post!
             archived = message_from_file(fp)
         self.assertEqual(archived['message-id'], '<first>')
 
-    @archiver('dummy', enable=True)
+    @configuration('archiver.dummy', enable='yes')
     def test_archive_runner_with_dated_message(self):
         # Date headers don't throw off the archiver runner.
         self._msg['Date'] = now(strip_tzinfo=False).strftime(RFC822_DATE_FMT)
@@ -158,7 +135,7 @@ First post!
         self.assertEqual(archived['message-id'], '<first>')
         self.assertEqual(archived['date'], 'Mon, 01 Aug 2005 07:49:23 +0000')
 
-    @archiver('dummy', enable=True, clobber='never')
+    @configuration('archiver.dummy', enable='yes', clobber_date='never')
     def test_clobber_date_never(self):
         # Even if the Date header is insanely off from the received time of
         # the message, if clobber_date is 'never', the header is not clobbered.
@@ -176,7 +153,7 @@ First post!
         self.assertEqual(archived['message-id'], '<first>')
         self.assertEqual(archived['date'], 'Mon, 01 Aug 2005 07:49:23 +0000')
 
-    @archiver('dummy', enable=True)
+    @configuration('archiver.dummy', enable='yes')
     def test_clobber_dateless(self):
         # A message with no Date header will always get clobbered.
         self.assertEqual(self._msg['date'], None)
@@ -195,7 +172,7 @@ First post!
         self.assertEqual(archived['message-id'], '<first>')
         self.assertEqual(archived['date'], 'Mon, 01 Aug 2005 07:49:23 +0000')
 
-    @archiver('dummy', enable=True, clobber='always')
+    @configuration('archiver.dummy', enable='yes', clobber_date='always')
     def test_clobber_date_always(self):
         # The date always gets clobbered with the current received time.
         self._msg['Date'] = now(strip_tzinfo=False).strftime(RFC822_DATE_FMT)
@@ -216,7 +193,8 @@ First post!
         self.assertEqual(archived['x-original-date'],
                          'Mon, 01 Aug 2005 07:49:23 +0000')
 
-    @archiver('dummy', enable=True, clobber='maybe', skew='1d')
+    @configuration('archiver.dummy', 
+                   enable='yes', clobber_date='maybe', clobber_skew='1d')
     def test_clobber_date_maybe_when_insane(self):
         # The date is clobbered if it's farther off from now than its skew
         # period.
@@ -238,7 +216,8 @@ First post!
         self.assertEqual(archived['x-original-date'],
                          'Mon, 01 Aug 2005 07:49:23 +0000')
 
-    @archiver('dummy', enable=True, clobber='maybe', skew='10d')
+    @configuration('archiver.dummy',
+                   enable='yes', clobber_date='maybe', clobber_skew='10d')
     def test_clobber_date_maybe_when_sane(self):
         # The date is not clobbered if it's nearer to now than its skew
         # period.
