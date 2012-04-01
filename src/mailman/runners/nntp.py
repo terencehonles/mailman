@@ -157,18 +157,26 @@ def prepare_message(mlist, msg, msgdata):
     # reject the message because of other problems.
     for header in config.nntp.remove_headers.split():
         del msg[header]
-    for rewrite_pairs in config.nntp.rewrite_duplicate_headers.splitlines():
-        if len(rewrite_pairs.strip()) == 0:
-            continue
-        header, rewrite = rewrite_pairs.split()
-        values = msg.get_all(header, [])
+    dup_headers = config.nntp.rewrite_duplicate_headers.split()
+    if len(dup_headers) % 2 != 0:
+        # There are an odd number of headers; ignore the last one.
+        bad_header = dup_headers.pop()
+        log.error('Ignoring odd [nntp]rewrite_duplicate_headers: {0}'.format(
+            bad_header))
+    dup_headers.reverse()
+    while dup_headers:
+        source = dup_headers.pop()
+        target = dup_headers.pop()
+        values = msg.get_all(source, [])
         if len(values) < 2:
-            # We only care about duplicates
+            # We only care about duplicates.
             continue
-        del msg[header]
-        # But keep the first one...
-        msg[header] = values[0]
-        for v in values[1:]:
-            msg[rewrite] = v
+        # Delete all the original headers.
+        del msg[source]
+        # Put the first value back on the original header.
+        msg[source] = values[0]
+        # And put all the subsequent values on the destination header.
+        for value in values[1:]:
+            msg[target] = value
     # Mark this message as prepared in case it has to be requeued.
     msgdata['prepped'] = True

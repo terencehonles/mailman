@@ -31,6 +31,7 @@ from mailman.app.lifecycle import create_list
 from mailman.interfaces.nntp import NewsModeration
 from mailman.runners import nntp
 from mailman.testing.helpers import (
+    configuration,
     specialized_message_from_string as mfs)
 from mailman.testing.layers import ConfigLayer
 
@@ -163,6 +164,63 @@ Testing
         self.assertEqual(self._msg['lines'], '1')
 
     def test_the_message_has_been_prepared(self):
+        # A key gets added to the metadata so that a retry won't try to
+        # re-apply all the preparations.
         msgdata = {}
         nntp.prepare_message(self._mlist, self._msg, msgdata)
         self.assertTrue(msgdata.get('prepped'))
+
+    @configuration('nntp', remove_headers='x-complaints-to')
+    def test_remove_headers(self):
+        # During preparation, headers which cause problems with certain NNTP
+        # servers such as INN get removed.
+        self._msg['X-Complaints-To'] = 'arguments@example.com'
+        nntp.prepare_message(self._mlist, self._msg, {})
+        self.assertEqual(self._msg['x-complaints-to'], None)
+
+    @configuration('nntp', rewrite_duplicate_headers="""
+        To X-Original-To
+        X-Fake X-Original-Fake
+        """)
+    def test_rewrite_headers(self):
+        # Some NNTP servers are very strict about duplicate headers.  What we
+        # can do is look at some headers and if they is more than one of that
+        # header in the message, all the headers are deleted except the first
+        # one, and then the other values are moved to the destination header.
+        #
+        # In this example, we'll create multiple To headers, which will all
+        # get moved to X-Original-To.  However, because there will only be one
+        # X-Fake header, it doesn't get rewritten.
+        self._msg['To'] = 'test@example.org'
+        self._msg['To'] = 'test@example.net'
+        self._msg['X-Fake'] = 'ignore me'
+        self.assertEqual(len(self._msg.get_all('to')), 3)
+        self.assertEqual(len(self._msg.get_all('x-fake')), 1)
+        nntp.prepare_message(self._mlist, self._msg, {})
+        tos = self._msg.get_all('to')
+        self.assertEqual(len(tos), 1)
+        self.assertEqual(tos[0], 'test@example.com')
+        original_tos = self._msg.get_all('x-original-to')
+        self.assertEqual(len(original_tos), 2)
+        self.assertEqual(original_tos, 
+                         ['test@example.org', 'test@example.net'])
+        fakes = self._msg.get_all('x-fake')
+        self.assertEqual(len(fakes), 1)
+        self.assertEqual(fakes[0], 'ignore me')
+        self.assertEqual(self._msg.get_all('x-original-fake'), None)
+
+    @configuration('nntp', rewrite_duplicate_headers="""
+        To X-Original-To
+        X-Fake
+        """)
+    def test_odd_duplicates(self):
+        # This is just a corner case, where there is an odd number of rewrite
+        # headers.  In that case, the odd-one-out does not get rewritten.
+        self._msg['x-fake'] = 'one'
+        self._msg['x-fake'] = 'two'
+        self._msg['x-fake'] = 'three'
+        self.assertEqual(len(self._msg.get_all('x-fake')), 3)
+        nntp.prepare_message(self._mlist, self._msg, {})
+        fakes = self._msg.get_all('x-fake')
+        self.assertEqual(len(fakes), 3)
+        self.assertEqual(fakes, ['one', 'two', 'three'])
