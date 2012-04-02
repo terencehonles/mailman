@@ -29,6 +29,7 @@ __all__ = [
     'digest_mbox',
     'event_subscribers',
     'get_lmtp_client',
+    'get_nntp_server',
     'get_queue_messages',
     'make_testable_runner',
     'reset_the_world',
@@ -40,6 +41,7 @@ __all__ = [
 
 import os
 import json
+import mock
 import time
 import uuid
 import errno
@@ -250,6 +252,24 @@ def get_lmtp_client(quiet=False):
                 raise
     else:
         raise RuntimeError('Connection refused')
+
+
+
+def get_nntp_server(cleanups):
+    """Create and start an NNTP server mock.
+
+    This can be used to retrieve the posted message for verification.
+    """
+    patcher = mock.patch('nntplib.NNTP')
+    server_class = patcher.start()
+    cleanups.append(patcher.stop)
+    nntpd = server_class()
+    # A class for more convenient access to the posted message.
+    class NNTPProxy:
+        def get_message(self):
+            args = nntpd.post.call_args
+            return specialized_message_from_string(args[0][0].read())
+    return NNTPProxy()
 
 
 

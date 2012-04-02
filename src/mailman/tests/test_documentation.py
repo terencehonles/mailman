@@ -178,6 +178,14 @@ def setup(testobj):
     testobj.globs['smtpd'] = SMTPLayer.smtpd
     testobj.globs['stop'] = stop
     testobj.globs['transaction'] = config.db
+    # Add this so that cleanups can be automatically added by the doctest.
+    testobj.globs['cleanups'] = []
+
+
+
+def teardown(testobj):
+    for cleanup in testobj.globs['cleanups']:
+        cleanup()
 
 
 
@@ -223,7 +231,8 @@ def test_suite():
             path,
             package='mailman',
             optionflags=flags,
-            setUp=setup)
+            setUp=setup,
+            tearDown=teardown)
         test.layer = layer
         suite.addTest(test)
     return suite

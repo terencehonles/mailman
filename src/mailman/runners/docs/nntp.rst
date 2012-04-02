@@ -7,10 +7,14 @@ The NNTP runner gateways mailing list messages to an NNTP newsgroup.
     >>> mlist = create_list('test@example.com')
     >>> mlist.linked_newsgroup = 'comp.lang.python'
 
-Some NNTP servers such as INN reject messages containing a set of prohibited
-headers, so one of the things that this runner does is remove these prohibited
-headers.
-::
+Get a handle on the NNTP server, which we'll use later to verify the posted
+messages.
+
+    >>> from mailman.testing.helpers import get_nntp_server
+    >>> nntpd = get_nntp_server(cleanups)
+
+A message gets posted to the mailing list.  It may contain some headers which
+are prohibited by NNTP servers such as INN.
 
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
@@ -29,13 +33,19 @@ headers.
     ...
     ... A message
     ... """)
-    >>> msgdata = {}
 
-    >>> from mailman.runners.nntp import prepare_message
-    >>> prepare_message(mlist, msg, msgdata)
-    >>> msgdata['prepped']
-    True
-    >>> print msg.as_string()
+The message gets copied to the NNTP queue for preparation and posting.
+
+    >>> filebase = config.switchboards['nntp'].enqueue(
+    ...     msg, listname='test@example.com')
+    >>> from mailman.testing.helpers import make_testable_runner
+    >>> from mailman.runners.nntp import NNTPRunner
+    >>> runner = make_testable_runner(NNTPRunner, 'nntp')
+    >>> runner.run()
+
+The message was successfully posted the NNTP server.
+
+    >>> print nntpd.get_message().as_string()
     From: aperson@example.com
     To: test@example.com
     Newsgroups: comp.lang.python
@@ -44,115 +54,3 @@ headers.
     <BLANKLINE>
     A message
     <BLANKLINE>
-
-Some NNTP servers will reject messages where certain headers are duplicated,
-so the news runner must collapse or move these duplicate headers to an
-``X-Original-*`` header that the news server doesn't care about.
-
-    >>> msg = message_from_string("""\
-    ... From: aperson@example.com
-    ... To: test@example.com
-    ... To: two@example.com
-    ... Cc: three@example.com
-    ... Cc: four@example.com
-    ... Cc: five@example.com
-    ... Content-Transfer-Encoding: yes
-    ... Content-Transfer-Encoding: no
-    ... Content-Transfer-Encoding: maybe
-    ...
-    ... A message
-    ... """)
-    >>> msgdata = {}
-    >>> prepare_message(mlist, msg, msgdata)
-    >>> msgdata['prepped']
-    True
-    >>> print msg.as_string()
-    From: aperson@example.com
-    Newsgroups: comp.lang.python
-    Message-ID: ...
-    Lines: 1
-    To: test@example.com
-    X-Original-To: two@example.com
-    CC: three@example.com
-    X-Original-CC: four@example.com
-    X-Original-CC: five@example.com
-    Content-Transfer-Encoding: yes
-    X-Original-Content-Transfer-Encoding: no
-    X-Original-Content-Transfer-Encoding: maybe
-    <BLANKLINE>
-    A message
-    <BLANKLINE>
-
-But if no headers are duplicated, then the news runner doesn't need to modify
-the message.
-
-    >>> msg = message_from_string("""\
-    ... From: aperson@example.com
-    ... To: test@example.com
-    ... Cc: someother@example.com
-    ... Content-Transfer-Encoding: yes
-    ...
-    ... A message
-    ... """)
-    >>> msgdata = {}
-    >>> prepare_message(mlist, msg, msgdata)
-    >>> msgdata['prepped']
-    True
-    >>> print msg.as_string()
-    From: aperson@example.com
-    To: test@example.com
-    Cc: someother@example.com
-    Content-Transfer-Encoding: yes
-    Newsgroups: comp.lang.python
-    Message-ID: ...
-    Lines: 1
-    <BLANKLINE>
-    A message
-    <BLANKLINE>
-
-
-Newsgroup moderation
-====================
-
-When the newsgroup is moderated, an ``Approved:`` header with the list's
-posting address is added for the benefit of the Usenet system.
-::
-
-    >>> from mailman.interfaces.nntp import NewsModeration
-    >>> mlist.news_moderation = NewsModeration.open_moderated
-    >>> msg = message_from_string("""\
-    ... From: aperson@example.com
-    ... To: test@example.com
-    ... Approved: this gets deleted
-    ...
-    ... """)
-    >>> prepare_message(mlist, msg, {})
-    >>> print msg['approved']
-    test@example.com
-
-    >>> mlist.news_moderation = NewsModeration.moderated
-    >>> msg = message_from_string("""\
-    ... From: aperson@example.com
-    ... To: test@example.com
-    ... Approved: this gets deleted
-    ...
-    ... """)
-    >>> prepare_message(mlist, msg, {})
-    >>> print msg['approved']
-    test@example.com
-
-But if the newsgroup is not moderated, the ``Approved:`` header is not changed.
-
-    >>> mlist.news_moderation = NewsModeration.none
-    >>> msg = message_from_string("""\
-    ... From: aperson@example.com
-    ... To: test@example.com
-    ... Approved: this doesn't get deleted
-    ...
-    ... """)
-    >>> prepare_message(mlist, msg, {})
-    >>> msg['approved']
-    u"this doesn't get deleted"
-
-
-XXX More of the NewsRunner should be tested.
