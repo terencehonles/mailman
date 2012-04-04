@@ -41,6 +41,11 @@ Documentation
  * Some additional documentation on related components such as Postorius and
    hyperkitty have been added, given by Stephen J Turnbull.
 
+Bug fixes
+---------
+ * Fixed a UnicodeError with non-ascii message bodies in the `approved` rule,
+   given by Mark Sapiro. (LP: #949924)
+
 
 3.0 beta 1 -- "The Twilight Zone"
 =================================
