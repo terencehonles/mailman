@@ -17,7 +17,7 @@
 
 """Look for moderator pre-approval."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -26,7 +26,9 @@ __all__ = [
 
 
 import re
+
 from email.iterators import typed_subpart_iterator
+from flufl.password import verify
 from zope.interface import implements
 
 from mailman.core.i18n import _
@@ -117,7 +119,8 @@ class Approved:
         else:
             for header in HEADERS:
                 del msg[header]
-        return password is not missing and password == mlist.moderator_password
+        return (password is not missing and 
+                verify(mlist.moderator_password, password))
 
 
 

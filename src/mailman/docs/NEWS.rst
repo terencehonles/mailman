@@ -25,6 +25,8 @@ Architecture
  * The `news` runner and queue has been renamed to the more accurate `nntp`.
    The runner has also been ported to Mailman 3 (LP: #967409).  Beta testers
    can can safely remove `$var_dir/queue/news`.
+ * A mailing list's *moderator password* is no longer stored in the clear; it
+   is hashed with the currently selected scheme.
 
 Configuration
 -------------

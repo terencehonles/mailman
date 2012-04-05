@@ -29,8 +29,8 @@ import os
 import string
 
 from storm.locals import (
-    And, Bool, DateTime, Float, Int, Pickle, Reference, Store, TimeDelta,
-    Unicode)
+    And, Bool, DateTime, Float, Int, Pickle, RawStr, Reference, Store,
+    TimeDelta, Unicode)
 from urlparse import urljoin
 from zope.component import getUtility
 from zope.interface import implements
@@ -160,7 +160,7 @@ class MailingList(Model):
     max_num_recipients = Int()
     member_moderation_notice = Unicode()
     mime_is_default_digest = Bool()
-    moderator_password = Unicode()
+    moderator_password = RawStr()
     new_member_options = Int()
     news_moderation = Enum(NewsModeration)
     news_prefix_subject_too = Bool()
