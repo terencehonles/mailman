@@ -37,6 +37,13 @@ Configuration
  * Configuration schema variable changes:
    [nntp]username -> [nntp]user
    [nntp]port (added)
+ * Header check specifications in the `mailman.cfg` file have changed quite
+   bit.  The previous `[spam.header.foo]` sections have been removed.
+   Instead, there's a new `[antispam]` section that contains a `header_checks`
+   variable.  This variable takes multiple lines of `Header: regexp` values,
+   one per line.  There is also a new `jump_chain` variable which names the
+   chain to jump to should any of the header checks (including the
+   list-specific, and programmatically added ones) match.
 
 Documentation
 -------------
@@ -47,6 +54,8 @@ Bug fixes
 ---------
  * Fixed a UnicodeError with non-ascii message bodies in the `approved` rule,
    given by Mark Sapiro. (LP: #949924)
+ * Fixed a typo when returning the configuration file's header match checks.
+   (LP: #953497)
 
 
 3.0 beta 1 -- "The Twilight Zone"

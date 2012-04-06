@@ -442,6 +442,8 @@ def reset_the_world():
     config.db.commit()
     # Reset the global style manager.
     getUtility(IStyleManager).populate()
+    # Remove all dynamic header-match rules.
+    config.chains['header-match'].flush()
 
 
 
