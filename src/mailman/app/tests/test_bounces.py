@@ -21,6 +21,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
+    'TestBounceMessage',
     'TestMaybeForward',
     'TestProbe',
     'TestSendProbe',
@@ -38,7 +39,7 @@ import unittest
 from zope.component import getUtility
 
 from mailman.app.bounces import (
-    ProbeVERP, StandardVERP, maybe_forward, send_probe)
+    ProbeVERP, StandardVERP, bounce_message, maybe_forward, send_probe)
 from mailman.app.lifecycle import create_list
 from mailman.app.membership import add_member
 from mailman.config import config
@@ -50,7 +51,7 @@ from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
     LogFileMark,
     get_queue_messages,
-    specialized_message_from_string as message_from_string)
+    specialized_message_from_string as mfs)
 from mailman.testing.layers import ConfigLayer
 
 
@@ -66,7 +67,7 @@ class TestVERP(unittest.TestCase):
 
     def test_no_verp(self):
         # The empty set is returned when there is no VERP headers.
-        msg = message_from_string("""\
+        msg = mfs("""\
 From: postmaster@example.com
 To: mailman-bounces@example.com
 
@@ -75,7 +76,7 @@ To: mailman-bounces@example.com
 
     def test_verp_in_to(self):
         # A VERP address is found in the To header.
-        msg = message_from_string("""\
+        msg = mfs("""\
 From: postmaster@example.com
 To: test-bounces+anne=example.org@example.com
 
@@ -85,7 +86,7 @@ To: test-bounces+anne=example.org@example.com
 
     def test_verp_in_delivered_to(self):
         # A VERP address is found in the Delivered-To header.
-        msg = message_from_string("""\
+        msg = mfs("""\
 From: postmaster@example.com
 Delivered-To: test-bounces+anne=example.org@example.com
 
@@ -95,7 +96,7 @@ Delivered-To: test-bounces+anne=example.org@example.com
 
     def test_verp_in_envelope_to(self):
         # A VERP address is found in the Envelope-To header.
-        msg = message_from_string("""\
+        msg = mfs("""\
 From: postmaster@example.com
 Envelope-To: test-bounces+anne=example.org@example.com
 
@@ -105,7 +106,7 @@ Envelope-To: test-bounces+anne=example.org@example.com
 
     def test_verp_in_apparently_to(self):
         # A VERP address is found in the Apparently-To header.
-        msg = message_from_string("""\
+        msg = mfs("""\
 From: postmaster@example.com
 Apparently-To: test-bounces+anne=example.org@example.com
 
@@ -115,7 +116,7 @@ Apparently-To: test-bounces+anne=example.org@example.com
 
     def test_verp_with_empty_header(self):
         # A VERP address is found, but there's an empty header.
-        msg = message_from_string("""\
+        msg = mfs("""\
 From: postmaster@example.com
 To: test-bounces+anne=example.org@example.com
 To:
@@ -126,7 +127,7 @@ To:
 
     def test_no_verp_with_empty_header(self):
         # There's an empty header, and no VERP address is found.
-        msg = message_from_string("""\
+        msg = mfs("""\
 From: postmaster@example.com
 To:
 
@@ -135,7 +136,7 @@ To:
 
     def test_verp_with_non_match(self):
         # A VERP address is found, but a header had a non-matching pattern.
-        msg = message_from_string("""\
+        msg = mfs("""\
 From: postmaster@example.com
 To: test-bounces+anne=example.org@example.com
 To: test-bounces@example.com
@@ -146,7 +147,7 @@ To: test-bounces@example.com
 
     def test_no_verp_with_non_match(self):
         # No VERP address is found, and a header had a non-matching pattern.
-        msg = message_from_string("""\
+        msg = mfs("""\
 From: postmaster@example.com
 To: test-bounces@example.com
 
@@ -155,7 +156,7 @@ To: test-bounces@example.com
 
     def test_multiple_verps(self):
         # More than one VERP address was found in the same header.
-        msg = message_from_string("""\
+        msg = mfs("""\
 From: postmaster@example.com
 To: test-bounces+anne=example.org@example.com
 To: test-bounces+anne=example.org@example.com
@@ -167,7 +168,7 @@ To: test-bounces+anne=example.org@example.com
     def test_multiple_verps_different_values(self):
         # More than one VERP address was found in the same header with
         # different values.
-        msg = message_from_string("""\
+        msg = mfs("""\
 From: postmaster@example.com
 To: test-bounces+anne=example.org@example.com
 To: test-bounces+bart=example.org@example.com
@@ -179,7 +180,7 @@ To: test-bounces+bart=example.org@example.com
     def test_multiple_verps_different_values_different_headers(self):
         # More than one VERP address was found in different headers with
         # different values.
-        msg = message_from_string("""\
+        msg = mfs("""\
 From: postmaster@example.com
 To: test-bounces+anne=example.org@example.com
 Apparently-To: test-bounces+bart=example.org@example.com
@@ -200,7 +201,7 @@ class TestSendProbe(unittest.TestCase):
         self._member = add_member(self._mlist, 'anne@example.com',
                                   'Anne Person', 'xxx',
                                   DeliveryMode.regular, 'en')
-        self._msg = message_from_string("""\
+        self._msg = mfs("""\
 From: bouncer@example.com
 To: anne@example.com
 Subject: You bounced
@@ -292,7 +293,7 @@ class TestSendProbeNonEnglish(unittest.TestCase):
         self._member = add_member(self._mlist, 'anne@example.com',
                                   'Anne Person', 'xxx',
                                   DeliveryMode.regular, 'en')
-        self._msg = message_from_string("""\
+        self._msg = mfs("""\
 From: bouncer@example.com
 To: anne@example.com
 Subject: You bounced
@@ -358,7 +359,7 @@ class TestProbe(unittest.TestCase):
         self._member = add_member(self._mlist, 'anne@example.com',
                                   'Anne Person', 'xxx',
                                   DeliveryMode.regular, 'en')
-        self._msg = message_from_string("""\
+        self._msg = mfs("""\
 From: bouncer@example.com
 To: anne@example.com
 Subject: You bounced
@@ -372,7 +373,7 @@ Message-ID: <first>
         token = send_probe(self._member, self._msg)
         # Simulate a bounce of the message in the virgin queue.
         message = get_queue_messages('virgin')[0].msg
-        bounce = message_from_string("""\
+        bounce = mfs("""\
 To: {0}
 From: mail-daemon@example.com
 
@@ -395,7 +396,7 @@ class TestMaybeForward(unittest.TestCase):
         site_owner: postmaster@example.com
         """)
         self._mlist = create_list('test@example.com')
-        self._msg = message_from_string("""\
+        self._msg = mfs("""\
 From: bouncer@example.com
 To: test-bounces@example.com
 Subject: You bounced
@@ -511,3 +512,29 @@ Message-ID: <first>
         # recipients of this message.
         self.assertEqual(items[0].msgdata['recipients'],
                          set(['postmaster@example.com',]))
+
+
+
+class TestBounceMessage(unittest.TestCase):
+    """Test the `mailman.app.bounces.bounce_message()` function."""
+
+    layer = ConfigLayer
+
+    def setUp(self):
+        self._mlist = create_list('test@example.com')
+        self._msg = mfs("""\
+From: anne@example.com
+To: test@example.com
+Subject: Ignore
+
+""")
+
+    def test_no_sender(self):
+        # The message won't be bounced if it has no discernible sender.
+        self._msg.sender = None
+        bounce_message(self._mlist, self._msg)
+        items = get_queue_messages('virgin')
+        # Nothing in the virgin queue means nothing's been bounced.
+        self.assertEqual(items, [])
+        
+        

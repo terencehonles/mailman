@@ -78,10 +78,10 @@ class IChain(Interface):
     def get_links(mlist, msg, msgdata):
         """Get an `IChainIterator` for processing.
 
-        :param mlist: the IMailingList object
-        :param msg: the message being processed
-        :param msgdata: the message metadata dictionary
-        :return: An `IChainIterator`.
+        :param mlist: The mailing list.
+        :param msg: The message being processed.
+        :param msgdata: The message metadata dictionary.
+        :return: `IChainIterator`.
         """
 
 

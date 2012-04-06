@@ -250,13 +250,3 @@ class Configuration:
         """Iterate over all the style configuration sections."""
         for section in self._config.getByCategory('style', []):
             yield section
-
-    @property
-    def header_matches(self):
-        """Iterate over all spam matching headers.
-
-        Values are 3-tuples of (header, pattern, chain)
-        """
-        matches = self._config.getByCategory('spam.headers', [])
-        for match in matches:
-            yield (matches.header, matches.pattern, matches.chain)

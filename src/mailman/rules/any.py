@@ -42,4 +42,4 @@ class Any:
 
     def check(self, mlist, msg, msgdata):
         """See `IRule`."""
-        return len(msgdata.get('rules', [])) > 0
+        return len(msgdata.get('rule_hits', [])) > 0

@@ -108,9 +108,6 @@ class _BaseVERPParser:
         self._pattern = pattern
         self._cre = re.compile(pattern, re.IGNORECASE)
 
-    def _get_addresses(self, match_object):
-        raise NotImplementedError
-
     def get_verp(self, mlist, msg):
         """Extract a set of VERP bounce addresses.
 
