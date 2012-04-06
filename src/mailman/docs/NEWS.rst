@@ -100,7 +100,7 @@ Architecture
    `$var_dir/archives/prototype`, given by Toshio Kuratomi.
  * Improved "8 mile high" document distilled by Stephen J Turnbull from the
    Pycon 2012 Mailman 3 sprint.  Also improvements to the Sphinx build given
-   by Andrea Crotti.
+   by Andrea Crotti (LP: #954718).
  * Pipermail has been eradicated.
  * Configuration variable `[mailman]filtered_messages_are_preservable`
    controls whether messages which have their top-level `Content-Type`
