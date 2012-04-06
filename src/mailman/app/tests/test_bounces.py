@@ -536,5 +536,3 @@ Subject: Ignore
         items = get_queue_messages('virgin')
         # Nothing in the virgin queue means nothing's been bounced.
         self.assertEqual(items, [])
-        
-        
