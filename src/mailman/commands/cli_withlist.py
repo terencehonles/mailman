@@ -172,8 +172,7 @@ class Withlist:
             readline.parse_and_bind('tab: complete')
         except ImportError:
             pass
-        else:
-            sys.ps1 = config.shell.prompt + ' '
+        sys.ps1 = config.shell.prompt + ' '
         interact(upframe=False, banner=banner, overrides=overrides)
 
     def _details(self):
