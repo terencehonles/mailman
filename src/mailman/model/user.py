@@ -27,13 +27,15 @@ __all__ = [
 from storm.locals import (
     DateTime, Int, RawStr, Reference, ReferenceSet, Unicode)
 from storm.properties import UUID
+from zope.event import notify
 from zope.interface import implements
 
 from mailman.config import config
 from mailman.database.model import Model
 from mailman.interfaces.address import (
     AddressAlreadyLinkedError, AddressNotLinkedError)
-from mailman.interfaces.user import IUser, UnverifiedAddressError
+from mailman.interfaces.user import (
+    IUser, PasswordChangeEvent, UnverifiedAddressError)
 from mailman.model.address import Address
 from mailman.model.preferences import Preferences
 from mailman.model.roster import Memberships
@@ -52,7 +54,7 @@ class User(Model):
 
     id = Int(primary=True)
     display_name = Unicode()
-    password = RawStr()
+    _password = RawStr(name='password')
     _user_id = UUID()
     _created_on = DateTime()
 
@@ -87,6 +89,15 @@ class User(Model):
     def created_on(self):
         """See `IUser`."""
         return self._created_on
+
+    @property
+    def password(self):
+        return self._password
+
+    @password.setter
+    def password(self, new_password):
+        self._password = new_password
+        notify(PasswordChangeEvent(self))
 
     def link(self, address):
         """See `IUser`."""

@@ -22,6 +22,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 __metaclass__ = type
 __all__ = [
     'IUser',
+    'PasswordChangeEvent',
     'UnverifiedAddressError',
     ]
 
@@ -34,6 +35,18 @@ from mailman.interfaces.address import AddressError
 
 class UnverifiedAddressError(AddressError):
     """Unverified address cannot be used as a user's preferred address."""
+
+
+
+class PasswordChangeEvent:
+    """Event which gets triggered when a user changes their password."""
+
+    def __init__(self, user):
+        self.user = user
+
+    def __str__(self):
+        return '<{0} {1}>'.format(self.__class__.__name__,
+                                  self.user.display_name)
 
 
 

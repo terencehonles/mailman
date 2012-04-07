@@ -36,6 +36,25 @@ The password and real name can be changed at any time.
     >>> dump_list(user.password for user in user_manager.users)
     another password
 
+When the user's password is changed, an event is triggered.
+
+    >>> saved_event = None
+    >>> def save_event(event):
+    ...     global saved_event
+    ...     saved_event = event
+    >>> from mailman.testing.helpers import event_subscribers
+    >>> with event_subscribers(save_event):
+    ...     user_1.password = b'changed again'
+    >>> print saved_event
+    <PasswordChangeEvent Zoe X. Person>
+
+The event holds a reference to the `IUser` that changed their password.
+
+    >>> print saved_event.user.display_name
+    Zoe X. Person
+    >>> print saved_event.user.password
+    changed again
+
 
 Basic user identification
 =========================

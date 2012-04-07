@@ -89,7 +89,8 @@ class AddressVerificationEvent:
         self.address = address
 
     def __str__(self):
-        return '<AddressVerificationEvent {0} {1}>'.format(
+        return '<{0} {1} {2}>'.format(
+            self.__class__.__name__,
             self.address.email,
             ('unverified' if self.address.verified_on is None
              else self.address.verified_on))

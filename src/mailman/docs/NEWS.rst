@@ -29,6 +29,8 @@ Architecture
    is hashed with the currently selected scheme.
  * An `AddressVerificationEvent` is triggered when an `IAddress` is verified
    or unverified.  (LP: #975698)
+ * A `PasswordChangeEvent` is triggered when an `IUser`'s password changes.
+   (LP: #975700)
 
 Configuration
 -------------
