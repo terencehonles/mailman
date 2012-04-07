@@ -27,10 +27,11 @@ __all__ = [
 
 from email.utils import formataddr
 from storm.locals import DateTime, Int, Reference, Unicode
+from zope.event import notify
 from zope.interface import implements
 
 from mailman.database.model import Model
-from mailman.interfaces.address import IAddress
+from mailman.interfaces.address import AddressVerificationEvent, IAddress
 from mailman.utilities.datetime import now
 
 
@@ -42,7 +43,7 @@ class Address(Model):
     email = Unicode()
     _original = Unicode()
     display_name = Unicode()
-    verified_on = DateTime()
+    _verified_on = DateTime(name='verified_on')
     registered_on = DateTime()
 
     user_id = Int()
@@ -71,6 +72,15 @@ class Address(Model):
         else:
             return '<Address: {0} [{1}] key: {2} at {3:#x}>'.format(
                 address_str, verified, self.email, id(self))
+
+    @property
+    def verified_on(self):
+        return self._verified_on
+
+    @verified_on.setter
+    def verified_on(self, timestamp):
+        self._verified_on = timestamp
+        notify(AddressVerificationEvent(self))
 
     @property
     def original_email(self):

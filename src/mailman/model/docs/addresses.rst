@@ -122,8 +122,8 @@ address from the user.
     bperson@example.com
 
 
-Registration and validation
-===========================
+Registration and verification
+=============================
 
 Addresses have two dates, the date the address was registered on and the date
 the address was validated on.  The former is set when the address is created,
@@ -144,10 +144,35 @@ verification procedure.  It takes a datetime object.
     >>> print address_4.verified_on
     2005-08-01 07:49:23
 
-The address shows the verified status in its repr.
+The address shows the verified status in its representation.
 
     >>> address_4
     <Address: Dan Person <dperson@example.com> [verified] at ...>
+
+An event is triggered when the address gets verified.
+
+    >>> saved_event = None
+    >>> address_5 = user_manager.create_address(
+    ...     'eperson@example.com', 'Elle Person')
+    >>> def save_event(event):
+    ...     global saved_event
+    ...     saved_event = event
+    >>> from mailman.testing.helpers import event_subscribers
+    >>> with event_subscribers(save_event):
+    ...     address_5.verified_on = now()
+    >>> print saved_event
+    <AddressVerificationEvent eperson@example.com 2005-08-01 07:49:23>
+
+An event is also triggered when the address is unverified.  In this case,
+check the event's address's `verified_on` attribute; if this is None, then the
+address is being unverified.
+
+    >>> with event_subscribers(save_event):
+    ...     address_5.verified_on = None
+    >>> print saved_event
+    <AddressVerificationEvent eperson@example.com unverified>
+    >>> print saved_event.address.verified_on
+    None
 
 
 Case-preserved addresses

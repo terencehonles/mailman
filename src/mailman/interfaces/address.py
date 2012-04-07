@@ -24,6 +24,7 @@ __all__ = [
     'AddressAlreadyLinkedError',
     'AddressError',
     'AddressNotLinkedError',
+    'AddressVerificationEvent',
     'EmailError',
     'ExistingAddressError',
     'IAddress',
@@ -78,6 +79,20 @@ class AddressNotLinkedError(AddressError):
 
 class InvalidEmailAddressError(EmailError):
     """Email address is invalid."""
+
+
+
+class AddressVerificationEvent:
+    """Triggered when an address gets verified or unverified."""
+
+    def __init__(self, address):
+        self.address = address
+
+    def __str__(self):
+        return '<AddressVerificationEvent {0} {1}>'.format(
+            self.address.email,
+            ('unverified' if self.address.verified_on is None
+             else self.address.verified_on))
 
 
 

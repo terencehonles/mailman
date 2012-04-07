@@ -27,6 +27,8 @@ Architecture
    can can safely remove `$var_dir/queue/news`.
  * A mailing list's *moderator password* is no longer stored in the clear; it
    is hashed with the currently selected scheme.
+ * An `AddressVerificationEvent` is triggered when an `IAddress` is verified
+   or unverified.  (LP: #975698)
 
 Configuration
 -------------
