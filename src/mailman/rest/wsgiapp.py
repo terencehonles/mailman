@@ -33,6 +33,7 @@ from wsgiref.simple_server import WSGIRequestHandler
 from wsgiref.simple_server import make_server as wsgi_server
 
 from mailman.config import config
+from mailman.database.transaction import transactional
 from mailman.rest.root import Root
 
 
@@ -51,17 +52,11 @@ class AdminWebServiceWSGIRequestHandler(WSGIRequestHandler):
 class AdminWebServiceApplication(RestishApp):
     """Connect the restish WSGI application to Mailman's database."""
 
+    @transactional
     def __call__(self, environ, start_response):
         """See `RestishApp`."""
-        try:
-            response = super(AdminWebServiceApplication, self).__call__(
-                environ, start_response)
-        except:
-            config.db.abort()
-            raise
-        else:
-            config.db.commit()
-            return response
+        return super(AdminWebServiceApplication, self).__call__(
+            environ, start_response)
 
 
 
