@@ -41,7 +41,7 @@ from zope.component import getUtility
 
 from mailman.config import config
 from mailman.core.runner import Runner
-from mailman.database.transaction import txn
+from mailman.database.transaction import transactional
 from mailman.email.message import Message
 from mailman.interfaces.listmanager import IListManager
 from mailman.utilities.datetime import now
@@ -154,7 +154,7 @@ class LMTPRunner(Runner, smtpd.SMTPServer):
         Channel(self, conn, addr)
         slog.debug('LMTP accept from %s', addr)
 
-    @txn
+    @transactional
     def process_message(self, peer, mailfrom, rcpttos, data):
         try:
             # Refresh the list of list names every time we process a message
