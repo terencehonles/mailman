@@ -31,7 +31,7 @@ import unittest
 from datetime import datetime
 
 from mailman.app.lifecycle import create_list
-from mailman.config import config
+from mailman.database.transaction import transaction
 from mailman.testing.helpers import get_lmtp_client, get_queue_messages
 from mailman.testing.layers import LMTPLayer
 
@@ -43,8 +43,8 @@ class TestLMTP(unittest.TestCase):
     layer = LMTPLayer
 
     def setUp(self):
-        self._mlist = create_list('test@example.com')
-        config.db.commit()
+        with transaction():
+            self._mlist = create_list('test@example.com')
         self._lmtp = get_lmtp_client(quiet=True)
         self._lmtp.lhlo('remote.example.org')
 
