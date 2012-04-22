@@ -17,10 +17,11 @@
 
 """REST membership tests."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
+    'TestMembership',
     ]
 
 
@@ -31,6 +32,7 @@ from zope.component import getUtility
 
 from mailman.app.lifecycle import create_list
 from mailman.config import config
+from mailman.database.transaction import transaction
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import call_api
 from mailman.testing.layers import RESTLayer
@@ -42,8 +44,8 @@ class TestMembership(unittest.TestCase):
     layer = RESTLayer
 
     def setUp(self):
-        self._mlist = create_list('test@example.com')
-        config.db.commit()
+        with transaction():
+            self._mlist = create_list('test@example.com')
         self._usermanager = getUtility(IUserManager)
 
     def test_try_to_join_missing_list(self):
@@ -85,9 +87,9 @@ class TestMembership(unittest.TestCase):
             raise AssertionError('Expected HTTPError')
 
     def test_try_to_leave_a_list_twice(self):
-        anne = self._usermanager.create_address('anne@example.com')
-        self._mlist.subscribe(anne)
-        config.db.commit()
+        with transaction():
+            anne = self._usermanager.create_address('anne@example.com')
+            self._mlist.subscribe(anne)
         url = 'http://localhost:9001/3.0/members/1'
         content, response = call_api(url, method='DELETE')
         # For a successful DELETE, the response code is 204 and there is no
@@ -104,9 +106,9 @@ class TestMembership(unittest.TestCase):
             raise AssertionError('Expected HTTPError')
 
     def test_try_to_join_a_list_twice(self):
-        anne = self._usermanager.create_address('anne@example.com')
-        self._mlist.subscribe(anne)
-        config.db.commit()
+        with transaction():
+            anne = self._usermanager.create_address('anne@example.com')
+            self._mlist.subscribe(anne)
         try:
             # For Python 2.6.
             call_api('http://localhost:9001/3.0/members', {
@@ -151,12 +153,12 @@ class TestMembership(unittest.TestCase):
         self.assertEqual(members[0].address.email, 'hugh/person@example.com')
 
     def test_join_as_user_with_preferred_address(self):
-        anne = self._usermanager.create_user('anne@example.com')
-        preferred = list(anne.addresses)[0]
-        preferred.verified_on = now()
-        anne.preferred_address = preferred
-        self._mlist.subscribe(anne)
-        config.db.commit()
+        with transaction():
+            anne = self._usermanager.create_user('anne@example.com')
+            preferred = list(anne.addresses)[0]
+            preferred.verified_on = now()
+            anne.preferred_address = preferred
+            self._mlist.subscribe(anne)
         content, response = call_api('http://localhost:9001/3.0/members')
         self.assertEqual(response.status, 200)
         self.assertEqual(int(content['total_size']), 1)
@@ -169,12 +171,12 @@ class TestMembership(unittest.TestCase):
         self.assertEqual(entry_0['fqdn_listname'], 'test@example.com')
 
     def test_member_changes_preferred_address(self):
-        anne = self._usermanager.create_user('anne@example.com')
-        preferred = list(anne.addresses)[0]
-        preferred.verified_on = now()
-        anne.preferred_address = preferred
-        self._mlist.subscribe(anne)
-        config.db.commit()
+        with transaction():
+            anne = self._usermanager.create_user('anne@example.com')
+            preferred = list(anne.addresses)[0]
+            preferred.verified_on = now()
+            anne.preferred_address = preferred
+            self._mlist.subscribe(anne)
         # Take a look at Anne's current membership.
         content, response = call_api('http://localhost:9001/3.0/members')
         self.assertEqual(int(content['total_size']), 1)
@@ -182,10 +184,10 @@ class TestMembership(unittest.TestCase):
         self.assertEqual(entry_0['address'], 'anne@example.com')
         # Anne registers a new address and makes it her preferred address.
         # There are no changes to her membership.
-        new_preferred = anne.register('aperson@example.com')
-        new_preferred.verified_on = now()
-        anne.preferred_address = new_preferred
-        config.db.commit()
+        with transaction():
+            new_preferred = anne.register('aperson@example.com')
+            new_preferred.verified_on = now()
+            anne.preferred_address = new_preferred
         # Take another look at Anne's current membership.
         content, response = call_api('http://localhost:9001/3.0/members')
         self.assertEqual(int(content['total_size']), 1)
@@ -214,9 +216,9 @@ class TestMembership(unittest.TestCase):
 
     def test_patch_member_bogus_attribute(self):
         # /members/<id> PATCH 'bogus' returns 400
-        anne = self._usermanager.create_address('anne@example.com')
-        self._mlist.subscribe(anne)
-        config.db.commit()
+        with transaction():
+            anne = self._usermanager.create_address('anne@example.com')
+            self._mlist.subscribe(anne)
         try:
             # For Python 2.6
             call_api('http://localhost:9001/3.0/members/1', {

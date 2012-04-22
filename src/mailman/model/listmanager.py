@@ -17,7 +17,7 @@
 
 """A mailing list manager."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -28,7 +28,7 @@ __all__ = [
 from zope.event import notify
 from zope.interface import implements
 
-from mailman.config import config
+from mailman.database.transaction import dbconnection
 from mailman.interfaces.address import InvalidEmailAddressError
 from mailman.interfaces.listmanager import (
     IListManager, ListAlreadyExistsError, ListCreatedEvent, ListCreatingEvent,
@@ -43,13 +43,14 @@ class ListManager:
 
     implements(IListManager)
 
-    def create(self, fqdn_listname):
+    @dbconnection
+    def create(self, store, fqdn_listname):
         """See `IListManager`."""
         listname, at, hostname = fqdn_listname.partition('@')
         if len(hostname) == 0:
             raise InvalidEmailAddressError(fqdn_listname)
         notify(ListCreatingEvent(fqdn_listname))
-        mlist = config.db.store.find(
+        mlist = store.find(
             MailingList,
             MailingList.list_name == listname,
             MailingList.mail_host == hostname).one()
@@ -57,47 +58,53 @@ class ListManager:
             raise ListAlreadyExistsError(fqdn_listname)
         mlist = MailingList(fqdn_listname)
         mlist.created_at = now()
-        config.db.store.add(mlist)
+        store.add(mlist)
         notify(ListCreatedEvent(mlist))
         return mlist
 
-    def get(self, fqdn_listname):
+    @dbconnection
+    def get(self, store, fqdn_listname):
         """See `IListManager`."""
         listname, at, hostname = fqdn_listname.partition('@')
-        return config.db.store.find(MailingList,
-                                    list_name=listname,
-                                    mail_host=hostname).one()
+        return store.find(MailingList,
+                          list_name=listname,
+                          mail_host=hostname).one()
 
-    def delete(self, mlist):
+    @dbconnection
+    def delete(self, store, mlist):
         """See `IListManager`."""
         fqdn_listname = mlist.fqdn_listname
         notify(ListDeletingEvent(mlist))
-        config.db.store.remove(mlist)
+        store.remove(mlist)
         notify(ListDeletedEvent(fqdn_listname))
 
     @property
-    def mailing_lists(self):
+    @dbconnection
+    def mailing_lists(self, store):
         """See `IListManager`."""
-        for mlist in config.db.store.find(MailingList):
+        for mlist in store.find(MailingList):
             yield mlist
 
-    def __iter__(self):
+    @dbconnection
+    def __iter__(self, store):
         """See `IListManager`."""
-        for mlist in config.db.store.find(MailingList):
+        for mlist in store.find(MailingList):
             yield mlist
 
     @property
-    def names(self):
+    @dbconnection
+    def names(self, store):
         """See `IListManager`."""
-        result_set = config.db.store.find(MailingList)
-        for mail_host, list_name in result_set.values(MailingList.mail_host, 
+        result_set = store.find(MailingList)
+        for mail_host, list_name in result_set.values(MailingList.mail_host,
                                                       MailingList.list_name):
             yield '{0}@{1}'.format(list_name, mail_host)
 
     @property
-    def name_components(self):
+    @dbconnection
+    def name_components(self, store):
         """See `IListManager`."""
-        result_set = config.db.store.find(MailingList)
-        for mail_host, list_name in result_set.values(MailingList.mail_host, 
+        result_set = store.find(MailingList)
+        for mail_host, list_name in result_set.values(MailingList.mail_host,
                                                       MailingList.list_name):
             yield list_name, mail_host

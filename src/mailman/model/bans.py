@@ -17,7 +17,7 @@
 
 """Ban manager."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -30,8 +30,8 @@ import re
 from storm.locals import Int, Unicode
 from zope.interface import implements
 
-from mailman.config import config
 from mailman.database.model import Model
+from mailman.database.transaction import dbconnection
 from mailman.interfaces.bans import IBan, IBanManager
 
 
@@ -53,43 +53,43 @@ class Ban(Model):
 class BanManager:
     implements(IBanManager)
 
-    def ban(self, email, mailing_list=None):
+    @dbconnection
+    def ban(self, store, email, mailing_list=None):
         """See `IBanManager`."""
-        bans = config.db.store.find(
-            Ban, email=email, mailing_list=mailing_list)
+        bans = store.find(Ban, email=email, mailing_list=mailing_list)
         if bans.count() == 0:
             ban = Ban(email, mailing_list)
-            config.db.store.add(ban)
+            store.add(ban)
 
-    def unban(self, email, mailing_list=None):
+    @dbconnection
+    def unban(self, store, email, mailing_list=None):
         """See `IBanManager`."""
-        ban = config.db.store.find(
-            Ban, email=email, mailing_list=mailing_list).one()
+        ban = store.find(Ban, email=email, mailing_list=mailing_list).one()
         if ban is not None:
-            config.db.store.remove(ban)
+            store.remove(ban)
 
-    def is_banned(self, email, mailing_list=None):
+    @dbconnection
+    def is_banned(self, store, email, mailing_list=None):
         """See `IBanManager`."""
         # A specific mailing list ban is being checked, however the email
         # address could be banned specifically, or globally.
         if mailing_list is not None:
             # Try specific bans first.
-            bans = config.db.store.find(
-                Ban, email=email, mailing_list=mailing_list)
+            bans = store.find(Ban, email=email, mailing_list=mailing_list)
             if bans.count() > 0:
                 return True
             # Try global bans next.
-            bans = config.db.store.find(Ban, email=email, mailing_list=None)
+            bans = store.find(Ban, email=email, mailing_list=None)
             if bans.count() > 0:
                 return True
             # Now try specific mailing list bans, but with a pattern.
-            bans = config.db.store.find(Ban, mailing_list=mailing_list)
+            bans = store.find(Ban, mailing_list=mailing_list)
             for ban in bans:
                 if (ban.email.startswith('^') and
                     re.match(ban.email, email, re.IGNORECASE) is not None):
                     return True
             # And now try global pattern bans.
-            bans = config.db.store.find(Ban, mailing_list=None)
+            bans = store.find(Ban, mailing_list=None)
             for ban in bans:
                 if (ban.email.startswith('^') and
                     re.match(ban.email, email, re.IGNORECASE) is not None):
@@ -97,12 +97,11 @@ class BanManager:
         else:
             # The client is asking for global bans.  Look up bans on the
             # specific email address first.
-            bans = config.db.store.find(
-                Ban, email=email, mailing_list=None)
+            bans = store.find(Ban, email=email, mailing_list=None)
             if bans.count() > 0:
                 return True
             # And now look for global pattern bans.
-            bans = config.db.store.find(Ban, mailing_list=None)
+            bans = store.find(Ban, mailing_list=None)
             for ban in bans:
                 if (ban.email.startswith('^') and
                     re.match(ban.email, email, re.IGNORECASE) is not None):

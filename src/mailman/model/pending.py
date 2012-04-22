@@ -17,7 +17,7 @@
 
 """Implementations of the IPendable and IPending interfaces."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -37,6 +37,7 @@ from zope.interface.verify import verifyObject
 
 from mailman.config import config
 from mailman.database.model import Model
+from mailman.database.transaction import dbconnection
 from mailman.interfaces.pending import (
     IPendable, IPended, IPendedKeyValue, IPendings)
 from mailman.utilities.datetime import now
@@ -86,7 +87,8 @@ class Pendings:
 
     implements(IPendings)
 
-    def add(self, pendable, lifetime=None):
+    @dbconnection
+    def add(self, store, pendable, lifetime=None):
         verifyObject(IPendable, pendable)
         # Calculate the token and the lifetime.
         if lifetime is None:
@@ -104,7 +106,7 @@ class Pendings:
             token = hashlib.sha1(repr(x)).hexdigest()
             # In practice, we'll never get a duplicate, but we'll be anal
             # about checking anyway.
-            if config.db.store.find(Pended, token=token).count() == 0:
+            if store.find(Pended, token=token).count() == 0:
                 break
         else:
             raise AssertionError('Could not find a valid pendings token')
@@ -129,11 +131,11 @@ class Pendings:
                          '\2'.join(value))
             keyval = PendedKeyValue(key=key, value=value)
             pending.key_values.add(keyval)
-        config.db.store.add(pending)
+        store.add(pending)
         return token
 
-    def confirm(self, token, expunge=True):
-        store = config.db.store
+    @dbconnection
+    def confirm(self, store, token, expunge=True):
         # Token can come in as a unicode, but it's stored in the database as
         # bytes.  They must be ascii.
         pendings = store.find(Pended, token=str(token))
@@ -158,8 +160,8 @@ class Pendings:
             store.remove(pending)
         return pendable
 
-    def evict(self):
-        store = config.db.store
+    @dbconnection
+    def evict(self, store):
         right_now = now()
         for pending in store.find(Pended):
             if pending.expiration_date < right_now:

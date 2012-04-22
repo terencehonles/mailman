@@ -31,6 +31,7 @@ from urllib2 import HTTPError
 from mailman.app.lifecycle import create_list
 from mailman.app.moderator import hold_message, hold_subscription
 from mailman.config import config
+from mailman.database.transaction import transaction
 from mailman.interfaces.member import DeliveryMode
 from mailman.testing.helpers import (
     call_api, specialized_message_from_string as mfs)
@@ -42,7 +43,8 @@ class TestModeration(unittest.TestCase):
     layer = RESTLayer
 
     def setUp(self):
-        self._mlist = create_list('ant@example.com')
+        with transaction():
+            self._mlist = create_list('ant@example.com')
         self._msg = mfs("""\
 From: anne@example.com
 To: ant@example.com
@@ -51,7 +53,6 @@ Message-ID: <alpha>
 
 Something else.
 """)
-        config.db.commit()
 
     def test_not_found(self):
         # When a bogus mailing list is given, 404 should result.

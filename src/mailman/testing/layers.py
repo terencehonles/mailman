@@ -25,7 +25,7 @@
 # eventually get rid of the zope.test* dependencies and use something like
 # testresources or some such.
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -56,6 +56,7 @@ from mailman.config import config
 from mailman.core import initialize
 from mailman.core.initialize import INHIBIT_CONFIG_FILE
 from mailman.core.logging import get_handler
+from mailman.database.transaction import transaction
 from mailman.interfaces.domain import IDomainManager
 from mailman.testing.helpers import (
     TestableMaster, get_lmtp_client, reset_the_world)
@@ -176,7 +177,7 @@ class ConfigLayer(MockAndMonkeyLayer):
         config_file = os.path.join(cls.var_dir, 'test.cfg')
         with open(config_file, 'w') as fp:
             fp.write(test_config)
-            print >> fp
+            print(file=fp)
         config.filename = config_file
 
     @classmethod
@@ -189,10 +190,10 @@ class ConfigLayer(MockAndMonkeyLayer):
     @classmethod
     def testSetUp(cls):
         # Add an example domain.
-        getUtility(IDomainManager).add(
-            'example.com', 'An example domain.',
-            'http://lists.example.com', 'postmaster@example.com')
-        config.db.commit()
+        with transaction():
+            getUtility(IDomainManager).add(
+                'example.com', 'An example domain.',
+                'http://lists.example.com', 'postmaster@example.com')
 
     @classmethod
     def testTearDown(cls):

@@ -22,7 +22,7 @@ the ones that fit a particular role.  These are used as the member, owner,
 moderator, and administrator roster filters.
 """
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -40,7 +40,7 @@ __all__ = [
 from storm.expr import And, Or
 from zope.interface import implements
 
-from mailman.config import config
+from mailman.database.transaction import dbconnection
 from mailman.interfaces.member import DeliveryMode, MemberRole
 from mailman.interfaces.roster import IRoster
 from mailman.model.address import Address
@@ -64,8 +64,9 @@ class AbstractRoster:
     def __init__(self, mlist):
         self._mlist = mlist
 
-    def _query(self):
-        return config.db.store.find(
+    @dbconnection
+    def _query(self, store):
+        return store.find(
             Member,
             mailing_list=self._mlist.fqdn_listname,
             role=self.role)
@@ -101,9 +102,10 @@ class AbstractRoster:
         for member in self.members:
             yield member.address
 
-    def get_member(self, address):
+    @dbconnection
+    def get_member(self, store, address):
         """See `IRoster`."""
-        results = config.db.store.find(
+        results = store.find(
             Member,
             Member.mailing_list == self._mlist.fqdn_listname,
             Member.role == self.role,
@@ -157,16 +159,18 @@ class AdministratorRoster(AbstractRoster):
 
     name = 'administrator'
 
-    def _query(self):
-        return config.db.store.find(
+    @dbconnection
+    def _query(self, store):
+        return store.find(
             Member,
             Member.mailing_list == self._mlist.fqdn_listname,
             Or(Member.role == MemberRole.owner,
                Member.role == MemberRole.moderator))
 
-    def get_member(self, address):
+    @dbconnection
+    def get_member(self, store, address):
         """See `IRoster`."""
-        results = config.db.store.find(
+        results = store.find(
                 Member,
                 Member.mailing_list == self._mlist.fqdn_listname,
                 Or(Member.role == MemberRole.moderator,
@@ -194,7 +198,8 @@ class DeliveryMemberRoster(AbstractRoster):
         # checking the delivery mode to a query parameter.
         return len(tuple(self.members))
 
-    def _get_members(self, *delivery_modes):
+    @dbconnection
+    def _get_members(self, store, *delivery_modes):
         """The set of members for a mailing list, filter by delivery mode.
 
         :param delivery_modes: The modes to filter on.
@@ -202,7 +207,7 @@ class DeliveryMemberRoster(AbstractRoster):
         :return: A generator of members.
         :rtype: generator
         """
-        results = config.db.store.find(
+        results = store.find(
             Member,
             And(Member.mailing_list == self._mlist.fqdn_listname,
                 Member.role == MemberRole.member))
@@ -244,10 +249,9 @@ class Subscribers(AbstractRoster):
 
     name = 'subscribers'
 
-    def _query(self):
-        return config.db.store.find(
-            Member,
-            mailing_list=self._mlist.fqdn_listname)
+    @dbconnection
+    def _query(self, store):
+        return store.find(Member, mailing_list=self._mlist.fqdn_listname)
 
 
 
@@ -261,8 +265,9 @@ class Memberships:
     def __init__(self, user):
         self._user = user
 
-    def _query(self):
-        results = config.db.store.find(
+    @dbconnection
+    def _query(self, store):
+        results = store.find(
             Member,
             Or(Member.user_id == self._user.id,
                And(Address.user_id == self._user.id,
@@ -291,9 +296,10 @@ class Memberships:
         for address in self._user.addresses:
             yield address
 
-    def get_member(self, address):
+    @dbconnection
+    def get_member(self, store, address):
         """See `IRoster`."""
-        results = config.db.store.find(
+        results = store.find(
             Member,
             Member.address_id == Address.id,
             Address.user_id == self._user.id)

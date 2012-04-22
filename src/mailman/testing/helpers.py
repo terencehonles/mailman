@@ -17,7 +17,7 @@
 
 """Various test helpers."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -64,6 +64,7 @@ from zope.component import getUtility
 
 from mailman.bin.master import Loop as Master
 from mailman.config import config
+from mailman.database.transaction import transaction
 from mailman.email.message import Message
 from mailman.interfaces.member import MemberRole
 from mailman.interfaces.messages import IMessageStore
@@ -237,13 +238,14 @@ def get_lmtp_client(quiet=False):
     # It's possible the process has started but is not yet accepting
     # connections.  Wait a little while.
     lmtp = LMTP()
+    #lmtp.debuglevel = 1
     until = datetime.datetime.now() + as_timedelta(config.devmode.wait)
     while datetime.datetime.now() < until:
         try:
             response = lmtp.connect(
                 config.mta.lmtp_host, int(config.mta.lmtp_port))
             if not quiet:
-                print response
+                print(response)
             return lmtp
         except socket.error as error:
             if error[0] == errno.ECONNREFUSED:
@@ -397,19 +399,19 @@ def subscribe(mlist, first_name, role=MemberRole.member):
     user_manager = getUtility(IUserManager)
     email = '{0}person@example.com'.format(first_name[0].lower())
     full_name = '{0} Person'.format(first_name)
-    person = user_manager.get_user(email)
-    if person is None:
-        address = user_manager.get_address(email)
-        if address is None:
-            person = user_manager.create_user(email, full_name)
+    with transaction():
+        person = user_manager.get_user(email)
+        if person is None:
+            address = user_manager.get_address(email)
+            if address is None:
+                person = user_manager.create_user(email, full_name)
+                preferred_address = list(person.addresses)[0]
+                mlist.subscribe(preferred_address, role)
+            else:
+                mlist.subscribe(address, role)
+        else:
             preferred_address = list(person.addresses)[0]
             mlist.subscribe(preferred_address, role)
-        else:
-            mlist.subscribe(address, role)
-    else:
-        preferred_address = list(person.addresses)[0]
-        mlist.subscribe(preferred_address, role)
-    config.db.commit()
 
 
 
@@ -437,9 +439,9 @@ def reset_the_world():
             os.remove(os.path.join(dirpath, filename))
     # Clear out messages in the message store.
     message_store = getUtility(IMessageStore)
-    for message in message_store.messages:
-        message_store.delete_message(message['message-id'])
-    config.db.commit()
+    with transaction():
+        for message in message_store.messages:
+            message_store.delete_message(message['message-id'])
     # Reset the global style manager.
     getUtility(IStyleManager).populate()
     # Remove all dynamic header-match rules.

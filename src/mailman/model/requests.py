@@ -17,7 +17,7 @@
 
 """Implementations of the pending requests interfaces."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -29,8 +29,8 @@ from storm.locals import AutoReload, Int, RawStr, Reference, Unicode
 from zope.component import getUtility
 from zope.interface import implements
 
-from mailman.config import config
 from mailman.database.model import Model
+from mailman.database.transaction import dbconnection
 from mailman.database.types import Enum
 from mailman.interfaces.pending import IPendable, IPendings
 from mailman.interfaces.requests import IListRequests, RequestType
@@ -49,30 +49,33 @@ class ListRequests:
         self.mailing_list = mailing_list
 
     @property
-    def count(self):
-        return config.db.store.find(
-            _Request, mailing_list=self.mailing_list).count()
+    @dbconnection
+    def count(self, store):
+        return store.find(_Request, mailing_list=self.mailing_list).count()
 
-    def count_of(self, request_type):
-        return config.db.store.find(
+    @dbconnection
+    def count_of(self, store, request_type):
+        return store.find(
             _Request,
             mailing_list=self.mailing_list, request_type=request_type).count()
 
     @property
-    def held_requests(self):
-        results = config.db.store.find(
-            _Request, mailing_list=self.mailing_list)
+    @dbconnection
+    def held_requests(self, store):
+        results = store.find(_Request, mailing_list=self.mailing_list)
         for request in results:
             yield request
 
-    def of_type(self, request_type):
-        results = config.db.store.find(
+    @dbconnection
+    def of_type(self, store, request_type):
+        results = store.find(
             _Request,
             mailing_list=self.mailing_list, request_type=request_type)
         for request in results:
             yield request
 
-    def hold_request(self, request_type, key, data=None):
+    @dbconnection
+    def hold_request(self, store, request_type, key, data=None):
         if request_type not in RequestType:
             raise TypeError(request_type)
         if data is None:
@@ -87,11 +90,12 @@ class ListRequests:
             token = getUtility(IPendings).add(pendable, timedelta(days=5000))
             data_hash = token
         request = _Request(key, request_type, self.mailing_list, data_hash)
-        config.db.store.add(request)
+        store.add(request)
         return request.id
 
-    def get_request(self, request_id, request_type=None):
-        result = config.db.store.get(_Request, request_id)
+    @dbconnection
+    def get_request(self, store, request_id, request_type=None):
+        result = store.get(_Request, request_id)
         if result is None:
             return None
         if request_type is not None and result.request_type != request_type:
@@ -104,13 +108,14 @@ class ListRequests:
         data.update(pendable)
         return result.key, data
 
-    def delete_request(self, request_id):
-        request = config.db.store.get(_Request, request_id)
+    @dbconnection
+    def delete_request(self, store, request_id):
+        request = store.get(_Request, request_id)
         if request is None:
             raise KeyError(request_id)
         # Throw away the pended data.
         getUtility(IPendings).confirm(request.data_hash)
-        config.db.store.remove(request)
+        store.remove(request)
 
 
 

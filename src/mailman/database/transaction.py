@@ -21,15 +21,32 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
+    'dbconnection',
+    'transaction',
     'transactional',
     ]
 
+
+from contextlib import contextmanager
 
 from mailman.config import config
 
 
 
-class transactional:
+@contextmanager
+def transaction():
+    """Context manager for ensuring the transaction is complete."""
+    try:
+        yield
+    except:
+        config.db.abort()
+        raise
+    else:
+        config.db.commit()
+
+
+
+def transactional(function):
     """Decorator for transactional support.
 
     When the function this decorator wraps exits cleanly, the current
@@ -38,16 +55,25 @@ class transactional:
 
     Either way, the current transaction is completed.
     """
-    def __init__(self, function):
-        self._function = function
+    def wrapper(*args, **kws):
+        try:
+            rtn = function(*args, **kws)
+            config.db.commit()
+            return rtn
+        except:
+            config.db.abort()
+            raise
+    return wrapper
 
-    def __get__(self, obj, type=None):
-        def wrapper(*args, **kws):
-            try:
-                rtn = self._function(obj, *args, **kws)
-                config.db.commit()
-                return rtn
-            except:
-                config.db.abort()
-                raise
-        return wrapper
+
+
+def dbconnection(function):
+    """Decorator for getting at the database connection.
+
+    Use this to avoid having to access the global `config.db.store`
+    attribute.  This calls the function with `store` as the first argument.
+    """
+    def wrapper(*args, **kws):
+        # args[0] is self.
+        return function(args[0], config.db.store, *args[1:], **kws)
+    return wrapper

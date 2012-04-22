@@ -17,10 +17,11 @@
 
 """REST domain tests."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
+    'TestDomains',
     ]
 
 
@@ -30,7 +31,7 @@ from urllib2 import HTTPError
 from zope.component import getUtility
 
 from mailman.app.lifecycle import create_list
-from mailman.config import config
+from mailman.database.transaction import transaction
 from mailman.interfaces.listmanager import IListManager
 from mailman.testing.helpers import call_api
 from mailman.testing.layers import RESTLayer
@@ -41,8 +42,8 @@ class TestDomains(unittest.TestCase):
     layer = RESTLayer
 
     def setUp(self):
-        self._mlist = create_list('test@example.com')
-        config.db.commit()
+        with transaction():
+            self._mlist = create_list('test@example.com')
 
     def test_bogus_endpoint_extension(self):
         # /domains/<domain>/lists/<anything> is not a valid endpoint.
@@ -67,8 +68,8 @@ class TestDomains(unittest.TestCase):
 
     def test_lists_are_deleted_when_domain_is_deleted(self):
         # /domains/<domain> DELETE removes all associated mailing lists.
-        create_list('ant@example.com')
-        config.db.commit()
+        with transaction():
+            create_list('ant@example.com')
         content, response = call_api(
             'http://localhost:9001/3.0/domains/example.com', method='DELETE')
         self.assertEqual(response.status, 204)

@@ -21,6 +21,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
+    'TestUsers',
     ]
 
 
@@ -29,7 +30,7 @@ import unittest
 from urllib2 import HTTPError
 
 from mailman.app.lifecycle import create_list
-from mailman.config import config
+from mailman.database.transaction import transaction
 from mailman.testing.helpers import call_api
 from mailman.testing.layers import RESTLayer
 
@@ -39,8 +40,8 @@ class TestUsers(unittest.TestCase):
     layer = RESTLayer
 
     def setUp(self):
-        self._mlist = create_list('test@example.com')
-        config.db.commit()
+        with transaction():
+            self._mlist = create_list('test@example.com')
 
     def test_delete_bogus_user(self):
         # Try to delete a user that does not exist.

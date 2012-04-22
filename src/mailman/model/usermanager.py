@@ -17,7 +17,7 @@
 
 """A user manager."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -27,7 +27,7 @@ __all__ = [
 
 from zope.interface import implements
 
-from mailman.config import config
+from mailman.database.transaction import dbconnection
 from mailman.interfaces.address import ExistingAddressError
 from mailman.interfaces.usermanager import IUserManager
 from mailman.model.address import Address
@@ -48,33 +48,38 @@ class UserManager:
             user.link(address)
         return user
 
-    def delete_user(self, user):
+    @dbconnection
+    def delete_user(self, store, user):
         """See `IUserManager`."""
-        config.db.store.remove(user)
+        store.remove(user)
 
-    def get_user(self, email):
+    @dbconnection
+    def get_user(self, store, email):
         """See `IUserManager`."""
-        addresses = config.db.store.find(Address, email=email.lower())
+        addresses = store.find(Address, email=email.lower())
         if addresses.count() == 0:
             return None
         return addresses.one().user
 
-    def get_user_by_id(self, user_id):
+    @dbconnection
+    def get_user_by_id(self, store, user_id):
         """See `IUserManager`."""
-        users = config.db.store.find(User, _user_id=user_id)
+        users = store.find(User, _user_id=user_id)
         if users.count() == 0:
             return None
         return users.one()
 
     @property
-    def users(self):
+    @dbconnection
+    def users(self, store):
         """See `IUserManager`."""
-        for user in config.db.store.find(User):
+        for user in store.find(User):
             yield user
 
-    def create_address(self, email, display_name=None):
+    @dbconnection
+    def create_address(self, store, email, display_name=None):
         """See `IUserManager`."""
-        addresses = config.db.store.find(Address, email=email.lower())
+        addresses = store.find(Address, email=email.lower())
         if addresses.count() == 1:
             found = addresses[0]
             raise ExistingAddressError(found.original_email)
@@ -85,32 +90,36 @@ class UserManager:
         # constructor will do the right thing.
         address = Address(email, display_name)
         address.preferences = Preferences()
-        config.db.store.add(address)
+        store.add(address)
         return address
 
-    def delete_address(self, address):
+    @dbconnection
+    def delete_address(self, store, address):
         """See `IUserManager`."""
         # If there's a user controlling this address, it has to first be
         # unlinked before the address can be deleted.
         if address.user:
             address.user.unlink(address)
-        config.db.store.remove(address)
+        store.remove(address)
 
-    def get_address(self, email):
+    @dbconnection
+    def get_address(self, store, email):
         """See `IUserManager`."""
-        addresses = config.db.store.find(Address, email=email.lower())
+        addresses = store.find(Address, email=email.lower())
         if addresses.count() == 0:
             return None
         return addresses.one()
 
     @property
-    def addresses(self):
+    @dbconnection
+    def addresses(self, store):
         """See `IUserManager`."""
-        for address in config.db.store.find(Address):
+        for address in store.find(Address):
             yield address
 
     @property
-    def members(self):
+    @dbconnection
+    def members(self, store):
         """See `IUserManager."""
-        for member in config.db.store.find(Member):
+        for member in store.find(Member):
                 yield member

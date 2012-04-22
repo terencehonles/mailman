@@ -32,6 +32,7 @@ from zope.component import getUtility
 
 from mailman.app.lifecycle import create_list
 from mailman.config import config
+from mailman.database.transaction import transaction
 from mailman.interfaces.registrar import IRegistrar
 from mailman.interfaces.usermanager import IUserManager
 from mailman.runners.command import CommandRunner
@@ -50,14 +51,14 @@ class TestConfirm(unittest.TestCase):
     layer = ConfigLayer
 
     def setUp(self):
-        # Register a subscription requiring confirmation.
         registrar = getUtility(IRegistrar)
-        self._mlist = create_list('test@example.com')
-        self._mlist.send_welcome_message = False
-        self._token = registrar.register(self._mlist, 'anne@example.org')
         self._commandq = config.switchboards['command']
         self._runner = make_testable_runner(CommandRunner, 'command')
-        config.db.commit()
+        with transaction():
+            # Register a subscription requiring confirmation.
+            self._mlist = create_list('test@example.com')
+            self._mlist.send_welcome_message = False
+            self._token = registrar.register(self._mlist, 'anne@example.org')
 
     def test_confirm_with_re_prefix(self):
         subject = 'Re: confirm {0}'.format(self._token)

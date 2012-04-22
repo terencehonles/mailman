@@ -37,6 +37,7 @@ from zope.interface import implements
 from mailman.app.membership import add_member
 from mailman.config import config
 from mailman.core.i18n import _
+from mailman.database.transaction import transactional
 from mailman.interfaces.command import ICLISubCommand
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import (
@@ -177,6 +178,7 @@ class Members:
             if fp is not sys.stdout:
                 fp.close()
 
+    @transactional
     def add_members(self, mlist, args):
         """Add the members in a file to a mailing list.
 
@@ -207,9 +209,8 @@ class Members:
                 except AlreadySubscribedError:
                     # It's okay if the address is already subscribed, just
                     # print a warning and continue.
-                    print('Already subscribed (skipping):', 
+                    print('Already subscribed (skipping):',
                           email, display_name)
         finally:
             if fp is not sys.stdin:
                 fp.close()
-        config.db.commit()

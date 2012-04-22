@@ -26,7 +26,7 @@ prepared for delivery.  Rejections, discards, and holds are processed
 immediately.
 """
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -36,9 +36,9 @@ __all__ = [
 
 from zope.component import getUtility
 
-from mailman.config import config
 from mailman.core.chains import process
 from mailman.core.runner import Runner
+from mailman.database.transaction import transaction
 from mailman.interfaces.address import ExistingAddressError
 from mailman.interfaces.usermanager import IUserManager
 
@@ -54,12 +54,12 @@ class IncomingRunner(Runner):
         # Ensure that the email addresses of the message's senders are known
         # to Mailman.  This will be used in nonmember posting dispositions.
         user_manager = getUtility(IUserManager)
-        for sender in msg.senders:
-            try:
-                user_manager.create_address(sender)
-            except ExistingAddressError:
-                pass
-        config.db.commit()
+        with transaction():
+            for sender in msg.senders:
+                try:
+                    user_manager.create_address(sender)
+                except ExistingAddressError:
+                    pass
         # Process the message through the mailing list's start chain.
         start_chain = (mlist.owner_chain
                        if msgdata.get('to_owner', False)
