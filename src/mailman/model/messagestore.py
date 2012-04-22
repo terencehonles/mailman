@@ -17,8 +17,7 @@
 
 """Model for message stores."""
 
-
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -34,6 +33,7 @@ import cPickle as pickle
 from zope.interface import implements
 
 from mailman.config import config
+from mailman.database.transaction import dbconnection
 from mailman.interfaces.messages import IMessageStore
 from mailman.model.message import Message
 from mailman.utilities.filesystem import makedirs
@@ -49,7 +49,8 @@ EMPTYSTRING = ''
 class MessageStore:
     implements(IMessageStore)
 
-    def add(self, message):
+    @dbconnection
+    def add(self, store, message):
         # Ensure that the message has the requisite headers.
         message_ids = message.get_all('message-id', [])
         if len(message_ids) <> 1:
@@ -57,8 +58,7 @@ class MessageStore:
         # Calculate and insert the X-Message-ID-Hash.
         message_id = message_ids[0]
         # Complain if the Message-ID already exists in the storage.
-        existing = config.db.store.find(Message,
-                                        Message.message_id == message_id).one()
+        existing = store.find(Message, Message.message_id == message_id).one()
         if existing is not None:
             raise ValueError(
                 'Message ID already exists in message store: {0}'.format(
@@ -104,34 +104,37 @@ class MessageStore:
         with open(path) as fp:
             return pickle.load(fp)
 
-    def get_message_by_id(self, message_id):
-        row = config.db.store.find(Message, message_id=message_id).one()
+    @dbconnection
+    def get_message_by_id(self, store, message_id):
+        row = store.find(Message, message_id=message_id).one()
         if row is None:
             return None
         return self._get_message(row)
 
-    def get_message_by_hash(self, message_id_hash):
+    @dbconnection
+    def get_message_by_hash(self, store, message_id_hash):
         # It's possible the hash came from a message header, in which case it
         # will be a Unicode.  However when coming from source code, it may be
         # an 8-string.  Coerce to the latter if necessary; it must be
         # US-ASCII.
         if isinstance(message_id_hash, unicode):
             message_id_hash = message_id_hash.encode('ascii')
-        row = config.db.store.find(Message,
-                                   message_id_hash=message_id_hash).one()
+        row = store.find(Message, message_id_hash=message_id_hash).one()
         if row is None:
             return None
         return self._get_message(row)
 
     @property
-    def messages(self):
-        for row in config.db.store.find(Message):
+    @dbconnection
+    def messages(self, store):
+        for row in store.find(Message):
             yield self._get_message(row)
 
-    def delete_message(self, message_id):
-        row = config.db.store.find(Message, message_id=message_id).one()
+    @dbconnection
+    def delete_message(self, store, message_id):
+        row = store.find(Message, message_id=message_id).one()
         if row is None:
             raise LookupError(message_id)
         path = os.path.join(config.MESSAGES_DIR, row.path)
         os.remove(path)
-        config.db.store.remove(row)
+        store.remove(row)

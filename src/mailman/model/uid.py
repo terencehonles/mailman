@@ -17,7 +17,7 @@
 
 """Unique IDs."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -28,8 +28,8 @@ __all__ = [
 from storm.locals import Int
 from storm.properties import UUID
 
-from mailman.config import config
 from mailman.database.model import Model
+from mailman.database.transaction import dbconnection
 
 
 
@@ -48,23 +48,29 @@ class UID(Model):
     id = Int(primary=True)
     uid = UUID()
 
-    def __init__(self, uid):
+    @dbconnection
+    def __init__(self, store, uid):
         super(UID, self).__init__()
         self.uid = uid
-        config.db.store.add(self)
+        store.add(self)
 
     def __repr__(self):
         return '<UID {0} at {1}>'.format(self.uid, id(self))
 
     @staticmethod
-    def record(uid):
+    @dbconnection
+    # Note that the parameter order is deliberate reversed here.  Normally,
+    # `store` is the first parameter after `self`, but since this is a
+    # staticmethod and there is no self, the decorator will see the uid in
+    # arg[0].
+    def record(uid, store):
         """Record the uid in the database.
 
         :param uid: The unique id.
         :type uid: unicode
         :raises ValueError: if the id is not unique.
         """
-        existing = config.db.store.find(UID, uid=uid)
+        existing = store.find(UID, uid=uid)
         if existing.count() != 0:
             raise ValueError(uid)
         return UID(uid)

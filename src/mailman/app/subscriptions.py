@@ -17,7 +17,7 @@
 
 """Module stuff."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -36,6 +36,7 @@ from zope.interface import implements
 from mailman.app.membership import add_member, delete_member
 from mailman.config import config
 from mailman.core.constants import system_preferences
+from mailman.database.transaction import dbconnection
 from mailman.interfaces.address import IEmailValidator
 from mailman.interfaces.listmanager import (
     IListManager, ListDeletedEvent, NoSuchListError)
@@ -90,9 +91,10 @@ class SubscriptionService:
                 sorted(by_role.get('member', []), key=address_of_member))
         return all_members
 
-    def get_member(self, member_id):
+    @dbconnection
+    def get_member(self, store, member_id):
         """See `ISubscriptionService`."""
-        members = config.db.store.find(
+        members = store.find(
             Member,
             Member._member_id == member_id)
         if members.count() == 0:
@@ -101,7 +103,9 @@ class SubscriptionService:
             assert members.count() == 1, 'Too many matching members'
             return members[0]
 
-    def find_members(self, subscriber=None, fqdn_listname=None, role=None):
+    @dbconnection
+    def find_members(self, store,
+                     subscriber=None, fqdn_listname=None, role=None):
         """See `ISubscriptionService`."""
         # If `subscriber` is a user id, then we'll search for all addresses
         # which are controlled by the user, otherwise we'll just search for
@@ -137,7 +141,7 @@ class SubscriptionService:
             query.append(Member.mailing_list == fqdn_listname)
         if role is not None:
             query.append(Member.role == role)
-        results = config.db.store.find(Member, And(*query))
+        results = store.find(Member, And(*query))
         return sorted(results, key=_membership_sort_key)
 
     def __iter__(self):

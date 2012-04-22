@@ -17,7 +17,7 @@
 
 """Model for members."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -29,9 +29,9 @@ from storm.properties import UUID
 from zope.component import getUtility
 from zope.interface import implements
 
-from mailman.config import config
 from mailman.core.constants import system_preferences
 from mailman.database.model import Model
+from mailman.database.transaction import dbconnection
 from mailman.database.types import Enum
 from mailman.interfaces.action import Action
 from mailman.interfaces.address import IAddress
@@ -176,7 +176,8 @@ class Member(Model):
         # XXX Um, this is definitely wrong
         return 'http://example.com/' + self.address.email
 
-    def unsubscribe(self):
+    @dbconnection
+    def unsubscribe(self, store):
         """See `IMember`."""
-        config.db.store.remove(self.preferences)
-        config.db.store.remove(self)
+        store.remove(self.preferences)
+        store.remove(self)

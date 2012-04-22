@@ -17,7 +17,7 @@
 
 """Model for users."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -30,8 +30,8 @@ from storm.properties import UUID
 from zope.event import notify
 from zope.interface import implements
 
-from mailman.config import config
 from mailman.database.model import Model
+from mailman.database.transaction import dbconnection
 from mailman.interfaces.address import (
     AddressAlreadyLinkedError, AddressNotLinkedError)
 from mailman.interfaces.user import (
@@ -64,16 +64,17 @@ class User(Model):
     preferences_id = Int()
     preferences = Reference(preferences_id, 'Preferences.id')
 
-    def __init__(self, display_name=None, preferences=None):
+    @dbconnection
+    def __init__(self, store, display_name=None, preferences=None):
         super(User, self).__init__()
         self._created_on = date_factory.now()
         user_id = uid_factory.new_uid()
-        assert config.db.store.find(User, _user_id=user_id).count() == 0, (
+        assert store.find(User, _user_id=user_id).count() == 0, (
             'Duplicate user id {0}'.format(user_id))
         self._user_id = user_id
         self.display_name = ('' if display_name is None else display_name)
         self.preferences = preferences
-        config.db.store.add(self)
+        store.add(self)
 
     def __repr__(self):
         short_user_id = self.user_id.int
@@ -135,18 +136,20 @@ class User(Model):
         """See `IUser`."""
         self._preferred_address = None
 
-    def controls(self, email):
+    @dbconnection
+    def controls(self, store, email):
         """See `IUser`."""
-        found = config.db.store.find(Address, email=email)
+        found = store.find(Address, email=email)
         if found.count() == 0:
             return False
         assert found.count() == 1, 'Unexpected count'
         return found[0].user is self
 
-    def register(self, email, display_name=None):
+    @dbconnection
+    def register(self, store, email, display_name=None):
         """See `IUser`."""
         # First, see if the address already exists
-        address = config.db.store.find(Address, email=email).one()
+        address = store.find(Address, email=email).one()
         if address is None:
             if display_name is None:
                 display_name = ''

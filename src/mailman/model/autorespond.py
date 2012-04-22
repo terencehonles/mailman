@@ -17,7 +17,7 @@
 
 """Module stuff."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -29,8 +29,8 @@ __all__ = [
 from storm.locals import And, Date, Desc, Int, Reference
 from zope.interface import implements
 
-from mailman.config import config
 from mailman.database.model import Model
+from mailman.database.transaction import dbconnection
 from mailman.database.types import Enum
 from mailman.interfaces.autorespond import (
     IAutoResponseRecord, IAutoResponseSet, Response)
@@ -66,27 +66,30 @@ class AutoResponseSet:
     def __init__(self, mailing_list):
         self._mailing_list = mailing_list
 
-    def todays_count(self, address, response_type):
+    @dbconnection
+    def todays_count(self, store, address, response_type):
         """See `IAutoResponseSet`."""
-        return config.db.store.find(
+        return store.find(
             AutoResponseRecord,
             And(AutoResponseRecord.address == address,
                 AutoResponseRecord.mailing_list == self._mailing_list,
                 AutoResponseRecord.response_type == response_type,
                 AutoResponseRecord.date_sent == today())).count()
 
-    def response_sent(self, address, response_type):
+    @dbconnection
+    def response_sent(self, store, address, response_type):
         """See `IAutoResponseSet`."""
         response = AutoResponseRecord(
             self._mailing_list, address, response_type)
-        config.db.store.add(response)
+        store.add(response)
 
-    def last_response(self, address, response_type):
+    @dbconnection
+    def last_response(self, store, address, response_type):
         """See `IAutoResponseSet`."""
-        results = config.db.store.find(
+        results = store.find(
             AutoResponseRecord,
             And(AutoResponseRecord.address == address,
                 AutoResponseRecord.mailing_list == self._mailing_list,
                 AutoResponseRecord.response_type == response_type)
-            ).order_by(Desc(AutoResponseRecord.date_sent)) 
+            ).order_by(Desc(AutoResponseRecord.date_sent))
         return (None if results.count() == 0 else results.first())
