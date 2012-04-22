@@ -37,6 +37,7 @@ from zope.component import getUtility
 
 from mailman.app.lifecycle import create_list
 from mailman.config import config
+from mailman.database.transaction import transaction
 from mailman.interfaces.member import MemberRole
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import (
@@ -59,17 +60,17 @@ class TestEmailToOwner(unittest.TestCase):
         self._mlist = create_list('test@example.com')
         # Add some owners, moderators, and members
         manager = getUtility(IUserManager)
-        anne = manager.create_address('anne@example.com')
-        bart = manager.create_address('bart@example.com')
-        cris = manager.create_address('cris@example.com')
-        dave = manager.create_address('dave@example.com')
-        self._mlist.subscribe(anne, MemberRole.member)
-        self._mlist.subscribe(anne, MemberRole.owner)
-        self._mlist.subscribe(bart, MemberRole.moderator)
-        self._mlist.subscribe(bart, MemberRole.owner)
-        self._mlist.subscribe(cris, MemberRole.moderator)
-        self._mlist.subscribe(dave, MemberRole.member)
-        config.db.commit()
+        with transaction():
+            anne = manager.create_address('anne@example.com')
+            bart = manager.create_address('bart@example.com')
+            cris = manager.create_address('cris@example.com')
+            dave = manager.create_address('dave@example.com')
+            self._mlist.subscribe(anne, MemberRole.member)
+            self._mlist.subscribe(anne, MemberRole.owner)
+            self._mlist.subscribe(bart, MemberRole.moderator)
+            self._mlist.subscribe(bart, MemberRole.owner)
+            self._mlist.subscribe(cris, MemberRole.moderator)
+            self._mlist.subscribe(dave, MemberRole.member)
         self._inq = make_testable_runner(IncomingRunner, 'in')
         self._pipelineq = make_testable_runner(PipelineRunner, 'pipeline')
         self._outq = make_testable_runner(OutgoingRunner, 'out')

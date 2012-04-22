@@ -17,10 +17,11 @@
 
 """REST address tests."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
+    'TestAddresses',
     ]
 
 
@@ -29,7 +30,7 @@ import unittest
 from urllib2 import HTTPError
 
 from mailman.app.lifecycle import create_list
-from mailman.config import config
+from mailman.database.transaction import transaction
 from mailman.testing.helpers import call_api
 from mailman.testing.layers import RESTLayer
 
@@ -39,8 +40,8 @@ class TestAddresses(unittest.TestCase):
     layer = RESTLayer
 
     def setUp(self):
-        self._mlist = create_list('test@example.com')
-        config.db.commit()
+        with transaction():
+            self._mlist = create_list('test@example.com')
 
     def test_membership_of_missing_address(self):
         # Try to get the memberships of a missing address.

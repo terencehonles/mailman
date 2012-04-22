@@ -32,7 +32,7 @@ from urllib2 import HTTPError
 from zope.component import getUtility
 
 from mailman.app.lifecycle import create_list
-from mailman.config import config
+from mailman.database.transaction import transaction
 from mailman.interfaces.usermanager import IUserManager
 from mailman.testing.helpers import call_api
 from mailman.testing.layers import RESTLayer
@@ -96,8 +96,8 @@ class TestLists(unittest.TestCase):
     layer = RESTLayer
 
     def setUp(self):
-        self._mlist = create_list('test@example.com')
-        config.db.commit()
+        with transaction():
+            self._mlist = create_list('test@example.com')
         self._usermanager = getUtility(IUserManager)
 
     def test_member_count_with_no_members(self):
@@ -109,9 +109,9 @@ class TestLists(unittest.TestCase):
 
     def test_member_count_with_one_member(self):
         # Add a member to a list and check that the resource reflects this.
-        anne = self._usermanager.create_address('anne@example.com')
-        self._mlist.subscribe(anne)
-        config.db.commit()
+        with transaction():
+            anne = self._usermanager.create_address('anne@example.com')
+            self._mlist.subscribe(anne)
         resource, response = call_api(
             'http://localhost:9001/3.0/lists/test@example.com')
         self.assertEqual(response.status, 200)
@@ -119,11 +119,11 @@ class TestLists(unittest.TestCase):
 
     def test_member_count_with_two_members(self):
         # Add two members to a list and check that the resource reflects this.
-        anne = self._usermanager.create_address('anne@example.com')
-        self._mlist.subscribe(anne)
-        bart = self._usermanager.create_address('bar@example.com')
-        self._mlist.subscribe(bart)
-        config.db.commit()
+        with transaction():
+            anne = self._usermanager.create_address('anne@example.com')
+            self._mlist.subscribe(anne)
+            bart = self._usermanager.create_address('bar@example.com')
+            self._mlist.subscribe(bart)
         resource, response = call_api(
             'http://localhost:9001/3.0/lists/test@example.com')
         self.assertEqual(response.status, 200)

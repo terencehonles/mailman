@@ -37,6 +37,7 @@ from flufl.lock import Lock
 from mailman.app.lifecycle import create_list
 from mailman.archiving.prototype import Prototype
 from mailman.config import config
+from mailman.database.transaction import transaction
 from mailman.testing.helpers import LogFileMark
 from mailman.testing.helpers import (
     specialized_message_from_string as mfs)
@@ -61,8 +62,8 @@ X-Message-ID-Hash: MS6QLWERIJLGCRF44J7USBFDELMNT2BW
 Tests are better than no tests
 but the water deserves to be swum.
 """)
-        self._mlist = create_list('test@example.com')
-        config.db.commit()
+        with transaction():
+            self._mlist = create_list('test@example.com')
         # Set up a temporary directory for the prototype archiver so that it's
         # easier to clean up.
         self._tempdir = tempfile.mkdtemp()

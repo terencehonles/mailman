@@ -17,7 +17,7 @@
 
 """Test bounce model objects."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -30,7 +30,7 @@ from datetime import datetime
 from zope.component import getUtility
 
 from mailman.app.lifecycle import create_list
-from mailman.config import config
+from mailman.database.transaction import transaction
 from mailman.interfaces.bounce import BounceContext, IBounceProcessor
 from mailman.testing.helpers import (
     specialized_message_from_string as message_from_string)
@@ -52,8 +52,9 @@ Message-Id: <first>
 """)
 
     def test_events_iterator(self):
-        self._processor.register(self._mlist, 'anne@example.com', self._msg)
-        config.db.commit()
+        with transaction():
+            self._processor.register(
+                self._mlist, 'anne@example.com', self._msg)
         events = list(self._processor.events)
         self.assertEqual(len(events), 1)
         event = events[0]
@@ -75,23 +76,25 @@ Message-Id: <first>
         self.assertEqual(event.processed, False)
 
     def test_unprocessed_events_iterator(self):
-        self._processor.register(self._mlist, 'anne@example.com', self._msg)
-        self._processor.register(self._mlist, 'bart@example.com', self._msg)
-        config.db.commit()
+        with transaction():
+            self._processor.register(
+                self._mlist, 'anne@example.com', self._msg)
+            self._processor.register(
+                self._mlist, 'bart@example.com', self._msg)
         events = list(self._processor.events)
         self.assertEqual(len(events), 2)
         unprocessed = list(self._processor.unprocessed)
         # The unprocessed list will be exactly the same right now.
         self.assertEqual(len(unprocessed), 2)
         # Process one of the events.
-        events[0].processed = True
-        config.db.commit()
+        with transaction():
+            events[0].processed = True
         # Now there will be only one unprocessed event.
         unprocessed = list(self._processor.unprocessed)
         self.assertEqual(len(unprocessed), 1)
         # Process the other event.
-        events[1].processed = True
-        config.db.commit()
+        with transaction():
+            events[1].processed = True
         # Now there will be no unprocessed events.
         unprocessed = list(self._processor.unprocessed)
         self.assertEqual(len(unprocessed), 0)
