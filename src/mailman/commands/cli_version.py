@@ -17,7 +17,7 @@
 
 """The Mailman version."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -25,17 +25,16 @@ __all__ = [
     ]
 
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.interfaces.command import ICLISubCommand
 from mailman.version import MAILMAN_VERSION_FULL
 
 
 
+@implementer(ICLISubCommand)
 class Version:
     """Mailman's version."""
-
-    implements(ICLISubCommand)
 
     name = 'version'
 
@@ -46,4 +45,4 @@ class Version:
 
     def process(self, args):
         """See `ICLISubCommand`."""
-        print MAILMAN_VERSION_FULL
+        print(MAILMAN_VERSION_FULL)

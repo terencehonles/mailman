@@ -29,7 +29,7 @@ import sys
 import cPickle
 
 from zope.component import getUtility
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.core.i18n import _
 from mailman.database.transaction import transactional
@@ -39,10 +39,9 @@ from mailman.utilities.importer import import_config_pck
 
 
 
+@implementer(ICLISubCommand)
 class Import21:
     """Import Mailman 2.1 list data."""
-
-    implements(ICLISubCommand)
 
     name = 'import21'
 

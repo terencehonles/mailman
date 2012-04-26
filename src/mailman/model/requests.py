@@ -27,7 +27,7 @@ __all__ = [
 from datetime import timedelta
 from storm.locals import AutoReload, Int, RawStr, Reference, Unicode
 from zope.component import getUtility
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
@@ -37,13 +37,14 @@ from mailman.interfaces.requests import IListRequests, RequestType
 
 
 
+@implementer(IPendable)
 class DataPendable(dict):
-    implements(IPendable)
+    pass
 
 
 
+@implementer(IListRequests)
 class ListRequests:
-    implements(IListRequests)
 
     def __init__(self, mailing_list):
         self.mailing_list = mailing_list

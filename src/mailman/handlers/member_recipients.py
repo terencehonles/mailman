@@ -31,7 +31,7 @@ __all__ = [
     ]
 
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.config import config
 from mailman.core import errors
@@ -42,10 +42,9 @@ from mailman.utilities.string import wrap
 
 
 
+@implementer(IHandler)
 class MemberRecipients:
     """Calculate the regular (i.e. non-digest) recipients of the message."""
-
-    implements(IHandler)
 
     name = 'member-recipients'
     description = _('Calculate the regular recipients of the message.')

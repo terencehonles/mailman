@@ -17,7 +17,7 @@
 
 """Check if any previous rules have matched."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -25,16 +25,16 @@ __all__ = [
     ]
 
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.core.i18n import _
 from mailman.interfaces.rules import IRule
 
 
 
+@implementer(IRule)
 class Any:
     """Look for any previous rule match."""
-    implements(IRule)
 
     name = 'any'
     description = _('Look for any previous rule hit.')

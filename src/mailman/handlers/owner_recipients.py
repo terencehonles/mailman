@@ -25,7 +25,7 @@ __all__ = [
     ]
 
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.config import config
 from mailman.core.i18n import _
@@ -34,10 +34,9 @@ from mailman.interfaces.member import DeliveryStatus
 
 
 
+@implementer(IHandler)
 class OwnerRecipients:
     """Calculate the owner (and moderator) recipients for -owner postings."""
-
-    implements(IHandler)
 
     name = 'owner-recipients'
     description = _('Calculate the owner and moderator recipients.')

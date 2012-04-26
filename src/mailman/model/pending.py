@@ -32,7 +32,7 @@ import hashlib
 
 from lazr.config import as_timedelta
 from storm.locals import DateTime, Int, RawStr, ReferenceSet, Unicode
-from zope.interface import implements
+from zope.interface import implementer
 from zope.interface.verify import verifyObject
 
 from mailman.config import config
@@ -45,10 +45,9 @@ from mailman.utilities.modules import call_name
 
 
 
+@implementer(IPendedKeyValue)
 class PendedKeyValue(Model):
     """A pended key/value pair, tied to a token."""
-
-    implements(IPendedKeyValue)
 
     def __init__(self, key, value):
         self.key = key
@@ -60,10 +59,10 @@ class PendedKeyValue(Model):
     pended_id = Int()
 
 
+
+@implementer(IPended)
 class Pended(Model):
     """A pended event, tied to a token."""
-
-    implements(IPended)
 
     def __init__(self, token, expiration_date):
         super(Pended, self).__init__()
@@ -77,15 +76,15 @@ class Pended(Model):
 
 
 
+@implementer(IPendable)
 class UnpendedPendable(dict):
-    implements(IPendable)
+    pass
 
 
 
+@implementer(IPendings)
 class Pendings:
     """Implementation of the IPending interface."""
-
-    implements(IPendings)
 
     @dbconnection
     def add(self, store, pendable, lifetime=None):

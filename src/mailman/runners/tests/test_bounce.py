@@ -17,17 +17,20 @@
 
 """Test the bounce runner."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
+    'TestBounceRunner',
+    'TestBounceRunnerBug876774',
+    'TestStyle',
     ]
 
 
 import unittest
 
 from zope.component import getUtility
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.app.bounces import send_probe
 from mailman.app.lifecycle import create_list
@@ -235,8 +238,9 @@ Message-Id: <third>
 # attributes.  In particular, this will not set the bogus `bounce_processing`
 # attribute which the default style set (before LP: #876774 was fixed).
 
+@implementer(IStyle)
 class TestStyle:
-    implements(IStyle)
+    """See `IStyle`."""
 
     name = 'test'
     priority = 10
@@ -249,6 +253,7 @@ class TestStyle:
         styles.append(self)
 
 
+
 class TestBounceRunnerBug876774(unittest.TestCase):
     """Test LP: #876774.
 

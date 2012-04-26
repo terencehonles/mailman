@@ -34,7 +34,7 @@ made as to the disposition of the message.  `defer` is the default for
 members, while `hold` is the default for nonmembers.
 """
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -42,7 +42,7 @@ __all__ = [
     ]
 
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.chains.base import Link
 from mailman.config import config
@@ -52,15 +52,13 @@ from mailman.interfaces.chain import IChain, LinkAction
 
 
 
+@implementer(IChain)
 class ModerationChain:
     """Dynamically produce a link jumping to the appropriate terminal chain.
 
     The terminal chain will be one of the Accept, Hold, Discard, or Reject
     chains, based on the member's or nonmember's moderation action setting.
     """
-
-    implements(IChain)
-
     name = 'moderation'
     description = _('Moderation chain')
 

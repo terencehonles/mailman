@@ -25,7 +25,7 @@ __all__ = [
     ]
 
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.core.i18n import _
 from mailman.interfaces.command import ContinueProcessing, IEmailCommand
@@ -35,9 +35,9 @@ SPACE = ' '
 
 
 
+@implementer(IEmailCommand)
 class Echo:
     """The email 'echo' command."""
-    implements(IEmailCommand)
 
     name = 'echo'
     argument_description = '[args]'

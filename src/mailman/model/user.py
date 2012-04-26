@@ -28,7 +28,7 @@ from storm.locals import (
     DateTime, Int, RawStr, Reference, ReferenceSet, Unicode)
 from storm.properties import UUID
 from zope.event import notify
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
@@ -47,10 +47,9 @@ uid_factory = UniqueIDFactory(context='users')
 
 
 
+@implementer(IUser)
 class User(Model):
     """Mailman users."""
-
-    implements(IUser)
 
     id = Int(primary=True)
     display_name = Unicode()

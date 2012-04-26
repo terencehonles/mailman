@@ -29,7 +29,7 @@ import os
 import unittest
 
 from email import message_from_file
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.app.lifecycle import create_list
 from mailman.config import config
@@ -44,8 +44,8 @@ from mailman.utilities.datetime import RFC822_DATE_FMT, factory, now
 
 
 
+@implementer(IArchiver)
 class DummyArchiver:
-    implements(IArchiver)
     name = 'dummy'
 
     @staticmethod
@@ -193,7 +193,7 @@ First post!
         self.assertEqual(archived['x-original-date'],
                          'Mon, 01 Aug 2005 07:49:23 +0000')
 
-    @configuration('archiver.dummy', 
+    @configuration('archiver.dummy',
                    enable='yes', clobber_date='maybe', clobber_skew='1d')
     def test_clobber_date_maybe_when_insane(self):
         # The date is clobbered if it's farther off from now than its skew

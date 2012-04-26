@@ -27,7 +27,7 @@ __all__ = [
 
 import unittest
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.app.lifecycle import create_list
 from mailman.config import config
@@ -41,8 +41,10 @@ from mailman.testing.layers import ConfigLayer
 
 
 
+@implementer(IHandler)
 class MyTestHandler:
-    implements(IHandler)
+    """See `IHandler`."""
+
     name = 'test handler'
     description = 'A test handler'
 
@@ -54,8 +56,9 @@ class MyTestHandler:
         self._test.mark(self._marker)
 
 
+
+@implementer(IPipeline)
 class MyTestPipeline:
-    implements(IPipeline)
     name = 'test'
     description = 'a test pipeline'
 

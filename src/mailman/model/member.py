@@ -27,7 +27,7 @@ __all__ = [
 from storm.locals import Int, Reference, Unicode
 from storm.properties import UUID
 from zope.component import getUtility
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.core.constants import system_preferences
 from mailman.database.model import Model
@@ -46,8 +46,9 @@ uid_factory = UniqueIDFactory(context='members')
 
 
 
+@implementer(IMember)
 class Member(Model):
-    implements(IMember)
+    """See `IMember`."""
 
     id = Int(primary=True)
     _member_id = UUID()

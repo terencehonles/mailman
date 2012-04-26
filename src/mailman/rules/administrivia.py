@@ -17,7 +17,7 @@
 
 """The administrivia rule."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -26,7 +26,7 @@ __all__ = [
 
 
 from email.iterators import typed_subpart_iterator
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.config import config
 from mailman.core.i18n import _
@@ -53,9 +53,9 @@ EMAIL_COMMANDS = {
 
 
 
+@implementer(IRule)
 class Administrivia:
     """The administrivia rule."""
-    implements(IRule)
 
     name = 'administrivia'
     description = _('Catch mis-addressed email commands.')

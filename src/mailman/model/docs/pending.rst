@@ -15,11 +15,14 @@ In order to pend an event, you first need a pending database.
 
 The pending database can add any ``IPendable`` to the database, returning a
 token that can be used in urls and such.
+::
 
-    >>> from zope.interface import implements
+    >>> from zope.interface import implementer
     >>> from mailman.interfaces.pending import IPendable
-    >>> class SimplePendable(dict):
-    ...     implements(IPendable)
+    >>> @implementer(IPendable)
+    ... class SimplePendable(dict):
+    ...     pass
+
     >>> subscription = SimplePendable(
     ...     type='subscription',
     ...     address='aperson@example.com',

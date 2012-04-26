@@ -22,7 +22,7 @@ posted to the list membership.  Anything else that needs to go out to some
 recipient should just be placed in the out queue directly.
 """
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -30,7 +30,7 @@ __all__ = [
     ]
 
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.config import config
 from mailman.core.i18n import _
@@ -38,10 +38,9 @@ from mailman.interfaces.handler import IHandler
 
 
 
+@implementer(IHandler)
 class ToOutgoing:
     """Send the message to the outgoing queue."""
-
-    implements(IHandler)
 
     name = 'to-outgoing'
     description = _('Send the message to the outgoing queue.')

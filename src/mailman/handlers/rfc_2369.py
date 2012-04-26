@@ -17,7 +17,7 @@
 
 """RFC 2369 List-* and related headers."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -26,7 +26,7 @@ __all__ = [
 
 
 from email.utils import formataddr
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.config import config
 from mailman.core.i18n import _
@@ -100,10 +100,9 @@ def process(mlist, msg, msgdata):
 
 
 
+@implementer(IHandler)
 class RFC2369:
     """Add the RFC 2369 List-* headers."""
-
-    implements(IHandler)
 
     name = 'rfc-2369'
     description = _('Add the RFC 2369 List-* headers.')

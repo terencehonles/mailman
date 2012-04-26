@@ -17,7 +17,7 @@
 
 """Getting information out of a qfile."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -28,7 +28,7 @@ __all__ = [
 import cPickle
 
 from pprint import PrettyPrinter
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.core.i18n import _
 from mailman.interfaces.command import ICLISubCommand
@@ -39,10 +39,9 @@ m = []
 
 
 
+@implementer(ICLISubCommand)
 class QFile:
     """Get information out of a queue file."""
-
-    implements(ICLISubCommand)
 
     name = 'qfile'
 
@@ -79,15 +78,15 @@ class QFile:
                 except EOFError:
                     break
         if args.doprint:
-            print _('[----- start pickle -----]')
+            print(_('[----- start pickle -----]'))
             for i, obj in enumerate(m):
                 count = i + 1
-                print _('<----- start object $count ----->')
+                print(_('<----- start object $count ----->'))
                 if isinstance(obj, basestring):
-                    print obj
+                    print(obj)
                 else:
                     printer.pprint(obj)
-            print _('[----- end pickle -----]')
+            print(_('[----- end pickle -----]'))
         count = len(m)
         banner = _("The variable 'm' contains $count objects")
         if args.interactive:

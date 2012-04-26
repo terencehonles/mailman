@@ -26,7 +26,7 @@ __all__ = [
 
 
 from zope.event import notify
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.database.transaction import dbconnection
 from mailman.interfaces.address import InvalidEmailAddressError
@@ -38,10 +38,9 @@ from mailman.utilities.datetime import now
 
 
 
+@implementer(IListManager)
 class ListManager:
     """An implementation of the `IListManager` interface."""
-
-    implements(IListManager)
 
     @dbconnection
     def create(self, store, fqdn_listname):

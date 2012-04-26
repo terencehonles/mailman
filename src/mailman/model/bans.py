@@ -28,7 +28,7 @@ __all__ = [
 import re
 
 from storm.locals import Int, Unicode
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
@@ -36,8 +36,9 @@ from mailman.interfaces.bans import IBan, IBanManager
 
 
 
+@implementer(IBan)
 class Ban(Model):
-    implements(IBan)
+    """See `IBan`."""
 
     id = Int(primary=True)
     email = Unicode()
@@ -50,8 +51,9 @@ class Ban(Model):
 
 
 
+@implementer(IBanManager)
 class BanManager:
-    implements(IBanManager)
+    """See `IBanManager`."""
 
     @dbconnection
     def ban(self, store, email, mailing_list=None):

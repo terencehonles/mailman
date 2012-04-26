@@ -24,7 +24,7 @@ wrapping only single sections after other processing are replaced by their
 contents.
 """
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -42,7 +42,7 @@ from email.mime.message import MIMEMessage
 from email.mime.text import MIMEText
 from lazr.config import as_boolean
 from os.path import splitext
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.config import config
 from mailman.core import errors
@@ -285,10 +285,9 @@ def get_file_ext(m):
 
 
 
+@implementer(IHandler)
 class MIMEDelete:
     """Filter the MIME content of messages."""
-
-    implements(IHandler)
 
     name = 'mime-delete'
     description = _('Filter the MIME content of messages.')

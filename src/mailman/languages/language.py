@@ -18,7 +18,7 @@
 """The representation of a language."""
 
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -26,15 +26,15 @@ __all__ = [
     ]
 
 
-from zope.interface import implements
+from zope.interface import implementer
+
 from mailman.interfaces.languages import ILanguage
 
 
 
+@implementer(ILanguage)
 class Language:
     """The representation of a language."""
-
-    implements(ILanguage)
 
     def __init__(self, code, charset, description):
         self.code = code

@@ -23,7 +23,7 @@ has already received a copy, we either drop the message, add a duplicate
 warning header, or pass it through, depending on the user's preferences.
 """
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -32,7 +32,7 @@ __all__ = [
 
 
 from email.utils import getaddresses, formataddr
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
@@ -42,10 +42,9 @@ COMMASPACE = ', '
 
 
 
+@implementer(IHandler)
 class AvoidDuplicates:
     """If the user wishes it, do not send duplicates of the same message."""
-
-    implements(IHandler)
 
     name = 'avoid-duplicates'
     description = _('Suppress some duplicates of the same message.')

@@ -30,7 +30,7 @@ import base64
 import hashlib
 import cPickle as pickle
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.config import config
 from mailman.database.transaction import dbconnection
@@ -46,8 +46,9 @@ EMPTYSTRING = ''
 
 
 
+@implementer(IMessageStore)
 class MessageStore:
-    implements(IMessageStore)
+    """See `IMessageStore`."""
 
     @dbconnection
     def add(self, store, message):

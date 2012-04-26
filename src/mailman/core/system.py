@@ -17,7 +17,7 @@
 
 """System information."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -27,15 +27,16 @@ __all__ = [
 
 import sys
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman import version
 from mailman.interfaces.system import ISystem
 
 
 
+@implementer(ISystem)
 class System:
-    implements(ISystem)
+    """See `ISystem`."""
 
     @property
     def mailman_version(self):

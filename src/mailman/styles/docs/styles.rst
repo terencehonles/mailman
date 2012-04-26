@@ -62,10 +62,10 @@ Registering styles
 
 New styles must implement the ``IStyle`` interface.
 
-    >>> from zope.interface import implements
+    >>> from zope.interface import implementer
     >>> from mailman.interfaces.styles import IStyle
-    >>> class TestStyle:
-    ...     implements(IStyle)
+    >>> @implementer(IStyle)
+    ... class TestStyle:
     ...     name = 'test'
     ...     priority = 10
     ...     def apply(self, mailing_list):

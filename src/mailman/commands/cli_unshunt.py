@@ -17,7 +17,7 @@
 
 """The 'unshunt' command."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -27,7 +27,7 @@ __all__ = [
 
 import sys
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.config import config
 from mailman.core.i18n import _
@@ -35,10 +35,9 @@ from mailman.interfaces.command import ICLISubCommand
 
 
 
+@implementer(ICLISubCommand)
 class Unshunt:
     """Unshunt messages."""
-
-    implements(ICLISubCommand)
 
     name = 'unshunt'
 
@@ -64,8 +63,8 @@ class Unshunt:
                 if not args.discard:
                     config.switchboards[which_queue].enqueue(msg, msgdata)
             except Exception as error:
-                print >> sys.stderr, _(
-                    'Cannot unshunt message $filebase, skipping:\n$error')
+                print(_('Cannot unshunt message $filebase, skipping:\n$error'),
+                      file=sys.stderr)
             else:
                 # Unlink the .bak file left by dequeue()
                 shunt_queue.finish(filebase)

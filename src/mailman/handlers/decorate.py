@@ -31,7 +31,7 @@ import logging
 from email.mime.text import MIMEText
 from urllib2 import URLError
 from zope.component import getUtility
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.core.i18n import _
 from mailman.email.message import Message
@@ -57,7 +57,7 @@ def process(mlist, msg, msgdata):
         d['user_address'] = recipient
         d['user_delivered_to'] = member.address.original_email
         d['user_language'] = member.preferred_language.description
-        d['user_name'] = (member.user.display_name 
+        d['user_name'] = (member.user.display_name
                           if member.user.display_name
                           else member.address.original_email)
         d['user_optionsurl'] = member.options_url
@@ -232,10 +232,9 @@ def decorate(mlist, uri, extradict=None):
 
 
 
+@implementer(IHandler)
 class Decorate:
     """Decorate a message with headers and footers."""
-
-    implements(IHandler)
 
     name = 'decorate'
     description = _('Decorate a message with headers and footers.')

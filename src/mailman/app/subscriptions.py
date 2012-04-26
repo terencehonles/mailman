@@ -31,7 +31,7 @@ from operator import attrgetter
 from storm.expr import And, Or
 from uuid import UUID
 from zope.component import getUtility
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.app.membership import add_member, delete_member
 from mailman.config import config
@@ -62,10 +62,9 @@ def _membership_sort_key(member):
 
 
 
+@implementer(ISubscriptionService)
 class SubscriptionService:
     """Subscription services for the REST API."""
-
-    implements(ISubscriptionService)
 
     __name__ = 'members'
 

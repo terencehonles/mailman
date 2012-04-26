@@ -29,7 +29,7 @@ import re
 
 from email.iterators import typed_subpart_iterator
 from flufl.password import verify
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.core.i18n import _
 from mailman.interfaces.rules import IRule
@@ -45,9 +45,9 @@ HEADERS = [
 
 
 
+@implementer(IRule)
 class Approved:
     """Look for moderator pre-approval."""
-    implements(IRule)
 
     name = 'approved'
     description = _('The message has a matching Approve or Approved header.')
@@ -119,7 +119,7 @@ class Approved:
         else:
             for header in HEADERS:
                 del msg[header]
-        return (password is not missing and 
+        return (password is not missing and
                 verify(mlist.moderator_password, password))
 
 

@@ -32,7 +32,7 @@ __all__ = [
 
 import logging
 
-from zope.interface import implements
+from zope.interface import implementer
 from zope.interface.verify import verifyObject
 
 from mailman.app.bounces import bounce_message
@@ -75,10 +75,9 @@ def process(mlist, msg, msgdata, pipeline_name='built-in'):
 
 
 
+@implementer(IPipeline)
 class BasePipeline:
     """Base pipeline implementation."""
-
-    implements(IPipeline)
 
     _default_handlers = ()
 

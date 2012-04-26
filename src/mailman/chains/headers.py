@@ -17,7 +17,7 @@
 
 """The header-matching chain."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -28,7 +28,7 @@ __all__ = [
 import re
 import logging
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.chains.base import Chain, Link
 from mailman.config import config
@@ -60,9 +60,9 @@ def make_link(header, pattern):
 
 
 
+@implementer(IRule)
 class HeaderMatchRule:
     """Header matching rule used by header-match chain."""
-    implements(IRule)
 
     # Sequential rule counter.
     _count = 1

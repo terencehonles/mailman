@@ -28,7 +28,7 @@ __all__ = [
 import logging
 
 from zope.component import getUtility
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.app.notifications import send_welcome_message
 from mailman.core.i18n import _
@@ -47,16 +47,15 @@ log = logging.getLogger('mailman.error')
 
 
 
+@implementer(IPendable)
 class PendableRegistration(dict):
-    implements(IPendable)
     PEND_KEY = 'registration'
 
 
 
+@implementer(IRegistrar)
 class Registrar:
     """Handle registrations and confirmations for subscriptions."""
-
-    implements(IRegistrar)
 
     def register(self, mlist, email, display_name=None, delivery_mode=None):
         """See `IUserRegistrar`."""

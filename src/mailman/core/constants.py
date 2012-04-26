@@ -17,7 +17,7 @@
 
 """Various constants and enumerations."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -26,7 +26,7 @@ __all__ = [
 
 
 from zope.component import getUtility
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.config import config
 from mailman.interfaces.languages import ILanguageManager
@@ -35,10 +35,9 @@ from mailman.interfaces.preferences import IPreferences
 
 
 
+@implementer(IPreferences)
 class SystemDefaultPreferences:
     """The default system preferences."""
-
-    implements(IPreferences)
 
     acknowledge_posts = False
     hide_address = True

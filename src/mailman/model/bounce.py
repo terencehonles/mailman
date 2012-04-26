@@ -27,7 +27,7 @@ __all__ = [
 
 
 from storm.locals import Bool, Int, DateTime, Unicode
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
@@ -38,8 +38,9 @@ from mailman.utilities.datetime import now
 
 
 
+@implementer(IBounceEvent)
 class BounceEvent(Model):
-    implements(IBounceEvent)
+    """See `IBounceEvent`."""
 
     id = Int(primary=True)
     list_name = Unicode()
@@ -59,8 +60,9 @@ class BounceEvent(Model):
 
 
 
+@implementer(IBounceProcessor)
 class BounceProcessor:
-    implements(IBounceProcessor)
+    """See `IBounceProcessor`."""
 
     @dbconnection
     def register(self, store, mlist, email, msg, where=None):

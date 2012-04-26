@@ -31,7 +31,7 @@ from contextlib import closing
 from urllib import addinfourl
 from urlparse import urlparse
 from zope.component import getUtility
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.utilities.i18n import TemplateNotFoundError, find
 from mailman.interfaces.languages import ILanguageManager
@@ -92,10 +92,9 @@ class MailmanHandler(urllib2.BaseHandler):
 
 
 
+@implementer(ITemplateLoader)
 class TemplateLoader:
     """Loader of templates, with caching and support for mailman:// URIs."""
-
-    implements(ITemplateLoader)
 
     def __init__(self):
         opener = urllib2.build_opener(MailmanHandler())

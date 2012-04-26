@@ -17,7 +17,7 @@
 
 """Add the message to the list's current digest."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -27,7 +27,7 @@ __all__ = [
 
 import os
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.config import config
 from mailman.core.i18n import _
@@ -39,10 +39,9 @@ from mailman.utilities.mailbox import Mailbox
 
 
 
+@implementer(IHandler)
 class ToDigest:
     """Add the message to the digest, possibly sending it."""
-
-    implements(IHandler)
 
     name = 'to-digest'
     description = _('Add the message to the digest, possibly sending it.')

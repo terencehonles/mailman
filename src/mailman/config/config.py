@@ -32,7 +32,7 @@ from lazr.config import ConfigSchema, as_boolean
 from pkg_resources import resource_stream
 from string import Template
 from zope.component import getUtility
-from zope.interface import Interface, implements
+from zope.interface import Interface, implementer
 
 import mailman.templates
 
@@ -52,10 +52,9 @@ class IConfiguration(Interface):
 
 
 
+@implementer(IConfiguration)
 class Configuration:
     """The core global configuration object."""
-
-    implements(IConfiguration)
 
     def __init__(self):
         self.switchboards = {}

@@ -17,24 +17,23 @@
 
 """Language manager."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
     'LanguageManager',
     ]
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.interfaces.languages import ILanguageManager
 from mailman.languages.language import Language
 
 
 
+@implementer(ILanguageManager)
 class LanguageManager:
     """Language manager."""
-
-    implements(ILanguageManager)
 
     def __init__(self):
         # Mapping from 2-letter code to Language instance.

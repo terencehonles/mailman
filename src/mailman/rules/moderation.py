@@ -17,7 +17,7 @@
 
 """Membership related rules."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -27,7 +27,7 @@ __all__ = [
 
 
 from zope.component import getUtility
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.core.i18n import _
 from mailman.interfaces.action import Action
@@ -37,9 +37,9 @@ from mailman.interfaces.usermanager import IUserManager
 
 
 
+@implementer(IRule)
 class MemberModeration:
     """The member moderation rule."""
-    implements(IRule)
 
     name = 'member-moderation'
     description = _('Match messages sent by moderated members.')
@@ -65,9 +65,9 @@ class MemberModeration:
 
 
 
+@implementer(IRule)
 class NonmemberModeration:
     """The nonmember moderation rule."""
-    implements(IRule)
 
     name = 'nonmember-moderation'
     description = _('Match messages sent by nonmembers.')

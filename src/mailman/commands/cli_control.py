@@ -17,7 +17,7 @@
 
 """Module stuff."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -34,7 +34,7 @@ import errno
 import signal
 import logging
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.bin.master import WatcherState, master_state
 from mailman.config import config
@@ -46,10 +46,9 @@ qlog = logging.getLogger('mailman.runner')
 
 
 
+@implementer(ICLISubCommand)
 class Start:
     """Start the Mailman daemons."""
-
-    implements(ICLISubCommand)
 
     name = 'start'
 
@@ -107,7 +106,7 @@ class Start:
                       'cleanly.  Try using --force.'))
         def log(message):
             if not args.quiet:
-                print message
+                print(message)
         # Daemon process startup according to Stevens, Advanced Programming in
         # the UNIX Environment, Chapter 13.
         pid = os.fork()
@@ -147,26 +146,25 @@ def kill_watcher(sig):
             pid = int(fp.read().strip())
     except (IOError, ValueError) as error:
         # For i18n convenience
-        print >> sys.stderr, _('PID unreadable in: $config.PID_FILE')
-        print >> sys.stderr, error
-        print >> sys.stderr, _('Is the master even running?')
+        print(_('PID unreadable in: $config.PID_FILE'), file=sys.stderr)
+        print(error, file=sys.stderr)
+        print(_('Is the master even running?'), file=sys.stderr)
         return
     try:
         os.kill(pid, sig)
     except OSError as error:
         if error.errno != errno.ESRCH:
             raise
-        print >> sys.stderr, _('No child with pid: $pid')
-        print >> sys.stderr, error
-        print >> sys.stderr, _('Stale pid file removed.')
+        print(_('No child with pid: $pid'), file=sys.stderr)
+        print(error, file=sys.stderr)
+        print(_('Stale pid file removed.'), file=sys.stderr)
         os.unlink(config.PID_FILE)
 
 
 
+@implementer(ICLISubCommand)
 class SignalCommand:
     """Common base class for simple, signal sending commands."""
-
-    implements(ICLISubCommand)
 
     name = None
     message = None
@@ -184,7 +182,7 @@ class SignalCommand:
     def process(self, args):
         """See `ICLISubCommand`."""
         if not args.quiet:
-            print _(self.message)
+            print(_(self.message))
         kill_watcher(self.signal)
 
 
@@ -204,10 +202,9 @@ class Reopen(SignalCommand):
     signal = signal.SIGHUP
 
 
+@implementer(ICLISubCommand)
 class Restart(SignalCommand):
     """Stop the Mailman daemons."""
-
-    implements(ICLISubCommand)
 
     name = 'restart'
     message = _('Restarting the Mailman runners')

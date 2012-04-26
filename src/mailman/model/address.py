@@ -17,7 +17,7 @@
 
 """Model for addresses."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -28,7 +28,7 @@ __all__ = [
 from email.utils import formataddr
 from storm.locals import DateTime, Int, Reference, Unicode
 from zope.event import notify
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.database.model import Model
 from mailman.interfaces.address import AddressVerificationEvent, IAddress
@@ -36,8 +36,9 @@ from mailman.utilities.datetime import now
 
 
 
+@implementer(IAddress)
 class Address(Model):
-    implements(IAddress)
+    """See `IAddress`."""
 
     id = Int(primary=True)
     email = Unicode()

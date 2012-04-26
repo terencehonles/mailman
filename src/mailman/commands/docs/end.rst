@@ -13,8 +13,8 @@ processing email messages.
 
 The 'end' command takes no arguments.
 
-    >>> command.argument_description
-    ''
+    >>> print 'DESCRIPTION:', command.argument_description
+    DESCRIPTION:
 
 The command itself is fairly simple; it just stops command processing, and the
 message isn't even looked at.
@@ -31,7 +31,7 @@ The 'stop' command is a synonym for 'end'.
     stop
     >>> print command.description
     An alias for 'end'.
-    >>> command.argument_description
-    ''
+    >>> print 'DESCRIPTION:', command.argument_description
+    DESCRIPTION:
     >>> print command.process(mlist, Message(), {}, (), None)
     ContinueProcessing.no

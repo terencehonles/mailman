@@ -25,7 +25,7 @@ __all__ = [
     ]
 
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.database.transaction import dbconnection
 from mailman.interfaces.address import ExistingAddressError
@@ -37,8 +37,9 @@ from mailman.model.user import User
 
 
 
+@implementer(IUserManager)
 class UserManager:
-    implements(IUserManager)
+    """See `IUserManager`."""
 
     def create_user(self, email=None, display_name=None):
         """See `IUserManager`."""

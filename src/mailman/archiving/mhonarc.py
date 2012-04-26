@@ -17,7 +17,7 @@
 
 """MHonArc archiver."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -29,7 +29,7 @@ import logging
 import subprocess
 
 from urlparse import urljoin
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.config import config
 from mailman.interfaces.archiver import IArchiver
@@ -40,10 +40,9 @@ log = logging.getLogger('mailman.archiver')
 
 
 
+@implementer(IArchiver)
 class MHonArc:
     """Local MHonArc archiver."""
-
-    implements(IArchiver)
 
     name = 'mhonarc'
 

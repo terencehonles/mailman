@@ -17,7 +17,7 @@
 
 """bin/mailman inject"""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -28,7 +28,7 @@ __all__ = [
 import sys
 
 from zope.component import getUtility
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.app.inject import inject_text
 from mailman.config import config
@@ -38,10 +38,9 @@ from mailman.interfaces.listmanager import IListManager
 
 
 
+@implementer(ICLISubCommand)
 class Inject:
     """Inject a message from a file into a mailing list's queue."""
-
-    implements(ICLISubCommand)
 
     name = 'inject'
 
@@ -82,9 +81,9 @@ class Inject:
         # Process --show first; if given, print output and exit, ignoring all
         # other command line switches.
         if args.show:
-            print 'Available queues:'
+            print('Available queues:')
             for switchboard in sorted(config.switchboards):
-                print '   ', switchboard
+                print('   ', switchboard)
             return
         # Could be None or sequence of length 0.
         if args.listname is None:
@@ -106,7 +105,7 @@ class Inject:
             try:
                 message_text = sys.stdin.read()
             except KeyboardInterrupt:
-                print 'Interrupted'
+                print('Interrupted')
                 sys.exit(1)
         else:
             with open(args.filename) as fp:

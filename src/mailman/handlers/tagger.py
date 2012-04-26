@@ -17,7 +17,7 @@
 
 """Extract topics from the original mail message."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -29,7 +29,7 @@ import re
 import email.iterators
 import email.parser
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
@@ -178,10 +178,9 @@ class _ForgivingParser(email.parser.HeaderParser):
 
 
 
+@implementer(IHandler)
 class Tagger:
     """Tag messages with topic matches."""
-
-    implements(IHandler)
 
     name = 'tagger'
     description = _('Tag messages with topic matches.')

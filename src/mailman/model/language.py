@@ -17,7 +17,7 @@
 
 """Model for languages."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -26,15 +26,16 @@ __all__ = [
 
 
 from storm.locals import Int, Unicode
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.database import Model
 from mailman.interfaces import ILanguage
 
 
 
+@implementer(ILanguage)
 class Language(Model):
-    implements(ILanguage)
+    """See `ILanguage`."""
 
     id = Int(primary=True)
     code = Unicode()

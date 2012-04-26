@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -32,7 +32,7 @@ from lazr.config import as_boolean
 from pkg_resources import resource_listdir, resource_string
 from storm.cache import GenerationalCache
 from storm.locals import create_database, Store
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.config import config
 from mailman.interfaces.database import IDatabase
@@ -45,6 +45,7 @@ NL = '\n'
 
 
 
+@implementer(IDatabase)
 class StormBaseDatabase:
     """The database base class for use with the Storm ORM.
 
@@ -54,8 +55,6 @@ class StormBaseDatabase:
     # Tag used to distinguish the database being used.  Override this in base
     # classes.
     TAG = ''
-
-    implements(IDatabase)
 
     def __init__(self):
         self.url = None
@@ -187,7 +186,7 @@ class StormBaseDatabase:
 
         :param store: The Storm store to load the schema into.
         :type store: storm.locals.Store`
-        :param version: The schema version identifier of the form 
+        :param version: The schema version identifier of the form
             YYYYMMDDHHMMSS.
         :type version: string
         :param filename: The file name containing the schema to load.  Pass

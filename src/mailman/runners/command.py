@@ -38,7 +38,7 @@ from email.errors import HeaderParseError
 from email.header import decode_header, make_header
 from email.iterators import typed_subpart_iterator
 from zope.component import getUtility
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.config import config
 from mailman.core.i18n import _
@@ -117,7 +117,7 @@ class CommandFinder:
                 continue
             # Ensure that all the parts are unicodes.  Since we only accept
             # ASCII commands and arguments, ignore anything else.
-            parts = [(part 
+            parts = [(part
                       if isinstance(part, unicode)
                       else part.decode('ascii', 'ignore'))
                      for part in parts]
@@ -125,10 +125,9 @@ class CommandFinder:
 
 
 
+@implementer(IEmailResults)
 class Results:
     """The email command results."""
-
-    implements(IEmailResults)
 
     def __init__(self, charset='us-ascii'):
         self._output = StringIO()

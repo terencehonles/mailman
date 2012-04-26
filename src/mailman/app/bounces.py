@@ -17,7 +17,7 @@
 
 """Application level bounce handling."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -38,7 +38,7 @@ from email.mime.text import MIMEText
 from email.utils import parseaddr
 from string import Template
 from zope.component import getUtility
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.config import config
 from mailman.core.i18n import _
@@ -176,9 +176,9 @@ class ProbeVERP(_BaseVERPParser):
 
 
 
+@implementer(IPendable)
 class _ProbePendable(dict):
     """The pendable dictionary for probe messages."""
-    implements(IPendable)
 
 
 def send_probe(member, msg):

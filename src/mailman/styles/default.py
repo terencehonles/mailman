@@ -17,7 +17,7 @@
 
 """Application of list styles to new and existing lists."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -28,7 +28,7 @@ __all__ = [
 # XXX Styles need to be reconciled with lazr.config.
 
 from datetime import timedelta
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.core.i18n import _
 from mailman.interfaces.action import Action, FilterAction
@@ -41,10 +41,9 @@ from mailman.interfaces.styles import IStyle
 
 
 
+@implementer(IStyle)
 class DefaultStyle:
     """The default (i.e. legacy) style."""
-
-    implements(IStyle)
 
     name = 'default'
     priority = 0    # the lowest priority style

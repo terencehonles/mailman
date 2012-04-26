@@ -17,7 +17,7 @@
 
 """Utility for generating all the aliases of a mailing list."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -25,7 +25,7 @@ __all__ = [
     ]
 
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.interfaces.mta import IMailTransportAgentAliases
 
@@ -43,10 +43,9 @@ SUBDESTINATIONS = (
 
 
 
+@implementer(IMailTransportAgentAliases)
 class MailTransportAgentAliases:
     """Utility for generating all the aliases of a mailing list."""
-
-    implements(IMailTransportAgentAliases)
 
     def aliases(self, mlist):
         """See `IMailTransportAgentAliases`."""

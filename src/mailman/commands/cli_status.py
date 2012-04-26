@@ -15,9 +15,9 @@
 # You should have received a copy of the GNU General Public License along with
 # GNU Mailman.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Module stuff."""
+"""bin/mailman status."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -27,7 +27,7 @@ __all__ = [
 
 import socket
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.bin.master import WatcherState, master_state
 from mailman.core.i18n import _
@@ -35,10 +35,9 @@ from mailman.interfaces.command import ICLISubCommand
 
 
 
+@implementer(ICLISubCommand)
 class Status:
     """Status of the Mailman system."""
-
-    implements(ICLISubCommand)
 
     name = 'status'
 
@@ -64,5 +63,5 @@ class Status:
                 'Invalid enum value: %s' % status)
             message = _('GNU Mailman is in an unexpected state '
                         '($hostname != $fqdn_name)')
-        print message
+        print(message)
         return int(status)

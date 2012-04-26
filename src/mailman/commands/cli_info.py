@@ -17,7 +17,7 @@
 
 """Information about this Mailman instance."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -27,7 +27,7 @@ __all__ = [
 
 import sys
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.config import config
 from mailman.core.i18n import _
@@ -37,10 +37,9 @@ from mailman.version import MAILMAN_VERSION_FULL
 
 
 
+@implementer(ICLISubCommand)
 class Info:
     """Information about this Mailman instance."""
-
-    implements(ICLISubCommand)
 
     name = 'info'
 
@@ -65,15 +64,16 @@ class Info:
             # We don't need to close output because that will happen
             # automatically when the script exits.
             output = open(args.output, 'w')
-        print >> output, MAILMAN_VERSION_FULL
-        print >> output, 'Python', sys.version
-        print >> output, 'config file:', config.filename
-        print >> output, 'db url:', config.db.url
-        print >> output, 'REST root url:', path_to('/')
-        print >> output, 'REST credentials: {0}:{1}'.format(
-            config.webservice.admin_user, config.webservice.admin_pass)
+        print(MAILMAN_VERSION_FULL, file=output)
+        print('Python', sys.version, file=output)
+        print('config file:', config.filename, file=output)
+        print('db url:', config.db.url, file=output)
+        print('REST root url:', path_to('/'), file=output)
+        print('REST credentials: {0}:{1}'.format(
+            config.webservice.admin_user, config.webservice.admin_pass),
+            file=output)
         if args.verbose:
-            print >> output, 'File system paths:'
+            print('File system paths:', file=output)
             longest = 0
             paths = {}
             for attribute in dir(config):
@@ -81,5 +81,5 @@ class Info:
                     paths[attribute] = getattr(config, attribute)
                 longest = max(longest, len(attribute))
             for attribute in sorted(paths):
-                print '    {0:{2}} = {1}'.format(attribute, paths[attribute],
-                                                 longest)
+                print('    {0:{2}} = {1}'.format(
+                    attribute, paths[attribute], longest))

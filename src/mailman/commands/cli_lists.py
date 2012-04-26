@@ -28,7 +28,7 @@ __all__ = [
 
 
 from zope.component import getUtility
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.app.lifecycle import create_list, remove_list
 from mailman.core.constants import system_preferences
@@ -49,10 +49,9 @@ COMMASPACE = ', '
 
 
 
+@implementer(ICLISubCommand)
 class Lists:
     """List all mailing lists"""
-
-    implements(ICLISubCommand)
 
     name = 'lists'
 
@@ -125,10 +124,9 @@ class Lists:
 
 
 
+@implementer(ICLISubCommand)
 class Create:
     """Create a mailing list"""
-
-    implements(ICLISubCommand)
 
     name = 'create'
 
@@ -242,10 +240,9 @@ class Create:
 
 
 
+@implementer(ICLISubCommand)
 class Remove:
     """Remove a mailing list"""
-
-    implements(ICLISubCommand)
 
     name = 'remove'
 

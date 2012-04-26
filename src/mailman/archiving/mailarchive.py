@@ -17,7 +17,7 @@
 
 """The Mail-Archive.com archiver."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -27,20 +27,19 @@ __all__ = [
 
 from urllib import quote
 from urlparse import urljoin
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.config import config
 from mailman.interfaces.archiver import IArchiver
 
 
 
+@implementer(IArchiver)
 class MailArchive:
     """Public archiver at the Mail-Archive.com.
 
     Messages get archived at http://go.mail-archive.com.
     """
-
-    implements(IArchiver)
 
     name = 'mail-archive'
 

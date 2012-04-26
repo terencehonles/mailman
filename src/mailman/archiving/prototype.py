@@ -17,7 +17,7 @@
 
 """Prototypical permalinking archiver."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -34,7 +34,7 @@ from mailbox import Maildir
 from urlparse import urljoin
 
 from flufl.lock import Lock, TimeOutError
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.config import config
 from mailman.interfaces.archiver import IArchiver
@@ -43,14 +43,13 @@ log = logging.getLogger('mailman.error')
 
 
 
+@implementer(IArchiver)
 class Prototype:
     """A prototype of a third party archiver.
 
     Mailman proposes a draft specification for interoperability between list
     servers and archivers: <http://wiki.list.org/display/DEV/Stable+URLs>.
     """
-
-    implements(IArchiver)
 
     name = 'prototype'
 

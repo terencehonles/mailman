@@ -17,7 +17,7 @@
 
 """bin/mailman withlist"""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -31,7 +31,7 @@ import sys
 
 from lazr.config import as_boolean
 from zope.component import getUtility
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.config import config
 from mailman.core.i18n import _
@@ -47,13 +47,12 @@ r = None
 
 
 
+@implementer(ICLISubCommand)
 class Withlist:
     """Operate on a mailing list.
 
     For detailed help, see --details
     """
-
-    implements(ICLISubCommand)
 
     name = 'withlist'
 
@@ -163,7 +162,7 @@ class Withlist:
             ipshell = InteractiveShellEmbed(banner1=banner, user_ns=overrides)
             ipshell()
         except ImportError:
-            print _('ipython is not available, set use_ipython to no')
+            print(_('ipython is not available, set use_ipython to no'))
 
     def _start_python(self, overrides, banner):
         # Set the tab completion.
@@ -178,25 +177,25 @@ class Withlist:
     def _details(self):
         """Print detailed usage."""
         # Split this up into paragraphs for easier translation.
-        print _("""\
+        print(_("""\
 This script provides you with a general framework for interacting with a
-mailing list.""")
-        print
-        print _("""\
+mailing list."""))
+        print()
+        print(_("""\
 There are two ways to use this script: interactively or programmatically.
 Using it interactively allows you to play with, examine and modify a mailing
 list from Python's interactive interpreter.  When running interactively, the
 variable 'm' will be available in the global namespace.  It will reference the
-mailing list object.""")
-        print
-        print _("""\
+mailing list object."""))
+        print()
+        print(_("""\
 Programmatically, you can write a function to operate on a mailing list, and
 this script will take care of the housekeeping (see below for examples).  In
 that case, the general usage syntax is:
 
-    % bin/mailman withlist [options] listname [args ...]""")
-        print
-        print _("""\
+    % bin/mailman withlist [options] listname [args ...]"""))
+        print()
+        print(_("""\
 Here's an example of how to use the --run option.  Say you have a file in the
 Mailman installation directory called 'listaddr.py', with the following two
 functions:
@@ -205,26 +204,26 @@ functions:
         print mlist.posting_address
 
     def requestaddr(mlist):
-        print mlist.request_address""")
-        print
-        print _("""\
+        print mlist.request_address"""))
+        print()
+        print(_("""\
 You can print the list's posting address by running the following from the
 command line:
 
     % bin/mailman withlist -r listaddr mylist@example.com
     Importing listaddr ...
     Running listaddr.listaddr() ...
-    mylist@example.com""")
-        print
-        print _("""\
+    mylist@example.com"""))
+        print()
+        print(_("""\
 And you can print the list's request address by running:
 
     % bin/mailman withlist -r listaddr.requestaddr mylist
     Importing listaddr ...
     Running listaddr.requestaddr() ...
-    mylist-request@example.com""")
-        print
-        print _("""\
+    mylist-request@example.com"""))
+        print()
+        print(_("""\
 As another example, say you wanted to change the display name for a particular
 mailing list.  You could put the following function in a file called
 'change.pw':
@@ -236,7 +235,7 @@ mailing list.  You could put the following function in a file called
 
 and run this from the command line:
 
-    % bin/mailman withlist -r change mylist@example.com 'My List'""")
+    % bin/mailman withlist -r change mylist@example.com 'My List'"""))
 
 
 

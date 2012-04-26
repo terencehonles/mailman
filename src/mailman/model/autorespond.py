@@ -27,7 +27,7 @@ __all__ = [
 
 
 from storm.locals import And, Date, Desc, Int, Reference
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
@@ -38,8 +38,9 @@ from mailman.utilities.datetime import today
 
 
 
+@implementer(IAutoResponseRecord)
 class AutoResponseRecord(Model):
-    implements(IAutoResponseRecord)
+    """See `IAutoResponseRecord`."""
 
     id = Int(primary=True)
 
@@ -60,8 +61,9 @@ class AutoResponseRecord(Model):
 
 
 
+@implementer(IAutoResponseSet)
 class AutoResponseSet:
-    implements(IAutoResponseSet)
+    """See `IAutoResponseSet`."""
 
     def __init__(self, mailing_list):
         self._mailing_list = mailing_list

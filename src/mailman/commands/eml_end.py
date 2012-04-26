@@ -17,6 +17,8 @@
 
 """The email commands 'end' and 'stop'."""
 
+from __future__ import absolute_import, print_function, unicode_literals
+
 __metaclass__ = type
 __all__ = [
     'End',
@@ -24,16 +26,16 @@ __all__ = [
     ]
 
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.core.i18n import _
 from mailman.interfaces.command import ContinueProcessing, IEmailCommand
 
 
 
+@implementer(IEmailCommand)
 class End:
     """The email 'end' command."""
-    implements(IEmailCommand)
 
     name = 'end'
     argument_description = ''

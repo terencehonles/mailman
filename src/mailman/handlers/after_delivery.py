@@ -17,7 +17,7 @@
 
 """Perform some bookkeeping after a successful post."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -25,7 +25,7 @@ __all__ = [
     ]
 
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
@@ -33,10 +33,9 @@ from mailman.utilities.datetime import now
 
 
 
+@implementer(IHandler)
 class AfterDelivery:
     """Perform some bookkeeping after a successful post."""
-
-    implements(IHandler)
 
     name = 'after-delivery'
     description = _('Perform some bookkeeping after a successful post.')

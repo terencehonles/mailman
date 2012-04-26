@@ -27,7 +27,7 @@ __all__ = [
 
 import logging
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.config import config
 from mailman.core.i18n import _
@@ -39,10 +39,9 @@ log = logging.getLogger('mailman.error')
 
 
 
+@implementer(IHandler)
 class ToUsenet:
     """Move the message to the outgoing news queue."""
-
-    implements(IHandler)
 
     name = 'to-usenet'
     description = _('Move the message to the outgoing news queue.')

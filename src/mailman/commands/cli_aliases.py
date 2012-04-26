@@ -17,7 +17,7 @@
 
 """Generate Mailman alias files for your MTA."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -29,7 +29,7 @@ import sys
 
 from operator import attrgetter
 from zope.component import getUtility
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.config import config
 from mailman.core.i18n import _
@@ -41,10 +41,9 @@ from mailman.utilities.modules import call_name
 
 
 
+@implementer(ICLISubCommand)
 class Aliases:
     """Regenerate the aliases appropriate for your MTA."""
-
-    implements(ICLISubCommand)
 
     name = 'aliases'
 
@@ -91,10 +90,9 @@ class Aliases:
 
 
 
+@implementer(IMailTransportAgentLifecycle)
 class Dummy:
     """Dummy aliases implementation for simpler output format."""
-
-    implements(IMailTransportAgentLifecycle)
 
     def create(self, mlist):
         """See `IMailTransportAgentLifecycle`."""
@@ -132,5 +130,5 @@ class Dummy:
             for mlist in sorted(by_domain[domain], key=sort_key):
                 utility = getUtility(IMailTransportAgentAliases)
                 for alias in utility.aliases(mlist):
-                    print >> fp, alias
-                print >> fp
+                    print(alias, file=fp)
+                print(file=fp)

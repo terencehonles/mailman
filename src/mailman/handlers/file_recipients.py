@@ -17,7 +17,7 @@
 
 """Get the normal delivery recipients from a Sendmail style :include: file."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -28,17 +28,16 @@ __all__ = [
 import os
 import errno
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
 
 
 
+@implementer(IHandler)
 class FileRecipients:
     """Get the normal delivery recipients from an include file."""
-
-    implements(IHandler)
 
     name = 'file-recipients'
     description = _('Get the normal delivery recipients from an include file.')

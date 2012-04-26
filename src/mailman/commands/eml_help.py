@@ -25,7 +25,7 @@ __all__ = [
     ]
 
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.config import config
 from mailman.core.i18n import _
@@ -37,10 +37,9 @@ SPACE = ' '
 
 
 
+@implementer(IEmailCommand)
 class Help:
     """The email 'help' command."""
-
-    implements(IEmailCommand)
 
     name = 'help'
     argument_description = '[command]'
@@ -58,14 +57,14 @@ class Help:
                 command = config.commands[command_name]
                 short_description = getattr(
                     command, 'short_description', _('n/a'))
-                print(format.format(command.name, short_description), 
+                print(format.format(command.name, short_description),
                       file=results)
             return ContinueProcessing.yes
         elif len(arguments) == 1:
             command_name = arguments[0]
             command = config.commands.get(command_name)
             if command is None:
-                print(_('$self.name: no such command: $command_name'), 
+                print(_('$self.name: no such command: $command_name'),
                       file=results)
                 return ContinueProcessing.no
             print('{0} {1}'.format(command.name, command.argument_description),

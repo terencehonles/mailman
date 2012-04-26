@@ -17,7 +17,7 @@
 
 """Model for mailing lists."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -33,7 +33,7 @@ from storm.locals import (
     TimeDelta, Unicode)
 from urlparse import urljoin
 from zope.component import getUtility
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.config import config
 from mailman.database.model import Model
@@ -67,8 +67,9 @@ UNDERSCORE = '_'
 
 
 
+@implementer(IMailingList)
 class MailingList(Model):
-    implements(IMailingList)
+    """See `IMailingList`."""
 
     id = Int(primary=True)
 
@@ -492,8 +493,9 @@ class MailingList(Model):
 
 
 
+@implementer(IAcceptableAlias)
 class AcceptableAlias(Model):
-    implements(IAcceptableAlias)
+    """See `IAcceptableAlias`."""
 
     id = Int(primary=True)
 
@@ -507,8 +509,10 @@ class AcceptableAlias(Model):
         self.alias = alias
 
 
+
+@implementer(IAcceptableAliasSet)
 class AcceptableAliasSet:
-    implements(IAcceptableAliasSet)
+    """See `IAcceptableAliasSet`."""
 
     def __init__(self, mailing_list):
         self._mailing_list = mailing_list

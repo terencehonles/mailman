@@ -17,7 +17,7 @@
 
 """The terminal 'hold' chain."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -33,7 +33,7 @@ from email.mime.text import MIMEText
 from email.utils import formatdate, make_msgid
 from zope.component import getUtility
 from zope.event import notify
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.app.moderator import hold_message
 from mailman.app.replybot import can_acknowledge
@@ -54,8 +54,8 @@ SEMISPACE = '; '
 
 
 
+@implementer(IPendable)
 class HeldMessagePendable(dict):
-    implements(IPendable)
     PEND_KEY = 'held message'
 
 

@@ -28,7 +28,7 @@ __all__ = [
 import unittest
 
 from zope.component import getUtility
-from zope.interface import implements
+from zope.interface import implementer
 from zope.interface.exceptions import DoesNotImplement
 
 from mailman.interfaces.styles import (
@@ -37,8 +37,8 @@ from mailman.testing.layers import ConfigLayer
 
 
 
+@implementer(IStyle)
 class DummyStyle:
-    implements(IStyle)
 
     name = 'dummy'
     priority = 1

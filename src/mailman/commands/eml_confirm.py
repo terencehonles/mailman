@@ -17,7 +17,7 @@
 
 """Module stuff."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -26,7 +26,7 @@ __all__ = [
 
 
 from zope.component import getUtility
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.core.i18n import _
 from mailman.interfaces.command import ContinueProcessing, IEmailCommand
@@ -34,10 +34,9 @@ from mailman.interfaces.registrar import IRegistrar
 
 
 
+@implementer(IEmailCommand)
 class Confirm:
     """The email 'confirm' command."""
-
-    implements(IEmailCommand)
 
     name = 'confirm'
     argument_description = 'token'
@@ -48,7 +47,7 @@ class Confirm:
         """See `IEmailCommand`."""
         # The token must be in the arguments.
         if len(arguments) == 0:
-            print >> results, _('No confirmation token found')
+            print(_('No confirmation token found'), file=results)
             return ContinueProcessing.no
         # Make sure we don't try to confirm the same token more than once.
         token = arguments[0]
@@ -60,7 +59,7 @@ class Confirm:
         results.confirms = tokens
         succeeded = getUtility(IRegistrar).confirm(token)
         if succeeded:
-            print >> results, _('Confirmed')
+            print(_('Confirmed'), file=results)
             return ContinueProcessing.yes
-        print >> results, _('Confirmation token did not match')
+        print(_('Confirmation token did not match'), file=results)
         return ContinueProcessing.no

@@ -44,10 +44,10 @@ Creating a list applies its styles
 Start by registering a test style.
 ::
 
-    >>> from zope.interface import implements
+    >>> from zope.interface import implementer
     >>> from mailman.interfaces.styles import IStyle
-    >>> class TestStyle(object):
-    ...     implements(IStyle)
+    >>> @implementer(IStyle)
+    ... class TestStyle(object):
     ...     name = 'test'
     ...     priority = 10
     ...     def apply(self, mailing_list):

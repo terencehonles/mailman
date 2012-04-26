@@ -318,12 +318,15 @@ confirm method will just return False.
 Likewise, if you try to confirm, through the `IUserRegistrar` interface, a
 token that doesn't match a registration event, you will get ``None``.
 However, the pending event matched with that token will still be removed.
+::
 
     >>> from mailman.interfaces.pending import IPendable
-    >>> from zope.interface import implements
+    >>> from zope.interface import implementer
 
-    >>> class SimplePendable(dict):
-    ...     implements(IPendable)
+    >>> @implementer(IPendable)
+    ... class SimplePendable(dict):
+    ...     pass
+
     >>> pendable = SimplePendable(type='foo', bar='baz')
     >>> token = pendingdb.add(pendable)
     >>> registrar.confirm(token)

@@ -17,7 +17,7 @@
 
 """The historical 'suspicious header' rule."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -28,7 +28,7 @@ __all__ = [
 import re
 import logging
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.core.i18n import _
 from mailman.interfaces.rules import IRule
@@ -37,9 +37,9 @@ log = logging.getLogger('mailman.error')
 
 
 
+@implementer(IRule)
 class SuspiciousHeader:
     """The historical 'suspicious header' rule."""
-    implements(IRule)
 
     name = 'suspicious-header'
     description = _('Catch messages with suspicious headers.')

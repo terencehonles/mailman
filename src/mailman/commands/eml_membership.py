@@ -30,7 +30,7 @@ __all__ = [
 
 from email.utils import formataddr, parseaddr
 from zope.component import getUtility
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.core.i18n import _
 from mailman.interfaces.command import ContinueProcessing, IEmailCommand
@@ -41,10 +41,9 @@ from mailman.interfaces.usermanager import IUserManager
 
 
 
+@implementer(IEmailCommand)
 class Join:
     """The email 'join' command."""
-
-    implements(IEmailCommand)
 
     name = 'join'
     # XXX 2012-02-29 BAW: DeliveryMode.summary is not yet supported.
@@ -89,7 +88,7 @@ used.
         if len(members) > 0:
             print(_('$person is already a member'), file=results)
         else:
-            getUtility(IRegistrar).register(mlist, address, 
+            getUtility(IRegistrar).register(mlist, address,
                                             display_name, delivery_mode)
             print(_('Confirmation email sent to $person'), file=results)
         return ContinueProcessing.yes
@@ -131,14 +130,13 @@ class Subscribe(Join):
 
 
 
+@implementer(IEmailCommand)
 class Leave:
     """The email 'leave' command."""
 
-    implements(IEmailCommand)
-
     name = 'leave'
     argument_description = ''
-    description = _("""Leave this mailing list.  
+    description = _("""Leave this mailing list.
 
 You may be asked to confirm your request.""")
     short_description = _('Leave this mailing list.')

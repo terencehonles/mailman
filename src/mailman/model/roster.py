@@ -38,7 +38,7 @@ __all__ = [
 
 
 from storm.expr import And, Or
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.database.transaction import dbconnection
 from mailman.interfaces.member import DeliveryMode, MemberRole
@@ -48,6 +48,7 @@ from mailman.model.member import Member
 
 
 
+@implementer(IRoster)
 class AbstractRoster:
     """An abstract IRoster class.
 
@@ -57,8 +58,6 @@ class AbstractRoster:
 
     This requires that subclasses implement the 'members' property.
     """
-    implements(IRoster)
-
     role = None
 
     def __init__(self, mlist):
@@ -255,10 +254,9 @@ class Subscribers(AbstractRoster):
 
 
 
+@implementer(IRoster)
 class Memberships:
     """A roster of a single user's memberships."""
-
-    implements(IRoster)
 
     name = 'memberships'
 

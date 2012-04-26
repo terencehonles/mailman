@@ -25,7 +25,7 @@ __all__ = [
     ]
 
 from storm.locals import AutoReload, Int, RawStr, Unicode
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
@@ -33,10 +33,9 @@ from mailman.interfaces.messages import IMessage
 
 
 
+@implementer(IMessage)
 class Message(Model):
     """A message in the message store."""
-
-    implements(IMessage)
 
     id = Int(primary=True, default=AutoReload)
     message_id = Unicode()

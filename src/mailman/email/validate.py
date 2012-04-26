@@ -27,7 +27,7 @@ __all__ = [
 
 import re
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.interfaces.address import (
     IEmailValidator, InvalidEmailAddressError)
@@ -39,10 +39,9 @@ _badchars = re.compile(r'[][()<>|;^,\000-\037\177-\377]')
 
 
 
+@implementer(IEmailValidator)
 class Validator:
     """An email address validator."""
-
-    implements(IEmailValidator)
 
     def is_valid(self, email):
         """See `IEmailValidator`."""

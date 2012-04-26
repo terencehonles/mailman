@@ -29,7 +29,7 @@ __all__ = [
 import unittest
 
 from zope.component import getUtility
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.app.lifecycle import create_list
 from mailman.config import config
@@ -48,24 +48,24 @@ from mailman.testing.layers import ConfigLayer
 
 
 
+@implementer(IHandler)
 class DiscardingHandler:
-    implements(IHandler)
     name = 'discarding'
 
     def process(self, mlist, msg, msgdata):
         raise DiscardMessage('by test handler')
 
 
+@implementer(IHandler)
 class RejectHandler:
-    implements(IHandler)
     name = 'rejecting'
 
     def process(self, mlist, msg, msgdata):
         raise RejectMessage('by test handler')
 
 
+@implementer(IPipeline)
 class DiscardingPipeline:
-    implements(IPipeline)
     name = 'test-discarding'
     description = 'Discarding test pipeline'
 
@@ -73,8 +73,8 @@ class DiscardingPipeline:
         yield DiscardingHandler()
 
 
+@implementer(IPipeline)
 class RejectingPipeline:
-    implements(IPipeline)
     name = 'test-rejecting'
     description = 'Rejectinging test pipeline'
 

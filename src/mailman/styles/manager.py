@@ -17,7 +17,7 @@
 
 """Style manager."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -26,7 +26,7 @@ __all__ = [
 
 
 from operator import attrgetter
-from zope.interface import implements
+from zope.interface import implementer
 from zope.interface.verify import verifyObject
 
 from mailman.interfaces.styles import (
@@ -35,10 +35,9 @@ from mailman.utilities.modules import call_name
 
 
 
+@implementer(IStyleManager)
 class StyleManager:
     """The built-in style manager."""
-
-    implements(IStyleManager)
 
     def __init__(self):
         """Install all styles from the configuration files."""

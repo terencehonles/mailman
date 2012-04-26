@@ -17,7 +17,7 @@
 
 """Cook a message's headers."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -30,7 +30,7 @@ import re
 from email.errors import HeaderParseError
 from email.header import Header, decode_header, make_header
 from email.utils import parseaddr, formataddr, getaddresses
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.core.i18n import _
 from mailman.interfaces.handler import IHandler
@@ -279,10 +279,9 @@ def ch_oneline(headerstr):
 
 
 
+@implementer(IHandler)
 class CookHeaders:
     """Modify message headers."""
-
-    implements(IHandler)
 
     name = 'cook-headers'
     description = _('Modify message headers.')

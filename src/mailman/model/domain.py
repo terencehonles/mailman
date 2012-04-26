@@ -29,7 +29,7 @@ __all__ = [
 from urlparse import urljoin, urlparse
 from storm.locals import Int, Unicode
 from zope.event import notify
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.database.model import Model
 from mailman.database.transaction import dbconnection
@@ -40,10 +40,9 @@ from mailman.model.mailinglist import MailingList
 
 
 
+@implementer(IDomain)
 class Domain(Model):
     """Domains."""
-
-    implements(IDomain)
 
     id = Int(primary=True)
 
@@ -115,10 +114,9 @@ class Domain(Model):
 
 
 
+@implementer(IDomainManager)
 class DomainManager:
     """Domain manager."""
-
-    implements(IDomainManager)
 
     @dbconnection
     def add(self, store,

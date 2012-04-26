@@ -17,7 +17,7 @@
 
 """The news moderation rule."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -25,7 +25,7 @@ __all__ = [
     ]
 
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.core.i18n import _
 from mailman.interfaces.nntp import NewsModeration
@@ -33,9 +33,9 @@ from mailman.interfaces.rules import IRule
 
 
 
+@implementer(IRule)
 class ModeratedNewsgroup:
     """The news moderation rule."""
-    implements(IRule)
 
     name = 'news-moderation'
     description = _(

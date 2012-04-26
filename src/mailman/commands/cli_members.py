@@ -32,7 +32,7 @@ from email.utils import formataddr, parseaddr
 from flufl.password import generate
 from operator import attrgetter
 from zope.component import getUtility
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.app.membership import add_member
 from mailman.config import config
@@ -45,10 +45,9 @@ from mailman.interfaces.member import (
 
 
 
+@implementer(ICLISubCommand)
 class Members:
     """Manage list memberships.  With no arguments, list all members."""
-
-    implements(ICLISubCommand)
 
     name = 'members'
 

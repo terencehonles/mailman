@@ -17,7 +17,7 @@
 
 """One last digest."""
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 __metaclass__ = type
 __all__ = [
@@ -26,7 +26,7 @@ __all__ = [
 
 
 from storm.locals import Int, Reference
-from zope.interface import implements
+from zope.interface import implementer
 
 from mailman.database.model import Model
 from mailman.database.types import Enum
@@ -35,8 +35,9 @@ from mailman.interfaces.member import DeliveryMode
 
 
 
+@implementer(IOneLastDigest)
 class OneLastDigest(Model):
-    implements(IOneLastDigest)
+    """See `IOneLastDigest`."""
 
     id = Int(primary=True)
 
