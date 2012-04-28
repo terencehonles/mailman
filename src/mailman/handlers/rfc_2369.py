@@ -74,9 +74,13 @@ def process(mlist, msg, msgdata):
         'List-Subscribe'  : subfieldfmt.format(listinfo, mlist.join_address),
         })
     if not msgdata.get('reduced_list_headers'):
-        # List-Post: is controlled by a separate attribute
-        if mlist.include_list_post_header:
-            headers['List-Post'] = '<mailto:{0}>'.format(mlist.posting_address)
+        # List-Post: is controlled by a separate attribute, which is somewhat
+        # misnamed.  RFC 2369 requires a value of NO if posting is not
+        # allowed, i.e. for an announce-only list.
+        list_post = ('<mailto:{0}>'.format(mlist.posting_address)
+                     if mlist.include_list_post_header
+                     else 'NO')
+        headers['List-Post'] = list_post
         # Add RFC 2369 and 5064 archiving headers, if archiving is enabled.
         if mlist.archive:
             for archiver in config.archivers:

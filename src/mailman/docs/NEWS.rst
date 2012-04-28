@@ -60,6 +60,7 @@ Bug fixes
    given by Mark Sapiro. (LP: #949924)
  * Fixed a typo when returning the configuration file's header match checks.
    (LP: #953497)
+ * List-Post should be NO when posting is not allowed. (LP: #987563)
 
 
 3.0 beta 1 -- "The Twilight Zone"

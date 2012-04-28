@@ -59,13 +59,14 @@ about hiding them.  A list owner can turn these headers off.
 Messages which Mailman generates itself, such as user or owner notifications,
 have a reduced set of `List-` headers.  Specifically, there is no `List-Post`,
 `List-Archive` or `Archived-At` header.
+..
 
     >>> mlist.include_rfc2369_headers = True
-    >>> mlist.include_list_post_header = False
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
     ...
     ... """)
+
     >>> process(mlist, msg, dict(reduced_list_headers=True))
     >>> list_headers(msg)
     ---start---
@@ -84,6 +85,7 @@ List-Post header
 Discussion lists, to which any subscriber can post, also have a `List-Post`
 header which contains the `mailto:` URL used to send messages to the list.
 
+    >>> mlist.include_rfc2369_headers = True
     >>> mlist.include_list_post_header = True
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
@@ -101,6 +103,28 @@ header which contains the `mailto:` URL used to send messages to the list.
         <mailto:test-leave@example.com>
     ---end---
 
+Some mailing lists are announce, or one-way lists, not discussion lists.
+Because the general membership cannot post to these mailing lists, the list
+owner can set a flag which adds a special `List-Post` header value, according
+to RFC 2369.
+
+    >>> mlist.include_list_post_header = False
+    >>> msg = message_from_string("""\
+    ... From: aperson@example.com
+    ...
+    ... """)
+    >>> process(mlist, msg, {})
+    >>> list_headers(msg)
+    ---start---
+    list-help: <mailto:test-request@example.com?subject=help>
+    list-id: <test.example.com>
+    list-post: NO
+    list-subscribe: <http://lists.example.com/listinfo/test@example.com>,
+        <mailto:test-join@example.com>
+    list-unsubscribe: <http://lists.example.com/listinfo/test@example.com>,
+        <mailto:test-leave@example.com>
+    ---end---
+
 
 List-Id header
 ==============
@@ -108,6 +132,7 @@ List-Id header
 If the mailing list has a description, then it is included in the ``List-Id``
 header.
 
+    >>> mlist.include_list_post_header = True
     >>> mlist.description = 'My test mailing list'
     >>> msg = message_from_string("""\
     ... From: aperson@example.com
